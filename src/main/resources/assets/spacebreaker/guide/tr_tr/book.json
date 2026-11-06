@@ -1,8 +1,16 @@
 {
   "title": "Saha Rehberi",
+  "subtitle": "Araştırma, makineler, giysi, roketler ve dünyalar: hepsi bu kitapta.",
+  "intro": "Bir bölüme tıkla; sayfaları köşedeki oklarla ya da fare tekerleğiyle çevir. Bir şey mi arıyorsun? Yukarıdaki kutuya yaz. Bir eşyaya tıklarsan kendi sayfası açılır.",
   "categories": {
-    "start": "Başlangıç", "research": "Araştırma", "materials": "Malzemeler", "machines": "Enerji ve Makineler",
-    "survival": "Giysi ve Hayatta Kalma", "rocketry": "Roketçilik", "worlds": "Dünyalar", "ruins": "Harabeler",
+    "start": "Başlangıç",
+    "research": "Araştırma",
+    "materials": "Malzemeler",
+    "machines": "Enerji ve Makineler",
+    "survival": "Giysi ve Hayatta Kalma",
+    "rocketry": "Roketçilik",
+    "worlds": "Dünyalar",
+    "ruins": "Harabeler",
     "science": "Bilim Köşesi"
   }
 }

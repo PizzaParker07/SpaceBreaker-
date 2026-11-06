@@ -75,7 +75,29 @@ final class ResearchEvents {
     private static void onDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
             ResearchNet.sync(player, List.of());
+            firstOrbit(player);
         }
+    }
+
+    static final String GOT_ORBIT_DATA = "spacebreaker:received_orbital_flight_data";
+
+    /**
+     * The first time a player reaches orbit their flight records become research data: landing systems (heat shield,
+     * parachute, landing legs) need them, so the way home from the first orbit is the emergency beacon.
+     */
+    static void firstOrbit(ServerPlayer player) {
+        var tag = player.getPersistentData();
+        if (tag.getBoolean(GOT_ORBIT_DATA) || !com.pizzaparker07.spacebreaker.core.body.Bodies.isOrbit(player.level())) {
+            return;
+        }
+        tag.putBoolean(GOT_ORBIT_DATA, true);
+        net.minecraft.world.item.ItemStack data = Research.experimentData(ResearchTree.ORBIT);
+        data.setCount(2);
+        if (!player.getInventory().add(data)) {
+            player.drop(data, false);
+        }
+        player.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.spacebreaker.orbit_data")
+                .withStyle(net.minecraft.ChatFormatting.AQUA), false);
     }
 
     private ResearchEvents() {

@@ -15,7 +15,7 @@ The red colour is rust: iron oxide. **Hematite ore** and soil full of little hem
 - **Perchlorate soil** is full of toxic salts: useful for chemistry, bad for farming.
 
 > [!TIP]
-> Carbon dioxide from the air plus hydrogen from water become **methane** fuel in the Sabatier process. You can make your fuel home on Mars. → [In-Situ Resources](isru)
+> Ice gives water and water gives **oxygen**: to breathe and as **liquid oxygen** for your rocket. Carbon dioxide and hydrogen become **methane and water** in the Sabatier reactor. → [In-Situ Resources](isru)
 
 {page}
 ## Traces of a wet past

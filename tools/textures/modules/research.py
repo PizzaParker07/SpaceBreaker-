@@ -656,6 +656,75 @@ def space_background() -> Canvas:
 
 # ----------------------------------------------------------------------------- guide book GUI
 
+def guide_cover() -> Image.Image:
+    """Nine-slice cover for the guide book (48×48, border 12): deep blue leather, stitching, gold corner protectors.
+    The screen stretches it to any book size (edges and centre tile), so the frame stays sharp at every scale."""
+    N = 48
+    img = Image.new('RGBA', (N, N), (0, 0, 0, 0))
+    px = img.load()
+    rng = random.Random(15)
+    lea = [c + (255,) for c in COVER]
+    for y in range(N):
+        for x in range(N):
+            if (x in (0, N - 1)) and (y in (0, N - 1)):
+                continue
+            if x in (0, N - 1) or y in (0, N - 1):
+                px[x, y] = lea[0]
+            else:
+                v = 2 + (1 if rng.random() < 0.15 else 0) - (1 if rng.random() < 0.1 else 0)
+                px[x, y] = lea[max(1, min(3, v))]
+    for i in range(2, N - 2):
+        px[i, 1] = lea[4]
+        px[i, N - 2] = lea[1]
+        px[1, i] = lea[4]
+        px[N - 2, i] = lea[1]
+    for i in range(6, N - 6, 3):           # stitching (period 3 tiles cleanly: 36 = 12 × 3)
+        px[i, 4] = lea[4]
+        px[i, N - 5] = lea[4]
+        px[4, i] = lea[4]
+        px[N - 5, i] = lea[4]
+    gold = [c + (255,) for c in P.GOLD]
+    for (cx, cy, sx, sy) in [(0, 0, 1, 1), (N - 1, 0, -1, 1), (0, N - 1, 1, -1), (N - 1, N - 1, -1, -1)]:
+        for i in range(10):
+            for j in range(10 - i):
+                if i + j == 0:
+                    continue
+                t = 6 if i + j < 3 else (5 if (i + j) % 3 else 4)
+                if i + j == 9:
+                    t = 2
+                px[cx + sx * i, cy + sy * j] = gold[t]
+    return img
+
+
+def guide_page(side: int) -> Image.Image:
+    """Nine-slice page (32×32, border 6). side 0 = left page (gutter on the right), 1 = right page."""
+    N = 32
+    img = Image.new('RGBA', (N, N), (0, 0, 0, 0))
+    px = img.load()
+    rng = random.Random(20 + side)
+    paper = [c + (255,) for c in PAPER]
+    for y in range(N):
+        for x in range(N):
+            g = (N - 1 - x) if side == 0 else x       # distance from the gutter
+            c = paper[4]
+            if g < 2:
+                c = paper[2]
+            elif g < 5:
+                c = paper[3]
+            elif rng.random() < 0.02:
+                c = paper[3]
+            px[x, y] = c
+    for x in range(N):                               # page stack: bottom edge
+        px[x, N - 2] = paper[2]
+        px[x, N - 1] = paper[1]
+    for y in range(N):                               # outer edge
+        px[0 if side == 0 else N - 1, y] = paper[1]
+        px[1 if side == 0 else N - 2, y] = paper[2]
+    for x in range(N):                               # top edge
+        px[x, 0] = paper[3]
+    return img
+
+
 def guide_book_gui() -> Image.Image:
     """Two-page book, 360×220 inside a 512×256 sheet: deep blue leather, gold corners, cream pages
     (matches GuideScreen.W/H)."""
@@ -1018,6 +1087,14 @@ def export(save):
     save(blueprint(), 'gui', 'research/blueprint')
     save(space_background(), 'gui', 'advancements/backgrounds/space')
     raw(guide_book_gui(), 'guide/book')
+    raw(guide_cover(), 'sprites/guide/cover')
+    raw(guide_page(0), 'sprites/guide/page_left')
+    raw(guide_page(1), 'sprites/guide/page_right')
+    import os
+    from generate import TEX
+    for name, size, border in (('cover', 48, 12), ('page_left', 32, 6), ('page_right', 32, 6)):
+        with open(os.path.join(TEX, 'gui', 'sprites', 'guide', name + '.png.mcmeta'), 'w') as f:
+            f.write('{\n  "gui": {"scaling": {"type": "nine_slice", "width": %d, "height": %d, "border": %d}}\n}\n' % (size, size, border))
     save(guide_slot(), 'gui', 'sprites/guide/slot')
     save(guide_recipe(), 'gui', 'sprites/guide/recipe')
     save(guide_lock(), 'gui', 'sprites/guide/lock')

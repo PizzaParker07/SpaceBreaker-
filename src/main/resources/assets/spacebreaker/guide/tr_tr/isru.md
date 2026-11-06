@@ -30,11 +30,13 @@ Kayayı eritip elektrikle ayrıştırır: **kayadan oksijen**.
 
 {page}
 ## Sabatier reaktörü
-Karbondioksit ile hidrojeni **metan ve suya** çevirir. Su, elektroliz ünitesine geri döner; metan, sıvı oksijenle birlikte dönüş yakıtın olur.
+Karbondioksit ile hidrojeni **metan ve suya** çevirir. Su, elektroliz ünitesine geri döner; metanı [Kriyojenik](cryogenics) sıvılaştırıcıyla sıvılaştırıp saklayabilirsin.
+
+>! Roket motorların şimdilik **RP-1 ve sıvı oksijen** yakar. Dönüş için RP-1'i Dünya'dan getir; sıvı oksijeni yerinde üretebilirsin.
 {recipe spacebreaker:sabatier/methane}
 
 > [!TIP]
-> **Mars'ta yakıt döngüsü:** buz eritici → su → elektroliz ünitesi → hidrojen; atmosfer işlemcisi → CO₂; ikisi Sabatier reaktörüne. Çıkan su yine elektroliz ünitesine gider.
+> **Mars'ta oksijen ve metan:** buz eritici → su → elektroliz ünitesi → oksijen + hidrojen; oksijen → kriyojenik sıvılaştırıcı → sıvı oksijen. Hidrojen ve atmosfer işlemcisinden gelen CO₂ Sabatier reaktörüne gider. Çıkan su yine elektroliz ünitesine gider.
 
 ## Kimyasal reaktör
 Bir katı ve iki sıvıyı birleştirir; örneğin kükürt, su ve oksijenden **sülfürik asit** yapar.

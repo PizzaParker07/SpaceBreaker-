@@ -114,7 +114,8 @@ public final class GuideGameTests {
             }
         }
         for (ResourceLocation id : refs.structures()) {
-            if (!id.getNamespace().equals(Spacebreaker.MOD_ID) || !Files.exists(asset("guide/structures/" + id.getPath() + ".nbt"))) {
+            boolean multiblock = com.pizzaparker07.spacebreaker.core.multiblock.Multiblocks.get(helper.getLevel().registryAccess(), id).isPresent();
+            if (!multiblock && (!id.getNamespace().equals(Spacebreaker.MOD_ID) || !Files.exists(asset("guide/structures/" + id.getPath() + ".nbt")))) {
                 errors.add(where + ": structure " + id);
             }
         }
@@ -131,6 +132,19 @@ public final class GuideGameTests {
         for (ResourceLocation id : refs.images()) {
             if (!id.getNamespace().equals(Spacebreaker.MOD_ID) || !Files.exists(asset(id.getPath()))) {
                 errors.add(where + ": image " + id);
+            }
+        }
+        for (String opt : refs.optional()) {
+            String[] kv = opt.split(" ", 2);
+            ResourceLocation id = ResourceLocation.parse(kv[1]);
+            boolean exists = switch (kv[0]) {
+                case "recipe" -> helper.getLevel().getServer().getRecipeManager().byKey(id).isPresent();
+                case "entity" -> BuiltInRegistries.ENTITY_TYPE.containsKey(id);
+                default -> com.pizzaparker07.spacebreaker.core.multiblock.Multiblocks.get(helper.getLevel().registryAccess(), id).isPresent()
+                        || Files.exists(asset("guide/structures/" + id.getPath() + ".nbt"));
+            };
+            if (exists) {
+                Spacebreaker.LOGGER.info("Guide {}: optional {} now exists, the ? can go", where, opt);
             }
         }
         for (String key : refs.keys()) {

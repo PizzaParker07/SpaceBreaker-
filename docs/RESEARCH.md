@@ -71,11 +71,14 @@ Front matter: `title`, `icon`, `items: [..]` (clicking these items anywhere in t
 `research: <tech>`, which only shows a "Research needed" note: pages are never hidden.
 
 Body (see `GuideMarkdown.java`): `#`/`##` headings, `-` and `1.` lists, `**bold**`, `*italic*`, `` `code` ``,
-`{color gold}…{/color}`, tables, `> [!TIP]` / `> [!WARNING]` / `> [!NOTE]` boxes, `[label](chapter)` links and the tags
+`{color gold}…{/color}` or `{blue}…{/}`, tables, `---` dividers, `>` tip and `>!` warning boxes (also `> [!TIP]`, `> [!WARNING]`,
+`> [!NOTE]`), `## Heading {#anchor}`, links `[label](chapter)`, `(chapter#anchor)`, `(#anchor)` and `(https://…)` (asks first), and the tags
 `{item id [text]}`, `{key key.name}` (the player's real key), `{tech id}`, `{page}`, `{recipe id}` (crafting, cooking,
 smithing and every Spacebreaker machine, fluids and gases included), `{items id id ...}`, `{entity id}` (turning model),
-`{structure name}` (turning 3D view of `assets/<ns>/guide/structures/<name>.nbt`, made by `tools/structures/modules/guide.py`)
-and `{image ns:textures/... w h}`.
+`{structure id}` (turning 3D view of the multiblock `data/<ns>/spacebreaker/multiblock/<id>.json`, with a "Show hologram" button for the Hologram Projector; `assets/<ns>/guide/structures/<id>.nbt` is the fallback for scenes that are not multiblocks)
+`{entity id scale=1.5 height=50}`, `{craft shaped a b c / d _ f -> result x2}` and `{image ns:textures/... w h}`.
+A `?` after a tag name (`{recipe? id}`) skips it quietly while the target does not exist yet.
+The language `book.json` also takes `subtitle` and `intro` for the contents page.
 
 The GameTest `guideChaptersExistInBothLanguagesAndResolve` checks that every chapter exists in English and Turkish and that
 every item, recipe, entity, structure, link, tech, image and key it names exists. Terms: `docs/GLOSSARY.md`.

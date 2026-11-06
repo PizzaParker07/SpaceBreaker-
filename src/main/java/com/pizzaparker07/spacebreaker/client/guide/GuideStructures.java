@@ -25,12 +25,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/** Small structure snapshots for the guide ({@code assets/<ns>/guide/structures/<name>.nbt}, vanilla template format). */
+/**
+ * Structure snapshots for the guide. The multiblock definitions ({@code data/<ns>/spacebreaker/multiblock/<id>.json}, the same
+ * data the Hologram Projector uses) come first; {@code assets/<ns>/guide/structures/<name>.nbt} (vanilla template format) is
+ * the fallback for decorative scenes.
+ */
 public final class GuideStructures {
     public record Placed(BlockPos pos, BlockState state) {
     }
 
-    public record Snapshot(List<Placed> blocks, int sx, int sy, int sz) {
+    /** multiblock: true when the snapshot comes from a multiblock definition (the projector can show it). */
+    public record Snapshot(List<Placed> blocks, int sx, int sy, int sz, boolean multiblock) {
     }
 
     private static final Map<ResourceLocation, Snapshot> CACHE = new HashMap<>();
@@ -40,7 +45,58 @@ public final class GuideStructures {
     }
 
     public static Snapshot get(ResourceLocation id) {
-        return CACHE.computeIfAbsent(id, GuideStructures::load);
+        Snapshot s = CACHE.get(id);
+        if (s == null) {
+            s = fromMultiblock(id);
+            if (s == null) {
+                s = load(id);
+            }
+            // multiblocks arrive with the world's data; don't cache a fallback made before that
+            if (s.multiblock() || Minecraft.getInstance().level != null) {
+                CACHE.put(id, s);
+            }
+        }
+        return s;
+    }
+
+    private static @org.jetbrains.annotations.Nullable Snapshot fromMultiblock(ResourceLocation id) {
+        var level = Minecraft.getInstance().level;
+        if (level == null) {
+            return null;
+        }
+        var def = com.pizzaparker07.spacebreaker.core.multiblock.Multiblocks.get(level.registryAccess(), id).orElse(null);
+        if (def == null) {
+            return null;
+        }
+        List<Placed> blocks = new ArrayList<>();
+        int minX = Integer.MAX_VALUE, minY = Integer.MAX_VALUE, minZ = Integer.MAX_VALUE, maxX = Integer.MIN_VALUE, maxY = Integer.MIN_VALUE, maxZ = Integer.MIN_VALUE;
+        var placements = def.placements(BlockPos.ZERO, net.minecraft.core.Direction.NORTH);
+        for (var p : placements) {
+            minX = Math.min(minX, p.pos().getX());
+            minY = Math.min(minY, p.pos().getY());
+            minZ = Math.min(minZ, p.pos().getZ());
+            maxX = Math.max(maxX, p.pos().getX());
+            maxY = Math.max(maxY, p.pos().getY());
+            maxZ = Math.max(maxZ, p.pos().getZ());
+        }
+        for (var p : placements) {
+            if (p.spec().isAir()) {
+                continue;
+            }
+            BlockState state = p.spec().display(net.minecraft.world.level.block.Rotation.NONE);
+            if (!state.isAir()) {
+                blocks.add(new Placed(p.pos().offset(-minX, -minY, -minZ), state));
+            }
+        }
+        if (blocks.isEmpty()) {
+            return null;
+        }
+        return new Snapshot(blocks, maxX - minX + 1, maxY - minY + 1, maxZ - minZ + 1, true);
+    }
+
+    /** True when a guide structure id names something that exists (multiblock or snapshot file). */
+    public static boolean exists(ResourceLocation id) {
+        return !get(id).blocks().isEmpty();
     }
 
     private static Snapshot load(ResourceLocation id) {
@@ -63,10 +119,10 @@ public final class GuideStructures {
                     blocks.add(new Placed(new BlockPos(pos.getInt(0), pos.getInt(1), pos.getInt(2)), state));
                 }
             }
-            return new Snapshot(blocks, size.getInt(0), size.getInt(1), size.getInt(2));
+            return new Snapshot(blocks, size.getInt(0), size.getInt(1), size.getInt(2), false);
         } catch (Exception e) {
             Spacebreaker.LOGGER.warn("Guide structure {} missing: {}", file, e.toString());
-            return new Snapshot(List.of(), 1, 1, 1);
+            return new Snapshot(List.of(), 1, 1, 1, false);
         }
     }
 

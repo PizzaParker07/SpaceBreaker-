@@ -11,14 +11,22 @@ research: spacebreaker:oxygen_storage
 | {item spacebreaker:oxygen_tank} | yaklaşık **5 dakika** |
 | {item spacebreaker:large_oxygen_tank} | yaklaşık **15 dakika** |
 
-Giysiye iki tüp takılır, yani tam dolu iki büyük tüple yarım saat dışarıda kalabilirsin.
+Giysinin sırt çantasına iki tüp takılır (Ek Oksijen modülüyle üç). Tam dolu iki büyük tüple yarım saat dışarıda kalabilirsin.
 
 {recipe spacebreaker:oxygen_tank}
 
 ## Tüpleri doldurmak
-{item spacebreaker:oxygen_filler} tüpleri **solunabilir havadan**, enerjiyle doldurur. Tüpü beşiğe koy ve enerji ver. Manevra ünitesinin gazını da doldurur.
+{item spacebreaker:oxygen_filler} tüpü beşiğine koy ve enerji ver. Manevra ünitesinin gazını da doldurur.
+- **Dünya'da:** tüpleri doğal havadan **bedava** doldurur; yalnızca enerji ister.
+- **Havasız ya da zehirli dünyalarda:** yalnızca **boruyla gelen oksijenden** doldurur. Bir üssün basınçlı odasındaki hava sayılmaz.
+
+| Kaynak | 1 mB = | Küçük tüp için |
+|---|---|---|
+| Oksijen gazı | 2 nefes tiki | 3000 mB |
+| Sıvı oksijen | 16 nefes tiki | 375 mB |
 
 {recipe spacebreaker:oxygen_filler}
 
-> [!WARNING]
-> Ay'da ve yörüngede hava yoktur. Dolum istasyonu orada ancak oksijenli bir odanın içinde çalışır. Her zaman yedek tüp taşı.
+> Ay'da oksijen kaynağın {item spacebreaker:regolith_heater}: kayayı oksijene çevirir. Ondan dolum istasyonuna bir boru çek. → [Yerinde Üretim](isru)
+
+>! Ay'da ve yörüngede hava yoktur. Her zaman yedek tüp taşı.

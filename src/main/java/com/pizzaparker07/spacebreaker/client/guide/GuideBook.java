@@ -39,7 +39,7 @@ public final class GuideBook extends SimplePreparableReloadListener<GuideBook.Da
     public record Category(String id, int color, ResourceLocation icon, List<ResourceLocation> chapters) {
     }
 
-    public record LangBook(String title, Map<String, String> categories) {
+    public record LangBook(String title, String subtitle, String intro, Map<String, String> categories) {
     }
 
     public record Data(List<Category> categories, Map<String, LangBook> langs, Map<String, Map<ResourceLocation, String>> sources,
@@ -66,6 +66,16 @@ public final class GuideBook extends SimplePreparableReloadListener<GuideBook.Da
     public String title() {
         LangBook b = data.langs().getOrDefault(lang(), data.langs().get(FALLBACK));
         return b == null ? "Field Guide" : b.title();
+    }
+
+    public String subtitle() {
+        LangBook b = data.langs().getOrDefault(lang(), data.langs().get(FALLBACK));
+        return b == null ? "" : b.subtitle();
+    }
+
+    public String intro() {
+        LangBook b = data.langs().getOrDefault(lang(), data.langs().get(FALLBACK));
+        return b == null ? "" : b.intro();
     }
 
     public String categoryName(String id) {
@@ -197,7 +207,9 @@ public final class GuideBook extends SimplePreparableReloadListener<GuideBook.Da
                     if (old != null) {
                         names.putAll(old.categories());
                     }
-                    langs.put(lang, new LangBook(old != null ? old.title() : GsonHelper.getAsString(o, "title", "Field Guide"), names));
+                    langs.put(lang, new LangBook(old != null ? old.title() : GsonHelper.getAsString(o, "title", "Field Guide"),
+                            old != null && !old.subtitle().isEmpty() ? old.subtitle() : GsonHelper.getAsString(o, "subtitle", ""),
+                            old != null && !old.intro().isEmpty() ? old.intro() : GsonHelper.getAsString(o, "intro", ""), names));
                 } else {
                     String name = parts[2].substring(0, parts[2].length() - 3);
                     sources.computeIfAbsent(lang, k -> new HashMap<>())

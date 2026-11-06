@@ -4,7 +4,7 @@ icon: spacebreaker:launch_pad
 items: [spacebreaker:launch_pad, spacebreaker:flame_trench, spacebreaker:service_tower, spacebreaker:crew_access_arm, spacebreaker:fuel_umbilical, spacebreaker:launch_control_console]
 research: spacebreaker:launch_infrastructure
 ---
-{structure spacebreaker:launch_pad}
+{structure spacebreaker:launch_site}
 
 ## Kurulum
 1. **Alev kanalı:** 3×3 {item spacebreaker:flame_trench} döşe. Roket ortadaki ızgaranın üstünde durur.

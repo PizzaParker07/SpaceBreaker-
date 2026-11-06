@@ -30,11 +30,13 @@ Melts rock and splits it with electricity: **oxygen from rock**.
 
 {page}
 ## Sabatier reactor
-Turns carbon dioxide and hydrogen into **methane and water**. The water goes back to the electrolyser; the methane, with liquid oxygen, is your fuel home.
+Turns carbon dioxide and hydrogen into **methane and water**. The water goes back to the electrolyser; you can liquefy and store the methane with the [Cryogenics](cryogenics) liquefier.
+
+>! Your rocket engines burn **RP-1 and liquid oxygen** for now. Bring RP-1 from Earth for the way home; liquid oxygen you can make on the spot.
 {recipe spacebreaker:sabatier/methane}
 
 > [!TIP]
-> **Fuel loop on Mars:** ice melter → water → electrolyser → hydrogen; atmosphere processor → CO₂; both into the Sabatier reactor. The water it gives goes back to the electrolyser.
+> **Oxygen and methane on Mars:** ice melter → water → electrolyser → oxygen + hydrogen; oxygen → cryogenic liquefier → liquid oxygen. Hydrogen and CO₂ from the atmosphere processor go into the Sabatier reactor. The water it gives goes back to the electrolyser.
 
 ## Chemical reactor
 Combines one solid and two fluids; for example sulfur, water and oxygen make **sulfuric acid**.

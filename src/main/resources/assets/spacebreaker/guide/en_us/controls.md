@@ -8,7 +8,7 @@ The keys below are **your** keys; change them in the options and this page follo
 |---|---|
 | Open the research tree | {key key.spacebreaker.research} |
 | Open the field guide | {key key.spacebreaker.guide} |
-| Launch / abort the countdown | {key key.spacebreaker.launch} |
+| [Launch](first_flight#launch) / abort the countdown | {key key.spacebreaker.launch} |
 | Star map (in orbit) | {key key.spacebreaker.star_map} |
 | Maneuvering unit: up | {key key.jump} |
 | Maneuvering unit: down | {key key.sneak} |

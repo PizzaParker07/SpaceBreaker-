@@ -9,6 +9,7 @@
     "spacebreaker:venus"
   ],
   "unlocks": [
-    "spacebreaker:acid_coating"
+    "spacebreaker:acid_coating",
+    "spacebreaker:chemical_reactor"
   ]
 }

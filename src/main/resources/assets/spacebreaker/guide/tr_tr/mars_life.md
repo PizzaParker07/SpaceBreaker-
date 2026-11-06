@@ -8,7 +8,7 @@ research: spacebreaker:interplanetary_transfers
 ## Pas Böceği
 Topraktan hematit kürecikleri kemirir ve **demir pulları** döker. Zararsızdır.
 
-## Taşyiyen
+## Taş Otlayan
 Küçük sürüler halinde dolaşır ve kayalardan tuz yalar. Çoğaltmak için iki tanesine {item spacebreaker:gypsum_crystal} ver.
 
 {page}

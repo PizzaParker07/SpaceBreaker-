@@ -8,7 +8,7 @@ Aşağıdaki tuşlar **senin** ayarlarındaki tuşlardır; değiştirdiğinde bu
 |---|---|
 | Araştırma ağacını aç | {key key.spacebreaker.research} |
 | Saha rehberini aç | {key key.spacebreaker.guide} |
-| Fırlat / geri sayımı durdur | {key key.spacebreaker.launch} |
+| [Fırlat](first_flight#launch) / geri sayımı durdur | {key key.spacebreaker.launch} |
 | Yıldız haritası (yörüngede) | {key key.spacebreaker.star_map} |
 | Manevra ünitesiyle yüksel | {key key.jump} |
 | Manevra ünitesiyle alçal | {key key.sneak} |

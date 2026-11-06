@@ -15,7 +15,7 @@ Kırmızı renk pastır, yani demir oksit. **Hematit cevheri** ve küçük hemat
 - **Perkloratlı toprak** zehirli tuzlarla doludur: kimya için yararlı, tarım için kötü.
 
 > [!TIP]
-> Havadaki karbondioksit ile sudan elde edilen hidrojen, Sabatier süreciyle **metan** yakıta dönüşür. Dönüş yakıtını Mars'ta üretebilirsin. → [Yerinde Kaynak Kullanımı](isru)
+> Buzdan su, sudan **oksijen** elde edersin: hem nefes almak hem de roketinin **sıvı oksijeni** için. Karbondioksit ve hidrojen de Sabatier reaktöründe **metan ve suya** dönüşür. → [Yerinde Kaynak Kullanımı](isru)
 
 {page}
 ## Islak geçmişin izleri

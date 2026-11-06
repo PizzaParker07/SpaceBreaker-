@@ -55,11 +55,20 @@ import java.util.Map;
  * the pages. Nothing is locked: chapters tied to a technology only show a small "Research needed" note.
  */
 public class GuideScreen extends Screen {
-    private static final ResourceLocation BOOK = Spacebreaker.id("textures/gui/guide/book.png");
+    private static final ResourceLocation COVER = Spacebreaker.id("guide/cover"), PAGE_L = Spacebreaker.id("guide/page_left"),
+            PAGE_R = Spacebreaker.id("guide/page_right");
     private static final ResourceLocation SLOT = Spacebreaker.id("guide/slot");
-    public static final int W = 360, H = 220, TEX_W = 512, TEX_H = 256;
-    private static final int PAGE_W = 142, TOP = 16, BOTTOM = 196, LEFT_X = 24, RIGHT_X = 194;
-    static final int INK = 0x3B2A1A, INK_SOFT = 0x7A6650, LINK = GuideMarkdown.LINK_COLOR;
+    /*
+     * The book is sized to the screen (GUI pixels): bookH = min(available, 290); pageH = bookH - 12;
+     * pageW = min((screenW - 12) / 2, min(240, max(round(pageH * 0.8), 180))); bookW = 2 * pageW + 12.
+     * The cover and pages are nine-slice sprites, so the frame stays sharp at any size.
+     * Body text is drawn at TS (a step below the GUI scale on large screens, still on whole pixels) so a line holds more
+     * words; layout works in these content units (PAGE_W × PAGE_H).
+     */
+    private static int W = 360, H = 220, PAGE = 174, BOOK_PAGE_W = 150, TOP = 19, LEFT_X = 19, RIGHT_X = 191;
+    private static float TS = 1F;
+    private static int PAGE_W = 150, PAGE_H = 170;
+    static final int INK = 0x2E2419, INK_SOFT = 0x6E5F4B, INK_FAINT = 0x9C8C72, TITLE = 0x1C4F8F, SUBTITLE = 0xA4520F, LINK = GuideMarkdown.LINK_COLOR;
 
     private enum Mode { CONTENTS, CHAPTER, SEARCH }
 
@@ -73,6 +82,7 @@ public class GuideScreen extends Screen {
     private final Deque<Place> forward = new ArrayDeque<>();
     private Place place = last;
     private List<List<Placed>> pages = List.of();
+    private Map<String, Integer> anchors = Map.of();
     private float scale = 1F;
     private int ox, oy;
     private EditBox search;
@@ -81,17 +91,29 @@ public class GuideScreen extends Screen {
 
     public GuideScreen() {
         super(Component.translatable("item.spacebreaker.guide_book"));
+        GuideStructures.clear(); // multiblocks come with the world's data
     }
 
     // ================================================================== setup
 
     @Override
     protected void init() {
-        float sx = (width - 40) / (float) W, sy = (height - 46) / (float) H;
-        scale = Math.max(0.75F, Math.min(sx, sy));
-        scale = Math.max(0.75F, (float) Math.floor(scale * 4F) / 4F);
-        ox = (int) ((width - W * scale) / 2);
-        oy = (int) ((height - H * scale) / 2) + 10;
+        int bookH = Math.max(160, Math.min(height - 20 - 2 * 6 - 4, 290));
+        int pageH = bookH - 12;
+        PAGE = Math.max(120, Math.min((width - 12 - 2 * 24) / 2, Math.min(240, Math.max(Math.round(pageH * 0.8F), 180))));
+        W = 2 * PAGE + 12;
+        H = bookH;
+        BOOK_PAGE_W = PAGE - 24;
+        TOP = 6 + 13;
+        LEFT_X = 6 + 13;
+        RIGHT_X = 6 + PAGE + 11;
+        double gs = minecraft.getWindow().getGuiScale();
+        TS = gs >= 3 ? (float) ((gs - 1) / gs) : 1F;
+        PAGE_W = (int) (BOOK_PAGE_W / TS);
+        PAGE_H = (int) ((pageH - 13 - 15 - 8) / TS);
+        scale = 1F;
+        ox = (width - W) / 2;
+        oy = (height - H) / 2 + 11;
         int barY = oy - 22;
         backButton = addRenderableWidget(Button.builder(Component.literal("◀"), b -> goBack()).bounds(ox, barY, 20, 18)
                 .tooltip(Tooltip.create(Component.translatable("gui.spacebreaker.guide.back"))).build());
@@ -211,6 +233,7 @@ public class GuideScreen extends Screen {
             }
         }
         pages = l.finish();
+        anchors = l.anchors;
         int spreads = Math.max(1, (pages.size() + 1) / 2);
         if (place.spread() >= spreads) {
             place = new Place(place.mode(), place.chapter(), spreads - 1, place.query());
@@ -218,8 +241,15 @@ public class GuideScreen extends Screen {
     }
 
     private void layoutContents(Layout l) {
-        l.add(new Title(Component.literal(GuideBook.INSTANCE.title()), new ItemStack(BuiltInRegistries.ITEM.get(Spacebreaker.id("guide_book"))), null));
-        l.text(Component.translatable("gui.spacebreaker.guide.intro").withStyle(Style.EMPTY.withColor(INK_SOFT)), 0, null, 0);
+        l.add(new Title(Component.literal(GuideBook.INSTANCE.title()).withColor(TITLE), new ItemStack(BuiltInRegistries.ITEM.get(Spacebreaker.id("guide_book"))), null));
+        String sub = GuideBook.INSTANCE.subtitle();
+        if (!sub.isEmpty()) {
+            l.text(Component.literal(sub).withStyle(Style.EMPTY.withColor(SUBTITLE).withItalic(true)), 0, null, 0);
+            l.space(3);
+        }
+        String intro = GuideBook.INSTANCE.intro();
+        l.text((intro.isEmpty() ? Component.translatable("gui.spacebreaker.guide.intro") : Component.literal(intro))
+                .withStyle(Style.EMPTY.withColor(INK_SOFT)), 0, null, 0);
         l.space(4);
         for (GuideBook.Category c : GuideBook.INSTANCE.categories()) {
             l.add(new CategoryHeader(c));
@@ -270,10 +300,18 @@ public class GuideScreen extends Screen {
             note = Component.translatable("gui.spacebreaker.guide.research_needed",
                     Component.translatable(TechNode.nameKey(ch.research().get())));
         }
-        l.add(new Title(Component.literal(ch.title()), stack(ch.icon()), note));
+        GuideBook.Category cat = GuideBook.INSTANCE.categoryOf(ch.id());
+        if (cat != null) {
+            l.add(new TextLine(Component.literal(GuideBook.INSTANCE.categoryName(cat.id()).toUpperCase(Locale.forLanguageTag(GuideBook.lang().replace('_', '-'))))
+                    .withStyle(Style.EMPTY.withColor(INK_FAINT)).getVisualOrderText(), 0, 0, 0, true));
+        }
+        l.add(new Title(Component.literal(ch.title()).withColor(TITLE), stack(ch.icon()), note));
         for (GuideMarkdown.Block b : ch.blocks()) {
             switch (b) {
                 case GuideMarkdown.Heading h -> {
+                    if (h.anchor() != null) {
+                        l.mark(h.anchor());
+                    }
                     l.space(h.level() == 1 ? 5 : 3);
                     int color = h.level() == 1 ? categoryColor(ch.id()) : (h.level() == 2 ? INK : INK_SOFT);
                     MutableComponent t = h.text().copy().withStyle(s -> s.withBold(true).withColor(color));
@@ -297,8 +335,8 @@ public class GuideScreen extends Screen {
                 }
                 case GuideMarkdown.Callout c -> {
                     int bar = switch (c.kind()) {
-                        case "tip" -> 0x2E6FB8;
-                        case "warning" -> 0xD07020;
+                        case "tip" -> 0x2A8CFF;
+                        case "warning" -> 0xE07412;
                         default -> 0x8A7A60;
                     };
                     l.space(2);
@@ -322,8 +360,20 @@ public class GuideScreen extends Screen {
                     l.space(4);
                 }
                 case GuideMarkdown.PageBreak pb -> l.pageBreak();
+                case GuideMarkdown.Rule r -> {
+                    l.space(2);
+                    l.add(new Ornament());
+                    l.space(2);
+                }
                 case GuideMarkdown.Recipe r -> {
-                    l.add(new RecipeView(r.id()));
+                    RecipeView v = new RecipeView(r.id());
+                    if (!(v.missing && r.optional())) {
+                        l.add(v);
+                        l.space(4);
+                    }
+                }
+                case GuideMarkdown.Craft cr -> {
+                    l.add(new RecipeView(cr));
                     l.space(4);
                 }
                 case GuideMarkdown.Items it -> {
@@ -331,12 +381,16 @@ public class GuideScreen extends Screen {
                     l.space(4);
                 }
                 case GuideMarkdown.EntityView e -> {
-                    l.add(new EntityElem(e.id()));
-                    l.space(4);
+                    if (!(e.optional() && !BuiltInRegistries.ENTITY_TYPE.containsKey(e.id()))) {
+                        l.add(new EntityElem(e.id(), e.scale(), e.height()));
+                        l.space(4);
+                    }
                 }
                 case GuideMarkdown.StructureView s -> {
-                    l.add(new StructureElem(s.id()));
-                    l.space(4);
+                    if (!(s.optional() && !GuideStructures.exists(s.id()))) {
+                        l.add(new StructureElem(s.id()));
+                        l.space(4);
+                    }
                 }
                 case GuideMarkdown.Image im -> {
                     l.add(new ImageElem(im));
@@ -379,6 +433,18 @@ public class GuideScreen extends Screen {
             this.time = time;
         }
 
+        void copyHoverTo(Ctx o) {
+            if (!hoverStack.isEmpty()) {
+                o.hoverStack = hoverStack;
+            }
+            if (hoverStyle != null) {
+                o.hoverStyle = hoverStyle;
+            }
+            if (hoverText != null) {
+                o.hoverText = hoverText;
+            }
+        }
+
         boolean over(int x, int y, int w, int h) {
             return mx >= x && mx < x + w && my >= y && my < y + h;
         }
@@ -405,7 +471,10 @@ public class GuideScreen extends Screen {
         g.pose().translate(ox, oy, 0);
         g.pose().scale(scale, scale, 1F);
         renderBookmarks(c, true);
-        g.blit(BOOK, 0, 0, 0, 0, W, H, TEX_W, TEX_H);
+        g.blitSprite(COVER, 0, 0, W, H);
+        g.blitSprite(PAGE_L, 6, 6, PAGE, H - 12);
+        g.blitSprite(PAGE_R, 6 + PAGE, 6, PAGE, H - 12);
+        g.fill(5 + PAGE, 4, 7 + PAGE, H - 4, 0xFF0F1830);
         int spread = place.spread();
         for (int side = 0; side < 2; side++) {
             int idx = spread * 2 + side;
@@ -413,11 +482,17 @@ public class GuideScreen extends Screen {
                 break;
             }
             int px = side == 0 ? LEFT_X : RIGHT_X;
+            Ctx pc = new Ctx(g, (mx - px) / TS, (my - TOP) / TS, time);
+            g.pose().pushPose();
+            g.pose().translate(px, TOP, 0);
+            g.pose().scale(TS, TS, 1F);
             for (Placed p : pages.get(idx)) {
-                p.elem().render(c, px, TOP + p.y());
+                p.elem().render(pc, 0, p.y());
             }
+            g.pose().popPose();
+            pc.copyHoverTo(c);
             Component num = Component.literal(String.valueOf(idx + 1));
-            g.drawString(font, num, px + (PAGE_W - font.width(num)) / 2, H - 18, INK_SOFT, false);
+            g.drawString(font, num, px + (BOOK_PAGE_W - font.width(num)) / 2, H - 18, INK_SOFT, false);
         }
         int spreads = Math.max(1, (pages.size() + 1) / 2);
         renderArrow(c, true, spread > 0 || canChainChapter(-1));
@@ -445,17 +520,19 @@ public class GuideScreen extends Screen {
         return i >= 0 && i < order.size();
     }
 
-    private static final int ARROW_Y = H - 21;
+    private static int arrowY() {
+        return H - 21;
+    }
 
     private void renderArrow(Ctx c, boolean left, boolean enabled) {
         if (!enabled) {
             return;
         }
         int x = left ? 14 : W - 32;
-        boolean hot = c.over(x, ARROW_Y, 18, 10);
+        boolean hot = c.over(x, arrowY(), 18, 10);
         String sprite = left ? (hot ? "widget/page_backward_highlighted" : "widget/page_backward")
                 : (hot ? "widget/page_forward_highlighted" : "widget/page_forward");
-        c.g.blitSprite(ResourceLocation.withDefaultNamespace(sprite), x, ARROW_Y, 18, 10);
+        c.g.blitSprite(ResourceLocation.withDefaultNamespace(sprite), x, arrowY(), 18, 10);
     }
 
     /** Coloured ribbons sticking out of the right edge: one per category (behind the cover; tips drawn on top). */
@@ -510,11 +587,11 @@ public class GuideScreen extends Screen {
             return false;
         }
         double mx = (mouseX - ox) / scale, my = (mouseY - oy) / scale;
-        if (mx >= 14 && mx < 32 && my >= ARROW_Y && my < ARROW_Y + 10) {
+        if (mx >= 14 && mx < 32 && my >= arrowY() && my < arrowY() + 10) {
             turn(-1);
             return true;
         }
-        if (mx >= W - 32 && mx < W - 14 && my >= ARROW_Y && my < ARROW_Y + 10) {
+        if (mx >= W - 32 && mx < W - 14 && my >= arrowY() && my < arrowY() + 10) {
             turn(1);
             return true;
         }
@@ -534,7 +611,7 @@ public class GuideScreen extends Screen {
             }
             int px = side == 0 ? LEFT_X : RIGHT_X;
             for (Placed p : pages.get(idx)) {
-                String link = p.elem().click(px, TOP + p.y(), mx, my);
+                String link = p.elem().click(0, p.y(), (mx - px) / TS, (my - TOP) / TS);
                 if (link != null) {
                     follow(link);
                     return true;
@@ -545,10 +622,30 @@ public class GuideScreen extends Screen {
     }
 
     private void follow(String link) {
-        if (link.startsWith(GuideMarkdown.LINK_CHAPTER)) {
-            ResourceLocation id = ResourceLocation.tryParse(link.substring(GuideMarkdown.LINK_CHAPTER.length()));
+        if (link.startsWith(LINK_HOLOGRAM)) {
+            ResourceLocation id = ResourceLocation.tryParse(link.substring(LINK_HOLOGRAM.length()));
+            if (id != null) {
+                showHologram(id);
+            }
+        } else if (link.startsWith("https://")) {
+            minecraft.setScreen(new net.minecraft.client.gui.screens.ConfirmLinkScreen(open -> {
+                if (open) {
+                    net.minecraft.Util.getPlatform().openUri(link);
+                }
+                minecraft.setScreen(this);
+            }, link, true));
+        } else if (link.startsWith(GuideMarkdown.LINK_CHAPTER)) {
+            String target = link.substring(GuideMarkdown.LINK_CHAPTER.length());
+            int hash = target.indexOf('#');
+            String anchor = hash < 0 ? null : target.substring(hash + 1);
+            ResourceLocation id = hash == 0 ? place.chapter() : ResourceLocation.tryParse(hash < 0 ? target : target.substring(0, hash));
             if (id != null && GuideBook.INSTANCE.chapter(id) != null) {
-                openChapter(id, 0);
+                if (!id.equals(place.chapter()) || place.mode() != Mode.CHAPTER) {
+                    openChapter(id, 0);
+                }
+                if (anchor != null && anchors.containsKey(anchor)) {
+                    place = new Place(Mode.CHAPTER, id, anchors.get(anchor) / 2, "");
+                }
             }
         } else if (link.startsWith(GuideMarkdown.LINK_ITEM)) {
             ResourceLocation item = ResourceLocation.tryParse(link.substring(GuideMarkdown.LINK_ITEM.length()));
@@ -622,6 +719,12 @@ public class GuideScreen extends Screen {
         private List<Placed> page = new ArrayList<>();
         private int y;
         private @Nullable Elem held; // a heading waiting for its first line (kept together)
+        final Map<String, Integer> anchors = new HashMap<>();
+
+        /** Remembers the page the next element lands on (headings with {#anchor}). */
+        void mark(String anchor) {
+            anchors.put(anchor, y > PAGE_H - 30 ? pages.size() + 1 : pages.size());
+        }
 
         Layout(Font font) {
             this.font = font;
@@ -629,7 +732,7 @@ public class GuideScreen extends Screen {
 
         void add(Elem e) {
             int h = e.height();
-            if (y + h > BOTTOM - TOP && !page.isEmpty()) {
+            if (y + h > PAGE_H && !page.isEmpty()) {
                 newPage();
             }
             page.add(new Placed(e, y));
@@ -799,6 +902,24 @@ public class GuideScreen extends Screen {
         }
     }
 
+    /** A decorative divider: a thin line with a small diamond in the middle. */
+    private static final class Ornament extends Elem {
+        @Override
+        int height() {
+            return 7;
+        }
+
+        @Override
+        void render(Ctx c, int x, int y) {
+            int mid = x + PAGE_W / 2, col = 0xFF000000 | 0xCDBB94;
+            c.g.fill(x + 12, y + 3, mid - 5, y + 4, col);
+            c.g.fill(mid + 5, y + 3, x + PAGE_W - 12, y + 4, col);
+            for (int i = 0; i < 3; i++) {
+                c.g.fill(mid - i, y + 3 - (2 - i), mid + i + 1, y + 4 + (2 - i), 0xFF000000 | SUBTITLE);
+            }
+        }
+    }
+
     private static final class BoxEdge extends Elem {
         final int color;
         final boolean top;
@@ -845,6 +966,9 @@ public class GuideScreen extends Screen {
         }
     }
 
+    /** Titles stay large while body text is drawn smaller. */
+    private static final float BIG = 1.25F;
+
     private final class Title extends Elem {
         final Component text;
         final ItemStack icon;
@@ -856,7 +980,7 @@ public class GuideScreen extends Screen {
             this.text = text;
             this.icon = icon;
             this.note = note;
-            this.lines = font.split(text.copy().withStyle(ChatFormatting.BOLD), PAGE_W - 22);
+            this.lines = font.split(text.copy().withStyle(ChatFormatting.BOLD), (int) ((PAGE_W - 22) / BIG));
             this.noteLines = note == null ? List.of() : font.split(Component.literal("⚑ ").append(note), PAGE_W - 6);
         }
 
@@ -864,20 +988,28 @@ public class GuideScreen extends Screen {
             return noteLines.isEmpty() ? 0 : noteLines.size() * 10 + 2;
         }
 
+        int head() {
+            return Math.max(24, Math.round(lines.size() * 10 * BIG) + 4);
+        }
+
         @Override
         int height() {
-            return Math.max(20, lines.size() * 10 + 4) + noteHeight() + 4;
+            return head() + noteHeight() + 4;
         }
 
         @Override
         void render(Ctx c, int x, int y) {
-            c.g.renderFakeItem(icon, x, y);
-            int ty = y + (lines.size() == 1 ? 4 : 0);
+            c.g.pose().pushPose();
+            c.g.pose().translate(x, y, 0);
+            c.g.pose().scale(BIG, BIG, 1F);
+            c.g.renderFakeItem(icon, 0, 0);
+            int ty = lines.size() == 1 ? 4 : 0;
             for (FormattedCharSequence l : lines) {
-                c.g.drawString(font, l, x + 20, ty, INK, false);
+                c.g.drawString(font, l, 20, ty, INK, false);
                 ty += 10;
             }
-            int base = y + Math.max(20, lines.size() * 10 + 4);
+            c.g.pose().popPose();
+            int base = y + head();
             c.g.fill(x, base - 2, x + PAGE_W, base - 1, 0x55000000 | INK_SOFT);
             if (!noteLines.isEmpty()) {
                 c.g.fill(x, base + 1, x + PAGE_W, base + 1 + noteHeight() - 2, 0x33D07020);
@@ -899,7 +1031,7 @@ public class GuideScreen extends Screen {
 
         @Override
         int height() {
-            return 14;
+            return 15;
         }
 
         @Override
@@ -909,10 +1041,9 @@ public class GuideScreen extends Screen {
 
         @Override
         void render(Ctx c, int x, int y) {
-            c.g.fill(x, y, x + PAGE_W, y + 11, 0xFF000000 | cat.color());
-            c.g.fill(x, y + 11, x + PAGE_W, y + 12, 0xFF000000 | darken(cat.color()));
             c.g.drawString(font, Component.literal(GuideBook.INSTANCE.categoryName(cat.id())).withStyle(ChatFormatting.BOLD),
-                    x + 4, y + 2, 0xFFFFFF, true);
+                    x, y + 2, darken(cat.color()), false);
+            c.g.fill(x, y + 12, x + PAGE_W, y + 13, 0xFF000000 | cat.color());
         }
     }
 
@@ -1170,6 +1301,20 @@ public class GuideScreen extends Screen {
         @Nullable Component info;
         boolean missing;
 
+        /** A hand-written crafting grid from {craft ...}. */
+        RecipeView(GuideMarkdown.Craft craft) {
+            this.id = craft.result();
+            for (ResourceLocation r : craft.grid()) {
+                inputs.add(r == null ? Ingredient.EMPTY : Ingredient.of(BuiltInRegistries.ITEM.get(r)));
+                counts.add(1);
+            }
+            gridW = craft.width();
+            ItemStack out = stack(craft.result());
+            out.setCount(Math.max(1, craft.count()));
+            outputs.add(out);
+            machine = new ItemStack(Items.CRAFTING_TABLE);
+        }
+
         RecipeView(ResourceLocation id) {
             this.id = id;
             var level = Minecraft.getInstance().level;
@@ -1329,19 +1474,23 @@ public class GuideScreen extends Screen {
 
     private final class EntityElem extends Elem {
         final ResourceLocation id;
+        final float scale;
+        final int h;
 
-        EntityElem(ResourceLocation id) {
+        EntityElem(ResourceLocation id, float scale, int h) {
             this.id = id;
+            this.scale = scale;
+            this.h = h;
         }
 
         @Override
         int height() {
-            return 74;
+            return h + 2;
         }
 
         @Override
         void render(Ctx c, int x, int y) {
-            c.g.fill(x, y, x + PAGE_W, y + 72, 0x16000000 | INK);
+            c.g.fill(x, y, x + PAGE_W, y + h, 0x16000000 | INK);
             Entity e = entities.computeIfAbsent(id, k -> {
                 var type = BuiltInRegistries.ENTITY_TYPE.getOptional(k).orElse(null);
                 return type == null || minecraft.level == null ? null : type.create(minecraft.level);
@@ -1350,7 +1499,7 @@ public class GuideScreen extends Screen {
                 return;
             }
             float size = Math.max(living.getBbHeight(), living.getBbWidth() * 1.3F);
-            float s = Math.min(48F / size, 40F);
+            float s = Math.min((h - 24F) / size, 40F) * scale;
             Quaternionf rot = new Quaternionf().rotateZ((float) Math.PI).rotateX((float) Math.toRadians(-12))
                     .rotateY((float) Math.toRadians(c.time * 1.2F % 360F));
             living.yBodyRot = 0;
@@ -1358,9 +1507,9 @@ public class GuideScreen extends Screen {
             living.setYRot(0);
             living.setXRot(0);
             living.tickCount = (int) c.time;
-            InventoryScreen.renderEntityInInventory(c.g, x + PAGE_W / 2F, y + 36 + living.getBbHeight() * s / 2F, s,
+            InventoryScreen.renderEntityInInventory(c.g, x + PAGE_W / 2F, y + h / 2F + living.getBbHeight() * s / 2F, s,
                     new Vector3f(), rot, null, living);
-            if (c.over(x, y, PAGE_W, 72)) {
+            if (c.over(x, y, PAGE_W, h)) {
                 c.hoverText = List.of(living.getType().getDescription());
             }
         }
@@ -1373,15 +1522,70 @@ public class GuideScreen extends Screen {
             this.id = id;
         }
 
+        boolean projectable() {
+            return GuideStructures.get(id).multiblock();
+        }
+
         @Override
         int height() {
-            return 96;
+            return projectable() ? 112 : 96;
+        }
+
+        private Component label() {
+            return Component.translatable("gui.spacebreaker.guide.show_hologram");
         }
 
         @Override
         void render(Ctx c, int x, int y) {
             c.g.fill(x, y, x + PAGE_W, y + 94, 0x16000000 | INK);
             GuideStructures.render(c.g, GuideStructures.get(id), x + 2, y + 2, PAGE_W - 4, 90, c.time);
+            if (projectable()) {
+                int w = font.width(label()) + 12, bx = x + (PAGE_W - w) / 2, by = y + 97;
+                boolean hot = c.over(bx, by, w, 13);
+                c.g.fill(bx, by, bx + w, by + 13, 0xFF000000 | (hot ? 0x2A8CFF : 0x1C4F8F));
+                c.g.drawString(font, label(), bx + 6, by + 3, 0xFFFFFF, false);
+                if (hot) {
+                    c.hoverText = List.of(Component.translatable(holdsProjector() ? "gui.spacebreaker.guide.show_hologram.hint"
+                            : "message.spacebreaker.hologram.need_projector").withStyle(ChatFormatting.GRAY));
+                }
+            }
+        }
+
+        @Override
+        @Nullable String click(int x, int y, double mx, double my) {
+            int w = font.width(label()) + 12, bx = x + (PAGE_W - w) / 2, by = y + 97;
+            if (projectable() && mx >= bx && mx < bx + w && my >= by && my < by + 13) {
+                return LINK_HOLOGRAM + id;
+            }
+            return null;
+        }
+    }
+
+    static final String LINK_HOLOGRAM = "hologram:";
+
+    private boolean holdsProjector() {
+        var p = minecraft.player;
+        return p != null && (p.getMainHandItem().getItem() instanceof com.pizzaparker07.spacebreaker.content.blueprint.HologramProjectorItem
+                || p.getOffhandItem().getItem() instanceof com.pizzaparker07.spacebreaker.content.blueprint.HologramProjectorItem);
+    }
+
+    /** Selects the structure on the projector in hand, or opens the projector's chapter when there is none. */
+    private void showHologram(ResourceLocation id) {
+        if (holdsProjector()) {
+            net.neoforged.neoforge.network.PacketDistributor.sendToServer(new com.pizzaparker07.spacebreaker.content.blueprint.BlueprintPayload(
+                    com.pizzaparker07.spacebreaker.content.blueprint.BlueprintPayload.SELECT, id));
+            if (minecraft.player != null) {
+                minecraft.player.displayClientMessage(Component.translatable("gui.spacebreaker.guide.hologram_selected",
+                        Component.translatable("multiblock." + id.getNamespace() + "." + id.getPath())), true);
+            }
+            onClose();
+            return;
+        }
+        ResourceLocation ch = GuideBook.INSTANCE.chapterForItem(Spacebreaker.id("hologram_projector"));
+        if (ch != null) {
+            openChapter(ch, 0);
+        } else if (minecraft.player != null) {
+            minecraft.player.displayClientMessage(Component.translatable("message.spacebreaker.hologram.need_projector"), true);
         }
     }
 

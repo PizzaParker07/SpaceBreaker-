@@ -100,10 +100,17 @@ final class ResearchLang {
         l.add("gui.spacebreaker.guide.research_needed", "Research needed: %s", "Gereken araştırma: %s");
         l.add("gui.spacebreaker.guide.recipe_info", "%s FE/t · %s s", "%s FE/t · %s sn");
         l.add("gui.spacebreaker.guide.recipe_time", "%s s", "%s sn");
+        l.add("gui.spacebreaker.guide.show_hologram", "Show hologram", "Hologramı göster");
+        l.add("gui.spacebreaker.guide.show_hologram.hint", "Loads this structure into the Hologram Projector in your hand",
+                "Bu yapıyı elindeki Hologram Projektörüne yükler");
+        l.add("gui.spacebreaker.guide.hologram_selected", "Projector ready: %s. Use it on a block to place the hologram.",
+                "Projektör hazır: %s. Hologramı yerleştirmek için bir bloğa kullan.");
         l.add("gui.spacebreaker.guide.no_recipe", "Recipe %s not found", "%s tarifi bulunamadı");
         // messages
         l.add("message.spacebreaker.tech_learned", "You learned a new technology: %s", "Yeni bir teknoloji öğrendin: %s");
         l.add("message.spacebreaker.requires_tech", "Requires technology: %s", "Gereken teknoloji: %s");
+        l.add("message.spacebreaker.orbit_data", "You reached orbit! Your flight records became Orbital Flight data: analyse them in a Research Lab.",
+                "Yörüngeye ulaştın! Uçuş kayıtların Yörünge Uçuşu verisine dönüştü: onları bir Araştırma Laboratuvarında incele.");
         l.add("message.spacebreaker.sample_taken", "Took a field sample (%s)", "Saha numunesi alındı (%s)");
         // commands
         l.add("commands.spacebreaker.research.unknown", "Unknown technology %s", "Bilinmeyen teknoloji %s");

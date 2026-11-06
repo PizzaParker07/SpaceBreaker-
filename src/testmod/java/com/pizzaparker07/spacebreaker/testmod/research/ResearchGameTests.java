@@ -254,13 +254,14 @@ public final class ResearchGameTests {
         LootTable table = level.getServer().reloadableRegistries().getLootTable(Dungeons.lootTable("earth", "observatory_archive"));
         helper.assertTrue(table != LootTable.EMPTY, "archive loot table exists");
         Map<ResourceLocation, TechNode> all = Tech.all(level.registryAccess());
-        boolean rocketry = true;
+        boolean rocketry = true, flightData = true;
         for (int i = 0; i < 20; i++) {
             LootParams params = new LootParams.Builder(level).withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(helper.absolutePos(BlockPos.ZERO)))
                     .create(LootContextParamSets.CHEST);
             List<ItemStack> items = table.getRandomItems(params);
-            boolean found = false;
+            boolean found = false, data = false;
             for (ItemStack s : items) {
+                data |= s.is(ResearchModule.EXPERIMENT_DATA.get()) && ResearchTree.SUBORBITAL.equals(s.get(ResearchModule.SAMPLE.get()));
                 if (s.getItem() instanceof TechDiskItem) {
                     ResourceLocation t = TechDiskItem.tech(s);
                     helper.assertTrue(t != null && all.containsKey(t), "disk holds a real technology: " + t);
@@ -269,8 +270,10 @@ public final class ResearchGameTests {
                 }
             }
             rocketry &= found;
+            flightData &= data;
         }
         helper.assertTrue(rocketry, "every archive has the basic rocketry disk");
+        helper.assertTrue(flightData, "every archive has suborbital flight data (vacuum engines need it)");
         LootTable supplies = level.getServer().reloadableRegistries().getLootTable(Dungeons.lootTable("earth", "observatory_supplies"));
         helper.assertTrue(supplies != LootTable.EMPTY, "supplies loot table exists");
         helper.succeed();

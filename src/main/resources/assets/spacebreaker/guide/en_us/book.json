@@ -1,8 +1,16 @@
 {
   "title": "Field Guide",
+  "subtitle": "Research, machines, suits, rockets and worlds: all in this book.",
+  "intro": "Click a chapter; turn pages with the corner arrows or the mouse wheel. Looking for something? Type in the box above. Click an item to open its own page.",
   "categories": {
-    "start": "Getting Started", "research": "Research", "materials": "Materials", "machines": "Energy & Machines",
-    "survival": "Suit & Survival", "rocketry": "Rocketry", "worlds": "Worlds", "ruins": "Ruins",
+    "start": "Getting Started",
+    "research": "Research",
+    "materials": "Materials",
+    "machines": "Energy & Machines",
+    "survival": "Suit & Survival",
+    "rocketry": "Rocketry",
+    "worlds": "Worlds",
+    "ruins": "Ruins",
     "science": "Science Corner"
   }
 }

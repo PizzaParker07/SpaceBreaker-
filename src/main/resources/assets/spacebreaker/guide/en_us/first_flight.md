@@ -10,17 +10,25 @@ From the pad to orbit and back home, step by step.
 - Take spare tanks and an {item spacebreaker:emergency_beacon}.
 - Build your [launch pad](launch_pad) and check it at the console.
 
-## 2. Design the rocket
-In the [assembler](rocket_assembler), build a crewed rocket with at least two stages. Orbit needs about **9,400 m/s** of Δv. Put a **heat shield** under the capsule and a **parachute** on top.
+## 2. What you need
+- {tech spacebreaker:basic_rocketry}: capsule, nose cone, assembler. Its disk is in the observatory.
+- {tech spacebreaker:launch_infrastructure}: pad and tower.
+- {tech spacebreaker:liquid_fuel_engines} and {tech spacebreaker:staging}: engine, tanks, decoupler.
+- {tech spacebreaker:vacuum_engines}: the upper-stage engine. Analyse the **Suborbital Flight** data from the observatory archive in the lab.
 
-## 3. Place it and fuel it
+## 3. Design the rocket
+In the [assembler](rocket_assembler), build a crewed rocket with at least two stages. Orbit needs about **9,400 m/s** of Δv.
+
+>! Your first rocket has **no heat shield or parachute**: {tech spacebreaker:landing_systems} unlocks them, and it needs **Orbital Flight** data. You get that data the first time you reach orbit. Come home with the {item spacebreaker:emergency_beacon}.
+
+## 4. Place it and fuel it
 1. {key key.use} the {item spacebreaker:rocket} on the middle trench grate.
 2. Pipe a tank of RP-1 and a tank of liquid oxygen into the {item spacebreaker:fuel_umbilical}. It fills the rocket.
 3. Watch the fuel level on the console.
 
 {page}
 
-## 4. Board and launch
+## 5. Board and launch {#launch}
 1. Board the rocket with {key key.use}.
 2. Check the console's list: pad, fuel, Δv and thrust-to-weight should be green.
 3. Press **Launch**, or press {key key.spacebreaker.launch} while aboard. The countdown starts; the same key aborts it.
@@ -28,11 +36,11 @@ In the [assembler](rocket_assembler), build a crewed rocket with at least two st
 > [!WARNING]
 > If you run out of fuel the capsule separates and comes down on its parachute. Without a heat shield, a fall from high up can still kill you.
 
-## 5. In orbit
-A message tells you when you arrive. Open the **star map** with {key key.spacebreaker.star_map} and pick where to go: lunar orbit needs about **4,000 m/s** more. → [Flight and Navigation](navigation)
+## 6. In orbit
+A message tells you when you arrive, and two **Orbital Flight** data drop into your bag. Open the **star map** with {key key.spacebreaker.star_map} and pick where to go: lunar orbit needs about **4,000 m/s** more. → [Flight and Navigation](navigation)
 
-## 6. Coming home
-Pick Earth on the star map. The capsule re-enters; the heat shield takes the heat and the parachute opens.
+## 7. Coming home
+- **First flight:** use the {item spacebreaker:emergency_beacon}. A capsule with a heat shield and parachute comes and takes you home.
+- **Later flights:** put a **heat shield** under your capsule and a **parachute** on top. Pick Earth on the star map; the shield takes the heat and the parachute opens.
 
-> [!TIP]
-> Stranded? Away from Earth, use the {item spacebreaker:emergency_beacon}: a capsule comes to bring you home.
+> Back home, analyse the Orbital Flight data in the lab: {tech spacebreaker:landing_systems} unlocks the heat shield, parachute and landing legs. You need the legs to land on the Moon.
