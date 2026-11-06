@@ -1,0 +1,21 @@
+{
+  "name": "multiblock.spacebreaker.launch_site",
+  "controller": "C",
+  "tech": "spacebreaker:launch_infrastructure",
+  "layers": [
+    ["   S   ", " PPPPP ", " PTTTP ", " PTCTP ", " PTTTP ", " PPPPP "],
+    ["   S   ", "       ", "       ", "       ", "       ", "       "],
+    ["   S   ", "   U   ", "       ", "       ", "       ", "       "],
+    ["   S   ", "       ", "       ", "       ", "       ", "       "],
+    ["   S   ", "   A   ", "       ", "       ", "       ", "       "],
+    ["   S   ", "       ", "       ", "       ", "       ", "       "]
+  ],
+  "key": {
+    "P": {"block": "spacebreaker:launch_pad"},
+    "T": {"block": "spacebreaker:flame_trench"},
+    "C": {"block": "spacebreaker:flame_trench"},
+    "S": {"block": "spacebreaker:service_tower"},
+    "U": {"block": "spacebreaker:fuel_umbilical"},
+    "A": {"block": "spacebreaker:crew_access_arm"}
+  }
+}

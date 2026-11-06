@@ -12,6 +12,7 @@ public final class ShowcaseScenarios {
         ALL.put("suit", new SuitScenario());
         ALL.put("suit_moon", new SuitMoonScenario());
         ALL.put("suit_tiers", new SuitTiersScenario());
+        ALL.put("blueprint", new BlueprintScenario());
         ALL.put("industry", new IndustryScenario());
         ALL.put("moon", new MoonScenario());
         ALL.put("research", new ResearchScenario());
