@@ -11,7 +11,7 @@ FAMILIES = [
 
 
 def generate():
-    for s in ('ceres_regolith', 'ammoniated_clay', 'carbonate_crust', 'vestan_regolith'):
+    for s in ('ceres_regolith', 'ammoniated_clay', 'carbonate_crust', 'vestan_regolith', 'diogenitic_regolith'):
         soil(s)
     for base, tex, stem in FAMILIES:
         simple_block(base, b(tex))

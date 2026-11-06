@@ -66,6 +66,8 @@ public final class BeltModule implements SbModule {
     // ---- Vesta
     public static final DeferredBlock<LunarRegolithBlock> VESTAN_REGOLITH = KIT.block("vestan_regolith", LunarRegolithBlock::new,
             BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GRAY).strength(0.6F).sound(SoundType.SAND));
+    public static final DeferredBlock<LunarRegolithBlock> DIOGENITIC_REGOLITH = KIT.block("diogenitic_regolith", LunarRegolithBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.TERRACOTTA_YELLOW).strength(0.6F).sound(SoundType.SAND));
     public static final BlockKit.Family EUCRITE = KIT.family("eucrite", MapColor.STONE, SoundType.STONE, 1.6F, true);
     public static final BlockKit.Family EUCRITE_BRICKS = KIT.family("eucrite_bricks", MapColor.STONE, SoundType.STONE, 1.6F, true);
     public static final DeferredBlock<Block> DIOGENITE = KIT.rock("diogenite", MapColor.TERRACOTTA_YELLOW, SoundType.STONE, 1.8F);
@@ -110,6 +112,7 @@ public final class BeltModule implements SbModule {
         lang.block(MAGNETITE_ORE, "Magnetite Ore", "Manyetit Cevheri");
         lang.item(RAW_MAGNETITE, "Raw Magnetite", "Ham Manyetit");
         lang.block(VESTAN_REGOLITH, "Vestan Regolith", "Vesta Regoliti");
+        lang.block(DIOGENITIC_REGOLITH, "Diogenitic Regolith", "Diyojenitli Regolit");
         BlockKit.familyNames(lang, EUCRITE, "Eucrite", "Ökrit");
         BlockKit.familyNames(lang, EUCRITE_BRICKS, "Eucrite Brick", "Ökrit Tuğla");
         lang.block(DIOGENITE, "Diogenite", "Diyojenit");
@@ -127,6 +130,7 @@ public final class BeltModule implements SbModule {
         loot.self(CEREAN_ICE.get());
         loot.ore(MAGNETITE_ORE.get(), RAW_MAGNETITE.get());
         loot.self(VESTAN_REGOLITH.get());
+        loot.self(DIOGENITIC_REGOLITH.get());
         loot.self(DIOGENITE.get());
         loot.ore(CHROMITE_ORE.get(), CHROMITE.get());
         KIT.familyLoot(loot);
@@ -134,7 +138,8 @@ public final class BeltModule implements SbModule {
 
     @Override
     public void addTags(SbTags tags) {
-        tags.block(BlockTags.MINEABLE_WITH_SHOVEL, CERES_REGOLITH.get(), AMMONIATED_CLAY.get(), CARBONATE_CRUST.get(), VESTAN_REGOLITH.get());
+        tags.block(BlockTags.MINEABLE_WITH_SHOVEL, CERES_REGOLITH.get(), AMMONIATED_CLAY.get(), CARBONATE_CRUST.get(), VESTAN_REGOLITH.get(),
+                DIOGENITIC_REGOLITH.get());
         tags.block(BlockTags.MINEABLE_WITH_PICKAXE, CEREAN_ICE.get(), MAGNETITE_ORE.get(), DIOGENITE.get(), CHROMITE_ORE.get());
         for (BlockKit.Family f : KIT.families()) {
             f.all().forEach(b -> tags.block(BlockTags.MINEABLE_WITH_PICKAXE, b.get()));
@@ -148,7 +153,7 @@ public final class BeltModule implements SbModule {
         tags.block(BlockTags.NEEDS_STONE_TOOL, MAGNETITE_ORE.get());
         tags.block(BlockTags.NEEDS_IRON_TOOL, CHROMITE_ORE.get());
         tags.block(BELT_STONE, CEREAN_ROCK.base().get(), EUCRITE.base().get(), DIOGENITE.get());
-        tags.block(CERES_GROUND, CERES_REGOLITH.get(), AMMONIATED_CLAY.get(), CARBONATE_CRUST.get(), CEREAN_ROCK.base().get(), VESTAN_REGOLITH.get(),
+        tags.block(CERES_GROUND, CERES_REGOLITH.get(), AMMONIATED_CLAY.get(), CARBONATE_CRUST.get(), CEREAN_ROCK.base().get(), VESTAN_REGOLITH.get(), DIOGENITIC_REGOLITH.get(),
                 EUCRITE.base().get(), DIOGENITE.get());
         tags.block(ORES_MAGNETITE, MAGNETITE_ORE.get());
         tags.block(ORES_CHROMITE, CHROMITE_ORE.get());

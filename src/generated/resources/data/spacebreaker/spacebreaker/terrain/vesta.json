@@ -45,6 +45,17 @@
           "Name": "spacebreaker:carbonaceous_chondrite"
         },
         "threshold": 0.8
+      },
+      {
+        "scale": 260.0,
+        "soil": {
+          "Name": "spacebreaker:diogenitic_regolith",
+          "Properties": {
+            "facing": "north",
+            "print": "none"
+          }
+        },
+        "threshold": 0.65
       }
     ]
   },

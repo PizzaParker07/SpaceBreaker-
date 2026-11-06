@@ -133,6 +133,11 @@ def vestan_regolith(v=0):
     return dust(P.VESTA_SOIL, 8601 + v * 41)
 
 
+def diogenitic_regolith(v=0):
+    """Ochre-tan dust from the giant south basin: warmer and a little coarser than the grey howardite plains."""
+    return dust(P.DIOGENITIC_SOIL, 8651 + v * 43)
+
+
 def eucrite():
     """Fine grey basalt with pale plagioclase laths: short light streaks in a few directions over a calm matrix."""
     r = P.EUCRITE
@@ -201,55 +206,53 @@ def chromite_item():
 def rock_mite():
     cv = Canvas(64, 32)
     r = P.ROCK_MITE
+    clay = P.AMMONIA_CLAY
     salt = P.MITE_SALT
     n = clustered(64, 64, 9101, passes=1)
 
-    def body(face, x, y, fw, fh):
-        if face == 'top':
-            # segmented carapace: a darker groove every third row, pale salt grains on the rear half
-            t = 3 if (y % 3) else 2
-            if x in (0, fw - 1):
-                t -= 1
-            if y > fh * 0.55 and n[y][x + 5] > 0.82:
-                return salt[1]
-            return noise_pick(r, t, n, x, y)
-        if face == 'bottom':
-            return r[1]
-        # sides: carapace edge on top, darker underside
-        return noise_pick(r, 3 if y == 0 else (2 if y < 2 else 1), n, x + 20, y + 30)
-
-    paint(cv, 0, 0, 8, 4, 10, body)
-
-    def hump(face, x, y, fw, fh):
-        if face == 'top':
-            if n[y + 20][x] > 0.7:
+    def plate(tones, ox, oy):
+        # an armour plate: flat top with a pale carbonate crust along its edges, darker overhanging sides
+        def f(face, x, y, fw, fh):
+            if face == 'top':
+                edge = y in (0, fh - 1) or x in (0, fw - 1)
+                if edge and n[y + oy][x + ox] > 0.68:
+                    return salt[1] if n[y + oy + 7][x + ox] > 0.6 else salt[0]
+                return noise_pick(tones, 3 if not edge else 2, n, x + ox, y + oy)
+            if face == 'bottom':
+                return r[0]
+            if y == 0 and n[y + oy + 3][x + ox] > 0.75:
                 return salt[0]
-            return noise_pick(r, 4, n, x + 11, y + 3)
-        return noise_pick(r, 3, n, x + 9, y + 40)
+            return noise_pick(tones, 2 if y == 0 else 1, n, x + ox + 20, y + oy + 30)
+        return f
 
-    paint(cv, 0, 14, 6, 2, 5, hump)
+    paint(cv, 0, 0, 8, 2, 4, plate(clay, 0, 0))
+    paint(cv, 0, 6, 9, 3, 4, plate(r, 11, 5))
+    paint(cv, 0, 13, 8, 2, 4, plate(clay, 23, 9))
+    paint(cv, 0, 19, 6, 1, 3, plate(r, 31, 17))
 
     def head(face, x, y, fw, fh):
         if face == 'front':
-            # two dark sensory pits instead of eyes
+            # two dark sensory pits and a pale mouth ridge, no eyes
             if y == 1 and x in (1, fw - 2):
                 return r[0]
+            if y == fh - 1:
+                return salt[0] if x in (2, 3) else r[1]
             return r[3] if y == 0 else r[2]
-        return noise_pick(r, 3 if face == 'top' else 2, n, x + 40, y)
-
-    paint(cv, 36, 0, 5, 3, 3, head)
-    paint(cv, 36, 6, 1, 1, 3, lambda f, x, y, fw, fh: r[4] if f in ('top', 'front') else r[2])
-
-    def crystal(face, x, y, fw, fh):
         if face == 'top':
-            return salt[3]
-        if face in ('front', 'right'):
-            return salt[2] if y < fh - 1 else salt[1]
-        return salt[1] if y < fh - 1 else salt[0]
+            return noise_pick(r, 4 if y < fh - 1 else 3, n, x + 40, y)
+        return noise_pick(r, 2, n, x + 40, y + 9)
 
-    paint(cv, 44, 6, 2, 3, 2, crystal)
-    paint(cv, 52, 0, 1, 2, 1, crystal)
-    paint(cv, 22, 14, 5, 1, 1, lambda f, x, y, fw, fh: (r[3] if x < 3 else r[2]) if f == 'top' else r[1])
+    paint(cv, 28, 0, 6, 3, 4, head)
+    paint(cv, 28, 8, 1, 1, 2, lambda f, x, y, fw, fh: salt[1] if f == 'front' else clay[3])
+    paint(cv, 36, 8, 1, 1, 4, lambda f, x, y, fw, fh: (r[5] if f == 'front' else r[3]) if f != 'bottom' else r[1])
+
+    def ridge(face, x, y, fw, fh):
+        if face == 'top':
+            return salt[1] if (x + y) % 3 else salt[2]
+        return salt[0] if face in ('left', 'right') else r[4]
+
+    paint(cv, 48, 0, 2, 1, 4, ridge)
+    paint(cv, 28, 14, 4, 1, 1, lambda f, x, y, fw, fh: (clay[3] if x < 2 else clay[2]) if f == 'top' else clay[1])
     return cv
 
 
@@ -323,7 +326,8 @@ def vesta_disc():
 def export(save):
     dust_spec = (18, 8, 64, None)
     for name, fn, r in (('ceres_regolith', ceres_regolith, P.CERES_SOIL), ('ammoniated_clay', ammoniated_clay, P.AMMONIA_CLAY),
-                        ('carbonate_crust', carbonate_crust, P.CARBONATE), ('vestan_regolith', vestan_regolith, P.VESTA_SOIL)):
+                        ('carbonate_crust', carbonate_crust, P.CARBONATE), ('vestan_regolith', vestan_regolith, P.VESTA_SOIL),
+                        ('diogenitic_regolith', diogenitic_regolith, P.DIOGENITIC_SOIL)):
         base = fn(0)
         spec = (60, 12, 40, None) if name == 'carbonate_crust' else dust_spec
         save(base, 'block', name, spec)

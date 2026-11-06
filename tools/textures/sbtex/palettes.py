@@ -109,7 +109,9 @@ CEREAN_ICE = ramp('#56626b', '#67747e', '#788690', '#8a98a2', '#9eabb4', '#b6c1c
 # Magnetite: black, sub-metallic with steel-grey glints.
 MAGNETITE = ramp('#111113', '#20232b', '#3a404d', '#5d6575', '#9aa3b4')
 # Vestan regolith (howardite dust): grey-buff, much brighter than Ceres.
-VESTA_SOIL = ramp('#5a564f', '#716c65', '#79746c', '#827c74', '#8a847c', '#948e85')
+VESTA_SOIL = ramp('#5c5650', '#736b63', '#7c736a', '#857b71', '#8e8378', '#998d81')
+# Diogenitic regolith: ochre-tan dust of the Rheasilvia ejecta, orthopyroxene-rich.
+DIOGENITIC_SOIL = ramp('#5f5240', '#75654d', '#7f6e53', '#89775a', '#938061', '#9f8b6a')
 # Eucrite: fine basalt, grey with pale plagioclase laths.
 EUCRITE = ramp('#3d3b39', '#4b4946', '#575451', '#63605c', '#706c67', '#8f8a83', '#b3aea6')
 # Diogenite: coarse orthopyroxene, greenish yellow-brown.

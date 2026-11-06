@@ -9,9 +9,13 @@
       }
     },
     "chance": 0.4,
+    "debris": {
+      "Name": "spacebreaker:cerean_rock"
+    },
     "dome": 0.0,
     "extent": 0.3,
     "min_radius": 16.0,
+    "slump": 3.5,
     "spots": 0.8
   }
 }

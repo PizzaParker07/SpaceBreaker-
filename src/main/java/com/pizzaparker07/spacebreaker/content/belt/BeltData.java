@@ -54,12 +54,14 @@ public final class BeltData {
 
     /** Rheasilvia: the south-polar basin of Vesta. */
     public static BasinFeature.Config rheasilvia() {
-        return new BasinFeature.Config(0, -90, 1000, 36, 18, 84, 0.22, 4, 0.16, 1.6, s(BeltModule.DIOGENITE), Optional.empty());
+        return new BasinFeature.Config(0, -90, 1000, 36, 18, 84, 0.22, 4, 0.16, 1.6, s(BeltModule.DIOGENITE),
+                Optional.of(s(BeltModule.DIOGENITIC_REGOLITH)), Optional.of(s(BeltModule.EUCRITE.base())));
     }
 
     /** Occator-like salt deposits on Ceres' crater floors. */
     public static CraterFloorFeature.Config faculae() {
-        return new CraterFloorFeature.Config(s(BeltModule.CARBONATE_CRUST), 16, 0.4, 0.3, 0.8, 0, 2);
+        return new CraterFloorFeature.Config(s(BeltModule.CARBONATE_CRUST), 16, 0.4, 0.3, 0.8, 0, 2, 3.5,
+                Optional.of(s(BeltModule.CEREAN_ROCK.base())));
     }
 
     private BeltData() {
@@ -122,7 +124,8 @@ public final class BeltData {
                 s(BeltModule.VESTAN_REGOLITH), Optional.empty(), Optional.empty());
         // dark carbon-rich material splashed in by old impacts
         var lf = new Landforms(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
-                List.of(new Landforms.SoilPatch(s(MarsModule.CARBONACEOUS_CHONDRITE), 170, 0.8, "any")),
+                List.of(new Landforms.SoilPatch(s(MarsModule.CARBONACEOUS_CHONDRITE), 170, 0.8, "any"),
+                        new Landforms.SoilPatch(s(BeltModule.DIOGENITIC_REGOLITH), 260, 0.65, "any")),
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
         return SmallBodyTerrain.of(Spacebreaker.id("vesta"), 262.7).baseHeight(74).roughness(1.05).craters(1.15).age(1.0)
                 .materials(m).landforms(lf).build();
