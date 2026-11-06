@@ -332,6 +332,12 @@ def raw_hematite():
     return cv
 
 
+def perchlorate_salt():
+    """Perchlorate salts leached from the soil: a small heap of off-white crystalline powder with a faint pink cast."""
+    from modules.industry_shapes import dust as dust_heap
+    return dust_heap(ramp('#5e4a44', '#7d6660', '#a08880', '#bfa9a0', '#d6c4bb', '#e6d8cf', '#f2e8e0', '#fbf5ef'), seed=8101)
+
+
 def gypsum_crystal():
     """A clear selenite blade: long prism leaning right, lit left face, shaded right face."""
     r = GYPSUM
@@ -400,6 +406,7 @@ def export(save):
     save(gypsum_overlay(), 'block', 'gypsum_ore_overlay', (120, 30, 0, gyp), wrap=False)
     save(raw_hematite(), 'item', 'raw_hematite')
     save(gypsum_crystal(), 'item', 'gypsum_crystal')
+    save(perchlorate_salt(), 'item', 'perchlorate_salt')
     export_sky(save)
 
 

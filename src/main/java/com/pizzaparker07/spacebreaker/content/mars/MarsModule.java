@@ -104,6 +104,8 @@ public final class MarsModule implements SbModule {
 
     public static final DeferredItem<Item> RAW_HEMATITE = KIT.item("raw_hematite");
     public static final DeferredItem<Item> GYPSUM_CRYSTAL = KIT.item("gypsum_crystal");
+    /** Perchlorate salts crushed out of perchlorate soil: an oxygen source (they give off O2 when heated). */
+    public static final DeferredItem<Item> PERCHLORATE_SALT = KIT.item("perchlorate_salt");
 
     // ------------------------------------------------------------------ tags
 
@@ -113,6 +115,9 @@ public final class MarsModule implements SbModule {
     public static final TagKey<Item> ITEM_ORES_GYPSUM = SbTagKeys.commonItem("ores/gypsum");
     public static final TagKey<Item> RAW_MATERIALS_HEMATITE = SbTagKeys.commonItem("raw_materials/hematite");
     public static final TagKey<Item> GEMS_GYPSUM = SbTagKeys.commonItem("gems/gypsum");
+    /** Industry inputs of the inner planets: perchlorate (oxygen), water ice (water), sulfur. */
+    public static final TagKey<Item> DUSTS_PERCHLORATE = SbTagKeys.commonItem("dusts/perchlorate");
+    public static final TagKey<Item> ICES_WATER = SbTagKeys.commonItem("ices/water");
     /** Loose Martian soils (boot prints). */
     public static final TagKey<Block> MARS_SOILS = SbTagKeys.modBlock("mars_soils");
     /** Rocks that Mars ore veins may replace. */
@@ -218,6 +223,7 @@ public final class MarsModule implements SbModule {
         lang.block(DEIMOS_REGOLITH, "Deimos Regolith", "Deimos Regoliti");
         lang.block(CARBONACEOUS_CHONDRITE, "Carbonaceous Chondrite", "Karbonlu Kondrit");
         lang.item(GYPSUM_CRYSTAL, "Gypsum Crystal", "Alçıtaşı Kristali");
+        lang.item(PERCHLORATE_SALT, "Perchlorate Salt", "Perklorat Tuzu");
         lang.add("commands.spacebreaker.duststorm.start", "A dust storm sweeps across Mars", "Mars'ta bir toz fırtınası başladı");
         lang.add("commands.spacebreaker.duststorm.stop", "The dust settles", "Toz yatıştı");
         lang.add("commands.spacebreaker.duststorm.none", "This world has no dust storms", "Bu dünyada toz fırtınası olmaz");
@@ -276,6 +282,10 @@ public final class MarsModule implements SbModule {
         tags.item(RAW_MATERIALS_HEMATITE, RAW_HEMATITE.get());
         tags.itemTag(Tags.Items.RAW_MATERIALS, RAW_MATERIALS_HEMATITE);
         tags.item(GEMS_GYPSUM, GYPSUM_CRYSTAL.get());
+        tags.item(DUSTS_PERCHLORATE, PERCHLORATE_SALT.get());
+        tags.itemTag(Tags.Items.DUSTS, DUSTS_PERCHLORATE);
+        tags.item(ICES_WATER, MARTIAN_ICE.get().asItem(), DUSTY_ICE.get().asItem(), net.minecraft.world.item.Items.ICE,
+                net.minecraft.world.item.Items.PACKED_ICE, MoonModule.LUNAR_ICE.get().asItem());
         // stairs/slabs/walls block tags are mirrored into item tags once, by the Moon module
         tags.item(ItemTags.SAND, MARTIAN_SAND.get().asItem(), OLIVINE_SAND.get().asItem());
     }

@@ -403,6 +403,7 @@ public final class MarsData {
             // hematite is iron oxide: smelt it into iron
             smeltOre(out, MarsModule.RAW_HEMATITE.get(), Items.IRON_INGOT, 0.7F, "iron_ingot_from_raw_hematite");
             smeltOre(out, MarsModule.HEMATITE_ORE.get(), Items.IRON_INGOT, 0.7F, "iron_ingot_from_hematite_ore");
+            InnerResources.recipes(out);
             EXTRA_RECIPES.forEach(c -> c.accept(out));
         }
     }
