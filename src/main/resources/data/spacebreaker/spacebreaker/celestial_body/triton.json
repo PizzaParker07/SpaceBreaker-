@@ -1,0 +1,16 @@
+{
+  "type": "moon",
+  "parent": "spacebreaker:neptune",
+  "dimension": "spacebreaker:triton",
+  "physical": { "mass_kg": 2.1389e22, "radius_km": 1353.4 },
+  "orbit": { "semi_major_axis_km": 354759, "eccentricity": 1.6e-05, "inclination_deg": 156.885, "period_days": 5.876854 },
+  "rotation": { "day_length_hours": 141.04, "axial_tilt_deg": 0.0, "tidally_locked": true },
+  "atmosphere": {
+    "pressure_kpa": 0.0014,
+    "composition": { "N2": 0.9999, "CH4": 0.0001 }
+  },
+  "climate": { "day_temp_c": -235, "night_temp_c": -236 },
+  "radiation_msv_per_day": 1.5,
+  "solar_irradiance": 1.51,
+  "albedo": 0.76
+}

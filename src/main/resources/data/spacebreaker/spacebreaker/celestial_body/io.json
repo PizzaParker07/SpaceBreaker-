@@ -1,0 +1,12 @@
+{
+  "type": "moon",
+  "parent": "spacebreaker:jupiter",
+  "dimension": "spacebreaker:io",
+  "physical": { "mass_kg": 8.931938e22, "radius_km": 1821.6 },
+  "orbit": { "semi_major_axis_km": 421700, "eccentricity": 0.0041, "inclination_deg": 0.05, "period_days": 1.769138 },
+  "rotation": { "day_length_hours": 42.46, "axial_tilt_deg": 0.0, "tidally_locked": true },
+  "climate": { "day_temp_c": -143, "night_temp_c": -183 },
+  "radiation_msv_per_day": 36000.0,
+  "solar_irradiance": 50.28,
+  "albedo": 0.63
+}

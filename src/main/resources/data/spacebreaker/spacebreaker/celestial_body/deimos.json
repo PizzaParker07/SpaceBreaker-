@@ -1,0 +1,12 @@
+{
+  "type": "moon",
+  "parent": "spacebreaker:mars",
+  "dimension": "spacebreaker:deimos",
+  "physical": { "mass_kg": 1476200000000000.0, "radius_km": 6.27 },
+  "orbit": { "semi_major_axis_km": 23463, "eccentricity": 0.00033, "inclination_deg": 1.791, "period_days": 1.26244 },
+  "rotation": { "day_length_hours": 30.35, "axial_tilt_deg": 0.0, "tidally_locked": true },
+  "climate": { "day_temp_c": -40, "night_temp_c": -110 },
+  "radiation_msv_per_day": 1.2,
+  "solar_irradiance": 586.21,
+  "albedo": 0.068
+}

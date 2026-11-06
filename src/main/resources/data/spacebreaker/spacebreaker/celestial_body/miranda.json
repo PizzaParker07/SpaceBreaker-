@@ -1,0 +1,12 @@
+{
+  "type": "moon",
+  "parent": "spacebreaker:uranus",
+  "dimension": "spacebreaker:miranda",
+  "physical": { "mass_kg": 6.59e19, "radius_km": 235.8 },
+  "orbit": { "semi_major_axis_km": 129390, "eccentricity": 0.0013, "inclination_deg": 4.338, "period_days": 1.413479 },
+  "rotation": { "day_length_hours": 33.92, "axial_tilt_deg": 0.0, "tidally_locked": true },
+  "climate": { "day_temp_c": -187, "night_temp_c": -213 },
+  "radiation_msv_per_day": 1.5,
+  "solar_irradiance": 3.7,
+  "albedo": 0.2
+}

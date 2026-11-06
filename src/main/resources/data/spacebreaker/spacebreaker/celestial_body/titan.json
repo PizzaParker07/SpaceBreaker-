@@ -1,0 +1,16 @@
+{
+  "type": "moon",
+  "parent": "spacebreaker:saturn",
+  "dimension": "spacebreaker:titan",
+  "physical": { "mass_kg": 1.3452e23, "radius_km": 2574.73 },
+  "orbit": { "semi_major_axis_km": 1221870, "eccentricity": 0.0288, "inclination_deg": 0.348, "period_days": 15.945 },
+  "rotation": { "day_length_hours": 382.68, "axial_tilt_deg": 0.3, "tidally_locked": true },
+  "atmosphere": {
+    "pressure_kpa": 146.7,
+    "composition": { "N2": 0.95, "CH4": 0.049, "H2": 0.001 }
+  },
+  "climate": { "day_temp_c": -179, "night_temp_c": -180 },
+  "radiation_msv_per_day": 0.01,
+  "solar_irradiance": 14.96,
+  "albedo": 0.265
+}

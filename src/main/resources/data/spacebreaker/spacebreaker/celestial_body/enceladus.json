@@ -1,0 +1,12 @@
+{
+  "type": "moon",
+  "parent": "spacebreaker:saturn",
+  "dimension": "spacebreaker:enceladus",
+  "physical": { "mass_kg": 1.08022e20, "radius_km": 252.1 },
+  "orbit": { "semi_major_axis_km": 237948, "eccentricity": 0.0047, "inclination_deg": 0.009, "period_days": 1.370218 },
+  "rotation": { "day_length_hours": 32.89, "axial_tilt_deg": 0.0, "tidally_locked": true },
+  "climate": { "day_temp_c": -198, "night_temp_c": -223 },
+  "radiation_msv_per_day": 2.0,
+  "solar_irradiance": 14.96,
+  "albedo": 0.81
+}
