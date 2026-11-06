@@ -37,7 +37,13 @@ import org.lwjgl.opengl.GL11;
  */
 public final class ShaderSkyPass {
     private static TextureTarget target;
+    private static net.minecraft.client.renderer.ShaderInstance composite;
+
+    static void setCompositeShader(net.minecraft.client.renderer.ShaderInstance shader) {
+        composite = shader;
+    }
     private static boolean warned;
+    private static final PassTimer TIMER = new PassTimer("sky pass");
 
     private ShaderSkyPass() {
     }
@@ -48,8 +54,9 @@ public final class ShaderSkyPass {
         if (mode == CompatConfig.SkyMode.OFF) {
             return false;
         }
-        if (mode == CompatConfig.SkyMode.AUTO && Compat.lodModInstalled()) {
-            return false; // LOD terrain is not in Minecraft's depth buffer: it would be painted over
+        if (mode == CompatConfig.SkyMode.AUTO && Compat.lodModInstalled()
+                && (Compat.isInstalled("voxy") || composite == null || !LodDepth.available())) {
+            return false; // LOD terrain we cannot see in a depth buffer would be painted over
         }
         ClientLevel level = Minecraft.getInstance().level;
         return level != null && SpaceSky.kind(level).ownSky() && ShaderState.shaderPackInUse();
@@ -71,7 +78,12 @@ public final class ShaderSkyPass {
             return; // under water / in lava the pack's fog is right
         }
         try {
-            draw(mc, level, camera, modelView, projection, partialTick);
+            TIMER.begin();
+            try {
+                draw(mc, level, camera, modelView, projection, partialTick);
+            } finally {
+                TIMER.end();
+            }
         } catch (RuntimeException e) {
             if (!warned) {
                 warned = true;
@@ -120,14 +132,29 @@ public final class ShaderSkyPass {
         RenderSystem.disableCull();
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         GL11.glDepthRange(1.0, 1.0);
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, target.getColorTextureId());
-        BufferBuilder b = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        b.addVertex(-1F, -1F, 0F).setUv(0F, 0F);
-        b.addVertex(1F, -1F, 0F).setUv(1F, 0F);
-        b.addVertex(1F, 1F, 0F).setUv(1F, 1F);
-        b.addVertex(-1F, 1F, 0F).setUv(0F, 1F);
-        BufferUploader.drawWithShader(b.buildOrThrow());
+        int lod = LodDepth.texture();
+        if (lod > 0 && composite != null) {
+            // Distant Horizons: LOD terrain is only in DH's depth buffer, so the shader keeps it
+            RenderSystem.setShader(() -> composite);
+            RenderSystem.setShaderTexture(0, target.getColorTextureId());
+            RenderSystem.setShaderTexture(1, lod);
+            composite.safeGetUniform("LodFar").set(LodDepth.farDepth());
+            BufferBuilder b = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
+            b.addVertex(-1F, -1F, 0F);
+            b.addVertex(1F, -1F, 0F);
+            b.addVertex(1F, 1F, 0F);
+            b.addVertex(-1F, 1F, 0F);
+            BufferUploader.drawWithShader(b.buildOrThrow());
+        } else {
+            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            RenderSystem.setShaderTexture(0, target.getColorTextureId());
+            BufferBuilder b = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+            b.addVertex(-1F, -1F, 0F).setUv(0F, 0F);
+            b.addVertex(1F, -1F, 0F).setUv(1F, 0F);
+            b.addVertex(1F, 1F, 0F).setUv(1F, 1F);
+            b.addVertex(-1F, 1F, 0F).setUv(0F, 1F);
+            BufferUploader.drawWithShader(b.buildOrThrow());
+        }
         GL11.glDepthRange(0.0, 1.0);
 
         RenderSystem.enableCull();
