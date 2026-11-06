@@ -13,6 +13,17 @@ The keys below are **your** keys; change them in the options and this page follo
 | Maneuvering unit: up | {key key.jump} |
 | Maneuvering unit: down | {key key.sneak} |
 
+## Aboard a rocket
+| What it does | Key |
+|---|---|
+| Orbit around the rocket | mouse |
+| Zoom in / out | mouse wheel |
+| Cockpit window | {key key.togglePerspective} |
+| Start / abort the countdown | {key key.spacebreaker.launch} |
+| Star map (in orbit) | {key key.spacebreaker.star_map} |
+| Get out | {key key.sneak} |
+→ [Flight and Navigation](navigation)
+
 ## With the mouse
 - **Gold sun visor:** hold {key key.sneak} and press {key key.use} with the {item spacebreaker:eva_helmet} in hand.
 - **Fitting a tank:** {key key.use} with an {item spacebreaker:oxygen_tank} while wearing an {item spacebreaker:eva_chestplate}.

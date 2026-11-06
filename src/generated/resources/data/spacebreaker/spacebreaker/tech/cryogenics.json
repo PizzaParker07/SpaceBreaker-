@@ -4,6 +4,9 @@
   "requires": [
     "spacebreaker:electrolysis"
   ],
+  "samples": [
+    "spacebreaker:earth"
+  ],
   "tier": 2,
   "unlocks": [
     "spacebreaker:cryogenic_liquefier",

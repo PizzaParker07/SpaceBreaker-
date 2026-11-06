@@ -61,6 +61,15 @@ public final class Transfers {
         }
         double dv = real.getAsDouble();
         boolean sameBody = from.body().equals(to.body());
+        if (sameBody && !from.orbit() && to.orbit() && layout != null && active < layout.stages().size()
+                && model instanceof AstroTransferModel astro) {
+            // the climb's gravity loss depends on this rocket's lift-off thrust-to-weight
+            double g = Locations.body(from.body()).map(b -> b.physical().surfaceGravity()).orElse(0.0);
+            double twr = com.pizzaparker07.spacebreaker.content.rocketry.design.RocketMath.twr(layout, active, layout.fullFuel(), g);
+            if (twr > 0) {
+                dv = astro.ascent(from, twr).orElse(dv);
+            }
+        }
         if (sameBody && !from.orbit() && from.atmosphere() && layout != null && active < layout.stages().size()) {
             RocketLayout.Stage s = layout.stages().get(active);
             if (s.fins() || s.gridFins()) {

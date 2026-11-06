@@ -1,0 +1,10 @@
+{
+  "type": "spacebreaker:supply_lander",
+  "biomes": [
+    "spacebreaker:charon_plains",
+    "spacebreaker:charon_polar"
+  ],
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "variant": "charon"
+}

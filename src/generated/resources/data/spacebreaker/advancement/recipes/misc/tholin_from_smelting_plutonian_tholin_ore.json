@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_plutonian_tholin_ore": {
+      "conditions": {
+        "items": [
+          {
+            "items": "spacebreaker:plutonian_tholin_ore"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "spacebreaker:tholin_from_smelting_plutonian_tholin_ore"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_plutonian_tholin_ore"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "spacebreaker:tholin_from_smelting_plutonian_tholin_ore"
+    ]
+  }
+}

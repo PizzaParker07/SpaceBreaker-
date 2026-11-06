@@ -3,5 +3,8 @@
   "icon": "minecraft:gunpowder",
   "requires": [
     "spacebreaker:basic_rocketry"
+  ],
+  "samples": [
+    "spacebreaker:earth"
   ]
 }

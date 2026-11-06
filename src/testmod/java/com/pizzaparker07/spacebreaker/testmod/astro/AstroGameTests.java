@@ -7,6 +7,10 @@ import com.pizzaparker07.spacebreaker.core.astro.BodySystem;
 import com.pizzaparker07.spacebreaker.core.astro.Ephemeris;
 import com.pizzaparker07.spacebreaker.core.astro.GameClock;
 import com.pizzaparker07.spacebreaker.core.astro.OrbitService;
+import com.pizzaparker07.spacebreaker.core.astro.SkyEphemeris;
+import com.pizzaparker07.spacebreaker.core.astro.smallbody.Asteroid;
+import com.pizzaparker07.spacebreaker.core.astro.smallbody.AsteroidGenerator;
+import com.pizzaparker07.spacebreaker.core.astro.smallbody.Region;
 import com.pizzaparker07.spacebreaker.core.astro.TransferPlanner;
 import com.pizzaparker07.spacebreaker.core.body.Bodies;
 import com.pizzaparker07.spacebreaker.core.body.BodyType;
@@ -118,6 +122,32 @@ public final class AstroGameTests {
         helper.assertTrue(w.open() == (ticks == 0), "open windows have no wait");
         helper.assertTrue(ticks <= GameClock.ticks(800 * 86400.0, BodyAdapter.timeScale()), "next Mars window within a synodic period");
         helper.assertTrue(orbits.window("spacebreaker:earth", "spacebreaker:moon").open(), "the Moon is always reachable");
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void skyFromTheOverworld(GameTestHelper helper) {
+        var access = helper.getLevel().registryAccess();
+        CelestialBody jupiter = Bodies.get(access, Bodies.key("jupiter")).orElseThrow();
+        helper.assertTrue(Math.abs(jupiter.geometricAlbedo() - 0.538) < 1e-9, "geometric albedo loads");
+        helper.assertTrue(Bodies.get(access, Bodies.SUN).orElseThrow().geometricAlbedo() < 0, "unknown by default");
+        BodySystem sys = BodyAdapter.system(access).orElseThrow();
+        List<SkyEphemeris.SkyObject> sky = SkyEphemeris.visible(sys, "spacebreaker:earth", BodyAdapter.simTime(helper.getLevel()), 6);
+        helper.assertTrue(sky.get(0).id().equals("spacebreaker:sun") && sky.get(0).apparentMagnitude() < -26, "the Sun first");
+        helper.assertTrue(sky.stream().anyMatch(o -> o.id().equals("spacebreaker:moon")), "the Moon is in the sky");
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void asteroidsBecomeCelestialBodies(GameTestHelper helper) {
+        for (Asteroid a : AsteroidGenerator.population(helper.getLevel().getSeed(), Region.MAIN_BELT, 50)) {
+            CelestialBody c = BodyAdapter.toCelestialBody(a.toAstroBody(), a.details(), Optional.empty());
+            helper.assertTrue(c.type() == BodyType.ASTEROID, "asteroid type");
+            helper.assertTrue(Math.abs(c.physical().surfaceGravity() - a.surfaceGravity()) < 1e-9, "gravity carried over");
+            JsonElement json = CelestialBody.CODEC.encodeStart(JsonOps.INSTANCE, c).getOrThrow();
+            CelestialBody back = CelestialBody.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow();
+            helper.assertTrue(back.equals(c), "codec round trip changed " + a.id());
+        }
         helper.succeed();
     }
 

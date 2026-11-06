@@ -5,6 +5,9 @@
     "spacebreaker:oxygen_storage",
     "spacebreaker:pressurised_modules"
   ],
+  "samples": [
+    "spacebreaker:earth"
+  ],
   "unlocks": [
     "spacebreaker:airlock_door"
   ]

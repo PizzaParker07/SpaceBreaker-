@@ -53,6 +53,8 @@ public final class OuterWorlds implements SbModule {
     public static final DeferredHolder<Feature<?>, VentFeature> VENTS = FEATURES.register("surface_vents", VentFeature::new);
     public static final DeferredHolder<Feature<?>, com.pizzaparker07.spacebreaker.content.belt.world.LayerFeature> LAYER =
             FEATURES.register("buried_layer", com.pizzaparker07.spacebreaker.content.belt.world.LayerFeature::new);
+    public static final DeferredHolder<Feature<?>, com.pizzaparker07.spacebreaker.content.belt.world.CellsFeature> CELLS =
+            FEATURES.register("polygon_cells", com.pizzaparker07.spacebreaker.content.belt.world.CellsFeature::new);
     public static final DeferredRegister<net.minecraft.world.level.block.entity.BlockEntityType<?>> BLOCK_ENTITIES =
             DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, Spacebreaker.MOD_ID);
     /** Vent blocks of every outer world (added by the region modules before registration). */

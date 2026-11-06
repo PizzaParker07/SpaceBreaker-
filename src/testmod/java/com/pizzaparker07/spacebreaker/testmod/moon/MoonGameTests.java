@@ -244,6 +244,51 @@ public final class MoonGameTests {
         helper.succeed();
     }
 
+    /**
+     * Performance budget of the planet engine: terrain + biomes for fresh chunks, measured on real proto-chunks.
+     * Vanilla noise chunks take roughly 5-15 ms each on one core; the Moon must stay well inside that.
+     */
+    @GameTest(template = EMPTY, timeoutTicks = 600)
+    public static void moonChunkGenerationIsFast(GameTestHelper helper) {
+        long seed = 20261106L;
+        PlanetChunkGenerator gen = moonGenerator(helper, seed);
+        var access = helper.getLevel().registryAccess();
+        var state = net.minecraft.world.level.levelgen.RandomState.create(net.minecraft.world.level.levelgen.NoiseGeneratorSettings.dummy(),
+                access.lookupOrThrow(net.minecraft.core.registries.Registries.NOISE), seed);
+        LevelHeightAccessor height = LevelHeightAccessor.create(-64, 384);
+        var biomes = access.registryOrThrow(net.minecraft.core.registries.Registries.BIOME);
+        int warm = 16;
+        int n = 96;
+        long total = 0;
+        for (int i = 0; i < warm + n; i++) {
+            var pos = new net.minecraft.world.level.ChunkPos(1000 + i % 12, 400 + i / 12);
+            var chunk = new net.minecraft.world.level.chunk.ProtoChunk(pos, net.minecraft.world.level.chunk.UpgradeData.EMPTY, height, biomes, null);
+            long t0 = System.nanoTime();
+            gen.createBiomes(state, null, null, chunk).join();
+            gen.fillFromNoise(null, state, null, chunk).join();
+            long dt = System.nanoTime() - t0;
+            if (i >= warm) {
+                total += dt;
+            }
+        }
+        double ms = total / 1e6 / n;
+        com.pizzaparker07.spacebreaker.Spacebreaker.LOGGER.info("[benchmark] Moon terrain + biomes: {} ms per chunk", String.format(java.util.Locale.ROOT, "%.2f", ms));
+        helper.assertTrue(ms < 20, "Moon chunk generation too slow: " + ms + " ms per chunk");
+        helper.succeed();
+    }
+
+    @GameTest(template = EMPTY)
+    public static void moonBiomesPlayMoonMusic(GameTestHelper helper) {
+        var biomes = helper.getLevel().registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.BIOME);
+        for (var key : List.of(com.pizzaparker07.spacebreaker.content.moon.MoonData.HIGHLANDS, com.pizzaparker07.spacebreaker.content.moon.MoonData.MARE,
+                com.pizzaparker07.spacebreaker.content.moon.MoonData.CRATER, com.pizzaparker07.spacebreaker.content.moon.MoonData.VOLCANIC,
+                com.pizzaparker07.spacebreaker.content.moon.MoonData.POLAR)) {
+            var music = biomes.getOrThrow(key).getBackgroundMusic().orElseThrow(() -> new AssertionError(key.location() + " has no music"));
+            helper.assertTrue(music.getEvent().is(Spacebreaker.id("music.moon")), key.location() + " should play music.moon");
+        }
+        helper.succeed();
+    }
+
     // ------------------------------------------------------------------ time and sky
 
     @GameTest(template = EMPTY)

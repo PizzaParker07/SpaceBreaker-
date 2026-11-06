@@ -463,6 +463,77 @@ public final class RocketryGameTests {
         helper.succeed();
     }
 
+    private static com.pizzaparker07.spacebreaker.content.rocketry.entity.MissionCalls.Snapshot snap(FlightState s, int timer, int stage, boolean back) {
+        return new com.pizzaparker07.spacebreaker.content.rocketry.entity.MissionCalls.Snapshot(s, timer, stage, back);
+    }
+
+    @GameTest(template = EMPTY)
+    public static void missionControlCalls(GameTestHelper helper) {
+        java.util.function.BiFunction<com.pizzaparker07.spacebreaker.content.rocketry.entity.MissionCalls.Snapshot,
+                com.pizzaparker07.spacebreaker.content.rocketry.entity.MissionCalls.Snapshot, com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line> call =
+                com.pizzaparker07.spacebreaker.content.rocketry.entity.MissionCalls::call;
+        // walk a whole countdown tick by tick and collect what is said
+        List<com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line> said = new java.util.ArrayList<>();
+        var prev = snap(FlightState.IDLE, 0, 0, true);
+        for (int t = RocketEntity.COUNTDOWN_TICKS; t >= 1; t--) {
+            var now = snap(FlightState.COUNTDOWN, t, 0, true);
+            var line = call.apply(prev, now);
+            if (line != null) {
+                said.add(line);
+            }
+            prev = now;
+        }
+        var liftoff = call.apply(prev, snap(FlightState.ASCENT, 0, 0, true));
+        helper.assertTrue(said.contains(com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line.COUNTDOWN_10)
+                && said.contains(com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line.COUNTDOWN_1), "counts down from 10 to 1: " + said);
+        helper.assertTrue(said.stream().filter(l -> l == com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line.IGNITION).count() == 1,
+                "ignition is called once: " + said);
+        helper.assertFalse(said.contains(com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line.COUNTDOWN_3), "T-3 is the ignition call");
+        helper.assertTrue(said.indexOf(com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line.COUNTDOWN_4)
+                < said.indexOf(com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line.IGNITION)
+                && said.indexOf(com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line.IGNITION)
+                < said.indexOf(com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line.COUNTDOWN_2), "4, ignition, 2, 1");
+        helper.assertTrue(said.size() == 10, "one call per second from T-10: " + said);
+        helper.assertTrue(liftoff == com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line.LIFTOFF, "liftoff");
+        helper.assertTrue(call.apply(snap(FlightState.COUNTDOWN, 90, 0, true), snap(FlightState.IDLE, 0, 0, true))
+                == com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line.COUNTDOWN_HOLD, "abort holds the countdown");
+        helper.assertTrue(call.apply(snap(FlightState.ASCENT, 300, 0, true), snap(FlightState.ASCENT, 301, 1, true))
+                == com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line.STAGE_SEPARATION, "staging");
+        helper.assertTrue(call.apply(snap(FlightState.ASCENT, 900, 1, true), snap(FlightState.ORBIT, 0, 1, true))
+                == com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line.ORBIT_REACHED, "orbit after the climb");
+        helper.assertTrue(call.apply(snap(FlightState.TRANSFER, 119, 1, true), snap(FlightState.ORBIT, 0, 1, true))
+                == com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line.ORBIT_REACHED, "orbit after a transfer");
+        helper.assertTrue(call.apply(snap(FlightState.TRANSFER, 119, 3, true), snap(FlightState.REENTRY, 0, 3, true))
+                == com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line.ENTRY_INTERFACE, "entry interface");
+        helper.assertTrue(call.apply(snap(FlightState.REENTRY, 150, 3, true), snap(FlightState.PARACHUTE, 0, 3, true))
+                == com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line.PARACHUTES, "parachutes");
+        helper.assertTrue(call.apply(snap(FlightState.PARACHUTE, 200, 3, true), snap(FlightState.IDLE, 0, 3, true))
+                == com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line.TOUCHDOWN, "touchdown under chutes");
+        helper.assertTrue(call.apply(snap(FlightState.DESCENT, 200, 2, true), snap(FlightState.IDLE, 0, 2, true))
+                == com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line.TOUCHDOWN, "powered touchdown");
+        helper.assertTrue(call.apply(snap(FlightState.ORBIT, 10, 1, true), snap(FlightState.ORBIT, 11, 1, false))
+                == com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line.FUEL_LOW, "fuel low when home is out of reach");
+        helper.assertTrue(call.apply(snap(FlightState.ORBIT, 10, 1, true), snap(FlightState.ORBIT, 11, 1, true)) == null, "quiet in a steady orbit");
+        helper.assertTrue(call.apply(null, snap(FlightState.ORBIT, 0, 1, true)) == null, "nothing on boarding a parked rocket");
+        helper.succeed();
+    }
+
+    @GameTest(template = EMPTY)
+    public static void launchCostFollowsThrustToWeight(GameTestHelper helper) {
+        var lookup = RocketParts.lookup(helper.getLevel().registryAccess());
+        RocketLayout heavy = moonRocket(helper);
+        RocketLayout light = RocketLayout.of(new RocketDesign(List.of(Spacebreaker.id("kerosene_engine"), Spacebreaker.id("fuel_tank_small"),
+                Spacebreaker.id("crew_capsule"), Spacebreaker.id("parachute"))), lookup);
+        double g = 9.80665;
+        double twrHeavy = RocketMath.twr(heavy, 0, heavy.fullFuel(), g), twrLight = RocketMath.twr(light, 0, light.fullFuel(), g);
+        double costHeavy = Transfers.cost(Location.EARTH_SURFACE, Location.EARTH_ORBIT, heavy, 0, SbConfig.Realism.REALISTIC).orElseThrow();
+        double costLight = Transfers.cost(Location.EARTH_SURFACE, Location.EARTH_ORBIT, light, 0, SbConfig.Realism.REALISTIC).orElseThrow();
+        helper.assertTrue(twrLight > twrHeavy, "the light rocket is punchier: " + twrLight + " vs " + twrHeavy);
+        helper.assertTrue(costLight < costHeavy, "less gravity loss with more thrust: " + costLight + " vs " + costHeavy);
+        helper.assertTrue(costLight > 7800 && costHeavy < 11500, "Earth ascent stays in the real 8-11 km/s range: " + costLight + " / " + costHeavy);
+        helper.succeed();
+    }
+
     @GameTest(template = EMPTY)
     public static void fuelFromFluidContainers(GameTestHelper helper) {
         RocketEntity rocket = RocketEntity.create(helper.getLevel(), RocketryModule.MOON_ROCKET, helper.absoluteVec(new net.minecraft.world.phys.Vec3(1.5, 2, 1.5)), 0F);

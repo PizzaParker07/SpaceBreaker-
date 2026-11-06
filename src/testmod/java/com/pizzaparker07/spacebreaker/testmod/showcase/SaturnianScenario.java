@@ -87,6 +87,18 @@ final class SaturnianScenario extends OuterShowcase {
         mob(level, SaturnEntities.METHANE_SKATER.get(), SX + 1, y0 + 1, SZ + 6, 200F);
         shot("04_titan_blocks", SX + 0.5, y0 + 3.4, SZ + 12.5, 180F, 18F, 120, at(0.2), null);
         shot("05_methane_skater", SX + 1.5, y0 + 2.6, SZ + 10.5, 180F, 26F, 60, at(0.2), null);
+        // two tholin worms on a patch of dune sand at the back of the stage, one burrowed
+        for (int x = SX + 3; x <= SX + 8; x++) {
+            for (int z = SZ - 4; z <= SZ + 1; z++) {
+                level.setBlock(new BlockPos(x, y0, z), SaturnModule.THOLIN_SAND.get().defaultBlockState(), Block.UPDATE_CLIENTS);
+            }
+        }
+        mob(level, SaturnEntities.THOLIN_WORM.get(), SX + 5, y0 + 1, SZ - 2, 150F);
+        var hidden = mob(level, SaturnEntities.THOLIN_WORM.get(), SX + 7, y0 + 1, SZ, 40F);
+        if (hidden != null) {
+            hidden.setBurrowed(true);
+        }
+        shot("05b_tholin_worm", SX + 6.2, y0 + 1.9, SZ + 2.2, 170F, 30F, 80, at(0.2), null);
         int hx = SX + 40;
         int hz = SZ - 40;
         int hy = (int) ground(level, hx + 8, hz + 12);

@@ -1,0 +1,15 @@
+{
+  "type": "spacebreaker:pluto",
+  "generator": {
+    "type": "spacebreaker:planet",
+    "terrain": "spacebreaker:pluto",
+    "biome_source": {
+      "type": "spacebreaker:planet",
+      "highlands": "spacebreaker:pluto_plains",
+      "lowlands": "spacebreaker:pluto_plains",
+      "crater": "spacebreaker:pluto_crater",
+      "volcano": "spacebreaker:pluto_ice_mountains",
+      "polar": "spacebreaker:pluto_polar"
+    }
+  }
+}

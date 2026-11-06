@@ -306,6 +306,11 @@ public final class MarsData {
     }
 
     /** Biome of an airless little moon: black sky, no weather, no life. */
+    /** Ambient music of airless worlds (shared with the Moon). */
+    public static net.minecraft.sounds.Music airlessMusic() {
+        return new net.minecraft.sounds.Music(com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_MOON, 3600, 12000, false);
+    }
+
     public static Biome airless(HolderGetter<PlacedFeature> pf, HolderGetter<ConfiguredWorldCarver<?>> carvers,
                                 Consumer<BiomeGenerationSettings.Builder> features) {
         BiomeGenerationSettings.Builder gen = new BiomeGenerationSettings.Builder(pf, carvers);
@@ -314,7 +319,7 @@ public final class MarsData {
                 .hasPrecipitation(false).temperature(0.5F).downfall(0F)
                 .specialEffects(new BiomeSpecialEffects.Builder()
                         .fogColor(0x000000).skyColor(0x000000).waterColor(0x3F76E4).waterFogColor(0x050533)
-                        .grassColorOverride(0x6A6460).foliageColorOverride(0x6A6460).build())
+                        .grassColorOverride(0x6A6460).foliageColorOverride(0x6A6460).backgroundMusic(airlessMusic()).build())
                 .mobSpawnSettings(new MobSpawnSettings.Builder().build())
                 .generationSettings(gen.build())
                 .build();
@@ -342,6 +347,7 @@ public final class MarsData {
                         .fogColor(MARS_FOG).skyColor(MARS_SKY).waterColor(0x4F6A7A).waterFogColor(0x2A3036)
                         .grassColorOverride(0x9A6A48).foliageColorOverride(0x9A6A48)
                         .ambientParticle(new AmbientParticleSettings(MarsParticles.DUST_MOTE.get(), 0.0015F))
+                        .backgroundMusic(new net.minecraft.sounds.Music(com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_MARS, 3600, 12000, false))
                         .build())
                 .mobSpawnSettings(spawns.build())
                 .generationSettings(gen.build())

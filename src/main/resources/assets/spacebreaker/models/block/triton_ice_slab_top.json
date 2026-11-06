@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "spacebreaker:block/triton_ice",
+    "side": "spacebreaker:block/triton_ice",
+    "top": "spacebreaker:block/triton_ice"
+  }
+}

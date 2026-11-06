@@ -4,8 +4,29 @@ icon: spacebreaker:emergency_beacon
 items: [spacebreaker:emergency_beacon]
 research: spacebreaker:orbital_mechanics
 ---
+## Roketteyken kamera
+Rokete binince kamera roketin çevresinde dönen **üçüncü şahıs** görünümüne geçer.
+- Fare: roketin çevresinde dön.
+- Fare tekerleği: yakınlaş / uzaklaş.
+- {key key.togglePerspective}: kokpit penceresi.
+
+Yörüngeye çıkarken, gezegenler arasında ve inişte yükleme ekranı yoktur; bir geçiş animasyonu oynar.
+
 ## Yıldız haritası
-Yörüngedeyken {key key.spacebreaker.star_map} haritayı açar. Gidebileceğin yerleri, gereken Δv'yi ve roketinde kalan Δv'yi gösterir. Yüzeyden fırlatmak için haritaya değil rampaya ihtiyacın var.
+Roket **yörüngedeyken** {key key.spacebreaker.star_map} haritayı açar. Yüzeyden önce rampadan fırlatman gerekir.
+1. Güneş soldadır; **Buradasın** iğnesi nerede olduğunu gösterir. Bir gezegene tıkla: sistemine yakınlaşır. Geri dönmek için **◀ Güneş Sistemi** ya da sağ tık.
+2. Sağdaki panel seçtiğin dünyanın resmini, kısa açıklamasını ve tehlikelerini gösterir: **Hava yok**, **Solunamaz hava**, **Ezici basınç**, **Sıcak**, **Soğuk**, **Radyasyon**.
+3. **Yörüngeye git** ya da **Yüzeye in**'i seç. (Henüz kurulmamış bir dünyada **Yakında**, yüzeyi olmayan bir cisimde **İnilecek yüzey yok** yazar.)
+4. Panel şunları yazar:
+   - **Gereken yakıt X · roketinde Y** → **Yeter ✔** ya da **X eksik ✘**
+   - **Geri dönüş yakıtı:** yeter ✔ / yetmez ✘
+   - **Yolculuk süresi:** X gün
+   - **Fırlatma penceresi:** şu an uygun, ya da en iyisi biraz sonra (şimdi gitmek daha çok yakıt ister)
+5. Rota haritada numaralı adımlarla çizilir. Büyük **Git** düğmesine bas. Düğme pasifse nedenini yazar.
+
+Uçarken göstergede **Kalan yakıt (Δv)** satırını izle.
+
+> **Δv**, roketinin hızını ne kadar değiştirebileceğidir; kısaca: yakıtın.
 
 ## Ay'a iniş
 - Ay yörüngesinden yüzeye yaklaşık **1870 m/s** gerekir. Dönüş için de bir o kadar.

@@ -1,0 +1,15 @@
+{
+  "type": "spacebreaker:charon",
+  "generator": {
+    "type": "spacebreaker:planet",
+    "terrain": "spacebreaker:charon",
+    "biome_source": {
+      "type": "spacebreaker:planet",
+      "highlands": "spacebreaker:charon_plains",
+      "crater": "spacebreaker:charon_crater",
+      "canyon": "spacebreaker:charon_chasms",
+      "polar": "spacebreaker:charon_polar",
+      "ice_cap": "spacebreaker:charon_polar"
+    }
+  }
+}

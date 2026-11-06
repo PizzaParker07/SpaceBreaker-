@@ -17,10 +17,14 @@ import com.pizzaparker07.spacebreaker.core.astro.galaxy.Rng;
  * @param roughness      overall relief, 0..1 (smooth plains → rugged)
  * @param dunes          true when wind can build dunes (enough air, loose material)
  * @param tidalHeating   tidal heat flux at the surface, W/m² (Io ≈ 2)
+ * @param volatileIce    fraction covered by frozen nitrogen/methane/CO glaciers (Pluto's Sputnik Planitia, Triton's cap)
+ * @param plumes         active geysers or plumes (Enceladus, Europa: tidal; Triton: sunlight on nitrogen ice)
  */
 public record TerrainHints(ColorFamily colorFamily, int baseColor, int accentColor, double craterDensity,
                            Liquid liquid, double liquidCoverage, double glaciation, double volcanism, double roughness,
-                           boolean dunes, double tidalHeating) {
+                           boolean dunes, double tidalHeating, double volatileIce, boolean plumes) {
+    /** Nitrogen freezes below this temperature, K. */
+    public static final double NITROGEN_FREEZE = 63.2;
 
     public enum ColorFamily {
         GREY_REGOLITH(0x8C8681, 0x5E5B58), RUST(0xC1683C, 0xD9A066), DARK_BASALT(0x4A4440, 0x8A6A3A),
@@ -87,7 +91,7 @@ public record TerrainHints(ColorFamily colorFamily, int baseColor, int accentCol
         Rng rng = new Rng(Rng.hash(seed, b.id().hashCode()));
         if (b.kind().isGiant() || b.isStar()) {
             return new TerrainHints(ColorFamily.GAS_BANDS, tint(ColorFamily.GAS_BANDS.base, rng), ColorFamily.GAS_BANDS.accent,
-                    0, Liquid.NONE, 0, 0, 0, 0, false, 0);
+                    0, Liquid.NONE, 0, 0, 0, 0, false, 0, 0, false);
         }
         double me = b.mass() / AstroConstants.EARTH_MASS;
         PlanetModel.Composition comp = PlanetModel.composition(me, b.density());
@@ -99,8 +103,11 @@ public record TerrainHints(ColorFamily colorFamily, int baseColor, int accentCol
         // volcanism: radiogenic heat fades with age and is larger in bigger bodies; tides add more
         double internal = Math.min(1, Math.sqrt(me) * Math.exp(-ageYears / 4e9));
         double tidalV = tidal <= 0.01 ? 0 : Math.min(1, Math.log10(tidal / 0.01) / Math.log10(IO_FLUX / 0.01));
-        double volcanism = Math.max(internal, tidalV);
-        if (icy && tidalV < 0.2) {
+        // large retrograde moons were captured, and tides heated them hard while their orbits circularised (Triton)
+        double capture = parent != null && !parent.isStar() && b.orbit() != null
+                && b.orbit().inclination() > Math.PI / 2 && b.mass() > 1e21 ? 0.5 : 0;
+        double volcanism = Math.max(internal, Math.max(tidalV, capture));
+        if (icy && tidalV < 0.2 && capture == 0) {
             volcanism *= 0.3; // ice shells: cryovolcanism at most
         }
 
@@ -138,7 +145,7 @@ public record TerrainHints(ColorFamily colorFamily, int baseColor, int accentCol
         double atm = 1 / (1 + Math.pow(p / 2.0, 1.2));
         double crater = 1e-2 * atm * Math.pow(1 - volcanism, 2) * (1 - coverage);
         if (icy) {
-            crater *= Math.exp(-12 * tidalV); // tidally heated ice shells resurface fast (Europa ≈ 60 Myr)
+            crater *= Math.exp(-12 * Math.max(tidalV, capture)); // tidally heated ice shells resurface fast (Europa ≈ 60 Myr)
         }
         if (liquid != Liquid.NONE && liquid != Liquid.LAVA) {
             crater *= 0.05; // rain and rivers wear craters down (Earth, Titan)
@@ -150,7 +157,7 @@ public record TerrainHints(ColorFamily colorFamily, int baseColor, int accentCol
         ColorFamily family;
         if (liquid == Liquid.LAVA && tidalV >= 0.9) {
             family = ColorFamily.SULFUR;
-        } else if (t > 600 && p > 1000) {
+        } else if (t > 600 && p > 1000 || liquid == Liquid.LAVA) {
             family = ColorFamily.DARK_BASALT;
         } else if (liquid == Liquid.WATER) {
             family = ColorFamily.OCEAN;
@@ -168,11 +175,18 @@ public record TerrainHints(ColorFamily colorFamily, int baseColor, int accentCol
             family = ColorFamily.DARK_BASALT;
         }
 
+        // frozen volatiles: a thin nitrogen atmosphere over a surface cold enough to freeze it
+        double volatileIce = b.composition().getOrDefault("N2", 0.0) > 0.5 && p > 0 && b.nightTempK() < NITROGEN_FREEZE
+                ? 0.2 : 0;
+        if (volatileIce > 0) {
+            crater *= 0.5; // glaciers fill and erase craters where they flow
+        }
+        boolean plumes = icy && (tidalV > 0.15 || volatileIce > 0 && fluxWm2 > 1.0);
         double g = b.surfaceGravity();
         double roughness = clamp(0.3 + crater * 20 + volcanism * 0.3 - coverage * 0.3 + (g < 2 ? 0.1 : 0));
         boolean dunes = p > 0.3 && coverage < 0.95 && liquid != Liquid.LAVA;
         return new TerrainHints(family, tint(family.base, rng), family.accent, crater, liquid, coverage, glaciation,
-                volcanism, roughness, dunes, tidal);
+                volcanism, roughness, dunes, tidal, volatileIce, plumes);
     }
 
     /** Hints for a body of the Solar System: flux from its distance to the Sun, age 4.6 Gyr. */

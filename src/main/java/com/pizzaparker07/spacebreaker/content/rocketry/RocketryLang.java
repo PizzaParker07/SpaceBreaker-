@@ -148,7 +148,7 @@ final class RocketryLang {
         l.add("hud.spacebreaker.speed", "Speed: %s", "Hız: %s");
         l.add("hud.spacebreaker.stage", "Stage %s / %s", "Kademe %s / %s");
         l.add("hud.spacebreaker.capsule", "Capsule only", "Yalnızca kapsül");
-        l.add("hud.spacebreaker.delta_v", "Δv left: %s", "Kalan Δv: %s");
+        l.add("hud.spacebreaker.delta_v", "Fuel left (Δv): %s", "Kalan yakıt (Δv): %s");
         l.add("hud.spacebreaker.fuel", "Fuel", "Yakıt");
         l.add("hud.spacebreaker.hint.launch", "Press %s to start the countdown", "Geri sayımı başlatmak için %s");
         l.add("hud.spacebreaker.hint.abort", "Press %s to abort", "Durdurmak için %s");
@@ -268,5 +268,10 @@ final class RocketryLang {
         l.add("location.spacebreaker.earth_surface", "Earth", "Dünya");
         l.add("location.spacebreaker.orbit_of", "%s orbit", "%s yörüngesi");
         l.add("body.spacebreaker.earth", "Earth", "Dünya");
+        // bodies no other area names yet (the outer system beyond Saturn)
+        // (Neptune, Triton, Pluto and Charon are named by their own world modules)
+        for (String[] b : new String[][]{{"uranus", "Uranus", "Uranüs"}, {"miranda", "Miranda", "Miranda"}}) {
+            l.add("body.spacebreaker." + b[0], b[1], b[2]);
+        }
     }
 }
