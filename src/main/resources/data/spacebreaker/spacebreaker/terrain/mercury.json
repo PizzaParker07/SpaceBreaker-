@@ -86,7 +86,7 @@
       "Name": "spacebreaker:mercury_regolith"
     },
     "ice": {
-      "Name": "spacebreaker:lunar_ice"
+      "Name": "spacebreaker:mercury_ice"
     },
     "bedrock": {
       "Name": "minecraft:bedrock"

@@ -104,12 +104,29 @@ public final class MercuryGameTests {
             if (st.is(Blocks.CHEST) && level.getBlockEntity(p) instanceof ChestBlockEntity ch && ch.getLootTable() != null) {
                 chests++;
             }
-            if (st.is(com.pizzaparker07.spacebreaker.content.moon.MoonModule.LUNAR_ICE.get())) {
+            if (st.is(com.pizzaparker07.spacebreaker.content.mercury.MercuryModule.MERCURY_ICE.get())) {
                 ice++;
             }
         }
         helper.assertTrue(chests >= 2, "office and stores chests, found " + chests);
         helper.assertTrue(ice > 300, "the mine is cut into ice, found " + ice);
+        int frost = 0;
+        int signs = 0;
+        for (BlockPos p : BlockPos.betweenClosed(bb.minX(), bb.minY(), bb.minZ(), bb.maxX(), bb.maxY(), bb.maxZ())) {
+            var be = level.getBlockEntity(p);
+            if (be instanceof net.minecraft.world.level.block.entity.DispenserBlockEntity d && d.getItem(0).is(net.minecraft.world.item.Items.POWDER_SNOW_BUCKET)) {
+                frost++;
+            }
+            if (be instanceof net.minecraft.world.level.block.entity.SignBlockEntity) {
+                signs++;
+            }
+            var st = level.getBlockState(p);
+            if (st.is(Blocks.LADDER) || st.is(Blocks.OAK_WALL_SIGN)) {
+                helper.assertTrue(st.canSurvive(level, p), "a ladder or sign hangs in the air at " + p);
+            }
+        }
+        helper.assertTrue(frost == 1, "the powder-snow trap, found " + frost);
+        helper.assertTrue(signs == 1, "the sign at the ice-sealed store, found " + signs);
         helper.succeed();
     }
 

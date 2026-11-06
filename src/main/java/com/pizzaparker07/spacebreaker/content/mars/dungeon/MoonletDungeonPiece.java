@@ -11,7 +11,6 @@ import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.LadderBlock;
 import net.minecraft.world.level.block.LanternBlock;
 import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -133,7 +132,7 @@ public class MoonletDungeonPiece extends StructurePiece {
         for (int y = fy + 1; y <= G; y++) {
             placeBlock(level, s(Blocks.AIR), 7, y, 4, box);
             placeBlock(level, wall, 7, y, 3, box);
-            placeBlock(level, Blocks.LADDER.defaultBlockState().setValue(LadderBlock.FACING, Direction.SOUTH), 7, y, 4, box);
+            DungeonBits.placeFacing(level, box, getWorldPos(7, y, 4), getWorldPos(7, y, 3), s(Blocks.LADDER), true);
         }
         placeBlock(level, Blocks.IRON_TRAPDOOR.defaultBlockState().setValue(TrapDoorBlock.HALF, Half.TOP), 7, G + 1, 4, box);
         // a marker beacon: a short mast with a reflector

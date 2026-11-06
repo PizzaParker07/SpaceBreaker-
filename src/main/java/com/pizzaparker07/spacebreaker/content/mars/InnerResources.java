@@ -35,6 +35,8 @@ public final class InnerResources {
                 .bonus(MarsModule.MARTIAN_SAND.get(), 1, 0.5F).time(80).energy(12).save(out, Spacebreaker.id("crushing/dusty_ice"));
         ProcessingRecipeBuilder.of(MachinesModule.CRUSHING).in(MoonModule.LUNAR_ICE.get()).out(Items.ICE)
                 .time(60).energy(10).save(out, Spacebreaker.id("crushing/polar_crater_ice"));
+        ProcessingRecipeBuilder.of(MachinesModule.CRUSHING).in(MercuryModule.MERCURY_ICE.get()).out(Items.ICE)
+                .bonus(MercuryModule.GRAPHITE.get(), 1, 0.1F).time(60).energy(10).save(out, Spacebreaker.id("crushing/mercury_ice"));
         ProcessingRecipeBuilder.of(MachinesModule.CRUSHING).in(VenusModule.SULFUR_CRUST.get()).out(VenusModule.SULFUR.get(), 2)
                 .time(80).energy(14).save(out, Spacebreaker.id("crushing/sulfur_crust"));
         ProcessingRecipeBuilder.of(MachinesModule.CRUSHING).in(MercuryModule.HOLLOW_DEPOSIT.get()).out(VenusModule.SULFUR.get())

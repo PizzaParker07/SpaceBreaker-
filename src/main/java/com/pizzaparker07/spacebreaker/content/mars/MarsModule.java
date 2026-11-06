@@ -291,7 +291,8 @@ public final class MarsModule implements SbModule {
         tags.item(REGOLITHS_SOLAR_WIND, com.pizzaparker07.spacebreaker.content.mercury.MercuryModule.MERCURY_REGOLITH.get().asItem(),
                 MoonModule.LUNAR_REGOLITH.get().asItem(), MoonModule.MARE_REGOLITH.get().asItem());
         tags.item(ICES_WATER, MARTIAN_ICE.get().asItem(), DUSTY_ICE.get().asItem(), net.minecraft.world.item.Items.ICE,
-                net.minecraft.world.item.Items.PACKED_ICE, MoonModule.LUNAR_ICE.get().asItem());
+                net.minecraft.world.item.Items.PACKED_ICE, MoonModule.LUNAR_ICE.get().asItem(),
+                com.pizzaparker07.spacebreaker.content.mercury.MercuryModule.MERCURY_ICE.get().asItem());
         // stairs/slabs/walls block tags are mirrored into item tags once, by the Moon module
         tags.item(ItemTags.SAND, MARTIAN_SAND.get().asItem(), OLIVINE_SAND.get().asItem());
     }

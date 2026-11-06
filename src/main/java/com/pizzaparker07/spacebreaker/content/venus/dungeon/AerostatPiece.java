@@ -107,9 +107,12 @@ public class AerostatPiece extends StructurePiece {
                 }
             }
         }
-        // door to the docking walkway on the south side
-        placeBlock(level, s(Blocks.AIR), 13, y0 + 1, z1, box);
-        placeBlock(level, s(Blocks.AIR), 13, y0 + 2, z1, box);
+        // door to the docking walkway on the south side: a sealed iron door (see valvePuzzle)
+        BlockState door = Blocks.IRON_DOOR.defaultBlockState().setValue(net.minecraft.world.level.block.DoorBlock.FACING, Direction.SOUTH);
+        placeBlock(level, door.setValue(net.minecraft.world.level.block.DoorBlock.HALF, net.minecraft.world.level.block.state.properties.DoubleBlockHalf.LOWER),
+                13, y0 + 1, z1, box);
+        placeBlock(level, door.setValue(net.minecraft.world.level.block.DoorBlock.HALF, net.minecraft.world.level.block.state.properties.DoubleBlockHalf.UPPER),
+                13, y0 + 2, z1, box);
         for (int z = z1 + 1; z <= z1 + 4; z++) {
             for (int x = 12; x <= 14; x++) {
                 placeBlock(level, x == 13 ? panel : s(Blocks.IRON_BARS), x, x == 13 ? y0 : y0 + 1, z, box);
@@ -117,6 +120,8 @@ public class AerostatPiece extends StructurePiece {
             placeBlock(level, panel, 12, y0, z, box);
             placeBlock(level, panel, 14, y0, z, box);
         }
+        valvePuzzle(level, box, y0, z1);
+        walkwayTrap(level, box, y0, z1);
         // propeller pods
         for (int x : new int[]{6, 20}) {
             placeBlock(level, s(Blocks.IRON_BLOCK), x, y0 + 3, 7, box);
@@ -143,6 +148,44 @@ public class AerostatPiece extends StructurePiece {
             if (getBlock(level, x, y, z, box).is(VenusModule.COMPOSITE_PANEL.get()) && !(x == 13 && z == z1)) {
                 placeBlock(level, s(Blocks.AIR), x, y, z, box);
             }
+        }
+    }
+
+    /**
+     * Puzzle: three gas valves (levers) above the gondola door; only the one under the sulfur-yellow mark is wired to
+     * the door. The sign tells which. The wrong ones do nothing.
+     */
+    private void valvePuzzle(WorldGenLevel level, BoundingBox box, int y0, int z1) {
+        BlockState lever = Blocks.LEVER.defaultBlockState().setValue(net.minecraft.world.level.block.LeverBlock.FACE,
+                net.minecraft.world.level.block.state.properties.AttachFace.WALL).setValue(net.minecraft.world.level.block.LeverBlock.FACING, Direction.SOUTH);
+        int[][] marks = {{11, 0}, {13, 1}, {15, 2}};
+        for (int[] m : marks) {
+            com.pizzaparker07.spacebreaker.content.mars.dungeon.DungeonBits.placeFacing(level, box, getWorldPos(m[0], y0 + 3, z1 + 1),
+                    getWorldPos(m[0], y0 + 3, z1), lever, true);
+            placeBlock(level, m[1] == 1 ? s(VenusModule.SULFUR_CRUST.get()) : m[1] == 0 ? s(Blocks.CYAN_TERRACOTTA) : s(Blocks.RED_TERRACOTTA),
+                    m[0], y0 + 4, z1, box);
+        }
+        com.pizzaparker07.spacebreaker.content.mars.dungeon.DungeonBits.placeFacing(level, box, getWorldPos(12, y0 + 2, z1 + 1),
+                getWorldPos(12, y0 + 2, z1), Blocks.OAK_WALL_SIGN.defaultBlockState(), true);
+        BlockPos sign = getWorldPos(12, y0 + 2, z1 + 1);
+        if (box.isInside(sign)) {
+            com.pizzaparker07.spacebreaker.content.mars.dungeon.DungeonBits.signText(level, sign, "aerostat_valve");
+        }
+    }
+
+    /**
+     * Trap: a plate at the end of the docking walkway drops the next floor panel (an iron trapdoor); under it hangs a
+     * small cargo net of cobweb, so a careless visitor is caught, not killed, while the acid rays come round.
+     */
+    private void walkwayTrap(WorldGenLevel level, BoundingBox box, int y0, int z1) {
+        placeBlock(level, s(Blocks.POLISHED_BLACKSTONE_PRESSURE_PLATE), 13, y0 + 1, z1 + 4, box);
+        placeBlock(level, Blocks.IRON_TRAPDOOR.defaultBlockState().setValue(net.minecraft.world.level.block.TrapDoorBlock.HALF,
+                net.minecraft.world.level.block.state.properties.Half.TOP).setValue(net.minecraft.world.level.block.TrapDoorBlock.FACING, Direction.SOUTH),
+                13, y0, z1 + 3, box);
+        placeBlock(level, s(Blocks.COBWEB), 13, y0 - 1, z1 + 3, box);
+        placeBlock(level, s(VenusModule.ENVELOPE_FABRIC.get()), 13, y0 - 2, z1 + 3, box);
+        for (int[] d : new int[][]{{12, 0}, {14, 0}, {13, -1}, {13, 1}}) {
+            placeBlock(level, s(Blocks.IRON_BARS), d[0], y0 - 1, z1 + 3 + d[1], box);
         }
     }
 

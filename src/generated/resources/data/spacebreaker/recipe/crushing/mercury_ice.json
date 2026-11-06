@@ -1,0 +1,22 @@
+{
+  "type": "spacebreaker:crushing",
+  "bonus": {
+    "count": 1,
+    "id": "spacebreaker:graphite"
+  },
+  "bonus_chance": 0.1,
+  "energy": 10,
+  "ingredients": [
+    {
+      "count": 1,
+      "item": "spacebreaker:mercury_ice"
+    }
+  ],
+  "results": [
+    {
+      "count": 1,
+      "id": "minecraft:ice"
+    }
+  ],
+  "time": 60
+}

@@ -6,7 +6,7 @@
     "targets": [
       {
         "state": {
-          "Name": "spacebreaker:lunar_ice"
+          "Name": "spacebreaker:mercury_ice"
         },
         "target": {
           "predicate_type": "minecraft:tag_match",
