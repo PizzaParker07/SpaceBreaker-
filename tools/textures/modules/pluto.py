@@ -30,6 +30,16 @@ def nitrogen_ice():
     return cv
 
 
+def stained_nitrogen_ice():
+    """Methane-stained ice of the cell troughs: dark grey-brown, glassy, a few rusty tholin specks."""
+    r = P.STAINED_N2
+    cv = ice_block(r, 13351, cracks=[[(4, 6), (5, 6), (6, 7)]])
+    rng = random.Random(13352)
+    for _ in range(4):
+        cv[rng.randrange(16), rng.randrange(16)] = P.PLUTO_THOLIN[3]
+    return cv
+
+
 def methane_frost():
     return frost(P.METHANE_FROST, 13401)
 
@@ -208,6 +218,7 @@ def export(save):
             save(footprint(base, prints(r), side), 'block', f'{name}_footprint_{side}', (22, 8, 64, None))
     save(nitrogen_ice(), 'block', 'nitrogen_ice', (200, 20, 0, None))
     save(methane_frost(), 'block', 'methane_frost', (18, 8, 64, None))
+    save(stained_nitrogen_ice(), 'block', 'stained_nitrogen_ice', (160, 20, 0, None))
     save(plutonian_ice(), 'block', 'plutonian_ice', (40, 12, 20, None))
     save(plutonian_tholin_overlay(), 'block', 'plutonian_tholin_ore_overlay', (90, 20, 0, None), wrap=False)
     save(charon_ice(), 'block', 'charon_ice', (40, 12, 20, None))

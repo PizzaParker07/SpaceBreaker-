@@ -211,3 +211,5 @@ MIRANDA_ICE = ramp('#515150', '#60605e', '#6e6e6c', '#7c7c79', '#8a8a87', '#9c9c
 BRIGHT_RIDGE = ramp('#a6aaad', '#b8bcbf', '#c8cbce', '#d6d9db', '#e3e5e6', '#eff0f1')
 DARK_BAND = ramp('#2c2c2c', '#363635', '#40403f', '#4a4a49', '#555554', '#61615f')
 CLINGER = ramp('#2a2a2b', '#3a3a3b', '#4c4c4d', '#606061', '#78787a', '#929294')
+# Stained nitrogen ice: the dark grey-brown methane-stained ice of the cell troughs, a hint of tholin red.
+STAINED_N2 = ramp('#3b3330', '#4a403b', '#574b44', '#64574e', '#72645a', '#837266')

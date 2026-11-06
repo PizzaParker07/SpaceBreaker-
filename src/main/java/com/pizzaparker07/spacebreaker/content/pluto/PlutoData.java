@@ -53,6 +53,8 @@ public final class PlutoData {
     public static final double HEART_X = 900;
     public static final double HEART_LATITUDE = 22;
     public static final double HEART_RADIUS = 650;
+    /** Surface level of the nitrogen-ice plain. */
+    public static final int HEART_LEVEL = 63;
 
     private PlutoData() {
     }
@@ -111,10 +113,12 @@ public final class PlutoData {
                 Optional.of(s(NITROGEN_ICE)), Optional.empty());
     }
 
-    /** Convection cells over the basin floor, dark debris gathered in the troughs between them. */
+    /** Convection cells over the basin floor, dark methane-stained ice gathered in the troughs between them. */
     public static CellsFeature.Config convectionCells() {
-        return new CellsFeature.Config("pillows", 46, 3, 2.5, Optional.of(s(THOLIN_REGOLITH)), Optional.of(s(NITROGEN_ICE)), HEART_X, HEART_LATITUDE,
-                HEART_RADIUS * 0.92, -90, 90);
+        // flat, gently domed cells (a block or two) and shallow troughs of methane-stained ice
+        return new CellsFeature.Config("pillows", 46, 2, 2.5, Optional.of(s(STAINED_NITROGEN_ICE)), Optional.of(s(NITROGEN_ICE)), HEART_X, HEART_LATITUDE,
+                HEART_RADIUS * 0.92, -90, 90,
+                Optional.of(HEART_LEVEL));
     }
 
     public static TerrainProfile charonProfile() {

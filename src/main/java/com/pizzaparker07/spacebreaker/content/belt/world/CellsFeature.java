@@ -33,10 +33,12 @@ import java.util.Optional;
  * @param radius      radius of the limiting disc (0 = no disc)
  * @param minLatitude cells only at or above this latitude (signed)
  * @param maxLatitude cells only at or below this latitude (signed)
+ * @param level       optional ground level the cells are levelled to first (a flat ice plain), or absent to follow the ground
  */
 public class CellsFeature extends Feature<CellsFeature.Config> {
     public record Config(String mode, double cell, double depth, double edge, Optional<BlockState> edgeBlock, Optional<BlockState> topBlock,
-                         double x, double latitude, double radius, double minLatitude, double maxLatitude) implements FeatureConfiguration {
+                         double x, double latitude, double radius, double minLatitude, double maxLatitude, Optional<Integer> level)
+            implements FeatureConfiguration {
         public static final Codec<Config> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.STRING.optionalFieldOf("mode", "pillows").forGetter(Config::mode),
                 Codec.DOUBLE.optionalFieldOf("cell", 48.0).forGetter(Config::cell),
@@ -48,7 +50,8 @@ public class CellsFeature extends Feature<CellsFeature.Config> {
                 Codec.DOUBLE.optionalFieldOf("latitude", 0.0).forGetter(Config::latitude),
                 Codec.DOUBLE.optionalFieldOf("radius", 0.0).forGetter(Config::radius),
                 Codec.DOUBLE.optionalFieldOf("min_latitude", -90.0).forGetter(Config::minLatitude),
-                Codec.DOUBLE.optionalFieldOf("max_latitude", 90.0).forGetter(Config::maxLatitude)
+                Codec.DOUBLE.optionalFieldOf("max_latitude", 90.0).forGetter(Config::maxLatitude),
+                Codec.INT.optionalFieldOf("level").forGetter(Config::level)
         ).apply(i, Config::new));
 
         public boolean dimples() {
@@ -141,6 +144,10 @@ public class CellsFeature extends Feature<CellsFeature.Config> {
                 }
                 Sample s = sample(t, cfg, x + 0.5, z + 0.5);
                 int dy = (int) Math.round(offset(cfg, s) * w);
+                if (cfg.level().isPresent()) {
+                    // level the ground first: the plain is a flat sheet of ice, the cells ride on it
+                    dy += (int) Math.round((cfg.level().get() - Columns.top(level, x, z)) * w);
+                }
                 if (dy != 0) {
                     Columns.shift(level, x, z, dy, level.getBlockState(new net.minecraft.core.BlockPos(x, Columns.top(level, x, z) - Columns.CARRY, z)));
                 }

@@ -63,6 +63,8 @@ public final class PlutoModule implements SbModule {
             BlockBehaviour.Properties.of().mapColor(MapColor.TERRACOTTA_RED).strength(0.6F).sound(SoundType.SAND));
     public static final DeferredBlock<Block> NITROGEN_ICE = KIT.block("nitrogen_ice", BlockBehaviour.Properties.of().mapColor(MapColor.SNOW)
             .strength(0.6F).friction(0.99F).sound(SoundType.GLASS).instrument(NoteBlockInstrument.CHIME));
+    public static final DeferredBlock<Block> STAINED_NITROGEN_ICE = KIT.block("stained_nitrogen_ice", BlockBehaviour.Properties.of()
+            .mapColor(MapColor.TERRACOTTA_BROWN).strength(0.6F).friction(0.98F).sound(SoundType.GLASS).instrument(NoteBlockInstrument.CHIME));
     public static final DeferredBlock<Block> METHANE_FROST = KIT.block("methane_frost", BlockBehaviour.Properties.of().mapColor(MapColor.SNOW)
             .strength(0.3F).sound(SoundType.POWDER_SNOW));
     public static final BlockKit.Family PLUTONIAN_ICE = KIT.family("plutonian_ice", MapColor.TERRACOTTA_WHITE, SoundType.STONE, 1.7F, true);
@@ -108,6 +110,7 @@ public final class PlutoModule implements SbModule {
         lang.block(PLUTONIAN_FROST, "Plutonian Frost", "Plüton Kırağısı");
         lang.block(THOLIN_REGOLITH, "Red Tholin Regolith", "Kızıl Tolin Regoliti");
         lang.block(NITROGEN_ICE, "Nitrogen Ice", "Azot Buzu");
+        lang.block(STAINED_NITROGEN_ICE, "Stained Nitrogen Ice", "Lekeli Azot Buzu");
         lang.block(METHANE_FROST, "Methane Frost", "Metan Kırağısı");
         BlockKit.familyNames(lang, PLUTONIAN_ICE, "Plutonian Bedrock Ice", "Plüton Ana Kaya Buzu");
         lang.block(PLUTONIAN_THOLIN_ORE, "Plutonian Tholin Deposit", "Plüton Tolin Yatağı");
@@ -122,7 +125,7 @@ public final class PlutoModule implements SbModule {
 
     @Override
     public void addBlockLoot(SbBlockLoot loot) {
-        for (DeferredBlock<? extends Block> b : List.of(PLUTONIAN_FROST, THOLIN_REGOLITH, NITROGEN_ICE, METHANE_FROST, CHARON_REGOLITH, CHARON_ICE,
+        for (DeferredBlock<? extends Block> b : List.of(PLUTONIAN_FROST, THOLIN_REGOLITH, NITROGEN_ICE, STAINED_NITROGEN_ICE, METHANE_FROST, CHARON_REGOLITH, CHARON_ICE,
                 RED_POLAR_FROST)) {
             loot.self(b.get());
         }
@@ -135,18 +138,18 @@ public final class PlutoModule implements SbModule {
     public void addTags(SbTags tags) {
         tags.block(BlockTags.MINEABLE_WITH_SHOVEL, PLUTONIAN_FROST.get(), THOLIN_REGOLITH.get(), METHANE_FROST.get(), CHARON_REGOLITH.get(),
                 RED_POLAR_FROST.get());
-        tags.block(BlockTags.MINEABLE_WITH_PICKAXE, NITROGEN_ICE.get(), PLUTONIAN_THOLIN_ORE.get(), CHARON_ICE.get(), AMMONIA_HYDRATE_ORE.get());
+        tags.block(BlockTags.MINEABLE_WITH_PICKAXE, NITROGEN_ICE.get(), STAINED_NITROGEN_ICE.get(), PLUTONIAN_THOLIN_ORE.get(), CHARON_ICE.get(), AMMONIA_HYDRATE_ORE.get());
         for (BlockKit.Family f : KIT.families()) {
             f.all().forEach(b -> tags.block(BlockTags.MINEABLE_WITH_PICKAXE, b.get()));
             tags.block(BlockTags.STAIRS, f.stairs().get());
             tags.block(BlockTags.SLABS, f.slab().get());
             tags.block(BlockTags.WALLS, f.wall().get());
         }
-        tags.block(BlockTags.ICE, NITROGEN_ICE.get());
+        tags.block(BlockTags.ICE, NITROGEN_ICE.get(), STAINED_NITROGEN_ICE.get());
         tags.block(BlockTags.NEEDS_STONE_TOOL, PLUTONIAN_THOLIN_ORE.get(), AMMONIA_HYDRATE_ORE.get());
         tags.block(PLUTO_STONE, PLUTONIAN_ICE.base().get());
         tags.block(CHARON_STONE, CHARON_ICE.get());
-        tags.block(PLUTONIAN_GROUND, PLUTONIAN_FROST.get(), THOLIN_REGOLITH.get(), NITROGEN_ICE.get(), METHANE_FROST.get(), PLUTONIAN_ICE.base().get(),
+        tags.block(PLUTONIAN_GROUND, PLUTONIAN_FROST.get(), THOLIN_REGOLITH.get(), NITROGEN_ICE.get(), STAINED_NITROGEN_ICE.get(), METHANE_FROST.get(), PLUTONIAN_ICE.base().get(),
                 CHARON_REGOLITH.get(), CHARON_ICE.get(), RED_POLAR_FROST.get());
         tags.block(SaturnModule.ORES_THOLIN, PLUTONIAN_THOLIN_ORE.get());
         tags.block(ORES_AMMONIA, AMMONIA_HYDRATE_ORE.get());

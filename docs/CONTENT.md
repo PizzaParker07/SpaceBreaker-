@@ -237,8 +237,8 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 ### Plüton ve Charon
 | Durum | İçerik | Not |
 |---|---|---|
-| 🎨 | Plüton `spacebreaker:pluto` | -230 °C, çok ince azot havası; kalp biçimli dev azot buzu ovası (sığ, düz tabanlı havza) ve üstünde yavaşça dönen konveksiyon hücreleri (çukurlarında kızıl tolin birikintisi); ovanın batı kıyısında su buzu dağları; ekvatorda koyu kızıl tolin ovaları, kutuplarda metan kırağısı; gökte kıpırdamadan duran Charon (3,5°), ufkun üstünde mavi pus katmanları |
-| 🎨 | Plüton blokları | Plüton Kırağısı, Kızıl Tolin Regoliti (kalıcı ayak izi), Azot Buzu (çok kaygan), Metan Kırağısı, Plüton Ana Kaya Buzu (+ merdiven, basamak, duvar), Plüton Tolin Yatağı (→ Tolin) |
+| 🎨 | Plüton `spacebreaker:pluto` | -230 °C, çok ince azot havası; kalp biçimli dev azot buzu ovası (sığ, düz tabanlı havza) ve üstünde yavaşça dönen düz, hafif kubbeli konveksiyon hücreleri (oluklarında metan lekeli koyu buz); ovanın batı kıyısında su buzu dağları; ekvatorda koyu kızıl tolin ovaları, kutuplarda metan kırağısı; gökte kıpırdamadan duran Charon (3,5°), ufkun hemen üstünde yumuşak mavi pus kuşağı ve içinde çok soluk ince katmanlar |
+| 🎨 | Plüton blokları | Plüton Kırağısı, Kızıl Tolin Regoliti (kalıcı ayak izi), Azot Buzu (çok kaygan), Lekeli Azot Buzu, Metan Kırağısı, Plüton Ana Kaya Buzu (+ merdiven, basamak, duvar), Plüton Tolin Yatağı (→ Tolin) |
 | 🎨 | Charon `spacebreaker:charon` | gri su buzu ovaları, ekvator boyunca kanyon kuşağı, kuzey kutbunda koyu kızıl kutup başlığı; gökte 7° genişliğinde, hiç kıpırdamayan Plüton |
 | 🎨 | Charon blokları | Charon Regoliti, Charon Buzu, Kızıl Kutup Kırağısı, Amonyak Hidrat Yatağı (→ Amonyak Kristali → kemik tozu) |
 | 🎨 | Zindanlar | Düşmüş İkmal İniş Aracı (Plüton, Charon) |

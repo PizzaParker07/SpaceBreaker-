@@ -2,14 +2,12 @@
   "type": "spacebreaker:polygon_cells",
   "config": {
     "cell": 46.0,
+    "depth": 2.0,
     "edge_block": {
-      "Name": "spacebreaker:tholin_regolith",
-      "Properties": {
-        "facing": "north",
-        "print": "none"
-      }
+      "Name": "spacebreaker:stained_nitrogen_ice"
     },
     "latitude": 22.0,
+    "level": 63,
     "radius": 598.0,
     "top_block": {
       "Name": "spacebreaker:nitrogen_ice"

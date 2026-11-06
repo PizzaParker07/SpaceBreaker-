@@ -150,6 +150,10 @@ public final class OuterWorlds implements SbModule {
         if (look.particles() != null) {
             fx.ambientParticle(look.particles());
         }
+        if (look.sky() == 0 && look.fog() == 0) {
+            // airless worlds share the low hum and glass chimes of the Moon
+            fx.backgroundMusic(new net.minecraft.sounds.Music(com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_MOON, 3600, 12000, false));
+        }
         return new Biome.BiomeBuilder()
                 .hasPrecipitation(false).temperature(temperature).downfall(0F)
                 .specialEffects(fx.build())

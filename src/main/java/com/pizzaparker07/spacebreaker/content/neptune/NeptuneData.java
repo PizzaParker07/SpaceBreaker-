@@ -77,7 +77,8 @@ public final class NeptuneData {
 
     /** Cantaloupe terrain: round pits a few blocks deep with sharp ridges between them, between the caps. */
     public static CellsFeature.Config cantaloupe() {
-        return new CellsFeature.Config("dimples", 30, 4, 2.0, Optional.of(s(TRITON_ICE.base())), Optional.empty(), 0, 0, 0, -44, 44);
+        return new CellsFeature.Config("dimples", 30, 4, 2.0, Optional.of(s(TRITON_ICE.base())), Optional.empty(), 0, 0, 0, -44, 44,
+                Optional.empty());
     }
 
     /** Nitrogen geysers in the polar caps, each with a dark streak of fallen dust. */

@@ -210,8 +210,16 @@ public final class JupiterGameTests {
         helper.assertTrue(level.registryAccess().registryOrThrow(Registries.STRUCTURE).containsKey(JupiterStructures.PROBE_KEY), "probe structure");
         BlockPos base = helper.absolutePos(BlockPos.ZERO).offset(7000, 0, -3000);
         ProbePiece piece = new ProbePiece(5L, base.getX(), 120, base.getZ(), Direction.SOUTH);
-        BeltGameTests.place(level, piece);
         BoundingBox bb = piece.getBoundingBox();
+        // keep the area (entity sections too) loaded for the whole test, so the serpents stay visible to queries
+        java.util.List<net.minecraft.world.level.ChunkPos> forced = new java.util.ArrayList<>();
+        for (int cx = (bb.minX() >> 4) - 1; cx <= (bb.maxX() >> 4) + 1; cx++) {
+            for (int cz = (bb.minZ() >> 4) - 1; cz <= (bb.maxZ() >> 4) + 1; cz++) {
+                level.setChunkForced(cx, cz, true);
+                forced.add(new net.minecraft.world.level.ChunkPos(cx, cz));
+            }
+        }
+        BeltGameTests.place(level, piece);
         int chests = 0;
         int water = 0;
         for (BlockPos p : BlockPos.betweenClosed(bb.minX(), bb.minY(), bb.minZ(), bb.maxX(), bb.maxY(), bb.maxZ())) {
@@ -225,8 +233,6 @@ public final class JupiterGameTests {
         }
         helper.assertTrue(chests == 2, "instrument and sample chests, found " + chests);
         helper.assertTrue(water > 30, "a pocket of liquid brine, found " + water);
-        int serpents = level.getEntitiesOfClass(GlowSerpent.class, AABB.of(bb)).size();
-        helper.assertTrue(serpents >= 2, "glow serpents live in the brine pool, found " + serpents);
         double shielded = Environment.radiation(level, piece.caveCentre());
         helper.assertTrue(shielded >= 0, "the cave is under the ice");
         ObservatoryPiece obs = new ObservatoryPiece(6L, base.getX() + 60, 120, base.getZ(), Direction.NORTH);
@@ -239,7 +245,13 @@ public final class JupiterGameTests {
             }
         }
         helper.assertTrue(obsChests == 2, "observatory logs and vault, found " + obsChests);
-        helper.succeed();
+        var area = AABB.of(bb).inflate(24);
+        helper.succeedWhen(() -> {
+            var serpents = level.getEntitiesOfClass(GlowSerpent.class, area);
+            helper.assertTrue(serpents.size() >= 2, "glow serpents live in the brine pool, found " + serpents.size());
+            serpents.forEach(net.minecraft.world.entity.Entity::discard);
+            forced.forEach(c -> level.setChunkForced(c.x, c.z, false));
+        });
     }
 
     @GameTest(template = WorldTests.EMPTY, timeoutTicks = 100)
