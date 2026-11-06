@@ -15,7 +15,14 @@ public final class SuitNetwork {
         registrar.playToClient(SuitStatusPayload.TYPE, SuitStatusPayload.CODEC,
                 (payload, ctx) -> ClientSuitState.accept(payload, ctx.player().level().getGameTime()));
         registrar.playToServer(ThrustPayload.TYPE, ThrustPayload.CODEC,
-                (payload, ctx) -> LifeSupport.data(ctx.player()).thrusting = payload.thrusting());
+                (payload, ctx) -> {
+                    var data = LifeSupport.data(ctx.player());
+                    data.thrusting = payload.thrusting();
+                    data.thrustDir = new net.minecraft.world.phys.Vec3(payload.x(), payload.y(), payload.z());
+                    if (data.thrustDir.lengthSqr() > 1.01) {
+                        data.thrustDir = data.thrustDir.normalize(); // never trust a client vector
+                    }
+                });
         registrar.playToClient(TetherPayload.TYPE, TetherPayload.CODEC,
                 (payload, ctx) -> com.pizzaparker07.spacebreaker.client.suit.TetherClient.accept(payload));
     }

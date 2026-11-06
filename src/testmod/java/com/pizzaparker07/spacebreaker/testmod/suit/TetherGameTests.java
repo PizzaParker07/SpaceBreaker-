@@ -105,4 +105,33 @@ public final class TetherGameTests {
         helper.assertTrue(d.tether.equals(back.tether) && d.tetherDim.equals(back.tetherDim), "anchor must survive save/load");
         helper.succeed();
     }
+
+    @GameTest(template = EMPTY)
+    public static void maneuveringUnitBurnsGasOnlyWhileThrustingInTheAir(GameTestHelper helper) {
+        Player p = helper.makeMockPlayer(GameType.SURVIVAL);
+        ItemStack torso = new ItemStack(SuitModule.EVA_CHESTPLATE.get());
+        com.pizzaparker07.spacebreaker.content.suit.SuitTanks.setManeuveringUnit(torso,
+                com.pizzaparker07.spacebreaker.content.suit.ManeuveringUnitItem.filled(SuitModule.MANEUVERING_UNIT.get()));
+        p.setItemSlot(net.minecraft.world.entity.EquipmentSlot.CHEST, torso);
+        p.setPos(helper.absoluteVec(new Vec3(2, 4, 2)));
+        p.setOnGround(false);
+        SurvivalData d = LifeSupport.data(p);
+        int full = com.pizzaparker07.spacebreaker.content.suit.ManeuveringUnitItem.CAPACITY;
+        com.pizzaparker07.spacebreaker.content.suit.ZeroG.tickThrust(p);
+        helper.assertTrue(fuel(p) == full, "no gas may burn without thrust");
+        d.thrusting = true;
+        d.thrustDir = new Vec3(1, 0, 0);
+        com.pizzaparker07.spacebreaker.content.suit.ZeroG.tickThrust(p); // also sends the thruster puffs
+        helper.assertTrue(fuel(p) == full - 1, "one tick of gas per tick of thrust, got " + fuel(p));
+        p.setOnGround(true);
+        com.pizzaparker07.spacebreaker.content.suit.ZeroG.tickThrust(p);
+        helper.assertTrue(fuel(p) == full - 1, "no gas may burn standing on the ground");
+        helper.succeed();
+    }
+
+    private static int fuel(Player p) {
+        ItemStack torso = com.pizzaparker07.spacebreaker.content.suit.SuitTanks.wornTorso(p);
+        return com.pizzaparker07.spacebreaker.content.suit.ManeuveringUnitItem.fuel(
+                com.pizzaparker07.spacebreaker.content.suit.SuitTanks.maneuveringUnit(torso));
+    }
 }

@@ -36,6 +36,13 @@ public final class SuitEvents {
             cachedRate(sp, data.doseRateMsvDay);
         }
         LifeSupport.tick(player, LifeSupport.Env.at(player, lastRate(sp)));
+        boolean magnetised = Environment.gravityFactor(player.level()) < 1.0 && Gravity.magnetised(player);
+        if (magnetised && !data.wasMagnetised) {
+            // the boots grip: a short metallic clank
+            player.level().playSound(null, player.blockPosition(), net.minecraft.sounds.SoundEvents.IRON_TRAPDOOR_CLOSE,
+                    net.minecraft.sounds.SoundSource.PLAYERS, 0.35F, 1.7F);
+        }
+        data.wasMagnetised = magnetised;
         if (player.tickCount % 5 == 0) {
             sendStatus(sp, data);
         }
@@ -90,6 +97,12 @@ public final class SuitEvents {
         }
         if (LifeSupport.hazards()) {
             flags |= SuitStatusPayload.HAZARDS;
+        }
+        if (data.wasMagnetised) {
+            flags |= SuitStatusPayload.MAGNETISED;
+        }
+        if (Tether.anchor(player).isPresent()) {
+            flags |= SuitStatusPayload.TETHERED;
         }
         ItemStack mmu = torso.isEmpty() ? ItemStack.EMPTY : SuitTanks.maneuveringUnit(torso);
         if (!mmu.isEmpty()) {

@@ -45,6 +45,10 @@ public final class SurvivalData {
     public double pressureKpa = 101.325;
     public boolean breathable = true;
     public boolean thrusting;
+    /** World direction of the Maneuvering Unit push, for the thruster puffs. */
+    public net.minecraft.world.phys.Vec3 thrustDir = net.minecraft.world.phys.Vec3.ZERO;
+    /** Last magnetic boots state, for the clank when they grip. */
+    public boolean wasMagnetised;
     /** Last known seal state, for the sealed / unsealed feedback (null until the first check). */
     public Boolean wasSealed;
 

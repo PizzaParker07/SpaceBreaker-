@@ -7,7 +7,6 @@ import com.pizzaparker07.spacebreaker.content.suit.net.SuitStatusPayload;
 import com.pizzaparker07.spacebreaker.content.suit.net.ThrustPayload;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
@@ -26,6 +25,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 @EventBusSubscriber(modid = Spacebreaker.MOD_ID, value = Dist.CLIENT)
 public final class ZeroGControls {
     private static boolean thrusting;
+    private static Vec3 sentDir = Vec3.ZERO;
 
     private ZeroGControls() {
     }
@@ -38,6 +38,7 @@ public final class ZeroGControls {
             return;
         }
         boolean thrust = false;
+        Vec3 dir = Vec3.ZERO;
         if (!p.isSpectator() && !p.getAbilities().flying && !p.isPassenger()) {
             SuitStatusPayload status = ClientSuitState.get(mc.level.getGameTime());
             boolean mmu = status != null && status.has(SuitStatusPayload.MMU) && status.mmuFuel() > 0;
@@ -56,6 +57,7 @@ public final class ZeroGControls {
                 if (push.lengthSqr() > 1e-4) {
                     p.setDeltaMovement(p.getDeltaMovement().add(push.normalize().scale(a)));
                     thrust = mmu;
+                    dir = push.normalize();
                 } else if (mmu) {
                     p.setDeltaMovement(p.getDeltaMovement().scale(0.9)); // attitude/position hold
                 }
@@ -63,15 +65,14 @@ public final class ZeroGControls {
                 p.setDeltaMovement(p.getDeltaMovement().add(0, 0.05 * boost, 0));
                 p.resetFallDistance();
                 thrust = true;
-            }
-            if (thrust && p.tickCount % 2 == 0) {
-                Vec3 back = Vec3.directionFromRotation(0, p.getYRot()).scale(-0.45);
-                mc.level.addParticle(ParticleTypes.CLOUD, p.getX() + back.x, p.getY() + 0.9, p.getZ() + back.z, 0, -0.05, 0);
+                dir = new Vec3(0, 1, 0);
             }
         }
-        if (thrust != thrusting) {
+        // the server burns the gas and shows the puffs; tell it when the thrust starts, stops or turns
+        if (thrust != thrusting || (thrust && dir.dot(sentDir) < 0.9)) {
             thrusting = thrust;
-            PacketDistributor.sendToServer(new ThrustPayload(thrust));
+            sentDir = dir;
+            PacketDistributor.sendToServer(new ThrustPayload(thrust, (float) dir.x, (float) dir.y, (float) dir.z));
         }
     }
 }

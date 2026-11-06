@@ -20,7 +20,7 @@ public record SuitStatusPayload(int oxygen, int capacity, int breath, float body
                                 float doseRate, float pressureKpa, float gravity, int mmuFuel, int integrity, int flags,
                                 int ratingMinC, int ratingMaxC, int shieldingPercent)
         implements CustomPacketPayload {
-    public static final int SEALED = 1, BREATHABLE = 2, HAZARDS = 4, MMU = 8, BOOSTER = 16;
+    public static final int SEALED = 1, BREATHABLE = 2, HAZARDS = 4, MMU = 8, BOOSTER = 16, MAGNETISED = 32, TETHERED = 64;
     public static final Type<SuitStatusPayload> TYPE = new Type<>(Spacebreaker.id("suit_status"));
     public static final StreamCodec<RegistryFriendlyByteBuf, SuitStatusPayload> CODEC = StreamCodec.of(
             (buf, p) -> {

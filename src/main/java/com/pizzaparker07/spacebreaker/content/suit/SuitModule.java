@@ -281,6 +281,8 @@ public final class SuitModule implements SbModule {
                 "Kemerden bir bloğa %s blokluk halat: uzaklaşıp sürüklenemezsin");
         lang.add("tooltip.spacebreaker.safety_tether.hint", "Use on a block to clip on, use again to unclip",
                 "Takmak için bir bloğa kullan, çözmek için yeniden kullan");
+        lang.add("hud.spacebreaker.mag", "MAG", "MANYETİK");
+        lang.add("hud.spacebreaker.tether", "TETHER", "HALAT");
         lang.add("message.spacebreaker.tether.clipped", "Tether clipped · %s blocks of line", "Halat takıldı · %s blok uzunluk");
         lang.add("message.spacebreaker.tether.released", "Tether unclipped", "Halat çözüldü");
         lang.add("message.spacebreaker.tether.anchor_lost", "Tether anchor lost!", "Halatın bağlı olduğu blok gitti!");
