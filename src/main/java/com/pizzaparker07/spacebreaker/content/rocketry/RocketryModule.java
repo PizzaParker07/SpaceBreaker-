@@ -174,6 +174,8 @@ public final class RocketryModule implements SbModule {
         modBus.addListener(RocketryModule::capabilities);
         modBus.addListener(RocketryModule::payloads);
         NeoForge.EVENT_BUS.addListener(RocketryModule::onMount);
+        NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.server.ServerStartedEvent e) ->
+                com.pizzaparker07.spacebreaker.content.rocketry.nav.AstroTransferModel.install(e.getServer().registryAccess()));
         SbTabs.SPACEFLIGHT.icon(CREW_CAPSULE);
         SbTabs.SPACEFLIGHT.add(ROCKET_ASSEMBLER_ITEM).add(LAUNCH_PAD_ITEM).add(FLAME_TRENCH_ITEM).add(SERVICE_TOWER_ITEM)
                 .add(CREW_ARM_ITEM).add(FUEL_UMBILICAL_ITEM).add(LAUNCH_CONSOLE_ITEM);
@@ -197,6 +199,7 @@ public final class RocketryModule implements SbModule {
 
     private static void capabilities(RegisterCapabilitiesEvent event) {
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, FUEL_UMBILICAL_BE.get(), (be, side) -> be.handler());
+        event.registerEntity(Capabilities.FluidHandler.ENTITY, ROCKET_ENTITY.get(), (rocket, ctx) -> new com.pizzaparker07.spacebreaker.content.rocketry.entity.RocketFluidHandler(rocket));
     }
 
     private static void payloads(RegisterPayloadHandlersEvent event) {
@@ -207,7 +210,8 @@ public final class RocketryModule implements SbModule {
     private static void onMount(EntityMountEvent event) {
         if (event.isDismounting() && event.getEntityBeingMounted() instanceof RocketEntity rocket
                 && !event.getEntityMounting().isRemoved() && event.getEntityMounting().isAlive()
-                && !rocket.isRemoved() && !rocket.canDismount()) {
+                && !rocket.isRemoved() && !rocket.canDismount()
+                && !(event.getEntityMounting() instanceof net.minecraft.world.entity.player.Player p && (p.isCreative() || p.isSpectator()))) {
             event.setCanceled(true);
         }
     }

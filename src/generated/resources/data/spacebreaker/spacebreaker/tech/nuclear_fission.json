@@ -5,9 +5,5 @@
     "spacebreaker:advanced_electronics",
     "spacebreaker:cryogenics"
   ],
-  "tier": 3,
-  "unlocks": [
-    "spacebreaker:rtg",
-    "spacebreaker:fission_reactor"
-  ]
+  "tier": 3
 }

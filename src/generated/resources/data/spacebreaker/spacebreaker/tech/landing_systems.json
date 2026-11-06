@@ -1,6 +1,6 @@
 {
   "category": "propulsion",
-  "icon": "minecraft:feather",
+  "icon": "spacebreaker:landing_legs",
   "requires": [
     "spacebreaker:vacuum_engines",
     "spacebreaker:guidance_systems"

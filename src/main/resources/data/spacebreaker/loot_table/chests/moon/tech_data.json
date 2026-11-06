@@ -1,4 +1,44 @@
 {
   "type": "minecraft:chest",
-  "pools": []
+  "random_sequence": "spacebreaker:chests/moon/tech_data",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item", "weight": 4, "name": "spacebreaker:tech_disk",
+          "functions": [{"function": "spacebreaker:random_tech_disk", "techs": [
+            "spacebreaker:lunar_surveying", "spacebreaker:field_geology", "spacebreaker:pressurised_modules",
+            "spacebreaker:oxygen_storage", "spacebreaker:water_recycling", "spacebreaker:solar_power",
+            "spacebreaker:rovers", "spacebreaker:thermal_regulation",
+            "spacebreaker:suit_mk2"]}]
+        },
+        {
+          "type": "minecraft:item", "weight": 3, "name": "spacebreaker:tech_disk",
+          "functions": [{"function": "spacebreaker:random_tech_disk", "samples": ["spacebreaker:moon"]}]
+        },
+        {
+          "type": "minecraft:item", "weight": 2, "name": "spacebreaker:tech_disk",
+          "functions": [{"function": "spacebreaker:random_tech_disk", "categories": ["propulsion", "life_support", "construction"], "min_tier": 1, "max_tier": 2}]
+        },
+        {
+          "type": "minecraft:item", "weight": 1, "name": "spacebreaker:tech_disk",
+          "functions": [{"function": "spacebreaker:random_tech_disk", "categories": ["astronomy", "exploration", "industry"], "min_tier": 2, "max_tier": 2}]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {"type": "minecraft:empty", "weight": 2},
+        {"type": "minecraft:item", "weight": 2, "name": "spacebreaker:field_sample",
+          "functions": [{"function": "minecraft:set_components", "components": {"spacebreaker:sample": "spacebreaker:moon"}},
+                        {"function": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 1, "max": 3}}]},
+        {"type": "minecraft:item", "weight": 1, "name": "spacebreaker:experiment_data",
+          "functions": [{"function": "minecraft:set_components", "components": {"spacebreaker:sample": "spacebreaker:orbital_flight"}}]},
+        {"type": "minecraft:item", "weight": 1, "name": "spacebreaker:field_sample",
+          "functions": [{"function": "minecraft:set_components", "components": {"spacebreaker:sample": "spacebreaker:meteorite"}}]}
+      ]
+    }
+  ]
 }

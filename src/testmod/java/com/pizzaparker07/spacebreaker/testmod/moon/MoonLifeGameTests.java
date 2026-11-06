@@ -106,8 +106,13 @@ public final class MoonLifeGameTests {
                 MoonLoot.LAVA_TUBE_PROBE)) {
             helper.assertTrue(server.reloadableRegistries().getLootTable(key) != LootTable.EMPTY, "loot table " + key.location());
         }
-        helper.assertTrue(server.reloadableRegistries().getKeys(Registries.LOOT_TABLE).contains(MoonLoot.TECH_DATA.location()),
-                "tech data hook table must exist for the research disks");
+        var params = new net.minecraft.world.level.storage.loot.LootParams.Builder(helper.getLevel())
+                .withParameter(net.minecraft.world.level.storage.loot.parameters.LootContextParams.ORIGIN, helper.absoluteVec(net.minecraft.world.phys.Vec3.ZERO))
+                .create(net.minecraft.world.level.storage.loot.parameters.LootContextParamSets.CHEST);
+        var disks = server.reloadableRegistries().getLootTable(MoonLoot.TECH_DATA).getRandomItems(params);
+        // Every roll yields a tech disk; the second pool may add field samples or experiment data.
+        helper.assertTrue(disks.stream().anyMatch(st -> net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(st.getItem())
+                .equals(Spacebreaker.id("tech_disk"))), "Moon tech data must roll a tech disk, got " + disks);
         helper.succeed();
     }
 

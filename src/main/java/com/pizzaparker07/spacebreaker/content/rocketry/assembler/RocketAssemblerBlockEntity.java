@@ -55,9 +55,21 @@ public class RocketAssemblerBlockEntity extends BlockEntity implements MenuProvi
             return false;
         }
         for (int i = 0; i < AssemblerSlots.OUTPUT; i++) {
+            ItemStack part = items.getStackInSlot(i);
+            if (!part.isEmpty() && !com.pizzaparker07.spacebreaker.content.rocketry.part.RocketTech.unlocked(player, part)) {
+                var tech = com.pizzaparker07.spacebreaker.content.rocketry.part.RocketTech.techFor(player, part);
+                player.displayClientMessage(tech == null ? Component.translatable("message.spacebreaker.assembler.wrong_part")
+                        : com.pizzaparker07.spacebreaker.content.rocketry.part.RocketTech.requires(tech), true);
+                return false;
+            }
+        }
+        for (int i = 0; i < AssemblerSlots.OUTPUT; i++) {
             items.extractItem(i, 1, false);
         }
         items.setStackInSlot(AssemblerSlots.OUTPUT, RocketItem.of(build.design()));
+        if (player instanceof net.minecraft.server.level.ServerPlayer sp) {
+            com.pizzaparker07.spacebreaker.content.research.Milestones.award(sp, com.pizzaparker07.spacebreaker.content.research.Milestones.FIRST_ROCKET);
+        }
         level.playSound(null, worldPosition, net.minecraft.sounds.SoundEvents.SMITHING_TABLE_USE, net.minecraft.sounds.SoundSource.BLOCKS, 1F, 0.9F);
         return true;
     }

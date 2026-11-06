@@ -1,0 +1,22 @@
+{
+  "chapter": "rocketry",
+  "title": "Fırlatma Rampası",
+  "icon": "spacebreaker:launch_pad",
+  "order": 3,
+  "requires_tech": "spacebreaker:basic_rocketry",
+  "pages": [
+    {
+      "items": [
+        "spacebreaker:launch_pad",
+        "spacebreaker:flame_trench",
+        "spacebreaker:service_tower",
+        "spacebreaker:crew_access_arm",
+        "spacebreaker:fuel_umbilical",
+        "spacebreaker:launch_control_console"
+      ]
+    },
+    {
+      "text": "On altı rampa plakasından bir halkanın içine 3×3 alev kanalı ızgarası döşe, yanına mürettebat erişim kolu ve yakıt hattı olan bir servis kulesi dik, yakına bir fırlatma kontrol konsolu koy. Konsol rampayı kontrol eder ve geri sayar."
+    }
+  ]
+}

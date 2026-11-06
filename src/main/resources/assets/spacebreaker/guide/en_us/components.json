@@ -1,0 +1,28 @@
+{
+  "chapter": "materials",
+  "title": "Components",
+  "icon": "spacebreaker:basic_circuit",
+  "order": 4,
+  "pages": [
+    {
+      "items": [
+        "spacebreaker:basic_circuit",
+        "spacebreaker:advanced_circuit",
+        "spacebreaker:electric_motor",
+        "spacebreaker:silicon_wafer",
+        "spacebreaker:solar_cell",
+        "spacebreaker:plastic_sheet",
+        "spacebreaker:gold_foil_insulation",
+        "spacebreaker:orange_foam_insulation",
+        "spacebreaker:ablative_shield_plate",
+        "spacebreaker:silicone_seal"
+      ]
+    },
+    {
+      "text": "Machines and rocket parts are built from components. Most of them come from the fabricator; silicon comes from quartz or sand in the arc furnace and is pressed into wafers."
+    },
+    {
+      "recipe": "spacebreaker:basic_circuit"
+    }
+  ]
+}

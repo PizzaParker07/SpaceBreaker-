@@ -1,0 +1,22 @@
+{
+  "chapter": "machines",
+  "title": "Pumpjack and Refinery",
+  "icon": "spacebreaker:pumpjack",
+  "order": 3,
+  "pages": [
+    {
+      "items": [
+        "spacebreaker:pumpjack",
+        "spacebreaker:refinery",
+        "spacebreaker:fluid_pipe",
+        "spacebreaker:fluid_tank"
+      ]
+    },
+    {
+      "text": "Both are big machines that need free space around them. Put the pumpjack over an oil seep, pipe the crude oil to the refinery and collect RP-1 in a tank. Sneak-use the end of a pipe to make it pull from a block."
+    },
+    {
+      "recipe": "spacebreaker:pumpjack"
+    }
+  ]
+}

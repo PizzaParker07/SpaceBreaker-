@@ -519,26 +519,25 @@ def grid_icon(rows, pal):
     return cv
 
 
-def cylinder_icon(top_y, bottom_y, x0=3, x1=12, body=WHITE, outline=None, bands=(), dark_band=(), roll=False):
-    """A short upright cylinder seen slightly from above: elliptic top, shaded body, rounded bottom."""
+def cylinder_icon(top_y, bottom_y, x0=3, x1=12, body=WHITE, outline=None, bands=(), dark_band=()):
+    """A short upright cylinder seen slightly from above: elliptic top, shaded body (3 tones), seams."""
     cv = Canvas()
     outline = outline or body[0]
     w = x1 - x0 + 1
     for y in range(top_y + 1, bottom_y):
         for x in range(x0, x1 + 1):
             t = (x - x0) / max(1, w - 1)
-            v = 1 - 1.6 * (t - 0.3) ** 2
-            idx = 3 + int(round(4 * max(0, min(1, v))))
-            c = body[min(len(body) - 1, idx)]
+            idx = 7 if 0.12 < t < 0.45 else (6 if t < 0.75 else 5)
+            c = body[idx]
             if y in bands:
-                c = body[max(1, idx - 2)]
-            if y in dark_band or (roll and y < (top_y + bottom_y) // 2 and t > 0.5):
-                c = CARBON[2 + int(round(2 * max(0, min(1, v))))]
+                c = body[3]
+            if y in dark_band:
+                c = CARBON[3] if idx >= 6 else CARBON[2]
             cv[x, y] = c
-    # top ellipse (2 px tall)
+    # top ellipse (2 px tall), seen from above
     for x in range(x0 + 1, x1):
-        cv[x, top_y] = ALU[6] if x < (x0 + x1) // 2 else ALU[5]
-        cv[x, top_y + 1] = ALU[4] if x < (x0 + x1) // 2 else ALU[3]
+        cv[x, top_y] = body[6] if x < (x0 + x1) // 2 + 2 else body[5]
+        cv[x, top_y + 1] = body[4]
     for y in range(top_y + 1, bottom_y):
         cv[x0 - 1, y] = outline
         cv[x1 + 1, y] = outline
@@ -558,7 +557,7 @@ def icons():
     out = {}
     out['fuel_tank_small'] = cylinder_icon(4, 12, bands=(5,), outline=WHITE[0])
     out['fuel_tank_medium'] = cylinder_icon(2, 14, bands=(3, 8), dark_band=(10, 11), outline=WHITE[0])
-    out['fuel_tank_large'] = cylinder_icon(1, 15, bands=(2, 8), roll=True, outline=WHITE[0])
+    out['fuel_tank_large'] = cylinder_icon(1, 15, bands=(8, 13), dark_band=(3, 4, 5), outline=WHITE[0])
     w, s, c, k = WHITE, STEEL, COPPER, CARBON
     out['kerosene_engine'] = grid_icon([
         "................",
@@ -577,7 +576,7 @@ def icons():
         "...cCCcccccdo...",
         "...DDDDDDDDDD...",
         "................",
-    ], {'o': k[0], 'K': k[5], 'k': k[3], 'd': k[1], 'S': s[6], 's': s[4], 'p': s[3], 'P': s[5],
+    ], {'o': k[0], 'K': k[5], 'k': k[3], 'd': k[1], 'S': s[6], 's': s[4], 'p': s[4], 'P': s[6],
         'C': c[6], 'c': c[4], 'D': c[1]})
     out['vacuum_engine'] = grid_icon([
         "..oooooooooooo..",
@@ -596,8 +595,8 @@ def icons():
         ".nNNnnnnnnnnno..",
         ".DDDDDDDDDDDDD..",
         "................",
-    ], {'o': k[0], 'K': k[5], 'k': k[3], 'S': s[6], 's': s[4], 'p': s[3], 'P': s[5],
-        'C': c[6], 'c': c[4], 'N': NIOBIUM[6], 'n': NIOBIUM[4], 'D': NIOBIUM[1]})
+    ], {'o': k[0], 'K': k[5], 'k': k[3], 'S': s[6], 's': s[4], 'p': s[4], 'P': s[6],
+        'C': c[6], 'c': c[4], 'N': NIOBIUM[6], 'n': NIOBIUM[4], 'D': k[0]})
     out['decoupler'] = grid_icon([
         "................", "................", "................", "................",
         "................",
@@ -609,7 +608,7 @@ def icons():
         "................", "................", "................", "................",
         "................", "................",
     ], {'o': s[0], 'S': s[6], 's': s[4], 'd': s[2], 'y': HAZARD[3], 'K': k[2]})
-    out['interstage'] = cylinder_icon(2, 14, body=CARBON + [CARBON[-1]], outline=CARBON[0], bands=(6, 7))
+    out['interstage'] = cylinder_icon(2, 14, body=CARBON + [CARBON[-1]], outline=CARBON[0], bands=(6,))
     out['heat_shield'] = grid_icon([
         "................", "................", "................", "................",
         "................", "................",
@@ -757,8 +756,8 @@ def icons():
         "..ooooSssSoooo..",
         "......cCcc......",
         ".....oFFffo.....",
-    ], {'o': w[0], 'W': w[7], 'w': w[5], 'g': w[3], 'K': k[4], 'k': k[2], 'V': GLASS[3], 'A': ALU[5], 'a': ALU[3],
-        'S': s[5], 's': s[3], 'C': COPPER[5], 'c': COPPER[3], 'F': (232, 170, 70), 'f': (204, 106, 44)})
+    ], {'o': w[0], 'W': w[7], 'w': w[5], 'g': w[3], 'K': k[4], 'k': k[2], 'V': k[2], 'A': w[5], 'a': w[3],
+        'S': w[3], 's': k[2], 'C': COPPER[5], 'c': k[2], 'F': (232, 170, 70), 'f': (204, 106, 44)})
     return out
 
 
@@ -1073,7 +1072,7 @@ def propellant_cartridge():
         ".....oooooo.....",
         "................",
         "................",
-    ], {'o': WHITE[0], 'W': WHITE[7], 'w': WHITE[5], 'g': WHITE[3], 'S': STEEL[6], 's': STEEL[4],
+    ], {'o': WHITE[0], 'W': WHITE[7], 'w': WHITE[5], 'g': WHITE[3], 'S': STEEL[6], 's': WHITE[3],
         'A': P.BRASS[5], 'a': P.BRASS[3], 'C': P.OXYGEN_CYAN[5], 'c': P.OXYGEN_CYAN[3]})
 
 
@@ -1178,51 +1177,79 @@ def _in_poly(x, y, pts):
     return c
 
 
-def earth_map(w=256, h=128):
+def smooth_noise(w, h, seed, cell, passes=1):
+    """Seamless-ish smooth noise: a coarse clumpy grid upscaled bicubically (no blocky steps)."""
+    from PIL import Image as _Img
+    gw, gh = max(2, w // cell), max(2, h // cell)
+    g = clustered(gw, gh, seed, passes=passes)
+    im = _Img.new('F', (gw, gh))
+    im.putdata([v for row in g for v in row])
+    big = im.resize((w, h), _Img.BICUBIC)
+    px = big.load()
+    return [[min(1.0, max(0.0, px[x, y])) for x in range(w)] for y in range(h)]
+
+
+def lon_of(x, w):
+    return (x + 0.5) / w * 360 - 180
+
+
+def earth_map(w=2048, h=1024):
+    """Equirectangular Earth: continents rasterised from the outlines above, coasts roughened by noise,
+    biome colours by latitude (forest, steppe, desert), ice caps, shallow seas along the coasts."""
+    from PIL import Image as _Img, ImageDraw, ImageFilter
+    big = _Img.new('L', (w, h), 0)
+    d = ImageDraw.Draw(big)
+    for poly in CONTINENTS:
+        d.polygon([((lon + 180) / 360 * w, (90 - lat) / 180 * h) for lon, lat in poly], fill=255)
+    n = smooth_noise(w, h, 301, 32, passes=1)
+    fine = smooth_noise(w, h, 302, 6, passes=1)
+    mask = big.load()
+    shelf = big.filter(ImageFilter.MaxFilter(13)).load()
     cv = Canvas(w, h)
-    n = clustered(w, h, 301, passes=2)
-    fine = clustered(w, h, 302, passes=0)
     for y in range(h):
         lat = 90 - (y + 0.5) / h * 180
+        a = abs(lat)
         for x in range(w):
-            lon = (x + 0.5) / w * 360 - 180
-            # wobble the coast a little so it is not made of straight lines
-            wl = lon + (n[y][x] - 0.5) * 6
-            wt = lat + (n[(y + 17) % h][x] - 0.5) * 5
-            land = any(_in_poly(wl, wt, poly) for poly in CONTINENTS)
-            a = abs(lat)
-            if a > 72 or (land and a > 62 and n[y][x] > 0.4):
-                cv[x, y] = ICE[1 if n[y][x] > 0.5 else 2] if land or a > 76 else OCEAN[3]
-                if not land and a <= 76:
-                    cv[x, y] = OCEAN[3]
+            nv = n[y][x]
+            fv = fine[y][x]
+            # roughen the coastline by sampling the mask a little off to the side
+            sx = int(x + (nv - 0.5) * 18 + (fv - 0.5) * 6) % w
+            sy = min(h - 1, max(0, int(y + (fv - 0.5) * 12)))
+            land = mask[sx, sy] > 127
+            if a > 82 - nv * 4 or (land and (lat < -62 or (lat > 60 and -60 < lon_of(x, w) < -18))):
+                cv[x, y] = ICE[1 if fv > 0.5 else 2]
                 continue
             if land:
-                # deserts in the subtropics, forests near the equator and mid latitudes
-                desert = 15 < a < 35 and n[y][x] > 0.35
+                a = abs(lat) + (fv - 0.5) * 8 + (nv - 0.5) * 10   # wobble the climate belts
+                if a > 60:
+                    cv[x, y] = LAND[3] if fv > 0.45 else LAND[4]       # tundra
+                    continue
+                desert = 14 < a < 34 and nv > 0.33
                 if desert:
-                    v = 4 + (1 if fine[y][x] > 0.5 else 0) + (1 if fine[y][x] > 0.85 else 0)
+                    v = 4 + (1 if fv > 0.5 else 0) + (1 if fv > 0.85 else 0)
                 else:
-                    v = (0 if a < 12 else 1) + (1 if n[y][x] > 0.55 else 0) + (1 if a > 45 and fine[y][x] > 0.6 else 0)
+                    v = (0 if a < 14 else 1) + (1 if nv > 0.55 else 0) + (1 if a > 45 and fv > 0.6 else 0)
                 cv[x, y] = LAND[min(6, v)]
             else:
-                coast = any(_in_poly(wl + dx, wt + dy, poly) for dx, dy in ((4, 0), (-4, 0), (0, 3), (0, -3)) for poly in CONTINENTS)
-                cv[x, y] = OCEAN[3 if coast else (1 if n[y][x] < 0.5 else 2)]
+                coast = shelf[sx, sy] > 127
+                cv[x, y] = OCEAN[3 if coast else (1 if nv < 0.45 else 2)]
     return cv
 
 
-def earth_clouds(w=256, h=128):
+def earth_clouds(w=2048, h=1024):
     cv = Canvas(w, h)
-    big = clustered(w, h, 311, passes=3)
-    small = clustered(w, h, 312, passes=1)
+    big = smooth_noise(w, h, 311, 20, passes=1)
+    small = smooth_noise(w, h, 312, 6, passes=1)
     for y in range(h):
         lat = 90 - (y + 0.5) / h * 180
-        band = 0.12 * math.cos(math.radians(lat) * 3)  # cloudier storm belts
+        band = 0.035 * math.cos(math.radians(lat) * 3)  # slightly cloudier storm belts
         for x in range(w):
+            # bilinear-ish: smooth large swirls plus fine edges
             v = big[y][x] * 0.7 + small[y][x] * 0.3 + band
-            if v > 0.62:
-                a = 235 if v > 0.72 else 170
+            if v > 0.73:
+                a = 225 if v > 0.82 else 150
                 cv[x, y] = (*WHITE[7], a)
-            elif v > 0.56:
+            elif v > 0.695:
                 cv[x, y] = (*WHITE[5], 90)
     return cv
 
@@ -1231,7 +1258,7 @@ def earth_limb():
     cv = Canvas(16, 16)
     for y in range(16):
         for x in range(16):
-            cv[x, y] = (110, 170, 240, 70)
+            cv[x, y] = (120, 185, 255, 255)
     return cv
 
 
@@ -1240,7 +1267,7 @@ MARIA = [((-20, 20), 22, 14), ((15, 25), 14, 10), ((30, 5), 12, 8), ((-35, -15),
          ((-55, 10), 18, 26), ((0, -5), 9, 6), ((25, -15), 10, 7), ((40, -45), 6, 4)]
 
 
-def moon_map(w=256, h=128):
+def moon_map(w=512, h=256):
     cv = Canvas(w, h)
     n = clustered(w, h, 321, passes=2)
     g = clustered(w, h, 322, passes=0)
@@ -1468,12 +1495,12 @@ def export_facility(save):
     save(parachute_canopy(), 'block/rocket', 'parachute_canopy')
     save(propellant_cartridge(), 'item', 'propellant_cartridge')
     save(emergency_beacon(), 'item', 'emergency_beacon')
-    save(earth_map(), 'environment', 'earth')
+    save(earth_map(), 'environment', 'orbit_earth')
     save(earth_clouds(), 'environment', 'orbit_earth_clouds')
-    save(earth_limb(), 'environment', 'earth_limb')
-    save(moon_map(), 'environment', 'moon')
-    save(disc(earth_map, 256, 128, limb=(110, 170, 240, 120)), 'environment', 'earth_disc')
-    save(disc(moon_map, 256, 128), 'environment', 'moon_disc')
+    save(earth_limb(), 'environment', 'orbit_earth_limb')
+    save(moon_map(), 'environment', 'orbit_moon')
+    save(disc(earth_map, 2048, 1024, limb=(110, 170, 240, 120)), 'environment', 'orbit_earth_disc')
+    save(disc(moon_map, 512, 256), 'environment', 'orbit_moon_disc')
     save(rocket_plume(), 'entity', 'rocket_plume')
     save(gui_assembler(), 'gui', 'rocket_assembler')
     save(gui_console(), 'gui', 'launch_console')

@@ -1,0 +1,33 @@
+{
+  "parent": "spacebreaker:main/first_ingot",
+  "criteria": {
+    "done": {
+      "conditions": {
+        "items": [
+          {
+            "items": "spacebreaker:steel_ingot"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.spacebreaker.steel.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "spacebreaker:steel_ingot"
+    },
+    "title": {
+      "translate": "advancements.spacebreaker.steel.title"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

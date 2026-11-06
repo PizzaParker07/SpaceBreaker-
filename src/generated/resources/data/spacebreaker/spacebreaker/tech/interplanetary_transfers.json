@@ -7,8 +7,5 @@
   "samples": [
     "spacebreaker:moon"
   ],
-  "tier": 2,
-  "unlocks": [
-    "spacebreaker:launch_window_planner"
-  ]
+  "tier": 2
 }

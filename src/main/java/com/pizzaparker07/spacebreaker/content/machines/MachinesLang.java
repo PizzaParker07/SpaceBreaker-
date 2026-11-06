@@ -40,11 +40,15 @@ final class MachinesLang {
         lang.add("gui.spacebreaker.status.no_oxygen", "No oxygen: fire needs air", "Oksijen yok: yanma için hava gerekir");
         lang.add("gui.spacebreaker.status.no_oil", "No crude oil below", "Altında ham petrol yok");
         lang.add("gui.spacebreaker.status.no_fuel", "No fuel", "Yakıt yok");
+        lang.add("gui.spacebreaker.status.locked", "Needs research", "Araştırma gerekli");
+        lang.add("gui.spacebreaker.requires", "Requires: %s", "Gerekli: %s");
         lang.add("gui.spacebreaker.status.incomplete", "Structure blocked", "Yapı engellenmiş");
         lang.add("message.spacebreaker.pipe_extract_on", "Pipe now pulls from this side", "Boru artık bu taraftan çekiyor");
         lang.add("message.spacebreaker.pipe_extract_off", "Pipe no longer pulls from this side", "Boru artık bu taraftan çekmiyor");
         lang.add("tooltip.spacebreaker.cable", "Carries up to %s FE/t", "En fazla %s FE/t taşır");
         lang.add("tooltip.spacebreaker.pipe", "Carries up to %s mB/t. Sneak-use an end to pull from a block", "En fazla %s mB/t taşır. Bir bloktan çekmek için eğilip ucuna tıkla");
+        lang.add("tooltip.spacebreaker.electrolyzer", "Hydrogen leaves on the left, oxygen on the right (seen from the front)",
+                "Hidrojen soldan, oksijen sağdan çıkar (önden bakınca)");
         lang.add("tooltip.spacebreaker.generator", "%s FE/t. Needs breathable air", "%s FE/t. Solunabilir hava gerekir");
     }
 

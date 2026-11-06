@@ -5,8 +5,5 @@
     "spacebreaker:lunar_surveying",
     "spacebreaker:electronics"
   ],
-  "tier": 2,
-  "unlocks": [
-    "spacebreaker:rover"
-  ]
+  "tier": 2
 }

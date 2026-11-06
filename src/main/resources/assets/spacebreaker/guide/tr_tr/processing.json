@@ -1,0 +1,24 @@
+{
+  "chapter": "machines",
+  "title": "İşleme",
+  "icon": "spacebreaker:press",
+  "order": 2,
+  "pages": [
+    {
+      "items": [
+        "spacebreaker:crusher",
+        "spacebreaker:arc_furnace",
+        "spacebreaker:press",
+        "spacebreaker:plate_press_die",
+        "spacebreaker:wire_press_die",
+        "spacebreaker:rod_press_die"
+      ]
+    },
+    {
+      "text": "Kırıcı cevherleri toza öğütür, bire iki. Elektrik ark fırını tozu ergitir ve alaşım yapar. Pres külçeleri levha, tel ve çubuğa dönüştürür; hangisi olacağına taktığın kalıp karar verir ve kalıp hiç tükenmez."
+    },
+    {
+      "recipe": "spacebreaker:press"
+    }
+  ]
+}

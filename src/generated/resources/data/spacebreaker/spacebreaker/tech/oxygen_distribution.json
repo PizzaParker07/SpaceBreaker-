@@ -1,6 +1,6 @@
 {
   "category": "life_support",
-  "icon": "minecraft:glass",
+  "icon": "spacebreaker:oxygen_distributor",
   "requires": [
     "spacebreaker:airlocks",
     "spacebreaker:electrolysis"

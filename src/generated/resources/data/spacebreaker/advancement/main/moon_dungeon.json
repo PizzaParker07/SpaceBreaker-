@@ -1,0 +1,32 @@
+{
+  "parent": "spacebreaker:main/moon_landing",
+  "criteria": {
+    "done": {
+      "conditions": {
+        "world": "spacebreaker:moon"
+      },
+      "trigger": "spacebreaker:dungeon_discovered"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.spacebreaker.moon_dungeon.description"
+    },
+    "icon": {
+      "components": {
+        "spacebreaker:tech": "spacebreaker:lunar_surveying"
+      },
+      "count": 1,
+      "id": "spacebreaker:tech_disk"
+    },
+    "title": {
+      "translate": "advancements.spacebreaker.moon_dungeon.title"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

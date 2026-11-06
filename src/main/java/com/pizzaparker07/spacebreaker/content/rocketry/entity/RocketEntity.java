@@ -453,9 +453,6 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         if (layout().stages().isEmpty() || !layout().problems().isEmpty()) {
             return Component.translatable("message.spacebreaker.launch.no_stage");
         }
-        if (getPassengers().stream().noneMatch(p -> p instanceof Player)) {
-            return Component.translatable("message.spacebreaker.launch.no_crew");
-        }
         Location here = location();
         Location to = launchTarget(here);
         if (to == null) {
@@ -595,10 +592,6 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
     private void tickCountdown() {
         int t = timer() - 1;
         setTimer(t);
-        if (getPassengers().stream().noneMatch(p -> p instanceof Player)) {
-            abortCountdown(null);
-            return;
-        }
         if (t % 20 == 0 && t > 0) {
             level().playSound(null, blockPosition(), SoundEvents.NOTE_BLOCK_BIT.value(), SoundSource.NEUTRAL, 1.5F, t <= IGNITION_TICKS ? 1.4F : 1.0F);
         }
@@ -639,6 +632,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         setTimer(0);
         setBurning(true);
         coast = 0;
+        award(com.pizzaparker07.spacebreaker.content.research.Milestones.LAUNCH);
         LaunchPad.Result pad = LaunchPad.padUnder(level(), position());
         if (pad != null) {
             LaunchPad.onLiftoff(level(), pad);
@@ -799,6 +793,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
             notifyCrew(Component.translatable("message.spacebreaker.warn.no_legs").withStyle(ChatFormatting.GOLD));
         }
         if (to.orbit()) {
+            award(com.pizzaparker07.spacebreaker.content.research.Milestones.ORBIT);
             notifyCrew(Component.translatable("message.spacebreaker.orbit.arrived", Component.translatable(to.translationKey())));
         }
     }
@@ -873,6 +868,11 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
             }
             notifyCrew(Component.translatable("message.spacebreaker.landing.hard").withStyle(ChatFormatting.GOLD));
         } else {
+            if (location() == Location.MOON_SURFACE) {
+                award(com.pizzaparker07.spacebreaker.content.research.Milestones.MOON_LANDING);
+            } else if (location() == Location.EARTH_SURFACE && isCapsuleOnly()) {
+                award(com.pizzaparker07.spacebreaker.content.research.Milestones.SAFE_RETURN);
+            }
             notifyCrew(Component.translatable("message.spacebreaker.landing.ok", Component.translatable(location().translationKey())).withStyle(ChatFormatting.GREEN));
         }
         if (location() != Location.EARTH_SURFACE && !MissionPlanner.canReturnHome(layout(), activeStage(), fuel, location(), SbConfig.realism())) {
@@ -950,6 +950,15 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         sl.addFreshEntity(spent);
     }
 
+    /** Research milestones (advancements) for everyone aboard. */
+    private void award(String milestone) {
+        for (Entity p : getPassengers()) {
+            if (p instanceof ServerPlayer sp) {
+                com.pizzaparker07.spacebreaker.content.research.Milestones.award(sp, milestone);
+            }
+        }
+    }
+
     private void notifyCrew(Component message) {
         for (Entity p : getPassengers()) {
             if (p instanceof Player player) {
@@ -968,6 +977,17 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         setBurning(false);
         setState(FlightState.TRANSFER);
         setTimer(TRANSFER_TICKS / 2);
+    }
+
+    /** Puts the rocket straight into a flight phase (scripted scenes, tests and admin tools). */
+    public void stageScene(FlightState state, int timer, int activeStage, boolean burning) {
+        setActiveStage(Math.min(activeStage, layout().stages().size()));
+        setState(state);
+        setTimer(timer);
+        setBurning(burning);
+        if (state == FlightState.DESCENT || state == FlightState.REENTRY || state == FlightState.PARACHUTE) {
+            setDeltaMovement(0, state == FlightState.REENTRY ? -3.2 : -0.5, 0);
+        }
     }
 
     public void setHome(double x, double z) {

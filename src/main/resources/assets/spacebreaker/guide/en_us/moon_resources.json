@@ -1,0 +1,22 @@
+{
+  "chapter": "moon",
+  "title": "Lunar Resources",
+  "icon": "spacebreaker:lunar_ice",
+  "order": 2,
+  "requires_tech": "spacebreaker:basic_rocketry",
+  "pages": [
+    {
+      "items": [
+        "spacebreaker:icy_regolith",
+        "spacebreaker:lunar_ice",
+        "spacebreaker:kreep_ore",
+        "spacebreaker:kreep_fragment",
+        "spacebreaker:meteoric_iron",
+        "spacebreaker:raw_ilmenite"
+      ]
+    },
+    {
+      "text": "Ice hides in the permanently dark floors of polar craters. KREEP holds rare earths and thorium. Meteoric iron from old impacts breaks into raw iron."
+    }
+  ]
+}

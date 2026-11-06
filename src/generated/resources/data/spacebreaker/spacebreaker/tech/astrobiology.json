@@ -9,8 +9,5 @@
     "spacebreaker:mars",
     "spacebreaker:venus"
   ],
-  "tier": 2,
-  "unlocks": [
-    "spacebreaker:life_detector"
-  ]
+  "tier": 2
 }

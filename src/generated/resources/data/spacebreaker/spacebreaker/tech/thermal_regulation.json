@@ -1,10 +1,11 @@
 {
   "category": "life_support",
-  "icon": "minecraft:leather_chestplate",
+  "icon": "spacebreaker:gold_foil_insulation",
   "requires": [
     "spacebreaker:pressure_suits"
   ],
   "unlocks": [
-    "spacebreaker:cooling_garment"
+    "spacebreaker:gold_foil_insulation",
+    "spacebreaker:orange_foam_insulation"
   ]
 }

@@ -1,0 +1,18 @@
+{
+  "chapter": "rocketry",
+  "title": "Uçuş",
+  "icon": "spacebreaker:emergency_beacon",
+  "order": 4,
+  "requires_tech": "spacebreaker:basic_rocketry",
+  "pages": [
+    {
+      "text": "Roketi kanalın üstüne dik, yakıt hattından yakıtını doldur, bin ve konsoldan fırlat. Yörüngede nereye gideceğini seçmek için yıldız haritasını aç. Ay'a inmek iniş bacakları, eve dönmek ısı kalkanı ve paraşüt ister."
+    },
+    {
+      "items": [
+        "spacebreaker:emergency_beacon"
+      ],
+      "text": "Mahsur mu kaldın? Acil dönüş işareti seni eve götürecek bir kapsül çağırır."
+    }
+  ]
+}

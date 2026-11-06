@@ -1,6 +1,6 @@
 {
   "category": "industry",
-  "icon": "spacebreaker:aluminum_plate",
+  "icon": "spacebreaker:press",
   "requires": [
     "spacebreaker:aluminium_smelting"
   ],
@@ -9,6 +9,8 @@
   ],
   "unlocks": [
     "spacebreaker:press",
-    "spacebreaker:aluminum_plate"
+    "spacebreaker:plate_press_die",
+    "spacebreaker:wire_press_die",
+    "spacebreaker:rod_press_die"
   ]
 }

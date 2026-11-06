@@ -4,8 +4,5 @@
   "requires": [
     "spacebreaker:nuclear_fission"
   ],
-  "tier": 3,
-  "unlocks": [
-    "spacebreaker:fusion_reactor"
-  ]
+  "tier": 3
 }

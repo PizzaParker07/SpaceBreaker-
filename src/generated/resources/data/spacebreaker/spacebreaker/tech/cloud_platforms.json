@@ -7,8 +7,5 @@
   "samples": [
     "spacebreaker:venus"
   ],
-  "tier": 2,
-  "unlocks": [
-    "spacebreaker:cloud_platform"
-  ]
+  "tier": 2
 }

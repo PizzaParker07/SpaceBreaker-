@@ -207,6 +207,43 @@ public final class MoonGameTests {
         helper.succeed();
     }
 
+    @GameTest(template = EMPTY, timeoutTicks = 400)
+    public static void moonDungeonsGenerateNaturally(GameTestHelper helper) {
+        long seed = 20261106L;
+        PlanetChunkGenerator gen = moonGenerator(helper, seed);
+        var access = helper.getLevel().registryAccess();
+        var state = net.minecraft.world.level.levelgen.RandomState.create(net.minecraft.world.level.levelgen.NoiseGeneratorSettings.dummy(),
+                access.lookupOrThrow(net.minecraft.core.registries.Registries.NOISE), seed);
+        var structureState = gen.createState(access.lookupOrThrow(net.minecraft.core.registries.Registries.STRUCTURE_SET), state, seed);
+        LevelHeightAccessor height = LevelHeightAccessor.create(-64, 384);
+        var structures = access.registryOrThrow(net.minecraft.core.registries.Registries.STRUCTURE);
+        for (var key : List.of(com.pizzaparker07.spacebreaker.content.moon.dungeon.MoonStructures.OUTPOST_KEY,
+                com.pizzaparker07.spacebreaker.content.moon.dungeon.MoonStructures.LAVA_TUBE_KEY)) {
+            var holder = structures.getHolderOrThrow(key);
+            var placements = structureState.getPlacementsForStructure(holder);
+            helper.assertTrue(!placements.isEmpty(), key.location() + " has no placement on the Moon");
+            int candidates = 0;
+            int valid = 0;
+            for (int cx = -80; cx <= 80 && valid < 3; cx++) {
+                for (int cz = -80; cz <= 80 && valid < 3; cz++) {
+                    if (!placements.get(0).isStructureChunk(structureState, cx, cz)) {
+                        continue;
+                    }
+                    candidates++;
+                    var ctx = new net.minecraft.world.level.levelgen.structure.Structure.GenerationContext(access, gen, gen.getBiomeSource(), state,
+                            helper.getLevel().getStructureManager(), seed, new net.minecraft.world.level.ChunkPos(cx, cz), height,
+                            b -> holder.value().biomes().contains(b));
+                    if (holder.value().findValidGenerationPoint(ctx).isPresent()) {
+                        valid++;
+                    }
+                }
+            }
+            helper.assertTrue(candidates > 0, key.location() + ": no candidate chunks");
+            helper.assertTrue(valid > 0, key.location() + ": " + candidates + " candidate chunks but none valid");
+        }
+        helper.succeed();
+    }
+
     // ------------------------------------------------------------------ time and sky
 
     @GameTest(template = EMPTY)

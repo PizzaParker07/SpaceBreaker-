@@ -1,0 +1,15 @@
+{
+  "chapter": "dungeons",
+  "title": "Ay'daki Harabeler",
+  "icon": "spacebreaker:survey_drone_spawn_egg",
+  "order": 1,
+  "requires_tech": "spacebreaker:basic_rocketry",
+  "pages": [
+    {
+      "text": "Terk edilmiş keşif karakolları ovalarda durur: merkez modül, laboratuvar, depo, dron hangarı ve hava kilidi. Antik lav tüpleri, denizlerde çökmüş tavanlardan açılır; derinlerinde eski bir sondanın enkazı vardır."
+    },
+    {
+      "text": "Laboratuvarları ve sondaları sonraki adımlar için teknoloji diskleri saklar: yaşam desteği, inşaat ve Ay'ın kendisi."
+    }
+  ]
+}

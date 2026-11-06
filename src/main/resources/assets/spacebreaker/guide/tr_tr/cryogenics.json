@@ -1,0 +1,28 @@
+{
+  "chapter": "machines",
+  "title": "Kriyojenik",
+  "icon": "spacebreaker:cryogenic_liquefier",
+  "order": 4,
+  "pages": [
+    {
+      "items": [
+        "spacebreaker:electrolyzer",
+        "spacebreaker:cryogenic_liquefier",
+        "spacebreaker:cryogenic_tank",
+        "spacebreaker:pressurized_tank",
+        "spacebreaker:gas_pipe",
+        "spacebreaker:cryogenic_canister"
+      ]
+    },
+    {
+      "text": "Elektroliz ünitesi suyu oksijen ve hidrojen gazına ayırır. Kriyojenik sıvılaştırıcı gazları sıvı oksijene (−183 °C) ve sıvı hidrojene (−253 °C) dönüştürür. Onları kriyojenik tank ya da kaplarda tut: açığa dökülürse kaynayıp uçarlar."
+    },
+    {
+      "items": [
+        "spacebreaker:liquid_oxygen_bucket",
+        "spacebreaker:liquid_hydrogen_bucket",
+        "spacebreaker:liquid_methane_bucket"
+      ]
+    }
+  ]
+}

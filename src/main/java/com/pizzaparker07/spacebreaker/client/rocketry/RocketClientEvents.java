@@ -29,6 +29,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 public final class RocketClientEvents {
     private static ResourceKey<Level> lastDimension;
     private static float shake;
+    private static final java.util.Map<Integer, EngineSound> SOUNDS = new java.util.HashMap<>();
 
     private RocketClientEvents() {
     }
@@ -67,6 +68,14 @@ public final class RocketClientEvents {
             }
             effects(level, rocket, quality);
             if (rocket.burning()) {
+                EngineSound snd = SOUNDS.get(rocket.getId());
+                if (snd == null || snd.isStopped()) {
+                    snd = new EngineSound(rocket);
+                    SOUNDS.put(rocket.getId(), snd);
+                    mc.getSoundManager().play(snd);
+                }
+            }
+            if (rocket.burning()) {
                 boolean riding = rocket == ridden;
                 double ground = level.getHeight(Heightmap.Types.MOTION_BLOCKING, rocket.getBlockX(), rocket.getBlockZ());
                 boolean nearGround = rocket.getY() - ground < 60 && rocket.location() == Location.EARTH_SURFACE;
@@ -87,6 +96,7 @@ public final class RocketClientEvents {
             }
         }
         shake = Mth.lerp(0.2F, shake, targetShake);
+        SOUNDS.values().removeIf(EngineSound::isStopped);
     }
 
     private static void effects(ClientLevel level, RocketEntity rocket, int quality) {
@@ -149,6 +159,26 @@ public final class RocketClientEvents {
                 }
             }
         }
+    }
+
+    @SubscribeEvent
+    static void tooltip(net.neoforged.neoforge.event.entity.player.ItemTooltipEvent event) {
+        var player = event.getEntity();
+        if (player == null || !(event.getItemStack().getItem() instanceof com.pizzaparker07.spacebreaker.content.rocketry.item.RocketPartItem)) {
+            return;
+        }
+        if (!com.pizzaparker07.spacebreaker.content.rocketry.part.RocketTech.unlocked(player, event.getItemStack())) {
+            var tech = com.pizzaparker07.spacebreaker.content.rocketry.part.RocketTech.techFor(player, event.getItemStack());
+            if (tech != null) {
+                event.getToolTip().add(com.pizzaparker07.spacebreaker.content.rocketry.part.RocketTech.requires(tech)
+                        .copy().withStyle(net.minecraft.ChatFormatting.RED));
+            }
+        }
+    }
+
+    @SubscribeEvent
+    static void login(net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent.LoggingIn event) {
+        com.pizzaparker07.spacebreaker.content.rocketry.nav.AstroTransferModel.install(event.getPlayer().level().registryAccess());
     }
 
     @SubscribeEvent

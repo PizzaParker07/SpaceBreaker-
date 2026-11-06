@@ -58,6 +58,8 @@ public final class DungeonsModule implements SbModule {
     @Override
     public void addTranslations(Lang lang) {
         lang.add(DungeonDef.nameKey(Dungeons.EARTH_OBSERVATORY), "Abandoned Observatory", "Terk Edilmiş Gözlemevi");
+        lang.add(DungeonDef.nameKey(Spacebreaker.id("survey_outpost")), "Abandoned Survey Outpost", "Terk Edilmiş Keşif Karakolu");
+        lang.add(DungeonDef.nameKey(Spacebreaker.id("lava_tube")), "Ancient Lava Tube", "Antik Lav Tüpü");
         lang.add("message.spacebreaker.dungeon_discovered", "Discovered: %s", "Keşfedildi: %s");
     }
 }

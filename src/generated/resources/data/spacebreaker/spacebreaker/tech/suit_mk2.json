@@ -8,8 +8,5 @@
   "samples": [
     "spacebreaker:mars"
   ],
-  "tier": 2,
-  "unlocks": [
-    "spacebreaker:eva_suit_mk2"
-  ]
+  "tier": 2
 }

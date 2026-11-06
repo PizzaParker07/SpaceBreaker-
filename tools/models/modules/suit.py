@@ -32,10 +32,11 @@ def tank_model(name, top):
         'textures': {'tex': i('oxygen_tank_model'), 'particle': i('oxygen_tank_model')},
         'elements': els,
         'display': {
-            'thirdperson_righthand': {'rotation': [75, 0, 0], 'translation': [0, 2.5, 1.5], 'scale': [0.5, 0.5, 0.5]},
-            'thirdperson_lefthand': {'rotation': [75, 0, 0], 'translation': [0, 2.5, 1.5], 'scale': [0.5, 0.5, 0.5]},
-            'firstperson_righthand': {'rotation': [0, 40, 0], 'translation': [1, 2.5, 0], 'scale': [0.34, 0.34, 0.34]},
-            'firstperson_lefthand': {'rotation': [0, 220, 0], 'translation': [1, 2.5, 0], 'scale': [0.34, 0.34, 0.34]},
+            'thirdperson_righthand': {'rotation': [75, 0, 0], 'translation': [0, 2.5, 1.5], 'scale': [0.4, 0.4, 0.4]},
+            'thirdperson_lefthand': {'rotation': [75, 0, 0], 'translation': [0, 2.5, 1.5], 'scale': [0.4, 0.4, 0.4]},
+            # about the size of a held lantern: small and low in the corner like vanilla items
+            'firstperson_righthand': {'rotation': [0, 45, 0], 'translation': [0, 0.5, 0], 'scale': [0.26, 0.26, 0.26]},
+            'firstperson_lefthand': {'rotation': [0, 225, 0], 'translation': [0, 0.5, 0], 'scale': [0.26, 0.26, 0.26]},
             'ground': {'rotation': [0, 0, 0], 'translation': [0, 2, 0], 'scale': [0.5, 0.5, 0.5]},
             'fixed': {'rotation': [0, 0, 0], 'translation': [0, -1, 0], 'scale': [0.8, 0.8, 0.8]},
             'head': {'rotation': [0, 0, 0], 'translation': [0, 13, 7], 'scale': [1, 1, 1]},

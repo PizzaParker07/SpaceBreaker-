@@ -37,9 +37,11 @@ final class SkyDraw {
         RenderSystem.defaultBlendFunc();
         RenderSystem.depthMask(false);
         RenderSystem.setShaderColor(1F, 1F, 1F, alpha);
+        RenderSystem.disableCull();
         stars.bind();
         stars.drawWithShader(modelView, projection, GameRenderer.getPositionColorShader());
         VertexBuffer.unbind();
+        RenderSystem.enableCull();
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
     }
 
@@ -54,7 +56,7 @@ final class SkyDraw {
             }
             float inv = Mth.invSqrt(d);
             Vector3f dir = new Vector3f(x * inv, y * inv, z * inv).mul(100F);
-            float size = 0.12F + rng.nextFloat() * rng.nextFloat() * 0.35F;
+            float size = 0.17F + rng.nextFloat() * rng.nextFloat() * 0.38F;
             int shade = 150 + rng.nextInt(106);
             // a few warm and a few cool stars
             float tint = rng.nextFloat();
@@ -135,6 +137,12 @@ final class SkyDraw {
      */
     static void planet(Matrix4f modelView, ResourceLocation texture, Vector3f center, float radius, float spin, Vector3f sun,
                        float night, float alpha, boolean additive) {
+        planet(modelView, texture, center, radius, spin, sun, night, alpha, additive, false);
+    }
+
+    /** @param rim fade the sphere towards its centre so only a thin glowing limb remains (atmosphere halo) */
+    static void planet(Matrix4f modelView, ResourceLocation texture, Vector3f center, float radius, float spin, Vector3f sun,
+                       float night, float alpha, boolean additive, boolean rim) {
         RenderSystem.enableBlend();
         if (additive) {
             RenderSystem.blendFunc(com.mojang.blaze3d.platform.GlStateManager.SourceFactor.SRC_ALPHA, com.mojang.blaze3d.platform.GlStateManager.DestFactor.ONE);
@@ -148,28 +156,41 @@ final class SkyDraw {
         BufferBuilder b = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
         for (int j = 0; j < lat; j++) {
             for (int i = 0; i < lon; i++) {
-                vert(b, modelView, center, radius, i, j, lon, lat, spin, s, night, alpha);
-                vert(b, modelView, center, radius, i, j + 1, lon, lat, spin, s, night, alpha);
-                vert(b, modelView, center, radius, i + 1, j + 1, lon, lat, spin, s, night, alpha);
-                vert(b, modelView, center, radius, i + 1, j, lon, lat, spin, s, night, alpha);
+                // counter-clockwise seen from outside, so back-face culling hides the far side
+                vert(b, modelView, center, radius, i, j, lon, lat, spin, s, night, alpha, rim);
+                vert(b, modelView, center, radius, i + 1, j, lon, lat, spin, s, night, alpha, rim);
+                vert(b, modelView, center, radius, i + 1, j + 1, lon, lat, spin, s, night, alpha, rim);
+                vert(b, modelView, center, radius, i, j + 1, lon, lat, spin, s, night, alpha, rim);
             }
         }
+        RenderSystem.enableCull();
         BufferUploader.drawWithShader(b.buildOrThrow());
         RenderSystem.defaultBlendFunc();
     }
 
     private static void vert(BufferBuilder b, Matrix4f m, Vector3f c, float r, int i, int j, int lon, int lat, float spin, Vector3f sun,
-                             float night, float alpha) {
+                             float night, float alpha, boolean rim) {
         float theta = (float) Math.PI * j / lat;               // 0 = north pole
         float phi = (float) (Math.PI * 2) * i / lon;
         float sy = Mth.cos(theta);
         float sr = Mth.sin(theta);
-        float nx = sr * Mth.cos(phi), nz = sr * Mth.sin(phi);
-        float light = nx * sun.x + sy * sun.y + nz * sun.z;
+        // body-local normal, then rotated 90 degrees about x so the poles lie on the horizon and we look down on the tropics
+        float lx = sr * Mth.cos(phi), ly = sy, lz = sr * Mth.sin(phi);
+        float nx = lx, nyw = -lz, nz = ly;
+        float light = nx * sun.x + nyw * sun.y + nz * sun.z;
         float shade = night + (1 - night) * Mth.clamp(light * 1.6F + 0.15F, 0F, 1F);
         int col = (int) (Mth.clamp(shade, 0, 1) * 255);
         float u = (float) i / lon + spin;
         float v = (float) j / lat;
-        b.addVertex(m, c.x + nx * r, c.y + sy * r, c.z + nz * r).setUv(u, v).setColor(col, col, col, (int) (alpha * 255));
+        float a = alpha;
+        if (rim) {
+            // camera at the origin: fresnel term from the angle between normal and line of sight
+            float px = c.x + nx * r, py = c.y + nyw * r, pz = c.z + nz * r;
+            float inv = Mth.invSqrt(px * px + py * py + pz * pz);
+            float facing = Math.abs(nx * px * inv + nyw * py * inv + nz * pz * inv);
+            float edge = 1 - facing;
+            a *= edge * edge * edge * Mth.clamp(0.35F + light, 0.15F, 1F);
+        }
+        b.addVertex(m, c.x + nx * r, c.y + nyw * r, c.z + nz * r).setUv(u, v).setColor(col, col, col, (int) (Mth.clamp(a, 0, 1) * 255));
     }
 }

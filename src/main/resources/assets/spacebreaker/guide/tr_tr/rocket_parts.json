@@ -1,0 +1,31 @@
+{
+  "chapter": "rocketry",
+  "title": "Roket Parçaları",
+  "icon": "spacebreaker:kerosene_engine",
+  "order": 1,
+  "requires_tech": "spacebreaker:basic_rocketry",
+  "pages": [
+    {
+      "items": [
+        "spacebreaker:nose_cone",
+        "spacebreaker:crew_capsule",
+        "spacebreaker:heat_shield",
+        "spacebreaker:parachute",
+        "spacebreaker:fuel_tank_small",
+        "spacebreaker:fuel_tank_medium",
+        "spacebreaker:fuel_tank_large",
+        "spacebreaker:kerosene_engine",
+        "spacebreaker:vacuum_engine",
+        "spacebreaker:decoupler",
+        "spacebreaker:interstage",
+        "spacebreaker:fins",
+        "spacebreaker:grid_fins",
+        "spacebreaker:landing_legs",
+        "spacebreaker:rcs_thrusters"
+      ]
+    },
+    {
+      "text": "Her kademe, altta bir motor ve üstünde yakıt tanklarından oluşur. Kademeleri ayırıcılar ya da ara kademeler ayırır. Kapsül mürettebatı taşır ve ısı kalkanının üstüne oturur, en üstte paraşüt bulunur. Kanatçıklar, iniş bacakları ve manevra iticileri yana takılır."
+    }
+  ]
+}

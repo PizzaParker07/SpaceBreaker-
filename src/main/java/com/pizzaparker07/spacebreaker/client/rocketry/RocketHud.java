@@ -75,35 +75,35 @@ public final class RocketHud {
         }
     }
 
-    /** Orange-red glow creeping in from the edges, with streaks rushing up past the window. */
+    /** Orange-red glow over the whole window, white-hot from below (the shield), with streaks rushing up past. */
     private static void plasma(GuiGraphics g, int w, int h, float heat, float time) {
         if (heat <= 0.01F) {
             return;
         }
-        int bands = 24;
-        for (int i = 0; i < bands; i++) {
-            float f = 1 - i / (float) bands;
-            int a = (int) (heat * 150 * f * f);
-            int col = (a << 24) | (i < bands / 3 ? 0xFFB040 : 0xFF5A1E);
-            int inset = (int) (i * (Math.min(w, h) * 0.32F) / bands);
-            // bottom (the shield is below us), sides, and a fainter top
-            g.fill(0, h - inset - 3, w, h - inset, col);
-            g.fill(inset, 0, inset + 2, h, col);
-            g.fill(w - inset - 2, 0, w - inset, h, col);
-            g.fill(0, inset, w, inset + 1, ((int) (a * 0.5F) << 24) | 0xFF7A30);
+        float flicker = 0.9F + 0.1F * Mth.sin(time * 1.7F);
+        g.fill(0, 0, w, h, ((int) (heat * flicker * 70) << 24) | 0xFF6A20);
+        // glow rising from the bottom edge
+        int glow = (int) (h * 0.55F);
+        g.fillGradient(0, h - glow, w, h, 0x00FF8A30, ((int) (heat * flicker * 200) << 24) | 0xFFB050);
+        g.fillGradient(0, 0, w, (int) (h * 0.25F), ((int) (heat * 110) << 24) | 0xFF5A1E, 0x00FF5A1E);
+        // side glow, one column per pixel so there are no bands
+        int side = (int) (w * 0.22F);
+        for (int i = 0; i < side; i++) {
+            float f = 1 - i / (float) side;
+            int a = (int) (heat * flicker * 150 * f * f);
+            int col = (a << 24) | 0xFF7A30;
+            g.fill(i, 0, i + 1, h, col);
+            g.fill(w - i - 1, 0, w - i, h, col);
         }
         RandomSource rng = RandomSource.create(42);
-        for (int i = 0; i < 40; i++) {
+        for (int i = 0; i < 70; i++) {
             float x = rng.nextFloat() * w;
-            float speed = 6 + rng.nextFloat() * 10;
-            float len = 10 + rng.nextFloat() * 40;
+            float speed = 8 + rng.nextFloat() * 14;
+            float len = 14 + rng.nextFloat() * 50;
             float y = h - ((time * speed + rng.nextFloat() * h) % (h + len));
-            int a = (int) (heat * (90 + rng.nextInt(120)));
-            boolean edge = x < w * 0.25F || x > w * 0.75F;
-            if (!edge) {
-                a /= 3;
-            }
-            g.fill((int) x, (int) y, (int) x + 1, (int) (y + len), (a << 24) | 0xFFE0A0);
+            boolean edge = x < w * 0.3F || x > w * 0.7F;
+            int a = (int) (heat * (edge ? 140 + rng.nextInt(110) : 40 + rng.nextInt(60)));
+            g.fill((int) x, (int) y, (int) x + 1, (int) (y + len), (a << 24) | 0xFFE6B0);
         }
     }
 

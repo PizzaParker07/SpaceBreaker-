@@ -1,0 +1,33 @@
+{
+  "parent": "spacebreaker:main/steel",
+  "criteria": {
+    "done": {
+      "conditions": {
+        "items": [
+          {
+            "items": "spacebreaker:rp1_bucket"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.spacebreaker.rp1.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "spacebreaker:rp1_bucket"
+    },
+    "title": {
+      "translate": "advancements.spacebreaker.rp1.title"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

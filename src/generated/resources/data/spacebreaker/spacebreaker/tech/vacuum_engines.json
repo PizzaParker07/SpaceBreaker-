@@ -1,6 +1,6 @@
 {
   "category": "propulsion",
-  "icon": "minecraft:cauldron",
+  "icon": "spacebreaker:vacuum_engine",
   "requires": [
     "spacebreaker:staging"
   ],

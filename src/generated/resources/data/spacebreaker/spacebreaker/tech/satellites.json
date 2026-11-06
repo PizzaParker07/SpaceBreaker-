@@ -8,8 +8,5 @@
   "samples": [
     "spacebreaker:orbital_flight"
   ],
-  "tier": 2,
-  "unlocks": [
-    "spacebreaker:satellite"
-  ]
+  "tier": 2
 }

@@ -42,6 +42,9 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
         super.render(g, mouseX, mouseY, partialTick);
         renderTooltip(g, mouseX, mouseY);
         renderGaugeTooltips(g, mouseX, mouseY);
+        if (menu.data.get(6) == 7 && mouseX >= leftPos + 8 && mouseX < leftPos + imageWidth - 8 && mouseY >= topPos + 4 && mouseY < topPos + 15) {
+            g.renderTooltip(font, requiresLine(), mouseX, mouseY);
+        }
     }
 
     @Override
@@ -120,11 +123,30 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
     @Override
     protected void renderLabels(GuiGraphics g, int mouseX, int mouseY) {
         super.renderLabels(g, mouseX, mouseY);
-        String key = MachineBlockEntity.statusKey(menu.data.get(6));
+        int status = menu.data.get(6);
+        String key = MachineBlockEntity.statusKey(status);
         if (key != null) {
             Component c = Component.translatable(key);
-            g.drawString(font, c, imageWidth - 8 - font.width(c), titleLabelY, 0xB02E26, false);
+            if (status == 7) {
+                c = requiresLine();
+            }
+            int room = imageWidth - 16 - font.width(title) - 6;
+            String text = font.plainSubstrByWidth(c.getString(), room);
+            g.drawString(font, text, imageWidth - 8 - font.width(text), titleLabelY, 0xB02E26, false);
         }
+    }
+
+    /** "Requires: <technology names>" for a machine its owner has not researched yet. */
+    private Component requiresLine() {
+        var req = menu.machine.techRequirement();
+        net.minecraft.network.chat.MutableComponent names = Component.empty();
+        for (int i = 0; i < req.techs().size(); i++) {
+            if (i > 0) {
+                names.append(" / ");
+            }
+            names.append(Component.translatable(com.pizzaparker07.spacebreaker.core.tech.TechNode.nameKey(req.techs().get(i))));
+        }
+        return Component.translatable("gui.spacebreaker.requires", names);
     }
 
     private void renderGaugeTooltips(GuiGraphics g, int mouseX, int mouseY) {

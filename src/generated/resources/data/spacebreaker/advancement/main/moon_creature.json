@@ -1,0 +1,37 @@
+{
+  "parent": "spacebreaker:main/moon_landing",
+  "criteria": {
+    "done": {
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type": "spacebreaker:regolith_tick"
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:player_killed_entity"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.spacebreaker.moon_creature.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "spacebreaker:kreep_fragment"
+    },
+    "title": {
+      "translate": "advancements.spacebreaker.moon_creature.title"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

@@ -4,8 +4,5 @@
   "requires": [
     "spacebreaker:oxygen_distribution"
   ],
-  "tier": 2,
-  "unlocks": [
-    "spacebreaker:water_recycler"
-  ]
+  "tier": 2
 }

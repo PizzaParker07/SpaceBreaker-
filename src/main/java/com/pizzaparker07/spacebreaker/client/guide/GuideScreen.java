@@ -41,7 +41,7 @@ public class GuideScreen extends Screen {
     public static final int BOOK_W = 300, BOOK_H = 188, TEX_W = 512, TEX_H = 256;
     private static final int PAGE_W = 118, PAGE_TOP = 16, PAGE_BOTTOM = 164;
     private static final int LEFT_X = 22, RIGHT_X = 160;
-    private static final int CHAPTER_Y = 30, CHAPTER_ROW = 15;
+    private static final int CHAPTER_Y = 29, CHAPTER_ROW = 14;
     private static final int INK = 0x3B2A1A, INK_SOFT = 0x6E5A44, INK_LINK = 0x1E4E7A;
 
     /** Remembered between openings (like vanilla's lectern page). */

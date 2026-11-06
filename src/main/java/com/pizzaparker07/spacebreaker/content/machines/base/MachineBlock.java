@@ -85,6 +85,14 @@ public class MachineBlock extends BaseEntityBlock {
     }
 
     @Override
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable net.minecraft.world.entity.LivingEntity placer, ItemStack stack) {
+        super.setPlacedBy(level, pos, state, placer, stack);
+        if (placer instanceof Player player && level.getBlockEntity(pos) instanceof MachineBlockEntity be) {
+            be.setOwner(player.getUUID());
+        }
+    }
+
+    @Override
     protected RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
     }
@@ -171,6 +179,10 @@ public class MachineBlock extends BaseEntityBlock {
         if (this == com.pizzaparker07.spacebreaker.content.machines.MachinesModule.COMBUSTION_GENERATOR.block().get()) {
             tooltip.add(net.minecraft.network.chat.Component.translatable("tooltip.spacebreaker.generator",
                     com.pizzaparker07.spacebreaker.content.machines.machine.CombustionGeneratorBlockEntity.OUTPUT)
+                    .withStyle(net.minecraft.ChatFormatting.GRAY));
+        }
+        if (this == com.pizzaparker07.spacebreaker.content.machines.MachinesModule.ELECTROLYZER.block().get()) {
+            tooltip.add(net.minecraft.network.chat.Component.translatable("tooltip.spacebreaker.electrolyzer")
                     .withStyle(net.minecraft.ChatFormatting.GRAY));
         }
     }

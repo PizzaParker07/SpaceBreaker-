@@ -1,0 +1,28 @@
+{
+  "chapter": "machines",
+  "title": "Cryogenics",
+  "icon": "spacebreaker:cryogenic_liquefier",
+  "order": 4,
+  "pages": [
+    {
+      "items": [
+        "spacebreaker:electrolyzer",
+        "spacebreaker:cryogenic_liquefier",
+        "spacebreaker:cryogenic_tank",
+        "spacebreaker:pressurized_tank",
+        "spacebreaker:gas_pipe",
+        "spacebreaker:cryogenic_canister"
+      ]
+    },
+    {
+      "text": "The electrolyzer splits water into oxygen and hydrogen gas. The cryogenic liquefier turns the gases into liquid oxygen (−183 °C) and liquid hydrogen (−253 °C). Keep them in cryogenic tanks or canisters: spilled in the open they boil away."
+    },
+    {
+      "items": [
+        "spacebreaker:liquid_oxygen_bucket",
+        "spacebreaker:liquid_hydrogen_bucket",
+        "spacebreaker:liquid_methane_bucket"
+      ]
+    }
+  ]
+}

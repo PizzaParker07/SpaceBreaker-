@@ -4,8 +4,5 @@
   "requires": [
     "spacebreaker:radiation_shielding"
   ],
-  "tier": 3,
-  "unlocks": [
-    "spacebreaker:eva_suit_mk3"
-  ]
+  "tier": 3
 }

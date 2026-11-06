@@ -1,0 +1,11 @@
+{
+  "chapter": "survival",
+  "title": "Tehlikeler",
+  "icon": "minecraft:snowball",
+  "order": 5,
+  "pages": [
+    {
+      "text": "Boşlukta nefesini yalnızca bir an tutabilirsin. Vücut ısısı yavaş değişir: öğle vakti ya da gölgede Ay korumasız bir bedeni pişirir ya da dondurur. Radyasyon zamanla birikir. Yerçekimi gerçektir: Ay'da uzağa zıplar, yavaşça düşersin."
+    }
+  ]
+}

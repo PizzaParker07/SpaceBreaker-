@@ -1,0 +1,22 @@
+{
+  "chapter": "survival",
+  "title": "EVA Suit",
+  "icon": "spacebreaker:eva_chestplate",
+  "order": 2,
+  "pages": [
+    {
+      "items": [
+        "spacebreaker:eva_helmet",
+        "spacebreaker:eva_chestplate",
+        "spacebreaker:eva_leggings",
+        "spacebreaker:eva_boots"
+      ]
+    },
+    {
+      "text": "The suit is sealed only when all four pieces are worn. The torso carries the life-support backpack: right-click it with an oxygen tank to fit up to two tanks. The helmet display shows oxygen, suit status, body and outside temperature, radiation and gravity."
+    },
+    {
+      "recipe": "spacebreaker:eva_chestplate"
+    }
+  ]
+}
