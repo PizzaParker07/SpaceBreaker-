@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.pizzaparker07.spacebreaker.compat.mixin",
+  "plugin": "com.pizzaparker07.spacebreaker.compat.CompatMixinPlugin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "ClientWeatherMixin"
+  ],
+  "client": [
+    "iris.PackCloudsMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

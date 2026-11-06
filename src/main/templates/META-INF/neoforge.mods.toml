@@ -30,3 +30,22 @@ side = "BOTH"
 # Planet engine: per-dimension solar time on other worlds
 [[mixins]]
 config = "spacebreaker.worldgen.mixins.json"
+
+# Renderer compatibility: client weather in space worlds; shader-pack cloud fix (only applied with Iris installed)
+[[mixins]]
+config = "spacebreaker.compat.mixins.json"
+
+# Optional renderers (never required; see docs/COMPAT.md)
+[[dependencies.${mod_id}]]
+modId = "iris"
+type = "optional"
+versionRange = "[1.8,)"
+ordering = "NONE"
+side = "CLIENT"
+
+[[dependencies.${mod_id}]]
+modId = "sodium"
+type = "optional"
+versionRange = "[0.6,)"
+ordering = "NONE"
+side = "CLIENT"
