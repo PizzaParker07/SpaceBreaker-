@@ -1,0 +1,35 @@
+{
+  "chapter": "inner_planets",
+  "title": "Mars",
+  "icon": "spacebreaker:martian_regolith",
+  "order": 0,
+  "requires_tech": "spacebreaker:interplanetary_transfers",
+  "pages": [
+    {
+      "items": [
+        "spacebreaker:martian_regolith",
+        "spacebreaker:martian_sand",
+        "spacebreaker:martian_basalt",
+        "spacebreaker:martian_sandstone"
+      ]
+    },
+    {
+      "text": "A cold desert under a butterscotch sky. The air is thin carbon dioxide at under one hundredth of Earth's pressure, gravity is 0.38 g and nights fall far below freezing. You need a sealed suit here, not just oxygen."
+    },
+    {
+      "text": "The north is a low, smooth plain; the south is old cratered highland. Look for the great volcanoes, the long rift canyons, dune seas and the polar ice caps."
+    },
+    {
+      "heading": "Dust storms"
+    },
+    {
+      "text": "Storms can wrap the whole planet for days. They dim the sun, so solar panels give much less power, and they hide everything beyond a few blocks. Dust-proof seals keep your machines and suit running."
+    },
+    {
+      "heading": "Blue sunsets"
+    },
+    {
+      "text": "The fine dust scatters red light to the sides but lets blue light pass straight on, so around a low sun the sky turns blue: the opposite of Earth."
+    }
+  ]
+}

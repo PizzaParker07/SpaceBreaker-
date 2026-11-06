@@ -345,6 +345,13 @@ entry('moon_dungeons', 'dungeons', 1, SB + 'survey_drone_spawn_egg', 'Ruins on t
       requires=SB + 'basic_rocketry')
 
 
+# ------------------------------------------------------------------------------------------- other areas
+import inner_planets  # noqa: E402
+
+CHAPTERS.append(inner_planets.CHAPTER)
+inner_planets.register(entry, SB)
+
+
 def page_json(p, lang):
     k = 0 if lang == 'en_us' else 1
     kind = p[0]

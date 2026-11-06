@@ -141,6 +141,13 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Bloklar | Merkür Regoliti, Oyuk Tortusu (kalıcı ayak izi), Merkür Kabuğu, Düşük Yansıtmalı Kaya, Grafit Cevheri (→ grafit) |
 | 🎨 | Zindan | Terk Edilmiş Kutup Buzu Madeni (gölgeli krater tabanının altında) |
 
+### İç gezegen yörüngeleri `spacebreaker:venus_orbit`, `mercury_orbit`, `mars_orbit`
+| Durum | İçerik | Not |
+|---|---|---|
+| 🎨 | Yörünge gökyüzü | dönen gezegen küresi (gece-gündüz sınırı), uzaklığa göre boyutlu Güneş; Venüs'te kalın parlak pus halkası, Mars'ta ince soluk halka, Merkür'de yok; uzakta Phobos/Deimos, Dünya, Merkür, Venüs |
+| 🎨 | Haritalar | Venüs bulut bantları (yan yatmış Y), Merkür kraterleri + Caloris + ışınlı genç kraterler, Mars coğrafyası (Tharsis, Olympus, Valles + Noctis, kutup başlıkları); hepsi kodla, piksel stilinde |
+| 🎨 | Rehber | yeni "İç Gezegenler" bölümü: Mars, Mars kaynakları, Mars'ta yaşam, Phobos ve Deimos, Venüs, bulutlarda yaşam ve harabeler, Merkür, yörüngeden görünüm (EN + TR, Gezegenlerarası Transferler ile açılır) |
+
 ### Faz 2 teknolojileri (zindan diskleri)
 | Durum | İçerik | Not |
 |---|---|---|

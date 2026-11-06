@@ -43,5 +43,10 @@
     "id": "physics",
     "icon": "minecraft:firework_rocket",
     "order": 70
+  },
+  {
+    "id": "inner_planets",
+    "icon": "spacebreaker:martian_regolith",
+    "order": 65
   }
 ]

@@ -1,0 +1,24 @@
+{
+  "chapter": "inner_planets",
+  "title": "Life on Mars",
+  "icon": "spacebreaker:rust_beetle_spawn_egg",
+  "order": 2,
+  "requires_tech": "spacebreaker:interplanetary_transfers",
+  "pages": [
+    {
+      "items": [
+        "spacebreaker:rust_beetle_spawn_egg",
+        "spacebreaker:stonegrazer_spawn_egg",
+        "spacebreaker:canyon_lurker_spawn_egg",
+        "spacebreaker:polar_worm_spawn_egg",
+        "spacebreaker:dust_devil_spawn_egg"
+      ]
+    },
+    {
+      "text": "Rust beetles chew hematite spheres out of the soil and shed iron flakes. Stonegrazers move in small herds and lick salts from the rocks; feed them gypsum crystals to breed them."
+    },
+    {
+      "text": "Careful in the canyons: a canyon lurker folded up looks like one more rock until you come close. Polar worms bite with a numbing chill if provoked, and in strong storms living dust devils chase anything that moves."
+    }
+  ]
+}

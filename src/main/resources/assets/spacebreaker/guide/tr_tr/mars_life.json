@@ -1,0 +1,24 @@
+{
+  "chapter": "inner_planets",
+  "title": "Mars'ta Yaşam",
+  "icon": "spacebreaker:rust_beetle_spawn_egg",
+  "order": 2,
+  "requires_tech": "spacebreaker:interplanetary_transfers",
+  "pages": [
+    {
+      "items": [
+        "spacebreaker:rust_beetle_spawn_egg",
+        "spacebreaker:stonegrazer_spawn_egg",
+        "spacebreaker:canyon_lurker_spawn_egg",
+        "spacebreaker:polar_worm_spawn_egg",
+        "spacebreaker:dust_devil_spawn_egg"
+      ]
+    },
+    {
+      "text": "Pas Böcekleri topraktan hematit kürelerini kemirir ve demir pulları döker. Taşyiyenler küçük sürüler halinde dolaşır ve kayalardan tuz yalar; onları çoğaltmak için Alçıtaşı Kristali ver."
+    },
+    {
+      "text": "Kanyonlarda dikkatli ol: katlanmış bir Kanyon Pusucusu, yaklaşana kadar sıradan bir kaya gibi görünür. Kutup Kurtçukları kızdırılırsa uyuşturan bir soğukla ısırır; güçlü fırtınalarda da canlı Toz Şeytanları hareket eden her şeyi kovalar."
+    }
+  ]
+}

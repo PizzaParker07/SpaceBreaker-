@@ -190,6 +190,8 @@ public final class MarsModule implements SbModule {
     public void addTranslations(Lang lang) {
         lang.add("body.spacebreaker.mars", "Mars", "Mars");
         lang.add("dimension.spacebreaker.mars", "Mars", "Mars");
+        lang.add("dimension.spacebreaker.mars_orbit", "Mars Orbit", "Mars Yörüngesi");
+        lang.add("guide.spacebreaker.chapter.inner_planets", "Inner Planets", "İç Gezegenler");
         lang.block(MARTIAN_REGOLITH, "Martian Regolith", "Mars Regoliti");
         lang.block(HEMATITE_SOIL, "Hematite Spherule Soil", "Hematit Kürecikli Toprak");
         lang.block(PERCHLORATE_SOIL, "Perchlorate Soil", "Perkloratlı Toprak");

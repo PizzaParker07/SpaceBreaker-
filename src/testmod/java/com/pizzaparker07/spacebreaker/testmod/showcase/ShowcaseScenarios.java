@@ -19,6 +19,7 @@ public final class ShowcaseScenarios {
         ALL.put("deimos", new MarsMoonScenario(true));
         ALL.put("venus", new VenusScenario());
         ALL.put("mercury", new MercuryScenario());
+        ALL.put("inner_orbit", new InnerOrbitScenario());
         ALL.put("rocketry", new RocketryScenario());
     }
 

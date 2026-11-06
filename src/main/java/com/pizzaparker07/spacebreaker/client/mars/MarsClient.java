@@ -36,6 +36,9 @@ public final class MarsClient {
                 Math.toDegrees(2 * Math.atan(3389.5 / 9376))));
         event.register(Spacebreaker.id("deimos"), new MarsMoonSkyEffects(com.pizzaparker07.spacebreaker.core.body.Bodies.key("deimos"),
                 Math.toDegrees(2 * Math.atan(3389.5 / 23463))));
+        for (String body : new String[]{"venus", "mercury", "mars"}) {
+            event.register(Spacebreaker.id(body + "_orbit"), new InnerOrbitSkyEffects(body));
+        }
     }
 
     @SubscribeEvent

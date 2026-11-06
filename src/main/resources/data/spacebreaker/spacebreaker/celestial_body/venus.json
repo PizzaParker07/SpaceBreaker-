@@ -2,6 +2,7 @@
   "type": "terrestrial",
   "parent": "spacebreaker:sun",
   "dimension": "spacebreaker:venus",
+  "orbit_dimension": "spacebreaker:venus_orbit",
   "physical": { "mass_kg": 4.8675e24, "radius_km": 6051.8, "surface_gravity": 8.87 },
   "orbit": { "semi_major_axis_km": 108209475, "eccentricity": 0.00677672, "inclination_deg": 3.39467605, "period_days": 224.701, "longitude_ascending_node_deg": 76.68, "argument_periapsis_deg": 54.92, "mean_anomaly_deg": 50.38 },
   "rotation": { "day_length_hours": 2802.0, "axial_tilt_deg": 177.36 },
