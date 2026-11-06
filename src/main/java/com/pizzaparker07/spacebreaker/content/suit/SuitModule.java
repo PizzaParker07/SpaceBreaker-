@@ -301,6 +301,9 @@ public final class SuitModule implements SbModule {
         lang.add("tooltip.spacebreaker.suit.shielding", "Radiation shielding: %s%%", "Radyasyon kalkanı: %%%s");
         lang.add("tooltip.spacebreaker.suit.upgrade", "Module: %s", "Modül: %s");
         lang.add("tooltip.spacebreaker.suit.needs_tech", "Full protection needs: %s", "Tam koruma için gereken: %s");
+        lang.add("message.spacebreaker.suit.sealed", "Suit sealed · life support online", "Giysi sızdırmaz · yaşam desteği çalışıyor");
+        lang.add("message.spacebreaker.suit.unsealed", "Suit unsealed", "Giysi açıldı");
+        lang.add("message.spacebreaker.suit.unsealed_vacuum", "Suit unsealed: no air out here!", "Giysi açıldı: burada hava yok!");
         lang.add("hud.spacebreaker.warn.rating", "BEYOND SUIT RATING", "GİYSİ DAYANIMI AŞILDI");
         lang.add("tech.spacebreaker.thermal_suits", "Thermal Suits", "Termal Giysiler");
         lang.add("tech.spacebreaker.thermal_suits.desc", "Reflective gold-foil layers and liquid cooling for Mercury's day and the surface of Venus.",
