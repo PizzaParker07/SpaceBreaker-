@@ -17,7 +17,7 @@ Per world with Complementary (vanilla reference shots live in each area's screen
 |---|---|---|
 | Moon | airless | black sky, stars, Earth with phases, grey regolith, sun shadows |
 | Earth orbit / Moon orbit | orbit | planet below, Sun, stars; station plates neutral grey |
-| Mercury | airless | huge Sun disc, grey crust at noon (`iris_mercury_*`); dawn light is orange (see limitations) |
+| Mercury | airless | huge Sun disc, grey crust at noon and at sunrise (`iris_mercury_*`) |
 | Mars | thin | own butterscotch sky, blue sunset; dust storm haze (`iris_mars_11_dust_storm` vs `vanilla_mars_11_dust_storm`), a little brighter than vanilla |
 | Venus | thick | dark ground, dense orange haze, whiteout in the clouds, cloud sea above (`venus_vanilla_bug_fixed.jpg`: vanilla / before / after) |
 | Titan and later thick worlds | thick | covered by the same generic haze pass (fog + light map of the world itself), no code needed |
@@ -25,9 +25,8 @@ Per world with Complementary (vanilla reference shots live in each area's screen
 
 Screen effects and HUDs (all in the GUI layer, drawn over the pack's final frame) were checked under Complementary:
 orbit HUD (`iris_rocketry_12_orbit_hud`), suit HUD on the Moon (`iris_suit_moon_03_hud_vacuum`), launch
-(`iris_rocketry_07_ignition`), Mars dust tint. The reentry plasma overlay is the same GUI code path; in the shader
-run the frame was taken after the heating phase had ended (rendering is slower, the rocket timer had moved on), so it
-is not in the screenshots.
+(`iris_rocketry_07_ignition`), Mars dust tint. The reentry plasma overlay (`iris_13_reentry_plasma`, compat shot 13 with
+a short view distance so the frame is ready during the heating phase) is drawn over the pack's frame as well.
 
 Sodium only: the compat scenario shots match vanilla; chunk meshing of freshly generated Moon and Mars terrain at
 12 chunks finished within the same minimum shot wait as vanilla (no stalls or timeouts). No deeper profiling done.
@@ -61,6 +60,7 @@ follow the Sun, which only the Overworld programs give. So we keep the Overworld
 | `SpaceWorlds` | classifies every dimension from its celestial body JSON: `ORBIT`, `AIRLESS` (vacuum), `THIN_ATMOSPHERE` (< 20 kPa, Mars), `THICK_ATMOSPHERE` (Venus, Titan), `VANILLA` (Overworld, Nether, End, unknown). New worlds are covered by adding `dimension` / `orbit_dimension` to their body JSON — a GameTest fails if a `spacebreaker:` dimension has no body. |
 | `client/ShaderSkyPass` | **sky replacement.** Iris renders into Minecraft's own depth buffer, which still holds the scene depth after the pack's final pass. NeoForge fires `RenderLevelStageEvent.Stage.AFTER_LEVEL` in `GameRenderer` right after `LevelRenderer.renderLevel` returns — after Iris's composite/final passes, before the depth clear for the hand. There our normal sky (`level.effects().renderSky`, unchanged vanilla code) is drawn into an off-screen target and copied onto the frame with `glDepthRange(1,1)` + `GL_LEQUAL`, i.e. only where the depth is still the cleared far value: the sky. Terrain, entities and the hand keep the pack's shading. Works with any pack, no pack-specific code. |
 | `client/HazePass` | **thick and dusty air.** Packs ignore vanilla fog and the light map, so Venus was a bright beige desert. At `AFTER_SOLID_BLOCKS` the terrain fog the world set up this frame is captured (start, end, shape, colour — after every mod's `ViewportEvent` fog handlers); the world's own `adjustLightmapColors` gives its full-daylight colour. After the pack's final pass (and after the sky pass) the depth buffer is copied (`glCopyTexSubImage2D`, avoids a feedback loop and converts formats) and the core shader `spacebreaker:compat_haze` applies `frame * tint * (1 - f) + fog * f` to scene pixels only (two blended draws). Thick atmospheres get haze + tint; thin ones (Mars) get haze only while their fog is closer than 80 % of the render distance (dust storms). Generic: Titan or any new world uses its own fog and light map. |
+| dawn white balance (`HazePass.dawnBalance`) | packs colour sunlight by the sun's height as if it shone through Earth's air, so the Moon and Mercury turned orange/pink at sunrise and sunset. Packs take the height from vanilla's sun angle; from the same angle the pass pulls red and green back toward blue on scene pixels of airless worlds (up to −42 % / −18 % at the horizon, nothing above ~40° or at night). A multiply can only darken, which suits a grazing sun. Checked with Complementary on the Moon and Mercury. |
 | `mixin/iris/PackCloudsMixin` | `DimensionSpecialEffects.getCloudHeight` → 25000 in space worlds while a pack is active. Iris passes it as `cloudHeight`; pack clouds move beyond their draw distance (no clouds in front of distant terrain, no cloud shadows). Our sky effects draw clouds themselves, vanilla never reads it there. |
 | `mixin/iris/PackAmbientMixin` | `ClientLevel.getSkyColor` → a cool fill in airless worlds while a pack is active (Iris passes it as `skyColor`). Packs use it differently: Complementary adds `pow(skyColor, 0.75)` to a warm, atmosphere-filtered sun and needs (0.20, 0.30, 0.72) to bring grey regolith back to neutral; MakeUp mixes 60 % of it into an already neutral ambient, so other packs get a moderate (0.20, 0.27, 0.55); BSL ignores it. The pack family is read from Iris's current pack name (internal method, by reflection; unknown → moderate value). Mars keeps its biome sky colour (butterscotch fill is right there). |
 | `mixin/ClientWeatherMixin` | client-side `getRainLevel` / `getThunderLevel` = 0 in space worlds (always, with or without Iris). Server-side weather is untouched. |
@@ -85,15 +85,23 @@ does it anyway; `OFF` leaves the pack alone.
 - **Haze strength:** the pack's own (brighter) lighting sits under our haze, so Mars storms read a little lighter
   than vanilla at mid distance; Venus matches closely. Translucent blocks and particles in front of terrain are hazed
   by the depth of what is behind them.
-- **Low sun on airless worlds (Moon, Mercury):** packs tint sunrise/sunset light orange (it comes from their Overworld atmosphere
-  model, keyed to the sun angle). Our sky stays black, but the ground looks like an Earth dawn for the first and
-  last ~10 % of the lunar day.
+- **Low sun on airless worlds:** the dawn white balance removes most of the packs' orange; the result is a little
+  cool and darker than vanilla right at the horizon. Packs that tint dawn much more or less than Complementary are
+  only partly corrected.
 - **Sky seen through glass or water** is the pack's (translucent geometry writes depth before the sky pass). Looking
   out of a glass window into space shows the pack's sky colour behind the glass.
 - **Pack bloom/lens flare** around the pack's own sun can bleed a little onto terrain silhouettes; the Sun disc
   itself is ours.
-- **Distant Horizons / Voxy:** their far terrain is not in Minecraft's depth buffer, so `AUTO` disables the sky
-  replacement when one is installed (the pack's sky is shown). `ALWAYS` forces it and hides LOD terrain.
+- **Distant Horizons / Voxy:** their far terrain lives in its own depth buffer (`dhDepthTex` / Voxy's), not in
+  Minecraft's. Both of our passes decide "sky or scene" from Minecraft's depth, so LOD terrain would count as sky.
+  - `spaceSky = AUTO` (default): when `distanthorizons` or `voxy` is installed, the sky replacement, the haze/light
+    pass and the dawn balance are all off in every world; the pack's own (Overworld) sky and lighting are shown,
+    as before this layer existed. The pack-cloud, pack-ambient and weather fixes stay on.
+  - `ALWAYS`: everything on; LOD terrain beyond the normal render distance is painted over by our sky.
+  - `OFF`: like AUTO with LOD mods, in every setup.
+  - Not tested in a client here (no LOD mod was installed); the behaviour follows from `Compat.lodModInstalled()`
+    in `ShaderSkyPass.active()`, which `HazePass` also checks. Reading the LOD depth texture would allow full support
+    later.
 - **Sun direction vs. shadows:** packs cast shadows from vanilla's sun path (plus their own `sunPathRotation`); our
   drawn Sun also tilts with the observer's latitude. Near the poles the two differ by up to the latitude.
 - Shader packs that use a different dimension mapping (custom `dimension.properties` entries for `spacebreaker:*`)

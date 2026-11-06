@@ -68,8 +68,7 @@ public final class HazePass {
     }
 
     private static boolean wanted(ClientLevel level) {
-        SpaceWorlds.Kind kind = SpaceSky.kind(level);
-        return (kind == SpaceWorlds.Kind.THICK_ATMOSPHERE || kind == SpaceWorlds.Kind.THIN_ATMOSPHERE) && ShaderSkyPass.active();
+        return SpaceSky.kind(level).ownSky() && ShaderSkyPass.active();
     }
 
     /** Called at AFTER_LEVEL, after the sky pass. */
@@ -85,8 +84,12 @@ public final class HazePass {
         }
         SpaceWorlds.Kind kind = SpaceSky.kind(level);
         float renderDistance = mc.gameRenderer.getRenderDistance();
-        boolean haze = fogEnd < renderDistance * CLOSE_FOG;
-        Vector3f tint = kind == SpaceWorlds.Kind.THICK_ATMOSPHERE ? daylightTint(level, partialTick) : new Vector3f(1F);
+        boolean haze = !kind.airless() && fogEnd < renderDistance * CLOSE_FOG;
+        Vector3f tint = switch (kind) {
+            case THICK_ATMOSPHERE -> daylightTint(level, partialTick);
+            case AIRLESS, ORBIT -> dawnBalance(level, partialTick);
+            default -> new Vector3f(1F);
+        };
         if (!haze && tint.x > 0.99F && tint.y > 0.99F && tint.z > 0.99F) {
             return;
         }
@@ -109,6 +112,28 @@ public final class HazePass {
         level.effects().adjustLightmapColors(level, partialTick, level.getSkyDarken(partialTick), 1F, 1F, 0, 15, colors);
         colors.set(clamp(colors.x), clamp(colors.y), clamp(colors.z));
         return colors;
+    }
+
+    /**
+     * White balance for airless worlds at low sun. Packs colour sunlight by the sun's height as if it shone through
+     * Earth's air (orange at dawn and dusk, also on the Moon and Mercury). Packs read the sun height from vanilla's
+     * sun angle, so the same height tells us how much orange they added; red and green are pulled back toward the
+     * blue channel on scene pixels (a multiply can only darken: a grazing sun is dim anyway). Night is untouched.
+     */
+    static Vector3f dawnBalance(ClientLevel level, float partialTick) {
+        float h = net.minecraft.util.Mth.cos(level.getTimeOfDay(partialTick) * net.minecraft.util.Mth.TWO_PI);
+        float low = 1F - smooth((h - 0.05F) / 0.60F);
+        float up = smooth((h + 0.10F) / 0.12F);
+        float w = low * up;
+        return new Vector3f(1F - DAWN_RED * w, 1F - DAWN_GREEN * w, 1F);
+    }
+
+    private static final float DAWN_RED = 0.42F;
+    private static final float DAWN_GREEN = 0.18F;
+
+    private static float smooth(float t) {
+        t = Math.max(0F, Math.min(1F, t));
+        return t * t * (3F - 2F * t);
     }
 
     private static float clamp(float v) {

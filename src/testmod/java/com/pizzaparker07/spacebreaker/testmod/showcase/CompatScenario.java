@@ -205,6 +205,26 @@ final class CompatScenario implements ShowcaseScenario {
                 go(MarsModule.MARS, 0.5, my + 12, 0.5, 90F, 4F, 0.49, null), null));
         s.add(new ShowcaseDriver.Shot("12_mars_night", 0, 0, 0, 0, 0F, 0F, true, fp, 140,
                 go(MarsModule.MARS, 0.5, my + 12, 0.5, 30F, -20F, 0.75, null), null));
+        // reentry plasma (GUI layer) over the pack's frame; a short view distance so the frame is ready while the
+        // capsule is still in the heating phase (ticks keep running: ridden entities are never frozen)
+        s.add(new ShowcaseDriver.Shot("13_reentry_plasma", 6000, 0, 0, 0, 0F, 0F, false, fp, 50, CompatScenario::reentry,
+                () -> Minecraft.getInstance().options.renderDistance().set(4)));
         return s;
+    }
+
+    private static void reentry(ServerPlayer p) {
+        // the driver first brings the player back to the scenario's dimension, so change worlds now and board the
+        // capsule a second later (riding across a dimension change in the same tick leaves the client without a view)
+        ServerLevel earth = p.server.overworld();
+        p.teleportTo(earth, -20.5, 701, 10.5, 0F, 60F);
+        var server = p.server;
+        int now = server.getTickCount();
+        server.tell(new net.minecraft.server.TickTask(now + 20, () -> {
+            RocketEntity capsule = RocketEntity.create(earth, RocketryModule.MOON_ROCKET, new net.minecraft.world.phys.Vec3(-20.5, 700, 10.5), 0F);
+            capsule.fillCompletely();
+            earth.addFreshEntity(capsule);
+            capsule.stageScene(com.pizzaparker07.spacebreaker.content.rocketry.entity.FlightState.REENTRY, 0, 3, false);
+            p.startRiding(capsule, true);
+        }));
     }
 }
