@@ -103,7 +103,13 @@ public final class BlueprintModule implements SbModule {
         lang.add("gui.spacebreaker.blueprints.empty", "No blueprints loaded", "Yüklü plan yok");
         lang.add("hud.spacebreaker.materials", "Materials", "Malzemeler");
         lang.add("hud.spacebreaker.materials.done", "%s / %s placed", "%s / %s yerleştirildi");
-        lang.add("multiblock.spacebreaker.launch_site", "Launch Site", "Fırlatma Tesisi");
+        lang.add("hud.spacebreaker.materials.missing", "%s missing", "%s eksik");
+        lang.add("gui.spacebreaker.blueprints.project", "Project", "Yansıt");
+        lang.add("gui.spacebreaker.blueprints.materials", "Materials", "Malzemeler");
+        lang.add("gui.spacebreaker.blueprints.tech", "Research: %s", "Araştırma: %s");
+        lang.add("gui.spacebreaker.blueprints.tech_known", "Researched", "Araştırıldı");
+        lang.add("gui.spacebreaker.blueprints.tech_unknown", "Not researched yet (you can still build it)", "Henüz araştırılmadı (yine de kurabilirsin)");
+        lang.add("multiblock.spacebreaker.launch_site", "Launch Site", "Fırlatma Alanı");
         lang.add("multiblock.spacebreaker.pressurised_habitat", "Pressurised Habitat", "Basınçlı Yaşam Modülü");
     }
 

@@ -24,10 +24,10 @@ final class GhostVertexConsumer implements VertexConsumer {
 
     @Override
     public VertexConsumer setColor(int red, int green, int blue, int a) {
-        // keep a little of the block's own shading, push it towards cyan
-        int cr = Math.round((red * 0.3F + 255 * 0.7F) * r);
-        int cg = Math.round((green * 0.3F + 255 * 0.7F) * g);
-        int cb = Math.round((blue * 0.3F + 255 * 0.7F) * b);
+        // keep a hint of the block's own shading, otherwise clearly the tint colour
+        int cr = Math.round((red * 0.15F + 255 * 0.85F) * r);
+        int cg = Math.round((green * 0.15F + 255 * 0.85F) * g);
+        int cb = Math.round((blue * 0.15F + 255 * 0.85F) * b);
         delegate.setColor(Math.min(255, cr), Math.min(255, cg), Math.min(255, cb), alpha);
         return this;
     }

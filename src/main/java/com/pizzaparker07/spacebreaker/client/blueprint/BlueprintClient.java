@@ -113,11 +113,12 @@ public final class BlueprintClient {
         Vec3 cam = event.getCamera().getPosition();
         PoseStack pose = event.getPoseStack();
         MultiBufferSource.BufferSource buffers = mc.renderBuffers().bufferSource();
-        float t = (mc.level.getGameTime() + event.getPartialTick().getGameTimeDeltaPartialTick(false)) * 0.15F;
-        float alpha = 0.38F + 0.08F * Mth.sin(t);
+        // slow pulse: +-0.1 around 0.4, one cycle every 1.5 s
+        float t = (mc.level.getGameTime() + event.getPartialTick().getGameTimeDeltaPartialTick(false)) * (Mth.TWO_PI / 30F);
+        float alpha = 0.4F + 0.1F * Mth.sin(t);
 
         ModelBlockRenderer renderer = mc.getBlockRenderer().getModelRenderer();
-        VertexConsumer ghost = new GhostVertexConsumer(buffers.getBuffer(Sheets.translucentCullBlockSheet()), 0.45F, 0.9F, 1.0F, alpha);
+        VertexConsumer ghost = new GhostVertexConsumer(buffers.getBuffer(Sheets.translucentCullBlockSheet()), 0.35F, 0.88F, 1.0F, alpha);
         for (HologramCache.Ghost g : CACHE.missing) {
             if (g.pos().distToCenterSqr(cam) > 96 * 96) {
                 continue;
@@ -176,8 +177,8 @@ public final class BlueprintClient {
         Component progress = Component.translatable("hud.spacebreaker.materials.done", CACHE.built, CACHE.total);
         int rows = Math.min(8, CACHE.needed.size());
         int w = Math.max(110, Math.max(font.width(title), font.width(progress)) + 8);
-        for (Item item : CACHE.needed.keySet()) {
-            w = Math.max(w, font.width(new ItemStack(item).getHoverName()) + 64);
+        for (Map.Entry<Item, Integer> e : CACHE.needed.entrySet()) {
+            w = Math.max(w, font.width(e.getValue() + "× " + new ItemStack(e.getKey()).getHoverName().getString()) + 76);
         }
         w = Math.min(w, 200);
         int h = 26 + rows * 18;
@@ -197,10 +198,12 @@ public final class BlueprintClient {
             int have = mc.player.getInventory().countItem(e.getKey());
             int need = e.getValue();
             g.renderItem(stack, x + 4, ry);
-            String count = have + " / " + need;
-            g.drawString(font, count, x + w - 4 - font.width(count), ry + 5, have >= need ? 0x7CD36A : 0xFF7060, true);
-            String name = font.plainSubstrByWidth(stack.getHoverName().getString(), w - 30 - font.width(count));
-            g.drawString(font, name, x + 23, ry + 5, 0xE0E0E0, true);
+            Component status = have >= need ? Component.literal("✓")
+                    : Component.translatable("hud.spacebreaker.materials.missing", need - have);
+            int sw = font.width(status);
+            g.drawString(font, status, x + w - 4 - sw, ry + 5, have >= need ? 0x7CD36A : 0xFF7060, true);
+            String name = font.plainSubstrByWidth(need + "× " + stack.getHoverName().getString(), w - 30 - sw);
+            g.drawString(font, name, x + 23, ry + 5, have >= need ? 0xA8D8A0 : 0xE0E0E0, true);
             ry += 18;
         }
     }
