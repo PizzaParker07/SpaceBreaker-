@@ -132,6 +132,20 @@ public final class BlueprintClient {
                     LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, ModelData.EMPTY, null);
             pose.popPose();
         }
+        // wrong blocks: a red-tinted, slightly enlarged ghost of what stands there (same shader-safe path as the
+        // ghosts), plus a line frame where line rendering is available
+        VertexConsumer red = new GhostVertexConsumer(buffers.getBuffer(Sheets.translucentCullBlockSheet()), 1.0F, 0.25F, 0.2F, 0.45F);
+        for (BlockPos p : CACHE.wrong) {
+            var state = mc.level.getBlockState(p);
+            pose.pushPose();
+            pose.translate(p.getX() - cam.x, p.getY() - cam.y, p.getZ() - cam.z);
+            pose.translate(0.5, 0.5, 0.5);
+            pose.scale(1.02F, 1.02F, 1.02F);
+            pose.translate(-0.5, -0.5, -0.5);
+            renderer.renderModel(pose.last(), red, state, mc.getBlockRenderer().getBlockModel(state), 1F, 1F, 1F,
+                    LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, ModelData.EMPTY, null);
+            pose.popPose();
+        }
         buffers.endBatch(Sheets.translucentCullBlockSheet());
 
         VertexConsumer lines = buffers.getBuffer(RenderType.lines());
