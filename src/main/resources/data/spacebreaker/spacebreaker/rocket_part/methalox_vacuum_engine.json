@@ -1,0 +1,11 @@
+{
+  "type": "engine",
+  "mass_kg": 560,
+  "thrust_kn": 220,
+  "isp_sea_level_s": 210,
+  "isp_vacuum_s": 380,
+  "height": 30,
+  "model": "spacebreaker:methalox_vacuum_engine",
+  "nozzle": 14,
+  "propellant": "methalox"
+}

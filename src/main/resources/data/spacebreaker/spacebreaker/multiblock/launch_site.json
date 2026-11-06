@@ -3,19 +3,19 @@
   "controller": "C",
   "tech": "spacebreaker:launch_infrastructure",
   "layers": [
-    ["   S   ", " PPPPP ", " PTTTP ", " PTCTP ", " PTTTP ", " PPPPP "],
-    ["   S   ", "       ", "       ", "       ", "       ", "       "],
-    ["   S   ", "   U   ", "       ", "       ", "       ", "       "],
-    ["   S   ", "       ", "       ", "       ", "       ", "       "],
-    ["   S   ", "   A   ", "       ", "       ", "       ", "       "],
-    ["   S   ", "       ", "       ", "       ", "       ", "       "]
+    ["  S  ", "PPPPP", "PTTTP", "PTCTP", "PTTTP", "PPPPP"],
+    ["  S  ", "     ", "     ", "     ", "     ", "     "],
+    ["  S  ", "  U  ", "     ", "     ", "     ", "     "],
+    ["  S  ", "     ", "     ", "     ", "     ", "     "],
+    ["  S  ", "     ", "     ", "     ", "     ", "     "],
+    ["  S  ", "  A  ", "     ", "     ", "     ", "     "]
   ],
   "key": {
     "P": {"block": "spacebreaker:launch_pad"},
     "T": {"block": "spacebreaker:flame_trench"},
     "C": {"block": "spacebreaker:flame_trench"},
     "S": {"block": "spacebreaker:service_tower"},
-    "U": {"block": "spacebreaker:fuel_umbilical"},
-    "A": {"block": "spacebreaker:crew_access_arm"}
+    "U": {"block": "spacebreaker:fuel_umbilical", "properties": {"facing": "south"}},
+    "A": {"block": "spacebreaker:crew_access_arm", "properties": {"facing": "south"}}
   }
 }

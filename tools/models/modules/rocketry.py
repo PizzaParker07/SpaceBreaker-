@@ -154,6 +154,37 @@ def vacuum_engine():
     return els
 
 
+def methalox_engine():
+    """Methane sea-level engine: compact steel bell, two turbopumps (one each for methane and oxygen)."""
+    els = []
+    els += prism(16, 20, 16)                              # thrust structure / aft skirt
+    els += prism(14, 16, 6, top=False)                    # powerhead
+    els += prism(12, 14, 4, top=False, bottom=False)      # throat
+    els += prism(9, 12, 6, top=False, bottom=False)       # regeneratively cooled bell
+    els += prism(5, 9, 7, top=False, bottom=False)
+    els += prism(2, 5, 8, top=False, bottom=False)
+    els += prism(0, 2, 9, top=False)
+    els.append(box([13, 10, 5], [17, 16, 9], region='aux', top_region='top', bottom_region='bottom'))
+    els.append(box([-1, 10, 7], [3, 16, 11], region='aux', top_region='top', bottom_region='bottom'))
+    return els
+
+
+def methalox_vacuum_engine():
+    """Methane vacuum engine: very wide bell with a dark radiatively cooled extension."""
+    els = []
+    els += prism(26, 30, 16)                              # mount ring
+    els += prism(23, 26, 6, top=False)                    # powerhead
+    els += prism(21, 23, 4, top=False, bottom=False)      # throat
+    els += prism(18, 21, 7, top=False, bottom=False)
+    els += prism(14, 18, 9, top=False, bottom=False)
+    els += prism(10, 14, 11, top=False, bottom=False)
+    els += prism(5, 10, 13, top=False, bottom=False)
+    els += prism(0, 5, 14, top=False)
+    els.append(box([13, 21, 5], [17, 26, 9], region='aux'))
+    els.append(box([-1, 21, 7], [3, 26, 11], region='aux'))
+    return els
+
+
 def decoupler():
     return prism(0, 3, 16)
 
@@ -240,6 +271,8 @@ PARTS = {
     'fuel_tank_large': (lambda: tank(32), False),
     'kerosene_engine': (kerosene_engine, False),
     'vacuum_engine': (vacuum_engine, False),
+    'methalox_engine': (methalox_engine, False),
+    'methalox_vacuum_engine': (methalox_vacuum_engine, False),
     'decoupler': (decoupler, False),
     'interstage': (interstage, False),
     'heat_shield': (heat_shield, False),

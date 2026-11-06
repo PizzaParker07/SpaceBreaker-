@@ -85,6 +85,8 @@ public final class RocketryModule implements SbModule {
     public static final DeferredItem<RocketPartItem> FUEL_TANK_LARGE = part("fuel_tank_large");
     public static final DeferredItem<RocketPartItem> KEROSENE_ENGINE = part("kerosene_engine");
     public static final DeferredItem<RocketPartItem> VACUUM_ENGINE = part("vacuum_engine");
+    public static final DeferredItem<RocketPartItem> METHALOX_ENGINE = part("methalox_engine");
+    public static final DeferredItem<RocketPartItem> METHALOX_VACUUM_ENGINE = part("methalox_vacuum_engine");
     public static final DeferredItem<RocketPartItem> DECOUPLER = part("decoupler");
     public static final DeferredItem<RocketPartItem> INTERSTAGE = part("interstage");
     public static final DeferredItem<RocketPartItem> FINS = part("fins");

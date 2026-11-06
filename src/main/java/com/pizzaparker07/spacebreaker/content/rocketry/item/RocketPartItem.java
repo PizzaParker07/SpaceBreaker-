@@ -35,10 +35,14 @@ public class RocketPartItem extends Item {
         if (p.propellantKg() > 0) {
             tooltip.add(Component.translatable("tooltip.spacebreaker.part.propellant", Fmt.kg(p.propellantKg()),
                     p.rp1Millibuckets(), p.loxMillibuckets()).withStyle(grey));
+            tooltip.add(Component.translatable("tooltip.spacebreaker.part.propellant_methalox",
+                    com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant.METHALOX.fuelMillibuckets(p.propellantKg()),
+                    com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant.METHALOX.loxMillibuckets(p.propellantKg())).withStyle(grey));
         }
         if (p.isEngine()) {
             tooltip.add(Component.translatable("tooltip.spacebreaker.part.thrust", Fmt.num(p.thrustKn())).withStyle(grey));
             tooltip.add(Component.translatable("tooltip.spacebreaker.part.isp", Fmt.num(p.ispSeaLevel()), Fmt.num(p.ispVacuum())).withStyle(grey));
+            tooltip.add(Component.translatable("tooltip.spacebreaker.part.burns", p.propellant().displayName()).withStyle(grey));
         }
         if (p.heatShield() > 0) {
             tooltip.add(Component.translatable("tooltip.spacebreaker.part.heat_shield." + Math.min(2, p.heatShield())).withStyle(grey));

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SAS",
+    "RFR",
+    "NNN"
+  ],
+  "key": {
+    "S": {
+      "item": "spacebreaker:nickel_superalloy_ingot"
+    },
+    "A": {
+      "item": "spacebreaker:aluminum_lithium_plate"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "F": {
+      "item": "minecraft:blast_furnace"
+    },
+    "N": {
+      "item": "spacebreaker:nickel_plate"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:methalox_vacuum_engine",
+    "count": 1
+  }
+}

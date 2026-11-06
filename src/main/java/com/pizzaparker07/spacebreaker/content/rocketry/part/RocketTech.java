@@ -30,6 +30,8 @@ public final class RocketTech {
             Map.entry("decoupler", "staging"),
             Map.entry("interstage", "staging"),
             Map.entry("vacuum_engine", "vacuum_engines"),
+            Map.entry("methalox_engine", "methane_engines"),
+            Map.entry("methalox_vacuum_engine", "methane_engines"),
             Map.entry("landing_legs", "landing_systems"),
             Map.entry("parachute", "landing_systems"),
             Map.entry("heat_shield", "landing_systems"),

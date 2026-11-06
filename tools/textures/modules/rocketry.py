@@ -252,6 +252,56 @@ def vacuum_engine():
     return cv
 
 
+def methalox_engine():
+    cv = new_sheet()
+    thrust_structure(cv, 16, 20, 131)
+    bell(cv, 14, 16, lambda y: 6, STEEL, 3, 6, 132)           # powerhead
+    bell(cv, 12, 14, lambda y: 4, STEEL, 1, 4, 133)
+    radii = {}
+    for y0, y1, r in [(9, 12, 6), (5, 9, 7), (2, 5, 8), (0, 2, 9)]:
+        for y in range(y0, y1):
+            radii[y] = r
+    bell(cv, 0, 12, lambda y: radii[y], STEEL, 2, 6, 134, lip=STEEL)  # steel, not copper: cleaner, hotter fuel
+    for y in (3, 7, 10):
+        ring(cv, SIDE, y, radii[y], STEEL, 1, 3)                       # coolant manifolds
+    turbopump(cv, (11, 15), 135)
+    engine_top(cv, TOP, 136)
+    nozzle_exit(cv, BOTTOM, 9, 4)
+    ox, oy = BOTTOM
+    for row in range(32):
+        for c in range(32):
+            d = math.hypot(c + 0.5 - 16, row + 0.5 - 16)
+            if 9.5 < d <= 16.2:
+                cv[ox + c, oy + row] = CARBON[1] if d < 15 else CARBON[3]
+    return cv
+
+
+def methalox_vacuum_engine():
+    cv = new_sheet()
+    thrust_structure(cv, 26, 30, 141)
+    bell(cv, 23, 26, lambda y: 6, STEEL, 3, 6, 142)
+    bell(cv, 21, 23, lambda y: 4, STEEL, 1, 4, 143)
+    radii = {}
+    for y0, y1, r in [(18, 21, 7), (14, 18, 9), (10, 14, 11), (5, 10, 13), (0, 5, 14)]:
+        for y in range(y0, y1):
+            radii[y] = r
+    bell(cv, 14, 21, lambda y: radii[y], STEEL, 2, 6, 144)                 # cooled steel throat section
+    bell(cv, 0, 14, lambda y: radii[y], CARBON, 2, 5, 145, lip=CARBON)      # dark radiatively cooled extension
+    ring(cv, SIDE, 14, radii[14], STEEL, 3, 6)                              # extension flange
+    for y in (4, 9):
+        ring(cv, SIDE, y, radii[y], CARBON, 1, 3)
+    turbopump(cv, (23,), 146)
+    engine_top(cv, TOP, 147)
+    nozzle_exit(cv, BOTTOM, 14, 4)
+    ox, oy = BOTTOM
+    for row in range(32):
+        for c in range(32):
+            d = math.hypot(c + 0.5 - 16, row + 0.5 - 16)
+            if 14.5 < d <= 16.2:
+                cv[ox + c, oy + row] = CARBON[3]
+    return cv
+
+
 # --------------------------------------------------------------------------- separators
 
 def decoupler():
@@ -597,6 +647,44 @@ def icons():
         "................",
     ], {'o': k[0], 'K': k[5], 'k': k[3], 'S': s[6], 's': s[4], 'p': s[4], 'P': s[6],
         'C': c[6], 'c': c[4], 'N': NIOBIUM[6], 'n': NIOBIUM[4], 'D': k[0]})
+    out['methalox_engine'] = grid_icon([
+        "................",
+        "..oooooooooooo..",
+        ".oKKKKKKKKKKkko.",
+        ".okkkkkkkkkkkdo.",
+        "..ooooSSSoooo...",
+        ".Pp...SsS...pP..",
+        ".Pp...sss...pP..",
+        ".pp...WWw...pp..",
+        "......WWwo......",
+        ".....WWwwwo.....",
+        ".....WWwwwdo....",
+        "....WWwwwwdo....",
+        "....WWwwwwwdo...",
+        "...WWwwwwwwdo...",
+        "...DDDDDDDDDD...",
+        "................",
+    ], {'o': k[0], 'K': k[5], 'k': k[3], 'd': s[1], 'S': s[6], 's': s[4], 'p': s[4], 'P': s[6],
+        'W': s[6], 'w': s[4], 'D': k[1]})
+    out['methalox_vacuum_engine'] = grid_icon([
+        "..oooooooooooo..",
+        ".oKKKKKKKKKKkko.",
+        "..ooooSSSoooo...",
+        ".Pp...SsS...pP..",
+        ".pp...WWw...pp..",
+        ".....WWwwo......",
+        ".....WWwwo......",
+        "....WWwwwwo.....",
+        "....nNNnnno.....",
+        "...nNNnnnnno....",
+        "...NNnnnnnno....",
+        "..nNNnnnnnnno...",
+        "..NNnnnnnnnnno..",
+        ".nNNnnnnnnnnnno.",
+        ".DDDDDDDDDDDDDD.",
+        "................",
+    ], {'o': k[0], 'K': k[5], 'k': k[3], 'S': s[6], 's': s[4], 'p': s[4], 'P': s[6],
+        'W': s[6], 'w': s[4], 'N': k[5], 'n': k[3], 'D': k[0]})
     out['decoupler'] = grid_icon([
         "................", "................", "................", "................",
         "................",
@@ -767,6 +855,8 @@ SHEETS = {
     'fuel_tank_large': lambda: fuel_tank(32, 'collar', 13),
     'kerosene_engine': kerosene_engine,
     'vacuum_engine': vacuum_engine,
+    'methalox_engine': methalox_engine,
+    'methalox_vacuum_engine': methalox_vacuum_engine,
     'decoupler': decoupler,
     'interstage': interstage,
     'heat_shield': heat_shield,

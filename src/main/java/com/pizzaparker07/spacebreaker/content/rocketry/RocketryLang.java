@@ -20,6 +20,12 @@ final class RocketryLang {
         l.item(RocketryModule.FUEL_TANK_LARGE, "Large Fuel Tank", "Büyük Yakıt Tankı");
         l.item(RocketryModule.KEROSENE_ENGINE, "Kerosene Engine (Sea Level)", "Kerosen Motoru (Deniz Seviyesi)");
         l.item(RocketryModule.VACUUM_ENGINE, "Kerosene Engine (Vacuum)", "Kerosen Motoru (Vakum)");
+        l.item(RocketryModule.METHALOX_ENGINE, "Methalox Engine (Sea Level)", "Metaloks Motoru (Deniz Seviyesi)");
+        l.item(RocketryModule.METHALOX_VACUUM_ENGINE, "Methalox Engine (Vacuum)", "Metaloks Motoru (Vakum)");
+        l.add("propellant.spacebreaker.kerolox", "RP-1/LOX", "RP-1/LOX");
+        l.add("propellant.spacebreaker.methalox", "Methane/LOX", "Metan/LOX");
+        l.add("tooltip.spacebreaker.part.burns", "Burns %s", "Yakıt: %s");
+        l.add("tooltip.spacebreaker.part.propellant_methalox", "In a methalox stage: CH4 %s mB, LOX %s mB", "Metaloks kademesinde: CH4 %s mB, LOX %s mB");
         l.item(RocketryModule.DECOUPLER, "Stage Decoupler", "Kademe Ayırıcı");
         l.item(RocketryModule.INTERSTAGE, "Interstage", "Ara Kademe");
         l.item(RocketryModule.FINS, "Fins", "Kanatçıklar");
@@ -154,7 +160,7 @@ final class RocketryLang {
         l.add("gui.spacebreaker.assembler.dv", "Δv %s", "Δv %s");
         l.add("gui.spacebreaker.assembler.twr", "TWR %s", "İ/A %s");
         l.add("gui.spacebreaker.assembler.mass", "Mass %s", "Kütle %s");
-        l.add("gui.spacebreaker.assembler.stage_line", "Stage %s: Δv %s, TWR %s, %s propellant, %s s burn", "Kademe %s: Δv %s, İ/A %s, %s yakıt, %s s yanma");
+        l.add("gui.spacebreaker.assembler.stage_line", "Stage %s (%s): Δv %s, TWR %s, %s propellant, %s s burn", "Kademe %s (%s): Δv %s, İ/A %s, %s yakıt, %s s yanma");
         l.add("gui.spacebreaker.assembler.payload", "Payload: %s, %s seat(s)", "Faydalı yük: %s, %s koltuk");
         l.add("gui.spacebreaker.milestone.orbit", "Earth orbit", "Dünya yörüngesi");
         l.add("gui.spacebreaker.milestone.moon_orbit", "Moon orbit", "Ay yörüngesi");

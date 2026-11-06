@@ -141,7 +141,7 @@ public class RocketAssemblerScreen extends AbstractContainerScreen<RocketAssembl
             RocketLayout.Stage s = layout.stages().get(i);
             double dv = RocketMath.stageDeltaV(layout, i, fuel, i == 0 ? RocketMath.ASCENT_ATMOSPHERE : 0);
             double twr = RocketMath.twr(layout, i, fuel, g0);
-            out.add(Component.translatable("gui.spacebreaker.assembler.stage_line", i + 1, Fmt.ms(dv), Fmt.twr(twr),
+            out.add(Component.translatable("gui.spacebreaker.assembler.stage_line", i + 1, s.propellant().displayName(), Fmt.ms(dv), Fmt.twr(twr),
                     Fmt.kg(s.propellantKg()), String.format(Locale.ROOT, "%.0f", RocketMath.burnTime(s, s.propellantKg(), 0))));
         }
         out.add(Component.translatable("gui.spacebreaker.assembler.payload", Fmt.kg(layout.payload().massKg()), layout.payload().seats()));

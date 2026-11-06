@@ -2,6 +2,8 @@ package com.pizzaparker07.spacebreaker.content.rocketry.pad;
 
 import com.pizzaparker07.spacebreaker.content.rocketry.RocketryModule;
 import com.pizzaparker07.spacebreaker.content.rocketry.entity.RocketEntity;
+import com.pizzaparker07.spacebreaker.content.rocketry.entity.RocketFluidHandler;
+import com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.level.Level;
@@ -19,7 +21,7 @@ public class FuelUmbilicalBlockEntity extends BlockEntity {
     private final IFluidHandler handler = new IFluidHandler() {
         @Override
         public int getTanks() {
-            return 2;
+            return 3;
         }
 
         @Override
@@ -30,12 +32,12 @@ public class FuelUmbilicalBlockEntity extends BlockEntity {
         @Override
         public int getTankCapacity(int tank) {
             RocketEntity r = rocket();
-            return r == null ? 0 : r.roomFor(tank == 1);
+            return r == null ? 0 : r.roomFor(RocketFluidHandler.tankFuel(tank));
         }
 
         @Override
         public boolean isFluidValid(int tank, FluidStack stack) {
-            return tank == 0 ? stack.is(RocketryModule.RP1_TAG) : stack.is(RocketryModule.LOX_TAG);
+            return tank == 1 ? stack.is(Propellant.LOX_TAG) : stack.is(java.util.Objects.requireNonNull(RocketFluidHandler.tankFuel(tank)).fuelTag());
         }
 
         @Override
@@ -44,11 +46,7 @@ public class FuelUmbilicalBlockEntity extends BlockEntity {
             if (r == null || resource.isEmpty()) {
                 return 0;
             }
-            boolean ox = resource.is(RocketryModule.LOX_TAG);
-            if (!ox && !resource.is(RocketryModule.RP1_TAG)) {
-                return 0;
-            }
-            return r.fill(ox, resource.getAmount(), action.simulate());
+            return r.fill(resource, action.simulate());
         }
 
         @Override

@@ -261,6 +261,37 @@ public final class RocketryGameTests {
     }
 
     @GameTest(template = EMPTY)
+    public static void launchSiteBlueprintIsThePad(GameTestHelper helper) {
+        var def = com.pizzaparker07.spacebreaker.core.multiblock.Multiblocks.get(helper.getLevel().registryAccess(), LaunchPad.SITE).orElseThrow();
+        BlockPos center = helper.absolutePos(new BlockPos(4, 1, 4));
+        for (net.minecraft.core.Direction facing : net.minecraft.core.Direction.Plane.HORIZONTAL) {
+            com.pizzaparker07.spacebreaker.core.multiblock.Multiblocks.place(helper.getLevel(), def, center, facing);
+            helper.assertTrue(com.pizzaparker07.spacebreaker.core.multiblock.Multiblocks.validate(helper.getLevel(), def, center, facing).complete(),
+                    "the placed blueprint validates facing " + facing);
+            LaunchPad.Result r = LaunchPad.check(helper.getLevel(), center);
+            helper.assertTrue(r.formed() && r.hasTower(), "the blueprint is a formed pad with a tower, facing " + facing);
+            helper.assertTrue(r.arms().size() == 1 && r.umbilicals().size() == 1, "arm and umbilical of the blueprint are found, facing " + facing);
+            net.minecraft.world.level.block.state.BlockState arm = helper.getLevel().getBlockState(r.arms().get(0));
+            helper.assertTrue(arm.getValue(com.pizzaparker07.spacebreaker.content.rocketry.pad.TowerAttachmentBlock.FACING) == facing.getOpposite(),
+                    "the arm faces the pad, facing " + facing);
+            BlockPos plate = center.offset(2, 0, 2);
+            helper.getLevel().setBlock(plate, Blocks.STONE.defaultBlockState(), 3);
+            LaunchPad.Result broken = LaunchPad.check(helper.getLevel(), center);
+            helper.assertTrue(!broken.formed() && broken.missingPad().equals(List.of(plate)), "the missing corner plate is reported");
+            var v = com.pizzaparker07.spacebreaker.core.multiblock.Multiblocks.validate(helper.getLevel(), def, center, facing);
+            helper.assertTrue(v.problems().size() == 1 && v.problems().get(0).pos().equals(plate), "the hologram points at the same block");
+            for (int dx = -3; dx <= 3; dx++) {
+                for (int dz = -3; dz <= 3; dz++) {
+                    for (int dy = 0; dy < def.height(); dy++) {
+                        helper.getLevel().setBlock(center.offset(dx, dy, dz), Blocks.AIR.defaultBlockState(), 3);
+                    }
+                }
+            }
+        }
+        helper.succeed();
+    }
+
+    @GameTest(template = EMPTY)
     public static void launchPadFormation(GameTestHelper helper) {
         BlockPos center = buildPad(helper, true);
         LaunchPad.Result r = LaunchPad.check(helper.getLevel(), center);
@@ -290,6 +321,69 @@ public final class RocketryGameTests {
             helper.assertTrue(land > 0 && land < 2500, name + ": landing from low orbit costs " + land);
             helper.assertTrue(Transfers.real(Location.EARTH_ORBIT, orbit.get()).isPresent(), name + ": reachable from Earth orbit");
         }
+        helper.succeed();
+    }
+
+    private static RocketDesign marsReturnRocket(String sl, String vac) {
+        return new RocketDesign(List.of(Spacebreaker.id(sl), Spacebreaker.id("fuel_tank_large"), Spacebreaker.id("fuel_tank_large"),
+                Spacebreaker.id("fuel_tank_large"), Spacebreaker.id("interstage"), Spacebreaker.id(vac), Spacebreaker.id("fuel_tank_large"),
+                Spacebreaker.id("fuel_tank_medium"), Spacebreaker.id("heat_shield"), Spacebreaker.id("crew_capsule"), Spacebreaker.id("parachute")));
+    }
+
+    @GameTest(template = EMPTY)
+    public static void methaloxFliesHomeFromMars(GameTestHelper helper) {
+        var lookup = RocketParts.lookup(helper.getLevel().registryAccess());
+        RocketLayout methalox = RocketLayout.of(marsReturnRocket("methalox_engine", "methalox_vacuum_engine"), lookup);
+        RocketLayout kerolox = RocketLayout.of(marsReturnRocket("kerosene_engine", "vacuum_engine"), lookup);
+        helper.assertTrue(methalox.problems().isEmpty(), "valid design: " + methalox.problems());
+        for (RocketLayout.Stage s : methalox.stages()) {
+            helper.assertTrue(s.propellant() == com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant.METHALOX,
+                    "tanks of a methalox stage hold methalox, stage " + s.index());
+        }
+        RocketLayout.Stage upper = methalox.stages().get(1);
+        helper.assertTrue(within(upper.ispVacuum(), 380, 1) && within(methalox.stages().get(0).ispSeaLevel(), 330, 1), "methalox Isp 330 s SL / 380 s vacuum");
+        double dvCh4 = RocketMath.totalDeltaV(methalox, 0, methalox.fullFuel(), 0);
+        double dvRp1 = RocketMath.totalDeltaV(kerolox, 0, kerolox.fullFuel(), 0);
+        helper.assertTrue(dvCh4 > dvRp1, "methalox beats kerolox on Δv: " + dvCh4 + " vs " + dvRp1);
+        var mars = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(Spacebreaker.id("mars"), false).orElseThrow();
+        List<Location> home = com.pizzaparker07.spacebreaker.content.rocketry.nav.MissionPlanner.homeRoute(mars);
+        helper.assertTrue(home.size() == 3 && home.get(1).orbit() && home.get(2).equals(Location.EARTH_SURFACE), "Mars surface -> Mars orbit -> Earth");
+        for (SbConfig.Realism realism : SbConfig.Realism.values()) {
+            var plan = com.pizzaparker07.spacebreaker.content.rocketry.nav.MissionPlanner.fly(methalox, 0, methalox.fullFuel(), home, realism);
+            double need = 0;
+            for (int i = 0; i + 1 < home.size(); i++) {
+                need += Transfers.cost(home.get(i), home.get(i + 1), realism).orElseThrow();
+            }
+            helper.assertTrue(plan.possible(), realism + ": a methalox rocket fuelled on Mars flies home (needs " + (int) need
+                    + " m/s, has " + (int) dvCh4 + " m/s): " + plan);
+        }
+        helper.succeed();
+    }
+
+    @GameTest(template = EMPTY)
+    public static void fuelWithMethaneAndOxygen(GameTestHelper helper) {
+        RocketEntity rocket = RocketEntity.create(helper.getLevel(), marsReturnRocket("methalox_engine", "methalox_vacuum_engine"),
+                helper.absoluteVec(new net.minecraft.world.phys.Vec3(1.5, 2, 1.5)), 0F);
+        helper.getLevel().addFreshEntity(rocket);
+        var ch4 = com.pizzaparker07.spacebreaker.content.fluids.FluidsModule.LIQUID_METHANE;
+        var lox = com.pizzaparker07.spacebreaker.content.fluids.FluidsModule.LIQUID_OXYGEN;
+        var rp1 = com.pizzaparker07.spacebreaker.content.fluids.FluidsModule.RP1;
+        var handler = new com.pizzaparker07.spacebreaker.content.rocketry.entity.RocketFluidHandler(rocket);
+        var exec = net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
+        helper.assertTrue(handler.fill(rp1.stack(1000), exec) == 0, "a methalox rocket takes no RP-1");
+        int ch4Room = rocket.roomFor(com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant.METHALOX);
+        int loxRoom = rocket.roomFor((com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant) null);
+        RocketLayout l = rocket.layout();
+        double cap = l.stages().stream().mapToDouble(RocketLayout.Stage::propellantKg).sum();
+        helper.assertTrue(within(ch4Room, com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant.METHALOX.fuelMillibuckets(cap), 3),
+                "methane room matches the O/F 3.6 mixture: " + ch4Room);
+        helper.assertTrue(handler.fill(ch4.stack(ch4Room), exec) == ch4Room, "liquid methane goes in");
+        helper.assertTrue(rocket.deltaV() == 0, "methane alone does not burn");
+        helper.assertTrue(handler.fill(lox.stack(loxRoom), exec) == loxRoom, "liquid oxygen goes in");
+        helper.assertTrue(rocket.fullyFuelled(), "methane + LOX fill every stage, fuel " + java.util.Arrays.toString(rocket.fuel()));
+        helper.assertTrue(rocket.roomFor(com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant.METHALOX) == 0
+                && rocket.roomFor((com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant) null) == 0, "no room left");
+        rocket.discard();
         helper.succeed();
     }
 

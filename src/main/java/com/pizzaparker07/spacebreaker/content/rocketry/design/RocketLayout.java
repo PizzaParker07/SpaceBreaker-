@@ -1,6 +1,7 @@
 package com.pizzaparker07.spacebreaker.content.rocketry.design;
 
 import com.pizzaparker07.spacebreaker.content.rocketry.part.PartType;
+import com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant;
 import com.pizzaparker07.spacebreaker.content.rocketry.part.RocketPart;
 import net.minecraft.resources.ResourceLocation;
 
@@ -13,9 +14,10 @@ import java.util.function.Function;
  * Pure data, no game state, so the maths can be tested on its own.
  */
 public final class RocketLayout {
-    /** One stage: everything that is dropped together when the next separator fires. */
+    /** One stage: everything that is dropped together when the next separator fires. Its tanks hold the propellant its engine burns. */
     public record Stage(int index, int firstPart, int lastPart, double dryKg, double propellantKg, double thrustKn,
-                        double ispSeaLevel, double ispVacuum, boolean fins, boolean gridFins, boolean legs, boolean rcs) {
+                        double ispSeaLevel, double ispVacuum, boolean fins, boolean gridFins, boolean legs, boolean rcs,
+                        Propellant propellant) {
         public boolean hasEngine() {
             return thrustKn > 0;
         }
@@ -54,7 +56,7 @@ public final class RocketLayout {
             RocketPart part = lookup.apply(id);
             if (part == null) {
                 problems.add("unknown_part");
-                part = new RocketPart(PartType.TANK, 0, 0, 0, 0, 0, 0, 0, 0, id, 0);
+                part = new RocketPart(PartType.TANK, 0, 0, 0, 0, 0, 0, 0, 0, id, 0, Propellant.KEROLOX);
             }
             parts.add(part);
         }
@@ -106,6 +108,7 @@ public final class RocketLayout {
     private static Stage stage(int index, int from, int to, List<RocketPart> parts) {
         double dry = 0, prop = 0, thrust = 0, flowSl = 0, flowVac = 0;
         boolean fins = false, grid = false, legs = false, rcs = false;
+        Propellant propellant = null;
         for (int i = from; i <= to; i++) {
             RocketPart p = parts.get(i);
             dry += p.massKg();
@@ -115,6 +118,9 @@ public final class RocketLayout {
                 // engines burning together: Isp = total thrust / total mass flow
                 flowSl += p.thrustKn() / Math.max(1, p.ispSeaLevel());
                 flowVac += p.thrustKn() / Math.max(1, p.ispVacuum());
+                if (propellant == null) {
+                    propellant = p.propellant();
+                }
             }
             fins |= p.type() == PartType.FINS;
             grid |= p.type() == PartType.GRID_FINS;
@@ -123,7 +129,8 @@ public final class RocketLayout {
         }
         double ispSl = flowSl > 0 ? thrust / flowSl : 0;
         double ispVac = flowVac > 0 ? thrust / flowVac : 0;
-        return new Stage(index, from, to, dry, prop, thrust, ispSl, ispVac, fins, grid, legs, rcs);
+        return new Stage(index, from, to, dry, prop, thrust, ispSl, ispVac, fins, grid, legs, rcs,
+                propellant == null ? Propellant.KEROLOX : propellant);
     }
 
     public RocketDesign design() {

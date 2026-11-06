@@ -11,6 +11,7 @@ import com.pizzaparker07.spacebreaker.content.rocketry.nav.MissionPlanner;
 import com.pizzaparker07.spacebreaker.content.rocketry.nav.Transfers;
 import com.pizzaparker07.spacebreaker.content.rocketry.net.RocketActionPayload;
 import com.pizzaparker07.spacebreaker.content.rocketry.pad.LaunchPad;
+import com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant;
 import com.pizzaparker07.spacebreaker.content.rocketry.part.RocketPart;
 import com.pizzaparker07.spacebreaker.content.rocketry.part.RocketParts;
 import com.pizzaparker07.spacebreaker.core.config.SbConfig;
@@ -81,6 +82,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
     private double[] fuel = new double[0];
     /** RP-1 and LOX pumped in but not yet paired into propellant (kg). */
     private double rp1Kg;
+    private double ch4Kg;
     private double loxKg;
 
     // flight bookkeeping (server)
@@ -198,6 +200,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         }
         tag.put("stages", list);
         tag.putDouble("rp1", rp1Kg);
+        tag.putDouble("ch4", ch4Kg);
         tag.putDouble("lox", loxKg);
     }
 
@@ -208,6 +211,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
             fuel[i] = list.getCompound(i).getDouble("kg");
         }
         rp1Kg = tag.getDouble("rp1");
+        ch4Kg = tag.getDouble("ch4");
         loxKg = tag.getDouble("lox");
     }
 
@@ -335,7 +339,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         // buckets, canisters and any other item fluid container holding RP-1 or liquid oxygen
         if (state() == FlightState.IDLE && !held.isEmpty()) {
             var content = net.neoforged.neoforge.fluids.FluidUtil.getFluidContained(held);
-            if (content.isPresent() && (content.get().is(RocketryModule.RP1_TAG) || content.get().is(RocketryModule.LOX_TAG))) {
+            if (content.isPresent() && Propellant.isRocketLiquid(content.get())) {
                 if (!level().isClientSide) {
                     var result = net.neoforged.neoforge.fluids.FluidUtil.tryEmptyContainer(held, new RocketFluidHandler(this),
                             Integer.MAX_VALUE, player, true);
@@ -400,52 +404,96 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
             fuel[i] = i >= activeStage() ? l.stages().get(i).propellantKg() : 0;
         }
         rp1Kg = 0;
+        ch4Kg = 0;
         loxKg = 0;
         syncFuel();
     }
 
-    /**
-     * Pump liquid in (mB of RP-1 or LOX). Paired into propellant at the 1 : 2.56 mixture ratio and stored
-     * from the lowest stage up. Returns the amount accepted.
-     */
+    /** Pump liquid in (mB of RP-1 or LOX, kerolox stages only). Returns the amount accepted. */
     public int fill(boolean oxidiser, int millibuckets, boolean simulate) {
+        return fill(oxidiser ? null : Propellant.KEROLOX, millibuckets, simulate);
+    }
+
+    /** Pump in any rocket liquid: a fuel (RP-1, liquid methane) or liquid oxygen. Returns the amount accepted. */
+    public int fill(net.neoforged.neoforge.fluids.FluidStack stack, boolean simulate) {
+        if (stack.isEmpty()) {
+            return 0;
+        }
+        if (stack.is(Propellant.LOX_TAG)) {
+            return fill((Propellant) null, stack.getAmount(), simulate);
+        }
+        Propellant p = Propellant.forFuel(stack);
+        return p == null ? 0 : fill(p, stack.getAmount(), simulate);
+    }
+
+    private double buffer(Propellant p) {
+        return p == Propellant.METHALOX ? ch4Kg : rp1Kg;
+    }
+
+    private void addBuffer(Propellant p, double kg) {
+        if (p == Propellant.METHALOX) {
+            ch4Kg += kg;
+        } else {
+            rp1Kg += kg;
+        }
+    }
+
+    /**
+     * Pump in mB of a stage fuel ({@code fuel}) or of liquid oxygen ({@code fuel == null}). Each stage takes the
+     * fuel its engine burns; fuel and oxygen are paired into propellant at that engine's mixture ratio and
+     * stored from the lowest stage up. Returns the amount accepted.
+     */
+    public int fill(@Nullable Propellant fuel, int millibuckets, boolean simulate) {
         if (state() != FlightState.IDLE && state() != FlightState.COUNTDOWN || millibuckets <= 0) {
             return 0;
         }
         RocketLayout l = layout();
-        double space = 0;
-        for (int i = activeStage(); i < fuel.length; i++) {
-            space += l.stages().get(i).propellantKg() - fuel[i];
+        double roomKg = 0;
+        for (int i = activeStage(); i < fuel().length; i++) {
+            RocketLayout.Stage s = l.stages().get(i);
+            double space = s.propellantKg() - this.fuel[i];
+            if (fuel == null) {
+                roomKg += space * (1 - s.propellant().fuelFraction());
+            } else if (s.propellant() == fuel) {
+                roomKg += space * fuel.fuelFraction();
+            }
         }
-        double share = oxidiser ? 1 - RocketPart.RP1_FRACTION : RocketPart.RP1_FRACTION;
-        double density = oxidiser ? RocketPart.LOX_DENSITY : RocketPart.RP1_DENSITY;
-        double buffered = oxidiser ? loxKg : rp1Kg;
-        double roomKg = Math.max(0, space * share - buffered);
+        double density = fuel == null ? Propellant.LOX_DENSITY : fuel.fuelDensity();
+        roomKg = Math.max(0, roomKg - (fuel == null ? loxKg : buffer(fuel)));
         int accepted = (int) Math.min(millibuckets, Math.floor(roomKg / density));
         if (accepted <= 0 || simulate) {
             return Math.max(0, accepted);
         }
-        if (oxidiser) {
+        if (fuel == null) {
             loxKg += accepted * density;
         } else {
-            rp1Kg += accepted * density;
+            addBuffer(fuel, accepted * density);
         }
-        double pairs = Math.min(rp1Kg / RocketPart.RP1_FRACTION, loxKg / (1 - RocketPart.RP1_FRACTION));
-        for (int i = activeStage(); i < fuel.length && pairs > 1e-6; i++) {
-            double room = l.stages().get(i).propellantKg() - fuel[i];
-            double add = Math.min(room, pairs);
-            fuel[i] += add;
-            pairs -= add;
-            rp1Kg -= add * RocketPart.RP1_FRACTION;
-            loxKg -= add * (1 - RocketPart.RP1_FRACTION);
+        for (int i = activeStage(); i < this.fuel.length; i++) {
+            RocketLayout.Stage s = l.stages().get(i);
+            Propellant p = s.propellant();
+            double f = p.fuelFraction();
+            double pairs = Math.min(buffer(p) / f, loxKg / (1 - f));
+            double add = Math.min(s.propellantKg() - this.fuel[i], pairs);
+            if (add <= 1e-9) {
+                continue;
+            }
+            this.fuel[i] += add;
+            addBuffer(p, -add * f);
+            loxKg -= add * (1 - f);
         }
         syncFuel();
         return accepted;
     }
 
-    /** Space left for each liquid, in mB. */
+    /** Space left for each liquid, in mB (RP-1 or LOX). */
     public int roomFor(boolean oxidiser) {
         return fill(oxidiser, Integer.MAX_VALUE, true);
+    }
+
+    /** Space left for a stage fuel ({@code null}: liquid oxygen), in mB. */
+    public int roomFor(@Nullable Propellant fuel) {
+        return fill(fuel, Integer.MAX_VALUE, true);
     }
 
     // ------------------------------------------------------------------ crew commands
