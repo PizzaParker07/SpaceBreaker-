@@ -37,6 +37,8 @@ public final class InnerResourceGameTests {
         helper.assertTrue(new ItemStack(MarsModule.PERCHLORATE_SALT.get()).is(MarsModule.DUSTS_PERCHLORATE), "perchlorate is c:dusts/perchlorate");
         helper.assertTrue(new ItemStack(MarsModule.MARTIAN_ICE.get()).is(MarsModule.ICES_WATER), "martian ice is c:ices/water");
         helper.assertTrue(new ItemStack(Items.ICE).is(MarsModule.ICES_WATER), "plain ice is c:ices/water");
+        helper.assertTrue(new ItemStack(VenusModule.SULFUR.get()).is(MarsModule.DUSTS_SULFUR), "sulfur is c:dusts/sulfur");
+        helper.assertTrue(new ItemStack(MercuryModule.MERCURY_REGOLITH.get()).is(MarsModule.REGOLITHS_SOLAR_WIND), "mercury regolith holds solar wind");
         helper.succeed();
     }
 

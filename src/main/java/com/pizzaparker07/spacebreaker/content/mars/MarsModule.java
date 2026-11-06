@@ -118,6 +118,9 @@ public final class MarsModule implements SbModule {
     /** Industry inputs of the inner planets: perchlorate (oxygen), water ice (water), sulfur. */
     public static final TagKey<Item> DUSTS_PERCHLORATE = SbTagKeys.commonItem("dusts/perchlorate");
     public static final TagKey<Item> ICES_WATER = SbTagKeys.commonItem("ices/water");
+    public static final TagKey<Item> DUSTS_SULFUR = SbTagKeys.commonItem("dusts/sulfur");
+    /** Regoliths that soaked up solar-wind hydrogen and helium-3 (airless bodies near the Sun). */
+    public static final TagKey<Item> REGOLITHS_SOLAR_WIND = SbTagKeys.commonItem("regoliths/solar_wind");
     /** Loose Martian soils (boot prints). */
     public static final TagKey<Block> MARS_SOILS = SbTagKeys.modBlock("mars_soils");
     /** Rocks that Mars ore veins may replace. */
@@ -283,7 +286,10 @@ public final class MarsModule implements SbModule {
         tags.itemTag(Tags.Items.RAW_MATERIALS, RAW_MATERIALS_HEMATITE);
         tags.item(GEMS_GYPSUM, GYPSUM_CRYSTAL.get());
         tags.item(DUSTS_PERCHLORATE, PERCHLORATE_SALT.get());
-        tags.itemTag(Tags.Items.DUSTS, DUSTS_PERCHLORATE);
+        tags.item(DUSTS_SULFUR, com.pizzaparker07.spacebreaker.content.venus.VenusModule.SULFUR.get());
+        tags.itemTag(Tags.Items.DUSTS, DUSTS_PERCHLORATE, DUSTS_SULFUR);
+        tags.item(REGOLITHS_SOLAR_WIND, com.pizzaparker07.spacebreaker.content.mercury.MercuryModule.MERCURY_REGOLITH.get().asItem(),
+                MoonModule.LUNAR_REGOLITH.get().asItem(), MoonModule.MARE_REGOLITH.get().asItem());
         tags.item(ICES_WATER, MARTIAN_ICE.get().asItem(), DUSTY_ICE.get().asItem(), net.minecraft.world.item.Items.ICE,
                 net.minecraft.world.item.Items.PACKED_ICE, MoonModule.LUNAR_ICE.get().asItem());
         // stairs/slabs/walls block tags are mirrored into item tags once, by the Moon module

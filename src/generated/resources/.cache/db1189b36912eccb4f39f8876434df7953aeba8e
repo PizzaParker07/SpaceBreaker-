@@ -1,6 +1,6 @@
-// 1.21.1	2026-11-06T19:17:13.862874516	Tags for minecraft:item mod id spacebreaker
+// 1.21.1	2026-11-06T19:37:35.217607882	Tags for minecraft:item mod id spacebreaker
 7e8e995a94080524a7a2d6280b7b24b5bae0a66f data/c/tags/item/buckets.json
-1ffec92d972a90bca2a922f432f906796cb8bc14 data/c/tags/item/dusts.json
+9f193ba6f1ede8ee1454c64033f45b25b36488c8 data/c/tags/item/dusts.json
 ad7d32167ffa7ca53078a97903c3d39992237e23 data/c/tags/item/dusts/aluminum.json
 1e348444b9090d1226540832a636f6aa0935df63 data/c/tags/item/dusts/coal.json
 2a4fb2c5dfaaa7e712a16d0af4b105a1b5e44eb0 data/c/tags/item/dusts/copper.json
@@ -9,6 +9,7 @@ d5ffd76eae6aa5a12b296ef8f91c74c5a83c9360 data/c/tags/item/dusts/iron.json
 271e43d60fa032f5f0ced7b3868cdf48dd3a34e4 data/c/tags/item/dusts/lithium.json
 2a65a9b853ae53f01f426d1248d101e7d49ab38c data/c/tags/item/dusts/nickel.json
 f9b937508de454eb6000e610f9f5889223f0ac9b data/c/tags/item/dusts/perchlorate.json
+4e3b13f481e2b5a2a92f407196e8171b3c635a66 data/c/tags/item/dusts/sulfur.json
 b8b1c86d18ce0a7c14183c37900e3d1dae9a6c5c data/c/tags/item/dusts/titanium.json
 58682988e1855d5e178aec782df052798999a982 data/c/tags/item/dusts/tungsten.json
 f5d68f9fa141c448101c2d1e358ed431e2ec9ccf data/c/tags/item/gems/gypsum.json
@@ -63,6 +64,7 @@ c43274ba74875113cd85dbd8ca19b19ce1833a2f data/c/tags/item/raw_materials/ilmenite
 4338403acae9cc1f7f53040ec0e2dc45d688a625 data/c/tags/item/raw_materials/rutile.json
 12fa247c0f157ce1496395bc28b36eda7706a12c data/c/tags/item/raw_materials/spodumene.json
 20055c2564312e0545794c0b73f9d248ff7fe9bf data/c/tags/item/raw_materials/wolframite.json
+5a1d4e66e545090f2718cc9aac1b10bea6a69b5c data/c/tags/item/regoliths/solar_wind.json
 34e122b3c8afafcc5f38019d9eb2f3ab1d290951 data/c/tags/item/rods.json
 befe8c303dfb8febde0e46b5e010deeb8a14baac data/c/tags/item/rods/iron.json
 1753d535379b3ad70d7b7113f2b39973e1b6c607 data/c/tags/item/rods/steel.json
