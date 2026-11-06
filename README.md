@@ -20,7 +20,7 @@ to other stars and — eventually — other galaxies.
 - **Life out there:** Mars and the other worlds have their own creatures.
 - **Hand-made look:** every texture is drawn pixel by pixel (by code), every machine has a real
   3D model, and all blocks ship LabPBR normal/specular maps for shader packs.
-- **Compatible:** works with Sodium and Iris; full-screen effects are drawn on top of the shader output.
+- **Compatible:** works with Sodium and Iris shader packs (space skies drawn over the pack, see `docs/COMPAT.md`); full-screen effects are drawn on top of the shader output.
 
 ### Content so far
 | Block / item | Notes |

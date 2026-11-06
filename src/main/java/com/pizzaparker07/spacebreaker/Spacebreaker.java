@@ -1,6 +1,7 @@
 package com.pizzaparker07.spacebreaker;
 
 import com.mojang.logging.LogUtils;
+import com.pizzaparker07.spacebreaker.compat.Compat;
 import com.pizzaparker07.spacebreaker.core.SbTabs;
 import com.pizzaparker07.spacebreaker.core.body.Bodies;
 import com.pizzaparker07.spacebreaker.core.config.SbConfig;
@@ -22,6 +23,7 @@ public final class Spacebreaker {
     public Spacebreaker(IEventBus modBus, ModContainer container) {
         container.registerConfig(ModConfig.Type.SERVER, SbConfig.SERVER_SPEC);
         container.registerConfig(ModConfig.Type.CLIENT, SbConfig.CLIENT_SPEC);
+        Compat.init(container);
 
         modBus.addListener(Bodies::registerRegistry);
         modBus.addListener(Tech::registerRegistry);

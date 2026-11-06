@@ -42,6 +42,8 @@ import java.util.stream.Stream;
 public final class ShowcaseDriver {
     private static final String SCENARIO = System.getProperty("spacebreaker.scenario", "");
     private static final String PREFIX = System.getProperty("spacebreaker.shotPrefix", "vanilla");
+    /** Optional regex: only shots whose name matches are taken (-Pshots=...). */
+    private static final String FILTER = System.getProperty("spacebreaker.shots", "");
     private static final String WORLD = "sb_showcase";
     private static final int TIMEOUT_TICKS = 20 * 60 * 12;
 
@@ -121,6 +123,9 @@ public final class ShowcaseDriver {
                         });
                         dimension = scenario.dimension();
                         shots = scenario.shots();
+                        if (!FILTER.isEmpty()) {
+                            shots = shots.stream().filter(sh -> sh.name().matches(FILTER)).toList();
+                        }
                         phase = Phase.BUILD;
                         ticks = 0;
                         log("world ready, building showcase (" + shots.size() + " shots)");
