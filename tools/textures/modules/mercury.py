@@ -8,14 +8,14 @@ from modules.mars import dust, prints
 from modules.moon_creatures import paint, noise_pick
 
 # Regolith: dark, cool grey with a faint blue cast (low-reflectance material).
-REGOLITH = ramp('#1c1d20', '#2b2d31', '#303236', '#35373b', '#3b3d42', '#424449')
+REGOLITH = ramp('#55514d', '#736e69', '#7b7671', '#837e79', '#8c8681', '#958f8a')
 # Crust: mid grey intercrater plains rock.
-CRUST = ramp('#2f2f31', '#3b3b3e', '#47474a', '#535357', '#606064', '#6e6e72')
+CRUST = ramp('#58534c', '#6c665e', '#7c756c', '#8c847a', '#9c948a', '#aaa297')
 # Low-reflectance rock: near black, graphite flakes.
-LRM = ramp('#141518', '#1c1d21', '#24262a', '#2d2f34', '#383a40')
+LRM = ramp('#3c3a38', '#4b4846', '#55524f', '#5e5b58', '#6a6764')
 GRAPHITE = ramp('#2a2c31', '#4a4e57', '#7a808b', '#a9afb9')
 # Hollow deposits: bright, slightly blue-white sulfide crust.
-HOLLOW = ramp('#55606e', '#6c7888', '#808d9e', '#94a1b2', '#a8b4c3', '#bcc6d2')
+HOLLOW = ramp('#7e848e', '#959ba5', '#a5abb4', '#b8bcc4', '#c6cad1', '#d3d6dc')
 CRAWLER = ramp('#2a2522', '#3b332e', '#4f443c', '#65564b', '#7c6a5c', '#93806f')
 GLOW = ramp('#6a2c08', '#c8641a', '#ffb04a', '#ffe0a0')
 

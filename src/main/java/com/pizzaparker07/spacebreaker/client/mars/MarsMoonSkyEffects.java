@@ -36,7 +36,8 @@ import org.joml.Vector3d;
 public class MarsMoonSkyEffects extends PlanetSkyEffects {
     private static final ResourceLocation SUN = Spacebreaker.id("textures/environment/sun_vacuum.png");
     private static final ResourceLocation MARS = Spacebreaker.id("textures/environment/mars_disc.png");
-    private static final int GRID = 20;
+    private static final int GRID = 40;
+    private static final ResourceLocation HALO = Spacebreaker.id("textures/environment/mars_halo.png");
     private final String bodyName;
     private final double marsSize;
     private ClientLevel cachedLevel;
@@ -146,6 +147,21 @@ public class MarsMoonSkyEffects extends PlanetSkyEffects {
             }
         }
         BufferUploader.drawWithShader(bb.buildOrThrow());
+        // thin, pale atmosphere ring, brightest on the sunlit limb
+        double lit = Math.max(0.15, 0.5 + 0.5 * sun.z);
+        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderTexture(0, HALO);
+        RenderSystem.setShaderColor((float) lit, (float) lit, (float) lit, (float) (0.8 * lit));
+        float h = half * 1.08F;
+        BufferBuilder hb = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        for (float[] q : new float[][]{{-1, 1, 0, 0}, {-1, -1, 0, 1}, {1, -1, 1, 1}, {1, 1, 1, 0}}) {
+            hb.addVertex(m, (float) (c.x + right.x * q[0] * h + up.x * q[1] * h), (float) (c.y + right.y * q[0] * h + up.y * q[1] * h),
+                    (float) (c.z + right.z * q[0] * h + up.z * q[1] * h)).setUv(q[2], q[3]);
+        }
+        BufferUploader.drawWithShader(hb.buildOrThrow());
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+        RenderSystem.defaultBlendFunc();
     }
 
     private static void vertex(BufferBuilder bb, Matrix4f m, Vector3d c, Vector3d right, Vector3d up, float half, Vector3d sun, int i, int j) {
@@ -155,9 +171,11 @@ public class MarsMoonSkyEffects extends PlanetSkyEffects {
         double dy = 1 - v * 2;
         double r2 = dx * dx + dy * dy;
         double nz = Math.sqrt(Math.max(0, 1 - r2));
-        double lambert = Math.max(0, dx * sun.x + dy * sun.y + nz * sun.z);
-        // a faint glow on the night side from the thin, dusty atmosphere at the limb
-        float b = (float) Math.min(1, 0.04 + lambert * 1.05);
+        double cosI = dx * sun.x + dy * sun.y + nz * sun.z;
+        // soft terminator: twilight scattering in the dusty atmosphere spreads it over a few degrees
+        double t = Math.max(0, Math.min(1, (cosI + 0.12) / 0.32));
+        double lambert = Math.max(0, cosI) * 0.85 + 0.15 * t * t * (3 - 2 * t);
+        float b = (float) Math.min(1, 0.03 + lambert * 1.05);
         float px = (float) (c.x + right.x * dx * half + up.x * dy * half);
         float py = (float) (c.y + right.y * dx * half + up.y * dy * half);
         float pz = (float) (c.z + right.z * dx * half + up.z * dy * half);

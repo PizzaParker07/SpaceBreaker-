@@ -5,20 +5,27 @@
   "relief": {
     "amplitude": 36,
     "scale": 540,
-    "detail_amplitude": 2.0,
-    "detail_scale": 34
+    "detail_amplitude": 2.6,
+    "detail_scale": 26,
+    "roughness": 1.1
   },
   "lowlands": {
-    "threshold": 0.06,
+    "threshold": 0.1,
     "scale": 3200,
     "depth": 20,
     "edge": 0.12,
     "ridge_height": 1.2,
-    "volcanic_patch": 1.0
+    "volcanic_patch": 1.0,
+    "dichotomy": {
+      "latitude": 12,
+      "width": 16,
+      "strength": 0.38,
+      "wave": 14
+    }
   },
   "craters": {
     "density": 0.8,
-    "lowland_density": 0.3,
+    "lowland_density": 0.33,
     "depth_ratio": 0.15,
     "rim_ratio": 0.04,
     "complex_radius": 30,

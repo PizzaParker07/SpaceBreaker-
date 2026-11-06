@@ -41,41 +41,115 @@ def chondrite():
 
 # --------------------------------------------------------------------------- Mars in the sky
 
-MARS_DISC = ramp('#4a2416', '#6b331d', '#8a4426', '#a65631', '#bd6b3e', '#cf8652')
-MARS_DARK = ramp('#3a2a22', '#4f3a2e')
-CAP = ramp('#d8d4cf', '#f1efec')
+def _lerp(a, b, t):
+    return tuple(int(round(a[i] + (b[i] - a[i]) * t)) for i in range(3))
 
 
-def mars_disc(size=64):
-    """Mars as a full disc: rusty plains, dark albedo markings, the rift line, white polar caps. Shading is applied
-    in game per vertex (phase), so the texture is evenly lit."""
-    cv = Canvas(size, size)
-    n = fbm(size, size, 4401, [(16, 1.0), (8, 0.5), (4, 0.25)])
+def mars_disc(size=512):
+    """Mars as a full, evenly lit disc for the sky of its moons, at high resolution: rusty plains and darker
+    southern highlands, Syrtis Major, Acidalia and Mare Erythraeum, the Tharsis volcanoes with Olympus Mons, the scar
+    of Valles Marineris, bright Hellas, and the white polar caps. Phase shading is applied in game."""
+    import math
+    from PIL import Image
     rng = random.Random(4402)
+    # value noise for natural mottling, sampled bilinearly at several scales
+    grids = []
+    for cell in (64, 24, 9):
+        g = [[rng.random() for _ in range(size // cell + 2)] for _ in range(size // cell + 2)]
+        grids.append((cell, g))
+
+    def noise(x, y):
+        v = 0
+        w = 0
+        for k, (cell, g) in enumerate(grids):
+            fx, fy = x / cell, y / cell
+            ix, iy = int(fx), int(fy)
+            tx, ty = fx - ix, fy - iy
+            a = g[iy][ix] * (1 - tx) + g[iy][ix + 1] * tx
+            b = g[iy + 1][ix] * (1 - tx) + g[iy + 1][ix + 1] * tx
+            amp = 1 / (k + 1)
+            v += (a * (1 - ty) + b * ty) * amp
+            w += amp
+        return v / w
+
+    bright = (217, 160, 102)   # bright dust
+    dust = (193, 104, 60)      # dust
+    dark = (110, 72, 52)       # dark albedo features
+    cap = (232, 228, 218)
+    # (u, v, radius, strength) of dark regions in disc coordinates (-1..1, v down)
+    darks = [(0.42, 0.05, 0.22, 1.0), (0.55, -0.32, 0.18, 0.8), (-0.05, 0.22, 0.35, 0.7), (0.15, 0.32, 0.25, 0.6), (-0.55, 0.15, 0.2, 0.5)]
+    volcanoes = [(-0.62, -0.12, 0.085), (-0.4, -0.05, 0.035), (-0.36, 0.06, 0.035), (-0.32, 0.17, 0.035)]
+    img = Image.new('RGBA', (size, size), (0, 0, 0, 0))
+    px = img.load()
     c = (size - 1) / 2
     for y in range(size):
         for x in range(size):
-            dx = (x - c) / c
-            dy = (y - c) / c
-            d = math.hypot(dx, dy)
+            u = (x - c) / c
+            v = (y - c) / c
+            d = math.hypot(u, v)
             if d > 1:
                 continue
-            lat = -dy
-            v = n[y][x]
-            if abs(lat) > 0.86 - 0.05 * v:
-                col = CAP[1] if abs(lat) > 0.92 else CAP[0]
-            elif v < 0.24 and -0.45 < lat < 0.3:
-                col = MARS_DARK[0] if v < 0.16 else MARS_DARK[1]
-            else:
-                col = MARS_DISC[2 + min(3, int(v * 4))]
-            # Valles Marineris: a dark scar just south of the equator
-            if abs(lat + 0.1 + 0.03 * math.sin(dx * 6)) < 0.025 and -0.55 < dx < 0.35:
-                col = MARS_DISC[0]
-            # limb darkening of the dusty atmosphere
-            if d > 0.93:
-                col = MARS_DISC[1] if col not in CAP else CAP[0]
-            cv[x, y] = col
-    return cv
+            n = noise(x, y)
+            col = _lerp(dust, bright, max(0.0, min(1.0, (n - 0.35) * 2.2)))
+            # southern highlands a shade darker and more cratered-looking
+            if v > 0:
+                col = _lerp(col, _lerp(dust, dark, 0.35), min(0.6, v * 0.9) * (0.6 + 0.4 * n))
+            for du, dv, r, k in darks:
+                dd = math.hypot(u - du, v - dv) / r
+                if dd < 1.3:
+                    t = max(0.0, 1 - dd) ** 0.8 * k * (0.55 + 0.6 * n)
+                    col = _lerp(col, dark, min(1.0, t))
+            # Hellas: a bright, smooth basin in the south
+            hd = math.hypot(u - 0.3, v - 0.55) / 0.13
+            if hd < 1:
+                col = _lerp(col, bright, (1 - hd) * 0.8)
+            # Tharsis volcanoes: lit summits with a dark caldera dot, Olympus Mons biggest with its cliff ring
+            for vu, vv, r in volcanoes:
+                vd = math.hypot(u - vu, v - vv) / r
+                if vd < 1:
+                    # a lit dome: brighter toward the upper-left flank, a soft shadow on the lower-right
+                    lu = (u - vu) / r
+                    lv = (v - vv) / r
+                    shade = -(lu + lv) * 0.5 * (1 - vd)
+                    col = _lerp(col, (214, 150, 104) if shade > 0 else (120, 70, 46), min(1.0, abs(shade) * 2.2 + (1 - vd) * 0.25))
+                    if vd < 0.12 and r > 0.05:
+                        col = _lerp(col, dark, 0.6)
+            # Valles Marineris: a long dark scar east of Tharsis
+            vy = 0.1 + 0.035 * math.sin(u * 7)
+            w = (0.006 + 0.012 * (1 - abs(u - 0.04) / 0.34)) * (0.7 + 0.6 * n)
+            if -0.3 < u < 0.38 and abs(v - vy) < w:
+                col = _lerp(col, (88, 50, 34), 0.55 + 0.25 * (1 - abs(v - vy) / w))
+            # polar caps, ragged edges
+            lat = -v
+            edge = 0.82 + 0.05 * (n - 0.5)
+            if lat > edge:
+                col = _lerp(col, cap, min(1.0, (lat - edge) * 14))
+            if -lat > edge + 0.04:
+                col = _lerp(col, cap, min(1.0, (-lat - edge - 0.04) * 12))
+            # soft, dusty limb: a little brighter and redder near the edge
+            if d > 0.9:
+                col = _lerp(col, (230, 160, 120), (d - 0.9) * 2.5)
+            a = 255 if d < 0.995 else int(255 * (1 - (d - 0.995) / 0.005))
+            px[x, y] = (col[0], col[1], col[2], max(0, a))
+    return img
+
+
+def mars_halo(size=128):
+    """Thin, pale atmosphere ring drawn around the disc (additive)."""
+    import math
+    from PIL import Image
+    img = Image.new('RGBA', (size, size), (0, 0, 0, 0))
+    px = img.load()
+    c = (size - 1) / 2
+    for y in range(size):
+        for x in range(size):
+            d = math.hypot(x - c, y - c) / c
+            # disc edge sits at 1/1.08 of the halo radius
+            t = (d - 1 / 1.08) / (1 - 1 / 1.08)
+            if -0.6 < t < 1:
+                a = math.exp(-((t - 0.05) / 0.35) ** 2) if t > -0.2 else 0
+                px[x, y] = (int(150 + 80 * a), int(160 + 60 * a), int(190 + 40 * a), int(200 * a))
+    return img
 
 
 def export(save):
@@ -87,4 +161,7 @@ def export(save):
         for side in ('left', 'right'):
             save(footprint(base, prints(r), side), 'block', f'{name}_footprint_{side}', (22, 8, 64, None))
     save(chondrite(), 'block', 'carbonaceous_chondrite', (30, 10, 30, None))
-    save(mars_disc(), 'environment', 'mars_disc')
+    import os
+    out = os.path.join(os.path.dirname(__file__), '..', '..', '..', 'src', 'main', 'resources', 'assets', 'spacebreaker', 'textures', 'environment')
+    mars_disc().save(os.path.join(out, 'mars_disc.png'))
+    mars_halo().save(os.path.join(out, 'mars_halo.png'))

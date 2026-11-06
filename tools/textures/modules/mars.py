@@ -12,17 +12,17 @@ from modules.moon import quant, white, blend, blur_dir, voronoi, footprint, bric
 # --------------------------------------------------------------------------- palettes (dark -> light)
 
 # Martian dust/regolith: muted rust-butterscotch (bead, then five powder tones).
-REGOLITH = ramp('#5e3220', '#86492f', '#8f5134', '#985939', '#a1623f', '#ab6c46')
+REGOLITH = ramp('#86452a', '#9b5232', '#a75a36', '#b2623a', '#bd6b3f', '#c87748')
 # Hematite spherules ("blueberries"): blue-grey iron oxide beads.
 BERRY = ramp('#2f2c33', '#4a4752', '#6c6a76')
 # Perchlorate/sulfate salt crust: pale cream.
 SALT = ramp('#b49a7c', '#cbb698', '#ddcdb2')
 # Phyllosilicate clay: pale grey-tan with a faint green cast.
-CLAY = ramp('#6f6355', '#8a7d6c', '#938674', '#9c8f7c', '#a59884', '#afa28d')
+CLAY = ramp('#614a3c', '#7e604e', '#866653', '#8c6a55', '#94725c', '#9d7b64')
 # CO2 frost over dust: pinkish white.
 FROST = ramp('#8f6c5c', '#b9a49c', '#c9b9b3', '#d6cbc7', '#e2dad7', '#eee9e7')
 # Dark basaltic dune sand.
-SAND = ramp('#2f2724', '#433833', '#4a3e38', '#51443d', '#584a42', '#605048')
+SAND = ramp('#352b26', '#4a3d36', '#51433b', '#584a42', '#5f5048', '#67574e')
 # Olivine sand: olive green.
 OLIVINE = ramp('#35352a', '#4b4c37', '#53543c', '#5b5c41', '#636447', '#6c6c4d')
 # Martian basalt: dark warm grey (a touch of rust in the lightest tone).

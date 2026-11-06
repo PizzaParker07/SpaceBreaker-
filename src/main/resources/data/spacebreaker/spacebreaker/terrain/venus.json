@@ -6,7 +6,8 @@
     "amplitude": 24,
     "scale": 620,
     "detail_amplitude": 1.6,
-    "detail_scale": 30
+    "detail_scale": 30,
+    "roughness": 0.6
   },
   "lowlands": {
     "threshold": -0.05,

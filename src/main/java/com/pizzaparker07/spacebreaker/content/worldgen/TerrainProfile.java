@@ -54,14 +54,20 @@ public record TerrainProfile(ResourceLocation body, int baseHeight, double poleD
      * @param scale           horizontal size of highland hills
      * @param detailAmplitude small bumps everywhere
      * @param detailScale     size of the small bumps
+     * @param roughness       fine, block-scale unevenness that breaks smooth slopes into ragged, natural steps (0 = none)
      */
-    public record Relief(double amplitude, double scale, double detailAmplitude, double detailScale) {
-        public static final Relief DEFAULT = new Relief(22, 520, 2.5, 36);
+    public record Relief(double amplitude, double scale, double detailAmplitude, double detailScale, double roughness) {
+        public static final Relief DEFAULT = new Relief(22, 520, 2.5, 36, 0);
+
+        public Relief(double amplitude, double scale, double detailAmplitude, double detailScale) {
+            this(amplitude, scale, detailAmplitude, detailScale, 0);
+        }
         public static final Codec<Relief> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.DOUBLE.optionalFieldOf("amplitude", DEFAULT.amplitude).forGetter(Relief::amplitude),
                 Codec.DOUBLE.optionalFieldOf("scale", DEFAULT.scale).forGetter(Relief::scale),
                 Codec.DOUBLE.optionalFieldOf("detail_amplitude", DEFAULT.detailAmplitude).forGetter(Relief::detailAmplitude),
-                Codec.DOUBLE.optionalFieldOf("detail_scale", DEFAULT.detailScale).forGetter(Relief::detailScale)
+                Codec.DOUBLE.optionalFieldOf("detail_scale", DEFAULT.detailScale).forGetter(Relief::detailScale),
+                Codec.DOUBLE.optionalFieldOf("roughness", 0.0).forGetter(Relief::roughness)
         ).apply(i, Relief::new));
     }
 
@@ -73,16 +79,39 @@ public record TerrainProfile(ResourceLocation body, int baseHeight, double poleD
      * @param ridgeHeight   wrinkle ridges on the lowland floor
      * @param volcanicPatch chance-like threshold for pyroclastic (volcanic glass) deposits near the shores; 1 = none
      */
-    public record Lowlands(double threshold, double scale, double depth, double edge, double ridgeHeight, double volcanicPatch) {
-        public static final Lowlands DEFAULT = new Lowlands(0.18, 2400, 14, 0.12, 1.6, 0.72);
+    public record Lowlands(double threshold, double scale, double depth, double edge, double ridgeHeight, double volcanicPatch,
+                           java.util.Optional<Dichotomy> dichotomy) {
+        public static final Lowlands DEFAULT = new Lowlands(0.18, 2400, 14, 0.12, 1.6, 0.72, java.util.Optional.empty());
+
+        public Lowlands(double threshold, double scale, double depth, double edge, double ridgeHeight, double volcanicPatch) {
+            this(threshold, scale, depth, edge, ridgeHeight, volcanicPatch, java.util.Optional.empty());
+        }
         public static final Codec<Lowlands> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.DOUBLE.optionalFieldOf("threshold", DEFAULT.threshold).forGetter(Lowlands::threshold),
                 Codec.DOUBLE.optionalFieldOf("scale", DEFAULT.scale).forGetter(Lowlands::scale),
                 Codec.DOUBLE.optionalFieldOf("depth", DEFAULT.depth).forGetter(Lowlands::depth),
                 Codec.DOUBLE.optionalFieldOf("edge", DEFAULT.edge).forGetter(Lowlands::edge),
                 Codec.DOUBLE.optionalFieldOf("ridge_height", DEFAULT.ridgeHeight).forGetter(Lowlands::ridgeHeight),
-                Codec.DOUBLE.optionalFieldOf("volcanic_patch", DEFAULT.volcanicPatch).forGetter(Lowlands::volcanicPatch)
+                Codec.DOUBLE.optionalFieldOf("volcanic_patch", DEFAULT.volcanicPatch).forGetter(Lowlands::volcanicPatch),
+                Dichotomy.CODEC.optionalFieldOf("dichotomy").forGetter(Lowlands::dichotomy)
         ).apply(i, Lowlands::new));
+    }
+
+    /**
+     * A hemispheric split (like Mars): lowlands favoured on one side of a wavy boundary latitude, highlands on the other.
+     *
+     * @param latitude boundary latitude (degrees, + north); lowlands lie poleward of it on the north side
+     * @param width    width of the transition in degrees
+     * @param strength how strongly the noise threshold is shifted (noise units)
+     * @param wave     amplitude of the boundary's wander in degrees
+     */
+    public record Dichotomy(double latitude, double width, double strength, double wave) {
+        public static final Codec<Dichotomy> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Codec.DOUBLE.optionalFieldOf("latitude", 15.0).forGetter(Dichotomy::latitude),
+                Codec.DOUBLE.optionalFieldOf("width", 12.0).forGetter(Dichotomy::width),
+                Codec.DOUBLE.optionalFieldOf("strength", 0.45).forGetter(Dichotomy::strength),
+                Codec.DOUBLE.optionalFieldOf("wave", 12.0).forGetter(Dichotomy::wave)
+        ).apply(i, Dichotomy::new));
     }
 
     /**

@@ -6,7 +6,7 @@ from sbtex.core import Canvas, ramp, clustered, fbm, parse_mask, mask_from, dome
 from modules.moon import quant, white, blend, blur_dir, bricks
 
 # Venus basalt: dark grey-brown, baked; a faint warm cast from the orange daylight is NOT painted in (light does that).
-BASALT = ramp('#1d1a19', '#272322', '#312c2a', '#3b3532', '#463f3b', '#524944', '#5e544e')
+BASALT = ramp('#24201e', '#2f2a27', '#3a3431', '#443e3a', '#4a4440', '#57504b', '#635b55')
 # Weathered surface gravel: browner, finer.
 SOIL = ramp('#2a2420', '#3a312b', '#41372f', '#483d35', '#4f433a', '#574a40')
 # Tessera: strongly folded rock, banded grey and rust.
@@ -14,7 +14,7 @@ TESSERA = ramp('#2c2624', '#3b3330', '#4b413c', '#5a4e47', '#6a5c53', '#7a6b60')
 # Sulfur crust: muted yellow, never neon.
 SULFUR = ramp('#5e5222', '#7d6d2c', '#958437', '#a99743', '#bba951', '#cbba63')
 # Metal frost (lead and bismuth sulfides): bright, slightly cool grey with sparkle.
-FROST = ramp('#4b4d52', '#62656b', '#7a7e85', '#93979e', '#acb0b7', '#c8ccd2', '#e3e6ea')
+FROST = ramp('#5f5b52', '#7a7568', '#938e80', '#a8a293', '#bdb7a8', '#cdc8ba', '#e0dbcf')
 # Light composite panel: warm white with a fine carbon weave.
 COMPOSITE = ramp('#8e8f8c', '#a9aaa6', '#bdbeb9', '#cdceca', '#dcddd9', '#e9eae6')
 WEAVE = ramp('#3a3c40', '#55585d')
