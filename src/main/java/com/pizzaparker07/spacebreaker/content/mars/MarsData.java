@@ -141,6 +141,7 @@ public final class MarsData {
         lang.add("biome.spacebreaker.deimos_surface", "Dusty Plains of Deimos", "Deimos'un Tozlu Ovaları");
         lang.add("dungeon.spacebreaker.mars_research_station", "Abandoned Mars Research Station", "Terk Edilmiş Mars Araştırma İstasyonu");
         lang.add("dungeon.spacebreaker.mars_riverbed_cave", "Ancient Buried Riverbed", "Antik Gömülü Nehir Yatağı");
+        lang.add("structure.spacebreaker.mars_lava_tube", "Martian Lava Tube", "Mars Lav Tüpü");
         lang.add("structure.spacebreaker.mars_research_station", "Abandoned Mars Research Station", "Terk Edilmiş Mars Araştırma İstasyonu");
         lang.add("dungeon.spacebreaker.phobos_probe_wreck", "Crashed Sample-Return Probe", "Düşmüş Numune Dönüş Sondası");
         lang.add("dungeon.spacebreaker.deimos_ice_cache", "Deimos Ice Cache", "Deimos Buz Deposu");
@@ -403,6 +404,7 @@ public final class MarsData {
             // hematite is iron oxide: smelt it into iron
             smeltOre(out, MarsModule.RAW_HEMATITE.get(), Items.IRON_INGOT, 0.7F, "iron_ingot_from_raw_hematite");
             smeltOre(out, MarsModule.HEMATITE_ORE.get(), Items.IRON_INGOT, 0.7F, "iron_ingot_from_hematite_ore");
+            InnerResources.recipes(out);
             EXTRA_RECIPES.forEach(c -> c.accept(out));
         }
     }

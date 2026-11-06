@@ -229,7 +229,7 @@ public class PlanetChunkGenerator extends ChunkGenerator {
                 Landforms.IceCap cap = lf.iceCap().get();
                 if (depth == 0 && c.frost && cap.frost().isPresent()) {
                     state = cap.frost().get();
-                } else if (cap.dustyIce().isPresent() && Math.floorMod(y + (int) (c.trough * 0.5), 5) == 0) {
+                } else if (cap.dustyIce().isPresent() && dustyLayer(y + (int) (c.trough * 0.5))) {
                     state = cap.dustyIce().get();
                 } else {
                     state = cap.ice();
@@ -395,5 +395,18 @@ public class PlanetChunkGenerator extends ChunkGenerator {
             info.add(String.format(Locale.ROOT, "Landforms: dune %.2f valley %.2f delta %.2f volcano %.2f rift %.2f cap %.1f patch %d",
                     c.dune, c.valley, c.delta, Math.min(c.volcanoS, 9.99), Math.min(c.rift, 9.99), c.cap, c.patch));
         }
+    }
+
+    /**
+     * Polar layered deposits: clean ice with thin dark dust bands at irregular spacing (one to three per 12 blocks),
+     * like the climate record seen in the walls of the Martian polar troughs.
+     */
+    public static boolean dustyLayer(int y) {
+        int cycle = Math.floorDiv(y, 12);
+        int phase = Math.floorMod(y, 12);
+        int h = (int) ((cycle * 0x9E3779B1L) >>> 9);
+        int a = 1 + (h & 3);
+        int b = a + 4 + (h >> 2 & 3);
+        return phase == a || phase == b || ((h >> 4 & 1) == 1 && phase == a + 1);
     }
 }
