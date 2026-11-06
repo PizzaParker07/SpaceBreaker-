@@ -77,4 +77,5 @@ small, additive and explained in the commit message.
 | Suit & survival | `dev/suit` | `content/suit`, `client/suit`, `client/hud`, oxygen/temperature/radiation effects, gravity application, zero-g movement, jetpack, airlock, oxygen distributor |
 | Astrophysics & Solar System data | `dev/astro` | `core/astro` (pure Java physics library + tests), `data/spacebreaker/spacebreaker/celestial_body/*.json` |
 | Inner planets (Mars, Phobos, Deimos, Venus, Mercury) | `dev/inner` | `content/mars`, `content/venus`, `content/mercury`, `client/mars`, `client/venus`, `client/mercury`, their dimensions, terrain profiles, blocks, creatures and dungeons |
+| Shader & renderer compatibility | `dev/compat` | `compat/` (optional Iris/Sodium integration), shader-safe sky/celestial rendering helpers in `client/sky` and the orbit sky in `client/rocketry` (coordinate with their owners), docs/COMPAT.md |
 | Research, dungeons & guide | `dev/research` | `content/research`, `client/research`, `content/dungeons` (shared dungeon framework), `client/guide`, tech tree data, guide book, advancements |
