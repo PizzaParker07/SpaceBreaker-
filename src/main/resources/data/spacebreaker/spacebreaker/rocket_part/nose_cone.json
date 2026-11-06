@@ -1,0 +1,6 @@
+{
+  "type": "nose_cone",
+  "mass_kg": 180,
+  "height": 24,
+  "model": "spacebreaker:nose_cone"
+}

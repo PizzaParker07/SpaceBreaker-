@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=north,extended=true": {
+      "model": "spacebreaker:block/crew_access_arm"
+    },
+    "facing=north,extended=false": {
+      "model": "spacebreaker:block/crew_access_arm"
+    },
+    "facing=east,extended=true": {
+      "model": "spacebreaker:block/crew_access_arm",
+      "y": 90
+    },
+    "facing=east,extended=false": {
+      "model": "spacebreaker:block/crew_access_arm",
+      "y": 90
+    },
+    "facing=south,extended=true": {
+      "model": "spacebreaker:block/crew_access_arm",
+      "y": 180
+    },
+    "facing=south,extended=false": {
+      "model": "spacebreaker:block/crew_access_arm",
+      "y": 180
+    },
+    "facing=west,extended=true": {
+      "model": "spacebreaker:block/crew_access_arm",
+      "y": 270
+    },
+    "facing=west,extended=false": {
+      "model": "spacebreaker:block/crew_access_arm",
+      "y": 270
+    }
+  }
+}

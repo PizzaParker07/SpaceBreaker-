@@ -1,8 +1,15 @@
-// 1.21.1	2026-11-06T15:15:27.695556507	Loot Tables
+// 1.21.1	2026-11-06T16:39:18.240260372	Loot Tables
 381c22549e872c7388c3d609990ec8528d9a753a data/spacebreaker/loot_table/blocks/bauxite_ore.json
+8112caec37f1845712fe976de80aa6f19d0a5ff2 data/spacebreaker/loot_table/blocks/crew_access_arm.json
 8f191904fef6b2e1c7ed927b5dbd576104853403 data/spacebreaker/loot_table/blocks/deepslate_bauxite_ore.json
+ec3841a929c56952a2490ed1f9f3042ad34584d4 data/spacebreaker/loot_table/blocks/flame_trench.json
+6dc54d2bbe6c8792e110fd205a578d864eb516a5 data/spacebreaker/loot_table/blocks/fuel_umbilical.json
 b42f80f1e5699725779da4a6d75d52c79a62e98c data/spacebreaker/loot_table/blocks/ilmenite_ore.json
+9f5522bc770693605af89b8ad447640dd4aa3855 data/spacebreaker/loot_table/blocks/launch_control_console.json
+ec588cc9af86de8b7dec6fcfaa27a827d7d17759 data/spacebreaker/loot_table/blocks/launch_pad.json
 f0c1fcb2b7c1e060d842ee9a11ed4da8d8601f57 data/spacebreaker/loot_table/blocks/lunar_regolith.json
 04307bd04334e34d0045c5d17fefdd1e4e45b016 data/spacebreaker/loot_table/blocks/mare_basalt.json
 184ae3a2abf30c9f56f0c1c0bebec75679056d33 data/spacebreaker/loot_table/blocks/raw_bauxite_block.json
+f19e5bf435aabce4dd06d7c8213b46787b994e32 data/spacebreaker/loot_table/blocks/rocket_assembler.json
+215e60e135f5ac1699b4eba00cd380b702f8ffc2 data/spacebreaker/loot_table/blocks/service_tower.json
 c09ba019815f2fcf7845fff827fdd1cde3490e07 data/spacebreaker/loot_table/blocks/solar_panel.json

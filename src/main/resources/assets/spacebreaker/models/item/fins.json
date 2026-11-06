@@ -1,0 +1,12 @@
+{
+  "loader": "neoforge:separate_transforms",
+  "gui_light": "front",
+  "base": {
+    "parent": "spacebreaker:item/fins_3d"
+  },
+  "perspectives": {
+    "gui": {
+      "parent": "spacebreaker:item/fins_icon"
+    }
+  }
+}

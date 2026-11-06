@@ -1,0 +1,111 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "body": "spacebreaker:block/console_body",
+    "top": "spacebreaker:block/console_top",
+    "screen": "spacebreaker:block/console_screen",
+    "panel": "spacebreaker:block/console_panel",
+    "particle": "spacebreaker:block/console_body"
+  },
+  "elements": [
+    {
+      "from": [
+        1,
+        0,
+        1
+      ],
+      "to": [
+        15,
+        9,
+        15
+      ],
+      "faces": {
+        "north": {
+          "texture": "#panel"
+        },
+        "south": {
+          "texture": "#body"
+        },
+        "east": {
+          "texture": "#body"
+        },
+        "west": {
+          "texture": "#body"
+        },
+        "up": {
+          "texture": "#top"
+        },
+        "down": {
+          "texture": "#body"
+        }
+      }
+    },
+    {
+      "from": [
+        1,
+        9,
+        9
+      ],
+      "to": [
+        15,
+        16,
+        15
+      ],
+      "faces": {
+        "north": {
+          "texture": "#screen",
+          "uv": [
+            1,
+            0,
+            15,
+            7
+          ]
+        },
+        "south": {
+          "texture": "#body"
+        },
+        "east": {
+          "texture": "#body"
+        },
+        "west": {
+          "texture": "#body"
+        },
+        "up": {
+          "texture": "#body"
+        },
+        "down": {
+          "texture": "#body"
+        }
+      }
+    },
+    {
+      "from": [
+        2,
+        10,
+        8.9
+      ],
+      "to": [
+        14,
+        15.4,
+        9
+      ],
+      "faces": {
+        "north": {
+          "texture": "#screen",
+          "uv": [
+            1,
+            8,
+            15,
+            14
+          ]
+        }
+      },
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15,
+        "ambient_occlusion": false
+      },
+      "shade": false
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "spacebreaker:block/fuel_umbilical"
+    },
+    "facing=east": {
+      "model": "spacebreaker:block/fuel_umbilical",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "spacebreaker:block/fuel_umbilical",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "spacebreaker:block/fuel_umbilical",
+      "y": 270
+    }
+  }
+}

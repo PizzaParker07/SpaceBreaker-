@@ -1,0 +1,6 @@
+{
+  "type": "parachute",
+  "mass_kg": 150,
+  "height": 6,
+  "model": "spacebreaker:parachute"
+}

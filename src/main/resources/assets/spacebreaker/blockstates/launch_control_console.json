@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "spacebreaker:block/launch_control_console"
+    },
+    "facing=east": {
+      "model": "spacebreaker:block/launch_control_console",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "spacebreaker:block/launch_control_console",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "spacebreaker:block/launch_control_console",
+      "y": 270
+    }
+  }
+}

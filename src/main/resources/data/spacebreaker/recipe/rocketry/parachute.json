@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "WSW",
+    "S S",
+    "WAW"
+  ],
+  "key": {
+    "W": {
+      "item": "minecraft:white_wool"
+    },
+    "S": {
+      "item": "minecraft:string"
+    },
+    "A": {
+      "item": "spacebreaker:aluminum_plate"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:parachute",
+    "count": 1
+  }
+}

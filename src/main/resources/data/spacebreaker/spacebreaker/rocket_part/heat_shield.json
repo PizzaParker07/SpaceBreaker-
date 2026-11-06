@@ -1,0 +1,7 @@
+{
+  "type": "heat_shield",
+  "mass_kg": 300,
+  "heat_shield": 2,
+  "height": 3,
+  "model": "spacebreaker:heat_shield"
+}

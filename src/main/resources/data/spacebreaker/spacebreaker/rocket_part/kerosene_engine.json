@@ -1,0 +1,10 @@
+{
+  "type": "engine",
+  "mass_kg": 650,
+  "thrust_kn": 560,
+  "isp_sea_level_s": 282,
+  "isp_vacuum_s": 311,
+  "height": 20,
+  "model": "spacebreaker:kerosene_engine",
+  "nozzle": 9
+}

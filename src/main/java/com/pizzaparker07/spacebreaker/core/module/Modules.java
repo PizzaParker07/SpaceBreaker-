@@ -3,6 +3,7 @@ package com.pizzaparker07.spacebreaker.core.module;
 import com.pizzaparker07.spacebreaker.content.earth.EarthModule;
 import com.pizzaparker07.spacebreaker.content.machines.MachinesModule;
 import com.pizzaparker07.spacebreaker.content.moon.MoonModule;
+import com.pizzaparker07.spacebreaker.content.rocketry.RocketryModule;
 import com.pizzaparker07.spacebreaker.content.suit.SuitModule;
 
 import java.util.List;
@@ -13,7 +14,8 @@ public final class Modules {
             new EarthModule(),
             new MoonModule(),
             new MachinesModule(),
-            new SuitModule()
+            new SuitModule(),
+            new RocketryModule()
     );
 
     private Modules() {

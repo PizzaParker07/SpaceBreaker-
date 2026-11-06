@@ -1,0 +1,334 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "tex": "spacebreaker:block/rocket/landing_legs",
+    "particle": "spacebreaker:block/rocket/landing_legs"
+  },
+  "elements": [
+    {
+      "from": [
+        6.5,
+        -14,
+        -10
+      ],
+      "to": [
+        9.5,
+        18,
+        -8
+      ],
+      "faces": {
+        "north": {
+          "texture": "#tex",
+          "uv": [
+            3.625,
+            3.5,
+            4.375,
+            11.5
+          ]
+        },
+        "south": {
+          "texture": "#tex",
+          "uv": [
+            3.625,
+            3.5,
+            4.375,
+            11.5
+          ]
+        },
+        "east": {
+          "texture": "#tex",
+          "uv": [
+            10.0,
+            3.5,
+            10.5,
+            11.5
+          ]
+        },
+        "west": {
+          "texture": "#tex",
+          "uv": [
+            9.5,
+            3.5,
+            10.0,
+            11.5
+          ]
+        },
+        "up": {
+          "texture": "#tex",
+          "uv": [
+            3.625,
+            13.5,
+            4.375,
+            14.0
+          ]
+        },
+        "down": {
+          "texture": "#tex",
+          "uv": [
+            11.625,
+            14.0,
+            12.375,
+            14.5
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        7,
+        16,
+        -9
+      ],
+      "to": [
+        9,
+        20,
+        -8
+      ],
+      "faces": {
+        "north": {
+          "texture": "#tex",
+          "uv": [
+            3.75,
+            3.0,
+            4.25,
+            4.0
+          ]
+        },
+        "south": {
+          "texture": "#tex",
+          "uv": [
+            3.75,
+            3.0,
+            4.25,
+            4.0
+          ]
+        },
+        "east": {
+          "texture": "#tex",
+          "uv": [
+            10.0,
+            3.0,
+            10.25,
+            4.0
+          ]
+        },
+        "west": {
+          "texture": "#tex",
+          "uv": [
+            9.75,
+            3.0,
+            10.0,
+            4.0
+          ]
+        },
+        "up": {
+          "texture": "#tex",
+          "uv": [
+            3.75,
+            13.75,
+            4.25,
+            14.0
+          ]
+        },
+        "down": {
+          "texture": "#tex",
+          "uv": [
+            11.75,
+            14.0,
+            12.25,
+            14.25
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        5,
+        -16,
+        -11
+      ],
+      "to": [
+        11,
+        -14,
+        -8
+      ],
+      "faces": {
+        "north": {
+          "texture": "#tex",
+          "uv": [
+            3.25,
+            11.5,
+            4.75,
+            12.0
+          ]
+        },
+        "south": {
+          "texture": "#tex",
+          "uv": [
+            3.25,
+            11.5,
+            4.75,
+            12.0
+          ]
+        },
+        "east": {
+          "texture": "#tex",
+          "uv": [
+            10.0,
+            11.5,
+            10.75,
+            12.0
+          ]
+        },
+        "west": {
+          "texture": "#tex",
+          "uv": [
+            9.25,
+            11.5,
+            10.0,
+            12.0
+          ]
+        },
+        "up": {
+          "texture": "#tex",
+          "uv": [
+            3.25,
+            13.25,
+            4.75,
+            14.0
+          ]
+        },
+        "down": {
+          "texture": "#tex",
+          "uv": [
+            11.25,
+            14.0,
+            12.75,
+            14.75
+          ]
+        }
+      }
+    }
+  ],
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [
+        75,
+        45,
+        0
+      ],
+      "translation": [
+        0,
+        2.5,
+        0
+      ],
+      "scale": [
+        0.22,
+        0.22,
+        0.22
+      ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [
+        75,
+        45,
+        0
+      ],
+      "translation": [
+        0,
+        2.5,
+        0
+      ],
+      "scale": [
+        0.22,
+        0.22,
+        0.22
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        0,
+        45,
+        0
+      ],
+      "translation": [
+        0,
+        2,
+        0
+      ],
+      "scale": [
+        0.24,
+        0.24,
+        0.24
+      ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [
+        0,
+        225,
+        0
+      ],
+      "translation": [
+        0,
+        2,
+        0
+      ],
+      "scale": [
+        0.24,
+        0.24,
+        0.24
+      ]
+    },
+    "ground": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        2,
+        0
+      ],
+      "scale": [
+        0.2,
+        0.2,
+        0.2
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        0.4,
+        0.4,
+        0.4
+      ]
+    },
+    "head": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        13,
+        0
+      ],
+      "scale": [
+        0.4,
+        0.4,
+        0.4
+      ]
+    }
+  }
+}

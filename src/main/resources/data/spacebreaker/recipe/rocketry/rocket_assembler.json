@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "BBB",
+    "ACA",
+    "IRI"
+  ],
+  "key": {
+    "B": {
+      "item": "minecraft:blue_concrete"
+    },
+    "A": {
+      "item": "spacebreaker:aluminum_plate"
+    },
+    "C": {
+      "item": "minecraft:crafting_table"
+    },
+    "I": {
+      "item": "minecraft:iron_block"
+    },
+    "R": {
+      "item": "minecraft:redstone_block"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:rocket_assembler",
+    "count": 1
+  }
+}

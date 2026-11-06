@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "ABA",
+    "H H",
+    "ABA"
+  ],
+  "key": {
+    "A": {
+      "item": "spacebreaker:aluminum_plate"
+    },
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "H": {
+      "item": "minecraft:black_wool"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:fuel_umbilical",
+    "count": 1
+  }
+}

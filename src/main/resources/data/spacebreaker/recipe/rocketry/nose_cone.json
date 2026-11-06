@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " A ",
+    "AWA",
+    "A A"
+  ],
+  "key": {
+    "A": {
+      "item": "spacebreaker:aluminum_plate"
+    },
+    "W": {
+      "item": "minecraft:white_concrete"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:nose_cone",
+    "count": 1
+  }
+}

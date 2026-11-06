@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "  A",
+    " AA",
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "item": "spacebreaker:aluminum_plate"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:fins",
+    "count": 1
+  }
+}

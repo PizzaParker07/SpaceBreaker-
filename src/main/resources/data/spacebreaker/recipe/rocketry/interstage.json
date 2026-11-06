@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "CAC",
+    "C C",
+    "CTC"
+  ],
+  "key": {
+    "C": {
+      "item": "minecraft:black_concrete"
+    },
+    "A": {
+      "item": "spacebreaker:aluminum_plate"
+    },
+    "T": {
+      "item": "minecraft:tnt"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:interstage",
+    "count": 1
+  }
+}
