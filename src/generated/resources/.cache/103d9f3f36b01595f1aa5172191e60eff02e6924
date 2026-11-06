@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-06T20:43:45.184215839	Registries
+// 1.21.1	2026-11-06T21:17:05.264528766	Registries
 a38072ba4c640199737ebfbbc034c7ff4c262ce1 data/spacebreaker/neoforge/biome_modifier/add_oil_deposit.json
 09748e9f324cff73a2a33cba57c1dd08e29a4564 data/spacebreaker/neoforge/biome_modifier/add_ore_bauxite.json
 f1b6195de59cc1992c67352426f851bd88e82fd9 data/spacebreaker/neoforge/biome_modifier/add_ore_pentlandite.json
@@ -6,7 +6,7 @@ d27752f3afe215763d940591e627875a359e57df data/spacebreaker/neoforge/biome_modifi
 80546be71f60358cb75f22fe51e9f945a039e696 data/spacebreaker/neoforge/biome_modifier/add_ore_spodumene.json
 26722b3d8e2991b64a0f0ab1dc85e1fb598b556d data/spacebreaker/neoforge/biome_modifier/add_ore_wolframite.json
 9e6ac010d00469441b2106d2c6cc3d65d7282cbd data/spacebreaker/spacebreaker/terrain/callisto.json
-f8199f2da24fd0dd01d04d80f64b0ba46530c715 data/spacebreaker/spacebreaker/terrain/ceres.json
+0a5925e1e787e5c61e32a715797785d4fcf930ea data/spacebreaker/spacebreaker/terrain/ceres.json
 3ea4e9562a030f8c745569163196d4bfed6e2d66 data/spacebreaker/spacebreaker/terrain/enceladus.json
 2dd1edf3d5f1adaf286d17ade6de612ac673e12b data/spacebreaker/spacebreaker/terrain/europa.json
 5ade6c6427aa0a21ba5fe071117c8ca3b3125dd5 data/spacebreaker/spacebreaker/terrain/ganymede.json

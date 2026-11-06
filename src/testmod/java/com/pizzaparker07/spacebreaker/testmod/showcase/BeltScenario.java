@@ -112,11 +112,8 @@ final class BeltScenario implements ShowcaseScenario {
             look(level, "04_faculae_crater", host.x() + r * 1.05, host.z() + r * 0.35, 9, host.x(), host.z(), 0.12, 260, MoonScenario::farView);
             look(level, "05_faculae_close", host.x() + 8, host.z() + 6, 4, host.x(), host.z(), 0.2, 160, null);
         }
-        double[] dome = MoonScenario.find(t, (x, z) -> t.column(x, z).volcanoS < 0.5, 6000);
-        if (dome != null) {
-            double[] c = dome;
-            look(level, "06_cryovolcanic_dome", c[0] + 150, c[1] + 120, 10, c[0], c[1], 0.07, 260, MoonScenario::farView);
-        }
+        // the anchored dome near the landing site (BeltData.ceresProfile)
+        look(level, "06_cryovolcanic_dome", 420 + 130, 260 + 95, 8, 420, 260, 0.08, 260, MoonScenario::farView);
         int ox = SX + 40;
         int oz = SZ - 30;
         int oy = (int) ground(level, ox + 14, oz + 14);
