@@ -7,7 +7,11 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import java.util.List;
 
 /** What a machine offers a recipe: its input slots, the tool (die) slot and the input tank. */
-public record MachineInput(List<ItemStack> items, ItemStack tool, FluidStack fluid) implements RecipeInput {
+public record MachineInput(List<ItemStack> items, ItemStack tool, FluidStack fluid, FluidStack fluid2) implements RecipeInput {
+    public MachineInput(List<ItemStack> items, ItemStack tool, FluidStack fluid) {
+        this(items, tool, fluid, FluidStack.EMPTY);
+    }
+
     @Override
     public ItemStack getItem(int index) {
         return items.get(index);
@@ -20,6 +24,6 @@ public record MachineInput(List<ItemStack> items, ItemStack tool, FluidStack flu
 
     @Override
     public boolean isEmpty() {
-        return items.stream().allMatch(ItemStack::isEmpty) && fluid.isEmpty();
+        return items.stream().allMatch(ItemStack::isEmpty) && fluid.isEmpty() && fluid2.isEmpty();
     }
 }

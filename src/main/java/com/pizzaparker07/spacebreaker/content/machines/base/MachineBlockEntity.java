@@ -123,6 +123,7 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
             case 5 -> "gui.spacebreaker.status.no_fuel";
             case 6 -> "gui.spacebreaker.status.incomplete";
             case 7 -> "gui.spacebreaker.status.locked";
+            case 8 -> "gui.spacebreaker.status.no_atmosphere";
             default -> null;
         };
     }
@@ -368,8 +369,13 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
 
         @Override
         public int fill(FluidStack resource, FluidAction action) {
-            for (MachineTank t : tanks) {
-                if (t.input && t.isFluidValid(resource)) {
+            for (MachineTank t : tanks) {   // a tank that already holds this fluid
+                if (t.input && !t.isEmpty() && FluidStack.isSameFluidSameComponents(t.getFluid(), resource)) {
+                    return t.fill(resource, action);
+                }
+            }
+            for (MachineTank t : tanks) {   // otherwise the first empty tank that accepts it
+                if (t.input && t.isEmpty() && t.isFluidValid(resource)) {
                     int filled = t.fill(resource, action);
                     if (filled > 0) {
                         return filled;

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "c:plates/aluminum"
+    },
+    "C": {
+      "item": "spacebreaker:basic_circuit"
+    },
+    "G": {
+      "tag": "c:glass_blocks/colorless"
+    },
+    "H": {
+      "item": "minecraft:hopper"
+    },
+    "K": {
+      "item": "minecraft:cauldron"
+    }
+  },
+  "pattern": [
+    "AHA",
+    "GKG",
+    "ACA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "spacebreaker:ice_melter"
+  }
+}

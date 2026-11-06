@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "c:plates/aluminum"
+    },
+    "C": {
+      "item": "spacebreaker:advanced_circuit"
+    },
+    "F": {
+      "item": "minecraft:iron_bars"
+    },
+    "M": {
+      "item": "spacebreaker:electric_motor"
+    },
+    "P": {
+      "item": "spacebreaker:gas_pipe"
+    }
+  },
+  "pattern": [
+    "AFA",
+    "MCM",
+    "APA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "spacebreaker:atmosphere_processor"
+  }
+}

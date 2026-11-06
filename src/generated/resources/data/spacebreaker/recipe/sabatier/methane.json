@@ -1,0 +1,23 @@
+{
+  "type": "spacebreaker:sabatier",
+  "energy": 60,
+  "fluid_input": {
+    "amount": 500,
+    "tag": "c:carbon_dioxide"
+  },
+  "fluid_input_2": {
+    "amount": 2000,
+    "tag": "c:hydrogen"
+  },
+  "fluid_results": [
+    {
+      "amount": 500,
+      "id": "spacebreaker:methane"
+    },
+    {
+      "amount": 250,
+      "id": "minecraft:water"
+    }
+  ],
+  "time": 80
+}

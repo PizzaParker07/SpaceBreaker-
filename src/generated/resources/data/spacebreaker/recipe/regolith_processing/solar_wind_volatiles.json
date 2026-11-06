@@ -1,0 +1,22 @@
+{
+  "type": "spacebreaker:regolith_processing",
+  "energy": 120,
+  "fluid_results": [
+    {
+      "amount": 200,
+      "id": "spacebreaker:hydrogen"
+    },
+    {
+      "amount": 20,
+      "id": "spacebreaker:helium_3"
+    }
+  ],
+  "ingredients": [
+    {
+      "count": 1,
+      "tag": "c:regoliths/solar_wind"
+    }
+  ],
+  "priority": 1,
+  "time": 160
+}
