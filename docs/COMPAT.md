@@ -1,0 +1,103 @@
+# Spacebreaker — Renderer compatibility (Sodium, Iris, shader packs)
+
+Owner's rule: **the mod must work with Sodium and with Iris shader packs.** Both are optional — the mod never
+needs them at compile time or at run time.
+
+| Setup | Status |
+|---|---|
+| Vanilla renderer | reference look |
+| Sodium 0.8 (no shaders) | works: terrain, block entity renderers (solar panel tracker, tanks, consoles), translucent glass/visor, emissive layers look the same as vanilla |
+| Sodium + Iris 1.8 + Complementary Reimagined r5.9.3 | works: black space sky, stars, Sun, Earth with phases from the Moon, planet below in orbit, Mars sky; terrain lit by the pack (sun shadows follow the world's own sun) |
+| Sodium + Iris + BSL v10.1.8 | works (same fixes, checked shot by shot) |
+| Sodium + Iris + MakeUp Ultra Fast 9.6 | see the screenshot table below |
+
+Screenshots: `docs/screenshots/compat/` (`vanilla_*`, `sodium_*`, `iris_*` = Complementary, `bsl_*`, `makeup_*`;
+`iris_bug_*` are the state before the fix).
+
+## 1. The problem
+
+Iris chooses a shader pack's program set from the dimension id (`Iris.getCurrentDimension()`): first the pack's
+`dimension.properties`, then `effects = minecraft:the_end / the_nether`, otherwise the id itself — which packs map to
+the Overworld programs (Complementary: `dimension.world0=*`). The Overworld programs then
+
+1. paint their own atmosphere over every pixel without geometry (`gbuffers_skybasic` overwrites colours,
+   `deferred1` adds volumetric clouds and aurora) — the sky our `DimensionSpecialEffects` draws never reaches the
+   screen: brown/grey sky with clouds on the Moon, grey void in orbit with no planet below;
+2. read vanilla's weather (space worlds inherit the Overworld's rain in vanilla) — wet, rainy Moon;
+3. light the ground with their warm, atmosphere-filtered sun plus an ambient fill derived from the `skyColor`
+   uniform — black biome sky = no fill, grey regolith looks like sand.
+
+**Why not the End program?** Mapping airless worlds to `world1` was examined in Complementary's source: the End
+`deferred1` overwrites every sky pixel with the purple End sky and End stars, `gbuffers_skytextured` outputs a flat
+colour, and terrain gets a dim purple light with no day/night. The Moon needs hard white sunlight and shadows that
+follow the Sun, which only the Overworld programs give. So we keep the Overworld programs and correct their inputs.
+
+## 2. How it works (package `compat/`)
+
+| Piece | What it does |
+|---|---|
+| `SpaceWorlds` | classifies every dimension from its celestial body JSON: `ORBIT`, `AIRLESS` (vacuum), `THIN_ATMOSPHERE` (< 20 kPa, Mars), `THICK_ATMOSPHERE` (Venus, Titan), `VANILLA` (Overworld, Nether, End, unknown). New worlds are covered by adding `dimension` / `orbit_dimension` to their body JSON — a GameTest fails if a `spacebreaker:` dimension has no body. |
+| `client/ShaderSkyPass` | **sky replacement.** Iris renders into Minecraft's own depth buffer, which still holds the scene depth after the pack's final pass. NeoForge fires `RenderLevelStageEvent.Stage.AFTER_LEVEL` in `GameRenderer` right after `LevelRenderer.renderLevel` returns — after Iris's composite/final passes, before the depth clear for the hand. There our normal sky (`level.effects().renderSky`, unchanged vanilla code) is drawn into an off-screen target and copied onto the frame with `glDepthRange(1,1)` + `GL_LEQUAL`, i.e. only where the depth is still the cleared far value: the sky. Terrain, entities and the hand keep the pack's shading. Works with any pack, no pack-specific code. |
+| `mixin/iris/PackCloudsMixin` | `DimensionSpecialEffects.getCloudHeight` → 25000 in space worlds while a pack is active. Iris passes it as `cloudHeight`; pack clouds move beyond their draw distance (no clouds in front of distant terrain, no cloud shadows). Our sky effects draw clouds themselves, vanilla never reads it there. |
+| `mixin/iris/PackAmbientMixin` | `ClientLevel.getSkyColor` → a dim cool fill (0.18, 0.30, 0.90) in airless worlds while a pack is active. Balances the pack's warm sun to near-neutral white on lit faces; shadows stay dark. Tuned with Complementary (compare `iris_*` and the bug shots), checked with BSL. Mars keeps its biome sky colour (butterscotch fill is right there). |
+| `mixin/ClientWeatherMixin` | client-side `getRainLevel` / `getThunderLevel` = 0 in space worlds (always, with or without Iris). Server-side weather is untouched. |
+| `CompatMixinPlugin` | the `iris.*` mixins are only applied when Iris (or Oculus) is installed: without it the game runs the exact vanilla code paths. |
+| `client/ShaderState` | Iris is reached only through its public API `net.irisshaders.iris.api.v0.IrisApi` (`isShaderPackInUse`) by reflection. |
+
+Full-screen effects and HUDs stay in the GUI layer (drawn on top of the pack's final frame) — unchanged.
+
+### Settings — `config/spacebreaker-compat-client.toml`
+```
+[shaders]
+spaceSky = "AUTO"        # AUTO | ALWAYS | OFF
+hidePackClouds = true
+```
+`AUTO` replaces the pack's sky in space worlds unless an LOD mod (Distant Horizons, Voxy) is installed; `ALWAYS`
+does it anyway; `OFF` leaves the pack alone.
+
+## 3. Known limitations
+
+- **Low sun on the Moon:** packs tint sunrise/sunset light orange (it comes from their Overworld atmosphere
+  model, keyed to the sun angle). Our sky stays black, but the ground looks like an Earth dawn for the first and
+  last ~10 % of the lunar day.
+- **Sky seen through glass or water** is the pack's (translucent geometry writes depth before the sky pass). Looking
+  out of a glass window into space shows the pack's sky colour behind the glass.
+- **Pack bloom/lens flare** around the pack's own sun can bleed a little onto terrain silhouettes; the Sun disc
+  itself is ours.
+- **Distant Horizons / Voxy:** their far terrain is not in Minecraft's depth buffer, so `AUTO` disables the sky
+  replacement when one is installed (the pack's sky is shown). `ALWAYS` forces it and hides LOD terrain.
+- **Sun direction vs. shadows:** packs cast shadows from vanilla's sun path (plus their own `sunPathRotation`); our
+  drawn Sun also tilts with the observer's latitude. Near the poles the two differ by up to the latitude.
+- Shader packs that use a different dimension mapping (custom `dimension.properties` entries for `spacebreaker:*`)
+  get the program set they ask for; the sky replacement still applies.
+- Not part of this layer, noticed while testing: server-side, `level.isRaining()` on the Moon follows the
+  Overworld's weather (vanilla's derived level data). `SolarPanelBlockEntity` uses it — solar output drops on the
+  Moon when it rains on Earth (industry area).
+
+## 4. How to test
+
+Downloads for testing only (never committed) — see `docs/DEV_WORKFLOW.md` → "Shader compatibility test downloads".
+Other packs used for the cross-check (Modrinth, free):
+```
+curl -sL -o run-showcase/shaderpacks/BSL_v10.1.8.zip https://cdn.modrinth.com/data/Q1vvjJYV/versions/Y68yiql9/BSL_v10.1.8.zip
+curl -sL -o run-showcase/shaderpacks/MakeUp-UltraFast-9.6.zip https://cdn.modrinth.com/data/izsIPI7a/versions/t4YRxQug/MakeUp-UltraFast-9.6.zip
+```
+The `compat` showcase scenario shoots the same 12 views in every setup: Moon by day/low sun/night with Earth,
+a prop stage (solar panels, tanks, filler, console, glass, lanterns), a suited player (visor), Earth orbit
+(down and up), Moon orbit, Mars day/sunset/night.
+```
+# vanilla
+LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s "-screen 0 1920x1080x24" ./gradlew runShowcase -Pscenario=compat
+# Sodium only: run-mods/ holds only sodium.jar, or iris.properties has enableShaders=false
+... ./gradlew runShowcase -Pscenario=compat -PwithCompat=true -PshotPrefix=sodium
+# Sodium + Iris + pack named in run-showcase/config/iris.properties
+... ./gradlew runShowcase -Pscenario=compat -PwithCompat=true -PshotPrefix=iris
+# a subset of shots
+... -Pshots='0[1357]_.*'
+```
+`./gradlew runGameTestServer` runs `testmod/compat/CompatGameTests` (classification of every body/dimension, no
+Overworld weather in space kinds, server weather untouched, Iris-only mixins gated, config defaults).
+
+What to look at: sky pure black with stars in airless worlds; Earth/planet discs present and correctly occluded by
+terrain and blocks (sharp silhouettes, no halo); no clouds or rain; regolith grey, not sand; Mars sky butterscotch
+by day, blue-ish around the setting Sun; hand, held items and GUI effects on top.

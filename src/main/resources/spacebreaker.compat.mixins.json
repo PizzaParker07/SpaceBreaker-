@@ -8,6 +8,7 @@
     "ClientWeatherMixin"
   ],
   "client": [
+    "iris.PackAmbientMixin",
     "iris.PackCloudsMixin"
   ],
   "injectors": {

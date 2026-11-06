@@ -19,6 +19,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.world.level.material.FogType;
+import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 import org.joml.Matrix4fStack;
 import org.lwjgl.opengl.GL11;
@@ -142,6 +143,22 @@ public final class ShaderSkyPass {
             target.destroyBuffers();
             target = null;
         }
+    }
+
+    /**
+     * Sky colour handed to shader packs in airless worlds. Packs light the ground with their own sun colour (warm:
+     * sunlight seen through air) plus an ambient fill derived from this colour; with the black biome sky the fill
+     * was zero and grey regolith looked like sand. A dim blue fill balances the warm sun to an almost neutral white
+     * on lit faces while shadows stay dark. Tuned with Complementary Reimagined and checked with BSL.
+     */
+    private static final Vec3 AIRLESS_PACK_SKY = new Vec3(0.18, 0.30, 0.90);
+
+    /** The sky colour shader packs should see in this world, or null to keep vanilla's. */
+    public static Vec3 packSkyColor(ClientLevel level) {
+        if (level != Minecraft.getInstance().level || !SpaceSky.kind(level).airless() || !ShaderState.shaderPackInUse()) {
+            return null;
+        }
+        return AIRLESS_PACK_SKY;
     }
 
     /** True when the shader pack's own clouds should be moved out of sight in this world. */

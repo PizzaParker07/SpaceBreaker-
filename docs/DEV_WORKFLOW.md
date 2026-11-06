@@ -47,6 +47,7 @@ python3 tools/textures/generate.py && python3 tools/models/gen_assets.py
 LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s "-screen 0 1920x1080x24" ./gradlew runShowcase -Pscenario=<name>
 # with Sodium + Iris + shader pack: put jars in run-mods/, the pack in run-showcase/shaderpacks/,
 # iris.properties in run-showcase/config/, then add -PwithCompat=true -PshotPrefix=iris
+# -Pshots=<regex> takes only matching shots; renderer checks: -Pscenario=compat (see docs/COMPAT.md)
 ```
 Screenshots land in `run-showcase/screenshots/`. Copy the best ones (as compressed JPG, ≤ 400 KB each)
 to `docs/screenshots/<area>/` when a content pack is ready for review.
