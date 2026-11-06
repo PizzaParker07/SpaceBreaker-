@@ -146,19 +146,29 @@ public final class ShaderSkyPass {
     }
 
     /**
-     * Sky colour handed to shader packs in airless worlds. Packs light the ground with their own sun colour (warm:
-     * sunlight seen through air) plus an ambient fill derived from this colour; with the black biome sky the fill
-     * was zero and grey regolith looked like sand. A dim blue fill balances the warm sun to an almost neutral white
-     * on lit faces while shadows stay dark. Tuned with Complementary Reimagined and checked with BSL.
+     * Sky colour handed to shader packs in airless worlds. Packs light the ground with their own sun colour plus an
+     * ambient fill derived from Iris's skyColor uniform; with the black biome sky the fill was zero. How strongly a
+     * pack uses it differs: Complementary adds pow(skyColor, 0.75) to a warm, atmosphere-filtered sun and needs a
+     * clearly blue fill to bring grey regolith back to neutral; MakeUp mixes 60 % of skyColor into its (already
+     * neutral) ambient and turns lavender with that. BSL does not read it. Tuned per pack family from the
+     * screenshots in docs/screenshots/compat; unknown packs get the moderate value.
      */
-    private static final Vec3 AIRLESS_PACK_SKY = new Vec3(0.18, 0.30, 0.90);
+    private static final Vec3 PACK_SKY_COMPLEMENTARY = new Vec3(0.18, 0.30, 0.90);
+    private static final Vec3 PACK_SKY_DEFAULT = new Vec3(0.20, 0.27, 0.55);
+    private static String lastPack;
+    private static Vec3 lastPackSky = PACK_SKY_DEFAULT;
 
     /** The sky colour shader packs should see in this world, or null to keep vanilla's. */
     public static Vec3 packSkyColor(ClientLevel level) {
         if (level != Minecraft.getInstance().level || !SpaceSky.kind(level).airless() || !ShaderState.shaderPackInUse()) {
             return null;
         }
-        return AIRLESS_PACK_SKY;
+        String pack = ShaderState.packName();
+        if (!pack.equals(lastPack)) {
+            lastPack = pack;
+            lastPackSky = pack.contains("complementary") ? PACK_SKY_COMPLEMENTARY : PACK_SKY_DEFAULT;
+        }
+        return lastPackSky;
     }
 
     /** True when the shader pack's own clouds should be moved out of sight in this world. */

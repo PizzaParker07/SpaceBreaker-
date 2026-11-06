@@ -9,10 +9,11 @@ needs them at compile time or at run time.
 | Sodium 0.8 (no shaders) | works: terrain, block entity renderers (solar panel tracker, tanks, consoles), translucent glass/visor, emissive layers look the same as vanilla |
 | Sodium + Iris 1.8 + Complementary Reimagined r5.9.3 | works: black space sky, stars, Sun, Earth with phases from the Moon, planet below in orbit, Mars sky; terrain lit by the pack (sun shadows follow the world's own sun) |
 | Sodium + Iris + BSL v10.1.8 | works (same fixes, checked shot by shot) |
-| Sodium + Iris + MakeUp Ultra Fast 9.6 | see the screenshot table below |
+| Sodium + Iris + MakeUp Ultra Fast 9.6 | works (same fixes; the ground is a little cooler/lavender than vanilla) |
 
 Screenshots: `docs/screenshots/compat/` (`vanilla_*`, `sodium_*`, `iris_*` = Complementary, `bsl_*`, `makeup_*`;
-`iris_bug_*` are the state before the fix).
+`iris_bug_*` are the state before the fix, `before_after_complementary.jpg` puts both side by side). All taken with
+Sodium 0.8.13 + Iris 1.8.14-beta.1 on Mesa llvmpipe (software GL 4.5).
 
 ## 1. The problem
 
@@ -39,7 +40,7 @@ follow the Sun, which only the Overworld programs give. So we keep the Overworld
 | `SpaceWorlds` | classifies every dimension from its celestial body JSON: `ORBIT`, `AIRLESS` (vacuum), `THIN_ATMOSPHERE` (< 20 kPa, Mars), `THICK_ATMOSPHERE` (Venus, Titan), `VANILLA` (Overworld, Nether, End, unknown). New worlds are covered by adding `dimension` / `orbit_dimension` to their body JSON — a GameTest fails if a `spacebreaker:` dimension has no body. |
 | `client/ShaderSkyPass` | **sky replacement.** Iris renders into Minecraft's own depth buffer, which still holds the scene depth after the pack's final pass. NeoForge fires `RenderLevelStageEvent.Stage.AFTER_LEVEL` in `GameRenderer` right after `LevelRenderer.renderLevel` returns — after Iris's composite/final passes, before the depth clear for the hand. There our normal sky (`level.effects().renderSky`, unchanged vanilla code) is drawn into an off-screen target and copied onto the frame with `glDepthRange(1,1)` + `GL_LEQUAL`, i.e. only where the depth is still the cleared far value: the sky. Terrain, entities and the hand keep the pack's shading. Works with any pack, no pack-specific code. |
 | `mixin/iris/PackCloudsMixin` | `DimensionSpecialEffects.getCloudHeight` → 25000 in space worlds while a pack is active. Iris passes it as `cloudHeight`; pack clouds move beyond their draw distance (no clouds in front of distant terrain, no cloud shadows). Our sky effects draw clouds themselves, vanilla never reads it there. |
-| `mixin/iris/PackAmbientMixin` | `ClientLevel.getSkyColor` → a dim cool fill (0.18, 0.30, 0.90) in airless worlds while a pack is active. Balances the pack's warm sun to near-neutral white on lit faces; shadows stay dark. Tuned with Complementary (compare `iris_*` and the bug shots), checked with BSL. Mars keeps its biome sky colour (butterscotch fill is right there). |
+| `mixin/iris/PackAmbientMixin` | `ClientLevel.getSkyColor` → a cool fill in airless worlds while a pack is active (Iris passes it as `skyColor`). Packs use it differently: Complementary adds `pow(skyColor, 0.75)` to a warm, atmosphere-filtered sun and needs (0.18, 0.30, 0.90) to bring grey regolith back to neutral; MakeUp mixes 60 % of it into an already neutral ambient, so other packs get a moderate (0.20, 0.27, 0.55); BSL ignores it. The pack family is read from Iris's current pack name (internal method, by reflection; unknown → moderate value). Mars keeps its biome sky colour (butterscotch fill is right there). |
 | `mixin/ClientWeatherMixin` | client-side `getRainLevel` / `getThunderLevel` = 0 in space worlds (always, with or without Iris). Server-side weather is untouched. |
 | `CompatMixinPlugin` | the `iris.*` mixins are only applied when Iris (or Oculus) is installed: without it the game runs the exact vanilla code paths. |
 | `client/ShaderState` | Iris is reached only through its public API `net.irisshaders.iris.api.v0.IrisApi` (`isShaderPackInUse`) by reflection. |
@@ -57,6 +58,8 @@ does it anyway; `OFF` leaves the pack alone.
 
 ## 3. Known limitations
 
+- **Ground tint differs slightly per pack:** the ambient fill above is a compromise per pack family; packs not
+  tested here may look a little warm (sandy) or cool (lavender) on the Moon by day.
 - **Low sun on the Moon:** packs tint sunrise/sunset light orange (it comes from their Overworld atmosphere
   model, keyed to the sun angle). Our sky stays black, but the ground looks like an Earth dawn for the first and
   last ~10 % of the lunar day.

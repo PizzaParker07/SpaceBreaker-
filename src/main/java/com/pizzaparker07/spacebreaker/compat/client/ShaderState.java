@@ -16,6 +16,7 @@ public final class ShaderState {
     private static Object api;
     private static MethodHandle inUse;
     private static MethodHandle shadowPass;
+    private static MethodHandle packName;
 
     private ShaderState() {
     }
@@ -34,6 +35,13 @@ public final class ShaderState {
             api = lookup.findStatic(cls, "getInstance", MethodType.methodType(cls)).invoke();
             inUse = lookup.findVirtual(cls, "isShaderPackInUse", MethodType.methodType(boolean.class));
             shadowPass = lookup.findVirtual(cls, "isRenderingShadowPass", MethodType.methodType(boolean.class));
+            try {
+                // internal, only used to pick per-pack light tuning; optional
+                Class<?> iris = Class.forName("net.irisshaders.iris.Iris");
+                packName = lookup.findStatic(iris, "getCurrentPackName", MethodType.methodType(String.class));
+            } catch (Throwable ignored) {
+                packName = null;
+            }
             Spacebreaker.LOGGER.info("Iris detected: space skies are drawn over shader packs (see spacebreaker-compat-client.toml)");
         } catch (Throwable t) {
             api = null;
@@ -52,6 +60,20 @@ public final class ShaderState {
         } catch (Throwable t) {
             api = null;
             return false;
+        }
+    }
+
+    /** File name of the active shader pack in lower case, or "" if unknown. */
+    public static String packName() {
+        resolve();
+        if (packName == null) {
+            return "";
+        }
+        try {
+            String name = (String) packName.invoke();
+            return name == null ? "" : name.toLowerCase(java.util.Locale.ROOT);
+        } catch (Throwable t) {
+            return "";
         }
     }
 
