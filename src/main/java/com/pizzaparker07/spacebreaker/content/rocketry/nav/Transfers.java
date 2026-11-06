@@ -29,7 +29,12 @@ public final class Transfers {
         return model;
     }
 
-    /** Scale applied to real Δv in each realism preset. */
+    /**
+     * The one place where gameplay Δv is derived from real Δv: cost = real Δv (from the active
+     * {@link TransferModel}, i.e. the core/astro TransferPlanner, see docs/ASTRO.md) × this factor,
+     * minus the fin/RCS bonuses. REALISTIC uses real numbers; BALANCED and EASY shrink the solar system
+     * so a buildable three-stage kerosene rocket can fly a Moon mission.
+     */
     public static double scale(SbConfig.Realism realism) {
         return switch (realism) {
             case REALISTIC -> 1.0;
@@ -67,6 +72,11 @@ public final class Transfers {
             dv -= RCS_BONUS;
         }
         return OptionalDouble.of(Math.max(0, dv) * scale(realism));
+    }
+
+    /** Real (unscaled) Δv of a route, for display next to the gameplay value. */
+    public static OptionalDouble real(Location from, Location to) {
+        return model.deltaV(from, to);
     }
 
     public static OptionalDouble cost(Location from, Location to, SbConfig.Realism realism) {

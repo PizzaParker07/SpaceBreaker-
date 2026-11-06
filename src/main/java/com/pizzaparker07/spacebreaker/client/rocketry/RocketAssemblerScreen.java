@@ -63,6 +63,20 @@ public class RocketAssemblerScreen extends AbstractContainerScreen<RocketAssembl
         g.blit(BG, leftPos, topPos, 0, 0, imageWidth, imageHeight, 512, 256);
     }
 
+    /** Grey out parts in the inventory that the player has not researched yet. */
+    private void greyLockedParts(GuiGraphics g) {
+        for (var slot : menu.slots) {
+            if (slot.index < AssemblerSlots.COUNT || !slot.hasItem()) {
+                continue;
+            }
+            var stack = slot.getItem();
+            if (com.pizzaparker07.spacebreaker.content.rocketry.part.RocketParts.forStack(minecraft.level.registryAccess(), stack).isPresent()
+                    && !com.pizzaparker07.spacebreaker.content.rocketry.part.RocketTech.unlocked(minecraft.player, stack)) {
+                g.fill(leftPos + slot.x, topPos + slot.y, leftPos + slot.x + 16, topPos + slot.y + 16, 300, 0xA08B8B8B);
+            }
+        }
+    }
+
     @Override
     protected void renderLabels(GuiGraphics g, int mouseX, int mouseY) {
         g.drawString(font, title, titleLabelX, titleLabelY, 0x404040, false);
@@ -112,6 +126,7 @@ public class RocketAssemblerScreen extends AbstractContainerScreen<RocketAssembl
     public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
         super.render(g, mouseX, mouseY, partialTick);
         renderPreview(g, partialTick);
+        greyLockedParts(g);
         renderTooltip(g, mouseX, mouseY);
         if (layout != null && isHovering(PREVIEW_X, PREVIEW_Y, PREVIEW_W, PREVIEW_H, mouseX, mouseY)) {
             g.renderComponentTooltip(font, stageLines(), mouseX, mouseY);

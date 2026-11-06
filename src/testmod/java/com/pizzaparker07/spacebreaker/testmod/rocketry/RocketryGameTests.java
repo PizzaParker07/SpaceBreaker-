@@ -119,13 +119,52 @@ public final class RocketryGameTests {
         helper.assertFalse(MissionPlanner.milestones(l, SbConfig.Realism.REALISTIC).get(1).reached(),
                 "with real distances a kerosene 3-stager cannot reach the Moon");
         double real = Transfers.model().deltaV(Location.EARTH_SURFACE, Location.EARTH_ORBIT).orElseThrow();
-        helper.assertTrue(real > 9000 && real < 10000, "Earth to orbit ~9.4 km/s real");
+        helper.assertTrue(real > 8500 && real < 10000, "Earth to orbit ~9.2 km/s real, got " + real);
+        helper.assertTrue(Transfers.model() instanceof com.pizzaparker07.spacebreaker.content.rocketry.nav.AstroTransferModel,
+                "the astrophysics library drives the Δv costs");
+        double tli = Transfers.model().deltaV(Location.EARTH_ORBIT, Location.MOON_ORBIT).orElseThrow();
+        helper.assertTrue(tli > 3500 && tli < 4500, "LEO to low lunar orbit ~3.95 km/s, got " + tli);
         // a rocket without a heat shield can reach orbit but never comes home
         RocketDesign noShield = new RocketDesign(RocketryModule.MOON_ROCKET.parts().stream()
                 .filter(id -> !id.getPath().equals("heat_shield")).toList());
         RocketLayout ns = RocketLayout.of(noShield, RocketParts.lookup(helper.getLevel().registryAccess()));
         helper.assertFalse(MissionPlanner.canReturnHome(ns, 0, ns.fullFuel(), Location.EARTH_ORBIT, SbConfig.Realism.BALANCED),
                 "no heat shield, no way home");
+        helper.succeed();
+    }
+
+    @GameTest(template = EMPTY)
+    public static void realisticModeUsesRealDeltaV(GameTestHelper helper) {
+        for (Location from : Location.values()) {
+            for (Location to : Transfers.destinations(from)) {
+                double real = Transfers.real(from, to).orElseThrow();
+                double realistic = Transfers.cost(from, to, SbConfig.Realism.REALISTIC).orElseThrow();
+                double balanced = Transfers.cost(from, to, SbConfig.Realism.BALANCED).orElseThrow();
+                helper.assertTrue(Math.abs(realistic - real) < 1e-6, "REALISTIC must use the real Δv for " + from + "->" + to);
+                helper.assertTrue(Math.abs(balanced - real * Transfers.scale(SbConfig.Realism.BALANCED)) < 1e-6, "BALANCED = real x scale");
+            }
+        }
+        // the real numbers are the textbook ones (docs/ASTRO.md Δv map)
+        helper.assertTrue(within(Transfers.real(Location.EARTH_ORBIT, Location.MOON_ORBIT).orElseThrow(), 3950, 250), "LEO -> LLO ~3.95 km/s");
+        helper.assertTrue(within(Transfers.real(Location.MOON_ORBIT, Location.MOON_SURFACE).orElseThrow(), 1900, 300), "lunar landing ~2.0 km/s");
+        helper.assertTrue(within(Transfers.real(Location.MOON_SURFACE, Location.MOON_ORBIT).orElseThrow(), 1900, 300), "lunar ascent ~2.0 km/s");
+        helper.assertTrue(within(Transfers.real(Location.MOON_ORBIT, Location.EARTH_SURFACE).orElseThrow(), 850, 200), "trans-Earth injection ~0.8 km/s");
+        helper.succeed();
+    }
+
+    private static boolean within(double v, double target, double tol) {
+        return Math.abs(v - target) <= tol;
+    }
+
+    @GameTest(template = EMPTY)
+    public static void advancedPartsNeedResearch(GameTestHelper helper) {
+        net.minecraft.world.entity.player.Player player = helper.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        ItemStack vac = new ItemStack(RocketryModule.VACUUM_ENGINE.get());
+        net.minecraft.resources.ResourceLocation tech = com.pizzaparker07.spacebreaker.content.rocketry.part.RocketTech.techFor(player, vac);
+        helper.assertTrue(tech != null, "the vacuum engine is gated by a technology");
+        helper.assertFalse(com.pizzaparker07.spacebreaker.content.rocketry.part.RocketTech.unlocked(player, vac), "locked before research");
+        com.pizzaparker07.spacebreaker.core.tech.Tech.learn(player, tech);
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.part.RocketTech.unlocked(player, vac), "unlocked after research");
         helper.succeed();
     }
 
@@ -221,6 +260,7 @@ public final class RocketryGameTests {
         RocketEntity rocket = RocketEntity.create(helper.getLevel(), quick, pad.rocketPos(), 0F);
         helper.getLevel().addFreshEntity(rocket);
         helper.assertTrue(rocket.launchProblem() != null, "an empty rocket cannot launch");
+        helper.assertTrue(rocket.deltaV() == 0, "no propellant, no Δv");
         rocket.fillCompletely();
         helper.assertTrue(rocket.fullyFuelled(), "cartridge fills every stage");
         ServerPlayer crew = helper.makeMockServerPlayerInLevel();
@@ -235,8 +275,7 @@ public final class RocketryGameTests {
         helper.runAfterDelay(RocketEntity.COUNTDOWN_TICKS + 5, () -> {
             helper.assertTrue(rocket.state() == FlightState.ASCENT, "liftoff after T-0, state " + rocket.state());
             helper.assertTrue(rocket.getDeltaMovement().y > 0, "climbing");
-            crew.stopRiding();
-            helper.assertTrue(crew.getVehicle() == rocket, "nobody climbs out of a rocket in flight");
+            helper.assertFalse(rocket.canDismount(), "nobody climbs out of a rocket in flight (creative players excepted)");
         });
         helper.succeedWhen(() -> {
             helper.assertTrue(rocket.activeStage() >= 1, "waiting for staging: state " + rocket.state() + " t=" + rocket.timer() + " fuel0=" + (int) rocket.fuel()[0] + " crew=" + rocket.getPassengers() + " y=" + (int) rocket.getY());

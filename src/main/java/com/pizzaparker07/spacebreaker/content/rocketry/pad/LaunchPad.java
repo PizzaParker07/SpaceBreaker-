@@ -95,15 +95,21 @@ public final class LaunchPad {
         List<BlockPos> arms = new ArrayList<>();
         List<BlockPos> umbilicals = new ArrayList<>();
         if (bestBase != null) {
-            for (int h = 0; h < bestHeight; h++) {
-                BlockPos t = bestBase.above(h);
-                for (Direction d : Direction.Plane.HORIZONTAL) {
-                    BlockPos n = t.relative(d);
-                    BlockState s = level.getBlockState(n);
-                    if (s.is(RocketryModule.CREW_ARM.get())) {
-                        arms.add(n);
-                    } else if (s.is(RocketryModule.FUEL_UMBILICAL.get())) {
-                        umbilicals.add(n);
+            // attachments anywhere on the tower side of the pad, up to the top of the tower
+            BlockPos.MutableBlockPos p = new BlockPos.MutableBlockPos();
+            for (int dx = -4; dx <= 4; dx++) {
+                for (int dz = -4; dz <= 4; dz++) {
+                    if (Math.max(Math.abs(dx), Math.abs(dz)) < 2) {
+                        continue;
+                    }
+                    for (int dy = 1; dy <= bestHeight + 1; dy++) {
+                        p.set(center.getX() + dx, center.getY() + dy, center.getZ() + dz);
+                        BlockState s = level.getBlockState(p);
+                        if (s.is(RocketryModule.CREW_ARM.get())) {
+                            arms.add(p.immutable());
+                        } else if (s.is(RocketryModule.FUEL_UMBILICAL.get())) {
+                            umbilicals.add(p.immutable());
+                        }
                     }
                 }
             }

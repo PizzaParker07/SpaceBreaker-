@@ -35,11 +35,16 @@ public class RocketRenderer extends EntityRenderer<RocketEntity> {
         if (rocket.design().isEmpty()) {
             return;
         }
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.options.getCameraType().isFirstPerson() && mc.player != null && mc.player.getVehicle() == rocket) {
+            return; // the crew sits inside the capsule: do not draw its walls around the camera
+        }
         RocketGeometry geo = rocket.geometry();
         FlightState state = rocket.state();
         float time = rocket.tickCount + partialTick;
         pose.pushPose();
         pose.mulPose(Axis.ZP.rotationDegrees(-rocket.tilt()));
+        pose.mulPose(Axis.YP.rotationDegrees(-rocket.getYRot()));
         if (state == FlightState.ORBIT || state == FlightState.TRANSFER) {
             pose.translate(0, Mth.sin(time * 0.03F) * 0.08F, 0);
             pose.mulPose(Axis.YP.rotationDegrees(time * 0.15F));
@@ -63,7 +68,7 @@ public class RocketRenderer extends EntityRenderer<RocketEntity> {
     private static float legDeploy(RocketEntity rocket, float partialTick) {
         return switch (rocket.state()) {
             case DESCENT -> Mth.clamp((rocket.timer() + partialTick - 40) / 40F, 0F, 1F);
-            case IDLE -> rocket.location() == Location.MOON_SURFACE ? 1F : 0F;
+            case IDLE -> rocket.location() == Location.MOON_SURFACE || rocket.activeStage() > 0 ? 1F : 0F;
             case COUNTDOWN, ASCENT -> rocket.location() == Location.MOON_SURFACE ? Math.max(0F, 1F - (rocket.timer() > 0 && rocket.state() == FlightState.ASCENT ? rocket.timer() / 40F : 0F)) : 0F;
             default -> 0F;
         };

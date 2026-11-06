@@ -18,13 +18,13 @@ import org.joml.Vector3f;
  * its own cloud layer). The other body of the pair hangs small in the distance.
  */
 public class OrbitSkyEffects extends DimensionSpecialEffects {
-    static final ResourceLocation EARTH = Spacebreaker.id("textures/environment/earth.png");
+    static final ResourceLocation EARTH = Spacebreaker.id("textures/environment/orbit_earth.png");
     static final ResourceLocation EARTH_CLOUDS = Spacebreaker.id("textures/environment/orbit_earth_clouds.png");
-    static final ResourceLocation EARTH_LIMB = Spacebreaker.id("textures/environment/earth_limb.png");
-    static final ResourceLocation MOON = Spacebreaker.id("textures/environment/moon.png");
+    static final ResourceLocation EARTH_LIMB = Spacebreaker.id("textures/environment/orbit_earth_limb.png");
+    static final ResourceLocation MOON = Spacebreaker.id("textures/environment/orbit_moon.png");
     static final ResourceLocation SUN = ResourceLocation.withDefaultNamespace("textures/environment/sun.png");
-    static final ResourceLocation EARTH_DISC = Spacebreaker.id("textures/environment/earth_disc.png");
-    static final ResourceLocation MOON_DISC = Spacebreaker.id("textures/environment/moon_disc.png");
+    static final ResourceLocation EARTH_DISC = Spacebreaker.id("textures/environment/orbit_earth_disc.png");
+    static final ResourceLocation MOON_DISC = Spacebreaker.id("textures/environment/orbit_moon_disc.png");
 
     /** One orbit (and one day/night cycle of the view) in ticks. */
     public static final float ORBIT_TICKS = 12000F;
@@ -68,23 +68,24 @@ public class OrbitSkyEffects extends DimensionSpecialEffects {
         float orbit = t / ORBIT_TICKS;
         // the sun swings around once per orbit; the planet turns underneath us
         float sunAngle = orbit * Mth.TWO_PI;
-        Vector3f sun = new Vector3f(Mth.cos(sunAngle), 0.35F, Mth.sin(sunAngle)).normalize();
+        Vector3f sun = new Vector3f(Mth.cos(sunAngle), 0.9F, Mth.sin(sunAngle)).normalize();
         RenderSystem.depthMask(false);
         RenderSystem.disableDepthTest();
         SkyDraw.blackout(modelView, 0xFF000000);
         SkyDraw.stars(modelView, projection, 1F);
         SkyDraw.billboard(modelView, SUN, sun, 100F, 12F, 1F);
-        // the body below: angular radius ~70 degrees from a low orbit
+        // the body below, seen from a high orbit (angular radius ~50 degrees) so the whole curve reads
         Vector3f center = new Vector3f(0, -100F, 0);
-        float radius = 94F;
+        float radius = 76F;
         if (moonOrbit) {
             SkyDraw.billboard(modelView, EARTH_DISC, new Vector3f(-0.6F, 0.35F, 0.7F), 100F, 3.2F, 1F);
             SkyDraw.planet(modelView, MOON, center, radius, orbit * 0.5F, sun, 0.04F, 1F, false);
         } else {
             SkyDraw.billboard(modelView, MOON_DISC, new Vector3f(0.7F, 0.45F, -0.55F), 100F, 2.4F, 1F);
-            SkyDraw.planet(modelView, EARTH_LIMB, center, radius * 1.025F, 0, sun, 0.0F, 0.85F, true);
             SkyDraw.planet(modelView, EARTH, center, radius, orbit, sun, 0.05F, 1F, false);
-            SkyDraw.planet(modelView, EARTH_CLOUDS, center, radius * 1.006F, orbit * 1.15F, sun, 0.03F, 0.9F, false);
+            SkyDraw.planet(modelView, EARTH_CLOUDS, center, radius * 1.006F, orbit * 1.15F, sun, 0.03F, 0.6F, false);
+            // thin blue atmosphere halo around the limb (drawn last, additive)
+            SkyDraw.planet(modelView, EARTH_LIMB, center, radius * 1.035F, 0, sun, 0.25F, 1F, true, true);
         }
         RenderSystem.enableDepthTest();
         RenderSystem.depthMask(true);

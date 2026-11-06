@@ -28,6 +28,7 @@ final class RocketryLang {
         l.item(RocketryModule.RCS_THRUSTERS, "RCS Thrusters", "Manevra İticileri");
         l.item(RocketryModule.ROCKET, "Rocket", "Roket");
 
+        l.add("tooltip.spacebreaker.part.requires", "Requires research: %s", "Araştırma gerekli: %s");
         l.add("tooltip.spacebreaker.part.mass", "Dry mass: %s", "Kuru kütle: %s");
         l.add("tooltip.spacebreaker.part.propellant", "Propellant: %s (RP-1 %s mB, LOX %s mB)", "Yakıt: %s (RP-1 %s mB, LOX %s mB)");
         l.add("tooltip.spacebreaker.part.thrust", "Thrust: %s kN", "İtki: %s kN");
@@ -179,6 +180,11 @@ final class RocketryLang {
         l.add("gui.spacebreaker.star_map.too_far", "Not enough propellant for this trip", "Bu yolculuk için yakıt yetmiyor");
         l.add("gui.spacebreaker.star_map.return_ok", "You can still get home afterwards", "Sonrasında eve dönebilirsin");
         l.add("gui.spacebreaker.star_map.no_return", "Warning: no fuel to come back from there!", "Uyarı: oradan dönecek yakıt yok!");
+        l.add("gui.spacebreaker.star_map.window_open", "Launch window open · transfer %s days", "Fırlatma penceresi açık · transfer %s gün");
+        l.add("gui.spacebreaker.star_map.window_wait", "Next launch window in %s · transfer %s days", "Sonraki fırlatma penceresi %s sonra · transfer %s gün");
+        l.add("gui.spacebreaker.star_map.scaled.balanced", "Balanced mode: Δv is %s%% of the real value", "Dengeli mod: Δv gerçek değerin %%%s kadarı");
+        l.add("gui.spacebreaker.star_map.scaled.easy", "Easy mode: Δv is %s%% of the real value", "Kolay mod: Δv gerçek değerin %%%s kadarı");
+        l.add("gui.spacebreaker.star_map.real", "real: %s km/s", "gerçek: %s km/s");
         l.add("gui.spacebreaker.star_map.pick", "Pick a destination", "Bir hedef seç");
         l.add("gui.spacebreaker.star_map.reach_orbit", "Destinations can be chosen once in orbit", "Hedefler yörüngedeyken seçilebilir");
 

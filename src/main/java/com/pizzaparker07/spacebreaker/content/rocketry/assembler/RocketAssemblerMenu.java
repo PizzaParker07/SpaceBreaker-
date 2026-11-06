@@ -79,7 +79,8 @@ public class RocketAssemblerMenu extends AbstractContainerMenu {
         @Override
         public boolean mayPlace(ItemStack stack) {
             return RocketParts.forStack(inventory.player.level().registryAccess(), stack)
-                    .map(p -> AssemblerSlots.accepts(beSlot, p.type())).orElse(false);
+                    .map(p -> AssemblerSlots.accepts(beSlot, p.type())).orElse(false)
+                    && com.pizzaparker07.spacebreaker.content.rocketry.part.RocketTech.unlocked(inventory.player, stack);
         }
 
         @Override
