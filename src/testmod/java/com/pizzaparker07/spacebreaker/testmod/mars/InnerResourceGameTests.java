@@ -42,6 +42,29 @@ public final class InnerResourceGameTests {
         helper.succeed();
     }
 
+    /**
+     * Mercury has no air, so a rocket must refuel there to come home: polar crater ice → water → hydrogen + oxygen,
+     * graphite + oxygen → CO₂, CO₂ + hydrogen → methane, then liquefied methane and oxygen. Every step must exist.
+     */
+    @GameTest(template = WorldTests.EMPTY)
+    public static void mercuryCanMakeMethalox(GameTestHelper helper) {
+        var recipes = helper.getLevel().getRecipeManager();
+        var burn = recipes.byKey(Spacebreaker.id("chemical_reaction/graphite_combustion"))
+                .orElseThrow(() -> new AssertionError("no graphite combustion"));
+        ProcessingRecipe r = (ProcessingRecipe) burn.value();
+        helper.assertTrue(r.ingredients.get(0).test(new ItemStack(MercuryModule.GRAPHITE.get())), "burns graphite");
+        helper.assertTrue(r.fluidResults.get(0).is(com.pizzaparker07.spacebreaker.content.fluids.FluidsModule.CARBON_DIOXIDE.get()), "makes CO2");
+        for (String id : new String[]{"melting/water_ice", "electrolysis/water", "sabatier/methane", "liquefaction/methane", "liquefaction/oxygen"}) {
+            helper.assertTrue(recipes.byKey(Spacebreaker.id(id)).isPresent(), "missing step " + id);
+        }
+        helper.assertTrue(new ItemStack(com.pizzaparker07.spacebreaker.content.moon.MoonModule.LUNAR_ICE.get()).is(MarsModule.ICES_WATER),
+                "Mercury's polar crater ice melts into water");
+        var mercury = WorldTests.profile(helper, "mercury");
+        helper.assertTrue(mercury.materials().ice().map(i -> i.is(com.pizzaparker07.spacebreaker.content.moon.MoonModule.LUNAR_ICE.get())).orElse(false),
+                "Mercury's shadowed craters hold water ice");
+        helper.succeed();
+    }
+
     private InnerResourceGameTests() {
     }
 }

@@ -1,0 +1,21 @@
+{
+  "type": "spacebreaker:chemical_reaction",
+  "energy": 40,
+  "fluid_input": {
+    "amount": 500,
+    "tag": "c:oxygen"
+  },
+  "fluid_results": [
+    {
+      "amount": 500,
+      "id": "spacebreaker:carbon_dioxide"
+    }
+  ],
+  "ingredients": [
+    {
+      "count": 1,
+      "item": "spacebreaker:graphite"
+    }
+  ],
+  "time": 60
+}
