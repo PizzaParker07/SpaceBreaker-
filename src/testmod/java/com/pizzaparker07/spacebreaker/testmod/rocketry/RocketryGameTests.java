@@ -279,6 +279,21 @@ public final class RocketryGameTests {
     // ------------------------------------------------------------------ flight
 
     @GameTest(template = EMPTY)
+    public static void outerWorldsAreReachable(GameTestHelper helper) {
+        for (String name : new String[]{"ceres", "vesta", "io", "europa", "ganymede", "callisto"}) {
+            var surface = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(Spacebreaker.id(name), false);
+            var orbit = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(Spacebreaker.id(name), true);
+            helper.assertTrue(surface.isPresent() && orbit.isPresent(), name + ": surface and orbit come from the body data");
+            helper.assertTrue(Transfers.destinations(orbit.get()).contains(surface.get()), name + ": landing is offered from orbit");
+            helper.assertTrue(Transfers.destinations(surface.get()).contains(orbit.get()), name + ": ascent is offered from the surface");
+            double land = Transfers.real(orbit.get(), surface.get()).orElseThrow();
+            helper.assertTrue(land > 0 && land < 2500, name + ": landing from low orbit costs " + land);
+            helper.assertTrue(Transfers.real(Location.EARTH_ORBIT, orbit.get()).isPresent(), name + ": reachable from Earth orbit");
+        }
+        helper.succeed();
+    }
+
+    @GameTest(template = EMPTY)
     public static void fuelFromFluidContainers(GameTestHelper helper) {
         RocketEntity rocket = RocketEntity.create(helper.getLevel(), RocketryModule.MOON_ROCKET, helper.absoluteVec(new net.minecraft.world.phys.Vec3(1.5, 2, 1.5)), 0F);
         helper.getLevel().addFreshEntity(rocket);
