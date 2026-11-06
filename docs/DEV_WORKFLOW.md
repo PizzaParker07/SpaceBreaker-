@@ -76,4 +76,5 @@ small, additive and explained in the commit message.
 | Industry | `dev/industry` | `content/earth`, `content/machines`, `content/fluids`, `client/machines`, Earth ore worldgen, energy, pipes, processing chain |
 | Suit & survival | `dev/suit` | `content/suit`, `client/suit`, `client/hud`, oxygen/temperature/radiation effects, gravity application, zero-g movement, jetpack, airlock, oxygen distributor |
 | Astrophysics & Solar System data | `dev/astro` | `core/astro` (pure Java physics library + tests), `data/spacebreaker/spacebreaker/celestial_body/*.json` |
+| Inner planets (Mars, Phobos, Deimos, Venus, Mercury) | `dev/inner` | `content/mars`, `content/venus`, `content/mercury`, `client/mars`, `client/venus`, `client/mercury`, their dimensions, terrain profiles, blocks, creatures and dungeons |
 | Research, dungeons & guide | `dev/research` | `content/research`, `client/research`, `content/dungeons` (shared dungeon framework), `client/guide`, tech tree data, guide book, advancements |
