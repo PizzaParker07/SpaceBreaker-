@@ -75,7 +75,7 @@ public class DustDevil extends Monster {
                         3, 0.5, 0.2, 0.5, 0.05);
             }
             // a whirlwind lives only as long as the storm that feeds it
-            if (tickCount > 100 && MarsWeather.dusty(level()) && MarsWeather.stormStrength(level()) < 0.2F && random.nextInt(40) == 0) {
+            if (!isNoAi() && tickCount > 100 && MarsWeather.dusty(level()) && MarsWeather.stormStrength(level()) < 0.2F && random.nextInt(40) == 0) {
                 server.sendParticles(ParticleTypes.POOF, getX(), getY() + 1, getZ(), 20, 0.4, 0.8, 0.4, 0.02);
                 discard();
             }

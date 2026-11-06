@@ -1,0 +1,10 @@
+{
+  "type": "spacebreaker:moonlet_dungeon",
+  "biomes": [
+    "spacebreaker:phobos_surface",
+    "spacebreaker:phobos_crater"
+  ],
+  "cache": false,
+  "spawn_overrides": {},
+  "step": "surface_structures"
+}

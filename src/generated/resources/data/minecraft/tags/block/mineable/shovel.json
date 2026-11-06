@@ -11,6 +11,8 @@
     "spacebreaker:martian_clay",
     "spacebreaker:co2_frost",
     "spacebreaker:martian_sand",
-    "spacebreaker:olivine_sand"
+    "spacebreaker:olivine_sand",
+    "spacebreaker:phobos_regolith",
+    "spacebreaker:deimos_regolith"
   ]
 }

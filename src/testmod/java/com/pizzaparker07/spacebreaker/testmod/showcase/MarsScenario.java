@@ -48,15 +48,44 @@ final class MarsScenario implements ShowcaseScenario {
     void extraBuild(ServerLevel level, PlanetTerrain t) {
         int y0 = (int) Math.floor(t.height(STAGE_X, STAGE_Z));
         // creature line-up on the pad, frozen for the photo
-        spawn(level, com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.RUST_BEETLE.get(), STAGE_X - 9, y0 + 1, STAGE_Z + 6, 150F);
-        spawn(level, com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.STONEGRAZER.get(), STAGE_X - 4, y0 + 1, STAGE_Z + 6, 160F);
-        var lurker = spawn(level, com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.CANYON_LURKER.get(), STAGE_X + 2, y0 + 1, STAGE_Z + 6, 200F);
+        spawn(level, com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.RUST_BEETLE.get(), STAGE_X - 9, y0 + 1, STAGE_Z + 6, 25F);
+        spawn(level, com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.STONEGRAZER.get(), STAGE_X - 4, y0 + 1, STAGE_Z + 6, -30F);
+        var lurker = spawn(level, com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.CANYON_LURKER.get(), STAGE_X + 2, y0 + 1, STAGE_Z + 6, 15F);
         if (lurker instanceof com.pizzaparker07.spacebreaker.content.mars.entity.CanyonLurker l) {
             l.setHidden(false);
         }
-        spawn(level, com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.CANYON_LURKER.get(), STAGE_X + 6, y0 + 1, STAGE_Z + 6, 200F);
-        spawn(level, com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.POLAR_WORM.get(), STAGE_X + 9, y0 + 1, STAGE_Z + 6, 210F);
-        spawn(level, com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.DUST_DEVIL.get(), STAGE_X + 12, y0 + 1, STAGE_Z + 6, 180F);
+        spawn(level, com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.CANYON_LURKER.get(), STAGE_X + 6, y0 + 1, STAGE_Z + 6, 0F);
+        spawn(level, com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.POLAR_WORM.get(), STAGE_X + 9, y0 + 1, STAGE_Z + 6, 35F);
+        spawn(level, com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.DUST_DEVIL.get(), STAGE_X + 12, y0 + 1, STAGE_Z + 6, 0F);
+        // dungeons near the vista point
+        int sy = (int) Math.floor(t.height(STATION_X + 16, STATION_Z + 16)) + 1;
+        place(level, new com.pizzaparker07.spacebreaker.content.mars.dungeon.ResearchStationPiece(4242L, STATION_X, sy, STATION_Z, net.minecraft.core.Direction.NORTH));
+        int top = (int) Math.floor(t.height(CAVE_X, CAVE_Z));
+        cave = new com.pizzaparker07.spacebreaker.content.mars.dungeon.RiverbedCavePiece(5150L, CAVE_X, top, CAVE_Z);
+        place(level, cave);
+    }
+
+    static final int STATION_X = -90;
+    static final int STATION_Z = 40;
+    static final int CAVE_X = 120;
+    static final int CAVE_Z = -80;
+    private com.pizzaparker07.spacebreaker.content.mars.dungeon.RiverbedCavePiece cave;
+
+    static void placePiece(ServerLevel level, net.minecraft.world.level.levelgen.structure.StructurePiece piece) {
+        place(level, piece);
+    }
+
+    private static void place(ServerLevel level, net.minecraft.world.level.levelgen.structure.StructurePiece piece) {
+        var bb = piece.getBoundingBox();
+        for (int cx = bb.minX() >> 4; cx <= bb.maxX() >> 4; cx++) {
+            for (int cz = bb.minZ() >> 4; cz <= bb.maxZ() >> 4; cz++) {
+                level.getChunk(cx, cz);
+                var cb = new net.minecraft.world.level.levelgen.structure.BoundingBox(cx << 4, level.getMinBuildHeight(), cz << 4, (cx << 4) + 15,
+                        level.getMaxBuildHeight(), (cz << 4) + 15);
+                piece.postProcess(level, level.structureManager(), level.getChunkSource().getGenerator(),
+                        net.minecraft.util.RandomSource.create(cx * 31L + cz), cb, new net.minecraft.world.level.ChunkPos(cx, cz), bb.getCenter());
+            }
+        }
     }
 
     private static net.minecraft.world.entity.Mob spawn(ServerLevel level, net.minecraft.world.entity.EntityType<? extends net.minecraft.world.entity.Mob> type,
@@ -80,8 +109,27 @@ final class MarsScenario implements ShowcaseScenario {
         List<ShowcaseDriver.Shot> s = new ArrayList<>();
         s.add(new ShowcaseDriver.Shot("13_creatures", 0, STAGE_X + 1.5, y0 + 3.2, STAGE_Z + 12.5, 180F, 14F, true, CameraType.FIRST_PERSON, 120,
                 at(0.18), null));
-        s.add(new ShowcaseDriver.Shot("14_creatures_close", 0, STAGE_X - 5, y0 + 2.6, STAGE_Z + 9.5, 200F, 18F, true, CameraType.FIRST_PERSON, 80,
-                at(0.18), null));
+        String[] names = {"beetle", "stonegrazer", "lurker", "lurker_hidden", "worm", "dust_devil"};
+        int[] xs = {-9, -4, 2, 6, 9, 12};
+        for (int i = 0; i < names.length; i++) {
+            double d = i == 1 ? 4.5 : i == 5 ? 5.5 : 2.6;
+            s.add(new ShowcaseDriver.Shot("14_" + names[i], 0, STAGE_X + xs[i] + 0.5 + (i % 2 == 0 ? -0.4 : 0.4) * d, y0 + 1 + (i == 5 ? 2.2 : 1.4), STAGE_Z + 6.5 + d,
+                    180F + (i % 2 == 0 ? 8F : -8F), i == 5 ? 5F : 22F, true, CameraType.FIRST_PERSON, 60, at(0.18), null));
+        }
+        int sy = (int) Math.floor(t.height(STATION_X + 16, STATION_Z + 16)) + 1;
+        s.add(new ShowcaseDriver.Shot("15_research_station", 0, STATION_X + 40, sy + 14, STATION_Z + 44, yaw(-24, -28), 22F, true,
+                CameraType.FIRST_PERSON, 200, at(0.15), null));
+        s.add(new ShowcaseDriver.Shot("16_station_inside", 0, STATION_X + 16.5, sy + 2.6, STATION_Z + 24.5, 0F, 8F, true,
+                CameraType.FIRST_PERSON, 100, at(0.2), null));
+        {
+            var c = new com.pizzaparker07.spacebreaker.content.mars.dungeon.RiverbedCavePiece(5150L, CAVE_X,
+                    (int) Math.floor(t.height(CAVE_X, CAVE_Z)), CAVE_Z).chamber();
+            s.add(new ShowcaseDriver.Shot("17_riverbed_chamber", 0, c.getX() + 0.5, c.getY() + 1.6, c.getZ() - 4.5, 0F, 18F, true,
+                    CameraType.FIRST_PERSON, 120, p -> {
+                        at(0.2).accept(p);
+                        p.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.NIGHT_VISION, 2400, 0, false, false));
+                    }, null));
+        }
         return s;
     }
 
@@ -165,8 +213,7 @@ final class MarsScenario implements ShowcaseScenario {
 
         // the great rift, from the north rim looking along it
         double rz = t.riftCentre(300);
-        double rimZ = rz - 135;
-        s.add(new ShowcaseDriver.Shot("03_great_rift", 0, 300, ground(300, rimZ) + 6, rimZ, -25F, 22F, true, fp, 260, at(0.15), null));
+        s.add(new ShowcaseDriver.Shot("03_great_rift", 0, 200, ground(200, rz) + 55, rz, -90F, 18F, true, fp, 260, at(0.15), null));
         s.add(new ShowcaseDriver.Shot("04_rift_floor", 0, 520, ground(520, t.riftCentre(520)) + 3, t.riftCentre(520), -90F, -4F, true, fp, 220,
                 at(0.3), null));
 

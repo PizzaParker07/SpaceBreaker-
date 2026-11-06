@@ -31,6 +31,11 @@ public final class MarsClient {
     @SubscribeEvent
     static void registerEffects(RegisterDimensionSpecialEffectsEvent event) {
         event.register(Spacebreaker.id("mars"), new MarsSkyEffects());
+        // Mars seen from its moons: 2 atan(R_mars / a)
+        event.register(Spacebreaker.id("phobos"), new MarsMoonSkyEffects(com.pizzaparker07.spacebreaker.core.body.Bodies.key("phobos"),
+                Math.toDegrees(2 * Math.atan(3389.5 / 9376))));
+        event.register(Spacebreaker.id("deimos"), new MarsMoonSkyEffects(com.pizzaparker07.spacebreaker.core.body.Bodies.key("deimos"),
+                Math.toDegrees(2 * Math.atan(3389.5 / 23463))));
     }
 
     @SubscribeEvent

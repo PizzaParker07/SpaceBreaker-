@@ -90,6 +90,18 @@ public final class MarsModule implements SbModule {
             BlockBehaviour.Properties.of().mapColor(MapColor.TERRACOTTA_BROWN).instrument(NoteBlockInstrument.BASEDRUM)
                     .requiresCorrectToolForDrops().strength(1.8F, 6.0F).sound(SoundType.TUFF));
 
+    // ------------------------------------------------------------------ Phobos and Deimos (airless: prints stay forever)
+
+    public static final ResourceKey<Level> PHOBOS = ResourceKey.create(Registries.DIMENSION, Spacebreaker.id("phobos"));
+    public static final ResourceKey<Level> DEIMOS = ResourceKey.create(Registries.DIMENSION, Spacebreaker.id("deimos"));
+    public static final DeferredBlock<com.pizzaparker07.spacebreaker.content.moon.LunarRegolithBlock> PHOBOS_REGOLITH = KIT.block("phobos_regolith",
+            com.pizzaparker07.spacebreaker.content.moon.LunarRegolithBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK).strength(0.5F).sound(SoundType.SAND));
+    public static final DeferredBlock<com.pizzaparker07.spacebreaker.content.moon.LunarRegolithBlock> DEIMOS_REGOLITH = KIT.block("deimos_regolith",
+            com.pizzaparker07.spacebreaker.content.moon.LunarRegolithBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GRAY).strength(0.5F).sound(SoundType.SAND));
+    public static final DeferredBlock<Block> CARBONACEOUS_CHONDRITE = KIT.rock("carbonaceous_chondrite", MapColor.COLOR_BLACK, SoundType.TUFF, 1.4F);
+
     public static final DeferredItem<Item> RAW_HEMATITE = KIT.item("raw_hematite");
     public static final DeferredItem<Item> GYPSUM_CRYSTAL = KIT.item("gypsum_crystal");
 
@@ -197,6 +209,13 @@ public final class MarsModule implements SbModule {
         lang.block(HEMATITE_ORE, "Hematite Ore", "Hematit Cevheri");
         lang.block(GYPSUM_ORE, "Gypsum Vein", "Alçıtaşı Damarı");
         lang.item(RAW_HEMATITE, "Raw Hematite", "Ham Hematit");
+        lang.add("body.spacebreaker.phobos", "Phobos", "Phobos");
+        lang.add("body.spacebreaker.deimos", "Deimos", "Deimos");
+        lang.add("dimension.spacebreaker.phobos", "Phobos", "Phobos");
+        lang.add("dimension.spacebreaker.deimos", "Deimos", "Deimos");
+        lang.block(PHOBOS_REGOLITH, "Phobos Regolith", "Phobos Regoliti");
+        lang.block(DEIMOS_REGOLITH, "Deimos Regolith", "Deimos Regoliti");
+        lang.block(CARBONACEOUS_CHONDRITE, "Carbonaceous Chondrite", "Karbonlu Kondrit");
         lang.item(GYPSUM_CRYSTAL, "Gypsum Crystal", "Alçıtaşı Kristali");
         lang.add("commands.spacebreaker.duststorm.start", "A dust storm sweeps across Mars", "Mars'ta bir toz fırtınası başladı");
         lang.add("commands.spacebreaker.duststorm.stop", "The dust settles", "Toz yatıştı");
@@ -209,6 +228,9 @@ public final class MarsModule implements SbModule {
     public void addBlockLoot(SbBlockLoot loot) {
         soils().forEach(s -> loot.self(s.get()));
         loot.self(MARTIAN_SAND.get());
+        loot.self(PHOBOS_REGOLITH.get());
+        loot.self(DEIMOS_REGOLITH.get());
+        loot.self(CARBONACEOUS_CHONDRITE.get());
         loot.self(OLIVINE_SAND.get());
         KIT.familyLoot(loot);
         loot.self(MARTIAN_MUDSTONE.get());
@@ -222,7 +244,7 @@ public final class MarsModule implements SbModule {
 
     @Override
     public void addTags(SbTags tags) {
-        List<Block> pick = new ArrayList<>(List.of(MARTIAN_MUDSTONE.get(), GYPSUM_BLOCK.get(), MARTIAN_ICE.get(), DUSTY_ICE.get(),
+        List<Block> pick = new ArrayList<>(List.of(CARBONACEOUS_CHONDRITE.get(), MARTIAN_MUDSTONE.get(), GYPSUM_BLOCK.get(), MARTIAN_ICE.get(), DUSTY_ICE.get(),
                 DRY_ICE.get(), HEMATITE_ORE.get(), GYPSUM_ORE.get()));
         for (BlockKit.Family f : KIT.families()) {
             f.all().forEach(b -> pick.add(b.get()));
@@ -236,6 +258,8 @@ public final class MarsModule implements SbModule {
         List<Block> shovel = new ArrayList<>(soils().stream().map(DeferredBlock::get).map(b -> (Block) b).toList());
         shovel.add(MARTIAN_SAND.get());
         shovel.add(OLIVINE_SAND.get());
+        shovel.add(PHOBOS_REGOLITH.get());
+        shovel.add(DEIMOS_REGOLITH.get());
         tags.block(BlockTags.MINEABLE_WITH_SHOVEL, shovel.toArray(Block[]::new));
         tags.block(MARS_SOILS, soils().stream().map(DeferredBlock::get).toArray(Block[]::new));
         tags.block(BlockTags.SAND, MARTIAN_SAND.get(), OLIVINE_SAND.get());

@@ -76,6 +76,9 @@ public final class MarsData {
     public static final ResourceKey<Biome> VOLCANO = biome("mars_volcano");
     public static final ResourceKey<Biome> VALLEY = biome("mars_valley");
     public static final ResourceKey<Biome> ICE_CAP = biome("mars_ice_cap");
+    public static final ResourceKey<Biome> PHOBOS_SURFACE = biome("phobos_surface");
+    public static final ResourceKey<Biome> PHOBOS_CRATER = biome("phobos_crater");
+    public static final ResourceKey<Biome> DEIMOS_SURFACE = biome("deimos_surface");
     public static final List<ResourceKey<Biome>> MARS_BIOMES = List.of(HIGHLANDS, PLAINS, CRATER, POLAR, DUNES, CANYON, VOLCANO, VALLEY, ICE_CAP);
 
     static final Map<String, ResourceKey<PlacedFeature>> PF = new LinkedHashMap<>();
@@ -122,9 +125,16 @@ public final class MarsData {
         lang.add("biome.spacebreaker.mars_volcano", "Shield Volcano", "Kalkan Volkan");
         lang.add("biome.spacebreaker.mars_valley", "Ancient River Valley", "Antik Nehir Vadisi");
         lang.add("biome.spacebreaker.mars_ice_cap", "Polar Ice Cap", "Kutup Buz Örtüsü");
+        lang.add("biome.spacebreaker.phobos_surface", "Grooved Plains of Phobos", "Phobos'un Oluklu Ovaları");
+        lang.add("biome.spacebreaker.phobos_crater", "Phobos Crater", "Phobos Krateri");
+        lang.add("biome.spacebreaker.deimos_surface", "Dusty Plains of Deimos", "Deimos'un Tozlu Ovaları");
         lang.add("dungeon.spacebreaker.mars_research_station", "Abandoned Mars Research Station", "Terk Edilmiş Mars Araştırma İstasyonu");
         lang.add("dungeon.spacebreaker.mars_riverbed_cave", "Ancient Buried Riverbed", "Antik Gömülü Nehir Yatağı");
         lang.add("structure.spacebreaker.mars_research_station", "Abandoned Mars Research Station", "Terk Edilmiş Mars Araştırma İstasyonu");
+        lang.add("dungeon.spacebreaker.phobos_probe_wreck", "Crashed Sample-Return Probe", "Düşmüş Numune Dönüş Sondası");
+        lang.add("dungeon.spacebreaker.deimos_ice_cache", "Deimos Ice Cache", "Deimos Buz Deposu");
+        lang.add("structure.spacebreaker.phobos_probe_wreck", "Crashed Sample-Return Probe", "Düşmüş Numune Dönüş Sondası");
+        lang.add("structure.spacebreaker.deimos_ice_cache", "Deimos Ice Cache", "Deimos Buz Deposu");
         lang.add("structure.spacebreaker.mars_riverbed_cave", "Ancient Buried Riverbed", "Antik Gömülü Nehir Yatağı");
         tech(lang, "dust_proof_seals", "Dust-Proof Seals", "Martian dust is finer than flour and full of salts: labyrinth seals and electrostatic wipers keep joints, airlocks and bearings working.",
                 "Toz Geçirmez Contalar", "Mars tozu undan incedir ve tuzla doludur: labirent contalar ve elektrostatik silecekler eklemleri, hava kilitlerini ve yatakları çalışır tutar.");
@@ -202,6 +212,7 @@ public final class MarsData {
         ctx.register(cf("mars_boulder_sediment"), boulder(0.8F, 1.7F, 0.5F, sandstone, 4, mudstone, 2));
         ctx.register(cf("mars_boulder_large"), boulder(2.0F, 3.4F, 0.4F, basalt, 3, sandstone, 2));
         ctx.register(cf("mars_meteorite"), boulder(0.6F, 1.1F, 0.6F, MarsModule.meteorite().defaultBlockState(), 1));
+        ctx.register(cf("moonlet_boulder"), boulder(0.7F, 1.6F, 0.5F, s(MarsModule.CARBONACEOUS_CHONDRITE), 1));
         ctx.register(cf("mars_ice_boulder"), boulder(0.8F, 1.6F, 0.5F, s(MarsModule.DRY_ICE), 2, s(MarsModule.MARTIAN_ICE), 3));
 
         RuleTest stone = new TagMatchTest(MarsModule.MARS_STONE);
@@ -230,6 +241,7 @@ public final class MarsData {
         placed(ctx, "mars_boulder_large", "mars_boulder_large", RarityFilter.onAverageOnceEvery(4), InSquarePlacement.spread(), top, BiomeFilter.biome());
         placed(ctx, "mars_meteorite", "mars_meteorite", RarityFilter.onAverageOnceEvery(70), InSquarePlacement.spread(), top, BiomeFilter.biome());
         placed(ctx, "mars_ice_boulder", "mars_ice_boulder", RarityFilter.onAverageOnceEvery(5), InSquarePlacement.spread(), top, BiomeFilter.biome());
+        placed(ctx, "moonlet_boulder", "moonlet_boulder", RarityFilter.onAverageOnceEvery(4), InSquarePlacement.spread(), top, BiomeFilter.biome());
         placed(ctx, "mars_ore_hematite", "mars_ore_hematite", CountPlacement.of(6), InSquarePlacement.spread(),
                 HeightRangePlacement.uniform(VerticalAnchor.absolute(-40), VerticalAnchor.absolute(140)), BiomeFilter.biome());
         placed(ctx, "mars_ore_hematite_rich", "mars_ore_hematite", CountPlacement.of(14), InSquarePlacement.spread(),
@@ -248,7 +260,7 @@ public final class MarsData {
     private static final List<String> ORE_ORDER = List.of("mars_clay_lens", "mars_ore_hematite", "mars_ore_hematite_rich", "mars_ore_gypsum",
             "mars_ice_vein", "mars_buried_iron");
     private static final List<String> SURFACE_ORDER = List.of("mars_boulder_large", "mars_boulder", "mars_boulder_rare", "mars_boulder_sediment",
-            "mars_ice_boulder", "mars_meteorite");
+            "mars_ice_boulder", "mars_meteorite", "moonlet_boulder");
 
     private static Consumer<BiomeGenerationSettings.Builder> features(HolderGetter<PlacedFeature> pf, String... wanted) {
         Set<String> w = Set.of(wanted);
@@ -276,6 +288,24 @@ public final class MarsData {
         ctx.register(VALLEY, marsBiome(pf, carvers, VALLEY, -0.6F, features(pf, "mars_clay_lens", "mars_ore_gypsum", "mars_ice_vein",
                 "mars_boulder_sediment", "mars_meteorite")));
         ctx.register(ICE_CAP, marsBiome(pf, carvers, ICE_CAP, -1.5F, features(pf, "mars_ice_vein", "mars_ice_boulder")));
+        ctx.register(PHOBOS_SURFACE, airless(pf, carvers, features(pf, "mars_buried_iron", "moonlet_boulder")));
+        ctx.register(PHOBOS_CRATER, airless(pf, carvers, features(pf, "mars_buried_iron", "moonlet_boulder", "mars_meteorite")));
+        ctx.register(DEIMOS_SURFACE, airless(pf, carvers, features(pf, "mars_buried_iron")));
+    }
+
+    /** Biome of an airless little moon: black sky, no weather, no life. */
+    public static Biome airless(HolderGetter<PlacedFeature> pf, HolderGetter<ConfiguredWorldCarver<?>> carvers,
+                                Consumer<BiomeGenerationSettings.Builder> features) {
+        BiomeGenerationSettings.Builder gen = new BiomeGenerationSettings.Builder(pf, carvers);
+        features.accept(gen);
+        return new Biome.BiomeBuilder()
+                .hasPrecipitation(false).temperature(0.5F).downfall(0F)
+                .specialEffects(new BiomeSpecialEffects.Builder()
+                        .fogColor(0x000000).skyColor(0x000000).waterColor(0x3F76E4).waterFogColor(0x050533)
+                        .grassColorOverride(0x6A6460).foliageColorOverride(0x6A6460).build())
+                .mobSpawnSettings(new MobSpawnSettings.Builder().build())
+                .generationSettings(gen.build())
+                .build();
     }
 
     /** Daytime sky colours (shader packs read these): butterscotch dust haze. */

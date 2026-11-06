@@ -1,0 +1,8 @@
+{
+  "structure": "spacebreaker:deimos_ice_cache",
+  "world": "spacebreaker:deimos",
+  "guardians": [],
+  "loot_tables": [
+    "spacebreaker:dungeons/deimos/ice_cache"
+  ]
+}

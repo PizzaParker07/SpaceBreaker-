@@ -185,9 +185,9 @@ def worm():
             d = max(abs(x - cx), abs(y - cy))
             if d < 1:
                 return MAW[0]
-            if d < 2:
-                return WORM[5] if (x + y) % 2 == 0 else MAW[1]
-            return WORM[3]
+            if d < 1.6:
+                return MAW[2] if (x + y) % 2 == 0 else MAW[1]
+            return WORM[4] if y == 0 else (WORM[2] if y == fh - 1 else WORM[3])
         return noise_pick(WORM, 3 if face == 'top' else 2, n, x, y)
 
     paint(cv, 0, 0, 6, 6, 6, head)

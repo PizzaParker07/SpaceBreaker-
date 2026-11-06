@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 10160901,
+    "separation": 6,
+    "spacing": 14
+  },
+  "structures": [
+    {
+      "structure": "spacebreaker:phobos_probe_wreck",
+      "weight": 1
+    }
+  ]
+}

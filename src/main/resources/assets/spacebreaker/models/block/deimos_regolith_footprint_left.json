@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "spacebreaker:block/deimos_regolith",
+    "up": "spacebreaker:block/deimos_regolith_footprint_left",
+    "down": "spacebreaker:block/deimos_regolith",
+    "north": "spacebreaker:block/deimos_regolith",
+    "south": "spacebreaker:block/deimos_regolith",
+    "east": "spacebreaker:block/deimos_regolith",
+    "west": "spacebreaker:block/deimos_regolith"
+  }
+}

@@ -2,8 +2,8 @@
 from sbmodels.common import *  # noqa: F401,F403
 from modules.moon import soil, slab, wall
 
-SOILS = ['martian_regolith', 'hematite_soil', 'perchlorate_soil', 'martian_clay', 'co2_frost']
-SIMPLE = ['martian_sand', 'olivine_sand', 'martian_mudstone', 'gypsum_block', 'dusty_ice', 'dry_ice']
+SOILS = ['martian_regolith', 'hematite_soil', 'perchlorate_soil', 'martian_clay', 'co2_frost', 'phobos_regolith', 'deimos_regolith']
+SIMPLE = ['carbonaceous_chondrite', 'martian_sand', 'olivine_sand', 'martian_mudstone', 'gypsum_block', 'dusty_ice', 'dry_ice']
 # (base block, texture, stem for stairs/slab/wall, has wall)
 FAMILIES = [
     ('martian_basalt', 'martian_basalt', 'martian_basalt', True),

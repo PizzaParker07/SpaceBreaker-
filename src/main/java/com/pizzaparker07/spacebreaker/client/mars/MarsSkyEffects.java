@@ -338,21 +338,6 @@ public class MarsSkyEffects extends DimensionSpecialEffects {
     }
 
     private static MeshData buildStars() {
-        RandomSource rnd = RandomSource.create(0x4A45L);
-        BufferBuilder b = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-        for (int i = 0; i < 1600; i++) {
-            Vector3f dir = new Vector3f((float) rnd.nextGaussian(), (float) rnd.nextGaussian(), (float) rnd.nextGaussian()).normalize();
-            float u = rnd.nextFloat();
-            float bright = 0.15F + 0.85F * u * u * u * u;
-            Vector3f center = new Vector3f(dir).mul(100F);
-            float size = 0.12F + bright * 0.2F;
-            Quaternionf q = new Quaternionf().rotateTo(new Vector3f(0, 0, -1), dir).rotateZ(rnd.nextFloat() * Mth.TWO_PI);
-            for (Vector3f c : new Vector3f[]{new Vector3f(size, -size, 0), new Vector3f(size, size, 0), new Vector3f(-size, size, 0),
-                    new Vector3f(-size, -size, 0)}) {
-                Vector3f p = c.rotate(q).add(center);
-                b.addVertex(p.x, p.y, p.z).setColor(bright, bright, bright, 1F);
-            }
-        }
-        return b.buildOrThrow();
+        return StarMesh.build(0x4A45L, 1600);
     }
 }
