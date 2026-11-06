@@ -1,7 +1,10 @@
 package com.pizzaparker07.spacebreaker.testmod.showcase;
 
-import com.pizzaparker07.spacebreaker.content.item.OxygenTankItem;
-import com.pizzaparker07.spacebreaker.registry.ModItems;
+import com.pizzaparker07.spacebreaker.content.suit.SuitModule;
+import com.pizzaparker07.spacebreaker.content.machines.MachinesModule;
+import com.pizzaparker07.spacebreaker.content.moon.MoonModule;
+import com.pizzaparker07.spacebreaker.content.earth.EarthModule;
+import com.pizzaparker07.spacebreaker.content.suit.OxygenTankItem;
 import net.minecraft.client.CameraType;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -45,8 +48,8 @@ final class ShowcaseShots {
     private static void equipPlayer(ServerPlayer player) {
         player.getAbilities().flying = false;
         player.onUpdateAbilities();
-        player.setItemSlot(EquipmentSlot.HEAD, new ItemStack(ModItems.EVA_HELMET.get()));
-        player.setItemSlot(EquipmentSlot.MAINHAND, OxygenTankItem.filled(ModItems.OXYGEN_TANK.get()));
+        player.setItemSlot(EquipmentSlot.HEAD, new ItemStack(SuitModule.EVA_HELMET.get()));
+        player.setItemSlot(EquipmentSlot.MAINHAND, OxygenTankItem.filled(SuitModule.OXYGEN_TANK.get()));
     }
 
     private static void fillHotbar(ServerPlayer player) {
@@ -54,15 +57,15 @@ final class ShowcaseShots {
         player.onUpdateAbilities();
         player.setItemSlot(EquipmentSlot.HEAD, ItemStack.EMPTY);
         var inv = player.getInventory();
-        inv.setItem(0, OxygenTankItem.filled(ModItems.OXYGEN_TANK.get()));
-        inv.setItem(1, new ItemStack(ModItems.EVA_HELMET.get()));
-        inv.setItem(2, new ItemStack(ModItems.ALUMINUM_INGOT.get()));
-        inv.setItem(3, new ItemStack(ModItems.ALUMINUM_PLATE.get()));
-        inv.setItem(4, new ItemStack(ModItems.RAW_BAUXITE.get()));
-        inv.setItem(5, new ItemStack(ModItems.BAUXITE_ORE.get()));
-        inv.setItem(6, new ItemStack(ModItems.ILMENITE_ORE.get()));
-        inv.setItem(7, new ItemStack(ModItems.LUNAR_REGOLITH.get()));
-        inv.setItem(8, new ItemStack(ModItems.SOLAR_PANEL.get()));
+        inv.setItem(0, OxygenTankItem.filled(SuitModule.OXYGEN_TANK.get()));
+        inv.setItem(1, new ItemStack(SuitModule.EVA_HELMET.get()));
+        inv.setItem(2, new ItemStack(EarthModule.ALUMINUM_INGOT.get()));
+        inv.setItem(3, new ItemStack(EarthModule.ALUMINUM_PLATE.get()));
+        inv.setItem(4, new ItemStack(EarthModule.RAW_BAUXITE.get()));
+        inv.setItem(5, new ItemStack(EarthModule.BAUXITE_ORE_ITEM.get()));
+        inv.setItem(6, new ItemStack(MoonModule.ILMENITE_ORE_ITEM.get()));
+        inv.setItem(7, new ItemStack(MoonModule.LUNAR_REGOLITH_ITEM.get()));
+        inv.setItem(8, new ItemStack(MachinesModule.SOLAR_PANEL_ITEM.get()));
         inv.selected = 0;
         player.connection.send(new net.minecraft.network.protocol.game.ClientboundSetCarriedItemPacket(0));
         player.inventoryMenu.broadcastChanges();

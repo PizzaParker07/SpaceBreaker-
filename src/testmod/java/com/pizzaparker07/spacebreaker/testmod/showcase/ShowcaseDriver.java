@@ -1,7 +1,7 @@
 package com.pizzaparker07.spacebreaker.testmod.showcase;
 
+import com.pizzaparker07.spacebreaker.core.SbTabs;
 import com.pizzaparker07.spacebreaker.Spacebreaker;
-import com.pizzaparker07.spacebreaker.registry.ModCreativeTabs;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Screenshot;
@@ -53,6 +53,7 @@ public final class ShowcaseDriver {
     private static int shotIndex;
     private static boolean shotApplied;
     private static List<Shot> shots;
+    private static net.minecraft.resources.ResourceKey<net.minecraft.world.level.Level> dimension = net.minecraft.world.level.Level.OVERWORLD;
 
     /**
      * One screenshot. eye = camera position; serverSetup runs on the integrated server thread,
@@ -108,9 +109,18 @@ public final class ShowcaseDriver {
             case LOADING -> {
                 if (mc.level != null && mc.player != null && mc.getSingleplayerServer() != null && mc.screen == null) {
                     if (++ticks > 40) {
-                        ServerLevel level = mc.getSingleplayerServer().overworld();
-                        mc.getSingleplayerServer().execute(() -> ShowcaseBuilder.build(level));
-                        shots = ShowcaseShots.forScenario(SCENARIO);
+                        ShowcaseScenario scenario = ShowcaseScenarios.get(SCENARIO);
+                        var server = mc.getSingleplayerServer();
+                        server.execute(() -> {
+                            ServerLevel level = server.getLevel(scenario.dimension());
+                            ServerPlayer player = server.getPlayerList().getPlayers().get(0);
+                            if (level != null && player.level() != level) {
+                                player.teleportTo(level, 0.5, 100, 0.5, 0F, 0F);
+                            }
+                            scenario.build(level != null ? level : server.overworld());
+                        });
+                        dimension = scenario.dimension();
+                        shots = scenario.shots();
                         phase = Phase.BUILD;
                         ticks = 0;
                         log("world ready, building showcase (" + shots.size() + " shots)");
@@ -143,12 +153,16 @@ public final class ShowcaseDriver {
             var server = mc.getSingleplayerServer();
             server.execute(() -> {
                 ServerPlayer player = server.getPlayerList().getPlayers().get(0);
-                ServerLevel level = server.overworld();
+                ServerLevel level = server.getLevel(dimension) != null ? server.getLevel(dimension) : server.overworld();
                 level.setDayTime(shot.time());
                 level.setWeatherParameters(12000, 0, false, false);
                 player.getAbilities().flying = true;
                 player.onUpdateAbilities();
-                player.connection.teleport(shot.x(), shot.y() - player.getEyeHeight(), shot.z(), shot.yaw(), shot.pitch());
+                if (player.level() != level) {
+                    player.teleportTo(level, shot.x(), shot.y() - player.getEyeHeight(), shot.z(), shot.yaw(), shot.pitch());
+                } else {
+                    player.connection.teleport(shot.x(), shot.y() - player.getEyeHeight(), shot.z(), shot.yaw(), shot.pitch());
+                }
                 if (shot.serverSetup() != null) {
                     shot.serverSetup().accept(player);
                 }
@@ -179,7 +193,7 @@ public final class ShowcaseDriver {
         try {
             Method select = CreativeModeInventoryScreen.class.getDeclaredMethod("selectTab", CreativeModeTab.class);
             select.setAccessible(true);
-            select.invoke(screen, ModCreativeTabs.MAIN.get());
+            select.invoke(screen, SbTabs.EQUIPMENT.holder.get());
         } catch (ReflectiveOperationException e) {
             log("could not select tab: " + e);
         }

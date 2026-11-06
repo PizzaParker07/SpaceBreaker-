@@ -1,13 +1,15 @@
 package com.pizzaparker07.spacebreaker.testmod;
 
+import com.pizzaparker07.spacebreaker.content.suit.SuitModule;
+import com.pizzaparker07.spacebreaker.content.machines.MachinesModule;
+import com.pizzaparker07.spacebreaker.content.moon.MoonModule;
+import com.pizzaparker07.spacebreaker.content.earth.EarthModule;
 import com.pizzaparker07.spacebreaker.Spacebreaker;
-import com.pizzaparker07.spacebreaker.content.block.Footprint;
-import com.pizzaparker07.spacebreaker.content.block.LunarRegolithBlock;
-import com.pizzaparker07.spacebreaker.content.blockentity.SolarPanelBlockEntity;
-import com.pizzaparker07.spacebreaker.content.item.OxygenTankItem;
-import com.pizzaparker07.spacebreaker.content.item.SpaceSuitItem;
-import com.pizzaparker07.spacebreaker.registry.ModBlocks;
-import com.pizzaparker07.spacebreaker.registry.ModItems;
+import com.pizzaparker07.spacebreaker.content.moon.Footprint;
+import com.pizzaparker07.spacebreaker.content.moon.LunarRegolithBlock;
+import com.pizzaparker07.spacebreaker.content.machines.SolarPanelBlockEntity;
+import com.pizzaparker07.spacebreaker.content.suit.OxygenTankItem;
+import com.pizzaparker07.spacebreaker.content.suit.SpaceSuitItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
@@ -32,8 +34,8 @@ public final class SpacebreakerGameTests {
     public static void regolithRecordsBootPrints(GameTestHelper helper) {
         BlockPos even = new BlockPos(2, 1, 2);   // x+z even -> left foot
         BlockPos odd = new BlockPos(3, 1, 2);    // x+z odd  -> right foot
-        helper.setBlock(even, ModBlocks.LUNAR_REGOLITH.get());
-        helper.setBlock(odd, ModBlocks.LUNAR_REGOLITH.get());
+        helper.setBlock(even, MoonModule.LUNAR_REGOLITH.get());
+        helper.setBlock(odd, MoonModule.LUNAR_REGOLITH.get());
         Zombie walker = helper.spawn(EntityType.ZOMBIE, 2, 2, 2);
         walker.setYRot(-90F); // facing east
 
@@ -54,8 +56,8 @@ public final class SpacebreakerGameTests {
     @GameTest(template = EMPTY)
     public static void itemsDoNotLeavePrints(GameTestHelper helper) {
         BlockPos pos = new BlockPos(2, 1, 2);
-        helper.setBlock(pos, ModBlocks.LUNAR_REGOLITH.get());
-        ItemEntity item = helper.spawnItem(ModItems.RAW_BAUXITE.get(), 2.5F, 2.1F, 2.5F);
+        helper.setBlock(pos, MoonModule.LUNAR_REGOLITH.get());
+        ItemEntity item = helper.spawnItem(EarthModule.RAW_BAUXITE.get(), 2.5F, 2.1F, 2.5F);
         BlockPos abs = helper.absolutePos(pos);
         BlockState state = helper.getLevel().getBlockState(abs);
         state.getBlock().stepOn(helper.getLevel(), abs, state, item);
@@ -84,7 +86,7 @@ public final class SpacebreakerGameTests {
         helper.getLevel().setDayTime(6000);
         helper.getLevel().setWeatherParameters(6000, 0, false, false);
         BlockPos pos = new BlockPos(3, 1, 3);
-        helper.setBlock(pos, ModBlocks.SOLAR_PANEL.get());
+        helper.setBlock(pos, MachinesModule.SOLAR_PANEL.get());
         helper.succeedWhen(() -> {
             SolarPanelBlockEntity be = helper.getBlockEntity(pos);
             helper.assertTrue(be.getEnergy().getEnergyStored() >= SolarPanelBlockEntity.PEAK_OUTPUT * 10, "panel not charging at noon");
@@ -95,7 +97,7 @@ public final class SpacebreakerGameTests {
     public static void solarPanelIdleAtNight(GameTestHelper helper) {
         helper.getLevel().setDayTime(18000);
         BlockPos pos = new BlockPos(3, 1, 3);
-        helper.setBlock(pos, ModBlocks.SOLAR_PANEL.get());
+        helper.setBlock(pos, MachinesModule.SOLAR_PANEL.get());
         helper.runAfterDelay(40, () -> {
             SolarPanelBlockEntity be = helper.getBlockEntity(pos);
             helper.assertTrue(be.getEnergy().getEnergyStored() == 0, "panel produced power at midnight");
@@ -107,15 +109,15 @@ public final class SpacebreakerGameTests {
 
     @GameTest(template = EMPTY)
     public static void oxygenTankStartsFullFromCreative(GameTestHelper helper) {
-        ItemStack tank = OxygenTankItem.filled(ModItems.OXYGEN_TANK.get());
+        ItemStack tank = OxygenTankItem.filled(SuitModule.OXYGEN_TANK.get());
         helper.assertTrue(OxygenTankItem.getOxygen(tank) == OxygenTankItem.SMALL_CAPACITY, "filled tank is not full");
-        helper.assertTrue(OxygenTankItem.getOxygen(new ItemStack(ModItems.OXYGEN_TANK.get())) == 0, "new tank must be empty");
+        helper.assertTrue(OxygenTankItem.getOxygen(new ItemStack(SuitModule.OXYGEN_TANK.get())) == 0, "new tank must be empty");
         helper.succeed();
     }
 
     @GameTest(template = EMPTY)
     public static void helmetSunVisorDefaultsUp(GameTestHelper helper) {
-        helper.assertFalse(SpaceSuitItem.isSunVisorDown(new ItemStack(ModItems.EVA_HELMET.get())), "sun visor should start raised");
+        helper.assertFalse(SpaceSuitItem.isSunVisorDown(new ItemStack(SuitModule.EVA_HELMET.get())), "sun visor should start raised");
         helper.succeed();
     }
 

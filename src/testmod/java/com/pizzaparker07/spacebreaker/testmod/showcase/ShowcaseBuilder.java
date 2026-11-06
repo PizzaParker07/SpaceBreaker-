@@ -1,10 +1,11 @@
 package com.pizzaparker07.spacebreaker.testmod.showcase;
 
-import com.pizzaparker07.spacebreaker.content.block.LunarRegolithBlock;
-import com.pizzaparker07.spacebreaker.content.item.OxygenTankItem;
-import com.pizzaparker07.spacebreaker.registry.ModBlocks;
-import com.pizzaparker07.spacebreaker.registry.ModDataComponents;
-import com.pizzaparker07.spacebreaker.registry.ModItems;
+import com.pizzaparker07.spacebreaker.content.machines.MachinesModule;
+import com.pizzaparker07.spacebreaker.content.moon.MoonModule;
+import com.pizzaparker07.spacebreaker.content.earth.EarthModule;
+import com.pizzaparker07.spacebreaker.content.moon.LunarRegolithBlock;
+import com.pizzaparker07.spacebreaker.content.suit.OxygenTankItem;
+import com.pizzaparker07.spacebreaker.content.suit.SuitModule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -31,30 +32,30 @@ public final class ShowcaseBuilder {
                     level.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
                 }
                 boolean stage = x >= -9 && x <= 9 && z >= -5 && z <= 11;
-                level.setBlock(new BlockPos(x, FLOOR, z), stage ? ModBlocks.LUNAR_REGOLITH.get().defaultBlockState()
+                level.setBlock(new BlockPos(x, FLOOR, z), stage ? MoonModule.LUNAR_REGOLITH.get().defaultBlockState()
                         : Blocks.GRASS_BLOCK.defaultBlockState(), Block.UPDATE_CLIENTS);
             }
         }
         // back wall of mare basalt with item frames
         for (int x = -7; x <= 7; x++) {
             for (int y = FLOOR + 1; y <= FLOOR + 4; y++) {
-                level.setBlock(new BlockPos(x, y, -4), ModBlocks.MARE_BASALT.get().defaultBlockState(), Block.UPDATE_CLIENTS);
+                level.setBlock(new BlockPos(x, y, -4), MoonModule.MARE_BASALT.get().defaultBlockState(), Block.UPDATE_CLIENTS);
             }
         }
-        ItemStack sunVisor = new ItemStack(ModItems.EVA_HELMET.get());
-        sunVisor.set(ModDataComponents.SUN_VISOR.get(), true);
+        ItemStack sunVisor = new ItemStack(SuitModule.EVA_HELMET.get());
+        sunVisor.set(SuitModule.SUN_VISOR.get(), true);
         ItemStack[] framed = {
-                new ItemStack(ModItems.RAW_BAUXITE.get()), new ItemStack(ModItems.ALUMINUM_INGOT.get()),
-                new ItemStack(ModItems.ALUMINUM_PLATE.get()), OxygenTankItem.filled(ModItems.OXYGEN_TANK.get()),
-                new ItemStack(ModItems.EVA_HELMET.get())};
+                new ItemStack(EarthModule.RAW_BAUXITE.get()), new ItemStack(EarthModule.ALUMINUM_INGOT.get()),
+                new ItemStack(EarthModule.ALUMINUM_PLATE.get()), OxygenTankItem.filled(SuitModule.OXYGEN_TANK.get()),
+                new ItemStack(SuitModule.EVA_HELMET.get())};
         for (int i = 0; i < framed.length; i++) {
             ItemFrame frame = new ItemFrame(level, new BlockPos(-4 + i * 2, FLOOR + 3, -3), Direction.SOUTH);
             frame.setItem(framed[i], false);
             level.addFreshEntity(frame);
         }
         // ore and rock columns
-        Block[] column = {ModBlocks.BAUXITE_ORE.get(), ModBlocks.DEEPSLATE_BAUXITE_ORE.get(), ModBlocks.RAW_BAUXITE_BLOCK.get(),
-                ModBlocks.MARE_BASALT.get(), ModBlocks.ILMENITE_ORE.get()};
+        Block[] column = {EarthModule.BAUXITE_ORE.get(), EarthModule.DEEPSLATE_BAUXITE_ORE.get(), EarthModule.RAW_BAUXITE_BLOCK.get(),
+                MoonModule.MARE_BASALT.get(), MoonModule.ILMENITE_ORE.get()};
         for (int i = 0; i < column.length; i++) {
             for (int y = 1; y <= 2; y++) {
                 level.setBlock(new BlockPos(-4 + i * 2, FLOOR + y, 0), column[i].defaultBlockState(), Block.UPDATE_CLIENTS);
@@ -63,11 +64,11 @@ public final class ShowcaseBuilder {
         // solar tracker array
         for (int x = -7; x <= -5; x++) {
             for (int z = 4; z <= 6; z++) {
-                level.setBlock(new BlockPos(x, FLOOR + 1, z), ModBlocks.SOLAR_PANEL.get().defaultBlockState(), Block.UPDATE_CLIENTS);
+                level.setBlock(new BlockPos(x, FLOOR + 1, z), MachinesModule.SOLAR_PANEL.get().defaultBlockState(), Block.UPDATE_CLIENTS);
             }
         }
         // helmets on stands: visor raised and sun visor lowered
-        spawnStand(level, 3.5, 5.5, new ItemStack(ModItems.EVA_HELMET.get()));
+        spawnStand(level, 3.5, 5.5, new ItemStack(SuitModule.EVA_HELMET.get()));
         spawnStand(level, 5.5, 5.5, sunVisor);
         // a walk across the regolith
         for (int z = 10; z >= 2; z--) {

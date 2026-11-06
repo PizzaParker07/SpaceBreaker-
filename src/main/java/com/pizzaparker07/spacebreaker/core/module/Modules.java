@@ -1,0 +1,21 @@
+package com.pizzaparker07.spacebreaker.core.module;
+
+import com.pizzaparker07.spacebreaker.content.earth.EarthModule;
+import com.pizzaparker07.spacebreaker.content.machines.MachinesModule;
+import com.pizzaparker07.spacebreaker.content.moon.MoonModule;
+import com.pizzaparker07.spacebreaker.content.suit.SuitModule;
+
+import java.util.List;
+
+/** Every feature module, in load order. Add one line per new module. */
+public final class Modules {
+    public static final List<SbModule> ALL = List.of(
+            new EarthModule(),
+            new MoonModule(),
+            new MachinesModule(),
+            new SuitModule()
+    );
+
+    private Modules() {
+    }
+}

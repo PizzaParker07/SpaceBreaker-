@@ -1,0 +1,6 @@
+{
+  "type": "star",
+  "physical": { "mass_kg": 1.9885e30, "radius_km": 695700, "surface_gravity": 274.0 },
+  "rotation": { "day_length_hours": 609.12, "axial_tilt_deg": 7.25 },
+  "climate": { "day_temp_c": 5499, "night_temp_c": 5499 }
+}

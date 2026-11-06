@@ -1,11 +1,11 @@
 package com.pizzaparker07.spacebreaker.client;
 
+import com.pizzaparker07.spacebreaker.content.suit.SuitModule;
 import com.pizzaparker07.spacebreaker.Spacebreaker;
-import com.pizzaparker07.spacebreaker.client.model.EvaHelmetModel;
-import com.pizzaparker07.spacebreaker.client.render.HelmetVisorLayer;
-import com.pizzaparker07.spacebreaker.client.render.SolarPanelRenderer;
-import com.pizzaparker07.spacebreaker.registry.ModBlockEntities;
-import com.pizzaparker07.spacebreaker.registry.ModItems;
+import com.pizzaparker07.spacebreaker.client.suit.EvaHelmetModel;
+import com.pizzaparker07.spacebreaker.client.suit.HelmetVisorLayer;
+import com.pizzaparker07.spacebreaker.client.machines.SolarPanelRenderer;
+import com.pizzaparker07.spacebreaker.content.machines.MachinesModule;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
@@ -32,7 +32,7 @@ public final class SpacebreakerClient {
 
     @SubscribeEvent
     static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerBlockEntityRenderer(ModBlockEntities.SOLAR_PANEL.get(), SolarPanelRenderer::new);
+        event.registerBlockEntityRenderer(MachinesModule.SOLAR_PANEL_BE.get(), SolarPanelRenderer::new);
     }
 
     @SubscribeEvent
@@ -76,6 +76,6 @@ public final class SpacebreakerClient {
                 }
                 return helmetModel;
             }
-        }, ModItems.EVA_HELMET.get());
+        }, SuitModule.EVA_HELMET.get());
     }
 }
