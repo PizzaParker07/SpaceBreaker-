@@ -26,7 +26,10 @@ import java.util.Optional;
  *     ["  T  ", "     "]
  *   ],
  *   "key": { "P": {"block": "ns:pad"}, "C": {"block": "ns:core"}, "T": {"tag": "ns:towers"} },
- *   "tech": "spacebreaker:launch_infrastructure"         // optional: technology that teaches it
+ *   "tech": "spacebreaker:launch_infrastructure",        // optional: technology that teaches it
+ *   "self_assembling": false                            // optional: true when placing the controller builds
+ *                                                       // the rest itself (projectors then show only the controller
+ *                                                       // and the space that must be free)
  * }
  * }</pre>
  * A space means "anything", {@code _} means "must be air"; every other character must be in {@code key}.
@@ -34,17 +37,28 @@ import java.util.Optional;
  * controller character must appear.
  */
 public record MultiblockDefinition(Optional<String> name, String controller, List<List<String>> layers, Map<String, BlockSpec> key,
-                                   Optional<ResourceLocation> tech) {
+                                   Optional<ResourceLocation> tech, boolean selfAssembling) {
     public static final Codec<MultiblockDefinition> CODEC = RecordCodecBuilder.<MultiblockDefinition>create(i -> i.group(
             Codec.STRING.optionalFieldOf("name").forGetter(MultiblockDefinition::name),
             Codec.STRING.fieldOf("controller").forGetter(MultiblockDefinition::controller),
             Codec.STRING.listOf().listOf().fieldOf("layers").forGetter(MultiblockDefinition::layers),
             Codec.unboundedMap(Codec.STRING, BlockSpec.CODEC).fieldOf("key").forGetter(MultiblockDefinition::key),
-            ResourceLocation.CODEC.optionalFieldOf("tech").forGetter(MultiblockDefinition::tech)
+            ResourceLocation.CODEC.optionalFieldOf("tech").forGetter(MultiblockDefinition::tech),
+            Codec.BOOL.optionalFieldOf("self_assembling", false).forGetter(MultiblockDefinition::selfAssembling)
     ).apply(i, MultiblockDefinition::new)).validate(MultiblockDefinition::check);
+
+    /** Source-compatible form without the self-assembling flag. */
+    public MultiblockDefinition(Optional<String> name, String controller, List<List<String>> layers, Map<String, BlockSpec> key,
+                                Optional<ResourceLocation> tech) {
+        this(name, controller, layers, key, tech, false);
+    }
 
     /** One position of the structure, already rotated and placed in the world. */
     public record Placement(BlockPos pos, int layer, char symbol, BlockSpec spec) {
+    }
+
+    public boolean isController(Placement p) {
+        return String.valueOf(p.symbol()).equals(controller);
     }
 
     private static DataResult<MultiblockDefinition> check(MultiblockDefinition d) {

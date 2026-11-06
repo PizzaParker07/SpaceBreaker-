@@ -104,6 +104,8 @@ public final class BlueprintModule implements SbModule {
         lang.add("hud.spacebreaker.materials", "Materials", "Malzemeler");
         lang.add("hud.spacebreaker.materials.done", "%s / %s placed", "%s / %s yerleştirildi");
         lang.add("hud.spacebreaker.materials.missing", "%s missing", "%s eksik");
+        lang.add("hud.spacebreaker.materials.self_assembling", "Place only the controller, it builds the rest",
+                "Yalnız denetleyiciyi koy, gerisini kendisi kurar");
         lang.add("gui.spacebreaker.blueprints.project", "Project", "Yansıt");
         lang.add("gui.spacebreaker.blueprints.materials", "Materials", "Malzemeler");
         lang.add("gui.spacebreaker.blueprints.tech", "Research: %s", "Araştırma: %s");

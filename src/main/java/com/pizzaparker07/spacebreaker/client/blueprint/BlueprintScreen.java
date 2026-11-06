@@ -144,7 +144,7 @@ public class BlueprintScreen extends Screen {
         Map<Item, Integer> totals = new LinkedHashMap<>();
         for (MultiblockDefinition.Placement p : d.placements(BlockPos.ZERO, Direction.NORTH)) {
             Item item = p.spec().item();
-            if (item != Items.AIR) {
+            if (item != Items.AIR && (!d.selfAssembling() || d.isController(p))) {
                 totals.merge(item, 1, Integer::sum);
             }
         }
@@ -168,6 +168,9 @@ public class BlueprintScreen extends Screen {
                 col = 0;
                 ly += 18;
             }
+        }
+        if (d.selfAssembling()) {
+            g.drawString(font, Component.translatable("hud.spacebreaker.materials.self_assembling"), dx, bottom() - 58, 0x9FE3EA, true);
         }
         d.tech().ifPresent(tech -> {
             boolean known = Tech.knows(minecraft.player, tech);

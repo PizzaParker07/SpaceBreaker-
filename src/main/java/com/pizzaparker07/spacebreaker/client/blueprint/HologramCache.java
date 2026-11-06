@@ -78,7 +78,15 @@ final class HologramCache {
                 continue;
             }
             boolean shown = h.layer() < 0 || h.layer() == p.layer();
-            if (actual.isAir() || actual.canBeReplaced()) {
+            boolean free = actual.isAir() || actual.canBeReplaced();
+            if (def.selfAssembling() && !def.isController(p)) {
+                // built by the controller itself: only the space has to be free
+                if (!free && shown) {
+                    wrong.add(p.pos());
+                }
+                continue;
+            }
+            if (free) {
                 if (shown && !p.spec().isAir()) {
                     missing.add(new Ghost(p.pos(), p.spec().display(rotation)));
                 }
