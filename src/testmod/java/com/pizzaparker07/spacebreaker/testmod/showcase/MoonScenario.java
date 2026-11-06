@@ -35,7 +35,10 @@ final class MoonScenario implements ShowcaseScenario {
     @Override
     public void build(ServerLevel level) {
         terrain = ((PlanetChunkGenerator) level.getChunkSource().getGenerator()).terrain();
+        // monsters (ticks, drones) are removed on peaceful; mob spawning stays off in the showcase world
+        level.getServer().setDifficulty(net.minecraft.world.Difficulty.NORMAL, true);
         MoonShowcaseBuilder.build(level, terrain);
+        MoonShowcaseBuilder.buildDungeons(level, terrain);
     }
 
     private PlanetTerrain terrain() {
@@ -134,6 +137,7 @@ final class MoonScenario implements ShowcaseScenario {
                 true, fp, 80, at(0.75), null));
         // 12+: close-ups of the showcase stage (blocks, creatures, dungeon) built by MoonShowcaseBuilder
         s.addAll(MoonShowcaseBuilder.shots(this::ground));
+        s.addAll(MoonShowcaseBuilder.dungeonShots(t));
         return s;
     }
 

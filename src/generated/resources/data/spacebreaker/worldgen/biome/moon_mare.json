@@ -30,9 +30,23 @@
   "spawners": {
     "ambient": [],
     "axolotls": [],
-    "creature": [],
+    "creature": [
+      {
+        "type": "spacebreaker:dust_swimmer",
+        "maxCount": 3,
+        "minCount": 2,
+        "weight": 14
+      }
+    ],
     "misc": [],
-    "monster": [],
+    "monster": [
+      {
+        "type": "spacebreaker:regolith_tick",
+        "maxCount": 3,
+        "minCount": 1,
+        "weight": 60
+      }
+    ],
     "underground_water_creature": [],
     "water_ambient": [],
     "water_creature": []

@@ -33,7 +33,14 @@
     "axolotls": [],
     "creature": [],
     "misc": [],
-    "monster": [],
+    "monster": [
+      {
+        "type": "spacebreaker:regolith_tick",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 30
+      }
+    ],
     "underground_water_creature": [],
     "water_ambient": [],
     "water_creature": []

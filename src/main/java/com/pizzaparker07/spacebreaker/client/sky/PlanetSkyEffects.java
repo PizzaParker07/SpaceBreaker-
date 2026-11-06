@@ -70,6 +70,43 @@ public class PlanetSkyEffects extends DimensionSpecialEffects {
         return null;
     }
 
+    /**
+     * Airless light: no blue twilight. The ground is either in hard, neutral sunlight or in darkness, softened at
+     * night by earthshine when the parent planet is up and lit.
+     */
+    @Override
+    public void adjustLightmapColors(ClientLevel level, float partialTicks, float skyDarken, float blockLightRedFlicker, float skyLight,
+                                     int pixelX, int pixelY, org.joml.Vector3f colors) {
+        refresh(level);
+        net.minecraft.client.Camera cam = net.minecraft.client.Minecraft.getInstance().gameRenderer.getMainCamera();
+        double lat = PlanetTerrain.latitude(cam.getPosition().z, poleDistance);
+        double lon = 90 * cam.getPosition().x / poleDistance;
+        float tod = level.getTimeOfDay(partialTicks);
+        Vector3d sun = SkyMath.sunDirection(tod, 0);
+        double day = smooth((sun.y + 0.04) / 0.16);
+        double night = 0.05;
+        if (parent.isPresent()) {
+            Vector3d e = SkyMath.parentDirection(lat, lon, PlanetTime.dayFraction(level));
+            if (e.y > 0) {
+                night += 0.11 * SkyMath.illuminatedFraction(SkyMath.sunDirection(tod, lat), e) * Math.min(1, e.y * 3);
+            }
+        }
+        float lunar = (float) (night + (1 - night) * day);
+        float sky = net.minecraft.client.renderer.LightTexture.getBrightness(level.dimensionType(), pixelY) * lunar;
+        float bl = net.minecraft.client.renderer.LightTexture.getBrightness(level.dimensionType(), pixelX) * blockLightRedFlicker;
+        float bg = bl * ((bl * 0.6F + 0.4F) * 0.6F + 0.4F);
+        float bb = bl * (bl * bl * 0.6F + 0.4F);
+        // earthshine is faintly blue, sunlight neutral white
+        float nightTint = (float) (1 - day);
+        colors.set(bl + sky, bg + sky, bb + sky * (1 + 0.15F * nightTint));
+        colors.lerp(new org.joml.Vector3f(0.75F, 0.75F, 0.75F), 0.04F);
+    }
+
+    private static double smooth(double t) {
+        t = Math.max(0, Math.min(1, t));
+        return t * t * (3 - 2 * t);
+    }
+
     @Override
     public boolean renderClouds(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, double camX, double camY, double camZ,
                                 Matrix4f modelViewMatrix, Matrix4f projectionMatrix) {

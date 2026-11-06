@@ -121,3 +121,5 @@ def generate():
     ore('kreep_ore', b('impact_breccia'), 'kreep_ore_overlay')
     for item in ('raw_ilmenite', 'kreep_fragment'):
         generated_item(item)
+    for mob in ('regolith_tick', 'elder_regolith_tick', 'dust_swimmer', 'survey_drone'):
+        write(f'models/item/{mob}_spawn_egg.json', {'parent': 'minecraft:item/template_spawn_egg'})

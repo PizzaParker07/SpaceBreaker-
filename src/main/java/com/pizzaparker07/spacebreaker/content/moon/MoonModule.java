@@ -25,6 +25,9 @@ import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
+import com.pizzaparker07.spacebreaker.content.moon.entity.MoonEntities;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -191,11 +194,33 @@ public final class MoonModule implements SbModule {
 
     @Override
     public void register(IEventBus modBus) {
+        MoonEntities.register(modBus, ITEMS);
+        com.pizzaparker07.spacebreaker.content.moon.dungeon.MoonStructures.register(modBus);
         BLOCKS.register(modBus);
         ITEMS.register(modBus);
         SbTabs.PLANETS.icon(LUNAR_REGOLITH_ITEM);
         TAB.forEach(SbTabs.PLANETS::add);
+        MoonEntities.eggs().forEach(e -> SbTabs.PLANETS.add(e));
         MoonData.register(modBus);
+        // creature spawns per biome (written into the biome JSON by datagen)
+        MoonData.SPAWNS.add(new MoonData.BiomeSpawns(MoonData.HIGHLANDS, s -> {
+            s.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MoonEntities.REGOLITH_TICK.get(), 100, 2, 4));
+            s.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(MoonEntities.DUST_SWIMMER.get(), 6, 1, 2));
+        }));
+        MoonData.SPAWNS.add(new MoonData.BiomeSpawns(MoonData.MARE, s -> {
+            s.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MoonEntities.REGOLITH_TICK.get(), 60, 1, 3));
+            s.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(MoonEntities.DUST_SWIMMER.get(), 14, 2, 3));
+        }));
+        MoonData.SPAWNS.add(new MoonData.BiomeSpawns(MoonData.CRATER, s -> {
+            s.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MoonEntities.REGOLITH_TICK.get(), 120, 2, 5));
+            s.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MoonEntities.ELDER_REGOLITH_TICK.get(), 4, 1, 1));
+        }));
+        MoonData.SPAWNS.add(new MoonData.BiomeSpawns(MoonData.VOLCANIC, s -> {
+            s.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(MoonEntities.DUST_SWIMMER.get(), 18, 2, 4));
+            s.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MoonEntities.REGOLITH_TICK.get(), 40, 1, 2));
+        }));
+        MoonData.SPAWNS.add(new MoonData.BiomeSpawns(MoonData.POLAR, s ->
+                s.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MoonEntities.REGOLITH_TICK.get(), 30, 1, 2))));
     }
 
     @Override
@@ -225,7 +250,10 @@ public final class MoonModule implements SbModule {
         lang.add("biome.spacebreaker.moon_crater", "Great Crater", "Büyük Krater");
         lang.add("biome.spacebreaker.moon_volcanic", "Pyroclastic Plains", "Piroklastik Ovalar");
         lang.add("biome.spacebreaker.moon_polar", "Lunar Pole", "Ay Kutbu");
+        lang.add("structure.spacebreaker.survey_outpost", "Abandoned Survey Outpost", "Terk Edilmiş Keşif Karakolu");
+        lang.add("structure.spacebreaker.lava_tube", "Ancient Lava Tube", "Antik Lav Tüpü");
         MoonData.translations(lang);
+        MoonEntities.translations(lang);
     }
 
     /**

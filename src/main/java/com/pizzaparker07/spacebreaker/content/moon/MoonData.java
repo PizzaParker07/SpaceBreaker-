@@ -94,9 +94,9 @@ public final class MoonData {
     /** Extra bootstrap steps added by other Moon classes (creatures, dungeons) before datagen runs. */
     static final List<Consumer<RegistrySetBuilder>> EXTRA = new ArrayList<>();
     /** Extra mob spawns per biome, filled by the creature code. */
-    static final List<BiomeSpawns> SPAWNS = new ArrayList<>();
+    public static final List<BiomeSpawns> SPAWNS = new ArrayList<>();
 
-    record BiomeSpawns(ResourceKey<Biome> biome, Consumer<MobSpawnSettings.Builder> spawns) {
+    public record BiomeSpawns(ResourceKey<Biome> biome, Consumer<MobSpawnSettings.Builder> spawns) {
     }
 
     private static ResourceKey<Biome> biome(String name) {
@@ -126,7 +126,9 @@ public final class MoonData {
         RegistrySetBuilder builder = new RegistrySetBuilder()
                 .add(Registries.CONFIGURED_FEATURE, MoonData::configuredFeatures)
                 .add(Registries.PLACED_FEATURE, MoonData::placedFeatures)
-                .add(Registries.BIOME, MoonData::biomes);
+                .add(Registries.BIOME, MoonData::biomes)
+                .add(Registries.STRUCTURE, com.pizzaparker07.spacebreaker.content.moon.dungeon.MoonStructures::structures)
+                .add(Registries.STRUCTURE_SET, com.pizzaparker07.spacebreaker.content.moon.dungeon.MoonStructures::sets);
         EXTRA.forEach(c -> c.accept(builder));
         event.getGenerator().addProvider(event.includeServer(),
                 new Named("Spacebreaker Moon worldgen", new DatapackBuiltinEntriesProvider(out, lookup, builder, Set.of(Spacebreaker.MOD_ID))));
