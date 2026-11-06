@@ -1,0 +1,11 @@
+{
+  "category": "propulsion",
+  "icon": "minecraft:tnt",
+  "requires": [
+    "spacebreaker:liquid_fuel_engines"
+  ],
+  "unlocks": [
+    "spacebreaker:stage_separator",
+    "spacebreaker:interstage"
+  ]
+}

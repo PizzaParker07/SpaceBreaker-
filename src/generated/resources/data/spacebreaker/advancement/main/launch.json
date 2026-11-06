@@ -1,0 +1,29 @@
+{
+  "parent": "spacebreaker:main/first_rocket",
+  "criteria": {
+    "done": {
+      "conditions": {
+        "milestone": "launch"
+      },
+      "trigger": "spacebreaker:milestone"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.spacebreaker.launch.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:fire_charge"
+    },
+    "title": {
+      "translate": "advancements.spacebreaker.launch.title"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

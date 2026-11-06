@@ -1,0 +1,37 @@
+{
+  "parent": "spacebreaker:main/orbit",
+  "criteria": {
+    "dimension": {
+      "conditions": {
+        "to": "spacebreaker:moon"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "milestone": {
+      "conditions": {
+        "milestone": "moon_landing"
+      },
+      "trigger": "spacebreaker:milestone"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.spacebreaker.moon_landing.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "count": 1,
+      "id": "spacebreaker:lunar_regolith"
+    },
+    "title": {
+      "translate": "advancements.spacebreaker.moon_landing.title"
+    }
+  },
+  "requirements": [
+    [
+      "milestone",
+      "dimension"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

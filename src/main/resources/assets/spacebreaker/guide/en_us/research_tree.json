@@ -1,0 +1,11 @@
+{
+  "chapter": "research",
+  "title": "The Research Tree",
+  "icon": "minecraft:writable_book",
+  "order": 3,
+  "pages": [
+    {
+      "text": "Press J (or the tree button in a lab) to open the research tree. Each row is a branch; lines show prerequisites. Gold frames are known, white ones are ready to research and dark ones are still locked. Hover a technology to see what it needs, how to learn it and what a lab needs to analyse it."
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "parent": "spacebreaker:main/ten_techs",
+  "criteria": {
+    "known": {
+      "conditions": {
+        "min_known": 30
+      },
+      "trigger": "spacebreaker:tech_learned"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.spacebreaker.thirty_techs.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "count": 1,
+      "id": "minecraft:enchanted_book"
+    },
+    "title": {
+      "translate": "advancements.spacebreaker.thirty_techs.title"
+    }
+  },
+  "requirements": [
+    [
+      "known"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

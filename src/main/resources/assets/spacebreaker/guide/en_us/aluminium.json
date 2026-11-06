@@ -1,0 +1,17 @@
+{
+  "chapter": "materials",
+  "title": "Aluminium",
+  "icon": "spacebreaker:aluminum_ingot",
+  "order": 1,
+  "pages": [
+    {
+      "items": [
+        "spacebreaker:aluminum_ingot",
+        "spacebreaker:aluminum_plate"
+      ]
+    },
+    {
+      "text": "Aluminium is a third as dense as steel and does not rust. Smelt raw bauxite into ingots; plates are the stiff, thin sheets used for tanks, hulls and machine casings."
+    }
+  ]
+}

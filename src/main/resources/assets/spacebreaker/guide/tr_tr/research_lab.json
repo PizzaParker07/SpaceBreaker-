@@ -1,0 +1,23 @@
+{
+  "chapter": "research",
+  "title": "Araştırma Laboratuvarı",
+  "icon": "spacebreaker:research_lab",
+  "order": 1,
+  "pages": [
+    {
+      "recipe": "spacebreaker:research_lab"
+    },
+    {
+      "image": "spacebreaker:textures/gui/guide/lab_flow.png",
+      "width": 112,
+      "height": 48,
+      "text": "Disk ya da numune girer, teknoloji çıkar"
+    },
+    {
+      "text": "Sol yuvaya bir teknoloji diski, saha numunesi ya da deney kaydı koy ve laboratuvara enerji (FE) ver: ilk teknolojiler için yanına konan bir güneş paneli yeter. İnceleme 30 saniyeden birkaç dakikaya kadar sürer."
+    },
+    {
+      "text": "Araştırmacı, laboratuvarı en son açan kişidir. Disk okunduktan sonra geri verilir, böylece arkadaşlarına ödünç verebilirsin; numuneler tükenir. Bir numunede senin için yeni bir şey yoksa laboratuvar bunu söyler ve numuneyi saklar."
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "chapter": "survival",
+  "title": "Oxygen",
+  "icon": "spacebreaker:oxygen_tank",
+  "order": 1,
+  "pages": [
+    {
+      "items": [
+        "spacebreaker:oxygen_tank"
+      ]
+    },
+    {
+      "text": "One tank holds five minutes of breathing. There is no air on the Moon or in orbit: always carry spares."
+    }
+  ]
+}

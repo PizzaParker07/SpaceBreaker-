@@ -1,0 +1,33 @@
+{
+  "parent": "spacebreaker:main/first_ore",
+  "criteria": {
+    "done": {
+      "conditions": {
+        "items": [
+          {
+            "items": "spacebreaker:aluminum_ingot"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.spacebreaker.first_ingot.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "spacebreaker:aluminum_ingot"
+    },
+    "title": {
+      "translate": "advancements.spacebreaker.first_ingot.title"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

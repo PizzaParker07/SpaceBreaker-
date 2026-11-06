@@ -1,0 +1,20 @@
+{
+  "chapter": "getting_started",
+  "title": "Welcome, Engineer",
+  "icon": "spacebreaker:guide_book",
+  "order": 0,
+  "pages": [
+    {
+      "text": "Spacebreaker is about building your way to space with real engineering. Rockets obey the rocket equation, worlds keep their real gravity, air and temperature, and every new machine starts as a technology you have to learn."
+    },
+    {
+      "image": "spacebreaker:textures/gui/guide/orbit.png",
+      "width": 112,
+      "height": 64,
+      "text": "Orbit: falling around the world"
+    },
+    {
+      "text": "This guide grows with you. Pages about things you have not discovered yet stay locked until you learn the technology behind them."
+    }
+  ]
+}

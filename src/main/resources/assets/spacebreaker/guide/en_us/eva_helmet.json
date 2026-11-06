@@ -1,0 +1,16 @@
+{
+  "chapter": "survival",
+  "title": "EVA Helmet",
+  "icon": "spacebreaker:eva_helmet",
+  "order": 0,
+  "pages": [
+    {
+      "items": [
+        "spacebreaker:eva_helmet"
+      ]
+    },
+    {
+      "text": "A pressure helmet with a clear visor and two lamps. Sneak and use it to lower the gold sun visor: outside the atmosphere the Sun is blinding."
+    }
+  ]
+}

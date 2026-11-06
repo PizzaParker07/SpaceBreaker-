@@ -1,0 +1,21 @@
+{
+  "chapter": "research",
+  "title": "Numune Çantası",
+  "icon": "spacebreaker:sample_kit",
+  "order": 0,
+  "pages": [
+    {
+      "recipe": "spacebreaker:sample_kit"
+    },
+    {
+      "text": "Çantayı doğal zemine (taş, toprak, kum, çakıl, cevher) kullanarak bulunduğun dünyanın saha numunesini al. Dünya numuneleri temel bilgileri ortaya çıkarır; Ay ve diğer dünyaların numuneleri yalnızca onların öğretebileceklerini."
+    },
+    {
+      "items": [
+        "spacebreaker:field_sample",
+        "spacebreaker:experiment_data"
+      ],
+      "text": "Saha numuneleri ve deney kayıtları"
+    }
+  ]
+}

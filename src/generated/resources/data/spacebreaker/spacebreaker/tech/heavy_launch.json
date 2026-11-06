@@ -1,0 +1,12 @@
+{
+  "category": "construction",
+  "icon": "minecraft:anvil",
+  "requires": [
+    "spacebreaker:launch_infrastructure",
+    "spacebreaker:staging"
+  ],
+  "tier": 2,
+  "unlocks": [
+    "spacebreaker:heavy_launch_pad"
+  ]
+}

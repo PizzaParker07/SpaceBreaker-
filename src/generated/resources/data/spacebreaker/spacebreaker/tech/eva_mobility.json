@@ -1,0 +1,12 @@
+{
+  "category": "life_support",
+  "icon": "minecraft:elytra",
+  "requires": [
+    "spacebreaker:thermal_regulation",
+    "spacebreaker:guidance_systems"
+  ],
+  "tier": 2,
+  "unlocks": [
+    "spacebreaker:manoeuvring_unit"
+  ]
+}

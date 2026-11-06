@@ -1,0 +1,11 @@
+{
+  "category": "life_support",
+  "icon": "minecraft:diamond_chestplate",
+  "requires": [
+    "spacebreaker:radiation_shielding"
+  ],
+  "tier": 3,
+  "unlocks": [
+    "spacebreaker:eva_suit_mk3"
+  ]
+}

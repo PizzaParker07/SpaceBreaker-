@@ -1,0 +1,12 @@
+{
+  "category": "life_support",
+  "icon": "spacebreaker:oxygen_tank",
+  "requires": [
+    "spacebreaker:pressure_suits",
+    "spacebreaker:aluminium_smelting"
+  ],
+  "unlocks": [
+    "spacebreaker:oxygen_tank",
+    "spacebreaker:oxygen_filling_station"
+  ]
+}

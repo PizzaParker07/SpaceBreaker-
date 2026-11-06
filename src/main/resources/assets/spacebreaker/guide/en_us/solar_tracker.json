@@ -1,0 +1,16 @@
+{
+  "chapter": "machines",
+  "title": "Solar Tracker",
+  "icon": "spacebreaker:solar_panel",
+  "order": 0,
+  "pages": [
+    {
+      "items": [
+        "spacebreaker:solar_panel"
+      ]
+    },
+    {
+      "text": "A single-axis tracker turns its panel east to west to face the sun and lies flat at night. It gives up to 20 FE/t at noon under a clear sky, less in rain, at dawn and at dusk. Energy flows out of every side except the top."
+    }
+  ]
+}

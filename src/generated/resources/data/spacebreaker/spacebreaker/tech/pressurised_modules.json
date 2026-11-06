@@ -1,0 +1,12 @@
+{
+  "category": "construction",
+  "icon": "minecraft:iron_block",
+  "requires": [
+    "spacebreaker:metal_pressing"
+  ],
+  "unlocks": [
+    "spacebreaker:aluminium_hull_panel",
+    "spacebreaker:pressure_glass",
+    "spacebreaker:sliding_door"
+  ]
+}

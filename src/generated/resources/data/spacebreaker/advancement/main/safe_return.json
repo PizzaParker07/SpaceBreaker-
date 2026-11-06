@@ -1,0 +1,30 @@
+{
+  "parent": "spacebreaker:main/moon_landing",
+  "criteria": {
+    "milestone": {
+      "conditions": {
+        "milestone": "safe_return"
+      },
+      "trigger": "spacebreaker:milestone"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.spacebreaker.safe_return.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "count": 1,
+      "id": "minecraft:grass_block"
+    },
+    "title": {
+      "translate": "advancements.spacebreaker.safe_return.title"
+    }
+  },
+  "requirements": [
+    [
+      "milestone"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

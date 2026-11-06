@@ -1,0 +1,14 @@
+{
+  "category": "industry",
+  "icon": "minecraft:brewing_stand",
+  "requires": [
+    "spacebreaker:electrolysis"
+  ],
+  "samples": [
+    "spacebreaker:mars"
+  ],
+  "tier": 2,
+  "unlocks": [
+    "spacebreaker:sabatier_reactor"
+  ]
+}

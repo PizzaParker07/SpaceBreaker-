@@ -1,0 +1,12 @@
+{
+  "category": "exploration",
+  "icon": "minecraft:minecart",
+  "requires": [
+    "spacebreaker:lunar_surveying",
+    "spacebreaker:electronics"
+  ],
+  "tier": 2,
+  "unlocks": [
+    "spacebreaker:rover"
+  ]
+}

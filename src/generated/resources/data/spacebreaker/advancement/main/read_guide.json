@@ -1,0 +1,29 @@
+{
+  "parent": "spacebreaker:main/root",
+  "criteria": {
+    "done": {
+      "conditions": {
+        "milestone": "open_guide"
+      },
+      "trigger": "spacebreaker:milestone"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.spacebreaker.read_guide.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "spacebreaker:guide_book"
+    },
+    "title": {
+      "translate": "advancements.spacebreaker.read_guide.title"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

@@ -1,0 +1,33 @@
+{
+  "parent": "spacebreaker:main/suit_up",
+  "criteria": {
+    "done": {
+      "conditions": {
+        "items": [
+          {
+            "items": "spacebreaker:oxygen_tank"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.spacebreaker.deep_breath.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "spacebreaker:oxygen_tank"
+    },
+    "title": {
+      "translate": "advancements.spacebreaker.deep_breath.title"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

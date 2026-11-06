@@ -1,0 +1,12 @@
+{
+  "category": "life_support",
+  "icon": "minecraft:netherite_scrap",
+  "requires": [
+    "spacebreaker:suit_mk2",
+    "spacebreaker:nuclear_fission"
+  ],
+  "tier": 3,
+  "unlocks": [
+    "spacebreaker:radiation_shelter"
+  ]
+}

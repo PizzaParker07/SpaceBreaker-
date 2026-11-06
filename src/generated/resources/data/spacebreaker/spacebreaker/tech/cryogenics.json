@@ -1,0 +1,12 @@
+{
+  "category": "industry",
+  "icon": "minecraft:blue_ice",
+  "requires": [
+    "spacebreaker:electrolysis"
+  ],
+  "tier": 2,
+  "unlocks": [
+    "spacebreaker:cryogenic_liquefier",
+    "spacebreaker:cryogenic_tank"
+  ]
+}

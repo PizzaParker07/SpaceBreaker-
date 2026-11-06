@@ -1,0 +1,29 @@
+{
+  "parent": "spacebreaker:main/root",
+  "criteria": {
+    "done": {
+      "trigger": "spacebreaker:dungeon_discovered"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.spacebreaker.dungeon_found.description"
+    },
+    "icon": {
+      "components": {
+        "spacebreaker:tech": "spacebreaker:basic_rocketry"
+      },
+      "count": 1,
+      "id": "spacebreaker:tech_disk"
+    },
+    "title": {
+      "translate": "advancements.spacebreaker.dungeon_found.title"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

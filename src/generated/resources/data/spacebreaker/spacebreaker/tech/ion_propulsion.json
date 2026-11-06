@@ -1,0 +1,12 @@
+{
+  "category": "propulsion",
+  "icon": "minecraft:amethyst_shard",
+  "requires": [
+    "spacebreaker:hydrogen_engines",
+    "spacebreaker:advanced_electronics"
+  ],
+  "tier": 2,
+  "unlocks": [
+    "spacebreaker:ion_engine"
+  ]
+}

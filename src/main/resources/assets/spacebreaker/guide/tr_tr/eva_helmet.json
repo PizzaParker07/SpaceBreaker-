@@ -1,0 +1,16 @@
+{
+  "chapter": "survival",
+  "title": "EVA Kaskı",
+  "icon": "spacebreaker:eva_helmet",
+  "order": 0,
+  "pages": [
+    {
+      "items": [
+        "spacebreaker:eva_helmet"
+      ]
+    },
+    {
+      "text": "Şeffaf vizörlü ve iki lambalı basınçlı kask. Altın güneş vizörünü indirmek için eğilip kullan: atmosferin dışında Güneş göz kamaştırır."
+    }
+  ]
+}

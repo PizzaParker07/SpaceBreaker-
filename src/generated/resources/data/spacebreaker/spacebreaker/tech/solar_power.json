@@ -1,0 +1,10 @@
+{
+  "category": "industry",
+  "icon": "spacebreaker:solar_panel",
+  "samples": [
+    "spacebreaker:earth"
+  ],
+  "unlocks": [
+    "spacebreaker:solar_panel"
+  ]
+}

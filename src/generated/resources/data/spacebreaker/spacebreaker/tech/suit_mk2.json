@@ -1,0 +1,15 @@
+{
+  "category": "life_support",
+  "icon": "minecraft:iron_chestplate",
+  "requires": [
+    "spacebreaker:eva_mobility",
+    "spacebreaker:advanced_electronics"
+  ],
+  "samples": [
+    "spacebreaker:mars"
+  ],
+  "tier": 2,
+  "unlocks": [
+    "spacebreaker:eva_suit_mk2"
+  ]
+}

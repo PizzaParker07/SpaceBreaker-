@@ -1,0 +1,19 @@
+{
+  "chapter": "moon",
+  "title": "Lunar Rocks",
+  "icon": "spacebreaker:lunar_regolith",
+  "order": 0,
+  "requires_tech": "spacebreaker:basic_rocketry",
+  "pages": [
+    {
+      "items": [
+        "spacebreaker:lunar_regolith",
+        "spacebreaker:mare_basalt",
+        "spacebreaker:ilmenite_ore"
+      ]
+    },
+    {
+      "text": "Regolith is fine grey dust that keeps every boot print. The dark maria are basalt; their black ilmenite crystals hold titanium and oxygen that can be extracted on the spot."
+    }
+  ]
+}

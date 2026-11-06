@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "spacebreaker:item/tech_disk",
+    "layer1": "spacebreaker:item/tech_disk_label"
+  }
+}

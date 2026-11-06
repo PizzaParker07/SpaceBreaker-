@@ -1,8 +1,8 @@
-// 1.21.1	2026-11-06T15:15:27.695319072	Tags for minecraft:block mod id spacebreaker
+// 1.21.1	2026-11-06T16:31:47.969978776	Tags for minecraft:block mod id spacebreaker
 aa1cfa5395ea10485668ca745dbd8cd2abd64cfe data/c/tags/block/ores.json
 2e53c12f1069a9431086af8c817e22054d435904 data/c/tags/block/ores/bauxite.json
 9f653fe92cede5b05d4ff9ac26f101e43ce60cfb data/c/tags/block/ores/ilmenite.json
-7854b8c095fbdc5499d49f0e365639c3e4ac4722 data/minecraft/tags/block/mineable/pickaxe.json
+9d2559b8df0d480b2bd1a0b503e38f41c565a86f data/minecraft/tags/block/mineable/pickaxe.json
 5389fa575a493cb1e717958aff3fc599a67fb4f3 data/minecraft/tags/block/mineable/shovel.json
 9f653fe92cede5b05d4ff9ac26f101e43ce60cfb data/minecraft/tags/block/needs_iron_tool.json
 330e6ec807a499b787a1da3fe5a72e48f8989eab data/minecraft/tags/block/needs_stone_tool.json

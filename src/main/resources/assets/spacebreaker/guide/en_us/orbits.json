@@ -1,0 +1,18 @@
+{
+  "chapter": "physics",
+  "title": "Orbits",
+  "icon": "minecraft:clock",
+  "order": 1,
+  "requires_tech": "spacebreaker:orbital_mechanics",
+  "pages": [
+    {
+      "image": "spacebreaker:textures/gui/guide/orbit.png",
+      "width": 112,
+      "height": 64,
+      "text": "Velocity sideways, gravity down"
+    },
+    {
+      "text": "In orbit you are still falling, but moving sideways so fast that the ground curves away beneath you. Low Earth orbit needs about 7.8 km/s; with drag and gravity losses a launch costs about 9.4 km/s of Δv."
+    }
+  ]
+}

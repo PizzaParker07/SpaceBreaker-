@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "L": {"tag": "c:leathers"},
+    "I": {"tag": "c:ingots/iron"},
+    "B": {"item": "minecraft:glass_bottle"},
+    "S": {"tag": "c:strings"}
+  },
+  "pattern": [
+    " S ",
+    "IBI",
+    " L "
+  ],
+  "result": {"count": 1, "id": "spacebreaker:sample_kit"}
+}

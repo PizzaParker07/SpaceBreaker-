@@ -1,0 +1,13 @@
+{
+  "category": "propulsion",
+  "icon": "minecraft:cauldron",
+  "requires": [
+    "spacebreaker:staging"
+  ],
+  "samples": [
+    "spacebreaker:suborbital_flight"
+  ],
+  "unlocks": [
+    "spacebreaker:vacuum_engine"
+  ]
+}

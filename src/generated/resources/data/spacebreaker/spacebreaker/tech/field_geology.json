@@ -1,0 +1,10 @@
+{
+  "category": "exploration",
+  "icon": "minecraft:brush",
+  "samples": [
+    "spacebreaker:earth"
+  ],
+  "unlocks": [
+    "spacebreaker:sample_kit"
+  ]
+}

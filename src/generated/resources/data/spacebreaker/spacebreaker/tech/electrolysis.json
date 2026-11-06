@@ -1,0 +1,11 @@
+{
+  "category": "industry",
+  "icon": "minecraft:potion",
+  "requires": [
+    "spacebreaker:solar_power",
+    "spacebreaker:electronics"
+  ],
+  "unlocks": [
+    "spacebreaker:electrolyser"
+  ]
+}

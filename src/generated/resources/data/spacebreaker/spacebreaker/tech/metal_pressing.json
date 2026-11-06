@@ -1,0 +1,14 @@
+{
+  "category": "industry",
+  "icon": "spacebreaker:aluminum_plate",
+  "requires": [
+    "spacebreaker:aluminium_smelting"
+  ],
+  "samples": [
+    "spacebreaker:earth"
+  ],
+  "unlocks": [
+    "spacebreaker:press",
+    "spacebreaker:aluminum_plate"
+  ]
+}

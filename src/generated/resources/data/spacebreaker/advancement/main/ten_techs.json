@@ -1,0 +1,30 @@
+{
+  "parent": "spacebreaker:main/first_tech",
+  "criteria": {
+    "known": {
+      "conditions": {
+        "min_known": 10
+      },
+      "trigger": "spacebreaker:tech_learned"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.spacebreaker.ten_techs.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "minecraft:writable_book"
+    },
+    "title": {
+      "translate": "advancements.spacebreaker.ten_techs.title"
+    }
+  },
+  "requirements": [
+    [
+      "known"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

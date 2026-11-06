@@ -1,0 +1,28 @@
+{
+  "criteria": {
+    "tick": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "spacebreaker:textures/gui/advancements/backgrounds/space.png",
+    "description": {
+      "translate": "advancements.spacebreaker.root.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "spacebreaker:eva_helmet"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "advancements.spacebreaker.root.title"
+    }
+  },
+  "requirements": [
+    [
+      "tick"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

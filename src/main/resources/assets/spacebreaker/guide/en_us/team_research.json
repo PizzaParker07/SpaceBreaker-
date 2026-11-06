@@ -1,0 +1,11 @@
+{
+  "chapter": "research",
+  "title": "Researching as a Team",
+  "icon": "minecraft:white_banner",
+  "order": 4,
+  "pages": [
+    {
+      "text": "Turn on team sharing in a lab and everyone in your scoreboard team learns what it finds, even players who are offline (they learn it when they join). Create a team with /team add and join it with /team join."
+    }
+  ]
+}
