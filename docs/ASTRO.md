@@ -296,6 +296,11 @@ Callisto dirty ice, Titan organic haze with methane lakes, Earth oceans).
 | `glaciation` | 1 for icy worlds below 0 °C, polar caps on cold worlds with air, polar cold traps on airless ones |
 | `volcanism` | max of radiogenic heat (√mass · e^(−age/4 Gyr)) and tidal heating (Ė = 21/2 · k₂/Q · G M² R⁵ n e² / a⁶, Io = 1) |
 | `roughness`, `dunes` | relief from craters, volcanism and low gravity; dunes when there is wind (p > 0.3 kPa) and dry land |
+| `volatileIce` | fraction under frozen nitrogen/methane glaciers: a nitrogen atmosphere over a surface below 63 K (Pluto, Triton) |
+| `plumes` | geysers: icy worlds with strong tides (Enceladus, Europa) or nitrogen ice in enough sunlight (Triton) |
+
+Large retrograde moons count as captured: the tides that circularised their orbits resurfaced them
+(Triton: young, cryovolcanic).
 
 ### Terrain parameters (`TerrainParams`)
 
@@ -411,3 +416,51 @@ and no water anywhere except as rock (ice).
 | Surface | nearly pure, fresh water ice — the most reflective surface in the Solar System |
 | Albedo / colours | 1.38 (geometric), Bond 0.81; ice ramp `#D9DEE2` `#EEF1F4` `#FAFBFC`, tiger-stripe blue `#8AA8C0`, plume deposits `#F6F8FA` |
 | Game | blinding white plains, cratered north, four long blue-tinted fissures near the south pole venting ice-crystal plumes |
+
+## Appendix: terrain profiles for Miranda, Triton, Pluto and Charon
+
+`TransNeptunianTerrainTest` keeps these real: Triton young with geysers and a nitrogen cap, Pluto with
+nitrogen glaciers but no geysers, Charon and Miranda old and rugged.
+
+### Miranda (Uranus, 472 km)
+| Quantity | Value |
+|---|---|
+| Relief | the most extreme for its size: Verona Rupes, a fault scarp 5–10 km high (the tallest cliff known); canyons up to 20 km deep |
+| Features | three coronae (Arden, Elsinore, Inverness): huge oval or trapezoid patches of parallel ridges and grooves, 200–300 km across, cut into old cratered terrain |
+| Craters | old rolling terrain heavily cratered; coronae younger, fewer craters |
+| Surface | water ice with silicates and carbon compounds |
+| Albedo / colours | 0.32; old terrain `#5E5A55` `#86817A`, corona bands alternating `#6A655F` / `#ABA59C`, bright scarp faces `#C8C3BA` |
+| Game | patchwork: cratered grey uplands interrupted by striped corona provinces and colossal cliffs; very low gravity (0.08 m/s²) |
+
+### Triton (Neptune, 2707 km)
+| Quantity | Value |
+|---|---|
+| Relief | low, mostly < 1 km; cryovolcanic plains, walled plains, "cantaloupe terrain" (dimpled ridges, cells 30–40 km) |
+| Craters | very few (surface 10–100 Myr old) |
+| Activity | nitrogen geysers: dark plumes rising ≈ 8 km, blown sideways into dark streaks 100+ km long on the southern cap; driven by sunlight warming the nitrogen ice |
+| Atmosphere | ≈ 1.4 Pa nitrogen with traces of methane, thin haze; 38 K |
+| Surface | frozen nitrogen (55 % of the cap), water ice, CO₂ and methane ice |
+| Albedo / colours | 0.72; south polar cap `#E2C9C0` `#F0DDD6` (pinkish), cantaloupe terrain `#B8B0A2` `#9C9486`, geyser streaks `#4A4440`, bluish fresh frost `#D2DCE4` |
+| Game | smooth pale plains, a pinkish polar cap with dark wind streaks and active geyser vents, dimpled terrain elsewhere; orbits Neptune backwards |
+
+### Pluto (dwarf planet, 2377 km)
+| Quantity | Value |
+|---|---|
+| Relief | water-ice mountains up to 6 km (Tenzing Montes, Hillary Montes) around Sputnik Planitia; possible cryovolcanoes (Wright Mons, 4 km high, 150 km wide) |
+| Features | Sputnik Planitia: a 1000 km nitrogen-ice glacier basin with no craters, split into convection cells 20–30 km across, ≈ 3–4 km below the surroundings; glaciers flowing into it; bladed methane terrain (Tartarus Dorsa, blades up to 500 m) |
+| Craters | moderately cratered elsewhere; Cthulhu Macula old and heavily cratered |
+| Atmosphere | ≈ 1 Pa nitrogen with methane and CO; layered blue haze up to 200 km (tholin particles) |
+| Surface | N₂, CH₄ and CO ices; water-ice bedrock; red-brown tholins |
+| Albedo / colours | 0.52 (geometric), Bond 0.72; nitrogen plains `#E8E2D8` `#F4EFE6`, Cthulhu tholins `#5A2E1E` `#7A3E26`, mid terrain `#B08A6A` `#C9A88A`, water-ice mountains `#D6D2CC` |
+| Haze (body JSON) | `colour` `#5f7fa6`, `high_colour` `#8fb0d6`, `visibility_blocks` 512 — a thin blue haze on a mostly dark sky |
+| Game | a giant bright crater-free ice plain with polygonal cells and floating water-ice blocks, ringed by tall ice mountains; dark red cratered lands elsewhere |
+
+### Charon (Pluto, 1212 km)
+| Quantity | Value |
+|---|---|
+| Relief | belt of chasms across the equator (Serenity Chasma, Mordor area canyons up to 7–9 km deep); southern Vulcan Planitia smoother and lower |
+| Craters | northern terrain heavily cratered; Vulcan Planitia fewer |
+| Features | Mordor Macula: a dark red north polar cap made of tholins from Pluto's escaping methane |
+| Surface | water ice with ammonia hydrates; no atmosphere |
+| Albedo / colours | 0.38 (geometric); grey ice `#8C8A86` `#ABA8A3`, Mordor red `#6E3A28` `#8A4A30`, fresh crater ice `#D0CEC9` |
+| Game | grey, rugged and old; deep canyons across the middle, a rusty red north pole; Pluto hangs fixed in the sky (mutual tidal lock) |
