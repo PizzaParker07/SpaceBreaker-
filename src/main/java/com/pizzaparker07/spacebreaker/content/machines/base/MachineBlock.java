@@ -166,6 +166,16 @@ public class MachineBlock extends BaseEntityBlock {
     }
 
     @Override
+    public void appendHoverText(ItemStack stack, net.minecraft.world.item.Item.TooltipContext context,
+                                java.util.List<net.minecraft.network.chat.Component> tooltip, net.minecraft.world.item.TooltipFlag flag) {
+        if (this == com.pizzaparker07.spacebreaker.content.machines.MachinesModule.COMBUSTION_GENERATOR.block().get()) {
+            tooltip.add(net.minecraft.network.chat.Component.translatable("tooltip.spacebreaker.generator",
+                    com.pizzaparker07.spacebreaker.content.machines.machine.CombustionGeneratorBlockEntity.OUTPUT)
+                    .withStyle(net.minecraft.ChatFormatting.GRAY));
+        }
+    }
+
+    @Override
     protected boolean hasAnalogOutputSignal(BlockState state) {
         return true;
     }

@@ -389,7 +389,7 @@ def board(r_board, trace, chip, pads, advanced=False) -> Canvas:
 def motor(body, copper, shaft) -> Canvas:
     """Electric motor: a short steel cylinder lying on its side, copper windings at the open end, shaft."""
     cv = Canvas()
-    cyl = [1, 2, 3, 4, 5, 5, 4, 3]  # vertical shading of the drum (y = 4..11)
+    cyl = [1, 3, 3, 5, 5, 5, 3, 3]  # vertical shading of the drum (y = 4..11)
     for y in range(4, 12):
         for x in range(3, 11):
             cv[x, y] = body[cyl[y - 4] + 1]
@@ -401,11 +401,11 @@ def motor(body, copper, shaft) -> Canvas:
         for x in range(11, 13):
             cv[x, y] = copper[5 if (y + x) % 2 else 3]
     for y in range(6, 10):
-        cv[13, y] = copper[2]
-    cv.put(14, 7, shaft[6])
-    cv.put(15, 7, shaft[5])
-    cv.put(14, 8, shaft[3])
-    cv.put(15, 8, shaft[2])
+        cv[13, y] = copper[3]
+    cv.put(14, 7, body[6])
+    cv.put(15, 7, body[6])
+    cv.put(14, 8, body[4])
+    cv.put(15, 8, body[4])
     for x in range(4, 10):                     # feet
         cv[x, 12] = body[1]
     _outline(cv, body)
@@ -443,19 +443,18 @@ def die(r, kind) -> Canvas:
 def canister(white, foil, steel) -> Canvas:
     """Insulated canister: white cylinder with a gold-foil band, valve on top."""
     cv = Canvas()
-    shade = [3, 5, 6, 6, 5, 5, 4, 3, 2]
+    shade = [4, 6, 6, 6, 4, 4, 4, 2, 2]
     for y in range(4, 15):
         for i, x in enumerate(range(4, 13)):
             ramp_ = foil if 8 <= y <= 10 else white
-            cv[x, y] = ramp_[shade[i] if 8 <= y <= 10 else min(7, shade[i] + 1)]
+            cv[x, y] = ramp_[shade[i]]
     for x in range(5, 12):
-        cv[x, 3] = white[5]
+        cv[x, 3] = white[6]
     for x in range(7, 10):
-        cv[x, 2] = steel[5]
+        cv[x, 2] = steel[4]
         cv[x, 1] = steel[6]
-    cv[10, 1] = steel[3]
-    cv[11, 1] = steel[4]
-    _outline(cv, white)
+    cv[10, 1] = steel[4]
+    _outline(cv, [white[1], white[1]])
     return cv
 
 

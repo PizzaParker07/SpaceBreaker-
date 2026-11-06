@@ -206,6 +206,13 @@ public class ConduitBlock extends BaseEntityBlock implements SimpleWaterloggedBl
         return dz > 0 ? Direction.SOUTH : Direction.NORTH;
     }
 
+    @Override
+    public void appendHoverText(net.minecraft.world.item.ItemStack stack, net.minecraft.world.item.Item.TooltipContext context,
+                                java.util.List<Component> tooltip, net.minecraft.world.item.TooltipFlag flag) {
+        tooltip.add(Component.translatable(type.energy ? "tooltip.spacebreaker.cable" : "tooltip.spacebreaker.pipe", type.rate)
+                .withStyle(net.minecraft.ChatFormatting.GRAY));
+    }
+
     // ------------------------------------------------------------------ shape, fluid, entity
 
     @Override

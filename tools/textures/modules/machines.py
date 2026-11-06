@@ -8,69 +8,51 @@ from sbtex import palettes as P
 # ----------------------------------------------------------------------------- solar panel
 
 def solar_cells() -> Canvas:
-    """Top of the tracking panel: aluminium frame, 3x3 monocrystalline cells on a white backsheet.
-    Cells are pseudo-square (clipped corners) with a faint busbar and a glass sheen."""
+    """Top of the tracking panel: aluminium frame, 3x3 monocrystalline cells on a light backsheet.
+    Cells are pseudo-square (clipped corners) with a busbar and one soft glass sheen (6 colours)."""
     C, B, A = P.CELL, P.BACKSHEET, P.ALUMINIUM
     cv = Canvas()
     for y in range(16):
         for x in range(16):
-            cv[x, y] = B[0]
+            cv[x, y] = B[1]
     starts = (1, 6, 11)
     for cy in starts:
         for cx in starts:
             for y in range(4):
                 for x in range(4):
-                    corner = (x in (0, 3)) and (y in (0, 3))
-                    if corner:
-                        cv[cx + x, cy + y] = B[1]
+                    if (x in (0, 3)) and (y in (0, 3)):
                         continue
-                    v = 2 if (x + y) % 3 else 1
-                    if x in (1, 2) and y in (1, 2):
-                        v = 3  # busbar crossing
-                    cv[cx + x, cy + y] = C[v]
-    # glass sheen: a soft diagonal band
-    for y in range(16):
-        for x in range(16):
-            d = x + y
-            c = cv[x, y]
-            if 9 <= d <= 11 and c[:3] in [tuple(C[i]) for i in range(8)]:
-                idx = [tuple(C[i]) for i in range(8)].index(c[:3])
-                cv[x, y] = C[min(7, idx + (2 if d == 10 else 1))]
-    # frame
+                    sheen = 9 <= (cx + x) + (cy + y) <= 10
+                    cv[cx + x, cy + y] = C[4] if sheen else (C[3] if x in (1, 2) and y in (1, 2) else C[2])
     for i in range(16):
-        cv[i, 0] = A[6]
-        cv[0, i] = A[6]
+        cv[i, 0] = A[5]
+        cv[0, i] = A[5]
         cv[i, 15] = A[3]
         cv[15, i] = A[3]
-    cv[0, 15] = A[4]
-    cv[15, 0] = A[4]
     return cv
 
 
 def solar_back() -> Canvas:
-    """Underside: white backsheet, frame, junction box and two cables."""
+    """Underside: backsheet, frame, junction box and two cables (6 colours)."""
     B, A, R = P.BACKSHEET, P.ALUMINIUM, P.RUBBER
     cv = Canvas()
     n = clustered(16, 16, 5, passes=1)
     for y in range(16):
         for x in range(16):
-            cv[x, y] = pick(B[1:5], 0.3 + n[y][x] * 0.5)
+            cv[x, y] = B[2] if n[y][x] > 0.3 else B[1]
     for i in range(16):
         cv[i, 0] = A[4]
         cv[0, i] = A[4]
         cv[i, 15] = A[2]
         cv[15, i] = A[2]
-    # junction box
     for y in range(2, 5):
         for x in range(6, 10):
-            cv[x, y] = R[3] if y > 2 else R[4]
-    cv[9, 4] = R[1]
-    # cables
-    for y in range(5, 9):
-        cv[6, y] = R[2]
-        cv[9, y] = R[2]
-    cv[6, 9] = R[1]
-    cv[9, 9] = R[1]
+            cv[x, y] = R[3]
+    for y in range(5, 10):
+        cv[6, y] = R[1]
+        cv[9, y] = R[1]
+    for x in range(6, 10):
+        cv[x, 4] = R[1]
     return cv
 
 

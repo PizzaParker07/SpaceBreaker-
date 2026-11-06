@@ -259,11 +259,9 @@ def liquefier_front():
             cv[x, 12] = frost[0]
     for x in (3, 11):
         cv[x, 11] = frost[0]
-    recess(cv, 4, 3, 7, 6, (225, 225, 220))      # gauge
+    recess(cv, 4, 3, 7, 6, frost[1])            # gauge
     cv[6, 4] = (160, 40, 30)
-    cv[5, 5] = (40, 40, 40)
-    rect(cv, 10, 3, 11, 7, P.BRASS[4])           # valve
-    cv[10, 3] = P.BRASS[6]
+    rect(cv, 10, 3, 11, 7, (160, 40, 30))       # valve
     return cv
 
 
@@ -320,7 +318,7 @@ def tank_side(band, window=True):
     cv = Canvas()
     for y in range(16):
         for x in range(16):
-            cv[x, y] = band[[4, 5, 5, 4, 4, 3, 3, 3][x // 2]]
+            cv[x, y] = band[[4, 5, 5, 4, 4, 3, 3, 3][x // 2]] if band is not S else S[[4, 5, 5, 4, 4, 3, 3, 3][x // 2]]
     for x in range(16):
         cv[x, 0] = S[4]
         cv[x, 1] = S[2]
@@ -329,11 +327,11 @@ def tank_side(band, window=True):
     if window:
         for y in range(2, 14):
             for x in (6, 7, 8, 9):
-                cv[x, y] = (20, 24, 30, 255)
-            cv[5, y] = S[1]
-            cv[10, y] = S[5]
+                cv[x, y] = S[0]
+            cv[5, y] = S[2]
+            cv[10, y] = S[4]
         for y in range(3, 14, 3):
-            cv[9, y] = (220, 220, 220)
+            cv[9, y] = S[4]
     return cv
 
 

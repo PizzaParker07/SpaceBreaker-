@@ -63,6 +63,22 @@ public class MultiblockMachineBlock extends MachineBlock {
     }
 
     @Override
+    public void appendHoverText(ItemStack stack, net.minecraft.world.item.Item.TooltipContext context,
+                                List<net.minecraft.network.chat.Component> tooltip, net.minecraft.world.item.TooltipFlag flag) {
+        int minX = 0, maxX = 0, maxY = 0, minZ = 0, maxZ = 0;
+        for (Part p : parts) {
+            minX = Math.min(minX, p.dx());
+            maxX = Math.max(maxX, p.dx());
+            maxY = Math.max(maxY, p.dy());
+            minZ = Math.min(minZ, p.dz());
+            maxZ = Math.max(maxZ, p.dz());
+        }
+        String size = (maxX - minX + 1) + "×" + (maxZ - minZ + 1) + "×" + (maxY + 1);
+        tooltip.add(net.minecraft.network.chat.Component.translatable("tooltip.spacebreaker.multiblock", size)
+                .withStyle(net.minecraft.ChatFormatting.GRAY));
+    }
+
+    @Override
     public @Nullable BlockState getStateForPlacement(BlockPlaceContext ctx) {
         BlockState state = super.getStateForPlacement(ctx);
         if (state == null) {
