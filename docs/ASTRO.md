@@ -253,3 +253,46 @@ habitable layer, see DESIGN). Matching blocks: Venus basalt.
 Game suggestions: Moon-like crater fields with long scarps and brighter hollows; ice only in crater
 floors near the poles that never see the Sun; huge day/night swing (430 °C / −180 °C) with a 176-day
 solar day, so the terminator matters. Matching blocks: Mercury graphitic regolith.
+
+## Procedural star systems (`core/astro/galaxy`)
+
+Everything is deterministic for a world seed (`new Galaxy(level.getSeed())`), pure Java and unit-tested.
+
+```java
+Galaxy galaxy = new Galaxy(server.overworld().getSeed());
+List<StarSeed> near = galaxy.starsWithin(GalaxyModel.SUN, 10);       // pc; real stars included
+StarSystem sys = galaxy.system(near.get(0)).orElseThrow();           // empty only for the Sun (use the registry)
+sys.nameEn(); sys.designation();          // "Velorin", "SB 1F3K-9QX" (names are not translated)
+sys.primary();                            // StellarModel.Star: mass, L, R, T, colour, class, lifetime
+sys.binary();                             // Optional companion star (data only for now)
+sys.planets();                            // AstroBody list; moons via sys.bodies().children(id)
+sys.details(id);                          // irradiance, radiation, axial tilt, gravity, rings
+sys.terrainHints(id);                     // TerrainHints for the planet engine
+Map<ResourceLocation, CelestialBody> records = BodyAdapter.toCelestialBodies(sys, id -> Optional.empty());
+```
+
+| Step | Model |
+|---|---|
+| Galaxy | thin + thick disk, four log-spiral arms (pitch 12.5°), 27° bar, halo; 10 pc sectors made on first use and cached (LRU); star address = sector + index, id = 64-bit hash of seed and address |
+| Names | catalogue designation `SB XXXX-XXX` from the id plus a syllable-based proper name (never a real star, planet or common word); planets add `b, c, …`, moons `I, II, …` |
+| Stars | Kroupa IMF 0.08–150 M☉, age 0.1–10 Gyr; stars older than their lifetime become white dwarfs, neutron stars or black holes; mass → luminosity, radius, temperature, spectral class, black-body RGB |
+| Binaries | companion with probability 27 % (< 0.5 M☉), 45 % (< 1.5 M☉), 60 % (heavier); mass ratio 0.1–1, separation log-normal around 50 AU; planets only inside the S-type stability limit 0.3 · a · (1 − e) |
+| Planets | Poisson count (more for heavier stars), geometric spacing 1.4–2.3×, every periapsis ≥ 1.15 × the previous apoapsis (orbits never cross); snow line 2.7 AU · √L: rocky / iron / ocean worlds inside, giants (35 % · M per slot) and icy worlds outside; mass–radius laws per composition |
+| Moons and rings | giants: Poisson(2.5) moons, terrestrial planets above 0.3 M⊕: 30 % chance of one; all moons inside a third of the Hill sphere and outside the Roche limit; 40 % of giants have rings inside their Roche limit for ice |
+| Climate | equilibrium temperature with albedo by composition, grey greenhouse from pressure and CO₂/CH₄, atmosphere only if Jeans retention (exosphere temperature) keeps N₂; tidal locking from the Gladman formula; day/night swing from pressure; surface radiation from stellar flux and air column |
+
+### Terrain hints (`TerrainHints`)
+
+`TerrainHints.of(bodySystem, id)` for Solar System bodies, `StarSystem.terrainHints(id)` for generated
+ones. All values come from physics, so the same rules give the real Solar System its look (unit-tested:
+Moon and Mercury grey regolith, Mars rust, Venus dark basalt, Io sulfur with lava, Europa pale ice,
+Callisto dirty ice, Titan organic haze with methane lakes, Earth oceans).
+
+| Field | Meaning and rule |
+|---|---|
+| `colorFamily`, `baseColor`, `accentColor` | `GREY_REGOLITH`, `RUST`, `DARK_BASALT`, `PALE_ICE`, `DIRTY_ICE`, `SULFUR`, `ORGANIC_HAZE`, `OCEAN`, `GAS_BANDS`, with sRGB colours (±8 % per-body tint) |
+| `craterDensity` | craters ≥ 1 km per km²: 10⁻² for an old airless surface, reduced by air, volcanism and liquids; ≤ 2·10⁻⁶ under very thick air |
+| `liquid`, `liquidCoverage` | `WATER`, `METHANE`, `NITROGEN` or `LAVA` when the surface temperature lies between the melting point and the boiling point at the surface pressure (Clausius–Clapeyron), lava above 1000 K or with Io-class tidal heating |
+| `glaciation` | 1 for icy worlds below 0 °C, polar caps on cold worlds with air, polar cold traps on airless ones |
+| `volcanism` | max of radiogenic heat (√mass · e^(−age/4 Gyr)) and tidal heating (Ė = 21/2 · k₂/Q · G M² R⁵ n e² / a⁶, Io = 1) |
+| `roughness`, `dunes` | relief from craters, volcanism and low gravity; dunes when there is wind (p > 0.3 kPa) and dry land |
