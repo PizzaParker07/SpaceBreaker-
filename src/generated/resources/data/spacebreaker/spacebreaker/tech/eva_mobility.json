@@ -5,6 +5,9 @@
     "spacebreaker:thermal_regulation",
     "spacebreaker:guidance_systems"
   ],
+  "samples": [
+    "spacebreaker:orbital_flight"
+  ],
   "tier": 2,
   "unlocks": [
     "spacebreaker:maneuvering_unit",

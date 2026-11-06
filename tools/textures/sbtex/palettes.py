@@ -161,9 +161,46 @@ ENCELADUS_ICE = ramp('#8fa4b3', '#a6b9c6', '#b9cad5', '#cad8e1', '#dae5ec', '#e9
 SULCUS_ICE = ramp('#3e6e86', '#4c8099', '#5a92ab', '#6aa3bc', '#7db4cb', '#97c7da')
 # Creatures: methane skater (dark amber body, pale stripes), geyser drifter (translucent blue-white bell).
 SKATER = ramp('#22150b', '#35210f', '#4a2f15', '#62401d', '#7c5428', '#9a6c36', '#b98a4c')
+# Tholin worm: rust-orange rings, darker grooves, a pale sifting plate on the head.
+WORM = ramp('#2a160a', '#3e2111', '#56301a', '#6e4024', '#895430', '#a56c3f', '#c0884f')
 DRIFTER = ramp('#7fa7bf', '#9cbfd3', '#b9d6e5', '#d5ebf4', '#eef8fc')
 DRIFTER_GLOW = ramp('#3f9fd9', '#86d3ff', '#d8f4ff')
 # Groove grazer (grey-blue banded plates, pale frosted edges) and crater hopper (dark brown-grey fur-like hide, white plates).
 GRAZER = ramp('#2c3036', '#3d434b', '#4f5761', '#636c77', '#7a838e', '#959ea8', '#b6bec6')
 HOPPER = ramp('#1f1c19', '#2d2925', '#3d3832', '#4f4841', '#625a51', '#776e64')
 HOPPER_PLATE = ramp('#a8adb3', '#d1d5d9', '#eef0f2')
+
+# --------------------------------------------------------------------------- Pluto and Charon
+# Plutonian frost: pale beige nitrogen-methane frost with a faint warm tint.
+PLUTO_FROST = ramp('#8c8070', '#a59888', '#b3a796', '#c0b4a3', '#ccc1b1', '#d9cfc0')
+# Red tholin regolith: the dark red-brown equatorial lowlands.
+PLUTO_THOLIN = ramp('#2e140d', '#3f1c12', '#4f2417', '#5f2d1c', '#713722', '#85432a')
+# Nitrogen ice: soft white with a faint blue cast, glassy.
+NITROGEN_ICE = ramp('#a7b1b8', '#bcc6cc', '#cdd5da', '#dbe2e6', '#e7ecef', '#f3f6f7')
+# Methane frost: the brightest snow, slightly warm.
+METHANE_FROST = ramp('#b9b4ab', '#cdc8bf', '#dbd7cf', '#e7e4dd', '#f1efea', '#faf9f6')
+# Plutonian bedrock ice: water ice hard as granite, grey-beige.
+PLUTO_ICE = ramp('#6a645c', '#7c766d', '#8d867d', '#9d968c', '#ada69c', '#bdb6ac')
+# Charon: neutral grey water ice and regolith.
+CHARON_SOIL = ramp('#4a4846', '#5a5856', '#666462', '#71706d', '#7d7b78', '#8a8885')
+CHARON_ICE = ramp('#545352', '#636260', '#716f6d', '#7f7d7a', '#8d8b88', '#a09e9a')
+# Red polar frost: tholin-stained frost of Charon's pole, darker and browner than Pluto's.
+RED_FROST = ramp('#2a120c', '#3a1911', '#4a2116', '#5a2a1b', '#6c3523', '#7f412b')
+# Ammonia hydrate: pale cyan-white crystals.
+AMMONIA = ramp('#5d7a80', '#86a7ad', '#acc9cd', '#cfe5e7', '#eef9fa')
+# Creatures.
+SLIDER = ramp('#4a3a32', '#62503f', '#7f6a55', '#9c876f', '#b9a58b', '#d2c2aa')
+TORTOISE = ramp('#26221f', '#36312d', '#47413b', '#59524a', '#6c645b', '#80786e')
+
+# --------------------------------------------------------------------------- Triton
+# Tritonian frost: grey with a faint green cast (the "cantaloupe" terrain).
+TRITON_FROST = ramp('#6d7369', '#80867b', '#8e9488', '#9ba194', '#a8ada0', '#b6baad')
+# Pink nitrogen frost of the polar cap.
+PINK_FROST = ramp('#a88a86', '#bc9f9a', '#cab0aa', '#d6beb8', '#e1cbc6', '#ecd9d5')
+# Dark plume dust: the streaks laid down by the geysers.
+PLUME_DUST = ramp('#1b1a1a', '#262424', '#302e2e', '#3b3838', '#474343', '#534e4e')
+# Tritonian bedrock ice: grey-green water ice.
+TRITON_ICE = ramp('#5c6359', '#6b7367', '#7a8275', '#889083', '#979f91', '#a7ae9f')
+# Methane clathrate: milky ice cages with yellowish methane.
+CLATHRATE = ramp('#7c7a63', '#9e9b7c', '#bdb995', '#d6d2ae', '#ecead0')
+BEETLE = ramp('#121112', '#1d1b1d', '#2a272a', '#383438', '#494449', '#5b555b')

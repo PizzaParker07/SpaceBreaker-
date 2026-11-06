@@ -173,31 +173,31 @@ public final class ResearchAdvancements implements AdvancementSubProvider {
     public static void addTranslations(Lang l) {
         a(l, "root", "Spacebreaker", "Reach for the stars, one technology at a time",
                 "Spacebreaker", "Yıldızlara uzan, her seferinde bir teknolojiyle");
-        a(l, "first_ore", "Red Earth", "Mine bauxite, the ore of aluminium", "Kızıl Toprak", "Alüminyumun cevheri boksiti kaz");
+        a(l, "first_ore", "Red Earth", "Mine bauxite, the ore of aluminium", "Kızıl Toprak", "Alüminyum cevheri olan boksiti kaz");
         a(l, "first_ingot", "Lighter than Steel", "Make an aluminium ingot", "Çelikten Hafif", "Bir alüminyum külçe yap");
-        a(l, "solar_power", "Catching Rays", "Build a solar tracker", "Işık Avcısı", "Bir güneş takipli panel yap");
-        a(l, "read_guide", "Read the Manual", "Open the Spacebreaker field guide", "Kılavuzu Oku", "Spacebreaker saha rehberini aç");
-        a(l, "field_sample", "Rock Collector", "Take a field sample with a sample kit", "Taş Koleksiyoncusu", "Numune çantasıyla bir saha numunesi al");
+        a(l, "solar_power", "Catching Rays", "Build a solar tracker", "Işık Avcısı", "Bir güneş paneli yap");
+        a(l, "read_guide", "Read the Manual", "Open the Spacebreaker field guide", "Rehberi Oku", "Spacebreaker saha rehberini aç");
+        a(l, "field_sample", "Rock Collector", "Take a field sample with a sample kit", "Taş Koleksiyoncusu", "Numune kitiyle bir saha numunesi al");
         a(l, "research_lab", "Laboratory", "Build a Research Lab", "Laboratuvar", "Bir Araştırma Laboratuvarı kur");
         a(l, "first_tech", "Eureka!", "Learn your first technology", "Buldum!", "İlk teknolojini öğren");
         a(l, "ten_techs", "Scholar", "Know 10 technologies", "Bilgin", "10 teknoloji bil");
         a(l, "thirty_techs", "Rocket Scientist", "Know 30 technologies", "Roket Bilimcisi", "30 teknoloji bil");
         a(l, "dungeon_found", "Ruins of the Space Age", "Discover a lost research site", "Uzay Çağının Kalıntıları", "Kayıp bir araştırma alanı keşfet");
         a(l, "basic_rocketry", "Action and Reaction", "Learn Basic Rocketry", "Etki ve Tepki", "Temel Roketçiliği öğren");
-        a(l, "first_rocket", "Some Assembly Required", "Assemble your first rocket", "Biraz Montaj Gerekir", "İlk roketini birleştir");
+        a(l, "first_rocket", "Some Assembly Required", "Assemble your first rocket", "Parça Parça Roket", "İlk roketini birleştir");
         a(l, "launch", "Strapped In", "Climb aboard a rocket on the pad", "Kemerler Bağlandı", "Rampadaki bir rokete bin");
-        a(l, "orbit", "Falling Around the World", "Reach orbit", "Dünyanın Etrafına Düşmek", "Yörüngeye ulaş");
+        a(l, "orbit", "Falling Around the World", "Reach orbit", "Yörüngedesin!", "Yörüngeye ulaş: Dünya'nın etrafında düşüyorsun ama yere hiç çarpmıyorsun");
         a(l, "moon_landing", "One Small Step", "Land on the Moon", "Küçük Bir Adım", "Ay'a in");
         a(l, "safe_return", "Welcome Home", "Come back to Earth safely", "Eve Hoş Geldin", "Dünya'ya sağ salim dön");
-        a(l, "steel", "Forged in the Arc", "Make steel in an electric arc furnace", "Arkta Dövüldü", "Elektrik ark fırınında çelik yap");
+        a(l, "steel", "Forged in the Arc", "Make steel in an electric arc furnace", "Ark Ateşinde Çelik", "Elektrik ark fırınında çelik yap");
         a(l, "fabricator", "Workshop", "Get a fabricator", "Atölye", "Bir Parça Üretim Tezgâhı edin");
         a(l, "rp1", "Black Gold", "Refine crude oil into RP-1 kerosene", "Kara Altın", "Ham petrolü RP-1 kerosenine arıt");
-        a(l, "liquid_oxygen", "Colder than Space", "Liquefy oxygen at −183 °C", "Uzaydan Soğuk", "Oksijeni −183 °C'de sıvılaştır");
+        a(l, "liquid_oxygen", "Colder than Space", "Liquefy oxygen at −183 °C", "Uzaydan da Soğuk", "Oksijeni −183 °C'de sıvılaştır");
         a(l, "moon_orbit", "Around the Moon", "Reach lunar orbit", "Ay'ın Etrafında", "Ay yörüngesine ulaş");
         a(l, "moon_dungeon", "Someone Was Here First", "Find a lost outpost or lava tube on the Moon",
                 "Biri Senden Önce Gelmiş", "Ay'da kayıp bir karakol ya da lav tüpü bul");
         a(l, "moon_creature", "Pest Control", "Defeat a regolith tick", "Haşere Kontrolü", "Bir regolit kenesini yen");
-        a(l, "full_suit", "Pressurised", "Collect all four pieces of an EVA suit", "Basınçlandırıldı", "Bir EVA giysisinin dört parçasını da topla");
+        a(l, "full_suit", "Pressurised", "Collect all four pieces of an EVA suit", "Tam Donanım", "Bir EVA giysisinin dört parçasını da topla");
         a(l, "jetpack", "Free Flyer", "Get a maneuvering unit", "Serbest Uçuş", "Bir manevra ünitesi edin");
         a(l, "suit_up", "Suit Up", "Get an EVA helmet", "Giyin Kuşan", "Bir EVA kaskı edin");
         a(l, "deep_breath", "Deep Breath", "Get an oxygen tank", "Derin Nefes", "Bir oksijen tüpü edin");

@@ -5,6 +5,9 @@
     "spacebreaker:solar_power",
     "spacebreaker:electronics"
   ],
+  "samples": [
+    "spacebreaker:earth"
+  ],
   "unlocks": [
     "spacebreaker:electrolyzer"
   ]

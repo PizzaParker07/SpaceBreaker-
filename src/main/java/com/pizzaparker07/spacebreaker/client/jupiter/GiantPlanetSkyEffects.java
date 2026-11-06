@@ -59,6 +59,8 @@ public class GiantPlanetSkyEffects extends PlanetSkyEffects {
     }
 
     private final ResourceKey<CelestialBody> bodyKey;
+    /** A moon shown instead of the parent (a double world: Charon in Pluto's sky), or null. */
+    private final ResourceKey<CelestialBody> companionKey;
     private final Parent look;
     private ClientLevel cachedLevel;
     private double poleDistance = 6000;
@@ -66,8 +68,17 @@ public class GiantPlanetSkyEffects extends PlanetSkyEffects {
     private double sunSize = 0.1;
 
     public GiantPlanetSkyEffects(ResourceKey<CelestialBody> body, Parent look) {
+        this(body, look, null);
+    }
+
+    /**
+     * @param companion a moon of {@code body} locked face to face with it (Charon for Pluto): drawn where the parent would
+     *                  be, at its own size, while the sun stays at the body's own distance
+     */
+    public GiantPlanetSkyEffects(ResourceKey<CelestialBody> body, Parent look, ResourceKey<CelestialBody> companion) {
         super(body);
         this.bodyKey = body;
+        this.companionKey = companion;
         this.look = look;
     }
 
@@ -81,7 +92,13 @@ public class GiantPlanetSkyEffects extends PlanetSkyEffects {
                 .map(TerrainProfile::poleDistance).orElse(6000.0);
         Optional<CelestialBody> body = Bodies.get(level.registryAccess(), bodyKey);
         Optional<CelestialBody> parent = body.flatMap(CelestialBody::parent).flatMap(p -> Bodies.get(level.registryAccess(), ResourceKey.create(Bodies.REGISTRY, p)));
-        if (body.isPresent() && parent.isPresent()) {
+        if (companionKey != null) {
+            Optional<CelestialBody> companion = Bodies.get(level.registryAccess(), companionKey);
+            if (body.isPresent() && companion.isPresent()) {
+                parentSize = SkyMath.angularDiameter(companion.get().physical().radiusKm(), Math.max(1, companion.get().orbit().semiMajorAxisKm()));
+                sunSize = SkyMath.angularDiameter(695700, Math.max(1, body.get().orbit().semiMajorAxisKm()));
+            }
+        } else if (body.isPresent() && parent.isPresent()) {
             parentSize = SkyMath.angularDiameter(parent.get().physical().radiusKm(), Math.max(1, body.get().orbit().semiMajorAxisKm()));
             sunSize = SkyMath.angularDiameter(695700, Math.max(1, parent.get().orbit().semiMajorAxisKm()));
         }

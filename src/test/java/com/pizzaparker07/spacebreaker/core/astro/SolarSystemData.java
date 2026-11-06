@@ -68,7 +68,7 @@ final class SolarSystemData {
                 d(orbit, "mean_anomaly_deg", 0), d(orbit, "period_days", 0),
                 d(rot, "day_length_hours", 0), Boolean.TRUE.equals(rot.get("tidally_locked")),
                 d(atm, "pressure_kpa", 0), comp, d(clim, "day_temp_c", 0), d(clim, "night_temp_c", 0),
-                d(j, "albedo", 0.3), j.containsKey("dimension"));
+                d(j, "albedo", 0.3), j.containsKey("dimension"), d(j, "geometric_albedo", -1));
     }
 
     private static double d(Map<String, Object> m, String k, double def) {

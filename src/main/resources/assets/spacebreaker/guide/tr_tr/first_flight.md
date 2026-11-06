@@ -29,7 +29,7 @@ Rampadan yörüngeye ve eve dönüşe, adım adım.
 {page}
 
 ## 5. Bin ve fırlat {#launch}
-1. Rokete {key key.use} ile bin.
+1. Rokete {key key.use} ile bin. Kamera roketin çevresine geçer: fareyle döndür, tekerlekle yakınlaş, {key key.togglePerspective} ile kokpite geç.
 2. Konsoldaki listeye bak: rampa, yakıt, Δv ve itki/ağırlık yeşil olmalı.
 3. **Fırlat**'a bas ya da roketteyken {key key.spacebreaker.launch} tuşuna bas. Geri sayım başlar; aynı tuşla durdurabilirsin.
 
@@ -37,10 +37,10 @@ Rampadan yörüngeye ve eve dönüşe, adım adım.
 > Yakıt yetmezse kapsül ayrılır ve paraşütle iner. Ama ısı kalkanın yoksa yüksekten düşmek ölümcül olabilir.
 
 ## 6. Yörüngede
-Yörüngeye varınca bir mesaj gelir ve çantana iki **Yörünge Uçuşu** verisi düşer. {key key.spacebreaker.star_map} ile **yıldız haritasını** aç ve gideceğin yeri seç: Ay yörüngesi için yaklaşık **4000 m/s** daha gerekir. → [Uçuş ve Yön Bulma](navigation)
+Yükleme ekranı yoktur: kısa bir geçişten sonra yörüngeye varınca bir mesaj gelir ve çantana iki **Yörünge Uçuşu** verisi düşer. {key key.spacebreaker.star_map} ile **yıldız haritasını** aç, bir dünyaya tıkla ve **Yörüngeye git** ya da **Yüzeye in**'i seç. Harita yakıtın yetip yetmediğini düz dille söyler. Ay yörüngesi için yaklaşık **4000 m/s** daha gerekir. → [Uçuş ve Yön Bulma](navigation)
 
 ## 7. Eve dönüş
 - **İlk uçuşta:** {item spacebreaker:emergency_beacon} kullan. Isı kalkanlı ve paraşütlü bir kapsül gelir, seni eve götürür.
-- **Sonraki uçuşlarda:** kapsülünün altında **ısı kalkanı**, üstünde **paraşüt** olsun. Yıldız haritasından Dünya'yı seç; kalkan ısıyı alır, paraşüt açılır.
+- **Sonraki uçuşlarda:** kapsülünün altında **ısı kalkanı**, üstünde **paraşüt** olsun. Yıldız haritasında Dünya'yı seçip **Yüzeye in**; kalkan ısıyı alır, paraşüt açılır.
 
 > Eve dönünce Yörünge Uçuşu verisini laboratuvarda incele: {tech spacebreaker:landing_systems} ile ısı kalkanı, paraşüt ve iniş bacakları açılır. Ay'a inmek için bacaklar şart.

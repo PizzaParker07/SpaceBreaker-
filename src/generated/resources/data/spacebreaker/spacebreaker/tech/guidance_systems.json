@@ -5,6 +5,9 @@
     "spacebreaker:basic_rocketry",
     "spacebreaker:electronics"
   ],
+  "samples": [
+    "spacebreaker:earth"
+  ],
   "unlocks": [
     "spacebreaker:rcs_thrusters",
     "spacebreaker:grid_fins"

@@ -8,5 +8,6 @@
   "climate": { "day_temp_c": -108, "night_temp_c": -193 },
   "radiation_msv_per_day": 0.1,
   "solar_irradiance": 50.28,
-  "albedo": 0.13
+  "albedo": 0.13,
+  "geometric_albedo": 0.22
 }

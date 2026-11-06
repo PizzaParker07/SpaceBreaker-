@@ -13,5 +13,6 @@
   "climate": { "day_temp_c": -10, "night_temp_c": -90 },
   "radiation_msv_per_day": 0.67,
   "solar_irradiance": 586.21,
-  "albedo": 0.25
+  "albedo": 0.25,
+  "geometric_albedo": 0.17
 }

@@ -4,5 +4,8 @@
   "requires": [
     "spacebreaker:oxygen_distribution"
   ],
+  "samples": [
+    "spacebreaker:moon"
+  ],
   "tier": 2
 }

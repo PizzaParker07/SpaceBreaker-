@@ -77,7 +77,9 @@ public final class BeltData {
         lang.add("biome.spacebreaker.vesta_polar", "Vestan Pole", "Vesta Kutbu");
         lang.add("dungeon.spacebreaker.ceres_mining_outpost", "Abandoned Ice Mining Outpost", "Terk Edilmiş Buz Madenciliği Karakolu");
         lang.add("structure.spacebreaker.ceres_mining_outpost", "Abandoned Ice Mining Outpost", "Terk Edilmiş Buz Madenciliği Karakolu");
-        for (String w : new String[]{"vesta", "ganymede", "callisto", "enceladus"}) {
+        for (com.pizzaparker07.spacebreaker.content.belt.dungeon.LanderPiece.Variant v
+                : com.pizzaparker07.spacebreaker.content.belt.dungeon.LanderPiece.Variant.values()) {
+            String w = v.id();
             lang.add("dungeon.spacebreaker." + w + "_lander", "Crashed Supply Lander", "Düşmüş İkmal İniş Aracı");
             lang.add("structure.spacebreaker." + w + "_lander", "Crashed Supply Lander", "Düşmüş İkmal İniş Aracı");
         }
@@ -110,7 +112,9 @@ public final class BeltData {
         var m = new SmallBodyTerrain.Materials(s(BeltModule.CERES_REGOLITH), s(BeltModule.CEREAN_ROCK.base()), s(BeltModule.AMMONIATED_CLAY),
                 s(BeltModule.AMMONIATED_CLAY), Optional.of(s(BeltModule.CERES_REGOLITH)), Optional.of(s(BeltModule.CEREAN_ICE)));
         // Ahuna Mons-like domes: steep, flat-topped piles of salty ice that rose through the crust
-        var domes = new Landforms.Volcanoes(1800, 0.35, 45, 80, 0.6, 46, 0.02, 0, List.of(), s(BeltModule.CEREAN_ROCK.base()),
+        var domes = new Landforms.Volcanoes(1800, 0.35, 45, 80, 0.6, 46, 0.02, 12,
+                // one dome a short walk from the landing site, like Ahuna Mons standing alone on the plains
+                List.of(new Landforms.Anchor(420, 260, 75, 44)), s(BeltModule.CEREAN_ROCK.base()),
                 Optional.of(s(BeltModule.CARBONATE_CRUST)));
         var lf = new Landforms(Optional.empty(), Optional.empty(), Optional.of(domes), Optional.empty(), Optional.empty(), Optional.empty(),
                 List.of(new Landforms.SoilPatch(s(BeltModule.AMMONIATED_CLAY), 240, 0.66, "any")),

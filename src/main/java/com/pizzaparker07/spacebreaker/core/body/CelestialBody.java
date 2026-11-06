@@ -30,6 +30,7 @@ import java.util.Optional;
  * @param solarIrradiance sunlight at the body, W/m² (Earth = 1361)
  * @param albedo          Bond albedo (fraction of sunlight reflected), 0.3 when unknown
  * @param rings           ring system, if any (for sky rendering and the star map)
+ * @param geometricAlbedo geometric (visual) albedo for brightness in the sky; negative when unknown
  */
 public record CelestialBody(
         BodyType type,
@@ -44,7 +45,8 @@ public record CelestialBody(
         double radiation,
         double solarIrradiance,
         double albedo,
-        Optional<Rings> rings
+        Optional<Rings> rings,
+        double geometricAlbedo
 ) {
     public static final double DEFAULT_ALBEDO = 0.3;
 
@@ -64,15 +66,25 @@ public record CelestialBody(
             Codec.DOUBLE.optionalFieldOf("radiation_msv_per_day", 0.0).forGetter(CelestialBody::radiation),
             Codec.DOUBLE.optionalFieldOf("solar_irradiance", EARTH_IRRADIANCE).forGetter(CelestialBody::solarIrradiance),
             Codec.DOUBLE.optionalFieldOf("albedo", DEFAULT_ALBEDO).forGetter(CelestialBody::albedo),
-            Rings.CODEC.optionalFieldOf("rings").forGetter(CelestialBody::rings)
+            Rings.CODEC.optionalFieldOf("rings").forGetter(CelestialBody::rings),
+            Codec.DOUBLE.optionalFieldOf("geometric_albedo", -1.0).forGetter(CelestialBody::geometricAlbedo)
     ).apply(i, CelestialBody::new));
+
+    /** Constructor without the geometric albedo (kept for code written before it existed). */
+    public CelestialBody(BodyType type, Optional<ResourceLocation> parent, Optional<ResourceKey<Level>> dimension,
+                         Optional<ResourceKey<Level>> orbitDimension, Physical physical, Orbit orbit, Rotation rotation,
+                         Atmosphere atmosphere, Climate climate, double radiation, double solarIrradiance, double albedo,
+                         Optional<Rings> rings) {
+        this(type, parent, dimension, orbitDimension, physical, orbit, rotation, atmosphere, climate, radiation,
+                solarIrradiance, albedo, rings, -1);
+    }
 
     /** Constructor without the optional albedo and rings (kept for code written before they existed). */
     public CelestialBody(BodyType type, Optional<ResourceLocation> parent, Optional<ResourceKey<Level>> dimension,
                          Optional<ResourceKey<Level>> orbitDimension, Physical physical, Orbit orbit, Rotation rotation,
                          Atmosphere atmosphere, Climate climate, double radiation, double solarIrradiance) {
         this(type, parent, dimension, orbitDimension, physical, orbit, rotation, atmosphere, climate, radiation,
-                solarIrradiance, DEFAULT_ALBEDO, Optional.empty());
+                solarIrradiance, DEFAULT_ALBEDO, Optional.empty(), -1);
     }
 
     public boolean landable() {

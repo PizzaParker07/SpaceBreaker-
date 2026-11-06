@@ -4,5 +4,8 @@
   "requires": [
     "spacebreaker:radiation_shielding"
   ],
+  "samples": [
+    "spacebreaker:ganymede"
+  ],
   "tier": 3
 }

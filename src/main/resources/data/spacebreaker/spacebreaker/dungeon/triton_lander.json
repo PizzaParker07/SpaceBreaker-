@@ -1,0 +1,9 @@
+{
+  "structure": "spacebreaker:triton_lander",
+  "world": "spacebreaker:triton",
+  "guardians": [],
+  "loot_tables": [
+    "spacebreaker:dungeons/triton/lander_cabin",
+    "spacebreaker:dungeons/triton/lander_cargo"
+  ]
+}

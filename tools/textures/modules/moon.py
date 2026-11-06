@@ -571,3 +571,72 @@ def export(save):
     save(kreep_overlay(), 'block', 'kreep_ore_overlay', (150, 40, 0, kreep_rules), wrap=False)
     save(raw_ilmenite(), 'item', 'raw_ilmenite')
     save(kreep_fragment(), 'item', 'kreep_fragment')
+
+
+# --------------------------------------------------------------------------- glimmer lamp and shell
+
+GLIMMER = [(31, 90, 80), (58, 156, 134), (111, 216, 191), (194, 245, 231)]
+
+
+def glimmer_lamp():
+    """Sintered frame around a glass pane, behind it a stack of glowing beetle shells."""
+    s = P.SINTERED
+    g = GLIMMER
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            edge = min(x, y, 15 - x, 15 - y)
+            if edge == 0:
+                c = s[3] if (x == 0 or y == 0) else s[1]
+            elif edge == 1:
+                c = s[2] if (x == 1 or y == 1) else s[3]
+            else:
+                # glowing shells: oval segments with darker seams
+                seam = (x + 2 * (y // 4)) % 6 == 0 or y % 4 == 1
+                c = g[1] if seam else (g[3] if (x + y) % 5 == 0 else g[2])
+            cv[x, y] = c
+    return cv
+
+
+SHELL = [
+    "................",
+    "................",
+    "......aaaa......",
+    ".....abbbba.....",
+    "....abcccbba....",
+    "....abcddcba....",
+    "...abccddccba...",
+    "...abcdeedcba...",
+    "...abcdeedcba...",
+    "...abccddccba...",
+    "....abcddcba....",
+    "....abccccba....",
+    ".....abbbba.....",
+    "......aaaa......",
+    "................",
+    "................",
+]
+
+
+def glimmer_shell():
+    """A shed glimmer beetle shell: dark teal plate with a luminous core."""
+    cols = {'a': (17, 23, 26), 'b': (38, 53, 56), 'c': (74, 101, 99), 'd': (58, 156, 134), 'e': (194, 245, 231)}
+    cv = Canvas()
+    for y, row in enumerate(SHELL):
+        for x, ch in enumerate(row):
+            if ch in cols:
+                cv[x, y] = cols[ch]
+    # light from the top-left
+    cv[6, 4] = (103, 135, 131)
+    cv[5, 5] = (103, 135, 131)
+    return cv
+
+
+_export_moon = export
+
+
+def export(save):  # noqa: F811 - extend the module export
+    _export_moon(save)
+    glow = lambda c: (120, 20, 0, 200) if c[3] and c[1] > 140 else None
+    save(glimmer_lamp(), 'block', 'glimmer_lamp', (120, 20, 0, glow))
+    save(glimmer_shell(), 'item', 'glimmer_shell')

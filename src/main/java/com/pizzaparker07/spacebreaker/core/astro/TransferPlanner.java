@@ -105,8 +105,8 @@ public final class TransferPlanner {
 
     /**
      * Low orbit to the surface. Airless: a powered descent mirroring the ascent. With an atmosphere and
-     * {@code useAtmosphere}: a deorbit burn, aerobraking, parachutes and a short landing burn if the
-     * parachute alone lands faster than 10 m/s.
+     * {@code useAtmosphere}: a deorbit burn, aerobraking, parachutes and, if the parachute alone lands faster
+     * than 10 m/s, a powered descent (1.5 × terminal speed + 15 % of the surface orbital speed).
      */
     public static double descent(AstroBody b, boolean useAtmosphere, double twr) {
         if (!b.hasAtmosphere() || !useAtmosphere) {
@@ -114,7 +114,9 @@ public final class TransferPlanner {
         }
         double deorbit = Transfers.hohmann(b.mu(), b.lowOrbitRadius(), b.radius()).dv1();
         double vt = parachuteTerminalSpeed(b);
-        double landing = vt > 10 ? 1.5 * vt : 0;
+        // where parachutes alone land too fast (thin air), a powered descent with hover and divert follows:
+        // ≈ 1.5 × terminal speed plus 15 % of the surface orbital speed (Mars ≈ 0.6 km/s, like real landers)
+        double landing = vt > 10 ? 1.5 * vt + 0.15 * Kepler.circularSpeed(b.mu(), b.radius()) : 0;
         return deorbit + landing;
     }
 

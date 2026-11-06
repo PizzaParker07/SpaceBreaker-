@@ -29,6 +29,16 @@ public final class SbSounds {
     // --- suit -----------------------------------------------------------------------------------
     public static final DeferredHolder<SoundEvent, SoundEvent> SUIT_OXYGEN_ALARM = event("suit.oxygen_alarm");
 
+    // --- music (streamed; use in a biome's "music" field) ----------------------------------------
+    /** Calm piano and synth pads for drifting in orbit. */
+    public static final DeferredHolder<SoundEvent, SoundEvent> MUSIC_ORBIT = event("music.orbit");
+    /** Low drones and glassy bells for the Moon and other airless worlds. */
+    public static final DeferredHolder<SoundEvent, SoundEvent> MUSIC_MOON = event("music.moon");
+    /** Warm pads and a lone distant melody over the red desert of Mars. */
+    public static final DeferredHolder<SoundEvent, SoundEvent> MUSIC_MARS = event("music.mars");
+    /** Airy glass tones above Venus' clouds over a distant furnace rumble. */
+    public static final DeferredHolder<SoundEvent, SoundEvent> MUSIC_VENUS = event("music.venus");
+
     // --- mission control ------------------------------------------------------------------------
     /** Short radio tones played before and after a spoken line. */
     public static final DeferredHolder<SoundEvent, SoundEvent> RADIO_IN = event("mission_control.radio_in");

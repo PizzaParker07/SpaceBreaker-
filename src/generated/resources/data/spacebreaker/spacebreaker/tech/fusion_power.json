@@ -4,5 +4,8 @@
   "requires": [
     "spacebreaker:nuclear_fission"
   ],
+  "samples": [
+    "spacebreaker:moon"
+  ],
   "tier": 3
 }

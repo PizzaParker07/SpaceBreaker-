@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_ammonia_hydrate_ore": {
+      "conditions": {
+        "items": [
+          {
+            "items": "spacebreaker:ammonia_hydrate_ore"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "spacebreaker:ammonia_crystal_from_smelting_ammonia_hydrate_ore"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_ammonia_hydrate_ore"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "spacebreaker:ammonia_crystal_from_smelting_ammonia_hydrate_ore"
+    ]
+  }
+}
