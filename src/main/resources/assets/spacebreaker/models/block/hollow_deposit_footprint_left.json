@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "spacebreaker:block/hollow_deposit",
+    "up": "spacebreaker:block/hollow_deposit_footprint_left",
+    "down": "spacebreaker:block/hollow_deposit",
+    "north": "spacebreaker:block/hollow_deposit",
+    "south": "spacebreaker:block/hollow_deposit",
+    "east": "spacebreaker:block/hollow_deposit",
+    "west": "spacebreaker:block/hollow_deposit"
+  }
+}

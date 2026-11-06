@@ -1,0 +1,9 @@
+{
+  "structure": "spacebreaker:mercury_ice_mine",
+  "world": "spacebreaker:mercury",
+  "guardians": [],
+  "loot_tables": [
+    "spacebreaker:dungeons/mercury/ice_mine_office",
+    "spacebreaker:dungeons/mercury/ice_mine_stores"
+  ]
+}

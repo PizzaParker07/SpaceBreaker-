@@ -119,7 +119,7 @@ def aerogel():
         for x in range(16):
             c = cv[x, y]
             edge = x in (0, 15) or y in (0, 15)
-            cv[x, y] = (c[0], c[1], c[2], 230 if edge else 150)
+            cv[x, y] = (c[0], c[1], c[2], 170)
     return cv
 
 

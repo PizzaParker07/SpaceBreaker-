@@ -1,0 +1,7 @@
+{
+  "parent": "spacebreaker:block/ore_overlay",
+  "textures": {
+    "stone": "spacebreaker:block/low_reflectance_rock",
+    "overlay": "spacebreaker:block/graphite_ore_overlay"
+  }
+}

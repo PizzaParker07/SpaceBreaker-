@@ -1,0 +1,14 @@
+{
+  "type": "spacebreaker:mercury",
+  "generator": {
+    "type": "spacebreaker:planet",
+    "terrain": "spacebreaker:mercury",
+    "biome_source": {
+      "type": "spacebreaker:planet",
+      "highlands": "spacebreaker:mercury_highlands",
+      "lowlands": "spacebreaker:mercury_plains",
+      "crater": "spacebreaker:mercury_crater",
+      "polar": "spacebreaker:mercury_polar"
+    }
+  }
+}

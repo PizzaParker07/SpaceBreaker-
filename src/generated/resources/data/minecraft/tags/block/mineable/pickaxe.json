@@ -101,6 +101,9 @@
     "spacebreaker:tessera_rock",
     "spacebreaker:sulfur_crust",
     "spacebreaker:metal_frost",
-    "spacebreaker:composite_panel"
+    "spacebreaker:composite_panel",
+    "spacebreaker:mercurian_crust",
+    "spacebreaker:low_reflectance_rock",
+    "spacebreaker:graphite_ore"
   ]
 }

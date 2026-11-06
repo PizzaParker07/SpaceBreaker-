@@ -23,6 +23,7 @@
     "spacebreaker:service_tower",
     "spacebreaker:hematite_ore",
     "spacebreaker:metal_frost",
-    "spacebreaker:composite_panel"
+    "spacebreaker:composite_panel",
+    "spacebreaker:graphite_ore"
   ]
 }

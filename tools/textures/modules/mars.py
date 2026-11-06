@@ -66,7 +66,7 @@ def martian_regolith(v=0):
 
 def hematite_soil(v=0):
     """Regolith studded with BB-sized hematite concretions: dark grey bead, a lit pixel top-left, shadow below."""
-    cv = dust([REGOLITH[1], REGOLITH[1], REGOLITH[2], REGOLITH[3], REGOLITH[4], REGOLITH[5]], 1601 + v * 41)
+    cv = dust([REGOLITH[1], REGOLITH[1], REGOLITH[2], REGOLITH[3], REGOLITH[4], REGOLITH[4]], 1601 + v * 41)
     rng = random.Random(1602 + v)
     spots = [(2, 2), (9, 1), (13, 5), (5, 7), (11, 10), (1, 12), (7, 13), (14, 14)]
     rng.shuffle(spots)
@@ -76,16 +76,16 @@ def hematite_soil(v=0):
         if i % 3 == 0:  # a bigger spherule: 2 px with a highlight
             cv[x, y] = BERRY[2]
             cv[x + 1, y] = BERRY[1]
-            cv[x + 1, y + 1] = REGOLITH[0]
+            cv[x + 1, y + 1] = REGOLITH[1]
         else:
             cv[x, y] = BERRY[1]
-            cv[x + 1, y + 1] = REGOLITH[0]
+            cv[x + 1, y + 1] = REGOLITH[1]
     return cv
 
 
 def perchlorate_soil(v=0):
     """Rust soil with a patchy pale salt crust (the crust follows a soft noise field)."""
-    base = dust(REGOLITH, 1701 + v * 43)
+    base = dust([REGOLITH[1], REGOLITH[1], REGOLITH[2], REGOLITH[3], REGOLITH[4], REGOLITH[4]], 1701 + v * 43)
     crust = fbm(16, 16, 1702 + v, [(4, 1.0), (2, 0.6)])
     g = white(1703 + v)
     for y in range(16):
@@ -94,7 +94,7 @@ def perchlorate_soil(v=0):
             if c > 0.74:
                 base[x, y] = SALT[2] if g[y][x] > 0.75 else SALT[1]
             elif c > 0.68:
-                base[x, y] = SALT[0]
+                base[x, y] = SALT[1]
     return base
 
 
@@ -369,8 +369,8 @@ def export(save):
     dust_spec = (18, 10, 64, None)
     soils = {
         'martian_regolith': (martian_regolith, REGOLITH),
-        'hematite_soil': (hematite_soil, REGOLITH),
-        'perchlorate_soil': (perchlorate_soil, REGOLITH),
+        'hematite_soil': (hematite_soil, [REGOLITH[1], REGOLITH[1], REGOLITH[2], REGOLITH[3], REGOLITH[4], REGOLITH[4]]),
+        'perchlorate_soil': (perchlorate_soil, [REGOLITH[1], REGOLITH[1], REGOLITH[2], REGOLITH[3], REGOLITH[4], REGOLITH[4]]),
         'martian_clay': (martian_clay, CLAY),
         'co2_frost': (co2_frost, FROST),
     }

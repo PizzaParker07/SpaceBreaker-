@@ -17,6 +17,7 @@ public final class ShowcaseScenarios {
         ALL.put("phobos", new MarsMoonScenario(false));
         ALL.put("deimos", new MarsMoonScenario(true));
         ALL.put("venus", new VenusScenario());
+        ALL.put("mercury", new MercuryScenario());
     }
 
     public static ShowcaseScenario get(String name) {

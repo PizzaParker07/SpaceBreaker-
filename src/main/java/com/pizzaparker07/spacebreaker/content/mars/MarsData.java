@@ -99,6 +99,17 @@ public final class MarsData {
     public record BiomeSpawns(ResourceKey<Biome> biome, Consumer<MobSpawnSettings.Builder> spawns) {
     }
 
+    /** Spawn settings collected in {@link #SPAWNS} for a biome. */
+    public static MobSpawnSettings spawnsFor(ResourceKey<Biome> key) {
+        MobSpawnSettings.Builder spawns = new MobSpawnSettings.Builder().creatureGenerationProbability(0.05F);
+        for (BiomeSpawns s : SPAWNS) {
+            if (s.biome() == key) {
+                s.spawns().accept(spawns);
+            }
+        }
+        return spawns.build();
+    }
+
     public static ResourceKey<Biome> biome(String name) {
         return ResourceKey.create(Registries.BIOME, Spacebreaker.id(name));
     }

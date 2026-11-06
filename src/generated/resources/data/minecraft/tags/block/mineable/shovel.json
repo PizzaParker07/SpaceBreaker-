@@ -14,6 +14,8 @@
     "spacebreaker:olivine_sand",
     "spacebreaker:phobos_regolith",
     "spacebreaker:deimos_regolith",
-    "spacebreaker:venus_soil"
+    "spacebreaker:venus_soil",
+    "spacebreaker:mercury_regolith",
+    "spacebreaker:hollow_deposit"
   ]
 }

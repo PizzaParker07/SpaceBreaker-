@@ -1,0 +1,6 @@
+{
+  "type": "spacebreaker:mercury_ice_mine",
+  "biomes": "spacebreaker:mercury_polar",
+  "spawn_overrides": {},
+  "step": "underground_structures"
+}
