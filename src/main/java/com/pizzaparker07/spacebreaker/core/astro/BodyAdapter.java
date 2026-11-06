@@ -2,6 +2,7 @@ package com.pizzaparker07.spacebreaker.core.astro;
 
 import com.pizzaparker07.spacebreaker.core.astro.galaxy.StarSystem;
 import com.pizzaparker07.spacebreaker.core.body.Bodies;
+import com.pizzaparker07.spacebreaker.core.config.SbConfig;
 import com.pizzaparker07.spacebreaker.core.body.BodyType;
 import com.pizzaparker07.spacebreaker.core.body.CelestialBody;
 import net.minecraft.core.Registry;
@@ -28,6 +29,12 @@ public final class BodyAdapter {
                 o.argumentPeriapsisDeg(), o.meanAnomalyDeg(), o.periodDays(), b.rotation().dayLengthHours(),
                 b.rotation().tidallyLocked(), b.atmosphere().pressureKpa(), b.atmosphere().composition(),
                 b.climate().dayTempC(), b.climate().nightTempC(), b.albedo(), b.landable());
+    }
+
+    /** Simulated orbital time (s since J2000) of a level, from its game time and the server's time scale. */
+    public static double simTime(Level level) {
+        double scale = SbConfig.SERVER_SPEC.isLoaded() ? SbConfig.TIME_SCALE.get() : 1.0;
+        return GameClock.simSeconds(level.getGameTime(), scale);
     }
 
     /** All bodies of the registry as one system (several trees if a data pack adds other stars). */
