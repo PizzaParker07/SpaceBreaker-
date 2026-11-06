@@ -150,9 +150,9 @@ public final class OuterWorlds implements SbModule {
         if (look.particles() != null) {
             fx.ambientParticle(look.particles());
         }
-        if (look.sky() == 0 && look.fog() == 0) {
-            // airless worlds share the low hum and glass chimes of the Moon
-            fx.backgroundMusic(new net.minecraft.sounds.Music(com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_MOON, 3600, 12000, false));
+        var music = music(key, look);
+        if (music != null) {
+            fx.backgroundMusic(new net.minecraft.sounds.Music(music, 3600, 12000, false));
         }
         return new Biome.BiomeBuilder()
                 .hasPrecipitation(false).temperature(temperature).downfall(0F)
@@ -160,6 +160,19 @@ public final class OuterWorlds implements SbModule {
                 .mobSpawnSettings(spawnsFor(key))
                 .generationSettings(gen.build())
                 .build();
+    }
+
+    /**
+     * Ambient music of a biome: Titan's own track under its haze, the Jovian track on Jupiter's moons, and the Moon's low hum
+     * on the other airless worlds.
+     */
+    static net.minecraft.core.Holder<net.minecraft.sounds.SoundEvent> music(ResourceKey<Biome> key, Look look) {
+        String world = key.location().getPath().split("_")[0];
+        return switch (world) {
+            case "titan" -> com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_TITAN;
+            case "io", "europa", "ganymede", "callisto" -> com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_JOVIAN;
+            default -> look.sky() == 0 && look.fog() == 0 ? com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_MOON : null;
+        };
     }
 
     /** Runs several bootstraps in order (used to combine one world's entries). */

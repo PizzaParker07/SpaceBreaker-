@@ -6,6 +6,12 @@
     "fog_color": 11039808,
     "foliage_color": 9067054,
     "grass_color": 9067054,
+    "music": {
+      "max_delay": 12000,
+      "min_delay": 3600,
+      "replace_current_music": false,
+      "sound": "spacebreaker:music.titan"
+    },
     "sky_color": 11565116,
     "water_color": 4159204,
     "water_fog_color": 329011
