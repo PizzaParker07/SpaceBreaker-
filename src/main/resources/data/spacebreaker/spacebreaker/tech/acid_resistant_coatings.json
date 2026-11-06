@@ -8,5 +8,7 @@
   "samples": [
     "spacebreaker:venus"
   ],
-  "unlocks": []
+  "unlocks": [
+    "spacebreaker:acid_coating"
+  ]
 }

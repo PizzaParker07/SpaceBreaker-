@@ -1,0 +1,17 @@
+{
+  "type": "spacebreaker:melting",
+  "energy": 30,
+  "fluid_results": [
+    {
+      "amount": 1000,
+      "id": "minecraft:water"
+    }
+  ],
+  "ingredients": [
+    {
+      "count": 1,
+      "tag": "c:ices/water"
+    }
+  ],
+  "time": 60
+}

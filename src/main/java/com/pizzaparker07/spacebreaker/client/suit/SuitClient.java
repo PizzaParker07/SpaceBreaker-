@@ -18,6 +18,12 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
+import net.neoforged.neoforge.registries.DeferredItem;
+import com.pizzaparker07.spacebreaker.content.suit.SpaceSuitItem;
+import com.pizzaparker07.spacebreaker.content.suit.SuitTier;
+import net.minecraft.util.FastColor;
+import net.minecraft.world.item.component.DyedItemColor;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 
@@ -27,7 +33,7 @@ import java.util.Map;
 /** Client registration for the EVA suit: armour models, overlay layer. */
 @EventBusSubscriber(modid = Spacebreaker.MOD_ID, value = Dist.CLIENT)
 public final class SuitClient {
-    private static final Map<ModelLayerLocation, EvaSuitModel> MODELS = new HashMap<>();
+    private static final Map<String, EvaSuitModel> MODELS = new HashMap<>();
 
     private SuitClient() {
     }
@@ -73,26 +79,63 @@ public final class SuitClient {
         }
     }
 
-    private static EvaSuitModel model(ModelLayerLocation layer) {
-        return MODELS.computeIfAbsent(layer, l -> new EvaSuitModel(Minecraft.getInstance().getEntityModels().bakeLayer(l)));
+    private static EvaSuitModel model(ModelLayerLocation layer, String tier) {
+        return MODELS.computeIfAbsent(layer + "/" + tier, k -> new EvaSuitModel(Minecraft.getInstance().getEntityModels().bakeLayer(layer), tier));
+    }
+
+    /** Default colour of the dyeable accent parts (bearing rings, patches) per tier. */
+    public static int defaultAccent(SuitTier tier) {
+        if (tier == SuitTier.THERMAL) {
+            return 0xE0B04A;  // gold anodised
+        }
+        if (tier == SuitTier.HEATED) {
+            return 0x3A3F46;  // dark steel
+        }
+        if (tier == SuitTier.RADIATION) {
+            return 0xE6B820;  // hazard yellow
+        }
+        return 0x68A0D8;      // blue anodised
+    }
+
+    public static int accentColor(ItemStack stack) {
+        SuitTier tier = stack.getItem() instanceof SpaceSuitItem suit ? suit.tier() : SuitTier.MK1;
+        return FastColor.ARGB32.opaque(DyedItemColor.getOrDefault(stack, defaultAccent(tier)));
     }
 
     private static IClientItemExtensions armour(ModelLayerLocation layer) {
         return new IClientItemExtensions() {
             @Override
             public HumanoidModel<?> getHumanoidArmorModel(LivingEntity entity, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> original) {
-                EvaSuitModel model = model(layer);
+                String tier = stack.getItem() instanceof SpaceSuitItem suit ? suit.tier().id() : "eva";
+                EvaSuitModel model = model(layer, tier);
                 model.showManeuveringUnit(SuitTanks.hasManeuveringUnit(stack));
                 return model;
+            }
+
+            @Override
+            public int getDefaultDyeColor(ItemStack stack) {
+                return accentColor(stack);
             }
         };
     }
 
     @SubscribeEvent
+    static void itemColors(RegisterColorHandlersEvent.Item event) {
+        event.register((stack, tintIndex) -> tintIndex == 1 ? accentColor(stack) : -1,
+                SuitModule.ALL_PIECES.stream().map(DeferredItem::get).toArray(net.minecraft.world.level.ItemLike[]::new));
+    }
+
+    @SubscribeEvent
     static void registerClientExtensions(RegisterClientExtensionsEvent event) {
-        event.registerItem(armour(EvaSuitModel.HELMET), SuitModule.EVA_HELMET.get());
-        event.registerItem(armour(EvaSuitModel.TORSO), SuitModule.EVA_CHESTPLATE.get());
-        event.registerItem(armour(EvaSuitModel.LEGS), SuitModule.EVA_LEGGINGS.get());
-        event.registerItem(armour(EvaSuitModel.BOOTS), SuitModule.EVA_BOOTS.get(), SuitModule.MAGNETIC_BOOTS.get());
+        for (DeferredItem<SpaceSuitItem> piece : SuitModule.ALL_PIECES) {
+            SpaceSuitItem item = piece.get();
+            ModelLayerLocation layer = switch (item.getType()) {
+                case HELMET -> EvaSuitModel.HELMET;
+                case CHESTPLATE -> EvaSuitModel.TORSO;
+                case LEGGINGS -> EvaSuitModel.LEGS;
+                default -> EvaSuitModel.BOOTS;
+            };
+            event.registerItem(armour(layer), item);
+        }
     }
 }

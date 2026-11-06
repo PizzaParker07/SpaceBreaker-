@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    " O ",
+    "OXO",
+    " C "
+  ],
+  "key": {
+    "O": {
+      "item": "spacebreaker:orange_foam_insulation"
+    },
+    "C": {
+      "item": "spacebreaker:advanced_circuit"
+    },
+    "X": {
+      "item": "spacebreaker:eva_chestplate"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:heated_chestplate",
+    "count": 1
+  }
+}

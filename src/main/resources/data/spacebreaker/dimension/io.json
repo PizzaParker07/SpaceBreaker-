@@ -1,0 +1,13 @@
+{
+  "type": "spacebreaker:io",
+  "generator": {
+    "type": "spacebreaker:planet",
+    "terrain": "spacebreaker:io",
+    "biome_source": {
+      "type": "spacebreaker:planet",
+      "highlands": "spacebreaker:io_plains",
+      "volcano": "spacebreaker:io_mountains",
+      "polar": "spacebreaker:io_polar"
+    }
+  }
+}

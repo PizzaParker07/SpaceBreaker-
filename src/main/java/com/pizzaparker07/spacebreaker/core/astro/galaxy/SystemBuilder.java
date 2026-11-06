@@ -30,6 +30,8 @@ final class SystemBuilder {
     private final Map<String, StarSystem.Details> details = new LinkedHashMap<>();
     private final Map<String, Double> starDistanceAu = new HashMap<>();
     private final double ageYears;
+    private String designation;
+    private StarSystem.Binary binary;
 
     SystemBuilder(StarSeed seed, String rootId, StarKind kind, StellarModel.Star primary, String nameEn, String nameTr) {
         this.seed = seed;
@@ -37,8 +39,9 @@ final class SystemBuilder {
         this.kind = kind;
         this.primary = primary;
         this.ageYears = seed.ageYears();
+        this.designation = nameEn;
         bodies.add(star(rootId, null, primary, null));
-        details.put(rootId, new StarSystem.Details(nameEn, nameTr, 0, 0, 0, gravity(primary)));
+        details.put(rootId, new StarSystem.Details(nameEn, nameTr, 0, 0, 0, gravity(primary), 0, 0));
     }
 
     String rootId() {
@@ -53,7 +56,7 @@ final class SystemBuilder {
     void companion(String id, String nameEn, String nameTr, StellarModel.Star s, double aAu, double e, double periodDays) {
         OrbitalElements orbit = elements(aAu * AstroConstants.AU, e, 0, 0, 0, 0, periodDays * AstroConstants.DAY);
         bodies.add(star(id, rootId, s, orbit));
-        details.put(id, new StarSystem.Details(nameEn, nameTr, 0, 0, 0, gravity(s)));
+        details.put(id, new StarSystem.Details(nameEn, nameTr, 0, 0, 0, gravity(s), 0, 0));
     }
 
     private static double gravity(StellarModel.Star s) {
@@ -125,7 +128,7 @@ final class SystemBuilder {
         AstroBody b = new AstroBody(id, parentId, kindFor(massKg, comp, parent.isStar()), massKg, radiusM, orbit,
                 day * 3600.0, locked, pressure, air, dayK, nightK, albedo, !giant);
         bodies.add(b);
-        details.put(id, new StarSystem.Details(nameEn, nameTr, flux, radiation, axialTilt, AstroConstants.G * massKg / (radiusM * radiusM)));
+        details.put(id, new StarSystem.Details(nameEn, nameTr, flux, radiation, axialTilt, AstroConstants.G * massKg / (radiusM * radiusM), 0, 0));
         return b;
     }
 
@@ -166,8 +169,24 @@ final class SystemBuilder {
         return starDistanceAu.getOrDefault(id, 0.0);
     }
 
+    void designation(String d) {
+        this.designation = d;
+    }
+
+    void binary(StarSystem.Binary b) {
+        this.binary = b;
+    }
+
+    /** Gives a body a ring system (radii in km from its centre). */
+    void rings(String id, double innerKm, double outerKm) {
+        StarSystem.Details d = details.get(id);
+        details.put(id, new StarSystem.Details(d.nameEn(), d.nameTr(), d.irradiance(), d.radiation(), d.axialTiltDeg(),
+                d.surfaceGravity(), innerKm, outerKm));
+    }
+
     StarSystem build() {
-        return new StarSystem(seed, rootId, kind, primary, new BodySystem(bodies), Map.copyOf(details));
+        return new StarSystem(seed, rootId, kind, primary, new BodySystem(bodies), Map.copyOf(details), designation,
+                java.util.Optional.ofNullable(binary));
     }
 
     static OrbitalElements elements(double a, double e, double inc, double lan, double argp, double m0, double period) {

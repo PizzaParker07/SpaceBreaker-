@@ -135,7 +135,7 @@ public final class RocketryGameTests {
 
     @GameTest(template = EMPTY)
     public static void realisticModeUsesRealDeltaV(GameTestHelper helper) {
-        for (Location from : Location.values()) {
+        for (Location from : com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.all()) {
             for (Location to : Transfers.destinations(from)) {
                 double real = Transfers.real(from, to).orElseThrow();
                 double realistic = Transfers.cost(from, to, SbConfig.Realism.REALISTIC).orElseThrow();
@@ -149,6 +149,35 @@ public final class RocketryGameTests {
         helper.assertTrue(within(Transfers.real(Location.MOON_ORBIT, Location.MOON_SURFACE).orElseThrow(), 1900, 300), "lunar landing ~2.0 km/s");
         helper.assertTrue(within(Transfers.real(Location.MOON_SURFACE, Location.MOON_ORBIT).orElseThrow(), 1900, 300), "lunar ascent ~2.0 km/s");
         helper.assertTrue(within(Transfers.real(Location.MOON_ORBIT, Location.EARTH_SURFACE).orElseThrow(), 850, 200), "trans-Earth injection ~0.8 km/s");
+        helper.succeed();
+    }
+
+    @GameTest(template = EMPTY)
+    public static void innerPlanetsAreDestinations(GameTestHelper helper) {
+        var mars = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(Spacebreaker.id("mars"), false);
+        var marsOrbit = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(Spacebreaker.id("mars"), true);
+        var venus = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(Spacebreaker.id("venus"), false);
+        var phobos = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(Spacebreaker.id("phobos"), false);
+        helper.assertTrue(mars.isPresent() && marsOrbit.isPresent() && venus.isPresent() && phobos.isPresent(), "Mars, Venus and Phobos come from the body data");
+        helper.assertTrue(marsOrbit.get().dimension().location().equals(Spacebreaker.id("mars_orbit")),
+                "Mars has its own orbit dimension (orbit_dimension in its body data)");
+        var phobosOrbit = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(Spacebreaker.id("phobos"), true);
+        helper.assertTrue(phobosOrbit.isPresent() && phobosOrbit.get().dimension().equals(Location.Orbits.SHARED),
+                "bodies without an orbit dimension share one");
+        helper.assertTrue(mars.get().atmosphere() && !phobos.get().atmosphere(), "Mars has air, Phobos does not");
+        helper.assertTrue(Transfers.destinations(Location.EARTH_ORBIT).contains(marsOrbit.get()), "Mars orbit is a destination from Earth orbit");
+        double toMars = Transfers.real(Location.EARTH_ORBIT, marsOrbit.get()).orElseThrow();
+        helper.assertTrue(toMars > 3000 && toMars < 6500, "LEO to low Mars orbit 3.6-5.7 km/s (aerobraking), got " + toMars);
+        double landMars = Transfers.real(marsOrbit.get(), mars.get()).orElseThrow();
+        helper.assertTrue(landMars < 1000, "Mars landing uses the air and parachutes, got " + landMars);
+        helper.assertTrue(Transfers.reentryRating(marsOrbit.get(), mars.get()) == 1, "Mars entry from orbit needs a shield");
+        var venusOrbit = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(Spacebreaker.id("venus"), true).orElseThrow();
+        helper.assertTrue(Transfers.reentryRating(venusOrbit, venus.get()) == 2, "Venus' dense air needs the lunar-grade shield");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.entity.RocketEntity.launchTarget(mars.get()).equals(marsOrbit.get()),
+                "launching from Mars goes to Mars orbit");
+        helper.assertTrue(Location.parse(marsOrbit.get().id()).orElseThrow().equals(marsOrbit.get()), "location ids round-trip");
+        var home = MissionPlanner.homeRoute(phobos.get());
+        helper.assertTrue(home.size() == 3 && home.get(2).equals(Location.EARTH_SURFACE), "home from Phobos: orbit, then Earth");
         helper.succeed();
     }
 
@@ -248,6 +277,26 @@ public final class RocketryGameTests {
     }
 
     // ------------------------------------------------------------------ flight
+
+    @GameTest(template = EMPTY)
+    public static void fuelFromFluidContainers(GameTestHelper helper) {
+        RocketEntity rocket = RocketEntity.create(helper.getLevel(), RocketryModule.MOON_ROCKET, helper.absoluteVec(new net.minecraft.world.phys.Vec3(1.5, 2, 1.5)), 0F);
+        helper.getLevel().addFreshEntity(rocket);
+        ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        int rp1 = rocket.roomFor(false);
+        int lox = rocket.roomFor(true);
+        net.minecraft.world.item.Item rp1Bucket = net.minecraft.core.registries.BuiltInRegistries.ITEM.get(Spacebreaker.id("rp1_bucket"));
+        helper.assertTrue(rp1Bucket != net.minecraft.world.item.Items.AIR, "RP-1 bucket exists");
+        player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new net.minecraft.world.item.ItemStack(rp1Bucket));
+        rocket.interact(player, net.minecraft.world.InteractionHand.MAIN_HAND);
+        helper.assertTrue(rocket.roomFor(false) == rp1 - 1000, "a bucket loads 1000 mB of RP-1: " + rp1 + " -> " + rocket.roomFor(false));
+        helper.assertTrue(rocket.roomFor(true) == lox, "RP-1 does not go into the oxidiser tank");
+        player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.WATER_BUCKET));
+        rocket.interact(player, net.minecraft.world.InteractionHand.MAIN_HAND);
+        helper.assertTrue(rocket.roomFor(false) == rp1 - 1000 && rocket.roomFor(true) == lox, "water is refused");
+        rocket.discard();
+        helper.succeed();
+    }
 
     @GameTest(template = EMPTY, timeoutTicks = 1200, batch = "rocketry_launch")
     public static void countdownLiftoffAndStaging(GameTestHelper helper) {

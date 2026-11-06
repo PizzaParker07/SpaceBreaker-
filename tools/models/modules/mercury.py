@@ -11,3 +11,4 @@ def generate():
     ore('graphite_ore', b('low_reflectance_rock'), 'graphite_ore_overlay')
     generated_item('graphite')
     write('models/item/terminator_crawler_spawn_egg.json', {'parent': 'minecraft:item/template_spawn_egg'})
+    write('models/item/hollow_snail_spawn_egg.json', {'parent': 'minecraft:item/template_spawn_egg'})

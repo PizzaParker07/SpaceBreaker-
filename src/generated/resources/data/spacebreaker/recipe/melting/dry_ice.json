@@ -1,0 +1,16 @@
+{
+  "type": "spacebreaker:melting",
+  "fluid_results": [
+    {
+      "amount": 1000,
+      "id": "spacebreaker:carbon_dioxide"
+    }
+  ],
+  "ingredients": [
+    {
+      "count": 1,
+      "tag": "c:dry_ices"
+    }
+  ],
+  "time": 40
+}

@@ -13,6 +13,8 @@ import com.pizzaparker07.spacebreaker.content.machines.machine.BatteryBankBlock;
 import com.pizzaparker07.spacebreaker.content.machines.machine.BatteryBankBlockEntity;
 import com.pizzaparker07.spacebreaker.content.machines.machine.CombustionGeneratorBlockEntity;
 import com.pizzaparker07.spacebreaker.content.machines.machine.TankBlock;
+import com.pizzaparker07.spacebreaker.content.machines.machine.AtmosphereProcessorBlockEntity;
+import com.pizzaparker07.spacebreaker.content.machines.machine.SabatierReactorBlockEntity;
 import com.pizzaparker07.spacebreaker.content.machines.machine.PumpjackBlockEntity;
 import com.pizzaparker07.spacebreaker.content.machines.machine.RefineryBlockEntity;
 import com.pizzaparker07.spacebreaker.content.machines.multiblock.MultiblockMachineBlock;
@@ -84,6 +86,12 @@ public final class MachinesModule implements SbModule {
     public static final ProcessingRecipe.Kind REFINING = kind("refining");
     public static final ProcessingRecipe.Kind ELECTROLYSIS = kind("electrolysis");
     public static final ProcessingRecipe.Kind LIQUEFACTION = kind("liquefaction");
+    /** In-situ resource utilisation (off-world industry). */
+    public static final ProcessingRecipe.Kind SABATIER = kind("sabatier");
+    public static final ProcessingRecipe.Kind REGOLITH_PROCESSING = kind("regolith_processing");
+    public static final ProcessingRecipe.Kind MELTING = kind("melting");
+    /** General chemistry: one item and up to two fluids in. Planet areas add their own recipes of this type. */
+    public static final ProcessingRecipe.Kind CHEMICAL_REACTION = kind("chemical_reaction");
 
     public static final DeferredHolder<MenuType<?>, MenuType<MachineMenu>> MACHINE_MENU =
             MENUS.register("machine", () -> IMenuTypeExtension.create(MachineMenu::client));
@@ -159,6 +167,27 @@ public final class MachinesModule implements SbModule {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TankBlockEntity>> TANK_BE =
             BLOCK_ENTITIES.register("tank", () -> BlockEntityType.Builder.of(TankBlockEntity::new,
                     TANKS.stream().map(DeferredBlock::get).toArray(Block[]::new)).build(null));
+
+    // ------------------------------------------------------------------ off-world industry (ISRU)
+    public static final MachineEntry<MachineBlock, AtmosphereProcessorBlockEntity> ATMOSPHERE_PROCESSOR =
+            machine("atmosphere_processor", AtmosphereProcessorBlockEntity::new, null, 0);
+    public static final MachineEntry<MachineBlock, ProcessingMachineBlockEntity> SABATIER_REACTOR = processingWith("sabatier_reactor", () -> SABATIER,
+            new MachineLayout().energy(10, 17).tank(30, 17).tank(52, 17).progress(76, 35, MachineLayout.Progress.ARROW).tank(108, 17).tank(130, 17),
+            40_000, List.of(TankSpec.in(8_000, f -> f.getFluidType().isLighterThanAir()), TankSpec.in(8_000, f -> f.getFluidType().isLighterThanAir()),
+                    TankSpec.out(8_000), TankSpec.out(8_000)), 9, SabatierReactorBlockEntity::new);
+    public static final MachineEntry<MachineBlock, ProcessingMachineBlockEntity> REGOLITH_HEATER = processing("regolith_heater", () -> REGOLITH_PROCESSING,
+            new MachineLayout().energy(10, 17).slot(40, 34, MachineLayout.Role.INPUT).progress(64, 35, MachineLayout.Progress.ARROW)
+                    .slot(94, 34, MachineLayout.Role.OUTPUT).tank(120, 17).tank(142, 17),
+            60_000, List.of(TankSpec.out(8_000), TankSpec.out(8_000)), 12);
+    public static final MachineEntry<MachineBlock, ProcessingMachineBlockEntity> ICE_MELTER = processing("ice_melter", () -> MELTING,
+            new MachineLayout().energy(10, 17).slot(52, 34, MachineLayout.Role.INPUT).progress(78, 35, MachineLayout.Progress.ARROW)
+                    .tank(110, 17).tank(132, 17),
+            20_000, List.of(TankSpec.out(16_000), TankSpec.out(8_000)), 0);
+
+    public static final MachineEntry<MachineBlock, ProcessingMachineBlockEntity> CHEMICAL_REACTOR = processing("chemical_reactor", () -> CHEMICAL_REACTION,
+            new MachineLayout().energy(10, 17).slot(30, 34, MachineLayout.Role.INPUT).tank(52, 17).tank(72, 17)
+                    .progress(94, 35, MachineLayout.Progress.ARROW).tank(122, 17).slot(146, 34, MachineLayout.Role.OUTPUT),
+            40_000, List.of(TankSpec.in(8_000, f -> true), TankSpec.in(8_000, f -> true), TankSpec.out(8_000)), 0);
 
     // ------------------------------------------------------------------ cables and pipes
     public static final List<DeferredBlock<ConduitBlock>> CONDUITS = new ArrayList<>();
@@ -351,11 +380,13 @@ public final class MachinesModule implements SbModule {
             tags.block(BlockTags.MINEABLE_WITH_PICKAXE, m.block().get());
         }
         CONDUITS.forEach(c -> tags.block(BlockTags.MINEABLE_WITH_PICKAXE, c.get()));
+        IsruRecipes.tags(tags);
         TANKS.forEach(t -> tags.block(BlockTags.MINEABLE_WITH_PICKAXE, t.get()));
     }
 
     @Override
     public void addRecipes(RecipeOutput out, HolderLookup.Provider registries) {
         MachineRecipes.add(out);
+        IsruRecipes.add(out);
     }
 }

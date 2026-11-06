@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/outer_stairs",
+  "textures": {
+    "bottom": "spacebreaker:block/cerean_rock",
+    "side": "spacebreaker:block/cerean_rock",
+    "top": "spacebreaker:block/cerean_rock"
+  }
+}

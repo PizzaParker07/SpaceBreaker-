@@ -25,7 +25,8 @@ import java.util.List;
  * Gases are fluids without a block (they live in pipes, tanks and canisters).
  */
 public final class SbFluid {
-    public enum Kind { LIQUID, CRYOGENIC, GAS }
+    /** PROCESS = a liquid that only lives in tanks, pipes and canisters (no world block or bucket). */
+    public enum Kind { LIQUID, CRYOGENIC, GAS, PROCESS }
 
     public final String name;
     public final String en;
@@ -60,7 +61,7 @@ public final class SbFluid {
                 .sound(SoundActions.BUCKET_EMPTY, kind == Kind.LIQUID ? net.minecraft.sounds.SoundEvents.BUCKET_EMPTY : net.minecraft.sounds.SoundEvents.BUCKET_EMPTY_POWDER_SNOW)));
         this.source = FluidsModule.FLUIDS.register(name, () -> new BaseFlowingFluid.Source(properties()));
         this.flowing = FluidsModule.FLUIDS.register("flowing_" + name, () -> new BaseFlowingFluid.Flowing(properties()));
-        if (gas) {
+        if (gas || kind == Kind.PROCESS) {
             this.block = null;
             this.bucket = null;
         } else {

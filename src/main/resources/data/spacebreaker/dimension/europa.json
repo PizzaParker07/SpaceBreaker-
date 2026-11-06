@@ -1,0 +1,13 @@
+{
+  "type": "spacebreaker:europa",
+  "generator": {
+    "type": "spacebreaker:planet",
+    "terrain": "spacebreaker:europa",
+    "biome_source": {
+      "type": "spacebreaker:planet",
+      "highlands": "spacebreaker:europa_ridged_plains",
+      "crater": "spacebreaker:europa_crater",
+      "polar": "spacebreaker:europa_polar"
+    }
+  }
+}

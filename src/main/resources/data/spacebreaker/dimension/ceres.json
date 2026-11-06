@@ -1,0 +1,14 @@
+{
+  "type": "spacebreaker:ceres",
+  "generator": {
+    "type": "spacebreaker:planet",
+    "terrain": "spacebreaker:ceres",
+    "biome_source": {
+      "type": "spacebreaker:planet",
+      "highlands": "spacebreaker:ceres_plains",
+      "crater": "spacebreaker:ceres_crater",
+      "volcano": "spacebreaker:ceres_dome",
+      "polar": "spacebreaker:ceres_polar"
+    }
+  }
+}

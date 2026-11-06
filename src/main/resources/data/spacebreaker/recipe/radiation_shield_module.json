@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "TPT",
+    "PTP",
+    "TPT"
+  ],
+  "key": {
+    "T": {
+      "tag": "c:plates/tungsten"
+    },
+    "P": {
+      "item": "spacebreaker:plastic_sheet"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:radiation_shield_module",
+    "count": 1
+  }
+}

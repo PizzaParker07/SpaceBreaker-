@@ -144,7 +144,12 @@ final class RocketryScenario implements ShowcaseScenario {
     }
 
     private static void toDimension(ServerPlayer player, Location where, double x, double y, double z, float yaw, float pitch) {
-        ServerLevel level = player.server.getLevel(where.dimension());
+        toDimension(player, where.dimension(), x, y, z, yaw, pitch);
+    }
+
+    private static void toDimension(ServerPlayer player, net.minecraft.resources.ResourceKey<net.minecraft.world.level.Level> dim,
+                                    double x, double y, double z, float yaw, float pitch) {
+        ServerLevel level = player.server.getLevel(dim);
         if (level != null) {
             player.teleportTo(level, x, y - player.getEyeHeight(), z, yaw, pitch);
         }
@@ -237,6 +242,38 @@ final class RocketryScenario implements ShowcaseScenario {
                     spawn(p.serverLevel(), Vec3.atBottomCenterOf(POOL.above(34)), 0F, FlightState.PARACHUTE, 80, 3, false);
                 }, null));
         s.add(new Shot("19_splashdown", 7000, POOL.getX() + 7.5, G + 3, POOL.getZ() + 6.5, 135F, 12F, true, fp, 400, null, null));
+        s.add(new Shot("20_mars_orbit", 6000, 0, 0, 0, 0F, 0F, true, fp, 120,
+                p -> {
+                    clearScene(p);
+                    ServerLevel orbit = p.server.getLevel(Location.Orbits.SHARED);
+                    if (orbit == null) {
+                        return;
+                    }
+                    double mx = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.sharedRegionX(Spacebreaker.id("mars"));
+                    RocketEntity r = spawn(orbit, new Vec3(mx + 0.5, RocketEntity.ORBIT_Y, 0.5), 0F, FlightState.ORBIT, 0, 2, false);
+                    r.setOrbitBody(Spacebreaker.id("mars"));
+                    toDimension(p, Location.Orbits.SHARED, mx - 6.5, RocketEntity.ORBIT_Y + 4, 8.5, 215F, 30F);
+                }, null));
+        s.add(new Shot("21_star_map_mars", 6000, 0, 0, 0, 0F, 0F, false, fp, 120,
+                p -> {
+                    toDimension(p, Location.Orbits.SHARED, com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.sharedRegionX(Spacebreaker.id("mars")) + 0.5,
+                            RocketEntity.ORBIT_Y + 1, 0.5, 30F, 35F);
+                    p.startRiding(scene.get(0), true);
+                    RocketryShowcaseClient.openMapWhenRiding = true;
+                }, null));
+        s.add(new Shot("22_mars_parachutes", 6000, 0, 0, 0, 0F, 0F, true, fp, 50,
+                p -> {
+                    clearScene(p);
+                    ServerLevel mars = p.server.getLevel(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.DIMENSION, Spacebreaker.id("mars")));
+                    if (mars == null) {
+                        return;
+                    }
+                    int gx = 100, gz = 100;
+                    mars.getChunk(gx >> 4, gz >> 4);
+                    int ground = mars.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, gx, gz);
+                    spawn(mars, new Vec3(gx + 0.5, ground + 40, gz + 0.5), 0F, FlightState.PARACHUTE, 80, 2, false);
+                    p.teleportTo(mars, gx + 14.5, ground + 12, gz + 12.5, 135F, -20F);
+                }, null));
         return s;
     }
 

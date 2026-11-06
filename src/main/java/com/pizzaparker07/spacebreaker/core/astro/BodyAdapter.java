@@ -81,7 +81,8 @@ public final class BodyAdapter {
                 new CelestialBody.Rotation(b.rotationPeriod() / 3600.0, d == null ? 0 : d.axialTiltDeg(), b.tidallyLocked()),
                 new CelestialBody.Atmosphere(b.surfacePressureKpa(), false, b.composition()),
                 new CelestialBody.Climate(b.dayTempK() - 273.15, b.nightTempK() - 273.15),
-                d == null ? 0 : d.radiation(), irradiance, b.albedo(), Optional.empty());
+                d == null ? 0 : d.radiation(), irradiance, b.albedo(),
+                d != null && d.hasRings() ? Optional.of(new CelestialBody.Rings(d.ringInnerKm(), d.ringOuterKm())) : Optional.empty());
     }
 
     private BodyAdapter() {

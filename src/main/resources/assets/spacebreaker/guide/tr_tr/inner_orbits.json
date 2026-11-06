@@ -1,0 +1,12 @@
+{
+  "chapter": "physics",
+  "title": "Yörüngeden İç Gezegenler",
+  "icon": "minecraft:ender_eye",
+  "order": 10,
+  "requires_tech": "spacebreaker:interplanetary_transfers",
+  "pages": [
+    {
+      "text": "Yörüngeden Venüs, pusa sarılmış düzgün, soluk bir küredir; bulutlarında silik, yan yatmış Y biçimli bantlar vardır. Merkür gri bir Ay gibi görünür. Mars'ta volkanları, yarık kanyonunu ve kutup başlıklarını seçebilirsin."
+    }
+  ]
+}

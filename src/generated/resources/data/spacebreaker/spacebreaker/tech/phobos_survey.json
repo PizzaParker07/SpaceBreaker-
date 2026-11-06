@@ -1,0 +1,11 @@
+{
+  "category": "exploration",
+  "icon": "minecraft:tuff",
+  "requires": [
+    "spacebreaker:martian_geology"
+  ],
+  "samples": [
+    "spacebreaker:phobos"
+  ],
+  "tier": 2
+}

@@ -1,0 +1,22 @@
+{
+  "type": "spacebreaker:crushing",
+  "bonus": {
+    "count": 1,
+    "id": "spacebreaker:perchlorate_salt"
+  },
+  "bonus_chance": 0.25,
+  "energy": 16,
+  "ingredients": [
+    {
+      "count": 1,
+      "item": "spacebreaker:perchlorate_soil"
+    }
+  ],
+  "results": [
+    {
+      "count": 1,
+      "id": "spacebreaker:perchlorate_salt"
+    }
+  ],
+  "time": 100
+}

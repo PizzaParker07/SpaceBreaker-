@@ -18,6 +18,19 @@ final class MachinesLang {
         name(lang, MachinesModule.LIQUEFIER, "Cryogenic Liquefier", "Kriyojenik Sıvılaştırıcı");
         name(lang, MachinesModule.PUMPJACK, "Pumpjack", "Petrol Pompası");
         name(lang, MachinesModule.REFINERY, "Refinery", "Rafineri");
+        name(lang, MachinesModule.ATMOSPHERE_PROCESSOR, "Atmosphere Processor", "Atmosfer İşlemcisi");
+        name(lang, MachinesModule.SABATIER_REACTOR, "Sabatier Reactor", "Sabatier Reaktörü");
+        name(lang, MachinesModule.REGOLITH_HEATER, "Regolith Heater", "Regolit Isıtıcı");
+        name(lang, MachinesModule.ICE_MELTER, "Ice Melter", "Buz Eritici");
+        name(lang, MachinesModule.CHEMICAL_REACTOR, "Chemical Reactor", "Kimyasal Reaktör");
+        lang.add("tooltip.spacebreaker.chemical_reactor", "One solid and two fluids in; e.g. sulfur + water + oxygen → sulfuric acid",
+                "Bir katı ve iki sıvı girer; örn. kükürt + su + oksijen → sülfürik asit");
+        lang.add("gui.spacebreaker.status.no_atmosphere", "No usable atmosphere", "Kullanılabilir atmosfer yok");
+        lang.add("tooltip.spacebreaker.atmosphere_processor", "Separates the main useful gas of the local air; needs open air above",
+                "Yerel havadaki başlıca yararlı gazı ayırır; üstü açık olmalı");
+        lang.add("tooltip.spacebreaker.sabatier_reactor", "CO₂ + H₂ → methane + water", "CO₂ + H₂ → metan + su");
+        lang.add("tooltip.spacebreaker.regolith_heater", "Molten regolith electrolysis: oxygen from rock", "Erimiş regolit elektrolizi: kayadan oksijen");
+        lang.add("tooltip.spacebreaker.ice_melter", "Ice to clean water; dry ice to carbon dioxide", "Buzdan temiz su; kuru buzdan karbondioksit");
         lang.block(MachinesModule.PART, "Machine Part", "Makine Parçası");
         lang.add("tooltip.spacebreaker.multiblock", "Needs free space around it (%s)", "Çevresinde boş alan gerekir (%s)");
         lang.block(MachinesModule.FLUID_TANK, "Fluid Tank", "Sıvı Tankı");

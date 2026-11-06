@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "spacebreaker:advanced_circuit"
+    },
+    "N": {
+      "tag": "c:plates/nickel"
+    },
+    "P": {
+      "item": "spacebreaker:gas_pipe"
+    },
+    "S": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "pattern": [
+    "NPN",
+    "SCS",
+    "NPN"
+  ],
+  "result": {
+    "count": 1,
+    "id": "spacebreaker:sabatier_reactor"
+  }
+}

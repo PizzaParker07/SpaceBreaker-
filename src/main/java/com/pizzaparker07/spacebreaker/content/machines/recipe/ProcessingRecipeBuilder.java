@@ -23,12 +23,14 @@ public final class ProcessingRecipeBuilder {
     private final List<SizedIngredient> ingredients = new ArrayList<>();
     private Optional<Ingredient> tool = Optional.empty();
     private Optional<SizedFluidIngredient> fluidInput = Optional.empty();
+    private Optional<SizedFluidIngredient> fluidInput2 = Optional.empty();
     private final List<ItemStack> results = new ArrayList<>();
     private Optional<ItemStack> bonus = Optional.empty();
     private float bonusChance;
     private final List<FluidStack> fluidResults = new ArrayList<>();
     private int time = 200;
     private int energy = 20;
+    private int priority;
 
     private ProcessingRecipeBuilder(ProcessingRecipe.Kind kind) {
         this.kind = kind;
@@ -61,8 +63,13 @@ public final class ProcessingRecipeBuilder {
         return this;
     }
 
+    /** First call sets the first fluid input, a second call the second one. */
     public ProcessingRecipeBuilder fluidIn(TagKey<Fluid> tag, int amount) {
-        fluidInput = Optional.of(SizedFluidIngredient.of(tag, amount));
+        if (fluidInput.isEmpty()) {
+            fluidInput = Optional.of(SizedFluidIngredient.of(tag, amount));
+        } else {
+            fluidInput2 = Optional.of(SizedFluidIngredient.of(tag, amount));
+        }
         return this;
     }
 
@@ -96,9 +103,16 @@ public final class ProcessingRecipeBuilder {
         return this;
     }
 
+    public ProcessingRecipeBuilder priority(int priority) {
+        this.priority = priority;
+        return this;
+    }
+
     public ProcessingRecipe build() {
-        return new ProcessingRecipe(kind, List.copyOf(ingredients), tool, fluidInput, List.copyOf(results), bonus, bonusChance,
+        ProcessingRecipe r = new ProcessingRecipe(kind, List.copyOf(ingredients), tool, fluidInput, fluidInput2, List.copyOf(results), bonus, bonusChance,
                 List.copyOf(fluidResults), time, energy);
+        r.priority = priority;
+        return r;
     }
 
     public void save(RecipeOutput out, ResourceLocation id) {

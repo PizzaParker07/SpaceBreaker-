@@ -10,7 +10,11 @@ import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 /** Crew command for the rocket they ride: launch/abort, travel to a destination, emergency return. */
-public record RocketActionPayload(int entityId, int action, int arg) implements CustomPacketPayload {
+public record RocketActionPayload(int entityId, int action, int arg, String target) implements CustomPacketPayload {
+    public RocketActionPayload(int entityId, int action, int arg) {
+        this(entityId, action, arg, "");
+    }
+
     public static final int LAUNCH = 0;
     public static final int TRAVEL = 1;
     public static final int ABORT = 2;
@@ -20,6 +24,7 @@ public record RocketActionPayload(int entityId, int action, int arg) implements 
             ByteBufCodecs.VAR_INT, RocketActionPayload::entityId,
             ByteBufCodecs.VAR_INT, RocketActionPayload::action,
             ByteBufCodecs.VAR_INT, RocketActionPayload::arg,
+            ByteBufCodecs.stringUtf8(128), RocketActionPayload::target,
             RocketActionPayload::new);
 
     @Override
@@ -32,7 +37,11 @@ public record RocketActionPayload(int entityId, int action, int arg) implements 
             return;
         }
         if (player.level().getEntity(payload.entityId()) instanceof RocketEntity rocket && player.getVehicle() == rocket) {
-            rocket.handleCrewAction(player, payload.action(), payload.arg());
+            if (payload.action() == TRAVEL) {
+                rocket.handleTravel(player, payload.target());
+            } else {
+                rocket.handleCrewAction(player, payload.action(), payload.arg());
+            }
         }
     }
 }

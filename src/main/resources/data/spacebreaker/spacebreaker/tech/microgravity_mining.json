@@ -1,0 +1,13 @@
+{
+  "category": "industry",
+  "tier": 4,
+  "requires": [
+    "spacebreaker:asteroid_mining"
+  ],
+  "icon": "spacebreaker:raw_magnetite",
+  "samples": [
+    "spacebreaker:ceres",
+    "spacebreaker:vesta"
+  ],
+  "unlocks": []
+}

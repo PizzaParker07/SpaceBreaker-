@@ -6,70 +6,96 @@ import com.pizzaparker07.spacebreaker.core.astro.BodySystem;
 import com.pizzaparker07.spacebreaker.core.astro.TransferPlanner;
 import net.minecraft.core.RegistryAccess;
 
-import java.util.EnumMap;
 import java.util.Map;
 import java.util.OptionalDouble;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Δv costs from the astrophysics library ({@code core/astro}): ascent and descent with gravity and drag
- * losses, patched-conic Earth-Moon transfers, aerocapture on the way home. Values are computed once
- * from the celestial body data; routes the library cannot answer fall back to {@link SimpleTransfers}.
+ * Δv for any pair of places from the astrophysics library ({@code core/astro}):
+ * <ul>
+ *   <li>surface → own low orbit: ascent with gravity and drag losses;</li>
+ *   <li>low orbit → own surface: powered descent, or deorbit + aerobraking + parachutes where there is air;</li>
+ *   <li>low orbit → low orbit of another body: patched-conic transfer (aerocapture where the target has air);</li>
+ *   <li>low orbit → surface of another body with air: departure burn and a direct entry.</li>
+ * </ul>
+ * Results are cached; anything the library cannot answer falls back to {@link SimpleTransfers}.
  */
 public final class AstroTransferModel implements TransferModel {
-    private static final String EARTH = "spacebreaker:earth";
-    private static final String MOON = "spacebreaker:moon";
-
-    private final Map<Location, Map<Location, Double>> table = new EnumMap<>(Location.class);
-    private final Map<Location, Map<Location, Double>> times = new EnumMap<>(Location.class);
+    private final BodySystem sys;
     private final TransferModel fallback = new SimpleTransfers();
+    private final Map<String, OptionalDouble> dv = new ConcurrentHashMap<>();
+    private final Map<String, OptionalDouble> times = new ConcurrentHashMap<>();
 
     public AstroTransferModel(BodySystem sys) {
-        AstroBody earth = sys.require(EARTH);
-        AstroBody moon = sys.require(MOON);
-        put(Location.EARTH_SURFACE, Location.EARTH_ORBIT, TransferPlanner.ascent(earth));
-        put(Location.EARTH_ORBIT, Location.EARTH_SURFACE, TransferPlanner.descent(earth, true));
-        TransferPlanner.Plan out = TransferPlanner.plan(sys, EARTH, MOON, false);
-        put(Location.EARTH_ORBIT, Location.MOON_ORBIT, out.total());
-        time(Location.EARTH_ORBIT, Location.MOON_ORBIT, out.transferTime());
-        put(Location.MOON_ORBIT, Location.MOON_SURFACE, TransferPlanner.descent(moon, false));
-        put(Location.MOON_SURFACE, Location.MOON_ORBIT, TransferPlanner.ascent(moon));
-        TransferPlanner.Plan home = TransferPlanner.plan(sys, MOON, EARTH, true);
-        put(Location.MOON_ORBIT, Location.EARTH_SURFACE, home.deltaV("departure") > 0 ? home.deltaV("departure") : home.total());
-        put(Location.MOON_ORBIT, Location.EARTH_ORBIT, home.total());
-        time(Location.MOON_ORBIT, Location.EARTH_ORBIT, home.transferTime());
-        time(Location.MOON_ORBIT, Location.EARTH_SURFACE, home.transferTime());
+        this.sys = sys;
     }
 
-    private void time(Location from, Location to, double seconds) {
-        if (Double.isFinite(seconds) && seconds > 0) {
-            times.computeIfAbsent(from, k -> new EnumMap<>(Location.class)).put(to, seconds);
-        }
-    }
-
-    /** Real coast time of a transfer in seconds (planet-moon windows are always open), if known. */
-    public OptionalDouble transferSeconds(Location from, Location to) {
-        Double v = times.getOrDefault(from, Map.of()).get(to);
-        return v == null ? OptionalDouble.empty() : OptionalDouble.of(v);
-    }
-
-    private void put(Location from, Location to, double dv) {
-        if (Double.isFinite(dv) && dv >= 0) {
-            table.computeIfAbsent(from, k -> new EnumMap<>(Location.class)).put(to, dv);
-        }
+    private static String key(Location a, Location b) {
+        return a.id() + ">" + b.id();
     }
 
     @Override
     public OptionalDouble deltaV(Location from, Location to) {
-        Double v = table.getOrDefault(from, Map.of()).get(to);
-        return v != null ? OptionalDouble.of(v) : fallback.deltaV(from, to);
+        if (from.equals(to)) {
+            return OptionalDouble.empty();
+        }
+        OptionalDouble v = dv.computeIfAbsent(key(from, to), k -> compute(from, to));
+        return v.isPresent() ? v : fallback.deltaV(from, to);
     }
 
-    /** Installs the library-backed model for this world's body data (keeps the simple table if it is missing). */
+    private OptionalDouble compute(Location from, Location to) {
+        try {
+            String a = from.body().toString();
+            String b = to.body().toString();
+            if (sys.get(a).isEmpty() || sys.get(b).isEmpty()) {
+                return OptionalDouble.empty();
+            }
+            AstroBody fromBody = sys.require(a);
+            if (from.body().equals(to.body())) {
+                if (!from.orbit() && to.orbit()) {
+                    return finite(TransferPlanner.ascent(fromBody));
+                }
+                if (from.orbit() && !to.orbit()) {
+                    return finite(TransferPlanner.descent(fromBody, to.atmosphere()));
+                }
+                return OptionalDouble.empty();
+            }
+            if (!from.orbit()) {
+                return OptionalDouble.empty(); // reach orbit first
+            }
+            if (to.orbit()) {
+                TransferPlanner.Plan p = TransferPlanner.plan(sys, a, b, to.atmosphere());
+                times.put(key(from, to), finite(p.transferTime()));
+                return finite(p.total());
+            }
+            if (to.atmosphere()) {
+                TransferPlanner.Plan p = TransferPlanner.plan(sys, a, b, true);
+                times.put(key(from, to), finite(p.transferTime()));
+                double departure = p.deltaV("departure");
+                return finite(departure > 0 ? departure : p.total());
+            }
+            return OptionalDouble.empty();
+        } catch (RuntimeException e) {
+            return OptionalDouble.empty();
+        }
+    }
+
+    private static OptionalDouble finite(double v) {
+        return Double.isFinite(v) && v >= 0 ? OptionalDouble.of(v) : OptionalDouble.empty();
+    }
+
+    /** Real coast time of a transfer in seconds, if known. */
+    public OptionalDouble transferSeconds(Location from, Location to) {
+        deltaV(from, to);
+        return times.getOrDefault(key(from, to), OptionalDouble.empty());
+    }
+
+    /** Installs the places and the library-backed model for this world's body data. */
     public static void install(RegistryAccess access) {
+        Locations.install(access);
         try {
             BodySystem sys = BodyAdapter.system(access).orElse(null);
-            Transfers.setModel(sys != null && sys.get(EARTH).isPresent() && sys.get(MOON).isPresent()
-                    ? new AstroTransferModel(sys) : new SimpleTransfers());
+            Transfers.setModel(sys != null && sys.get("spacebreaker:earth").isPresent() ? new AstroTransferModel(sys) : new SimpleTransfers());
         } catch (RuntimeException e) {
             Transfers.setModel(new SimpleTransfers());
         }

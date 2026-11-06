@@ -159,7 +159,7 @@ def steel_panel(x, y, w, h):
 # ----------------------------------------------------------------------------------- helmet
 
 def eva_helmet() -> Canvas:
-    cv = Canvas(64, 64)
+    cv = Canvas(128, 64)
     def hard(x, y, w, h):
         """Hard composite shell: brighter and smoother than fabric."""
         t = y / max(1, h - 1)
@@ -264,7 +264,7 @@ def _is_back_column(face, x, w):
 # ----------------------------------------------------------------------------------- torso
 
 def eva_torso() -> Canvas:
-    cv = Canvas(64, 64)
+    cv = Canvas(128, 64)
 
     # upper torso (hard upper torso, 8x12x4 texels stretched over the vanilla armour volume)
     chest_fabric = fabric(21, 6)
@@ -387,7 +387,7 @@ def eva_torso() -> Canvas:
 # ----------------------------------------------------------------------------------- legs
 
 def eva_legs() -> Canvas:
-    cv = Canvas(64, 32)
+    cv = Canvas(128, 32)
     hips = fabric(31, 6)
     box(cv, LEGS['hips'], sides=hips, top=solid(W[6]), bottom=solid(W[4]))
     box(cv, LEGS['waist'], sides=ring_side, top=ring_flat, bottom=solid(A[2]))
@@ -410,7 +410,7 @@ def eva_legs() -> Canvas:
 # ----------------------------------------------------------------------------------- boots
 
 def eva_boots(magnetic=False) -> Canvas:
-    cv = Canvas(64, 32)
+    cv = Canvas(128, 32)
 
     def upper(x, y, w, h):
         if magnetic and y == h - 1:
@@ -703,25 +703,262 @@ def _icon(rows, pal) -> Canvas:
 OUTLINE = {'o': (45, 45, 45), 'k': (25, 25, 25)}
 
 
-def icon_helmet() -> Canvas:
-    return _icon(ICON_HELMET, OUTLINE | {'H': W[7], 'W': W[6], 'w': W[4], 'g': W[4], 'v': V[1], 'r': V[6], 'R': V[6],
-                                         'B': A[5], 'b': A[5], 'L': L[3]})
+# ===================================================================================== suit tiers
+# Every tier reuses the Mk1 painters with its own material ramp (module globals W and A are swapped while a
+# sheet is drawn), then gets its tier-only parts painted on top. Accent colours (bearing rings, patches) are
+# drawn with a sentinel ramp and split into a grey "_accent" sheet that the game tints with the dye colour.
+from sbtex.core import ramp as _ramp
+
+WHITE = P.SUIT_WHITE
+BLUE = P.ANODIZED_BLUE
+SILVER = _ramp('#3f4247', '#53575d', '#6a6e75', '#82878e', '#9a9fa6', '#b0b4ba', '#c4c8cd', '#d8dbdf')
+ORANGE = _ramp('#4a1f0a', '#6e2f0f', '#924015', '#b5521c', '#d06626', '#e47c36', '#f1974f', '#f8b46f')
+LEAD = _ramp('#1e2124', '#2b2f33', '#3a3e44', '#4a4f56', '#5c626a', '#70767e', '#868c94', '#9ea4ab')
+HAZARD = _ramp('#4a3606', '#6e520a', '#93700f', '#b58e17', '#d2aa22', '#e6c235', '#f2d65a', '#fae896')
+DARK_STEEL = _ramp('#121418', '#1b1e23', '#262a30', '#31363d', '#3d434b', '#4b525b', '#5c636d', '#6f7781')
+GOLD_ANOD = _ramp('#3d2a08', '#5e420d', '#7f5a12', '#a07318', '#c08d22', '#d8a636', '#e8c055', '#f4d888')
+SENT = [(255, 0, 32 * i) for i in range(8)]
+GREY = [(g, g, g) for g in (60, 80, 105, 135, 170, 215, 245, 255)]
+
+TIER_RAMPS = {  # primary, accent (default dye colour ramp)
+    'eva': (WHITE, BLUE),
+    'thermal': (SILVER, GOLD_ANOD),
+    'heated': (ORANGE, DARK_STEEL),
+    'radiation': (LEAD, HAZARD),
+}
 
 
-def icon_torso() -> Canvas:
-    return _icon(ICON_TORSO, OUTLINE | {'H': W[7], 'W': W[6], 'w': W[4], 'g': W[4], 'B': A[5], 'b': A[5],
-                                        's': S[5], 'S': S[5], 'd': S[2], 'Y': G[5]})
+def _with_ramps(primary, accent, fn, *args):
+    global W, A
+    old = W, A
+    W, A = primary, accent
+    try:
+        return fn(*args)
+    finally:
+        W, A = old
 
 
-def icon_legs() -> Canvas:
-    return _icon(ICON_LEGS, OUTLINE | {'H': W[7], 'W': W[6], 'w': W[4], 'g': W[2], 'B': A[5], 'b': A[3]})
+def _split_accent(cv, accent_ramp):
+    """Sentinel pixels -> grey accent sheet; in the base sheet they get the tier's default accent colour."""
+    acc = Canvas(cv.w, cv.h)
+    lookup = {c: i for i, c in enumerate(SENT)}
+    for y in range(cv.h):
+        for x in range(cv.w):
+            c = cv.p[x, y]
+            if c[3] and c[:3] in lookup:
+                k = lookup[c[:3]]
+                acc[x, y] = GREY[k]
+                cv[x, y] = accent_ramp[k]
+    return cv, acc
 
 
-def icon_boots(magnetic=False) -> Canvas:
-    pal = OUTLINE | {'H': W[7], 'W': W[6], 'w': W[4], 'g': W[2], 'B': A[5], 'b': A[3], 's': R[4]}
-    if magnetic:
-        pal |= {'s': CU[4], 'g': S[4], 'w': S[6], 'W': S[7], 'H': W[6]}
-    return _icon(ICON_BOOTS, pal)
+def _flat(r, tl=7, mid=6, br=4):
+    """Plate face lit from the top-left: light top row and left column, dark bottom/right edge."""
+    def fn(x, y, w, h):
+        if (y == 0 or x == 0) and not (y == h - 1 and h > 1):
+            return r[tl]
+        if (y == h - 1 and h > 1) or (x == w - 1 and w > 1):
+            return r[br]
+        return r[mid]
+    return fn
+
+
+def _ribbed(r, period=2):
+    """Radiator / louvre face: alternating fins."""
+    def fn(x, y, w, h):
+        if y == 0 or x == 0:
+            return r[7]
+        if x == w - 1 or y == h - 1:
+            return r[3]
+        return r[6] if y % period == 0 else r[4]
+    return fn
+
+
+def _quilted(r):
+    """Padded insulation: soft horizontal baffles (like a down jacket), lit from the top-left."""
+    def fn(x, y, w, h):
+        if y % 3 == 2:
+            return r[4]                      # stitched seam between baffles
+        if y % 3 == 0:
+            return r[6] if x > 0 else r[7]   # puffed top of a baffle catches the light
+        return r[5]
+    return fn
+
+
+def helmet_extras(cv, tier):
+    if tier == 'thermal':
+        box(cv, (64, 28, 10, 1, 2), top=_flat(SILVER), north=_flat(G, 7, 6, 4), sides=_flat(SILVER, 6, 5, 3), bottom=solid(G[3]))
+    elif tier == 'heated':
+        box(cv, (64, 0, 12, 2, 12), sides=_quilted(ORANGE), top=_quilted(ORANGE), bottom=solid(ORANGE[2]))
+        box(cv, (64, 14, 4, 1, 4), top=lambda x, y, w, h: S[6] if (x + y) % 2 else S[4], sides=solid(S[4]), bottom=solid(S[2]))
+    elif tier == 'radiation':
+        plate = _flat(HAZARD, 6, 5, 3)
+        box(cv, (64, 20, 10, 2, 1), all=plate, bottom=solid(HAZARD[2]))
+        box(cv, (64, 24, 10, 2, 1), all=plate, top=solid(HAZARD[3]))
+        for u in (88, 104):
+            box(cv, (u, 20, 1, 4, 6), all=_flat(LEAD, 6, 5, 3))
+        box(cv, (64, 30, 2, 2, 8), sides=_ribbed(HAZARD), top=_flat(HAZARD), bottom=solid(HAZARD[2]))
+
+
+def torso_extras(cv, tier):
+    if tier == 'thermal':
+        for u in (64, 76):
+            box(cv, (u, 0, 5, 8, 1), north=_ribbed(G), south=_ribbed(G), sides=solid(G[3]), top=solid(G[6]), bottom=solid(G[2]))
+    elif tier == 'heated':
+        def pack(x, y, w, h):
+            if y == 1 and 1 <= x <= 4:
+                return (255, 150, 60) if x % 2 else (220, 110, 40)   # heater status bars
+            return _flat(DARK_STEEL, 6, 5, 3)(x, y, w, h)
+        box(cv, (64, 24, 6, 3, 1), north=pack, sides=solid(DARK_STEEL[4]), top=solid(DARK_STEEL[6]), bottom=solid(DARK_STEEL[2]))
+        box(cv, (64, 16, 4, 3, 4), sides=_quilted(ORANGE), top=_quilted(ORANGE), bottom=solid(ORANGE[3]))
+    elif tier == 'radiation':
+        def abdomen(x, y, w, h):
+            if y in (1, 2) and x in (1, w - 2):
+                return HAZARD[2]                                  # bolts
+            return _flat(HAZARD, 6, 5, 3)(x, y, w, h)
+        box(cv, (64, 40, 8, 4, 1), north=abdomen, sides=solid(HAZARD[3]), top=solid(HAZARD[6]), bottom=solid(HAZARD[2]))
+
+        def shield(x, y, w, h):
+            if x in (0, w - 1) or y in (0, h - 1):
+                return LEAD[6] if (x == 0 or y == 0) else LEAD[2]
+            if (x + y) % 4 == 0 and 2 <= y <= h - 3:
+                return HAZARD[5]                                  # hazard chevrons
+            return LEAD[4]
+        box(cv, (88, 32, 10, 12, 1), south=shield, north=solid(LEAD[3]), sides=solid(LEAD[3]), top=solid(LEAD[5]), bottom=solid(LEAD[2]))
+        box(cv, (64, 32, 6, 2, 6), sides=_flat(HAZARD, 6, 5, 3), top=_flat(HAZARD), bottom=solid(HAZARD[2]))
+
+
+def legs_extras(cv, tier):
+    if tier == 'thermal':
+        box(cv, (64, 0, 4, 2, 1), all=_flat(G, 7, 5, 3))
+    elif tier == 'heated':
+        box(cv, (64, 4, 4, 5, 4), sides=_quilted(ORANGE), top=solid(ORANGE[5]), bottom=solid(ORANGE[3]))
+    elif tier == 'radiation':
+        box(cv, (64, 16, 4, 5, 1), north=_flat(HAZARD, 6, 5, 3), sides=solid(HAZARD[3]), top=solid(HAZARD[6]), bottom=solid(HAZARD[2]))
+
+
+def boots_extras(cv, tier):
+    if tier == 'heated':
+        box(cv, (64, 0, 6, 2, 6), sides=_quilted(ORANGE), top=solid(ORANGE[6]), bottom=solid(ORANGE[3]))
+    elif tier == 'radiation':
+        box(cv, (64, 8, 6, 4, 1), north=_flat(HAZARD, 6, 5, 3), sides=solid(HAZARD[3]), top=solid(HAZARD[6]), bottom=solid(HAZARD[2]))
+
+
+def tier_sheets(tier):
+    """{texture name: (base, accent)} for the four armour sheets of a tier."""
+    primary, accent = TIER_RAMPS[tier]
+    out = {}
+    for piece, fn, extras in (('helmet', eva_helmet, helmet_extras), ('torso', eva_torso, torso_extras),
+                              ('legs', eva_legs, legs_extras), ('boots', eva_boots, boots_extras)):
+        cv = _with_ramps(primary, SENT, fn)
+        extras(cv, tier)
+        out[f'{tier}_{piece}'] = _split_accent(cv, accent)
+    if tier == 'eva':
+        cv = _with_ramps(primary, SENT, eva_boots, True)
+        out['magnetic_boots'] = _split_accent(cv, accent)
+    return out
+
+
+# ------------------------------------------------------------------- tier icons (base + grey accent layer)
+
+ICON_HELMET_RAD = [r.replace('v', 'P') if i in (6, 9, 10) else r for i, r in enumerate(ICON_HELMET)]
+
+
+def tier_icons(tier):
+    primary, accent = TIER_RAMPS[tier]
+    pal = OUTLINE | {'H': primary[7], 'W': primary[6], 'w': primary[4], 'g': primary[4], 'B': SENT[5], 'b': SENT[5],
+                     'v': V[1], 'r': V[6], 'R': V[6], 'L': L[3], 's': S[5], 'S': S[5], 'd': S[2], 'Y': G[5]}
+    if tier == 'thermal':
+        pal |= {'v': G[5], 'r': G[7], 'R': G[7], 'Y': G[6], 'd': G[3], 's': G[5], 'S': G[5]}
+    elif tier == 'heated':
+        pal |= {'s': DARK_STEEL[5], 'S': DARK_STEEL[5], 'd': (240, 130, 50), 'Y': DARK_STEEL[6]}
+    elif tier == 'radiation':
+        pal |= {'P': HAZARD[5], 's': HAZARD[5], 'S': HAZARD[5], 'd': HAZARD[2], 'Y': HAZARD[6]}
+    boots = pal | {'s': R[4] if tier != 'radiation' else HAZARD[4]}
+    icons = {
+        f'{tier}_helmet': _icon(ICON_HELMET_RAD if tier == 'radiation' else ICON_HELMET, pal),
+        f'{tier}_chestplate': _icon(ICON_TORSO, pal),
+        f'{tier}_leggings': _icon(ICON_LEGS, pal),
+        f'{tier}_boots': _icon(ICON_BOOTS, boots),
+    }
+    if tier == 'eva':
+        mag = boots | {'s': CU[4], 'g': S[4], 'w': S[6], 'W': S[7], 'H': primary[6]}
+        icons['magnetic_boots'] = _icon(ICON_BOOTS, mag)
+    return {k: _split_accent(v, accent) for k, v in icons.items()}
+
+
+# ------------------------------------------------------------------- upgrade items
+
+ICON_TEMPLATE = [
+    "................",
+    "...oooooooooo...",
+    "..oHWWWWWWWWwo..",
+    "..oWaaaaaaaawo..",
+    "..oWa......awo..",
+    "..oWa.oooo.awo..",
+    "..oWa.oHWo.awo..",
+    "..oWa.oWwo.awo..",
+    "..oWa.oooo.awo..",
+    "..oWa......awo..",
+    "..oWaaaaaaaawo..",
+    "..oWWWWWWWWWwo..",
+    "..owwwwwwwwwwo..",
+    "...oooooooooo...",
+    "................",
+    "................",
+]
+
+ICON_MODULE = [
+    "................",
+    "................",
+    "...oooooooooo...",
+    "..oHWWWWWWWWwo..",
+    "..oWccccccccwo..",
+    "..oWcXXXXXXcwo..",
+    "..oWcXYYYYXcwo..",
+    "..oWcXYZZYXcwo..",
+    "..oWcXYZZYXcwo..",
+    "..oWcXYYYYXcwo..",
+    "..oWcXXXXXXcwo..",
+    "..oWccccccccwo..",
+    "..owwwwwwwwwwo..",
+    "...oPoPoPoPoo...",
+    "................",
+    "................",
+]
+
+
+def icon_template():
+    # vanilla smithing templates are dark slabs with an engraved motif; ours carries a helmet outline
+    return _icon(ICON_TEMPLATE, {'o': (30, 32, 36), 'H': S[6], 'W': S[4], 'w': S[2], 'a': A[5]})
+
+
+def icon_module(core):
+    # a circuit module: steel body, dark board, coloured core telling the function, gold pins
+    pal = {'o': (30, 32, 36), 'H': S[7], 'W': S[5], 'w': S[3], 'c': S[2], 'X': (40, 70, 50), 'P': G[5]}
+    pal |= core
+    return _icon(ICON_MODULE, pal)
+
+
+MODULE_CORES = {
+    'thermal_regulator_module': {'Y': (230, 140, 40), 'Z': (255, 200, 90)},
+    'radiation_shield_module': {'Y': HAZARD[4], 'Z': (40, 40, 40)},
+    'extra_oxygen_module': {'Y': C[4], 'Z': C[6]},
+    'jetpack_booster_module': {'Y': (200, 80, 60), 'Z': (250, 220, 120)},
+}
+
+
+def export_tiers(save):
+    for tier in TIER_RAMPS:
+        for name, (base, acc) in tier_sheets(tier).items():
+            save(base, 'models/armor', name)
+            save(acc, 'models/armor', name + '_accent')
+        for name, (base, acc) in tier_icons(tier).items():
+            save(base, 'item', name)
+            save(acc, 'item', name + '_accent')
+    save(icon_template(), 'item', 'suit_upgrade_template')
+    for name, core in MODULE_CORES.items():
+        save(icon_module(core), 'item', name)
 
 
 # ===================================================================================== HUD icons
@@ -815,18 +1052,9 @@ def export(save):
     export_blocks(save)
     save(icon_small_tank(), 'item', 'oxygen_tank')
     save(oxygen_tank_model(), 'item', 'oxygen_tank_model')
-    save(icon_helmet(), 'item', 'eva_helmet')
-    save(icon_torso(), 'item', 'eva_chestplate')
-    save(icon_legs(), 'item', 'eva_leggings')
-    save(icon_boots(), 'item', 'eva_boots')
-    save(icon_boots(True), 'item', 'magnetic_boots')
     save(icon_large_tank(), 'item', 'large_oxygen_tank')
     save(icon_mmu(), 'item', 'maneuvering_unit')
-    save(eva_helmet(), 'models/armor', 'eva_helmet')
-    save(eva_torso(), 'models/armor', 'eva_torso')
-    save(eva_legs(), 'models/armor', 'eva_legs')
-    save(eva_boots(), 'models/armor', 'eva_boots')
-    save(eva_boots(True), 'models/armor', 'magnetic_boots')
+    export_tiers(save)
     save(eva_suit_overlay(), 'models/armor', 'eva_suit_overlay')
 
 

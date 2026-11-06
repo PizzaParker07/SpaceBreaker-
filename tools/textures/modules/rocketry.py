@@ -923,21 +923,16 @@ def crew_arm_rail():
 
 def fuel_umbilical_front():
     cv = block_noise(211, STEEL, 2, 4)
-    for x, c in ((4, BRASS_), (10, ALU)):
-        pass
     # two quick-disconnect couplings: RP-1 (amber ring) and LOX (cyan ring)
     for cx, ring_ in ((5, P.BRASS), (10, P.OXYGEN_CYAN)):
         for y in range(6, 10):
             for x in range(cx - 2, cx + 2):
                 edge = y in (6, 9) or x in (cx - 2, cx + 1)
-                cv[x, y] = ring_[5] if edge and (x == cx - 2 or y == 6) else (ring_[3] if edge else RUBBER[1])
+                cv[x, y] = ring_[4] if edge else RUBBER[1]
     for x in range(16):
         cv[x, 0] = STEEL[6]
         cv[x, 15] = STEEL[1]
     return cv
-
-
-BRASS_ = P.BRASS
 
 
 def fuel_umbilical_hose():
@@ -964,12 +959,14 @@ def console_body():
 
 def console_top():
     cv = console_body()
+    keycap = cv[8, 9]  # body steel, so the keys cost no extra colour
     # keyboard and two big buttons on the desk
     for y in range(3, 8):
         for x in range(2, 14):
-            cv[x, y] = CARBON[3] if (x + y) % 2 else CARBON[4]
-    cv[4, 11], cv[5, 11], cv[4, 12], cv[5, 12] = RED[4], RED[5], RED[3], RED[4]
-    cv[10, 11], cv[11, 11], cv[10, 12], cv[11, 12] = SCREEN[4], SCREEN[5], SCREEN[3], SCREEN[4]
+            key = y in (4, 6) and x % 2 == 1 and 2 < x < 13
+            cv[x, y] = keycap if key else CARBON[4]
+    cv[4, 11], cv[5, 11], cv[4, 12], cv[5, 12] = RED[4], RED[4], RED[4], RED[4]
+    cv[10, 11], cv[11, 11], cv[10, 12], cv[11, 12] = SCREEN[4], SCREEN[4], SCREEN[4], SCREEN[4]
     return cv
 
 
@@ -1016,14 +1013,11 @@ def assembler_top():
           [(5, 10), (10, 10), (5, 11), (10, 11), (4, 12), (11, 12), (6, 12), (9, 12)]
     for x, y in pts:
         cv[x, y] = BLUEPRINT[5]
-    cv[7, 7], cv[8, 7] = BLUEPRINT[4], BLUEPRINT[4]
     for i in range(16):
         cv[i, 0] = STEEL[6]
         cv[0, i] = STEEL[6]
         cv[i, 15] = STEEL[2]
         cv[15, i] = STEEL[2]
-    for x in range(11, 14):
-        cv[x, 13] = HAZARD[3]          # ruler
     return cv
 
 
@@ -1471,10 +1465,46 @@ def gui_console():
     return cv
 
 
+def _merge_cost(pq, counts):
+    a, b = pq
+    d = sum((u - v) ** 2 for u, v in zip(a, b))
+    # accents (saturated colours such as lights and port rings) are kept unless their own shades meet
+    accent = max(a[:3]) - min(a[:3]) > 70 or max(b[:3]) - min(b[:3]) > 70
+    return d * (40 if accent else min(counts[a], counts[b]) ** 0.5)
+
+
+def limit_colours(cv, n=6):
+    """Merge the two closest colours (the rarer into the commoner) until at most n remain (STYLE.md colour
+    budget), weighted by how rare the rarer one is, so stray shades collapse first and small accents such as lights keep their colour."""
+    counts = {}
+    for y in range(cv.h):
+        for x in range(cv.w):
+            c = cv[x, y]
+            if c[3] > 0:
+                counts[c] = counts.get(c, 0) + 1
+    remap = {}
+    while len(counts) > n:
+        cs = list(counts)
+        a, b = min(((p, q) for i, p in enumerate(cs) for q in cs[i + 1:]),
+                   key=lambda pq: _merge_cost(pq, counts))
+        rare, near = (a, b) if counts[a] <= counts[b] else (b, a)
+        counts[near] += counts.pop(rare)
+        remap[rare] = near
+        for k, v in list(remap.items()):
+            if v == rare:
+                remap[k] = near
+    for y in range(cv.h):
+        for x in range(cv.w):
+            c = cv[x, y]
+            if c in remap:
+                cv[x, y] = remap[c]
+    return cv
+
+
 def export_facility(save):
     blk = (100, 30, 0, None)
-    save(launch_pad_top(), 'block', 'launch_pad_top', blk)
-    save(launch_pad_side(), 'block', 'launch_pad_side', blk)
+    save(limit_colours(launch_pad_top()), 'block', 'launch_pad_top', blk)
+    save(limit_colours(launch_pad_side()), 'block', 'launch_pad_side', blk)
     save(flame_trench_top(), 'block', 'flame_trench_top', (140, 230, 0, None))
     save(flame_trench_side(), 'block', 'flame_trench_side', (140, 230, 0, None))
     save(service_tower(), 'block', 'service_tower', (90, 30, 0, None), wrap=False)
@@ -1482,16 +1512,16 @@ def export_facility(save):
     save(tower_steel(), 'block', 'tower_steel', (140, 230, 0, None))
     save(crew_arm_walkway(), 'block', 'crew_arm_walkway', (140, 230, 0, None))
     save(crew_arm_rail(), 'block', 'crew_arm_rail', (90, 30, 0, None))
-    save(fuel_umbilical_front(), 'block', 'fuel_umbilical_front', (140, 230, 0, None), wrap=False)
+    save(limit_colours(fuel_umbilical_front()), 'block', 'fuel_umbilical_front', (140, 230, 0, None), wrap=False)
     save(fuel_umbilical_hose(), 'block', 'fuel_umbilical_hose', (60, 20, 0, None))
     screen_rule = lambda c: (200, 20, 0, 200) if c[1] > c[0] + 20 and c[1] > 40 else None
     save(console_body(), 'block', 'console_body', (150, 232, 0, None), wrap=False)
-    save(console_top(), 'block', 'console_top', (150, 232, 0, screen_rule), wrap=False)
+    save(limit_colours(console_top()), 'block', 'console_top', (150, 232, 0, screen_rule), wrap=False)
     save(console_screen(), 'block', 'console_screen', (200, 20, 0, screen_rule), wrap=False)
-    save(console_panel(), 'block', 'console_panel', (150, 232, 0, None), wrap=False)
-    save(assembler_top(), 'block', 'rocket_assembler_top', (80, 20, 0, None), wrap=False)
+    save(limit_colours(console_panel()), 'block', 'console_panel', (150, 232, 0, None), wrap=False)
+    save(limit_colours(assembler_top()), 'block', 'rocket_assembler_top', (80, 20, 0, None), wrap=False)
     save(assembler_side(), 'block', 'rocket_assembler_side', (140, 230, 0, None), wrap=False)
-    save(assembler_front(), 'block', 'rocket_assembler_front', (140, 230, 0, None), wrap=False)
+    save(limit_colours(assembler_front()), 'block', 'rocket_assembler_front', (140, 230, 0, None), wrap=False)
     save(parachute_canopy(), 'block/rocket', 'parachute_canopy')
     save(propellant_cartridge(), 'item', 'propellant_cartridge')
     save(emergency_beacon(), 'item', 'emergency_beacon')
@@ -1512,3 +1542,84 @@ _export_parts = export
 def export(save):  # noqa: F811
     _export_parts(save)
     export_facility(save)
+
+
+# =========================================================================== other worlds seen from orbit
+
+ROCK_RAMP = ramp('#2e2b29', '#3f3b38', '#524d49', '#66605b', '#7a736d', '#8f8780')
+GAS_RAMP = ramp('#5b4632', '#7a6047', '#987a5c', '#b39674', '#cbb08e', '#ddc8a8', '#ece0c6')
+ICE_RAMP = ramp('#2c4f6b', '#3b6584', '#4d7c9c', '#6293b2', '#7aa9c4', '#97bfd4', '#b8d6e4')
+
+
+def cratered(w, h, r, seed, maria=(), craters=70, caps=None):
+    """Generic rocky world map: mottled ground, darker plains, bright-rimmed craters, optional polar caps."""
+    cv = Canvas(w, h)
+    n = smooth_noise(w, h, seed, 16)
+    f = smooth_noise(w, h, seed + 1, 3)
+    rng = random.Random(seed + 2)
+    cr = [(rng.uniform(-180, 180), rng.uniform(-75, 75), rng.uniform(1.5, 8)) for _ in range(craters)]
+    top = len(r) - 1
+    for y in range(h):
+        lat = 90 - (y + 0.5) / h * 180
+        for x in range(w):
+            lon = (x + 0.5) / w * 360 - 180
+            v = 2 + n[y][x] * (top - 2) + (f[y][x] - 0.5) * 1.2
+            for (cl, ct), rl, rt in maria:
+                if ((lon - cl) / rl) ** 2 + ((lat - ct) / rt) ** 2 < 1 + (n[y][x] - 0.5) * 0.8:
+                    v -= 1.6
+            for cl, ct, rad in cr:
+                dd = math.hypot((lon - cl) * math.cos(math.radians(lat)), lat - ct)
+                if dd < rad:
+                    v = 1.2 if dd < rad * 0.72 else top - 0.4
+            c = r[int(max(0, min(top, round(v))))]
+            if caps and abs(lat) > caps - n[y][x] * 6:
+                c = ICE[1 if f[y][x] > 0.5 else 2]
+            cv[x, y] = c
+    return cv
+
+
+def generic_rock_map(w=512, h=256):
+    return cratered(w, h, ROCK_RAMP, 431, craters=90)
+
+
+def banded_map(r, seed):
+    def fn(w=512, h=256):
+        cv = Canvas(w, h)
+        n = smooth_noise(w, h, seed, 24)
+        f = smooth_noise(w, h, seed + 1, 4)
+        for y in range(h):
+            lat = 90 - (y + 0.5) / h * 180
+            for x in range(w):
+                v = 3 + math.sin(math.radians(lat * 7 + n[y][x] * 40)) * 2 + (f[y][x] - 0.5)
+                cv[x, y] = r[int(max(0, min(len(r) - 1, round(v))))]
+        return cv
+    return fn
+
+
+def limb_tex(rgb):
+    cv = Canvas(16, 16)
+    for y in range(16):
+        for x in range(16):
+            cv[x, y] = (*rgb, 255)
+    return cv
+
+
+def export_worlds(save):
+    worlds = {
+        # Mars, Venus and Mercury maps (orbit_<name>.png, <name>_disc.png) belong to the inner planets area
+        'generic_rock': generic_rock_map, 'generic_gas': banded_map(GAS_RAMP, 441), 'generic_ice': banded_map(ICE_RAMP, 451),
+    }
+    for name, fn in worlds.items():
+        save(fn(), 'environment', 'orbit_' + name)
+        save(disc(fn, 512, 256), 'environment', 'orbit_' + name + '_disc')
+    save(limb_tex((230, 150, 110)), 'environment', 'orbit_mars_limb')
+    save(limb_tex((250, 225, 160)), 'environment', 'orbit_venus_limb')
+    save(limb_tex((170, 200, 230)), 'environment', 'orbit_generic_limb')
+
+
+_export_with_facility = export
+
+
+def export(save):  # noqa: F811
+    _export_with_facility(save)
+    export_worlds(save)

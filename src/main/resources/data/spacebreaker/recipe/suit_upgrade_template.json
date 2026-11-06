@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SIS",
+    "IcI",
+    "SIS"
+  ],
+  "key": {
+    "S": {
+      "item": "spacebreaker:silicone_seal"
+    },
+    "I": {
+      "tag": "c:plates/titanium"
+    },
+    "c": {
+      "item": "spacebreaker:basic_circuit"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:suit_upgrade_template",
+    "count": 2
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "type": "spacebreaker:regolith_processing",
+  "bonus": {
+    "count": 1,
+    "id": "spacebreaker:iron_dust"
+  },
+  "bonus_chance": 0.2,
+  "energy": 120,
+  "fluid_results": [
+    {
+      "amount": 250,
+      "id": "spacebreaker:oxygen"
+    }
+  ],
+  "ingredients": [
+    {
+      "count": 1,
+      "tag": "c:regoliths"
+    }
+  ],
+  "time": 160
+}

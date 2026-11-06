@@ -1,0 +1,13 @@
+{
+  "structure": "spacebreaker:ceres_mining_outpost",
+  "world": "spacebreaker:ceres",
+  "guardians": [
+    { "entity": "spacebreaker:rock_mite", "count": 3 }
+  ],
+  "guardian_radius": 10,
+  "loot_tables": [
+    "spacebreaker:dungeons/ceres/outpost_office",
+    "spacebreaker:dungeons/ceres/outpost_stores",
+    "spacebreaker:dungeons/ceres/outpost_core_store"
+  ]
+}

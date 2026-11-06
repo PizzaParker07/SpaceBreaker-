@@ -236,6 +236,20 @@ entry('fabricator', 'machines', 5, SB + 'fabricator', 'Fabricator', 'Parça Üre
        'Hassas parçalar için enerjiyle çalışan tezgâh: devreler, motorlar, güneş hücreleri, yalıtım ve kalkan levhaları. '
        'Tarifleri, tarif gösterici modlarda "Parça üretimi" başlığı altında görünür.'))
 
+entry('isru', 'machines', 6, SB + 'sabatier_reactor', 'Living off the Land (ISRU)', 'Yerinde Üretim (ISRU)',
+      ('items', [SB + 'atmosphere_processor', SB + 'sabatier_reactor', SB + 'regolith_heater', SB + 'ice_melter'], '', ''),
+      ('text', 'Every kilogram launched from Earth is expensive, so make what you can where you land. The atmosphere processor '
+               'pulls the main useful gas out of the local air (carbon dioxide on Mars) and needs open sky above it. The ice '
+               'melter turns ice into clean water and dry ice into carbon dioxide.',
+       'Dünya\'dan fırlatılan her kilogram pahalıdır; bu yüzden indiğin yerde yapabildiğini yap. Atmosfer işlemcisi yerel '
+       'havanın ana yararlı gazını (Mars\'ta karbondioksit) ayırır ve üstünde açık gökyüzü ister. Buz eritici buzdan temiz su, '
+       'kuru buzdan karbondioksit elde eder.'),
+      ('text', 'The Sabatier reactor combines carbon dioxide with hydrogen into methane and water: rocket fuel made on Mars. The '
+               'regolith heater melts rock and splits it with electricity to free oxygen, even on the airless Moon.',
+       'Sabatier reaktörü karbondioksiti hidrojenle birleştirip metan ve su yapar: Mars\'ta üretilen roket yakıtı. Regolit '
+       'ısıtıcı kayayı eritir ve elektrikle ayrıştırarak oksijen açığa çıkarır; havasız Ay\'da bile.'),
+      requires=SB + 'electrolysis')
+
 # ------------------------------------------------------------------------------------------- survival (more)
 entry('eva_suit', 'survival', 2, SB + 'eva_chestplate', 'EVA Suit', 'EVA Giysisi',
       ('items', [SB + 'eva_helmet', SB + 'eva_chestplate', SB + 'eva_leggings', SB + 'eva_boots'], '', ''),
@@ -343,6 +357,22 @@ entry('moon_dungeons', 'dungeons', 1, SB + 'survey_drone_spawn_egg', 'Ruins on t
       ('text', 'Their labs and probes keep tech disks for the next steps: life support, construction and the Moon itself.',
        'Laboratuvarları ve sondaları sonraki adımlar için teknoloji diskleri saklar: yaşam desteği, inşaat ve Ay\'ın kendisi.'),
       requires=SB + 'basic_rocketry')
+
+# ------------------------------------------------------------------------------------------- Mars
+entry('mars_ruins', 'dungeons', 2, SB + 'martian_basalt_bricks', 'Ruins on Mars and its Moons', 'Mars ve Uydularındaki Harabeler',
+      ('text', 'An abandoned research station with a greenhouse, an ISRU plant and a drilling rig; an ancient buried riverbed with '
+               'a fallen probe; a crashed sample-return probe on Phobos and an ice cache on Deimos. Their tech disks teach methane '
+               'engines, the Sabatier process and Martian geology.',
+       'Serası, ISRU tesisi ve sondaj kulesi olan terk edilmiş bir araştırma istasyonu; düşmüş bir sondanın bulunduğu antik gömülü '
+       'bir nehir yatağı; Phobos\'ta düşmüş bir numune dönüş sondası ve Deimos\'ta bir buz deposu. Teknoloji diskleri metan '
+       'motorlarını, Sabatier sürecini ve Mars jeolojisini öğretir.'),
+      requires=SB + 'interplanetary_transfers')
+
+# ------------------------------------------------------------------------------------------- inner planets
+import inner_planets  # noqa: E402
+
+CHAPTERS.extend(inner_planets.CHAPTERS)
+inner_planets.register(entry, SB)
 
 
 def page_json(p, lang):

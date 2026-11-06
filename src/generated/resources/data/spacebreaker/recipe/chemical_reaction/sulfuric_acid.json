@@ -1,0 +1,25 @@
+{
+  "type": "spacebreaker:chemical_reaction",
+  "energy": 60,
+  "fluid_input": {
+    "amount": 250,
+    "tag": "c:water"
+  },
+  "fluid_input_2": {
+    "amount": 750,
+    "tag": "c:oxygen"
+  },
+  "fluid_results": [
+    {
+      "amount": 250,
+      "id": "spacebreaker:sulfuric_acid"
+    }
+  ],
+  "ingredients": [
+    {
+      "count": 1,
+      "tag": "c:dusts/sulfur"
+    }
+  ],
+  "time": 100
+}

@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "spacebreaker:block/sulfur_sand",
+    "up": "spacebreaker:block/sulfur_sand_footprint_left",
+    "down": "spacebreaker:block/sulfur_sand",
+    "north": "spacebreaker:block/sulfur_sand",
+    "south": "spacebreaker:block/sulfur_sand",
+    "east": "spacebreaker:block/sulfur_sand",
+    "west": "spacebreaker:block/sulfur_sand"
+  }
+}

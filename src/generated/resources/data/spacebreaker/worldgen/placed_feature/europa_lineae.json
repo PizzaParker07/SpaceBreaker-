@@ -1,0 +1,8 @@
+{
+  "feature": "spacebreaker:europa_lineae",
+  "placement": [
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

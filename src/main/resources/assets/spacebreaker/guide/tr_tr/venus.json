@@ -1,0 +1,33 @@
+{
+  "chapter": "venus",
+  "title": "Venüs",
+  "icon": "spacebreaker:venus_basalt",
+  "order": 0,
+  "requires_tech": "spacebreaker:interplanetary_transfers",
+  "pages": [
+    {
+      "items": [
+        "spacebreaker:venus_basalt",
+        "spacebreaker:venus_soil",
+        "spacebreaker:tessera_rock",
+        "spacebreaker:sulfur_crust",
+        "spacebreaker:metal_frost"
+      ]
+    },
+    {
+      "text": "Yüzey bir fırındır: 464 derece ve Dünya'nın 92 katı hava basıncı, loş turuncu bir gökyüzünün altında. Henüz yapabildiğin hiçbir şey orada uzun süre dayanamaz."
+    },
+    {
+      "text": "Araziye yukarıdan bak: kıvrımlı tesseralar, geniş kalkan volkanları ve sıcak havadan kar gibi yoğunlaşan metalle kırağılanmış yaylalar."
+    },
+    {
+      "heading": "Bulutlara doğru"
+    },
+    {
+      "text": "Bulut katmanına tırman; hava, bulut tepelerinin yakınında neredeyse bir bar ve oda sıcaklığına inene kadar soğur ve incelir: Dünya'dan sonra güneş sisteminin en dost yeri. Ama bulutlar sülfürik asittir."
+    },
+    {
+      "text": "Venüs ters yönde ve çok yavaş döner: güneş batıdan doğar ve bir gün aylarca sürer."
+    }
+  ]
+}

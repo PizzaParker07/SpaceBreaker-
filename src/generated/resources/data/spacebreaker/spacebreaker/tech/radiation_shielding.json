@@ -5,5 +5,10 @@
     "spacebreaker:suit_mk2",
     "spacebreaker:nuclear_fission"
   ],
+  "samples": [
+    "spacebreaker:io",
+    "spacebreaker:europa",
+    "spacebreaker:ganymede"
+  ],
   "tier": 3
 }

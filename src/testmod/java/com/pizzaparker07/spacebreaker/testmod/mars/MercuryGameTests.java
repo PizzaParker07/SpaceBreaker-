@@ -113,6 +113,18 @@ public final class MercuryGameTests {
         helper.succeed();
     }
 
+    /** The hollow snail is Mercury's harmless, useful creature: on a hollow deposit it leaves sulfur behind. */
+    @GameTest(template = WorldTests.EMPTY, timeoutTicks = 120)
+    public static void hollowSnailGrazesSulfur(GameTestHelper helper) {
+        BlockPos floor = new BlockPos(1, 1, 1);
+        helper.setBlock(floor, com.pizzaparker07.spacebreaker.content.mercury.MercuryModule.HOLLOW_DEPOSIT.get());
+        var snail = helper.spawn(com.pizzaparker07.spacebreaker.content.mercury.MercuryEntities.HOLLOW_SNAIL.get(), floor.above());
+        snail.setNoAi(true);
+        helper.assertFalse(snail instanceof net.minecraft.world.entity.monster.Enemy, "the snail is no monster");
+        snail.grazeSoon();
+        helper.succeedWhen(() -> helper.assertItemEntityPresent(com.pizzaparker07.spacebreaker.content.venus.VenusModule.SULFUR.get(), floor.above(), 2.0));
+    }
+
     private MercuryGameTests() {
     }
 }

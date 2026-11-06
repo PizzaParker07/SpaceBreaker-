@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "spacebreaker:callistan_rock"
+  },
+  "result": {
+    "count": 2,
+    "id": "spacebreaker:callistan_rock_slab"
+  }
+}

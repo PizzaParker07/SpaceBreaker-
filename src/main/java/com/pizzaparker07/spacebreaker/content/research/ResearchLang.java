@@ -31,6 +31,20 @@ final class ResearchLang {
         l.add("sample.spacebreaker.mars", "Mars", "Mars");
         l.add("sample.spacebreaker.venus", "Venus", "Venüs");
         l.add("sample.spacebreaker.sun", "Sun", "Güneş");
+        l.add("sample.spacebreaker.mercury", "Mercury", "Merkür");
+        l.add("sample.spacebreaker.phobos", "Phobos", "Phobos");
+        l.add("sample.spacebreaker.deimos", "Deimos", "Deimos");
+        l.add("sample.spacebreaker.ceres", "Ceres", "Ceres");
+        l.add("sample.spacebreaker.vesta", "Vesta", "Vesta");
+        l.add("sample.spacebreaker.io", "Io", "Io");
+        l.add("sample.spacebreaker.europa", "Europa", "Europa");
+        l.add("sample.spacebreaker.ganymede", "Ganymede", "Ganymede");
+        l.add("sample.spacebreaker.callisto", "Callisto", "Kallisto");
+        l.add("sample.spacebreaker.titan", "Titan", "Titan");
+        l.add("sample.spacebreaker.enceladus", "Enceladus", "Enceladus");
+        l.add("sample.spacebreaker.triton", "Triton", "Triton");
+        l.add("sample.spacebreaker.pluto", "Pluto", "Plüton");
+        l.add("sample.spacebreaker.charon", "Charon", "Charon");
         l.add("sample.spacebreaker.meteorite", "Meteorite", "Göktaşı");
         l.add("sample.spacebreaker.suborbital_flight", "Suborbital Flight", "Yörünge Altı Uçuş");
         l.add("sample.spacebreaker.orbital_flight", "Orbital Flight", "Yörünge Uçuşu");
@@ -88,6 +102,9 @@ final class ResearchLang {
         l.add("guide.spacebreaker.chapter.survival", "Space Survival", "Uzayda Hayatta Kalma");
         l.add("guide.spacebreaker.chapter.rocketry", "Rocketry", "Roketçilik");
         l.add("guide.spacebreaker.chapter.moon", "The Moon", "Ay");
+        l.add("guide.spacebreaker.chapter.mars", "Mars", "Mars");
+        l.add("guide.spacebreaker.chapter.venus", "Venus", "Venüs");
+        l.add("guide.spacebreaker.chapter.mercury", "Mercury", "Merkür");
         l.add("guide.spacebreaker.chapter.physics", "Flight Physics", "Uçuş Fiziği");
         // messages
         l.add("message.spacebreaker.tech_learned", "You learned a new technology: %s", "Yeni bir teknoloji öğrendin: %s");

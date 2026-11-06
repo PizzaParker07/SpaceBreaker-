@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "TPT",
+    "PXP",
+    "TPT"
+  ],
+  "key": {
+    "T": {
+      "tag": "c:plates/tungsten"
+    },
+    "P": {
+      "item": "spacebreaker:plastic_sheet"
+    },
+    "X": {
+      "item": "spacebreaker:eva_chestplate"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:radiation_chestplate",
+    "count": 1
+  }
+}

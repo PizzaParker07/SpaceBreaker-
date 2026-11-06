@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_europan_ice_bricks": {
+      "conditions": {
+        "items": [
+          {
+            "items": "spacebreaker:europan_ice_bricks"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "spacebreaker:europan_ice_brick_stairs_from_europan_ice_bricks_stonecutting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_europan_ice_bricks"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "spacebreaker:europan_ice_brick_stairs_from_europan_ice_bricks_stonecutting"
+    ]
+  }
+}

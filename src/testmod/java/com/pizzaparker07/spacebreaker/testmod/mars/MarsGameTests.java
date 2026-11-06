@@ -111,6 +111,21 @@ public final class MarsGameTests {
         PlanetTerrain.Column cap = t.column(100, -p * 0.98);
         helper.assertTrue(cap.cap > 5, "ice cap near the north pole, got " + cap.cap);
         helper.assertTrue(t.column(100, -p * 0.5).cap == 0, "no cap at mid latitudes");
+        // layered deposits: dust bands at irregular spacing
+        java.util.Set<Integer> gaps = new java.util.HashSet<>();
+        int bands = 0;
+        int last = Integer.MIN_VALUE;
+        for (int y = 60; y < 120; y++) {
+            if (com.pizzaparker07.spacebreaker.content.worldgen.PlanetChunkGenerator.dustyLayer(y)) {
+                bands++;
+                if (last != Integer.MIN_VALUE) {
+                    gaps.add(y - last);
+                }
+                last = y;
+            }
+        }
+        helper.assertTrue(bands >= 8 && bands <= 30, "dust bands in 60 blocks of ice: " + bands);
+        helper.assertTrue(gaps.size() >= 3, "irregular band spacing: " + gaps);
         WorldTests.dumpMap(t, "mars_origin", 0, 0, 6000, 600);
         WorldTests.dumpMap(t, "mars_volcano", v[0], v[1], v[2] * 3, 400);
         WorldTests.dumpMap(t, "mars_caldera", v[0], v[1], 400, 400);
@@ -150,6 +165,29 @@ public final class MarsGameTests {
         }
         helper.assertTrue(DryIceBlock.SUBLIMATION_C < -20, "dry ice sublimates in warm places");
         helper.assertTrue(DryIceBlock.warm(helper.getLevel(), helper.absolutePos(BlockPos.ZERO)), "Earth is warm enough to sublimate dry ice");
+        helper.succeed();
+    }
+
+    /** Lava tubes: natural shelters several blocks under the plains, reachable through collapsed skylights. */
+    @GameTest(template = WorldTests.EMPTY)
+    public static void lavaTubesAreShelteredTunnels(GameTestHelper helper) {
+        helper.assertTrue(helper.getLevel().registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.STRUCTURE)
+                .containsKey(com.pizzaparker07.spacebreaker.content.mars.dungeon.MarsStructures.LAVA_TUBE_KEY), "lava tube structure");
+        var path = com.pizzaparker07.spacebreaker.content.mars.dungeon.LavaTubeStructure.walk(42L, 0, 0, (x, z) -> 100 + (x + z) / 40);
+        var tube = new com.pizzaparker07.spacebreaker.content.mars.dungeon.LavaTubePiece(42L, path);
+        int skylights = 0;
+        for (int i = 0; i < tube.nodeCount(); i++) {
+            int[] n = path.get(i);
+            int roof = n[3] - (int) Math.ceil(n[1] + com.pizzaparker07.spacebreaker.content.mars.dungeon.LavaTubePiece.HALF_HEIGHT);
+            helper.assertTrue(roof >= 5, "roof too thin at node " + i + ": " + roof);
+            if (i > 0) {
+                helper.assertTrue(Math.abs(n[1] - path.get(i - 1)[1]) <= 1, "the tube floor runs smoothly");
+            }
+            skylights += com.pizzaparker07.spacebreaker.content.mars.dungeon.LavaTubePiece.skylight(i) ? 1 : 0;
+        }
+        helper.assertTrue(skylights >= 2, "skylights to get in: " + skylights);
+        // every solid block overhead halves the dose (Environment.radiation): 5+ blocks of roof cut it below 1/32
+        helper.assertTrue(Math.pow(0.5, 5) < 0.04, "a roof of 5+ blocks is a real radiation shelter");
         helper.succeed();
     }
 

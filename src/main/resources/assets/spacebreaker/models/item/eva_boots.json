@@ -1,6 +1,7 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "spacebreaker:item/eva_boots"
+    "layer0": "spacebreaker:item/eva_boots",
+    "layer1": "spacebreaker:item/eva_boots_accent"
   }
 }

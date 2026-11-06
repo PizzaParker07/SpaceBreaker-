@@ -1,0 +1,18 @@
+{
+  "category": "life_support",
+  "tier": 3,
+  "requires": [
+    "spacebreaker:radiation_shielding"
+  ],
+  "icon": "spacebreaker:radiation_helmet",
+  "samples": [
+    "spacebreaker:europa",
+    "spacebreaker:io"
+  ],
+  "unlocks": [
+    "spacebreaker:radiation_helmet",
+    "spacebreaker:radiation_chestplate",
+    "spacebreaker:radiation_leggings",
+    "spacebreaker:radiation_boots"
+  ]
+}

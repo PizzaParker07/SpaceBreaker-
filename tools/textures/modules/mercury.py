@@ -132,6 +132,47 @@ def crawler_eyes():
     return cv
 
 
+SNAIL_BODY = ramp('#3e3a37', '#524c47', '#665f58', '#7a726a', '#8e857c')
+
+
+def snail():
+    """Hollow Snail: grey, finely wrinkled foot and head; a pale blue-white shell banded like the hollow crust."""
+    cv = Canvas(64, 32)
+    n = clustered(64, 32, 7601, passes=1)
+
+    def foot(face, x, y, fw, fh):
+        if face == 'bottom':
+            return SNAIL_BODY[0]
+        if face == 'top':
+            return noise_pick(SNAIL_BODY, 3 if x in (1, fw - 2) else 2, n, x, y)
+        return noise_pick(SNAIL_BODY, 2 if y == 0 else 1, n, x + 20, y + 4)
+
+    paint(cv, 0, 0, 5, 2, 11, foot)
+
+    def shell(face, x, y, fw, fh):
+        if face == 'bottom':
+            return SNAIL_BODY[1]
+        if face == 'top':
+            ring = max(abs(x - 3), abs(y - 3))
+            return HOLLOW[5 - ring] if ring < 3 else HOLLOW[2]
+        # growth bands down the sides, lit at the rim
+        if y == 0:
+            return HOLLOW[5]
+        return HOLLOW[4] if y % 2 else HOLLOW[2 if (x + y) % 5 else 1]
+
+    paint(cv, 0, 14, 7, 6, 7, shell)
+    paint(cv, 30, 14, 4, 2, 4, lambda f, x, y, fw, fh: HOLLOW[5] if f == 'top' else HOLLOW[3])
+
+    def head(face, x, y, fw, fh):
+        if face == 'front' and y == fh - 1:
+            return SNAIL_BODY[0]  # rasping mouth
+        return noise_pick(SNAIL_BODY, 3 if face == 'top' else 2, n, x + 40, y + 10)
+
+    paint(cv, 34, 0, 3, 3, 2, head)
+    paint(cv, 46, 0, 1, 3, 1, lambda f, x, y, fw, fh: GRAPHITE[0] if y == 0 else SNAIL_BODY[2])
+    return cv
+
+
 def export(save):
     dust_spec = (18, 8, 64, None)
     for name, fn, r in (('mercury_regolith', mercury_regolith, REGOLITH), ('hollow_deposit', hollow_deposit, HOLLOW)):
@@ -148,3 +189,4 @@ def export(save):
     save(graphite_item(), 'item', 'graphite')
     save(crawler(), 'entity', 'mercury/terminator_crawler')
     save(crawler_eyes(), 'entity', 'mercury/terminator_crawler_eyes')
+    save(snail(), 'entity', 'mercury/hollow_snail')

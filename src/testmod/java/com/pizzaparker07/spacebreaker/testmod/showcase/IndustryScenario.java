@@ -37,10 +37,11 @@ final class IndustryScenario implements ShowcaseScenario {
 
     @Override
     public void build(ServerLevel level) {
-        clear(level, -14, -8, 44, 22);
+        clear(level, -34, -8, 44, 22);
         machineHall(level);
         oilField(level);
         oreGallery(level);
+        isruBay(level);
     }
 
     static void clear(ServerLevel level, int x0, int z0, int x1, int z1) {
@@ -196,6 +197,82 @@ final class IndustryScenario implements ShowcaseScenario {
         }
     }
 
+    static final int ISRU_X = -26;
+
+    /** A Mars-style fuel plant: ice and dry ice in, liquid methane and LOX out; regolith heater and air processor beside it. */
+    private static void isruBay(ServerLevel level) {
+        BlockState floor = net.minecraft.core.registries.BuiltInRegistries.BLOCK
+                .getOptional(com.pizzaparker07.spacebreaker.Spacebreaker.id("martian_regolith")).map(Block::defaultBlockState)
+                .orElse(Blocks.RED_SAND.defaultBlockState());
+        for (int x = ISRU_X - 5; x <= ISRU_X + 11; x++) {
+            for (int z = -3; z <= 8; z++) {
+                set(level, x, F, z, floor);
+            }
+        }
+        int x0 = ISRU_X;
+        place(level, MachinesModule.ICE_MELTER, x0 + 1, 0, be -> be.items().setStackInSlot(0, new ItemStack(Items.ICE, 64)));
+        place(level, MachinesModule.ICE_MELTER, x0 + 2, 0, be -> be.items().setStackInSlot(0, new ItemStack(
+                net.minecraft.core.registries.BuiltInRegistries.ITEM.getOptional(com.pizzaparker07.spacebreaker.Spacebreaker.id("dry_ice")).orElse(Items.SNOWBALL), 64)));
+        place(level, MachinesModule.ELECTROLYZER, x0 + 1, 1, be -> { });
+        place(level, MachinesModule.SABATIER_REACTOR, x0 + 2, 1, be -> { });
+        place(level, MachinesModule.LIQUEFIER, x0, 1, be -> { });
+        place(level, MachinesModule.LIQUEFIER, x0 + 3, 1, be -> { });
+        set(level, x0 + 3, F + 1, 2, MachinesModule.CRYOGENIC_TANK.get().defaultBlockState());
+        set(level, x0, F + 1, 2, MachinesModule.CRYOGENIC_TANK.get().defaultBlockState());
+        place(level, MachinesModule.REGOLITH_HEATER, x0 + 5, 1, be -> be.items().setStackInSlot(0, new ItemStack(floor.getBlock().asItem(), 64)));
+        place(level, MachinesModule.ATMOSPHERE_PROCESSOR, x0 + 6, 1, be -> { });
+        set(level, x0 + 5, F + 1, 2, MachinesModule.PRESSURIZED_TANK.get().defaultBlockState());
+        set(level, x0 + 6, F + 1, 2, MachinesModule.PRESSURIZED_TANK.get().defaultBlockState());
+        for (int x = x0 - 3; x <= x0 - 1; x++) {
+            set(level, x, F + 1, 5, MachinesModule.SOLAR_PANEL.get().defaultBlockState());
+        }
+        // display row facing the camera, all running
+        List<MachineEntry<?, ?>> show = List.of(MachinesModule.ATMOSPHERE_PROCESSOR, MachinesModule.SABATIER_REACTOR,
+                MachinesModule.REGOLITH_HEATER, MachinesModule.ICE_MELTER, MachinesModule.CHEMICAL_REACTOR);
+        for (int i = 0; i < show.size(); i++) {
+            BlockPos pos = new BlockPos(x0 + 1 + i * 2, F + 1, 6);
+            level.setBlock(pos, show.get(i).block().get().defaultBlockState().setValue(MachineBlock.FACING, Direction.SOUTH), Block.UPDATE_ALL);
+            if (level.getBlockEntity(pos) instanceof MachineBlockEntity be) {
+                be.energy().generate(be.energy().getMaxEnergyStored());
+                switch (i) {
+                    case 1 -> {
+                        be.fluidCapability(null).fill(FluidsModule.HYDROGEN.stack(8_000), IFluidHandler.FluidAction.EXECUTE);
+                        be.fluidCapability(null).fill(FluidsModule.CARBON_DIOXIDE.stack(8_000), IFluidHandler.FluidAction.EXECUTE);
+                    }
+                    case 2 -> be.items().setStackInSlot(0, new ItemStack(floor.getBlock().asItem(), 64));
+                    case 3 -> be.items().setStackInSlot(0, new ItemStack(Items.PACKED_ICE, 64));
+                    default -> { }
+                }
+            }
+        }
+    }
+
+    /** Keeps the ISRU bay running between photos (software rendering is slow, the machines are hungry). */
+    private static void rechargeIsru(ServerPlayer player) {
+        for (int x = ISRU_X - 1; x <= ISRU_X + 10; x++) {
+            for (int z = 0; z <= 6; z++) {
+                if (player.level().getBlockEntity(new BlockPos(x, F + 1, z)) instanceof MachineBlockEntity be) {
+                    be.energy().generate(be.energy().getMaxEnergyStored());
+                    if (z == 6 && be.getBlockState().is(MachinesModule.SABATIER_REACTOR.block().get())) {
+                        be.fluidCapability(null).fill(FluidsModule.HYDROGEN.stack(8_000), IFluidHandler.FluidAction.EXECUTE);
+                        be.fluidCapability(null).fill(FluidsModule.CARBON_DIOXIDE.stack(8_000), IFluidHandler.FluidAction.EXECUTE);
+                        be.tank(2).setFluid(net.neoforged.neoforge.fluids.FluidStack.EMPTY);
+                        be.tank(3).setFluid(net.neoforged.neoforge.fluids.FluidStack.EMPTY);
+                    }
+                }
+            }
+        }
+    }
+
+    private static void place(ServerLevel level, MachineEntry<?, ?> m, int x, int z, Consumer<MachineBlockEntity> c) {
+        BlockPos pos = new BlockPos(x, F + 1, z);
+        level.setBlock(pos, m.block().get().defaultBlockState().setValue(MachineBlock.FACING, Direction.NORTH), Block.UPDATE_ALL);
+        if (level.getBlockEntity(pos) instanceof MachineBlockEntity be) {
+            be.energy().generate(be.energy().getMaxEnergyStored());
+            c.accept(be);
+        }
+    }
+
     private static void oreGallery(ServerLevel level) {
         int x0 = GALLERY_X, z0 = 0;
         // a cave-like room: stone above, deepslate below, ores set into the back wall
@@ -247,6 +324,13 @@ final class IndustryScenario implements ShowcaseScenario {
     public List<Shot> shots() {
         List<Shot> s = new ArrayList<>();
         CameraType fp = CameraType.FIRST_PERSON;
+        s.add(new Shot("12_isru_bay", 6000, ISRU_X + 3.5, G + 3.2, -5.5, 0F, 24F, true, fp, 400, IndustryScenario::rechargeIsru, null));
+        s.add(new Shot("13_isru_close", 6000, ISRU_X + 2.0, G + 1.9, -1.9, 10F, 18F, true, fp, 60, IndustryScenario::rechargeIsru, null));
+        s.add(new Shot("13b_isru_row", 6000, ISRU_X + 5.5, G + 2.2, 11.6, 180F, 14F, true, fp, 80, IndustryScenario::rechargeIsru, null));
+        s.add(new Shot("13c_isru_row_night", 18000, ISRU_X + 5.5, G + 2.2, 11.6, 180F, 14F, true, fp, 40, IndustryScenario::rechargeIsru, null));
+        s.add(new Shot("14_isru_night", 18000, ISRU_X + 3.5, G + 2.6, -4.0, 0F, 20F, true, fp, 60, IndustryScenario::rechargeIsru, null));
+        s.add(new Shot("15_gui_sabatier", 6000, ISRU_X + 2.5, G + 1.62, -1.0, 0F, 30F, false, fp, 40,
+                p -> openAt(p, new BlockPos(ISRU_X + 2, F + 1, 1)), null));
         s.add(new Shot("01_hall_wide", 6000, -1.0, G + 4.0, 11.5, 180F, 22F, true, fp, 200, null, null));
         s.add(new Shot("02_hall_left", 6000, -5.5, G + 1.9, 3.3, 180F, 14F, true, fp, 60, null, null));
         s.add(new Shot("03_hall_right", 6000, 3.5, G + 1.9, 3.3, 180F, 14F, true, fp, 60, null, null));

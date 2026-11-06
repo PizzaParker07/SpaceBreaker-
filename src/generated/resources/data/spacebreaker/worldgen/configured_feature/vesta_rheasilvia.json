@@ -1,0 +1,13 @@
+{
+  "type": "spacebreaker:impact_basin",
+  "config": {
+    "peak": 84.0,
+    "peak_radius": 0.22,
+    "radius": 1000.0,
+    "rim": 18.0,
+    "rock": {
+      "Name": "spacebreaker:diogenite"
+    },
+    "wall": 0.16
+  }
+}

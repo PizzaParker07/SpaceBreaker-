@@ -49,6 +49,9 @@ public final class FluidsModule implements SbModule {
     public static final TagKey<Fluid> TAG_OXYGEN = SbTagKeys.commonFluid("oxygen");
     public static final TagKey<Fluid> TAG_HYDROGEN = SbTagKeys.commonFluid("hydrogen");
     public static final TagKey<Fluid> TAG_METHANE = SbTagKeys.commonFluid("methane");
+    public static final TagKey<Fluid> TAG_CO2 = SbTagKeys.commonFluid("carbon_dioxide");
+    public static final TagKey<Fluid> TAG_SULFURIC_ACID = SbTagKeys.commonFluid("sulfuric_acid");
+    public static final TagKey<Fluid> TAG_HELIUM_3 = SbTagKeys.commonFluid("helium_3");
 
     //                                       name, en, tr, kind, tint, kelvin, density, viscosity, tags
     public static final SbFluid CRUDE_OIL = new SbFluid("crude_oil", "Crude Oil", "Ham Petrol", SbFluid.Kind.LIQUID,
@@ -68,7 +71,18 @@ public final class FluidsModule implements SbModule {
     public static final SbFluid METHANE = new SbFluid("methane", "Methane", "Metan", SbFluid.Kind.GAS,
             0x80E6E0C8, 293, -5, 12, List.of(TAG_METHANE));
 
-    public static final List<SbFluid> ALL = List.of(CRUDE_OIL, RP1, LIQUID_OXYGEN, LIQUID_HYDROGEN, LIQUID_METHANE, OXYGEN, HYDROGEN, METHANE);
+    public static final SbFluid CARBON_DIOXIDE = new SbFluid("carbon_dioxide", "Carbon Dioxide", "Karbondioksit", SbFluid.Kind.GAS,
+            0x80D8D2C8, 293, -2, 15, List.of(TAG_CO2));
+
+    /** Venus cloud droplets; a dense, oily, faintly yellow liquid (no world block: it stays in tanks and pipes). */
+    public static final SbFluid SULFURIC_ACID = new SbFluid("sulfuric_acid", "Sulfuric Acid", "Sülfürik Asit", SbFluid.Kind.PROCESS,
+            0xC8E8DC8C, 293, 1830, 2400, List.of(TAG_SULFURIC_ACID));
+    /** Solar-wind helium implanted in Mercury and Moon regolith. */
+    public static final SbFluid HELIUM_3 = new SbFluid("helium_3", "Helium-3", "Helyum-3", SbFluid.Kind.GAS,
+            0x80F0E6FF, 293, -12, 8, List.of(TAG_HELIUM_3));
+
+    public static final List<SbFluid> ALL = List.of(CRUDE_OIL, RP1, LIQUID_OXYGEN, LIQUID_HYDROGEN, LIQUID_METHANE, OXYGEN, HYDROGEN, METHANE,
+            CARBON_DIOXIDE, SULFURIC_ACID, HELIUM_3);
 
     public static final DeferredItem<CryogenicCanisterItem> CANISTER = ITEMS.registerItem("cryogenic_canister", CryogenicCanisterItem::new);
 
