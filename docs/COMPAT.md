@@ -21,6 +21,8 @@ Per world with Complementary (vanilla reference shots live in each area's screen
 | Mars | thin | own butterscotch sky, blue sunset; dust storm haze (`iris_mars_11_dust_storm` vs `vanilla_mars_11_dust_storm`), a little brighter than vanilla |
 | Venus | thick | dark ground, dense orange haze, whiteout in the clouds, cloud sea above (`venus_vanilla_bug_fixed.jpg`: vanilla / before / after) |
 | Titan | thick | orange haze and dim light from the generic haze pass, no Titan code (`iris_titan_*` vs `vanilla_titan_01_dunes`); ground a little warmer than vanilla, the small methane drizzle particles are hard to see under the pack |
+| Pluto, Charon | airless | black sky, Charon/Pluto in the sky, Pluto's blue haze layers (drawn by its sky, so the sky pass carries them) (`iris_pluto_*`, `vanilla_pluto_05_blue_haze`); ground a little cooler than vanilla |
+| Triton | airless | Neptune with its terminator, nitrogen geysers (`iris_triton_*`) |
 | Enceladus | airless | black sky with Saturn and its rings, crescent phase (`iris_enceladus_*`): same as vanilla |
 | Europa, Io (and Ganymede, Callisto) | airless | black sky, stars, the huge Jupiter with its terminator, Io's plumes (`iris_europa_01_jupiter`, `iris_io_02_sulfur_plume`); as dark as vanilla where Jupiter's night side faces the ground |
 | Phobos, Deimos | airless | classified and handled like the Moon; no separate shader screenshots yet |
@@ -78,9 +80,10 @@ Full-screen effects and HUDs stay in the GUI layer (drawn on top of the pack's f
 [shaders]
 spaceSky = "AUTO"        # AUTO | ALWAYS | OFF
 hidePackClouds = true
+atmosphereHaze = true    # haze/tint/dawn pass (two full-screen draws); off on slow GPUs
 ```
-`AUTO` replaces the pack's sky in space worlds unless an LOD mod (Distant Horizons, Voxy) is installed; `ALWAYS`
-does it anyway; `OFF` leaves the pack alone.
+`AUTO` replaces the pack's sky in space worlds; with Distant Horizons it also tests DH's depth texture, with Voxy
+(no depth API) it stays off. `ALWAYS` does it anyway; `OFF` leaves the pack alone.
 
 ## 2b. Holograms and previews: `compat/client/GhostBlocks`
 
@@ -109,16 +112,19 @@ Complementary the tint is weaker (the pack re-lights translucent entities) but t
   out of a glass window into space shows the pack's sky colour behind the glass.
 - **Pack bloom/lens flare** around the pack's own sun can bleed a little onto terrain silhouettes; the Sun disc
   itself is ours.
-- **Distant Horizons / Voxy:** their far terrain lives in its own depth buffer (`dhDepthTex` / Voxy's), not in
-  Minecraft's. Both of our passes decide "sky or scene" from Minecraft's depth, so LOD terrain would count as sky.
-  - `spaceSky = AUTO` (default): when `distanthorizons` or `voxy` is installed, the sky replacement, the haze/light
-    pass and the dawn balance are all off in every world; the pack's own (Overworld) sky and lighting are shown,
-    as before this layer existed. The pack-cloud, pack-ambient and weather fixes stay on.
-  - `ALWAYS`: everything on; LOD terrain beyond the normal render distance is painted over by our sky.
-  - `OFF`: like AUTO with LOD mods, in every setup.
-  - Not tested in a client here (no LOD mod was installed); the behaviour follows from `Compat.lodModInstalled()`
-    in `ShaderSkyPass.active()`, which `HazePass` also checks. Reading the LOD depth texture would allow full support
-    later.
+- **Distant Horizons / Voxy:** their far terrain lives in its own depth buffer, not in Minecraft's.
+  - Distant Horizons: `LodDepth` reads DH's depth texture through DH's public API (`DhApi.Delayed.renderProxy
+    .getDhDepthTextureId()`, the same texture Iris attaches to its DH framebuffers) and its far value; the sky
+    composite (core shader `compat_sky_composite`) keeps pixels where DH drew terrain, and the haze pass treats them
+    as beyond the render distance (fully hazed on Venus/Titan). With that, `AUTO` stays on with DH.
+  - Tested with DH 3.3.3 + Iris + Complementary before the DH depth support: `AUTO` then switched our passes off and
+    the Moon showed the pack's blue Overworld sky (`dh_auto_moon_before_lod_support`); `ALWAYS` gave the right sky
+    (`dh_always_moon`). **The DH depth support itself is not verified with LOD terrain on screen**: running the DH jar
+    in this test environment was not permitted afterwards. To verify: put DH in `run-mods/`, run
+    `-Pscenario=lod -PwithCompat=true` (6-chunk view, 90 s for LODs to build, Moon and Venus) and check that LOD
+    terrain beyond 6 chunks stays visible under the black sky and is hazed on Venus. If DH's texture cannot be read,
+    `AUTO` falls back to off as before.
+  - Voxy: no depth API; `AUTO` keeps the passes off, `ALWAYS` paints over its terrain.
 - **Sun direction vs. shadows:** packs cast shadows from vanilla's sun path (plus their own `sunPathRotation`); our
   drawn Sun also tilts with the observer's latitude. Near the poles the two differ by up to the latitude.
 - Shader packs that use a different dimension mapping (custom `dimension.properties` entries for `spacebreaker:*`)
@@ -132,6 +138,30 @@ Complementary the tint is weaker (the pack re-lights translucent entities) but t
   now uses its own methane drop particle and is visible under the pack (`iris_titan_03_methane_rain`); it reads darker
   than in vanilla because Titan's dim light and haze apply to the drops too. Other areas: avoid blue-dominant vanilla
   water particles for effects that must stay visible with shaders.
+
+## 3b. Performance
+
+Measured with the `perf` scenario (`-Pscenario=perf`, Mesa llvmpipe software GL at 1920×1080 — absolute frame rates
+are far below a real GPU; the relative numbers matter) and GL timer queries (`-Dspacebreaker.compat.profile=true`).
+
+| | Moon | Mars | Titan | Europa |
+|---|---|---|---|---|
+| Server: 81 fresh chunks (ms/chunk) | 13.6 | 22.1 | 10.4 | 11.4 |
+| Client view built (vanilla / Sodium / Iris) | ≤ 1.1 s / ≤ 1.1 s / ≤ 1.1 s | same | 2.1 / 1.1 / 1.1 s | ≤ 1.1 s all |
+| Vanilla fps (llvmpipe) | 19.5 | 18.5 | 24.6 | 23.4 |
+| Sodium fps (llvmpipe) | 15.9 | 15.7 | 18.9 | 23.2 |
+| Iris + Complementary fps (llvmpipe) | 1.5–1.8 | 1.6–1.7 | 1.7–1.9 | 1.9–2.0 |
+| Sky pass GPU ms/frame (Iris) | ~7 | ~14.6 | ~7.3 | ~7.7–12 |
+| Haze pass GPU ms/frame (Iris) | – | – (no storm) | ~17–19 | – |
+
+- With Iris the frame takes ~550 ms on llvmpipe; our passes are 1–2 % (sky) and ~3 % (haze) of it. On a GPU both are
+  a full-screen draw or two: well under a millisecond.
+- Sodium is slower than vanilla on llvmpipe (it is tuned for GPUs); not a mod issue. Chunk generation is the same with
+  and without Sodium/Iris (server side), Mars being the most expensive terrain.
+- `GhostBlocks`: 16 ghost blocks ≈ 0.15–0.23 ms/frame GPU (vanilla, llvmpipe).
+- Optimisations: the duplicate sky inside the pack's world pass is skipped (`SkipPackSkyMixin`); the haze pass only
+  runs where it changes something and can be switched off (`atmosphereHaze`). Further steps if needed on real
+  hardware: half-resolution sky target, merging the two haze draws.
 
 ## 4. How to test
 
