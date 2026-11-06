@@ -1,6 +1,10 @@
 {
   "values": [
     "#c:ores/bauxite",
+    "#c:ores/rutile",
+    "#c:ores/pentlandite",
+    "#c:ores/spodumene",
+    "#c:ores/wolframite",
     "#c:ores/ilmenite",
     "#c:ores/kreep"
   ]
