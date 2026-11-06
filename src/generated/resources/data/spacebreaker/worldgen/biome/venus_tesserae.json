@@ -5,6 +5,12 @@
     "fog_color": 12159556,
     "foliage_color": 9072704,
     "grass_color": 9072704,
+    "music": {
+      "max_delay": 12000,
+      "min_delay": 3600,
+      "replace_current_music": false,
+      "sound": "spacebreaker:music.venus"
+    },
     "sky_color": 14267242,
     "water_color": 8022574,
     "water_fog_color": 3813397

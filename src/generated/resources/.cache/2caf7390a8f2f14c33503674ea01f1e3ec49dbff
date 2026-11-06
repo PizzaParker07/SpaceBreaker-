@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-06T19:17:13.866109082	Spacebreaker inner planets recipes
+// 1.21.1	2026-11-06T21:54:15.801387795	Spacebreaker inner planets recipes
 ea6a05797061b01256ddc22d4b818ba0c3c92238 data/spacebreaker/advancement/recipes/building_blocks/aerogel.json
 9b7cff5c72a5ba7dc92a04601c1af32f7d61c349 data/spacebreaker/advancement/recipes/building_blocks/composite_panel.json
 f46d66f4e27e5564e14498f719b0e24f696fe219 data/spacebreaker/advancement/recipes/building_blocks/envelope_fabric.json
@@ -38,6 +38,7 @@ d97b530d2077cf9a20cab7db2932c43d4ade4132 data/spacebreaker/advancement/recipes/m
 64a2e247ee70d61fc6de7deba4905a7cf82386b4 data/spacebreaker/advancement/recipes/misc/iron_ingot_from_raw_hematite_smelting.json
 e40575726b0ec158c002cb66f9f4aa60f30fb778 data/spacebreaker/recipe/acid_coating.json
 170de7ea8520121a6aba0d890d73704ae4637976 data/spacebreaker/recipe/aerogel.json
+91b30167686e58077dd0416a10467cde41d9747e data/spacebreaker/recipe/chemical_reaction/graphite_combustion.json
 8566862f008d8d9a756828d83c4efd684e85920b data/spacebreaker/recipe/composite_panel.json
 e877ca5735af35ecf3868fbe9c304bb81a38cd38 data/spacebreaker/recipe/crushing/dusty_ice.json
 6c5993188417929cbd93e8f4cd566b1a2c686ed3 data/spacebreaker/recipe/crushing/hollow_deposit.json

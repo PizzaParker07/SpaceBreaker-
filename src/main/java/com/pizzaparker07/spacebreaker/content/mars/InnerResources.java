@@ -16,7 +16,10 @@ import net.minecraft.world.item.Items;
  *   <li>perchlorate soil → perchlorate salt ({@code c:dusts/perchlorate}), the oxygen source of Mars;</li>
  *   <li>Martian, dusty and polar crater ice → plain ice ({@code c:ices/water}), which melts into water for the
  *       electrolyser;</li>
- *   <li>Venus's sulfur crust and Mercury's sulfide-rich hollow deposits → sulfur.</li>
+ *   <li>Venus's sulfur crust and Mercury's sulfide-rich hollow deposits → sulfur;</li>
+ *   <li>Mercury's graphite burnt in oxygen → carbon dioxide (C + O₂ → CO₂, chemical reactor). With hydrogen and oxygen
+ *       from polar crater ice this closes a methalox loop on Mercury: CO₂ + H₂ → methane (Sabatier), liquefied with
+ *       oxygen into rocket propellant, so a rocket can refuel there for the way home.</li>
  * </ul>
  */
 public final class InnerResources {
@@ -36,5 +39,9 @@ public final class InnerResources {
                 .time(80).energy(14).save(out, Spacebreaker.id("crushing/sulfur_crust"));
         ProcessingRecipeBuilder.of(MachinesModule.CRUSHING).in(MercuryModule.HOLLOW_DEPOSIT.get()).out(VenusModule.SULFUR.get())
                 .bonus(VenusModule.SULFUR.get(), 1, 0.3F).time(80).energy(14).save(out, Spacebreaker.id("crushing/hollow_deposit"));
+        ProcessingRecipeBuilder.of(MachinesModule.CHEMICAL_REACTION).in(MercuryModule.GRAPHITE.get())
+                .fluidIn(com.pizzaparker07.spacebreaker.content.fluids.FluidsModule.TAG_OXYGEN, 500)
+                .fluidOut(com.pizzaparker07.spacebreaker.content.fluids.FluidsModule.CARBON_DIOXIDE.get(), 500)
+                .time(60).energy(40).save(out, Spacebreaker.id("chemical_reaction/graphite_combustion"));
     }
 }
