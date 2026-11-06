@@ -1,0 +1,15 @@
+{
+  "type": "spacebreaker:liquefaction",
+  "energy": 100,
+  "fluid_input": {
+    "amount": 1000,
+    "tag": "c:oxygen"
+  },
+  "fluid_results": [
+    {
+      "amount": 500,
+      "id": "spacebreaker:liquid_oxygen"
+    }
+  ],
+  "time": 60
+}

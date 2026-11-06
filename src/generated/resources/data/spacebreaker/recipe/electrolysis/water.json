@@ -1,0 +1,19 @@
+{
+  "type": "spacebreaker:electrolysis",
+  "energy": 120,
+  "fluid_input": {
+    "amount": 500,
+    "tag": "c:water"
+  },
+  "fluid_results": [
+    {
+      "amount": 1000,
+      "id": "spacebreaker:hydrogen"
+    },
+    {
+      "amount": 500,
+      "id": "spacebreaker:oxygen"
+    }
+  ],
+  "time": 40
+}

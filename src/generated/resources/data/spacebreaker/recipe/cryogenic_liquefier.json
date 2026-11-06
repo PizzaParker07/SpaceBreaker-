@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "c:plates/aluminum"
+    },
+    "C": {
+      "item": "spacebreaker:advanced_circuit"
+    },
+    "F": {
+      "item": "spacebreaker:gold_foil_insulation"
+    },
+    "K": {
+      "item": "minecraft:cauldron"
+    },
+    "M": {
+      "item": "spacebreaker:electric_motor"
+    }
+  },
+  "pattern": [
+    "AFA",
+    "MKM",
+    "ACA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "spacebreaker:cryogenic_liquefier"
+  }
+}

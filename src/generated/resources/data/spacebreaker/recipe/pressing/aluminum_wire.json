@@ -1,0 +1,19 @@
+{
+  "type": "spacebreaker:pressing",
+  "ingredients": [
+    {
+      "count": 1,
+      "tag": "c:ingots/aluminum"
+    }
+  ],
+  "results": [
+    {
+      "count": 2,
+      "id": "spacebreaker:aluminum_wire"
+    }
+  ],
+  "time": 60,
+  "tool": {
+    "item": "spacebreaker:wire_press_die"
+  }
+}

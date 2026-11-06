@@ -1,0 +1,79 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "body": "spacebreaker:block/gas_pipe",
+    "end": "spacebreaker:block/gas_pipe_flange",
+    "particle": "spacebreaker:block/gas_pipe",
+    "valve": "spacebreaker:block/pipe_valve"
+  },
+  "elements": [
+    {
+      "from": [
+        4,
+        2,
+        4
+      ],
+      "to": [
+        12,
+        4,
+        12
+      ],
+      "faces": {
+        "north": {
+          "texture": "#valve",
+          "uv": [
+            4,
+            12,
+            12,
+            14
+          ]
+        },
+        "south": {
+          "texture": "#valve",
+          "uv": [
+            4,
+            12,
+            12,
+            14
+          ]
+        },
+        "east": {
+          "texture": "#valve",
+          "uv": [
+            4,
+            12,
+            12,
+            14
+          ]
+        },
+        "west": {
+          "texture": "#valve",
+          "uv": [
+            4,
+            12,
+            12,
+            14
+          ]
+        },
+        "up": {
+          "texture": "#valve",
+          "uv": [
+            4,
+            4,
+            12,
+            12
+          ]
+        },
+        "down": {
+          "texture": "#valve",
+          "uv": [
+            4,
+            4,
+            12,
+            12
+          ]
+        }
+      }
+    }
+  ]
+}

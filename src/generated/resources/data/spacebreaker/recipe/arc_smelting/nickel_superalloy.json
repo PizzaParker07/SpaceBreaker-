@@ -1,0 +1,25 @@
+{
+  "type": "spacebreaker:arc_smelting",
+  "energy": 100,
+  "ingredients": [
+    {
+      "count": 3,
+      "tag": "c:ingots/nickel"
+    },
+    {
+      "count": 1,
+      "tag": "c:ingots/titanium"
+    },
+    {
+      "count": 1,
+      "tag": "c:ingots/steel"
+    }
+  ],
+  "results": [
+    {
+      "count": 4,
+      "id": "spacebreaker:nickel_superalloy_ingot"
+    }
+  ],
+  "time": 240
+}

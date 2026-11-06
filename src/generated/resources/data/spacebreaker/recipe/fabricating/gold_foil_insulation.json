@@ -1,0 +1,21 @@
+{
+  "type": "spacebreaker:fabricating",
+  "energy": 30,
+  "ingredients": [
+    {
+      "count": 1,
+      "tag": "c:plates/gold"
+    },
+    {
+      "count": 1,
+      "tag": "c:plastics"
+    }
+  ],
+  "results": [
+    {
+      "count": 4,
+      "id": "spacebreaker:gold_foil_insulation"
+    }
+  ],
+  "time": 80
+}

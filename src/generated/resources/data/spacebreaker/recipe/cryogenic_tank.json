@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "c:plates/aluminum_lithium"
+    },
+    "F": {
+      "item": "spacebreaker:orange_foam_insulation"
+    },
+    "G": {
+      "tag": "c:glass_panes/colorless"
+    }
+  },
+  "pattern": [
+    "FAF",
+    "G G",
+    "FAF"
+  ],
+  "result": {
+    "count": 1,
+    "id": "spacebreaker:cryogenic_tank"
+  }
+}

@@ -1,0 +1,154 @@
+{
+  "variants": {
+    "charge=0,facing=north,lit=false": {
+      "model": "spacebreaker:block/battery_bank"
+    },
+    "charge=1,facing=north,lit=false": {
+      "model": "spacebreaker:block/battery_bank_1"
+    },
+    "charge=2,facing=north,lit=false": {
+      "model": "spacebreaker:block/battery_bank_2"
+    },
+    "charge=3,facing=north,lit=false": {
+      "model": "spacebreaker:block/battery_bank_3"
+    },
+    "charge=4,facing=north,lit=false": {
+      "model": "spacebreaker:block/battery_bank_4"
+    },
+    "charge=0,facing=north,lit=true": {
+      "model": "spacebreaker:block/battery_bank"
+    },
+    "charge=1,facing=north,lit=true": {
+      "model": "spacebreaker:block/battery_bank_1"
+    },
+    "charge=2,facing=north,lit=true": {
+      "model": "spacebreaker:block/battery_bank_2"
+    },
+    "charge=3,facing=north,lit=true": {
+      "model": "spacebreaker:block/battery_bank_3"
+    },
+    "charge=4,facing=north,lit=true": {
+      "model": "spacebreaker:block/battery_bank_4"
+    },
+    "charge=0,facing=east,lit=false": {
+      "model": "spacebreaker:block/battery_bank",
+      "y": 90
+    },
+    "charge=1,facing=east,lit=false": {
+      "model": "spacebreaker:block/battery_bank_1",
+      "y": 90
+    },
+    "charge=2,facing=east,lit=false": {
+      "model": "spacebreaker:block/battery_bank_2",
+      "y": 90
+    },
+    "charge=3,facing=east,lit=false": {
+      "model": "spacebreaker:block/battery_bank_3",
+      "y": 90
+    },
+    "charge=4,facing=east,lit=false": {
+      "model": "spacebreaker:block/battery_bank_4",
+      "y": 90
+    },
+    "charge=0,facing=east,lit=true": {
+      "model": "spacebreaker:block/battery_bank",
+      "y": 90
+    },
+    "charge=1,facing=east,lit=true": {
+      "model": "spacebreaker:block/battery_bank_1",
+      "y": 90
+    },
+    "charge=2,facing=east,lit=true": {
+      "model": "spacebreaker:block/battery_bank_2",
+      "y": 90
+    },
+    "charge=3,facing=east,lit=true": {
+      "model": "spacebreaker:block/battery_bank_3",
+      "y": 90
+    },
+    "charge=4,facing=east,lit=true": {
+      "model": "spacebreaker:block/battery_bank_4",
+      "y": 90
+    },
+    "charge=0,facing=south,lit=false": {
+      "model": "spacebreaker:block/battery_bank",
+      "y": 180
+    },
+    "charge=1,facing=south,lit=false": {
+      "model": "spacebreaker:block/battery_bank_1",
+      "y": 180
+    },
+    "charge=2,facing=south,lit=false": {
+      "model": "spacebreaker:block/battery_bank_2",
+      "y": 180
+    },
+    "charge=3,facing=south,lit=false": {
+      "model": "spacebreaker:block/battery_bank_3",
+      "y": 180
+    },
+    "charge=4,facing=south,lit=false": {
+      "model": "spacebreaker:block/battery_bank_4",
+      "y": 180
+    },
+    "charge=0,facing=south,lit=true": {
+      "model": "spacebreaker:block/battery_bank",
+      "y": 180
+    },
+    "charge=1,facing=south,lit=true": {
+      "model": "spacebreaker:block/battery_bank_1",
+      "y": 180
+    },
+    "charge=2,facing=south,lit=true": {
+      "model": "spacebreaker:block/battery_bank_2",
+      "y": 180
+    },
+    "charge=3,facing=south,lit=true": {
+      "model": "spacebreaker:block/battery_bank_3",
+      "y": 180
+    },
+    "charge=4,facing=south,lit=true": {
+      "model": "spacebreaker:block/battery_bank_4",
+      "y": 180
+    },
+    "charge=0,facing=west,lit=false": {
+      "model": "spacebreaker:block/battery_bank",
+      "y": 270
+    },
+    "charge=1,facing=west,lit=false": {
+      "model": "spacebreaker:block/battery_bank_1",
+      "y": 270
+    },
+    "charge=2,facing=west,lit=false": {
+      "model": "spacebreaker:block/battery_bank_2",
+      "y": 270
+    },
+    "charge=3,facing=west,lit=false": {
+      "model": "spacebreaker:block/battery_bank_3",
+      "y": 270
+    },
+    "charge=4,facing=west,lit=false": {
+      "model": "spacebreaker:block/battery_bank_4",
+      "y": 270
+    },
+    "charge=0,facing=west,lit=true": {
+      "model": "spacebreaker:block/battery_bank",
+      "y": 270
+    },
+    "charge=1,facing=west,lit=true": {
+      "model": "spacebreaker:block/battery_bank_1",
+      "y": 270
+    },
+    "charge=2,facing=west,lit=true": {
+      "model": "spacebreaker:block/battery_bank_2",
+      "y": 270
+    },
+    "charge=3,facing=west,lit=true": {
+      "model": "spacebreaker:block/battery_bank_3",
+      "y": 270
+    },
+    "charge=4,facing=west,lit=true": {
+      "model": "spacebreaker:block/battery_bank_4",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "tag": "c:storage_blocks/steel"
+    },
+    "C": {
+      "item": "spacebreaker:basic_circuit"
+    },
+    "M": {
+      "item": "spacebreaker:electric_motor"
+    },
+    "P": {
+      "item": "spacebreaker:fluid_pipe"
+    },
+    "R": {
+      "tag": "c:rods/steel"
+    },
+    "S": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "pattern": [
+    "BRB",
+    "SMS",
+    "PCP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "spacebreaker:pumpjack"
+  }
+}

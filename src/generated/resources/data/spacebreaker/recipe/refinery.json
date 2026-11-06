@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "c:plates/aluminum"
+    },
+    "C": {
+      "item": "spacebreaker:basic_circuit"
+    },
+    "F": {
+      "item": "minecraft:blast_furnace"
+    },
+    "P": {
+      "item": "spacebreaker:fluid_pipe"
+    },
+    "S": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "pattern": [
+    "APA",
+    "SFS",
+    "SCS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "spacebreaker:refinery"
+  }
+}

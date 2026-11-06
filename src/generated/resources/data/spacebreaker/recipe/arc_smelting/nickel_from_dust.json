@@ -1,0 +1,17 @@
+{
+  "type": "spacebreaker:arc_smelting",
+  "energy": 40,
+  "ingredients": [
+    {
+      "count": 1,
+      "tag": "c:dusts/nickel"
+    }
+  ],
+  "results": [
+    {
+      "count": 1,
+      "id": "spacebreaker:nickel_ingot"
+    }
+  ],
+  "time": 80
+}

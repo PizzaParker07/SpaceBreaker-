@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "P": {
+      "tag": "c:plates/copper"
+    },
+    "S": {
+      "item": "spacebreaker:silicone_seal"
+    }
+  },
+  "pattern": [
+    "PPP",
+    " S ",
+    "PPP"
+  ],
+  "result": {
+    "count": 8,
+    "id": "spacebreaker:gas_pipe"
+  }
+}

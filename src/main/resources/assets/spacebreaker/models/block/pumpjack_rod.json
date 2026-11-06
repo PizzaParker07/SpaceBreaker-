@@ -1,0 +1,84 @@
+{
+  "parent": "minecraft:block/block",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "paint": "spacebreaker:block/pumpjack_paint",
+    "lattice": "spacebreaker:block/pumpjack_lattice",
+    "weight": "spacebreaker:block/pumpjack_weight",
+    "motor": "spacebreaker:block/pumpjack_motor",
+    "well": "spacebreaker:block/pumpjack_wellhead",
+    "steel": "spacebreaker:block/press_steel",
+    "particle": "spacebreaker:block/pumpjack_paint"
+  },
+  "elements": [
+    {
+      "from": [
+        7,
+        0,
+        7
+      ],
+      "to": [
+        9,
+        16,
+        9
+      ],
+      "faces": {
+        "north": {
+          "texture": "#steel",
+          "uv": [
+            7,
+            0,
+            9,
+            16
+          ]
+        },
+        "south": {
+          "texture": "#steel",
+          "uv": [
+            7,
+            0,
+            9,
+            16
+          ]
+        },
+        "east": {
+          "texture": "#steel",
+          "uv": [
+            7,
+            0,
+            9,
+            16
+          ]
+        },
+        "west": {
+          "texture": "#steel",
+          "uv": [
+            7,
+            0,
+            9,
+            16
+          ]
+        },
+        "up": {
+          "texture": "#steel",
+          "uv": [
+            7,
+            7,
+            9,
+            9
+          ]
+        },
+        "down": {
+          "texture": "#steel",
+          "uv": [
+            7,
+            7,
+            9,
+            9
+          ]
+        }
+      }
+    }
+  ],
+  "ambientocclusion": false
+}

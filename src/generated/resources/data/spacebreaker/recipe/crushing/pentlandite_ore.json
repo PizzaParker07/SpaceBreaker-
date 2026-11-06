@@ -1,0 +1,16 @@
+{
+  "type": "spacebreaker:crushing",
+  "ingredients": [
+    {
+      "count": 1,
+      "tag": "c:ores/pentlandite"
+    }
+  ],
+  "results": [
+    {
+      "count": 2,
+      "id": "spacebreaker:nickel_dust"
+    }
+  ],
+  "time": 120
+}

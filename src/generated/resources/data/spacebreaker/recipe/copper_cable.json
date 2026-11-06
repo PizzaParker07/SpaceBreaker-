@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "K": {
+      "item": "minecraft:dried_kelp"
+    },
+    "W": {
+      "tag": "c:wires/copper"
+    }
+  },
+  "pattern": [
+    "KKK",
+    "WWW",
+    "KKK"
+  ],
+  "result": {
+    "count": 6,
+    "id": "spacebreaker:copper_cable"
+  }
+}

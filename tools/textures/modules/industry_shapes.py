@@ -219,9 +219,10 @@ def raw_chunk(r, variant='a', speck=None, specks=(), seed=3) -> Canvas:
 def metal_block(r, style='plain', seed=5) -> Canvas:
     """Storage block: smooth metal face with a bevelled border and a style-specific panel pattern."""
     cv = Canvas()
+    n = clustered(16, 16, seed, passes=2)
     for y in range(16):
         for x in range(16):
-            cv[x, y] = r[5] if (x + y) % 9 not in (0, 1) else r[4]
+            cv[x, y] = r[4] if n[y][x] < 0.1 else r[5]
     for i in range(16):
         cv[i, 0] = r[6]
         cv[0, i] = r[6]
@@ -249,9 +250,9 @@ def metal_block(r, style='plain', seed=5) -> Canvas:
             cv[i, 7] = r[3]
             cv[i, 8] = r[6]
     elif style == 'brushed':
-        for y in range(2, 14):
-            for x in range(2, 14):
-                if (x * 3 + y * 7) % 11 == 0:
+        for y in (4, 7, 10):
+            for x in range(3, 13):
+                if (x + y) % 5:
                     cv[x, y] = r[6]
     return cv
 

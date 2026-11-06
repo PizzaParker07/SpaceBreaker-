@@ -25,6 +25,23 @@
     "spacebreaker:nickel_superalloy_block",
     "spacebreaker:mare_basalt",
     "spacebreaker:ilmenite_ore",
-    "spacebreaker:solar_panel"
+    "spacebreaker:solar_panel",
+    "spacebreaker:combustion_generator",
+    "spacebreaker:battery_bank",
+    "spacebreaker:crusher",
+    "spacebreaker:arc_furnace",
+    "spacebreaker:press",
+    "spacebreaker:fabricator",
+    "spacebreaker:electrolyzer",
+    "spacebreaker:cryogenic_liquefier",
+    "spacebreaker:pumpjack",
+    "spacebreaker:refinery",
+    "spacebreaker:copper_cable",
+    "spacebreaker:hv_cable",
+    "spacebreaker:fluid_pipe",
+    "spacebreaker:gas_pipe",
+    "spacebreaker:fluid_tank",
+    "spacebreaker:pressurized_tank",
+    "spacebreaker:cryogenic_tank"
   ]
 }

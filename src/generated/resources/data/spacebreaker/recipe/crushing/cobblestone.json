@@ -1,0 +1,17 @@
+{
+  "type": "spacebreaker:crushing",
+  "energy": 12,
+  "ingredients": [
+    {
+      "count": 1,
+      "tag": "c:cobblestones/normal"
+    }
+  ],
+  "results": [
+    {
+      "count": 1,
+      "id": "minecraft:gravel"
+    }
+  ],
+  "time": 60
+}

@@ -1,0 +1,70 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "body": "spacebreaker:block/hv_cable",
+    "end": "spacebreaker:block/hv_cable_end",
+    "particle": "spacebreaker:block/hv_cable",
+    "valve": "spacebreaker:block/pipe_valve"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        5,
+        5
+      ],
+      "to": [
+        5,
+        11,
+        11
+      ],
+      "faces": {
+        "north": {
+          "texture": "#body",
+          "uv": [
+            11,
+            5,
+            16,
+            11
+          ]
+        },
+        "south": {
+          "texture": "#body",
+          "uv": [
+            0,
+            5,
+            5,
+            11
+          ]
+        },
+        "west": {
+          "texture": "#end",
+          "uv": [
+            5,
+            5,
+            11,
+            11
+          ]
+        },
+        "up": {
+          "texture": "#body",
+          "uv": [
+            0,
+            5,
+            5,
+            11
+          ]
+        },
+        "down": {
+          "texture": "#body",
+          "uv": [
+            0,
+            5,
+            5,
+            11
+          ]
+        }
+      }
+    }
+  ]
+}

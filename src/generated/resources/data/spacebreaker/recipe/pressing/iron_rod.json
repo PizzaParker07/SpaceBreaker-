@@ -1,0 +1,19 @@
+{
+  "type": "spacebreaker:pressing",
+  "ingredients": [
+    {
+      "count": 1,
+      "tag": "c:ingots/iron"
+    }
+  ],
+  "results": [
+    {
+      "count": 1,
+      "id": "spacebreaker:iron_rod"
+    }
+  ],
+  "time": 60,
+  "tool": {
+    "item": "spacebreaker:rod_press_die"
+  }
+}

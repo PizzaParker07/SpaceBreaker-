@@ -9,6 +9,10 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.ModelEvent;
+import com.pizzaparker07.spacebreaker.content.machines.MachinesModule;
 
 /** Client registration for the Industry area (fluids, machine renderers and screens). */
 @EventBusSubscriber(modid = Spacebreaker.MOD_ID, value = Dist.CLIENT)
@@ -18,6 +22,26 @@ public final class IndustryClient {
     private static final ResourceLocation OVERLAY = ResourceLocation.withDefaultNamespace("block/water_overlay");
 
     private IndustryClient() {
+    }
+
+    @SubscribeEvent
+    static void renderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerBlockEntityRenderer(MachinesModule.TANK_BE.get(), TankRenderer::new);
+        event.registerBlockEntityRenderer(MachinesModule.PRESS.type().get(), PressRenderer::new);
+        event.registerBlockEntityRenderer(MachinesModule.PUMPJACK.type().get(), PumpjackRenderer::new);
+    }
+
+    @SubscribeEvent
+    static void models(ModelEvent.RegisterAdditional event) {
+        event.register(PressRenderer.RAM);
+        event.register(PumpjackRenderer.BEAM);
+        event.register(PumpjackRenderer.CRANK);
+        event.register(PumpjackRenderer.ROD);
+    }
+
+    @SubscribeEvent
+    static void screens(RegisterMenuScreensEvent event) {
+        event.register(MachinesModule.MACHINE_MENU.get(), MachineScreen::new);
     }
 
     @SubscribeEvent

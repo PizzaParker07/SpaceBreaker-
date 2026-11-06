@@ -1,0 +1,21 @@
+{
+  "type": "spacebreaker:fabricating",
+  "energy": 30,
+  "ingredients": [
+    {
+      "count": 2,
+      "tag": "c:plastics"
+    },
+    {
+      "count": 1,
+      "tag": "c:dyes/orange"
+    }
+  ],
+  "results": [
+    {
+      "count": 4,
+      "id": "spacebreaker:orange_foam_insulation"
+    }
+  ],
+  "time": 80
+}

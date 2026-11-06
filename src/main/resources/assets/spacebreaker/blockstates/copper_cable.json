@@ -1,0 +1,99 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "spacebreaker:block/copper_cable_core"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "north": "connected"
+          },
+          {
+            "north": "extract"
+          }
+        ]
+      },
+      "apply": {
+        "model": "spacebreaker:block/copper_cable_north"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "south": "connected"
+          },
+          {
+            "south": "extract"
+          }
+        ]
+      },
+      "apply": {
+        "model": "spacebreaker:block/copper_cable_south"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "east": "connected"
+          },
+          {
+            "east": "extract"
+          }
+        ]
+      },
+      "apply": {
+        "model": "spacebreaker:block/copper_cable_east"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "west": "connected"
+          },
+          {
+            "west": "extract"
+          }
+        ]
+      },
+      "apply": {
+        "model": "spacebreaker:block/copper_cable_west"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "up": "connected"
+          },
+          {
+            "up": "extract"
+          }
+        ]
+      },
+      "apply": {
+        "model": "spacebreaker:block/copper_cable_up"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "down": "connected"
+          },
+          {
+            "down": "extract"
+          }
+        ]
+      },
+      "apply": {
+        "model": "spacebreaker:block/copper_cable_down"
+      }
+    }
+  ]
+}

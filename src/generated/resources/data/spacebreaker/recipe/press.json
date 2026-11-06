@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:anvil"
+    },
+    "C": {
+      "item": "spacebreaker:basic_circuit"
+    },
+    "M": {
+      "item": "spacebreaker:electric_motor"
+    },
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "S": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "pattern": [
+    "SPS",
+    "AMA",
+    "SCS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "spacebreaker:press"
+  }
+}

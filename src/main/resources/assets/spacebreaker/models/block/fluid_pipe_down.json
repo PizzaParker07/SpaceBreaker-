@@ -1,0 +1,138 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "body": "spacebreaker:block/fluid_pipe",
+    "end": "spacebreaker:block/fluid_pipe_flange",
+    "particle": "spacebreaker:block/fluid_pipe",
+    "valve": "spacebreaker:block/pipe_valve"
+  },
+  "elements": [
+    {
+      "from": [
+        5,
+        0,
+        5
+      ],
+      "to": [
+        11,
+        5,
+        11
+      ],
+      "faces": {
+        "north": {
+          "texture": "#body",
+          "uv": [
+            5,
+            11,
+            11,
+            16
+          ]
+        },
+        "south": {
+          "texture": "#body",
+          "uv": [
+            5,
+            11,
+            11,
+            16
+          ]
+        },
+        "east": {
+          "texture": "#body",
+          "uv": [
+            5,
+            11,
+            11,
+            16
+          ]
+        },
+        "west": {
+          "texture": "#body",
+          "uv": [
+            5,
+            11,
+            11,
+            16
+          ]
+        },
+        "down": {
+          "texture": "#end",
+          "uv": [
+            5,
+            5,
+            11,
+            11
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        4,
+        0,
+        4
+      ],
+      "to": [
+        12,
+        2,
+        12
+      ],
+      "faces": {
+        "north": {
+          "texture": "#end",
+          "uv": [
+            4,
+            14,
+            12,
+            16
+          ]
+        },
+        "south": {
+          "texture": "#end",
+          "uv": [
+            4,
+            14,
+            12,
+            16
+          ]
+        },
+        "east": {
+          "texture": "#end",
+          "uv": [
+            4,
+            14,
+            12,
+            16
+          ]
+        },
+        "west": {
+          "texture": "#end",
+          "uv": [
+            4,
+            14,
+            12,
+            16
+          ]
+        },
+        "up": {
+          "texture": "#end",
+          "uv": [
+            4,
+            4,
+            12,
+            12
+          ]
+        },
+        "down": {
+          "texture": "#end",
+          "uv": [
+            4,
+            4,
+            12,
+            12
+          ]
+        }
+      }
+    }
+  ]
+}

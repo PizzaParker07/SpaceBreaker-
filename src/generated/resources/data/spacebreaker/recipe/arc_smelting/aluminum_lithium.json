@@ -1,0 +1,20 @@
+{
+  "type": "spacebreaker:arc_smelting",
+  "energy": 80,
+  "ingredients": [
+    {
+      "count": 3,
+      "tag": "c:ingots/aluminum"
+    },
+    {
+      "count": 1,
+      "tag": "c:ingots/lithium"
+    }
+  ],
+  "results": [
+    {
+      "count": 4,
+      "id": "spacebreaker:aluminum_lithium_ingot"
+    }
+  ]
+}

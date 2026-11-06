@@ -1,0 +1,25 @@
+{
+  "type": "spacebreaker:fabricating",
+  "energy": 40,
+  "ingredients": [
+    {
+      "count": 1,
+      "item": "spacebreaker:silicon_wafer"
+    },
+    {
+      "count": 1,
+      "tag": "c:wires/copper"
+    },
+    {
+      "count": 1,
+      "tag": "c:glass_panes/colorless"
+    }
+  ],
+  "results": [
+    {
+      "count": 1,
+      "id": "spacebreaker:solar_cell"
+    }
+  ],
+  "time": 120
+}
