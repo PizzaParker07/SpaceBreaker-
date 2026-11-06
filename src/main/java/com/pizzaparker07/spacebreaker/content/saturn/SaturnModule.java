@@ -106,7 +106,6 @@ public final class SaturnModule implements SbModule {
             lang.add("body.spacebreaker." + w[0], w[1], w[2]);
             if (!w[0].equals("saturn")) {
                 lang.add("dimension.spacebreaker." + w[0], w[1], w[2]);
-                lang.add("sample.spacebreaker." + w[0], w[1], w[2]);
             }
         }
         lang.block(THOLIN_SAND, "Tholin Sand", "Tolin Kumu");
