@@ -72,6 +72,10 @@ Run: `./gradlew runGameTestServer` (writes `run-gametest/qa/progression.md` and 
   every Mercury sample are unobtainable; `solar_shielding` (only Mercury samples) needs another source.
 - Fix options: lower Mercury transfer cost (gravity assist via Venus), a hydrogen/methane source on Mercury, or a
   hydrolox engine part for `hydrogen_engines`.
+- Update: dev/inner adds in-situ methalox on Mercury (polar ice → water → H₂/O₂, graphite + O₂ → CO₂, Sabatier). Tested
+  merged with dev/qa: the chain is correct, but even a one-way landing fails — Earth orbit 3158 → Venus orbit 1238 →
+  Mercury orbit 3327 → surface 1252 = 8975 m/s gameplay Δv, more than the best design delivers after ascent losses
+  (9794 m/s vacuum). Still open on rocketry's side (hydrolox upper stage) or a cheaper route.
 
 ### QA-4 Moon night vs Mk1 suit
 - Moon body data: night −173 °C, day 120 °C. `SuitTier.MK1` covers −160…125 °C. Thermal regulator modules
@@ -407,49 +411,49 @@ Not reachable in a fresh survival world.
 
 ### Missions the best buildable rocket cannot fly
 
-| Destination | Δv needed for a round trip (gameplay) | Best vacuum Δv of any buildable design |
-|---|---|---|
-| spacebreaker:mercury/surface | 12864 | 0 |
-| spacebreaker:mercury/orbit | 10360 | 0 |
-| spacebreaker:venus/surface | 9187 | 0 |
-| spacebreaker:venus/orbit | 5559 | 0 |
-| spacebreaker:earth/orbit | 3180 | 0 |
-| spacebreaker:moon/surface | 6226 | 0 |
-| spacebreaker:moon/orbit | 4830 | 0 |
-| spacebreaker:mars/surface | 6562 | 0 |
-| spacebreaker:mars/orbit | 5164 | 0 |
-| spacebreaker:phobos/surface | 5524 | 0 |
-| spacebreaker:phobos/orbit | 5520 | 0 |
-| spacebreaker:deimos/surface | 5713 | 0 |
-| spacebreaker:deimos/orbit | 5710 | 0 |
-| spacebreaker:vesta/surface | 7456 | 0 |
-| spacebreaker:vesta/orbit | 7302 | 0 |
-| spacebreaker:ceres/surface | 7980 | 0 |
-| spacebreaker:ceres/orbit | 7739 | 0 |
-| spacebreaker:jupiter/orbit | 11631 | 0 |
-| spacebreaker:io/surface | 11331 | 0 |
-| spacebreaker:io/orbit | 9875 | 0 |
-| spacebreaker:europa/surface | 10310 | 0 |
-| spacebreaker:europa/orbit | 9138 | 0 |
-| spacebreaker:callisto/surface | 9304 | 0 |
-| spacebreaker:callisto/orbit | 7872 | 0 |
-| spacebreaker:ganymede/surface | 9924 | 0 |
-| spacebreaker:ganymede/orbit | 8327 | 0 |
-| spacebreaker:saturn/orbit | 9545 | 0 |
-| spacebreaker:enceladus/surface | 9735 | 0 |
-| spacebreaker:enceladus/orbit | 9604 | 0 |
-| spacebreaker:titan/surface | 7615 | 0 |
-| spacebreaker:titan/orbit | 6743 | 0 |
-| spacebreaker:uranus/orbit | 8313 | 0 |
-| spacebreaker:miranda/surface | 8665 | 0 |
-| spacebreaker:miranda/orbit | 8560 | 0 |
-| spacebreaker:neptune/orbit | 8578 | 0 |
-| spacebreaker:triton/surface | 8525 | 0 |
-| spacebreaker:triton/orbit | 7681 | 0 |
-| spacebreaker:pluto/surface | 8608 | 0 |
-| spacebreaker:pluto/orbit | 7904 | 0 |
-| spacebreaker:charon/surface | 8275 | 0 |
-| spacebreaker:charon/orbit | 7932 | 0 |
+| Destination | Δv needed for a round trip (gameplay) | Best vacuum Δv of any buildable design | One way: legs (gameplay m/s) |
+|---|---|---|---|
+| spacebreaker:mercury/surface | 12864 | 0 | spacebreaker:earth/orbit 3158 → spacebreaker:venus/orbit 1238 → spacebreaker:mercury/orbit 3327 → spacebreaker:mercury/surface 1252 = 8975 |
+| spacebreaker:mercury/orbit | 10360 | 0 | spacebreaker:earth/orbit 3158 → spacebreaker:venus/orbit 1238 → spacebreaker:mercury/orbit 3327 = 7723 |
+| spacebreaker:venus/surface | 9187 | 0 | spacebreaker:earth/orbit 3158 → spacebreaker:venus/surface 1226 = 4384 |
+| spacebreaker:venus/orbit | 5559 | 0 | spacebreaker:earth/orbit 3158 → spacebreaker:venus/orbit 1238 = 4396 |
+| spacebreaker:earth/orbit | 3180 | 0 | spacebreaker:earth/orbit 3158 = 3158 |
+| spacebreaker:moon/surface | 6226 | 0 | spacebreaker:earth/orbit 3158 → spacebreaker:moon/orbit 1384 → spacebreaker:moon/surface 698 = 5240 |
+| spacebreaker:moon/orbit | 4830 | 0 | spacebreaker:earth/orbit 3158 → spacebreaker:moon/orbit 1384 = 4542 |
+| spacebreaker:mars/surface | 6562 | 0 | spacebreaker:earth/orbit 3158 → spacebreaker:mars/surface 1264 = 4422 |
+| spacebreaker:mars/orbit | 5164 | 0 | spacebreaker:earth/orbit 3158 → spacebreaker:mars/orbit 1269 = 4427 |
+| spacebreaker:phobos/surface | 5524 | 0 | spacebreaker:earth/orbit 3158 → spacebreaker:mars/orbit 1269 → spacebreaker:phobos/orbit 436 → spacebreaker:phobos/surface 2 = 4866 |
+| spacebreaker:phobos/orbit | 5520 | 0 | spacebreaker:earth/orbit 3158 → spacebreaker:mars/orbit 1269 → spacebreaker:phobos/orbit 436 = 4864 |
+| spacebreaker:deimos/surface | 5713 | 0 | spacebreaker:earth/orbit 3158 → spacebreaker:mars/orbit 1269 → spacebreaker:deimos/orbit 613 → spacebreaker:deimos/surface 2 = 5042 |
+| spacebreaker:deimos/orbit | 5710 | 0 | spacebreaker:earth/orbit 3158 → spacebreaker:mars/orbit 1269 → spacebreaker:deimos/orbit 613 = 5041 |
+| spacebreaker:vesta/surface | 7456 | 0 | spacebreaker:earth/orbit 3158 → spacebreaker:mars/orbit 1269 → spacebreaker:vesta/orbit 1406 → spacebreaker:vesta/surface 77 = 5911 |
+| spacebreaker:vesta/orbit | 7302 | 0 | spacebreaker:earth/orbit 3158 → spacebreaker:mars/orbit 1269 → spacebreaker:vesta/orbit 1406 = 5834 |
+| spacebreaker:ceres/surface | 7980 | 0 | spacebreaker:earth/orbit 3158 → spacebreaker:mars/orbit 1269 → spacebreaker:ceres/orbit 1727 → spacebreaker:ceres/surface 121 = 6274 |
+| spacebreaker:ceres/orbit | 7739 | 0 | spacebreaker:earth/orbit 3158 → spacebreaker:mars/orbit 1269 → spacebreaker:ceres/orbit 1727 = 6154 |
+| spacebreaker:jupiter/orbit | 11631 | 0 | spacebreaker:earth/orbit 3158 → spacebreaker:jupiter/orbit 2279 = 5437 |
+| spacebreaker:io/surface | 11331 | 0 | spacebreaker:earth/orbit 3158 → spacebreaker:io/orbit 4462 → spacebreaker:io/surface 728 = 8348 |
+| spacebreaker:io/orbit | 9875 | 0 | spacebreaker:earth/orbit 3158 → spacebreaker:io/orbit 4462 = 7620 |
+| spacebreaker:europa/surface | 10310 | 0 | spacebreaker:earth/orbit 3158 → spacebreaker:europa/orbit 4093 → spacebreaker:europa/surface 586 = 7837 |
+| spacebreaker:europa/orbit | 9138 | 0 | spacebreaker:earth/orbit 3158 → spacebreaker:europa/orbit 4093 = 7251 |
+| spacebreaker:callisto/surface | 9304 | 0 | spacebreaker:earth/orbit 3158 → spacebreaker:callisto/orbit 3461 → spacebreaker:callisto/surface 716 = 7334 |
+| spacebreaker:callisto/orbit | 7872 | 0 | spacebreaker:earth/orbit 3158 → spacebreaker:callisto/orbit 3461 = 6618 |
+| spacebreaker:ganymede/surface | 9924 | 0 | spacebreaker:earth/orbit 3158 → spacebreaker:ganymede/orbit 3688 → spacebreaker:ganymede/surface 798 = 7644 |
+| spacebreaker:ganymede/orbit | 8327 | 0 | spacebreaker:earth/orbit 3158 → spacebreaker:ganymede/orbit 3688 = 6846 |
+| spacebreaker:saturn/orbit | 9545 | 0 | spacebreaker:earth/orbit 3158 → spacebreaker:saturn/orbit 2593 = 5751 |
+| spacebreaker:enceladus/surface | 9735 | 0 | spacebreaker:earth/orbit 3158 → spacebreaker:titan/orbit 2552 → spacebreaker:enceladus/orbit 1835 → spacebreaker:enceladus/surface 66 = 7611 |
+| spacebreaker:enceladus/orbit | 9604 | 0 | spacebreaker:earth/orbit 3158 → spacebreaker:titan/orbit 2552 → spacebreaker:enceladus/orbit 1835 = 7545 |
+| spacebreaker:titan/surface | 7615 | 0 | spacebreaker:earth/orbit 3158 → spacebreaker:titan/surface 2549 = 5707 |
+| spacebreaker:titan/orbit | 6743 | 0 | spacebreaker:earth/orbit 3158 → spacebreaker:titan/orbit 2552 = 5710 |
+| spacebreaker:uranus/orbit | 8313 | 0 | spacebreaker:earth/orbit 3158 → spacebreaker:uranus/orbit 2818 = 5976 |
+| spacebreaker:miranda/surface | 8665 | 0 | spacebreaker:earth/orbit 3158 → spacebreaker:miranda/orbit 4097 → spacebreaker:miranda/surface 53 = 7308 |
+| spacebreaker:miranda/orbit | 8560 | 0 | spacebreaker:earth/orbit 3158 → spacebreaker:miranda/orbit 4097 = 7255 |
+| spacebreaker:neptune/orbit | 8578 | 0 | spacebreaker:earth/orbit 3158 → spacebreaker:neptune/orbit 2915 = 6073 |
+| spacebreaker:triton/surface | 8525 | 0 | spacebreaker:earth/orbit 3158 → spacebreaker:triton/orbit 3705 → spacebreaker:triton/surface 422 = 7285 |
+| spacebreaker:triton/orbit | 7681 | 0 | spacebreaker:earth/orbit 3158 → spacebreaker:triton/orbit 3705 = 6863 |
+| spacebreaker:pluto/surface | 8608 | 0 | spacebreaker:earth/orbit 3158 → spacebreaker:titan/orbit 2552 → spacebreaker:pluto/orbit 1132 → spacebreaker:pluto/surface 352 = 7194 |
+| spacebreaker:pluto/orbit | 7904 | 0 | spacebreaker:earth/orbit 3158 → spacebreaker:titan/orbit 2552 → spacebreaker:pluto/orbit 1132 = 6842 |
+| spacebreaker:charon/surface | 8275 | 0 | spacebreaker:earth/orbit 3158 → spacebreaker:titan/orbit 2552 → spacebreaker:charon/orbit 1127 → spacebreaker:charon/surface 172 = 7009 |
+| spacebreaker:charon/orbit | 7932 | 0 | spacebreaker:earth/orbit 3158 → spacebreaker:titan/orbit 2552 → spacebreaker:charon/orbit 1127 = 6837 |
 
 
 ## What if the source-less technologies got a disk on Earth
@@ -746,19 +750,19 @@ None.
 
 ### Missions the best buildable rocket cannot fly
 
-| Destination | Δv needed for a round trip (gameplay) | Best vacuum Δv of any buildable design |
-|---|---|---|
-| spacebreaker:mercury/surface | 12864 | 9794 |
-| spacebreaker:mercury/orbit | 10360 | 9794 |
-| spacebreaker:jupiter/orbit | 11631 | 9794 |
-| spacebreaker:io/orbit | 9875 | 9794 |
-| spacebreaker:europa/orbit | 9138 | 9794 |
-| spacebreaker:saturn/orbit | 9545 | 9794 |
-| spacebreaker:enceladus/orbit | 9604 | 9794 |
-| spacebreaker:miranda/surface | 8665 | 9794 |
-| spacebreaker:triton/surface | 8525 | 9794 |
-| spacebreaker:pluto/surface | 8608 | 9794 |
-| spacebreaker:charon/surface | 8275 | 9794 |
+| Destination | Δv needed for a round trip (gameplay) | Best vacuum Δv of any buildable design | One way: legs (gameplay m/s) |
+|---|---|---|---|
+| spacebreaker:mercury/surface | 12864 | 9794 | spacebreaker:earth/orbit 3158 → spacebreaker:venus/orbit 1238 → spacebreaker:mercury/orbit 3327 → spacebreaker:mercury/surface 1252 = 8975 |
+| spacebreaker:mercury/orbit | 10360 | 9794 | spacebreaker:earth/orbit 3158 → spacebreaker:venus/orbit 1238 → spacebreaker:mercury/orbit 3327 = 7723 |
+| spacebreaker:jupiter/orbit | 11631 | 9794 | spacebreaker:earth/orbit 3158 → spacebreaker:jupiter/orbit 2279 = 5437 |
+| spacebreaker:io/orbit | 9875 | 9794 | spacebreaker:earth/orbit 3158 → spacebreaker:io/orbit 4462 = 7620 |
+| spacebreaker:europa/orbit | 9138 | 9794 | spacebreaker:earth/orbit 3158 → spacebreaker:europa/orbit 4093 = 7251 |
+| spacebreaker:saturn/orbit | 9545 | 9794 | spacebreaker:earth/orbit 3158 → spacebreaker:saturn/orbit 2593 = 5751 |
+| spacebreaker:enceladus/orbit | 9604 | 9794 | spacebreaker:earth/orbit 3158 → spacebreaker:titan/orbit 2552 → spacebreaker:enceladus/orbit 1835 = 7545 |
+| spacebreaker:miranda/surface | 8665 | 9794 | spacebreaker:earth/orbit 3158 → spacebreaker:miranda/orbit 4097 → spacebreaker:miranda/surface 53 = 7308 |
+| spacebreaker:triton/surface | 8525 | 9794 | spacebreaker:earth/orbit 3158 → spacebreaker:triton/orbit 3705 → spacebreaker:triton/surface 422 = 7285 |
+| spacebreaker:pluto/surface | 8608 | 9794 | spacebreaker:earth/orbit 3158 → spacebreaker:titan/orbit 2552 → spacebreaker:pluto/orbit 1132 → spacebreaker:pluto/surface 352 = 7194 |
+| spacebreaker:charon/surface | 8275 | 9794 | spacebreaker:earth/orbit 3158 → spacebreaker:titan/orbit 2552 → spacebreaker:charon/orbit 1127 → spacebreaker:charon/surface 172 = 7009 |
 
 # Localization audit (`tools/qa/lang_audit.py`)
 
