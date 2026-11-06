@@ -139,7 +139,7 @@ public final class HelmetHud {
         if (s.doseRate() > 0.05F || s.doseMsv() >= 1F) {
             int c = s.doseMsv() >= 1000 ? ALARM : (s.doseMsv() >= 250 || s.doseRate() > 50 ? WARN : 0xD8C040);
             float fill = (float) (Math.log10(1 + s.doseMsv()) / Math.log10(1 + 3000));
-            rows.add(new Row(ICON_RAD, Mth.clamp(fill, 0F, 1F), c, fmt(s.doseRate()) + "/d", c == ALARM ? ALARM : 0xFFFFFF, false));
+            rows.add(new Row(ICON_RAD, Mth.clamp(fill, 0F, 1F), c, fmt(s.doseRate()) + "/d" + (s.doseMsv() >= 1F ? " " + fmt(s.doseMsv()) + "mSv" : ""), c == ALARM ? ALARM : 0xFFFFFF, false));
         }
         // surroundings: only off Earth-normal conditions
         if (!breathable || s.gravity() < 0.95F || s.gravity() > 1.05F || s.ambientC() < -20 || s.ambientC() > 50) {
