@@ -73,7 +73,7 @@ public final class HazePass {
     }
 
     /** Called at AFTER_LEVEL, after the sky pass. */
-    public static void afterLevel(Matrix4f projection, float partialTick) {
+    public static void afterLevel(Matrix4f modelView, Matrix4f projection, float partialTick) {
         if (!captured) {
             return;
         }
@@ -91,7 +91,7 @@ public final class HazePass {
             return;
         }
         try {
-            draw(mc, projection, haze, tint);
+            draw(mc, modelView, projection, haze, tint);
         } catch (RuntimeException e) {
             if (!warned) {
                 warned = true;
@@ -115,7 +115,7 @@ public final class HazePass {
         return Float.isNaN(v) ? 1F : Math.max(0.06F, Math.min(1F, v));
     }
 
-    private static void draw(Minecraft mc, Matrix4f projection, boolean haze, Vector3f tint) {
+    private static void draw(Minecraft mc, Matrix4f viewMatrix, Matrix4f projection, boolean haze, Vector3f tint) {
         RenderTarget main = mc.getMainRenderTarget();
         copyDepth(main);
 
@@ -135,6 +135,7 @@ public final class HazePass {
         RenderSystem.setShader(() -> shader);
         RenderSystem.setShaderTexture(0, depthCopy);
         shader.safeGetUniform("InvProjMat").set(new Matrix4f(projection).invert());
+        shader.safeGetUniform("InvViewMat").set(new Matrix4f(viewMatrix).invert());
         shader.safeGetUniform("HazeStart").set(haze ? fogStart : 1.0e9F);
         shader.safeGetUniform("HazeEnd").set(haze ? fogEnd : 2.0e9F);
         shader.safeGetUniform("HazeShape").set(fogShape);

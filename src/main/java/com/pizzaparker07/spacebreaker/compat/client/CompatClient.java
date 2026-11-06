@@ -23,7 +23,7 @@ public final class CompatClient {
         } else if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_LEVEL) {
             float partialTick = event.getPartialTick().getGameTimeDeltaPartialTick(false);
             ShaderSkyPass.afterLevel(event.getModelViewMatrix(), event.getProjectionMatrix(), partialTick);
-            HazePass.afterLevel(event.getProjectionMatrix(), partialTick);
+            HazePass.afterLevel(event.getModelViewMatrix(), event.getProjectionMatrix(), partialTick);
         }
     }
 

@@ -8,6 +8,7 @@
 
 uniform sampler2D Sampler0;
 uniform mat4 InvProjMat;
+uniform mat4 InvViewMat;
 uniform float HazeStart;
 uniform float HazeEnd;
 uniform int HazeShape;
@@ -26,7 +27,9 @@ void main() {
     }
     vec4 view = InvProjMat * vec4(vec3(screenUv, depth) * 2.0 - 1.0, 1.0);
     view.xyz /= view.w;
-    float dist = fog_distance(view.xyz, HazeShape);
+    // camera-relative, world-aligned position, as vanilla's fog uses it (the cylinder shape needs world up)
+    vec3 rel = (InvViewMat * vec4(view.xyz, 0.0)).xyz;
+    float dist = fog_distance(rel, HazeShape);
     float f = 0.0;
     if (dist > HazeStart) {
         f = dist < HazeEnd ? smoothstep(HazeStart, HazeEnd, dist) : 1.0;

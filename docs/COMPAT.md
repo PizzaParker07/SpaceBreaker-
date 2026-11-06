@@ -11,6 +11,27 @@ needs them at compile time or at run time.
 | Sodium + Iris + BSL v10.1.8 | works (same fixes, checked shot by shot) |
 | Sodium + Iris + MakeUp Ultra Fast 9.6 | works (same fixes; the ground is a little cooler/lavender than vanilla) |
 
+Per world with Complementary (vanilla reference shots live in each area's screenshot folder):
+
+| World | Kind | Shader result |
+|---|---|---|
+| Moon | airless | black sky, stars, Earth with phases, grey regolith, sun shadows |
+| Earth orbit / Moon orbit | orbit | planet below, Sun, stars; station plates neutral grey |
+| Mercury | airless | huge Sun disc, grey crust at noon (`iris_mercury_*`); dawn light is orange (see limitations) |
+| Mars | thin | own butterscotch sky, blue sunset; dust storm haze (`iris_mars_11_dust_storm` vs `vanilla_mars_11_dust_storm`), a little brighter than vanilla |
+| Venus | thick | dark ground, dense orange haze, whiteout in the clouds, cloud sea above (`venus_vanilla_bug_fixed.jpg`: vanilla / before / after) |
+| Titan and later thick worlds | thick | covered by the same generic haze pass (fog + light map of the world itself), no code needed |
+| Phobos, Deimos | airless | classified and handled like the Moon; no separate shader screenshots yet |
+
+Screen effects and HUDs (all in the GUI layer, drawn over the pack's final frame) were checked under Complementary:
+orbit HUD (`iris_rocketry_12_orbit_hud`), suit HUD on the Moon (`iris_suit_moon_03_hud_vacuum`), launch
+(`iris_rocketry_07_ignition`), Mars dust tint. The reentry plasma overlay is the same GUI code path; in the shader
+run the frame was taken after the heating phase had ended (rendering is slower, the rocket timer had moved on), so it
+is not in the screenshots.
+
+Sodium only: the compat scenario shots match vanilla; chunk meshing of freshly generated Moon and Mars terrain at
+12 chunks finished within the same minimum shot wait as vanilla (no stalls or timeouts). No deeper profiling done.
+
 Screenshots: `docs/screenshots/compat/` (`vanilla_*`, `sodium_*`, `iris_*` = Complementary, `bsl_*`, `makeup_*`;
 `iris_bug_*` are the state before the fix, `before_after_complementary.jpg` puts both side by side). All taken with
 Sodium 0.8.13 + Iris 1.8.14-beta.1 on Mesa llvmpipe (software GL 4.5).
@@ -39,8 +60,9 @@ follow the Sun, which only the Overworld programs give. So we keep the Overworld
 |---|---|
 | `SpaceWorlds` | classifies every dimension from its celestial body JSON: `ORBIT`, `AIRLESS` (vacuum), `THIN_ATMOSPHERE` (< 20 kPa, Mars), `THICK_ATMOSPHERE` (Venus, Titan), `VANILLA` (Overworld, Nether, End, unknown). New worlds are covered by adding `dimension` / `orbit_dimension` to their body JSON — a GameTest fails if a `spacebreaker:` dimension has no body. |
 | `client/ShaderSkyPass` | **sky replacement.** Iris renders into Minecraft's own depth buffer, which still holds the scene depth after the pack's final pass. NeoForge fires `RenderLevelStageEvent.Stage.AFTER_LEVEL` in `GameRenderer` right after `LevelRenderer.renderLevel` returns — after Iris's composite/final passes, before the depth clear for the hand. There our normal sky (`level.effects().renderSky`, unchanged vanilla code) is drawn into an off-screen target and copied onto the frame with `glDepthRange(1,1)` + `GL_LEQUAL`, i.e. only where the depth is still the cleared far value: the sky. Terrain, entities and the hand keep the pack's shading. Works with any pack, no pack-specific code. |
+| `client/HazePass` | **thick and dusty air.** Packs ignore vanilla fog and the light map, so Venus was a bright beige desert. At `AFTER_SOLID_BLOCKS` the terrain fog the world set up this frame is captured (start, end, shape, colour — after every mod's `ViewportEvent` fog handlers); the world's own `adjustLightmapColors` gives its full-daylight colour. After the pack's final pass (and after the sky pass) the depth buffer is copied (`glCopyTexSubImage2D`, avoids a feedback loop and converts formats) and the core shader `spacebreaker:compat_haze` applies `frame * tint * (1 - f) + fog * f` to scene pixels only (two blended draws). Thick atmospheres get haze + tint; thin ones (Mars) get haze only while their fog is closer than 80 % of the render distance (dust storms). Generic: Titan or any new world uses its own fog and light map. |
 | `mixin/iris/PackCloudsMixin` | `DimensionSpecialEffects.getCloudHeight` → 25000 in space worlds while a pack is active. Iris passes it as `cloudHeight`; pack clouds move beyond their draw distance (no clouds in front of distant terrain, no cloud shadows). Our sky effects draw clouds themselves, vanilla never reads it there. |
-| `mixin/iris/PackAmbientMixin` | `ClientLevel.getSkyColor` → a cool fill in airless worlds while a pack is active (Iris passes it as `skyColor`). Packs use it differently: Complementary adds `pow(skyColor, 0.75)` to a warm, atmosphere-filtered sun and needs (0.18, 0.30, 0.90) to bring grey regolith back to neutral; MakeUp mixes 60 % of it into an already neutral ambient, so other packs get a moderate (0.20, 0.27, 0.55); BSL ignores it. The pack family is read from Iris's current pack name (internal method, by reflection; unknown → moderate value). Mars keeps its biome sky colour (butterscotch fill is right there). |
+| `mixin/iris/PackAmbientMixin` | `ClientLevel.getSkyColor` → a cool fill in airless worlds while a pack is active (Iris passes it as `skyColor`). Packs use it differently: Complementary adds `pow(skyColor, 0.75)` to a warm, atmosphere-filtered sun and needs (0.20, 0.30, 0.72) to bring grey regolith back to neutral; MakeUp mixes 60 % of it into an already neutral ambient, so other packs get a moderate (0.20, 0.27, 0.55); BSL ignores it. The pack family is read from Iris's current pack name (internal method, by reflection; unknown → moderate value). Mars keeps its biome sky colour (butterscotch fill is right there). |
 | `mixin/ClientWeatherMixin` | client-side `getRainLevel` / `getThunderLevel` = 0 in space worlds (always, with or without Iris). Server-side weather is untouched. |
 | `CompatMixinPlugin` | the `iris.*` mixins are only applied when Iris (or Oculus) is installed: without it the game runs the exact vanilla code paths. |
 | `client/ShaderState` | Iris is reached only through its public API `net.irisshaders.iris.api.v0.IrisApi` (`isShaderPackInUse`) by reflection. |
@@ -60,7 +82,10 @@ does it anyway; `OFF` leaves the pack alone.
 
 - **Ground tint differs slightly per pack:** the ambient fill above is a compromise per pack family; packs not
   tested here may look a little warm (sandy) or cool (lavender) on the Moon by day.
-- **Low sun on the Moon:** packs tint sunrise/sunset light orange (it comes from their Overworld atmosphere
+- **Haze strength:** the pack's own (brighter) lighting sits under our haze, so Mars storms read a little lighter
+  than vanilla at mid distance; Venus matches closely. Translucent blocks and particles in front of terrain are hazed
+  by the depth of what is behind them.
+- **Low sun on airless worlds (Moon, Mercury):** packs tint sunrise/sunset light orange (it comes from their Overworld atmosphere
   model, keyed to the sun angle). Our sky stays black, but the ground looks like an Earth dawn for the first and
   last ~10 % of the lunar day.
 - **Sky seen through glass or water** is the pack's (translucent geometry writes depth before the sky pass). Looking
