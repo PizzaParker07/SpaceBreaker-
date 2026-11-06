@@ -3,14 +3,15 @@ package com.pizzaparker07.spacebreaker.client.hud;
 import com.pizzaparker07.spacebreaker.Spacebreaker;
 import com.pizzaparker07.spacebreaker.content.suit.OxygenTankItem;
 import com.pizzaparker07.spacebreaker.content.suit.SpaceSuitItem;
-import com.pizzaparker07.spacebreaker.content.suit.SurvivalData;
 import com.pizzaparker07.spacebreaker.content.suit.net.SuitStatusPayload;
 import com.pizzaparker07.spacebreaker.core.config.SbConfig;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -26,14 +27,14 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Helmet HUD, drawn in the GUI layer so it stays on top of shader packs: a faint visor frame, a compact
- * read-out panel (oxygen, suit, body temperature, outside temperature, radiation, pressure, gravity)
- * and blinking warnings. Visible in first person while an EVA helmet is worn.
+ * Helmet HUD, drawn in the GUI layer so it stays on top of shader packs: a faint visor frame and a
+ * compact vanilla-style gauge cluster right of the hotbar (oxygen, body temperature; suit, radiation,
+ * surroundings and Maneuvering Unit gas only when they matter) with one blinking warning above the
+ * hotbar. Visible in first person while an EVA helmet is worn; scale and opacity are configurable.
  */
 @EventBusSubscriber(modid = Spacebreaker.MOD_ID, value = Dist.CLIENT)
 public final class HelmetHud {
     private static final int TEXT = 0x9FE3EA;
-    private static final int DIM = 0x78B4BC;
     private static final int WARN = 0xFFB040;
     private static final int ALARM = 0xFF5A4A;
 
@@ -80,7 +81,18 @@ public final class HelmetHud {
         }
     }
 
-    // ------------------------------------------------------------------ read-out panel
+    // ------------------------------------------------------------------ gauges
+
+    private static final ResourceLocation ICONS = Spacebreaker.id("textures/gui/hud_icons.png");
+    private static final int ICON_OXYGEN = 0, ICON_SUIT = 1, ICON_TEMP = 2, ICON_RAD = 3, ICON_PRESSURE = 4, ICON_MMU = 5;
+    private static final int OXYGEN = 0x36B1C0;
+    private static final int GOOD = 0x7CD36A;
+    private static final int BAR_W = 41;
+    private static final int ROW_H = 11;
+
+    /** One gauge row: icon, bar (fill 0..1, or a marker position when {@code marker}), short value. */
+    private record Row(int icon, float fill, int color, String value, int valueColor, boolean marker) {
+    }
 
     static void renderPanel(GuiGraphics g, DeltaTracker delta) {
         Minecraft mc = Minecraft.getInstance();
@@ -96,100 +108,130 @@ public final class HelmetHud {
         float scale = (float) (SbConfig.CLIENT_SPEC.isLoaded() ? SbConfig.HUD_SCALE.get() : 1.0);
         Font font = mc.font;
         boolean blink = (player.tickCount / 8) % 2 == 0;
-
-        List<Line> lines = new ArrayList<>();
-        // oxygen
-        float o2 = s.capacity() > 0 ? (float) s.oxygen() / s.capacity() : 0F;
-        int o2Col = s.capacity() == 0 || o2 < 0.15F ? ALARM : (o2 < 0.3F ? WARN : TEXT);
-        lines.add(new Line(Component.translatable("hud.spacebreaker.oxygen"), OxygenTankItem.time(s.oxygen()), o2Col, o2));
-        // suit
+        boolean breathable = s.has(SuitStatusPayload.BREATHABLE);
         boolean sealed = s.has(SuitStatusPayload.SEALED);
-        lines.add(new Line(Component.translatable("hud.spacebreaker.suit"),
-                Component.translatable(sealed ? "hud.spacebreaker.sealed" : "hud.spacebreaker.open").getString() + "  " + s.integrity() + "%",
-                sealed ? TEXT : WARN, -1));
-        // temperatures
+
+        List<Row> rows = new ArrayList<>();
+        // oxygen: always
+        float o2 = s.capacity() > 0 ? (float) s.oxygen() / s.capacity() : 0F;
+        boolean o2Low = s.capacity() == 0 || o2 < 0.15F;
+        rows.add(new Row(ICON_OXYGEN, o2, o2Low ? ALARM : (o2 < 0.3F ? WARN : OXYGEN),
+                s.capacity() > 0 ? OxygenTankItem.time(s.oxygen()) : "--:--", o2Low && !breathable ? ALARM : 0xFFFFFF, false));
+        // suit: only when it matters
+        if (!sealed || s.integrity() < 50) {
+            int c = !sealed ? WARN : (s.integrity() < 20 ? ALARM : WARN);
+            rows.add(new Row(ICON_SUIT, s.integrity() / 100F, c,
+                    sealed ? s.integrity() + "%" : Component.translatable("hud.spacebreaker.open").getString(), c, false));
+        }
+        // body temperature: marker on a 30..44 °C scale, normal band in the middle
         float body = s.bodyTempC();
-        int bodyCol = body < 32 || body > 41 ? ALARM : (body < 35 || body > 38.5F ? WARN : TEXT);
-        lines.add(new Line(Component.translatable("hud.spacebreaker.body"), String.format(Locale.ROOT, "%.1f °C", body), bodyCol, -1));
-        lines.add(new Line(Component.translatable("hud.spacebreaker.outside"), String.format(Locale.ROOT, "%.0f °C", s.ambientC()), DIM, -1));
-        // radiation
-        int radCol = s.doseMsv() >= 1000 ? ALARM : (s.doseMsv() >= 250 || s.doseRate() > 50 ? WARN : TEXT);
-        lines.add(new Line(Component.translatable("hud.spacebreaker.radiation"),
-                String.format(Locale.ROOT, "%s mSv/d · %s mSv", fmt(s.doseRate()), fmt(s.doseMsv())), radCol, -1));
-        // pressure and gravity
-        lines.add(new Line(Component.translatable("hud.spacebreaker.pressure"),
-                String.format(Locale.ROOT, "%s kPa · %.2f g", fmt(s.pressureKpa()), s.gravity()), DIM, -1));
+        int bodyCol = body < 32 || body > 41 ? ALARM : (body < 35 || body > 38.5F ? WARN : GOOD);
+        rows.add(new Row(ICON_TEMP, Mth.clamp((body - 30F) / 14F, 0F, 1F), bodyCol,
+                String.format(Locale.ROOT, "%.1f°", body), bodyCol == GOOD ? 0xFFFFFF : bodyCol, true));
+        // radiation: only when there is some
+        if (s.doseRate() > 0.05F || s.doseMsv() >= 1F) {
+            int c = s.doseMsv() >= 1000 ? ALARM : (s.doseMsv() >= 250 || s.doseRate() > 50 ? WARN : 0xD8C040);
+            float fill = (float) (Math.log10(1 + s.doseMsv()) / Math.log10(1 + 3000));
+            rows.add(new Row(ICON_RAD, Mth.clamp(fill, 0F, 1F), c, fmt(s.doseRate()) + "/d", c == ALARM ? ALARM : 0xFFFFFF, false));
+        }
+        // surroundings: only off Earth-normal conditions
+        if (!breathable || s.gravity() < 0.95F || s.gravity() > 1.05F || s.ambientC() < -20 || s.ambientC() > 50) {
+            String env = String.format(Locale.ROOT, "%s kPa %.2fg %.0f°", fmt(s.pressureKpa()), s.gravity(), s.ambientC());
+            rows.add(new Row(ICON_PRESSURE, -1F, 0, env, TEXT, false));
+        }
         if (s.has(SuitStatusPayload.MMU)) {
-            lines.add(new Line(Component.translatable("hud.spacebreaker.mmu"),
-                    Math.round(100F * s.mmuFuel() / com.pizzaparker07.spacebreaker.content.suit.ManeuveringUnitItem.CAPACITY) + "%", TEXT, -1));
+            float gas = (float) s.mmuFuel() / com.pizzaparker07.spacebreaker.content.suit.ManeuveringUnitItem.CAPACITY;
+            rows.add(new Row(ICON_MMU, gas, gas < 0.15F ? WARN : 0xE0B040, Math.round(gas * 100) + "%", 0xFFFFFF, false));
         }
 
-        int labelW = 0;
-        int valueW = 0;
-        for (Line l : lines) {
-            labelW = Math.max(labelW, font.width(l.label));
-            valueW = Math.max(valueW, font.width(l.value));
+        int width = 0;
+        for (Row r : rows) {
+            width = Math.max(width, 11 + (r.fill() >= 0 ? BAR_W + 3 : 0) + font.width(r.value()));
         }
-        int pad = 4;
-        int barW = 34;
-        int width = pad * 3 + labelW + valueW + barW + 4;
-        int lineH = 10;
-        int height = pad * 2 + lines.size() * lineH - 1;
+        int height = rows.size() * ROW_H - 2;
+        // anchor: right of the hotbar, bottom-aligned with it; top-left corner if the screen is too narrow
+        int ax = g.guiWidth() / 2 + 91 + 8;
+        int ay = g.guiHeight() - 2 - Math.round(height * scale);
+        if (ax + width * scale > g.guiWidth() - 2) {
+            ax = 4;
+            ay = 4;
+        }
 
+        RenderSystem.enableBlend();
         g.pose().pushPose();
-        g.pose().translate(6, 6, 0);
+        g.pose().translate(ax, ay, 0);
         g.pose().scale(scale, scale, 1F);
-        g.fill(0, 0, width, height, argb(0x081018, 0.45F * alpha));
-        g.fill(0, 0, width, 1, argb(TEXT, 0.5F * alpha));
-        g.fill(0, 0, 1, 6, argb(TEXT, 0.8F * alpha));
-        g.fill(width - 1, height - 6, width, height, argb(TEXT, 0.8F * alpha));
-        int y = pad;
-        for (Line l : lines) {
-            g.drawString(font, l.label, pad, y, argb(DIM, alpha), false);
-            int vx = pad * 2 + labelW;
-            if (l.bar >= 0) {
-                g.fill(vx, y + 1, vx + barW, y + 7, argb(0x000000, 0.5F * alpha));
-                g.fill(vx + 1, y + 2, vx + 1 + Math.round((barW - 2) * Mth.clamp(l.bar, 0F, 1F)), y + 6, argb(l.color, alpha));
+        int y = 0;
+        for (Row r : rows) {
+            g.setColor(1F, 1F, 1F, alpha);
+            g.blit(ICONS, 0, y, r.icon() * 9, 0, 9, 9, 9 * 6, 9);
+            g.setColor(1F, 1F, 1F, 1F);
+            int x = 11;
+            if (r.fill() >= 0) {
+                drawBar(g, x, y + 2, r, alpha, blink);
+                x += BAR_W + 3;
             }
-            g.drawString(font, l.value, vx + barW + 4, y, argb(l.color, alpha), false);
-            y += lineH;
+            g.drawString(font, r.value(), x, y + 1, argb(r.valueColor(), alpha), true);
+            y += ROW_H;
         }
         g.pose().popPose();
+        RenderSystem.disableBlend();
 
-        // warnings, centred under the crosshair area
-        List<Component> warnings = new ArrayList<>();
-        boolean breathable = s.has(SuitStatusPayload.BREATHABLE);
+        // warnings: centred above the hotbar, like vanilla's action bar
+        Component warning = null;
         if (!breathable && !sealed) {
-            warnings.add(Component.translatable("hud.spacebreaker.warn.unsealed"));
+            warning = Component.translatable("hud.spacebreaker.warn.unsealed");
         } else if (!breathable && s.oxygen() == 0) {
-            warnings.add(Component.translatable("hud.spacebreaker.warn.no_oxygen"));
+            warning = Component.translatable("hud.spacebreaker.warn.no_oxygen");
         } else if (!breathable && o2 < 0.15F) {
-            warnings.add(Component.translatable("hud.spacebreaker.warn.low_oxygen"));
-        }
-        if (s.breath() < SurvivalData.MAX_BREATH / 2 && !breathable) {
-            warnings.add(Component.translatable("hud.spacebreaker.warn.hypoxia"));
-        }
-        if (body < 35) {
-            warnings.add(Component.translatable("hud.spacebreaker.warn.cold"));
+            warning = Component.translatable("hud.spacebreaker.warn.low_oxygen");
+        } else if (body < 35) {
+            warning = Component.translatable("hud.spacebreaker.warn.cold");
         } else if (body > 38.5F) {
-            warnings.add(Component.translatable("hud.spacebreaker.warn.hot"));
+            warning = Component.translatable("hud.spacebreaker.warn.hot");
+        } else if (s.doseRate() > 50 || s.doseMsv() >= 500) {
+            warning = Component.translatable("hud.spacebreaker.warn.radiation");
+        } else if (s.integrity() < 20) {
+            warning = Component.translatable("hud.spacebreaker.warn.damaged");
         }
-        if (s.doseRate() > 50 || s.doseMsv() >= 500) {
-            warnings.add(Component.translatable("hud.spacebreaker.warn.radiation"));
+        if (warning != null && blink) {
+            int ww = font.width(warning);
+            int wx = (g.guiWidth() - ww) / 2;
+            int wy = g.guiHeight() - 59 - (player.isCreative() ? 0 : 10);
+            g.drawString(font, warning, wx, wy, argb(ALARM, alpha), true);
         }
-        if (s.integrity() < 20) {
-            warnings.add(Component.translatable("hud.spacebreaker.warn.damaged"));
+    }
+
+    /** Vanilla-looking bar: dark frame, coloured fill with a lighter top line; marker style for temperatures. */
+    private static void drawBar(GuiGraphics g, int x, int y, Row r, float alpha, boolean blink) {
+        int h = 5;
+        g.fill(x, y, x + BAR_W, y + h, argb(0x101014, 0.75F * alpha));
+        g.fill(x + 1, y + 1, x + BAR_W - 1, y + h - 1, argb(0x2A2C33, 0.75F * alpha));
+        int inner = BAR_W - 2;
+        if (r.marker()) {
+            // normal band (35..38.5 °C) and the marker
+            int b0 = x + 1 + Math.round(inner * (5F / 14F));
+            int b1 = x + 1 + Math.round(inner * (8.5F / 14F));
+            g.fill(b0, y + 1, b1, y + h - 1, argb(0x3E6B3A, alpha));
+            int mx = x + 1 + Math.round((inner - 2) * r.fill());
+            g.fill(mx, y, mx + 2, y + h, argb(r.color(), alpha));
+            return;
         }
-        int wy = g.guiHeight() / 2 + 18;
-        for (Component w : warnings) {
-            if (blink) {
-                int ww = font.width(w);
-                int x = (g.guiWidth() - ww) / 2;
-                g.fill(x - 3, wy - 2, x + ww + 3, wy + 9, argb(0x200000, 0.5F * alpha));
-                g.drawString(font, w, x, wy, argb(ALARM, alpha), false);
-            }
-            wy += 12;
+        int w = Math.round(inner * Mth.clamp(r.fill(), 0F, 1F));
+        if (w > 0) {
+            g.fill(x + 1, y + 1, x + 1 + w, y + h - 1, argb(r.color(), alpha));
+            g.fill(x + 1, y + 1, x + 1 + w, y + 2, argb(lighten(r.color()), alpha));
         }
+        if (r.color() == ALARM && !blink) {
+            g.fill(x, y, x + BAR_W, y + h, argb(ALARM, 0.25F * alpha));
+        }
+    }
+
+    private static int lighten(int rgb) {
+        int r = Math.min(255, ((rgb >> 16) & 0xFF) + 50);
+        int gr = Math.min(255, ((rgb >> 8) & 0xFF) + 50);
+        int b = Math.min(255, (rgb & 0xFF) + 50);
+        return (r << 16) | (gr << 8) | b;
     }
 
     private static String fmt(float v) {
@@ -202,6 +244,4 @@ public final class HelmetHud {
         return String.format(Locale.ROOT, "%.2f", v);
     }
 
-    private record Line(Component label, String value, int color, float bar) {
-    }
 }
