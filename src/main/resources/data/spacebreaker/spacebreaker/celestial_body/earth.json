@@ -4,7 +4,7 @@
   "dimension": "minecraft:overworld",
   "orbit_dimension": "spacebreaker:earth_orbit",
   "physical": { "mass_kg": 5.9722e24, "radius_km": 6371.0, "surface_gravity": 9.80665 },
-  "orbit": { "semi_major_axis_km": 149598023, "eccentricity": 0.0167, "inclination_deg": 0.0, "period_days": 365.256 },
+  "orbit": { "semi_major_axis_km": 149598023, "eccentricity": 0.0167, "inclination_deg": 0.0, "period_days": 365.256, "argument_periapsis_deg": 102.94, "mean_anomaly_deg": 357.53 },
   "rotation": { "day_length_hours": 24.0, "axial_tilt_deg": 23.44 },
   "atmosphere": {
     "pressure_kpa": 101.325, "breathable": true,
@@ -12,5 +12,6 @@
   },
   "climate": { "day_temp_c": 22, "night_temp_c": 8 },
   "radiation_msv_per_day": 0.0066,
-  "solar_irradiance": 1361
+  "solar_irradiance": 1361,
+  "albedo": 0.306
 }

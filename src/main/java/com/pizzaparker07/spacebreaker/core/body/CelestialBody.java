@@ -28,6 +28,8 @@ import java.util.Optional;
  * @param climate         surface temperatures
  * @param radiation       surface dose rate without shielding, mSv per day
  * @param solarIrradiance sunlight at the body, W/m² (Earth = 1361)
+ * @param albedo          Bond albedo (fraction of sunlight reflected), 0.3 when unknown
+ * @param rings           ring system, if any (for sky rendering and the star map)
  */
 public record CelestialBody(
         BodyType type,
@@ -40,8 +42,12 @@ public record CelestialBody(
         Atmosphere atmosphere,
         Climate climate,
         double radiation,
-        double solarIrradiance
+        double solarIrradiance,
+        double albedo,
+        Optional<Rings> rings
 ) {
+    public static final double DEFAULT_ALBEDO = 0.3;
+
     public static final double EARTH_GRAVITY = 9.80665;
     public static final double EARTH_IRRADIANCE = 1361.0;
 
@@ -56,8 +62,18 @@ public record CelestialBody(
             Atmosphere.CODEC.optionalFieldOf("atmosphere", Atmosphere.VACUUM).forGetter(CelestialBody::atmosphere),
             Climate.CODEC.fieldOf("climate").forGetter(CelestialBody::climate),
             Codec.DOUBLE.optionalFieldOf("radiation_msv_per_day", 0.0).forGetter(CelestialBody::radiation),
-            Codec.DOUBLE.optionalFieldOf("solar_irradiance", EARTH_IRRADIANCE).forGetter(CelestialBody::solarIrradiance)
+            Codec.DOUBLE.optionalFieldOf("solar_irradiance", EARTH_IRRADIANCE).forGetter(CelestialBody::solarIrradiance),
+            Codec.DOUBLE.optionalFieldOf("albedo", DEFAULT_ALBEDO).forGetter(CelestialBody::albedo),
+            Rings.CODEC.optionalFieldOf("rings").forGetter(CelestialBody::rings)
     ).apply(i, CelestialBody::new));
+
+    /** Constructor without the optional albedo and rings (kept for code written before they existed). */
+    public CelestialBody(BodyType type, Optional<ResourceLocation> parent, Optional<ResourceKey<Level>> dimension,
+                         Optional<ResourceKey<Level>> orbitDimension, Physical physical, Orbit orbit, Rotation rotation,
+                         Atmosphere atmosphere, Climate climate, double radiation, double solarIrradiance) {
+        this(type, parent, dimension, orbitDimension, physical, orbit, rotation, atmosphere, climate, radiation,
+                solarIrradiance, DEFAULT_ALBEDO, Optional.empty());
+    }
 
     public boolean landable() {
         return dimension.isPresent();
@@ -95,15 +111,36 @@ public record CelestialBody(
         }
     }
 
-    /** Keplerian orbit around the parent. Distances in km, period in days. */
-    public record Orbit(double semiMajorAxisKm, double eccentricity, double inclinationDeg, double periodDays) {
+    /**
+     * Keplerian orbit around the parent. Distances in km, period in days, angles in degrees.
+     * The orientation angles and the mean anomaly refer to the J2000 epoch (ecliptic frame for planets,
+     * the parent's equator/Laplace plane for moons) and default to 0 when unknown.
+     */
+    public record Orbit(double semiMajorAxisKm, double eccentricity, double inclinationDeg, double periodDays,
+                        double longitudeAscendingNodeDeg, double argumentPeriapsisDeg, double meanAnomalyDeg) {
         public static final Orbit NONE = new Orbit(0, 0, 0, 0);
         public static final Codec<Orbit> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.DOUBLE.fieldOf("semi_major_axis_km").forGetter(Orbit::semiMajorAxisKm),
                 Codec.DOUBLE.optionalFieldOf("eccentricity", 0.0).forGetter(Orbit::eccentricity),
                 Codec.DOUBLE.optionalFieldOf("inclination_deg", 0.0).forGetter(Orbit::inclinationDeg),
-                Codec.DOUBLE.fieldOf("period_days").forGetter(Orbit::periodDays)
+                Codec.DOUBLE.fieldOf("period_days").forGetter(Orbit::periodDays),
+                Codec.DOUBLE.optionalFieldOf("longitude_ascending_node_deg", 0.0).forGetter(Orbit::longitudeAscendingNodeDeg),
+                Codec.DOUBLE.optionalFieldOf("argument_periapsis_deg", 0.0).forGetter(Orbit::argumentPeriapsisDeg),
+                Codec.DOUBLE.optionalFieldOf("mean_anomaly_deg", 0.0).forGetter(Orbit::meanAnomalyDeg)
         ).apply(i, Orbit::new));
+
+        /** Orbit without orientation angles (kept for code written before they existed). */
+        public Orbit(double semiMajorAxisKm, double eccentricity, double inclinationDeg, double periodDays) {
+            this(semiMajorAxisKm, eccentricity, inclinationDeg, periodDays, 0, 0, 0);
+        }
+    }
+
+    /** A ring system, radii from the body's centre in km. */
+    public record Rings(double innerRadiusKm, double outerRadiusKm) {
+        public static final Codec<Rings> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Codec.DOUBLE.fieldOf("inner_radius_km").forGetter(Rings::innerRadiusKm),
+                Codec.DOUBLE.fieldOf("outer_radius_km").forGetter(Rings::outerRadiusKm)
+        ).apply(i, Rings::new));
     }
 
     /** Solar day length in hours (what you experience on the surface) and axial tilt. */

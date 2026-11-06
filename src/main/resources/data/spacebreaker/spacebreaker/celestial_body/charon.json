@@ -1,0 +1,12 @@
+{
+  "type": "moon",
+  "parent": "spacebreaker:pluto",
+  "dimension": "spacebreaker:charon",
+  "physical": { "mass_kg": 1.586e21, "radius_km": 606.0 },
+  "orbit": { "semi_major_axis_km": 19591, "eccentricity": 0.0002, "inclination_deg": 0.08, "period_days": 6.38723 },
+  "rotation": { "day_length_hours": 153.2928, "axial_tilt_deg": 0.0, "tidally_locked": true },
+  "climate": { "day_temp_c": -220, "night_temp_c": -230 },
+  "radiation_msv_per_day": 1.4,
+  "solar_irradiance": 0.87,
+  "albedo": 0.25
+}

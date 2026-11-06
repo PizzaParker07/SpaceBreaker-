@@ -1,0 +1,12 @@
+{
+  "type": "moon",
+  "parent": "spacebreaker:mars",
+  "dimension": "spacebreaker:phobos",
+  "physical": { "mass_kg": 1.0659e16, "radius_km": 11.08 },
+  "orbit": { "semi_major_axis_km": 9376, "eccentricity": 0.0151, "inclination_deg": 1.093, "period_days": 0.31891 },
+  "rotation": { "day_length_hours": 7.66, "axial_tilt_deg": 0.0, "tidally_locked": true },
+  "climate": { "day_temp_c": -4, "night_temp_c": -112 },
+  "radiation_msv_per_day": 1.0,
+  "solar_irradiance": 586.21,
+  "albedo": 0.07
+}

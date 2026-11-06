@@ -1,0 +1,12 @@
+{
+  "type": "terrestrial",
+  "parent": "spacebreaker:sun",
+  "dimension": "spacebreaker:mercury",
+  "physical": { "mass_kg": 3.3011e23, "radius_km": 2439.7, "surface_gravity": 3.7 },
+  "orbit": { "semi_major_axis_km": 57909227, "eccentricity": 0.20563593, "inclination_deg": 7.005, "period_days": 87.969, "longitude_ascending_node_deg": 48.33, "argument_periapsis_deg": 29.13, "mean_anomaly_deg": 174.79 },
+  "rotation": { "day_length_hours": 4222.6, "axial_tilt_deg": 0.034 },
+  "climate": { "day_temp_c": 430, "night_temp_c": -180 },
+  "radiation_msv_per_day": 2.0,
+  "solar_irradiance": 9082.67,
+  "albedo": 0.068
+}

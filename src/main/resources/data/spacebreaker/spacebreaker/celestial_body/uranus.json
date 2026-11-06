@@ -1,0 +1,15 @@
+{
+  "type": "ice_giant",
+  "parent": "spacebreaker:sun",
+  "physical": { "mass_kg": 8.681e25, "radius_km": 25362, "surface_gravity": 8.87 },
+  "orbit": { "semi_major_axis_km": 2870658171, "eccentricity": 0.04725744, "inclination_deg": 0.77263783, "period_days": 30685.4, "longitude_ascending_node_deg": 74.02, "argument_periapsis_deg": 96.94, "mean_anomaly_deg": 142.28 },
+  "rotation": { "day_length_hours": 17.24, "axial_tilt_deg": 97.77 },
+  "atmosphere": {
+    "pressure_kpa": 100.0,
+    "composition": { "H2": 0.825, "He": 0.152, "CH4": 0.023 }
+  },
+  "climate": { "day_temp_c": -197, "night_temp_c": -197 },
+  "solar_irradiance": 3.7,
+  "albedo": 0.3,
+  "rings": { "inner_radius_km": 38000, "outer_radius_km": 51149 }
+}
