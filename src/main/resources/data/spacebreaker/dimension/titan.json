@@ -1,0 +1,14 @@
+{
+  "type": "spacebreaker:titan",
+  "generator": {
+    "type": "spacebreaker:planet",
+    "terrain": "spacebreaker:titan",
+    "biome_source": {
+      "type": "spacebreaker:planet",
+      "highlands": "spacebreaker:titan_plains",
+      "dunes": "spacebreaker:titan_dunes",
+      "crater": "spacebreaker:titan_crater",
+      "polar": "spacebreaker:titan_lake_district"
+    }
+  }
+}

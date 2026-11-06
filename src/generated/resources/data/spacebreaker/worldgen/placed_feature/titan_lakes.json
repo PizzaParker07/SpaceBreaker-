@@ -1,0 +1,8 @@
+{
+  "feature": "spacebreaker:titan_lakes",
+  "placement": [
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

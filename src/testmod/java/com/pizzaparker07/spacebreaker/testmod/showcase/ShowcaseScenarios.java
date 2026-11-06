@@ -28,6 +28,12 @@ public final class ShowcaseScenarios {
         ALL.put("emi", new JeiScenario(false));
         ALL.put("belt", new BeltScenario(false));
         ALL.put("vesta", new BeltScenario(true));
+        ALL.put("jovian", new JovianScenario("europa"));
+        ALL.put("io", new JovianScenario("io"));
+        ALL.put("ganymede", new JovianScenario("ganymede"));
+        ALL.put("callisto", new JovianScenario("callisto"));
+        ALL.put("saturnian", new SaturnianScenario(false));
+        ALL.put("enceladus", new SaturnianScenario(true));
     }
 
     public static ShowcaseScenario get(String name) {

@@ -1,0 +1,8 @@
+{
+  "feature": "spacebreaker:enceladus_geysers",
+  "placement": [
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

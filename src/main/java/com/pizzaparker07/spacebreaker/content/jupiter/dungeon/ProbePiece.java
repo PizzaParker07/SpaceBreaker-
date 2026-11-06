@@ -66,6 +66,11 @@ public class ProbePiece extends StructurePiece {
     static final int SHAFT_X = 10;
     static final int SHAFT_Z = 10;
 
+    /** World position of a local position (for showcases and tests). */
+    public BlockPos world(int x, int y, int z) {
+        return getWorldPos(x, y, z);
+    }
+
     /** World position of the cave centre (for showcases and tests). */
     public BlockPos caveCentre() {
         return getWorldPos(10, CAVE + 1, 10);

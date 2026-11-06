@@ -107,6 +107,42 @@ public final class JupiterGameTests {
             }
         }
         helper.assertTrue(lakes > 40, "many paterae with lava lakes: " + lakes);
+        // run the real feature over a lake on the test level and count the lava it leaves
+        PlanetChunkGenerator gen = WorldTests.generator(helper, "io", 9L);
+        LakeFeature.Lake big = null;
+        for (int gx = 0; gx < 10 && big == null; gx++) {
+            for (int gz = 0; gz < 10 && big == null; gz++) {
+                LakeFeature.Lake l = LakeFeature.lake(gen.terrain(), cfg, gx + 30, gz + 30);
+                if (l != null && l.radius() > 12) {
+                    big = l;
+                }
+            }
+        }
+        helper.assertTrue(big != null, "a big lake to test");
+        ServerLevel level = helper.getLevel();
+        int cx = (int) Math.floor(big.x()) >> 4;
+        int cz = (int) Math.floor(big.z()) >> 4;
+        level.getChunk(cx, cz);
+        BlockPos origin = new BlockPos(cx << 4, 0, cz << 4);
+        // shape the test chunk like Io's ground first, so the lake digs into real terrain heights
+        for (int dx = 0; dx < 16; dx++) {
+            for (int dz = 0; dz < 16; dz++) {
+                int h = (int) Math.floor(gen.terrain().height(origin.getX() + dx, origin.getZ() + dz));
+                for (int y = 30; y <= 130; y++) {
+                    level.setBlock(new BlockPos(origin.getX() + dx, y, origin.getZ() + dz),
+                            y <= h ? JupiterModule.SULFUR_SAND.get().defaultBlockState() : Blocks.AIR.defaultBlockState(), 2);
+                }
+            }
+        }
+        new LakeFeature().place(new net.minecraft.world.level.levelgen.feature.FeaturePlaceContext<>(java.util.Optional.empty(), level, gen,
+                net.minecraft.util.RandomSource.create(1), origin, cfg));
+        int lava = 0;
+        for (BlockPos p : BlockPos.betweenClosed(origin.getX(), -64, origin.getZ(), origin.getX() + 15, 200, origin.getZ() + 15)) {
+            if (level.getBlockState(p).is(Blocks.LAVA)) {
+                lava++;
+            }
+        }
+        helper.assertTrue(lava > 20, "the lake feature fills its bowl with lava, found " + lava + " (level " + big.level() + ")");
         WorldTests.dumpMap(t, "io", 0, 0, 4000, 400);
         helper.succeed();
     }

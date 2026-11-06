@@ -1,0 +1,6 @@
+{
+  "type": "spacebreaker:titan_hangar",
+  "biomes": "spacebreaker:titan_plains",
+  "spawn_overrides": {},
+  "step": "surface_structures"
+}

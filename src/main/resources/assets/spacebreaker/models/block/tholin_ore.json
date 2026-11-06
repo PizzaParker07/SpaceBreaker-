@@ -1,0 +1,7 @@
+{
+  "parent": "spacebreaker:block/ore_overlay",
+  "textures": {
+    "stone": "spacebreaker:block/titan_ice",
+    "overlay": "spacebreaker:block/tholin_ore_overlay"
+  }
+}

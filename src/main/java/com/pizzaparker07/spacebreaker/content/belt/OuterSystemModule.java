@@ -19,7 +19,8 @@ public final class OuterSystemModule implements SbModule {
     private final List<SbModule> parts = List.of(
             new OuterWorlds(),
             new BeltModule(),
-            new com.pizzaparker07.spacebreaker.content.jupiter.JupiterModule()
+            new com.pizzaparker07.spacebreaker.content.jupiter.JupiterModule(),
+            new com.pizzaparker07.spacebreaker.content.saturn.SaturnModule()
     );
 
     @Override

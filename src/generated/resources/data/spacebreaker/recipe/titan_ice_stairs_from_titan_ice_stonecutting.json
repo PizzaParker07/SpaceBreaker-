@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "spacebreaker:titan_ice"
+  },
+  "result": {
+    "count": 1,
+    "id": "spacebreaker:titan_ice_stairs"
+  }
+}

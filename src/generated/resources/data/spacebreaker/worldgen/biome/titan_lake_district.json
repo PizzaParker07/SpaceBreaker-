@@ -1,0 +1,48 @@
+{
+  "carvers": {},
+  "creature_spawn_probability": 0.04,
+  "downfall": 0.0,
+  "effects": {
+    "fog_color": 11039808,
+    "foliage_color": 9067054,
+    "grass_color": 9067054,
+    "sky_color": 11565116,
+    "water_color": 4159204,
+    "water_fog_color": 329011
+  },
+  "features": [
+    [],
+    [
+      "spacebreaker:titan_lakes"
+    ],
+    [
+      "spacebreaker:titan_cobbles"
+    ],
+    [],
+    [],
+    [],
+    [
+      "spacebreaker:titan_tholin"
+    ]
+  ],
+  "has_precipitation": false,
+  "spawn_costs": {},
+  "spawners": {
+    "ambient": [],
+    "axolotls": [],
+    "creature": [
+      {
+        "type": "spacebreaker:methane_skater",
+        "maxCount": 4,
+        "minCount": 2,
+        "weight": 30
+      }
+    ],
+    "misc": [],
+    "monster": [],
+    "underground_water_creature": [],
+    "water_ambient": [],
+    "water_creature": []
+  },
+  "temperature": -1.8
+}

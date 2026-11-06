@@ -1,0 +1,9 @@
+{
+  "structure": "spacebreaker:titan_hangar",
+  "world": "spacebreaker:titan",
+  "guardians": [],
+  "loot_tables": [
+    "spacebreaker:dungeons/titan/hangar_workshop",
+    "spacebreaker:dungeons/titan/hangar_lab"
+  ]
+}

@@ -61,22 +61,30 @@ public final class Columns {
         return sum / norm;
     }
 
-    /** y of the top solid block of a column (generation heightmap). */
+    /**
+     * y of the top non-air block of a column. Starts from the generation heightmap but scans the blocks themselves, because
+     * the heightmap is not reliably updated while features dig and build inside one generation step.
+     */
     public static int top(WorldGenLevel level, int x, int z) {
-        return level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, x, z) - 1;
+        int start = Math.min(level.getMaxBuildHeight() - 1, level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, x, z) + 24);
+        BlockPos.MutableBlockPos p = new BlockPos.MutableBlockPos(x, start, z);
+        int min = level.getMinBuildHeight();
+        while (p.getY() > min && level.getBlockState(p).isAir()) {
+            p.move(0, -1, 0);
+        }
+        return p.getY();
     }
 
     /**
      * Moves the ground surface of a column by {@code dy} blocks (negative digs down, positive builds up), keeping the top
      * {@link #CARRY} blocks (soil over rock) as the new top. New ground below the carried layers is {@code fill}.
+     *
+     * @return the new top y
      */
-    public static void shift(WorldGenLevel level, int x, int z, int dy, BlockState fill) {
-        if (dy == 0) {
-            return;
-        }
+    public static int shift(WorldGenLevel level, int x, int z, int dy, BlockState fill) {
         int y = top(level, x, z);
-        if (y <= level.getMinBuildHeight() + CARRY + 2) {
-            return;
+        if (dy == 0 || y <= level.getMinBuildHeight() + CARRY + 2) {
+            return y;
         }
         BlockPos.MutableBlockPos p = new BlockPos.MutableBlockPos();
         BlockState[] carried = new BlockState[CARRY];
@@ -97,6 +105,7 @@ public final class Columns {
         for (int i = 0; i < CARRY; i++) {
             level.setBlock(p.set(x, ny - i, z), carried[i], 2);
         }
+        return ny;
     }
 
     /** Replaces the top {@code depth} solid blocks of a column. */

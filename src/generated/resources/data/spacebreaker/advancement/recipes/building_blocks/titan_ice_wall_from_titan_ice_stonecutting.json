@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "spacebreaker:titan_ice_wall_from_titan_ice_stonecutting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_titan_ice": {
+      "conditions": {
+        "items": [
+          {
+            "items": "spacebreaker:titan_ice"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_titan_ice"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "spacebreaker:titan_ice_wall_from_titan_ice_stonecutting"
+    ]
+  }
+}

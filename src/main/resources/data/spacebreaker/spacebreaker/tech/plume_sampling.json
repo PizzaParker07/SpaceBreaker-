@@ -1,0 +1,13 @@
+{
+  "category": "exploration",
+  "tier": 5,
+  "requires": [
+    "spacebreaker:cryobot_drilling",
+    "spacebreaker:astrobiology"
+  ],
+  "icon": "spacebreaker:sulcus_ice",
+  "samples": [
+    "spacebreaker:enceladus"
+  ],
+  "unlocks": []
+}
