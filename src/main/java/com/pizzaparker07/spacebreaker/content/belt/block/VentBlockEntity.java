@@ -20,6 +20,8 @@ public class VentBlockEntity extends BlockEntity {
     private static final Vector3f SULFUR_YELLOW = new Vector3f(0.92F, 0.82F, 0.42F);
     private static final Vector3f SULFUR_PALE = new Vector3f(0.86F, 0.88F, 0.95F);
     private static final Vector3f ICE_WHITE = new Vector3f(0.93F, 0.96F, 1.0F);
+    private static final Vector3f PLUME_DARK = new Vector3f(0.16F, 0.15F, 0.15F);
+    private static final Vector3f PLUME_GREY = new Vector3f(0.42F, 0.4F, 0.4F);
 
     public VentBlockEntity(BlockPos pos, BlockState state) {
         super(OuterWorlds.VENT.get(), pos, state);
@@ -50,7 +52,16 @@ public class VentBlockEntity extends BlockEntity {
             double vx = r.nextGaussian() * 0.04;
             double vz = r.nextGaussian() * 0.04;
             double vy = speed * (0.7 + r.nextDouble() * 0.6);
-            if (kind.style() == VentBlock.Style.ICE) {
+            if (kind.style() == VentBlock.Style.NITROGEN) {
+                // a narrow dark column of nitrogen gas and dust; at the top the thin wind bends it over into a long streak
+                level.addAlwaysVisibleParticle(new DustParticleOptions(i % 2 == 0 ? PLUME_DARK : PLUME_GREY, 3.2F), true,
+                        x + vx * 6, y + r.nextDouble() * kind.height(), z + vz * 6, vx, 0.04, vz);
+                if (i < 3) {
+                    double along = r.nextDouble() * kind.height() * 0.8;
+                    level.addAlwaysVisibleParticle(new DustParticleOptions(PLUME_DARK, 3.6F), true, x + along, y + kind.height() - along * 0.08,
+                            z + r.nextGaussian() * 0.8, 0.12, -0.01, 0);
+                }
+            } else if (kind.style() == VentBlock.Style.ICE) {
                 level.addAlwaysVisibleParticle(i % 3 == 0 ? ParticleTypes.CLOUD : ParticleTypes.SNOWFLAKE, true, x, y, z, vx, vy, vz);
                 if (i == 0) {
                     level.addAlwaysVisibleParticle(new DustParticleOptions(ICE_WHITE, 2.4F), true, x, y + r.nextDouble() * kind.height(), z,

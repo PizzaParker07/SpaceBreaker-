@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "spacebreaker:sintered_regolith"
+    },
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "S": {
+      "item": "spacebreaker:glimmer_shell"
+    }
+  },
+  "pattern": [
+    " S ",
+    "SGS",
+    " B "
+  ],
+  "result": {
+    "count": 1,
+    "id": "spacebreaker:glimmer_lamp"
+  }
+}

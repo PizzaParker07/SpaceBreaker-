@@ -256,7 +256,9 @@ public final class MoonData {
                 .downfall(0F)
                 .specialEffects(new BiomeSpecialEffects.Builder()
                         .fogColor(0x000000).skyColor(0x000000).waterColor(0x3F76E4).waterFogColor(0x050533)
-                        .grassColorOverride(0x8A8A80).foliageColorOverride(0x8A8A80).build())
+                        .grassColorOverride(0x8A8A80).foliageColorOverride(0x8A8A80)
+                        .backgroundMusic(new net.minecraft.sounds.Music(com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_MOON, 3600, 12000, false))
+                        .build())
                 .mobSpawnSettings(spawns.build())
                 .generationSettings(gen.build())
                 .build();
@@ -320,6 +322,11 @@ public final class MoonData {
             polished(out, RecipeCategory.BUILDING_BLOCKS, sin.base().get(), MoonModule.SINTERED_REGOLITH.get());
             stonecut(out, RecipeCategory.BUILDING_BLOCKS, sin.base().get(), MoonModule.SINTERED_REGOLITH.get());
 
+            // glimmer lamp: four shells around a glass core, a sintered base
+            net.minecraft.data.recipes.ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, MoonModule.GLIMMER_LAMP.get())
+                    .define('S', MoonModule.GLIMMER_SHELL.get()).define('G', Items.GLASS).define('B', MoonModule.SINTERED_REGOLITH.get())
+                    .pattern(" S ").pattern("SGS").pattern(" B ")
+                    .unlockedBy(getHasName(MoonModule.GLIMMER_SHELL.get()), has(MoonModule.GLIMMER_SHELL.get())).save(out);
             // meteoric iron: almost pure iron-nickel
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.RAW_IRON, 4).requires(MoonModule.METEORIC_IRON.get())
                     .unlockedBy(getHasName(MoonModule.METEORIC_IRON.get()), has(MoonModule.METEORIC_IRON.get()))

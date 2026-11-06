@@ -5,6 +5,9 @@
     "spacebreaker:pressure_suits",
     "spacebreaker:aluminium_smelting"
   ],
+  "samples": [
+    "spacebreaker:earth"
+  ],
   "unlocks": [
     "spacebreaker:oxygen_tank",
     "spacebreaker:large_oxygen_tank",

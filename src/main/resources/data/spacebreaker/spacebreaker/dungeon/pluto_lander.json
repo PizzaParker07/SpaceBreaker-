@@ -1,0 +1,9 @@
+{
+  "structure": "spacebreaker:pluto_lander",
+  "world": "spacebreaker:pluto",
+  "guardians": [],
+  "loot_tables": [
+    "spacebreaker:dungeons/pluto/lander_cabin",
+    "spacebreaker:dungeons/pluto/lander_cargo"
+  ]
+}

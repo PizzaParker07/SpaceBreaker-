@@ -92,7 +92,8 @@ public final class MercuryData {
                     .hasPrecipitation(false).temperature(0.5F).downfall(0F)
                     .specialEffects(new BiomeSpecialEffects.Builder()
                             .fogColor(0x000000).skyColor(0x000000).waterColor(0x3F76E4).waterFogColor(0x050533)
-                            .grassColorOverride(0x55575C).foliageColorOverride(0x55575C).build())
+                            .grassColorOverride(0x55575C).foliageColorOverride(0x55575C)
+                            .backgroundMusic(MarsData.airlessMusic()).build())
                     .mobSpawnSettings(MarsData.spawnsFor(key))
                     .generationSettings(gen.build())
                     .build());

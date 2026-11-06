@@ -1,0 +1,8 @@
+{
+  "feature": "spacebreaker:triton_geysers",
+  "placement": [
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

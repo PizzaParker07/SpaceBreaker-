@@ -631,7 +631,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         setState(FlightState.BURN);
         setBurning(!reentry || !isCapsuleOnly());
         setTimer(0);
-        level().playSound(null, blockPosition(), SoundEvents.FIRECHARGE_USE, SoundSource.NEUTRAL, 2F, 0.5F);
+        level().playSound(null, blockPosition(), com.pizzaparker07.spacebreaker.content.audio.SbSounds.ROCKET_IGNITION.get(), SoundSource.NEUTRAL, 2F, 1.1F);
         return true;
     }
 
@@ -675,7 +675,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         }
         if (t == IGNITION_TICKS) {
             setBurning(true);
-            level().playSound(null, blockPosition(), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.NEUTRAL, 2F, 0.5F);
+            level().playSound(null, blockPosition(), com.pizzaparker07.spacebreaker.content.audio.SbSounds.ROCKET_IGNITION.get(), SoundSource.NEUTRAL, 4F, 1F);
         }
         if (t <= 0) {
             beginAscent();
@@ -756,7 +756,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
             setActiveStage(s + 1);
             setBurning(false);
             coast = STAGING_COAST_TICKS;
-            level().playSound(null, blockPosition(), SoundEvents.PISTON_EXTEND, SoundSource.NEUTRAL, 2F, 0.6F);
+            level().playSound(null, blockPosition(), com.pizzaparker07.spacebreaker.content.audio.SbSounds.ROCKET_STAGE_SEPARATION.get(), SoundSource.NEUTRAL, 3F, 1F);
             if (s + 1 >= l.stages().size()) {
                 failAscent();
                 return;
@@ -994,7 +994,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
             } else if (layout().payload().parachute()) {
                 setState(FlightState.PARACHUTE);
                 setTimer(0);
-                level().playSound(null, blockPosition(), SoundEvents.WOOL_PLACE, SoundSource.NEUTRAL, 2F, 0.6F);
+                level().playSound(null, blockPosition(), com.pizzaparker07.spacebreaker.content.audio.SbSounds.ROCKET_PARACHUTE_DEPLOY.get(), SoundSource.NEUTRAL, 3F, 1F);
             } else if (getY() - ground <= Math.abs(vy)) {
                 setPos(getX(), ground, getZ());
                 touchDown(true);

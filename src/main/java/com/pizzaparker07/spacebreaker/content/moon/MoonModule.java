@@ -82,6 +82,10 @@ public final class MoonModule implements SbModule {
 
     public static final DeferredItem<Item> RAW_ILMENITE = ITEMS.registerSimpleItem("raw_ilmenite");
     public static final DeferredItem<Item> KREEP_FRAGMENT = ITEMS.registerSimpleItem("kreep_fragment");
+    public static final DeferredItem<Item> GLIMMER_SHELL = ITEMS.registerSimpleItem("glimmer_shell");
+    /** A lamp of glimmer beetle shells: steady light with no power, for the long lunar night. */
+    public static final DeferredBlock<Block> GLIMMER_LAMP = block("glimmer_lamp", BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_CYAN)
+            .instrument(NoteBlockInstrument.HAT).strength(0.6F).sound(SoundType.GLASS).lightLevel(st -> 14));
 
     // block items (kept as fields for other modules and tests)
     public static final DeferredItem<BlockItem> LUNAR_REGOLITH_ITEM = item(LUNAR_REGOLITH);
@@ -165,6 +169,7 @@ public final class MoonModule implements SbModule {
         order.add(METEORIC_IRON);
         order.add(ILMENITE_ORE);
         order.add(KREEP_ORE);
+        order.add(GLIMMER_LAMP);
         for (DeferredBlock<? extends Block> b : order) {
             DeferredItem<BlockItem> existing = switch (b.getId().getPath()) {
                 case "lunar_regolith" -> LUNAR_REGOLITH_ITEM;
@@ -177,6 +182,7 @@ public final class MoonModule implements SbModule {
         }
         TAB.add(RAW_ILMENITE);
         TAB.add(KREEP_FRAGMENT);
+        TAB.add(GLIMMER_SHELL);
     }
 
     public static List<DeferredBlock<LunarRegolithBlock>> soils() {
@@ -214,13 +220,16 @@ public final class MoonModule implements SbModule {
         MoonData.SPAWNS.add(new MoonData.BiomeSpawns(MoonData.CRATER, s -> {
             s.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MoonEntities.REGOLITH_TICK.get(), 120, 2, 5));
             s.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MoonEntities.ELDER_REGOLITH_TICK.get(), 4, 1, 1));
+            s.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(MoonEntities.GLIMMER_BEETLE.get(), 4, 1, 3));
         }));
         MoonData.SPAWNS.add(new MoonData.BiomeSpawns(MoonData.VOLCANIC, s -> {
             s.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(MoonEntities.DUST_SWIMMER.get(), 18, 2, 4));
             s.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MoonEntities.REGOLITH_TICK.get(), 40, 1, 2));
         }));
-        MoonData.SPAWNS.add(new MoonData.BiomeSpawns(MoonData.POLAR, s ->
-                s.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MoonEntities.REGOLITH_TICK.get(), 30, 1, 2))));
+        MoonData.SPAWNS.add(new MoonData.BiomeSpawns(MoonData.POLAR, s -> {
+            s.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MoonEntities.REGOLITH_TICK.get(), 30, 1, 2));
+            s.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(MoonEntities.GLIMMER_BEETLE.get(), 12, 2, 4));
+        }));
     }
 
     @Override
@@ -245,6 +254,8 @@ public final class MoonModule implements SbModule {
         lang.block(KREEP_ORE, "KREEP Ore", "KREEP Cevheri");
         lang.item(RAW_ILMENITE, "Raw Ilmenite", "Ham İlmenit");
         lang.item(KREEP_FRAGMENT, "KREEP Fragment", "KREEP Parçası");
+        lang.item(GLIMMER_SHELL, "Glimmer Shell", "Parıltı Kabuğu");
+        lang.block(GLIMMER_LAMP, "Glimmer Lamp", "Parıltı Lambası");
         lang.add("biome.spacebreaker.moon_highlands", "Lunar Highlands", "Ay Yaylaları");
         lang.add("biome.spacebreaker.moon_mare", "Lunar Mare", "Ay Denizi (Mare)");
         lang.add("biome.spacebreaker.moon_crater", "Great Crater", "Büyük Krater");
@@ -252,6 +263,10 @@ public final class MoonModule implements SbModule {
         lang.add("biome.spacebreaker.moon_polar", "Lunar Pole", "Ay Kutbu");
         lang.add("structure.spacebreaker.survey_outpost", "Abandoned Survey Outpost", "Terk Edilmiş Keşif Karakolu");
         lang.add("structure.spacebreaker.lava_tube", "Ancient Lava Tube", "Antik Lav Tüpü");
+        lang.add("sign.spacebreaker.outpost_vault.0", "VAULT", "KASA");
+        lang.add("sign.spacebreaker.outpost_vault.1", "power lost", "güç kesildi");
+        lang.add("sign.spacebreaker.outpost_vault.2", "fit a power cell", "güç hücresi tak");
+        lang.add("sign.spacebreaker.outpost_vault.3", "above the door", "kapının üstüne");
         MoonData.translations(lang);
         MoonEntities.translations(lang);
     }
@@ -278,6 +293,7 @@ public final class MoonModule implements SbModule {
         loot.self(IMPACT_BRECCIA.get());
         loot.self(SINTERED_REGOLITH.get());
         loot.self(METEORIC_IRON.get());
+        loot.self(GLIMMER_LAMP.get());
         for (StoneFamily f : families()) {
             loot.self(f.base().get());
             loot.self(f.stairs().get());
@@ -293,7 +309,7 @@ public final class MoonModule implements SbModule {
     @Override
     public void addTags(SbTags tags) {
         List<Block> pick = new ArrayList<>(List.of(MARE_BASALT.get(), IMPACT_BRECCIA.get(), SINTERED_REGOLITH.get(),
-                METEORIC_IRON.get(), ILMENITE_ORE.get(), KREEP_ORE.get(), LUNAR_ICE.get()));
+                METEORIC_IRON.get(), ILMENITE_ORE.get(), KREEP_ORE.get(), LUNAR_ICE.get(), GLIMMER_LAMP.get()));
         for (StoneFamily f : families()) {
             f.all().forEach(b -> pick.add(b.get()));
             tags.block(BlockTags.STAIRS, f.stairs().get());

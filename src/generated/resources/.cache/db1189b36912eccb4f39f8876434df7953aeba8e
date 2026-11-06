@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-06T20:30:55.466525969	Tags for minecraft:item mod id spacebreaker
+// 1.21.1	2026-11-06T21:53:36.572856714	Tags for minecraft:item mod id spacebreaker
 7e8e995a94080524a7a2d6280b7b24b5bae0a66f data/c/tags/item/buckets.json
 2a38d13958b33895ff8da9a470c0eb27ca030dfb data/c/tags/item/dry_ices.json
 9f193ba6f1ede8ee1454c64033f45b25b36488c8 data/c/tags/item/dusts.json
@@ -34,7 +34,8 @@ b9864ba1205ca0bfe05749fe1b054d3d55f93d25 data/c/tags/item/nuggets/aluminum.json
 e2b1acd7ecafb1e12829c81d9760779468454a55 data/c/tags/item/nuggets/steel.json
 668202086fbb6b6e4f1d74c69d57f7a5bde173d0 data/c/tags/item/nuggets/titanium.json
 005301c689a4b9f2a404a8654863325e08b30008 data/c/tags/item/nuggets/tungsten.json
-b167d3808d759fbde13f1ec270495c7ba6616495 data/c/tags/item/ores.json
+e27a64b5283ed94d600959120b2b296e6a69b6a5 data/c/tags/item/ores.json
+f9bb0edf7816cfeb62e0fe8f059db745e1f01707 data/c/tags/item/ores/ammonia.json
 2e53c12f1069a9431086af8c817e22054d435904 data/c/tags/item/ores/bauxite.json
 6782862eafa384e0cc8f1a2770bc5ab062cfbb5b data/c/tags/item/ores/chromite.json
 b3a2195b57c44989915c892616defef84e1cc40f data/c/tags/item/ores/graphite.json
@@ -43,12 +44,13 @@ b3a2195b57c44989915c892616defef84e1cc40f data/c/tags/item/ores/graphite.json
 9f653fe92cede5b05d4ff9ac26f101e43ce60cfb data/c/tags/item/ores/ilmenite.json
 9303ecfabb67b55a4a9758c3fa94f957caa99294 data/c/tags/item/ores/kreep.json
 6c63f1118a8c474ff7da1b8ec76c66fd4fba7075 data/c/tags/item/ores/magnetite.json
+e964c10a1934ab2bf86cfc37c8a98760945cc8f7 data/c/tags/item/ores/methane_clathrate.json
 b95696d7cb751fef26f67aa2843a29892b12c05e data/c/tags/item/ores/pentlandite.json
 c1e9ab087a406ea0d1a295a8302915e64125ae0e data/c/tags/item/ores/rutile.json
 e04da0b4f3f90123ff07d73fd83145c6d7099d42 data/c/tags/item/ores/salt.json
 4855c2782d3cfd4eacfb7f7eea2c8e4117be72a2 data/c/tags/item/ores/spodumene.json
 9c6ef292ec5f9b913322481613b6ee4179f966a9 data/c/tags/item/ores/sulfur.json
-a28d4d3dedc77e45be8f36549454f07d22f02189 data/c/tags/item/ores/tholin.json
+8a715e2e7d33bd4064b569ceaf8da2d435f1367b data/c/tags/item/ores/tholin.json
 0e2e4be0dccac5a97f8194a15aa36781edba362b data/c/tags/item/ores/wolframite.json
 248ef67421eff92210229db562b72a4280edfeb1 data/c/tags/item/perchlorate_soils.json
 72e4001c68b0486a9036976d9db29fde85b30ca6 data/c/tags/item/plastics.json
@@ -107,8 +109,8 @@ c53893040c86bcc09dd84910b2e0945d5107fb1f data/c/tags/item/wires/tungsten.json
 cd7806a652087ef3237bc109bf884f6301b77963 data/minecraft/tags/item/head_armor.json
 f0a0fbdf43cab8de673f6a2a995b934149b396e1 data/minecraft/tags/item/leg_armor.json
 1137c1ba4d56080deb8301dbb264af90ec575b94 data/minecraft/tags/item/sand.json
-de8f9a38550903efdfb886c5581cc9354bce4179 data/minecraft/tags/item/slabs.json
-3f22de000e19ca00d832f88535af788b3c93a803 data/minecraft/tags/item/stairs.json
-8a7c22c46f11fe6a99ab513c1169cedee474514c data/minecraft/tags/item/walls.json
+442b3dcafda20c7f9ac5bc3bb0ef8790b7ae7ad4 data/minecraft/tags/item/slabs.json
+ee48d8b21d549e91aea4a035da7cf561a08d3cd2 data/minecraft/tags/item/stairs.json
+ac79a60690cf9b1c968c94466581cc7dba07fe00 data/minecraft/tags/item/walls.json
 8ce8de56c882fde6d0067f4d1a5eecfe4f54c662 data/spacebreaker/tags/item/press_dies.json
 694849f8ef7201ef082dd39d125bd84fe060a97b data/spacebreaker/tags/item/researchable.json

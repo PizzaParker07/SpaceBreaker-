@@ -237,6 +237,8 @@ public class LavaTubePiece extends StructurePiece {
         }
         guard(level, box, MoonEntities.REGOLITH_TICK.get(), x + 3, fy, z - 2);
         guard(level, box, MoonEntities.REGOLITH_TICK.get(), x - 3, fy, z + 2);
+        guard(level, box, MoonEntities.GLIMMER_BEETLE.get(), x + 1, fy, z + 3);
+        guard(level, box, MoonEntities.GLIMMER_BEETLE.get(), x - 2, fy, z - 3);
     }
 
     private void nest(WorldGenLevel level, BoundingBox box, int x, int y, int z) {

@@ -1,0 +1,21 @@
+{
+  "type": "spacebreaker:surface_vents",
+  "config": {
+    "cell": 130,
+    "chance": 0.55,
+    "deposits": [
+      {
+        "Name": "spacebreaker:plume_dust",
+        "Properties": {
+          "facing": "north",
+          "print": "none"
+        }
+      }
+    ],
+    "max_latitude": -50.0,
+    "radius": 7.0,
+    "vent": {
+      "Name": "spacebreaker:nitrogen_geyser"
+    }
+  }
+}

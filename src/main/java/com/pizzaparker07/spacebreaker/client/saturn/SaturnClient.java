@@ -54,12 +54,15 @@ public final class SaturnClient {
     static void layers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(MethaneSkaterModel.LAYER, MethaneSkaterModel::createLayer);
         event.registerLayerDefinition(GeyserDrifterModel.LAYER, GeyserDrifterModel::createLayer);
+        event.registerLayerDefinition(TholinWormModel.LAYER, TholinWormModel::createLayer);
     }
 
     @SubscribeEvent
     static void renderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(SaturnEntities.METHANE_SKATER.get(), ctx -> new SimpleMobRenderer<>(ctx,
                 new MethaneSkaterModel(ctx.bakeLayer(MethaneSkaterModel.LAYER)), Spacebreaker.id("textures/entity/saturn/methane_skater.png"), 1.0F, 0.5F, false));
+        event.registerEntityRenderer(SaturnEntities.THOLIN_WORM.get(), ctx -> new SimpleMobRenderer<>(ctx,
+                new TholinWormModel(ctx.bakeLayer(TholinWormModel.LAYER)), Spacebreaker.id("textures/entity/saturn/tholin_worm.png"), 1.0F, 0.45F, false));
         event.registerEntityRenderer(SaturnEntities.GEYSER_DRIFTER.get(), ctx -> {
             var r = new SimpleMobRenderer<GeyserDrifter, GeyserDrifterModel>(ctx, new GeyserDrifterModel(ctx.bakeLayer(GeyserDrifterModel.LAYER)),
                     Spacebreaker.id("textures/entity/saturn/geyser_drifter.png"), 1.0F, 0.3F, true);

@@ -119,8 +119,12 @@ abstract class OuterShowcase implements ShowcaseScenario {
 
     /** Places a crashed supply lander next to the stage and adds a shot of it. */
     void lander(ServerLevel level, com.pizzaparker07.spacebreaker.content.belt.dungeon.LanderPiece.Variant variant, String name, double dayFraction) {
-        int x = SX - 50;
-        int z = SZ - 10;
+        lander(level, variant, name, dayFraction, SX - 50, SZ - 10);
+    }
+
+    /** As above, with the lander's corner at (x, z). */
+    void lander(ServerLevel level, com.pizzaparker07.spacebreaker.content.belt.dungeon.LanderPiece.Variant variant, String name, double dayFraction,
+                int x, int z) {
         int y = (int) ground(level, x + 6, z + 13);
         var piece = new com.pizzaparker07.spacebreaker.content.belt.dungeon.LanderPiece(91L, variant, x, y, z, Direction.NORTH);
         MarsScenario.placePiece(level, piece);
@@ -154,7 +158,7 @@ abstract class OuterShowcase implements ShowcaseScenario {
         int y0 = (int) ground(level, SX, SZ) - 1;
         for (int x = SX - 9; x <= SX + 9; x++) {
             for (int z = SZ - 5; z <= SZ + 12; z++) {
-                for (int y = y0 - 3; y <= y0 + 10; y++) {
+                for (int y = y0 - 3; y <= y0 + 48; y++) {
                     level.setBlock(new BlockPos(x, y, z), y < y0 ? rock : y == y0 ? soil : Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
                 }
             }

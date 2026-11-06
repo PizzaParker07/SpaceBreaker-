@@ -17,5 +17,5 @@ def generate():
     generated_item('tholin')
     write('models/block/titan_methane.json', {'textures': {'particle': 'minecraft:block/water_still'}})
     write('blockstates/titan_methane.json', {'variants': {'': {'model': b('titan_methane')}}})
-    for e in ('methane_skater', 'geyser_drifter'):
+    for e in ('methane_skater', 'geyser_drifter', 'tholin_worm'):
         write(f'models/item/{e}_spawn_egg.json', {'parent': 'minecraft:item/template_spawn_egg'})

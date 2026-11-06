@@ -30,6 +30,7 @@
     "spacebreaker:ilmenite_ore",
     "spacebreaker:kreep_ore",
     "spacebreaker:lunar_ice",
+    "spacebreaker:glimmer_lamp",
     "spacebreaker:anorthosite",
     "spacebreaker:anorthosite_stairs",
     "spacebreaker:anorthosite_slab",
@@ -153,6 +154,20 @@
     "spacebreaker:titan_ice",
     "spacebreaker:titan_ice_stairs",
     "spacebreaker:titan_ice_slab",
-    "spacebreaker:titan_ice_wall"
+    "spacebreaker:titan_ice_wall",
+    "spacebreaker:nitrogen_geyser",
+    "spacebreaker:methane_clathrate_ore",
+    "spacebreaker:triton_ice",
+    "spacebreaker:triton_ice_stairs",
+    "spacebreaker:triton_ice_slab",
+    "spacebreaker:triton_ice_wall",
+    "spacebreaker:nitrogen_ice",
+    "spacebreaker:plutonian_tholin_ore",
+    "spacebreaker:charon_ice",
+    "spacebreaker:ammonia_hydrate_ore",
+    "spacebreaker:plutonian_ice",
+    "spacebreaker:plutonian_ice_stairs",
+    "spacebreaker:plutonian_ice_slab",
+    "spacebreaker:plutonian_ice_wall"
   ]
 }

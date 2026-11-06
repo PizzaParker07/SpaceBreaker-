@@ -12,6 +12,12 @@
       "tick_delay": 12000,
       "block_search_extent": 8,
       "offset": 2.0
+    },
+    "music": {
+      "sound": "spacebreaker:music.orbit",
+      "min_delay": 2400,
+      "max_delay": 9600,
+      "replace_current_music": true
     }
   },
   "spawners": {},

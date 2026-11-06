@@ -6,6 +6,12 @@
     "fog_color": 0,
     "foliage_color": 9079424,
     "grass_color": 9079424,
+    "music": {
+      "max_delay": 12000,
+      "min_delay": 3600,
+      "replace_current_music": false,
+      "sound": "spacebreaker:music.moon"
+    },
     "sky_color": 0,
     "water_color": 4159204,
     "water_fog_color": 329011
@@ -33,7 +39,14 @@
   "spawners": {
     "ambient": [],
     "axolotls": [],
-    "creature": [],
+    "creature": [
+      {
+        "type": "spacebreaker:glimmer_beetle",
+        "maxCount": 3,
+        "minCount": 1,
+        "weight": 4
+      }
+    ],
     "misc": [],
     "monster": [
       {

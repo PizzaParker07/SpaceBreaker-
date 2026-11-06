@@ -1,0 +1,46 @@
+{
+  "carvers": {},
+  "creature_spawn_probability": 0.04,
+  "downfall": 0.0,
+  "effects": {
+    "fog_color": 0,
+    "foliage_color": 9342090,
+    "grass_color": 9342090,
+    "sky_color": 0,
+    "water_color": 4159204,
+    "water_fog_color": 329011
+  },
+  "features": [
+    [],
+    [],
+    [
+      "spacebreaker:charon_block"
+    ],
+    [],
+    [],
+    [],
+    [
+      "spacebreaker:charon_ammonia"
+    ]
+  ],
+  "has_precipitation": false,
+  "spawn_costs": {},
+  "spawners": {
+    "ambient": [],
+    "axolotls": [],
+    "creature": [
+      {
+        "type": "spacebreaker:frost_tortoise",
+        "maxCount": 3,
+        "minCount": 2,
+        "weight": 10
+      }
+    ],
+    "misc": [],
+    "monster": [],
+    "underground_water_creature": [],
+    "water_ambient": [],
+    "water_creature": []
+  },
+  "temperature": -2.0
+}

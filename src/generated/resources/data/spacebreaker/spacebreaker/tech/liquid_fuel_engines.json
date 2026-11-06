@@ -5,6 +5,9 @@
     "spacebreaker:basic_rocketry",
     "spacebreaker:fuel_refining"
   ],
+  "samples": [
+    "spacebreaker:earth"
+  ],
   "unlocks": [
     "spacebreaker:kerosene_engine",
     "spacebreaker:fuel_tank_small",

@@ -18,6 +18,7 @@ public final class MoonClient {
         event.registerLayerDefinition(RegolithTickModel.LAYER, RegolithTickModel::createLayer);
         event.registerLayerDefinition(DustSwimmerModel.LAYER, DustSwimmerModel::createLayer);
         event.registerLayerDefinition(SurveyDroneModel.LAYER, SurveyDroneModel::createLayer);
+        event.registerLayerDefinition(GlimmerBeetleModel.LAYER, GlimmerBeetleModel::createLayer);
     }
 
     @SubscribeEvent
@@ -27,5 +28,6 @@ public final class MoonClient {
         event.registerEntityRenderer(MoonEntities.DUST_SWIMMER.get(), DustSwimmerRenderer::new);
         event.registerEntityRenderer(MoonEntities.SURVEY_DRONE.get(), SurveyDroneRenderer::new);
         event.registerEntityRenderer(MoonEntities.STUN_BOLT.get(), StunBoltRenderer::new);
+        event.registerEntityRenderer(MoonEntities.GLIMMER_BEETLE.get(), GlimmerBeetleRenderer::new);
     }
 }

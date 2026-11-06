@@ -92,10 +92,11 @@ final class JovianScenario extends OuterShowcase {
                 level.setBlock(new BlockPos(x, y0 - 2, z), JupiterModule.REFROZEN_BRINE.get().defaultBlockState(), Block.UPDATE_CLIENTS);
             }
         }
-        mob(level, JupiterEntities.GLOW_SERPENT.get(), SX - 5, y0 - 0.9, SZ + 6, 80F);
-        mob(level, JupiterEntities.GLOW_SERPENT.get(), SX - 3, y0 - 0.6, SZ + 7, 250F);
+        mob(level, JupiterEntities.GLOW_SERPENT.get(), SX - 5, y0 - 0.45, SZ + 6.5, 80F);
+        mob(level, JupiterEntities.GLOW_SERPENT.get(), SX - 3, y0 - 0.35, SZ + 7.6, 250F);
         shot("06_europa_blocks", SX + 0.5, y0 + 3.6, SZ + 12.5, 180F, 18F, 120, at(0.12), null);
-        shot("07_glow_serpents", SX - 3.5, y0 + 2.6, SZ + 9.5, 180F, 62F, 80, at(0.12), null);
+        // at night, so their glow stands out against the dark brine
+        shot("07_glow_serpents", SX - 3.5, y0 + 1.4, SZ + 9.3, 180F, 48F, 80, at(0.6), null);
         int px = SX + 50;
         int pz = SZ - 40;
         int py = (int) ground(level, px + 10, pz + 10) - 1;

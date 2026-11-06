@@ -323,3 +323,71 @@ def export(save):
     save(survey_drone(), 'entity/moon', 'survey_drone')
     save(survey_drone_lights(), 'entity/moon', 'survey_drone_lights')
     save(stun_bolt(), 'entity/moon', 'stun_bolt')
+
+
+# --------------------------------------------------------------------------- glimmer beetle
+
+BEETLE = ramp('#11171a', '#1b2427', '#263538', '#35494b', '#4a6563', '#678783')
+GLIMMER = ramp('#1f5a50', '#3a9c86', '#6fd8bf', '#c2f5e7')
+
+
+def glimmer_beetle():
+    r = BEETLE
+    g = GLIMMER
+    cv = Canvas(64, 64)
+
+    def abdomen(face, x, y, fw, fh):
+        if face == 'top':
+            if x in (2, 3):
+                return r[1] if y < fh - 2 else g[0]  # elytra seam, glow showing at the tail
+            if y >= fh - 2:
+                return g[1] if (x + y) % 2 else g[0]
+            t = 4 if (x in (1, 4) and y < 3) else (3 if x in (1, 4) else 2)
+            if y == 0:
+                t += 1
+            return r[min(5, t)]
+        if face == 'back':
+            return g[2] if y == 1 else g[1]
+        if face == 'bottom':
+            return g[0] if y >= fh - 3 else r[0]
+        return r[1] if y > 0 else r[3]
+
+    paint(cv, 0, 0, 6, 3, 7, abdomen)
+    paint(cv, 0, 10, 4, 2, 3, lambda f, x, y, fw, fh: (r[4] if y == 0 else r[3]) if f == 'top' else r[1])
+    paint(cv, 14, 10, 2, 2, 2, lambda f, x, y, fw, fh: (g[2] if y == 0 else r[1]) if f == 'front' else r[2])
+    paint(cv, 22, 10, 1, 2, 1, lambda f, x, y, fw, fh: r[3] if y == 0 else r[2])
+    paint(cv, 0, 16, 4, 1, 1, lambda f, x, y, fw, fh: r[3] if x == 1 else r[1])
+    return cv
+
+
+def glimmer_beetle_glow():
+    """Only the luminous parts: rear of the abdomen, tail seam, eye spots."""
+    g = GLIMMER
+    cv = Canvas(64, 64)
+    # abdomen top rear rows (top face at (7, 0), 6 x 7)
+    for x in range(6):
+        for y in (5, 6):
+            cv[7 + x, y] = g[2] if (x + y) % 2 else g[1]
+    cv[9, 4] = g[1]
+    cv[10, 4] = g[1]
+    # back face at (20, 7), 6 x 3
+    for x in range(6):
+        for y in range(3):
+            cv[20 + x, 7 + y] = g[3] if y == 1 else g[2]
+    # bottom face rear (13, 0) rows 4..6
+    for x in range(6):
+        for y in range(4, 7):
+            cv[13 + x, y] = g[1]
+    # eye spots on the head front (16, 12)
+    cv[16, 12] = g[3]
+    cv[17, 12] = g[3]
+    return cv
+
+
+_export_creatures = export
+
+
+def export(save):  # noqa: F811 - extend the module export
+    _export_creatures(save)
+    save(glimmer_beetle(), 'entity/moon', 'glimmer_beetle')
+    save(glimmer_beetle_glow(), 'entity/moon', 'glimmer_beetle_glow')

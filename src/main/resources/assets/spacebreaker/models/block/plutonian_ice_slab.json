@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab",
+  "textures": {
+    "bottom": "spacebreaker:block/plutonian_ice",
+    "side": "spacebreaker:block/plutonian_ice",
+    "top": "spacebreaker:block/plutonian_ice"
+  }
+}

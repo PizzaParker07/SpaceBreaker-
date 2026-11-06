@@ -4,8 +4,29 @@ icon: spacebreaker:emergency_beacon
 items: [spacebreaker:emergency_beacon]
 research: spacebreaker:orbital_mechanics
 ---
+## The camera aboard
+When you board, the camera switches to a **third-person** view that circles the rocket.
+- Mouse: orbit around the rocket.
+- Mouse wheel: zoom in / out.
+- {key key.togglePerspective}: the cockpit window.
+
+There are no loading screens on the way to orbit, between worlds or when landing; a transition animation plays instead.
+
 ## The star map
-In orbit, {key key.spacebreaker.star_map} opens the map. It shows where you can go, the Δv each trip needs and the Δv left in your rocket. To launch from a surface you need a pad, not the map.
+With the rocket **in orbit**, {key key.spacebreaker.star_map} opens the map. Launch from a pad first.
+1. The Sun is on the left; the **You are here** pin shows where you are. Click a planet to zoom into its system. Go back with **◀ Solar System** or a right-click.
+2. The panel on the right shows the chosen world's picture, a short description and its hazards: **No air**, **Unbreathable air**, **Crushing pressure**, **Hot**, **Cold**, **Radiation**.
+3. Pick **Go to orbit** or **Land**. (A world that is not built yet says **Coming soon**; a body without ground says **No ground to land on**.)
+4. The panel tells you:
+   - **Fuel needed X · on board Y** → **Enough ✔** or **X short ✘**
+   - **Fuel to come home:** enough ✔ / not enough ✘
+   - **Trip time:** X days
+   - **Launch window:** now is fine, or the best one is a little later (going now costs more fuel)
+5. The route is drawn on the map in numbered steps. Press the big **Go** button. If it is greyed out, it tells you why.
+
+While flying, watch the **Fuel left (Δv)** line on the display.
+
+> **Δv** is how much your rocket can change its speed; in short: your fuel.
 
 ## Landing on the Moon
 - Lunar orbit to the surface takes about **1,870 m/s**. The way back takes as much.

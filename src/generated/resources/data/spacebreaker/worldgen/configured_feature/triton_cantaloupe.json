@@ -1,0 +1,14 @@
+{
+  "type": "spacebreaker:polygon_cells",
+  "config": {
+    "cell": 30.0,
+    "depth": 4.0,
+    "edge": 2.0,
+    "edge_block": {
+      "Name": "spacebreaker:triton_ice"
+    },
+    "max_latitude": 44.0,
+    "min_latitude": -44.0,
+    "mode": "dimples"
+  }
+}

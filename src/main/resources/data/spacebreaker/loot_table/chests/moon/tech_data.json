@@ -15,7 +15,7 @@
         },
         {
           "type": "minecraft:item", "weight": 3, "name": "spacebreaker:tech_disk",
-          "functions": [{"function": "spacebreaker:random_tech_disk", "samples": ["spacebreaker:moon"]}]
+          "functions": [{"function": "spacebreaker:random_tech_disk", "samples": ["spacebreaker:moon"], "max_tier": 2}]
         },
         {
           "type": "minecraft:item", "weight": 2, "name": "spacebreaker:tech_disk",

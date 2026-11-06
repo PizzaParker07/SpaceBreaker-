@@ -4,6 +4,9 @@
   "requires": [
     "spacebreaker:pressure_suits"
   ],
+  "samples": [
+    "spacebreaker:earth"
+  ],
   "unlocks": [
     "spacebreaker:gold_foil_insulation",
     "spacebreaker:orange_foam_insulation"

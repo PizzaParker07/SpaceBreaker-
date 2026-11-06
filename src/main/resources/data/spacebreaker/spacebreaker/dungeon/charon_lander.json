@@ -1,0 +1,9 @@
+{
+  "structure": "spacebreaker:charon_lander",
+  "world": "spacebreaker:charon",
+  "guardians": [],
+  "loot_tables": [
+    "spacebreaker:dungeons/charon/lander_cabin",
+    "spacebreaker:dungeons/charon/lander_cargo"
+  ]
+}

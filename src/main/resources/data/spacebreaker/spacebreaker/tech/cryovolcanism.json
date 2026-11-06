@@ -1,0 +1,13 @@
+{
+  "category": "exploration",
+  "tier": 5,
+  "requires": [
+    "spacebreaker:plume_sampling",
+    "spacebreaker:cryogenics"
+  ],
+  "icon": "spacebreaker:nitrogen_geyser",
+  "samples": [
+    "spacebreaker:triton"
+  ],
+  "unlocks": []
+}

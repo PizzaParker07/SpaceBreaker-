@@ -11,6 +11,8 @@ New machines, rocket parts and suits are unlocked by **technologies**. You learn
 
 All three are analysed in a [Research Lab](research_lab).
 
+> Every technology has a sample source, so you never depend on luck. The one exception is **Basic Rocketry**: its disk is always in an observatory archive. Disks are a shortcut: they teach that technology without waiting for samples.
+
 ## Taking samples
 {recipe spacebreaker:sample_kit}
 
