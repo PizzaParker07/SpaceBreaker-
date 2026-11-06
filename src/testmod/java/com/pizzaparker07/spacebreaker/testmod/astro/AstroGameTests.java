@@ -4,6 +4,9 @@ import com.pizzaparker07.spacebreaker.Spacebreaker;
 import com.pizzaparker07.spacebreaker.core.astro.AstroBody;
 import com.pizzaparker07.spacebreaker.core.astro.BodyAdapter;
 import com.pizzaparker07.spacebreaker.core.astro.BodySystem;
+import com.pizzaparker07.spacebreaker.core.astro.Ephemeris;
+import com.pizzaparker07.spacebreaker.core.astro.GameClock;
+import com.pizzaparker07.spacebreaker.core.astro.OrbitService;
 import com.pizzaparker07.spacebreaker.core.astro.TransferPlanner;
 import com.pizzaparker07.spacebreaker.core.body.Bodies;
 import com.pizzaparker07.spacebreaker.core.body.BodyType;
@@ -101,6 +104,20 @@ public final class AstroGameTests {
                 helper.assertTrue(back.equals(en.getValue()), "codec round trip changed " + en.getKey());
             }
         }
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void orbitServiceGivesPositionsAndWindows(GameTestHelper helper) {
+        OrbitService orbits = OrbitService.get(helper.getLevel().getServer());
+        helper.assertTrue(orbits == OrbitService.get(helper.getLevel().getServer()), "one service per server");
+        double au = orbits.ephemeris().starDistanceAu("spacebreaker:mars");
+        helper.assertTrue(au > 1.38 && au < 1.67, "Mars between perihelion and aphelion: " + au);
+        Ephemeris.Window w = orbits.window("spacebreaker:earth", "spacebreaker:mars");
+        long ticks = orbits.ticksUntil(w);
+        helper.assertTrue(w.open() == (ticks == 0), "open windows have no wait");
+        helper.assertTrue(ticks <= GameClock.ticks(800 * 86400.0, BodyAdapter.timeScale()), "next Mars window within a synodic period");
+        helper.assertTrue(orbits.window("spacebreaker:earth", "spacebreaker:moon").open(), "the Moon is always reachable");
         helper.succeed();
     }
 
