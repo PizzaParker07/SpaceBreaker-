@@ -1,15 +1,19 @@
 """Field guide pages for the inner planets (Mars, Phobos and Deimos, Venus, Mercury), registered into gen_guide.py.
+Written with the inner-planets team; one chapter per planet (mars, venus, mercury), the orbit page goes to physics.
 Same element tuples as there: ('text', en, tr), ('heading', en, tr), ('items', [ids], en, tr)."""
 
-CHAPTER = ('inner_planets', 'spacebreaker:martian_regolith', 65)
+CHAPTERS = [
+    ('mars', 'spacebreaker:martian_regolith', 62),
+    ('venus', 'spacebreaker:venus_basalt', 64),
+    ('mercury', 'spacebreaker:mercurian_crust', 66),
+]
 
 
 def register(entry, sb):
     req = sb + 'interplanetary_transfers'
-    ch = CHAPTER[0]
 
     # --------------------------------------------------------------------------------------- Mars
-    entry('mars', ch, 0, sb + 'martian_regolith', 'Mars', 'Mars',
+    entry('mars', 'mars', 0, sb + 'martian_regolith', 'Mars', 'Mars',
           ('items', [sb + 'martian_regolith', sb + 'martian_sand', sb + 'martian_basalt', sb + 'martian_sandstone'], '', ''),
           ('text', 'A cold desert under a butterscotch sky. The air is thin carbon dioxide at under one hundredth of Earth\'s '
                    'pressure, gravity is 0.38 g and nights fall far below freezing. You need a sealed suit here, not just oxygen.',
@@ -30,7 +34,7 @@ def register(entry, sb):
            'İnce toz kırmızı ışığı yanlara saçar ama mavi ışığı dümdüz geçirir; bu yüzden alçak güneşin çevresinde gökyüzü maviye '
            'döner: Dünya\'nın tam tersi.'),
           requires=req)
-    entry('mars_resources', ch, 1, sb + 'raw_hematite', 'Martian Resources', 'Mars Kaynakları',
+    entry('mars_resources', 'mars', 1, sb + 'raw_hematite', 'Martian Resources', 'Mars Kaynakları',
           ('items', [sb + 'hematite_ore', sb + 'hematite_soil', sb + 'perchlorate_soil', sb + 'martian_ice', sb + 'dry_ice'], '', ''),
           ('text', 'The red colour is rust: iron oxide. Hematite ore and soil rich in little hematite spheres are your iron. '
                    'Perchlorate soil is full of toxic salts: useful to chemists, bad for growing food.',
@@ -44,7 +48,7 @@ def register(entry, sb):
           ('text', 'Mudstone, clay and gypsum only form in water. Find them in old river valleys and deltas: Mars was once wet.',
            'Çamurtaşı, kil ve alçıtaşı sadece suda oluşur. Onları eski nehir vadilerinde ve deltalarda bul: Mars bir zamanlar ıslaktı.'),
           requires=req)
-    entry('mars_life', ch, 2, sb + 'rust_beetle_spawn_egg', 'Life on Mars', 'Mars\'ta Yaşam',
+    entry('mars_life', 'mars', 2, sb + 'rust_beetle_spawn_egg', 'Life on Mars', 'Mars\'ta Yaşam',
           ('items', [sb + 'rust_beetle_spawn_egg', sb + 'stonegrazer_spawn_egg', sb + 'canyon_lurker_spawn_egg',
                      sb + 'polar_worm_spawn_egg', sb + 'dust_devil_spawn_egg'], '', ''),
           ('text', 'Rust beetles chew hematite spheres out of the soil and shed iron flakes. Stonegrazers move in small herds and lick '
@@ -56,7 +60,7 @@ def register(entry, sb):
            'Kanyonlarda dikkatli ol: katlanmış bir Kanyon Pusucusu, yaklaşana kadar sıradan bir kaya gibi görünür. Kutup Kurtçukları '
            'kızdırılırsa uyuşturan bir soğukla ısırır; güçlü fırtınalarda da canlı Toz Şeytanları hareket eden her şeyi kovalar.'),
           requires=req)
-    entry('mars_moons', ch, 3, sb + 'phobos_regolith', 'Phobos and Deimos', 'Phobos ve Deimos',
+    entry('mars_moons', 'mars', 3, sb + 'phobos_regolith', 'Phobos and Deimos', 'Phobos ve Deimos',
           ('items', [sb + 'phobos_regolith', sb + 'deimos_regolith', sb + 'carbonaceous_chondrite'], '', ''),
           ('text', 'Two tiny, dark moons, probably captured asteroids. Their gravity is so weak that a jump carries you a long way. '
                    'Mars fills the sky: about 40 degrees across from Phobos, 16 from Deimos, always in the same place.',
@@ -67,7 +71,7 @@ def register(entry, sb):
           requires=req)
 
     # --------------------------------------------------------------------------------------- Venus
-    entry('venus', ch, 10, sb + 'venus_basalt', 'Venus', 'Venüs',
+    entry('venus', 'venus', 0, sb + 'venus_basalt', 'Venus', 'Venüs',
           ('items', [sb + 'venus_basalt', sb + 'venus_soil', sb + 'tessera_rock', sb + 'sulfur_crust', sb + 'metal_frost'], '', ''),
           ('text', 'The surface is a furnace: 464 degrees and 92 times Earth\'s air pressure, under a dim orange sky. Nothing you can '
                    'build yet survives there for long.',
@@ -85,7 +89,7 @@ def register(entry, sb):
           ('text', 'Venus turns backwards and very slowly: the sun rises in the west, and a day lasts months.',
            'Venüs ters yönde ve çok yavaş döner: güneş batıdan doğar ve bir gün aylarca sürer.'),
           requires=req)
-    entry('venus_clouds', ch, 11, sb + 'cloud_jelly_spawn_egg', 'Life and Ruins in the Clouds', 'Bulutlarda Yaşam ve Harabeler',
+    entry('venus_clouds', 'venus', 1, sb + 'cloud_jelly_spawn_egg', 'Life and Ruins in the Clouds', 'Bulutlarda Yaşam ve Harabeler',
           ('items', [sb + 'cloud_jelly_spawn_egg', sb + 'acid_ray_spawn_egg', sb + 'aerogel', sb + 'envelope_fabric'], '', ''),
           ('text', 'Cloud jellies drift on sacs of light gas and sieve sulfur from the air. Acid rays glide in wide curves; leave them '
                    'alone, or they spray acid that eats into armour.',
@@ -97,10 +101,13 @@ def register(entry, sb):
           ('items', [sb + 'acid_coating'], '', ''),
           ('text', 'Put any armour piece and a fluoropolymer coating together in a crafting grid to make it acid-proof.',
            'Herhangi bir zırh parçasını ve bir Floropolimer Kaplamayı üretim ızgarasında birleştirerek onu aside dayanıklı yap.'),
+          ('text', 'Light composite panels and aerogel build platforms that float in the breathable-air layer.',
+           'Hafif kompozit paneller ve aerojel, solunabilir hava katmanında yüzen platformlar kurar.'),
+          ('recipe', sb + 'composite_panel'),
           requires=req)
 
     # --------------------------------------------------------------------------------------- Mercury
-    entry('mercury', ch, 20, sb + 'mercurian_crust', 'Mercury', 'Merkür',
+    entry('mercury', 'mercury', 0, sb + 'mercurian_crust', 'Mercury', 'Merkür',
           ('items', [sb + 'mercury_regolith', sb + 'mercurian_crust', sb + 'low_reflectance_rock', sb + 'hollow_deposit'], '', ''),
           ('text', 'No air and a sun almost three times as wide as at home. In daylight the ground reaches over 400 degrees; at night '
                    'it falls to minus 180. Travel near the terminator, the line between day and night.',
@@ -118,7 +125,7 @@ def register(entry, sb):
           requires=req)
 
     # --------------------------------------------------------------------------------------- orbit
-    entry('inner_orbits', ch, 30, 'minecraft:ender_eye', 'Inner Planets from Orbit', 'Yörüngeden İç Gezegenler',
+    entry('inner_orbits', 'physics', 10, 'minecraft:ender_eye', 'Inner Planets from Orbit', 'Yörüngeden İç Gezegenler',
           ('text', 'From orbit Venus is a smooth, pale ball wrapped in haze, with faint sideways Y-shaped bands in its clouds. Mercury '
                    'looks like a grey Moon. On Mars you can pick out the volcanoes, the rift canyon and the polar caps.',
            'Yörüngeden Venüs, pusa sarılmış düzgün, soluk bir küredir; bulutlarında silik, yan yatmış Y biçimli bantlar vardır. Merkür '

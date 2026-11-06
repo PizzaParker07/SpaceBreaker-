@@ -1,8 +1,8 @@
 {
-  "chapter": "inner_planets",
+  "chapter": "venus",
   "title": "Bulutlarda Yaşam ve Harabeler",
   "icon": "spacebreaker:cloud_jelly_spawn_egg",
-  "order": 11,
+  "order": 1,
   "requires_tech": "spacebreaker:interplanetary_transfers",
   "pages": [
     {
@@ -26,6 +26,12 @@
     },
     {
       "text": "Herhangi bir zırh parçasını ve bir Floropolimer Kaplamayı üretim ızgarasında birleştirerek onu aside dayanıklı yap."
+    },
+    {
+      "text": "Hafif kompozit paneller ve aerojel, solunabilir hava katmanında yüzen platformlar kurar."
+    },
+    {
+      "recipe": "spacebreaker:composite_panel"
     }
   ]
 }

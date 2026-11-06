@@ -344,11 +344,20 @@ entry('moon_dungeons', 'dungeons', 1, SB + 'survey_drone_spawn_egg', 'Ruins on t
        'Laboratuvarları ve sondaları sonraki adımlar için teknoloji diskleri saklar: yaşam desteği, inşaat ve Ay\'ın kendisi.'),
       requires=SB + 'basic_rocketry')
 
+# ------------------------------------------------------------------------------------------- Mars
+entry('mars_ruins', 'dungeons', 2, SB + 'martian_basalt_bricks', 'Ruins on Mars and its Moons', 'Mars ve Uydularındaki Harabeler',
+      ('text', 'An abandoned research station with a greenhouse, an ISRU plant and a drilling rig; an ancient buried riverbed with '
+               'a fallen probe; a crashed sample-return probe on Phobos and an ice cache on Deimos. Their tech disks teach methane '
+               'engines, the Sabatier process and Martian geology.',
+       'Serası, ISRU tesisi ve sondaj kulesi olan terk edilmiş bir araştırma istasyonu; düşmüş bir sondanın bulunduğu antik gömülü '
+       'bir nehir yatağı; Phobos\'ta düşmüş bir numune dönüş sondası ve Deimos\'ta bir buz deposu. Teknoloji diskleri metan '
+       'motorlarını, Sabatier sürecini ve Mars jeolojisini öğretir.'),
+      requires=SB + 'interplanetary_transfers')
 
-# ------------------------------------------------------------------------------------------- other areas
+# ------------------------------------------------------------------------------------------- inner planets
 import inner_planets  # noqa: E402
 
-CHAPTERS.append(inner_planets.CHAPTER)
+CHAPTERS.extend(inner_planets.CHAPTERS)
 inner_planets.register(entry, SB)
 
 

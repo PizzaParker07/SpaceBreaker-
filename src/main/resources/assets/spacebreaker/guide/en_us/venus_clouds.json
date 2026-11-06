@@ -1,8 +1,8 @@
 {
-  "chapter": "inner_planets",
+  "chapter": "venus",
   "title": "Life and Ruins in the Clouds",
   "icon": "spacebreaker:cloud_jelly_spawn_egg",
-  "order": 11,
+  "order": 1,
   "requires_tech": "spacebreaker:interplanetary_transfers",
   "pages": [
     {
@@ -26,6 +26,12 @@
     },
     {
       "text": "Put any armour piece and a fluoropolymer coating together in a crafting grid to make it acid-proof."
+    },
+    {
+      "text": "Light composite panels and aerogel build platforms that float in the breathable-air layer."
+    },
+    {
+      "recipe": "spacebreaker:composite_panel"
     }
   ]
 }

@@ -1,8 +1,8 @@
 {
-  "chapter": "inner_planets",
+  "chapter": "venus",
   "title": "Venus",
   "icon": "spacebreaker:venus_basalt",
-  "order": 10,
+  "order": 0,
   "requires_tech": "spacebreaker:interplanetary_transfers",
   "pages": [
     {

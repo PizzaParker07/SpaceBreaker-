@@ -1,8 +1,8 @@
 {
-  "chapter": "inner_planets",
+  "chapter": "mercury",
   "title": "Mercury",
   "icon": "spacebreaker:mercurian_crust",
-  "order": 20,
+  "order": 0,
   "requires_tech": "spacebreaker:interplanetary_transfers",
   "pages": [
     {

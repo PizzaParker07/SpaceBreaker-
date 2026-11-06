@@ -51,7 +51,7 @@ public final class InnerOrbitGameTests {
                 try (InputStream in = Spacebreaker.class.getResourceAsStream(path)) {
                     helper.assertTrue(in != null, "missing guide page " + path);
                     JsonObject o = JsonParser.parseReader(new InputStreamReader(in, StandardCharsets.UTF_8)).getAsJsonObject();
-                    helper.assertTrue("inner_planets".equals(o.get("chapter").getAsString()), name + " chapter");
+                    helper.assertTrue(!o.get("chapter").getAsString().isEmpty(), name + " chapter");
                     ResourceLocation tech = ResourceLocation.parse(o.get("requires_tech").getAsString());
                     helper.assertTrue(techs.containsKey(tech), name + " requires unknown tech " + tech);
                     helper.assertTrue(BuiltInRegistries.ITEM.containsKey(ResourceLocation.parse(o.get("icon").getAsString())), name + " icon");

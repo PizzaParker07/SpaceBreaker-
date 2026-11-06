@@ -1,8 +1,8 @@
 {
-  "chapter": "inner_planets",
+  "chapter": "physics",
   "title": "Inner Planets from Orbit",
   "icon": "minecraft:ender_eye",
-  "order": 30,
+  "order": 10,
   "requires_tech": "spacebreaker:interplanetary_transfers",
   "pages": [
     {
