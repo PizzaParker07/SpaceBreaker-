@@ -20,7 +20,8 @@ Per world with Complementary (vanilla reference shots live in each area's screen
 | Mercury | airless | huge Sun disc, grey crust at noon and at sunrise (`iris_mercury_*`) |
 | Mars | thin | own butterscotch sky, blue sunset; dust storm haze (`iris_mars_11_dust_storm` vs `vanilla_mars_11_dust_storm`), a little brighter than vanilla |
 | Venus | thick | dark ground, dense orange haze, whiteout in the clouds, cloud sea above (`venus_vanilla_bug_fixed.jpg`: vanilla / before / after) |
-| Titan and later thick worlds | thick | covered by the same generic haze pass (fog + light map of the world itself), no code needed |
+| Titan | thick | orange haze and dim light from the generic haze pass, no Titan code (`iris_titan_*` vs `vanilla_titan_01_dunes`); ground a little warmer than vanilla, the small methane drizzle particles are hard to see under the pack |
+| Europa, Io (and Ganymede, Callisto) | airless | black sky, stars, the huge Jupiter with its terminator, Io's plumes (`iris_europa_01_jupiter`, `iris_io_02_sulfur_plume`); as dark as vanilla where Jupiter's night side faces the ground |
 | Phobos, Deimos | airless | classified and handled like the Moon; no separate shader screenshots yet |
 
 Screen effects and HUDs (all in the GUI layer, drawn over the pack's final frame) were checked under Complementary:
@@ -86,6 +87,8 @@ r, g, b, alpha)` at `RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS` (pose
 the block's baked model through `Sheets.translucentCullBlockSheet()` with scaled alpha and full-bright light, so Iris
 batches it as a translucent entity and packs shade it with their translucent program (correct alpha and sorting).
 Avoid immediate-mode position/colour drawing for world-space holograms: packs may discard or recolour it.
+The Hologram Projector (`client/blueprint`) uses the same technique (translucent block sheet, tinted, alpha) plus
+`RenderType.lines()` outlines; checked with Complementary: `iris_blueprint_01_launch_site`, `iris_blueprint_04_habitat`.
 `vanilla_14_ghost_blocks` / `iris_14_ghost_blocks`: a 4×2×2 ghost (steel, tanks, glass) between the prop rows; with
 Complementary the tint is weaker (the pack re-lights translucent entities) but the ghost stays clearly visible.
 
