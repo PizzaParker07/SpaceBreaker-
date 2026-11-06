@@ -85,20 +85,75 @@ public record Crater(double x, double z, double radius, double depth, double rim
         return 0.12 + 0.63 * s2 * s2;
     }
 
-    /** Strength (0..1) of the bright ray system at this point; 0 for old craters. */
+    /**
+     * Strength (0..1) of the bright ray system at this point; 0 for old craters. A ragged continuous halo
+     * near the rim, then a dozen or so streaks of thin ejecta: each with its own direction, length and width,
+     * slightly curved, some splitting into branches, tapering and breaking up into patches toward the tip.
+     * The generator turns this into a speckle probability, so rays thin out and fade with distance.
+     */
     public double ray(double px, double pz, double s, double rayLength) {
         if (!fresh || s < 0.95 || s > rayLength) {
             return 0;
         }
-        if (s < 1.7) {
-            return 1; // continuous bright ejecta halo
-        }
         double a = Mth.atan2(pz - z, px - x);
-        double p1 = ((seed >>> 32) & 0xFFFF) / 65535.0 * Mth.TWO_PI;
-        double p2 = ((seed >>> 48) & 0xFFFF) / 65535.0 * Mth.TWO_PI;
-        double v = Math.sin(11 * a + p1) + 0.75 * Math.sin(17 * a + p2) + 0.55 * Math.sin(29 * a + p1 + p2);
-        double need = 1.05 + 0.75 * (s - 1.7) / (rayLength - 1.7);
-        return v > need ? Math.min(1, (v - need) * 3) : 0;
+        // ragged halo of fresh, bright ejecta
+        double halo = 1.45 + 0.25 * valueNoise(a * 2.2, seed) + 0.15 * valueNoise(a * 7.1, seed + 1);
+        if (s < halo) {
+            return 1;
+        }
+        double best = 0;
+        int rays = 9 + (int) ((seed >>> 8) & 7);
+        for (int i = 0; i < rays; i++) {
+            long h = seed * 31 + i * 0x9E3779B97F4A7C15L;
+            double theta = unit(h, 0) * Mth.TWO_PI;
+            double len = halo + (rayLength - halo) * (0.35 + 0.65 * unit(h, 1));
+            if (s > len) {
+                continue;
+            }
+            double t = (s - halo) / (len - halo);                      // 0 at the halo, 1 at the tip
+            double curve = (unit(h, 2) - 0.5) * 0.25;
+            double width = (0.08 + 0.1 * unit(h, 3)) * (1 - 0.7 * t);  // angular half-width, tapering
+            double strength = (1 - t) * (0.75 + 0.25 * unit(h, 4));
+            best = Math.max(best, streak(a, theta + curve * t, width, strength, s, h));
+            // a branch splitting off part way out
+            double split = 0.3 + 0.4 * unit(h, 5);
+            if (unit(h, 6) < 0.55 && t > split) {
+                double side = unit(h, 7) < 0.5 ? -1 : 1;
+                double bt = (t - split) / (1 - split);
+                best = Math.max(best, streak(a, theta + curve * t + side * 0.18 * bt, width * 0.7, strength * 0.8, s, h + 17));
+            }
+        }
+        return best;
+    }
+
+    /** One streak: a soft-edged angular band, broken into patches along its length. */
+    private static double streak(double a, double theta, double width, double strength, double s, long h) {
+        double d = Math.abs(Mth.wrapDegrees(Math.toDegrees(a - theta))) * Mth.DEG_TO_RAD;
+        if (d >= width) {
+            return 0;
+        }
+        double across = Math.sqrt(1 - d / width);
+        double patches = 0.5 + 0.5 * valueNoise(s * 2.6, h);
+        double gaps = patches < 0.25 ? 0 : Math.min(1, (patches - 0.25) / 0.45);
+        return strength * across * gaps;
+    }
+
+    private static double unit(long h, int i) {
+        long v = h + i * 0x632BE59BD9B4E019L;
+        v = (v ^ (v >>> 30)) * 0xBF58476D1CE4E5B9L;
+        v = (v ^ (v >>> 27)) * 0x94D049BB133111EBL;
+        v ^= v >>> 31;
+        return (v >>> 11) * 0x1.0p-53;
+    }
+
+    /** Smooth 1-D value noise in [-1, 1] (wraps every 64 units). */
+    private static double valueNoise(double t, long h) {
+        int i = Mth.floor(t);
+        double f = t - i;
+        double u = f * f * (3 - 2 * f);
+        double v0 = unit(h, i & 63) * 2 - 1;
+        double v1 = unit(h, (i + 1) & 63) * 2 - 1;
+        return v0 + (v1 - v0) * u;
     }
 
     static double smooth(double t) {
