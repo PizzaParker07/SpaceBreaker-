@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "spacebreaker:item/radiation_helmet",
+    "layer1": "spacebreaker:item/radiation_helmet_accent"
+  }
+}

@@ -48,7 +48,7 @@ public class SuitOverlayLayer<T extends LivingEntity, M extends HumanoidModel<T>
         if (helmet.getItem() instanceof SpaceSuitItem suit && suit.getType() == ArmorItem.Type.HELMET && getParentModel().head.visible) {
             pose.pushPose();
             getParentModel().head.translateAndRotate(pose);
-            if (SpaceSuitItem.isSunVisorDown(helmet)) {
+            if (SpaceSuitItem.isSunVisorDown(helmet) || suit.tier() == com.pizzaparker07.spacebreaker.content.suit.SuitTier.THERMAL) {
                 sunVisor.render(pose, buffers.getBuffer(RenderType.entityCutoutNoCull(TEXTURE)), light, OverlayTexture.NO_OVERLAY);
             } else {
                 sunVisorUp.render(pose, buffers.getBuffer(RenderType.entityCutoutNoCull(TEXTURE)), light, OverlayTexture.NO_OVERLAY);

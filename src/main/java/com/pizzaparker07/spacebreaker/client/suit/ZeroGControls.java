@@ -41,13 +41,14 @@ public final class ZeroGControls {
         if (!p.isSpectator() && !p.getAbilities().flying && !p.isPassenger()) {
             SuitStatusPayload status = ClientSuitState.get(mc.level.getGameTime());
             boolean mmu = status != null && status.has(SuitStatusPayload.MMU) && status.mmuFuel() > 0;
+            double boost = status != null && status.has(SuitStatusPayload.BOOSTER) ? 1.5 : 1.0;
             double g = Gravity.factorFor(p);
             boolean up = p.input.jumping;
             boolean down = p.input.shiftKeyDown;
             float fwd = p.input.forwardImpulse;
             float side = p.input.leftImpulse;
             if (g < 0.01 && !p.onGround()) {
-                double a = mmu ? 0.03 : 0.004;
+                double a = mmu ? 0.03 * boost : 0.004;
                 Vec3 look = p.getLookAngle();
                 float yaw = p.getYRot() * Mth.DEG_TO_RAD;
                 Vec3 left = new Vec3(Mth.cos(yaw), 0, Mth.sin(yaw));
@@ -59,7 +60,7 @@ public final class ZeroGControls {
                     p.setDeltaMovement(p.getDeltaMovement().scale(0.9)); // attitude/position hold
                 }
             } else if (mmu && up && !p.onGround() && p.getDeltaMovement().y < 0.35) {
-                p.setDeltaMovement(p.getDeltaMovement().add(0, 0.05, 0));
+                p.setDeltaMovement(p.getDeltaMovement().add(0, 0.05 * boost, 0));
                 p.resetFallDistance();
                 thrust = true;
             }

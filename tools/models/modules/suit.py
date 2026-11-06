@@ -57,7 +57,14 @@ def oxygen_tank():
 
 
 def generate():
-    for name in ('eva_helmet', 'eva_chestplate', 'eva_leggings', 'eva_boots', 'magnetic_boots', 'maneuvering_unit'):
+    # suit pieces: base icon + grey accent layer tinted with the dye colour (tint index 1)
+    pieces = ['magnetic_boots'] + [f'{t}_{p}' for t in ('eva', 'thermal', 'heated', 'radiation')
+                                   for p in ('helmet', 'chestplate', 'leggings', 'boots')]
+    for name in pieces:
+        write(f'models/item/{name}.json', {'parent': 'minecraft:item/generated',
+                                            'textures': {'layer0': i(name), 'layer1': i(name + '_accent')}})
+    for name in ('maneuvering_unit', 'suit_upgrade_template', 'thermal_regulator_module', 'radiation_shield_module',
+                 'extra_oxygen_module', 'jetpack_booster_module'):
         generated_item(name)
     oxygen_tank()
     oxygen_filler()

@@ -1,6 +1,7 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "spacebreaker:item/magnetic_boots"
+    "layer0": "spacebreaker:item/magnetic_boots",
+    "layer1": "spacebreaker:item/magnetic_boots_accent"
   }
 }
