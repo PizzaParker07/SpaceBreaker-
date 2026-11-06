@@ -36,10 +36,35 @@ import java.util.Set;
 public final class IndustryBootstrapTest {
     @GameTest(template = "empty")
     public static void researchLabAndPowerAreReachableWithoutResearch(GameTestHelper h) {
+        expect(h, reachable(h, true), "before any research", "research_lab", "combustion_generator", "basic_circuit", "copper_wire",
+                "electric_motor", "crusher", "iron_rod", "battery_bank");
+    }
+
+    @GameTest(template = "empty")
+    public static void everyMachineIsReachableOnceResearched(GameTestHelper h) {
+        java.util.List<String> machines = new java.util.ArrayList<>();
+        MachinesModule.MACHINES.forEach(m -> machines.add(BuiltInRegistries.ITEM.getKey(m.item().get()).getPath()));
+        machines.addAll(java.util.List.of("steel_ingot", "plate_press_die", "wire_press_die", "rod_press_die", "solar_panel",
+                "advanced_circuit", "fluid_tank", "pressurized_tank", "cryogenic_tank", "copper_cable", "hv_cable", "fluid_pipe", "gas_pipe"));
+        expect(h, reachable(h, false), "with research", machines.toArray(String[]::new));
+    }
+
+    private static void expect(GameTestHelper h, Set<Item> have, String when, String... goals) {
+        java.util.List<String> missing = new java.util.ArrayList<>();
+        for (String goal : goals) {
+            if (!have.contains(BuiltInRegistries.ITEM.get(Spacebreaker.id(goal)))) {
+                missing.add(goal);
+            }
+        }
+        h.assertTrue(missing.isEmpty(), "cannot be made " + when + ": " + missing);
+        h.succeed();
+    }
+
+    /** Fixed point over crafting, smelting and machine recipes; gated = machines listed in a tech's unlocks do not run. */
+    private static Set<Item> reachable(GameTestHelper h, boolean gated) {
         var access = h.getLevel().registryAccess();
         var recipes = h.getLevel().getRecipeManager().getRecipes();
         Set<Item> have = new HashSet<>();
-        // the world: every vanilla item, plus everything mined from ores
         BuiltInRegistries.ITEM.forEach(i -> {
             if (BuiltInRegistries.ITEM.getKey(i).getNamespace().equals("minecraft")) {
                 have.add(i);
@@ -53,6 +78,7 @@ public final class IndustryBootstrapTest {
         machineFor.put(MachinesModule.ARC_SMELTING, MachinesModule.ARC_FURNACE);
         machineFor.put(MachinesModule.PRESSING, MachinesModule.PRESS);
         machineFor.put(MachinesModule.FABRICATING, MachinesModule.FABRICATOR);
+        machineFor.put(MachinesModule.REFINING, MachinesModule.REFINERY);
         boolean changed = true;
         while (changed) {
             changed = false;
@@ -64,10 +90,14 @@ public final class IndustryBootstrapTest {
                     if (have.contains(result) || !all(r.getIngredients(), have)) {
                         continue;
                     }
-                } else if (r instanceof ProcessingRecipe pr && machineFor.containsKey(pr.kind()) && pr.fluidInput.isEmpty() && !pr.results.isEmpty()) {
+                } else if (r instanceof ProcessingRecipe pr && machineFor.containsKey(pr.kind()) && !pr.results.isEmpty()) {
                     MachineEntry<?, ?> m = machineFor.get(pr.kind());
                     ResourceLocation id = BuiltInRegistries.BLOCK.getKey(m.block().get());
-                    if (!have.contains(m.item().get()) || !TechRequirement.forUnlock(access, id).isEmpty()) {
+                    if (!have.contains(m.item().get()) || (gated && !TechRequirement.forUnlock(access, id).isEmpty())) {
+                        continue;
+                    }
+                    // fluids: the refinery's crude oil comes from a pumpjack, which must be reachable too
+                    if (pr.fluidInput.isPresent() && !(pr.kind() == MachinesModule.REFINING && have.contains(MachinesModule.PUMPJACK.item().get()))) {
                         continue;
                     }
                     if (pr.tool.isPresent() && !any(pr.tool.get(), have)) {
@@ -87,11 +117,7 @@ public final class IndustryBootstrapTest {
                 changed = true;
             }
         }
-        for (String goal : new String[]{"research_lab", "combustion_generator", "basic_circuit", "copper_wire"}) {
-            Item item = BuiltInRegistries.ITEM.get(Spacebreaker.id(goal));
-            h.assertTrue(have.contains(item), "spacebreaker:" + goal + " cannot be made before any research");
-        }
-        h.succeed();
+        return have;
     }
 
     @GameTest(template = "empty")

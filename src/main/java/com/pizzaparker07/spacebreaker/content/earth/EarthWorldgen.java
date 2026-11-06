@@ -43,22 +43,28 @@ import java.util.List;
  * </ul>
  */
 public final class EarthWorldgen {
-    public record Vein(Metal metal, int size, int count, int minY, int maxY, boolean triangle, float airDiscard, TagKey<Biome> biomes) {
+    public record Vein(Metal metal, int size, int count, int minY, int maxY, boolean triangle, float airDiscard, TagKey<Biome> biomes, String suffix) {
+        public Vein(Metal metal, int size, int count, int minY, int maxY, boolean triangle, float airDiscard, TagKey<Biome> biomes) {
+            this(metal, size, count, minY, maxY, triangle, airDiscard, biomes, "");
+        }
+
         public ResourceKey<ConfiguredFeature<?, ?>> configured() {
-            return ResourceKey.create(Registries.CONFIGURED_FEATURE, Spacebreaker.id("ore_" + metal.oreName));
+            return ResourceKey.create(Registries.CONFIGURED_FEATURE, Spacebreaker.id("ore_" + metal.oreName + suffix));
         }
 
         public ResourceKey<PlacedFeature> placed() {
-            return ResourceKey.create(Registries.PLACED_FEATURE, Spacebreaker.id("ore_" + metal.oreName));
+            return ResourceKey.create(Registries.PLACED_FEATURE, Spacebreaker.id("ore_" + metal.oreName + suffix));
         }
 
         public ResourceKey<BiomeModifier> modifier() {
-            return ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS, Spacebreaker.id("add_ore_" + metal.oreName));
+            return ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS, Spacebreaker.id("add_ore_" + metal.oreName + suffix));
         }
     }
 
     public static final List<Vein> VEINS = List.of(
             new Vein(EarthModule.ALUMINUM, 10, 9, 40, 128, false, 0.0F, Tags.Biomes.IS_HOT_OVERWORLD),
+            // old lateritic patches everywhere else, so nobody is stuck before finding a warm biome
+            new Vein(EarthModule.ALUMINUM, 6, 2, 48, 100, false, 0.0F, BiomeTags.IS_OVERWORLD, "_sparse"),
             new Vein(EarthModule.TITANIUM, 5, 3, -64, 8, true, 0.4F, BiomeTags.IS_OVERWORLD),
             new Vein(EarthModule.NICKEL, 8, 6, -32, 48, true, 0.2F, BiomeTags.IS_OVERWORLD),
             new Vein(EarthModule.LITHIUM, 7, 10, 40, 220, false, 0.0F, Tags.Biomes.IS_MOUNTAIN),
