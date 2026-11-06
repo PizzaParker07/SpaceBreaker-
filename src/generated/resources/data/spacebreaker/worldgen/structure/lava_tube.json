@@ -1,0 +1,9 @@
+{
+  "type": "spacebreaker:lava_tube",
+  "biomes": [
+    "spacebreaker:moon_mare",
+    "spacebreaker:moon_volcanic"
+  ],
+  "spawn_overrides": {},
+  "step": "underground_structures"
+}

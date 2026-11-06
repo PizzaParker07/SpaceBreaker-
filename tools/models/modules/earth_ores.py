@@ -1,4 +1,4 @@
-"""Earth ores, metals, alloys, intermediates (and the Moon's ilmenite overlay, until it moves)."""
+"""Earth ores, metals, alloys and intermediates."""
 from sbmodels.common import *  # noqa: F401,F403
 
 ORES = ['bauxite', 'rutile', 'pentlandite', 'spodumene', 'wolframite']
@@ -23,7 +23,6 @@ def generate():
         ore(f'deepslate_{name}_ore', 'minecraft:block/deepslate', f'{name}_ore_overlay')
         simple_block(f'raw_{name}_block')
         generated_item(f'raw_{name}')
-    ore('ilmenite_ore', b('mare_basalt'), 'ilmenite_ore_overlay')
     for m in METAL_BLOCKS:
         simple_block(f'{m}_block')
         generated_item(f'{m}_ingot')

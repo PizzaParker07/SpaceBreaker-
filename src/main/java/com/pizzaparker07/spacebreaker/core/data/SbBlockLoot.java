@@ -34,6 +34,11 @@ public class SbBlockLoot extends BlockLootSubProvider {
         add(block, b -> createOreDrop(b, drop));
     }
 
+    /** Slabs drop two items when double. */
+    public void slab(Block block) {
+        add(block, createSlabItemTable(block));
+    }
+
     public void custom(Block block, Function<Block, LootTable.Builder> builder) {
         add(block, builder);
     }

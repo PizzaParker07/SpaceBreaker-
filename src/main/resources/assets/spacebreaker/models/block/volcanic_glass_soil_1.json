@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "spacebreaker:block/volcanic_glass_soil_1"
+  }
+}

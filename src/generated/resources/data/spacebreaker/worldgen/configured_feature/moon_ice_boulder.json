@@ -1,0 +1,28 @@
+{
+  "type": "spacebreaker:boulder",
+  "config": {
+    "block": {
+      "type": "minecraft:weighted_state_provider",
+      "entries": [
+        {
+          "data": {
+            "Name": "spacebreaker:lunar_ice"
+          },
+          "weight": 2
+        },
+        {
+          "data": {
+            "Name": "spacebreaker:anorthosite"
+          },
+          "weight": 3
+        }
+      ]
+    },
+    "buried": 0.5,
+    "radius": {
+      "type": "minecraft:uniform",
+      "max_exclusive": 1.6,
+      "min_inclusive": 0.8
+    }
+  }
+}

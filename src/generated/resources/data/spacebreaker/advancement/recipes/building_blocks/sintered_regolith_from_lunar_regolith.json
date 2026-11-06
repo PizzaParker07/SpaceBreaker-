@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_lunar_regolith": {
+      "conditions": {
+        "items": [
+          {
+            "items": "spacebreaker:lunar_regolith"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "spacebreaker:sintered_regolith_from_lunar_regolith"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_lunar_regolith"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "spacebreaker:sintered_regolith_from_lunar_regolith"
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "type": "spacebreaker:boulder",
+  "config": {
+    "block": {
+      "type": "minecraft:weighted_state_provider",
+      "entries": [
+        {
+          "data": {
+            "Name": "spacebreaker:impact_breccia"
+          },
+          "weight": 4
+        },
+        {
+          "data": {
+            "Name": "spacebreaker:anorthosite"
+          },
+          "weight": 3
+        },
+        {
+          "data": {
+            "Name": "spacebreaker:mare_basalt"
+          },
+          "weight": 1
+        }
+      ]
+    },
+    "radius": {
+      "type": "minecraft:uniform",
+      "max_exclusive": 3.6,
+      "min_inclusive": 2.0
+    }
+  }
+}

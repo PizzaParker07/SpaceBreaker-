@@ -1,0 +1,99 @@
+{
+  "body": "spacebreaker:moon",
+  "base_height": 80,
+  "pole_distance": 6000,
+  "relief": {
+    "amplitude": 30,
+    "scale": 460,
+    "detail_amplitude": 2.6,
+    "detail_scale": 30
+  },
+  "lowlands": {
+    "threshold": 0.16,
+    "scale": 2600,
+    "depth": 16,
+    "edge": 0.1,
+    "ridge_height": 1.6,
+    "volcanic_patch": 0.7
+  },
+  "craters": {
+    "density": 1.0,
+    "lowland_density": 0.3,
+    "depth_ratio": 0.2,
+    "rim_ratio": 0.055,
+    "complex_radius": 34,
+    "central_peak": 0.5,
+    "fresh_chance": 0.22,
+    "ray_length": 7,
+    "classes": [
+      {
+        "min_radius": 2.5,
+        "max_radius": 6,
+        "cell": 34,
+        "chance": 0.55,
+        "per_cell": 2
+      },
+      {
+        "min_radius": 6,
+        "max_radius": 16,
+        "cell": 100,
+        "chance": 0.55,
+        "per_cell": 2
+      },
+      {
+        "min_radius": 16,
+        "max_radius": 44,
+        "cell": 280,
+        "chance": 0.55,
+        "per_cell": 1
+      },
+      {
+        "min_radius": 44,
+        "max_radius": 120,
+        "cell": 850,
+        "chance": 0.6,
+        "per_cell": 1
+      }
+    ]
+  },
+  "poles": {
+    "polar_latitude": 72,
+    "ice_latitude": 78,
+    "ice_depth": 4,
+    "polar_craters": 1.6
+  },
+  "materials": {
+    "highland_soil": {
+      "Name": "spacebreaker:lunar_regolith"
+    },
+    "lowland_soil": {
+      "Name": "spacebreaker:mare_regolith"
+    },
+    "ray_soil": {
+      "Name": "spacebreaker:lunar_regolith"
+    },
+    "highland_rock": {
+      "Name": "spacebreaker:anorthosite"
+    },
+    "lowland_rock": {
+      "Name": "spacebreaker:mare_basalt"
+    },
+    "breccia": {
+      "Name": "spacebreaker:impact_breccia"
+    },
+    "polar_soil": {
+      "Name": "spacebreaker:icy_regolith"
+    },
+    "ice": {
+      "Name": "spacebreaker:lunar_ice"
+    },
+    "volcanic_soil": {
+      "Name": "spacebreaker:volcanic_glass_soil"
+    },
+    "bedrock": {
+      "Name": "minecraft:bedrock"
+    },
+    "soil_depth": 4,
+    "lowland_rock_depth": 18
+  }
+}

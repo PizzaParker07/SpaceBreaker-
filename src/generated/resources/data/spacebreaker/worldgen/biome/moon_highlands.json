@@ -1,0 +1,56 @@
+{
+  "carvers": {},
+  "creature_spawn_probability": 0.04,
+  "downfall": 0.0,
+  "effects": {
+    "fog_color": 0,
+    "foliage_color": 9079424,
+    "grass_color": 9079424,
+    "sky_color": 0,
+    "water_color": 4159204,
+    "water_fog_color": 329011
+  },
+  "features": [
+    [],
+    [],
+    [
+      "spacebreaker:moon_boulder_highland",
+      "spacebreaker:moon_meteorite_rare"
+    ],
+    [],
+    [],
+    [],
+    [
+      "spacebreaker:moon_breccia_blob",
+      "spacebreaker:moon_ore_kreep",
+      "spacebreaker:moon_buried_iron"
+    ]
+  ],
+  "has_precipitation": false,
+  "spawn_costs": {},
+  "spawners": {
+    "ambient": [],
+    "axolotls": [],
+    "creature": [
+      {
+        "type": "spacebreaker:dust_swimmer",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 6
+      }
+    ],
+    "misc": [],
+    "monster": [
+      {
+        "type": "spacebreaker:regolith_tick",
+        "maxCount": 4,
+        "minCount": 2,
+        "weight": 100
+      }
+    ],
+    "underground_water_creature": [],
+    "water_ambient": [],
+    "water_creature": []
+  },
+  "temperature": 0.5
+}

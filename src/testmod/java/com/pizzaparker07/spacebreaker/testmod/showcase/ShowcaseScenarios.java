@@ -11,6 +11,7 @@ public final class ShowcaseScenarios {
         ALL.put("style_sample", new StyleSampleScenario());
         ALL.put("suit", new SuitScenario());
         ALL.put("industry", new IndustryScenario());
+        ALL.put("moon", new MoonScenario());
     }
 
     public static ShowcaseScenario get(String name) {

@@ -1,0 +1,10 @@
+{
+  "type": "spacebreaker:survey_outpost",
+  "biomes": [
+    "spacebreaker:moon_highlands",
+    "spacebreaker:moon_mare",
+    "spacebreaker:moon_volcanic"
+  ],
+  "spawn_overrides": {},
+  "step": "surface_structures"
+}
