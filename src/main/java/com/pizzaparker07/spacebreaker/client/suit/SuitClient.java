@@ -17,6 +17,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 
@@ -29,6 +30,20 @@ public final class SuitClient {
     private static final Map<ModelLayerLocation, EvaSuitModel> MODELS = new HashMap<>();
 
     private SuitClient() {
+    }
+
+    @SubscribeEvent
+    static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerBlockEntityRenderer(SuitModule.AIRLOCK_DOOR_BE.get(), AirlockDoorRenderer::new);
+        event.registerBlockEntityRenderer(SuitModule.OXYGEN_FILLER_BE.get(), OxygenFillerRenderer::new);
+    }
+
+    @SubscribeEvent
+    static void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
+        event.register(AirlockDoorRenderer.LEFT_LOWER);
+        event.register(AirlockDoorRenderer.RIGHT_LOWER);
+        event.register(AirlockDoorRenderer.LEFT_UPPER);
+        event.register(AirlockDoorRenderer.RIGHT_UPPER);
     }
 
     @SubscribeEvent

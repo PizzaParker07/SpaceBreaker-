@@ -632,6 +632,54 @@ def icon_small_tank() -> Canvas:
     return _icon(ICON_SMALL_TANK, pal)
 
 
+def oxygen_tank_model() -> Canvas:
+    """UV sheet of the in-hand 3D oxygen tanks (both sizes), 9 colours.
+    Regions:
+      (0,0)-(6,11)   body side: white paint lit from the left, cyan O2 band, steel foot ring
+      (6,0)-(12,6)   end caps (white)
+      (12,0)-(16,4)  collar (steel)
+      (12,4)-(16,6)  brass valve
+      (12,6)-(16,8)  hand wheel (rubber)
+      (6,6)-(8,8)    gauge face, (8,6)-(10,8) gauge body
+    """
+    cv = Canvas()
+    rows = ['W', 'W', 'C', 'c', 'W', 'W', 'W', 'W', 'W', 'S', 's']
+    shade = [W[7], W[7], W[6], W[6], W[6], S[6]]
+    for y, kind in enumerate(rows):
+        for x in range(6):
+            if kind == 'W':
+                c = shade[x]
+            elif kind == 'C':
+                c = C[5] if x < 4 else C[3]
+            elif kind == 'c':
+                c = C[3]
+            elif kind == 'S':
+                c = S[6]
+            else:
+                c = S[4]
+            cv[x, y] = c
+    for y in range(6):
+        for x in range(6, 12):
+            edge = x in (6, 11) or y in (0, 5)
+            cv[x, y] = W[6] if edge else W[7]
+    for y in range(4):
+        for x in range(12, 16):
+            cv[x, y] = S[6] if y < 2 else S[4]
+    for x in range(12, 16):
+        cv[x, 4] = CU[4]
+        cv[x, 5] = CU[2]
+        cv[x, 6] = R[2]
+        cv[x, 7] = R[2]
+    cv[6, 6] = W[7]
+    cv[7, 6] = W[7]
+    cv[6, 7] = W[7]
+    cv[7, 7] = R[2]                           # needle
+    for y in range(6, 8):
+        for x in range(8, 10):
+            cv[x, y] = S[4]
+    return cv
+
+
 def icon_large_tank() -> Canvas:
     pal = {'o': W[0], 'O': W[0], 'W': W[6], 'H': W[7], 'w': W[4], 'g': W[4], 'C': C[5], 'c': C[3],
            's': S[5], 'S': S[5], 'm': S[3], 'b': CU[4], 'B': S[3], 'k': S[3]}
@@ -677,7 +725,9 @@ def icon_boots(magnetic=False) -> Canvas:
 
 
 def export(save):
+    export_blocks(save)
     save(icon_small_tank(), 'item', 'oxygen_tank')
+    save(oxygen_tank_model(), 'item', 'oxygen_tank_model')
     save(icon_helmet(), 'item', 'eva_helmet')
     save(icon_torso(), 'item', 'eva_chestplate')
     save(icon_legs(), 'item', 'eva_leggings')
@@ -691,3 +741,243 @@ def export(save):
     save(eva_boots(), 'models/armor', 'eva_boots')
     save(eva_boots(True), 'models/armor', 'magnetic_boots')
     save(eva_suit_overlay(), 'models/armor', 'eva_suit_overlay')
+
+
+# ===================================================================================== life support blocks
+# 16x16 block textures, 4-6 colours each, light from the top-left. Machines share a white painted casing
+# (same paint as the suit), a galvanised steel plinth and blue anodised fittings.
+
+LAMP_ON = (110, 230, 120)
+
+
+def _canvas_fill(fn) -> Canvas:
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            c = fn(x, y)
+            if c is not None:
+                cv[x, y] = c
+    return cv
+
+
+def casing() -> Canvas:
+    """White painted panel: two panels with a seam, edge highlights, four rivets."""
+    rng = random.Random(51)
+
+    def fn(x, y):
+        if y == 0 or x == 0:
+            return W[7]
+        if y == 15 or x == 15:
+            return W[3]
+        if y == 8:
+            return W[3]                      # panel seam
+        if y == 9:
+            return W[6]
+        if (x, y) in ((2, 2), (13, 2), (2, 13), (13, 13), (2, 6), (13, 6)):
+            return W[3]                      # rivets
+        return W[6]
+    return _canvas_fill(fn)
+
+
+def plinth() -> Canvas:
+    """Galvanised steel base: horizontal brushed grain, darker lower edge."""
+    rng = random.Random(52)
+
+    def fn(x, y):
+        if y == 0:
+            return S[6]
+        if y >= 14:
+            return S[2]
+        return S[4] if (rng.random() < 0.2 or (y % 4 == 2 and rng.random() < 0.5)) else S[5]
+    return _canvas_fill(fn)
+
+
+def steel_top() -> Canvas:
+    """Top plate of a machine: steel with a bevelled edge and corner bolts."""
+    rng = random.Random(53)
+
+    def fn(x, y):
+        if x == 0 or y == 0:
+            return S[6]
+        if x == 15 or y == 15:
+            return S[2]
+        if (x, y) in ((2, 2), (13, 2), (2, 13), (13, 13)):
+            return S[6]
+        if (x, y) in ((3, 3), (14, 3), (3, 14), (14, 14)):
+            return S[2]
+        return S[4] if rng.random() < 0.18 else S[5]
+    return _canvas_fill(fn)
+
+
+def ring_tex() -> Canvas:
+    """Blue anodised cradle ring (used on small elements)."""
+    def fn(x, y):
+        if y == 0 or x == 0:
+            return A[6]
+        if y == 15 or x == 15:
+            return A[3]
+        return A[5] if (x + y) % 5 else A[4]
+    return _canvas_fill(fn)
+
+
+def filler_front(on=False) -> Canvas:
+    """Casing with a cyan O2 band across the top, a centred pressure gauge and a small status lamp."""
+    cv = casing()
+    for x in range(1, 15):
+        cv[x, 3] = C[4]                      # oxygen colour band
+    dial = parse_mask([
+        ".bbbb.",
+        "bwwwwb",
+        "bwwwnb",
+        "bwwnwb",
+        "bwwwwb",
+        ".bbbb.",
+    ])
+    for y, row in enumerate(dial):
+        for x, ch in enumerate(row):
+            if ch == 'b':
+                cv[5 + x, 6 + y] = S[3]
+            elif ch == 'w':
+                cv[5 + x, 6 + y] = W[7]
+            elif ch == 'n':
+                cv[5 + x, 6 + y] = S[3]
+    cv[12, 11] = LAMP_ON if on else S[3]   # status lamp
+    return cv
+
+
+def filler_top() -> Canvas:
+    """Top plate with the tank cradle and its quick-connect port."""
+    cv = steel_top()
+    for y in range(5, 11):
+        for x in range(5, 11):
+            edge = x in (5, 10) or y in (5, 10)
+            cv[x, y] = A[5] if edge else S[2]
+    cv[7, 7] = S[6]
+    cv[8, 7] = S[4]
+    cv[7, 8] = S[4]
+    cv[8, 8] = S[2]
+    return cv
+
+
+def distributor_front(on=False) -> Canvas:
+    """Casing with an air outlet louvre and a status lamp."""
+    cv = casing()
+    for y in range(2, 8):
+        for x in range(3, 13):
+            cv[x, y] = S[2] if y % 2 == 0 else S[5]
+    for x in range(6, 10):
+        cv[x, 11] = S[2]
+        cv[x, 13] = S[2]
+    cv[6, 12] = S[2]
+    cv[9, 12] = S[2]
+    cv[7, 12] = LAMP_ON if on else S[2]
+    cv[8, 12] = LAMP_ON if on else S[2]
+    return cv
+
+
+def distributor_top() -> Canvas:
+    """Fan grille: round dark opening, four blades, steel rim."""
+    cv = steel_top()
+    import math
+    for y in range(16):
+        for x in range(16):
+            dx, dy = x - 7.5, y - 7.5
+            r = math.hypot(dx, dy)
+            if r < 5.6:
+                a = math.atan2(dy, dx)
+                blade = (math.sin(a * 4 + r * 0.6) > 0.35)
+                cv[x, y] = S[4] if blade else S[2]
+                if r < 1.2:
+                    cv[x, y] = A[5]
+            elif r < 6.6:
+                cv[x, y] = S[6] if (dx + dy) < 0 else S[2]
+    return cv
+
+
+def airlock_frame() -> Canvas:
+    """Steel frame with hazard stripes along its inner edge."""
+    rng = random.Random(54)
+    Y = ((214, 170, 40), (40, 38, 36))
+
+    def fn(x, y):
+        if x <= 1:
+            return Y[0] if ((x + y) // 2) % 2 == 0 else Y[1]   # hazard stripes
+        if x == 2 or y == 0:
+            return S[6]
+        if x == 15 or y == 15:
+            return S[2]
+        return S[4] if rng.random() < 0.15 else S[5]
+    return _canvas_fill(fn)
+
+
+def airlock_panel(window=False) -> Canvas:
+    """Door leaves: light painted panel, reinforcing ribs, meeting edges with a rubber seal.
+    The upper texture has a small viewport across both leaves."""
+    rng = random.Random(55)
+
+    def fn(x, y):
+        if x in (7, 8):
+            return R[2]                                  # rubber seal where the leaves meet
+        if x in (2, 13) and 0 < y < 15:
+            return W[4]                                  # leaf edge
+        if y in (3, 12) and not window:
+            return W[4]                                  # rib
+        if window and 4 <= y <= 8 and 4 <= x <= 11:
+            if y in (4, 8) or x in (4, 11):
+                return S[4]                              # viewport rim
+            if (x + y) in (11, 12) and x < 7:
+                return V[5]                              # reflection
+            return V[2]
+        if window and y == 12:
+            return W[4]
+        return W[5] if (rng.random() < 0.1 and not window) else W[6]
+    return _canvas_fill(fn)
+
+
+ICON_AIRLOCK = [
+    "..ssssssssssss..",
+    "..syyHWWkWWHyd..",
+    "..sy.HWWkWWW.d..",
+    "..syHWvvkvvWyd..",
+    "..s.HWvvkvvW.d..",
+    "..syHWWWkWWWyd..",
+    "..s.HWWWkWWW.d..",
+    "..syHWWWkWWWyd..",
+    "..s.HWWWkWWW.d..",
+    "..syHwwwkwwwyd..",
+    "..s.HWWWkWWW.d..",
+    "..syHWWWkWWWyd..",
+    "..s.HWWWkWWW.d..",
+    "..syHWWWkWWWyd..",
+    "..s.wwwwkwwww.d.",
+    "..sddddddddddd..",
+]
+
+
+def icon_airlock() -> Canvas:
+    pal = {'s': S[5], 'd': S[2], 'y': (214, 170, 40), '.': (40, 38, 36), 'H': W[7], 'W': W[6], 'w': W[4], 'k': R[2], 'v': V[2]}
+    cv = Canvas()
+    for y, row in enumerate(ICON_AIRLOCK):
+        for x, ch in enumerate(row):
+            if ch in pal and not (ch == '.' and (x < 2 or x > 13)):
+                cv[x, y] = pal[ch]
+    return cv
+
+
+def export_blocks(save):
+    metal = (150, 230, 0, None)
+    paint = (110, 0, 0, None)
+    save(casing(), 'block', 'life_support_casing', paint, wrap=False)
+    save(plinth(), 'block', 'life_support_plinth', metal, wrap=False)
+    save(steel_top(), 'block', 'life_support_top', metal, wrap=False)
+    save(ring_tex(), 'block', 'life_support_ring', (180, 232, 0, None), wrap=False)
+    save(filler_front(), 'block', 'oxygen_filler_front', paint, wrap=False)
+    save(filler_front(True), 'block', 'oxygen_filler_front_on', paint, wrap=False)
+    save(filler_top(), 'block', 'oxygen_filler_top', metal, wrap=False)
+    save(distributor_front(), 'block', 'oxygen_distributor_front', paint, wrap=False)
+    save(distributor_front(True), 'block', 'oxygen_distributor_front_on', paint, wrap=False)
+    save(distributor_top(), 'block', 'oxygen_distributor_top', metal, wrap=False)
+    save(airlock_frame(), 'block', 'airlock_door_frame', metal, wrap=False)
+    save(airlock_panel(), 'block', 'airlock_door_panel', paint, wrap=False)
+    save(airlock_panel(True), 'block', 'airlock_door_panel_window', paint, wrap=False)
+    save(icon_airlock(), 'item', 'airlock_door')

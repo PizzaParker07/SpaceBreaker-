@@ -1,8 +1,11 @@
-// 1.21.1	2026-11-06T15:15:27.695556507	Loot Tables
+// 1.21.1	2026-11-06T16:25:30.013973427	Loot Tables
+e37973997ec83c5b040a31bf9fcda1757b53fc00 data/spacebreaker/loot_table/blocks/airlock_door.json
 381c22549e872c7388c3d609990ec8528d9a753a data/spacebreaker/loot_table/blocks/bauxite_ore.json
 8f191904fef6b2e1c7ed927b5dbd576104853403 data/spacebreaker/loot_table/blocks/deepslate_bauxite_ore.json
 b42f80f1e5699725779da4a6d75d52c79a62e98c data/spacebreaker/loot_table/blocks/ilmenite_ore.json
 f0c1fcb2b7c1e060d842ee9a11ed4da8d8601f57 data/spacebreaker/loot_table/blocks/lunar_regolith.json
 04307bd04334e34d0045c5d17fefdd1e4e45b016 data/spacebreaker/loot_table/blocks/mare_basalt.json
+fa8d39140471b72a66f6b97e047ab9a12ff8d826 data/spacebreaker/loot_table/blocks/oxygen_distributor.json
+a377ecf31a9ddf2018cc11c9366bd2059ab356ab data/spacebreaker/loot_table/blocks/oxygen_filler.json
 184ae3a2abf30c9f56f0c1c0bebec75679056d33 data/spacebreaker/loot_table/blocks/raw_bauxite_block.json
 c09ba019815f2fcf7845fff827fdd1cde3490e07 data/spacebreaker/loot_table/blocks/solar_panel.json

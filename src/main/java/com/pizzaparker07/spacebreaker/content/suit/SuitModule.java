@@ -21,7 +21,38 @@ import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.item.crafting.Ingredient;
 import com.pizzaparker07.spacebreaker.content.suit.net.SuitNetwork;
 import com.pizzaparker07.spacebreaker.client.hud.HudConfig;
+import com.pizzaparker07.spacebreaker.content.suit.block.AirlockDoorBlock;
+import com.pizzaparker07.spacebreaker.content.suit.block.AirlockDoorBlockEntity;
+import com.pizzaparker07.spacebreaker.content.suit.block.OxygenDistributorBlock;
+import com.pizzaparker07.spacebreaker.content.suit.block.OxygenDistributorBlockEntity;
+import com.pizzaparker07.spacebreaker.content.suit.block.OxygenFillerBlock;
+import com.pizzaparker07.spacebreaker.content.suit.block.OxygenFillerBlockEntity;
+import com.pizzaparker07.spacebreaker.content.suit.block.SealedRooms;
+import com.pizzaparker07.spacebreaker.core.data.SbBlockLoot;
+import com.pizzaparker07.spacebreaker.core.env.Environment;
+import net.minecraft.advancements.critereon.StatePropertiesPredicate;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.DoubleHighBlockItem;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.attachment.AttachmentType;
@@ -36,6 +67,8 @@ import java.util.function.Supplier;
 
 /** EVA suits, oxygen tanks and life support equipment. */
 public final class SuitModule implements SbModule {
+    public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(Spacebreaker.MOD_ID);
+    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, Spacebreaker.MOD_ID);
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Spacebreaker.MOD_ID);
     public static final DeferredRegister<ArmorMaterial> MATERIALS = DeferredRegister.create(Registries.ARMOR_MATERIAL, Spacebreaker.MOD_ID);
     public static final DeferredRegister<AttachmentType<?>> ATTACHMENTS = DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, Spacebreaker.MOD_ID);
@@ -79,6 +112,35 @@ public final class SuitModule implements SbModule {
     public static final DeferredItem<ManeuveringUnitItem> MANEUVERING_UNIT = ITEMS.registerItem("maneuvering_unit",
             ManeuveringUnitItem::new, new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON));
 
+    // ------------------------------------------------------------------ life support blocks
+
+    /** Blocks that always hold air (in addition to full solid blocks). */
+    public static final TagKey<Block> AIRTIGHT = TagKey.create(Registries.BLOCK, Spacebreaker.id("airtight"));
+    /** Full blocks that still let air through (leaves, ...). */
+    public static final TagKey<Block> LEAKY = TagKey.create(Registries.BLOCK, Spacebreaker.id("leaky"));
+
+    public static final DeferredBlock<OxygenFillerBlock> OXYGEN_FILLER = BLOCKS.registerBlock("oxygen_filler", OxygenFillerBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.0F, 6.0F).sound(SoundType.METAL).noOcclusion().requiresCorrectToolForDrops());
+    public static final DeferredBlock<OxygenDistributorBlock> OXYGEN_DISTRIBUTOR = BLOCKS.registerBlock("oxygen_distributor", OxygenDistributorBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.0F, 6.0F).sound(SoundType.METAL).noOcclusion().requiresCorrectToolForDrops());
+    public static final DeferredBlock<AirlockDoorBlock> AIRLOCK_DOOR = BLOCKS.registerBlock("airlock_door", AirlockDoorBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 12.0F).sound(SoundType.METAL).noOcclusion()
+                    .requiresCorrectToolForDrops().pushReaction(PushReaction.BLOCK));
+    public static final DeferredItem<BlockItem> OXYGEN_FILLER_ITEM = ITEMS.registerSimpleBlockItem(OXYGEN_FILLER);
+    public static final DeferredItem<BlockItem> OXYGEN_DISTRIBUTOR_ITEM = ITEMS.registerSimpleBlockItem(OXYGEN_DISTRIBUTOR);
+    public static final DeferredItem<DoubleHighBlockItem> AIRLOCK_DOOR_ITEM = ITEMS.registerItem("airlock_door",
+            p -> new DoubleHighBlockItem(AIRLOCK_DOOR.get(), p));
+
+    @SuppressWarnings("DataFlowIssue")
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<OxygenFillerBlockEntity>> OXYGEN_FILLER_BE =
+            BLOCK_ENTITIES.register("oxygen_filler", () -> BlockEntityType.Builder.of(OxygenFillerBlockEntity::new, OXYGEN_FILLER.get()).build(null));
+    @SuppressWarnings("DataFlowIssue")
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<OxygenDistributorBlockEntity>> OXYGEN_DISTRIBUTOR_BE =
+            BLOCK_ENTITIES.register("oxygen_distributor", () -> BlockEntityType.Builder.of(OxygenDistributorBlockEntity::new, OXYGEN_DISTRIBUTOR.get()).build(null));
+    @SuppressWarnings("DataFlowIssue")
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<AirlockDoorBlockEntity>> AIRLOCK_DOOR_BE =
+            BLOCK_ENTITIES.register("airlock_door", () -> BlockEntityType.Builder.of(AirlockDoorBlockEntity::new, AIRLOCK_DOOR.get()).build(null));
+
     private static DeferredItem<SpaceSuitItem> suit(String name, ArmorItem.Type type, String texture) {
         return ITEMS.registerItem(name, p -> new SpaceSuitItem(EVA_SUIT, type, SuitTier.MK1, texture, p),
                 new Item.Properties().durability(type.getDurability(20)).rarity(Rarity.UNCOMMON));
@@ -92,6 +154,10 @@ public final class SuitModule implements SbModule {
     @Override
     public void register(IEventBus modBus) {
         COMPONENTS.register(modBus);
+        BLOCKS.register(modBus);
+        BLOCK_ENTITIES.register(modBus);
+        modBus.addListener(SuitModule::capabilities);
+        Environment.addOxygenSource(SealedRooms::providesOxygen);
         ATTACHMENTS.register(modBus);
         modBus.addListener(SuitNetwork::register);
         ModLoadingContext.get().getActiveContainer().registerConfig(ModConfig.Type.CLIENT, HudConfig.SPEC, "spacebreaker-hud.toml");
@@ -100,13 +166,33 @@ public final class SuitModule implements SbModule {
         SbTabs.EQUIPMENT.icon(EVA_HELMET).add(EVA_HELMET).add(EVA_CHESTPLATE).add(EVA_LEGGINGS).add(EVA_BOOTS).add(MAGNETIC_BOOTS)
                 .addStack(() -> OxygenTankItem.filled(OXYGEN_TANK.get()))
                 .addStack(() -> OxygenTankItem.filled(LARGE_OXYGEN_TANK.get()))
-                .addStack(() -> ManeuveringUnitItem.filled(MANEUVERING_UNIT.get()));
+                .addStack(() -> ManeuveringUnitItem.filled(MANEUVERING_UNIT.get()))
+                .add(OXYGEN_FILLER_ITEM).add(OXYGEN_DISTRIBUTOR_ITEM).add(AIRLOCK_DOOR_ITEM);
+    }
+
+    private static void capabilities(RegisterCapabilitiesEvent event) {
+        for (var type : List.of(OXYGEN_FILLER_BE.get(), OXYGEN_DISTRIBUTOR_BE.get())) {
+            event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, type, (be, side) -> be.getItems());
+        }
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, OXYGEN_FILLER_BE.get(), (be, side) -> be.getEnergy());
     }
 
     @Override
     public void addTranslations(Lang lang) {
         lang.add("itemGroup.spacebreaker.equipment", "Spacebreaker: Equipment", "Spacebreaker: Ekipman");
         lang.item(OXYGEN_TANK, "Oxygen Tank", "Oksijen Tüpü");
+        lang.block(OXYGEN_FILLER, "Oxygen Filler", "Oksijen Dolum İstasyonu");
+        lang.block(OXYGEN_DISTRIBUTOR, "Oxygen Distributor", "Oksijen Dağıtıcı");
+        lang.block(AIRLOCK_DOOR, "Airlock Door", "Hava Kilidi Kapısı");
+        lang.add("message.spacebreaker.machine.empty", "No tank inserted · %s / %s FE", "Tüp takılı değil · %s / %s FE");
+        lang.add("message.spacebreaker.distributor.scanning", "Checking the room for leaks...", "Oda sızıntıya karşı kontrol ediliyor...");
+        lang.add("message.spacebreaker.distributor.leak", "Room is not sealed", "Oda sızdırmaz değil");
+        lang.add("message.spacebreaker.distributor.leak_at", "Leak near %s %s %s (or the room is too large)", "Sızıntı: %s %s %s yakınında (ya da oda çok büyük)");
+        lang.add("message.spacebreaker.distributor.no_oxygen", "Sealed room of %s blocks: insert an oxygen tank", "%s bloklu sızdırmaz oda: bir oksijen tüpü tak");
+        lang.add("message.spacebreaker.distributor.sealed", "Sealed room of %s blocks · oxygen for %s", "%s bloklu sızdırmaz oda · %s yetecek oksijen");
+        lang.add("tooltip.spacebreaker.oxygen_filler", "Refills tanks from breathable air. Needs FE", "Tüpleri solunabilir havadan doldurur. FE gerekir");
+        lang.add("tooltip.spacebreaker.oxygen_distributor", "Pressurises the sealed room around it from a tank", "Çevresindeki sızdırmaz odayı tüpten oksijenle doldurur");
+        lang.add("tooltip.spacebreaker.airlock_door", "Airtight when closed. Opens by hand or redstone", "Kapalıyken hava geçirmez. Elle ya da kızıltaşla açılır");
         lang.item(LARGE_OXYGEN_TANK, "Large Oxygen Tank", "Büyük Oksijen Tüpü");
         lang.item(EVA_HELMET, "EVA Helmet", "EVA Kaskı");
         lang.item(EVA_CHESTPLATE, "EVA Torso", "EVA Gövdesi");
@@ -157,10 +243,23 @@ public final class SuitModule implements SbModule {
 
     @Override
     public void addTags(SbTags tags) {
+        tags.block(BlockTags.MINEABLE_WITH_PICKAXE, OXYGEN_FILLER.get(), OXYGEN_DISTRIBUTOR.get(), AIRLOCK_DOOR.get());
+        tags.block(AIRTIGHT, Blocks.IRON_TRAPDOOR, Blocks.IRON_DOOR);
+        tags.blockTag(LEAKY, BlockTags.LEAVES);
         tags.item(ItemTags.HEAD_ARMOR, EVA_HELMET.get());
         tags.item(ItemTags.CHEST_ARMOR, EVA_CHESTPLATE.get());
         tags.item(ItemTags.LEG_ARMOR, EVA_LEGGINGS.get());
         tags.item(ItemTags.FOOT_ARMOR, EVA_BOOTS.get(), MAGNETIC_BOOTS.get());
+    }
+
+    @Override
+    public void addBlockLoot(SbBlockLoot loot) {
+        loot.self(OXYGEN_FILLER.get());
+        loot.self(OXYGEN_DISTRIBUTOR.get());
+        loot.custom(AIRLOCK_DOOR.get(), b -> LootTable.lootTable().withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1))
+                .add(LootItem.lootTableItem(b).when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(b)
+                        .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(AirlockDoorBlock.HALF, DoubleBlockHalf.LOWER))))
+                .when(ExplosionCondition.survivesExplosion())));
     }
 
     private static EnumMap<ArmorItem.Type, Integer> defense(int boots, int legs, int chest, int helmet, int body) {

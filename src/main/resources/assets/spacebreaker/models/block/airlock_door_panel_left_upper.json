@@ -1,0 +1,79 @@
+{
+  "parent": "minecraft:block/block",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "panel": "spacebreaker:block/airlock_door_panel_window",
+    "edge": "spacebreaker:block/life_support_plinth",
+    "particle": "spacebreaker:block/airlock_door_panel_window"
+  },
+  "elements": [
+    {
+      "from": [
+        2,
+        0,
+        6
+      ],
+      "to": [
+        8,
+        15,
+        10
+      ],
+      "faces": {
+        "north": {
+          "texture": "#panel",
+          "uv": [
+            8,
+            1,
+            14,
+            16
+          ]
+        },
+        "south": {
+          "texture": "#panel",
+          "uv": [
+            2,
+            1,
+            8,
+            16
+          ]
+        },
+        "east": {
+          "texture": "#edge",
+          "uv": [
+            6,
+            1,
+            10,
+            16
+          ]
+        },
+        "west": {
+          "texture": "#edge",
+          "uv": [
+            6,
+            1,
+            10,
+            16
+          ]
+        },
+        "up": {
+          "texture": "#edge",
+          "uv": [
+            2,
+            6,
+            8,
+            10
+          ]
+        },
+        "down": {
+          "texture": "#edge",
+          "uv": [
+            2,
+            6,
+            8,
+            10
+          ]
+        }
+      }
+    }
+  ]
+}

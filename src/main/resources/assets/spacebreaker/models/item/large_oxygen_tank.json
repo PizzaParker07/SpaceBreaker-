@@ -1,6 +1,12 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "spacebreaker:item/large_oxygen_tank"
+  "loader": "neoforge:separate_transforms",
+  "gui_light": "front",
+  "base": {
+    "parent": "spacebreaker:item/large_oxygen_tank_3d"
+  },
+  "perspectives": {
+    "gui": {
+      "parent": "spacebreaker:item/large_oxygen_tank_icon"
+    }
   }
 }
