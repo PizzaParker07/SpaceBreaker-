@@ -1,0 +1,17 @@
+{
+  "values": [
+    "#c:storage_blocks/raw_bauxite",
+    "#c:storage_blocks/aluminum",
+    "#c:storage_blocks/raw_rutile",
+    "#c:storage_blocks/titanium",
+    "#c:storage_blocks/raw_pentlandite",
+    "#c:storage_blocks/nickel",
+    "#c:storage_blocks/raw_spodumene",
+    "#c:storage_blocks/lithium",
+    "#c:storage_blocks/raw_wolframite",
+    "#c:storage_blocks/tungsten",
+    "#c:storage_blocks/steel",
+    "#c:storage_blocks/aluminum_lithium",
+    "#c:storage_blocks/nickel_superalloy"
+  ]
+}

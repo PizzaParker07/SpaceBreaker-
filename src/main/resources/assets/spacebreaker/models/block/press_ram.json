@@ -1,0 +1,146 @@
+{
+  "parent": "minecraft:block/block",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "steel": "spacebreaker:block/press_steel",
+    "particle": "spacebreaker:block/press_steel"
+  },
+  "elements": [
+    {
+      "from": [
+        4,
+        9,
+        4
+      ],
+      "to": [
+        12,
+        13,
+        12
+      ],
+      "faces": {
+        "north": {
+          "texture": "#steel",
+          "uv": [
+            4,
+            3,
+            12,
+            7
+          ]
+        },
+        "south": {
+          "texture": "#steel",
+          "uv": [
+            4,
+            3,
+            12,
+            7
+          ]
+        },
+        "east": {
+          "texture": "#steel",
+          "uv": [
+            4,
+            3,
+            12,
+            7
+          ]
+        },
+        "west": {
+          "texture": "#steel",
+          "uv": [
+            4,
+            3,
+            12,
+            7
+          ]
+        },
+        "up": {
+          "texture": "#steel",
+          "uv": [
+            4,
+            4,
+            12,
+            12
+          ]
+        },
+        "down": {
+          "texture": "#steel",
+          "uv": [
+            4,
+            4,
+            12,
+            12
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        6,
+        8,
+        6
+      ],
+      "to": [
+        10,
+        9,
+        10
+      ],
+      "faces": {
+        "north": {
+          "texture": "#steel",
+          "uv": [
+            6,
+            7,
+            10,
+            8
+          ]
+        },
+        "south": {
+          "texture": "#steel",
+          "uv": [
+            6,
+            7,
+            10,
+            8
+          ]
+        },
+        "east": {
+          "texture": "#steel",
+          "uv": [
+            6,
+            7,
+            10,
+            8
+          ]
+        },
+        "west": {
+          "texture": "#steel",
+          "uv": [
+            6,
+            7,
+            10,
+            8
+          ]
+        },
+        "up": {
+          "texture": "#steel",
+          "uv": [
+            6,
+            6,
+            10,
+            10
+          ]
+        },
+        "down": {
+          "texture": "#steel",
+          "uv": [
+            6,
+            6,
+            10,
+            10
+          ]
+        }
+      }
+    }
+  ]
+}

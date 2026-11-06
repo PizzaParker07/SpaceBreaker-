@@ -1,0 +1,109 @@
+{
+  "variants": {
+    "facing=north,shape=pumpjack_well": {
+      "model": "spacebreaker:block/pumpjack_well"
+    },
+    "facing=east,shape=pumpjack_well": {
+      "model": "spacebreaker:block/pumpjack_well",
+      "y": 90
+    },
+    "facing=south,shape=pumpjack_well": {
+      "model": "spacebreaker:block/pumpjack_well",
+      "y": 180
+    },
+    "facing=west,shape=pumpjack_well": {
+      "model": "spacebreaker:block/pumpjack_well",
+      "y": 270
+    },
+    "facing=north,shape=pumpjack_rear": {
+      "model": "spacebreaker:block/pumpjack_rear"
+    },
+    "facing=east,shape=pumpjack_rear": {
+      "model": "spacebreaker:block/pumpjack_rear",
+      "y": 90
+    },
+    "facing=south,shape=pumpjack_rear": {
+      "model": "spacebreaker:block/pumpjack_rear",
+      "y": 180
+    },
+    "facing=west,shape=pumpjack_rear": {
+      "model": "spacebreaker:block/pumpjack_rear",
+      "y": 270
+    },
+    "facing=north,shape=pumpjack_post": {
+      "model": "spacebreaker:block/pumpjack_post"
+    },
+    "facing=east,shape=pumpjack_post": {
+      "model": "spacebreaker:block/pumpjack_post",
+      "y": 90
+    },
+    "facing=south,shape=pumpjack_post": {
+      "model": "spacebreaker:block/pumpjack_post",
+      "y": 180
+    },
+    "facing=west,shape=pumpjack_post": {
+      "model": "spacebreaker:block/pumpjack_post",
+      "y": 270
+    },
+    "facing=north,shape=pumpjack_beam": {
+      "model": "spacebreaker:block/empty_part"
+    },
+    "facing=east,shape=pumpjack_beam": {
+      "model": "spacebreaker:block/empty_part",
+      "y": 90
+    },
+    "facing=south,shape=pumpjack_beam": {
+      "model": "spacebreaker:block/empty_part",
+      "y": 180
+    },
+    "facing=west,shape=pumpjack_beam": {
+      "model": "spacebreaker:block/empty_part",
+      "y": 270
+    },
+    "facing=north,shape=pumpjack_head": {
+      "model": "spacebreaker:block/empty_part"
+    },
+    "facing=east,shape=pumpjack_head": {
+      "model": "spacebreaker:block/empty_part",
+      "y": 90
+    },
+    "facing=south,shape=pumpjack_head": {
+      "model": "spacebreaker:block/empty_part",
+      "y": 180
+    },
+    "facing=west,shape=pumpjack_head": {
+      "model": "spacebreaker:block/empty_part",
+      "y": 270
+    },
+    "facing=north,shape=refinery_column": {
+      "model": "spacebreaker:block/refinery_column"
+    },
+    "facing=east,shape=refinery_column": {
+      "model": "spacebreaker:block/refinery_column",
+      "y": 90
+    },
+    "facing=south,shape=refinery_column": {
+      "model": "spacebreaker:block/refinery_column",
+      "y": 180
+    },
+    "facing=west,shape=refinery_column": {
+      "model": "spacebreaker:block/refinery_column",
+      "y": 270
+    },
+    "facing=north,shape=refinery_top": {
+      "model": "spacebreaker:block/refinery_top"
+    },
+    "facing=east,shape=refinery_top": {
+      "model": "spacebreaker:block/refinery_top",
+      "y": 90
+    },
+    "facing=south,shape=refinery_top": {
+      "model": "spacebreaker:block/refinery_top",
+      "y": 180
+    },
+    "facing=west,shape=refinery_top": {
+      "model": "spacebreaker:block/refinery_top",
+      "y": 270
+    }
+  }
+}

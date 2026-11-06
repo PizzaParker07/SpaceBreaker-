@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "spacebreaker:basic_circuit"
+    },
+    "F": {
+      "item": "minecraft:furnace"
+    },
+    "P": {
+      "tag": "c:plates/iron"
+    },
+    "W": {
+      "tag": "c:wires/copper"
+    }
+  },
+  "pattern": [
+    "PPP",
+    "WFW",
+    "PCP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "spacebreaker:combustion_generator"
+  }
+}

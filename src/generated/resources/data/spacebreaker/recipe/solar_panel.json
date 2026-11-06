@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "c:plates/aluminum"
+    },
+    "C": {
+      "item": "spacebreaker:basic_circuit"
+    },
+    "L": {
+      "item": "spacebreaker:solar_cell"
+    },
+    "R": {
+      "tag": "c:rods/steel"
+    }
+  },
+  "pattern": [
+    "LLL",
+    "ARA",
+    " C "
+  ],
+  "result": {
+    "count": 1,
+    "id": "spacebreaker:solar_panel"
+  }
+}

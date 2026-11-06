@@ -1,0 +1,22 @@
+{
+  "type": "spacebreaker:crushing",
+  "bonus": {
+    "count": 1,
+    "id": "minecraft:flint"
+  },
+  "bonus_chance": 0.1,
+  "energy": 12,
+  "ingredients": [
+    {
+      "count": 1,
+      "tag": "c:gravels"
+    }
+  ],
+  "results": [
+    {
+      "count": 1,
+      "id": "minecraft:sand"
+    }
+  ],
+  "time": 60
+}

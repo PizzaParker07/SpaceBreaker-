@@ -1,0 +1,21 @@
+{
+  "type": "spacebreaker:crushing",
+  "bonus": {
+    "count": 1,
+    "id": "spacebreaker:lithium_dust"
+  },
+  "bonus_chance": 0.5,
+  "ingredients": [
+    {
+      "count": 1,
+      "tag": "c:raw_materials/spodumene"
+    }
+  ],
+  "results": [
+    {
+      "count": 1,
+      "id": "spacebreaker:lithium_dust"
+    }
+  ],
+  "time": 100
+}

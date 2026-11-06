@@ -1,0 +1,19 @@
+{
+  "type": "spacebreaker:pressing",
+  "ingredients": [
+    {
+      "count": 1,
+      "tag": "c:ingots/nickel_superalloy"
+    }
+  ],
+  "results": [
+    {
+      "count": 1,
+      "id": "spacebreaker:nickel_superalloy_plate"
+    }
+  ],
+  "time": 60,
+  "tool": {
+    "item": "spacebreaker:plate_press_die"
+  }
+}

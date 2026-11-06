@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "P": {
+      "tag": "c:plates/iron"
+    }
+  },
+  "pattern": [
+    "PPP",
+    "   ",
+    "PPP"
+  ],
+  "result": {
+    "count": 8,
+    "id": "spacebreaker:fluid_pipe"
+  }
+}

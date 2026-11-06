@@ -1,0 +1,113 @@
+{
+  "parent": "minecraft:block/block",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "front": "spacebreaker:block/battery_bank_front",
+    "top": "spacebreaker:block/machine_top",
+    "side": "spacebreaker:block/battery_bank_side",
+    "bottom": "spacebreaker:block/machine_bottom",
+    "particle": "spacebreaker:block/battery_bank_side",
+    "c1": "spacebreaker:block/battery_bank_charge_1",
+    "c2": "spacebreaker:block/battery_bank_charge_2",
+    "c3": "spacebreaker:block/battery_bank_charge_3",
+    "c4": "spacebreaker:block/battery_bank_charge_4"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "north": {
+          "texture": "#front",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "south": {
+          "texture": "#side",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "east": {
+          "texture": "#side",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "west": {
+          "texture": "#side",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "up": {
+          "texture": "#top",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "down": {
+          "texture": "#bottom",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        0,
+        -0.01
+      ],
+      "to": [
+        16,
+        16,
+        0
+      ],
+      "faces": {
+        "north": {
+          "texture": "#c3",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        }
+      },
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      },
+      "shade": false
+    }
+  ]
+}

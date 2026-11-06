@@ -1,0 +1,20 @@
+{
+  "type": "spacebreaker:arc_smelting",
+  "energy": 80,
+  "ingredients": [
+    {
+      "count": 2,
+      "tag": "c:sands"
+    },
+    {
+      "count": 1,
+      "tag": "c:dusts/coal"
+    }
+  ],
+  "results": [
+    {
+      "count": 1,
+      "id": "spacebreaker:silicon"
+    }
+  ]
+}

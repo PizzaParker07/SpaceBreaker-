@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "spacebreaker:basic_circuit"
+    },
+    "F": {
+      "item": "minecraft:flint"
+    },
+    "H": {
+      "item": "minecraft:hopper"
+    },
+    "M": {
+      "item": "spacebreaker:electric_motor"
+    },
+    "P": {
+      "tag": "c:plates/iron"
+    }
+  },
+  "pattern": [
+    "PHP",
+    "FMF",
+    "PCP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "spacebreaker:crusher"
+  }
+}

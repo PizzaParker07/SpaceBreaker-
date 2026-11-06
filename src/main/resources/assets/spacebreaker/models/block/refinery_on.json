@@ -1,0 +1,233 @@
+{
+  "parent": "minecraft:block/block",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "front": "spacebreaker:block/refinery_front",
+    "side": "spacebreaker:block/machine_casing",
+    "top": "spacebreaker:block/machine_top",
+    "bottom": "spacebreaker:block/machine_bottom",
+    "column": "spacebreaker:block/refinery_column",
+    "ctop": "spacebreaker:block/refinery_column_top",
+    "grating": "spacebreaker:block/refinery_grating",
+    "ladder": "minecraft:block/ladder",
+    "steel": "spacebreaker:block/press_steel",
+    "glow": "spacebreaker:block/refinery_glow",
+    "particle": "spacebreaker:block/refinery_column"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        10,
+        16
+      ],
+      "faces": {
+        "north": {
+          "texture": "#front",
+          "uv": [
+            0,
+            6,
+            16,
+            16
+          ]
+        },
+        "south": {
+          "texture": "#side",
+          "uv": [
+            0,
+            6,
+            16,
+            16
+          ]
+        },
+        "east": {
+          "texture": "#side",
+          "uv": [
+            0,
+            6,
+            16,
+            16
+          ]
+        },
+        "west": {
+          "texture": "#side",
+          "uv": [
+            0,
+            6,
+            16,
+            16
+          ]
+        },
+        "up": {
+          "texture": "#top",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "down": {
+          "texture": "#bottom",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        2,
+        10,
+        2
+      ],
+      "to": [
+        14,
+        16,
+        14
+      ],
+      "faces": {
+        "north": {
+          "texture": "#column",
+          "uv": [
+            2,
+            0,
+            14,
+            6
+          ]
+        },
+        "south": {
+          "texture": "#column",
+          "uv": [
+            2,
+            0,
+            14,
+            6
+          ]
+        },
+        "east": {
+          "texture": "#column",
+          "uv": [
+            2,
+            0,
+            14,
+            6
+          ]
+        },
+        "west": {
+          "texture": "#column",
+          "uv": [
+            2,
+            0,
+            14,
+            6
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        13,
+        10,
+        3
+      ],
+      "to": [
+        15,
+        16,
+        5
+      ],
+      "faces": {
+        "north": {
+          "texture": "#steel",
+          "uv": [
+            1,
+            0,
+            3,
+            6
+          ]
+        },
+        "south": {
+          "texture": "#steel",
+          "uv": [
+            13,
+            0,
+            15,
+            6
+          ]
+        },
+        "east": {
+          "texture": "#steel",
+          "uv": [
+            11,
+            0,
+            13,
+            6
+          ]
+        },
+        "west": {
+          "texture": "#steel",
+          "uv": [
+            3,
+            0,
+            5,
+            6
+          ]
+        },
+        "up": {
+          "texture": "#steel",
+          "uv": [
+            13,
+            3,
+            15,
+            5
+          ]
+        },
+        "down": {
+          "texture": "#steel",
+          "uv": [
+            13,
+            11,
+            15,
+            13
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        0,
+        -0.01
+      ],
+      "to": [
+        16,
+        10,
+        0
+      ],
+      "faces": {
+        "north": {
+          "texture": "#glow",
+          "uv": [
+            0,
+            6,
+            16,
+            16
+          ]
+        }
+      },
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      },
+      "shade": false
+    }
+  ]
+}

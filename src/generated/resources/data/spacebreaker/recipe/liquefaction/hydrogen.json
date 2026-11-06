@@ -1,0 +1,15 @@
+{
+  "type": "spacebreaker:liquefaction",
+  "energy": 160,
+  "fluid_input": {
+    "amount": 1000,
+    "tag": "c:hydrogen"
+  },
+  "fluid_results": [
+    {
+      "amount": 250,
+      "id": "spacebreaker:liquid_hydrogen"
+    }
+  ],
+  "time": 80
+}

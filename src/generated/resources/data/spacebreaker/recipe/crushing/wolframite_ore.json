@@ -1,0 +1,16 @@
+{
+  "type": "spacebreaker:crushing",
+  "ingredients": [
+    {
+      "count": 1,
+      "tag": "c:ores/wolframite"
+    }
+  ],
+  "results": [
+    {
+      "count": 2,
+      "id": "spacebreaker:tungsten_dust"
+    }
+  ],
+  "time": 120
+}

@@ -1,0 +1,17 @@
+{
+  "type": "spacebreaker:arc_smelting",
+  "energy": 80,
+  "ingredients": [
+    {
+      "count": 1,
+      "tag": "c:raw_materials/wolframite"
+    }
+  ],
+  "results": [
+    {
+      "count": 1,
+      "id": "spacebreaker:tungsten_ingot"
+    }
+  ],
+  "time": 160
+}

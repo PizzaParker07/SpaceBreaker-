@@ -1,0 +1,14 @@
+{
+  "values": [
+    "spacebreaker:bauxite_ore",
+    "spacebreaker:deepslate_bauxite_ore",
+    "spacebreaker:rutile_ore",
+    "spacebreaker:deepslate_rutile_ore",
+    "spacebreaker:pentlandite_ore",
+    "spacebreaker:deepslate_pentlandite_ore",
+    "spacebreaker:spodumene_ore",
+    "spacebreaker:deepslate_spodumene_ore",
+    "spacebreaker:wolframite_ore",
+    "spacebreaker:deepslate_wolframite_ore"
+  ]
+}

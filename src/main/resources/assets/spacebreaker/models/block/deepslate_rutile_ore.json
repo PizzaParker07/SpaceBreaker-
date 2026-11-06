@@ -1,0 +1,7 @@
+{
+  "parent": "spacebreaker:block/ore_overlay",
+  "textures": {
+    "stone": "minecraft:block/deepslate",
+    "overlay": "spacebreaker:block/rutile_ore_overlay"
+  }
+}

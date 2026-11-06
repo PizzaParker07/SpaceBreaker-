@@ -1,0 +1,25 @@
+{
+  "type": "spacebreaker:refining",
+  "energy": 60,
+  "fluid_input": {
+    "amount": 1000,
+    "tag": "c:crude_oil"
+  },
+  "fluid_results": [
+    {
+      "amount": 500,
+      "id": "spacebreaker:rp1"
+    },
+    {
+      "amount": 250,
+      "id": "spacebreaker:methane"
+    }
+  ],
+  "results": [
+    {
+      "count": 1,
+      "id": "spacebreaker:plastic_sheet"
+    }
+  ],
+  "time": 100
+}

@@ -17,23 +17,25 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 ### Paket ① Madenler ve malzemeler
 | Durum | İçerik | Not |
 |---|---|---|
-| 🎨 | Boksit Cevheri (taş + derin kayrak), Ham Boksit, Ham Boksit Bloğu | pizolitik kızıl-kahve yumrular |
-| 🎨 | Alüminyum Külçe, Alüminyum Levha | fırçalanmış metal levha |
-| ⬜ | Rutil → Titanyum, Pentlandit → Nikel, Spodümen → Lityum, Wolframit → Tungsten | her biri: cevher ×2, ham, ham blok, külçe, parça, blok, levha, toz |
-| ⬜ | Ham petrol cepleri + yüzey sızıntıları | RP-1 ve plastik |
-| ⬜ | Çelik, Al-Li alaşımı, nikel süper alaşımı, plastik, silisyum plaka, güneş hücresi, devre kartları, elektrik motoru, ablatif kalkan, altın folyo, turuncu köpük, silikon conta, pres kalıpları | |
+| 🎨 | Boksit → Alüminyum (cevher ×2, ham, ham blok, külçe, parça, blok, levha, toz, tel) | sıcak biyomlarda, yüzeye yakın |
+| 🎨 | Rutil → Titanyum, Pentlandit → Nikel, Spodümen → Lityum, Wolframit → Tungsten | her biri: cevher ×2, ham, ham blok, külçe, parça, blok, levha, toz (+ tel/çubuk); rutil derin ve nadir, pentlandit orta derinlik, spodümen dağlarda, wolframit derin |
+| 🎨 | Demir / bakır / altın için levha, toz, tel, çubuk | |
+| 🎨 | Ham petrol cepleri + yüzey sızıntıları (Petrol Sızıntısı bloğu) | ceplerin tam üstünde katran lekeli zemin |
+| 🎨 | Çelik, Al-Li alaşımı, nikel süper alaşımı, plastik levha, silisyum, silisyum plaka, güneş hücresi, temel/gelişmiş devre kartı, elektrik motoru, ablatif kalkan levhası, altın folyo, turuncu köpük, silikon conta, levha/tel/çubuk pres kalıpları, kömür tozu | |
+| 🎨 | Sıvılar: ham petrol, RP-1, sıvı oksijen, sıvı hidrojen, sıvı metan, oksijen, hidrojen, metan | `c:` etiketleri, kovalar, Kriyojenik Kap; kriyojenik sıvılar açıkta kaynayıp uçar |
 
 ### Paket ② Enerji ve makineler
 | Durum | İçerik | Not |
 |---|---|---|
 | 🎨 | Güneş Takipli Panel | doğu-batı takip, gece düz yatar; 20 FE/t tepe, hava ve güneş açısına bağlı |
-| ⬜ | Yanmalı Jeneratör, Batarya Bankası, Bakır / Yüksek Gerilim Kablosu | |
-| ⬜ | Kırıcı, Elektrik Ark Fırını, Pres, Petrol Pompası (çok bloklu), Rafineri (çok bloklu) | |
-| ⬜ | Elektroliz Ünitesi, Kriyojenik Sıvılaştırıcı, tanklar, sıvı/gaz borusu | |
-| ⬜ | Parça Üretim Tezgâhı, Roket Montaj Tezgâhı (3B önizleme, Δv, itki/ağırlık) | |
 | 🎨 | Oksijen Dolum İstasyonu | tüpü beşiğe koy; solunabilir havadan FE ile doldurur (Manevra Ünitesi gazı da) |
 | 🎨 | Oksijen Dağıtıcı | kapalı odayı tick'lere yayılmış taşkın dolumla bulur (en çok 4096 blok), tüpten oksijen verir; blok değişince yeniden kontrol |
 | 🎨 | Hava Kilidi Kapısı | 2 blok, kayar kanatlar (animasyonlu); kapalıyken hava geçirmez; el ya da kızıltaşla açılır |
+| 🎨 | Yanmalı Jeneratör, Batarya Bankası, Bakır / Yüksek Gerilim Kablosu | jeneratör yalnız oksijenli havada yanar; batarya önden verir, şarj göstergesi |
+| 🎨 | Kırıcı, Elektrik Ark Fırını, Pres (hareketli koç), Petrol Pompası (çok bloklu, animasyonlu), Rafineri (çok bloklu damıtma kulesi) | |
+| 🎨 | Elektroliz Ünitesi, Kriyojenik Sıvılaştırıcı, Sıvı / Basınçlı Gaz / Kriyojenik Tank (dolum görünür), sıvı/gaz borusu (uçtan çekme modu) | |
+| 🎨 | Parça Üretim Tezgâhı | `spacebreaker:fabricating` tarifi; Roket ve Giysi alanları kendi tariflerini ekler |
+| ⬜ | Roket Montaj Tezgâhı (3B önizleme, Δv, itki/ağırlık) | |
 
 ### Paket ③ Roket, rampa, giysi ve Ay
 | Durum | İçerik | Not |

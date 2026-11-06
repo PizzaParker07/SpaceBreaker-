@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "spacebreaker:basic_circuit"
+    },
+    "L": {
+      "tag": "c:ingots/lithium"
+    },
+    "P": {
+      "tag": "c:plates/iron"
+    },
+    "W": {
+      "tag": "c:wires/copper"
+    }
+  },
+  "pattern": [
+    "PWP",
+    "LCL",
+    "PWP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "spacebreaker:battery_bank"
+  }
+}

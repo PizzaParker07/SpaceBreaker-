@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "S": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "pattern": [
+    "S S",
+    "S S",
+    "S S"
+  ],
+  "result": {
+    "count": 1,
+    "id": "spacebreaker:rod_press_die"
+  }
+}

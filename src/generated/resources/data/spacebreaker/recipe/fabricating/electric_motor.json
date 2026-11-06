@@ -1,0 +1,25 @@
+{
+  "type": "spacebreaker:fabricating",
+  "energy": 40,
+  "ingredients": [
+    {
+      "count": 2,
+      "tag": "c:plates/steel"
+    },
+    {
+      "count": 4,
+      "tag": "c:wires/copper"
+    },
+    {
+      "count": 1,
+      "tag": "c:rods/steel"
+    }
+  ],
+  "results": [
+    {
+      "count": 2,
+      "id": "spacebreaker:electric_motor"
+    }
+  ],
+  "time": 120
+}

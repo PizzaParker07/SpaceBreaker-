@@ -1,0 +1,28 @@
+{
+  "type": "spacebreaker:fabricating",
+  "energy": 60,
+  "ingredients": [
+    {
+      "count": 2,
+      "item": "spacebreaker:basic_circuit"
+    },
+    {
+      "count": 2,
+      "item": "spacebreaker:silicon_wafer"
+    },
+    {
+      "count": 1,
+      "tag": "c:wires/gold"
+    },
+    {
+      "count": 1,
+      "tag": "c:plastics"
+    }
+  ],
+  "results": [
+    {
+      "count": 1,
+      "id": "spacebreaker:advanced_circuit"
+    }
+  ]
+}

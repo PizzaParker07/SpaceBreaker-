@@ -1,0 +1,21 @@
+{
+  "type": "spacebreaker:arc_smelting",
+  "energy": 60,
+  "ingredients": [
+    {
+      "count": 1,
+      "tag": "c:ingots/iron"
+    },
+    {
+      "count": 1,
+      "tag": "c:dusts/coal"
+    }
+  ],
+  "results": [
+    {
+      "count": 1,
+      "id": "spacebreaker:steel_ingot"
+    }
+  ],
+  "time": 160
+}

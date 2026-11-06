@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "P": {
+      "tag": "c:plastics"
+    },
+    "W": {
+      "tag": "c:wires/aluminum"
+    }
+  },
+  "pattern": [
+    "PPP",
+    "WWW",
+    "PPP"
+  ],
+  "result": {
+    "count": 6,
+    "id": "spacebreaker:hv_cable"
+  }
+}

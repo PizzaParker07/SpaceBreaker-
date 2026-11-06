@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "minecraft:bricks"
+    },
+    "C": {
+      "item": "spacebreaker:basic_circuit"
+    },
+    "K": {
+      "item": "minecraft:cauldron"
+    },
+    "P": {
+      "tag": "c:plates/iron"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "W": {
+      "tag": "c:wires/copper"
+    }
+  },
+  "pattern": [
+    "RWR",
+    "BKB",
+    "PCP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "spacebreaker:arc_furnace"
+  }
+}

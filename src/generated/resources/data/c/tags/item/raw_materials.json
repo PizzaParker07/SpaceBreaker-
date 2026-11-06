@@ -1,5 +1,9 @@
 {
   "values": [
-    "#c:raw_materials/bauxite"
+    "#c:raw_materials/bauxite",
+    "#c:raw_materials/rutile",
+    "#c:raw_materials/pentlandite",
+    "#c:raw_materials/spodumene",
+    "#c:raw_materials/wolframite"
   ]
 }

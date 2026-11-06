@@ -1,0 +1,17 @@
+{
+  "type": "spacebreaker:crushing",
+  "energy": 12,
+  "ingredients": [
+    {
+      "count": 1,
+      "item": "minecraft:coal"
+    }
+  ],
+  "results": [
+    {
+      "count": 1,
+      "id": "spacebreaker:coal_dust"
+    }
+  ],
+  "time": 60
+}

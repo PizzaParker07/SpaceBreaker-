@@ -1,0 +1,21 @@
+{
+  "type": "spacebreaker:arc_smelting",
+  "energy": 80,
+  "ingredients": [
+    {
+      "count": 1,
+      "tag": "c:gems/quartz"
+    },
+    {
+      "count": 1,
+      "tag": "c:dusts/coal"
+    }
+  ],
+  "results": [
+    {
+      "count": 2,
+      "id": "spacebreaker:silicon"
+    }
+  ],
+  "time": 160
+}
