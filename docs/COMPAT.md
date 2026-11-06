@@ -78,6 +78,17 @@ hidePackClouds = true
 `AUTO` replaces the pack's sky in space worlds unless an LOD mod (Distant Horizons, Voxy) is installed; `ALWAYS`
 does it anyway; `OFF` leaves the pack alone.
 
+## 2b. Holograms and previews: `compat/client/GhostBlocks`
+
+For structure projectors, placement previews and other "ghost" blocks: `GhostBlocks.render(poseStack, buffers, state,
+r, g, b, alpha)` at `RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS` (pose stack translated to the camera,
+`Minecraft.getInstance().renderBuffers().bufferSource()`), then `GhostBlocks.flush(buffers)` once per frame. It draws
+the block's baked model through `Sheets.translucentCullBlockSheet()` with scaled alpha and full-bright light, so Iris
+batches it as a translucent entity and packs shade it with their translucent program (correct alpha and sorting).
+Avoid immediate-mode position/colour drawing for world-space holograms: packs may discard or recolour it.
+`vanilla_14_ghost_blocks` / `iris_14_ghost_blocks`: a 4×2×2 ghost (steel, tanks, glass) between the prop rows; with
+Complementary the tint is weaker (the pack re-lights translucent entities) but the ghost stays clearly visible.
+
 ## 3. Known limitations
 
 - **Ground tint differs slightly per pack:** the ambient fill above is a compromise per pack family; packs not
