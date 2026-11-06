@@ -56,7 +56,7 @@ public class MarsSkyEffects extends DimensionSpecialEffects {
 
     static final float[] ZENITH = rgb(0xA27A5A);
     static final float[] HORIZON = rgb(0xD9B48C);
-    static final float[] SUNSET_BLUE = rgb(0x7F9CC8);
+    static final float[] SUNSET_BLUE = rgb(0x6C8FB3);
     static final float[] DUSK = rgb(0x4A3A34);
     static final float[] STORM = rgb(0x9A6A48);
 
@@ -151,11 +151,13 @@ public class MarsSkyEffects extends DimensionSpecialEffects {
             c[i] = (float) Mth.lerp(t, HORIZON[i], ZENITH[i]);
         }
         // blue aureole around a low sun
-        double low = 1 - smooth((s.y - 0.05) / 0.35);
+        // blue aureole: forward scattering on the fine dust turns the sky around a low sun blue, ~30 degrees wide,
+        // while the rest of the sky stays butterscotch
+        double low = 1 - smooth((s.y - 0.08) / 0.45);
         double toward = Math.max(0, d.dot(s));
-        double glow = Math.pow(toward, 6) * low * smooth((s.y + 0.2) / 0.2);
+        double glow = (0.75 * Math.pow(toward, 5) + 0.35 * Math.pow(toward, 18)) * low * smooth((s.y + 0.22) / 0.22);
         for (int i = 0; i < 3; i++) {
-            c[i] = (float) Mth.lerp(Math.min(1, glow * 1.3), c[i], SUNSET_BLUE[i]);
+            c[i] = (float) Mth.lerp(Math.min(1, glow * 1.6), c[i], SUNSET_BLUE[i]);
         }
         // night: deep brown-black, a faint glow lingers on the sun side
         double twilight = Math.pow(toward, 3) * (1 - day) * smooth((s.y + 0.3) / 0.3) * 0.5;
@@ -238,6 +240,9 @@ public class MarsSkyEffects extends DimensionSpecialEffects {
         if (sun.y > -0.2) {
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
             glow(m, sun, 9F * (1 + storm), (0.22F + 0.2F * storm) * sunVis * Math.max(0.2F, day));
+            if (sun.y < 0.45 && storm < 0.5F) {
+                glowBlue(m, sun, 16F, 0.35F * (float) (1 - sun.y / 0.45) * (1 - 2 * storm) * Math.max(0.3F, day));
+            }
         }
 
         // ---- the moons: their own hour angles (equatorial orbits), lit by the sun
@@ -294,6 +299,26 @@ public class MarsSkyEffects extends DimensionSpecialEffects {
             double a = i * Mth.TWO_PI / 24;
             Vector3d p = new Vector3d(c).add(new Vector3d(right).mul(Math.cos(a) * rad)).add(new Vector3d(up2).mul(Math.sin(a) * rad));
             bb.addVertex(m, (float) p.x, (float) p.y, (float) p.z).setColor(0.85F, 0.9F, 1F, 0F);
+        }
+        BufferUploader.drawWithShader(bb.buildOrThrow());
+        RenderSystem.defaultBlendFunc();
+    }
+
+    /** Soft additive blue halo around a low sun (adds to the aureole of the dome; kept in the shader-pack fog colour too). */
+    private static void glowBlue(Matrix4f m, Vector3d d, float deg, float strength) {
+        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        Vector3d up = Math.abs(d.y) > 0.95 ? new Vector3d(0, 0, 1) : new Vector3d(0, 1, 0);
+        Vector3d right = new Vector3d(d).cross(up).normalize();
+        Vector3d up2 = new Vector3d(right).cross(d).normalize();
+        float rad = (float) (100 * Math.tan(Math.toRadians(deg)));
+        BufferBuilder bb = Tesselator.getInstance().begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
+        Vector3d c = new Vector3d(d).mul(100);
+        bb.addVertex(m, (float) c.x, (float) c.y, (float) c.z).setColor(SUNSET_BLUE[0], SUNSET_BLUE[1], SUNSET_BLUE[2] * 1.1F, strength);
+        for (int i = 0; i <= 32; i++) {
+            double a = i * Mth.TWO_PI / 32;
+            Vector3d p = new Vector3d(c).add(new Vector3d(right).mul(Math.cos(a) * rad)).add(new Vector3d(up2).mul(Math.sin(a) * rad));
+            bb.addVertex(m, (float) p.x, (float) p.y, (float) p.z).setColor(SUNSET_BLUE[0], SUNSET_BLUE[1], SUNSET_BLUE[2], 0F);
         }
         BufferUploader.drawWithShader(bb.buildOrThrow());
         RenderSystem.defaultBlendFunc();

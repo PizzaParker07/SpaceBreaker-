@@ -35,16 +35,16 @@ public final class MarsEntities {
     private static final List<DeferredItem<DeferredSpawnEggItem>> EGGS = new ArrayList<>();
 
     public static final DeferredHolder<EntityType<?>, EntityType<RustBeetle>> RUST_BEETLE = ENTITIES.register("rust_beetle",
-            () -> EntityType.Builder.of(RustBeetle::new, MobCategory.CREATURE).sized(0.75F, 0.5F).eyeHeight(0.3F).clientTrackingRange(8)
+            () -> EntityType.Builder.of(RustBeetle::new, MobCategory.CREATURE).sized(0.95F, 0.75F).eyeHeight(0.5F).clientTrackingRange(8)
                     .build("rust_beetle"));
     public static final DeferredHolder<EntityType<?>, EntityType<DustDevil>> DUST_DEVIL = ENTITIES.register("dust_devil",
             () -> EntityType.Builder.of(DustDevil::new, MobCategory.MONSTER).sized(1.1F, 2.6F).eyeHeight(1.6F).clientTrackingRange(10)
                     .build("dust_devil"));
     public static final DeferredHolder<EntityType<?>, EntityType<CanyonLurker>> CANYON_LURKER = ENTITIES.register("canyon_lurker",
-            () -> EntityType.Builder.of(CanyonLurker::new, MobCategory.MONSTER).sized(1.2F, 0.75F).eyeHeight(0.55F).clientTrackingRange(8)
+            () -> EntityType.Builder.of(CanyonLurker::new, MobCategory.MONSTER).sized(1.4F, 0.95F).eyeHeight(0.75F).clientTrackingRange(8)
                     .build("canyon_lurker"));
     public static final DeferredHolder<EntityType<?>, EntityType<Stonegrazer>> STONEGRAZER = ENTITIES.register("stonegrazer",
-            () -> EntityType.Builder.of(Stonegrazer::new, MobCategory.CREATURE).sized(1.6F, 1.5F).eyeHeight(1.1F).clientTrackingRange(10)
+            () -> EntityType.Builder.of(Stonegrazer::new, MobCategory.CREATURE).sized(1.6F, 1.65F).eyeHeight(1.1F).clientTrackingRange(10)
                     .build("stonegrazer"));
     public static final DeferredHolder<EntityType<?>, EntityType<PolarWorm>> POLAR_WORM = ENTITIES.register("polar_worm",
             () -> EntityType.Builder.of(PolarWorm::new, MobCategory.CREATURE).sized(0.7F, 0.5F).eyeHeight(0.35F).clientTrackingRange(8)

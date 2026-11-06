@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-06T17:22:15.913993782	Tags for minecraft:item mod id spacebreaker
+// 1.21.1	2026-11-06T18:10:00.711261159	Tags for minecraft:item mod id spacebreaker
 7e8e995a94080524a7a2d6280b7b24b5bae0a66f data/c/tags/item/buckets.json
 e8c124d1254042fe6eb9bded9e1ebed66c5d69dd data/c/tags/item/dusts.json
 ad7d32167ffa7ca53078a97903c3d39992237e23 data/c/tags/item/dusts/aluminum.json
@@ -29,8 +29,9 @@ b9864ba1205ca0bfe05749fe1b054d3d55f93d25 data/c/tags/item/nuggets/aluminum.json
 e2b1acd7ecafb1e12829c81d9760779468454a55 data/c/tags/item/nuggets/steel.json
 668202086fbb6b6e4f1d74c69d57f7a5bde173d0 data/c/tags/item/nuggets/titanium.json
 005301c689a4b9f2a404a8654863325e08b30008 data/c/tags/item/nuggets/tungsten.json
-a416108e9732649e9b062c4f957a525d817bc7eb data/c/tags/item/ores.json
+d9a63114bc20b5aa3cd1a4720a37741b4adc07b4 data/c/tags/item/ores.json
 2e53c12f1069a9431086af8c817e22054d435904 data/c/tags/item/ores/bauxite.json
+b3a2195b57c44989915c892616defef84e1cc40f data/c/tags/item/ores/graphite.json
 2ddf8e684b01bc27f3717269a198a193b926d001 data/c/tags/item/ores/gypsum.json
 74b7b306fed16c39256aea4d6cb125505a0b13a1 data/c/tags/item/ores/hematite.json
 9f653fe92cede5b05d4ff9ac26f101e43ce60cfb data/c/tags/item/ores/ilmenite.json

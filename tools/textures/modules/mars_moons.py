@@ -41,41 +41,135 @@ def chondrite():
 
 # --------------------------------------------------------------------------- Mars in the sky
 
-MARS_DISC = ramp('#4a2416', '#6b331d', '#8a4426', '#a65631', '#bd6b3e', '#cf8652')
-MARS_DARK = ramp('#3a2a22', '#4f3a2e')
-CAP = ramp('#d8d4cf', '#f1efec')
+def _lerp(a, b, t):
+    return tuple(int(round(a[i] + (b[i] - a[i]) * t)) for i in range(3))
 
 
-def mars_disc(size=64):
-    """Mars as a full disc: rusty plains, dark albedo markings, the rift line, white polar caps. Shading is applied
-    in game per vertex (phase), so the texture is evenly lit."""
-    cv = Canvas(size, size)
-    n = fbm(size, size, 4401, [(16, 1.0), (8, 0.5), (4, 0.25)])
+def mars_disc(size=256):
+    """Mars as a full, evenly lit disc for the sky of its moons, drawn like the vanilla Moon: crisp albedo regions in a
+    few flat tones rather than smooth gradients. Shown: the bright Tharsis rise with its three shield volcanoes in a
+    row and Olympus Mons apart to the north-west (each with a caldera), Noctis Labyrinthus at the western end of Valles
+    Marineris, the main east-west canyon with parallel chasmata, the wide central troughs and the chaos at its eastern
+    mouth, the dark albedo regions, bright Hellas and the polar caps. Phase shading is applied in game."""
+    import math
+    from PIL import Image
     rng = random.Random(4402)
+    grids = []
+    for cell in (32, 12, 5):
+        g = [[rng.random() for _ in range(size // cell + 2)] for _ in range(size // cell + 2)]
+        grids.append((cell, g))
+
+    def noise(x, y):
+        v = 0
+        w = 0
+        for k, (cell, g) in enumerate(grids):
+            fx, fy = x / cell, y / cell
+            ix, iy = int(fx), int(fy)
+            tx, ty = fx - ix, fy - iy
+            a = g[iy][ix] * (1 - tx) + g[iy][ix + 1] * tx
+            b = g[iy + 1][ix] * (1 - tx) + g[iy + 1][ix + 1] * tx
+            amp = 0.55 ** k
+            v += (a * (1 - ty) + b * ty) * amp
+            w += amp
+        return v / w
+
+    # six flat albedo tones, dark to bright, plus canyon floor, cap and caldera shades
+    tones = [(96, 58, 40), (124, 74, 50), (152, 90, 58), (178, 104, 64), (199, 124, 78), (218, 150, 100)]
+    canyon = (70, 40, 29)
+    wall = (110, 64, 44)
+    caps = [(206, 198, 186), (236, 232, 222)]
+    # dark albedo regions (u, v, ru, rv, depth): Acidalia, Mare Erythraeum, Margaritifer, Syrtis-ward, Sirenum
+    darks = [(0.42, -0.42, 0.22, 0.13, 0.55), (0.25, 0.42, 0.42, 0.13, 0.5), (0.52, 0.18, 0.12, 0.2, 0.45),
+             (0.86, 0.02, 0.14, 0.3, 0.55), (-0.62, 0.48, 0.3, 0.1, 0.35)]
+    shields = [(-0.50, 0.19, 0.06), (-0.44, 0.04, 0.065), (-0.37, -0.11, 0.06)]
+    olympus = (-0.72, -0.22, 0.11)
+
+    def seg_dist(u, v, x0, y0, x1, y1):
+        dx, dy = x1 - x0, y1 - y0
+        t = max(0.0, min(1.0, ((u - x0) * dx + (v - y0) * dy) / (dx * dx + dy * dy)))
+        return math.hypot(u - x0 - t * dx, v - y0 - t * dy)
+
+    # Valles Marineris: (x0, y0, x1, y1, half width) segments, mostly east-west, slightly descending to the east
+    chasma = [(-0.20, 0.140, 0.02, 0.150, 0.016),   # Ius / Tithonium
+              (-0.18, 0.105, -0.02, 0.110, 0.012),  # parallel northern chasma
+              (-0.04, 0.115, 0.12, 0.125, 0.030),   # Melas / Candor: the wide central troughs
+              (-0.02, 0.085, 0.10, 0.090, 0.016),   # Ophir / Candor north
+              (0.10, 0.130, 0.34, 0.165, 0.020),    # Coprates
+              (0.10, 0.180, 0.28, 0.205, 0.008),    # a thinner southern side canyon
+              (0.32, 0.165, 0.44, 0.150, 0.026)]    # Eos / Capri opening eastward
+    # Noctis Labyrinthus: a short criss-cross net at the western end
+    noctis = []
+    nr = random.Random(77)
+    for _ in range(9):
+        cx, cy = -0.27 + nr.uniform(-0.06, 0.06), 0.13 + nr.uniform(-0.05, 0.05)
+        ang = nr.choice((0.0, 1.05, 2.1)) + nr.uniform(-0.2, 0.2)
+        ln = nr.uniform(0.02, 0.035)
+        noctis.append((cx - ln * math.cos(ang), cy - ln * math.sin(ang), cx + ln * math.cos(ang), cy + ln * math.sin(ang), 0.008))
+
+    img = Image.new('RGBA', (size, size), (0, 0, 0, 0))
+    px = img.load()
     c = (size - 1) / 2
+    jit = random.Random(4403)
     for y in range(size):
         for x in range(size):
-            dx = (x - c) / c
-            dy = (y - c) / c
-            d = math.hypot(dx, dy)
+            u = (x - c) / c
+            v = (y - c) / c
+            d = math.hypot(u, v)
             if d > 1:
                 continue
-            lat = -dy
-            v = n[y][x]
-            if abs(lat) > 0.86 - 0.05 * v:
-                col = CAP[1] if abs(lat) > 0.92 else CAP[0]
-            elif v < 0.24 and -0.45 < lat < 0.3:
-                col = MARS_DARK[0] if v < 0.16 else MARS_DARK[1]
-            else:
-                col = MARS_DISC[2 + min(3, int(v * 4))]
-            # Valles Marineris: a dark scar just south of the equator
-            if abs(lat + 0.1 + 0.03 * math.sin(dx * 6)) < 0.025 and -0.55 < dx < 0.35:
-                col = MARS_DISC[0]
-            # limb darkening of the dusty atmosphere
-            if d > 0.93:
-                col = MARS_DISC[1] if col not in CAP else CAP[0]
-            cv[x, y] = col
-    return cv
+            n = noise(x, y)
+            # albedo, 0 dark .. 1 bright
+            al = 0.62 + (n - 0.5) * 0.5
+            if v > 0.05:  # southern highlands: darker, more mottled
+                al -= min(0.18, (v - 0.05) * 0.35) * (0.7 + 0.6 * n)
+            for du, dv, ru, rv, k in darks:
+                dd = math.hypot((u - du) / ru, (v - dv) / rv) + (n - 0.5) * 1.3 + 0.35 * math.sin(u * 23 + v * 17)
+                if dd < 1:
+                    al -= k * min(1.0, (1 - dd) * 2.5)
+            # Tharsis rise and Hellas: bright and dusty
+            th = math.hypot((u + 0.48) / 0.32, (v - 0.02) / 0.4) + (n - 0.5) * 0.4
+            if th < 1:
+                al += 0.16 * min(1.0, (1 - th) * 3)
+            hd = math.hypot((u - 0.55) / 0.16, (v - 0.62) / 0.1) + (n - 0.5) * 0.4
+            if hd < 1:
+                al += 0.3 * min(1.0, (1 - hd) * 3)
+            al += (jit.random() - 0.5) * 0.05
+            col = tones[max(0, min(5, int(al * 6)))]
+            # volcanoes: a dome lit from the upper left, a hard shadow side, a dark caldera
+            for vu, vv, r in shields + [olympus]:
+                lu, lv = (u - vu) / r, (v - vv) / r
+                vd = math.hypot(lu, lv)
+                if vd < 1:
+                    if vd < (0.3 if r > 0.1 else 0.22):
+                        col = tones[1] if vd > (0.2 if r > 0.1 else 0.12) else tones[0]
+                    elif lu + lv < -0.25:
+                        col = tones[5]
+                    elif lu + lv > 0.45:
+                        col = tones[2]
+                    else:
+                        col = tones[4]
+                    if r > 0.1 and vd > 0.88:  # Olympus: its basal escarpment
+                        col = tones[1] if lu + lv > 0 else tones[5]
+            # Valles Marineris and Noctis: dark floor with a brown wall band, edges roughened
+            rough = (n - 0.5) * 0.012
+            best = 9.0
+            for x0, y0, x1, y1, w in chasma + noctis:
+                best = min(best, seg_dist(u, v, x0, y0, x1, y1) / max(0.004, w * 1.35 + rough))
+            if best < 1:
+                col = canyon if best < 0.55 else wall
+            # chaos terrain at the eastern mouth: blotchy dark knobs
+            ch = math.hypot((u - 0.47) / 0.07, (v - 0.13) / 0.07)
+            if ch < 1 and n > 0.52:
+                col = wall if n < 0.6 else canyon
+            # polar caps with ragged edges
+            lat = -v
+            edge = 0.84 + (n - 0.5) * 0.16 + 0.012 * math.sin(u * 31 + 1.3)
+            if lat > edge:
+                col = caps[1] if lat > edge + 0.04 else caps[0]
+            if -lat > edge + 0.05:
+                col = caps[1] if -lat > edge + 0.09 else caps[0]
+            px[x, y] = (col[0], col[1], col[2], 255)
+    return img
 
 
 def export(save):
@@ -87,4 +181,9 @@ def export(save):
         for side in ('left', 'right'):
             save(footprint(base, prints(r), side), 'block', f'{name}_footprint_{side}', (22, 8, 64, None))
     save(chondrite(), 'block', 'carbonaceous_chondrite', (30, 10, 30, None))
-    save(mars_disc(), 'environment', 'mars_disc')
+    import os
+    out = os.path.join(os.path.dirname(__file__), '..', '..', '..', 'src', 'main', 'resources', 'assets', 'spacebreaker', 'textures', 'environment')
+    mars_disc().save(os.path.join(out, 'mars_disc.png'))
+    halo = os.path.join(out, 'mars_halo.png')
+    if os.path.exists(halo):
+        os.remove(halo)

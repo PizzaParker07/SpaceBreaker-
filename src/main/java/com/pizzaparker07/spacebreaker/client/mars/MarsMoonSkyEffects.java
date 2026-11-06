@@ -36,7 +36,8 @@ import org.joml.Vector3d;
 public class MarsMoonSkyEffects extends PlanetSkyEffects {
     private static final ResourceLocation SUN = Spacebreaker.id("textures/environment/sun_vacuum.png");
     private static final ResourceLocation MARS = Spacebreaker.id("textures/environment/mars_disc.png");
-    private static final int GRID = 20;
+    private static final int GRID = 40;
+    private static final int RING = 128;
     private final String bodyName;
     private final double marsSize;
     private ClientLevel cachedLevel;
@@ -146,6 +147,37 @@ public class MarsMoonSkyEffects extends PlanetSkyEffects {
             }
         }
         BufferUploader.drawWithShader(bb.buildOrThrow());
+        // thin, pale atmosphere ring as smooth geometry (no texture stairs), brightest on the sunlit limb
+        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        float[] radii = {0.985F, 1.012F, 1.11F};
+        float[] alpha = {0F, 0.55F, 0F};
+        BufferBuilder hb = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        for (int k = 0; k < RING; k++) {
+            double a0 = 2 * Math.PI * k / RING;
+            double a1 = 2 * Math.PI * (k + 1) / RING;
+            for (int band = 0; band < 2; band++) {
+                ringVertex(hb, m, c, right, up, half, sun, a0, radii[band], alpha[band]);
+                ringVertex(hb, m, c, right, up, half, sun, a0, radii[band + 1], alpha[band + 1]);
+                ringVertex(hb, m, c, right, up, half, sun, a1, radii[band + 1], alpha[band + 1]);
+                ringVertex(hb, m, c, right, up, half, sun, a1, radii[band], alpha[band]);
+            }
+        }
+        BufferUploader.drawWithShader(hb.buildOrThrow());
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+        RenderSystem.defaultBlendFunc();
+    }
+
+    private static void ringVertex(BufferBuilder bb, Matrix4f m, Vector3d c, Vector3d right, Vector3d up, float half, Vector3d sun,
+                                   double ang, float r, float a) {
+        double dx = Math.cos(ang);
+        double dy = Math.sin(ang);
+        // the limb faces sideways: lit where the sun shines along it, plus some forward scatter when backlit
+        double lit = Math.max(0.12, Math.min(1, 0.35 + 0.65 * (dx * sun.x + dy * sun.y) + 0.3 * sun.z));
+        float px = (float) (c.x + (right.x * dx + up.x * dy) * r * half);
+        float py = (float) (c.y + (right.y * dx + up.y * dy) * r * half);
+        float pz = (float) (c.z + (right.z * dx + up.z * dy) * r * half);
+        bb.addVertex(m, px, py, pz).setColor(0.85F, 0.82F, 0.9F, (float) (a * lit));
     }
 
     private static void vertex(BufferBuilder bb, Matrix4f m, Vector3d c, Vector3d right, Vector3d up, float half, Vector3d sun, int i, int j) {
@@ -155,9 +187,11 @@ public class MarsMoonSkyEffects extends PlanetSkyEffects {
         double dy = 1 - v * 2;
         double r2 = dx * dx + dy * dy;
         double nz = Math.sqrt(Math.max(0, 1 - r2));
-        double lambert = Math.max(0, dx * sun.x + dy * sun.y + nz * sun.z);
-        // a faint glow on the night side from the thin, dusty atmosphere at the limb
-        float b = (float) Math.min(1, 0.04 + lambert * 1.05);
+        double cosI = dx * sun.x + dy * sun.y + nz * sun.z;
+        // soft terminator: twilight scattering in the dusty atmosphere spreads it over a few degrees
+        double t = Math.max(0, Math.min(1, (cosI + 0.12) / 0.32));
+        double lambert = Math.max(0, cosI) * 0.85 + 0.15 * t * t * (3 - 2 * t);
+        float b = (float) Math.min(1, 0.03 + lambert * 1.05);
         float px = (float) (c.x + right.x * dx * half + up.x * dy * half);
         float py = (float) (c.y + right.y * dx * half + up.y * dy * half);
         float pz = (float) (c.z + right.z * dx * half + up.z * dy * half);

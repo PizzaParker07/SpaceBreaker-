@@ -49,8 +49,8 @@ final class MarsScenario implements ShowcaseScenario {
         int y0 = (int) Math.floor(t.height(STAGE_X, STAGE_Z));
         // creature line-up on the pad, frozen for the photo
         spawn(level, com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.RUST_BEETLE.get(), STAGE_X - 9, y0 + 1, STAGE_Z + 6, 25F);
-        spawn(level, com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.STONEGRAZER.get(), STAGE_X - 4, y0 + 1, STAGE_Z + 6, -30F);
-        var lurker = spawn(level, com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.CANYON_LURKER.get(), STAGE_X + 2, y0 + 1, STAGE_Z + 6, 15F);
+        spawn(level, com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.STONEGRAZER.get(), STAGE_X - 4, y0 + 1, STAGE_Z + 6, -65F);
+        var lurker = spawn(level, com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.CANYON_LURKER.get(), STAGE_X + 2, y0 + 1, STAGE_Z + 6, 40F);
         if (lurker instanceof com.pizzaparker07.spacebreaker.content.mars.entity.CanyonLurker l) {
             l.setHidden(false);
         }

@@ -68,6 +68,8 @@ def beetle():
 
     paint(cv, 0, 28, 1, 1, 5, leg)
     paint(cv, 14, 28, 5, 1, 1, leg)
+    paint(cv, 14, 32, 1, 3, 1, lambda f, x, y, fw, fh: CHITIN[0] if y == fh - 1 else (CHITIN[3] if f == 'front' else CHITIN[2]))
+    paint(cv, 44, 8, 1, 1, 4, lambda f, x, y, fw, fh: CHITIN[4] if f == 'front' else (CHITIN[3] if f == 'top' and x == 0 else CHITIN[2]))
     return cv
 
 
@@ -90,19 +92,19 @@ def grazer():
     paint(cv, 0, 0, 14, 10, 22, body)
 
     def plates(face, x, y, fw, fh):
+        # each dorsal plate: a lit rim on top, weathered rust-red sides fading darker toward the base
         if face == 'top':
-            row = y % 4
-            t = 4 if row == 0 else (3 if row < 3 else 1)  # each plate lit on its front edge, gap shadow behind
-            if x in (0, fw - 1):
-                t = max(1, t - 1)
-            if x == fw // 2 and row != 3:
-                t += 1
-            return PLATE[min(5, t)]
+            return PLATE[5] if y == 0 else (PLATE[4] if x not in (0, fw - 1) else PLATE[3])
         if face == 'bottom':
             return PLATE[0]
-        return PLATE[3] if y == 0 else PLATE[1]
+        if y == 0:
+            return PLATE[4]
+        t = 3 if y < fh // 2 else 2
+        if face in ('left', 'right') and (x + y) % 3 == 0:
+            t -= 1
+        return PLATE[max(1, t)]
 
-    paint(cv, 0, 32, 12, 3, 18, plates)
+    paint(cv, 0, 32, 6, 4, 4, plates)
 
     def head(face, x, y, fw, fh):
         if face == 'front':
@@ -124,7 +126,21 @@ def grazer():
             return GRAZER[0] if y == fh - 1 else GRAZER[1]  # broad padded foot
         return noise_pick(GRAZER, 3 if face in ('front', 'left') else 2, n, x + 100, y + 10)
 
-    paint(cv, 72, 16, 4, 8, 4, leg)
+    paint(cv, 72, 16, 4, 10, 4, leg)
+
+    def snout(face, x, y, fw, fh):
+        if face == 'front':
+            if y == 1 and x in (1, fw - 2):
+                return GRAZER[0]  # nostrils
+            if y == fh - 1:
+                return GRAZER[1] if x % 2 else GRAZER[2]  # grinding lips
+            return noise_pick(GRAZER, 4 if y == 0 else 3, n, x + 80, y + 50)
+        if face == 'top':
+            return noise_pick(GRAZER, 4, n, x + 85, y + 55)
+        return noise_pick(GRAZER, 2, n, x + 90, y + 58)
+
+    paint(cv, 104, 0, 6, 4, 3, snout)
+    paint(cv, 104, 10, 1, 3, 1, lambda f, x, y, fw, fh: GRAZER[6] if y == 0 else (GRAZER[5] if f in ('front', 'left') else GRAZER[4]))
     paint(cv, 72, 30, 3, 3, 6, lambda f, x, y, fw, fh: noise_pick(GRAZER, 2, n, x + 110, y + 50))
     return cv
 
@@ -163,6 +179,7 @@ def lurker():
 
     paint(cv, 44, 20, 3, 3, 4, claw)
     paint(cv, 0, 30, 6, 1, 1, lambda f, x, y, fw, fh: LURKER[3] if f == "top" else LURKER[1])
+    paint(cv, 0, 34, 1, 3, 1, lambda f, x, y, fw, fh: LURKER_BELLY[0] if y == fh - 1 else (LURKER[3] if f == 'front' else LURKER[2]))
     return cv
 
 

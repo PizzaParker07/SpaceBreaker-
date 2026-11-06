@@ -71,8 +71,8 @@ final class MarsMoonScenario implements ShowcaseScenario {
             PlanetTime.setDayFraction(p.serverLevel(), 0.2);
             p.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.NIGHT_VISION, 2400, 0, false, false));
         };
-        s.add(new ShowcaseDriver.Shot("04_" + w + "_dungeon", 0, DX + 7.5, y + (deimos ? -4.4 : 7), DZ + (deimos ? 7.5 : 18.5), 180F,
-                deimos ? 10F : 30F, true, fp, 120, deimos ? lit : at(0.2), null));
+        s.add(new ShowcaseDriver.Shot("04_" + w + "_dungeon", 0, DX + 7.5, y + (deimos ? -4.4 : 5), DZ + (deimos ? 7.5 : 13.5), 180F,
+                deimos ? 10F : 38F, true, fp, 120, deimos ? lit : at(0.2), null));
         return s;
     }
 }

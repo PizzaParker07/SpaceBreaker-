@@ -1,0 +1,47 @@
+{
+  "carvers": {},
+  "creature_spawn_probability": 0.05,
+  "downfall": 0.0,
+  "effects": {
+    "fog_color": 0,
+    "foliage_color": 5592924,
+    "grass_color": 5592924,
+    "sky_color": 0,
+    "water_color": 4159204,
+    "water_fog_color": 329011
+  },
+  "features": [
+    [],
+    [],
+    [
+      "spacebreaker:mercury_boulder"
+    ],
+    [],
+    [],
+    [],
+    [
+      "spacebreaker:mercury_lrm",
+      "spacebreaker:mercury_graphite"
+    ]
+  ],
+  "has_precipitation": false,
+  "spawn_costs": {},
+  "spawners": {
+    "ambient": [],
+    "axolotls": [],
+    "creature": [],
+    "misc": [],
+    "monster": [
+      {
+        "type": "spacebreaker:terminator_crawler",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 60
+      }
+    ],
+    "underground_water_creature": [],
+    "water_ambient": [],
+    "water_creature": []
+  },
+  "temperature": 0.5
+}

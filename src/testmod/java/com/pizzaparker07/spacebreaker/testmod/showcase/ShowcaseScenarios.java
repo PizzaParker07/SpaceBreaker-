@@ -17,6 +17,8 @@ public final class ShowcaseScenarios {
         ALL.put("mars", new MarsScenario());
         ALL.put("phobos", new MarsMoonScenario(false));
         ALL.put("deimos", new MarsMoonScenario(true));
+        ALL.put("venus", new VenusScenario());
+        ALL.put("mercury", new MercuryScenario());
         ALL.put("rocketry", new RocketryScenario());
         ALL.put("compat", new CompatScenario());
     }

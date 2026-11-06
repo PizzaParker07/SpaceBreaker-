@@ -54,7 +54,7 @@ public final class MarsClient {
     @SubscribeEvent
     static void renderers(net.neoforged.neoforge.client.event.EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(MarsEntities.RUST_BEETLE.get(), ctx -> new SimpleMobRenderer<>(ctx,
-                new RustBeetleModel(ctx.bakeLayer(RustBeetleModel.LAYER)), tex("rust_beetle"), 1F, 0.35F, false));
+                new RustBeetleModel(ctx.bakeLayer(RustBeetleModel.LAYER)), tex("rust_beetle"), 1.3F, 0.45F, false));
         event.registerEntityRenderer(MarsEntities.STONEGRAZER.get(), ctx -> new SimpleMobRenderer<>(ctx,
                 new StonegrazerModel(ctx.bakeLayer(StonegrazerModel.LAYER)), tex("stonegrazer"), 1F, 0.9F, false));
         event.registerEntityRenderer(MarsEntities.POLAR_WORM.get(), ctx -> new SimpleMobRenderer<>(ctx,
@@ -62,7 +62,7 @@ public final class MarsClient {
         event.registerEntityRenderer(MarsEntities.DUST_DEVIL.get(), ctx -> new SimpleMobRenderer<>(ctx,
                 new DustDevilModel(ctx.bakeLayer(DustDevilModel.LAYER)), tex("dust_devil"), 1.75F, 0F, true));
         event.registerEntityRenderer(MarsEntities.CANYON_LURKER.get(), ctx -> {
-            var r = new SimpleMobRenderer<>(ctx, new CanyonLurkerModel(ctx.bakeLayer(CanyonLurkerModel.LAYER)), tex("canyon_lurker"), 1F, 0.6F, false);
+            var r = new SimpleMobRenderer<>(ctx, new CanyonLurkerModel(ctx.bakeLayer(CanyonLurkerModel.LAYER)), tex("canyon_lurker"), 1.2F, 0.75F, false);
             r.addLayer(new net.minecraft.client.renderer.entity.layers.EyesLayer<>(r) {
                 private final net.minecraft.client.renderer.RenderType eyes = net.minecraft.client.renderer.RenderType.eyes(tex("canyon_lurker_eyes"));
 

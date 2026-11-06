@@ -1,0 +1,135 @@
+{
+  "type": "minecraft:chest",
+  "random_sequence": "spacebreaker:dungeons/mercury/ice_mine_office",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "weight": 2,
+          "name": "spacebreaker:tech_disk",
+          "functions": [
+            {
+              "function": "spacebreaker:random_tech_disk",
+              "techs": [
+                "spacebreaker:polar_ice_mining"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 2,
+          "name": "spacebreaker:tech_disk",
+          "functions": [
+            {
+              "function": "spacebreaker:random_tech_disk",
+              "techs": [
+                "spacebreaker:heat_resistant_electronics"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": {
+        "type": "minecraft:uniform",
+        "min": 1,
+        "max": 2
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "weight": 2,
+          "name": "spacebreaker:tech_disk",
+          "functions": [
+            {
+              "function": "spacebreaker:random_tech_disk",
+              "techs": [
+                "spacebreaker:thermal_regulation",
+                "spacebreaker:radiation_shielding",
+                "spacebreaker:solar_power"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 1,
+          "name": "spacebreaker:tech_disk",
+          "functions": [
+            {
+              "function": "spacebreaker:random_tech_disk",
+              "categories": [
+                "industry",
+                "exploration"
+              ],
+              "max_tier": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": {
+        "type": "minecraft:uniform",
+        "min": 2,
+        "max": 4
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "weight": 3,
+          "name": "spacebreaker:graphite",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 6
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 2,
+          "name": "minecraft:paper",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 5
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 2,
+          "name": "minecraft:redstone",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 5
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 1,
+          "name": "minecraft:compass"
+        }
+      ]
+    }
+  ]
+}

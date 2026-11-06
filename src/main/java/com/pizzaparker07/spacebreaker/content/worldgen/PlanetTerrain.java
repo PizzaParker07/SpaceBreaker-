@@ -185,6 +185,10 @@ public final class PlanetTerrain {
         double lowFloor = -low.depth() + low.ridgeHeight() * Math.pow(ridge, 6) * 2;
         double ds = 1.0 / relief.detailScale();
         double detail = relief.detailAmplitude() * fbm(detailNoise, x * ds, z * ds, 2);
+        if (relief.roughness() > 0) {
+            // ragged block-scale unevenness: breaks long smooth slopes into irregular steps instead of clean contour lines
+            detail += relief.roughness() * (0.65 * detailNoise.getValue(x / 4.3 + 91.1, z / 4.3 - 17.7) + 0.35 * detailNoise.getValue(x / 1.9 - 5.5, z / 1.9 + 44.4));
+        }
 
         double built = landforms.active() ? landforms.build(x, z, out) : 0;
         double craterSum = 0;
@@ -238,6 +242,11 @@ public final class PlanetTerrain {
         TerrainProfile.Lowlands low = profile.lowlands();
         double ls = 1.0 / low.scale();
         double n = 0.75 * fbm(lowNoise, x * ls, z * ls, 3) + 0.25 * lowNoise2.getValue(x * ls * 3.1, z * ls * 3.1);
+        if (low.dichotomy().isPresent()) {
+            TerrainProfile.Dichotomy d = low.dichotomy().get();
+            double line = d.latitude() + d.wave() * lowNoise2.getValue(x / (low.scale() * 1.7) + 33.3, 7.7);
+            n += d.strength() * (2 * Crater.smooth((latitude - line) / d.width() + 0.5) - 1);
+        }
         double m = Crater.smooth((n - low.threshold() + low.edge()) / (2 * low.edge()));
         double polar = profile.poles().polarLatitude();
         double fade = 1 - Crater.smooth((Math.abs(latitude) - (polar - 10)) / 10);

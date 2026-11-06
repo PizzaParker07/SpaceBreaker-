@@ -1,0 +1,28 @@
+{
+  "type": "spacebreaker:boulder",
+  "config": {
+    "block": {
+      "type": "minecraft:weighted_state_provider",
+      "entries": [
+        {
+          "data": {
+            "Name": "spacebreaker:mercurian_crust"
+          },
+          "weight": 3
+        },
+        {
+          "data": {
+            "Name": "spacebreaker:low_reflectance_rock"
+          },
+          "weight": 2
+        }
+      ]
+    },
+    "buried": 0.45,
+    "radius": {
+      "type": "minecraft:uniform",
+      "max_exclusive": 2.0,
+      "min_inclusive": 0.8
+    }
+  }
+}

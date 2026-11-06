@@ -15,9 +15,9 @@ import java.util.Optional;
  */
 public record Landforms(Optional<Dunes> dunes, Optional<Rift> rift, Optional<Volcanoes> volcanoes, Optional<Valleys> valleys,
                         Optional<Strata> strata, Optional<IceCap> iceCap, List<SoilPatch> patches, Optional<Scarps> scarps,
-                        Optional<Grooves> grooves, Optional<Tesserae> tesserae) {
+                        Optional<Grooves> grooves, Optional<Tesserae> tesserae, Optional<Peaks> peaks) {
     public static final Landforms NONE = new Landforms(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
-            Optional.empty(), Optional.empty(), List.of(), Optional.empty(), Optional.empty(), Optional.empty());
+            Optional.empty(), Optional.empty(), List.of(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
 
     public static final Codec<Landforms> CODEC = RecordCodecBuilder.create(i -> i.group(
             Dunes.CODEC.optionalFieldOf("dunes").forGetter(Landforms::dunes),
@@ -29,8 +29,22 @@ public record Landforms(Optional<Dunes> dunes, Optional<Rift> rift, Optional<Vol
             SoilPatch.CODEC.listOf().optionalFieldOf("patches", List.of()).forGetter(Landforms::patches),
             Scarps.CODEC.optionalFieldOf("scarps").forGetter(Landforms::scarps),
             Grooves.CODEC.optionalFieldOf("grooves").forGetter(Landforms::grooves),
-            Tesserae.CODEC.optionalFieldOf("tesserae").forGetter(Landforms::tesserae)
+            Tesserae.CODEC.optionalFieldOf("tesserae").forGetter(Landforms::tesserae),
+            Peaks.CODEC.optionalFieldOf("peaks").forGetter(Landforms::peaks)
     ).apply(i, Landforms::new));
+
+    /**
+     * A different surface on the highest ground, like snow lines (e.g. Venus' metallic frost on its mountain tops).
+     *
+     * @param soil   surface block above the line
+     * @param height absolute y of the line (blurred by a few blocks)
+     */
+    public record Peaks(BlockState soil, int height) {
+        public static final Codec<Peaks> CODEC = RecordCodecBuilder.create(i -> i.group(
+                BlockState.CODEC.fieldOf("soil").forGetter(Peaks::soil),
+                Codec.INT.fieldOf("height").forGetter(Peaks::height)
+        ).apply(i, Peaks::new));
+    }
 
     /**
      * Transverse dune fields: asymmetric ridges (gentle windward slope, steep slip face) across the wind.
@@ -249,13 +263,15 @@ public record Landforms(Optional<Dunes> dunes, Optional<Rift> rift, Optional<Vol
      * @param threshold noise level above which the ground is tessera
      * @param height    ridge relief
      * @param spacing   ridge spacing
+     * @param rock      the deformed rock exposed on tessera ground
      */
-    public record Tesserae(double scale, double threshold, double height, double spacing) {
+    public record Tesserae(double scale, double threshold, double height, double spacing, Optional<BlockState> rock) {
         public static final Codec<Tesserae> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.DOUBLE.optionalFieldOf("scale", 1600.0).forGetter(Tesserae::scale),
                 Codec.DOUBLE.optionalFieldOf("threshold", 0.3).forGetter(Tesserae::threshold),
                 Codec.DOUBLE.optionalFieldOf("height", 14.0).forGetter(Tesserae::height),
-                Codec.DOUBLE.optionalFieldOf("spacing", 40.0).forGetter(Tesserae::spacing)
+                Codec.DOUBLE.optionalFieldOf("spacing", 40.0).forGetter(Tesserae::spacing),
+                BlockState.CODEC.optionalFieldOf("rock").forGetter(Tesserae::rock)
         ).apply(i, Tesserae::new));
     }
 }

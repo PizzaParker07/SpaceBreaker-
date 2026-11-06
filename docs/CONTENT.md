@@ -100,13 +100,59 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | ✅ | Galaksi temeli: tohumlu Samanyolu, sektörler, prosedürel yıldız sistemleri | gerçek yakın yıldızlar: Alfa Centauri A/B, Proxima b, Barnard b, Sirius A/B, Epsilon Eridani b, Tau Ceti, TRAPPIST-1 b–h |
 | ✅ | Güneş Sistemi Δv haritası | [ASTRO.md](ASTRO.md#δv-map-of-the-solar-system) |
 
+## Faz 2 — İç gezegenler (Mars, Phobos, Deimos, Venüs, Merkür)
+
+### Gezegen motoru eklentileri
+| Durum | İçerik | Not |
+|---|---|---|
+| 🎨 | Yer şekilleri (`landforms`, isteğe bağlı) | kumul alanları (rüzgâr yönlü asimetrik sırtlar), büyük yarık kanyonu (taraçalı duvarlar, heyelan tümsekleri), kalkan volkanlar (kaldera, ışınsal lav akıntıları, taban yarı), eski nehir vadileri ve deltalar, katmanlı tortul kayalar, kutup buz örtüsü (oluklar, kırağı), toprak lekeleri, loblu sarplıklar, oluk zincirleri, tessera, zirve kırağısı |
+| 🎨 | Ortam kancaları | güneş ışığı (toz fırtınası, bulutlar) ve basınç (yükseklik) çarpanları; güneş paneli fırtınada düşer |
+
+### Mars `spacebreaker:mars`
+| Durum | İçerik | Not |
+|---|---|---|
+| 🎨 | 9 biyom | Kraterli Yaylalar, Kuzey Ovaları, Mars Krateri, Kutup Katmanlı Tortulları, Kumul Denizi, Büyük Yarık Kanyonu, Kalkan Volkan, Antik Nehir Vadisi, Kutup Buz Örtüsü |
+| 🎨 | Topraklar | Mars Regoliti, Hematit Kürecikli Toprak, Perkloratlı Toprak, Mars Kili, CO₂ Kırağısı — ayak izi tutar, rüzgâr zamanla siler (fırtınada hızlı) |
+| 🎨 | Kumlar, kayalar, buzlar | Mars Kumu (koyu bazalt kumu), Olivin Kumu, Mars Bazaltı / Cilalı / Tuğla aileleri, Katmanlı Kumtaşı ailesi, Mars Çamurtaşı, Alçıtaşı Bloğu, Mars Su Buzu, Tozlu Buz, Kuru Buz (sıcakta süblimleşir) |
+| 🎨 | Cevherler | Hematit (→ demir), Alçıtaşı Damarı (→ kristal, Taşyiyen yemi); Mars'ta da meteor demiri |
+| 🎨 | Gökyüzü | karamela rengi gün, gün batımında mavi hale, küçük Güneş, kendi saat açılarıyla Phobos (batıdan doğar) ve Deimos |
+| 🎨 | Toz fırtınaları | seviye başına kayıtlı, sise ve GUI katmanında toz tonu (shader güvenli), uçuşan toz, %85 daha az güneş, kutuplar daha soğuk; `/spacebreaker duststorm` |
+| 🎨 | Zindanlar | Terk Edilmiş Mars Araştırma İstasyonu (sera, ISRU tesisi, garaj, sondaj kulesi), Antik Gömülü Nehir Yatağı (katmanlı mağara, kil yatak, düşmüş sonda) |
+
+### Phobos ve Deimos
+| Durum | İçerik | Not |
+|---|---|---|
+| 🎨 | Boyutlar `spacebreaker:phobos`, `spacebreaker:deimos` | çok küçük, havasız; Phobos'ta oluk zincirleri; gökte dev Mars (≈40° / 16°), evresiyle |
+| 🎨 | Bloklar | Phobos Regoliti, Deimos Regoliti (kalıcı ayak izi), Karbonlu Kondrit |
+| 🎨 | Zindanlar | Düşmüş Numune Dönüş Sondası (Phobos), Deimos Buz Deposu |
+
+### Venüs `spacebreaker:venus`
+| Durum | İçerik | Not |
+|---|---|---|
+| 🎨 | Yüzey | Volkanik Ovalar, Tessera Yaylaları, kalkan volkanlar, kraterler; 464 °C, 92 bar, loş turuncu pus |
+| 🎨 | Bulut katmanı (y 195–245) | ~1 bar, oda sıcaklığı; asit bulutları kaplamasız zırhı aşındırır; üstünde bulut denizi, Güneş batıdan doğar |
+| 🎨 | Bloklar ve eşyalar | Venüs Bazaltı, Kavrulmuş Çakıl, Tessera Kayası, Kükürt Kabuğu (→ kükürt), Metal Kırağısı; Hafif Kompozit Panel, Aerojel, Balon Kumaşı; Floropolimer Kaplama (zırh + kaplama → aside dayanıklı zırh) |
+| 🎨 | Zindan | Terk Edilmiş Araştırma Balonu (bulut tepelerinde, Asit Vatozu muhafızları) |
+
+### Merkür `spacebreaker:mercury`
+| Durum | İçerik | Not |
+|---|---|---|
+| 🎨 | Arazi | yoğun kraterler, loblu sarplıklar, düz ovalar, parlak oyuklar, kalıcı gölgeli kutup kraterlerinde buz; dev Güneş, 430 °C gündüz / −180 °C gece |
+| 🎨 | Bloklar | Merkür Regoliti, Oyuk Tortusu (kalıcı ayak izi), Merkür Kabuğu, Düşük Yansıtmalı Kaya, Grafit Cevheri (→ grafit) |
+| 🎨 | Zindan | Terk Edilmiş Kutup Buzu Madeni (gölgeli krater tabanının altında) |
+
+### Faz 2 teknolojileri (zindan diskleri)
+| Durum | İçerik | Not |
+|---|---|---|
+| 🎨 | Toz Geçirmez Contalar, Isıya Dayanıklı Elektronik, Aside Dayanıklı Kaplamalar, Kutup Buzu Madenciliği | ayrıca Mars/Venüs/Merkür zindanlarından metan motorları, Sabatier süreci, ISRU, Mars jeolojisi, astrobiyoloji, bulut platformları |
+
 ## Yaratıklar (gezegenlere özgü, kan yok)
 | Gök cismi | Yaratıklar |
 |---|---|
 | Ay 🎨 | Regolit Kenesi (tozun altına saklanır, düşük yerçekiminde sıçrar), Yaşlı Regolit Kenesi (lav tüpü muhafızı), Toz Yüzücüsü (regolitin hemen altında süzülen pasif canlı, arkasında toz dalgaları), Keşif Dronu (karakol muhafızı, sersemletme atışı) |
-| Mars | Pas Böceği (demir oksit yer, tarafsız), Toz Şeytanı (fırtınalarda canlı hortum), Kanyon Pusucusu, Taşyiyen (iri, pasif otlayıcı), Kutup Kurtçuğu |
-| Venüs (bulutlar) | Asit Vatozu (süzülen, tarafsız), Bulut Medüzü (pasif gaz kesesi) |
-| Merkür | Alacakaranlık Sürüngeni (gece-gündüz sınırında yaşar) |
+| Mars 🎨 | Pas Böceği (demir oksit yer, tarafsız), Toz Şeytanı (fırtınalarda canlı hortum), Kanyon Pusucusu, Taşyiyen (iri, pasif otlayıcı), Kutup Kurtçuğu |
+| Venüs (bulutlar) 🎨 | Asit Vatozu (süzülen, tarafsız), Bulut Medüzü (pasif gaz kesesi) |
+| Merkür 🎨 | Alacakaranlık Sürüngeni (gece-gündüz sınırında yaşar; güneş yükselince ya da gece çökünce toprağa gömülür) |
 | Io | Kükürt Yengeci |
 | Europa | Buzaltı Işık Yılanı (biyolüminesan, pasif) |
 | Titan | Metan Kayıcısı, Tolin Solucanı |

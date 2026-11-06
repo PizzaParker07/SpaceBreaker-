@@ -21,6 +21,17 @@ public final class Environment {
     private static final List<OxygenSource> OXYGEN_SOURCES = new CopyOnWriteArrayList<>();
     private static final List<TemperatureModifier> TEMPERATURE_MODIFIERS = new CopyOnWriteArrayList<>();
     private static final List<SunlightModifier> SUNLIGHT_MODIFIERS = new CopyOnWriteArrayList<>();
+    private static final List<PressureModifier> PRESSURE_MODIFIERS = new CopyOnWriteArrayList<>();
+
+    /** Multiplies the ambient pressure at a position (e.g. thinner air with altitude); 1 = unchanged. */
+    @FunctionalInterface
+    public interface PressureModifier {
+        double factor(Level level, BlockPos pos);
+    }
+
+    public static void addPressureModifier(PressureModifier modifier) {
+        PRESSURE_MODIFIERS.add(modifier);
+    }
 
     /** Something that can make a position breathable even in vacuum (e.g. an oxygenated, sealed room). */
     @FunctionalInterface
@@ -96,7 +107,11 @@ public final class Environment {
         if (Bodies.isOrbit(level)) {
             return 0.0;
         }
-        return body(level).map(b -> b.atmosphere().pressureKpa()).orElse(101.325);
+        double p = body(level).map(b -> b.atmosphere().pressureKpa()).orElse(101.325);
+        for (PressureModifier modifier : PRESSURE_MODIFIERS) {
+            p *= modifier.factor(level, pos);
+        }
+        return p;
     }
 
     /** Sun elevation above the horizon in radians (negative at night). */

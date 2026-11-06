@@ -21,7 +21,9 @@ public final class Modules {
             new com.pizzaparker07.spacebreaker.content.research.ResearchModule(),
             new com.pizzaparker07.spacebreaker.content.dungeons.DungeonsModule(),
             new RocketryModule(),
-            new com.pizzaparker07.spacebreaker.content.mars.MarsModule()
+            new com.pizzaparker07.spacebreaker.content.mars.MarsModule(),
+            new com.pizzaparker07.spacebreaker.content.venus.VenusModule(),
+            new com.pizzaparker07.spacebreaker.content.mercury.MercuryModule()
     );
 
     private Modules() {

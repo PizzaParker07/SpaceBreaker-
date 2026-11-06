@@ -21,6 +21,9 @@
     "spacebreaker:launch_pad",
     "spacebreaker:flame_trench",
     "spacebreaker:service_tower",
-    "spacebreaker:hematite_ore"
+    "spacebreaker:hematite_ore",
+    "spacebreaker:metal_frost",
+    "spacebreaker:composite_panel",
+    "spacebreaker:graphite_ore"
   ]
 }
