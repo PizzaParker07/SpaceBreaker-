@@ -10,6 +10,7 @@ public final class ShowcaseScenarios {
     static {
         ALL.put("style_sample", new StyleSampleScenario());
         ALL.put("suit", new SuitScenario());
+        ALL.put("suit_moon", new SuitMoonScenario());
         ALL.put("industry", new IndustryScenario());
         ALL.put("moon", new MoonScenario());
         ALL.put("research", new ResearchScenario());

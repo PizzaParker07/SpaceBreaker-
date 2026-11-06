@@ -724,7 +724,94 @@ def icon_boots(magnetic=False) -> Canvas:
     return _icon(ICON_BOOTS, pal)
 
 
+# ===================================================================================== HUD icons
+# 9x9 icons for the helmet HUD, drawn like vanilla's heart/armour/bubble icons: dark outline, flat colour,
+# one highlight. Sheet: hud_icons.png, 9 px per icon in a row.
+HUD_ICONS = {
+    'oxygen': [
+        "...KKK...",
+        "...KbK...",
+        "..KKKKK..",
+        ".KHWWWsK.",
+        ".KWCCCsK.",
+        ".KWCCCsK.",
+        ".KHWWWsK.",
+        ".KHWWWsK.",
+        "..KKKKK..",
+    ],
+    'suit': [
+        ".KKKKKKK.",
+        "KHWWWWWsK",
+        "KWVVVVVsK",
+        "KWVvVVVsK",
+        "KWVVVVVsK",
+        "KHWWWWWsK",
+        ".KBBBBBK.",
+        "..KKKKK..",
+        ".........",
+    ],
+    'temperature': [
+        "...KKK...",
+        "...KWK...",
+        "...KWK...",
+        "...KrK...",
+        "...KrK...",
+        "..KrrrK..",
+        ".KrRRrrK.",
+        ".KrrrrrK.",
+        "..KKKKK..",
+    ],
+    'radiation': [
+        ".........",
+        ".KKK.KKK.",
+        "KYYYKYYYK",
+        "KYYKKKYYK",
+        ".KKKYKKK.",
+        "...KKK...",
+        "..KYYYK..",
+        "..KYYYK..",
+        "...KKK...",
+    ],
+    'pressure': [
+        "..KKKKK..",
+        ".KHWWWsK.",
+        "KHWWWKWsK",
+        "KWWWKWWsK",
+        "KWWKKWWsK",
+        "KWWWWWWsK",
+        ".KsWWWsK.",
+        "..KKKKK..",
+        ".........",
+    ],
+    'mmu': [
+        "..KKKKK..",
+        ".KHWWWsK.",
+        ".KWSSSsK.",
+        ".KWWWWsK.",
+        ".KKKKKKK.",
+        "..KS.SK..",
+        "..Kc.cK..",
+        "...c.c...",
+        "...c.c...",
+    ],
+}
+HUD_ORDER = ('oxygen', 'suit', 'temperature', 'radiation', 'pressure', 'mmu')
+
+
+def hud_icons() -> Canvas:
+    pal = {'K': (24, 24, 28), 'H': W[7], 'W': W[6], 's': W[3], 'C': C[5], 'b': CU[4], 'V': V[2], 'v': V[6],
+           'B': A[5], 'r': (200, 50, 40), 'R': (255, 140, 120), 'Y': (240, 200, 40), 'S': S[5], 'c': (210, 230, 240)}
+    cv = Canvas(9 * len(HUD_ORDER), 9)
+    for i, name in enumerate(HUD_ORDER):
+        for y, row in enumerate(HUD_ICONS[name]):
+            for x, ch in enumerate(row):
+                if ch in pal:
+                    cv[i * 9 + x, y] = pal[ch]
+    return cv
+
+
 def export(save):
+    save(hud_icons(), 'gui', 'hud_icons')
     export_blocks(save)
     save(icon_small_tank(), 'item', 'oxygen_tank')
     save(oxygen_tank_model(), 'item', 'oxygen_tank_model')
