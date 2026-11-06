@@ -217,6 +217,15 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Zindan | Terk Edilmiş Döner Kanat Hangarı (Titan: tonozlu hangar, sekiz rotorlu uçan araç, atölye, laboratuvar, metan deposu) |
 | 🎨 | Teknolojiler | Hava Hareketliliği (4), Hidrokarbon İşleme (4), Gayzer Örneklemesi (5) |
 
+### Uranüs sistemi
+| Durum | İçerik | Not |
+|---|---|---|
+| 🎨 | Miranda `spacebreaker:miranda` | parçalanıp yeniden birleştirilmiş gibi yamalı bir dünya: eski, kraterli gri ovalar; parlak ve koyu paralel sırtlardan üç dev "yarış pisti" taç yapısı; iniş alanına yakın, yüzü katmanlı çıplak buzdan ~95 blok yüksekliğinde dev fay uçurumu (dibinde moloz yamacı); gökte 22° genişliğinde, ince koyu halkalı soluk camgöbeği Uranüs |
+| 🎨 | Miranda blokları | Miranda Regoliti (kalıcı ayak izi), Miranda Ana Kaya Buzu (+ merdiven, basamak, duvar), Parlak Sırt Buzu, Koyu Bant Buzu, Miranda Karbon Yatağı (→ kömür) |
+| 🎨 | Zindan | Düşmüş İkmal İniş Aracı (Miranda) |
+| 🎨 | Teknoloji | Dikey Keşif (4) |
+| 🎨 | Ortak yüzey özellikleri | fay uçurumu (`fault_cliff`), taç yapıları (`coronae`) |
+
 ### Neptün sistemi
 | Durum | İçerik | Not |
 |---|---|---|
@@ -249,6 +258,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | Kallisto 🎨 | Krater Sıçrayıcısı (ürkek, düşük yerçekiminde uzun sıçrayışlarla kaçar) |
 | Titan 🎨 | Metan Kayıcısı (metan göllerinin üstünde yürür) · Tolin Solucanı (kumul denizlerinde halkalı, ürkek kazıcı: yaklaşınca kuma gömülür, sessizlikte çıkar, kumu eleyip ara sıra tolin bırakır; tolin kumuyla çoğalır) |
 | Enceladus 🎨 | Gayzer Süzülücüsü (gayzer bulutlarında süzülen parlak çan) |
+| Miranda 🎨 | Uçurum Yapışkanı (beş kollu, yassı otlayıcı; duvarlara tırmanır, düşme hasarı almaz; kömürle çoğalır) |
 | Triton 🎨 | Gayzer Böceği (gayzer tozuyla beslenir, gayzer fırlatınca kanat kınlarını açıp süzülerek iner, düşme hasarı almaz; gayzer tozuyla çoğalır) |
 | Plüton 🎨 | Azot Kaydırıcısı (azot buzunda karnı üstünde iki kat hızlı kayar, tolinle çoğalır) |
 | Charon 🎨 | Kırağı Kaplumbağası (vurulunca kabuğuna çekilir, içerideyken hasarın dörtte birini alır; amonyakla çoğalır) |
