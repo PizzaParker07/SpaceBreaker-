@@ -26,7 +26,9 @@ Per world with Complementary (vanilla reference shots live in each area's screen
 | Phobos, Deimos | airless | classified and handled like the Moon; no separate shader screenshots yet |
 
 Screen effects and HUDs (all in the GUI layer, drawn over the pack's final frame) were checked under Complementary:
-orbit HUD (`iris_rocketry_12_orbit_hud`), suit HUD on the Moon (`iris_suit_moon_03_hud_vacuum`), launch
+rocket camera and cockpit window (`iris_rocketry_24_rocket_camera`, `iris_rocketry_25_cockpit`), the transit animation
+that replaces the loading screen during dimension changes (`iris_rocketry_26/27/28_transit_*`; the frames differ from
+vanilla only in the animation phase, the shader run is slower), orbit HUD (`iris_rocketry_12_orbit_hud`), suit HUD on the Moon (`iris_suit_moon_03_hud_vacuum`), launch
 (`iris_rocketry_07_ignition`), Mars dust tint. The reentry plasma overlay (`iris_13_reentry_plasma`, compat shot 13 with
 a short view distance so the frame is ready during the heating phase) is drawn over the pack's frame as well.
 
@@ -126,11 +128,10 @@ Complementary the tint is weaker (the pack re-lights translucent entities) but t
   Moon when it rains on Earth (industry area).
 
 - **Blue "water" particles are faded by Complementary:** its `gbuffers_textured` recognises blue particles
-  (`b > 1.15·(r+g)`, as in `FALLING_WATER` / `RAIN`), pales them (`sqrt`, ×0.7) and drops ~60 % of them by dither. Titan's
-  methane drizzle uses those vanilla particles, so under the pack it is almost invisible in the orange haze
-  (`vanilla_titan_03_methane_rain` vs `iris_titan_03_methane_rain`; the same with our passes off, so it is the pack).
-  Fix for the owning area: a custom drop particle whose colour is not blue-dominant (liquid methane is nearly
-  colourless — e.g. a pale grey/amber tint) is drawn normally by the pack.
+  (`b > 1.15·(r+g)`, as vanilla `FALLING_WATER` / `RAIN`), pales them and drops ~60 % of them by dither. Titan's drizzle
+  now uses its own methane drop particle and is visible under the pack (`iris_titan_03_methane_rain`); it reads darker
+  than in vanilla because Titan's dim light and haze apply to the drops too. Other areas: avoid blue-dominant vanilla
+  water particles for effects that must stay visible with shaders.
 
 ## 4. How to test
 
