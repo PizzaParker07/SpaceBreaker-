@@ -54,12 +54,12 @@ public class VentBlockEntity extends BlockEntity {
             double vy = speed * (0.7 + r.nextDouble() * 0.6);
             if (kind.style() == VentBlock.Style.NITROGEN) {
                 // a narrow dark column of nitrogen gas and dust; at the top the thin wind bends it over into a long streak
-                level.addAlwaysVisibleParticle(new DustParticleOptions(i % 2 == 0 ? PLUME_DARK : PLUME_GREY, 1.8F), true,
-                        x + vx * 2, y + r.nextDouble() * kind.height(), z + vz * 2, vx, 0.04, vz);
-                if (i < 2) {
+                level.addAlwaysVisibleParticle(new DustParticleOptions(i % 2 == 0 ? PLUME_DARK : PLUME_GREY, 3.2F), true,
+                        x + vx * 6, y + r.nextDouble() * kind.height(), z + vz * 6, vx, 0.04, vz);
+                if (i < 3) {
                     double along = r.nextDouble() * kind.height() * 0.8;
-                    level.addAlwaysVisibleParticle(new DustParticleOptions(PLUME_DARK, 2.4F), true, x + along, y + kind.height() - along * 0.08,
-                            z + r.nextGaussian() * 0.6, 0.12, -0.01, 0);
+                    level.addAlwaysVisibleParticle(new DustParticleOptions(PLUME_DARK, 3.6F), true, x + along, y + kind.height() - along * 0.08,
+                            z + r.nextGaussian() * 0.8, 0.12, -0.01, 0);
                 }
             } else if (kind.style() == VentBlock.Style.ICE) {
                 level.addAlwaysVisibleParticle(i % 3 == 0 ? ParticleTypes.CLOUD : ParticleTypes.SNOWFLAKE, true, x, y, z, vx, vy, vz);
