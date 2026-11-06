@@ -1,0 +1,8 @@
+{
+  "feature": "spacebreaker:europa_ocean",
+  "placement": [
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

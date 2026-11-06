@@ -45,7 +45,7 @@ public final class Transfers {
 
     public static List<Location> destinations(Location from) {
         List<Location> out = new ArrayList<>();
-        for (Location to : Location.values()) {
+        for (Location to : Locations.all()) {
             if (to != from && model.deltaV(from, to).isPresent()) {
                 out.add(to);
             }
@@ -60,14 +60,14 @@ public final class Transfers {
             return real;
         }
         double dv = real.getAsDouble();
-        if (from == Location.EARTH_SURFACE && layout != null && active < layout.stages().size()) {
+        boolean sameBody = from.body().equals(to.body());
+        if (sameBody && !from.orbit() && from.atmosphere() && layout != null && active < layout.stages().size()) {
             RocketLayout.Stage s = layout.stages().get(active);
             if (s.fins() || s.gridFins()) {
                 dv -= FIN_BONUS;
             }
         }
-        boolean airlessPowered = (from == Location.MOON_ORBIT && to == Location.MOON_SURFACE)
-                || (from == Location.MOON_SURFACE && to == Location.MOON_ORBIT);
+        boolean airlessPowered = sameBody && from.orbit() != to.orbit() && !from.atmosphere();
         if (airlessPowered && layout != null && layout.hasRcsFrom(active)) {
             dv -= RCS_BONUS;
         }
@@ -83,12 +83,19 @@ public final class Transfers {
         return cost(from, to, null, 0, realism);
     }
 
-    /** Required heat shield rating to come home through an atmosphere from here (0 = none needed). */
+    /**
+     * Heat shield rating needed for a leg (0 = none): 1 to land from a low orbit through an atmosphere,
+     * 2 for a direct entry or aerocapture coming from another body, and for very dense atmospheres.
+     */
     public static int reentryRating(Location from, Location to) {
-        if (to == Location.EARTH_SURFACE) {
-            return from == Location.MOON_ORBIT ? 2 : 1;
+        boolean sameBody = from.body().equals(to.body());
+        if (!to.orbit() && to.atmosphere()) {
+            if (!sameBody) {
+                return 2;
+            }
+            return from.orbit() ? (to.pressureKpa() > 1000 ? 2 : 1) : 0;
         }
-        if (to == Location.EARTH_ORBIT && from == Location.MOON_ORBIT) {
+        if (to.orbit() && to.atmosphere() && !sameBody) {
             return 2; // aerocapture
         }
         return 0;

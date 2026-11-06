@@ -1,0 +1,35 @@
+{
+  "chapter": "mars",
+  "title": "Mars Kaynakları",
+  "icon": "spacebreaker:raw_hematite",
+  "order": 1,
+  "requires_tech": "spacebreaker:interplanetary_transfers",
+  "pages": [
+    {
+      "items": [
+        "spacebreaker:hematite_ore",
+        "spacebreaker:hematite_soil",
+        "spacebreaker:perchlorate_soil",
+        "spacebreaker:martian_ice",
+        "spacebreaker:dry_ice"
+      ]
+    },
+    {
+      "text": "Kırmızı renk pastır: demir oksit. Hematit cevheri ve küçük hematit küreleriyle dolu toprak senin demirindir. Perklorat toprağı zehirli tuzlarla doludur: kimyacılar için yararlı, yiyecek yetiştirmek için kötü."
+    },
+    {
+      "text": "Su; kutup başlıklarında buz olarak, tozlu buzda tozun altında ve yüksek enlemlerin toprağında saklanır. Başlıkların üstü, ısınınca doğrudan gaza dönüşen kuru buzla, yani donmuş karbondioksitle kaplıdır."
+    },
+    {
+      "items": [
+        "spacebreaker:martian_mudstone",
+        "spacebreaker:martian_clay",
+        "spacebreaker:gypsum_crystal",
+        "spacebreaker:olivine_sand"
+      ]
+    },
+    {
+      "text": "Çamurtaşı, kil ve alçıtaşı sadece suda oluşur. Onları eski nehir vadilerinde ve deltalarda bul: Mars bir zamanlar ıslaktı."
+    }
+  ]
+}

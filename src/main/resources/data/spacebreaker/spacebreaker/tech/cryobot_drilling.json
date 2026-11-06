@@ -1,0 +1,13 @@
+{
+  "category": "exploration",
+  "tier": 4,
+  "requires": [
+    "spacebreaker:icy_moons"
+  ],
+  "icon": "spacebreaker:europan_ice",
+  "samples": [
+    "spacebreaker:europa",
+    "spacebreaker:ganymede"
+  ],
+  "unlocks": []
+}

@@ -1,0 +1,6 @@
+{
+  "type": "spacebreaker:io_observatory",
+  "biomes": "spacebreaker:io_plains",
+  "spawn_overrides": {},
+  "step": "surface_structures"
+}

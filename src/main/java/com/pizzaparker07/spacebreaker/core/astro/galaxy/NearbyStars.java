@@ -79,8 +79,9 @@ public final class NearbyStars {
         Rng rng = new Rng(Rng.hash(seed.id(), 0x4E454152L));
         switch (e.key) {
             case "alpha_centauri" -> {
-                b.companion(rootId("alpha_centauri_b"), "Alpha Centauri B", "Alfa Centauri B",
-                        StellarModel.catalogue(0.9092, 0.5002, 0.8591, 5260), 23.4, 0.5179, 79.91 * 365.25);
+                StellarModel.Star bStar = StellarModel.catalogue(0.9092, 0.5002, 0.8591, 5260);
+                b.companion(rootId("alpha_centauri_b"), "Alpha Centauri B", "Alfa Centauri B", bStar, 23.4, 0.5179, 79.91 * 365.25);
+                b.binary(new StarSystem.Binary(bStar, 23.4, 0.5179, 79.91 * 365.25));
                 // binary periastron 11.3 AU: S-type planets are stable inside ~2.5 AU of A
                 StarSystemGenerator.addPlanets(b, rng, 2.5, nameEn, nameTr);
             }
@@ -88,8 +89,11 @@ public final class NearbyStars {
                     b.planet(rootId("proxima_centauri_b"), "Proxima Centauri b", "Proxima Centauri b", 1.07, 1.07, 0.04857, 0.02, 0, rng);
             case "barnards_star" ->
                     b.planet(rootId("barnards_star_b"), "Barnard's Star b", "Barnard Yıldızı b", 0.37, 0.75, 0.0229, 0.03, 0, rng);
-            case "sirius" -> b.companion(rootId("sirius_b"), "Sirius B", "Sirius B",
-                    StellarModel.catalogue(1.018, 0.056, 0.0084, 25000), 19.8, 0.5923, 50.13 * 365.25);
+            case "sirius" -> {
+                StellarModel.Star wd = StellarModel.catalogue(1.018, 0.056, 0.0084, 25000);
+                b.companion(rootId("sirius_b"), "Sirius B", "Sirius B", wd, 19.8, 0.5923, 50.13 * 365.25);
+                b.binary(new StarSystem.Binary(wd, 19.8, 0.5923, 50.13 * 365.25));
+            }
             case "epsilon_eridani" -> {
                 b.planet(rootId("epsilon_eridani_b"), "Epsilon Eridani b", "Epsilon Eridani b", 0.66 * 317.83, 1.2 * 11.21, 3.53, 0.07, 0, rng);
                 StarSystemGenerator.addPlanets(b, new Rng(rng.nextLong()), 2.0, nameEn, nameTr, 0, 1);

@@ -1,0 +1,35 @@
+{
+  "chapter": "mars",
+  "title": "Mars",
+  "icon": "spacebreaker:martian_regolith",
+  "order": 0,
+  "requires_tech": "spacebreaker:interplanetary_transfers",
+  "pages": [
+    {
+      "items": [
+        "spacebreaker:martian_regolith",
+        "spacebreaker:martian_sand",
+        "spacebreaker:martian_basalt",
+        "spacebreaker:martian_sandstone"
+      ]
+    },
+    {
+      "text": "Karamela renkli bir gökyüzü altında soğuk bir çöl. Hava, Dünya basıncının yüzde birinden azında ince karbondioksittir; yerçekimi 0,38 g'dir ve geceler donma noktasının çok altına iner. Burada sadece oksijen değil, sızdırmaz bir giysi gerekir."
+    },
+    {
+      "text": "Kuzey alçak ve düz bir ovadır; güney eski, kraterli yaylalardır. Dev volkanları, uzun yarık kanyonlarını, kum denizlerini ve kutup buz başlıklarını ara."
+    },
+    {
+      "heading": "Toz fırtınaları"
+    },
+    {
+      "text": "Fırtınalar günlerce bütün gezegeni sarabilir. Güneşi karartır, bu yüzden güneş panelleri çok daha az güç verir ve birkaç bloktan ötesini gizler. Toz geçirmez contalar makinelerini ve giysini çalışır tutar."
+    },
+    {
+      "heading": "Mavi gün batımları"
+    },
+    {
+      "text": "İnce toz kırmızı ışığı yanlara saçar ama mavi ışığı dümdüz geçirir; bu yüzden alçak güneşin çevresinde gökyüzü maviye döner: Dünya'nın tam tersi."
+    }
+  ]
+}

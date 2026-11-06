@@ -1,0 +1,17 @@
+{
+  "type": "spacebreaker:crushing",
+  "energy": 14,
+  "ingredients": [
+    {
+      "count": 1,
+      "item": "spacebreaker:sulfur_crust"
+    }
+  ],
+  "results": [
+    {
+      "count": 2,
+      "id": "spacebreaker:sulfur"
+    }
+  ],
+  "time": 80
+}

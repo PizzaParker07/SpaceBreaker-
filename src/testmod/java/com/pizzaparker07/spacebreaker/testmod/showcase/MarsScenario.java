@@ -63,6 +63,17 @@ final class MarsScenario implements ShowcaseScenario {
         int top = (int) Math.floor(t.height(CAVE_X, CAVE_Z));
         cave = new com.pizzaparker07.spacebreaker.content.mars.dungeon.RiverbedCavePiece(5150L, CAVE_X, top, CAVE_Z);
         place(level, cave);
+        place(level, tube(t));
+    }
+
+    static final int TUBE_X = -40;
+    static final int TUBE_Z = -130;
+
+    /** A lava tube under the plains near the vista point (same seed every run). */
+    static com.pizzaparker07.spacebreaker.content.mars.dungeon.LavaTubePiece tube(PlanetTerrain t) {
+        return new com.pizzaparker07.spacebreaker.content.mars.dungeon.LavaTubePiece(7171L,
+                com.pizzaparker07.spacebreaker.content.mars.dungeon.LavaTubeStructure.walk(7171L, TUBE_X, TUBE_Z,
+                        (x, z) -> (int) Math.floor(t.height(x, z)) + 1));
     }
 
     static final int STATION_X = -90;
@@ -116,9 +127,26 @@ final class MarsScenario implements ShowcaseScenario {
             s.add(new ShowcaseDriver.Shot("14_" + names[i], 0, STAGE_X + xs[i] + 0.5 + (i % 2 == 0 ? -0.4 : 0.4) * d, y0 + 1 + (i == 5 ? 2.2 : 1.4), STAGE_Z + 6.5 + d,
                     180F + (i % 2 == 0 ? 8F : -8F), i == 5 ? 5F : 22F, true, CameraType.FIRST_PERSON, 60, at(0.18), null));
         }
+        {
+            var tube = tube(t);
+            int sky = 3;
+            var a = tube.node(sky);
+            var b = tube.node(sky + 5);
+            float along = (float) Math.toDegrees(Math.atan2(-(a.getX() - b.getX()), a.getZ() - b.getZ()));
+            s.add(new ShowcaseDriver.Shot("18_lava_tube_skylight", 0, a.getX() + 0.5 - 5, ground(a.getX(), a.getZ()) + 9, a.getZ() + 0.5 - 5,
+                    -45F, 58F, true, CameraType.FIRST_PERSON, 160, at(0.22), null));
+            s.add(new ShowcaseDriver.Shot("19_lava_tube_inside", 0, b.getX() + 0.5, tube.floor(sky + 5) + 1.6, b.getZ() + 0.5, along, 4F, true,
+                    CameraType.FIRST_PERSON, 120, p -> {
+                        at(0.22).accept(p);
+                        p.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.NIGHT_VISION, 2400, 0, false, false));
+                    }, null));
+        }
         int sy = (int) Math.floor(t.height(STATION_X + 16, STATION_Z + 16)) + 1;
         s.add(new ShowcaseDriver.Shot("15_research_station", 0, STATION_X + 40, sy + 14, STATION_Z + 44, yaw(-24, -28), 22F, true,
-                CameraType.FIRST_PERSON, 200, at(0.15), null));
+                CameraType.FIRST_PERSON, 200, p -> {
+                    p.removeAllEffects();
+                    at(0.15).accept(p);
+                }, null));
         s.add(new ShowcaseDriver.Shot("16_station_inside", 0, STATION_X + 16.5, sy + 2.6, STATION_Z + 24.5, 0F, 8F, true,
                 CameraType.FIRST_PERSON, 100, at(0.2), null));
         {

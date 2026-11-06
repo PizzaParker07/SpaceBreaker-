@@ -1,0 +1,37 @@
+{
+  "chapter": "venus",
+  "title": "Bulutlarda Yaşam ve Harabeler",
+  "icon": "spacebreaker:cloud_jelly_spawn_egg",
+  "order": 1,
+  "requires_tech": "spacebreaker:interplanetary_transfers",
+  "pages": [
+    {
+      "items": [
+        "spacebreaker:cloud_jelly_spawn_egg",
+        "spacebreaker:acid_ray_spawn_egg",
+        "spacebreaker:aerogel",
+        "spacebreaker:envelope_fabric"
+      ]
+    },
+    {
+      "text": "Bulut Medüzleri hafif gaz keseleriyle süzülür ve havadan kükürt süzer. Asit Vatozları geniş kavislerle süzülür; onlara dokunma, yoksa zırhı aşındıran asit püskürtürler."
+    },
+    {
+      "text": "Bulut tepelerinin üstünde terk edilmiş bir aerostat süzülür. Laboratuvarı ve deposu hâlâ teknoloji diskleri saklar; Asit Vatozları onları korur."
+    },
+    {
+      "items": [
+        "spacebreaker:acid_coating"
+      ]
+    },
+    {
+      "text": "Herhangi bir zırh parçasını ve bir Floropolimer Kaplamayı üretim ızgarasında birleştirerek onu aside dayanıklı yap."
+    },
+    {
+      "text": "Hafif kompozit paneller ve aerojel, solunabilir hava katmanında yüzen platformlar kurar."
+    },
+    {
+      "recipe": "spacebreaker:composite_panel"
+    }
+  ]
+}

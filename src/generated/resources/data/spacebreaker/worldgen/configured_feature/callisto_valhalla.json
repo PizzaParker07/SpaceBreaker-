@@ -1,0 +1,25 @@
+{
+  "type": "spacebreaker:impact_basin",
+  "config": {
+    "depth": 5.0,
+    "floor_soil": {
+      "Name": "spacebreaker:bright_frost",
+      "Properties": {
+        "facing": "north",
+        "print": "none"
+      }
+    },
+    "latitude": 15.0,
+    "peak": 0.0,
+    "peak_radius": 0.3,
+    "radius": 1100.0,
+    "rim": 3.0,
+    "rings": 4.5,
+    "rock": {
+      "Name": "spacebreaker:callistan_rock"
+    },
+    "terraces": 0,
+    "wall": 0.08,
+    "x": 1400.0
+  }
+}

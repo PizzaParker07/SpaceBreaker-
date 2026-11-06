@@ -1,0 +1,12 @@
+{
+  "chapter": "dungeons",
+  "title": "Mars ve Uydularındaki Harabeler",
+  "icon": "spacebreaker:martian_basalt_bricks",
+  "order": 2,
+  "requires_tech": "spacebreaker:interplanetary_transfers",
+  "pages": [
+    {
+      "text": "Serası, ISRU tesisi ve sondaj kulesi olan terk edilmiş bir araştırma istasyonu; düşmüş bir sondanın bulunduğu antik gömülü bir nehir yatağı; Phobos'ta düşmüş bir numune dönüş sondası ve Deimos'ta bir buz deposu. Teknoloji diskleri metan motorlarını, Sabatier sürecini ve Mars jeolojisini öğretir."
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "type": "spacebreaker:mars_lava_tube",
+  "biomes": [
+    "spacebreaker:mars_volcano",
+    "spacebreaker:mars_plains"
+  ],
+  "spawn_overrides": {},
+  "step": "underground_structures"
+}

@@ -1,0 +1,23 @@
+{
+  "chapter": "machines",
+  "title": "Yerinde Üretim (ISRU)",
+  "icon": "spacebreaker:sabatier_reactor",
+  "order": 6,
+  "requires_tech": "spacebreaker:electrolysis",
+  "pages": [
+    {
+      "items": [
+        "spacebreaker:atmosphere_processor",
+        "spacebreaker:sabatier_reactor",
+        "spacebreaker:regolith_heater",
+        "spacebreaker:ice_melter"
+      ]
+    },
+    {
+      "text": "Dünya'dan fırlatılan her kilogram pahalıdır; bu yüzden indiğin yerde yapabildiğini yap. Atmosfer işlemcisi yerel havanın ana yararlı gazını (Mars'ta karbondioksit) ayırır ve üstünde açık gökyüzü ister. Buz eritici buzdan temiz su, kuru buzdan karbondioksit elde eder."
+    },
+    {
+      "text": "Sabatier reaktörü karbondioksiti hidrojenle birleştirip metan ve su yapar: Mars'ta üretilen roket yakıtı. Regolit ısıtıcı kayayı eritir ve elektrikle ayrıştırarak oksijen açığa çıkarır; havasız Ay'da bile."
+    }
+  ]
+}

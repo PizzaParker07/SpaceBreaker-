@@ -115,6 +115,7 @@ public final class VenusModule implements SbModule {
     public void addTranslations(Lang lang) {
         lang.add("body.spacebreaker.venus", "Venus", "Venüs");
         lang.add("dimension.spacebreaker.venus", "Venus", "Venüs");
+        lang.add("dimension.spacebreaker.venus_orbit", "Venus Orbit", "Venüs Yörüngesi");
         lang.block(VENUS_BASALT, "Venusian Basalt", "Venüs Bazaltı");
         lang.block(VENUS_SOIL, "Scorched Gravel", "Kavrulmuş Çakıl");
         lang.block(TESSERA_ROCK, "Tessera Rock", "Tessera Kayası");

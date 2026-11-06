@@ -6,7 +6,9 @@
     "spacebreaker:ion_propulsion"
   ],
   "samples": [
-    "spacebreaker:meteorite"
+    "spacebreaker:meteorite",
+    "spacebreaker:ceres",
+    "spacebreaker:vesta"
   ],
   "tier": 3
 }

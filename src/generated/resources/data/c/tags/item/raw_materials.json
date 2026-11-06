@@ -6,6 +6,7 @@
     "#c:raw_materials/spodumene",
     "#c:raw_materials/wolframite",
     "#c:raw_materials/ilmenite",
-    "#c:raw_materials/hematite"
+    "#c:raw_materials/hematite",
+    "#c:raw_materials/magnetite"
   ]
 }

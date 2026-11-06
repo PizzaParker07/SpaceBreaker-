@@ -75,12 +75,39 @@ public final class StarSystemGenerator {
         StarState st = starOf(seed);
         StarKind kind = st.kind();
         StellarModel.Star star = st.star();
-        String name = designation(seed.id());
+        String name = StarNames.properName(seed.id());
         SystemBuilder b = new SystemBuilder(seed, rootId(seed.id()), kind, star, name, name);
+        b.designation(designation(seed.id()));
+        double maxAu = Double.POSITIVE_INFINITY;
+        StarSystem.Binary binary = binaryOf(seed, star);
+        if (binary != null) {
+            b.binary(binary);
+            maxAu = binary.stableLimitAu();
+        }
         if (kind.hasPlanets()) {
-            addPlanets(b, new Rng(Rng.hash(seed.id(), 0x504C414EL)), Double.POSITIVE_INFINITY, name, name);
+            addPlanets(b, new Rng(Rng.hash(seed.id(), 0x504C414EL)), maxAu, name, name);
         }
         return b.build();
+    }
+
+    /** Multiplicity grows with mass (≈ 27 % of red dwarfs, ≈ 45 % of Sun-like stars, ≈ 60 % above 1.5 M☉). */
+    public static double binaryFraction(double mass) {
+        return mass < 0.5 ? 0.27 : mass < 1.5 ? 0.45 : 0.6;
+    }
+
+    /** The companion of a generated star, or null for a single star. */
+    static StarSystem.Binary binaryOf(StarSeed seed, StellarModel.Star primary) {
+        Rng rng = new Rng(Rng.hash(seed.id(), 0x42494E41L));
+        if (!rng.chance(binaryFraction(seed.mass()))) {
+            return null;
+        }
+        double m2 = Math.max(0.08, seed.mass() * rng.range(0.1, 1.0));
+        // separations: log-normal around ~50 AU (Raghavan et al. 2010)
+        double a = Math.pow(10, 1.7 + 1.5 * rng.gaussian());
+        a = Math.max(0.05, Math.min(a, 20000));
+        double e = a < 1 ? Math.min(0.3, rng.rayleigh(0.05)) : rng.range(0, 0.8);
+        double period = Kepler.period(a * AstroConstants.AU, AstroConstants.G * (primary.mass() + m2) * AstroConstants.SOLAR_MASS);
+        return new StarSystem.Binary(StellarModel.mainSequence(m2), a, e, period / AstroConstants.DAY);
     }
 
     /**
@@ -102,8 +129,15 @@ public final class StarSystemGenerator {
         double snow = 2.7 * Math.sqrt(l);
         double minA = Math.max(5 * star.radius() * AstroConstants.SOLAR_RADIUS / AstroConstants.AU, 0.008);
         double a = startAu > 0 ? startAu * rng.range(1.4, 2.2) : Math.max(minA, rng.logRange(0.02, 0.4) * Math.sqrt(m));
+        double prevApo = startAu > 0 ? startAu : 0;
         for (int i = 0; i < count; i++) {
-            if (a > maxAu || a > 400) {
+            // orbits never cross: each periapsis clears the previous apoapsis by 15 %
+            a = Math.max(a, prevApo * 1.25);
+            double ecc = Math.min(0.5, rng.rayleigh(0.05));
+            if (prevApo > 0) {
+                ecc = Math.max(0, Math.min(ecc, 1 - prevApo * 1.15 / a));
+            }
+            if (a * (1 + ecc) > maxAu || a > 400) {
                 break;
             }
             char letter = (char) ('b' + letterOffset + i);
@@ -128,12 +162,33 @@ public final class StarSystemGenerator {
             double re = PlanetModel.radiusFor(me, comp);
             String id = b.rootId() + "/" + letter;
             AstroBody p = b.body(id, b.rootId(), nameEn + " " + letter, nameTr + " " + letter, me * AstroConstants.EARTH_MASS,
-                    re * AstroConstants.EARTH_RADIUS, comp, a * AstroConstants.AU, Math.min(0.5, rng.rayleigh(0.05)),
+                    re * AstroConstants.EARTH_RADIUS, comp, a * AstroConstants.AU, ecc,
                     Math.toRadians(Math.abs(rng.gaussian()) * 1.5), rng.range(0, 2 * Math.PI), rng.range(0, 2 * Math.PI),
                     rng.range(0, 2 * Math.PI), rng.logRange(8, 60), Math.abs(rng.gaussian()) * 20, rng);
+            addRings(b, p, comp, rng);
             addMoons(b, p, comp, rng, nameEn + " " + letter, nameTr + " " + letter, a > snow);
+            prevApo = a * (1 + ecc);
             a *= rng.logRange(1.4, 2.3);
         }
+    }
+
+    /** Giants often have rings inside their Roche limit for ice (density 1000 kg/m³). */
+    private static void addRings(SystemBuilder b, AstroBody planet, PlanetModel.Composition comp, Rng rng) {
+        boolean giant = comp == PlanetModel.Composition.GAS_GIANT || comp == PlanetModel.Composition.ICE_GIANT;
+        if (!giant || !rng.chance(0.4)) {
+            return;
+        }
+        double roche = rocheLimitIce(planet);
+        double inner = planet.radius() * rng.range(1.1, 1.4);
+        double outer = Math.min(roche, inner * rng.range(1.3, 2.2));
+        if (outer > inner * 1.05) {
+            b.rings(planet.id(), inner / 1000, outer / 1000);
+        }
+    }
+
+    /** Fluid Roche limit for an icy body around a planet, m. */
+    public static double rocheLimitIce(AstroBody planet) {
+        return 2.44 * planet.radius() * Math.cbrt(planet.density() / 1000.0);
     }
 
     private static void addMoons(SystemBuilder b, AstroBody planet, PlanetModel.Composition comp, Rng rng,
@@ -146,7 +201,7 @@ public final class StarSystemGenerator {
         AstroBody star = b.find(b.rootId());
         double hill = Kepler.hillRadius(planet.orbit().semiMajorAxis(), planet.orbit().eccentricity(), planet.mass(), star.mass());
         double limit = hill / 3;
-        double a = planet.radius() * rng.range(4, 8);
+        double a = Math.max(planet.radius() * rng.range(4, 8), rocheLimitIce(planet) * 1.2);
         for (int i = 0; i < count && a < limit; i++) {
             double me = giant ? rng.logRange(1e-5, 0.03) : planet.mass() / AstroConstants.EARTH_MASS * rng.logRange(1e-3, 0.03);
             PlanetModel.Composition mc = cold ? (rng.chance(0.3) ? PlanetModel.Composition.OCEAN : PlanetModel.Composition.ICY)

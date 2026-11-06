@@ -57,6 +57,14 @@ public class SampleItem extends Item {
             case "mars" -> 0xB5552E;       // rust
             case "venus" -> 0xC9A757;      // sulphur yellow
             case "meteorite" -> 0x5A4E48;  // fusion crust
+            case "mercury" -> 0x6E6A66;    // dark grey regolith
+            case "phobos", "deimos", "ceres" -> 0x4E4A46; // carbon-rich dust
+            case "vesta" -> 0x8C8478;
+            case "io" -> 0xD6C24A;         // sulfur
+            case "europa", "enceladus", "triton" -> 0xC8D6DE; // ice
+            case "ganymede", "callisto" -> 0x7E7266;
+            case "titan" -> 0xA87A3A;      // tholin orange
+            case "pluto", "charon" -> 0xC9A98E;
             case "suborbital_flight" -> 0x6FA0D8;
             case "orbital_flight" -> 0x3E5FA8;
             default -> 0xA0A0A0;

@@ -1,0 +1,13 @@
+{
+  "type": "spacebreaker:mercury_orbit",
+  "generator": {
+    "type": "minecraft:flat",
+    "settings": {
+      "biome": "spacebreaker:orbit",
+      "layers": [],
+      "lakes": false,
+      "features": false,
+      "structure_overrides": []
+    }
+  }
+}

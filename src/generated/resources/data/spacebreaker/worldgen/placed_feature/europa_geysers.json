@@ -1,0 +1,8 @@
+{
+  "feature": "spacebreaker:europa_geysers",
+  "placement": [
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

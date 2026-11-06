@@ -1,5 +1,7 @@
-// 1.21.1	2026-11-06T16:12:44.238481779	Tags for minecraft:fluid mod id spacebreaker
+// 1.21.1	2026-11-06T19:32:49.220637331	Tags for minecraft:fluid mod id spacebreaker
+6e4b2778746691086dc52896205897432b53c83b data/c/tags/fluid/carbon_dioxide.json
 b02960a994c2d69433312148bac1c346dc432bbd data/c/tags/fluid/crude_oil.json
+77bead21524878ec5e4c60b8dc64a433e6409c84 data/c/tags/fluid/helium_3.json
 4d40f6476d73ab3af309d4663fc41d13e748e136 data/c/tags/fluid/hydrogen.json
 bf8e289a358a2631573168b47ce371a9c6580185 data/c/tags/fluid/liquid_hydrogen.json
 cff7a8307a4c6133d2a10aee1e705013f54a791a data/c/tags/fluid/liquid_methane.json
@@ -7,3 +9,4 @@ cff7a8307a4c6133d2a10aee1e705013f54a791a data/c/tags/fluid/liquid_methane.json
 8f7d6ca07ea54baee87fced1e60300fe68cfb3b8 data/c/tags/fluid/methane.json
 2399bb52467f534d62ce64dfcf19f297f1ab52d2 data/c/tags/fluid/oxygen.json
 913bbcf2f1eb53ad706c860eb7fbe0fc27fa8ff5 data/c/tags/fluid/rp1.json
+f45db6173912ed4bdf117112d325a5e210f55fd8 data/c/tags/fluid/sulfuric_acid.json

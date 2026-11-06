@@ -1,0 +1,29 @@
+{
+  "type": "spacebreaker:surface_vents",
+  "config": {
+    "cell": 420,
+    "deposits": [
+      {
+        "Name": "spacebreaker:europan_frost",
+        "Properties": {
+          "facing": "north",
+          "print": "none"
+        }
+      },
+      {
+        "Name": "spacebreaker:europan_frost",
+        "Properties": {
+          "facing": "north",
+          "print": "none"
+        }
+      }
+    ],
+    "pit": {
+      "Name": "spacebreaker:stained_ice"
+    },
+    "radius": 7.0,
+    "vent": {
+      "Name": "spacebreaker:ice_geyser"
+    }
+  }
+}

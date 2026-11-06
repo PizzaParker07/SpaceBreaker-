@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_eucrite_bricks": {
+      "conditions": {
+        "items": [
+          {
+            "items": "spacebreaker:eucrite_bricks"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "spacebreaker:eucrite_brick_slab_from_eucrite_bricks_stonecutting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_eucrite_bricks"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "spacebreaker:eucrite_brick_slab_from_eucrite_bricks_stonecutting"
+    ]
+  }
+}

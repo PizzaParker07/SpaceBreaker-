@@ -56,7 +56,7 @@ public final class RocketHud {
                 float a = Mth.clamp(t / 25F, 0, 1);
                 g.fill(0, 0, w, h, (int) (a * 255) << 24);
                 if (a > 0.6F) {
-                    Component title = Component.translatable("hud.spacebreaker.coasting", Component.translatable(rocket.destination().translationKey()));
+                    Component title = Component.translatable("hud.spacebreaker.coasting", rocket.destination().name());
                     int alpha = (int) ((a - 0.6F) / 0.4F * 255) << 24;
                     g.drawCenteredString(mc.font, title, w / 2, h / 2 - 10, 0xDDE6F0 | alpha);
                     float p = Mth.clamp(t / RocketEntity.TRANSFER_TICKS, 0, 1);
@@ -141,7 +141,7 @@ public final class RocketHud {
         g.fill(x - 3, y - 3, x + 142, y + lines * 10 + 2, 0x90000000);
         Location here = rocket.location();
         line(g, font, x, y, Component.translatable("hud.spacebreaker.state." + s.name().toLowerCase(Locale.ROOT)), 0xFFE08A);
-        line(g, font, x, y + 10, Component.translatable("hud.spacebreaker.location", Component.translatable(here.translationKey())), 0xDDE6F0);
+        line(g, font, x, y + 10, Component.translatable("hud.spacebreaker.location", here.name()), 0xDDE6F0);
         double alt = here.orbit() ? Double.NaN : rocket.getY() - (mc.level != null ? mc.level.getSeaLevel() : 63);
         String altText = Double.isNaN(alt) ? "—" : String.format(Locale.ROOT, "%,.0f m", Math.max(0, alt));
         line(g, font, x, y + 20, Component.translatable("hud.spacebreaker.altitude", altText), 0xDDE6F0);

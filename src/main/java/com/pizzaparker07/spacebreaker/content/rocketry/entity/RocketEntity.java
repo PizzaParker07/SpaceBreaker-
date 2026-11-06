@@ -70,7 +70,9 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
     private static final EntityDataAccessor<Integer> DATA_STATE = SynchedEntityData.defineId(RocketEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> DATA_STAGE = SynchedEntityData.defineId(RocketEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> DATA_TIMER = SynchedEntityData.defineId(RocketEntity.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Integer> DATA_DEST = SynchedEntityData.defineId(RocketEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<String> DATA_DEST = SynchedEntityData.defineId(RocketEntity.class, EntityDataSerializers.STRING);
+    /** Body circled while in the shared orbit dimension ("" elsewhere). */
+    private static final EntityDataAccessor<String> DATA_ORBIT_BODY = SynchedEntityData.defineId(RocketEntity.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<Boolean> DATA_BURNING = SynchedEntityData.defineId(RocketEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Float> DATA_TILT = SynchedEntityData.defineId(RocketEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<CompoundTag> DATA_FUEL = SynchedEntityData.defineId(RocketEntity.class, EntityDataSerializers.COMPOUND_TAG);
@@ -120,7 +122,8 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         builder.define(DATA_STATE, 0);
         builder.define(DATA_STAGE, 0);
         builder.define(DATA_TIMER, 0);
-        builder.define(DATA_DEST, 0);
+        builder.define(DATA_DEST, Location.EARTH_ORBIT.id());
+        builder.define(DATA_ORBIT_BODY, "");
         builder.define(DATA_BURNING, false);
         builder.define(DATA_TILT, 0F);
         builder.define(DATA_FUEL, new CompoundTag());
@@ -153,7 +156,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
     }
 
     public Location destination() {
-        return Location.byId(entityData.get(DATA_DEST));
+        return Location.parse(entityData.get(DATA_DEST)).orElse(Location.EARTH_SURFACE);
     }
 
     public boolean burning() {
@@ -256,12 +259,14 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
     /** Δv left from the active stage up (vacuum, or the ascent blend on an atmospheric surface). */
     public double deltaV() {
         Location here = location();
-        double atmosphere = here == Location.EARTH_SURFACE ? RocketMath.ASCENT_ATMOSPHERE : 0;
+        double atmosphere = !here.orbit() && here.atmosphere() ? RocketMath.ASCENT_ATMOSPHERE : 0;
         return RocketMath.totalDeltaV(layout(), activeStage(), fuel, atmosphere);
     }
 
     public Location location() {
-        return Location.of(level().dimension()).orElse(Location.EARTH_SURFACE);
+        String ob = entityData.get(DATA_ORBIT_BODY);
+        return com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.at(level().dimension(),
+                ob.isEmpty() ? null : net.minecraft.resources.ResourceLocation.tryParse(ob)).orElse(Location.EARTH_SURFACE);
     }
 
     public boolean isCapsuleOnly() {
@@ -326,6 +331,23 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
                 player.displayClientMessage(Component.translatable("message.spacebreaker.rocket.fuelled"), true);
             }
             return InteractionResult.sidedSuccess(level().isClientSide);
+        }
+        // buckets, canisters and any other item fluid container holding RP-1 or liquid oxygen
+        if (state() == FlightState.IDLE && !held.isEmpty()) {
+            var content = net.neoforged.neoforge.fluids.FluidUtil.getFluidContained(held);
+            if (content.isPresent() && (content.get().is(RocketryModule.RP1_TAG) || content.get().is(RocketryModule.LOX_TAG))) {
+                if (!level().isClientSide) {
+                    var result = net.neoforged.neoforge.fluids.FluidUtil.tryEmptyContainer(held, new RocketFluidHandler(this),
+                            Integer.MAX_VALUE, player, true);
+                    if (result.isSuccess()) {
+                        player.setItemInHand(hand, result.getResult());
+                        player.displayClientMessage(Component.translatable("message.spacebreaker.rocket.loaded", content.get().getHoverName()), true);
+                    } else {
+                        player.displayClientMessage(Component.translatable("message.spacebreaker.rocket.tank_full", content.get().getHoverName()), true);
+                    }
+                }
+                return InteractionResult.sidedSuccess(level().isClientSide);
+            }
         }
         if (player.isSecondaryUseActive() || player.getVehicle() == this) {
             return InteractionResult.PASS;
@@ -428,6 +450,11 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
 
     // ------------------------------------------------------------------ crew commands
 
+    /** Star map choice (by location id). */
+    public void handleTravel(ServerPlayer player, String target) {
+        Location.parse(target).ifPresent(to -> tryTravel(player, to));
+    }
+
     public void handleCrewAction(ServerPlayer player, int action, int arg) {
         switch (action) {
             case RocketActionPayload.LAUNCH -> {
@@ -438,7 +465,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
                 }
             }
             case RocketActionPayload.ABORT -> abortCountdown(player);
-            case RocketActionPayload.TRAVEL -> tryTravel(player, Location.byId(arg));
+            case RocketActionPayload.TRAVEL -> { }
             default -> {
             }
         }
@@ -458,7 +485,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         if (to == null) {
             return Component.translatable("message.spacebreaker.launch.nowhere");
         }
-        if (here == Location.EARTH_SURFACE && LaunchPad.padUnder(level(), position()) == null) {
+        if (here.equals(Location.EARTH_SURFACE) && LaunchPad.padUnder(level(), position()) == null) {
             return Component.translatable("message.spacebreaker.launch.no_pad");
         }
         double g = Environment.gravity(level());
@@ -476,11 +503,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
 
     @Nullable
     public static Location launchTarget(Location here) {
-        return switch (here) {
-            case EARTH_SURFACE -> Location.EARTH_ORBIT;
-            case MOON_SURFACE -> Location.MOON_ORBIT;
-            default -> null;
-        };
+        return here.orbit() ? null : com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(here.body(), true).orElse(null);
     }
 
     public boolean tryStartCountdown(@Nullable ServerPlayer by) {
@@ -495,8 +518,8 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
             by.displayClientMessage(Component.translatable("message.spacebreaker.warn.no_return").withStyle(ChatFormatting.GOLD), false);
         }
         setState(FlightState.COUNTDOWN);
-        setTimer(location() == Location.EARTH_SURFACE ? COUNTDOWN_TICKS : MOON_COUNTDOWN_TICKS);
-        if (Double.isNaN(homeX) && location() == Location.EARTH_SURFACE) {
+        setTimer(location().equals(Location.EARTH_SURFACE) ? COUNTDOWN_TICKS : MOON_COUNTDOWN_TICKS);
+        if (Double.isNaN(homeX) && location().equals(Location.EARTH_SURFACE)) {
             homeX = getX();
             homeZ = getZ();
         }
@@ -527,14 +550,14 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         }
         if (to.dimension() != null && by.server.getLevel(to.dimension()) == null) {
             by.displayClientMessage(Component.translatable("message.spacebreaker.travel.unavailable",
-                    Component.translatable(to.translationKey())).withStyle(ChatFormatting.RED), false);
+                    to.name()).withStyle(ChatFormatting.RED), false);
             return false;
         }
         int rating = Transfers.reentryRating(here, to);
         if (rating > layout().payload().heatShield()) {
             by.displayClientMessage(Component.translatable("message.spacebreaker.warn.heat_shield").withStyle(ChatFormatting.GOLD), false);
         }
-        boolean reentry = to == Location.EARTH_SURFACE;
+        boolean reentry = to.isEarth() && !to.orbit();
         RocketMath.Burn burn = RocketMath.burn(layout(), activeStage(), fuel, cost.getAsDouble(), 0);
         if (!burn.complete()) {
             by.displayClientMessage(Component.translatable("message.spacebreaker.travel.delta_v",
@@ -549,7 +572,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         setActiveStage(Math.min(burn.activeStage(), layout().stages().size()));
         syncFuel();
         requiredShield = rating;
-        entityData.set(DATA_DEST, to.ordinal());
+        entityData.set(DATA_DEST, to.id());
         setState(FlightState.BURN);
         setBurning(!reentry || !isCapsuleOnly());
         setTimer(0);
@@ -616,7 +639,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         legCost = cost.getAsDouble();
         legDelivered = 0;
         ascentFirstStage = activeStage();
-        double atmosphere = here == Location.EARTH_SURFACE ? RocketMath.ASCENT_ATMOSPHERE : 0;
+        double atmosphere = !here.orbit() && here.atmosphere() ? RocketMath.ASCENT_ATMOSPHERE : 0;
         // run the whole burn once to learn how long it really takes, then compress it to a watchable ascent
         double realSeconds = 0;
         double[] f = fuel.clone();
@@ -625,9 +648,9 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
             double used = fuel[s] - burn.fuel()[s];
             realSeconds += RocketMath.burnTime(layout().stages().get(s), used, s == activeStage() ? atmosphere : 0);
         }
-        double watch = here == Location.EARTH_SURFACE ? 30 : 14;
+        double watch = here.atmosphere() ? 30 : 14;
         timeScale = Math.max(1, realSeconds / watch);
-        entityData.set(DATA_DEST, to.ordinal());
+        entityData.set(DATA_DEST, to.id());
         setState(FlightState.ASCENT);
         setTimer(0);
         setBurning(true);
@@ -653,7 +676,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
             vy = Math.max(0.2, vy - 0.004);
         } else if (s < l.stages().size() && l.stages().get(s).hasEngine() && fuel[s] > 1e-6) {
             RocketLayout.Stage stage = l.stages().get(s);
-            double atmosphere = s == ascentFirstStage && location() == Location.EARTH_SURFACE ? RocketMath.ASCENT_ATMOSPHERE : 0;
+            double atmosphere = s == ascentFirstStage && location().atmosphere() ? RocketMath.ASCENT_ATMOSPHERE : 0;
             double isp = stage.isp(atmosphere);
             double m0 = RocketMath.mass(l, s, fuel);
             double flow = stage.thrustKn() * 1000.0 / (isp * RocketPart.G0);
@@ -687,7 +710,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
             return;
         }
         // gentle gravity turn on Earth so it looks like a real ascent
-        float tilt = location() == Location.EARTH_SURFACE ? (float) Mth.clamp((t - 200) * 0.03, 0, 14) : 0;
+        float tilt = location().atmosphere() ? (float) Mth.clamp((t - 200) * 0.03, 0, 14) : 0;
         entityData.set(DATA_TILT, tilt);
         double vx = vy * Math.sin(Math.toRadians(tilt));
         setDeltaMovement(vx, vy, 0);
@@ -705,7 +728,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         setActiveStage(layout().stages().size());
         setBurning(false);
         entityData.set(DATA_TILT, 0F);
-        setState(location() == Location.EARTH_SURFACE ? FlightState.PARACHUTE : FlightState.DESCENT);
+        setState(location().atmosphere() && layout().payload().parachute() ? FlightState.PARACHUTE : FlightState.DESCENT);
         setTimer(0);
         notifyCrew(Component.translatable("message.spacebreaker.ascent.failed").withStyle(ChatFormatting.RED));
     }
@@ -743,7 +766,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         ServerLevel target = server.getServer().getLevel(to.dimension());
         if (target == null) {
             // destination not installed: stay where we are, in orbit
-            notifyCrew(Component.translatable("message.spacebreaker.travel.unavailable", Component.translatable(to.translationKey())).withStyle(ChatFormatting.RED));
+            notifyCrew(Component.translatable("message.spacebreaker.travel.unavailable", to.name()).withStyle(ChatFormatting.RED));
             setState(location().orbit() ? FlightState.ORBIT : FlightState.IDLE);
             setBurning(false);
             setDeltaMovement(Vec3.ZERO);
@@ -752,17 +775,24 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         Vec3 pos;
         FlightState next;
         Vec3 speed = Vec3.ZERO;
-        switch (to) {
-            case EARTH_ORBIT, MOON_ORBIT -> {
-                pos = new Vec3(getX(), ORBIT_Y, getZ());
-                next = FlightState.ORBIT;
-            }
-            case MOON_SURFACE -> {
-                pos = new Vec3(getX(), target.getMaxBuildHeight() + 40, getZ());
-                next = FlightState.DESCENT;
-                speed = new Vec3(0, -2.5, 0);
-            }
-            default -> {
+        entityData.set(DATA_ORBIT_BODY, to.orbit() && Location.Orbits.SHARED.equals(to.dimension()) ? to.body().toString() : "");
+        if (to.orbit()) {
+            // in the shared orbit space every body gets its own region so different flights never meet
+            double offset = Location.Orbits.SHARED.equals(to.dimension()) ? com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.sharedRegionX(to.body()) : 0;
+            double x = getX() % 2048.0 + offset;
+            pos = new Vec3(x, ORBIT_Y, getZ());
+            next = FlightState.ORBIT;
+        } else if (!to.atmosphere()) {
+            pos = new Vec3(getX() % 30000.0, target.getMaxBuildHeight() + 40, getZ() % 30000.0);
+            next = FlightState.DESCENT;
+            speed = new Vec3(0, -2.5, 0);
+        } else if (!to.isEarth()) {
+            // entry into another world's air: aerobrake behind the shield, chutes, then a short retro-burn
+            pos = new Vec3(getX() % 30000.0, Math.max(target.getMaxBuildHeight() + 200, 500), getZ() % 30000.0);
+            next = FlightState.REENTRY;
+            speed = new Vec3(0, -3.2, 0);
+        } else {
+            {
                 double x = Double.isNaN(homeX) ? target.getSharedSpawnPos().getX() + 0.5 : homeX + 48;
                 double z = Double.isNaN(homeZ) ? target.getSharedSpawnPos().getZ() + 0.5 : homeZ + 16;
                 pos = new Vec3(x, Math.max(target.getMaxBuildHeight() + 260, 600), z);
@@ -789,12 +819,12 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
     }
 
     private void onArrived(Location to) {
-        if (to == Location.MOON_SURFACE && !layout().hasLegsFrom(activeStage())) {
+        if (!to.orbit() && !to.isEarth() && !layout().hasLegsFrom(activeStage())) {
             notifyCrew(Component.translatable("message.spacebreaker.warn.no_legs").withStyle(ChatFormatting.GOLD));
         }
         if (to.orbit()) {
             award(com.pizzaparker07.spacebreaker.content.research.Milestones.ORBIT);
-            notifyCrew(Component.translatable("message.spacebreaker.orbit.arrived", Component.translatable(to.translationKey())));
+            notifyCrew(Component.translatable("message.spacebreaker.orbit.arrived", to.name()));
         }
     }
 
@@ -868,14 +898,14 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
             }
             notifyCrew(Component.translatable("message.spacebreaker.landing.hard").withStyle(ChatFormatting.GOLD));
         } else {
-            if (location() == Location.MOON_SURFACE) {
+            if (location().equals(Location.MOON_SURFACE)) {
                 award(com.pizzaparker07.spacebreaker.content.research.Milestones.MOON_LANDING);
-            } else if (location() == Location.EARTH_SURFACE && isCapsuleOnly()) {
+            } else if (location().equals(Location.EARTH_SURFACE) && isCapsuleOnly()) {
                 award(com.pizzaparker07.spacebreaker.content.research.Milestones.SAFE_RETURN);
             }
-            notifyCrew(Component.translatable("message.spacebreaker.landing.ok", Component.translatable(location().translationKey())).withStyle(ChatFormatting.GREEN));
+            notifyCrew(Component.translatable("message.spacebreaker.landing.ok", location().name()).withStyle(ChatFormatting.GREEN));
         }
-        if (location() != Location.EARTH_SURFACE && !MissionPlanner.canReturnHome(layout(), activeStage(), fuel, location(), SbConfig.realism())) {
+        if (!location().equals(Location.EARTH_SURFACE) && !MissionPlanner.canReturnHome(layout(), activeStage(), fuel, location(), SbConfig.realism())) {
             notifyCrew(Component.translatable("message.spacebreaker.warn.stranded").withStyle(ChatFormatting.GOLD));
         }
     }
@@ -898,7 +928,10 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
             sl.sendParticles(ParticleTypes.LARGE_SMOKE, getX(), getY() + 1.5, getZ(), 2, 0.4, 0.4, 0.4, 0.01);
         }
         if (!Double.isNaN(ground) && getY() - ground < 140) {
-            if (layout().payload().parachute()) {
+            if (!location().isEarth() && !layout().payload().parachute()) {
+                setState(FlightState.DESCENT);
+                setTimer(60);
+            } else if (layout().payload().parachute()) {
                 setState(FlightState.PARACHUTE);
                 setTimer(0);
                 level().playSound(null, blockPosition(), SoundEvents.WOOL_PLACE, SoundSource.NEUTRAL, 2F, 0.6F);
@@ -918,6 +951,12 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         double vy = Mth.lerp(0.06, getDeltaMovement().y, target);
         setDeltaMovement(0, vy, 0);
         if (Double.isNaN(ground)) {
+            return;
+        }
+        if (!location().isEarth() && getY() - ground < 24) {
+            // chutes alone are not enough on other worlds: cut them and land on the engines
+            setState(FlightState.DESCENT);
+            setTimer(60);
             return;
         }
         if (getY() - ground <= Math.abs(vy) + 0.01) {
@@ -973,10 +1012,15 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
             return;
         }
         requiredShield = 0;
-        entityData.set(DATA_DEST, Location.EARTH_SURFACE.ordinal());
+        entityData.set(DATA_DEST, Location.EARTH_SURFACE.id());
         setBurning(false);
         setState(FlightState.TRANSFER);
         setTimer(TRANSFER_TICKS / 2);
+    }
+
+    /** Which body the rocket circles in the shared orbit dimension (scripted scenes and tests). */
+    public void setOrbitBody(net.minecraft.resources.ResourceLocation body) {
+        entityData.set(DATA_ORBIT_BODY, body.toString());
     }
 
     /** Puts the rocket straight into a flight phase (scripted scenes, tests and admin tools). */
@@ -1006,7 +1050,8 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         entityData.set(DATA_STATE, tag.getInt("state"));
         entityData.set(DATA_STAGE, tag.getInt("stage"));
         entityData.set(DATA_TIMER, tag.getInt("timer"));
-        entityData.set(DATA_DEST, tag.getInt("dest"));
+        entityData.set(DATA_DEST, tag.getString("dest"));
+        entityData.set(DATA_ORBIT_BODY, tag.getString("orbitBody"));
         entityData.set(DATA_BURNING, tag.getBoolean("burning"));
         entityData.set(DATA_TILT, tag.getFloat("tilt"));
         legCost = tag.getDouble("legCost");
@@ -1030,7 +1075,8 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         tag.putInt("state", entityData.get(DATA_STATE));
         tag.putInt("stage", activeStage());
         tag.putInt("timer", timer());
-        tag.putInt("dest", entityData.get(DATA_DEST));
+        tag.putString("dest", entityData.get(DATA_DEST));
+        tag.putString("orbitBody", entityData.get(DATA_ORBIT_BODY));
         tag.putBoolean("burning", burning());
         tag.putFloat("tilt", tilt());
         tag.putDouble("legCost", legCost);

@@ -21,8 +21,11 @@ public final class ShowcaseScenarios {
         ALL.put("deimos", new MarsMoonScenario(true));
         ALL.put("venus", new VenusScenario());
         ALL.put("mercury", new MercuryScenario());
+        ALL.put("inner_orbit", new InnerOrbitScenario());
         ALL.put("rocketry", new RocketryScenario());
         ALL.put("compat", new CompatScenario());
+        ALL.put("belt", new BeltScenario(false));
+        ALL.put("vesta", new BeltScenario(true));
     }
 
     public static ShowcaseScenario get(String name) {

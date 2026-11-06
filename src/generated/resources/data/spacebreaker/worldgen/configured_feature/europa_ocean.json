@@ -1,0 +1,16 @@
+{
+  "type": "spacebreaker:buried_layer",
+  "config": {
+    "block": {
+      "Name": "minecraft:water",
+      "Properties": {
+        "level": "0"
+      }
+    },
+    "bottom": -63,
+    "ceiling": {
+      "Name": "spacebreaker:europan_ice"
+    },
+    "top": -52
+  }
+}

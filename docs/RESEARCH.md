@@ -8,6 +8,14 @@ Everything here is server authoritative; clients get a synced copy of the known 
   Data packs may add or override nodes. Fields: `category`, `tier`, `requires`, `icon`, `unlocks`,
   optional `research_time` (ticks), `energy` (FE/t) and `samples` (sample kinds that can reveal it).
 - Names: language keys `tech.<ns>.<path>` and `tech.<ns>.<path>.desc`.
+- Branches: the six built-in ones are propulsion, life_support, industry, astronomy, construction, exploration. A new
+  branch (e.g. for the outer system) is just a new `category` string: the research screen gives it its own row after
+  the built-in ones; add the language key `tech_category.spacebreaker.<category>`.
+- `unlocks` must only name registered items, blocks, entities or recipes (a GameTest checks this); leave it empty for
+  technologies whose content does not exist yet.
+- Sample kinds are celestial body ids; a sample kit on Titan gives `spacebreaker:titan` samples. Kinds already used by
+  technologies: earth, moon, mars, venus, mercury, phobos, ceres, vesta, io, europa, ganymede, callisto, titan,
+  enceladus, meteorite, suborbital_flight, orbital_flight.
 - Query / change: `Tech.knows(player, id)`, `Tech.learn(player, id)`, `Tech.all(registryAccess)`,
   `Research.teach(serverPlayer, id, shareWithTeam)`. Every change posts `TechChangedEvent` (sync, toast, advancements).
 

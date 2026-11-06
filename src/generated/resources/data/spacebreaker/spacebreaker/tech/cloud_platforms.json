@@ -1,11 +1,15 @@
 {
   "category": "construction",
-  "icon": "minecraft:white_wool",
+  "icon": "spacebreaker:composite_panel",
   "requires": [
     "spacebreaker:space_stations"
   ],
   "samples": [
     "spacebreaker:venus"
   ],
-  "tier": 2
+  "tier": 2,
+  "unlocks": [
+    "spacebreaker:composite_panel",
+    "spacebreaker:aerogel"
+  ]
 }

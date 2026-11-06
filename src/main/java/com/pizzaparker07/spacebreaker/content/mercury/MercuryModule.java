@@ -71,6 +71,7 @@ public final class MercuryModule implements SbModule {
     public void addTranslations(Lang lang) {
         lang.add("body.spacebreaker.mercury", "Mercury", "Merkür");
         lang.add("dimension.spacebreaker.mercury", "Mercury", "Merkür");
+        lang.add("dimension.spacebreaker.mercury_orbit", "Mercury Orbit", "Merkür Yörüngesi");
         lang.block(MERCURY_REGOLITH, "Mercurian Regolith", "Merkür Regoliti");
         lang.block(HOLLOW_DEPOSIT, "Hollow Deposit", "Oyuk Tortusu");
         lang.block(MERCURIAN_CRUST, "Mercurian Crust", "Merkür Kabuğu");

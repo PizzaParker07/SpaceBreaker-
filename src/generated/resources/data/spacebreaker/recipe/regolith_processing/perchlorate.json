@@ -1,0 +1,17 @@
+{
+  "type": "spacebreaker:regolith_processing",
+  "energy": 80,
+  "fluid_results": [
+    {
+      "amount": 500,
+      "id": "spacebreaker:oxygen"
+    }
+  ],
+  "ingredients": [
+    {
+      "count": 1,
+      "tag": "c:perchlorate_soils"
+    }
+  ],
+  "time": 100
+}
