@@ -35,7 +35,7 @@ public final class ZeroG {
             return;
         }
         player.resetFallDistance();
-        if (player.level() instanceof ServerLevel level && player.tickCount % 2 == 0) {
+        if (player.level() instanceof ServerLevel level && player.tickCount % 3 == 0) {
             puffs(level, player, data.thrustDir);
         }
         ItemStack copy = mmu.copy();
@@ -43,7 +43,7 @@ public final class ZeroG {
         SuitTanks.setManeuveringUnit(torso, copy);
     }
 
-    /** Puffs from the nozzles at the top and bottom of both thruster towers, blowing against the push. */
+    /** Small puffs of condensing cold gas (snowflake particles) from the nozzles at the top and bottom of both thruster towers, blowing against the push. */
     static void puffs(ServerLevel level, Player player, Vec3 push) {
         Vec3 dir = push.lengthSqr() < 1e-4 ? new Vec3(0, 1, 0) : push.normalize();
         float yaw = player.yBodyRot * Mth.DEG_TO_RAD;
@@ -54,7 +54,7 @@ public final class ZeroG {
             double y = i < 2 ? 1.42 : 0.82;
             Vec3 nozzle = player.position().add(back).add(side).add(0, y, 0);
             // count 0: the offsets are the velocity of the one particle
-            level.sendParticles(ParticleTypes.POOF, nozzle.x, nozzle.y, nozzle.z, 0, -dir.x, -dir.y, -dir.z, 0.12);
+            level.sendParticles(ParticleTypes.SNOWFLAKE, nozzle.x, nozzle.y, nozzle.z, 0, -dir.x, -dir.y, -dir.z, 0.18);
         }
         if (player.tickCount % 6 == 0) {
             level.playSound(null, player.getX(), player.getY() + 1, player.getZ(), SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS,

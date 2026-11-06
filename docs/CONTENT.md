@@ -55,12 +55,14 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Hologram Projektörü | çoklu blok yapıların nasıl kurulacağını gösterir: yapı seç, yere yansıt, eğil + tekerlek ile döndür, katman katman mod; eksikler camgöbeği hayalet, yanlış bloklar kırmızı çerçeve, ekranda malzeme listesi; denetleyiciye boş elle eğil + sağ tık eksikleri yansıtır. Yapılar `data/<ns>/spacebreaker/multiblock/*.json` |
 | 🎨 | Giysi yükseltmeleri | demirci masası: Giysi Yükseltme Şablonu + parça + modül (termal regülatör, radyasyon kalkanı, ek oksijen, jetpack güçlendirici) |
 | 🎨 | Boyanabilir aksan | tüm giysi parçalarının halka/aksan rengi boyayla değişir |
-| 🎨 | Manyetik EVA Botları | düşük/sıfır yerçekiminde zemine yapıştırır (eğilince bırakır) |
-| 🎨 | Manevra Ünitesi | gövdeye takılır; soğuk gazla uçuş (sıfır g'de 6 eksen, Ay'da havada kalma) |
+| 🎨 | Manyetik EVA Botları | düşük/sıfır yerçekiminde zemine yapıştırır (eğilince bırakır); tutunurken metalik tık sesi, HUD'da MAG |
+| 🎨 | Manevra Ünitesi | gövdeye takılır; soğuk gazla uçuş (sıfır g'de 6 eksen, Ay'da havada kalma); dört lüleden itişe ters küçük gaz pufları (herkes görür) |
+| 🎨 | Güvenlik Halatı | bir bloğa takılır (kullan / tekrar kullan çözer); 16 bloktan uzağa sürüklenmeyi ve gergin halatta düşmeyi önler; turuncu halat herkese görünür, alçak yerçekiminde az sarkar; blok kırılınca ya da eşya bırakılınca çözülür |
+| 🎨 | Kask lambaları ve canlı giysi | karanlıkta lambalar kendiliğinden yanar: bakılan yere blok ışığı gibi kademeli ışık havuzu (dinamik ışık modu gerekmez, shader güvenli), dışarıdan kısa ışık konisi; vizörde gökyüzü yansıması; yürürken sırt çantası ve anten hafifçe sallanır |
 | 🎨 | Oksijen Tüpü (5 dk), Büyük Oksijen Tüpü (15 dk) | envanterde 2B, elde 3B; gövdenin sırt çantasına 2 tüp takılır |
 | 🎨 | Kask HUD'u | GUI katmanında (shader güvenli): O2, giysi, vücut ısısı, dış sıcaklık, radyasyon, basınç/g, uyarılar; ölçek/opaklık ayarı |
 | 🎨 | Hayatta kalma | boşlukta nefes tutma ve boğulma, yavaş değişen vücut ısısı (hipotermi/aşırı ısınma), radyasyon dozu, gerçek yerçekimi (zıplama ve düşme hasarı ölçekli) |
-| ⬜ | kask lambası, çevre sensörü, titanyum aletler, elektrikli matkap, Giysi Mk2+ | |
+| ⬜ | çevre sensörü, titanyum aletler, elektrikli matkap | |
 | 🎨 | Mare Bazaltı, İlmenit Cevheri | |
 | 🎨 | EVA Kaskı | özel 3B model, saydam vizör, altın güneş vizörü (eğil + kullan), parlayan lambalar |
 | ⬜ | EVA giysisi gövde/pantolon/bot, manevra ünitesi, kask lambası, çevre sensörü, titanyum aletler, elektrikli matkap | |
