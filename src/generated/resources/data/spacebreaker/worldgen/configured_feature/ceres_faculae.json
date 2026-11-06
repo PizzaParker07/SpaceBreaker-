@@ -8,10 +8,10 @@
         "print": "none"
       }
     },
-    "chance": 0.38,
-    "dome": 4.0,
-    "extent": 0.17,
+    "chance": 0.4,
+    "dome": 0.0,
+    "extent": 0.3,
     "min_radius": 16.0,
-    "spots": 0.6
+    "spots": 0.8
   }
 }

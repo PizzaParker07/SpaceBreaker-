@@ -27,12 +27,13 @@ import java.util.Optional;
  * @param peak       central mountain height above the floor
  * @param peakRadius central mountain base radius in basin radii
  * @param terraces   steps in the wall
+ * @param wall       width of the wall in basin radii
  * @param rock       ground used to build up the rim and mountain under the carried soil
  * @param floorSoil  optional soil on the floor (impact melt, slumped debris)
  */
 public class BasinFeature extends Feature<BasinFeature.Config> {
     public record Config(double x, double latitude, double radius, double depth, double rim, double peak, double peakRadius, int terraces,
-                         BlockState rock, Optional<BlockState> floorSoil) implements FeatureConfiguration {
+                         double wall, BlockState rock, Optional<BlockState> floorSoil) implements FeatureConfiguration {
         public static final Codec<Config> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.DOUBLE.optionalFieldOf("x", 0.0).forGetter(Config::x),
                 Codec.DOUBLE.optionalFieldOf("latitude", -90.0).forGetter(Config::latitude),
@@ -42,6 +43,7 @@ public class BasinFeature extends Feature<BasinFeature.Config> {
                 Codec.DOUBLE.optionalFieldOf("peak", 60.0).forGetter(Config::peak),
                 Codec.DOUBLE.optionalFieldOf("peak_radius", 0.2).forGetter(Config::peakRadius),
                 Codec.INT.optionalFieldOf("terraces", 4).forGetter(Config::terraces),
+                Codec.DOUBLE.optionalFieldOf("wall", 0.2).forGetter(Config::wall),
                 BlockState.CODEC.fieldOf("rock").forGetter(Config::rock),
                 BlockState.CODEC.optionalFieldOf("floor_soil").forGetter(Config::floorSoil)
         ).apply(i, Config::new));
@@ -76,8 +78,8 @@ public class BasinFeature extends Feature<BasinFeature.Config> {
         SimplexNoise n = Columns.noise(t.seed(), 58);
         // outer ejecta swell and the rim crest
         double rim = cfg.rim() * Math.exp(-Math.pow((s - 1) / (s < 1 ? 0.06 : 0.25), 2));
-        // wall: from the crest down to the floor between s = 1 and s = 0.72, in terraces
-        double wall = Columns.smooth((1 - s) / 0.28);
+        // wall: from the crest down to the floor between s = 1 and s = 1 - wall, in terraces
+        double wall = Columns.smooth((1 - s) / cfg.wall());
         if (cfg.terraces() > 1) {
             double steps = wall * cfg.terraces();
             double k = Math.floor(steps);
@@ -87,9 +89,9 @@ public class BasinFeature extends Feature<BasinFeature.Config> {
         double floor = -cfg.depth() * wall;
         // concentric scarps on the floor (the basin's ring faults), low and broken
         double ring = 0;
-        if (s < 0.75 && s > cfg.peakRadius()) {
-            double r = Math.sin(s * 34 + n.getValue(x / 300.0, z / 300.0) * 2);
-            ring = 2.2 * Columns.smooth((r - 0.75) / 0.2) * (0.5 + 0.5 * n.getValue(x / 90.0, z / 90.0));
+        if (s < 1 - cfg.wall() * 0.9 && s > cfg.peakRadius()) {
+            double r = Math.sin(s * 30 + n.getValue(x / 300.0, z / 300.0) * 2);
+            ring = 1.6 * Columns.smooth((r - 0.2) / 0.8) * (0.5 + 0.5 * n.getValue(x / 90.0, z / 90.0));
         }
         // the central mountain: a broad, lumpy massif
         double peak = 0;

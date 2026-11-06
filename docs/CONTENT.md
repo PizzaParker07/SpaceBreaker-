@@ -146,6 +146,29 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 |---|---|---|
 | 🎨 | Toz Geçirmez Contalar, Isıya Dayanıklı Elektronik, Aside Dayanıklı Kaplamalar, Kutup Buzu Madenciliği | ayrıca Mars/Venüs/Merkür zindanlarından metan motorları, Sabatier süreci, ISRU, Mars jeolojisi, astrobiyoloji, bulut platformları |
 
+## Faz 3 — Dış Güneş Sistemi (asteroit kuşağı, Jüpiter ve Satürn uyduları)
+
+### Ortak dünya motoru eklentileri
+| Durum | İçerik | Not |
+|---|---|---|
+| 🎨 | Yüzey özellikleri (`content/belt/world`) | gezegen motorunun zeminini yığın başına biçimlendirir: krater tabanlarında tuz lekeleri (faculae), dev kutup çarpma havzası, çatlak buz çizgileri (lineae) ve kaos arazisi, sıvı gölleri, bacalar/gayzerler |
+| 🎨 | Küçük gök cismi arazi üreticisi (`SmallBodyTerrain`) | yarıçap ve yüzey yaşından arazi profili; Ceres ve Vesta bununla yapılır, prosedürel asteroitler için hazır |
+
+### Ceres `spacebreaker:ceres`
+| Durum | İçerik | Not |
+|---|---|---|
+| 🎨 | Arazi | koyu, kraterli ovalar; Occator benzeri kraterlerde parlak sodyum karbonat lekeleri (merkez + dağınık lekeler), Ahuna benzeri kriyovolkanik kubbeler, kutuplarda ve birkaç blok altta su buzu; 0,03 g |
+| 🎨 | Bloklar | Ceres Regoliti, Amonyaklı Kil, Karbonat Tuz Kabuğu (kalıcı ayak izi), Ceres Kayası (+ merdiven, basamak, duvar), Ceres Buzu, Manyetit Cevheri (→ Ham Manyetit → demir) |
+| 🎨 | Yaratık | Kaya Akarı: çakılın içinde gizlenir; birine vurulunca bütün küme uyanır ve düşük yerçekiminde uzağa sıçrar |
+| 🎨 | Zindan | Terk Edilmiş Buz Madenciliği Karakolu: mürettebat modülü, buz işleme salonu, iniş pisti, anten, kuyu kulesi; aşağıda buz merceğine açılmış galeri ve akar yuvası |
+| 🎨 | Teknolojiler | Mikro Yerçekiminde Madencilik (4), Tuzlu Su Kimyası (3) |
+
+### Vesta `spacebreaker:vesta`
+| Durum | İçerik | Not |
+|---|---|---|
+| 🎨 | Arazi | gri, yoğun kraterli yaylalar; güney kutbunda dev Rheasilvia havzası (taraçalı duvar, halka sarplıklar, dev merkez dağı); koyu karbonlu madde lekeleri |
+| 🎨 | Bloklar | Vesta Regoliti, Ökrit (+ merdiven, basamak, duvar), Ökrit Tuğla (+ merdiven, basamak, duvar), Diyojenit, Kromit Cevheri (→ Kromit) |
+
 ## Yaratıklar (gezegenlere özgü, kan yok)
 | Gök cismi | Yaratıklar |
 |---|---|
@@ -156,7 +179,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | Io | Kükürt Yengeci |
 | Europa | Buzaltı Işık Yılanı (biyolüminesan, pasif) |
 | Titan | Metan Kayıcısı, Tolin Solucanı |
-| Asteroitler | Kaya Akarı |
+| Asteroitler 🎨 | Kaya Akarı (Ceres, Vesta) |
 | Ötegezegenler | prosedürel bitki ve hayvanlar (Faz 5) |
 
 ## Sonraki fazlar (özet)

@@ -21,6 +21,8 @@ public final class ShowcaseScenarios {
         ALL.put("mercury", new MercuryScenario());
         ALL.put("rocketry", new RocketryScenario());
         ALL.put("compat", new CompatScenario());
+        ALL.put("belt", new BeltScenario(false));
+        ALL.put("vesta", new BeltScenario(true));
     }
 
     public static ShowcaseScenario get(String name) {

@@ -94,10 +94,10 @@
     "polar_latitude": 74.0
   },
   "relief": {
-    "amplitude": 26.86666666666667,
-    "detail_amplitude": 2.08,
+    "amplitude": 21.700000000000003,
+    "detail_amplitude": 1.6800000000000002,
     "detail_scale": 26.0,
-    "roughness": 0.7150000000000001,
+    "roughness": 0.5775000000000001,
     "scale": 381.33333333333337
   }
 }

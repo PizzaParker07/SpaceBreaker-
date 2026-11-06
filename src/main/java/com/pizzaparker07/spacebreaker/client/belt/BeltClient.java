@@ -34,6 +34,6 @@ public final class BeltClient {
     @SubscribeEvent
     static void renderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(BeltEntities.ROCK_MITE.get(), ctx -> new SimpleMobRenderer<>(ctx,
-                new RockMiteModel(ctx.bakeLayer(RockMiteModel.LAYER)), Spacebreaker.id("textures/entity/belt/rock_mite.png"), 1.0F, 0.4F, false));
+                new RockMiteModel(ctx.bakeLayer(RockMiteModel.LAYER)), Spacebreaker.id("textures/entity/belt/rock_mite.png"), 1.15F, 0.45F, false));
     }
 }

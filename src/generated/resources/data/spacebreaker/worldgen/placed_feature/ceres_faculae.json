@@ -1,4 +1,8 @@
 {
   "feature": "spacebreaker:ceres_faculae",
-  "placement": []
+  "placement": [
+    {
+      "type": "minecraft:biome"
+    }
+  ]
 }

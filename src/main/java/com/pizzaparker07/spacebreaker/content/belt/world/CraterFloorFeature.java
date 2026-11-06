@@ -67,7 +67,7 @@ public class CraterFloorFeature extends Feature<CraterFloorFeature.Config> {
         if (cfg.spots() > 0 && s < 0.8) {
             double sp = Columns.fbm(n, x / 5.0 + 300, z / 5.0 - 300, 2);
             // spots get rarer toward the walls
-            if (sp > 1 - 0.55 * cfg.spots() * (1 - s / 0.8)) {
+            if (sp > 0.6 - 0.45 * cfg.spots() * (1 - s / 0.8)) {
                 return 1.5;
             }
         }

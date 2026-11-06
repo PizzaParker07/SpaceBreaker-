@@ -1,4 +1,8 @@
 {
   "feature": "spacebreaker:vesta_rheasilvia",
-  "placement": []
+  "placement": [
+    {
+      "type": "minecraft:biome"
+    }
+  ]
 }

@@ -54,12 +54,12 @@ public final class BeltData {
 
     /** Rheasilvia: the south-polar basin of Vesta. */
     public static BasinFeature.Config rheasilvia() {
-        return new BasinFeature.Config(0, -90, 1450, 34, 16, 72, 0.2, 4, s(BeltModule.DIOGENITE), Optional.empty());
+        return new BasinFeature.Config(0, -90, 1000, 36, 18, 84, 0.22, 4, 0.16, s(BeltModule.DIOGENITE), Optional.empty());
     }
 
     /** Occator-like salt deposits on Ceres' crater floors. */
     public static CraterFloorFeature.Config faculae() {
-        return new CraterFloorFeature.Config(s(BeltModule.CARBONATE_CRUST), 16, 0.38, 0.17, 0.6, 4, 2);
+        return new CraterFloorFeature.Config(s(BeltModule.CARBONATE_CRUST), 16, 0.4, 0.3, 0.8, 0, 2);
     }
 
     private BeltData() {
@@ -94,9 +94,9 @@ public final class BeltData {
 
     public static TerrainProfile ceresProfile() {
         var m = new SmallBodyTerrain.Materials(s(BeltModule.CERES_REGOLITH), s(BeltModule.CEREAN_ROCK.base()), s(BeltModule.AMMONIATED_CLAY),
-                s(BeltModule.CARBONATE_CRUST), Optional.of(s(BeltModule.CERES_REGOLITH)), Optional.of(s(BeltModule.CEREAN_ICE)));
+                s(BeltModule.AMMONIATED_CLAY), Optional.of(s(BeltModule.CERES_REGOLITH)), Optional.of(s(BeltModule.CEREAN_ICE)));
         // Ahuna Mons-like domes: steep, flat-topped piles of salty ice that rose through the crust
-        var domes = new Landforms.Volcanoes(2400, 0.22, 45, 80, 0.6, 46, 0.02, 0, List.of(), s(BeltModule.CEREAN_ROCK.base()),
+        var domes = new Landforms.Volcanoes(1800, 0.35, 45, 80, 0.6, 46, 0.02, 0, List.of(), s(BeltModule.CEREAN_ROCK.base()),
                 Optional.of(s(BeltModule.CARBONATE_CRUST)));
         var lf = new Landforms(Optional.empty(), Optional.empty(), Optional.of(domes), Optional.empty(), Optional.empty(), Optional.empty(),
                 List.of(new Landforms.SoilPatch(s(BeltModule.AMMONIATED_CLAY), 240, 0.66, "any")),
@@ -112,7 +112,7 @@ public final class BeltData {
         var lf = new Landforms(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
                 List.of(new Landforms.SoilPatch(s(MarsModule.CARBONACEOUS_CHONDRITE), 170, 0.8, "any")),
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
-        return SmallBodyTerrain.of(Spacebreaker.id("vesta"), 262.7).baseHeight(74).roughness(1.3).craters(1.15).age(1.0)
+        return SmallBodyTerrain.of(Spacebreaker.id("vesta"), 262.7).baseHeight(74).roughness(1.05).craters(1.15).age(1.0)
                 .materials(m).landforms(lf).build();
     }
 

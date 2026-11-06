@@ -97,13 +97,13 @@ LAMP = ramp('#5b4a1a', '#9c8433', '#d7c160', '#f3e39a', '#fff7d6', '#ffffff')
 
 # --- Outer Solar System: asteroid belt ---------------------------------------------
 # Ceres regolith: very dark (albedo 0.09) neutral grey with a faint warm cast (bead, then five powder tones).
-CERES_SOIL = ramp('#2e2c2a', '#3e3b38', '#44413e', '#4a4744', '#514d4a', '#595551')
+CERES_SOIL = ramp('#363431', '#4b4845', '#524f4b', '#595652', '#605c58', '#68645f')
 # Ammoniated phyllosilicate clay: dark grey-brown, a touch greener than the regolith.
-AMMONIA_CLAY = ramp('#353630', '#44443c', '#4b4a42', '#525047', '#59574d', '#625f54')
+AMMONIA_CLAY = ramp('#3c3d35', '#4d4d44', '#55544a', '#5c5b50', '#646256', '#6d6a5e')
 # Sodium-carbonate faculae: bright, slightly warm white salt crust with soft grey shading.
 CARBONATE = ramp('#9b988f', '#b8b5ac', '#c9c6bd', '#d7d4cc', '#e2dfd8', '#eeece6')
 # Cerean rock: dark hydrated silicate rock, brown-grey.
-CEREAN_ROCK = ramp('#232120', '#2d2a28', '#363230', '#403b38', '#4a4541', '#55504b', '#625c56')
+CEREAN_ROCK = ramp('#2a2826', '#353230', '#3f3b38', '#4a4541', '#55504b', '#615b55', '#6e6761')
 # Cerean ice: dirty water ice from below the regolith, cold grey-blue.
 CEREAN_ICE = ramp('#56626b', '#67747e', '#788690', '#8a98a2', '#9eabb4', '#b6c1c9')
 # Magnetite: black, sub-metallic with steel-grey glints.
