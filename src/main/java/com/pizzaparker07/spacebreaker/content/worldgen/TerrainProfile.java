@@ -25,9 +25,10 @@ import java.util.Optional;
  * @param craters      impact crater population and shape
  * @param poles        polar climate: permanently shadowed, icy crater floors
  * @param materials    blocks of the crust
+ * @param landforms    optional larger landforms: dunes, rifts, volcanoes, valleys, strata, ice caps, scarps ...
  */
 public record TerrainProfile(ResourceLocation body, int baseHeight, double poleDistance, Relief relief, Lowlands lowlands,
-                             Craters craters, Poles poles, Materials materials) {
+                             Craters craters, Poles poles, Materials materials, Landforms landforms) {
     public static final ResourceKey<Registry<TerrainProfile>> REGISTRY = ResourceKey.createRegistryKey(Spacebreaker.id("terrain"));
 
     public static final Codec<TerrainProfile> CODEC = RecordCodecBuilder.create(i -> i.group(
@@ -38,8 +39,15 @@ public record TerrainProfile(ResourceLocation body, int baseHeight, double poleD
             Lowlands.CODEC.optionalFieldOf("lowlands", Lowlands.DEFAULT).forGetter(TerrainProfile::lowlands),
             Craters.CODEC.optionalFieldOf("craters", Craters.DEFAULT).forGetter(TerrainProfile::craters),
             Poles.CODEC.optionalFieldOf("poles", Poles.DEFAULT).forGetter(TerrainProfile::poles),
-            Materials.CODEC.fieldOf("materials").forGetter(TerrainProfile::materials)
+            Materials.CODEC.fieldOf("materials").forGetter(TerrainProfile::materials),
+            Landforms.CODEC.optionalFieldOf("landforms", Landforms.NONE).forGetter(TerrainProfile::landforms)
     ).apply(i, TerrainProfile::new));
+
+    /** Profile without extra landforms (airless, cratered worlds). */
+    public TerrainProfile(ResourceLocation body, int baseHeight, double poleDistance, Relief relief, Lowlands lowlands,
+                          Craters craters, Poles poles, Materials materials) {
+        this(body, baseHeight, poleDistance, relief, lowlands, craters, poles, materials, Landforms.NONE);
+    }
 
     /**
      * @param amplitude       height of highland hills and massifs

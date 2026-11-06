@@ -1,0 +1,98 @@
+{
+  "body": "spacebreaker:phobos",
+  "base_height": 70,
+  "pole_distance": 900,
+  "relief": {
+    "amplitude": 18,
+    "scale": 300,
+    "detail_amplitude": 1.5,
+    "detail_scale": 26
+  },
+  "lowlands": {
+    "threshold": 0.9,
+    "scale": 2000,
+    "depth": 4,
+    "edge": 0.1,
+    "ridge_height": 0,
+    "volcanic_patch": 1.0
+  },
+  "craters": {
+    "density": 1.2,
+    "lowland_density": 1,
+    "depth_ratio": 0.2,
+    "rim_ratio": 0.045,
+    "complex_radius": 40,
+    "central_peak": 0.3,
+    "fresh_chance": 0.0,
+    "ray_length": 3,
+    "classes": [
+      {
+        "min_radius": 2.5,
+        "max_radius": 6,
+        "cell": 30,
+        "chance": 0.5,
+        "per_cell": 2
+      },
+      {
+        "min_radius": 6,
+        "max_radius": 18,
+        "cell": 90,
+        "chance": 0.55,
+        "per_cell": 1
+      },
+      {
+        "min_radius": 18,
+        "max_radius": 45,
+        "cell": 260,
+        "chance": 0.5,
+        "per_cell": 1
+      },
+      {
+        "min_radius": 60,
+        "max_radius": 95,
+        "cell": 900,
+        "chance": 1.0,
+        "per_cell": 1
+      }
+    ]
+  },
+  "poles": {
+    "polar_latitude": 95,
+    "ice_latitude": 95,
+    "ice_depth": 0,
+    "polar_craters": 1.0
+  },
+  "materials": {
+    "highland_soil": {
+      "Name": "spacebreaker:phobos_regolith"
+    },
+    "lowland_soil": {
+      "Name": "spacebreaker:phobos_regolith"
+    },
+    "ray_soil": {
+      "Name": "spacebreaker:phobos_regolith"
+    },
+    "highland_rock": {
+      "Name": "spacebreaker:carbonaceous_chondrite"
+    },
+    "lowland_rock": {
+      "Name": "spacebreaker:carbonaceous_chondrite"
+    },
+    "breccia": {
+      "Name": "spacebreaker:carbonaceous_chondrite"
+    },
+    "bedrock": {
+      "Name": "minecraft:bedrock"
+    },
+    "soil_depth": 4,
+    "lowland_rock_depth": 4
+  },
+  "landforms": {
+    "grooves": {
+      "spacing": 26,
+      "width": 6,
+      "depth": 3.5,
+      "angle_deg": 20
+    }
+  }
+}

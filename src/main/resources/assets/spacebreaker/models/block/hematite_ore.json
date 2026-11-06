@@ -1,0 +1,7 @@
+{
+  "parent": "spacebreaker:block/ore_overlay",
+  "textures": {
+    "stone": "spacebreaker:block/martian_sandstone",
+    "overlay": "spacebreaker:block/hematite_ore_overlay"
+  }
+}

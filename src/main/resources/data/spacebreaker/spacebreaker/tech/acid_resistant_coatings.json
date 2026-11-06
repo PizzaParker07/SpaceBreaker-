@@ -1,0 +1,14 @@
+{
+  "category": "construction",
+  "tier": 2,
+  "requires": [
+    "spacebreaker:pressurised_modules"
+  ],
+  "icon": "minecraft:honeycomb",
+  "samples": [
+    "spacebreaker:venus"
+  ],
+  "unlocks": [
+    "spacebreaker:acid_coating"
+  ]
+}

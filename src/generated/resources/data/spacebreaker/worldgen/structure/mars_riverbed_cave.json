@@ -1,0 +1,10 @@
+{
+  "type": "spacebreaker:mars_riverbed_cave",
+  "biomes": [
+    "spacebreaker:mars_valley",
+    "spacebreaker:mars_highlands",
+    "spacebreaker:mars_plains"
+  ],
+  "spawn_overrides": {},
+  "step": "underground_structures"
+}

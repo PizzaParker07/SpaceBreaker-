@@ -67,7 +67,8 @@ public class SolarPanelBlockEntity extends BlockEntity {
     public static void serverTick(Level level, BlockPos pos, BlockState state, SolarPanelBlockEntity be) {
         int produced = 0;
         if (level.dimensionType().hasSkyLight() && level.canSeeSky(pos.above())) {
-            float factor = irradiance(sunAngle(level, 1F));
+            float factor = irradiance(sunAngle(level, 1F))
+                    * (float) com.pizzaparker07.spacebreaker.core.env.Environment.sunlightModifier(level, pos); // dust storms, clouds
             if (level.isThundering()) {
                 factor *= 0.2F;
             } else if (level.isRaining()) {

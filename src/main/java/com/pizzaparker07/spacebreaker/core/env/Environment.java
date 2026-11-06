@@ -20,6 +20,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public final class Environment {
     private static final List<OxygenSource> OXYGEN_SOURCES = new CopyOnWriteArrayList<>();
     private static final List<TemperatureModifier> TEMPERATURE_MODIFIERS = new CopyOnWriteArrayList<>();
+    private static final List<SunlightModifier> SUNLIGHT_MODIFIERS = new CopyOnWriteArrayList<>();
 
     /** Something that can make a position breathable even in vacuum (e.g. an oxygenated, sealed room). */
     @FunctionalInterface
@@ -31,6 +32,16 @@ public final class Environment {
     @FunctionalInterface
     public interface TemperatureModifier {
         double offsetC(Level level, BlockPos pos);
+    }
+
+    /** Multiplies the sunlight reaching a position (e.g. dust storms, cloud decks); 1 = unchanged. */
+    @FunctionalInterface
+    public interface SunlightModifier {
+        double factor(Level level, BlockPos pos);
+    }
+
+    public static void addSunlightModifier(SunlightModifier modifier) {
+        SUNLIGHT_MODIFIERS.add(modifier);
     }
 
     public static void addOxygenSource(OxygenSource source) {
@@ -132,6 +143,23 @@ public final class Environment {
     /** Sunlight relative to Earth (1.0 = 1361 W/m²). */
     public static double solarFactor(Level level) {
         return body(level).map(b -> b.solarIrradiance() / CelestialBody.EARTH_IRRADIANCE).orElse(1.0);
+    }
+
+    /**
+     * Sunlight relative to Earth at a position, after local effects such as dust storms. Solar machines should
+     * use this rather than {@link #solarFactor(Level)}.
+     */
+    public static double solarFactor(Level level, BlockPos pos) {
+        return solarFactor(level) * sunlightModifier(level, pos);
+    }
+
+    /** Only the local modifiers (weather, clouds) at a position: 1 = clear sky. */
+    public static double sunlightModifier(Level level, BlockPos pos) {
+        double f = 1;
+        for (SunlightModifier modifier : SUNLIGHT_MODIFIERS) {
+            f *= modifier.factor(level, pos);
+        }
+        return f;
     }
 
     private Environment() {

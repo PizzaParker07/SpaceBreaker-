@@ -1,0 +1,22 @@
+{
+  "type": "spacebreaker:boulder",
+  "config": {
+    "block": {
+      "type": "minecraft:weighted_state_provider",
+      "entries": [
+        {
+          "data": {
+            "Name": "spacebreaker:meteoric_iron"
+          },
+          "weight": 1
+        }
+      ]
+    },
+    "buried": 0.6,
+    "radius": {
+      "type": "minecraft:uniform",
+      "max_exclusive": 1.1,
+      "min_inclusive": 0.6
+    }
+  }
+}

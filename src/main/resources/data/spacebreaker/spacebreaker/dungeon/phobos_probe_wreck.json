@@ -1,0 +1,8 @@
+{
+  "structure": "spacebreaker:phobos_probe_wreck",
+  "world": "spacebreaker:phobos",
+  "guardians": [],
+  "loot_tables": [
+    "spacebreaker:dungeons/phobos/probe_vault"
+  ]
+}

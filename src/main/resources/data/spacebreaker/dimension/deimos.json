@@ -1,0 +1,11 @@
+{
+  "type": "spacebreaker:deimos",
+  "generator": {
+    "type": "spacebreaker:planet",
+    "terrain": "spacebreaker:deimos",
+    "biome_source": {
+      "type": "spacebreaker:planet",
+      "highlands": "spacebreaker:deimos_surface"
+    }
+  }
+}

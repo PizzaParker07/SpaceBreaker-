@@ -1,0 +1,84 @@
+{
+  "body": "spacebreaker:deimos",
+  "base_height": 70,
+  "pole_distance": 600,
+  "relief": {
+    "amplitude": 12,
+    "scale": 260,
+    "detail_amplitude": 1.0,
+    "detail_scale": 30
+  },
+  "lowlands": {
+    "threshold": 0.9,
+    "scale": 2000,
+    "depth": 4,
+    "edge": 0.1,
+    "ridge_height": 0,
+    "volcanic_patch": 1.0
+  },
+  "craters": {
+    "density": 0.6,
+    "lowland_density": 1,
+    "depth_ratio": 0.12,
+    "rim_ratio": 0.03,
+    "complex_radius": 40,
+    "central_peak": 0.2,
+    "fresh_chance": 0.0,
+    "ray_length": 3,
+    "classes": [
+      {
+        "min_radius": 3,
+        "max_radius": 7,
+        "cell": 40,
+        "chance": 0.45,
+        "per_cell": 1
+      },
+      {
+        "min_radius": 7,
+        "max_radius": 20,
+        "cell": 120,
+        "chance": 0.5,
+        "per_cell": 1
+      },
+      {
+        "min_radius": 20,
+        "max_radius": 40,
+        "cell": 350,
+        "chance": 0.5,
+        "per_cell": 1
+      }
+    ]
+  },
+  "poles": {
+    "polar_latitude": 95,
+    "ice_latitude": 95,
+    "ice_depth": 0,
+    "polar_craters": 1.0
+  },
+  "materials": {
+    "highland_soil": {
+      "Name": "spacebreaker:deimos_regolith"
+    },
+    "lowland_soil": {
+      "Name": "spacebreaker:deimos_regolith"
+    },
+    "ray_soil": {
+      "Name": "spacebreaker:deimos_regolith"
+    },
+    "highland_rock": {
+      "Name": "spacebreaker:carbonaceous_chondrite"
+    },
+    "lowland_rock": {
+      "Name": "spacebreaker:carbonaceous_chondrite"
+    },
+    "breccia": {
+      "Name": "spacebreaker:carbonaceous_chondrite"
+    },
+    "bedrock": {
+      "Name": "minecraft:bedrock"
+    },
+    "soil_depth": 6,
+    "lowland_rock_depth": 4
+  },
+  "landforms": {}
+}

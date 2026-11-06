@@ -23,7 +23,12 @@ public class PlanetBiomeSource extends BiomeSource {
             Biome.CODEC.optionalFieldOf("lowlands").forGetter(s -> s.lowlands),
             Biome.CODEC.optionalFieldOf("crater").forGetter(s -> s.crater),
             Biome.CODEC.optionalFieldOf("volcanic").forGetter(s -> s.volcanic),
-            Biome.CODEC.optionalFieldOf("polar").forGetter(s -> s.polar)
+            Biome.CODEC.optionalFieldOf("polar").forGetter(s -> s.polar),
+            Biome.CODEC.optionalFieldOf("dunes").forGetter(s -> s.dunes),
+            Biome.CODEC.optionalFieldOf("canyon").forGetter(s -> s.canyon),
+            Biome.CODEC.optionalFieldOf("volcano").forGetter(s -> s.volcano),
+            Biome.CODEC.optionalFieldOf("valley").forGetter(s -> s.valley),
+            Biome.CODEC.optionalFieldOf("ice_cap").forGetter(s -> s.iceCap)
     ).apply(i, i.stable(PlanetBiomeSource::new)));
 
     private final Holder<Biome> highlands;
@@ -31,17 +36,35 @@ public class PlanetBiomeSource extends BiomeSource {
     private final Optional<Holder<Biome>> crater;
     private final Optional<Holder<Biome>> volcanic;
     private final Optional<Holder<Biome>> polar;
+    private final Optional<Holder<Biome>> dunes;
+    private final Optional<Holder<Biome>> canyon;
+    private final Optional<Holder<Biome>> volcano;
+    private final Optional<Holder<Biome>> valley;
+    private final Optional<Holder<Biome>> iceCap;
     private volatile Supplier<PlanetTerrain> terrain;
     private final ConcurrentHashMap<Long, PlanetTerrain.Zone> zones = new ConcurrentHashMap<>();
     private volatile long zonesSeed;
 
     public PlanetBiomeSource(Holder<Biome> highlands, Optional<Holder<Biome>> lowlands, Optional<Holder<Biome>> crater,
                              Optional<Holder<Biome>> volcanic, Optional<Holder<Biome>> polar) {
+        this(highlands, lowlands, crater, volcanic, polar, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+                Optional.empty());
+    }
+
+    public PlanetBiomeSource(Holder<Biome> highlands, Optional<Holder<Biome>> lowlands, Optional<Holder<Biome>> crater,
+                             Optional<Holder<Biome>> volcanic, Optional<Holder<Biome>> polar, Optional<Holder<Biome>> dunes,
+                             Optional<Holder<Biome>> canyon, Optional<Holder<Biome>> volcano, Optional<Holder<Biome>> valley,
+                             Optional<Holder<Biome>> iceCap) {
         this.highlands = highlands;
         this.lowlands = lowlands;
         this.crater = crater;
         this.volcanic = volcanic;
         this.polar = polar;
+        this.dunes = dunes;
+        this.canyon = canyon;
+        this.volcano = volcano;
+        this.valley = valley;
+        this.iceCap = iceCap;
     }
 
     void attach(Supplier<PlanetTerrain> terrain) {
@@ -55,7 +78,8 @@ public class PlanetBiomeSource extends BiomeSource {
 
     @Override
     protected Stream<Holder<Biome>> collectPossibleBiomes() {
-        return Stream.of(Optional.of(highlands), lowlands, crater, volcanic, polar).flatMap(Optional::stream);
+        return Stream.of(Optional.of(highlands), lowlands, crater, volcanic, polar, dunes, canyon, volcano, valley, iceCap)
+                .flatMap(Optional::stream).distinct();
     }
 
     public Holder<Biome> biome(PlanetTerrain.Zone zone) {
@@ -65,6 +89,11 @@ public class PlanetBiomeSource extends BiomeSource {
             case CRATER -> crater.orElse(highlands);
             case VOLCANIC -> volcanic.or(() -> lowlands).orElse(highlands);
             case POLAR -> polar.orElse(highlands);
+            case DUNES -> dunes.or(() -> lowlands).orElse(highlands);
+            case CANYON -> canyon.or(() -> crater).orElse(highlands);
+            case VOLCANO -> volcano.or(() -> volcanic).orElse(highlands);
+            case VALLEY -> valley.orElse(highlands);
+            case ICE_CAP -> iceCap.or(() -> polar).orElse(highlands);
         };
     }
 

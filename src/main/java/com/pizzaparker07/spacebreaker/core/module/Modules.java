@@ -20,7 +20,8 @@ public final class Modules {
             new SuitModule(),
             new com.pizzaparker07.spacebreaker.content.research.ResearchModule(),
             new com.pizzaparker07.spacebreaker.content.dungeons.DungeonsModule(),
-            new RocketryModule()
+            new RocketryModule(),
+            new com.pizzaparker07.spacebreaker.content.mars.MarsModule()
     );
 
     private Modules() {

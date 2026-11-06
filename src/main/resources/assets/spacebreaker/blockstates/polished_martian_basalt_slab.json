@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "spacebreaker:block/polished_martian_basalt_slab"
+    },
+    "type=top": {
+      "model": "spacebreaker:block/polished_martian_basalt_slab_top"
+    },
+    "type=double": {
+      "model": "spacebreaker:block/polished_martian_basalt"
+    }
+  }
+}

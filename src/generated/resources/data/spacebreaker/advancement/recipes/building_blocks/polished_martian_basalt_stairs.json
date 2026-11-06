@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_polished_martian_basalt": {
+      "conditions": {
+        "items": [
+          {
+            "items": "spacebreaker:polished_martian_basalt"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "spacebreaker:polished_martian_basalt_stairs"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_polished_martian_basalt"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "spacebreaker:polished_martian_basalt_stairs"
+    ]
+  }
+}

@@ -6,6 +6,8 @@
     "#c:ores/spodumene",
     "#c:ores/wolframite",
     "#c:ores/ilmenite",
-    "#c:ores/kreep"
+    "#c:ores/kreep",
+    "#c:ores/hematite",
+    "#c:ores/gypsum"
   ]
 }

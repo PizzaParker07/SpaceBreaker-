@@ -1,0 +1,10 @@
+{
+  "type": "spacebreaker:mars_research_station",
+  "biomes": [
+    "spacebreaker:mars_plains",
+    "spacebreaker:mars_highlands",
+    "spacebreaker:mars_valley"
+  ],
+  "spawn_overrides": {},
+  "step": "surface_structures"
+}

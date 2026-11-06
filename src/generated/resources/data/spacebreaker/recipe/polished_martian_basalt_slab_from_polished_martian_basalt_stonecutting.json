@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "spacebreaker:polished_martian_basalt"
+  },
+  "result": {
+    "count": 2,
+    "id": "spacebreaker:polished_martian_basalt_slab"
+  }
+}

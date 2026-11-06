@@ -1,0 +1,15 @@
+{
+  "category": "exploration",
+  "tier": 2,
+  "requires": [
+    "spacebreaker:lunar_surveying"
+  ],
+  "icon": "minecraft:blue_ice",
+  "samples": [
+    "spacebreaker:mercury",
+    "spacebreaker:mars"
+  ],
+  "unlocks": [
+    "spacebreaker:ice_drill"
+  ]
+}

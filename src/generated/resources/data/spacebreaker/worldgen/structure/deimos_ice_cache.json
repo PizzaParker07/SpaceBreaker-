@@ -1,0 +1,7 @@
+{
+  "type": "spacebreaker:moonlet_dungeon",
+  "biomes": "spacebreaker:deimos_surface",
+  "cache": true,
+  "spawn_overrides": {},
+  "step": "surface_structures"
+}

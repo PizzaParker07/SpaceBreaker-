@@ -1,0 +1,21 @@
+{
+  "structure": "spacebreaker:mars_research_station",
+  "world": "spacebreaker:mars",
+  "guardians": [
+    {
+      "entity": "spacebreaker:survey_drone",
+      "count": 2
+    },
+    {
+      "entity": "spacebreaker:rust_beetle",
+      "count": 3
+    }
+  ],
+  "guardian_radius": 12,
+  "loot_tables": [
+    "spacebreaker:dungeons/mars/station_command",
+    "spacebreaker:dungeons/mars/station_lab",
+    "spacebreaker:dungeons/mars/station_isru",
+    "spacebreaker:dungeons/mars/station_storage"
+  ]
+}

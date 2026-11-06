@@ -1,0 +1,12 @@
+{
+  "type": "spacebreaker:phobos",
+  "generator": {
+    "type": "spacebreaker:planet",
+    "terrain": "spacebreaker:phobos",
+    "biome_source": {
+      "type": "spacebreaker:planet",
+      "highlands": "spacebreaker:phobos_surface",
+      "crater": "spacebreaker:phobos_crater"
+    }
+  }
+}
