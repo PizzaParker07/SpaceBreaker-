@@ -45,6 +45,13 @@ public final class RocketHud {
         int w = g.guiWidth();
         int h = g.guiHeight();
         float pt = delta.getGameTimeDeltaPartialTick(false);
+        float transit = TransitView.alpha();
+        if (transit > 0) {
+            TransitView.render(g, w, h, transit); // seen through the window in the cockpit view
+        }
+        if (rocket != null && RocketCamera.inCockpit()) {
+            cockpitFrame(g, w, h);
+        }
         if (rocket != null) {
             FlightState s = rocket.state();
             float t = rocket.timer() + pt;
@@ -52,9 +59,12 @@ public final class RocketHud {
                 float heat = Mth.clamp(t / 30F, 0, 1) * Mth.clamp((170 - t) / 50F, 0, 1);
                 plasma(g, w, h, heat, rocket.tickCount + pt);
             }
-            if (s == FlightState.TRANSFER) {
+            if (s == FlightState.TRANSFER && !TransitView.active()) {
                 float a = Mth.clamp(t / 25F, 0, 1);
                 g.fill(0, 0, w, h, (int) (a * 255) << 24);
+            }
+            if (s == FlightState.TRANSFER) {
+                float a = Mth.clamp(t / 25F, 0, 1);
                 if (a > 0.6F) {
                     Component title = Component.translatable("hud.spacebreaker.coasting", rocket.destination().name());
                     int alpha = (int) ((a - 0.6F) / 0.4F * 255) << 24;
@@ -75,8 +85,36 @@ public final class RocketHud {
         }
     }
 
+    /** Capsule window seen from the inside: a padded frame with rounded corners and one centre strut. */
+    private static void cockpitFrame(GuiGraphics g, int w, int h) {
+        int side = Math.max(18, w / 9);
+        int top = Math.max(14, h / 8);
+        int bottom = Math.max(20, h / 6);
+        int wall = 0xF0181A1E;
+        g.fill(0, 0, w, top, wall);
+        g.fill(0, h - bottom, w, h, wall);
+        g.fill(0, top, side, h - bottom, wall);
+        g.fill(w - side, top, w, h - bottom, wall);
+        // rounded inner corners, one column at a time
+        int r = Math.min(side, top) + 6;
+        for (int i = 0; i < r; i++) {
+            int cut = r - (int) Math.round(Math.sqrt(r * r - (double) (r - i) * (r - i)));
+            g.fill(side + i, top, side + i + 1, top + cut, wall);
+            g.fill(w - side - i - 1, top, w - side - i, top + cut, wall);
+            g.fill(side + i, h - bottom - cut, side + i + 1, h - bottom, wall);
+            g.fill(w - side - i - 1, h - bottom - cut, w - side - i, h - bottom, wall);
+        }
+        // soft shading on the inside edge of the frame and a thin rim highlight
+        g.fillGradient(side, top, w - side, top + 10, 0x60000000, 0x00000000);
+        g.fill(side, h - bottom - 1, w - side, h - bottom, 0x40B8C0CC);
+        // centre strut of the window
+        int sw = Math.max(3, w / 160);
+        g.fill(w / 2 - sw, top, w / 2 + sw, h - bottom, wall);
+        g.fill(w / 2 - sw, top, w / 2 - sw + 1, h - bottom, 0x30B8C0CC);
+    }
+
     /** Orange-red glow over the whole window, white-hot from below (the shield), with streaks rushing up past. */
-    private static void plasma(GuiGraphics g, int w, int h, float heat, float time) {
+    static void plasma(GuiGraphics g, int w, int h, float heat, float time) {
         if (heat <= 0.01F) {
             return;
         }

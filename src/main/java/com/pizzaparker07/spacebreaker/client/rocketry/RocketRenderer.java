@@ -36,9 +36,8 @@ public class RocketRenderer extends EntityRenderer<RocketEntity> {
             return;
         }
         Minecraft mc = Minecraft.getInstance();
-        if (mc.options.getCameraType().isFirstPerson() && mc.player != null && mc.player.getVehicle() == rocket) {
-            return; // the crew sits inside the capsule: do not draw its walls around the camera
-        }
+        // in the cockpit the camera sits inside the capsule: draw the rest of the rocket, not the walls around it
+        boolean cockpit = mc.options.getCameraType().isFirstPerson() && mc.player != null && mc.player.getVehicle() == rocket;
         RocketGeometry geo = rocket.geometry();
         FlightState state = rocket.state();
         float time = rocket.tickCount + partialTick;
@@ -50,14 +49,15 @@ public class RocketRenderer extends EntityRenderer<RocketEntity> {
             pose.mulPose(Axis.YP.rotationDegrees(time * 0.15F));
         }
         float legs = legDeploy(rocket, partialTick);
-        RocketStackRenderer.render(rocket.layout(), geo, pose, buffers, light, legs);
+        int skipFrom = cockpit && rocket.layout().payload().present() ? rocket.layout().payload().firstPart() : Integer.MAX_VALUE;
+        RocketStackRenderer.render(rocket.layout(), geo, pose, buffers, light, legs, skipFrom);
         if (rocket.burning()) {
             boolean vacuum = rocket.location() != Location.EARTH_SURFACE || rocket.getY() > 400;
             float strength = state == FlightState.COUNTDOWN ? Mth.clamp((RocketEntity.IGNITION_TICKS - rocket.timer() + partialTick) / 30F, 0.15F, 1F)
                     : state == FlightState.DESCENT ? 0.65F : 1F;
             RocketStackRenderer.renderPlume(rocket.layout(), geo, rocket.activeStage(), pose, buffers, time, strength, vacuum);
         }
-        if (state == FlightState.PARACHUTE) {
+        if (state == FlightState.PARACHUTE && !cockpit) {
             float open = Mth.clamp((rocket.timer() + partialTick) / 30F, 0.15F, 1F);
             renderCanopy(pose, buffers, geo, open, time, light);
         }

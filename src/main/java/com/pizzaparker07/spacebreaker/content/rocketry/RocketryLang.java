@@ -182,22 +182,90 @@ final class RocketryLang {
         l.add("gui.spacebreaker.console.return", "Return possible", "Dönüş mümkün");
         l.add("gui.spacebreaker.console.status.no_rocket", "No rocket", "Roket yok");
         l.add("gui.spacebreaker.star_map", "Star Map", "Yıldız Haritası");
-        l.add("gui.spacebreaker.star_map.burn", "Burn", "Ateşle");
-        l.add("gui.spacebreaker.star_map.available", "Δv available: %s", "Kullanılabilir Δv: %s");
-        l.add("gui.spacebreaker.star_map.route", "To %s: %s", "%s: %s");
-        l.add("gui.spacebreaker.star_map.too_far", "Not enough propellant for this trip", "Bu yolculuk için yakıt yetmiyor");
-        l.add("gui.spacebreaker.star_map.return_ok", "You can still get home afterwards", "Sonrasında eve dönebilirsin");
-        l.add("gui.spacebreaker.star_map.no_return", "Warning: no fuel to come back from there!", "Uyarı: oradan dönecek yakıt yok!");
-        l.add("gui.spacebreaker.star_map.window_open", "Launch window open · transfer %s days", "Fırlatma penceresi açık · transfer %s gün");
-        l.add("gui.spacebreaker.star_map.window_wait", "Next launch window in %s · transfer %s days", "Sonraki fırlatma penceresi %s sonra · transfer %s gün");
-        l.add("gui.spacebreaker.star_map.scaled.balanced", "Balanced mode: Δv is %s%% of the real value", "Dengeli mod: Δv gerçek değerin %%%s kadarı");
-        l.add("gui.spacebreaker.star_map.scaled.easy", "Easy mode: Δv is %s%% of the real value", "Kolay mod: Δv gerçek değerin %%%s kadarı");
-        l.add("gui.spacebreaker.star_map.real", "real: %s km/s", "gerçek: %s km/s");
-        l.add("gui.spacebreaker.star_map.pick", "Pick a destination", "Bir hedef seç");
-        l.add("gui.spacebreaker.star_map.reach_orbit", "Destinations can be chosen once in orbit", "Hedefler yörüngedeyken seçilebilir");
-
+        l.add("gui.spacebreaker.star_map.window_open", "Launch window: now is a good time", "Fırlatma penceresi: şu an uygun");
+        l.add("gui.spacebreaker.star_map.window_wait", "Launch window: best in %s (now costs more fuel)", "Fırlatma penceresi: en iyisi %s sonra (şimdi daha çok yakıt ister)");
+        l.add("gui.spacebreaker.star_map.wait_hours", "%s h %s min", "%s sa %s dk");
+        l.add("gui.spacebreaker.star_map.wait_minutes", "%s min", "%s dk");
+        l.add("gui.spacebreaker.star_map.sun", "Sun", "Güneş");
+        l.add("gui.spacebreaker.star_map.you_are_here", "You are here", "Buradasın");
+        l.add("gui.spacebreaker.star_map.system_of", "The %s system", "%s sistemi");
+        l.add("gui.spacebreaker.star_map.back", "◀ Solar System", "◀ Güneş Sistemi");
+        l.add("gui.spacebreaker.star_map.to_orbit", "Go to orbit", "Yörüngeye git");
+        l.add("gui.spacebreaker.star_map.land", "Land", "Yüzeye in");
+        l.add("gui.spacebreaker.star_map.soon", "Coming soon", "Yakında");
+        l.add("gui.spacebreaker.star_map.no_surface", "No ground to land on", "İnilecek yüzey yok");
+        l.add("gui.spacebreaker.star_map.go", "Go", "Git");
+        l.add("gui.spacebreaker.star_map.pick_target", "Click a world on the map, then choose to go to its orbit or land on it.", "Haritada bir dünyaya tıkla, sonra yörüngesine mi gideceğini yoksa yüzeyine mi ineceğini seç.");
+        l.add("gui.spacebreaker.star_map.trip_to", "Trip to %s", "%s yolculuğu");
+        l.add("gui.spacebreaker.star_map.fuel_line", "Fuel needed %s · on board %s", "Gereken yakıt %s · roketinde %s");
+        l.add("gui.spacebreaker.star_map.enough", "Enough ✔", "Yeter ✔");
+        l.add("gui.spacebreaker.star_map.short", "%s short ✘", "%s eksik ✘");
+        l.add("gui.spacebreaker.star_map.return_yes", "Fuel to come home: enough ✔", "Geri dönüş yakıtı: yeter ✔");
+        l.add("gui.spacebreaker.star_map.return_no", "Fuel to come home: not enough ✘", "Geri dönüş yakıtı: yetmez ✘");
+        l.add("gui.spacebreaker.star_map.travel_time", "Trip time: %s days", "Yolculuk süresi: %s gün");
+        l.add("gui.spacebreaker.star_map.need_shield", "Needs a stronger heat shield to come down through the air", "Havadan geçerek inmek için daha güçlü bir ısı kalkanı gerekli");
+        l.add("gui.spacebreaker.star_map.need_legs", "No landing legs: the landing will be rough", "İniş bacağı yok: iniş sert olacak");
+        l.add("gui.spacebreaker.star_map.need_chute", "No parachute: add one for a soft landing", "Paraşüt yok: yumuşak iniş için bir paraşüt ekle");
+        l.add("gui.spacebreaker.star_map.first_stop", "First stop: %s", "İlk durak: %s");
+        l.add("gui.spacebreaker.star_map.delta_v_help", "Fuel here means Δv (delta-v): how much your rocket can still change its speed. Every trip uses some; the numbers are in metres per second.", "Buradaki yakıt Δv (delta-v) demek: roketinin hızını daha ne kadar değiştirebileceği. Her yolculuk bir kısmını harcar; sayılar saniyede metre cinsindendir.");
+        l.add("gui.spacebreaker.star_map.mode.balanced", "Balanced mode: trips take %s%% of the real fuel", "Dengeli mod: yolculuklar gerçek yakıtın %%%s kadarını ister");
+        l.add("gui.spacebreaker.star_map.mode.easy", "Easy mode: trips take %s%% of the real fuel", "Kolay mod: yolculuklar gerçek yakıtın %%%s kadarını ister");
+        l.add("gui.spacebreaker.star_map.block.none", "", "");
+        l.add("gui.spacebreaker.star_map.block.here", "You are already here.", "Zaten buradasın.");
+        l.add("gui.spacebreaker.star_map.block.not_in_orbit", "Reach orbit first: press the launch key on the pad.", "Önce yörüngeye çık: rampada fırlatma tuşuna bas.");
+        l.add("gui.spacebreaker.star_map.block.not_built", "This world is not in the game yet.", "Bu dünya henüz oyunda yok.");
+        l.add("gui.spacebreaker.star_map.block.no_route", "There is no way to fly there from here.", "Buradan oraya uçmanın yolu yok.");
+        l.add("gui.spacebreaker.star_map.block.not_enough_fuel", "Not enough fuel: refuel or build a bigger rocket.", "Yakıt yetmiyor: yakıt al ya da daha büyük bir roket yap.");
+        l.add("gui.spacebreaker.star_map.block.busy", "The rocket is busy.", "Roket şu an meşgul.");
+        l.add("gui.spacebreaker.star_map.hazard.no_air", "No air", "Hava yok");
+        l.add("gui.spacebreaker.star_map.hazard.thin_air", "Unbreathable air", "Solunamaz hava");
+        l.add("gui.spacebreaker.star_map.hazard.crushing_air", "Crushing air", "Ezici basınç");
+        l.add("gui.spacebreaker.star_map.hazard.hot", "Hot", "Sıcak");
+        l.add("gui.spacebreaker.star_map.hazard.cold", "Cold", "Soğuk");
+        l.add("gui.spacebreaker.star_map.hazard.radiation", "Radiation", "Radyasyon");
+        for (String[] k : new String[][]{
+                {"terrestrial", "Rocky planet", "Kayalık gezegen"}, {"dwarf", "Dwarf planet", "Cüce gezegen"}, {"moon", "Moon", "Uydu"},
+                {"gas_giant", "Gas giant", "Gaz devi"}, {"ice_giant", "Ice giant", "Buz devi"}, {"asteroid", "Asteroid", "Asteroit"},
+                {"star", "Star", "Yıldız"}, {"station", "Space station", "Uzay istasyonu"}}) {
+            l.add("gui.spacebreaker.star_map.kind." + k[0], k[1], k[2]);
+        }
+        for (String[] k : new String[][]{
+                {"terrestrial", "A rocky world.", "Kayalık bir dünya."},
+                {"dwarf", "A small world, too light to clear its own path around the Sun.", "Güneş çevresindeki yolunu temizleyemeyecek kadar hafif, küçük bir dünya."},
+                {"moon", "A moon circling its planet.", "Gezegeninin çevresinde dönen bir uydu."},
+                {"gas_giant", "A giant ball of gas with no ground to stand on.", "Üzerinde durulacak zemini olmayan dev bir gaz küresi."},
+                {"ice_giant", "A cold giant of gas and ice, with no ground to stand on.", "Gaz ve buzdan soğuk bir dev; üzerinde durulacak zemin yok."},
+                {"asteroid", "A lump of rock left over from the birth of the planets.", "Gezegenlerin doğumundan kalmış bir kaya parçası."},
+                {"star", "", ""}, {"station", "A home built in space.", "Uzayda kurulmuş bir yuva."}}) {
+            l.add("gui.spacebreaker.star_map.about_kind." + k[0], k[1], k[2]);
+        }
+        for (String[] k : new String[][]{
+                {"mercury", "The smallest planet, closest to the Sun: scorching by day, freezing by night.", "Güneş'e en yakın, en küçük gezegen: gündüz kavurucu, gece dondurucu."},
+                {"venus", "Earth's twin in size, hidden under acid clouds. The air on the ground would crush a submarine.", "Boyutça Dünya'nın ikizi, asit bulutlarının altında saklı. Yerdeki hava bir denizaltıyı ezerdi."},
+                {"earth", "Home: air to breathe, water and a blue sky.", "Evimiz: solunacak hava, su ve mavi gökyüzü."},
+                {"moon", "Earth's grey companion: no air, low gravity, dusty seas of old lava.", "Dünya'nın gri yoldaşı: hava yok, yerçekimi az, eski lavdan tozlu denizler."},
+                {"mars", "The red planet: thin cold air, giant canyons and ice at the poles. Its ice can be made into rocket fuel.", "Kızıl gezegen: ince soğuk hava, dev kanyonlar ve kutuplarda buz. Buzu roket yakıtına çevrilebilir."},
+                {"phobos", "Mars's larger moon, a lumpy rock that skims low over the planet.", "Mars'ın büyük uydusu; gezegenin hemen üstünden geçen yumru bir kaya."},
+                {"deimos", "Mars's tiny outer moon: you could almost jump off it.", "Mars'ın minik dış uydusu: neredeyse zıplayarak üstünden kurtulabilirsin."},
+                {"ceres", "The largest body in the asteroid belt, with bright salt patches in its craters.", "Asteroit kuşağının en büyük cismi; kraterlerinde parlak tuz lekeleri var."},
+                {"vesta", "A battered asteroid with a mountain twice as tall as Everest.", "Everest'in iki katı yüksekliğinde bir dağı olan hırpalanmış bir asteroit."},
+                {"jupiter", "The biggest planet, a storm-striped ball of gas. Its radiation belts are deadly.", "En büyük gezegen; fırtına çizgili bir gaz küresi. Radyasyon kuşakları ölümcül."},
+                {"io", "Jupiter's volcanic moon: sulphur plains and fountains of lava.", "Jüpiter'in volkanik uydusu: kükürt ovaları ve lav fıskiyeleri."},
+                {"europa", "An ice shell over a hidden ocean, deep in Jupiter's radiation.", "Jüpiter'in radyasyonu içinde, gizli bir okyanusun üstünde buz kabuk."},
+                {"ganymede", "The largest moon in the Solar System, bigger than Mercury.", "Güneş Sistemi'nin en büyük uydusu; Merkür'den bile büyük."},
+                {"callisto", "An old, cratered moon of ice and rock, outside Jupiter's worst radiation.", "Jüpiter'in en sert radyasyonunun dışında, buz ve kayadan yaşlı, kraterli bir uydu."},
+                {"saturn", "The ringed giant: a world of gas lighter than water.", "Halkalı dev: sudan hafif bir gaz dünyası."},
+                {"enceladus", "A bright little ice moon that sprays water into space.", "Uzaya su püskürten parlak, küçük bir buz uydu."},
+                {"titan", "A moon with thick orange haze and lakes of liquid methane.", "Kalın turuncu pusu ve sıvı metan gölleri olan bir uydu."},
+                {"uranus", "A pale blue ice giant that rolls around the Sun on its side.", "Güneş'in çevresinde yan yatmış dönen soluk mavi bir buz devi."},
+                {"miranda", "A small moon of Uranus with cliffs taller than any on Earth.", "Uranüs'ün, Dünya'dakilerden yüksek uçurumları olan küçük bir uydusu."},
+                {"neptune", "The farthest planet: deep blue, cold and windy.", "En uzak gezegen: koyu mavi, soğuk ve rüzgârlı."},
+                {"triton", "Neptune's frozen moon, with geysers of nitrogen.", "Neptün'ün donmuş uydusu; azot gayzerleri var."},
+                {"pluto", "A small icy world at the edge of the planets, with a heart-shaped plain.", "Gezegenlerin kıyısında, kalp biçimli bir ovası olan küçük buzlu bir dünya."},
+                {"charon", "Pluto's big moon: the two circle each other like a pair.", "Plüton'un büyük uydusu: ikisi bir çift gibi birbirinin çevresinde döner."}}) {
+            l.add("gui.spacebreaker.star_map.about." + k[0], k[1], k[2]);
+        }
         l.add("location.spacebreaker.earth_surface", "Earth", "Dünya");
-        l.add("gui.spacebreaker.star_map.here", "You are at: %s", "Konum: %s");
         l.add("location.spacebreaker.orbit_of", "%s orbit", "%s yörüngesi");
         l.add("body.spacebreaker.earth", "Earth", "Dünya");
     }
