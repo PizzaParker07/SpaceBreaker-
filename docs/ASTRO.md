@@ -577,3 +577,29 @@ At the default orbitalTimeScale (1 real s per simulated hour) a Mars transfer co
 | Low Jupiter orbit insertion | 17.70 | 17.20 ± 1.00 | 6.19 | 4.42 | ok |
 | Phobos surface → orbit | 0.01 | 0.01 ± 0.01 | 0.00 | 0.00 | ok |
 
+
+## Sky ephemeris (`SkyEphemeris`)
+
+What you see in the sky from any body, for the sky renderer (`client/sky`) and telescopes.
+
+```java
+BodySystem sys = BodyAdapter.system(level.registryAccess()).orElseThrow();   // cache it per registry
+double t = BodyAdapter.simTime(level);              // game time → simulated s since J2000 (orbitalTimeScale)
+List<SkyEphemeris.SkyObject> sky = SkyEphemeris.visible(sys, "spacebreaker:mars", t, 6.0);  // brightest first
+for (SkyEphemeris.SkyObject o : sky) {
+    o.direction();          // unit vector, system frame (ecliptic J2000), from the observer's centre
+    o.apparentMagnitude();  // Sun from Earth −26.7, full Moon −12.7, Venus −4.4, Jupiter −2.9, naked eye ≤ 6
+    o.angularDiameter();    // rad — draw a disc when it is larger than a pixel (Jupiter from Io: 19°)
+    o.illuminated();        // lit fraction (phases), o.phaseAngle(), o.elongation() from the star
+    o.colorRgb();           // Earth blue-white, Mars rust, Venus cream, ice giants cyan, stars black-body
+}
+SkyEphemeris.Horizontal h = SkyEphemeris.toHorizontal(o.direction(), axialTiltRad, rotationAngleRad, latitudeRad);
+```
+
+`toHorizontal` uses the observer body's axial tilt (about the x axis), how far it has turned
+(local sidereal angle: 0 when the meridian faces +x) and the latitude (z axis in the world). Magnitudes:
+m = H + 5 log₁₀(r·Δ/AU²) − 2.5 log₁₀ Φ(α) with H from diameter and geometric albedo (new optional body
+field `geometric_albedo`, NASA values; Bond albedo when missing) and a Lambert phase law; Saturn's rings
+are not included. `SkyEphemerisTest` checks the Sun, the full Moon, Venus at greatest elongation
+(24 Mar 2020: 46°, −4.4), Jupiter (3 Nov 2023: −2.9, 49.5″), Mars (13 Oct 2020: −2.6, 22″) and Saturn
+at opposition, Earth from Mars (≈ −2.5) and the Galilean moons from Io.
