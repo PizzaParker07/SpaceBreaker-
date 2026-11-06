@@ -19,6 +19,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import com.pizzaparker07.spacebreaker.content.suit.net.SuitNetwork;
 import com.pizzaparker07.spacebreaker.client.hud.HudConfig;
 import com.pizzaparker07.spacebreaker.content.suit.block.AirlockDoorBlock;
@@ -109,6 +110,67 @@ public final class SuitModule implements SbModule {
     public static final DeferredItem<SpaceSuitItem> EVA_LEGGINGS = suit("eva_leggings", ArmorItem.Type.LEGGINGS, "eva_legs");
     public static final DeferredItem<SpaceSuitItem> EVA_BOOTS = suit("eva_boots", ArmorItem.Type.BOOTS, "eva_boots");
     public static final DeferredItem<SpaceSuitItem> MAGNETIC_BOOTS = suit("magnetic_boots", ArmorItem.Type.BOOTS, "magnetic_boots");
+
+    /** Radiation-hardened suits are heavier armour (tungsten plates). */
+    public static final Holder<ArmorMaterial> HEAVY_SUIT = MATERIALS.register("heavy_suit", () -> new ArmorMaterial(
+            defense(2, 4, 5, 2, 5), 7, SoundEvents.ARMOR_EQUIP_NETHERITE,
+            () -> Ingredient.of(net.minecraft.world.item.Items.IRON_INGOT),
+            List.of(new ArmorMaterial.Layer(Spacebreaker.id("heavy_suit"))), 1.0F, 0.05F));
+
+    public static final DeferredItem<SpaceSuitItem> THERMAL_HELMET = tierPiece(SuitTier.THERMAL, ArmorItem.Type.HELMET);
+    public static final DeferredItem<SpaceSuitItem> THERMAL_CHESTPLATE = tierPiece(SuitTier.THERMAL, ArmorItem.Type.CHESTPLATE);
+    public static final DeferredItem<SpaceSuitItem> THERMAL_LEGGINGS = tierPiece(SuitTier.THERMAL, ArmorItem.Type.LEGGINGS);
+    public static final DeferredItem<SpaceSuitItem> THERMAL_BOOTS = tierPiece(SuitTier.THERMAL, ArmorItem.Type.BOOTS);
+    public static final DeferredItem<SpaceSuitItem> HEATED_HELMET = tierPiece(SuitTier.HEATED, ArmorItem.Type.HELMET);
+    public static final DeferredItem<SpaceSuitItem> HEATED_CHESTPLATE = tierPiece(SuitTier.HEATED, ArmorItem.Type.CHESTPLATE);
+    public static final DeferredItem<SpaceSuitItem> HEATED_LEGGINGS = tierPiece(SuitTier.HEATED, ArmorItem.Type.LEGGINGS);
+    public static final DeferredItem<SpaceSuitItem> HEATED_BOOTS = tierPiece(SuitTier.HEATED, ArmorItem.Type.BOOTS);
+    public static final DeferredItem<SpaceSuitItem> RADIATION_HELMET = tierPiece(SuitTier.RADIATION, ArmorItem.Type.HELMET);
+    public static final DeferredItem<SpaceSuitItem> RADIATION_CHESTPLATE = tierPiece(SuitTier.RADIATION, ArmorItem.Type.CHESTPLATE);
+    public static final DeferredItem<SpaceSuitItem> RADIATION_LEGGINGS = tierPiece(SuitTier.RADIATION, ArmorItem.Type.LEGGINGS);
+    public static final DeferredItem<SpaceSuitItem> RADIATION_BOOTS = tierPiece(SuitTier.RADIATION, ArmorItem.Type.BOOTS);
+
+    /** Every suit piece, for tags, client registration and tests. */
+    public static final List<DeferredItem<SpaceSuitItem>> ALL_PIECES = List.of(EVA_HELMET, EVA_CHESTPLATE, EVA_LEGGINGS, EVA_BOOTS, MAGNETIC_BOOTS,
+            THERMAL_HELMET, THERMAL_CHESTPLATE, THERMAL_LEGGINGS, THERMAL_BOOTS, HEATED_HELMET, HEATED_CHESTPLATE, HEATED_LEGGINGS, HEATED_BOOTS,
+            RADIATION_HELMET, RADIATION_CHESTPLATE, RADIATION_LEGGINGS, RADIATION_BOOTS);
+
+    // ------------------------------------------------------------------ upgrade modules
+
+    /** Which module a suit piece carries. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<SuitUpgrade>> SUIT_UPGRADE =
+            COMPONENTS.registerComponentType("suit_upgrade", b -> b.persistent(SuitUpgrade.CODEC).networkSynchronized(SuitUpgrade.STREAM_CODEC));
+    public static final DeferredItem<Item> SUIT_UPGRADE_TEMPLATE = ITEMS.registerSimpleItem("suit_upgrade_template", new Item.Properties().rarity(Rarity.UNCOMMON));
+    public static final DeferredItem<SuitModuleItem> THERMAL_REGULATOR_MODULE = module("thermal_regulator_module", SuitUpgrade.THERMAL_REGULATOR);
+    public static final DeferredItem<SuitModuleItem> RADIATION_SHIELD_MODULE = module("radiation_shield_module", SuitUpgrade.RADIATION_SHIELD);
+    public static final DeferredItem<SuitModuleItem> EXTRA_OXYGEN_MODULE = module("extra_oxygen_module", SuitUpgrade.EXTRA_OXYGEN);
+    public static final DeferredItem<SuitModuleItem> JETPACK_BOOSTER_MODULE = module("jetpack_booster_module", SuitUpgrade.JETPACK_BOOSTER);
+
+    public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(Registries.RECIPE_SERIALIZER, Spacebreaker.MOD_ID);
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<SuitUpgradeRecipe>> SUIT_UPGRADE_RECIPE =
+            RECIPE_SERIALIZERS.register("suit_upgrade", () -> SuitUpgradeRecipe.SERIALIZER);
+
+    private static DeferredItem<SuitModuleItem> module(String name, SuitUpgrade upgrade) {
+        return ITEMS.registerItem(name, p -> new SuitModuleItem(upgrade, p), new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON));
+    }
+
+    private static DeferredItem<SpaceSuitItem> tierPiece(SuitTier tier, ArmorItem.Type type) {
+        String piece = switch (type) {
+            case HELMET -> "helmet";
+            case CHESTPLATE -> "chestplate";
+            case LEGGINGS -> "leggings";
+            default -> "boots";
+        };
+        String texture = switch (type) {
+            case HELMET -> "helmet";
+            case CHESTPLATE -> "torso";
+            case LEGGINGS -> "legs";
+            default -> "boots";
+        };
+        boolean heavy = tier == SuitTier.RADIATION;
+        return ITEMS.registerItem(tier.id() + "_" + piece, p -> new SpaceSuitItem(heavy ? HEAVY_SUIT : EVA_SUIT, type, tier, tier.id() + "_" + texture, p),
+                new Item.Properties().durability(type.getDurability(heavy ? 33 : 26)).rarity(tier.level() >= 3 ? Rarity.RARE : Rarity.UNCOMMON));
+    }
     public static final DeferredItem<ManeuveringUnitItem> MANEUVERING_UNIT = ITEMS.registerItem("maneuvering_unit",
             ManeuveringUnitItem::new, new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON));
 
@@ -163,7 +225,11 @@ public final class SuitModule implements SbModule {
         ModLoadingContext.get().getActiveContainer().registerConfig(ModConfig.Type.CLIENT, HudConfig.SPEC, "spacebreaker-hud.toml");
         MATERIALS.register(modBus);
         ITEMS.register(modBus);
-        SbTabs.EQUIPMENT.icon(EVA_HELMET).add(EVA_HELMET).add(EVA_CHESTPLATE).add(EVA_LEGGINGS).add(EVA_BOOTS).add(MAGNETIC_BOOTS)
+        RECIPE_SERIALIZERS.register(modBus);
+        SbTabs.EQUIPMENT.icon(EVA_HELMET);
+        ALL_PIECES.forEach(SbTabs.EQUIPMENT::add);
+        SbTabs.EQUIPMENT.add(SUIT_UPGRADE_TEMPLATE).add(THERMAL_REGULATOR_MODULE).add(RADIATION_SHIELD_MODULE).add(EXTRA_OXYGEN_MODULE)
+                .add(JETPACK_BOOSTER_MODULE)
                 .addStack(() -> OxygenTankItem.filled(OXYGEN_TANK.get()))
                 .addStack(() -> OxygenTankItem.filled(LARGE_OXYGEN_TANK.get()))
                 .addStack(() -> ManeuveringUnitItem.filled(MANEUVERING_UNIT.get()))
@@ -200,6 +266,46 @@ public final class SuitModule implements SbModule {
         lang.item(EVA_BOOTS, "EVA Boots", "EVA Botları");
         lang.item(MAGNETIC_BOOTS, "Magnetic EVA Boots", "Manyetik EVA Botları");
         lang.item(MANEUVERING_UNIT, "Maneuvering Unit", "Manevra Ünitesi");
+        String[][] tiers = {{"thermal", "Thermal", "Termal"}, {"heated", "Heated", "Isıtmalı"}, {"radiation", "Radiation-Hardened", "Radyasyon Zırhlı"}};
+        String[][] pieces = {{"helmet", "Helmet", "Kaskı"}, {"chestplate", "Torso", "Gövdesi"}, {"leggings", "Leggings", "Pantolonu"}, {"boots", "Boots", "Botları"}};
+        for (String[] t : tiers) {
+            for (String[] p : pieces) {
+                lang.add("item.spacebreaker." + t[0] + "_" + p[0], t[1] + " Suit " + p[1], t[2] + " Giysi " + p[2]);
+            }
+        }
+        lang.item(SUIT_UPGRADE_TEMPLATE, "Suit Upgrade Template", "Giysi Yükseltme Şablonu");
+        lang.item(THERMAL_REGULATOR_MODULE, "Thermal Regulator Module", "Termal Regülatör Modülü");
+        lang.item(RADIATION_SHIELD_MODULE, "Radiation Shield Module", "Radyasyon Kalkanı Modülü");
+        lang.item(EXTRA_OXYGEN_MODULE, "Extra Oxygen Module", "Ek Oksijen Modülü");
+        lang.item(JETPACK_BOOSTER_MODULE, "Jetpack Booster Module", "Jetpack Güçlendirici Modülü");
+        lang.add("upgrade.spacebreaker.thermal_regulator", "Thermal Regulator", "Termal Regülatör");
+        lang.add("upgrade.spacebreaker.thermal_regulator.desc", "Widens the suit's rated range by 15 °C each way (stacks)",
+                "Giysinin dayanım aralığını her iki yönde 15 °C genişletir (birikir)");
+        lang.add("upgrade.spacebreaker.radiation_shield", "Radiation Shield", "Radyasyon Kalkanı");
+        lang.add("upgrade.spacebreaker.radiation_shield.desc", "Cuts the radiation dose by a quarter (stacks)", "Radyasyon dozunu dörtte bir azaltır (birikir)");
+        lang.add("upgrade.spacebreaker.extra_oxygen", "Extra Oxygen", "Ek Oksijen");
+        lang.add("upgrade.spacebreaker.extra_oxygen.desc", "Torso only: a third tank slot in the backpack", "Yalnız gövde: sırt çantasına üçüncü tüp yuvası");
+        lang.add("upgrade.spacebreaker.jetpack_booster", "Jetpack Booster", "Jetpack Güçlendirici");
+        lang.add("upgrade.spacebreaker.jetpack_booster.desc", "Torso only: stronger Maneuvering Unit thrust for the same gas", "Yalnız gövde: aynı gazla daha güçlü Manevra Ünitesi itkisi");
+        lang.add("tooltip.spacebreaker.module.hint", "Smithing table: Suit Upgrade Template + suit piece + module",
+                "Demirci masası: Giysi Yükseltme Şablonu + giysi parçası + modül");
+        lang.add("item.spacebreaker.suit_upgrade_template.desc", "Fits an upgrade module to a suit piece", "Giysi parçasına yükseltme modülü takar");
+        lang.add("tooltip.spacebreaker.suit.shielding", "Radiation shielding: %s%%", "Radyasyon kalkanı: %%%s");
+        lang.add("tooltip.spacebreaker.suit.upgrade", "Module: %s", "Modül: %s");
+        lang.add("tooltip.spacebreaker.suit.needs_tech", "Full protection needs: %s", "Tam koruma için gereken: %s");
+        lang.add("hud.spacebreaker.warn.rating", "BEYOND SUIT RATING", "GİYSİ DAYANIMI AŞILDI");
+        lang.add("tech.spacebreaker.thermal_suits", "Thermal Suits", "Termal Giysiler");
+        lang.add("tech.spacebreaker.thermal_suits.desc", "Reflective gold-foil layers and liquid cooling for Mercury's day and the surface of Venus.",
+                "Merkür gündüzü ve Venüs yüzeyi için yansıtıcı altın folyo katmanları ve sıvı soğutma.");
+        lang.add("tech.spacebreaker.heated_suits", "Heated Suits", "Isıtmalı Giysiler");
+        lang.add("tech.spacebreaker.heated_suits.desc", "Thick foam insulation and battery heaters for Titan's freezing nitrogen air.",
+                "Titan'ın donduran azot havası için kalın köpük yalıtım ve bataryalı ısıtıcılar.");
+        lang.add("tech.spacebreaker.radiation_hardened_suits", "Radiation-Hardened Suits", "Radyasyon Zırhlı Giysiler");
+        lang.add("tech.spacebreaker.radiation_hardened_suits.desc", "Polyethylene and tungsten layers against the radiation belts of Jupiter.",
+                "Jüpiter'in radyasyon kuşaklarına karşı polietilen ve tungsten katmanları.");
+        lang.add("tech.spacebreaker.suit_upgrades", "Suit Upgrades", "Giysi Yükseltmeleri");
+        lang.add("tech.spacebreaker.suit_upgrades.desc", "Upgrade modules fitted to suit pieces at a smithing table.",
+                "Demirci masasında giysi parçalarına takılan yükseltme modülleri.");
         lang.add("tooltip.spacebreaker.oxygen.hint", "Use while wearing an EVA torso to slot it in", "EVA gövdesi giyiliyken kullanınca sırt çantasına takılır");
         lang.add("tooltip.spacebreaker.suit.range", "Rated %s °C to %s °C", "Dayanım: %s °C ile %s °C arası");
         lang.add("tooltip.spacebreaker.suit.set", "Sealed only with all four pieces worn", "Yalnızca dört parça birlikte giyilince sızdırmaz");
@@ -240,7 +346,11 @@ public final class SuitModule implements SbModule {
         tags.item(ItemTags.HEAD_ARMOR, EVA_HELMET.get());
         tags.item(ItemTags.CHEST_ARMOR, EVA_CHESTPLATE.get());
         tags.item(ItemTags.LEG_ARMOR, EVA_LEGGINGS.get());
-        tags.item(ItemTags.FOOT_ARMOR, EVA_BOOTS.get(), MAGNETIC_BOOTS.get());
+        tags.item(ItemTags.HEAD_ARMOR, THERMAL_HELMET.get(), HEATED_HELMET.get(), RADIATION_HELMET.get());
+        tags.item(ItemTags.CHEST_ARMOR, THERMAL_CHESTPLATE.get(), HEATED_CHESTPLATE.get(), RADIATION_CHESTPLATE.get());
+        tags.item(ItemTags.LEG_ARMOR, THERMAL_LEGGINGS.get(), HEATED_LEGGINGS.get(), RADIATION_LEGGINGS.get());
+        tags.item(ItemTags.FOOT_ARMOR, EVA_BOOTS.get(), MAGNETIC_BOOTS.get(), THERMAL_BOOTS.get(), HEATED_BOOTS.get(), RADIATION_BOOTS.get());
+        tags.item(ItemTags.DYEABLE, ALL_PIECES.stream().map(DeferredItem::get).toArray(Item[]::new));
     }
 
     @Override

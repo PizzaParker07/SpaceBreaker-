@@ -143,9 +143,11 @@ public final class SuitGameTests {
         }
         helper.assertTrue(Math.abs(body - target) < 0.5 && body >= target, "settles at the target without overshoot, body " + body);
         Player p = suited(helper, true, 1);
-        helper.assertTrue(LifeSupport.effectiveAmbient(p, -173.0) == 21.0, "Mk1 suit keeps the cabin at 21 °C in lunar night");
-        helper.assertTrue(LifeSupport.effectiveAmbient(p, 120.0) == 21.0, "and in lunar day");
-        helper.assertTrue(LifeSupport.effectiveAmbient(p, 400.0) > 200.0, "Venus heat overwhelms a Mk1 suit");
+        double lunarNight = LifeSupport.effectiveAmbient(p, -173.0, 0.0);
+        helper.assertTrue(LifeSupport.targetBodyTemp(lunarNight) == SurvivalData.NORMAL_BODY_C,
+                "Mk1 suit keeps the wearer comfortable in lunar night, felt " + lunarNight);
+        helper.assertTrue(LifeSupport.effectiveAmbient(p, 120.0, 0.0) == 21.0, "and in lunar day");
+        helper.assertTrue(LifeSupport.effectiveAmbient(p, 400.0, 0.0) > 200.0, "Mercury noon overwhelms a Mk1 suit");
         helper.assertTrue(LifeSupport.targetBodyTemp(21.0) == SurvivalData.NORMAL_BODY_C, "comfortable cabin keeps 37 °C");
         helper.succeed();
     }

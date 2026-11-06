@@ -1,0 +1,19 @@
+{
+  "category": "life_support",
+  "tier": 2,
+  "requires": [
+    "spacebreaker:suit_mk2",
+    "spacebreaker:heat_resistant_electronics"
+  ],
+  "icon": "spacebreaker:thermal_helmet",
+  "samples": [
+    "spacebreaker:venus",
+    "spacebreaker:mercury"
+  ],
+  "unlocks": [
+    "spacebreaker:thermal_helmet",
+    "spacebreaker:thermal_chestplate",
+    "spacebreaker:thermal_leggings",
+    "spacebreaker:thermal_boots"
+  ]
+}

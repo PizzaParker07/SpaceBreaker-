@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SKS",
+    "AcA"
+  ],
+  "key": {
+    "S": {
+      "item": "spacebreaker:silicone_seal"
+    },
+    "K": {
+      "item": "spacebreaker:oxygen_tank"
+    },
+    "A": {
+      "tag": "c:plates/aluminum"
+    },
+    "c": {
+      "item": "spacebreaker:basic_circuit"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:extra_oxygen_module",
+    "count": 1
+  }
+}

@@ -1,5 +1,8 @@
 {
   "values": [
-    "spacebreaker:eva_chestplate"
+    "spacebreaker:eva_chestplate",
+    "spacebreaker:thermal_chestplate",
+    "spacebreaker:heated_chestplate",
+    "spacebreaker:radiation_chestplate"
   ]
 }

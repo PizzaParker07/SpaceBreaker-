@@ -1,5 +1,8 @@
 {
   "values": [
-    "spacebreaker:eva_helmet"
+    "spacebreaker:eva_helmet",
+    "spacebreaker:thermal_helmet",
+    "spacebreaker:heated_helmet",
+    "spacebreaker:radiation_helmet"
   ]
 }

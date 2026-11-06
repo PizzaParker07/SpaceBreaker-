@@ -1,5 +1,8 @@
 {
   "values": [
-    "spacebreaker:eva_leggings"
+    "spacebreaker:eva_leggings",
+    "spacebreaker:thermal_leggings",
+    "spacebreaker:heated_leggings",
+    "spacebreaker:radiation_leggings"
   ]
 }

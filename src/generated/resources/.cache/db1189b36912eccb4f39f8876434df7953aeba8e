@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-06T18:10:00.711261159	Tags for minecraft:item mod id spacebreaker
+// 1.21.1	2026-11-06T19:09:06.665864733	Tags for minecraft:item mod id spacebreaker
 7e8e995a94080524a7a2d6280b7b24b5bae0a66f data/c/tags/item/buckets.json
 e8c124d1254042fe6eb9bded9e1ebed66c5d69dd data/c/tags/item/dusts.json
 ad7d32167ffa7ca53078a97903c3d39992237e23 data/c/tags/item/dusts/aluminum.json
@@ -87,10 +87,11 @@ c13a1fd6361eaef0ec8c5028873d11604c98fdc6 data/c/tags/item/wires/aluminum.json
 7b0ba7b54a31306667420f788d120024aa8a584c data/c/tags/item/wires/gold.json
 c53893040c86bcc09dd84910b2e0945d5107fb1f data/c/tags/item/wires/tungsten.json
 0c9b9ea610564cb730896f559fe5d1669a859c32 data/minecraft/tags/item/beacon_payment_items.json
-f75665d5dc09543412415ed6f91412199640c492 data/minecraft/tags/item/chest_armor.json
-80c2b389f804aa31ae630edb2562f64f80987d56 data/minecraft/tags/item/foot_armor.json
-866d4e35597e8439a3bd31730e069ad3c563da93 data/minecraft/tags/item/head_armor.json
-8833c233fc59c80be0074a5187f08df7235ab6fa data/minecraft/tags/item/leg_armor.json
+3f967db6146e848de6713b7e3184ce4cdcc4fb82 data/minecraft/tags/item/chest_armor.json
+378dd29cb2d952e609917dbca5a3df7954c75e82 data/minecraft/tags/item/dyeable.json
+137151cccd6170d769c4aa4ff44cb7c65dbc3d63 data/minecraft/tags/item/foot_armor.json
+cd7806a652087ef3237bc109bf884f6301b77963 data/minecraft/tags/item/head_armor.json
+f0a0fbdf43cab8de673f6a2a995b934149b396e1 data/minecraft/tags/item/leg_armor.json
 1137c1ba4d56080deb8301dbb264af90ec575b94 data/minecraft/tags/item/sand.json
 2606c98f3e03435937a8cacc7af63d9e9a301907 data/minecraft/tags/item/slabs.json
 07180392460c91910dcdcffb8b5f2c35bfcffec1 data/minecraft/tags/item/stairs.json

@@ -1,0 +1,18 @@
+{
+  "category": "life_support",
+  "tier": 2,
+  "requires": [
+    "spacebreaker:suit_mk2",
+    "spacebreaker:cryogenics"
+  ],
+  "icon": "spacebreaker:heated_helmet",
+  "samples": [
+    "spacebreaker:mars"
+  ],
+  "unlocks": [
+    "spacebreaker:heated_helmet",
+    "spacebreaker:heated_chestplate",
+    "spacebreaker:heated_leggings",
+    "spacebreaker:heated_boots"
+  ]
+}

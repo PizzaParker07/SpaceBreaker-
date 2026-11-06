@@ -49,26 +49,7 @@ public class SpaceSuitItem extends ArmorItem {
 
     /** True when the entity wears a complete EVA suit (helmet, torso, legs and boots). */
     public static boolean isSealed(LivingEntity entity) {
-        return sealedTier(entity) != null;
-    }
-
-    /** The weakest tier among the four worn pieces, or null when the suit is incomplete. */
-    @Nullable
-    public static SuitTier sealedTier(LivingEntity entity) {
-        SuitTier weakest = null;
-        for (EquipmentSlot slot : new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET}) {
-            ItemStack stack = entity.getItemBySlot(slot);
-            if (!(stack.getItem() instanceof SpaceSuitItem suit) || suit.getEquipmentSlot() != slot) {
-                return null;
-            }
-            if (stack.isDamageableItem() && stack.getDamageValue() >= stack.getMaxDamage() - 1) {
-                return null; // a ruined piece leaks
-            }
-            if (weakest == null || suit.tier.level() < weakest.level()) {
-                weakest = suit.tier;
-            }
-        }
-        return weakest;
+        return SuitProtection.rating(entity) != null;
     }
 
     public static boolean wearsHelmet(LivingEntity entity) {
@@ -136,6 +117,16 @@ public class SpaceSuitItem extends ArmorItem {
             SuitTanks.appendTooltip(stack, tooltip);
         }
         tooltip.add(Component.translatable("tooltip.spacebreaker.suit.range", tier.minTempC(), tier.maxTempC()).withStyle(ChatFormatting.GRAY));
+        tooltip.add(Component.translatable("tooltip.spacebreaker.suit.shielding", tier.shieldingPercent()).withStyle(ChatFormatting.GRAY));
+        SuitUpgrade upgrade = SuitUpgrade.of(stack);
+        if (upgrade != null) {
+            tooltip.add(Component.translatable("tooltip.spacebreaker.suit.upgrade", Component.translatable(upgrade.descriptionKey()))
+                    .withStyle(ChatFormatting.AQUA));
+        }
+        if (tier.tech() != null) {
+            tooltip.add(Component.translatable("tooltip.spacebreaker.suit.needs_tech",
+                    Component.translatable(com.pizzaparker07.spacebreaker.core.tech.TechNode.nameKey(tier.tech()))).withStyle(ChatFormatting.DARK_PURPLE));
+        }
         tooltip.add(Component.translatable("tooltip.spacebreaker.suit.set").withStyle(ChatFormatting.DARK_GRAY));
     }
 }

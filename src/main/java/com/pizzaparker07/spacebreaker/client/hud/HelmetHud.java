@@ -124,6 +124,11 @@ public final class HelmetHud {
             rows.add(new Row(ICON_SUIT, s.integrity() / 100F, c,
                     sealed ? s.integrity() + "%" : Component.translatable("hud.spacebreaker.open").getString(), c, false));
         }
+        // suit rating: only when the surroundings are beyond it
+        boolean beyond = sealed && (s.ambientC() < s.ratingMinC() || s.ambientC() > s.ratingMaxC());
+        if (beyond) {
+            rows.add(new Row(ICON_SUIT, -1F, 0, String.format(Locale.ROOT, "%d..%d°", s.ratingMinC(), s.ratingMaxC()), WARN, false));
+        }
         // body temperature: marker on a 30..44 °C scale, normal band in the middle
         float body = s.bodyTempC();
         int bodyCol = body < 32 || body > 41 ? ALARM : (body < 35 || body > 38.5F ? WARN : GOOD);
@@ -194,6 +199,8 @@ public final class HelmetHud {
             warning = Component.translatable("hud.spacebreaker.warn.no_oxygen");
         } else if (!breathable && o2 < 0.15F) {
             warning = Component.translatable("hud.spacebreaker.warn.low_oxygen");
+        } else if (beyond) {
+            warning = Component.translatable("hud.spacebreaker.warn.rating");
         } else if (body < 35) {
             warning = Component.translatable("hud.spacebreaker.warn.cold");
         } else if (body > 38.5F) {

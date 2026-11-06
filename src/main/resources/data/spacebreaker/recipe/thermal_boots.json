@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    " F ",
+    "FXF",
+    " N "
+  ],
+  "key": {
+    "F": {
+      "item": "spacebreaker:gold_foil_insulation"
+    },
+    "N": {
+      "tag": "c:plates/nickel_superalloy"
+    },
+    "X": {
+      "item": "spacebreaker:eva_boots"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:thermal_boots",
+    "count": 1
+  }
+}
