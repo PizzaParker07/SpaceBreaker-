@@ -84,6 +84,22 @@ public final class AstroTransferModel implements TransferModel {
         return Double.isFinite(v) && v >= 0 ? OptionalDouble.of(v) : OptionalDouble.empty();
     }
 
+    /**
+     * Real Δv to climb from a surface to its low orbit for a rocket lifting off with this thrust-to-weight
+     * ratio: a sluggish rocket loses more to gravity, a punchy one less (clamped to 1.05–4).
+     */
+    public OptionalDouble ascent(Location from, double twr) {
+        try {
+            var body = sys.get(from.body().toString());
+            if (body.isEmpty() || from.orbit()) {
+                return OptionalDouble.empty();
+            }
+            return finite(TransferPlanner.ascent(body.get(), Math.max(1.05, Math.min(4.0, twr))));
+        } catch (RuntimeException e) {
+            return OptionalDouble.empty();
+        }
+    }
+
     /** Real coast time of a transfer in seconds, if known. */
     public OptionalDouble transferSeconds(Location from, Location to) {
         deltaV(from, to);

@@ -201,27 +201,69 @@ public final class TransitView {
     }
 
     /**
-     * A planet too big to draw from its disc picture: a smooth round body, darker towards the bottom, with a
-     * glowing rim of air where it has some. Only the rows on screen are drawn.
+     * A planet too big to draw from its disc picture: its surface map wrapped row by row (rows near the limb
+     * are squeezed like on a sphere), clouds on Earth, darker towards the bottom, with a halo of air where it
+     * has some. Only the rows on screen are drawn.
+     *
+     * @param u0    longitude at the centre, as a share of the map width
+     * @param v0    map row (share of the height) at the top of the disc
+     * @param vSpan share of the map height the whole disc covers
      */
-    private static void bigPlanet(GuiGraphics g, int w, int h, float cx, float cy, float r, int ground, int air, float alpha) {
+    private static void bigPlanet(GuiGraphics g, int w, int h, float cx, float cy, float r, Location body, float u0, float v0,
+                                  float vSpan, float alpha) {
+        int air = airColour(body);
         if ((air & 0xFFFFFF) != 0) {
-            // a soft halo of air hugging the limb
             for (int i = 3; i >= 1; i--) {
                 fillCircle(g, w, h, cx, cy, r + i * 5, argb(alpha * 0.22F, lerpRgb(0.25F, air, 0xFFFFFF)));
             }
         }
+        fillCircle(g, w, h, cx, cy, r, argb(alpha, groundColour(body)));
+        mapRows(g, w, h, cx, cy, r, OrbitSkyEffects.surface(body.body()), u0, v0, vSpan, alpha);
+        if (body.isEarth()) {
+            mapRows(g, w, h, cx, cy, r, OrbitSkyEffects.EARTH_CLOUDS, u0 + 0.13F, v0, vSpan, alpha * 0.75F);
+        }
+        // night side towards the bottom, a little haze at the limb
         int y0 = Math.max(0, (int) (cy - r)), y1 = Math.min(h, (int) (cy + r) + 1);
         for (int y = y0; y < y1; y++) {
             float dy = y + 0.5F - cy;
             float half = (float) Math.sqrt(Math.max(0, r * r - dy * dy));
-            if (half <= 0) {
+            float depth = Mth.clamp((dy + r) / Math.min(2 * r, h * 1.2F), 0, 1);
+            int x0 = Math.max(0, (int) (cx - half)), x1 = Math.min(w, (int) (cx + half) + 1);
+            if (depth > 0.25F) {
+                g.fill(x0, y, x1, y + 1, argb(alpha * (depth - 0.25F) * 0.6F, 0x000000));
+            }
+            if ((air & 0xFFFFFF) != 0 && depth < 0.08F) {
+                g.fill(x0, y, x1, y + 1, argb(alpha * (0.08F - depth) * 4F, lerpRgb(0.4F, air, 0xFFFFFF)));
+            }
+        }
+    }
+
+    private static final int MAP_W = 4096, MAP_H = 2048;
+
+    private static void mapRows(GuiGraphics g, int w, int h, float cx, float cy, float r, ResourceLocation tex, float u0, float v0,
+                                float vSpan, float alpha) {
+        RenderSystem.enableBlend();
+        RenderSystem.setShaderColor(1F, 1F, 1F, Mth.clamp(alpha, 0, 1));
+        int y0 = Math.max(0, (int) (cy - r)), y1 = Math.min(h, (int) (cy + r) + 1);
+        for (int y = y0; y < y1; y++) {
+            float dy = y + 0.5F - cy;
+            float s = Mth.clamp(dy / r, -1, 1);
+            float half = (float) Math.sqrt(Math.max(0, r * r - dy * dy));
+            if (half < 1) {
                 continue;
             }
-            float depth = Mth.clamp((dy + r) / Math.min(2 * r, h * 1.2F), 0, 1); // 0 at the limb, 1 deep below
-            int col = lerpRgb(depth * 0.55F, lerpRgb(0.25F, ground, 0xFFFFFF), lerpRgb(0.45F, ground, 0x000000));
-            g.fill(Math.max(0, (int) (cx - half)), y, Math.min(w, (int) (cx + half) + 1), y + 1, argb(alpha, col));
+            // latitude from the sphere, so rows bunch up towards the limb
+            float lat = (float) ((Math.asin(s) + Math.PI / 2) / Math.PI);
+            int v = (int) ((v0 + lat * vSpan) * MAP_H) % MAP_H;
+            int x0 = Math.max(0, (int) (cx - half)), x1 = Math.min(w, (int) (cx + half) + 1);
+            // the visible chord covers half the globe's longitudes at the equator, less near the poles
+            float uSpan = 0.5F * MAP_W * (half / r);
+            float uLeft = u0 * MAP_W - uSpan / 2 + (x0 - (cx - half)) / (2 * half) * uSpan;
+            int uw = Math.max(1, Math.round(uSpan * (x1 - x0) / (2 * half)));
+            int u = Math.floorMod((int) uLeft, MAP_W - uw);
+            g.blit(tex, x0, y, x1 - x0, 1, u, v, uw, 1, MAP_W, MAP_H);
         }
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
     }
 
     private static void fillCircle(GuiGraphics g, int w, int h, float cx, float cy, float r, int colour) {
@@ -245,7 +287,7 @@ public final class TransitView {
             // the planet curves away below: a huge body whose rim bends more and sinks as the rocket climbs
             float r = Mth.lerp(p, w * 3.5F, w * 0.9F);
             float topEdge = Mth.lerp(p, h * 0.6F, h * 0.7F);
-            bigPlanet(g, w, h, w / 2F, topEdge + r, r, groundColour(from), air, alpha);
+            bigPlanet(g, w, h, w / 2F, topEdge + r, r, from, 0.32F + time * 0.004F, 0.18F, 0.7F, alpha);
         }
     }
 
@@ -292,7 +334,7 @@ public final class TransitView {
             disc(g, to.body(), w / 2F, cy, size, alpha * (1 - swap));
         }
         if (swap > 0) {
-            bigPlanet(g, w, h, w / 2F, cy, size / 2F, groundColour(to), airColour(to), alpha * swap);
+            bigPlanet(g, w, h, w / 2F, cy, size / 2F, to, 0.55F, 0.0F, 1.0F, alpha * swap);
         }
         if (to.atmosphere()) {
             int air = airColour(to);
