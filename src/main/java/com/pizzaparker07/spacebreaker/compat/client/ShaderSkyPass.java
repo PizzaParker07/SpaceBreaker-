@@ -37,6 +37,12 @@ import org.lwjgl.opengl.GL11;
  */
 public final class ShaderSkyPass {
     private static TextureTarget target;
+    private static boolean afterSkyStage;
+
+    /** True while AFTER_SKY is replayed into our off-screen sky (listeners may want to know). */
+    public static boolean replayingAfterSky() {
+        return afterSkyStage;
+    }
     private static net.minecraft.client.renderer.ShaderInstance composite;
 
     static void setCompositeShader(net.minecraft.client.renderer.ShaderInstance shader) {
@@ -121,6 +127,18 @@ public final class ShaderSkyPass {
         effects.renderSky(level, (int) level.getGameTime(), partialTick, new Matrix4f(modelViewMatrix), camera,
                 new Matrix4f(projection), false, () -> {
         });
+        // everything other code draws "right after the sky" (planet dots, ascent darkening...) belongs to the sky too:
+        // without this it would be painted over on our sky pixels
+        afterSkyStage = true;
+        try {
+            net.neoforged.neoforge.client.ClientHooks.dispatchRenderStage(
+                    net.neoforged.neoforge.client.event.RenderLevelStageEvent.Stage.AFTER_SKY, mc.levelRenderer, null,
+                    new Matrix4f(modelViewMatrix), new Matrix4f(projection), mc.levelRenderer.getTicks(), camera, mc.levelRenderer.getFrustum());
+        } finally {
+            afterSkyStage = false;
+        }
+        RenderSystem.depthMask(false);
+        RenderSystem.disableDepthTest();
 
         // 2) copy it onto the finished frame where nothing was drawn (depth still 1.0)
         main.bindWrite(true);
