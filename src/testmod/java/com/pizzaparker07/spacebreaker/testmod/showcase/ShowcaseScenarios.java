@@ -21,6 +21,7 @@ public final class ShowcaseScenarios {
         ALL.put("mercury", new MercuryScenario());
         ALL.put("inner_orbit", new InnerOrbitScenario());
         ALL.put("rocketry", new RocketryScenario());
+        ALL.put("compat", new CompatScenario());
     }
 
     public static ShowcaseScenario get(String name) {

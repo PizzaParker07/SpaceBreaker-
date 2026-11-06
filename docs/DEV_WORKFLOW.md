@@ -47,6 +47,7 @@ python3 tools/textures/generate.py && python3 tools/models/gen_assets.py
 LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s "-screen 0 1920x1080x24" ./gradlew runShowcase -Pscenario=<name>
 # with Sodium + Iris + shader pack: put jars in run-mods/, the pack in run-showcase/shaderpacks/,
 # iris.properties in run-showcase/config/, then add -PwithCompat=true -PshotPrefix=iris
+# -Pshots=<regex> takes only matching shots; renderer checks: -Pscenario=compat (see docs/COMPAT.md)
 ```
 Screenshots land in `run-showcase/screenshots/`. Copy the best ones (as compressed JPG, ≤ 400 KB each)
 to `docs/screenshots/<area>/` when a content pack is ready for review.
@@ -77,5 +78,6 @@ small, additive and explained in the commit message.
 | Suit & survival | `dev/suit` | `content/suit`, `client/suit`, `client/hud`, oxygen/temperature/radiation effects, gravity application, zero-g movement, jetpack, airlock, oxygen distributor |
 | Astrophysics & Solar System data | `dev/astro` | `core/astro` (pure Java physics library + tests), `data/spacebreaker/spacebreaker/celestial_body/*.json` |
 | Inner planets (Mars, Phobos, Deimos, Venus, Mercury) | `dev/inner` | `content/mars`, `content/venus`, `content/mercury`, `client/mars`, `client/venus`, `client/mercury`, their dimensions, terrain profiles, blocks, creatures and dungeons |
+| Outer Solar System (asteroid belt, Jupiter and Saturn moons) | `dev/outer` | `content/belt`, `content/jupiter`, `content/saturn`, `client/belt`, `client/jupiter`, `client/saturn`, their dimensions, terrain profiles, blocks, creatures and dungeons |
 | Shader & renderer compatibility | `dev/compat` | `compat/` (optional Iris/Sodium integration), shader-safe sky/celestial rendering helpers in `client/sky` and the orbit sky in `client/rocketry` (coordinate with their owners), docs/COMPAT.md |
 | Research, dungeons & guide | `dev/research` | `content/research`, `client/research`, `content/dungeons` (shared dungeon framework), `client/guide`, tech tree data, guide book, advancements |

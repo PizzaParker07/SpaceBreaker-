@@ -67,6 +67,7 @@ neoForge {
             gameDirectory = project.file('run-showcase')
             systemProperty 'spacebreaker.scenario', project.findProperty('scenario') ?: 'style_sample'
             systemProperty 'spacebreaker.shotPrefix', project.findProperty('shotPrefix') ?: 'vanilla'
+            systemProperty 'spacebreaker.shots', project.findProperty('shots') ?: ''
             programArguments.addAll '--width', '1920', '--height', '1080', '--username', 'PizzaParker07'
             jvmArguments.addAll '-Xmx3G'
         }
