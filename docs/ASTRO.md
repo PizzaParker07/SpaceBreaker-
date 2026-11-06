@@ -319,3 +319,95 @@ t.deltaV(); t.travelYears(); t.shipYears();   // 2·c·atanh β, d/β, with time
 A placeholder for the deep space drive: gate it behind the research tech `Interstellar.REQUIRED_TECH`
 (`spacebreaker:deep_space_drive`); for gameplay, `scaledTravelSeconds(ly, secondsPerLy)` gives a short
 scaled trip time.
+
+## Appendix: terrain profiles for the asteroids and outer moons
+
+Same format as the inner-planet appendix. Colours are sRGB suggestions for block ramps (dark → light);
+albedos are geometric (Bond in the body JSON). `TerrainParams` values come from `OuterTerrainTest`,
+which keeps their ranking real: Callisto ≥ Ganymede > Enceladus > Europa in crater density, Io none.
+
+### Ceres (dwarf planet, 940 km)
+| Quantity | Value |
+|---|---|
+| Relief | ≈ 15 km total (−7.3 to +7.4 km); Ahuna Mons, a 4 km high, 17 km wide cryovolcanic dome |
+| Craters | heavily cratered but few basins > 300 km (they relaxed); polygonal craters; D_t ≈ 10 km; Occator (92 km) with bright faculae |
+| Surface | ammoniated clays (phyllosilicates), magnesium and sodium carbonates, salts; water ice a few metres down and in shadowed polar craters |
+| Albedo / colours | 0.09; dark regolith ramp `#3E3C3A` `#5C5A57` `#77746F`, faculae `#E8E6E0`, salt crust `#CFCAC0` |
+| Game | dark grey cratered plains, rare bright salt patches in crater floors, a single tall dome; ice only under the surface and at the poles |
+
+### Vesta (asteroid, 525 km)
+| Quantity | Value |
+|---|---|
+| Relief | extreme for its size: ≈ 41 km total; Rheasilvia basin 505 km wide with a ≈ 22 km central peak |
+| Craters | saturated; D_t ≈ 30 km; equatorial troughs (Divalia Fossa 465 km long, 22 km wide, 5 km deep) |
+| Surface | basaltic howardite–eucrite–diogenite rock (pyroxene-rich), dark carbonaceous patches from impacts |
+| Albedo / colours | 0.42; ramp `#6E665E` `#9A9086` `#C8BFB2`, dark material `#4A4440`, bright fresh ejecta `#DDD5C8` |
+| Game | steep, rugged and bright; one giant basin with a central mountain; parallel trough grooves |
+
+### Io
+| Quantity | Value |
+|---|---|
+| Relief | non-volcanic mountains up to 17.5 km (Boösaule Montes), plateaus, calderas (paterae) up to 200 km |
+| Craters | no impact craters at all (resurfaced ≈ 1 cm per year) |
+| Volcanism | > 400 active volcanoes, lava lakes (Loki Patera, 200 km), plumes up to 400 km high; silicate lava at 1300–1600 K |
+| Surface | sulfur allotropes and SO₂ frost over silicate crust |
+| Albedo / colours | 0.63; sulfur ramp `#8C6A2E` `#D9C25A` `#EDE39A`, red short-chain sulfur `#B5552B`, SO₂ frost `#E8E2C8`, fresh black lava `#2A2622`, glowing lava `#FF8A2A` |
+| Game | colourful flat plains, scattered calderas with lava lakes, isolated tall mountains; no craters; extreme radiation (data: 36 Sv/day) |
+
+### Europa
+| Quantity | Value |
+|---|---|
+| Relief | very flat: mostly < 200 m, ridges 100–300 m high, rare features up to ≈ 1 km |
+| Craters | very few (≈ 40 larger than 10 km), surface 40–90 Myr old |
+| Features | double ridges and bands (lineae) crossing everywhere, chaos terrain (ice rafts in refrozen matrix), possible plumes |
+| Surface | water ice with hydrated salts and sulfuric acid; reddish-brown material along lineae and chaos |
+| Albedo / colours | 0.67; ice ramp `#C9CDD0` `#E6EBEF` `#F4F6F8`, lineae `#A0603C` `#7A4A32`, chaos matrix `#B59A82` |
+| Game | smooth white plains criss-crossed by brown ridge lines, patches of jumbled ice blocks; ocean under ≈ 15–25 km of ice |
+
+### Ganymede
+| Quantity | Value |
+|---|---|
+| Relief | modest; grooved terrain with parallel ridges and troughs a few hundred metres high, spaced 3–10 km |
+| Craters | dark terrain (≈ 1/3, old) heavily cratered; bright terrain (≈ 2/3) younger with fewer craters; palimpsests (flat crater ghosts) |
+| Surface | water ice and silicates; thin polar frost caps above ≈ 40° latitude |
+| Albedo / colours | 0.43; dark terrain `#4E463E` `#6E6458`, bright grooved terrain `#9C9488` `#BDB6AA`, polar frost `#DCDDDC` |
+| Game | two terrain archetypes (dark cratered / bright grooved) split by noise; frosted poles |
+
+### Callisto
+| Quantity | Value |
+|---|---|
+| Relief | low; ring structures of multi-ring basins (Valhalla, 3800 km rings), knobs and ice spires a few hundred metres high |
+| Craters | the most heavily cratered body known (saturated); few small craters (eroded by sublimation) |
+| Surface | ice mixed with dark dust that covers most of it; bright ice on crater rims and slopes |
+| Albedo / colours | 0.22; dust `#3F3A33` `#5F574C` `#7A7166`, exposed ice `#B8B3A8` `#D6D3CC` |
+| Game | dark, smooth-ish crater fields, bright crater rims, very old and quiet; low radiation (safest Jovian moon) |
+
+### Titan
+| Quantity | Value |
+|---|---|
+| Relief | gentle: mostly within ±1 km, mountains up to 3.3 km (Mithrim Montes), labyrinth terrain |
+| Craters | very few (≈ 90 known), eroded and buried |
+| Features | equatorial longitudinal dunes of organic sand (≈ 100 m high, 1–2 km apart, hundreds of km long); river channels; north polar seas (Kraken Mare ≈ 400 000 km², Ligeia Mare ≈ 126 000 km²) and southern lakes; lakes and seas cover ≈ 1.5–2 % of the surface |
+| Surface | water-ice bedrock under organic sediments (tholins); "pebbles" of ice |
+| Albedo / colours | 0.22; under the haze the ground looks `#5A3E24` `#8A5A2E` `#A8743C`, dune sand `#3A2A1E` `#4E3A2A`, ice pebbles `#9C8A70`, lake liquid `#1E1A14` |
+| Haze (body JSON) | `colour` `#b07a3e`, `high_colour` `#d9a35a`, `visibility_blocks` 160 — thinner near the surface than Venus but the sky is a uniform orange |
+| Game | orange-lit dunes at the equator, rolling plains and channels, methane lakes towards the poles; 1.47 bar, −179 °C, no suit pressure needed but full thermal protection |
+
+**Methane cycle (Titan).** Surface temperature 94 K, pressure 146.7 kPa; methane is 4.9 % of the air
+near the surface with ≈ 45 % relative humidity (Huygens). Clouds form at 20–40 km; rain is rare but
+heavy (seasonal storms, one year on Titan = 29.5 Earth years), drops 1–10 mm fall slowly (≈ 1.6 m/s).
+Liquids: methane (melts 90.7 K, boils 111.7 K at 1 atm, ≈ 118 K at Titan's surface pressure), ethane
+(melts 90.4 K) and dissolved nitrogen; Ligeia Mare is roughly 70 % methane, 15 % nitrogen, 15 % ethane.
+Evaporation from the seas is slow; most rain falls near the poles in summer. Game suggestion: methane
+rain weather that fills low basins near the poles, liquid that does not freeze at surface temperature,
+and no water anywhere except as rock (ice).
+
+### Enceladus
+| Quantity | Value |
+|---|---|
+| Relief | ridged plains; south polar "tiger stripes": 4 parallel fractures ≈ 130 km long, 2 km wide, 500 m deep with 100 m flanking ridges |
+| Craters | north cratered (softened craters), south polar region almost crater-free (< 1 Myr) |
+| Activity | plumes of water vapour and ice grains from the tiger stripes (≈ 200 kg/s) feeding Saturn's E ring; global ocean |
+| Surface | nearly pure, fresh water ice — the most reflective surface in the Solar System |
+| Albedo / colours | 1.38 (geometric), Bond 0.81; ice ramp `#D9DEE2` `#EEF1F4` `#FAFBFC`, tiger-stripe blue `#8AA8C0`, plume deposits `#F6F8FA` |
+| Game | blinding white plains, cratered north, four long blue-tinted fissures near the south pole venting ice-crystal plumes |

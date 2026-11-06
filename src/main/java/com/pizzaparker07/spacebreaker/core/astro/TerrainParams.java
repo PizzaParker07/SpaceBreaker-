@@ -29,7 +29,7 @@ import java.util.Optional;
  * @param dunes               add dune fields
  * @param volcanoes           add shield volcanoes
  * @param valleys             add river valleys
- * @param iceCap              add polar ice caps
+ * @param iceCap              add polar ice caps (seasonal caps need air and a climate above 150 K)
  * @param palette             colour family for block choice
  */
 public record TerrainParams(int baseHeight, double reliefAmplitude, double reliefScale, double detailAmplitude,
@@ -47,6 +47,11 @@ public record TerrainParams(int baseHeight, double reliefAmplitude, double relie
         double p = body.surfacePressureKpa();
         double lowG = clamp(Math.pow(MOON_G / g, 0.2), 0.7, 1.6);
         double amp = (18 + 18 * h.roughness() + 10 * h.volcanism()) * lowG;
+        boolean icy = h.colorFamily() == TerrainHints.ColorFamily.PALE_ICE || h.colorFamily() == TerrainHints.ColorFamily.DIRTY_ICE;
+        if (icy && h.tidalHeating() > 0.01) {
+            // a warm, flexing ice shell relaxes its relief (Europa is flatter than the Moon)
+            amp *= 1 - 0.8 * Math.min(1, Math.log10(h.tidalHeating() / 0.01) / Math.log10(TerrainHints.IO_FLUX / 0.01));
+        }
         double lowThreshold = clamp(0.3 - 0.35 * h.volcanism() - 0.5 * h.liquidCoverage(), -0.3, 0.9);
         double lowDepth = 10 + 10 * h.volcanism() + 6 * h.liquidCoverage();
         double density = h.craterDensity() <= 0 ? 0.05
@@ -75,7 +80,8 @@ public record TerrainParams(int baseHeight, double reliefAmplitude, double relie
                 h.roughness() * 1.2, lowThreshold, lowDepth, density, clamp(1 - 0.7 * h.volcanism(), 0.2, 1),
                 depthRatio, rimRatio, complexRadius, fresh, polarLat, iceLat, h.glaciation() > 0.9 ? 8 : 4, sea,
                 h.liquid(), h.dunes(), h.volcanism() > 0.25, h.liquid() == TerrainHints.Liquid.WATER
-                || h.liquid() == TerrainHints.Liquid.METHANE, air && h.glaciation() > 0.01 && h.glaciation() <= 0.9,
+                || h.liquid() == TerrainHints.Liquid.METHANE,
+                air && h.glaciation() > 0.01 && h.glaciation() <= 0.9 && body.meanTempK() > 150,
                 h.colorFamily());
     }
 

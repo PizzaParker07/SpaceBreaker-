@@ -124,7 +124,8 @@ public record TerrainHints(ColorFamily colorFamily, int baseColor, int accentCol
         // ice cover
         double glaciation;
         if (icy && t < 273.15) {
-            glaciation = 1 - coverage;
+            // bright ice worlds show their ice; dark ones (Callisto, Ceres, Titan) are covered by dust or sediment
+            glaciation = (b.albedo() > 0.3 ? 1 : 0.15) * (1 - coverage);
         } else if (liquid == Liquid.LAVA) {
             glaciation = 0;
         } else if (b.hasAtmosphere()) {
@@ -136,6 +137,12 @@ public record TerrainHints(ColorFamily colorFamily, int baseColor, int accentCol
         // craters: an old airless surface keeps them all; air, liquids and lava erase them
         double atm = 1 / (1 + Math.pow(p / 2.0, 1.2));
         double crater = 1e-2 * atm * Math.pow(1 - volcanism, 2) * (1 - coverage);
+        if (icy) {
+            crater *= Math.exp(-12 * tidalV); // tidally heated ice shells resurface fast (Europa ≈ 60 Myr)
+        }
+        if (liquid != Liquid.NONE && liquid != Liquid.LAVA) {
+            crater *= 0.05; // rain and rivers wear craters down (Earth, Titan)
+        }
         if (p > 1000) {
             crater = Math.min(crater, 2e-6);
         }
