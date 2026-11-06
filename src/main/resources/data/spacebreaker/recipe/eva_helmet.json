@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "PYP",
+    "WGW"
+  ],
+  "key": {
+    "Y": {
+      "tag": "c:ingots/gold"
+    },
+    "W": {
+      "item": "minecraft:white_wool"
+    },
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "P": {
+      "tag": "c:plates/aluminum"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:eva_helmet",
+    "count": 1
+  }
+}

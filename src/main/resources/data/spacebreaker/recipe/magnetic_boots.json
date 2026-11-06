@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    " E ",
+    "IRI"
+  ],
+  "key": {
+    "E": {
+      "item": "spacebreaker:eva_boots"
+    },
+    "I": {
+      "tag": "c:ingots/iron"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:magnetic_boots",
+    "count": 1
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "facing": "north",
+        "half": "lower"
+      },
+      "apply": {
+        "model": "spacebreaker:block/airlock_door_frame_lower"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "half": "upper"
+      },
+      "apply": {
+        "model": "spacebreaker:block/airlock_door_frame_upper"
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "half": "lower"
+      },
+      "apply": {
+        "model": "spacebreaker:block/airlock_door_frame_lower",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "half": "upper"
+      },
+      "apply": {
+        "model": "spacebreaker:block/airlock_door_frame_upper",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "half": "lower"
+      },
+      "apply": {
+        "model": "spacebreaker:block/airlock_door_frame_lower"
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "half": "upper"
+      },
+      "apply": {
+        "model": "spacebreaker:block/airlock_door_frame_upper"
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "half": "lower"
+      },
+      "apply": {
+        "model": "spacebreaker:block/airlock_door_frame_lower",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "half": "upper"
+      },
+      "apply": {
+        "model": "spacebreaker:block/airlock_door_frame_upper",
+        "y": 90
+      }
+    }
+  ]
+}

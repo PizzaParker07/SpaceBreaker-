@@ -31,16 +31,22 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | ⬜ | Kırıcı, Elektrik Ark Fırını, Pres, Petrol Pompası (çok bloklu), Rafineri (çok bloklu) | |
 | ⬜ | Elektroliz Ünitesi, Kriyojenik Sıvılaştırıcı, tanklar, sıvı/gaz borusu | |
 | ⬜ | Parça Üretim Tezgâhı, Roket Montaj Tezgâhı (3B önizleme, Δv, itki/ağırlık) | |
-| ⬜ | Oksijen Dolum İstasyonu, Oksijen Dağıtıcı, Hava Kilidi | |
+| 🎨 | Oksijen Dolum İstasyonu | tüpü beşiğe koy; solunabilir havadan FE ile doldurur (Manevra Ünitesi gazı da) |
+| 🎨 | Oksijen Dağıtıcı | kapalı odayı tick'lere yayılmış taşkın dolumla bulur (en çok 4096 blok), tüpten oksijen verir; blok değişince yeniden kontrol |
+| 🎨 | Hava Kilidi Kapısı | 2 blok, kayar kanatlar (animasyonlu); kapalıyken hava geçirmez; el ya da kızıltaşla açılır |
 
 ### Paket ③ Roket, rampa, giysi ve Ay
 | Durum | İçerik | Not |
 |---|---|---|
 | ⬜ | Fırlatma tesisi: rampa, alev kanalı, servis kulesi + erişim kolu, yakıt hattı, kontrol konsolu, uyarı ışığı | |
 | ⬜ | Roket parçaları: burun konisi, kapsül, ısı kalkanı, paraşüt, tanklar, deniz seviyesi + vakum motoru, kademe ayırıcı, ara kademe, kanatçıklar, iniş bacakları, manevra iticileri | |
-| 🎨 | EVA Kaskı | özel 3B model, saydam vizör, altın güneş vizörü (eğil + kullan), parlayan lambalar |
-| ⬜ | EVA giysisi gövde/pantolon/bot, manevra ünitesi, kask lambası, çevre sensörü, titanyum aletler, elektrikli matkap | |
-| 🎨 | Oksijen Tüpü | envanterde 2B, elde 3B; 5 dakikalık oksijen |
+| 🎨 | EVA Giysisi Mk1: Kask, Gövde, Pantolon, Bot | özel 3B modeller: yuvarlak kask, sarmal füme vizör, altın güneş vizörü (eğil + kullan), parlayan yan lambalar; göğüs kontrol kutusu, yaşam destek sırt çantası + oksijen şişeleri; mavi yatak halkaları; tabanlı botlar. Yalnızca dört parça birlikte sızdırmaz |
+| 🎨 | Manyetik EVA Botları | düşük/sıfır yerçekiminde zemine yapıştırır (eğilince bırakır) |
+| 🎨 | Manevra Ünitesi | gövdeye takılır; soğuk gazla uçuş (sıfır g'de 6 eksen, Ay'da havada kalma) |
+| 🎨 | Oksijen Tüpü (5 dk), Büyük Oksijen Tüpü (15 dk) | envanterde 2B, elde 3B; gövdenin sırt çantasına 2 tüp takılır |
+| 🎨 | Kask HUD'u | GUI katmanında (shader güvenli): O2, giysi, vücut ısısı, dış sıcaklık, radyasyon, basınç/g, uyarılar; ölçek/opaklık ayarı |
+| 🎨 | Hayatta kalma | boşlukta nefes tutma ve boğulma, yavaş değişen vücut ısısı (hipotermi/aşırı ısınma), radyasyon dozu, gerçek yerçekimi (zıplama ve düşme hasarı ölçekli) |
+| ⬜ | kask lambası, çevre sensörü, titanyum aletler, elektrikli matkap, Giysi Mk2+ | |
 | 🎨 | Ay Regoliti | **kalıcı ayak izi**, sol/sağ sırayla |
 | 🎨 | Mare Bazaltı, İlmenit Cevheri | |
 | ⬜ | Anortozit (+ türevler), Darbe Breşi, Turuncu Volkanik Cam Toprağı, Buzlu Regolit, Ay Buzu, Sinterlenmiş Regolit Tuğlası, Meteor Demiri | |

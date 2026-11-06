@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PT",
+    "IP",
+    "PT"
+  ],
+  "key": {
+    "I": {
+      "tag": "c:ingots/iron"
+    },
+    "T": {
+      "item": "minecraft:iron_trapdoor"
+    },
+    "P": {
+      "tag": "c:plates/aluminum"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:airlock_door",
+    "count": 1
+  }
+}

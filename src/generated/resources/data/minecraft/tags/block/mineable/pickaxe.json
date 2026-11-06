@@ -5,6 +5,9 @@
     "spacebreaker:raw_bauxite_block",
     "spacebreaker:mare_basalt",
     "spacebreaker:ilmenite_ore",
-    "spacebreaker:solar_panel"
+    "spacebreaker:solar_panel",
+    "spacebreaker:oxygen_filler",
+    "spacebreaker:oxygen_distributor",
+    "spacebreaker:airlock_door"
   ]
 }

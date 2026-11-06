@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PFP",
+    "QBQ",
+    "PUP"
+  ],
+  "key": {
+    "F": {
+      "item": "minecraft:iron_bars"
+    },
+    "Q": {
+      "item": "minecraft:copper_ingot"
+    },
+    "U": {
+      "item": "minecraft:bucket"
+    },
+    "B": {
+      "item": "minecraft:piston"
+    },
+    "P": {
+      "tag": "c:plates/aluminum"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:oxygen_distributor",
+    "count": 1
+  }
+}
