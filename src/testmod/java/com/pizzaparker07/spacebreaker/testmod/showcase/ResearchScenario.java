@@ -180,12 +180,12 @@ final class ResearchScenario implements ShowcaseScenario {
         };
     }
 
-    private static Runnable guideChapter(String chapter) {
+    private static Runnable guideContents() {
         return () -> {
             Minecraft.getInstance().getToasts().clear();
             GuideScreen screen = new GuideScreen();
             Minecraft.getInstance().setScreen(screen);
-            screen.showChapter(chapter);
+            screen.showContents();
         };
     }
 
@@ -194,7 +194,7 @@ final class ResearchScenario implements ShowcaseScenario {
             Minecraft.getInstance().getToasts().clear();
             GuideScreen screen = new GuideScreen();
             Minecraft.getInstance().setScreen(screen);
-            screen.showEntry(Spacebreaker.id(entry), spread);
+            screen.openChapter(Spacebreaker.id(entry), spread);
         };
     }
 
@@ -204,6 +204,19 @@ final class ResearchScenario implements ShowcaseScenario {
             GuideScreen screen = new GuideScreen();
             Minecraft.getInstance().setScreen(screen);
             screen.setSearch(text);
+        };
+    }
+
+    /** Switches the client to Turkish and reloads resources; the shot that runs it waits for the reload. */
+    private static Runnable turkish() {
+        return () -> {
+            Minecraft mc = Minecraft.getInstance();
+            mc.setScreen(null);
+            if (!"tr_tr".equals(mc.getLanguageManager().getSelected())) {
+                mc.getLanguageManager().setSelected("tr_tr");
+                mc.options.languageCode = "tr_tr";
+                mc.reloadResourcePacks();
+            }
         };
     }
 
@@ -234,12 +247,10 @@ final class ResearchScenario implements ShowcaseScenario {
             learnSome(p);
         }, tree("staging")));
         s.add(new Shot("06_research_tree_life", 6000, 0.5, g + 1.9, 4.2, 180F, 22F, false, fp, 40, null, tree("airlocks")));
-        s.add(new Shot("07_guide_index", 6000, 0.5, g + 1.9, 4.2, 180F, 22F, false, fp, 40, null, guideChapter("research")));
+        s.add(new Shot("07_guide_contents", 6000, 0.5, g + 1.9, 4.2, 180F, 22F, false, fp, 40, null, guideContents()));
         s.add(new Shot("08_guide_lab", 6000, 0.5, g + 1.9, 4.2, 180F, 22F, false, fp, 40, null, guideEntry("research_lab", 0)));
-        s.add(new Shot("09_guide_orbits", 6000, 0.5, g + 1.9, 4.2, 180F, 22F, false, fp, 40, null, guideEntry("orbits", 0)));
-        s.add(new Shot("09b_guide_rocket_parts", 6000, 0.5, g + 1.9, 4.2, 180F, 22F, false, fp, 40, null, guideEntry("rocket_parts", 0)));
-        s.add(new Shot("09c_guide_machines", 6000, 0.5, g + 1.9, 4.2, 180F, 22F, false, fp, 40, null, guideChapter("machines")));
-        s.add(new Shot("09d_guide_venus", 6000, 0.5, g + 1.9, 4.2, 180F, 22F, false, fp, 40, null, guideEntry("venus_world", 0)));
+        s.add(new Shot("09_guide_first_flight", 6000, 0.5, g + 1.9, 4.2, 180F, 22F, false, fp, 40, null, guideEntry("first_flight", 0)));
+        s.add(new Shot("09b_guide_launch_pad", 6000, 0.5, g + 1.9, 4.2, 180F, 22F, false, fp, 40, null, guideEntry("launch_pad", 0)));
         s.add(new Shot("10_guide_search", 6000, 0.5, g + 1.9, 4.2, 180F, 22F, false, fp, 40, null, guideSearch("moon")));
         double m = g + MOUND;
         s.add(new Shot("11_observatory_wide", 7000, 29.5, m + 11, 31.0, 180F, 22F, true, fp, 200, null, null));
@@ -249,6 +260,14 @@ final class ResearchScenario implements ShowcaseScenario {
         s.add(new Shot("15_observatory_dusk", 12600, 4.5, m + 5.5, 22.5, 225F, 8F, true, fp, 120, null, null));
         s.add(new Shot("16_hotbar", 6000, 0.5, g + 1.62, 4.5, 180F, 30F, false, fp, 40, ResearchScenario::hands, null));
         s.add(new Shot("17_creative_tab", 6000, 0.5, g + 1.62, 4.5, 180F, 30F, false, fp, 30, ResearchScenario::hands, ResearchScenario::researchTab));
+        // Turkish field guide (docs/screenshots/guide): contents, a machine with its recipe, first flight, the Moon, the launch pad.
+        s.add(new Shot("20_tr_switch", 6000, 0.5, g + 1.62, 4.5, 180F, 30F, false, fp, 600, null, turkish()));
+        s.add(new Shot("21_tr_contents", 6000, 0.5, g + 1.9, 4.2, 180F, 22F, false, fp, 40, null, guideContents()));
+        s.add(new Shot("22_tr_machine", 6000, 0.5, g + 1.9, 4.2, 180F, 22F, false, fp, 40, null, guideEntry("processing", 0)));
+        s.add(new Shot("23_tr_first_flight", 6000, 0.5, g + 1.9, 4.2, 180F, 22F, false, fp, 40, null, guideEntry("first_flight", 0)));
+        s.add(new Shot("24_tr_moon_life", 6000, 0.5, g + 1.9, 4.2, 180F, 22F, false, fp, 60, null, guideEntry("moon_life", 0)));
+        s.add(new Shot("25_tr_launch_pad", 6000, 0.5, g + 1.9, 4.2, 180F, 22F, false, fp, 60, null, guideEntry("launch_pad", 0)));
+        s.add(new Shot("26_tr_isru", 6000, 0.5, g + 1.9, 4.2, 180F, 22F, false, fp, 40, null, guideEntry("isru", 0)));
         return s;
     }
 }

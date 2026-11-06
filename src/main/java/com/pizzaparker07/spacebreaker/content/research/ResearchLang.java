@@ -92,20 +92,15 @@ final class ResearchLang {
         l.add("gui.spacebreaker.guide.search", "Search...", "Ara...");
         l.add("gui.spacebreaker.guide.results", "Search results", "Arama sonuçları");
         l.add("gui.spacebreaker.guide.none", "Nothing found", "Hiçbir şey bulunamadı");
-        l.add("gui.spacebreaker.guide.locked", "Learn %s to read this page", "Bu sayfayı okumak için %s öğren");
-        l.add("gui.spacebreaker.guide.back", "Back to contents", "İçindekilere dön");
-        l.add("guide.spacebreaker.chapter.getting_started", "Getting Started", "Başlarken");
-        l.add("guide.spacebreaker.chapter.materials", "Earth Materials", "Dünya Malzemeleri");
-        l.add("guide.spacebreaker.chapter.machines", "Energy & Machines", "Enerji ve Makineler");
-        l.add("guide.spacebreaker.chapter.research", "Research", "Araştırma");
-        l.add("guide.spacebreaker.chapter.dungeons", "Ruins & Dungeons", "Harabeler ve Zindanlar");
-        l.add("guide.spacebreaker.chapter.survival", "Space Survival", "Uzayda Hayatta Kalma");
-        l.add("guide.spacebreaker.chapter.rocketry", "Rocketry", "Roketçilik");
-        l.add("guide.spacebreaker.chapter.moon", "The Moon", "Ay");
-        l.add("guide.spacebreaker.chapter.mars", "Mars", "Mars");
-        l.add("guide.spacebreaker.chapter.venus", "Venus", "Venüs");
-        l.add("guide.spacebreaker.chapter.mercury", "Mercury", "Merkür");
-        l.add("guide.spacebreaker.chapter.physics", "Flight Physics", "Uçuş Fiziği");
+        l.add("gui.spacebreaker.guide.back", "Back", "Geri");
+        l.add("gui.spacebreaker.guide.forward", "Forward", "İleri");
+        l.add("gui.spacebreaker.guide.contents", "Contents", "İçindekiler");
+        l.add("gui.spacebreaker.guide.intro", "Click a chapter to open it. Arrows or the mouse wheel turn pages; the ribbons on the right jump between topics.",
+                "Açmak için bir bölüme tıkla. Sayfaları oklarla ya da fare tekerleğiyle çevir; sağdaki şeritler konular arasında atlar.");
+        l.add("gui.spacebreaker.guide.research_needed", "Research needed: %s", "Gereken araştırma: %s");
+        l.add("gui.spacebreaker.guide.recipe_info", "%s FE/t · %s s", "%s FE/t · %s sn");
+        l.add("gui.spacebreaker.guide.recipe_time", "%s s", "%s sn");
+        l.add("gui.spacebreaker.guide.no_recipe", "Recipe %s not found", "%s tarifi bulunamadı");
         // messages
         l.add("message.spacebreaker.tech_learned", "You learned a new technology: %s", "Yeni bir teknoloji öğrendin: %s");
         l.add("message.spacebreaker.requires_tech", "Requires technology: %s", "Gereken teknoloji: %s");

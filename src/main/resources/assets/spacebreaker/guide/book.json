@@ -1,0 +1,41 @@
+{
+  "categories": [
+    {"id": "start", "color": "#4A9A3A", "icon": "spacebreaker:guide_book",
+     "chapters": ["welcome", "progression", "controls"]},
+    {"id": "research", "color": "#7C6BD6", "icon": "spacebreaker:research_lab",
+     "chapters": ["research_basics", "research_lab", "research_tree"]},
+    {"id": "materials", "color": "#B5552E", "icon": "spacebreaker:raw_bauxite",
+     "chapters": ["ores", "metals_alloys", "components", "crude_oil"]},
+    {"id": "machines", "color": "#C9A13B", "icon": "spacebreaker:press",
+     "chapters": ["power", "processing", "fabricator", "oil_refining", "cryogenics", "isru"]},
+    {"id": "survival", "color": "#3FA6B8", "icon": "spacebreaker:eva_helmet",
+     "chapters": ["eva_suit", "oxygen", "base_air", "eva_mobility", "hazards"]},
+    {"id": "rocketry", "color": "#D8673A", "icon": "spacebreaker:rocket",
+     "chapters": ["rocket_parts", "rocket_assembler", "launch_pad", "first_flight", "navigation"]},
+    {"id": "worlds", "color": "#8F9AA6", "icon": "spacebreaker:lunar_regolith",
+     "chapters": ["moon", "moon_life", "mars", "mars_resources", "mars_life", "mars_moons", "venus", "venus_clouds", "mercury"]},
+    {"id": "ruins", "color": "#5E8A3A", "icon": "spacebreaker:tech_disk",
+     "chapters": ["observatory", "moon_ruins", "planet_ruins"]},
+    {"id": "science", "color": "#2E6FB8", "icon": "minecraft:clock",
+     "chapters": ["rocket_equation", "orbits", "inner_orbits"]}
+  ],
+  "machines": {
+    "spacebreaker:crushing": "spacebreaker:crusher",
+    "spacebreaker:arc_smelting": "spacebreaker:arc_furnace",
+    "spacebreaker:pressing": "spacebreaker:press",
+    "spacebreaker:fabricating": "spacebreaker:fabricator",
+    "spacebreaker:refining": "spacebreaker:refinery",
+    "spacebreaker:electrolysis": "spacebreaker:electrolyzer",
+    "spacebreaker:liquefaction": "spacebreaker:cryogenic_liquefier",
+    "spacebreaker:sabatier": "spacebreaker:sabatier_reactor",
+    "spacebreaker:atmosphere_processing": "spacebreaker:atmosphere_processor",
+    "spacebreaker:regolith_heating": "spacebreaker:regolith_heater",
+    "spacebreaker:ice_melting": "spacebreaker:ice_melter",
+    "minecraft:smelting": "minecraft:furnace",
+    "minecraft:blasting": "minecraft:blast_furnace",
+    "minecraft:smoking": "minecraft:smoker",
+    "minecraft:campfire_cooking": "minecraft:campfire",
+    "minecraft:stonecutting": "minecraft:stonecutter",
+    "minecraft:smithing": "minecraft:smithing_table"
+  }
+}

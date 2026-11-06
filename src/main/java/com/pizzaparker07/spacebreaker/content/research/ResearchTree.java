@@ -152,15 +152,15 @@ public final class ResearchTree {
         t("methane_engines", PROPULSION, 2).req("vacuum_engines", "sabatier_process").icon("minecraft:fire_charge")
                 .samples(MARS)
                 .en("Methane Engines", "Clean-burning methalox engines, fuelled by propellant made on Mars itself.")
-                .tr("Metan Motorları", "Temiz yanan metan-oksijen motorları; yakıtı Mars'ın kendisinde üretilir.");
+                .tr("Metan Motorları", "Temiz yanan metan-oksijen motorları; yakıtını Mars'ta üretebilirsin.");
         t("hydrogen_engines", PROPULSION, 2).req("vacuum_engines", "cryogenics").icon("minecraft:snowball")
                 
                 .en("Hydrogen Engines", "Liquid hydrogen gives the highest chemical specific impulse, if you can keep it cold.")
-                .tr("Hidrojen Motorları", "Sıvı hidrojen en yüksek kimyasal özgül itkiyi verir; yeter ki soğuk tutabil.");
+                .tr("Hidrojen Motorları", "Sıvı hidrojen en yüksek kimyasal özgül itkiyi verir; yeter ki onu soğuk tutabilesin.");
         t("ion_propulsion", PROPULSION, 2).req("hydrogen_engines", "advanced_electronics").icon("minecraft:amethyst_shard")
                 
                 .en("Ion Propulsion", "A whisper of thrust for months on end: electric fields accelerate xenon ions to huge speeds.")
-                .tr("İyon İtkisi", "Aylarca süren fısıltı kadar itki: elektrik alanları ksenon iyonlarını büyük hızlara çıkarır.");
+                .tr("İyon İtkisi", "Fısıltı kadar zayıf ama aylarca süren itki: elektrik alanı ksenon iyonlarını çok büyük hızlara çıkarır.");
         t("nuclear_thermal_propulsion", PROPULSION, 3).req("hydrogen_engines", "nuclear_fission").icon("minecraft:glowstone_dust")
                 
                 .en("Nuclear Thermal Propulsion", "A reactor heats hydrogen directly: twice the efficiency of any chemical engine.")
@@ -168,7 +168,7 @@ public final class ResearchTree {
         t("fusion_drive", PROPULSION, 3).req("nuclear_thermal_propulsion", "fusion_power").icon("minecraft:nether_star")
                 
                 .en("Fusion Drive", "Magnetically confined fusion exhaust: the road to the outer planets in weeks, not years.")
-                .tr("Füzyon Sürücüsü", "Manyetik hapsedilmiş füzyon egzozu: dış gezegenlere yıllarda değil haftalarda.");
+                .tr("Füzyon Sürücüsü", "Manyetik alanla hapsedilmiş füzyon egzozu: dış gezegenlere yıllarda değil, haftalarda.");
 
         // ============================================================ LIFE SUPPORT
         t("pressure_suits", LIFE_SUPPORT, 1).icon("spacebreaker:eva_helmet").unlocks("eva_helmet", "eva_chestplate", "eva_leggings", "eva_boots").samples(EARTH)
@@ -245,14 +245,14 @@ public final class ResearchTree {
         t("cryogenics", INDUSTRY, 2).req("electrolysis").icon("spacebreaker:cryogenic_tank").unlocks("cryogenic_liquefier", "cryogenic_canister")
                 .en("Cryogenics", "Liquefy oxygen at −183 °C and hydrogen at −253 °C, and store them without boil-off.")
                 .tr("Kriyojenik", "Oksijeni −183 °C'de, hidrojeni −253 °C'de sıvılaştır ve buharlaşmadan sakla.");
-        t("sabatier_process", INDUSTRY, 2).req("electrolysis").icon("minecraft:brewing_stand")
+        t("sabatier_process", INDUSTRY, 2).req("electrolysis").icon("spacebreaker:sabatier_reactor").unlocks("sabatier_reactor", "atmosphere_processor")
                 .samples(MARS)
                 .en("Sabatier Process", "Carbon dioxide plus hydrogen over a nickel catalyst gives methane and water.")
                 .tr("Sabatier Süreci", "Nikel katalizör üzerinde karbondioksit ve hidrojen: metan ve su.");
-        t("isru", INDUSTRY, 2).req("electrolysis", "lunar_surveying").icon("spacebreaker:raw_ilmenite")
+        t("isru", INDUSTRY, 2).req("electrolysis", "lunar_surveying").icon("spacebreaker:regolith_heater").unlocks("regolith_heater", "ice_melter")
                 .samples(MOON)
                 .en("In-Situ Resources", "Live off the land: oxygen from ilmenite, water from polar ice.")
-                .tr("Yerinde Kaynak Kullanımı", "Bulunduğun yerden geçin: ilmenitten oksijen, kutup buzundan su.");
+                .tr("Yerinde Kaynak Kullanımı", "Ne gerekiyorsa indiğin yerde üret: ilmenitten oksijen, kutup buzundan su.");
         t("advanced_electronics", INDUSTRY, 2).req("electronics").icon("spacebreaker:advanced_circuit").unlocks("advanced_circuit", "silicon_wafer", "solar_cell")
                 .samples(METEORITE)
                 .en("Advanced Electronics", "Radiation-hardened processors and silicon wafers grown in clean rooms.")
@@ -272,7 +272,7 @@ public final class ResearchTree {
         t("orbital_mechanics", ASTRONOMY, 1).req("observational_astronomy", "basic_rocketry").icon("minecraft:clock")
                 .samples(SUBORBITAL)
                 .en("Orbital Mechanics", "Orbit is falling and missing the ground: about 7.8 km/s sideways at low altitude.")
-                .tr("Yörünge Mekaniği", "Yörünge, düşüp yere ıskalamaktır: alçak irtifada yana doğru yaklaşık 7,8 km/s.");
+                .tr("Yörünge Mekaniği", "Yörüngede olmak, düşerken yeri ıskalamaktır: alçak irtifada yana doğru yaklaşık 7,8 km/s.");
         t("radio_communication", ASTRONOMY, 1).req("observational_astronomy", "electronics").icon("minecraft:lightning_rod")
                 
                 .en("Radio Communication", "Antennas and transmitters to talk to spacecraft beyond the horizon.")
@@ -296,7 +296,7 @@ public final class ResearchTree {
         t("gravity_assists", ASTRONOMY, 3).req("interplanetary_transfers", "space_probes").icon("minecraft:heart_of_the_sea")
                 .samples(CALLISTO)
                 .en("Gravity Assists", "Steal a little of a planet's orbital speed by flying close behind it.")
-                .tr("Kütleçekim Yardımı", "Bir gezegenin hemen arkasından geçerek yörünge hızından biraz çal.");
+                .tr("Kütleçekim Yardımı", "Bir gezegenin hemen arkasından geç ve onun yörünge hızından biraz kap.");
         t("deep_space_network", ASTRONOMY, 3).req("space_probes", "nuclear_fission").icon("minecraft:conduit")
                 
                 .en("Deep Space Network", "Giant dishes that can hear a probe's faint signal from beyond Saturn.")
@@ -335,7 +335,7 @@ public final class ResearchTree {
         // ============================================================ EXPLORATION
         t("field_geology", EXPLORATION, 1).icon("minecraft:brush").unlocks("sample_kit").samples(EARTH)
                 .en("Field Geology", "Read rocks like a book: collect, label and analyse samples from every world.")
-                .tr("Saha Jeolojisi", "Kayaları kitap gibi oku: her dünyadan örnek topla, etiketle ve incele.");
+                .tr("Saha Jeolojisi", "Kayaları kitap gibi oku: her dünyadan numune topla, etiketle ve incele.");
         t("lunar_surveying", EXPLORATION, 1).req("field_geology", "landing_systems").icon("spacebreaker:mare_basalt")
                 .samples(MOON)
                 .en("Lunar Surveying", "Map the maria and highlands; find ilmenite, ice and the safest landing sites.")

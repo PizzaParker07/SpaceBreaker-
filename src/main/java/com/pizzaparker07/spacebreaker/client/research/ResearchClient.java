@@ -2,7 +2,7 @@ package com.pizzaparker07.spacebreaker.client.research;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.pizzaparker07.spacebreaker.Spacebreaker;
-import com.pizzaparker07.spacebreaker.client.guide.GuideData;
+import com.pizzaparker07.spacebreaker.client.guide.GuideBook;
 import com.pizzaparker07.spacebreaker.client.guide.GuideScreen;
 import com.pizzaparker07.spacebreaker.content.research.GuideBookItem;
 import com.pizzaparker07.spacebreaker.content.research.ResearchModule;
@@ -44,7 +44,7 @@ public final class ResearchClient {
 
     @SubscribeEvent
     static void reloadListeners(RegisterClientReloadListenersEvent event) {
-        event.registerReloadListener(GuideData.INSTANCE);
+        event.registerReloadListener(GuideBook.INSTANCE);
     }
 
     @SubscribeEvent

@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-06T19:06:51.52131116	spacebreaker tech tree
+// 1.21.1	2026-11-06T20:14:31.574421569	spacebreaker tech tree
 eb99e6fc2778efcc16dc23f020327813f7f85164 data/spacebreaker/spacebreaker/tech/advanced_electronics.json
 8e5f0892a5769469c149ba1b0ef8454962783ce0 data/spacebreaker/spacebreaker/tech/airlocks.json
 537f359ae0acefa3a0666d917ea3d66c22a9f910 data/spacebreaker/spacebreaker/tech/aluminium_smelting.json
@@ -22,7 +22,7 @@ a55ec2f1720ea9a7d8f62c2ce2c7687a5240c6fc data/spacebreaker/spacebreaker/tech/hyd
 b33b62230c0431b44985df00686abe7779fa1f42 data/spacebreaker/spacebreaker/tech/icy_moons.json
 d3199b1a36d9e07146a86a74db131265442176c1 data/spacebreaker/spacebreaker/tech/interplanetary_transfers.json
 f9216b8baf8231ef67ebbec0f90fca77d00307dc data/spacebreaker/spacebreaker/tech/ion_propulsion.json
-169e08ed0254d41c72a643d087df7c0ffdb0ecf2 data/spacebreaker/spacebreaker/tech/isru.json
+e9990a45ff839949b853ec902b1e45f5dd65f7fc data/spacebreaker/spacebreaker/tech/isru.json
 7b978ace522a5dd7fa2e9674ec0896cf85ebdc7f data/spacebreaker/spacebreaker/tech/landing_systems.json
 d67d817e179b3cffa02fc795c58d36ba9cd98494 data/spacebreaker/spacebreaker/tech/launch_infrastructure.json
 56ca47b542f71166a7de78a5606f51b233c253a7 data/spacebreaker/spacebreaker/tech/liquid_fuel_engines.json
@@ -46,7 +46,7 @@ cc6e7034e9e32e075ae0b353c20504353a424d82 data/spacebreaker/spacebreaker/tech/pre
 ab9f451d50bb79e63c4f1a92e65ab3f15d5976b0 data/spacebreaker/spacebreaker/tech/radio_communication.json
 8ff3ec7f5fc7af62895a0a362f35406555dba46d data/spacebreaker/spacebreaker/tech/regolith_sintering.json
 fce12b915cd75309725c7c2d25da711e03acd06f data/spacebreaker/spacebreaker/tech/rovers.json
-f5fdd6c3b151a60db31bbe8982e579d4b68240f3 data/spacebreaker/spacebreaker/tech/sabatier_process.json
+b518966fa219e2d1064195fd08d0fe6113b7a96d data/spacebreaker/spacebreaker/tech/sabatier_process.json
 3bfc5426c93fe3c85a81a70c72cff0bf5fc9ae2a data/spacebreaker/spacebreaker/tech/satellites.json
 cd6bf187f1d9e1d4fc8064d956249df2ec5fb2b9 data/spacebreaker/spacebreaker/tech/solar_power.json
 c005c5f288dc81501843bf20586a75bf8642de88 data/spacebreaker/spacebreaker/tech/solar_shielding.json

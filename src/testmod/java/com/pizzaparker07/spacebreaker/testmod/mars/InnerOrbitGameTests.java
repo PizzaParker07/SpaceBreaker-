@@ -1,9 +1,7 @@
 package com.pizzaparker07.spacebreaker.testmod.mars;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.pizzaparker07.spacebreaker.Spacebreaker;
+import com.pizzaparker07.spacebreaker.client.guide.GuideMarkdown;
 import com.pizzaparker07.spacebreaker.core.body.Bodies;
 import com.pizzaparker07.spacebreaker.core.body.CelestialBody;
 import com.pizzaparker07.spacebreaker.core.tech.Tech;
@@ -18,7 +16,6 @@ import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
 @GameTestHolder(Spacebreaker.MOD_ID)
@@ -47,22 +44,15 @@ public final class InnerOrbitGameTests {
         var techs = helper.getLevel().registryAccess().registryOrThrow(Tech.REGISTRY);
         for (String lang : new String[]{"en_us", "tr_tr"}) {
             for (String name : GUIDE) {
-                String path = "/assets/spacebreaker/guide/" + lang + "/" + name + ".json";
+                String path = "/assets/spacebreaker/guide/" + lang + "/" + name + ".md";
                 try (InputStream in = Spacebreaker.class.getResourceAsStream(path)) {
                     helper.assertTrue(in != null, "missing guide page " + path);
-                    JsonObject o = JsonParser.parseReader(new InputStreamReader(in, StandardCharsets.UTF_8)).getAsJsonObject();
-                    helper.assertTrue(!o.get("chapter").getAsString().isEmpty(), name + " chapter");
-                    ResourceLocation tech = ResourceLocation.parse(o.get("requires_tech").getAsString());
+                    GuideMarkdown.Chapter c = GuideMarkdown.parse(Spacebreaker.id(name), new String(in.readAllBytes(), StandardCharsets.UTF_8));
+                    ResourceLocation tech = c.research().orElseThrow(() -> new AssertionError(name + " names no research"));
                     helper.assertTrue(techs.containsKey(tech), name + " requires unknown tech " + tech);
-                    helper.assertTrue(BuiltInRegistries.ITEM.containsKey(ResourceLocation.parse(o.get("icon").getAsString())), name + " icon");
-                    for (JsonElement p : o.getAsJsonArray("pages")) {
-                        JsonObject page = p.getAsJsonObject();
-                        if (page.has("items")) {
-                            for (JsonElement i : page.getAsJsonArray("items")) {
-                                helper.assertTrue(BuiltInRegistries.ITEM.containsKey(ResourceLocation.parse(i.getAsString())),
-                                        name + " shows unknown item " + i.getAsString());
-                            }
-                        }
+                    helper.assertTrue(BuiltInRegistries.ITEM.containsKey(c.icon()), name + " icon");
+                    for (ResourceLocation i : c.refs().items()) {
+                        helper.assertTrue(BuiltInRegistries.ITEM.containsKey(i), name + " shows unknown item " + i);
                     }
                 } catch (java.io.IOException e) {
                     throw new AssertionError(e);

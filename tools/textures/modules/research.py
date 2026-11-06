@@ -657,8 +657,9 @@ def space_background() -> Canvas:
 # ----------------------------------------------------------------------------- guide book GUI
 
 def guide_book_gui() -> Image.Image:
-    """Two-page book, 300×188 inside a 512×256 sheet: deep blue leather, gold corners, cream pages."""
-    W, H = 300, 188
+    """Two-page book, 360×220 inside a 512×256 sheet: deep blue leather, gold corners, cream pages
+    (matches GuideScreen.W/H)."""
+    W, H = 360, 220
     img = Image.new('RGBA', (512, 256), (0, 0, 0, 0))
     px = img.load()
     rng = random.Random(5)
@@ -691,8 +692,8 @@ def guide_book_gui() -> Image.Image:
     # pages
     paper = [c + (255,) for c in PAPER]
     for side in (0, 1):
-        x0 = 10 if side == 0 else 151
-        x1 = 149 if side == 0 else 290
+        x0 = 10 if side == 0 else W // 2 + 1
+        x1 = W // 2 - 1 if side == 0 else W - 10
         for y in range(8, H - 9):
             for x in range(x0, x1):
                 g = (x1 - 1 - x) if side == 0 else (x - x0)  # distance from the gutter
@@ -713,8 +714,8 @@ def guide_book_gui() -> Image.Image:
             px[ox, y] = paper[1]
     # gutter
     for y in range(6, H - 6):
-        px[149, y] = lea[0]
-        px[150, y] = lea[1]
+        px[W // 2 - 1, y] = lea[0]
+        px[W // 2, y] = lea[1]
     # gold corner protectors
     gold = [c + (255,) for c in P.GOLD]
     for (cx, cy, sx, sy) in [(0, 0, 1, 1), (W - 1, 0, -1, 1), (0, H - 1, 1, -1), (W - 1, H - 1, -1, -1)]:
