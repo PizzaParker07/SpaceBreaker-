@@ -32,11 +32,13 @@ import java.util.List;
 public class SpaceSuitItem extends ArmorItem {
     private final SuitTier tier;
     private final ResourceLocation texture;
+    private final ResourceLocation accentTexture;
 
     public SpaceSuitItem(Holder<ArmorMaterial> material, Type type, SuitTier tier, String textureName, Properties properties) {
         super(material, type, properties);
         this.tier = tier;
         this.texture = Spacebreaker.id("textures/models/armor/" + textureName + ".png");
+        this.accentTexture = Spacebreaker.id("textures/models/armor/" + textureName + "_accent.png");
     }
 
     public SuitTier tier() {
@@ -103,7 +105,7 @@ public class SpaceSuitItem extends ArmorItem {
 
     @Override
     public @Nullable ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, ArmorMaterial.Layer layer, boolean innerModel) {
-        return texture;
+        return layer.dyeable() ? accentTexture : texture;
     }
 
     @Override

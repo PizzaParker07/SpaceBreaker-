@@ -77,7 +77,8 @@ public final class HelmetHud {
             g.fill(w - 1 - i, 0, w - i, h, a << 24);
         }
         ItemStack helmet = mc.player.getItemBySlot(EquipmentSlot.HEAD);
-        if (SpaceSuitItem.isSunVisorDown(helmet)) {
+        if (SpaceSuitItem.isSunVisorDown(helmet)
+                || (helmet.getItem() instanceof SpaceSuitItem s && s.tier() == com.pizzaparker07.spacebreaker.content.suit.SuitTier.THERMAL)) {
             g.fill(0, 0, w, h, 0x38C08616); // warm gold filter
         }
     }

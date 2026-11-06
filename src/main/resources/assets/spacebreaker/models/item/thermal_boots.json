@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "spacebreaker:item/thermal_boots",
+    "layer1": "spacebreaker:item/thermal_boots_accent"
+  }
+}

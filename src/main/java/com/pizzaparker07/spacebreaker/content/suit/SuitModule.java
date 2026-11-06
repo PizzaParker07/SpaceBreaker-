@@ -99,7 +99,7 @@ public final class SuitModule implements SbModule {
     public static final Holder<ArmorMaterial> EVA_SUIT = MATERIALS.register("eva_suit", () -> new ArmorMaterial(
             defense(1, 2, 3, 1, 3), 9, SoundEvents.ARMOR_EQUIP_LEATHER,
             () -> Ingredient.of(EarthModule.ALUMINUM_PLATE.get()),
-            List.of(new ArmorMaterial.Layer(Spacebreaker.id("eva_suit"))), 0.0F, 0.0F));
+            List.of(new ArmorMaterial.Layer(Spacebreaker.id("eva_suit")), new ArmorMaterial.Layer(Spacebreaker.id("eva_suit"), "_accent", true)), 0.0F, 0.0F));
 
     public static final DeferredItem<OxygenTankItem> OXYGEN_TANK = ITEMS.registerItem("oxygen_tank",
             p -> new OxygenTankItem(p, OxygenTankItem.SMALL_CAPACITY), new Item.Properties().stacksTo(1));
@@ -115,7 +115,7 @@ public final class SuitModule implements SbModule {
     public static final Holder<ArmorMaterial> HEAVY_SUIT = MATERIALS.register("heavy_suit", () -> new ArmorMaterial(
             defense(2, 4, 5, 2, 5), 7, SoundEvents.ARMOR_EQUIP_NETHERITE,
             () -> Ingredient.of(net.minecraft.world.item.Items.IRON_INGOT),
-            List.of(new ArmorMaterial.Layer(Spacebreaker.id("heavy_suit"))), 1.0F, 0.05F));
+            List.of(new ArmorMaterial.Layer(Spacebreaker.id("heavy_suit")), new ArmorMaterial.Layer(Spacebreaker.id("heavy_suit"), "_accent", true)), 1.0F, 0.05F));
 
     public static final DeferredItem<SpaceSuitItem> THERMAL_HELMET = tierPiece(SuitTier.THERMAL, ArmorItem.Type.HELMET);
     public static final DeferredItem<SpaceSuitItem> THERMAL_CHESTPLATE = tierPiece(SuitTier.THERMAL, ArmorItem.Type.CHESTPLATE);
