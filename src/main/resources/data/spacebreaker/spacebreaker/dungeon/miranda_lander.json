@@ -1,0 +1,9 @@
+{
+  "structure": "spacebreaker:miranda_lander",
+  "world": "spacebreaker:miranda",
+  "guardians": [],
+  "loot_tables": [
+    "spacebreaker:dungeons/miranda/lander_cabin",
+    "spacebreaker:dungeons/miranda/lander_cargo"
+  ]
+}

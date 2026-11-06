@@ -1,0 +1,7 @@
+{
+  "type": "spacebreaker:supply_lander",
+  "biomes": "spacebreaker:miranda_plains",
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "variant": "miranda"
+}

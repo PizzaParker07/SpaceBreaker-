@@ -1,0 +1,49 @@
+{
+  "carvers": {},
+  "creature_spawn_probability": 0.04,
+  "downfall": 0.0,
+  "effects": {
+    "fog_color": 0,
+    "foliage_color": 10132120,
+    "grass_color": 10132120,
+    "sky_color": 0,
+    "water_color": 4159204,
+    "water_fog_color": 329011
+  },
+  "features": [
+    [
+      "spacebreaker:miranda_coronae",
+      "spacebreaker:miranda_cliff"
+    ],
+    [],
+    [
+      "spacebreaker:miranda_block"
+    ],
+    [],
+    [],
+    [],
+    [
+      "spacebreaker:miranda_carbon"
+    ]
+  ],
+  "has_precipitation": false,
+  "spawn_costs": {},
+  "spawners": {
+    "ambient": [],
+    "axolotls": [],
+    "creature": [
+      {
+        "type": "spacebreaker:cliff_clinger",
+        "maxCount": 3,
+        "minCount": 1,
+        "weight": 6
+      }
+    ],
+    "misc": [],
+    "monster": [],
+    "underground_water_creature": [],
+    "water_ambient": [],
+    "water_creature": []
+  },
+  "temperature": -2.0
+}

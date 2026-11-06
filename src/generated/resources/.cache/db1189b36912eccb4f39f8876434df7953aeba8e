@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-06T21:53:36.572856714	Tags for minecraft:item mod id spacebreaker
+// 1.21.1	2026-11-06T22:02:36.917922562	Tags for minecraft:item mod id spacebreaker
 7e8e995a94080524a7a2d6280b7b24b5bae0a66f data/c/tags/item/buckets.json
 2a38d13958b33895ff8da9a470c0eb27ca030dfb data/c/tags/item/dry_ices.json
 9f193ba6f1ede8ee1454c64033f45b25b36488c8 data/c/tags/item/dusts.json
@@ -109,8 +109,8 @@ c53893040c86bcc09dd84910b2e0945d5107fb1f data/c/tags/item/wires/tungsten.json
 cd7806a652087ef3237bc109bf884f6301b77963 data/minecraft/tags/item/head_armor.json
 f0a0fbdf43cab8de673f6a2a995b934149b396e1 data/minecraft/tags/item/leg_armor.json
 1137c1ba4d56080deb8301dbb264af90ec575b94 data/minecraft/tags/item/sand.json
-442b3dcafda20c7f9ac5bc3bb0ef8790b7ae7ad4 data/minecraft/tags/item/slabs.json
-ee48d8b21d549e91aea4a035da7cf561a08d3cd2 data/minecraft/tags/item/stairs.json
-ac79a60690cf9b1c968c94466581cc7dba07fe00 data/minecraft/tags/item/walls.json
+da11356f50380c274564c8d4dc10925d3ddfb5cf data/minecraft/tags/item/slabs.json
+2dce56fc0924badb5af2211c330d362f4cf1b5a4 data/minecraft/tags/item/stairs.json
+ac387f94a714d7f44dec89dd72f262e051f6e8a9 data/minecraft/tags/item/walls.json
 8ce8de56c882fde6d0067f4d1a5eecfe4f54c662 data/spacebreaker/tags/item/press_dies.json
 694849f8ef7201ef082dd39d125bd84fe060a97b data/spacebreaker/tags/item/researchable.json

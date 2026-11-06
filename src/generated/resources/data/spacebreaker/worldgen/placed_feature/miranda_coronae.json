@@ -1,0 +1,8 @@
+{
+  "feature": "spacebreaker:miranda_coronae",
+  "placement": [
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}
