@@ -1,7 +1,6 @@
 package com.pizzaparker07.spacebreaker.content.mercury;
 
 import com.pizzaparker07.spacebreaker.content.mars.MarsData;
-import com.pizzaparker07.spacebreaker.content.moon.MoonModule;
 import com.pizzaparker07.spacebreaker.core.lang.Lang;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
@@ -62,7 +61,7 @@ public final class MercuryData {
         ctx.register(MarsData.cf("mercury_lrm"), new ConfiguredFeature<>(Feature.ORE,
                 new OreConfiguration(stone, MarsData.s(MercuryModule.LOW_REFLECTANCE_ROCK), 48)));
         ctx.register(MarsData.cf("mercury_ice"), new ConfiguredFeature<>(Feature.ORE,
-                new OreConfiguration(stone, MoonModule.LUNAR_ICE.get().defaultBlockState(), 24)));
+                new OreConfiguration(stone, MercuryModule.MERCURY_ICE.get().defaultBlockState(), 24)));
     }
 
     private static void placed(BootstrapContext<PlacedFeature> ctx) {

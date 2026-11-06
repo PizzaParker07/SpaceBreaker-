@@ -104,7 +104,7 @@ public final class MercuryGameTests {
             if (st.is(Blocks.CHEST) && level.getBlockEntity(p) instanceof ChestBlockEntity ch && ch.getLootTable() != null) {
                 chests++;
             }
-            if (st.is(com.pizzaparker07.spacebreaker.content.moon.MoonModule.LUNAR_ICE.get())) {
+            if (st.is(com.pizzaparker07.spacebreaker.content.mercury.MercuryModule.MERCURY_ICE.get())) {
                 ice++;
             }
         }

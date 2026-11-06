@@ -40,6 +40,11 @@ public final class MercuryModule implements SbModule {
             BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK).strength(0.6F).sound(SoundType.SAND));
     public static final DeferredBlock<LunarRegolithBlock> HOLLOW_DEPOSIT = KIT.block("hollow_deposit", LunarRegolithBlock::new,
             BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_BLUE).strength(0.5F).sound(SoundType.CALCITE));
+    /** Polar crater ice: water ice that has sat in permanent shadow for billions of years, flecked with dark graphite
+     *  and sulfur-bearing dust (Mercury's polar deposits are covered by a dark organic-rich lag). */
+    public static final DeferredBlock<Block> MERCURY_ICE = KIT.block("mercury_ice", BlockBehaviour.Properties.of().mapColor(MapColor.ICE)
+            .instrument(net.minecraft.world.level.block.state.properties.NoteBlockInstrument.CHIME).friction(0.98F).strength(0.8F)
+            .sound(net.minecraft.world.level.block.SoundType.GLASS));
     public static final DeferredBlock<Block> MERCURIAN_CRUST = KIT.rock("mercurian_crust", MapColor.COLOR_GRAY, SoundType.STONE, 1.7F);
     public static final DeferredBlock<Block> LOW_REFLECTANCE_ROCK = KIT.rock("low_reflectance_rock", MapColor.COLOR_BLACK, SoundType.DEEPSLATE, 2.0F);
     public static final DeferredBlock<DropExperienceBlock> GRAPHITE_ORE = KIT.block("graphite_ore", p -> new DropExperienceBlock(UniformInt.of(0, 2), p),
@@ -74,6 +79,7 @@ public final class MercuryModule implements SbModule {
         lang.add("dimension.spacebreaker.mercury_orbit", "Mercury Orbit", "Merkür Yörüngesi");
         lang.block(MERCURY_REGOLITH, "Mercurian Regolith", "Merkür Regoliti");
         lang.block(HOLLOW_DEPOSIT, "Hollow Deposit", "Oyuk Tortusu");
+        lang.block(MERCURY_ICE, "Mercurian Polar Ice", "Merkür Kutup Buzu");
         String[][] store = {{"STORE", "DEPO"}, {"power lost:", "güç kesildi:"}, {"sealed with ice", "buzla mühürlü"}, {"cut through", "kazıyarak geç"}};
         for (int i = 0; i < 4; i++) {
             lang.add("sign.spacebreaker.ice_mine_store." + i, store[i][0], store[i][1]);
@@ -92,6 +98,7 @@ public final class MercuryModule implements SbModule {
         loot.self(HOLLOW_DEPOSIT.get());
         loot.self(MERCURIAN_CRUST.get());
         loot.self(LOW_REFLECTANCE_ROCK.get());
+        loot.self(MERCURY_ICE.get());
         loot.ore(GRAPHITE_ORE.get(), GRAPHITE.get());
     }
 
@@ -99,6 +106,8 @@ public final class MercuryModule implements SbModule {
     public void addTags(SbTags tags) {
         tags.block(BlockTags.MINEABLE_WITH_PICKAXE, MERCURIAN_CRUST.get(), LOW_REFLECTANCE_ROCK.get(), GRAPHITE_ORE.get());
         tags.block(BlockTags.MINEABLE_WITH_SHOVEL, MERCURY_REGOLITH.get(), HOLLOW_DEPOSIT.get());
+        tags.block(BlockTags.MINEABLE_WITH_PICKAXE, MERCURY_ICE.get());
+        tags.block(BlockTags.ICE, MERCURY_ICE.get());
         tags.block(BlockTags.NEEDS_STONE_TOOL, GRAPHITE_ORE.get());
         tags.block(MERCURY_STONE, MERCURIAN_CRUST.get(), LOW_REFLECTANCE_ROCK.get());
         tags.block(ORES_GRAPHITE, GRAPHITE_ORE.get());

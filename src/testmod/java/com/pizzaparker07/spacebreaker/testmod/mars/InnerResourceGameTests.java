@@ -57,10 +57,10 @@ public final class InnerResourceGameTests {
         for (String id : new String[]{"melting/water_ice", "electrolysis/water", "sabatier/methane", "liquefaction/methane", "liquefaction/oxygen"}) {
             helper.assertTrue(recipes.byKey(Spacebreaker.id(id)).isPresent(), "missing step " + id);
         }
-        helper.assertTrue(new ItemStack(com.pizzaparker07.spacebreaker.content.moon.MoonModule.LUNAR_ICE.get()).is(MarsModule.ICES_WATER),
+        helper.assertTrue(new ItemStack(MercuryModule.MERCURY_ICE.get()).is(MarsModule.ICES_WATER),
                 "Mercury's polar crater ice melts into water");
         var mercury = WorldTests.profile(helper, "mercury");
-        helper.assertTrue(mercury.materials().ice().map(i -> i.is(com.pizzaparker07.spacebreaker.content.moon.MoonModule.LUNAR_ICE.get())).orElse(false),
+        helper.assertTrue(mercury.materials().ice().map(i -> i.is(MercuryModule.MERCURY_ICE.get())).orElse(false),
                 "Mercury's shadowed craters hold water ice");
         helper.succeed();
     }

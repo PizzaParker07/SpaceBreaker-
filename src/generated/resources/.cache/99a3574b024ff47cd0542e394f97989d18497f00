@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-06T21:40:57.341609455	Spacebreaker inner planets worldgen
+// 1.21.1	2026-11-06T22:17:47.855379521	Spacebreaker inner planets worldgen
 16676fef966d898c9a200173130207149689a794 data/spacebreaker/worldgen/biome/deimos_surface.json
 a38bd155cbf32cd8a4fc3ed4b226773a6ca531ed data/spacebreaker/worldgen/biome/mars_canyon.json
 850d48863e1922b235d124c0eaa44a4d68de9604 data/spacebreaker/worldgen/biome/mars_crater.json
@@ -31,7 +31,7 @@ a3c92c436d0502430b11b750daf585885e39926a data/spacebreaker/worldgen/configured_f
 85dc5dfd4f99f9e81f2fd68a20c4b006213ece7a data/spacebreaker/worldgen/configured_feature/mars_ore_hematite.json
 4d4920cf8db964b277c165d679dcc650ba35d1e8 data/spacebreaker/worldgen/configured_feature/mercury_boulder.json
 9ddc923162244b69516ce3514c940c2f85afe00e data/spacebreaker/worldgen/configured_feature/mercury_graphite.json
-dc2da1efb432130ff26da793ac7c1ecb8f411715 data/spacebreaker/worldgen/configured_feature/mercury_ice.json
+0b30df64bcf0bfbcc56bdadf3dc96ec08bd9bbb0 data/spacebreaker/worldgen/configured_feature/mercury_ice.json
 5be498ee142dc5974cc0fd1b86593581dc0d4379 data/spacebreaker/worldgen/configured_feature/mercury_lrm.json
 31ec04af2cba6ed242ccbbe5bc866c1a4e8dc8aa data/spacebreaker/worldgen/configured_feature/moonlet_boulder.json
 ec6653d5766d06d868d0da236d5065c189847df7 data/spacebreaker/worldgen/configured_feature/venus_boulder.json

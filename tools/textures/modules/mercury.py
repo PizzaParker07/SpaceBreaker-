@@ -3,7 +3,7 @@ bright hollow deposits, and the Terminator Crawler."""
 import random
 
 from sbtex.core import Canvas, ramp, clustered, fbm, parse_mask, mask_from, dome_shade, edge_pixels, pick
-from modules.moon import quant, white, blend, footprint, overlay, RAW_CHUNK
+from modules.moon import quant, white, blend, blur_dir, footprint, overlay, RAW_CHUNK
 from modules.mars import dust, prints
 from modules.moon_creatures import paint, noise_pick
 
@@ -33,6 +33,23 @@ def hollow_deposit(v=0):
         x, y = rng.randrange(16), rng.randrange(16)
         cv[x, y] = HOLLOW[0]
         cv[x + 1, y + 1] = HOLLOW[5]
+    return cv
+
+
+ICE = ramp('#2c2f36', '#7e94a8', '#9db2c4', '#b6c8d6', '#cdd9e3', '#e6eef4')
+
+
+def mercury_ice():
+    """Polar crater ice: grey-blue packed ice with dark graphite flecks and a few yellowish sulfur specks."""
+    f = blend((blur_dir(white(7701), 3, 1, 1), 0.6), (clustered(16, 16, 7702, passes=1), 0.4))
+    cv, _ = quant(f, ICE[2:5], [24, 48, 28])
+    rng = random.Random(7703)
+    for _ in range(7):
+        cv[rng.randrange(16), rng.randrange(16)] = ICE[0]
+    for x, y in [(4, 11), (12, 3)]:
+        cv[x, y] = HOLLOW[1]
+    for x, y in [(3, 4), (4, 5), (10, 9), (11, 10)]:
+        cv[x, y] = ICE[5]
     return cv
 
 
@@ -183,6 +200,7 @@ def export(save):
             save(footprint(base, prints(r), side), 'block', f'{name}_footprint_{side}', (22, 8, 64, None))
     rock = (40, 12, 20, None)
     save(mercurian_crust(), 'block', 'mercurian_crust', rock)
+    save(mercury_ice(), 'block', 'mercury_ice', (200, 22, 0, lambda c: (200, 22, 0, 255) if c[3] else None))
     save(low_reflectance_rock(), 'block', 'low_reflectance_rock', rock)
     gr = lambda c: (160, 210, 0, 255) if c[3] else None
     save(graphite_overlay(), 'block', 'graphite_ore_overlay', (140, 200, 0, gr), wrap=False)

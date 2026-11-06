@@ -150,7 +150,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | Durum | İçerik | Not |
 |---|---|---|
 | 🎨 | Arazi | yoğun kraterler, loblu sarplıklar, düz ovalar, parlak oyuklar, kalıcı gölgeli kutup kraterlerinde buz; dev Güneş, 430 °C gündüz / −180 °C gece |
-| 🎨 | Bloklar | Merkür Regoliti, Oyuk Tortusu (kalıcı ayak izi), Merkür Kabuğu, Düşük Yansıtmalı Kaya, Grafit Cevheri (→ grafit) |
+| 🎨 | Bloklar | Merkür Regoliti, Oyuk Tortusu (kalıcı ayak izi), Merkür Kabuğu, Düşük Yansıtmalı Kaya, Grafit Cevheri (→ grafit), Merkür Kutup Buzu (gölgeli kraterlerde, grafit lekeli; `c:ices/water`) |
 | 🎨 | Zindan | Terk Edilmiş Kutup Buzu Madeni (gölgeli krater tabanının altında) |
 | 🎨 | Endüstri girdileri | kırıcıda: Oyuk Tortusu → kükürt; Venüs Kükürt Kabuğu → kükürt; Kimyasal Reaktörde grafit + O₂ → CO₂ (Merkür'de yerinde metaloks) |
 | 🎨 | Bulmaca ve tuzaklar (2. tur) | Buz Madeni: buzla mühürlü depo (tabelalı, kazıyarak geçilir), tahrikte toz kar püskürten donma tuzağı · Aerostat: üç gaz vanası, yalnız kükürt sarısı işaretli olan gondol kapısını açar; iskelede kapaklı döşeme tuzağı (altında örümcek ağlı kargo ağı, ölümcül değil) · Mars İstasyonu: garaj tünelinde hâlâ çalışan çevre savunması (ok tuzağı) |

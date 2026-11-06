@@ -1,7 +1,6 @@
 package com.pizzaparker07.spacebreaker.content.mercury;
 
 import com.pizzaparker07.spacebreaker.content.dungeons.Dungeons;
-import com.pizzaparker07.spacebreaker.content.moon.MoonModule;
 import com.pizzaparker07.spacebreaker.content.moon.entity.MoonEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -60,7 +59,7 @@ public class IceMinePiece extends StructurePiece {
     @Override
     public void postProcess(WorldGenLevel level, StructureManager structures, ChunkGenerator generator, RandomSource random,
                             BoundingBox box, ChunkPos chunkPos, BlockPos pivot) {
-        BlockState ice = s(MoonModule.LUNAR_ICE.get());
+        BlockState ice = s(MercuryModule.MERCURY_ICE.get());
         BlockState wall = s(MercuryModule.MERCURIAN_CRUST.get());
         int fy = 2; // mine level floor (local y)
         // the ice body: a lens of ice around the workings
@@ -166,7 +165,7 @@ public class IceMinePiece extends StructurePiece {
                         placeBlock(level, s(Blocks.IRON_BLOCK), x, y, z, box);
                     } else if (x == x0 || x == x1 || y == y1 || z == z0 || z == z1) {
                         if (here.isAir() || !here.is(Blocks.IRON_BLOCK)) {
-                            placeBlock(level, here.is(MoonModule.LUNAR_ICE.get()) ? here : wall, x, y, z, box);
+                            placeBlock(level, here.is(MercuryModule.MERCURY_ICE.get()) ? here : wall, x, y, z, box);
                         }
                     } else {
                         placeBlock(level, s(Blocks.AIR), x, y, z, box);
