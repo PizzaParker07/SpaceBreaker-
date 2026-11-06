@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "spacebreaker:block/venus_soil"
+      },
+      {
+        "model": "spacebreaker:block/venus_soil",
+        "y": 90
+      },
+      {
+        "model": "spacebreaker:block/venus_soil",
+        "y": 180
+      },
+      {
+        "model": "spacebreaker:block/venus_soil",
+        "y": 270
+      }
+    ]
+  }
+}

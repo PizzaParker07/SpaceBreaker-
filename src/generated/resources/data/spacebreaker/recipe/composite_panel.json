@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "A": {
+      "item": "spacebreaker:aluminum_plate"
+    },
+    "P": {
+      "item": "spacebreaker:plastic_sheet"
+    }
+  },
+  "pattern": [
+    "PA",
+    "AP"
+  ],
+  "result": {
+    "count": 4,
+    "id": "spacebreaker:composite_panel"
+  }
+}

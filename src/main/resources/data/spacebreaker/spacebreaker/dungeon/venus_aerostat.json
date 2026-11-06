@@ -1,0 +1,9 @@
+{
+  "structure": "spacebreaker:venus_aerostat",
+  "world": "spacebreaker:venus",
+  "guardians": [],
+  "loot_tables": [
+    "spacebreaker:dungeons/venus/aerostat_lab",
+    "spacebreaker:dungeons/venus/aerostat_stores"
+  ]
+}

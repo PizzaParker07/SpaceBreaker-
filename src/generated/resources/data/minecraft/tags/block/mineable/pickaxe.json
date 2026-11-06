@@ -96,6 +96,11 @@
     "spacebreaker:martian_sandstone",
     "spacebreaker:martian_sandstone_stairs",
     "spacebreaker:martian_sandstone_slab",
-    "spacebreaker:martian_sandstone_wall"
+    "spacebreaker:martian_sandstone_wall",
+    "spacebreaker:venus_basalt",
+    "spacebreaker:tessera_rock",
+    "spacebreaker:sulfur_crust",
+    "spacebreaker:metal_frost",
+    "spacebreaker:composite_panel"
   ]
 }

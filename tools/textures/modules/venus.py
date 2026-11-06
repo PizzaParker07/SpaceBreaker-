@@ -171,11 +171,42 @@ def sulfur_item():
     return cv
 
 
+def acid_coating_item():
+    """A small sealed tin of fluoropolymer: white body, yellow hazard band, grey lid."""
+    rows = [
+        "................",
+        "................",
+        "................",
+        ".....LLLLLL.....",
+        "....LllllllL....",
+        "....WWWWWWWW....",
+        "....WwwwwwwW....",
+        "....YyYyYyYY....",
+        "....yYyYyYyY....",
+        "....WwwwwwwW....",
+        "....WwwwwwwW....",
+        "....WwwwwwwW....",
+        "....DDDDDDDD....",
+        "................",
+        "................",
+        "................",
+    ]
+    tone = {'L': COMPOSITE[1], 'l': COMPOSITE[3], 'W': COMPOSITE[2], 'w': COMPOSITE[4], 'Y': SULFUR[3], 'y': WEAVE[0], 'D': COMPOSITE[0]}
+    cv = Canvas()
+    for y, row in enumerate(rows):
+        for x, ch in enumerate(row):
+            if ch in tone:
+                cv[x, y] = tone[ch]
+    for y in range(5, 12):
+        cv[4, y] = COMPOSITE[1]
+        cv[11, y] = COMPOSITE[0]
+    return cv
+
+
 def export(save):
     rock = (40, 12, 20, None)
     save(venus_basalt(), 'block', 'venus_basalt', rock)
     save(venus_soil(0), 'block', 'venus_soil', (18, 10, 40, None))
-    save(venus_soil(1), 'block', 'venus_soil_1', (18, 10, 40, None))
     save(tessera(), 'block', 'tessera_rock', rock)
     save(sulfur_crust(), 'block', 'sulfur_crust', (30, 12, 20, None))
     shiny = lambda c: (210, 230, 0, 255) if c[3] and sum(c[:3]) > 450 else None
@@ -184,3 +215,96 @@ def export(save):
     save(aerogel(), 'block', 'aerogel', (220, 20, 0, None))
     save(envelope_fabric(), 'block', 'envelope_fabric', (10, 10, 0, None))
     save(sulfur_item(), 'item', 'sulfur')
+    save(acid_coating_item(), 'item', 'acid_coating')
+    export_more(save)
+
+
+# --------------------------------------------------------------------------- creatures and sky
+
+from modules.moon_creatures import paint, noise_pick  # noqa: E402
+
+ACID = ramp('#3e3a1c', '#5a5426', '#777031', '#948b3e', '#b0a64e', '#c9c068')
+BELLY = ramp('#9e987a', '#b8b294', '#d6d1b4')
+SAC = ramp('#b8a98e', '#cfc3a8', '#ddd2b8', '#e9e0ca', '#f3ecdb')
+VEIN = ramp('#9c7f98', '#7f6580', '#634e66')
+
+
+def acid_ray():
+    """Acid Ray: an olive-yellow back mottled darker, acid-yellow wing margins, a pale belly."""
+    cv = Canvas(64, 64)
+    n = clustered(64, 64, 6001, passes=1)
+
+    def body(face, x, y, fw, fh):
+        if face == 'top':
+            if (x * 7 + y * 3) % 11 == 0:
+                return ACID[1]
+            return noise_pick(ACID, 3 if 2 < x < fw - 3 else 2, n, x, y)
+        if face == 'bottom':
+            return noise_pick(BELLY, 1, n, x + 20, y)
+        return ACID[2] if y == 0 else BELLY[0]
+
+    paint(cv, 0, 0, 10, 2, 12, body)
+
+    def wing(face, x, y, fw, fh):
+        if face == 'top':
+            edge = x >= fw - 2 or y in (0, fh - 1)
+            if edge:
+                return ACID[5] if (x + y) % 2 == 0 else ACID[4]
+            return noise_pick(ACID, 2 + (1 if x < 4 else 0), n, x + 30, y + 10)
+        if face == 'bottom':
+            return noise_pick(BELLY, 2 if x < 6 else 1, n, x + 40, y + 30)
+        return ACID[4]
+
+    paint(cv, 0, 16, 12, 1, 10, wing)
+    paint(cv, 44, 0, 1, 1, 10, lambda f, x, y, fw, fh: ACID[1] if f != 'top' else ACID[2])
+    return cv
+
+
+def cloud_jelly():
+    """Cloud Jelly: a pale translucent gas sac with lilac veins and a frilled rim; long lilac tentacles."""
+    cv = Canvas(64, 64)
+    n = clustered(64, 64, 6101, passes=2)
+
+    def sac(face, x, y, fw, fh):
+        v = n[(y * 3) % 64][(x * 3) % 64]
+        if face in ('top', 'bottom'):
+            c = SAC[3] if v > 0.5 else SAC[2]
+            if (x == fw // 2 or y == fh // 2) and face == 'top':
+                c = VEIN[0]
+            return (c[0], c[1], c[2], 200)
+        if x % 4 == 1 and y > 1:
+            return (VEIN[0][0], VEIN[0][1], VEIN[0][2], 210)
+        c = SAC[4] if y < 2 else (SAC[2] if v > 0.4 else SAC[1])
+        return (c[0], c[1], c[2], 170)
+
+    paint(cv, 0, 0, 14, 12, 14, sac)
+
+    def rim(face, x, y, fw, fh):
+        c = VEIN[1] if (x // 2) % 2 == 0 else SAC[1]
+        return (c[0], c[1], c[2], 220)
+
+    paint(cv, 0, 26, 16, 2, 16, rim)
+
+    def tentacle(face, x, y, fw, fh):
+        c = VEIN[0] if y % 3 else VEIN[2]
+        return (c[0], c[1], c[2], 230)
+
+    paint(cv, 56, 0, 1, 14, 1, tentacle)
+    return cv
+
+
+def cloud_sea():
+    """Tiling cloud-top texture (32x32): soft puffs in cream and pale yellow, drawn in the sky below the player."""
+    f = fbm(32, 32, 6201, [(16, 1.0), (8, 0.6), (4, 0.3)])
+    cv = Canvas(32, 32)
+    r = ramp('#c8b98e', '#d8cba2', '#e6dbb8', '#f1e9cf', '#f8f3e3')
+    for y in range(32):
+        for x in range(32):
+            cv[x, y] = pick(r, f[y][x])
+    return cv
+
+
+def export_more(save):
+    save(acid_ray(), 'entity', 'venus/acid_ray')
+    save(cloud_jelly(), 'entity', 'venus/cloud_jelly')
+    save(cloud_sea(), 'environment', 'venus_cloud_sea')

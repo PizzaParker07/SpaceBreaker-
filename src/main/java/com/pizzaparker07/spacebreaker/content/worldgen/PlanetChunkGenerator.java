@@ -202,6 +202,15 @@ public class PlanetChunkGenerator extends ChunkGenerator {
             soil = c.altDune && d.altSoil().isPresent() ? d.altSoil().get() : d.soil();
             soilDepth = Math.max(mat.soilDepth(), (int) Math.ceil(c.duneHeight) + 2);
         }
+        if (c.tessera > 0.5 + jitter && lf.tesserae().flatMap(Landforms.Tesserae::rock).isPresent()) {
+            highRock = lowRock = lf.tesserae().get().rock().get();
+            strata = false;
+            soilDepth = Math.min(soilDepth, slope >= 2 ? 0 : 1);
+        }
+        if (lf.peaks().isPresent() && top >= lf.peaks().get().height() + (int) (jitter * 20) && !shadowed) {
+            soil = lf.peaks().get().soil();
+            soilDepth = Math.max(soilDepth, 1);
+        }
         if (c.rift > 0.42 && c.rift < 1 && slope >= 2) {
             soilDepth = 0; // rift walls: bare layered rock
         }

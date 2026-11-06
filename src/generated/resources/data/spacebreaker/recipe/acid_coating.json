@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "spacebreaker:plastic_sheet"
+    },
+    {
+      "item": "spacebreaker:sulfur"
+    },
+    {
+      "item": "minecraft:honeycomb"
+    }
+  ],
+  "result": {
+    "count": 2,
+    "id": "spacebreaker:acid_coating"
+  }
+}

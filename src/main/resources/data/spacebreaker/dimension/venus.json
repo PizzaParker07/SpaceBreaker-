@@ -1,0 +1,14 @@
+{
+  "type": "spacebreaker:venus",
+  "generator": {
+    "type": "spacebreaker:planet",
+    "terrain": "spacebreaker:venus",
+    "biome_source": {
+      "type": "spacebreaker:planet",
+      "highlands": "spacebreaker:venus_tesserae",
+      "lowlands": "spacebreaker:venus_plains",
+      "crater": "spacebreaker:venus_crater",
+      "volcano": "spacebreaker:venus_volcano"
+    }
+  }
+}

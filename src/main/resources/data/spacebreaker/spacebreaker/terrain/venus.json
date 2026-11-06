@@ -1,0 +1,132 @@
+{
+  "body": "spacebreaker:venus",
+  "base_height": 46,
+  "pole_distance": 9000,
+  "relief": {
+    "amplitude": 24,
+    "scale": 620,
+    "detail_amplitude": 1.6,
+    "detail_scale": 30
+  },
+  "lowlands": {
+    "threshold": -0.05,
+    "scale": 2800,
+    "depth": 10,
+    "edge": 0.12,
+    "ridge_height": 2.2,
+    "volcanic_patch": 1.0
+  },
+  "craters": {
+    "density": 0.35,
+    "lowland_density": 0.8,
+    "depth_ratio": 0.12,
+    "rim_ratio": 0.035,
+    "complex_radius": 26,
+    "central_peak": 0.4,
+    "fresh_chance": 0.0,
+    "ray_length": 3,
+    "classes": [
+      {
+        "min_radius": 10,
+        "max_radius": 24,
+        "cell": 420,
+        "chance": 0.4,
+        "per_cell": 1
+      },
+      {
+        "min_radius": 24,
+        "max_radius": 70,
+        "cell": 1200,
+        "chance": 0.5,
+        "per_cell": 1
+      }
+    ]
+  },
+  "poles": {
+    "polar_latitude": 95,
+    "ice_latitude": 95,
+    "ice_depth": 0,
+    "polar_craters": 1.0
+  },
+  "materials": {
+    "highland_soil": {
+      "Name": "spacebreaker:venus_soil"
+    },
+    "lowland_soil": {
+      "Name": "spacebreaker:venus_soil"
+    },
+    "ray_soil": {
+      "Name": "spacebreaker:venus_soil"
+    },
+    "highland_rock": {
+      "Name": "spacebreaker:venus_basalt"
+    },
+    "lowland_rock": {
+      "Name": "spacebreaker:venus_basalt"
+    },
+    "breccia": {
+      "Name": "spacebreaker:venus_basalt"
+    },
+    "bedrock": {
+      "Name": "minecraft:bedrock"
+    },
+    "soil_depth": 1,
+    "lowland_rock_depth": 30
+  },
+  "landforms": {
+    "volcanoes": {
+      "cell": 2600,
+      "chance": 0.45,
+      "min_radius": 180,
+      "max_radius": 560,
+      "height_ratio": 0.13,
+      "max_height": 95,
+      "caldera": 0.07,
+      "escarpment": 0,
+      "anchors": [
+        {
+          "x": 900,
+          "z": -500,
+          "radius": 520,
+          "height": 90
+        }
+      ],
+      "rock": {
+        "Name": "spacebreaker:venus_basalt"
+      }
+    },
+    "tesserae": {
+      "scale": 1500,
+      "threshold": 0.3,
+      "height": 18,
+      "spacing": 30,
+      "rock": {
+        "Name": "spacebreaker:tessera_rock"
+      }
+    },
+    "peaks": {
+      "soil": {
+        "Name": "spacebreaker:metal_frost"
+      },
+      "height": 112
+    },
+    "patches": [
+      {
+        "soil": {
+          "Name": "spacebreaker:sulfur_crust"
+        },
+        "scale": 120,
+        "threshold": 0.82,
+        "where": "any"
+      },
+      {
+        "soil": {
+          "Name": "spacebreaker:venus_basalt"
+        },
+        "scale": 200,
+        "threshold": 0.62,
+        "where": "lowlands"
+      }
+    ]
+  }
+}
