@@ -37,6 +37,18 @@ public class OxygenDistributorBlockEntity extends GasMachineBlockEntity {
     }
 
     @Override
+    protected void saveAdditional(net.minecraft.nbt.CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        tag.putInt("pressurised", pressurised);
+    }
+
+    @Override
+    protected void loadAdditional(net.minecraft.nbt.CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        pressurised = tag.getInt("pressurised");
+    }
+
+    @Override
     public boolean accepts(ItemStack stack) {
         return stack.getItem() instanceof OxygenTankItem;
     }
@@ -45,9 +57,35 @@ public class OxygenDistributorBlockEntity extends GasMachineBlockEntity {
         return room;
     }
 
-    /** True while the room is sealed and supplied: its air blocks are breathable. */
+    /** Oxygen needed once to fill one block of room with air, in breathing ticks. */
+    public static final int PRESSURISE_PER_BLOCK = 4;
+    /** Blocks of the current room already filled with air (lost when the room leaks). */
+    private int pressurised;
+
+    /** True while the room is sealed, fully pressurised and supplied: its air blocks are breathable. */
     public boolean active() {
-        return room.sealed() && OxygenTankItem.getOxygen(getStack()) > 0 && !isRemoved();
+        return room.sealed() && pressurised >= room.volume() && supply() > 0 && !isRemoved();
+    }
+
+    /** Oxygen available: the slotted tank plus the piped-in buffer. */
+    public int supply() {
+        return OxygenTankItem.getOxygen(getStack()) + storedOxygen;
+    }
+
+    /** Takes oxygen, tank first, then the piped-in buffer; returns what was taken. */
+    private int take(int amount) {
+        ItemStack tank = getStack();
+        int fromTank = Math.min(amount, OxygenTankItem.getOxygen(tank));
+        if (fromTank > 0) {
+            ItemStack copy = tank.copy();
+            copy.set(SuitModule.OXYGEN.get(), OxygenTankItem.getOxygen(tank) - fromTank);
+            items.setStackInSlot(0, copy);
+        }
+        return fromTank + takeStored(amount - fromTank);
+    }
+
+    public int pressurised() {
+        return pressurised;
     }
 
     public void markDirty() {
@@ -80,12 +118,23 @@ public class OxygenDistributorBlockEntity extends GasMachineBlockEntity {
             }
             be.lastState = now;
         }
-        ItemStack tank = be.getStack();
-        if (be.room.sealed() && OxygenTankItem.getOxygen(tank) > 0) {
+        if (be.room.state() == SealedRoom.State.LEAKING) {
+            be.pressurised = 0;                 // a leak vents the air
+        } else if (!be.room.sealed()) {
+            // first scan after loading: keep the saved pressure until the scan finishes
+        } else if (be.pressurised < be.room.volume()) {
+            // fill the room first: a few blocks' worth per tick
+            int blocks = Math.min(be.room.volume() - be.pressurised, 50);
+            int paid = be.take(blocks * PRESSURISE_PER_BLOCK);
+            be.pressurised += paid / PRESSURISE_PER_BLOCK;
+            be.setChanged();
+        } else if (be.pressurised > be.room.volume()) {
+            be.pressurised = be.room.volume();  // room got smaller
+        } else {
             int use = usePerTick(be.room.volume(), level.getGameTime());
-            ItemStack copy = tank.copy();
-            copy.set(SuitModule.OXYGEN.get(), Math.max(0, OxygenTankItem.getOxygen(copy) - use));
-            be.items.setStackInSlot(0, copy);
+            if (be.take(use) < use) {
+                be.pressurised = Math.max(0, be.pressurised - 1); // running dry: pressure drops
+            }
         }
         boolean lit = be.active();
         if (state.getValue(GasMachineBlock.LIT) != lit) {
@@ -111,10 +160,13 @@ public class OxygenDistributorBlockEntity extends GasMachineBlockEntity {
                     ? Component.translatable("message.spacebreaker.distributor.leak_at", room.leak().getX(), room.leak().getY(), room.leak().getZ())
                     .withStyle(ChatFormatting.RED)
                     : Component.translatable("message.spacebreaker.distributor.leak").withStyle(ChatFormatting.RED);
-            case SEALED -> tank.isEmpty() || OxygenTankItem.getOxygen(tank) == 0
+            case SEALED -> supply() == 0
                     ? Component.translatable("message.spacebreaker.distributor.no_oxygen", room.volume()).withStyle(ChatFormatting.GOLD)
+                    : pressurised < room.volume()
+                    ? Component.translatable("message.spacebreaker.distributor.pressurising", room.volume(),
+                    pressurised * 100 / Math.max(1, room.volume())).withStyle(ChatFormatting.YELLOW)
                     : Component.translatable("message.spacebreaker.distributor.sealed", room.volume(),
-                    OxygenTankItem.time(OxygenTankItem.getOxygen(tank) / Math.max(1, usePerTick(room.volume(), 0)))).withStyle(ChatFormatting.AQUA);
+                    OxygenTankItem.time(supply() / Math.max(1, usePerTick(room.volume(), 0)))).withStyle(ChatFormatting.AQUA);
         };
     }
 

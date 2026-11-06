@@ -241,6 +241,9 @@ public final class SuitModule implements SbModule {
             event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, type, (be, side) -> be.getItems());
         }
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, OXYGEN_FILLER_BE.get(), (be, side) -> be.getEnergy());
+        for (var type : List.of(OXYGEN_FILLER_BE.get(), OXYGEN_DISTRIBUTOR_BE.get())) {
+            event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, type, (be, side) -> be.getOxygenInput());
+        }
     }
 
     @Override
@@ -250,14 +253,19 @@ public final class SuitModule implements SbModule {
         lang.block(OXYGEN_FILLER, "Oxygen Filler", "Oksijen Dolum İstasyonu");
         lang.block(OXYGEN_DISTRIBUTOR, "Oxygen Distributor", "Oksijen Dağıtıcı");
         lang.block(AIRLOCK_DOOR, "Airlock Door", "Hava Kilidi Kapısı");
-        lang.add("message.spacebreaker.machine.empty", "No tank inserted · %s / %s FE", "Tüp takılı değil · %s / %s FE");
+        lang.add("message.spacebreaker.machine.empty", "No tank inserted · %s / %s FE · piped oxygen %s",
+                "Tüp takılı değil · %s / %s FE · borudan gelen oksijen %s");
+        lang.add("message.spacebreaker.distributor.pressurising", "Pressurising room of %s blocks: %s%%", "%s bloklu oda basınçlandırılıyor: %%%s");
         lang.add("message.spacebreaker.distributor.scanning", "Checking the room for leaks...", "Oda sızıntıya karşı kontrol ediliyor...");
         lang.add("message.spacebreaker.distributor.leak", "Room is not sealed", "Oda sızdırmaz değil");
         lang.add("message.spacebreaker.distributor.leak_at", "Leak near %s %s %s (or the room is too large)", "Sızıntı: %s %s %s yakınında (ya da oda çok büyük)");
-        lang.add("message.spacebreaker.distributor.no_oxygen", "Sealed room of %s blocks: insert an oxygen tank", "%s bloklu sızdırmaz oda: bir oksijen tüpü tak");
+        lang.add("message.spacebreaker.distributor.no_oxygen", "Sealed room of %s blocks: insert an oxygen tank or pipe in oxygen",
+                "%s bloklu sızdırmaz oda: oksijen tüpü tak ya da boruyla oksijen ver");
         lang.add("message.spacebreaker.distributor.sealed", "Sealed room of %s blocks · oxygen for %s", "%s bloklu sızdırmaz oda · %s yetecek oksijen");
-        lang.add("tooltip.spacebreaker.oxygen_filler", "Refills tanks from breathable air. Needs FE", "Tüpleri solunabilir havadan doldurur. FE gerekir");
-        lang.add("tooltip.spacebreaker.oxygen_distributor", "Pressurises the sealed room around it from a tank", "Çevresindeki sızdırmaz odayı tüpten oksijenle doldurur");
+        lang.add("tooltip.spacebreaker.oxygen_filler", "Refills tanks from a planet's breathable air, or from piped oxygen / liquid oxygen. Needs FE",
+                "Tüpleri gezegenin solunabilir havasından ya da borudan gelen oksijen / sıvı oksijenden doldurur. FE gerekir");
+        lang.add("tooltip.spacebreaker.oxygen_distributor", "Pressurises the sealed room around it from a tank or piped oxygen",
+                "Çevresindeki sızdırmaz odayı tüpten ya da borudan gelen oksijenle doldurur");
         lang.add("tooltip.spacebreaker.airlock_door", "Airtight when closed. Opens by hand or redstone", "Kapalıyken hava geçirmez. Elle ya da kızıltaşla açılır");
         lang.item(LARGE_OXYGEN_TANK, "Large Oxygen Tank", "Büyük Oksijen Tüpü");
         lang.item(EVA_HELMET, "EVA Helmet", "EVA Kaskı");
