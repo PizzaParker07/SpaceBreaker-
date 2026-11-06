@@ -1,8 +1,15 @@
-// 1.21.1	2026-11-06T15:15:27.695319072	Tags for minecraft:block mod id spacebreaker
-aa1cfa5395ea10485668ca745dbd8cd2abd64cfe data/c/tags/block/ores.json
+// 1.21.1	2026-11-06T16:21:04.738013368	Tags for minecraft:block mod id spacebreaker
+8cbf98a6f96eac5b8aa50d9208d35272e399d724 data/c/tags/block/ores.json
 2e53c12f1069a9431086af8c817e22054d435904 data/c/tags/block/ores/bauxite.json
 9f653fe92cede5b05d4ff9ac26f101e43ce60cfb data/c/tags/block/ores/ilmenite.json
-7854b8c095fbdc5499d49f0e365639c3e4ac4722 data/minecraft/tags/block/mineable/pickaxe.json
-5389fa575a493cb1e717958aff3fc599a67fb4f3 data/minecraft/tags/block/mineable/shovel.json
-9f653fe92cede5b05d4ff9ac26f101e43ce60cfb data/minecraft/tags/block/needs_iron_tool.json
-330e6ec807a499b787a1da3fe5a72e48f8989eab data/minecraft/tags/block/needs_stone_tool.json
+9303ecfabb67b55a4a9758c3fa94f957caa99294 data/c/tags/block/ores/kreep.json
+d4cf7107947920e77f4ebad58d807ea3123c27b1 data/minecraft/tags/block/ice.json
+3d205333f39b22a251b86e3f666bfab99eea629f data/minecraft/tags/block/mineable/pickaxe.json
+65f229612c5d2f11045007d043184bec03af4bbb data/minecraft/tags/block/mineable/shovel.json
+7794a7a14dfc549a806c18679f00538fcb38e7c9 data/minecraft/tags/block/needs_iron_tool.json
+dc4e58700618649d48ed5d9da2db46f9f6d0fc0b data/minecraft/tags/block/needs_stone_tool.json
+f8aabeb1c5ae11ab726d0ebab9bc698a35f54c42 data/minecraft/tags/block/slabs.json
+f05112f20c644458c8a0eb695adbd85afb359f15 data/minecraft/tags/block/stairs.json
+e3825e9a8c6f0fa0d41393d86c631340c01b8595 data/minecraft/tags/block/walls.json
+65f229612c5d2f11045007d043184bec03af4bbb data/spacebreaker/tags/block/lunar_soils.json
+3fdd2a67f181088985225042c5dc62b5b4a84539 data/spacebreaker/tags/block/moon_stone.json

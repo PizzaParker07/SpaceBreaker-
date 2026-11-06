@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "spacebreaker:block/volcanic_glass_soil",
+    "up": "spacebreaker:block/volcanic_glass_soil_footprint_left",
+    "down": "spacebreaker:block/volcanic_glass_soil",
+    "north": "spacebreaker:block/volcanic_glass_soil",
+    "south": "spacebreaker:block/volcanic_glass_soil",
+    "east": "spacebreaker:block/volcanic_glass_soil",
+    "west": "spacebreaker:block/volcanic_glass_soil"
+  }
+}

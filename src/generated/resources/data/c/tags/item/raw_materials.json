@@ -1,5 +1,6 @@
 {
   "values": [
-    "#c:raw_materials/bauxite"
+    "#c:raw_materials/bauxite",
+    "#c:raw_materials/ilmenite"
   ]
 }

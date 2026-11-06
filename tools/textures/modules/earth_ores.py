@@ -1,4 +1,4 @@
-"""Ore overlays. Ores are rendered as an overlay on top of the host stone texture
+"""Earth ore overlays (the Moon's ilmenite and KREEP live in moon.py). Ores are rendered as an overlay on top of the host stone texture
 (vanilla stone/deepslate for Earth ores, our own rocks elsewhere), so they always
 match the host block — including with resource packs.
 
@@ -45,33 +45,6 @@ def bauxite_overlay() -> Canvas:
     return _draw(BAUXITE_ROWS, BAUXITE, {str(i): i for i in range(7)})
 
 
-# Ilmenite: glossy black tabular crystals.
-# o outline, k black, d dark, m mid, h facet, H lit facet, s specular, S hot specular
-ILMENITE_ROWS = [
-    "................",
-    "..sHH....Hk.....",
-    ".sHhhk....hk..sk",
-    "sHhmkk.....o..ko",
-    ".kkdo...........",
-    "...........sH...",
-    "......sk..sHhk..",
-    "......ko..Hmkk..",
-    "...........ko...",
-    "..sk............",
-    ".sHhk.....sHHk..",
-    "sHmkk....sHhmkk.",
-    ".kkdo....Hmkkdo.",
-    "..........kko...",
-    "..............sk",
-    ".....Hk.......ko",
-]
-
-
-def ilmenite_overlay() -> Canvas:
-    from sbtex.palettes import ILMENITE
-    return _draw(ILMENITE_ROWS, ILMENITE, {'o': 0, 'k': 1, 'd': 2, 'm': 3, 'h': 4, 'H': 5, 's': 6, 'S': 7})
-
-
 def raw_bauxite_block() -> Canvas:
     """Massive pisolitic bauxite: earthy red-brown matrix packed with small round pisoids."""
     import random
@@ -98,8 +71,6 @@ def export(save):
     from sbtex import shapes, palettes as P
     save(raw_bauxite_block(), 'block', 'raw_bauxite_block', (40, 10, 50, None))
     save(bauxite_overlay(), 'block', 'bauxite_ore_overlay', (55, 18, 30, None), wrap=False)
-    ilm_rules = lambda c: (235, 230, 0, 255) if c[3] and sum(c[:3]) > 300 else ((200, 230, 0, 255) if c[3] else None)
-    save(ilmenite_overlay(), 'block', 'ilmenite_ore_overlay', (180, 230, 0, ilm_rules), wrap=False)
     save(shapes.raw_bauxite(), 'item', 'raw_bauxite')
     save(shapes.ingot(P.ALUMINIUM), 'item', 'aluminum_ingot')
     save(shapes.plate(P.ALUMINIUM), 'item', 'aluminum_plate')

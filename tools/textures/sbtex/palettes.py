@@ -2,12 +2,30 @@
 from .core import ramp
 
 # --- Moon -------------------------------------------------------------------
-# Mare basalt: dark, very slightly warm grey, fine grained.
-MARE_BASALT = ramp('#1f1e22', '#2a292d', '#343337', '#3e3d41', '#49474b', '#555256', '#625f62')
-# Lunar regolith: powdery neutral grey (highland/mare mix).
-REGOLITH = ramp('#55534f', '#62605c', '#6e6c68', '#7a7874', '#86847f', '#93908b', '#a19e98', '#b0ada6')
+# Mare basalt: dark, very slightly cool grey, fine grained.
+MARE_BASALT = ramp('#202024', '#29292e', '#323237', '#3c3c41', '#47474c', '#545459', '#62626a')
+# Lunar regolith (highlands): powdery neutral grey, a touch warm.
+REGOLITH = ramp('#55534f', '#62605c', '#6e6c68', '#7a7874', '#86847f', '#93918b', '#a19e98', '#b0ada6')
+# Mare regolith: the dark soil of the lunar seas (basalt dust + glass).
+MARE_REGOLITH = ramp('#353432', '#3f3e3c', '#494846', '#53524f', '#5e5c59', '#6a6865', '#777571')
+# Orange volcanic glass soil (pyroclastic beads, Apollo 17 style) + black beads.
+VOLCANIC_GLASS = ramp('#2e2723', '#6b4a35', '#7b563c', '#8a6344', '#98704d', '#a67e59')
+# Frost on polar regolith.
+FROST = ramp('#a9bcc4', '#cfdde2', '#eef5f7')
+# Anorthosite: pale plagioclase rock of the highlands, cool light grey.
+ANORTHOSITE = ramp('#6f706f', '#8a8b89', '#9c9d9a', '#adaeab', '#bebfbb', '#cfd0cc', '#dfe0dc')
+# Impact breccia: mid-grey melt matrix with light and dark clasts.
+BRECCIA = ramp('#3e3d3b', '#52504d', '#605e5a', '#6e6c68', '#8b8a85', '#a9a8a2', '#c3c2bc')
+# Lunar polar ice: dusty, desaturated blue-grey.
+LUNAR_ICE = ramp('#4e5d68', '#61737f', '#768893', '#8b9ca6', '#a3b2ba', '#bfcbd1', '#dbe4e8')
+# Sintered regolith: warm dark-grey ceramic.
+SINTERED = ramp('#2f2c29', '#3d3a36', '#4a4642', '#57524d', '#635e58', '#706a63', '#7e7770')
+# Meteoric iron: dark fusion crust over iron-nickel metal.
+METEORIC_IRON = ramp('#221f1d', '#332e2a', '#463f39', '#5a524b', '#7a746e', '#a19d98', '#cfccc7')
 # Ilmenite: glossy black with a cold violet sheen.
 ILMENITE = ramp('#08070b', '#121017', '#1c1a22', '#2a2631', '#454050', '#7b7489', '#bdb7cc', '#ebe8f4')
+# KREEP: phosphate/zircon-rich crystals, pale greenish yellow.
+KREEP = ramp('#4c5126', '#6b7234', '#8f9846', '#b2ba62', '#d3d98e', '#eef0c4')
 
 # --- Earth ores ----------------------------------------------------------------
 # Bauxite pisoids: red-brown to ochre.

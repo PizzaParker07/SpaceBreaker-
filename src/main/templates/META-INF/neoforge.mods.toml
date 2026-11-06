@@ -26,3 +26,7 @@ type = "required"
 versionRange = "${minecraft_version_range}"
 ordering = "NONE"
 side = "BOTH"
+
+# Planet engine: per-dimension solar time on other worlds
+[[mixins]]
+config = "spacebreaker.worldgen.mixins.json"

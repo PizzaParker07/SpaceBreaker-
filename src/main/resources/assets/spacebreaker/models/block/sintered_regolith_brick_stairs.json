@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/stairs",
+  "textures": {
+    "bottom": "spacebreaker:block/sintered_regolith_bricks",
+    "side": "spacebreaker:block/sintered_regolith_bricks",
+    "top": "spacebreaker:block/sintered_regolith_bricks"
+  }
+}

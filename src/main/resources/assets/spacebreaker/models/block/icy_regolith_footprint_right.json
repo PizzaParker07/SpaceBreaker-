@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "spacebreaker:block/icy_regolith",
+    "up": "spacebreaker:block/icy_regolith_footprint_right",
+    "down": "spacebreaker:block/icy_regolith",
+    "north": "spacebreaker:block/icy_regolith",
+    "south": "spacebreaker:block/icy_regolith",
+    "east": "spacebreaker:block/icy_regolith",
+    "west": "spacebreaker:block/icy_regolith"
+  }
+}

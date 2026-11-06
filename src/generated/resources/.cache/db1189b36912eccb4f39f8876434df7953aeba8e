@@ -1,10 +1,15 @@
-// 1.21.1	2026-11-06T15:15:27.695738194	Tags for minecraft:item mod id spacebreaker
+// 1.21.1	2026-11-06T16:21:04.740534081	Tags for minecraft:item mod id spacebreaker
 0fa79fab8073b9e1899940ee089425952972e436 data/c/tags/item/ingots.json
 0c9b9ea610564cb730896f559fe5d1669a859c32 data/c/tags/item/ingots/aluminum.json
-aa1cfa5395ea10485668ca745dbd8cd2abd64cfe data/c/tags/item/ores.json
+8cbf98a6f96eac5b8aa50d9208d35272e399d724 data/c/tags/item/ores.json
 2e53c12f1069a9431086af8c817e22054d435904 data/c/tags/item/ores/bauxite.json
 9f653fe92cede5b05d4ff9ac26f101e43ce60cfb data/c/tags/item/ores/ilmenite.json
+9303ecfabb67b55a4a9758c3fa94f957caa99294 data/c/tags/item/ores/kreep.json
 160360afe2ac4ef137bfef2b1e5396fa1ea02079 data/c/tags/item/plates/aluminum.json
-dc6d04942f6ce9f4e7c7a1a947b51f77e819e83c data/c/tags/item/raw_materials.json
+179584fb21742d4c8810ec88c96b67b6faed9031 data/c/tags/item/raw_materials.json
 01c1ab86a98c045b834d4b0eb6f54772b7c672e3 data/c/tags/item/raw_materials/bauxite.json
+c43274ba74875113cd85dbd8ca19b19ce1833a2f data/c/tags/item/raw_materials/ilmenite.json
 866d4e35597e8439a3bd31730e069ad3c563da93 data/minecraft/tags/item/head_armor.json
+f8aabeb1c5ae11ab726d0ebab9bc698a35f54c42 data/minecraft/tags/item/slabs.json
+f05112f20c644458c8a0eb695adbd85afb359f15 data/minecraft/tags/item/stairs.json
+e3825e9a8c6f0fa0d41393d86c631340c01b8595 data/minecraft/tags/item/walls.json

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_icy_regolith": {
+      "conditions": {
+        "items": [
+          {
+            "items": "spacebreaker:icy_regolith"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "spacebreaker:dry_lunar_regolith"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_icy_regolith"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "spacebreaker:dry_lunar_regolith"
+    ]
+  }
+}

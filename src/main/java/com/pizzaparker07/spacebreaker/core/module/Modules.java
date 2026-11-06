@@ -4,6 +4,7 @@ import com.pizzaparker07.spacebreaker.content.earth.EarthModule;
 import com.pizzaparker07.spacebreaker.content.machines.MachinesModule;
 import com.pizzaparker07.spacebreaker.content.moon.MoonModule;
 import com.pizzaparker07.spacebreaker.content.suit.SuitModule;
+import com.pizzaparker07.spacebreaker.content.worldgen.WorldgenModule;
 
 import java.util.List;
 
@@ -11,6 +12,7 @@ import java.util.List;
 public final class Modules {
     public static final List<SbModule> ALL = List.of(
             new EarthModule(),
+            new WorldgenModule(),
             new MoonModule(),
             new MachinesModule(),
             new SuitModule()

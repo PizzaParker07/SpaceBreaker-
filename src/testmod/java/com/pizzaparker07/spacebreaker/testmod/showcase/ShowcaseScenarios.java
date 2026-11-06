@@ -9,6 +9,7 @@ public final class ShowcaseScenarios {
 
     static {
         ALL.put("style_sample", new StyleSampleScenario());
+        ALL.put("moon", new MoonScenario());
     }
 
     public static ShowcaseScenario get(String name) {

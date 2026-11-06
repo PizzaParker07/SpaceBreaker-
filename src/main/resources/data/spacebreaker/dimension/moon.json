@@ -1,0 +1,15 @@
+{
+  "type": "spacebreaker:moon",
+  "generator": {
+    "type": "spacebreaker:planet",
+    "terrain": "spacebreaker:moon",
+    "biome_source": {
+      "type": "spacebreaker:planet",
+      "highlands": "spacebreaker:moon_highlands",
+      "lowlands": "spacebreaker:moon_mare",
+      "crater": "spacebreaker:moon_crater",
+      "volcanic": "spacebreaker:moon_volcanic",
+      "polar": "spacebreaker:moon_polar"
+    }
+  }
+}

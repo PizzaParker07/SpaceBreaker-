@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "spacebreaker:meteoric_iron"
+    }
+  ],
+  "result": {
+    "count": 4,
+    "id": "minecraft:raw_iron"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_sintered_regolith_bricks": {
+      "conditions": {
+        "items": [
+          {
+            "items": "spacebreaker:sintered_regolith_bricks"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "spacebreaker:sintered_regolith_brick_wall"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_sintered_regolith_bricks"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "spacebreaker:sintered_regolith_brick_wall"
+    ]
+  }
+}
