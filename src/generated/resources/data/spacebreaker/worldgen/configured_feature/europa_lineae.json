@@ -1,0 +1,17 @@
+{
+  "type": "spacebreaker:lineae",
+  "config": {
+    "chaos": {
+      "Name": "spacebreaker:refrozen_brine"
+    },
+    "chaos_scale": 950.0,
+    "chaos_threshold": 0.64,
+    "ridge": {
+      "Name": "spacebreaker:europan_ice"
+    },
+    "stain": {
+      "Name": "spacebreaker:stained_ice"
+    },
+    "width": 0.035
+  }
+}

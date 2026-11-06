@@ -1,0 +1,8 @@
+{
+  "feature": "spacebreaker:ganymede_grooves",
+  "placement": [
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

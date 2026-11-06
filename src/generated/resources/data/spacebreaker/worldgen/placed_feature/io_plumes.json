@@ -1,0 +1,8 @@
+{
+  "feature": "spacebreaker:io_plumes",
+  "placement": [
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

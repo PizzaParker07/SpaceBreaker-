@@ -1,0 +1,39 @@
+{
+  "type": "spacebreaker:surface_vents",
+  "config": {
+    "cell": 340,
+    "chance": 0.4,
+    "deposits": [
+      {
+        "Name": "spacebreaker:so2_frost",
+        "Properties": {
+          "facing": "north",
+          "print": "none"
+        }
+      },
+      {
+        "Name": "spacebreaker:red_sulfur",
+        "Properties": {
+          "facing": "north",
+          "print": "none"
+        }
+      },
+      {
+        "Name": "spacebreaker:red_sulfur",
+        "Properties": {
+          "facing": "north",
+          "print": "none"
+        }
+      }
+    ],
+    "max_latitude": 80.0,
+    "min_latitude": -80.0,
+    "pit": {
+      "Name": "spacebreaker:ionian_basalt"
+    },
+    "radius": 24.0,
+    "vent": {
+      "Name": "spacebreaker:sulfur_vent"
+    }
+  }
+}

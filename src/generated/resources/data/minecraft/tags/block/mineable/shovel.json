@@ -16,6 +16,17 @@
     "spacebreaker:deimos_regolith",
     "spacebreaker:venus_soil",
     "spacebreaker:mercury_regolith",
-    "spacebreaker:hollow_deposit"
+    "spacebreaker:hollow_deposit",
+    "spacebreaker:ceres_regolith",
+    "spacebreaker:ammoniated_clay",
+    "spacebreaker:carbonate_crust",
+    "spacebreaker:vestan_regolith",
+    "spacebreaker:europan_frost",
+    "spacebreaker:sulfur_sand",
+    "spacebreaker:so2_frost",
+    "spacebreaker:red_sulfur",
+    "spacebreaker:ganymede_regolith",
+    "spacebreaker:callisto_regolith",
+    "spacebreaker:bright_frost"
   ]
 }

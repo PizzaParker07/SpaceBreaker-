@@ -1,0 +1,8 @@
+{
+  "feature": "spacebreaker:callisto_valhalla",
+  "placement": [
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

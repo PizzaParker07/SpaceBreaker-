@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 844517,
+    "separation": 4,
+    "spacing": 10
+  },
+  "structures": [
+    {
+      "structure": "spacebreaker:ceres_mining_outpost",
+      "weight": 1
+    }
+  ]
+}

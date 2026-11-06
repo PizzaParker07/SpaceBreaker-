@@ -1,0 +1,12 @@
+{
+  "category": "life_support",
+  "tier": 3,
+  "requires": [
+    "spacebreaker:water_recycling"
+  ],
+  "icon": "spacebreaker:carbonate_crust",
+  "samples": [
+    "spacebreaker:ceres"
+  ],
+  "unlocks": []
+}

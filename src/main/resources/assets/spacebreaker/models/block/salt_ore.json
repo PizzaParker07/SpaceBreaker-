@@ -1,0 +1,7 @@
+{
+  "parent": "spacebreaker:block/ore_overlay",
+  "textures": {
+    "stone": "spacebreaker:block/europan_ice",
+    "overlay": "spacebreaker:block/salt_ore_overlay"
+  }
+}

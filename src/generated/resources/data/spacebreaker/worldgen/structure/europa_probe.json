@@ -1,0 +1,6 @@
+{
+  "type": "spacebreaker:europa_probe",
+  "biomes": "spacebreaker:europa_ridged_plains",
+  "spawn_overrides": {},
+  "step": "underground_structures"
+}

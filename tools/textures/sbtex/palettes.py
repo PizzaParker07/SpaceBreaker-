@@ -94,3 +94,54 @@ OXYGEN_CYAN = ramp('#06303a', '#0b4654', '#115f6f', '#17798b', '#2194a6', '#36b1
 VISOR_GLASS = ramp('#0a0f17', '#121a26', '#1c2838', '#2a3a4f', '#3f536b', '#5d7390', '#8aa0bb', '#c7d4e4')
 RUBBER = ramp('#101113', '#18191c', '#212327', '#2b2e33', '#373a40', '#45494f')
 LAMP = ramp('#5b4a1a', '#9c8433', '#d7c160', '#f3e39a', '#fff7d6', '#ffffff')
+
+# --- Outer Solar System: asteroid belt ---------------------------------------------
+# Ceres regolith: very dark (albedo 0.09) neutral grey with a faint warm cast (bead, then five powder tones).
+CERES_SOIL = ramp('#363431', '#4b4845', '#524f4b', '#595652', '#605c58', '#68645f')
+# Ammoniated phyllosilicate clay: dark grey-brown, a touch greener than the regolith.
+AMMONIA_CLAY = ramp('#3c3d35', '#4d4d44', '#55544a', '#5c5b50', '#646256', '#6d6a5e')
+# Sodium-carbonate faculae: bright, slightly warm white salt crust with soft grey shading.
+CARBONATE = ramp('#9b988f', '#b8b5ac', '#c9c6bd', '#d7d4cc', '#e2dfd8', '#eeece6')
+# Cerean rock: dark hydrated silicate rock, brown-grey.
+CEREAN_ROCK = ramp('#2a2826', '#353230', '#3f3b38', '#4a4541', '#55504b', '#615b55', '#6e6761')
+# Cerean ice: dirty water ice from below the regolith, cold grey-blue.
+CEREAN_ICE = ramp('#56626b', '#67747e', '#788690', '#8a98a2', '#9eabb4', '#b6c1c9')
+# Magnetite: black, sub-metallic with steel-grey glints.
+MAGNETITE = ramp('#111113', '#20232b', '#3a404d', '#5d6575', '#9aa3b4')
+# Vestan regolith (howardite dust): grey-buff, much brighter than Ceres.
+VESTA_SOIL = ramp('#5a564f', '#716c65', '#79746c', '#827c74', '#8a847c', '#948e85')
+# Eucrite: fine basalt, grey with pale plagioclase laths.
+EUCRITE = ramp('#3d3b39', '#4b4946', '#575451', '#63605c', '#706c67', '#8f8a83', '#b3aea6')
+# Diogenite: coarse orthopyroxene, greenish yellow-brown.
+DIOGENITE = ramp('#423f31', '#544f3b', '#655f45', '#766f50', '#867f5c', '#978f6a')
+# Chromite: black-brown sub-metallic grains.
+CHROMITE = ramp('#141110', '#251f1c', '#3a322d', '#584d46', '#7d726b')
+# Rock mite: dark carbonaceous carapace, pale salt crystals.
+ROCK_MITE = ramp('#1f1d1c', '#2b2826', '#363230', '#423d3a', '#504a46', '#5f5853')
+MITE_SALT = ramp('#9d998f', '#c3bfb5', '#dedad1', '#f1eee8')
+
+# --- Outer Solar System: Jupiter's moons ------------------------------------------------
+# Europa: bright, faintly cream frost; pale blue-grey shell ice; red-brown stained lineae ice; orange-brown chaos brine.
+EUROPA_FROST = ramp('#a9a59c', '#c9c5bc', '#d3cfc6', '#dcd8d0', '#e4e1da', '#ecebe5')
+EUROPA_ICE = ramp('#7f8f99', '#94a4ae', '#a7b6bf', '#b8c6ce', '#c9d5dc', '#dbe4ea')
+STAINED_ICE = ramp('#5e3f2f', '#734e3a', '#865d45', '#976c51', '#a87d60', '#b98f72')
+BRINE_ICE = ramp('#6a4a35', '#7f5a41', '#93694d', '#a6795b', '#b98c6d', '#d9cbb8')
+OCEAN_SALT = ramp('#8b8f96', '#a9adb3', '#c4c8cd', '#dadde1', '#eceef0', '#fbfbfc')
+# Io: muted sulfur yellow sand, white SO2 frost, rusty red short-chain sulfur, near-black silicate lava.
+SULFUR_SAND = ramp('#857429', '#a38f37', '#ac983e', '#b5a045', '#bea94d', '#c7b257')
+SO2_FROST = ramp('#b3b19f', '#cdccbd', '#d6d5c7', '#dfded2', '#e7e7dc', '#efefe7')
+RED_SULFUR = ramp('#6a2915', '#86391e', '#914023', '#9c4829', '#a75130', '#b35b37')
+IONIAN_BASALT = ramp('#161718', '#1e2021', '#27292a', '#313334', '#3c3e40', '#484a4c')
+IO_SULFUR = ramp('#5e4d12', '#8a7419', '#b39b25', '#d4bd3c', '#ead864')
+# Ganymede: grey-brown dirty regolith, bright clean grooved ice, dark ancient crust.
+GANYMEDE_SOIL = ramp('#4f4a44', '#665f57', '#6e665e', '#766e65', '#7e766c', '#877e74')
+GROOVED_ICE = ramp('#8e9196', '#a3a6ab', '#b4b7bb', '#c3c6c9', '#d1d3d6', '#dfe1e3')
+DARK_ICE_CRUST = ramp('#2f2b27', '#3b3631', '#46403a', '#514a43', '#5c544c', '#685f56')
+# Callisto: the darkest Galilean regolith, white frost knobs, dark icy rock.
+CALLISTO_SOIL = ramp('#2e2b27', '#3e3a34', '#45403a', '#4b4640', '#524c45', '#5a534c')
+BRIGHT_FROST = ramp('#a8adb3', '#c6cbd0', '#d1d5d9', '#dbdee2', '#e4e7ea', '#eef0f2')
+CALLISTAN_ROCK = ramp('#262523', '#302e2b', '#3a3734', '#45413d', '#504b47', '#5c5752', '#6a645e')
+# Creatures: glow serpent (deep blue-black skin, cyan glow), sulfur crab (glazed yellow-orange shell).
+SERPENT = ramp('#0d141b', '#142029', '#1c2c38', '#253948', '#304858', '#3d5869')
+SERPENT_GLOW = ramp('#2a9e98', '#5ef0e0', '#c8fff6')
+CRAB = ramp('#4a2a10', '#6e3f15', '#8f5a1c', '#b07c27', '#c99d35', '#dcbd4f', '#ead777')

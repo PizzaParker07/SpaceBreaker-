@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "spacebreaker:eucrite"
+  },
+  "result": {
+    "count": 1,
+    "id": "spacebreaker:eucrite_wall"
+  }
+}

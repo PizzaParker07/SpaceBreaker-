@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "spacebreaker:block/ice_geyser_top",
+    "bottom": "spacebreaker:block/ice_geyser_side",
+    "side": "spacebreaker:block/ice_geyser_side"
+  }
+}

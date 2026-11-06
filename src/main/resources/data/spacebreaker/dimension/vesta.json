@@ -1,0 +1,13 @@
+{
+  "type": "spacebreaker:vesta",
+  "generator": {
+    "type": "spacebreaker:planet",
+    "terrain": "spacebreaker:vesta",
+    "biome_source": {
+      "type": "spacebreaker:planet",
+      "highlands": "spacebreaker:vesta_highlands",
+      "crater": "spacebreaker:vesta_crater",
+      "polar": "spacebreaker:vesta_polar"
+    }
+  }
+}

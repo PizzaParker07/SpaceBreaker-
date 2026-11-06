@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "spacebreaker:block/callisto_regolith",
+    "up": "spacebreaker:block/callisto_regolith_footprint_right",
+    "down": "spacebreaker:block/callisto_regolith",
+    "north": "spacebreaker:block/callisto_regolith",
+    "south": "spacebreaker:block/callisto_regolith",
+    "east": "spacebreaker:block/callisto_regolith",
+    "west": "spacebreaker:block/callisto_regolith"
+  }
+}

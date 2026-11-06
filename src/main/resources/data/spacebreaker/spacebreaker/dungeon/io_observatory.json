@@ -1,0 +1,15 @@
+{
+  "structure": "spacebreaker:io_observatory",
+  "world": "spacebreaker:io",
+  "guardians": [
+    {
+      "entity": "spacebreaker:sulfur_crab",
+      "count": 2
+    }
+  ],
+  "guardian_radius": 9,
+  "loot_tables": [
+    "spacebreaker:dungeons/io/observatory_logs",
+    "spacebreaker:dungeons/io/observatory_vault"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "spacebreaker:block/so2_frost",
+    "up": "spacebreaker:block/so2_frost_footprint_left",
+    "down": "spacebreaker:block/so2_frost",
+    "north": "spacebreaker:block/so2_frost",
+    "south": "spacebreaker:block/so2_frost",
+    "east": "spacebreaker:block/so2_frost",
+    "west": "spacebreaker:block/so2_frost"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab",
+  "textures": {
+    "bottom": "spacebreaker:block/callistan_rock",
+    "side": "spacebreaker:block/callistan_rock",
+    "top": "spacebreaker:block/callistan_rock"
+  }
+}

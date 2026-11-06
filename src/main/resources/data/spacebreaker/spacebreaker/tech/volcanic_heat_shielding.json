@@ -1,0 +1,13 @@
+{
+  "category": "life_support",
+  "tier": 4,
+  "requires": [
+    "spacebreaker:thermal_regulation",
+    "spacebreaker:suit_mk2"
+  ],
+  "icon": "minecraft:magma_block",
+  "samples": [
+    "spacebreaker:io"
+  ],
+  "unlocks": []
+}

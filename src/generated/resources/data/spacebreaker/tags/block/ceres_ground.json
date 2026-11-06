@@ -1,0 +1,11 @@
+{
+  "values": [
+    "spacebreaker:ceres_regolith",
+    "spacebreaker:ammoniated_clay",
+    "spacebreaker:carbonate_crust",
+    "spacebreaker:cerean_rock",
+    "spacebreaker:vestan_regolith",
+    "spacebreaker:eucrite",
+    "spacebreaker:diogenite"
+  ]
+}

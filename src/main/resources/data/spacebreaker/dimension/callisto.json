@@ -1,0 +1,13 @@
+{
+  "type": "spacebreaker:callisto",
+  "generator": {
+    "type": "spacebreaker:planet",
+    "terrain": "spacebreaker:callisto",
+    "biome_source": {
+      "type": "spacebreaker:planet",
+      "highlands": "spacebreaker:callisto_plains",
+      "crater": "spacebreaker:callisto_crater",
+      "polar": "spacebreaker:callisto_polar"
+    }
+  }
+}

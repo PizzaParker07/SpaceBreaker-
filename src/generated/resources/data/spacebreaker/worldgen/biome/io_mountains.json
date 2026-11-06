@@ -1,0 +1,50 @@
+{
+  "carvers": {},
+  "creature_spawn_probability": 0.04,
+  "downfall": 0.0,
+  "effects": {
+    "fog_color": 0,
+    "foliage_color": 12099664,
+    "grass_color": 12099664,
+    "sky_color": 0,
+    "water_color": 4159204,
+    "water_fog_color": 329011
+  },
+  "features": [
+    [],
+    [
+      "spacebreaker:io_paterae"
+    ],
+    [
+      "spacebreaker:io_boulder"
+    ],
+    [],
+    [
+      "spacebreaker:io_plumes"
+    ],
+    [],
+    [
+      "spacebreaker:io_sulfur_ore"
+    ]
+  ],
+  "has_precipitation": false,
+  "spawn_costs": {},
+  "spawners": {
+    "ambient": [],
+    "axolotls": [],
+    "creature": [],
+    "misc": [],
+    "monster": [
+      {
+        "type": "spacebreaker:sulfur_crab",
+        "maxCount": 3,
+        "minCount": 1,
+        "weight": 50
+      }
+    ],
+    "underground_water_creature": [],
+    "water_ambient": [],
+    "water_creature": []
+  },
+  "temperature": -1.4
+}

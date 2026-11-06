@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "spacebreaker:block/ammoniated_clay",
+    "up": "spacebreaker:block/ammoniated_clay_footprint_right",
+    "down": "spacebreaker:block/ammoniated_clay",
+    "north": "spacebreaker:block/ammoniated_clay",
+    "south": "spacebreaker:block/ammoniated_clay",
+    "east": "spacebreaker:block/ammoniated_clay",
+    "west": "spacebreaker:block/ammoniated_clay"
+  }
+}
