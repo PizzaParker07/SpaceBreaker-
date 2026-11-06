@@ -7,6 +7,9 @@
     "spacebreaker:martian_basalt_slab",
     "spacebreaker:polished_martian_basalt_slab",
     "spacebreaker:martian_basalt_brick_slab",
-    "spacebreaker:martian_sandstone_slab"
+    "spacebreaker:martian_sandstone_slab",
+    "spacebreaker:cerean_rock_slab",
+    "spacebreaker:eucrite_slab",
+    "spacebreaker:eucrite_brick_slab"
   ]
 }

@@ -104,6 +104,22 @@
     "spacebreaker:composite_panel",
     "spacebreaker:mercurian_crust",
     "spacebreaker:low_reflectance_rock",
-    "spacebreaker:graphite_ore"
+    "spacebreaker:graphite_ore",
+    "spacebreaker:cerean_ice",
+    "spacebreaker:magnetite_ore",
+    "spacebreaker:diogenite",
+    "spacebreaker:chromite_ore",
+    "spacebreaker:cerean_rock",
+    "spacebreaker:cerean_rock_stairs",
+    "spacebreaker:cerean_rock_slab",
+    "spacebreaker:cerean_rock_wall",
+    "spacebreaker:eucrite",
+    "spacebreaker:eucrite_stairs",
+    "spacebreaker:eucrite_slab",
+    "spacebreaker:eucrite_wall",
+    "spacebreaker:eucrite_bricks",
+    "spacebreaker:eucrite_brick_stairs",
+    "spacebreaker:eucrite_brick_slab",
+    "spacebreaker:eucrite_brick_wall"
   ]
 }

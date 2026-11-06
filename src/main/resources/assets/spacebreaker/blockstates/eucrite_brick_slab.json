@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "spacebreaker:block/eucrite_brick_slab"
+    },
+    "type=top": {
+      "model": "spacebreaker:block/eucrite_brick_slab_top"
+    },
+    "type=double": {
+      "model": "spacebreaker:block/eucrite_bricks"
+    }
+  }
+}

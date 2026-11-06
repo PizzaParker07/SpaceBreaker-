@@ -10,6 +10,8 @@
     "#c:ores/hematite",
     "#c:ores/gypsum",
     "#c:ores/sulfur",
-    "#c:ores/graphite"
+    "#c:ores/graphite",
+    "#c:ores/magnetite",
+    "#c:ores/chromite"
   ]
 }

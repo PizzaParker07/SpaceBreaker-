@@ -9,6 +9,8 @@
     "#c:ores/kreep",
     "#c:ores/hematite",
     "#c:ores/gypsum",
-    "#c:ores/graphite"
+    "#c:ores/graphite",
+    "#c:ores/magnetite",
+    "#c:ores/chromite"
   ]
 }

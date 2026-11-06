@@ -1,0 +1,28 @@
+{
+  "type": "spacebreaker:boulder",
+  "config": {
+    "block": {
+      "type": "minecraft:weighted_state_provider",
+      "entries": [
+        {
+          "data": {
+            "Name": "spacebreaker:eucrite"
+          },
+          "weight": 5
+        },
+        {
+          "data": {
+            "Name": "spacebreaker:diogenite"
+          },
+          "weight": 2
+        }
+      ]
+    },
+    "buried": 0.45,
+    "radius": {
+      "type": "minecraft:uniform",
+      "max_exclusive": 2.2,
+      "min_inclusive": 0.8
+    }
+  }
+}

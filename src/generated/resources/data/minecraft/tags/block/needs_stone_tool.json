@@ -24,6 +24,7 @@
     "spacebreaker:hematite_ore",
     "spacebreaker:metal_frost",
     "spacebreaker:composite_panel",
-    "spacebreaker:graphite_ore"
+    "spacebreaker:graphite_ore",
+    "spacebreaker:magnetite_ore"
   ]
 }

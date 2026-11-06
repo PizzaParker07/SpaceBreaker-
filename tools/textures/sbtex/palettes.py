@@ -94,3 +94,28 @@ OXYGEN_CYAN = ramp('#06303a', '#0b4654', '#115f6f', '#17798b', '#2194a6', '#36b1
 VISOR_GLASS = ramp('#0a0f17', '#121a26', '#1c2838', '#2a3a4f', '#3f536b', '#5d7390', '#8aa0bb', '#c7d4e4')
 RUBBER = ramp('#101113', '#18191c', '#212327', '#2b2e33', '#373a40', '#45494f')
 LAMP = ramp('#5b4a1a', '#9c8433', '#d7c160', '#f3e39a', '#fff7d6', '#ffffff')
+
+# --- Outer Solar System: asteroid belt ---------------------------------------------
+# Ceres regolith: very dark (albedo 0.09) neutral grey with a faint warm cast (bead, then five powder tones).
+CERES_SOIL = ramp('#2e2c2a', '#3e3b38', '#44413e', '#4a4744', '#514d4a', '#595551')
+# Ammoniated phyllosilicate clay: dark grey-brown, a touch greener than the regolith.
+AMMONIA_CLAY = ramp('#353630', '#44443c', '#4b4a42', '#525047', '#59574d', '#625f54')
+# Sodium-carbonate faculae: bright, slightly warm white salt crust with soft grey shading.
+CARBONATE = ramp('#9b988f', '#b8b5ac', '#c9c6bd', '#d7d4cc', '#e2dfd8', '#eeece6')
+# Cerean rock: dark hydrated silicate rock, brown-grey.
+CEREAN_ROCK = ramp('#232120', '#2d2a28', '#363230', '#403b38', '#4a4541', '#55504b', '#625c56')
+# Cerean ice: dirty water ice from below the regolith, cold grey-blue.
+CEREAN_ICE = ramp('#56626b', '#67747e', '#788690', '#8a98a2', '#9eabb4', '#b6c1c9')
+# Magnetite: black, sub-metallic with steel-grey glints.
+MAGNETITE = ramp('#111113', '#20232b', '#3a404d', '#5d6575', '#9aa3b4')
+# Vestan regolith (howardite dust): grey-buff, much brighter than Ceres.
+VESTA_SOIL = ramp('#5a564f', '#716c65', '#79746c', '#827c74', '#8a847c', '#948e85')
+# Eucrite: fine basalt, grey with pale plagioclase laths.
+EUCRITE = ramp('#3d3b39', '#4b4946', '#575451', '#63605c', '#706c67', '#8f8a83', '#b3aea6')
+# Diogenite: coarse orthopyroxene, greenish yellow-brown.
+DIOGENITE = ramp('#423f31', '#544f3b', '#655f45', '#766f50', '#867f5c', '#978f6a')
+# Chromite: black-brown sub-metallic grains.
+CHROMITE = ramp('#141110', '#251f1c', '#3a322d', '#584d46', '#7d726b')
+# Rock mite: dark carbonaceous carapace, pale salt crystals.
+ROCK_MITE = ramp('#1f1d1c', '#2b2826', '#363230', '#423d3a', '#504a46', '#5f5853')
+MITE_SALT = ramp('#9d998f', '#c3bfb5', '#dedad1', '#f1eee8')

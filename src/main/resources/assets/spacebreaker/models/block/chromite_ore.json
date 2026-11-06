@@ -1,0 +1,7 @@
+{
+  "parent": "spacebreaker:block/ore_overlay",
+  "textures": {
+    "stone": "spacebreaker:block/diogenite",
+    "overlay": "spacebreaker:block/chromite_ore_overlay"
+  }
+}

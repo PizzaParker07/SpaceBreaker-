@@ -1,0 +1,17 @@
+{
+  "type": "spacebreaker:crater_floor_deposit",
+  "config": {
+    "block": {
+      "Name": "spacebreaker:carbonate_crust",
+      "Properties": {
+        "facing": "north",
+        "print": "none"
+      }
+    },
+    "chance": 0.38,
+    "dome": 4.0,
+    "extent": 0.17,
+    "min_radius": 16.0,
+    "spots": 0.6
+  }
+}

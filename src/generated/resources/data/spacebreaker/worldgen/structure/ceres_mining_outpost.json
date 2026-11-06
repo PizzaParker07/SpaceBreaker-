@@ -1,0 +1,9 @@
+{
+  "type": "spacebreaker:ceres_mining_outpost",
+  "biomes": [
+    "spacebreaker:ceres_plains",
+    "spacebreaker:ceres_crater"
+  ],
+  "spawn_overrides": {},
+  "step": "surface_structures"
+}
