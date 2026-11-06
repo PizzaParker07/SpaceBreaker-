@@ -1047,6 +1047,31 @@ def hud_icons() -> Canvas:
     return cv
 
 
+# Safety tether: a coil of safety-orange line, its tail running up to a steel carabiner
+ICON_TETHER = [
+    "...........oo...",
+    "..........oSSo..",
+    ".........oSoosS.",
+    ".........oSo.os.",
+    ".........oSo.os.",
+    "....oooo.oSo.os.",
+    "..ooHHHHooSo.os.",
+    ".oHHhhhhhooSsso.",
+    "oHhooooooddooo..",
+    "oHo.oHHo.oHdo...",
+    "oho.oHdo.ohdo...",
+    "ohho.oo.ohhdo...",
+    ".ohhhoooohddo...",
+    "..oddhhhhddo....",
+    "...oooooooo.....",
+    "................",
+]
+
+
+def icon_tether() -> Canvas:
+    pal = {'o': (45, 30, 18), 'H': ORANGE[7], 'h': ORANGE[5], 'd': ORANGE[3], 'S': S[7], 's': S[4]}
+    return _icon(ICON_TETHER, pal)
+
 def export(save):
     save(hud_icons(), 'gui', 'hud_icons')
     export_blocks(save)
@@ -1054,6 +1079,7 @@ def export(save):
     save(oxygen_tank_model(), 'item', 'oxygen_tank_model')
     save(icon_large_tank(), 'item', 'large_oxygen_tank')
     save(icon_mmu(), 'item', 'maneuvering_unit')
+    save(icon_tether(), 'item', 'safety_tether')
     export_tiers(save)
     save(eva_suit_overlay(), 'models/armor', 'eva_suit_overlay')
 

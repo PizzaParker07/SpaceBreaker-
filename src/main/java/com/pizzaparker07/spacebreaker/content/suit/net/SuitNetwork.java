@@ -16,5 +16,7 @@ public final class SuitNetwork {
                 (payload, ctx) -> ClientSuitState.accept(payload, ctx.player().level().getGameTime()));
         registrar.playToServer(ThrustPayload.TYPE, ThrustPayload.CODEC,
                 (payload, ctx) -> LifeSupport.data(ctx.player()).thrusting = payload.thrusting());
+        registrar.playToClient(TetherPayload.TYPE, TetherPayload.CODEC,
+                (payload, ctx) -> com.pizzaparker07.spacebreaker.client.suit.TetherClient.accept(payload));
     }
 }

@@ -30,6 +30,7 @@ public final class SuitEvents {
             return;
         }
         SurvivalData data = LifeSupport.data(player);
+        Tether.tick(player);
         if (player.tickCount % 20 == 0 || player.tickCount < 2) {
             data.doseRateMsvDay = Environment.radiation(player.level(), BlockPos.containing(player.getEyePosition()));
             cachedRate(sp, data.doseRateMsvDay);
@@ -110,6 +111,31 @@ public final class SuitEvents {
             }
         }
         return worst;
+    }
+
+    @SubscribeEvent
+    static void onStartTracking(net.neoforged.neoforge.event.entity.player.PlayerEvent.StartTracking event) {
+        if (event.getTarget() instanceof Player target && event.getEntity() instanceof ServerPlayer tracker
+                && tracker.connection.hasChannel(com.pizzaparker07.spacebreaker.content.suit.net.TetherPayload.TYPE)) {
+            Tether.anchor(target).ifPresent(a -> PacketDistributor.sendToPlayer(tracker,
+                    new com.pizzaparker07.spacebreaker.content.suit.net.TetherPayload(target.getId(), java.util.Optional.of(a))));
+        }
+    }
+
+    @SubscribeEvent
+    static void onLogin(net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent event) {
+        Tether.sync(event.getEntity());
+    }
+
+    @SubscribeEvent
+    static void onRespawn(net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerRespawnEvent event) {
+        Tether.sync(event.getEntity());
+    }
+
+    @SubscribeEvent
+    static void onChangeDimension(net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerChangedDimensionEvent event) {
+        Tether.release(event.getEntity(), "message.spacebreaker.tether.released");
+        Tether.sync(event.getEntity());
     }
 
     @SubscribeEvent
