@@ -296,3 +296,26 @@ Callisto dirty ice, Titan organic haze with methane lakes, Earth oceans).
 | `glaciation` | 1 for icy worlds below 0 °C, polar caps on cold worlds with air, polar cold traps on airless ones |
 | `volcanism` | max of radiogenic heat (√mass · e^(−age/4 Gyr)) and tidal heating (Ė = 21/2 · k₂/Q · G M² R⁵ n e² / a⁶, Io = 1) |
 | `roughness`, `dunes` | relief from craters, volcanism and low gravity; dunes when there is wind (p > 0.3 kPa) and dry land |
+
+### Terrain parameters (`TerrainParams`)
+
+`TerrainParams.of(body, hints)` turns the hints into the numbers of a worldgen `TerrainProfile`
+(block units): base height, relief amplitude/scale/detail/roughness, lowland threshold and depth, crater
+density multiplier (Moon = 1, Venus ≈ 0.35), crater depth/rim ratios, complex-crater radius (∝ g^−0.3),
+fresh-crater share, polar and ice latitudes (caps cover the glaciated fraction: 1 − sin φ = f), sea level
+and liquid, and switches for dunes, volcanoes, valleys and ice caps. `referenceProfile()` names a
+hand-made profile whose blocks fit the colour family (`moon`, `mars`, `venus`) until generic
+colour-variant blocks exist. Unit tests keep the real bodies close to their hand-made profiles.
+
+## Interstellar travel (`Interstellar`)
+
+```java
+List<Interstellar.Destination> near = Interstellar.nearby(galaxy, galaxy.sun(), 15); // ly, nearest first
+near.get(0).nameEn();          // "Proxima Centauri", 4.24 ly; summary(): kind, class, colour, mass, L
+Interstellar.Trip t = Interstellar.trip(near.get(0).distanceLy(), 0.1);  // cruise at 0.1 c
+t.deltaV(); t.travelYears(); t.shipYears();   // 2·c·atanh β, d/β, with time dilation
+```
+
+A placeholder for the deep space drive: gate it behind the research tech `Interstellar.REQUIRED_TECH`
+(`spacebreaker:deep_space_drive`); for gameplay, `scaledTravelSeconds(ly, secondsPerLy)` gives a short
+scaled trip time.
