@@ -153,16 +153,52 @@ public record CelestialBody(
     }
 
     /** Surface pressure in kPa (Earth = 101.3) and composition as volume fractions. */
-    public record Atmosphere(double pressureKpa, boolean breathable, Map<String, Double> composition) {
+    /**
+     * @param haze optional visible haze of a thick atmosphere (fog colour and visibility at the surface); read by the
+     *             world's sky effects and by shader-pack compatibility, so packs can reproduce it
+     */
+    public record Atmosphere(double pressureKpa, boolean breathable, Map<String, Double> composition, Optional<Haze> haze) {
         public static final Atmosphere VACUUM = new Atmosphere(0, false, Map.of());
         public static final Codec<Atmosphere> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.DOUBLE.fieldOf("pressure_kpa").forGetter(Atmosphere::pressureKpa),
                 Codec.BOOL.optionalFieldOf("breathable", false).forGetter(Atmosphere::breathable),
-                Codec.unboundedMap(Codec.STRING, Codec.DOUBLE).optionalFieldOf("composition", Map.of()).forGetter(Atmosphere::composition)
+                Codec.unboundedMap(Codec.STRING, Codec.DOUBLE).optionalFieldOf("composition", Map.of()).forGetter(Atmosphere::composition),
+                Haze.CODEC.optionalFieldOf("haze").forGetter(Atmosphere::haze)
         ).apply(i, Atmosphere::new));
+
+        public Atmosphere(double pressureKpa, boolean breathable, Map<String, Double> composition) {
+            this(pressureKpa, breathable, composition, Optional.empty());
+        }
 
         public boolean isVacuum() {
             return pressureKpa < 0.1;
+        }
+    }
+
+    /**
+     * Haze of a thick atmosphere.
+     *
+     * @param colour           fog colour at the surface in full daylight (RGB)
+     * @param highColour       fog colour high up, inside the cloud deck (RGB)
+     * @param visibilityBlocks how far you can see at the surface, blocks
+     */
+    public record Haze(int colour, int highColour, double visibilityBlocks) {
+        private static final Codec<Integer> HEX = Codec.STRING.comapFlatMap(str -> {
+            try {
+                return com.mojang.serialization.DataResult.success(Integer.parseInt(str.startsWith("#") ? str.substring(1) : str, 16));
+            } catch (NumberFormatException e) {
+                return com.mojang.serialization.DataResult.error(() -> "not a hex colour: " + str);
+            }
+        }, c -> String.format("#%06x", c));
+        public static final Codec<Haze> CODEC = RecordCodecBuilder.create(i -> i.group(
+                HEX.fieldOf("colour").forGetter(Haze::colour),
+                HEX.optionalFieldOf("high_colour").forGetter(h -> Optional.of(h.highColour())),
+                Codec.DOUBLE.optionalFieldOf("visibility_blocks", 64.0).forGetter(Haze::visibilityBlocks)
+        ).apply(i, (c, hc, v) -> new Haze(c, hc.orElse(c), v)));
+
+        /** The colour as r, g, b in 0..1. */
+        public static float[] rgb(int c) {
+            return new float[]{(c >> 16 & 255) / 255F, (c >> 8 & 255) / 255F, (c & 255) / 255F};
         }
     }
 

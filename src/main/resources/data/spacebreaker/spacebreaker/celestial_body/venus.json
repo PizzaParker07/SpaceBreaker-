@@ -8,7 +8,8 @@
   "rotation": { "day_length_hours": 2802.0, "axial_tilt_deg": 177.36 },
   "atmosphere": {
     "pressure_kpa": 9200.0,
-    "composition": { "CO2": 0.965, "N2": 0.035, "SO2": 0.00015 }
+    "composition": { "CO2": 0.965, "N2": 0.035, "SO2": 0.00015 },
+    "haze": { "colour": "#7a5429", "high_colour": "#dbcc99", "visibility_blocks": 64 }
   },
   "climate": { "day_temp_c": 464, "night_temp_c": 464 },
   "radiation_msv_per_day": 0.001,

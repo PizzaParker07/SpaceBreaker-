@@ -48,6 +48,9 @@ public final class VenusGameTests {
                 .orElseThrow(() -> new AssertionError("venus has no body"));
         helper.assertTrue(body.atmosphere().pressureKpa() > 9000, "92 bar at the surface");
         helper.assertTrue(body.climate().dayTempC() > 400, "a furnace at the surface");
+        var haze = body.atmosphere().haze().orElseThrow(() -> new AssertionError("venus has no haze data"));
+        helper.assertTrue(haze.visibilityBlocks() > 16 && haze.visibilityBlocks() < 128, "a thick surface haze, got " + haze.visibilityBlocks());
+        helper.assertTrue(haze.colour() != haze.highColour(), "dark orange haze below, pale cloud colour above");
         // the altitude model: 1 bar and room temperature somewhere in the cloud deck
         double surfaceP = body.atmosphere().pressureKpa();
         double cloudP = surfaceP * Math.exp(-(220 - VenusClimate.SURFACE) / VenusClimate.SCALE_HEIGHT);
