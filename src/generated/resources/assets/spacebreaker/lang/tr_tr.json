@@ -59,6 +59,7 @@
   "gui.spacebreaker.guide.none": "Hiçbir şey bulunamadı",
   "gui.spacebreaker.guide.results": "Arama sonuçları",
   "gui.spacebreaker.guide.search": "Ara...",
+  "gui.spacebreaker.guide.title": "Saha Rehberi",
   "gui.spacebreaker.lab.analysing": "İnceleniyor: %s",
   "gui.spacebreaker.lab.draw": "%s FE/t harcar",
   "gui.spacebreaker.lab.energy": "%s / %s FE",

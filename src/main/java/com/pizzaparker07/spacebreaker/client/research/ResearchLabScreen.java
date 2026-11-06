@@ -78,18 +78,12 @@ public class ResearchLabScreen extends AbstractContainerScreen<ResearchLabMenu> 
     protected void renderLabels(GuiGraphics g, int mouseX, int mouseY) {
         super.renderLabels(g, mouseX, mouseY);
         Component status = statusLine();
-        int w = font.width(status);
-        int maxW = 146 - 30;
-        if (w > maxW) {
-            List<net.minecraft.util.FormattedCharSequence> lines = font.split(status, maxW);
-            int y = 56;
-            for (var line : lines.subList(0, Math.min(2, lines.size()))) {
-                g.drawString(font, line, 30 + (maxW - font.width(line)) / 2, y, 0x404040, false);
-                y += 9;
-            }
-        } else {
-            g.drawString(font, status, 30 + (maxW - w) / 2, 60, 0x404040, false);
+        int maxW = 120;
+        String text = status.getString();
+        if (font.width(text) > maxW) {
+            text = font.plainSubstrByWidth(text, maxW - font.width("...")) + "...";
         }
+        g.drawString(font, text, 28 + (maxW - font.width(text)) / 2, 58, 0x404040, false);
     }
 
     private Component statusLine() {

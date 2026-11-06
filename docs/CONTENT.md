@@ -46,6 +46,18 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | ⬜ | Anortozit (+ türevler), Darbe Breşi, Turuncu Volkanik Cam Toprağı, Buzlu Regolit, Ay Buzu, Sinterlenmiş Regolit Tuğlası, Meteor Demiri | |
 | ⬜ | Üs blokları: alüminyum paneller, titanyum levha, ızgara zemin, lombar, basınçlı cam, kayar kapı, uyarı şeridi, LED/panel lamba/projektör, kablo ve boru kanalları, merdiven/korkuluk/platform | |
 
+### Paket ④ Araştırma, zindanlar ve rehber
+| Durum | İçerik | Not |
+|---|---|---|
+| 🎨 | Teknoloji ağacı (Faz 1–3, 55 teknoloji) | itki, yaşam desteği, sanayi, astronomi, inşaat, keşif dalları; ön koşullar dallar arası |
+| 🎨 | Teknoloji Diski | dal rengine göre etiket; zindanlardan çıkar, laboratuvarda okunur, okunduktan sonra geri verilir |
+| 🎨 | Saha Numunesi, Deney Kaydı, Numune Çantası | her dünyanın numunesi farklı teknolojileri ortaya çıkarır |
+| 🎨 | Araştırma Laboratuvarı | tezgâh + analiz cihazı + mikroskop; FE ile çalışır, çalışırken ekran parlar; takımla paylaşım |
+| 🎨 | Araştırma ağacı ekranı (J) | dallar, ön koşul çizgileri, ipuçları, sürükle/yakınlaştır |
+| 🎨 | Saha Rehberi | iki sayfalık kitap: bölümler, arama, eşyalar, tarifler, çizimler, teknolojiyle açılan sayfalar (TR + EN) |
+| 🎨 | Terk Edilmiş Gözlemevi (Dünya zindanı) | bakır kubbe, kırık teleskop, gizli arşiv (ilk roketçilik diskleri), roket test rampası, muhafızlar |
+| 🎨 | Ana başarım ağacı | ilk cevher → külçe → güneş; numune → laboratuvar → ilk teknoloji; zindan → roket → yörünge → Ay → dönüş |
+
 ---
 
 ## Yaratıklar (gezegenlere özgü, kan yok)

@@ -41,6 +41,7 @@ public class GuideScreen extends Screen {
     public static final int BOOK_W = 300, BOOK_H = 188, TEX_W = 512, TEX_H = 256;
     private static final int PAGE_W = 118, PAGE_TOP = 16, PAGE_BOTTOM = 164;
     private static final int LEFT_X = 22, RIGHT_X = 160;
+    private static final int CHAPTER_Y = 30, CHAPTER_ROW = 15;
     private static final int INK = 0x3B2A1A, INK_SOFT = 0x6E5A44, INK_LINK = 0x1E4E7A;
 
     /** Remembered between openings (like vanilla's lectern page). */
@@ -75,7 +76,7 @@ public class GuideScreen extends Screen {
             chapter = GuideData.INSTANCE.chapters().get(0).id();
         }
         String text = search == null ? "" : search.getValue();
-        search = new EditBox(font, bx + LEFT_X + 2, by + PAGE_TOP + 14, PAGE_W - 4, 12, Component.translatable("gui.spacebreaker.guide.search"));
+        search = new EditBox(font, bx + LEFT_X + 2, by + PAGE_TOP + 12, PAGE_W - 4, 12, Component.translatable("gui.spacebreaker.guide.search"));
         search.setHint(Component.translatable("gui.spacebreaker.guide.search").withStyle(ChatFormatting.GRAY));
         search.setBordered(true);
         search.setMaxLength(40);
@@ -155,6 +156,8 @@ public class GuideScreen extends Screen {
     }
 
     public void setSearch(String text) {
+        open = null;
+        lastEntry = null;
         search.setValue(text);
         updateWidgets();
     }
@@ -293,22 +296,22 @@ public class GuideScreen extends Screen {
     private @Nullable List<Component> renderIndex(GuiGraphics g, int mouseX, int mouseY) {
         List<Component> hover = null;
         int lx = bx + LEFT_X, rx = bx + RIGHT_X, py = by + PAGE_TOP;
-        Component title = Component.translatable("item.spacebreaker.guide_book").withStyle(ChatFormatting.BOLD);
+        Component title = Component.translatable("gui.spacebreaker.guide.title").withStyle(ChatFormatting.BOLD);
         g.drawString(font, title, lx + (PAGE_W - font.width(title)) / 2, py + 1, INK, false);
-        int y = py + 32;
+        int y = py + CHAPTER_Y;
         for (GuideData.Chapter c : GuideData.INSTANCE.chapters()) {
-            if (y > by + PAGE_BOTTOM - 16) {
+            if (y > by + BOOK_H - 26) {
                 break;
             }
             boolean sel = c.id().equals(chapter) && search.getValue().isBlank();
-            boolean hot = inside(mouseX, mouseY, lx, y - 1, PAGE_W, 18);
+            boolean hot = inside(mouseX, mouseY, lx, y - 1, PAGE_W, CHAPTER_ROW);
             if (sel) {
-                g.fill(lx - 2, y - 1, lx + PAGE_W, y + 17, 0x30000000 | INK_SOFT);
+                g.fill(lx - 2, y - 1, lx + PAGE_W, y + CHAPTER_ROW - 1, 0x30000000 | INK_SOFT);
             }
-            renderIcon(g, c.icon(), lx, y);
+            renderIcon(g, c.icon(), lx, y - 1);
             Component name = Component.translatable("guide.spacebreaker.chapter." + c.id());
-            g.drawString(font, name, lx + 20, y + 5, hot ? INK_LINK : INK, false);
-            y += 18;
+            g.drawString(font, name, lx + 20, y + 3, hot ? INK_LINK : INK, false);
+            y += CHAPTER_ROW;
         }
         // right page: entries
         boolean searching = !search.getValue().isBlank();
@@ -332,8 +335,14 @@ public class GuideScreen extends Screen {
                 g.blitSprite(LOCK, rx + 3, y + 2, 10, 12);
             }
             String t = unlocked ? e.title() : "???";
-            String clipped = font.plainSubstrByWidth(t, PAGE_W - 22);
-            g.drawString(font, clipped, rx + 20, y + 5, !unlocked ? INK_SOFT : hot ? INK_LINK : INK, false);
+            List<FormattedCharSequence> lines = font.split(Component.literal(t), PAGE_W - 22);
+            int color = !unlocked ? INK_SOFT : hot ? INK_LINK : INK;
+            if (lines.size() == 1) {
+                g.drawString(font, lines.get(0), rx + 20, y + 5, color, false);
+            } else {
+                g.drawString(font, lines.get(0), rx + 20, y, color, false);
+                g.drawString(font, lines.get(1), rx + 20, y + 9, color, false);
+            }
             if (hot && !unlocked && e.requiresTech().isPresent()) {
                 hover = List.of(Component.translatable("gui.spacebreaker.guide.locked",
                         Component.translatable(TechNode.nameKey(e.requiresTech().get()))));
@@ -460,9 +469,9 @@ public class GuideScreen extends Screen {
             return false;
         }
         int lx = bx + LEFT_X, rx = bx + RIGHT_X, py = by + PAGE_TOP;
-        int y = py + 32;
+        int y = py + CHAPTER_Y;
         for (GuideData.Chapter c : GuideData.INSTANCE.chapters()) {
-            if (inside(mx, my, lx, y - 1, PAGE_W, 18)) {
+            if (inside(mx, my, lx, y - 1, PAGE_W, CHAPTER_ROW)) {
                 chapter = c.id();
                 lastChapter = chapter;
                 search.setValue("");
@@ -470,7 +479,7 @@ public class GuideScreen extends Screen {
                 updateWidgets();
                 return true;
             }
-            y += 18;
+            y += CHAPTER_ROW;
         }
         List<GuideData.Entry> list = visibleEntries();
         int cap = listCapacity();

@@ -9,6 +9,7 @@ public final class ShowcaseScenarios {
 
     static {
         ALL.put("style_sample", new StyleSampleScenario());
+        ALL.put("research", new ResearchScenario());
     }
 
     public static ShowcaseScenario get(String name) {

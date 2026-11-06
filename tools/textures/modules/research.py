@@ -200,10 +200,10 @@ def guide_book() -> Canvas:
         cv[2, y] = s
         cv[12, y] = o
         cv[13, y] = PAPER[4] if y % 2 else PAPER[2]
-        cv[14, y] = PAPER[0] if y > 2 else (0, 0, 0, 0)
+        cv[14, y] = o if y > 2 else (0, 0, 0, 0)
         for x in range(3, 12):
             cv[x, y] = H if (y == 2 or x == 3) else (s if (y == 13 or x == 11) else c)
-    cv[13, 14] = PAPER[0]
+    cv[13, 14] = o
     cv[13, 1] = (0, 0, 0, 0)
     cv[14, 14] = (0, 0, 0, 0)
     # spine bands
@@ -213,11 +213,10 @@ def guide_book() -> Canvas:
     for x, y, t in [(7, 4, 6), (6, 5, 5), (7, 5, 6), (8, 5, 4),
                     (4, 6, 3), (5, 6, 5), (6, 6, 6), (7, 6, 5), (8, 6, 5), (9, 6, 4), (10, 6, 3),
                     (6, 7, 4), (7, 7, 4), (8, 7, 3), (7, 8, 3)]:
-        cv[x, y] = G[t]
+        cv[x, y] = G[max(4, t)]
     # title rule
     for x in range(5, 10):
         cv[x, 10] = G[4]
-    cv[5, 10] = G[5]
     return cv
 
 
@@ -274,13 +273,13 @@ def lab_front() -> Canvas:
     _bevel(cv, 2, 8, 13, 10, A[6], A[2])   # drawer with the disk slot
     for x in range(4, 10):
         cv[x, 9] = PLASTIC[0]
-    cv[11, 9] = (0x3a, 0x8f, 0x4a, 255)    # status LED
+    cv[11, 9] = (0x3a, 0x8f, 0x4a, 255)    # status LED (single tone)
     _bevel(cv, 2, 11, 13, 14, A[6], A[2])  # cupboard door
     for x in range(6, 10):                 # handle
-        cv[x, 12] = S[6]
-        cv[x, 13] = S[2]
+        cv[x, 12] = A[6]
+        cv[x, 13] = A[2]
     for x in range(1, 15):                 # kick plate
-        cv[x, 15] = S[2]
+        cv[x, 15] = A[1]
     return cv
 
 

@@ -60,19 +60,36 @@ def observatory(t: Template, rng: random.Random):
         t.set(CX + R, y, CZ, 'air')
     t.set(CX + R, G + 2, CZ, 'stone_brick_stairs', facing='west', half='top')
     t.set(CX + R + 1, G - 1, CZ, 'stone_brick_stairs', facing='west', half='bottom')
-    # --- weathered copper dome with an observing slit along the east-west axis; the west half fell in
+    # --- weathered copper dome with an observing slit along the east-west axis; its north-west quarter fell in
     dome_y = G + 5
     for x in range(CX - R, CX + R + 1):
         for y in range(dome_y, dome_y + R + 1):
             for z in range(CZ - R, CZ + R + 1):
-                d = math.sqrt((x - CX) ** 2 + (y - dome_y) ** 2 * 1.25 + (z - CZ) ** 2)
+                d = math.sqrt((x - CX) ** 2 + ((y - dome_y) * 1.15) ** 2 + (z - CZ) ** 2)
                 if not (R - 1.0 <= d < R):
                     continue
                 if z == CZ and x >= CX - 1:
-                    continue  # the slit
-                if x < CX and rng.random() < 0.55 + (CX - x) * 0.08:
-                    continue  # collapsed half
-                t.set(x, y, z, rng.choice(['weathered_copper', 'weathered_copper', 'oxidized_copper', 'exposed_copper']))
+                    continue  # the observing slit, open up and over the top
+                ang = math.degrees(math.atan2(z - CZ, x - CX)) % 360   # 0 east, 90 south, 180 west, 270 north
+                jag = ((x * 3 + z * 5 + y * 7) % 4) * 6
+                if 150 - jag < ang < 285 + jag and y >= dome_y + 1 + ((x + z) % 2):
+                    continue  # collapsed quarter, jagged edge
+                if y == dome_y:
+                    name = 'weathered_copper'          # ring beam
+                else:
+                    patch = math.sin(x * 1.3 + y * 0.7) + math.cos(z * 1.1 - y * 0.9)
+                    name = 'oxidized_cut_copper' if patch > 0.9 else 'weathered_cut_copper'
+                t.set(x, y, z, name)
+    # fallen dome panels lying inside the drum, under the hole
+    for (x, z, name) in [(CX - 3, CZ - 1, 'weathered_cut_copper'), (CX - 2, CZ - 2, 'weathered_cut_copper_slab'),
+                         (CX - 3, CZ + 1, 'oxidized_cut_copper_slab'), (CX - 1, CZ - 3, 'weathered_cut_copper_stairs'),
+                         (CX - 6, CZ - 3, 'weathered_cut_copper'), (CX - 7, CZ - 1, 'oxidized_cut_copper_slab')]:
+        if name.endswith('slab'):
+            t.set(x, G, z, name, type='bottom', waterlogged='false')
+        elif name.endswith('stairs'):
+            t.set(x, G, z, name, facing='east', half='bottom', shape='straight', waterlogged='false')
+        else:
+            t.set(x, G, z, name)
     # --- interior debris
     for _ in range(14):
         a = rng.random() * math.tau
@@ -80,10 +97,8 @@ def observatory(t: Template, rng: random.Random):
         x, z = int(round(CX + math.cos(a) * rr)), int(round(CZ + math.sin(a) * rr))
         if (x, z) == (CX, CZ) or abs(z - CZ) <= 0 and x > CX:
             continue
-        b = rng.choice(['oxidized_copper', 'weathered_cut_copper_slab', 'gravel', 'cobblestone', 'cobweb'])
+        b = rng.choice(['gravel', 'cobblestone', 'cobweb', 'stone_brick_slab'])
         t.set(x, G, z, b, **({'type': 'bottom', 'waterlogged': 'false'} if b.endswith('slab') else {}))
-    for (x, z) in [(CX - 3, CZ - 1), (CX - 2, CZ - 3), (CX + 2, CZ + 3)]:
-        t.set(x, G, z, 'weathered_cut_copper_slab', type='bottom', waterlogged='false')
     # --- the telescope: a pier, a fork mount and a tube aimed up through the slit (east)
     t.set(CX, G, CZ, 'polished_deepslate')
     t.set(CX, G + 1, CZ, 'polished_deepslate_wall', up='true', north='none', south='none', east='none', west='none', waterlogged='false')
@@ -136,6 +151,13 @@ def cellar(t: Template, rng: random.Random, hx, hz):
         for z in range(z0, z1 + 1):
             t.set(x, 0, z, rng.choice(['deepslate_tiles', 'deepslate_tiles', 'cracked_deepslate_tiles']))
     t.set(hx, G - 2, hz, 'ladder', facing='south', waterlogged='false')
+    # ceiling (the plinth covers only part of the room; never leave it open to the sky)
+    for x in range(x0 - 1, x1 + 2):
+        for z in range(z0 - 1, z1 + 2):
+            if (x, z) == (hx, hz):
+                continue
+            if t.get(x, G - 1, z) is None:
+                t.set(x, G - 1, z, 'stone_bricks' if x in (x0 - 1, x1 + 1) or z in (z0 - 1, z1 + 1) else 'coarse_dirt')
     # archive: chest in an alcove, barrels, a lectern and a candle
     t.chest(x0, 1, z1, ARCHIVE, facing='east')
     t.set(x0, 2, z1, 'candle', candles='3', lit='false', waterlogged='false')
@@ -191,33 +213,61 @@ def test_stand(t: Template, rng: random.Random):
     for x, z in [(tx0 - 1, tz0 - 1), (tx1 + 1, tz0 - 1), (tx0 - 1, tz1 + 1), (tx1 + 1, tz1 + 1)]:
         t.set(x, G - 1, z, 'polished_blackstone')
         t.set(x, G, z, 'polished_blackstone_wall', up='true', north='none', south='none', east='none', west='none', waterlogged='false')
-    # service gantry: steel lattice tower east of the trench, the top half bent over
+    # service gantry: a steel lattice tower east of the trench; its north-east corner buckled and the top fell
     gx0, gz0 = 27, 10
-    for y in range(G, G + 9):
-        broken = y >= G + 6
-        for dx in (0, 2):
-            for dz in (0, 2):
-                if broken and (dx, dz) != (0, 0) and rng.random() < 0.6:
+    top = G + 9
+
+    def post_height(dx, dz):
+        return top - 4 if (dx, dz) == (2, 0) else top
+
+    def bars(x, y, z, axis):
+        if axis == 'x':
+            t.set(x, y, z, 'iron_bars', east='true', west='true', north='false', south='false', waterlogged='false')
+        else:
+            t.set(x, y, z, 'iron_bars', north='true', south='true', east='false', west='false', waterlogged='false')
+
+    for dx in (0, 2):
+        for dz in (0, 2):
+            for y in range(G, post_height(dx, dz)):
+                t.set(gx0 + dx, y, gz0 + dz, 'polished_deepslate_wall', up='true', waterlogged='false',
+                      north='low' if dz == 2 else 'none', south='low' if dz == 0 else 'none',
+                      east='low' if dx == 0 else 'none', west='low' if dx == 2 else 'none')
+    for y in range(G + 1, top):
+        if (y - G) % 4 == 0:
+            continue  # leave the deck levels open
+        for i in (1,):
+            if y < post_height(2, 0):
+                bars(gx0 + i, y, gz0, 'x')            # north face
+                bars(gx0 + 2, y, gz0 + i, 'z')        # east face
+            bars(gx0 + i, y, gz0 + 2, 'x')            # south face
+            if y > G + 2:
+                bars(gx0, y, gz0 + i, 'z')            # west face (open at the bottom: the way in)
+    for y in (G + 4, G + 8):                          # decks
+        for i in range(3):
+            for j in range(3):
+                if (i, j) in ((0, 0), (0, 2), (2, 0), (2, 2)):
                     continue
-                t.set(gx0 + dx, y, gz0 + dz, 'polished_deepslate')
-        if y % 3 == 0 and not broken:
-            for i in range(1, 2):
-                t.set(gx0 + i, y, gz0, 'iron_bars', east='true', west='true', north='false', south='false', waterlogged='false')
-                t.set(gx0 + i, y, gz0 + 2, 'iron_bars', east='true', west='true', north='false', south='false', waterlogged='false')
-                t.set(gx0, y, gz0 + i, 'iron_bars', north='true', south='true', east='false', west='false', waterlogged='false')
-                t.set(gx0 + 2, y, gz0 + i, 'iron_bars', north='true', south='true', east='false', west='false', waterlogged='false')
-    for i in range(3):
-        for j in range(3):
-            t.set(gx0 + i, G + 4, gz0 + j, 'iron_trapdoor', facing='north', half='top', open='false', powered='false', waterlogged='false')
-    # swing arm reaching west over the trench, sagging at the tip
-    for x in range(tx1 + 1, gx0):
-        t.set(x, G + 4, gz0 + 1, 'polished_deepslate_slab', type='top', waterlogged='false')
-    t.set(tx1, G + 3, gz0 + 1, 'chain', axis='y', waterlogged='false')
-    t.set(tx1, G + 2, gz0 + 1, 'chain', axis='y', waterlogged='false')
-    # fallen top of the tower lying on the pad
+                if y == G + 8 and (i, j) in ((2, 1), (1, 0)):
+                    continue                          # torn decking at the buckled corner
+                t.set(gx0 + i, y, gz0 + j, 'polished_deepslate_slab', type='bottom', waterlogged='false')
+    for i in range(3):                                # cap on the standing posts
+        t.set(gx0, top, gz0 + i, 'polished_deepslate_slab', type='bottom', waterlogged='false')
+    t.set(gx0 + 1, top, gz0 + 2, 'polished_deepslate_slab', type='bottom', waterlogged='false')
+    t.set(gx0 + 2, top, gz0 + 2, 'polished_deepslate_slab', type='bottom', waterlogged='false')
+    # swing arm reaching west over the trench, an umbilical hanging from its tip
+    for x in range(tx1, gx0):
+        t.set(x, G + 5, gz0 + 1, 'polished_deepslate_slab', type='top', waterlogged='false')
+    for y in (G + 4, G + 3):
+        t.set(tx1, y, gz0 + 1, 'chain', axis='y', waterlogged='false')
+    # the fallen top section lying on the pad
     for i in range(4):
-        t.set(gx0 + 1 + i, G, gz0 + 5, 'polished_deepslate' if i % 3 == 0 else 'iron_bars',
-              **({} if i % 3 == 0 else {'east': 'true', 'west': 'true', 'north': 'false', 'south': 'false', 'waterlogged': 'false'}))
+        x = gx0 - 1 + i
+        if i in (0, 3):
+            t.set(x, G, gz0 + 5, 'polished_deepslate_wall', up='true', east='low' if i == 0 else 'none',
+                  west='low' if i == 3 else 'none', north='none', south='none', waterlogged='false')
+        else:
+            bars(x, G, gz0 + 5, 'x')
+    t.set(gx0 + 3, G, gz0 + 4, 'polished_deepslate_slab', type='bottom', waterlogged='false')
     # the wrecked sounding rocket, lying across the south of the pad (nose to the west)
     rz = 17
     body = ['white_concrete', 'white_concrete', 'red_concrete', 'white_concrete', 'white_concrete', 'white_concrete']

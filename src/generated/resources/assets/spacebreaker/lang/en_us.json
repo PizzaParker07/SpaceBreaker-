@@ -59,6 +59,7 @@
   "gui.spacebreaker.guide.none": "Nothing found",
   "gui.spacebreaker.guide.results": "Search results",
   "gui.spacebreaker.guide.search": "Search...",
+  "gui.spacebreaker.guide.title": "Field Guide",
   "gui.spacebreaker.lab.analysing": "Analysing: %s",
   "gui.spacebreaker.lab.draw": "Uses %s FE/t",
   "gui.spacebreaker.lab.energy": "%s / %s FE",
