@@ -12,7 +12,7 @@ import net.neoforged.bus.api.IEventBus;
 import java.util.List;
 
 /**
- * The outer Solar System: the asteroid belt (Ceres, Vesta), Jupiter's moons and Saturn's moons. One entry in the module
+ * The outer Solar System: the asteroid belt (Ceres, Vesta), Jupiter's moons, Saturn's moons, and Pluto with Charon. One entry in the module
  * list that hands every call to the shared outer-world code and then to each region's module in order.
  */
 public final class OuterSystemModule implements SbModule {
@@ -20,7 +20,8 @@ public final class OuterSystemModule implements SbModule {
             new OuterWorlds(),
             new BeltModule(),
             new com.pizzaparker07.spacebreaker.content.jupiter.JupiterModule(),
-            new com.pizzaparker07.spacebreaker.content.saturn.SaturnModule()
+            new com.pizzaparker07.spacebreaker.content.saturn.SaturnModule(),
+            new com.pizzaparker07.spacebreaker.content.pluto.PlutoModule()
     );
 
     @Override

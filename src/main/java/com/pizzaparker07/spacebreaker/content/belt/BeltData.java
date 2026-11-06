@@ -77,7 +77,9 @@ public final class BeltData {
         lang.add("biome.spacebreaker.vesta_polar", "Vestan Pole", "Vesta Kutbu");
         lang.add("dungeon.spacebreaker.ceres_mining_outpost", "Abandoned Ice Mining Outpost", "Terk Edilmiş Buz Madenciliği Karakolu");
         lang.add("structure.spacebreaker.ceres_mining_outpost", "Abandoned Ice Mining Outpost", "Terk Edilmiş Buz Madenciliği Karakolu");
-        for (String w : new String[]{"vesta", "ganymede", "callisto", "enceladus"}) {
+        for (com.pizzaparker07.spacebreaker.content.belt.dungeon.LanderPiece.Variant v
+                : com.pizzaparker07.spacebreaker.content.belt.dungeon.LanderPiece.Variant.values()) {
+            String w = v.id();
             lang.add("dungeon.spacebreaker." + w + "_lander", "Crashed Supply Lander", "Düşmüş İkmal İniş Aracı");
             lang.add("structure.spacebreaker." + w + "_lander", "Crashed Supply Lander", "Düşmüş İkmal İniş Aracı");
         }

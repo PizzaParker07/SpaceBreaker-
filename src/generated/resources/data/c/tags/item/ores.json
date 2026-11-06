@@ -14,6 +14,7 @@
     "#c:ores/chromite",
     "#c:ores/salt",
     "#c:ores/sulfur",
-    "#c:ores/tholin"
+    "#c:ores/tholin",
+    "#c:ores/ammonia"
   ]
 }

@@ -199,7 +199,7 @@ public final class BeltGameTests {
     }
 
     @GameTest(template = WorldTests.EMPTY, timeoutTicks = 300)
-    public static void crashedLandersOnFourWorlds(GameTestHelper helper) {
+    public static void crashedLandersOnEveryWorld(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         var structures = level.registryAccess().registryOrThrow(Registries.STRUCTURE);
         BlockPos base = helper.absolutePos(BlockPos.ZERO).offset(9000, 0, 9000);

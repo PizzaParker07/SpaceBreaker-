@@ -31,12 +31,12 @@ import java.util.Locale;
  * A supply lander that came down hard: a skid trench ploughed through the local soil and thrown up in a ridge, the
  * lander on its side at the end of it with one leg folded under, a solar wing torn off and lying flat, scattered debris -
  * and the survey team's cargo hold, buried beside it with a hatch and a ladder. One piece, dressed in each world's own
- * ground: Vesta, Ganymede, Callisto and Enceladus each have their own cargo and technology.
+ * ground: Vesta, Ganymede, Callisto, Enceladus, Pluto and Charon each have their own cargo and technology.
  */
 public class LanderPiece extends StructurePiece {
     /** The worlds a lander can lie on, with the ground it digs into. */
     public enum Variant {
-        VESTA, GANYMEDE, CALLISTO, ENCELADUS;
+        VESTA, GANYMEDE, CALLISTO, ENCELADUS, PLUTO, CHARON;
 
         public String id() {
             return name().toLowerCase(Locale.ROOT);
@@ -48,6 +48,8 @@ public class LanderPiece extends StructurePiece {
                 case GANYMEDE -> JupiterModule.GANYMEDE_REGOLITH.get().defaultBlockState();
                 case CALLISTO -> JupiterModule.CALLISTO_REGOLITH.get().defaultBlockState();
                 case ENCELADUS -> SaturnModule.ENCELADUS_SNOW.get().defaultBlockState();
+                case PLUTO -> com.pizzaparker07.spacebreaker.content.pluto.PlutoModule.PLUTONIAN_FROST.get().defaultBlockState();
+                case CHARON -> com.pizzaparker07.spacebreaker.content.pluto.PlutoModule.CHARON_REGOLITH.get().defaultBlockState();
             };
         }
 
@@ -57,6 +59,8 @@ public class LanderPiece extends StructurePiece {
                 case GANYMEDE -> JupiterModule.DARK_ICE_CRUST.get().defaultBlockState();
                 case CALLISTO -> JupiterModule.CALLISTAN_ROCK.base().get().defaultBlockState();
                 case ENCELADUS -> SaturnModule.ENCELADUS_ICE.get().defaultBlockState();
+                case PLUTO -> com.pizzaparker07.spacebreaker.content.pluto.PlutoModule.PLUTONIAN_ICE.base().get().defaultBlockState();
+                case CHARON -> com.pizzaparker07.spacebreaker.content.pluto.PlutoModule.CHARON_ICE.get().defaultBlockState();
             };
         }
 
