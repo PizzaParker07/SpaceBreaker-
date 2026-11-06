@@ -111,7 +111,8 @@ public final class SuitEvents {
         PacketDistributor.sendToPlayer(player, new SuitStatusPayload(SuitTanks.oxygen(torso), SuitTanks.capacity(torso), data.breath,
                 (float) data.bodyTempC, (float) data.ambientC, (float) data.doseMsv, (float) data.doseRateMsvDay,
                 (float) data.pressureKpa, (float) Gravity.factorFor(player), mmu.isEmpty() ? 0 : ManeuveringUnitItem.fuel(mmu),
-                integrity(player), flags, rating == null ? 0 : rating.minTempC(), rating == null ? 0 : rating.maxTempC(),
+                integrity(player), flags, rating == null ? 0 : (int) Math.round(LifeSupport.ratedRange(rating, data.pressureKpa)[0]),
+                rating == null ? 0 : (int) Math.round(LifeSupport.ratedRange(rating, data.pressureKpa)[1]),
                 rating == null ? 0 : rating.shieldingPercent()));
     }
 

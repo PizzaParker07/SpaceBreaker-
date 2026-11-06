@@ -149,4 +149,39 @@ public final class SuitTierGameTests {
         helper.assertTrue(boots != null && boots.is(SuitModule.HEATED_BOOTS.get()), "result keeps the piece");
         helper.succeed();
     }
+
+    // QA-4: the Moon is the first destination; its night (-173 °C, vacuum) must be fully covered by the Mk1 suit
+    private static final double MOON_NIGHT_C = -173, MERCURY_NIGHT_C = -180, MERCURY_DAY_C = 430;
+
+    @GameTest(template = EMPTY)
+    public static void mk1SurvivesTheLunarNight(GameTestHelper helper) {
+        Player p = wearing(helper, GameType.SURVIVAL, set(SuitTier.MK1));
+        SuitTanks.insert(p.getItemBySlot(EquipmentSlot.CHEST),
+                com.pizzaparker07.spacebreaker.content.suit.OxygenTankItem.filled(SuitModule.LARGE_OXYGEN_TANK.get()));
+        helper.assertTrue(bodyTarget(p, MOON_NIGHT_C, 0.0) == SurvivalData.NORMAL_BODY_C,
+                "Mk1 must keep the body at 37 °C in the lunar night, target " + bodyTarget(p, MOON_NIGHT_C, 0.0));
+        float health = p.getHealth();
+        LifeSupport.Env night = new LifeSupport.Env(false, MOON_NIGHT_C, 0.0, 0.0);
+        for (int i = 0; i < 20 * 60 * 3; i++) {
+            LifeSupport.tick(p, night);
+        }
+        SurvivalData d = LifeSupport.data(p);
+        helper.assertTrue(d.bodyTempC >= SurvivalData.NORMAL_BODY_C - 0.5, "body temperature fell to " + d.bodyTempC);
+        helper.assertTrue(p.getHealth() >= health, "no damage in three minutes of lunar night, health " + p.getHealth());
+        helper.succeed();
+    }
+
+    @GameTest(template = EMPTY)
+    public static void thermalSuitCoversAllOfMercury(GameTestHelper helper) {
+        Player p = wearing(helper, GameType.CREATIVE, set(SuitTier.THERMAL));
+        Tech.learn(p, SuitTier.THERMAL.tech());
+        helper.assertTrue(bodyTarget(p, MERCURY_NIGHT_C, 0.0) == SurvivalData.NORMAL_BODY_C, "thermal suit in Mercury's night");
+        helper.assertTrue(bodyTarget(p, MERCURY_DAY_C, 0.0) == SurvivalData.NORMAL_BODY_C, "thermal suit in Mercury's day");
+        Player heated = wearing(helper, GameType.CREATIVE, set(SuitTier.HEATED));
+        Tech.learn(heated, SuitTier.HEATED.tech());
+        Tech.learn(p, SuitTier.THERMAL.tech());
+        helper.assertTrue(bodyTarget(p, TITAN_C, TITAN_KPA) < bodyTarget(heated, TITAN_C, TITAN_KPA),
+                "Titan's dense cold air still calls for the heated suit");
+        helper.succeed();
+    }
 }

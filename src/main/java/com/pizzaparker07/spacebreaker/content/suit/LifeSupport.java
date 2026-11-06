@@ -107,16 +107,29 @@ public final class LifeSupport {
             return ambientC;
         }
         double k = convection(pressureKpa);
-        if (ambientC < rating.minTempC()) {
-            return SUIT_CABIN_C + (ambientC - rating.minTempC()) * k;
+        double[] range = ratedRange(rating, pressureKpa);
+        if (ambientC < range[0]) {
+            return SUIT_CABIN_C + (ambientC - range[0]) * k;
         }
-        if (ambientC > rating.maxTempC()) {
-            return SUIT_CABIN_C + (ambientC - rating.maxTempC()) * k;
+        if (ambientC > range[1]) {
+            return SUIT_CABIN_C + (ambientC - range[1]) * k;
         }
         return SUIT_CABIN_C;
     }
 
-    /** Core temperature the body settles at for a felt ambient temperature (comfortable from 5 to 35 °C). */
+    /**
+     * The temperatures a suit really holds at this pressure: the rating is for vacuum, where heat only leaves by
+     * radiation; dense air carries heat away (or in) faster, which shrinks the suit's margin around its cabin
+     * temperature by the convection factor - except on the side the suit is built for (heated suit: dense cold,
+     * thermal suit: dense heat).
+     */
+    public static double[] ratedRange(SuitProtection.Rating rating, double pressureKpa) {
+        double k = convection(pressureKpa);
+        double lo = rating.denseCold() ? rating.minTempC() : SUIT_CABIN_C + (rating.minTempC() - SUIT_CABIN_C) / k;
+        double hi = rating.denseHot() ? rating.maxTempC() : SUIT_CABIN_C + (rating.maxTempC() - SUIT_CABIN_C) / k;
+        return new double[]{lo, hi};
+    }
+
     public static double targetBodyTemp(double feltC) {
         if (feltC < 5.0) {
             return SurvivalData.NORMAL_BODY_C + (feltC - 5.0) * 0.08;
