@@ -6,8 +6,12 @@ from .core import ramp
 MARE_BASALT = ramp('#202024', '#29292e', '#323237', '#3c3c41', '#47474c', '#545459', '#62626a')
 # Lunar regolith (highlands): powdery neutral grey, a touch warm.
 REGOLITH = ramp('#55534f', '#62605c', '#6e6c68', '#7a7874', '#86847f', '#93918b', '#a19e98', '#b0ada6')
+# Highland soil tones: narrow spread like vanilla sand (bead, then five powder tones).
+REGOLITH_SOIL = ramp('#5c5a56', '#74726d', '#7c7a75', '#85837e', '#8e8c86', '#99968f')
 # Mare regolith: the dark soil of the lunar seas (basalt dust + glass).
 MARE_REGOLITH = ramp('#353432', '#3f3e3c', '#494846', '#53524f', '#5e5c59', '#6a6865', '#777571')
+# Mare soil tones (bead, then five powder tones).
+MARE_SOIL = ramp('#2f2e2c', '#454441', '#4c4b48', '#53524f', '#5b5a56', '#64625e')
 # Orange volcanic glass soil (pyroclastic beads, Apollo 17 style) + black beads.
 VOLCANIC_GLASS = ramp('#2e2723', '#6b4a35', '#7b563c', '#8a6344', '#98704d', '#a67e59')
 # Frost on polar regolith.

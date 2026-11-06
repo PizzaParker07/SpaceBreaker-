@@ -52,22 +52,25 @@ def tick_sheet(r, crystals=False, seed=5):
     n = clustered(64, 64, seed, passes=1)
     rng = random.Random(seed)
 
+    top = [
+        "1223322.",
+        "23344332",
+        "23465432",
+        "234440432",
+        "23344432",
+        "2304443 2",
+        "23446432",
+        "23344332",
+        "22333332",
+        "1222222.",
+    ]
+
     def body(face, x, y, fw, fh):
         if face == 'top':
-            # oval carapace: lighter centre, darker rim, festoon notches along the rear edge
-            cx, cy = (fw - 1) / 2, (fh - 1) / 2
-            e = ((x - cx) / (fw / 2)) ** 2 + ((y - cy) / (fh / 2)) ** 2
-            if e > 0.85:
-                t = 2
-            elif e > 0.5:
-                t = 3
-            else:
-                t = 4
-            if y == fh - 1 and x % 2 == 0:
-                t = 1
-            if x == int(cx) and 2 < y < fh - 2:
-                t -= 1  # central groove
-            return noise_pick(r, t, n, x + 10, y)
+            # leathery oval carapace: pale dusty centre, darker rim, a few pits and dust specks
+            ch = top[y][x] if x < len(top[y]) else '2'
+            t = 1 if ch in '. ' else int(ch)
+            return r[t] if t in (0, 6) else noise_pick(r, t, n, x + 10, y)
         if face == 'bottom':
             return noise_pick(r, 1, n, x + 20, y + 30)
         # sides: top edge catches light, lower part in shadow
@@ -98,11 +101,13 @@ def tick_sheet(r, crystals=False, seed=5):
 
     def leg(face, x, y, fw, fh):
         if face in ('top', 'front', 'back', 'bottom'):
-            # jointed: light segments with dark joints every 3 px
-            if x % 3 == 2:
-                return r[1]
-            return r[4] if face == 'top' else r[3]
-        return r[2]
+            # jointed: dark segments with pale joint rings, tip darkest
+            if x in (2, 5):
+                return r[4]
+            if face == 'top':
+                return r[1] if x < 1 else r[3]
+            return r[2]
+        return r[1]
 
     paint(cv, 0, 20, 8, 1, 1, leg)
 
@@ -127,49 +132,49 @@ def tick_eyes():
 # --------------------------------------------------------------------------- dust swimmer
 
 def dust_swimmer():
+    """Mottled dust-grey back (camouflage) with darker spots, a pale belly, eyes on short stalks."""
     r = DUST
     cv = Canvas(64, 64)
     n = clustered(64, 64, 17, passes=1)
+    spots = {(1, 2), (5, 3), (2, 6), (6, 7), (3, 10), (1, 12), (6, 11), (4, 5)}
 
     def body(face, x, y, fw, fh):
         if face == 'top':
             t = 4
             if x in (0, fw - 1):
                 t = 3
-            if x == fw // 2 and y % 3 != 0:
-                t = 5  # pale spine line
-            if (y + (x // 2)) % 5 == 0 and 0 < x < fw - 1:
-                t = 2  # darker transverse bands for camouflage
+            if (x, y) in spots or (x - 1, y) in spots:
+                t = 1  # dark spots
+            if x in (3, 4) and y % 4 == 1:
+                t = 5  # pale spine scales
             return noise_pick(r, t, n, x, y)
         if face == 'bottom':
             return r[6] if (x + y) % 4 else r[5]
-        t = 3 if y == 0 else 2
+        t = 3 if y == 0 else (2 if y == 1 else 5)
         return noise_pick(r, t, n, x + 30, y + 40)
 
-    paint(cv, 0, 0, 6, 3, 14, body)
+    paint(cv, 0, 0, 8, 3, 14, body)
 
     def head(face, x, y, fw, fh):
         if face == 'top':
             return r[4] if y > 0 else r[5]
         if face == 'front':
-            return r[2] if y == 1 else r[3]
-        if face in ('right', 'left') and y == 0 and x == 1:
-            return P.ILMENITE[1]  # small dark eye
+            return r[1] if y == 1 and 1 <= x <= 4 else r[3]  # wide mouth slit for sifting dust
         return r[3] if face != 'bottom' else r[6]
 
-    paint(cv, 0, 17, 4, 2, 4, head)
+    paint(cv, 0, 17, 6, 2, 4, head)
+    paint(cv, 20, 17, 1, 2, 1, lambda f, x, y, fw, fh: (P.ILMENITE[1] if y == 0 else r[3]) if f != 'top' else P.ILMENITE[5])
 
     def fin(face, x, y, fw, fh):
         if face == 'top':
-            # ribs radiating from the body edge; lighter trailing edge
             if y == fh - 1 or x == fw - 1:
-                return r[5]
-            return r[2] if (x + y) % 3 == 0 else r[4]
+                return r[5]  # pale trailing edge
+            return r[2] if x % 2 == 0 else r[4]  # rays
         if face == 'bottom':
             return r[6]
         return r[3]
 
-    paint(cv, 16, 17, 7, 1, 7, fin)
+    paint(cv, 24, 17, 7, 1, 6, fin)
 
     def dorsal(face, x, y, fw, fh):
         if face in ('right', 'left'):
@@ -178,11 +183,12 @@ def dust_swimmer():
             return r[2] if x % 2 == 0 else r[3]
         return r[4]
 
-    paint(cv, 44, 0, 1, 4, 5, dorsal)
+    paint(cv, 44, 0, 1, 5, 3, dorsal)
+    paint(cv, 52, 0, 1, 3, 3, dorsal)
 
     def tail(face, x, y, fw, fh):
         if face == 'top':
-            return r[4] if y % 2 else r[3]
+            return r[4] if y % 2 else r[2]
         if face == 'bottom':
             return r[6]
         return r[2]

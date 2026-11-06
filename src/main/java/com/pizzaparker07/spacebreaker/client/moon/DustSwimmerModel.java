@@ -37,15 +37,20 @@ public class DustSwimmerModel<T extends DustSwimmer> extends HierarchicalModel<T
         MeshDefinition mesh = new MeshDefinition();
         PartDefinition root = mesh.getRoot();
         PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create()
-                .texOffs(0, 0).addBox(-3F, -3F, -7F, 6F, 3F, 14F), PartPose.offset(0F, 22F, 0F));
-        body.addOrReplaceChild("head", CubeListBuilder.create()
-                .texOffs(0, 17).addBox(-2F, -2F, -4F, 4F, 2F, 4F), PartPose.offset(0F, 0F, -7F));
+                .texOffs(0, 0).addBox(-4F, -3F, -7F, 8F, 3F, 14F), PartPose.offset(0F, 22F, 0F));
+        PartDefinition head = body.addOrReplaceChild("head", CubeListBuilder.create()
+                .texOffs(0, 17).addBox(-3F, -2F, -4F, 6F, 2F, 4F), PartPose.offset(0F, -0.5F, -7F));
+        head.addOrReplaceChild("eyes", CubeListBuilder.create()
+                .texOffs(20, 17).addBox(-2.5F, -4F, -3F, 1F, 2F, 1F)
+                .texOffs(20, 17).mirror().addBox(1.5F, -4F, -3F, 1F, 2F, 1F), PartPose.ZERO);
         body.addOrReplaceChild("left_fin", CubeListBuilder.create()
-                .texOffs(16, 17).addBox(0F, 0F, -3F, 7F, 1F, 7F), PartPose.offset(3F, -1F, -1F));
+                .texOffs(24, 17).addBox(0F, 0F, -3F, 7F, 1F, 6F), PartPose.offset(4F, -1F, -1F));
         body.addOrReplaceChild("right_fin", CubeListBuilder.create()
-                .texOffs(16, 17).mirror().addBox(-7F, 0F, -3F, 7F, 1F, 7F), PartPose.offset(-3F, -1F, -1F));
+                .texOffs(24, 17).mirror().addBox(-7F, 0F, -3F, 7F, 1F, 6F), PartPose.offset(-4F, -1F, -1F));
+        // swept dorsal fin: tall leading edge, lower trailing part
         body.addOrReplaceChild("dorsal", CubeListBuilder.create()
-                .texOffs(44, 0).addBox(-0.5F, -4F, -2F, 1F, 4F, 5F), PartPose.offset(0F, -3F, -1F));
+                .texOffs(44, 0).addBox(-0.5F, -5F, -2F, 1F, 5F, 3F)
+                .texOffs(52, 0).addBox(-0.5F, -3F, 1F, 1F, 3F, 3F), PartPose.offset(0F, -3F, -1F));
         PartDefinition tail = body.addOrReplaceChild("tail", CubeListBuilder.create()
                 .texOffs(0, 25).addBox(-1.5F, -1F, 0F, 3F, 2F, 7F), PartPose.offset(0F, -1.5F, 7F));
         tail.addOrReplaceChild("tail_fin", CubeListBuilder.create()

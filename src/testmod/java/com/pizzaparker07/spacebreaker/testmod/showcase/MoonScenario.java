@@ -39,6 +39,14 @@ final class MoonScenario implements ShowcaseScenario {
         level.getServer().setDifficulty(net.minecraft.world.Difficulty.NORMAL, true);
         MoonShowcaseBuilder.build(level, terrain);
         MoonShowcaseBuilder.buildDungeons(level, terrain);
+        // check that the dungeons also generate naturally
+        var structures = level.registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.STRUCTURE);
+        for (var key : List.of(com.pizzaparker07.spacebreaker.content.moon.dungeon.MoonStructures.OUTPOST_KEY,
+                com.pizzaparker07.spacebreaker.content.moon.dungeon.MoonStructures.LAVA_TUBE_KEY)) {
+            var found = level.getChunkSource().getGenerator().findNearestMapStructure(level,
+                    net.minecraft.core.HolderSet.direct(structures.getHolderOrThrow(key)), net.minecraft.core.BlockPos.ZERO, 64, false);
+            ShowcaseDriver.log("nearest " + key.location() + ": " + (found == null ? "none" : found.getFirst().toShortString()));
+        }
     }
 
     private PlanetTerrain terrain() {

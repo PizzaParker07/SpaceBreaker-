@@ -84,8 +84,8 @@ SOIL_SHARES = [5, 20, 36, 26, 10, 3]
 
 
 def soil(r, seed, specks=True):
-    """Powdery soil like vanilla sand: fine grain, tiny clumps, a few dark glass beads and bright grains."""
-    f = blend((white(seed), 0.55), (clustered(16, 16, seed + 1, passes=1), 0.3), (fbm(16, 16, seed + 2, [(8, 1.0)]), 0.15))
+    """Powdery soil like vanilla sand: fine grain in soft clumps, a few dark glass beads."""
+    f = blend((white(seed), 0.4), (clustered(16, 16, seed + 1, passes=1), 0.42), (fbm(16, 16, seed + 2, [(8, 1.0)]), 0.18))
     cv, idx = quant(f, r, SOIL_SHARES)
     if specks:
         rng = random.Random(seed + 9)
@@ -98,13 +98,11 @@ def soil(r, seed, specks=True):
 
 
 def regolith_ramp():
-    r = P.REGOLITH
-    return [r[1], r[2], r[3], r[4], r[5], r[6]]
+    return list(P.REGOLITH_SOIL)
 
 
 def mare_ramp():
-    r = P.MARE_REGOLITH
-    return [r[0], r[1], r[2], r[3], r[4], r[5]]
+    return list(P.MARE_SOIL)
 
 
 def lunar_regolith(variant=0):
@@ -368,27 +366,38 @@ def sintered_regolith_bricks():
 
 
 def meteoric_iron():
-    """Iron-nickel meteorite: dark brown-grey fusion crust dimpled with thumb-print hollows (regmaglypts);
-    bright metal shows only where the crust chipped off."""
+    """Iron-nickel meteorite: dark fusion crust dimpled with thumb-print hollows (regmaglypts).
+    Each hollow is a shallow bowl: shaded on its top-left inner slope, lit on the bottom-right one,
+    with bright metal only where the crust chipped off the ridges."""
     r = P.METEORIC_IRON
-    cell, edge, pts = voronoi(1201, 6)
-    f = clustered(16, 16, 1202, passes=1)
+    cell, edge, pts = voronoi(1201, 7)
+    radius = {}
+    for y in range(16):
+        for x in range(16):
+            c = cell[y][x]
+            px, py = pts[c]
+            dx = (x + 0.5 - px + 8) % 16 - 8
+            dy = (y + 0.5 - py + 8) % 16 - 8
+            radius[c] = max(radius.get(c, 1.0), (dx * dx + dy * dy) ** 0.5)
     cv = Canvas()
     for y in range(16):
         for x in range(16):
-            px, py = pts[cell[y][x]]
+            c = cell[y][x]
+            px, py = pts[c]
             dx = (x + 0.5 - px + 8) % 16 - 8
             dy = (y + 0.5 - py + 8) % 16 - 8
-            e = edge[y][x]
-            # concave dimple: its top-left inner slope is in shadow, bottom-right slope faces the light
-            v = 0.45 + (dx + dy) * 0.07 + (f[y][x] - 0.5) * 0.25
-            if e < 1.0:
-                v += 0.18  # rounded ridge between hollows
-            cv[x, y] = r[max(1, min(4, int(round(1 + v * 3))))]
-    for x, y in [(3, 5), (4, 5), (11, 2), (13, 12), (12, 12), (6, 13)]:
-        cv[x, y] = r[5]
-    cv[3, 5] = r[6]
-    cv[13, 12] = r[6]
+            d = (dx * dx + dy * dy) ** 0.5
+            rad = radius[c]
+            # bowl: brightness follows the slope direction, strongest near the rim
+            slope = ((dx + dy) / (d + 1e-6)) * min(1.0, d / rad) if d > 0.3 else 0.0
+            t = 2 + slope * 1.1
+            if edge[y][x] < 0.8:
+                t = 3.4  # rounded ridge between hollows
+            cv[x, y] = r[max(1, min(4, int(round(t))))]
+    for x, y in [(3, 5), (11, 2), (13, 12), (6, 13), (8, 8)]:
+        if cv[x, y] in (r[3], r[4]):
+            cv[x, y] = r[5]
+    cv[11, 2] = r[6]
     return cv
 
 
