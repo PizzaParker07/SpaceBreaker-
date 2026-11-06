@@ -1,0 +1,20 @@
+{
+  "block.spacebreaker.bauxite_ore": "Bauxite Ore",
+  "block.spacebreaker.deepslate_bauxite_ore": "Deepslate Bauxite Ore",
+  "block.spacebreaker.ilmenite_ore": "Ilmenite Ore",
+  "block.spacebreaker.lunar_regolith": "Lunar Regolith",
+  "block.spacebreaker.mare_basalt": "Mare Basalt",
+  "block.spacebreaker.raw_bauxite_block": "Block of Raw Bauxite",
+  "block.spacebreaker.solar_panel": "Solar Tracker",
+  "item.spacebreaker.aluminum_ingot": "Aluminum Ingot",
+  "item.spacebreaker.aluminum_plate": "Aluminum Plate",
+  "item.spacebreaker.eva_helmet": "EVA Helmet",
+  "item.spacebreaker.oxygen_tank": "Oxygen Tank",
+  "item.spacebreaker.raw_bauxite": "Raw Bauxite",
+  "itemGroup.spacebreaker.main": "Spacebreaker",
+  "tooltip.spacebreaker.oxygen": "Oxygen: %s / %s",
+  "tooltip.spacebreaker.solar_panel": "Follows the sun. Peak output: %s FE/t",
+  "tooltip.spacebreaker.sun_visor.down": "Sun visor: lowered",
+  "tooltip.spacebreaker.sun_visor.hint": "Sneak + use to toggle the sun visor",
+  "tooltip.spacebreaker.sun_visor.up": "Sun visor: raised"
+}

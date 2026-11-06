@@ -1,0 +1,162 @@
+{
+  "variants": {
+    "facing=north,print=none": [
+      {
+        "model": "spacebreaker:block/lunar_regolith"
+      },
+      {
+        "model": "spacebreaker:block/lunar_regolith",
+        "y": 90
+      },
+      {
+        "model": "spacebreaker:block/lunar_regolith",
+        "y": 180
+      },
+      {
+        "model": "spacebreaker:block/lunar_regolith",
+        "y": 270
+      },
+      {
+        "model": "spacebreaker:block/lunar_regolith_1"
+      },
+      {
+        "model": "spacebreaker:block/lunar_regolith_1",
+        "y": 90
+      },
+      {
+        "model": "spacebreaker:block/lunar_regolith_1",
+        "y": 180
+      },
+      {
+        "model": "spacebreaker:block/lunar_regolith_1",
+        "y": 270
+      }
+    ],
+    "facing=north,print=left": {
+      "model": "spacebreaker:block/lunar_regolith_footprint_left"
+    },
+    "facing=north,print=right": {
+      "model": "spacebreaker:block/lunar_regolith_footprint_right"
+    },
+    "facing=east,print=none": [
+      {
+        "model": "spacebreaker:block/lunar_regolith"
+      },
+      {
+        "model": "spacebreaker:block/lunar_regolith",
+        "y": 90
+      },
+      {
+        "model": "spacebreaker:block/lunar_regolith",
+        "y": 180
+      },
+      {
+        "model": "spacebreaker:block/lunar_regolith",
+        "y": 270
+      },
+      {
+        "model": "spacebreaker:block/lunar_regolith_1"
+      },
+      {
+        "model": "spacebreaker:block/lunar_regolith_1",
+        "y": 90
+      },
+      {
+        "model": "spacebreaker:block/lunar_regolith_1",
+        "y": 180
+      },
+      {
+        "model": "spacebreaker:block/lunar_regolith_1",
+        "y": 270
+      }
+    ],
+    "facing=east,print=left": {
+      "model": "spacebreaker:block/lunar_regolith_footprint_left",
+      "y": 90
+    },
+    "facing=east,print=right": {
+      "model": "spacebreaker:block/lunar_regolith_footprint_right",
+      "y": 90
+    },
+    "facing=south,print=none": [
+      {
+        "model": "spacebreaker:block/lunar_regolith"
+      },
+      {
+        "model": "spacebreaker:block/lunar_regolith",
+        "y": 90
+      },
+      {
+        "model": "spacebreaker:block/lunar_regolith",
+        "y": 180
+      },
+      {
+        "model": "spacebreaker:block/lunar_regolith",
+        "y": 270
+      },
+      {
+        "model": "spacebreaker:block/lunar_regolith_1"
+      },
+      {
+        "model": "spacebreaker:block/lunar_regolith_1",
+        "y": 90
+      },
+      {
+        "model": "spacebreaker:block/lunar_regolith_1",
+        "y": 180
+      },
+      {
+        "model": "spacebreaker:block/lunar_regolith_1",
+        "y": 270
+      }
+    ],
+    "facing=south,print=left": {
+      "model": "spacebreaker:block/lunar_regolith_footprint_left",
+      "y": 180
+    },
+    "facing=south,print=right": {
+      "model": "spacebreaker:block/lunar_regolith_footprint_right",
+      "y": 180
+    },
+    "facing=west,print=none": [
+      {
+        "model": "spacebreaker:block/lunar_regolith"
+      },
+      {
+        "model": "spacebreaker:block/lunar_regolith",
+        "y": 90
+      },
+      {
+        "model": "spacebreaker:block/lunar_regolith",
+        "y": 180
+      },
+      {
+        "model": "spacebreaker:block/lunar_regolith",
+        "y": 270
+      },
+      {
+        "model": "spacebreaker:block/lunar_regolith_1"
+      },
+      {
+        "model": "spacebreaker:block/lunar_regolith_1",
+        "y": 90
+      },
+      {
+        "model": "spacebreaker:block/lunar_regolith_1",
+        "y": 180
+      },
+      {
+        "model": "spacebreaker:block/lunar_regolith_1",
+        "y": 270
+      }
+    ],
+    "facing=west,print=left": {
+      "model": "spacebreaker:block/lunar_regolith_footprint_left",
+      "y": 270
+    },
+    "facing=west,print=right": {
+      "model": "spacebreaker:block/lunar_regolith_footprint_right",
+      "y": 270
+    }
+  }
+}

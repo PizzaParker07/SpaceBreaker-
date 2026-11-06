@@ -1,0 +1,174 @@
+plugins {
+    id 'java-library'
+    id 'idea'
+    id 'net.neoforged.moddev' version '2.0.148'
+}
+
+version = mod_version
+group = mod_group_id
+
+base {
+    archivesName = "${mod_id}-neoforge-${minecraft_version}"
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+repositories {
+    mavenLocal()
+}
+
+sourceSets {
+    // Test-only content (GameTests, showcase automation). Never shipped in the release jar.
+    testmod {
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
+}
+
+configurations {
+    localRuntime
+    runtimeClasspath.extendsFrom localRuntime
+    testmodRuntimeClasspath.extendsFrom localRuntime
+}
+
+neoForge {
+    version = project.neo_version
+
+    parchment {
+        mappingsVersion = project.parchment_mappings_version
+        minecraftVersion = project.parchment_minecraft_version
+    }
+
+    addModdingDependenciesTo(sourceSets.testmod)
+
+    runs {
+        configureEach {
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+            systemProperty 'forge.logging.console.level', 'info'
+            logLevel = org.slf4j.event.Level.INFO
+        }
+
+        client {
+            client()
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        server {
+            server()
+            programArgument '--nogui'
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        // Automated client scenario: builds a showcase world, takes screenshots, quits.
+        // Usage: ./gradlew runShowcase -Pscenario=style_sample
+        showcase {
+            client()
+            sourceSet = sourceSets.testmod
+            gameDirectory = project.file('run-showcase')
+            systemProperty 'spacebreaker.scenario', project.findProperty('scenario') ?: 'style_sample'
+            systemProperty 'spacebreaker.shotPrefix', project.findProperty('shotPrefix') ?: 'vanilla'
+            programArguments.addAll '--width', '1920', '--height', '1080', '--username', 'PizzaParker07'
+            jvmArguments.addAll '-Xmx3G'
+        }
+
+        gameTestServer {
+            type = 'gameTestServer'
+            sourceSet = sourceSets.testmod
+            gameDirectory = project.file('run-gametest')
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        data {
+            data()
+            programArguments.addAll '--mod', project.mod_id, '--all',
+                    '--output', file('src/generated/resources/').getAbsolutePath(),
+                    '--existing', file('src/main/resources/').getAbsolutePath()
+        }
+    }
+
+    mods {
+        "${mod_id}" {
+            sourceSet(sourceSets.main)
+            sourceSet(sourceSets.testmod)
+        }
+    }
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+var generateModMetadata = tasks.register('generateModMetadata', ProcessResources) {
+    var replaceProperties = [
+            minecraft_version      : minecraft_version,
+            minecraft_version_range: minecraft_version_range,
+            neo_version            : neo_version,
+            neo_version_range      : neo_version_range,
+            loader_version_range   : loader_version_range,
+            mod_id                 : mod_id,
+            mod_name               : mod_name,
+            mod_license            : mod_license,
+            mod_version            : mod_version,
+            mod_authors            : mod_authors,
+            mod_description        : mod_description
+    ]
+    inputs.properties replaceProperties
+    expand replaceProperties
+    from 'src/main/templates'
+    into 'build/generated/sources/modMetadata'
+}
+sourceSets.main.resources.srcDir generateModMetadata
+neoForge.ideSyncTask generateModMetadata
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+jar {
+    from('LICENSE') { rename { "${it}_${project.mod_id}" } }
+    manifest {
+        attributes(
+                'Specification-Title': mod_id,
+                'Specification-Vendor': 'PizzaParker07',
+                'Specification-Version': '1',
+                'Implementation-Title': project.name,
+                'Implementation-Version': project.version,
+                'Implementation-Vendor': 'PizzaParker07'
+        )
+    }
+}
+
+idea {
+    module {
+        downloadSources = true
+        downloadJavadoc = true
+    }
+}
+
+// Fresh client options for the automated showcase (no pause on focus loss, no first-run screens).
+// Optional compatibility mods (Sodium / Iris) for local client tests are never bundled: drop the
+// jars into ./run-mods and pass -PwithCompat=true; they are copied into run-showcase/mods.
+tasks.register('prepareShowcase') {
+    doLast {
+        copy {
+            from 'src/testmod/resources/showcase-options.txt'
+            into 'run-showcase'
+            rename { 'options.txt' }
+        }
+        delete fileTree('run-showcase/mods') { include '*.jar' }
+        if (project.hasProperty('withCompat')) {
+            copy {
+                from fileTree('run-mods') { include '*.jar' }
+                into 'run-showcase/mods'
+            }
+        }
+    }
+}
+tasks.matching { it.name == 'runShowcase' }.configureEach { dependsOn 'prepareShowcase' }

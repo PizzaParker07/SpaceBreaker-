@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "spacebreaker:block/solar_panel_base"
+    }
+  }
+}

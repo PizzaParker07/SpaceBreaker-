@@ -1,0 +1,20 @@
+{
+  "block.spacebreaker.bauxite_ore": "Boksit Cevheri",
+  "block.spacebreaker.deepslate_bauxite_ore": "Derin Kayrak Boksit Cevheri",
+  "block.spacebreaker.ilmenite_ore": "İlmenit Cevheri",
+  "block.spacebreaker.lunar_regolith": "Ay Regoliti",
+  "block.spacebreaker.mare_basalt": "Mare Bazaltı",
+  "block.spacebreaker.raw_bauxite_block": "Ham Boksit Bloğu",
+  "block.spacebreaker.solar_panel": "Güneş Takipli Panel",
+  "item.spacebreaker.aluminum_ingot": "Alüminyum Külçe",
+  "item.spacebreaker.aluminum_plate": "Alüminyum Levha",
+  "item.spacebreaker.eva_helmet": "EVA Kaskı",
+  "item.spacebreaker.oxygen_tank": "Oksijen Tüpü",
+  "item.spacebreaker.raw_bauxite": "Ham Boksit",
+  "itemGroup.spacebreaker.main": "Spacebreaker",
+  "tooltip.spacebreaker.oxygen": "Oksijen: %s / %s",
+  "tooltip.spacebreaker.solar_panel": "Güneşi takip eder. En yüksek üretim: %s FE/t",
+  "tooltip.spacebreaker.sun_visor.down": "Güneş vizörü: indirilmiş",
+  "tooltip.spacebreaker.sun_visor.hint": "Güneş vizörünü indirip kaldırmak için eğilip kullan",
+  "tooltip.spacebreaker.sun_visor.up": "Güneş vizörü: kalkık"
+}

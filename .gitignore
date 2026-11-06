@@ -1,0 +1,35 @@
+# Gradle / build
+.gradle/
+build/
+out/
+bin/
+*.class
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.classpath
+.project
+.settings/
+
+# Run directories
+run/
+run-*/
+!run-mods/.gitkeep
+run-mods/*.jar
+runs/
+
+# Local / private
+*.env
+.env*
+secrets/
+logs/
+crash-reports/
+
+# Python
+__pycache__/
+*.pyc
+tools/**/out/

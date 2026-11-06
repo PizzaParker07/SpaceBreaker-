@@ -1,0 +1,7 @@
+{
+  "parent": "spacebreaker:block/ore_overlay",
+  "textures": {
+    "stone": "minecraft:block/stone",
+    "overlay": "spacebreaker:block/bauxite_ore_overlay"
+  }
+}
