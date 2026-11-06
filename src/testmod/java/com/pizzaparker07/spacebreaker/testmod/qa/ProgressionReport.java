@@ -147,6 +147,10 @@ final class ProgressionReport {
             if (m.missions.containsKey(l.id()) || l.equals(Location.EARTH_SURFACE)) {
                 continue;
             }
+            if (l.dimension() == null || !m.worlds.containsKey(l.dimension())) {
+                out.append("| ").append(l.id()).append(" | world not built yet | — | — |\n");
+                continue;
+            }
             List<Location> route = new ArrayList<>(RocketSearch.route(Location.EARTH_SURFACE, l, m.realism));
             if (route.isEmpty()) {
                 out.append("| ").append(l.id()).append(" | no route | — | — |\n");

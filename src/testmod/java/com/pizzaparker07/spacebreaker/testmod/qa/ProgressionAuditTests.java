@@ -24,20 +24,7 @@ public final class ProgressionAuditTests {
      * Technologies the audit currently cannot reach in survival. Each entry is a reported bug (docs/QA.md). The test
      * fails when a technology NOT on this list is unreachable; remove entries as their owners fix them.
      */
-    static final Set<String> KNOWN_DEAD_ENDS = Set.of(
-            // QA-1: no liquid oxygen before space (electrolysis, cryogenics have no source on Earth): everything after the first rocket
-            "acid_resistant_coatings", "advanced_electronics", "aerial_mobility", "airlocks", "asteroid_mining",
-            "astrobiology", "brine_chemistry", "cloud_platforms", "cryobot_drilling", "cryogenics",
-            "deep_space_habitats", "deep_space_network", "dust_proof_seals", "electrolysis", "eva_mobility",
-            "fusion_drive", "fusion_power", "gravity_assists", "heat_resistant_electronics", "heated_suits",
-            "heavy_launch", "hydrocarbon_processing", "hydrogen_engines", "icy_moons", "interplanetary_transfers",
-            "ion_propulsion", "isru", "lunar_surveying", "magnetospheric_physics", "martian_geology",
-            "methane_engines", "microgravity_mining", "nuclear_fission", "nuclear_thermal_propulsion",
-            "orbital_shipyard", "oxygen_distribution", "oxygen_storage", "phobos_survey", "plume_sampling",
-            "polar_ice_mining", "pressurised_modules", "radiation_hardened_electronics", "radiation_hardened_suits",
-            "radiation_shielding", "regolith_sintering", "rovers", "sabatier_process", "satellites", "solar_shielding",
-            "space_probes", "space_stations", "spectroscopy", "suit_mk2", "suit_mk3", "suit_upgrades",
-            "thermal_regulation", "thermal_suits", "titan_expedition", "volcanic_heat_shielding", "water_recycling");
+    static final Set<String> KNOWN_DEAD_ENDS = Set.of();
 
     private static ProgressionModel cached;
     static ProgressionModel whatIf;
