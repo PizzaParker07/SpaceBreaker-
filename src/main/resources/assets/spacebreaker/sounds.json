@@ -446,5 +446,21 @@
         "stream": true
       }
     ]
+  },
+  "music.mars": {
+    "sounds": [
+      {
+        "name": "spacebreaker:music/mars",
+        "stream": true
+      }
+    ]
+  },
+  "music.venus": {
+    "sounds": [
+      {
+        "name": "spacebreaker:music/venus",
+        "stream": true
+      }
+    ]
   }
 }
