@@ -11,7 +11,7 @@ public record StellarSummary(StarKind kind, StellarModel.SpectralClass spectralC
         if (seed.fixed()) {
             NearbyStars.Entry e = NearbyStars.entry(seed.fixedKey()).orElseThrow();
             star = e.star();
-            kind = StarKind.MAIN_SEQUENCE;
+            kind = e.kind();
         } else {
             StarSystemGenerator.StarState st = StarSystemGenerator.starOf(seed);
             star = st.star();

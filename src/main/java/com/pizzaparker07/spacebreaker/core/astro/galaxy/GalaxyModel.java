@@ -6,7 +6,7 @@ import com.pizzaparker07.spacebreaker.core.astro.Vec3;
  * Smooth stellar number density of a barred spiral galaxy shaped like the Milky Way, in stars per pc³.
  * Galactocentric frame in parsecs: the centre at the origin, the disk in the x–y plane, the Sun on the −x axis
  * slightly above the plane, galactic rotation towards +y at the Sun.
- * Components: thin and thick exponential disks with four logarithmic spiral arms, a triaxial bar/bulge
+ * Components: thin and thick exponential disks with two major and two minor logarithmic spiral arms, a triaxial bar/bulge
  * rotated 27° from the Sun–centre line, and a sparse power-law halo. Normalised to 0.1 stars/pc³ at the Sun.
  */
 public final class GalaxyModel {
@@ -20,7 +20,9 @@ public final class GalaxyModel {
     private static final double BAR_ANGLE = Math.toRadians(27);
     private static final double BAR_X = 1700, BAR_Y = 640, BAR_Z = 440, BAR_DENSITY = 25;
     private static final int ARMS = 4;
-    private static final double PITCH = Math.toRadians(12.5), ARM_WIDTH = 450, ARM_CONTRAST = 0.8, ARM_START = 3500;
+    /** Two major arms (Scutum–Centaurus, Perseus) and two weaker ones (Norma, Sagittarius). */
+    private static final double[] ARM_STRENGTH = {1.0, 0.45, 1.0, 0.45};
+    private static final double PITCH = Math.toRadians(14), ARM_WIDTH = 650, ARM_CONTRAST = 1.0, ARM_START = 3500;
     private static final double HALO_DENSITY = 1.5e-4;
 
     private static final double NORMALISATION = SOLAR_NEIGHBOURHOOD_DENSITY / raw(SUN.x(), SUN.y(), SUN.z());
@@ -65,7 +67,7 @@ public final class GalaxyModel {
             double expected = phase + Math.log(r / ARM_START) / Math.tan(PITCH);
             double d = wrap(theta - expected);
             double dist = Math.abs(d) * r * Math.sin(PITCH);
-            best = Math.max(best, Math.exp(-sq(dist / ARM_WIDTH)));
+            best = Math.max(best, ARM_STRENGTH[k] * Math.exp(-sq(dist / ARM_WIDTH)));
         }
         return best;
     }

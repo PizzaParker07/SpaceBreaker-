@@ -155,7 +155,7 @@ public record TerrainHints(ColorFamily colorFamily, int baseColor, int accentCol
         }
 
         ColorFamily family;
-        if (liquid == Liquid.LAVA && tidalV >= 0.9) {
+        if (liquid == Liquid.LAVA && tidalV >= 0.9 && t < 1000) { // above ~1000 K sulfur boils off: molten rock looks dark
             family = ColorFamily.SULFUR;
         } else if (t > 600 && p > 1000 || liquid == Liquid.LAVA) {
             family = ColorFamily.DARK_BASALT;

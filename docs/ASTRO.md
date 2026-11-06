@@ -49,7 +49,7 @@ double dv = RocketMath.totalDeltaV(stack, payloadKg);
 | `galaxy.Galaxy` | seed-based Milky Way: lazily generated 10 pc sectors, star lookup by address, `starsWithin`, `system(star)` (cached) |
 | `galaxy.GalaxyModel` | stellar density: thin + thick disk with four spiral arms, bar, halo; 0.1 stars/pc³ at the Sun |
 | `galaxy.StarSystemGenerator` | Kroupa IMF, stellar remnants, planets (snow line, spacing, giants), moons inside a third of the Hill sphere, atmospheres, tidal locking |
-| `galaxy.NearbyStars` | real stars as fixed entries: Sun, Alpha Centauri A/B, Proxima Centauri (+ b), Barnard's Star (+ b), Sirius A/B, Epsilon Eridani (+ b), Tau Ceti, TRAPPIST-1 (+ b–h); unknown planets are filled in by the generator |
+| `galaxy.NearbyStars` | real-star catalogue: the Sun and 43 star systems within 25 ly, Fomalhaut just outside (positions from J2000 RA/Dec and distance, companions such as Alpha Centauri B, Sirius B, Procyon B) plus TRAPPIST-1, with their **confirmed** planets (Proxima b and d, Barnard's Star b–e, Gliese 876, HD 219134, Teegarden's Star, Wolf 1061, GJ 1061, YZ Ceti, Luyten's Star, Lacaille 9352, Ross 128, Lalande 21185, Gliese 581, Gliese 667 C, Epsilon Eridani b, Epsilon Indi Ab, TRAPPIST-1 b–h). Inside 25 ly only real stars exist; planets the generator adds around them have `Details.discovered() == false` ("not yet discovered") |
 | `galaxy.Rng` | SplitMix64: identical numbers on every machine for the same world seed |
 
 ### Conventions
@@ -655,3 +655,11 @@ thumb: a deep-space burn changes v∞ by 2.5× its Δv (v∞ leveraging). Legs: 
 
 MESSENGER needed ≈ 7 km/s from launch to its (elliptical) Mercury orbit, so the numbers are of the right
 size. `GravityAssistTest` checks them.
+
+### Real neighbourhood and the galaxy picture
+
+Inside `NearbyStars.CATALOGUE_RADIUS_LY` (25 ly) the galaxy contains only catalogued real stars; generated
+stars begin outside it. Each `StarSystem.Details` says whether a body is `discovered` (a confirmed, real
+planet) or a generator fill-in for a world nobody has found yet — show the latter as "not yet discovered".
+`GalaxyMap.overview` now draws two major and two minor spiral arms (Scutum–Centaurus and Perseus brightest)
+weighted by the light of young stars, around a bright bar and bulge.
