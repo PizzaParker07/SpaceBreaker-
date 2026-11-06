@@ -1,13 +1,22 @@
 name: Release
 
-# Pushing a tag such as v0.1.0 builds the mod, runs the GameTests and publishes a GitHub Release
-# with the jar attached. Release notes come from docs/releases/<tag>.md.
+# Pushing a tag such as v0.1.0 (or running this workflow by hand with a tag name) builds the mod,
+# runs the GameTests and publishes a GitHub Release with the jar attached.
+# Release notes come from docs/releases/<tag>.md.
 on:
   push:
     tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag, e.g. v0.1.0-alpha.1 (created on the selected branch if missing)'
+        required: true
 
 permissions:
   contents: write
+
+env:
+  TAG: ${{ github.event.inputs.tag || github.ref_name }}
 
 jobs:
   release:
@@ -26,7 +35,9 @@ jobs:
       - name: Publish release
         uses: softprops/action-gh-release@v2
         with:
-          name: Spacebreaker ${{ github.ref_name }}
-          body_path: docs/releases/${{ github.ref_name }}.md
+          tag_name: ${{ env.TAG }}
+          target_commitish: ${{ github.sha }}
+          name: Spacebreaker ${{ env.TAG }}
+          body_path: docs/releases/${{ env.TAG }}.md
           files: build/libs/*.jar
-          prerelease: ${{ contains(github.ref_name, 'alpha') || contains(github.ref_name, 'beta') }}
+          prerelease: ${{ contains(env.TAG, 'alpha') || contains(env.TAG, 'beta') }}
