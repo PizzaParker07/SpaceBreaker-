@@ -3,6 +3,7 @@ package com.pizzaparker07.spacebreaker.client.blueprint;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.pizzaparker07.spacebreaker.Spacebreaker;
+import com.pizzaparker07.spacebreaker.compat.client.GhostBlocks;
 import com.pizzaparker07.spacebreaker.content.blueprint.BlueprintModule;
 import com.pizzaparker07.spacebreaker.content.blueprint.BlueprintPayload;
 import com.pizzaparker07.spacebreaker.content.blueprint.Hologram;
@@ -12,12 +13,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.block.ModelBlockRenderer;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -36,7 +33,6 @@ import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
-import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.Map;
@@ -117,8 +113,11 @@ public final class BlueprintClient {
         float t = (mc.level.getGameTime() + event.getPartialTick().getGameTimeDeltaPartialTick(false)) * (Mth.TWO_PI / 30F);
         float alpha = 0.4F + 0.1F * Mth.sin(t);
 
-        ModelBlockRenderer renderer = mc.getBlockRenderer().getModelRenderer();
-        VertexConsumer ghost = new GhostVertexConsumer(buffers.getBuffer(Sheets.translucentCullBlockSheet()), 0.35F, 0.88F, 1.0F, alpha);
+        // ghosts and wrong-block overlays use the shared shader-safe render type (compat GhostBlocks, checked with
+        // Iris + Complementary); the vertex colour is pushed towards the tint so ghosts never look like real blocks
+        var renderer = mc.getBlockRenderer().getModelRenderer();
+        VertexConsumer cyan = new GhostVertexConsumer(buffers.getBuffer(GhostBlocks.renderType()), 0.35F, 0.88F, 1.0F, alpha);
+        VertexConsumer red = new GhostVertexConsumer(buffers.getBuffer(GhostBlocks.renderType()), 1.0F, 0.25F, 0.2F, 0.5F);
         for (HologramCache.Ghost g : CACHE.missing) {
             if (g.pos().distToCenterSqr(cam) > 96 * 96) {
                 continue;
@@ -129,25 +128,19 @@ public final class BlueprintClient {
             pose.translate(0.5, 0.5, 0.5);
             pose.scale(0.98F, 0.98F, 0.98F);
             pose.translate(-0.5, -0.5, -0.5);
-            renderer.renderModel(pose.last(), ghost, g.state(), mc.getBlockRenderer().getBlockModel(g.state()), 1F, 1F, 1F,
-                    LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, ModelData.EMPTY, null);
+            ghost(renderer, pose, cyan, g.state());
             pose.popPose();
         }
-        // wrong blocks: a red-tinted, slightly enlarged ghost of what stands there (same shader-safe path as the
-        // ghosts), plus a line frame where line rendering is available
-        VertexConsumer red = new GhostVertexConsumer(buffers.getBuffer(Sheets.translucentCullBlockSheet()), 1.0F, 0.25F, 0.2F, 0.45F);
         for (BlockPos p : CACHE.wrong) {
-            var state = mc.level.getBlockState(p);
             pose.pushPose();
             pose.translate(p.getX() - cam.x, p.getY() - cam.y, p.getZ() - cam.z);
             pose.translate(0.5, 0.5, 0.5);
             pose.scale(1.02F, 1.02F, 1.02F);
             pose.translate(-0.5, -0.5, -0.5);
-            renderer.renderModel(pose.last(), red, state, mc.getBlockRenderer().getBlockModel(state), 1F, 1F, 1F,
-                    LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, ModelData.EMPTY, null);
+            ghost(renderer, pose, red, mc.level.getBlockState(p));
             pose.popPose();
         }
-        buffers.endBatch(Sheets.translucentCullBlockSheet());
+        GhostBlocks.flush(buffers);
 
         VertexConsumer lines = buffers.getBuffer(RenderType.lines());
         for (BlockPos p : CACHE.wrong) {
@@ -158,6 +151,13 @@ public final class BlueprintClient {
         AABB all = new AABB(Vec3.atLowerCornerOf(CACHE.min), Vec3.atLowerCornerOf(CACHE.max).add(1, 1, 1)).move(-cam.x, -cam.y, -cam.z);
         LevelRenderer.renderLineBox(pose, lines, all, 0.45F, 0.85F, 1F, 0.35F);
         buffers.endBatch(RenderType.lines());
+    }
+
+    private static void ghost(net.minecraft.client.renderer.block.ModelBlockRenderer renderer, PoseStack pose, VertexConsumer consumer,
+                              net.minecraft.world.level.block.state.BlockState state) {
+        renderer.renderModel(pose.last(), consumer, state, Minecraft.getInstance().getBlockRenderer().getBlockModel(state), 1F, 1F, 1F,
+                net.minecraft.client.renderer.LightTexture.FULL_BRIGHT, net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY,
+                net.neoforged.neoforge.client.model.data.ModelData.EMPTY, GhostBlocks.renderType());
     }
 
     // ------------------------------------------------------------------ material list
