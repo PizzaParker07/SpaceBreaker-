@@ -4,6 +4,9 @@
   "requires": [
     "spacebreaker:basic_rocketry"
   ],
+  "samples": [
+    "spacebreaker:earth"
+  ],
   "unlocks": [
     "spacebreaker:launch_pad",
     "spacebreaker:flame_trench",

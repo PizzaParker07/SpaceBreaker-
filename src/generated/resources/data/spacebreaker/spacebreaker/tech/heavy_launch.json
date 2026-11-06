@@ -5,5 +5,8 @@
     "spacebreaker:launch_infrastructure",
     "spacebreaker:staging"
   ],
+  "samples": [
+    "spacebreaker:orbital_flight"
+  ],
   "tier": 2
 }

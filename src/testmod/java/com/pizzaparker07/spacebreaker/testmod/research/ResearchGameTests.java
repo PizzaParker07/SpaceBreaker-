@@ -70,6 +70,22 @@ public final class ResearchGameTests {
 
     // ------------------------------------------------------------------ tree data
 
+    /**
+     * Every technology can be researched from some sample or flight data, so nobody depends on a lucky disk.
+     * The one exception is Basic Rocketry: its disk is guaranteed in every observatory archive.
+     */
+    @GameTest(template = EMPTY)
+    public static void everyTechnologyHasASampleSource(GameTestHelper helper) {
+        List<String> missing = new java.util.ArrayList<>();
+        Tech.all(helper.getLevel().registryAccess()).forEach((id, node) -> {
+            if (node.samples().isEmpty() && !id.equals(ROCKETRY)) {
+                missing.add(id.toString());
+            }
+        });
+        helper.assertTrue(missing.isEmpty(), "technologies only reachable by disk: " + missing);
+        helper.succeed();
+    }
+
     @GameTest(template = EMPTY)
     public static void techTreeLoadsWithValidPrerequisites(GameTestHelper helper) {
         Map<ResourceLocation, TechNode> all = Tech.all(helper.getLevel().registryAccess());

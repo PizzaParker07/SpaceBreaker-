@@ -4,5 +4,8 @@
   "requires": [
     "spacebreaker:observational_astronomy",
     "spacebreaker:electronics"
+  ],
+  "samples": [
+    "spacebreaker:earth"
   ]
 }

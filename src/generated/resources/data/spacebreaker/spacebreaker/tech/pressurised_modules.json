@@ -3,5 +3,8 @@
   "icon": "minecraft:iron_block",
   "requires": [
     "spacebreaker:metal_pressing"
+  ],
+  "samples": [
+    "spacebreaker:earth"
   ]
 }

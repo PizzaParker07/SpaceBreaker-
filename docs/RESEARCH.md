@@ -7,6 +7,9 @@ Everything here is server authoritative; clients get a synced copy of the known 
   `content/research/ResearchTree.java` (names + descriptions in English and Turkish) and written by `./gradlew runData`.
   Data packs may add or override nodes. Fields: `category`, `tier`, `requires`, `icon`, `unlocks`,
   optional `research_time` (ticks), `energy` (FE/t) and `samples` (sample kinds that can reveal it).
+  Every technology needs at least one sample kind (GameTest `everyTechnologyHasASampleSource`), so progress never
+  depends on a lucky disk; disks are shortcuts. The only exception is `basic_rocketry`, whose disk every observatory
+  archive holds.
 - Names: language keys `tech.<ns>.<path>` and `tech.<ns>.<path>.desc`.
 - Branches: the six built-in ones are propulsion, life_support, industry, astronomy, construction, exploration. A new
   branch (e.g. for the outer system) is just a new `category` string: the research screen gives it its own row after

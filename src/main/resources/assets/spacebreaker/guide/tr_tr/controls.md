@@ -13,6 +13,17 @@ Aşağıdaki tuşlar **senin** ayarlarındaki tuşlardır; değiştirdiğinde bu
 | Manevra ünitesiyle yüksel | {key key.jump} |
 | Manevra ünitesiyle alçal | {key key.sneak} |
 
+## Roketteyken
+| Ne yapar | Tuş |
+|---|---|
+| Roketin çevresinde dön | fare |
+| Yakınlaş / uzaklaş | fare tekerleği |
+| Kokpit penceresi | {key key.togglePerspective} |
+| Geri sayımı başlat / durdur | {key key.spacebreaker.launch} |
+| Yıldız haritası (yörüngede) | {key key.spacebreaker.star_map} |
+| Roketten in | {key key.sneak} |
+→ [Uçuş ve Yön Bulma](navigation)
+
 ## Fare ile
 - **Altın güneş vizörü:** {item spacebreaker:eva_helmet} elindeyken {key key.sneak} basılı tut ve {key key.use} tuşuna bas.
 - **Tüp takmak:** {item spacebreaker:oxygen_tank} elindeyken, üstünde {item spacebreaker:eva_chestplate} varken {key key.use}.

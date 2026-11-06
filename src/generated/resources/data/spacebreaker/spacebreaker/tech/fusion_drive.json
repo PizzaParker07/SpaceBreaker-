@@ -5,5 +5,8 @@
     "spacebreaker:nuclear_thermal_propulsion",
     "spacebreaker:fusion_power"
   ],
+  "samples": [
+    "spacebreaker:ganymede"
+  ],
   "tier": 3
 }
