@@ -6,6 +6,12 @@
     "fog_color": 12095080,
     "foliage_color": 10119752,
     "grass_color": 10119752,
+    "music": {
+      "max_delay": 12000,
+      "min_delay": 3600,
+      "replace_current_music": false,
+      "sound": "spacebreaker:music.mars"
+    },
     "particle": {
       "options": {
         "type": "spacebreaker:dust_mote"

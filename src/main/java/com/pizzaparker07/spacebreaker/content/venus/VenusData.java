@@ -101,7 +101,9 @@ public final class VenusData {
                 .hasPrecipitation(false).temperature(2.0F).downfall(0F)
                 .specialEffects(new BiomeSpecialEffects.Builder()
                         .fogColor(FOG).skyColor(SKY).waterColor(0x7A6A2E).waterFogColor(0x3A3015)
-                        .grassColorOverride(0x8A7040).foliageColorOverride(0x8A7040).build())
+                        .grassColorOverride(0x8A7040).foliageColorOverride(0x8A7040)
+                        .backgroundMusic(new net.minecraft.sounds.Music(com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_VENUS, 3600, 12000, false))
+                        .build())
                 .mobSpawnSettings(new MobSpawnSettings.Builder().build())
                 .generationSettings(gen.build())
                 .build();

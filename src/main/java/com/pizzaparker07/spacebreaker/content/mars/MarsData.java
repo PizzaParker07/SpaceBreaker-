@@ -347,6 +347,7 @@ public final class MarsData {
                         .fogColor(MARS_FOG).skyColor(MARS_SKY).waterColor(0x4F6A7A).waterFogColor(0x2A3036)
                         .grassColorOverride(0x9A6A48).foliageColorOverride(0x9A6A48)
                         .ambientParticle(new AmbientParticleSettings(MarsParticles.DUST_MOTE.get(), 0.0015F))
+                        .backgroundMusic(new net.minecraft.sounds.Music(com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_MARS, 3600, 12000, false))
                         .build())
                 .mobSpawnSettings(spawns.build())
                 .generationSettings(gen.build())
