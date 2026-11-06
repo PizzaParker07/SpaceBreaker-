@@ -153,7 +153,7 @@ public final class ShaderSkyPass {
      * neutral) ambient and turns lavender with that. BSL does not read it. Tuned per pack family from the
      * screenshots in docs/screenshots/compat; unknown packs get the moderate value.
      */
-    private static final Vec3 PACK_SKY_COMPLEMENTARY = new Vec3(0.18, 0.30, 0.90);
+    private static final Vec3 PACK_SKY_COMPLEMENTARY = new Vec3(0.20, 0.30, 0.72);
     private static final Vec3 PACK_SKY_DEFAULT = new Vec3(0.20, 0.27, 0.55);
     private static String lastPack;
     private static Vec3 lastPackSky = PACK_SKY_DEFAULT;
