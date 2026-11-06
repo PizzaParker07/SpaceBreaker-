@@ -164,6 +164,19 @@ public final class TransferPlanner {
         return new Plan(fromId, toId, legs, h.time(), Transfers.hohmannPhaseAngle(c.mu(), r1, r2), syn);
     }
 
+    /**
+     * The cheaper of the direct transfer ({@link #plan}) and a gravity-assist tour ({@link GravityAssist}), e.g.
+     * Earth ↔ Mercury via Venus: far less Δv, years longer. The plan's {@code synodicPeriod} and
+     * {@code phaseAngle} then describe the window of the first leg (Earth → Venus).
+     */
+    public static Plan planWithAssists(BodySystem sys, String fromId, String toId, boolean aerobrake) {
+        Plan direct = plan(sys, fromId, toId, aerobrake);
+        return GravityAssist.tour(sys, fromId, toId, aerobrake)
+                .map(GravityAssist.Tour::plan)
+                .filter(t -> t.total() < direct.total())
+                .orElse(direct);
+    }
+
     /** Hyperbolic excess speed vInf needed at the top of the chain, carried down to the first body. */
     private static double excessAtBody(List<AstroBody> chainBodyFirst, double vInfTop) {
         double v = vInfTop;

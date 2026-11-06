@@ -635,3 +635,22 @@ CelestialBody c = BodyAdapter.toCelestialBody(a.toAstroBody(), a.details(), Opti
 
 Bulk density = grain density × (1 − porosity): rubble-pile C ≈ 1.45 g/cm³ (Bennu and Ryugu 1.19),
 S ≈ 2.0 (Itokawa 1.9, Eros 2.7). `AsteroidGeneratorTest` checks all of the above.
+
+## Gravity assists (`GravityAssist`, `TransferPlanner.planWithAssists`)
+
+`TransferPlanner.planWithAssists(sys, from, to, aerobrake)` returns the cheaper of the direct Hohmann
+plan and a gravity-assist tour; `plan(...)` itself is unchanged. Tours exist for the inner Solar System
+(both ends inside 1.6 AU, a planet orbiting between them): a flyby of that planet lowers the perihelion
+to the target's orbit (a deep-space burn pumps its v∞ first if needed), then resonant flybys of the
+target with small burns cut the arrival speed to ≈ 30 % (at least 1.5 km/s) before capture. Rule of
+thumb: a deep-space burn changes v∞ by 2.5× its Δv (v∞ leveraging). Legs: `departure`, `flyby_pumping`,
+`target_flybys`, `capture`; `synodicPeriod`/`phaseAngle` are those of the first leg.
+
+| Route | Direct | With assists | Time |
+|---|---|---|---|
+| LEO → low Mercury orbit | 13.09 km/s | 8.31 km/s (Venus, 4 Mercury flybys) | 105 d → 3.8 y |
+| Low Mercury orbit → LEO (aerocapture) | 7.57 km/s | 4.85 km/s | 3.8 y |
+| Low Mars orbit → low Mercury orbit | 16.90 km/s | 8.75 km/s (Earth, 6 flybys) | 5.9 y |
+
+MESSENGER needed ≈ 7 km/s from launch to its (elliptical) Mercury orbit, so the numbers are of the right
+size. `GravityAssistTest` checks them.
