@@ -210,7 +210,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 ### Satürn uyduları
 | Durum | İçerik | Not |
 |---|---|---|
-| 🎨 | Titan `spacebreaker:titan` | 1,5 bar azot, oksijen yok, -179 °C; turuncu pus (yoğun sis, yıldızsız gök, soluk güneş), hidrokarbon kumul denizi, organik ovalar, kutuplarda metan gölleri (kaynamayan sıvı metan), metan sağanakları; yoğun havada yumuşak düşüş ve uzun süzülme (elytra kaldırma kuvveti kazanır) |
+| 🎨 | Titan `spacebreaker:titan` | 1,5 bar azot, oksijen yok, -179 °C; turuncu pus (yoğun sis, yıldızsız gök, soluk güneş), hidrokarbon kumul denizi, organik ovalar, kutuplarda metan gölleri (kaynamayan sıvı metan), metan sağanakları (iri, yavaş düşen soluk amber damlalar); yoğun havada yumuşak düşüş ve uzun süzülme (elytra kaldırma kuvveti kazanır) |
 | 🎨 | Titan blokları | Tolin Kumu, Tolin Çamuru (kalıcı ayak izi), Titan Ana Kaya Buzu (+ merdiven, basamak, duvar), Buz Çakılları, Tolin Yatağı (→ Tolin) |
 | 🎨 | Enceladus `spacebreaker:enceladus` | en parlak buz; güney kutbunda kaplan çizgisi yarıkları ve gayzer alanı; gökte 28° genişliğinde, halkaları neredeyse yandan görünen Satürn (halka gölgesiyle) |
 | 🎨 | Enceladus blokları | Enceladus Karı (kalıcı ayak izi), Enceladus Buzu, Kaplan Çizgisi Buzu (hafif parlar) |

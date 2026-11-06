@@ -156,7 +156,7 @@ final class JovianScenario extends OuterShowcase {
     }
 
     private void ganymede(ServerLevel level, PlanetTerrain t) {
-        parent(level, t, "01_jupiter_over_ganymede", 0, 0, 0.3, 10);
+        parent(level, t, "01_jupiter_over_ganymede", 40, 25, 0.62, 24);
         double[] grooved = MoonScenario.find(t, (x, z) -> t.lowland(x, z, t.latitude(z)) > 0.9, 3000);
         if (grooved != null) {
             look(level, "02_grooved_terrain", grooved[0], grooved[1], 18, grooved[0] + 60, grooved[1] + 40, at(0.08), 200, MoonScenario::farView);
@@ -176,7 +176,7 @@ final class JovianScenario extends OuterShowcase {
     }
 
     private void callisto(ServerLevel level, PlanetTerrain t) {
-        parent(level, t, "01_jupiter_over_callisto", 0, 0, 0.3, 6);
+        parent(level, t, "01_jupiter_over_callisto", 0, 0, 0.58, 24);
         look(level, "02_callisto_craters", 0, 0, 16, 90, 70, at(0.06), 220, MoonScenario::farView);
         BasinFeature.Config v = JupiterData.valhalla();
         double cz = BasinFeature.centreZ(t, v);
