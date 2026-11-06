@@ -122,6 +122,8 @@ public final class NeptuneModule implements SbModule {
 
     @Override
     public void addTags(SbTags tags) {
+        // water ice for the ice melter: water, then hydrogen and oxygen for rocket fuel
+        tags.item(com.pizzaparker07.spacebreaker.content.machines.IsruRecipes.WATER_ICES, TRITON_ICE.base().get().asItem());
         tags.block(BlockTags.MINEABLE_WITH_SHOVEL, TRITON_FROST.get(), PINK_NITROGEN_FROST.get(), PLUME_DUST.get());
         tags.block(BlockTags.MINEABLE_WITH_PICKAXE, NITROGEN_GEYSER.get(), CLATHRATE_ORE.get());
         for (BlockKit.Family f : KIT.families()) {

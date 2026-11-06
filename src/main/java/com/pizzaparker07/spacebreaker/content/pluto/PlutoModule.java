@@ -136,6 +136,8 @@ public final class PlutoModule implements SbModule {
 
     @Override
     public void addTags(SbTags tags) {
+        // water ice for the ice melter: water, then hydrogen and oxygen for rocket fuel
+        tags.item(com.pizzaparker07.spacebreaker.content.machines.IsruRecipes.WATER_ICES, PLUTONIAN_ICE.base().get().asItem(), CHARON_ICE.get().asItem());
         tags.block(BlockTags.MINEABLE_WITH_SHOVEL, PLUTONIAN_FROST.get(), THOLIN_REGOLITH.get(), METHANE_FROST.get(), CHARON_REGOLITH.get(),
                 RED_POLAR_FROST.get());
         tags.block(BlockTags.MINEABLE_WITH_PICKAXE, NITROGEN_ICE.get(), STAINED_NITROGEN_ICE.get(), PLUTONIAN_THOLIN_ORE.get(), CHARON_ICE.get(), AMMONIA_HYDRATE_ORE.get());

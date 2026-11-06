@@ -97,6 +97,8 @@ public final class UranusModule implements SbModule {
 
     @Override
     public void addTags(SbTags tags) {
+        // water ice for the ice melter: water, then hydrogen and oxygen for rocket fuel
+        tags.item(com.pizzaparker07.spacebreaker.content.machines.IsruRecipes.WATER_ICES, MIRANDAN_ICE.base().get().asItem(), BRIGHT_RIDGE_ICE.get().asItem());
         tags.block(BlockTags.MINEABLE_WITH_SHOVEL, MIRANDAN_REGOLITH.get());
         tags.block(BlockTags.MINEABLE_WITH_PICKAXE, BRIGHT_RIDGE_ICE.get(), DARK_BAND_ICE.get(), CARBON_ORE.get());
         for (BlockKit.Family f : KIT.families()) {

@@ -138,6 +138,8 @@ public final class BeltModule implements SbModule {
 
     @Override
     public void addTags(SbTags tags) {
+        // water ice for the ice melter: water, then hydrogen and oxygen for rocket fuel
+        tags.item(com.pizzaparker07.spacebreaker.content.machines.IsruRecipes.WATER_ICES, CEREAN_ICE.get().asItem());
         tags.block(BlockTags.MINEABLE_WITH_SHOVEL, CERES_REGOLITH.get(), AMMONIATED_CLAY.get(), CARBONATE_CRUST.get(), VESTAN_REGOLITH.get(),
                 DIOGENITIC_REGOLITH.get());
         tags.block(BlockTags.MINEABLE_WITH_PICKAXE, CEREAN_ICE.get(), MAGNETITE_ORE.get(), DIOGENITE.get(), CHROMITE_ORE.get());
