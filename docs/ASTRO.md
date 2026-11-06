@@ -598,10 +598,11 @@ SkyEphemeris.Horizontal h = SkyEphemeris.toHorizontal(o.direction(), axialTiltRa
 
 `toHorizontal` uses the observer body's axial tilt (about the x axis), how far it has turned
 (local sidereal angle: 0 when the meridian faces +x) and the latitude (z axis in the world). Magnitudes:
-m = H + 5 log₁₀(r·Δ/AU²) − 2.5 log₁₀ Φ(α) with H from diameter and geometric albedo (new optional body
-field `geometric_albedo`, NASA values; Bond albedo when missing) and a Lambert phase law; Saturn's rings
-are not included. `SkyEphemerisTest` checks the Sun, the full Moon, Venus at greatest elongation
-(24 Mar 2020: 46°, −4.4), Jupiter (3 Nov 2023: −2.9, 49.5″), Mars (13 Oct 2020: −2.6, 22″) and Saturn
+m = V(1, α) + 5 log₁₀(r·Δ/AU²). Mercury, Venus, Earth, Mars and Jupiter use their measured phase curves
+(Mallama & Hilton 2018), so Venus stays near −4 even as a thin crescent and −3.3 at inferior conjunction;
+other bodies use H from diameter and geometric albedo (optional body field `geometric_albedo`, NASA values;
+Bond albedo when missing) with a Lambert phase law. Saturn's rings are not included. `SkyEphemerisTest` checks the Sun, the full Moon, Venus over a whole synodic cycle (superior conjunction
+−3.9, greatest elongation 24 Mar 2020: 46°, −4.4, greatest brilliancy −4.7, a 12° crescent brighter than −3.5), Jupiter (3 Nov 2023: −2.9, 49.5″), Mars (13 Oct 2020: −2.6, 22″) and Saturn
 at opposition, Earth from Mars (≈ −2.5) and the Galilean moons from Io.
 
 ## Asteroids and small bodies (`core/astro/smallbody`)

@@ -48,9 +48,39 @@ class SkyEphemerisTest {
     void venusAtGreatestElongation2020() {
         SkyEphemeris.SkyObject v = fromEarth("venus", "2020-03-24");
         assertEquals(46.1, Math.toDegrees(v.elongation()), 2.0);
-        assertEquals(-4.4, v.apparentMagnitude(), 0.4);
+        assertEquals(-4.4, v.apparentMagnitude(), 0.15);
         assertEquals(0.5, v.illuminated(), 0.08, "half lit at greatest elongation");
         assertEquals(24.7, arcsec(v.angularDiameter()), 2.0);
+    }
+
+    @Test
+    void venusThroughItsWholeCycle() {
+        // superior conjunction (26 Mar 2021): small, full and far, still ≈ −3.9
+        SkyEphemeris.SkyObject sup = fromEarth("venus", "2021-03-26");
+        assertTrue(Math.toDegrees(sup.elongation()) < 3);
+        assertEquals(-3.9, sup.apparentMagnitude(), 0.15);
+        // greatest brilliancy (28 Apr 2020): a fat crescent at ≈ −4.7
+        assertEquals(-4.7, fromEarth("venus", "2020-04-28").apparentMagnitude(), 0.2);
+        // near inferior conjunction, ~12° from the Sun: a thin crescent but still brighter than Jupiter ever gets
+        double t0 = t("2020-05-10");
+        SkyEphemeris.SkyObject thin = null;
+        for (double d = 0; d < 30; d += 0.25) {
+            SkyEphemeris.SkyObject v = SkyEphemeris.view(SolarSystemData.system(), EARTH, "spacebreaker:venus", t0 + d * 86400);
+            if (Math.abs(Math.toDegrees(v.elongation()) - 12) < 0.5) {
+                thin = v;
+                break;
+            }
+        }
+        assertNotNull(thin, "Venus passes 12° from the Sun before inferior conjunction");
+        assertTrue(thin.illuminated() < 0.1, "a thin crescent");
+        assertTrue(thin.apparentMagnitude() < -3.5, "still dazzling: " + thin.apparentMagnitude());
+        // over a full synodic cycle Venus never drops below −3.0 except right at inferior conjunction
+        for (double d = 0; d < 584; d += 1) {
+            SkyEphemeris.SkyObject v = SkyEphemeris.view(SolarSystemData.system(), EARTH, "spacebreaker:venus", t("2020-01-01") + d * 86400);
+            if (Math.toDegrees(v.elongation()) > 6) {
+                assertTrue(v.apparentMagnitude() < -3.0, "day " + d + ": " + v.apparentMagnitude());
+            }
+        }
     }
 
     @Test
