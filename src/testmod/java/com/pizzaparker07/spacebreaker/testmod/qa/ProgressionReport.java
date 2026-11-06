@@ -141,21 +141,31 @@ final class ProgressionReport {
                     .append(" | ").append(ProgressionModel.describe(e.getValue().rocket())).append(" |\n");
         }
         out.append('\n');
-        out.append("## Missions the best buildable rocket cannot fly\n\n| Destination | Δv needed for a round trip (gameplay) | Best vacuum Δv of any buildable design |\n|---|---|---|\n");
+        out.append("## Missions the best buildable rocket cannot fly\n\n| Destination | Δv needed for a round trip (gameplay) | Best vacuum Δv of any buildable design | One way: legs (gameplay m/s) |\n|---|---|---|---|\n");
         double bestDv = m.best.stream().mapToDouble(RocketSearch.Candidate::totalDv).max().orElse(0);
         for (Location l : Locations.all()) {
             if (m.missions.containsKey(l.id()) || l.equals(Location.EARTH_SURFACE)) {
                 continue;
             }
-            List<Location> route = new ArrayList<>(RocketSearch.route(Location.EARTH_SURFACE, l, m.realism));
-            if (route.isEmpty()) {
-                out.append("| ").append(l.id()).append(" | no route | — |\n");
+            if (l.dimension() == null || !m.worlds.containsKey(l.dimension())) {
+                out.append("| ").append(l.id()).append(" | world not built yet | — | — |\n");
                 continue;
             }
+            List<Location> route = new ArrayList<>(RocketSearch.route(Location.EARTH_SURFACE, l, m.realism));
+            if (route.isEmpty()) {
+                out.append("| ").append(l.id()).append(" | no route | — | — |\n");
+                continue;
+            }
+            List<String> legs = new ArrayList<>();
+            for (int i = 0; i + 1 < route.size(); i++) {
+                legs.add(route.get(i + 1).id() + " " + Math.round(com.pizzaparker07.spacebreaker.content.rocketry.nav.Transfers
+                        .cost(route.get(i), route.get(i + 1), m.realism).orElse(-1)));
+            }
+            String oneWay = String.join(" → ", legs) + " = " + Math.round(RocketSearch.need(route, m.realism));
             var home = com.pizzaparker07.spacebreaker.content.rocketry.nav.MissionPlanner.homeRoute(l);
             route.addAll(home.subList(1, home.size()));
             out.append("| ").append(l.id()).append(" | ").append(Math.round(RocketSearch.need(route, m.realism))).append(" | ")
-                    .append(Math.round(bestDv)).append(" |\n");
+                    .append(Math.round(bestDv)).append(" | ").append(oneWay).append(" |\n");
         }
         out.append('\n');
         if (!m.notes.isEmpty()) {
