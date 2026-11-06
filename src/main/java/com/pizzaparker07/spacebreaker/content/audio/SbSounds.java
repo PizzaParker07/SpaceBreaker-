@@ -38,6 +38,10 @@ public final class SbSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> MUSIC_MARS = event("music.mars");
     /** Airy glass tones above Venus' clouds over a distant furnace rumble. */
     public static final DeferredHolder<SoundEvent, SoundEvent> MUSIC_VENUS = event("music.venus");
+    /** Amber haze and methane rain: detuned pads and soft falling notes for Titan. */
+    public static final DeferredHolder<SoundEvent, SoundEvent> MUSIC_TITAN = event("music.titan");
+    /** Swelling pads and ice chimes under Jupiter for its icy moons. */
+    public static final DeferredHolder<SoundEvent, SoundEvent> MUSIC_JOVIAN = event("music.jovian");
 
     // --- mission control ------------------------------------------------------------------------
     /** Short radio tones played before and after a spoken line. */
