@@ -33,11 +33,16 @@ def sheet(items, scale=10, cols=6, bg=(40, 44, 52), label_h=14):
     h = rows * (cell + label_h + 14) + 10
     out = Image.new('RGB', (w, h), bg)
     d = ImageDraw.Draw(out)
+    try:
+        from PIL import ImageFont
+        font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', 13)
+    except OSError:
+        font = None
     for i, (name, img) in enumerate(items):
         cx = 10 + (i % cols) * (cell + 10)
         cy = 10 + (i // cols) * (cell + label_h + 14)
         k = max(1, cell // max(img.width, img.height))
         im = img.resize((img.width * k, img.height * k), Image.NEAREST)
         out.paste(im, (cx, cy), im)
-        d.text((cx, cy + cell + 2), name, fill=(220, 220, 220))
+        d.text((cx, cy + cell + 2), name, fill=(235, 235, 235), font=font)
     return out
