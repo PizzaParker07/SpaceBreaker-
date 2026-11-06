@@ -8,9 +8,5 @@
   "samples": [
     "spacebreaker:orbital_flight"
   ],
-  "tier": 2,
-  "unlocks": [
-    "spacebreaker:station_module",
-    "spacebreaker:docking_port"
-  ]
+  "tier": 2
 }

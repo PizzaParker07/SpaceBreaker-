@@ -5,8 +5,5 @@
     "spacebreaker:satellites",
     "spacebreaker:interplanetary_transfers"
   ],
-  "tier": 2,
-  "unlocks": [
-    "spacebreaker:probe"
-  ]
+  "tier": 2
 }

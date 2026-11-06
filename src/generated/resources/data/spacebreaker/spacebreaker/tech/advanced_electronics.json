@@ -1,6 +1,6 @@
 {
   "category": "industry",
-  "icon": "minecraft:comparator",
+  "icon": "spacebreaker:advanced_circuit",
   "requires": [
     "spacebreaker:electronics"
   ],
@@ -9,7 +9,8 @@
   ],
   "tier": 2,
   "unlocks": [
-    "spacebreaker:processor",
-    "spacebreaker:silicon_wafer"
+    "spacebreaker:advanced_circuit",
+    "spacebreaker:silicon_wafer",
+    "spacebreaker:solar_cell"
   ]
 }

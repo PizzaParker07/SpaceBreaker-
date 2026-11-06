@@ -1,0 +1,6 @@
+{
+  "structure": "spacebreaker:survey_outpost",
+  "world": "spacebreaker:moon",
+  "loot_tables": ["spacebreaker:chests/moon/outpost_lab", "spacebreaker:chests/moon/outpost_storage",
+                  "spacebreaker:chests/moon/outpost_command", "spacebreaker:chests/moon/tech_data"]
+}

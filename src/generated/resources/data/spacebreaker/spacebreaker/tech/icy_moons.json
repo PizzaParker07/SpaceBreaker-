@@ -5,8 +5,5 @@
     "spacebreaker:astrobiology",
     "spacebreaker:suit_mk3"
   ],
-  "tier": 3,
-  "unlocks": [
-    "spacebreaker:ice_penetrator"
-  ]
+  "tier": 3
 }

@@ -1,12 +1,12 @@
 {
   "category": "propulsion",
-  "icon": "minecraft:compass",
+  "icon": "spacebreaker:rcs_thrusters",
   "requires": [
     "spacebreaker:basic_rocketry",
     "spacebreaker:electronics"
   ],
   "unlocks": [
-    "spacebreaker:guidance_computer",
-    "spacebreaker:rcs_thruster"
+    "spacebreaker:rcs_thrusters",
+    "spacebreaker:grid_fins"
   ]
 }

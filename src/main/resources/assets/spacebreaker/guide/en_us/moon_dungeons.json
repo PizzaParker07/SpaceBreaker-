@@ -1,0 +1,15 @@
+{
+  "chapter": "dungeons",
+  "title": "Ruins on the Moon",
+  "icon": "spacebreaker:survey_drone_spawn_egg",
+  "order": 1,
+  "requires_tech": "spacebreaker:basic_rocketry",
+  "pages": [
+    {
+      "text": "Abandoned survey outposts stand on the plains: a central module, a lab, storage, a drone hangar and an airlock. Ancient lava tubes open through collapsed roofs in the maria, with the wreck of an old probe deep inside."
+    },
+    {
+      "text": "Their labs and probes keep tech disks for the next steps: life support, construction and the Moon itself."
+    }
+  ]
+}

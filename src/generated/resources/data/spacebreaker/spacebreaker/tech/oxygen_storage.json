@@ -7,6 +7,7 @@
   ],
   "unlocks": [
     "spacebreaker:oxygen_tank",
-    "spacebreaker:oxygen_filling_station"
+    "spacebreaker:large_oxygen_tank",
+    "spacebreaker:oxygen_filler"
   ]
 }

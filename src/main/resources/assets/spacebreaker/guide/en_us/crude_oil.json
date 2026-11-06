@@ -1,0 +1,19 @@
+{
+  "chapter": "materials",
+  "title": "Crude Oil",
+  "icon": "spacebreaker:crude_oil_bucket",
+  "order": 5,
+  "pages": [
+    {
+      "items": [
+        "spacebreaker:oil_seep",
+        "spacebreaker:crude_oil_bucket",
+        "spacebreaker:rp1_bucket",
+        "spacebreaker:plastic_sheet"
+      ]
+    },
+    {
+      "text": "Tar-stained ground (an oil seep) means a pocket of crude oil lies right below. Pump it up with a pumpjack and distil it in a refinery into RP-1 rocket kerosene and plastics."
+    }
+  ]
+}

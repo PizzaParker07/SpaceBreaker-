@@ -1,0 +1,17 @@
+{
+  "chapter": "survival",
+  "title": "Moving in Low Gravity",
+  "icon": "spacebreaker:maneuvering_unit",
+  "order": 4,
+  "pages": [
+    {
+      "items": [
+        "spacebreaker:maneuvering_unit",
+        "spacebreaker:magnetic_boots"
+      ]
+    },
+    {
+      "text": "Fit the maneuvering unit onto an EVA torso and fly with jump and sneak on cold gas; refill it at an oxygen filler. Magnetic boots keep you on the floor in low and zero gravity; sneak to let go."
+    }
+  ]
+}

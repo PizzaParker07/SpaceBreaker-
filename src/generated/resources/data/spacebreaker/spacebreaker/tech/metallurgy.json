@@ -1,0 +1,16 @@
+{
+  "category": "industry",
+  "icon": "spacebreaker:steel_ingot",
+  "requires": [
+    "spacebreaker:aluminium_smelting"
+  ],
+  "samples": [
+    "spacebreaker:earth"
+  ],
+  "unlocks": [
+    "spacebreaker:arc_furnace",
+    "spacebreaker:steel_ingot",
+    "spacebreaker:aluminum_lithium_ingot",
+    "spacebreaker:nickel_superalloy_ingot"
+  ]
+}

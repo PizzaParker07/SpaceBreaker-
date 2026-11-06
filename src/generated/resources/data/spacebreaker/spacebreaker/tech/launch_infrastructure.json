@@ -1,6 +1,6 @@
 {
   "category": "construction",
-  "icon": "minecraft:smooth_stone",
+  "icon": "spacebreaker:launch_pad",
   "requires": [
     "spacebreaker:basic_rocketry"
   ],
@@ -8,6 +8,8 @@
     "spacebreaker:launch_pad",
     "spacebreaker:flame_trench",
     "spacebreaker:service_tower",
-    "spacebreaker:launch_console"
+    "spacebreaker:crew_access_arm",
+    "spacebreaker:fuel_umbilical",
+    "spacebreaker:launch_control_console"
   ]
 }

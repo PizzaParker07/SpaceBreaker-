@@ -5,8 +5,5 @@
     "spacebreaker:vacuum_engines",
     "spacebreaker:cryogenics"
   ],
-  "tier": 2,
-  "unlocks": [
-    "spacebreaker:hydrogen_engine"
-  ]
+  "tier": 2
 }

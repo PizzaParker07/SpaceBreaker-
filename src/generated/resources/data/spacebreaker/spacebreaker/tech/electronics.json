@@ -1,6 +1,6 @@
 {
   "category": "industry",
-  "icon": "minecraft:redstone",
+  "icon": "spacebreaker:basic_circuit",
   "requires": [
     "spacebreaker:metal_pressing"
   ],
@@ -8,7 +8,7 @@
     "spacebreaker:earth"
   ],
   "unlocks": [
-    "spacebreaker:circuit_board",
+    "spacebreaker:basic_circuit",
     "spacebreaker:electric_motor"
   ]
 }

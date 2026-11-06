@@ -1,0 +1,29 @@
+{
+  "parent": "spacebreaker:main/orbit",
+  "criteria": {
+    "done": {
+      "conditions": {
+        "to": "spacebreaker:moon_orbit"
+      },
+      "trigger": "minecraft:changed_dimension"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.spacebreaker.moon_orbit.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:ender_pearl"
+    },
+    "title": {
+      "translate": "advancements.spacebreaker.moon_orbit.title"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

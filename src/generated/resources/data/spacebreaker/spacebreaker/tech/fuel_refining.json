@@ -1,11 +1,11 @@
 {
   "category": "industry",
-  "icon": "minecraft:coal",
+  "icon": "spacebreaker:rp1_bucket",
   "requires": [
     "spacebreaker:electronics"
   ],
   "unlocks": [
-    "spacebreaker:oil_pump",
+    "spacebreaker:pumpjack",
     "spacebreaker:refinery"
   ]
 }

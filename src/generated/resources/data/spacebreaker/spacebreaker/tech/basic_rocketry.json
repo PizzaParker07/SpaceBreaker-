@@ -4,6 +4,8 @@
   "unlocks": [
     "spacebreaker:rocket_assembler",
     "spacebreaker:nose_cone",
-    "spacebreaker:fin"
+    "spacebreaker:fins",
+    "spacebreaker:crew_capsule",
+    "spacebreaker:emergency_beacon"
   ]
 }

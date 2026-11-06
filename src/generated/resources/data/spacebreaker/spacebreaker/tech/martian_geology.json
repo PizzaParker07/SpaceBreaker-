@@ -8,8 +8,5 @@
   "samples": [
     "spacebreaker:mars"
   ],
-  "tier": 2,
-  "unlocks": [
-    "spacebreaker:core_drill"
-  ]
+  "tier": 2
 }

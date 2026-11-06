@@ -83,9 +83,9 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Saha Numunesi, Deney Kaydı, Numune Çantası | her dünyanın numunesi farklı teknolojileri ortaya çıkarır |
 | 🎨 | Araştırma Laboratuvarı | tezgâh + analiz cihazı + mikroskop; FE ile çalışır, çalışırken ekran parlar; takımla paylaşım |
 | 🎨 | Araştırma ağacı ekranı (J) | dallar, ön koşul çizgileri, ipuçları, sürükle/yakınlaştır |
-| 🎨 | Saha Rehberi | iki sayfalık kitap: bölümler, arama, eşyalar, tarifler, çizimler, teknolojiyle açılan sayfalar (TR + EN) |
+| 🎨 | Saha Rehberi | iki sayfalık kitap: 9 bölüm, 38 sayfa (malzemeler, makineler, giysi, roketçilik, Ay, zindanlar, fizik), arama, tarifler, çizimler, teknolojiyle açılan sayfalar (TR + EN) |
 | 🎨 | Terk Edilmiş Gözlemevi (Dünya zindanı) | bakır kubbe, kırık teleskop, gizli arşiv (ilk roketçilik diskleri), roket test rampası, muhafızlar |
-| 🎨 | Ana başarım ağacı | ilk cevher → külçe → güneş; numune → laboratuvar → ilk teknoloji; zindan → roket → yörünge → Ay → dönüş |
+| 🎨 | Ana başarım ağacı (28) | cevher → külçe → çelik → RP-1 → sıvı oksijen; numune → laboratuvar → teknolojiler; zindan → roket → yörünge → Ay yörüngesi ve Ay → Ay zindanı, kene, dönüş; tam giysi, manevra ünitesi |
 
 ---
 

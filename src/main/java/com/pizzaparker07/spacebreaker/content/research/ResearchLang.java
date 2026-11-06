@@ -86,6 +86,7 @@ final class ResearchLang {
         l.add("guide.spacebreaker.chapter.research", "Research", "Araştırma");
         l.add("guide.spacebreaker.chapter.dungeons", "Ruins & Dungeons", "Harabeler ve Zindanlar");
         l.add("guide.spacebreaker.chapter.survival", "Space Survival", "Uzayda Hayatta Kalma");
+        l.add("guide.spacebreaker.chapter.rocketry", "Rocketry", "Roketçilik");
         l.add("guide.spacebreaker.chapter.moon", "The Moon", "Ay");
         l.add("guide.spacebreaker.chapter.physics", "Flight Physics", "Uçuş Fiziği");
         // messages

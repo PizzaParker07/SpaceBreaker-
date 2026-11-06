@@ -1,0 +1,22 @@
+{
+  "chapter": "survival",
+  "title": "Air for the Base",
+  "icon": "spacebreaker:oxygen_distributor",
+  "order": 3,
+  "pages": [
+    {
+      "items": [
+        "spacebreaker:oxygen_filler",
+        "spacebreaker:oxygen_distributor",
+        "spacebreaker:airlock_door",
+        "spacebreaker:large_oxygen_tank"
+      ]
+    },
+    {
+      "text": "The oxygen filler refills tanks from breathable air using power. The oxygen distributor fills a sealed room (up to 4096 blocks) from a tank and tells you where it leaks. Airlock doors are airtight while closed and open by hand or redstone."
+    },
+    {
+      "recipe": "spacebreaker:oxygen_distributor"
+    }
+  ]
+}

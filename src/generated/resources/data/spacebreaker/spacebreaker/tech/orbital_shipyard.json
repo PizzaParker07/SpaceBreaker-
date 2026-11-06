@@ -6,8 +6,5 @@
     "spacebreaker:heavy_launch",
     "spacebreaker:fusion_power"
   ],
-  "tier": 3,
-  "unlocks": [
-    "spacebreaker:orbital_shipyard"
-  ]
+  "tier": 3
 }

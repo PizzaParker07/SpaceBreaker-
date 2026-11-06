@@ -6,6 +6,8 @@
   ],
   "unlocks": [
     "spacebreaker:eva_helmet",
-    "spacebreaker:eva_suit"
+    "spacebreaker:eva_chestplate",
+    "spacebreaker:eva_leggings",
+    "spacebreaker:eva_boots"
   ]
 }

@@ -5,8 +5,5 @@
     "spacebreaker:interplanetary_transfers",
     "spacebreaker:space_probes"
   ],
-  "tier": 3,
-  "unlocks": [
-    "spacebreaker:gravity_assist_planner"
-  ]
+  "tier": 3
 }

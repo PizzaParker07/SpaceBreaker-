@@ -8,8 +8,5 @@
   "samples": [
     "spacebreaker:meteorite"
   ],
-  "tier": 2,
-  "unlocks": [
-    "spacebreaker:spectrometer"
-  ]
+  "tier": 2
 }

@@ -1,0 +1,27 @@
+{
+  "chapter": "materials",
+  "title": "Uzay Çağının Cevherleri",
+  "icon": "spacebreaker:raw_rutile",
+  "order": 2,
+  "pages": [
+    {
+      "items": [
+        "spacebreaker:rutile_ore",
+        "spacebreaker:pentlandite_ore",
+        "spacebreaker:spodumene_ore",
+        "spacebreaker:wolframite_ore"
+      ]
+    },
+    {
+      "text": "Rutil titanyum verir; derinde ve nadirdir. Pentlandit orta derinlikte nikel verir. Spodümen dağların yükseklerinde lityum verir. Wolframit derinde tungsten verir. Her birinin derin kayrak çeşidi ve ham bloğu vardır."
+    },
+    {
+      "items": [
+        "spacebreaker:titanium_ingot",
+        "spacebreaker:nickel_ingot",
+        "spacebreaker:lithium_ingot",
+        "spacebreaker:tungsten_ingot"
+      ]
+    }
+  ]
+}

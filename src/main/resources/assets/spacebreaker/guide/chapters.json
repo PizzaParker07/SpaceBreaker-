@@ -30,6 +30,11 @@
     "order": 50
   },
   {
+    "id": "rocketry",
+    "icon": "spacebreaker:rocket",
+    "order": 55
+  },
+  {
     "id": "moon",
     "icon": "spacebreaker:lunar_regolith",
     "order": 60

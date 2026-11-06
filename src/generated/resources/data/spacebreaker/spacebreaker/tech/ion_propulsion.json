@@ -5,8 +5,5 @@
     "spacebreaker:hydrogen_engines",
     "spacebreaker:advanced_electronics"
   ],
-  "tier": 2,
-  "unlocks": [
-    "spacebreaker:ion_engine"
-  ]
+  "tier": 2
 }

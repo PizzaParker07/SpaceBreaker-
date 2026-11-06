@@ -1,0 +1,34 @@
+{
+  "parent": "spacebreaker:main/rp1",
+  "criteria": {
+    "done": {
+      "conditions": {
+        "items": [
+          {
+            "items": "spacebreaker:liquid_oxygen_bucket"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.spacebreaker.liquid_oxygen.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "spacebreaker:liquid_oxygen_bucket"
+    },
+    "title": {
+      "translate": "advancements.spacebreaker.liquid_oxygen.title"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

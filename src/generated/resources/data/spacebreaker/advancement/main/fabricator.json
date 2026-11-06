@@ -1,0 +1,33 @@
+{
+  "parent": "spacebreaker:main/steel",
+  "criteria": {
+    "done": {
+      "conditions": {
+        "items": [
+          {
+            "items": "spacebreaker:fabricator"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.spacebreaker.fabricator.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "spacebreaker:fabricator"
+    },
+    "title": {
+      "translate": "advancements.spacebreaker.fabricator.title"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

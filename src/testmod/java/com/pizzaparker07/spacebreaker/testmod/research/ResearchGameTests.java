@@ -306,6 +306,65 @@ public final class ResearchGameTests {
     }
 
     @GameTest(template = EMPTY)
+    public static void moonTechDataRollsDisksAndDungeonsResolve(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        LootTable table = level.getServer().reloadableRegistries().getLootTable(
+                ResourceKey.create(Registries.LOOT_TABLE, Spacebreaker.id("chests/moon/tech_data")));
+        Map<ResourceLocation, TechNode> all = Tech.all(level.registryAccess());
+        for (int i = 0; i < 20; i++) {
+            LootParams params = new LootParams.Builder(level).withParameter(LootContextParams.ORIGIN, Vec3.ZERO).create(LootContextParamSets.CHEST);
+            int disks = 0;
+            for (ItemStack s : table.getRandomItems(params)) {
+                if (s.getItem() instanceof TechDiskItem) {
+                    ResourceLocation t = TechDiskItem.tech(s);
+                    helper.assertTrue(t != null && all.containsKey(t) && all.get(t).tier() <= 2, "Moon disk is a phase 1-2 tech: " + t);
+                    disks++;
+                }
+            }
+            helper.assertTrue(disks == 1, "Moon tech data always holds one disk, got " + disks);
+        }
+        var structures = level.registryAccess().registryOrThrow(Registries.STRUCTURE);
+        for (Map.Entry<ResourceLocation, DungeonDef> e : Dungeons.all(level.registryAccess()).entrySet()) {
+            helper.assertTrue(structures.containsKey(e.getValue().structure()), e.getKey() + " points at a missing structure");
+            for (ResourceLocation loot : e.getValue().lootTables()) {
+                helper.assertTrue(level.getServer().reloadableRegistries().getKeys(Registries.LOOT_TABLE).contains(loot),
+                        e.getKey() + " lists a missing loot table " + loot);
+            }
+        }
+        helper.assertTrue(Dungeons.all(level.registryAccess()).size() >= 3, "Earth observatory + two Moon dungeons");
+        helper.succeed();
+    }
+
+    @GameTest(template = EMPTY)
+    public static void techIconsAndUnlocksAreRealItems(GameTestHelper helper) {
+        for (Map.Entry<ResourceLocation, TechNode> e : Tech.all(helper.getLevel().registryAccess()).entrySet()) {
+            e.getValue().icon().ifPresent(icon -> helper.assertTrue(
+                    net.minecraft.core.registries.BuiltInRegistries.ITEM.containsKey(icon), e.getKey() + " has a missing icon " + icon));
+        }
+        var recipes = helper.getLevel().getRecipeManager();
+        for (Map.Entry<ResourceLocation, TechNode> e : Tech.all(helper.getLevel().registryAccess()).entrySet()) {
+            for (ResourceLocation u : e.getValue().unlocks()) {
+                boolean real = net.minecraft.core.registries.BuiltInRegistries.ITEM.containsKey(u)
+                        || net.minecraft.core.registries.BuiltInRegistries.BLOCK.containsKey(u)
+                        || net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.containsKey(u)
+                        || recipes.byKey(u).isPresent();
+                helper.assertTrue(real, e.getKey() + " unlocks " + u + ", which is not a registered item, block, entity or recipe");
+            }
+        }
+        for (String starter : new String[]{"crusher", "combustion_generator", "battery_bank", "fluid_tank", "pressurized_tank", "cryogenic_tank", "research_lab"}) {
+            helper.assertTrue(TechRequirement.forUnlock(helper.getLevel().registryAccess(), Spacebreaker.id(starter)).isEmpty(),
+                    starter + " must stay a starter machine (not gated)");
+        }
+        helper.assertTrue(TechRequirement.forUnlock(helper.getLevel().registryAccess(), Spacebreaker.id("arc_furnace")).techs()
+                .contains(ResearchTree.id("metallurgy")), "arc furnace gated by metallurgy");
+        helper.assertTrue(TechRequirement.forUnlock(helper.getLevel().registryAccess(), Spacebreaker.id("fabricator")).techs()
+                .contains(ResearchTree.id("precision_manufacturing")), "fabricator gated by precision manufacturing");
+        helper.assertTrue(TechRequirement.forUnlock(helper.getLevel().registryAccess(), Spacebreaker.id("kerosene_engine"))
+                .techs().contains(ResearchTree.id("liquid_fuel_engines")), "kerosene engine gated by liquid-fuel engines");
+        helper.succeed();
+    }
+
+    @GameTest(template = EMPTY)
     public static void discoveryOutsideDungeonsDoesNothing(GameTestHelper helper) {
         ServerPlayer p = player(helper);
         p.moveTo(helper.absoluteVec(new Vec3(1, 2, 1)));

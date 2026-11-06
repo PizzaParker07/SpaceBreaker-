@@ -21,6 +21,10 @@ import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.ChangeDimensionTrigger;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.PlayerTrigger;
+import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.advancements.critereon.KilledTrigger;
+import net.minecraft.advancements.critereon.StartRidingTrigger;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.advancements.AdvancementSubProvider;
@@ -57,6 +61,12 @@ public final class ResearchAdvancements implements AdvancementSubProvider {
                 InventoryChangeTrigger.TriggerInstance.hasItems(EarthModule.ALUMINUM_INGOT.get()));
         task(out, ingot, "solar_power", new ItemStack(MachinesModule.SOLAR_PANEL_ITEM.get()),
                 InventoryChangeTrigger.TriggerInstance.hasItems(MachinesModule.SOLAR_PANEL_ITEM.get()));
+        AdvancementHolder steel = task(out, ingot, "steel", new ItemStack(item("steel_ingot")),
+                InventoryChangeTrigger.TriggerInstance.hasItems(item("steel_ingot")));
+        task(out, steel, "fabricator", new ItemStack(item("fabricator")), InventoryChangeTrigger.TriggerInstance.hasItems(item("fabricator")));
+        AdvancementHolder oil = task(out, steel, "rp1", new ItemStack(item("rp1_bucket")), InventoryChangeTrigger.TriggerInstance.hasItems(item("rp1_bucket")));
+        build(out, oil, "liquid_oxygen", new ItemStack(item("liquid_oxygen_bucket")), AdvancementType.GOAL, "done",
+                InventoryChangeTrigger.TriggerInstance.hasItems(item("liquid_oxygen_bucket")));
 
         // research
         task(out, root, "read_guide", new ItemStack(ResearchModule.GUIDE_BOOK.get()), milestone(Milestones.OPEN_GUIDE));
@@ -76,8 +86,11 @@ public final class ResearchAdvancements implements AdvancementSubProvider {
                 DungeonsModule.DISCOVERED_TRIGGER.get().createCriterion(new DungeonDiscoveredTrigger.Instance(Optional.empty(), Optional.empty(), Optional.empty())));
         AdvancementHolder rocketry = task(out, dungeon, "basic_rocketry", new ItemStack(Items.FIREWORK_ROCKET),
                 techLearned(Optional.of(ResearchTree.id("basic_rocketry")), Optional.empty()));
-        AdvancementHolder rocket = task(out, rocketry, "first_rocket", new ItemStack(Items.FIREWORK_STAR), milestone(Milestones.FIRST_ROCKET));
-        AdvancementHolder launch = task(out, rocket, "launch", new ItemStack(Items.FIRE_CHARGE), milestone(Milestones.LAUNCH));
+        AdvancementHolder rocket = anyOf(out, rocketry, "first_rocket", new ItemStack(item("rocket")), AdvancementType.TASK,
+                milestone(Milestones.FIRST_ROCKET), InventoryChangeTrigger.TriggerInstance.hasItems(item("rocket")));
+        AdvancementHolder launch = anyOf(out, rocket, "launch", new ItemStack(item("crew_capsule")), AdvancementType.TASK,
+                milestone(Milestones.LAUNCH), StartRidingTrigger.TriggerInstance.playerStartsRiding(EntityPredicate.Builder.entity()
+                        .vehicle(EntityPredicate.Builder.entity().of(BuiltInRegistries.ENTITY_TYPE.get(Spacebreaker.id("rocket"))))));
         AdvancementHolder orbit = Advancement.Builder.advancement().parent(launch)
                 .display(new ItemStack(Items.ENDER_EYE), title("orbit"), desc("orbit"), null, AdvancementType.GOAL, true, true, false)
                 .addCriterion("milestone", milestone(Milestones.ORBIT))
@@ -91,13 +104,37 @@ public final class ResearchAdvancements implements AdvancementSubProvider {
                 .addCriterion("dimension", ChangeDimensionTrigger.TriggerInstance.changedDimensionTo(MOON))
                 .requirements(AdvancementRequirements.Strategy.OR)
                 .save(out, id("moon_landing"));
-        build(out, moon, "safe_return", new ItemStack(Items.GRASS_BLOCK), AdvancementType.CHALLENGE, "milestone", milestone(Milestones.SAFE_RETURN));
+        anyOf(out, moon, "safe_return", new ItemStack(Items.GRASS_BLOCK), AdvancementType.CHALLENGE, milestone(Milestones.SAFE_RETURN),
+                ChangeDimensionTrigger.TriggerInstance.changedDimension(EARTH_ORBIT, Level.OVERWORLD));
+        task(out, orbit, "moon_orbit", new ItemStack(Items.ENDER_PEARL), ChangeDimensionTrigger.TriggerInstance.changedDimensionTo(
+                ResourceKey.create(Registries.DIMENSION, Spacebreaker.id("moon_orbit"))));
+        task(out, moon, "moon_dungeon", Research.disk(ResearchTree.id("lunar_surveying")),
+                DungeonsModule.DISCOVERED_TRIGGER.get().createCriterion(new DungeonDiscoveredTrigger.Instance(Optional.empty(), Optional.empty(),
+                        Optional.of(ResearchTree.MOON))));
+        task(out, moon, "moon_creature", new ItemStack(item("kreep_fragment")), KilledTrigger.TriggerInstance.playerKilledEntity(
+                EntityPredicate.Builder.entity().of(BuiltInRegistries.ENTITY_TYPE.get(Spacebreaker.id("regolith_tick")))));
 
         // suit
         AdvancementHolder suit = task(out, root, "suit_up", new ItemStack(SuitModule.EVA_HELMET.get()),
                 InventoryChangeTrigger.TriggerInstance.hasItems(SuitModule.EVA_HELMET.get()));
         task(out, suit, "deep_breath", new ItemStack(SuitModule.OXYGEN_TANK.get()),
                 InventoryChangeTrigger.TriggerInstance.hasItems(SuitModule.OXYGEN_TANK.get()));
+        AdvancementHolder full = build(out, suit, "full_suit", new ItemStack(item("eva_chestplate")), AdvancementType.GOAL, "done",
+                InventoryChangeTrigger.TriggerInstance.hasItems(item("eva_helmet"), item("eva_chestplate"), item("eva_leggings"), item("eva_boots")));
+        task(out, full, "jetpack", new ItemStack(item("maneuvering_unit")), InventoryChangeTrigger.TriggerInstance.hasItems(item("maneuvering_unit")));
+    }
+
+    private static net.minecraft.world.item.Item item(String path) {
+        return BuiltInRegistries.ITEM.get(Spacebreaker.id(path));
+    }
+
+    private static AdvancementHolder anyOf(Consumer<AdvancementHolder> out, AdvancementHolder parent, String name, ItemStack icon,
+                                           AdvancementType type, Criterion<?> a, Criterion<?> b) {
+        return Advancement.Builder.advancement().parent(parent)
+                .display(icon, title(name), desc(name), null, type, true, true, false)
+                .addCriterion("a", a).addCriterion("b", b)
+                .requirements(AdvancementRequirements.Strategy.OR)
+                .save(out, id(name));
     }
 
     private static Criterion<?> milestone(String id) {
@@ -148,10 +185,20 @@ public final class ResearchAdvancements implements AdvancementSubProvider {
         a(l, "dungeon_found", "Ruins of the Space Age", "Discover a lost research site", "Uzay Çağının Kalıntıları", "Kayıp bir araştırma alanı keşfet");
         a(l, "basic_rocketry", "Action and Reaction", "Learn Basic Rocketry", "Etki ve Tepki", "Temel Roketçiliği öğren");
         a(l, "first_rocket", "Some Assembly Required", "Assemble your first rocket", "Biraz Montaj Gerekir", "İlk roketini birleştir");
-        a(l, "launch", "Lift-off!", "Launch a rocket", "Kalkış!", "Bir roket fırlat");
+        a(l, "launch", "Strapped In", "Climb aboard a rocket on the pad", "Kemerler Bağlandı", "Rampadaki bir rokete bin");
         a(l, "orbit", "Falling Around the World", "Reach orbit", "Dünyanın Etrafına Düşmek", "Yörüngeye ulaş");
         a(l, "moon_landing", "One Small Step", "Land on the Moon", "Küçük Bir Adım", "Ay'a in");
         a(l, "safe_return", "Welcome Home", "Come back to Earth safely", "Eve Hoş Geldin", "Dünya'ya sağ salim dön");
+        a(l, "steel", "Forged in the Arc", "Make steel in an electric arc furnace", "Arkta Dövüldü", "Elektrik ark fırınında çelik yap");
+        a(l, "fabricator", "Workshop", "Get a fabricator", "Atölye", "Bir Parça Üretim Tezgâhı edin");
+        a(l, "rp1", "Black Gold", "Refine crude oil into RP-1 kerosene", "Kara Altın", "Ham petrolü RP-1 kerosenine arıt");
+        a(l, "liquid_oxygen", "Colder than Space", "Liquefy oxygen at −183 °C", "Uzaydan Soğuk", "Oksijeni −183 °C'de sıvılaştır");
+        a(l, "moon_orbit", "Around the Moon", "Reach lunar orbit", "Ay'ın Etrafında", "Ay yörüngesine ulaş");
+        a(l, "moon_dungeon", "Someone Was Here First", "Find a lost outpost or lava tube on the Moon",
+                "Biri Senden Önce Gelmiş", "Ay'da kayıp bir karakol ya da lav tüpü bul");
+        a(l, "moon_creature", "Pest Control", "Defeat a regolith tick", "Haşere Kontrolü", "Bir regolit kenesini yen");
+        a(l, "full_suit", "Pressurised", "Collect all four pieces of an EVA suit", "Basınçlandırıldı", "Bir EVA giysisinin dört parçasını da topla");
+        a(l, "jetpack", "Free Flyer", "Get a maneuvering unit", "Serbest Uçuş", "Bir manevra ünitesi edin");
         a(l, "suit_up", "Suit Up", "Get an EVA helmet", "Giyin Kuşan", "Bir EVA kaskı edin");
         a(l, "deep_breath", "Deep Breath", "Get an oxygen tank", "Derin Nefes", "Bir oksijen tüpü edin");
     }

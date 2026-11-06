@@ -3,8 +3,5 @@
   "icon": "minecraft:spyglass",
   "samples": [
     "spacebreaker:earth"
-  ],
-  "unlocks": [
-    "spacebreaker:telescope"
   ]
 }

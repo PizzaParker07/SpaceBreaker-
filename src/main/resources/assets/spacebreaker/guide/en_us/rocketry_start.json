@@ -1,0 +1,11 @@
+{
+  "chapter": "rocketry",
+  "title": "Before You Fly",
+  "icon": "spacebreaker:rocket",
+  "order": 0,
+  "pages": [
+    {
+      "text": "Rockets are learned, not invented: find an abandoned observatory, take the Basic Rocketry disk from its archive and read it in a Research Lab. The rest of this chapter opens up when you know it."
+    }
+  ]
+}

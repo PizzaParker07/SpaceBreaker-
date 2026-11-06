@@ -1,0 +1,16 @@
+{
+  "category": "industry",
+  "icon": "spacebreaker:fabricator",
+  "requires": [
+    "spacebreaker:electronics",
+    "spacebreaker:metallurgy"
+  ],
+  "samples": [
+    "spacebreaker:earth"
+  ],
+  "unlocks": [
+    "spacebreaker:fabricator",
+    "spacebreaker:solar_cell",
+    "spacebreaker:ablative_shield_plate"
+  ]
+}

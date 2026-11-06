@@ -5,8 +5,5 @@
     "spacebreaker:nuclear_thermal_propulsion",
     "spacebreaker:fusion_power"
   ],
-  "tier": 3,
-  "unlocks": [
-    "spacebreaker:fusion_drive"
-  ]
+  "tier": 3
 }

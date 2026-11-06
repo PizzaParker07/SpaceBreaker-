@@ -3,8 +3,5 @@
   "icon": "minecraft:gunpowder",
   "requires": [
     "spacebreaker:basic_rocketry"
-  ],
-  "unlocks": [
-    "spacebreaker:solid_rocket_booster"
   ]
 }

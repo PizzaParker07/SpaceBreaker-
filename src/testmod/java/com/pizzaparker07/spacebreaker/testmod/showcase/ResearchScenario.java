@@ -237,6 +237,8 @@ final class ResearchScenario implements ShowcaseScenario {
         s.add(new Shot("07_guide_index", 6000, 0.5, g + 1.9, 4.2, 180F, 22F, false, fp, 40, null, guideChapter("research")));
         s.add(new Shot("08_guide_lab", 6000, 0.5, g + 1.9, 4.2, 180F, 22F, false, fp, 40, null, guideEntry("research_lab", 0)));
         s.add(new Shot("09_guide_orbits", 6000, 0.5, g + 1.9, 4.2, 180F, 22F, false, fp, 40, null, guideEntry("orbits", 0)));
+        s.add(new Shot("09b_guide_rocket_parts", 6000, 0.5, g + 1.9, 4.2, 180F, 22F, false, fp, 40, null, guideEntry("rocket_parts", 0)));
+        s.add(new Shot("09c_guide_machines", 6000, 0.5, g + 1.9, 4.2, 180F, 22F, false, fp, 40, null, guideChapter("machines")));
         s.add(new Shot("10_guide_search", 6000, 0.5, g + 1.9, 4.2, 180F, 22F, false, fp, 40, null, guideSearch("moon")));
         double m = g + MOUND;
         s.add(new Shot("11_observatory_wide", 7000, 29.5, m + 11, 31.0, 180F, 22F, true, fp, 200, null, null));

@@ -1,0 +1,43 @@
+{
+  "parent": "spacebreaker:main/suit_up",
+  "criteria": {
+    "done": {
+      "conditions": {
+        "items": [
+          {
+            "items": "spacebreaker:eva_helmet"
+          },
+          {
+            "items": "spacebreaker:eva_chestplate"
+          },
+          {
+            "items": "spacebreaker:eva_leggings"
+          },
+          {
+            "items": "spacebreaker:eva_boots"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.spacebreaker.full_suit.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "spacebreaker:eva_chestplate"
+    },
+    "title": {
+      "translate": "advancements.spacebreaker.full_suit.title"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

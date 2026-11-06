@@ -1,0 +1,5 @@
+{
+  "structure": "spacebreaker:lava_tube",
+  "world": "spacebreaker:moon",
+  "loot_tables": ["spacebreaker:chests/moon/lava_tube_probe", "spacebreaker:chests/moon/tech_data"]
+}

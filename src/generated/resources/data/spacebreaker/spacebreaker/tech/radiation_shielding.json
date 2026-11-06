@@ -5,8 +5,5 @@
     "spacebreaker:suit_mk2",
     "spacebreaker:nuclear_fission"
   ],
-  "tier": 3,
-  "unlocks": [
-    "spacebreaker:radiation_shelter"
-  ]
+  "tier": 3
 }

@@ -7,8 +7,5 @@
   "samples": [
     "spacebreaker:mars"
   ],
-  "tier": 2,
-  "unlocks": [
-    "spacebreaker:sabatier_reactor"
-  ]
+  "tier": 2
 }

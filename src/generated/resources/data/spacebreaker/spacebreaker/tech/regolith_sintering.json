@@ -1,6 +1,6 @@
 {
   "category": "construction",
-  "icon": "spacebreaker:lunar_regolith",
+  "icon": "spacebreaker:sintered_regolith_bricks",
   "requires": [
     "spacebreaker:pressurised_modules"
   ],

@@ -19,6 +19,7 @@ CHAPTERS = [
     ('research', SB + 'research_lab', 30),
     ('dungeons', SB + 'tech_disk', 40),
     ('survival', SB + 'eva_helmet', 50),
+    ('rocketry', SB + 'rocket', 55),
     ('moon', SB + 'lunar_regolith', 60),
     ('physics', 'minecraft:firework_rocket', 70),
 ]
@@ -166,6 +167,182 @@ entry('orbits', 'physics', 1, 'minecraft:clock', 'Orbits', 'Yörüngeler',
        'Yörüngede hâlâ düşüyorsundur, ama yana öyle hızlı gidiyorsun ki zemin altından kıvrılıp uzaklaşır. Alçak Dünya yörüngesi '
        'yaklaşık 7,8 km/s ister; sürtünme ve yerçekimi kayıplarıyla bir fırlatma yaklaşık 9,4 km/s Δv tutar.'),
       requires=SB + 'orbital_mechanics')
+
+# ------------------------------------------------------------------------------------------- more materials
+entry('earth_ores', 'materials', 2, SB + 'raw_rutile', 'Ores of the Space Age', 'Uzay Çağının Cevherleri',
+      ('items', [SB + 'rutile_ore', SB + 'pentlandite_ore', SB + 'spodumene_ore', SB + 'wolframite_ore'], '', ''),
+      ('text', 'Rutile gives titanium and lies deep and rare. Pentlandite gives nickel at middle depths. Spodumene gives lithium '
+               'high in the mountains. Wolframite gives tungsten, deep down. Each has a deepslate version and a raw block.',
+       'Rutil titanyum verir; derinde ve nadirdir. Pentlandit orta derinlikte nikel verir. Spodümen dağların yükseklerinde '
+       'lityum verir. Wolframit derinde tungsten verir. Her birinin derin kayrak çeşidi ve ham bloğu vardır.'),
+      ('items', [SB + 'titanium_ingot', SB + 'nickel_ingot', SB + 'lithium_ingot', SB + 'tungsten_ingot'], '', ''))
+entry('alloys', 'materials', 3, SB + 'steel_ingot', 'Alloys', 'Alaşımlar',
+      ('items', [SB + 'steel_ingot', SB + 'aluminum_lithium_ingot', SB + 'nickel_superalloy_ingot'], '', ''),
+      ('text', 'The electric arc furnace melts metals together. Steel is iron with a little carbon: strong and cheap for towers '
+               'and pads. Aluminium-lithium is the lightest metal for tanks. Nickel superalloy survives the heat inside engines.',
+       'Elektrik ark fırını metalleri birlikte eritir. Çelik biraz karbonlu demirdir: kuleler ve rampalar için güçlü ve ucuz. '
+       'Alüminyum-lityum tanklar için en hafif metaldir. Nikel süper alaşımı motorların içindeki ısıya dayanır.'))
+entry('components', 'materials', 4, SB + 'basic_circuit', 'Components', 'Bileşenler',
+      ('items', [SB + 'basic_circuit', SB + 'advanced_circuit', SB + 'electric_motor', SB + 'silicon_wafer', SB + 'solar_cell',
+                 SB + 'plastic_sheet', SB + 'gold_foil_insulation', SB + 'orange_foam_insulation', SB + 'ablative_shield_plate',
+                 SB + 'silicone_seal'], '', ''),
+      ('text', 'Machines and rocket parts are built from components. Most of them come from the fabricator; silicon comes from '
+               'quartz or sand in the arc furnace and is pressed into wafers.',
+       'Makineler ve roket parçaları bileşenlerden yapılır. Çoğu Parça Üretim Tezgâhı\'ndan çıkar; silisyum ark fırınında '
+       'kuvarstan ya da kumdan elde edilir ve preste plakaya dönüştürülür.'),
+      ('recipe', SB + 'basic_circuit'))
+entry('crude_oil', 'materials', 5, SB + 'crude_oil_bucket', 'Crude Oil', 'Ham Petrol',
+      ('items', [SB + 'oil_seep', SB + 'crude_oil_bucket', SB + 'rp1_bucket', SB + 'plastic_sheet'], '', ''),
+      ('text', 'Tar-stained ground (an oil seep) means a pocket of crude oil lies right below. Pump it up with a pumpjack and '
+               'distil it in a refinery into RP-1 rocket kerosene and plastics.',
+       'Katran lekeli zemin (petrol sızıntısı), hemen altında bir ham petrol cebi olduğunu gösterir. Onu petrol pompasıyla çıkar '
+       've rafineride RP-1 roket kerosenine ve plastiğe damıt.'))
+
+# ------------------------------------------------------------------------------------------- machines
+entry('power', 'machines', 1, SB + 'combustion_generator', 'Power Grid', 'Elektrik Şebekesi',
+      ('items', [SB + 'combustion_generator', SB + 'battery_bank', SB + 'copper_cable', SB + 'hv_cable'], '', ''),
+      ('text', 'The combustion generator burns fuel, but only where there is breathable air. The battery bank stores energy and '
+               'gives it out of its front. Copper cable carries a little power; high-voltage cable carries a lot.',
+       'Yanmalı jeneratör yakıt yakar, ama yalnızca solunabilir havanın olduğu yerde. Batarya bankası enerjiyi depolar ve önünden '
+       'verir. Bakır kablo biraz güç taşır; yüksek gerilim kablosu çok taşır.'),
+      ('recipe', SB + 'combustion_generator'))
+entry('processing', 'machines', 2, SB + 'press', 'Processing', 'İşleme',
+      ('items', [SB + 'crusher', SB + 'arc_furnace', SB + 'press', SB + 'plate_press_die', SB + 'wire_press_die', SB + 'rod_press_die'], '', ''),
+      ('text', 'The crusher grinds ores into dust, two for one. The electric arc furnace smelts dust and makes alloys. The press '
+               'shapes ingots into plates, wires and rods; the die you put in decides which, and is never used up.',
+       'Kırıcı cevherleri toza öğütür, bire iki. Elektrik ark fırını tozu ergitir ve alaşım yapar. Pres külçeleri levha, tel ve '
+       'çubuğa dönüştürür; hangisi olacağına taktığın kalıp karar verir ve kalıp hiç tükenmez.'),
+      ('recipe', SB + 'press'))
+entry('oil_industry', 'machines', 3, SB + 'pumpjack', 'Pumpjack and Refinery', 'Petrol Pompası ve Rafineri',
+      ('items', [SB + 'pumpjack', SB + 'refinery', SB + 'fluid_pipe', SB + 'fluid_tank'], '', ''),
+      ('text', 'Both are big machines that need free space around them. Put the pumpjack over an oil seep, pipe the crude oil to '
+               'the refinery and collect RP-1 in a tank. Sneak-use the end of a pipe to make it pull from a block.',
+       'İkisi de çevresinde boş alan isteyen büyük makinelerdir. Petrol pompasını bir sızıntının üstüne kur, ham petrolü boruyla '
+       'rafineriye götür ve RP-1\'i bir tankta topla. Bir borunun ucuna eğilip kullanırsan o bloktan çekmeye başlar.'),
+      ('recipe', SB + 'pumpjack'))
+entry('cryogenics', 'machines', 4, SB + 'cryogenic_liquefier', 'Cryogenics', 'Kriyojenik',
+      ('items', [SB + 'electrolyzer', SB + 'cryogenic_liquefier', SB + 'cryogenic_tank', SB + 'pressurized_tank', SB + 'gas_pipe',
+                 SB + 'cryogenic_canister'], '', ''),
+      ('text', 'The electrolyzer splits water into oxygen and hydrogen gas. The cryogenic liquefier turns the gases into liquid '
+               'oxygen (−183 °C) and liquid hydrogen (−253 °C). Keep them in cryogenic tanks or canisters: spilled in the open '
+               'they boil away.',
+       'Elektroliz ünitesi suyu oksijen ve hidrojen gazına ayırır. Kriyojenik sıvılaştırıcı gazları sıvı oksijene (−183 °C) ve '
+       'sıvı hidrojene (−253 °C) dönüştürür. Onları kriyojenik tank ya da kaplarda tut: açığa dökülürse kaynayıp uçarlar.'),
+      ('items', [SB + 'liquid_oxygen_bucket', SB + 'liquid_hydrogen_bucket', SB + 'liquid_methane_bucket'], '', ''))
+entry('fabricator', 'machines', 5, SB + 'fabricator', 'Fabricator', 'Parça Üretim Tezgâhı',
+      ('recipe', SB + 'fabricator'),
+      ('text', 'A powered workbench for precision parts: circuits, motors, solar cells, insulation and shield plates. Its recipes '
+               'show up in recipe viewers under "Fabricating".',
+       'Hassas parçalar için enerjiyle çalışan tezgâh: devreler, motorlar, güneş hücreleri, yalıtım ve kalkan levhaları. '
+       'Tarifleri, tarif gösterici modlarda "Parça üretimi" başlığı altında görünür.'))
+
+# ------------------------------------------------------------------------------------------- survival (more)
+entry('eva_suit', 'survival', 2, SB + 'eva_chestplate', 'EVA Suit', 'EVA Giysisi',
+      ('items', [SB + 'eva_helmet', SB + 'eva_chestplate', SB + 'eva_leggings', SB + 'eva_boots'], '', ''),
+      ('text', 'The suit is sealed only when all four pieces are worn. The torso carries the life-support backpack: right-click '
+               'it with an oxygen tank to fit up to two tanks. The helmet display shows oxygen, suit status, body and outside '
+               'temperature, radiation and gravity.',
+       'Giysi ancak dört parçası birlikte giyildiğinde sızdırmaz olur. Gövde yaşam destek sırt çantasını taşır: en çok iki tüp '
+       'takmak için ona oksijen tüpüyle sağ tıkla. Kask göstergesi oksijeni, giysi durumunu, vücut ve dış sıcaklığı, radyasyonu '
+       've yerçekimini gösterir.'),
+      ('recipe', SB + 'eva_chestplate'))
+entry('life_support', 'survival', 3, SB + 'oxygen_distributor', 'Air for the Base', 'Üs İçin Hava',
+      ('items', [SB + 'oxygen_filler', SB + 'oxygen_distributor', SB + 'airlock_door', SB + 'large_oxygen_tank'], '', ''),
+      ('text', 'The oxygen filler refills tanks from breathable air using power. The oxygen distributor fills a sealed room (up to '
+               '4096 blocks) from a tank and tells you where it leaks. Airlock doors are airtight while closed and open by hand '
+               'or redstone.',
+       'Oksijen dolum istasyonu tüpleri enerjiyle solunabilir havadan doldurur. Oksijen dağıtıcı kapalı bir odayı (en çok 4096 '
+       'blok) bir tüpten doldurur ve nereden sızdığını söyler. Hava kilidi kapıları kapalıyken hava geçirmez, elle ya da '
+       'kızıltaşla açılır.'),
+      ('recipe', SB + 'oxygen_distributor'))
+entry('eva_mobility', 'survival', 4, SB + 'maneuvering_unit', 'Moving in Low Gravity', 'Düşük Yerçekiminde Hareket',
+      ('items', [SB + 'maneuvering_unit', SB + 'magnetic_boots'], '', ''),
+      ('text', 'Fit the maneuvering unit onto an EVA torso and fly with jump and sneak on cold gas; refill it at an oxygen filler. '
+               'Magnetic boots keep you on the floor in low and zero gravity; sneak to let go.',
+       'Manevra ünitesini bir EVA gövdesine tak ve zıplama ile eğilme tuşlarıyla soğuk gazla uç; oksijen dolum istasyonunda '
+       'yeniden doldur. Manyetik botlar seni düşük ve sıfır yerçekiminde zemine tutar; bırakmak için eğil.'))
+entry('hazards', 'survival', 5, 'minecraft:snowball', 'Hazards', 'Tehlikeler',
+      ('text', 'In vacuum you can hold your breath only for a moment. Body temperature changes slowly: the Moon at noon or in '
+               'shadow will cook or freeze an unprotected body. Radiation adds up over time. Gravity is real: on the Moon you '
+               'jump far and fall gently.',
+       'Boşlukta nefesini yalnızca bir an tutabilirsin. Vücut ısısı yavaş değişir: öğle vakti ya da gölgede Ay korumasız bir '
+       'bedeni pişirir ya da dondurur. Radyasyon zamanla birikir. Yerçekimi gerçektir: Ay\'da uzağa zıplar, yavaşça düşersin.'))
+
+# ------------------------------------------------------------------------------------------- rocketry
+entry('rocketry_start', 'rocketry', 0, SB + 'rocket', 'Before You Fly', 'Uçmadan Önce',
+      ('text', 'Rockets are learned, not invented: find an abandoned observatory, take the Basic Rocketry disk from its archive '
+               'and read it in a Research Lab. The rest of this chapter opens up when you know it.',
+       'Roketler icat edilmez, öğrenilir: terk edilmiş bir gözlemevi bul, arşivinden Temel Roketçilik diskini al ve Araştırma '
+       'Laboratuvarı\'nda oku. Bu bölümün geri kalanı onu öğrendiğinde açılır.'))
+entry('rocket_parts', 'rocketry', 1, SB + 'kerosene_engine', 'Rocket Parts', 'Roket Parçaları',
+      ('items', [SB + 'nose_cone', SB + 'crew_capsule', SB + 'heat_shield', SB + 'parachute', SB + 'fuel_tank_small',
+                 SB + 'fuel_tank_medium', SB + 'fuel_tank_large', SB + 'kerosene_engine', SB + 'vacuum_engine', SB + 'decoupler',
+                 SB + 'interstage', SB + 'fins', SB + 'grid_fins', SB + 'landing_legs', SB + 'rcs_thrusters'], '', ''),
+      ('text', 'Each stage is an engine at the bottom with fuel tanks above it. Decouplers or interstages separate stages. The '
+               'capsule carries the crew and sits on a heat shield, with a parachute on top. Fins, landing legs and RCS go on '
+               'the side.',
+       'Her kademe, altta bir motor ve üstünde yakıt tanklarından oluşur. Kademeleri ayırıcılar ya da ara kademeler ayırır. '
+       'Kapsül mürettebatı taşır ve ısı kalkanının üstüne oturur, en üstte paraşüt bulunur. Kanatçıklar, iniş bacakları ve '
+       'manevra iticileri yana takılır.'),
+      requires=SB + 'basic_rocketry')
+entry('rocket_assembler', 'rocketry', 2, SB + 'rocket_assembler', 'Rocket Assembler', 'Roket Montaj Tezgâhı',
+      ('recipe', SB + 'rocketry/rocket_assembler'),
+      ('text', 'Fill the stages from the bottom up and put the payload on top. The assembler shows the Δv and thrust-to-weight of '
+               'every stage before you build. Reaching orbit takes about 9.4 km/s; the Moon about 6 km/s more.',
+       'Kademeleri alttan yukarı doldur, yükü en üste koy. Montaj tezgâhı, yapmadan önce her kademenin Δv ve itki/ağırlık '
+       'değerini gösterir. Yörüngeye çıkmak yaklaşık 9,4 km/s, Ay\'a gitmek yaklaşık 6 km/s daha ister.'),
+      requires=SB + 'basic_rocketry')
+entry('launch_pad', 'rocketry', 3, SB + 'launch_pad', 'Launch Pad', 'Fırlatma Rampası',
+      ('items', [SB + 'launch_pad', SB + 'flame_trench', SB + 'service_tower', SB + 'crew_access_arm', SB + 'fuel_umbilical',
+                 SB + 'launch_control_console'], '', ''),
+      ('text', 'Lay a 3×3 of flame trench grates inside a ring of 16 pad plates, build a service tower beside it with the crew '
+               'access arm and the fuel umbilical, and place a launch control console nearby. The console checks the pad and '
+               'counts down.',
+       'On altı rampa plakasından bir halkanın içine 3×3 alev kanalı ızgarası döşe, yanına mürettebat erişim kolu ve yakıt hattı '
+       'olan bir servis kulesi dik, yakına bir fırlatma kontrol konsolu koy. Konsol rampayı kontrol eder ve geri sayar.'),
+      requires=SB + 'basic_rocketry')
+entry('flight', 'rocketry', 4, SB + 'emergency_beacon', 'Flight', 'Uçuş',
+      ('text', 'Stand the rocket on the trench, fuel it through the umbilical, climb in and launch from the console. In orbit, '
+               'open the star map to choose where to go. Landing on the Moon needs landing legs; coming home needs a heat shield '
+               'and a parachute.',
+       'Roketi kanalın üstüne dik, yakıt hattından yakıtını doldur, bin ve konsoldan fırlat. Yörüngede nereye gideceğini seçmek '
+       'için yıldız haritasını aç. Ay\'a inmek iniş bacakları, eve dönmek ısı kalkanı ve paraşüt ister.'),
+      ('items', [SB + 'emergency_beacon'], 'Stranded? The emergency beacon calls a capsule home.',
+       'Mahsur mu kaldın? Acil dönüş işareti seni eve götürecek bir kapsül çağırır.'),
+      requires=SB + 'basic_rocketry')
+
+# ------------------------------------------------------------------------------------------- moon (more)
+entry('moon_building', 'moon', 1, SB + 'sintered_regolith_bricks', 'Building on the Moon', 'Ay\'da İnşaat',
+      ('items', [SB + 'anorthosite', SB + 'polished_anorthosite', SB + 'anorthosite_bricks', SB + 'sintered_regolith',
+                 SB + 'sintered_regolith_bricks', SB + 'impact_breccia'], '', ''),
+      ('text', 'The bright highlands are anorthosite; cut it in a stonecutter. Bake regolith in a furnace into sintered regolith, '
+               'the first building block of a Moon base.',
+       'Parlak yaylalar anortozittir; onu taş kesicide kes. Regoliti fırında pişirip sinterlenmiş regolit yap: bir Ay üssünün '
+       'ilk yapı malzemesi.'),
+      requires=SB + 'basic_rocketry')
+entry('moon_resources', 'moon', 2, SB + 'lunar_ice', 'Lunar Resources', 'Ay Kaynakları',
+      ('items', [SB + 'icy_regolith', SB + 'lunar_ice', SB + 'kreep_ore', SB + 'kreep_fragment', SB + 'meteoric_iron', SB + 'raw_ilmenite'], '', ''),
+      ('text', 'Ice hides in the permanently dark floors of polar craters. KREEP holds rare earths and thorium. Meteoric iron '
+               'from old impacts breaks into raw iron.',
+       'Buz, kutup kraterlerinin hiç güneş görmeyen tabanlarında saklanır. KREEP nadir toprak elementleri ve toryum içerir. Eski '
+       'çarpmalardan kalan meteor demiri ham demire ayrılır.'),
+      requires=SB + 'basic_rocketry')
+entry('moon_life', 'moon', 3, SB + 'regolith_tick_spawn_egg', 'Life on the Moon', 'Ay\'da Yaşam',
+      ('items', [SB + 'regolith_tick_spawn_egg', SB + 'elder_regolith_tick_spawn_egg', SB + 'dust_swimmer_spawn_egg',
+                 SB + 'survey_drone_spawn_egg'], '', ''),
+      ('text', 'Regolith ticks hide under the dust and leap far in the low gravity; an elder tick guards its nest in the lava '
+               'tubes. Dust swimmers glide harmlessly just under the surface. Old survey drones still guard their outposts.',
+       'Regolit keneleri tozun altına saklanır ve düşük yerçekiminde uzağa sıçrar; yaşlı bir kene lav tüplerindeki yuvasını '
+       'korur. Toz yüzücüleri yüzeyin hemen altında zararsızca süzülür. Eski keşif dronları hâlâ karakollarını korur.'),
+      requires=SB + 'basic_rocketry')
+entry('moon_dungeons', 'dungeons', 1, SB + 'survey_drone_spawn_egg', 'Ruins on the Moon', 'Ay\'daki Harabeler',
+      ('text', 'Abandoned survey outposts stand on the plains: a central module, a lab, storage, a drone hangar and an airlock. '
+               'Ancient lava tubes open through collapsed roofs in the maria, with the wreck of an old probe deep inside.',
+       'Terk edilmiş keşif karakolları ovalarda durur: merkez modül, laboratuvar, depo, dron hangarı ve hava kilidi. Antik lav '
+       'tüpleri, denizlerde çökmüş tavanlardan açılır; derinlerinde eski bir sondanın enkazı vardır.'),
+      ('text', 'Their labs and probes keep tech disks for the next steps: life support, construction and the Moon itself.',
+       'Laboratuvarları ve sondaları sonraki adımlar için teknoloji diskleri saklar: yaşam desteği, inşaat ve Ay\'ın kendisi.'),
+      requires=SB + 'basic_rocketry')
 
 
 def page_json(p, lang):

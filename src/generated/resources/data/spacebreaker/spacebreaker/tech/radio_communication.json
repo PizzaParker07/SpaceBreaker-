@@ -4,8 +4,5 @@
   "requires": [
     "spacebreaker:observational_astronomy",
     "spacebreaker:electronics"
-  ],
-  "unlocks": [
-    "spacebreaker:radio_antenna"
   ]
 }

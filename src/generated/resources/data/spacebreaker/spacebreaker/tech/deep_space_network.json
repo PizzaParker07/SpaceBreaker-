@@ -5,8 +5,5 @@
     "spacebreaker:space_probes",
     "spacebreaker:nuclear_fission"
   ],
-  "tier": 3,
-  "unlocks": [
-    "spacebreaker:deep_space_dish"
-  ]
+  "tier": 3
 }

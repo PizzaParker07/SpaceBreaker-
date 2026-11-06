@@ -1,0 +1,22 @@
+{
+  "chapter": "machines",
+  "title": "Power Grid",
+  "icon": "spacebreaker:combustion_generator",
+  "order": 1,
+  "pages": [
+    {
+      "items": [
+        "spacebreaker:combustion_generator",
+        "spacebreaker:battery_bank",
+        "spacebreaker:copper_cable",
+        "spacebreaker:hv_cable"
+      ]
+    },
+    {
+      "text": "The combustion generator burns fuel, but only where there is breathable air. The battery bank stores energy and gives it out of its front. Copper cable carries a little power; high-voltage cable carries a lot."
+    },
+    {
+      "recipe": "spacebreaker:combustion_generator"
+    }
+  ]
+}
