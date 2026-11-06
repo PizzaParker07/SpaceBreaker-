@@ -54,7 +54,33 @@ public class MultiblockMachineBlock extends MachineBlock {
         return controller.offset(rx, p.dy(), rz);
     }
 
+    // ------------------------------------------------------------------ data-driven layout (core/multiblock)
+
+    /** The structure definition data/spacebreaker/spacebreaker/multiblock/&lt;block id&gt;.json, if loaded. */
+    public java.util.Optional<com.pizzaparker07.spacebreaker.core.multiblock.MultiblockDefinition> definition(net.minecraft.world.level.LevelReader level) {
+        if (!(level instanceof Level l)) {
+            return java.util.Optional.empty();
+        }
+        return com.pizzaparker07.spacebreaker.core.multiblock.Multiblocks.get(l.registryAccess(),
+                net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(this));
+    }
+
+    /** Non-controller positions of the structure: from the JSON definition when present, else the built-in part list. */
+    private List<com.pizzaparker07.spacebreaker.core.multiblock.MultiblockDefinition.Placement> partPlacements(
+            com.pizzaparker07.spacebreaker.core.multiblock.MultiblockDefinition def, BlockPos controller, Direction facing) {
+        char c = def.controller().charAt(0);
+        return def.placements(controller, facing).stream().filter(p -> p.symbol() != c && p.symbol() != '_').toList();
+    }
+
     public List<BlockPos> partPositions(BlockPos controller, Direction facing) {
+        return partPositions(null, controller, facing);
+    }
+
+    public List<BlockPos> partPositions(@Nullable net.minecraft.world.level.LevelReader level, BlockPos controller, Direction facing) {
+        var def = level == null ? java.util.Optional.<com.pizzaparker07.spacebreaker.core.multiblock.MultiblockDefinition>empty() : definition(level);
+        if (def.isPresent()) {
+            return partPlacements(def.get(), controller, facing).stream().map(com.pizzaparker07.spacebreaker.core.multiblock.MultiblockDefinition.Placement::pos).toList();
+        }
         List<BlockPos> out = new ArrayList<>();
         for (Part p : parts) {
             out.add(offset(controller, facing, p));
@@ -85,7 +111,7 @@ public class MultiblockMachineBlock extends MachineBlock {
             return null;
         }
         Level level = ctx.getLevel();
-        for (BlockPos p : partPositions(ctx.getClickedPos(), state.getValue(FACING))) {
+        for (BlockPos p : partPositions(level, ctx.getClickedPos(), state.getValue(FACING))) {
             if (!level.getBlockState(p).canBeReplaced(ctx) || !level.isInWorldBounds(p)) {
                 return null;
             }
@@ -102,6 +128,17 @@ public class MultiblockMachineBlock extends MachineBlock {
     /** Places the part blocks (also used by structure code and tests). */
     public void build(Level level, BlockPos pos, BlockState state) {
         Direction facing = state.getValue(FACING);
+        var def = definition(level);
+        if (def.isPresent()) {
+            var rot = com.pizzaparker07.spacebreaker.core.multiblock.MultiblockDefinition.rotation(facing);
+            for (var p : partPlacements(def.get(), pos, facing)) {
+                level.setBlock(p.pos(), p.spec().display(rot), Block.UPDATE_ALL);
+                if (level.getBlockEntity(p.pos()) instanceof PartBlockEntity be) {
+                    be.setController(pos);
+                }
+            }
+            return;
+        }
         for (Part p : parts) {
             BlockPos at = offset(pos, facing, p);
             level.setBlock(at, MachinesModule.PART.get().defaultBlockState().setValue(PartBlock.SHAPE, p.shape()).setValue(FACING, facing), Block.UPDATE_ALL);
@@ -111,8 +148,13 @@ public class MultiblockMachineBlock extends MachineBlock {
         }
     }
 
+    /** Complete = the JSON structure validates (when defined) and every part belongs to this controller. */
     public boolean isComplete(Level level, BlockPos pos, BlockState state) {
-        for (BlockPos p : partPositions(pos, state.getValue(FACING))) {
+        var def = definition(level);
+        if (def.isPresent() && !com.pizzaparker07.spacebreaker.core.multiblock.Multiblocks.validate(level, def.get(), pos, state.getValue(FACING)).complete()) {
+            return false;
+        }
+        for (BlockPos p : partPositions(level, pos, state.getValue(FACING))) {
             if (!pos.equals(PartBlock.controller(level, p))) {
                 return false;
             }
@@ -123,7 +165,7 @@ public class MultiblockMachineBlock extends MachineBlock {
     @Override
     protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean moved) {
         if (!state.is(newState.getBlock())) {
-            for (BlockPos p : partPositions(pos, state.getValue(FACING))) {
+            for (BlockPos p : partPositions(level, pos, state.getValue(FACING))) {
                 if (pos.equals(PartBlock.controller(level, p))) {
                     level.removeBlock(p, false);
                 }

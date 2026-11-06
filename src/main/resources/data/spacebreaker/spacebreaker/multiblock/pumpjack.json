@@ -1,0 +1,63 @@
+{
+  "name": "multiblock.spacebreaker.pumpjack",
+  "controller": "C",
+  "tech": "spacebreaker:fuel_refining",
+  "self_assembling": true,
+  "layers": [
+    [
+      "W",
+      "C",
+      "R"
+    ],
+    [
+      " ",
+      "P",
+      " "
+    ],
+    [
+      "H",
+      "B",
+      "B"
+    ]
+  ],
+  "key": {
+    "C": {
+      "block": "spacebreaker:pumpjack"
+    },
+    "W": {
+      "block": "spacebreaker:machine_part",
+      "properties": {
+        "shape": "pumpjack_well",
+        "facing": "north"
+      }
+    },
+    "R": {
+      "block": "spacebreaker:machine_part",
+      "properties": {
+        "shape": "pumpjack_rear",
+        "facing": "north"
+      }
+    },
+    "P": {
+      "block": "spacebreaker:machine_part",
+      "properties": {
+        "shape": "pumpjack_post",
+        "facing": "north"
+      }
+    },
+    "H": {
+      "block": "spacebreaker:machine_part",
+      "properties": {
+        "shape": "pumpjack_head",
+        "facing": "north"
+      }
+    },
+    "B": {
+      "block": "spacebreaker:machine_part",
+      "properties": {
+        "shape": "pumpjack_beam",
+        "facing": "north"
+      }
+    }
+  }
+}

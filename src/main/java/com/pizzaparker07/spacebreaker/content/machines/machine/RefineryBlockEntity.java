@@ -27,7 +27,7 @@ public class RefineryBlockEntity extends ProcessingMachineBlockEntity {
     protected boolean tickServer(Level level, BlockPos pos, BlockState state) {
         boolean working = super.tickServer(level, pos, state);
         if (level.getGameTime() % 4 == 0 && state.getBlock() instanceof MultiblockMachineBlock mb) {
-            for (BlockPos p : mb.partPositions(pos, state.getValue(MachineBlock.FACING))) {
+            for (BlockPos p : mb.partPositions(level, pos, state.getValue(MachineBlock.FACING))) {
                 pushFluids(level, p, 200);
             }
         }

@@ -31,6 +31,12 @@ final class MachinesLang {
         lang.add("tooltip.spacebreaker.sabatier_reactor", "CO₂ + H₂ → methane + water", "CO₂ + H₂ → metan + su");
         lang.add("tooltip.spacebreaker.regolith_heater", "Molten regolith electrolysis: oxygen from rock", "Erimiş regolit elektrolizi: kayadan oksijen");
         lang.add("tooltip.spacebreaker.ice_melter", "Ice to clean water; dry ice to carbon dioxide", "Buzdan temiz su; kuru buzdan karbondioksit");
+        com.pizzaparker07.spacebreaker.content.earth.EarthModule.tag(lang, IsruRecipes.REGOLITHS, "Regoliths", "Regolitler");
+        com.pizzaparker07.spacebreaker.content.earth.EarthModule.tag(lang, IsruRecipes.ICES, "Ices", "Buzlar");
+        com.pizzaparker07.spacebreaker.content.earth.EarthModule.tag(lang, IsruRecipes.DRY_ICES, "Dry Ices", "Kuru Buzlar");
+        com.pizzaparker07.spacebreaker.content.earth.EarthModule.tag(lang, IsruRecipes.PERCHLORATE_SOILS, "Perchlorate Soils", "Perkloratlı Topraklar");
+        lang.add("multiblock.spacebreaker.pumpjack", "Pumpjack", "Petrol Pompası");
+        lang.add("multiblock.spacebreaker.refinery", "Refinery Tower", "Rafineri Kulesi");
         lang.block(MachinesModule.PART, "Machine Part", "Makine Parçası");
         lang.add("tooltip.spacebreaker.multiblock", "Needs free space around it (%s)", "Çevresinde boş alan gerekir (%s)");
         lang.block(MachinesModule.FLUID_TANK, "Fluid Tank", "Sıvı Tankı");

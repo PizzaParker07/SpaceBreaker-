@@ -1,0 +1,39 @@
+{
+  "name": "multiblock.spacebreaker.refinery",
+  "controller": "C",
+  "tech": "spacebreaker:fuel_refining",
+  "self_assembling": true,
+  "layers": [
+    [
+      "C"
+    ],
+    [
+      "K"
+    ],
+    [
+      "K"
+    ],
+    [
+      "T"
+    ]
+  ],
+  "key": {
+    "C": {
+      "block": "spacebreaker:refinery"
+    },
+    "K": {
+      "block": "spacebreaker:machine_part",
+      "properties": {
+        "shape": "refinery_column",
+        "facing": "north"
+      }
+    },
+    "T": {
+      "block": "spacebreaker:machine_part",
+      "properties": {
+        "shape": "refinery_top",
+        "facing": "north"
+      }
+    }
+  }
+}

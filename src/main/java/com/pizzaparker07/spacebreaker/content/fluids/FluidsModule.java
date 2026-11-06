@@ -65,21 +65,21 @@ public final class FluidsModule implements SbModule {
     public static final SbFluid LIQUID_METHANE = new SbFluid("liquid_methane", "Liquid Methane", "Sıvı Metan", SbFluid.Kind.CRYOGENIC,
             0xA0C9D8E6, 112, 422, 150, List.of(TAG_LCH4));
     public static final SbFluid OXYGEN = new SbFluid("oxygen", "Oxygen", "Oksijen", SbFluid.Kind.GAS,
-            0x80A9D4F2, 293, -1, 20, List.of(TAG_OXYGEN));
+            0xC080B8F0, 293, -1, 20, List.of(TAG_OXYGEN));
     public static final SbFluid HYDROGEN = new SbFluid("hydrogen", "Hydrogen", "Hidrojen", SbFluid.Kind.GAS,
-            0x80F2F2F2, 293, -10, 10, List.of(TAG_HYDROGEN));
+            0xC0DCEBFF, 293, -10, 10, List.of(TAG_HYDROGEN));
     public static final SbFluid METHANE = new SbFluid("methane", "Methane", "Metan", SbFluid.Kind.GAS,
-            0x80E6E0C8, 293, -5, 12, List.of(TAG_METHANE));
+            0xC0F0C878, 293, -5, 12, List.of(TAG_METHANE));
 
     public static final SbFluid CARBON_DIOXIDE = new SbFluid("carbon_dioxide", "Carbon Dioxide", "Karbondioksit", SbFluid.Kind.GAS,
-            0x80D8D2C8, 293, -2, 15, List.of(TAG_CO2));
+            0xC0B8AE98, 293, -2, 15, List.of(TAG_CO2));
 
     /** Venus cloud droplets; a dense, oily, faintly yellow liquid (no world block: it stays in tanks and pipes). */
     public static final SbFluid SULFURIC_ACID = new SbFluid("sulfuric_acid", "Sulfuric Acid", "Sülfürik Asit", SbFluid.Kind.PROCESS,
             0xC8E8DC8C, 293, 1830, 2400, List.of(TAG_SULFURIC_ACID));
     /** Solar-wind helium implanted in Mercury and Moon regolith. */
     public static final SbFluid HELIUM_3 = new SbFluid("helium_3", "Helium-3", "Helyum-3", SbFluid.Kind.GAS,
-            0x80F0E6FF, 293, -12, 8, List.of(TAG_HELIUM_3));
+            0xC0D8B8F0, 293, -12, 8, List.of(TAG_HELIUM_3));
 
     public static final List<SbFluid> ALL = List.of(CRUDE_OIL, RP1, LIQUID_OXYGEN, LIQUID_HYDROGEN, LIQUID_METHANE, OXYGEN, HYDROGEN, METHANE,
             CARBON_DIOXIDE, SULFURIC_ACID, HELIUM_3);
@@ -136,6 +136,11 @@ public final class FluidsModule implements SbModule {
             }
         }
         lang.item(CANISTER, "Cryogenic Canister", "Kriyojenik Kap");
+        for (SbFluid f : ALL) {
+            for (TagKey<Fluid> tag : f.tags) {
+                lang.add("tag.fluid." + tag.location().getNamespace() + "." + tag.location().getPath().replace('/', '.'), f.en, f.tr);
+            }
+        }
         lang.add("tooltip.spacebreaker.empty", "Empty", "Boş");
         lang.add("tooltip.spacebreaker.fluid_amount", "%s: %s / %s mB", "%s: %s / %s mB");
     }

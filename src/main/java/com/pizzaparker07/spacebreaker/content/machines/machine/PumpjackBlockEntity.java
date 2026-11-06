@@ -137,7 +137,7 @@ public class PumpjackBlockEntity extends MachineBlockEntity {
         }
         pushFluids(level, pos, 500);
         if (state.getBlock() instanceof MultiblockMachineBlock mb) {
-            for (BlockPos p : mb.partPositions(pos, state.getValue(MachineBlock.FACING))) {
+            for (BlockPos p : mb.partPositions(level, pos, state.getValue(MachineBlock.FACING))) {
                 if (p.getY() == pos.getY()) {
                     pushFluids(level, p, 500);
                 }

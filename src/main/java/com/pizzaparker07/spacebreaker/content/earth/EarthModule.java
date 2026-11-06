@@ -44,6 +44,11 @@ public final class EarthModule implements SbModule {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(Spacebreaker.MOD_ID);
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Spacebreaker.MOD_ID);
     public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(Registries.FEATURE, Spacebreaker.MOD_ID);
+    public static final DeferredRegister<net.minecraft.world.item.crafting.RecipeSerializer<?>> SERIALIZERS =
+            DeferredRegister.create(Registries.RECIPE_SERIALIZER, Spacebreaker.MOD_ID);
+    /** Shapeless crafting that keeps (and wears) tools such as shears. */
+    public static final DeferredHolder<net.minecraft.world.item.crafting.RecipeSerializer<?>, ToolShapelessRecipe.Serializer> TOOL_SHAPELESS =
+            SERIALIZERS.register("tool_shapeless", ToolShapelessRecipe.Serializer::new);
 
     // ------------------------------------------------------------------ ore metals
     public static final Metal ALUMINUM = Metal.builder("aluminum", "Aluminum", "Alüminyum")
@@ -126,6 +131,7 @@ public final class EarthModule implements SbModule {
         BLOCKS.register(modBus);
         ITEMS.register(modBus);
         FEATURES.register(modBus);
+        SERIALIZERS.register(modBus);
         SbTabs.Tab tab = SbTabs.MATERIALS.icon(ALUMINUM_INGOT);
         for (Metal m : METALS) {
             m.items().forEach(tab::add);
@@ -166,6 +172,7 @@ public final class EarthModule implements SbModule {
                 lang.item(m.rod, m.en + " Rod", m.tr + " Çubuk");
             }
         }
+        tagNames(lang);
         lang.item(COAL_DUST, "Coal Dust", "Kömür Tozu");
         lang.item(SILICON, "Silicon", "Silisyum");
         lang.item(SILICON_WAFER, "Silicon Wafer", "Silisyum Plaka");
@@ -184,6 +191,44 @@ public final class EarthModule implements SbModule {
         lang.block(OIL_SEEP, "Oil Seep", "Petrol Sızıntısı");
         lang.add("tooltip.spacebreaker.press_die", "Used in the Press; not consumed", "Preste kullanılır; tükenmez");
         lang.add("tooltip.spacebreaker.oil_seep", "Crude oil lies somewhere below", "Altında bir yerde ham petrol var");
+    }
+
+    /** Names for every item tag this module owns (shown by recipe viewers), e.g. tag.item.c.ingots.titanium. */
+    private static void tagNames(Lang lang) {
+        for (Metal m : METALS) {
+            if (m.hasOre()) {
+                tag(lang, m.oreItemTag, m.oreEn + " Ores", m.oreTr + " Cevherleri");
+                tag(lang, m.rawTag, "Raw " + m.oreEn, "Ham " + m.oreTr);
+                tag(lang, m.rawBlockItemTag, "Blocks of Raw " + m.oreEn, "Ham " + m.oreTr + " Blokları");
+            }
+            if (!m.isVanilla()) {
+                tag(lang, m.ingotTag, m.en + " Ingots", m.tr + " Külçeleri");
+                tag(lang, m.nuggetTag, m.en + " Nuggets", m.tr + " Parçaları");
+                tag(lang, m.blockItemTag, "Blocks of " + m.en, m.tr + " Blokları");
+            }
+            if (m.plate != null) {
+                tag(lang, m.plateTag, m.en + " Plates", m.tr + " Levhaları");
+            }
+            if (m.dust != null) {
+                tag(lang, m.dustTag, m.en + " Dusts", m.tr + " Tozları");
+            }
+            if (m.wire != null) {
+                tag(lang, m.wireTag, m.en + " Wires", m.tr + " Telleri");
+            }
+            if (m.rod != null) {
+                tag(lang, m.rodTag, m.en + " Rods", m.tr + " Çubukları");
+            }
+        }
+        tag(lang, SbTagKeys.commonItem("plates"), "Plates", "Levhalar");
+        tag(lang, SbTagKeys.commonItem("wires"), "Wires", "Teller");
+        tag(lang, DIES, "Press Dies", "Pres Kalıpları");
+        tag(lang, SILICON_TAG, "Silicon", "Silisyum");
+        tag(lang, PLASTIC_TAG, "Plastics", "Plastikler");
+        tag(lang, COAL_DUST_TAG, "Coal Dusts", "Kömür Tozları");
+    }
+
+    public static void tag(Lang lang, TagKey<Item> tag, String en, String tr) {
+        lang.add("tag.item." + tag.location().getNamespace() + "." + tag.location().getPath().replace('/', '.'), en, tr);
     }
 
     // ------------------------------------------------------------------ loot and tags
@@ -286,6 +331,10 @@ public final class EarthModule implements SbModule {
                         .unlockedBy("has_ingot", has(m.ingotTag)).save(out, Spacebreaker.id(m.name + "_plate_by_hand"));
             }
         }
+        // early-game fallback (the Press makes 2 wires per ingot): one hand-made plate + shears -> 2 wires
+        out.accept(Spacebreaker.id("copper_wire_by_hand"), new ToolShapelessRecipe("", net.minecraft.world.item.crafting.CraftingBookCategory.MISC,
+                new net.minecraft.world.item.ItemStack(COPPER.wire.get(), 2),
+                net.minecraft.core.NonNullList.of(Ingredient.EMPTY, Ingredient.of(COPPER.plateTag), Ingredient.of(Items.SHEARS))), null);
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, BASIC_CIRCUIT.get(), 2)
                 .pattern("WRW").pattern("RPR").pattern("WRW")
                 .define('W', COPPER.wireTag).define('R', Tags.Items.DUSTS_REDSTONE).define('P', IRON.plateTag)

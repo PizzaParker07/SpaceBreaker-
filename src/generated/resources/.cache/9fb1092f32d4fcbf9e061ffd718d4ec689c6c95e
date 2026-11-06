@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-06T20:30:55.469016547	Recipes
+// 1.21.1	2026-11-06T20:37:54.459727312	Recipes
 a726668da2e09e168e3b51aa526fcef734254369 data/spacebreaker/advancement/recipes/building_blocks/callistan_rock_slab.json
 517cc96e074a84c8e60b0f1e8696eddf8a3225e2 data/spacebreaker/advancement/recipes/building_blocks/callistan_rock_slab_from_callistan_rock_stonecutting.json
 6ad721d2da9ec4682f05c03935f5d2068b42a144 data/spacebreaker/advancement/recipes/building_blocks/callistan_rock_stairs.json
@@ -228,6 +228,7 @@ cdd2f33f22ccf8b429d0c3293163432574297a05 data/spacebreaker/recipe/combustion_gen
 2bca475e301dfe00a5c5b9610d053a0818330bf8 data/spacebreaker/recipe/copper_ingot_from_dust_blasting.json
 b2c5b8f9790cdee56a8e7ebf50fa6c84e7976463 data/spacebreaker/recipe/copper_ingot_from_dust_smelting.json
 166c1a08ddfae6e1d5d14af58ae194a136ff5ee6 data/spacebreaker/recipe/copper_plate_by_hand.json
+f66e96e1ae89bb3a5ddebd1849636d8dd47002a1 data/spacebreaker/recipe/copper_wire_by_hand.json
 d3fdffc351d4c70feb4dd3ec8bfa6b4e1d649a8c data/spacebreaker/recipe/crusher.json
 6d08dab88fd1665ae0eded7608079798d6054b01 data/spacebreaker/recipe/crushing/aluminum_ingot.json
 d89222a3b7e19ca67cdfb3004fdfabdee1b81252 data/spacebreaker/recipe/crushing/bauxite_ore.json
