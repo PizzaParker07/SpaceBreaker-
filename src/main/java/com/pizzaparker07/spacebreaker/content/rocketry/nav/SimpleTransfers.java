@@ -1,12 +1,12 @@
 package com.pizzaparker07.spacebreaker.content.rocketry.nav;
 
-import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.OptionalDouble;
 
-/** Textbook Δv budget for the Earth-Moon system (m/s, including typical gravity and steering losses). */
+/** Textbook Δv budget for the Earth-Moon system (m/s), used when the astrophysics data is not available. */
 public final class SimpleTransfers implements TransferModel {
-    private final Map<Location, Map<Location, Double>> table = new EnumMap<>(Location.class);
+    private final Map<Location, Map<Location, Double>> table = new HashMap<>();
 
     public SimpleTransfers() {
         put(Location.EARTH_SURFACE, Location.EARTH_ORBIT, 9400);  // launch to a 200 km orbit
@@ -19,7 +19,7 @@ public final class SimpleTransfers implements TransferModel {
     }
 
     private void put(Location from, Location to, double dv) {
-        table.computeIfAbsent(from, k -> new EnumMap<>(Location.class)).put(to, dv);
+        table.computeIfAbsent(from, k -> new HashMap<>()).put(to, dv);
     }
 
     @Override

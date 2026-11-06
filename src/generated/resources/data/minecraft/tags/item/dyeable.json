@@ -1,0 +1,21 @@
+{
+  "values": [
+    "spacebreaker:eva_helmet",
+    "spacebreaker:eva_chestplate",
+    "spacebreaker:eva_leggings",
+    "spacebreaker:eva_boots",
+    "spacebreaker:magnetic_boots",
+    "spacebreaker:thermal_helmet",
+    "spacebreaker:thermal_chestplate",
+    "spacebreaker:thermal_leggings",
+    "spacebreaker:thermal_boots",
+    "spacebreaker:heated_helmet",
+    "spacebreaker:heated_chestplate",
+    "spacebreaker:heated_leggings",
+    "spacebreaker:heated_boots",
+    "spacebreaker:radiation_helmet",
+    "spacebreaker:radiation_chestplate",
+    "spacebreaker:radiation_leggings",
+    "spacebreaker:radiation_boots"
+  ]
+}

@@ -77,7 +77,8 @@ public final class HelmetHud {
             g.fill(w - 1 - i, 0, w - i, h, a << 24);
         }
         ItemStack helmet = mc.player.getItemBySlot(EquipmentSlot.HEAD);
-        if (SpaceSuitItem.isSunVisorDown(helmet)) {
+        if (SpaceSuitItem.isSunVisorDown(helmet)
+                || (helmet.getItem() instanceof SpaceSuitItem s && s.tier() == com.pizzaparker07.spacebreaker.content.suit.SuitTier.THERMAL)) {
             g.fill(0, 0, w, h, 0x38C08616); // warm gold filter
         }
     }
@@ -124,6 +125,11 @@ public final class HelmetHud {
             rows.add(new Row(ICON_SUIT, s.integrity() / 100F, c,
                     sealed ? s.integrity() + "%" : Component.translatable("hud.spacebreaker.open").getString(), c, false));
         }
+        // suit rating: only when the surroundings are beyond it
+        boolean beyond = sealed && (s.ambientC() < s.ratingMinC() || s.ambientC() > s.ratingMaxC());
+        if (beyond) {
+            rows.add(new Row(ICON_SUIT, -1F, 0, String.format(Locale.ROOT, "%d..%d°", s.ratingMinC(), s.ratingMaxC()), WARN, false));
+        }
         // body temperature: marker on a 30..44 °C scale, normal band in the middle
         float body = s.bodyTempC();
         int bodyCol = body < 32 || body > 41 ? ALARM : (body < 35 || body > 38.5F ? WARN : GOOD);
@@ -133,7 +139,7 @@ public final class HelmetHud {
         if (s.doseRate() > 0.05F || s.doseMsv() >= 1F) {
             int c = s.doseMsv() >= 1000 ? ALARM : (s.doseMsv() >= 250 || s.doseRate() > 50 ? WARN : 0xD8C040);
             float fill = (float) (Math.log10(1 + s.doseMsv()) / Math.log10(1 + 3000));
-            rows.add(new Row(ICON_RAD, Mth.clamp(fill, 0F, 1F), c, fmt(s.doseRate()) + "/d", c == ALARM ? ALARM : 0xFFFFFF, false));
+            rows.add(new Row(ICON_RAD, Mth.clamp(fill, 0F, 1F), c, fmt(s.doseRate()) + "/d" + (s.doseMsv() >= 1F ? " " + fmt(s.doseMsv()) + "mSv" : ""), c == ALARM ? ALARM : 0xFFFFFF, false));
         }
         // surroundings: only off Earth-normal conditions
         if (!breathable || s.gravity() < 0.95F || s.gravity() > 1.05F || s.ambientC() < -20 || s.ambientC() > 50) {
@@ -194,6 +200,8 @@ public final class HelmetHud {
             warning = Component.translatable("hud.spacebreaker.warn.no_oxygen");
         } else if (!breathable && o2 < 0.15F) {
             warning = Component.translatable("hud.spacebreaker.warn.low_oxygen");
+        } else if (beyond) {
+            warning = Component.translatable("hud.spacebreaker.warn.rating");
         } else if (body < 35) {
             warning = Component.translatable("hud.spacebreaker.warn.cold");
         } else if (body > 38.5F) {

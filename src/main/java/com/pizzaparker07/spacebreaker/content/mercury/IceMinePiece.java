@@ -50,8 +50,8 @@ public class IceMinePiece extends StructurePiece {
         tag.putLong("Seed", seed);
     }
 
-    static final ResourceKey<LootTable> MINE_OFFICE = Dungeons.lootTable("mercury", "ice_mine_office");
-    static final ResourceKey<LootTable> MINE_STORES = Dungeons.lootTable("mercury", "ice_mine_stores");
+    public static final ResourceKey<LootTable> MINE_OFFICE = Dungeons.lootTable("mercury", "ice_mine_office");
+    public static final ResourceKey<LootTable> MINE_STORES = Dungeons.lootTable("mercury", "ice_mine_stores");
 
     private static BlockState s(Block b) {
         return b.defaultBlockState();

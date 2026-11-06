@@ -31,6 +31,16 @@ public final class ResearchTree {
     public static final ResourceLocation MOON = Spacebreaker.id("moon");
     public static final ResourceLocation MARS = Spacebreaker.id("mars");
     public static final ResourceLocation VENUS = Spacebreaker.id("venus");
+    public static final ResourceLocation MERCURY = Spacebreaker.id("mercury");
+    public static final ResourceLocation PHOBOS = Spacebreaker.id("phobos");
+    public static final ResourceLocation CERES = Spacebreaker.id("ceres");
+    public static final ResourceLocation VESTA = Spacebreaker.id("vesta");
+    public static final ResourceLocation IO = Spacebreaker.id("io");
+    public static final ResourceLocation EUROPA = Spacebreaker.id("europa");
+    public static final ResourceLocation GANYMEDE = Spacebreaker.id("ganymede");
+    public static final ResourceLocation CALLISTO = Spacebreaker.id("callisto");
+    public static final ResourceLocation TITAN = Spacebreaker.id("titan");
+    public static final ResourceLocation ENCELADUS = Spacebreaker.id("enceladus");
     public static final ResourceLocation METEORITE = Spacebreaker.id("meteorite");
     public static final ResourceLocation SUBORBITAL = Spacebreaker.id("suborbital_flight");
     public static final ResourceLocation ORBIT = Spacebreaker.id("orbital_flight");
@@ -142,15 +152,15 @@ public final class ResearchTree {
         t("methane_engines", PROPULSION, 2).req("vacuum_engines", "sabatier_process").icon("minecraft:fire_charge")
                 .samples(MARS)
                 .en("Methane Engines", "Clean-burning methalox engines, fuelled by propellant made on Mars itself.")
-                .tr("Metan Motorları", "Temiz yanan metan-oksijen motorları; yakıtı Mars'ın kendisinde üretilir.");
+                .tr("Metan Motorları", "Temiz yanan metan-oksijen motorları; yakıtını Mars'ta üretebilirsin.");
         t("hydrogen_engines", PROPULSION, 2).req("vacuum_engines", "cryogenics").icon("minecraft:snowball")
                 
                 .en("Hydrogen Engines", "Liquid hydrogen gives the highest chemical specific impulse, if you can keep it cold.")
-                .tr("Hidrojen Motorları", "Sıvı hidrojen en yüksek kimyasal özgül itkiyi verir; yeter ki soğuk tutabil.");
+                .tr("Hidrojen Motorları", "Sıvı hidrojen en yüksek kimyasal özgül itkiyi verir; yeter ki onu soğuk tutabilesin.");
         t("ion_propulsion", PROPULSION, 2).req("hydrogen_engines", "advanced_electronics").icon("minecraft:amethyst_shard")
                 
                 .en("Ion Propulsion", "A whisper of thrust for months on end: electric fields accelerate xenon ions to huge speeds.")
-                .tr("İyon İtkisi", "Aylarca süren fısıltı kadar itki: elektrik alanları ksenon iyonlarını büyük hızlara çıkarır.");
+                .tr("İyon İtkisi", "Fısıltı kadar zayıf ama aylarca süren itki: elektrik alanı ksenon iyonlarını çok büyük hızlara çıkarır.");
         t("nuclear_thermal_propulsion", PROPULSION, 3).req("hydrogen_engines", "nuclear_fission").icon("minecraft:glowstone_dust")
                 
                 .en("Nuclear Thermal Propulsion", "A reactor heats hydrogen directly: twice the efficiency of any chemical engine.")
@@ -158,7 +168,7 @@ public final class ResearchTree {
         t("fusion_drive", PROPULSION, 3).req("nuclear_thermal_propulsion", "fusion_power").icon("minecraft:nether_star")
                 
                 .en("Fusion Drive", "Magnetically confined fusion exhaust: the road to the outer planets in weeks, not years.")
-                .tr("Füzyon Sürücüsü", "Manyetik hapsedilmiş füzyon egzozu: dış gezegenlere yıllarda değil haftalarda.");
+                .tr("Füzyon Sürücüsü", "Manyetik alanla hapsedilmiş füzyon egzozu: dış gezegenlere yıllarda değil, haftalarda.");
 
         // ============================================================ LIFE SUPPORT
         t("pressure_suits", LIFE_SUPPORT, 1).icon("spacebreaker:eva_helmet").unlocks("eva_helmet", "eva_chestplate", "eva_leggings", "eva_boots").samples(EARTH)
@@ -180,6 +190,9 @@ public final class ResearchTree {
                 .unlocks("oxygen_distributor").samples(MOON)
                 .en("Oxygen Distribution", "Fill sealed rooms with breathable air and keep it there.")
                 .tr("Oksijen Dağıtımı", "Kapalı odaları solunabilir havayla doldur ve havayı orada tut.");
+        t("solar_shielding", LIFE_SUPPORT, 2).req("thermal_regulation", "radio_communication").icon("minecraft:gold_block").samples(MERCURY)
+                .en("Solar Shielding", "Gold-film sunshades and white radiators: on Mercury the Sun is seven times brighter and the ground reaches 430 °C.")
+                .tr("Güneş Kalkanı", "Altın filmli güneşlikler ve beyaz radyatörler: Merkür'de Güneş yedi kat parlaktır ve zemin 430 °C'ye ulaşır.");
         t("eva_mobility", LIFE_SUPPORT, 2).req("thermal_regulation", "guidance_systems").icon("spacebreaker:maneuvering_unit")
                 .unlocks("maneuvering_unit", "magnetic_boots")
                 .en("EVA Mobility", "A backpack manoeuvring unit: cold-gas thrusters for moving freely in zero gravity.")
@@ -193,7 +206,7 @@ public final class ResearchTree {
                 .en("Water Recycling", "Recover more than nine litres of every ten: humidity, wash water and the rest.")
                 .tr("Su Geri Kazanımı", "Her on litrenin dokuzundan fazlasını geri kazan: nem, yıkama suyu ve geri kalanı.");
         t("radiation_shielding", LIFE_SUPPORT, 3).req("suit_mk2", "nuclear_fission").icon("minecraft:netherite_scrap")
-                
+                .samples(IO, EUROPA, GANYMEDE)
                 .en("Radiation Shielding", "Layers of water, polyethylene and lead against solar storms and cosmic rays.")
                 .tr("Radyasyon Kalkanı", "Güneş fırtınalarına ve kozmik ışınlara karşı su, polietilen ve kurşun katmanları.");
         t("suit_mk3", LIFE_SUPPORT, 3).req("radiation_shielding").icon("minecraft:diamond_chestplate")
@@ -232,14 +245,14 @@ public final class ResearchTree {
         t("cryogenics", INDUSTRY, 2).req("electrolysis").icon("spacebreaker:cryogenic_tank").unlocks("cryogenic_liquefier", "cryogenic_canister")
                 .en("Cryogenics", "Liquefy oxygen at −183 °C and hydrogen at −253 °C, and store them without boil-off.")
                 .tr("Kriyojenik", "Oksijeni −183 °C'de, hidrojeni −253 °C'de sıvılaştır ve buharlaşmadan sakla.");
-        t("sabatier_process", INDUSTRY, 2).req("electrolysis").icon("minecraft:brewing_stand")
+        t("sabatier_process", INDUSTRY, 2).req("electrolysis").icon("spacebreaker:sabatier_reactor").unlocks("sabatier_reactor", "atmosphere_processor")
                 .samples(MARS)
                 .en("Sabatier Process", "Carbon dioxide plus hydrogen over a nickel catalyst gives methane and water.")
                 .tr("Sabatier Süreci", "Nikel katalizör üzerinde karbondioksit ve hidrojen: metan ve su.");
-        t("isru", INDUSTRY, 2).req("electrolysis", "lunar_surveying").icon("spacebreaker:raw_ilmenite")
+        t("isru", INDUSTRY, 2).req("electrolysis", "lunar_surveying").icon("spacebreaker:regolith_heater").unlocks("regolith_heater", "ice_melter")
                 .samples(MOON)
                 .en("In-Situ Resources", "Live off the land: oxygen from ilmenite, water from polar ice.")
-                .tr("Yerinde Kaynak Kullanımı", "Bulunduğun yerden geçin: ilmenitten oksijen, kutup buzundan su.");
+                .tr("Yerinde Kaynak Kullanımı", "Ne gerekiyorsa indiğin yerde üret: ilmenitten oksijen, kutup buzundan su.");
         t("advanced_electronics", INDUSTRY, 2).req("electronics").icon("spacebreaker:advanced_circuit").unlocks("advanced_circuit", "silicon_wafer", "solar_cell")
                 .samples(METEORITE)
                 .en("Advanced Electronics", "Radiation-hardened processors and silicon wafers grown in clean rooms.")
@@ -259,7 +272,7 @@ public final class ResearchTree {
         t("orbital_mechanics", ASTRONOMY, 1).req("observational_astronomy", "basic_rocketry").icon("minecraft:clock")
                 .samples(SUBORBITAL)
                 .en("Orbital Mechanics", "Orbit is falling and missing the ground: about 7.8 km/s sideways at low altitude.")
-                .tr("Yörünge Mekaniği", "Yörünge, düşüp yere ıskalamaktır: alçak irtifada yana doğru yaklaşık 7,8 km/s.");
+                .tr("Yörünge Mekaniği", "Yörüngede olmak, düşerken yeri ıskalamaktır: alçak irtifada yana doğru yaklaşık 7,8 km/s.");
         t("radio_communication", ASTRONOMY, 1).req("observational_astronomy", "electronics").icon("minecraft:lightning_rod")
                 
                 .en("Radio Communication", "Antennas and transmitters to talk to spacecraft beyond the horizon.")
@@ -281,9 +294,9 @@ public final class ResearchTree {
                 .en("Space Probes", "Uncrewed explorers that fly ahead and send back pictures of worlds no one has seen.")
                 .tr("Uzay Sondaları", "Önden giden ve kimsenin görmediği dünyaların görüntülerini gönderen insansız kâşifler.");
         t("gravity_assists", ASTRONOMY, 3).req("interplanetary_transfers", "space_probes").icon("minecraft:heart_of_the_sea")
-                
+                .samples(CALLISTO)
                 .en("Gravity Assists", "Steal a little of a planet's orbital speed by flying close behind it.")
-                .tr("Kütleçekim Yardımı", "Bir gezegenin hemen arkasından geçerek yörünge hızından biraz çal.");
+                .tr("Kütleçekim Yardımı", "Bir gezegenin hemen arkasından geç ve onun yörünge hızından biraz kap.");
         t("deep_space_network", ASTRONOMY, 3).req("space_probes", "nuclear_fission").icon("minecraft:conduit")
                 
                 .en("Deep Space Network", "Giant dishes that can hear a probe's faint signal from beyond Saturn.")
@@ -310,7 +323,7 @@ public final class ResearchTree {
                 .samples(ORBIT)
                 .en("Space Stations", "Dock modules together in orbit: a home, a workshop and a fuel depot above the sky.")
                 .tr("Uzay İstasyonları", "Modülleri yörüngede birleştir: gökyüzünün üstünde bir ev, atölye ve yakıt deposu.");
-        t("cloud_platforms", CONSTRUCTION, 2).req("space_stations").icon("minecraft:white_wool")
+        t("cloud_platforms", CONSTRUCTION, 2).req("space_stations").icon("spacebreaker:composite_panel").unlocks("composite_panel", "aerogel")
                 .samples(VENUS)
                 .en("Cloud Platforms", "Breathable air is a lifting gas on Venus: float a base 50 km above the furnace.")
                 .tr("Bulut Platformları", "Venüs'te solunabilir hava bir kaldırma gazıdır: üssü fırının 50 km üstünde yüzdür.");
@@ -322,7 +335,7 @@ public final class ResearchTree {
         // ============================================================ EXPLORATION
         t("field_geology", EXPLORATION, 1).icon("minecraft:brush").unlocks("sample_kit").samples(EARTH)
                 .en("Field Geology", "Read rocks like a book: collect, label and analyse samples from every world.")
-                .tr("Saha Jeolojisi", "Kayaları kitap gibi oku: her dünyadan örnek topla, etiketle ve incele.");
+                .tr("Saha Jeolojisi", "Kayaları kitap gibi oku: her dünyadan numune topla, etiketle ve incele.");
         t("lunar_surveying", EXPLORATION, 1).req("field_geology", "landing_systems").icon("spacebreaker:mare_basalt")
                 .samples(MOON)
                 .en("Lunar Surveying", "Map the maria and highlands; find ilmenite, ice and the safest landing sites.")
@@ -340,11 +353,17 @@ public final class ResearchTree {
                 .en("Astrobiology", "Where could life survive out there, and how would we recognise it?")
                 .tr("Astrobiyoloji", "Orada yaşam nerede hayatta kalabilir ve onu nasıl tanırız?");
         t("asteroid_mining", EXPLORATION, 3).req("rovers", "ion_propulsion").icon("minecraft:raw_iron")
-                .samples(METEORITE)
+                .samples(METEORITE, CERES, VESTA)
                 .en("Asteroid Mining", "Nickel-iron and platinum-group metals, waiting in the belt between Mars and Jupiter.")
                 .tr("Asteroit Madenciliği", "Mars ile Jüpiter arasındaki kuşakta bekleyen nikel-demir ve platin grubu metaller.");
+        t("titan_expedition", EXPLORATION, 3).req("astrobiology", "cryogenics").icon("minecraft:kelp").samples(TITAN)
+                .en("Titan Expedition", "Thick nitrogen air and lakes of liquid methane at −180 °C: the only other world with rain, rivers and seas.")
+                .tr("Titan Seferi", "Kalın azot havası ve −180 °C'de sıvı metan gölleri: yağmuru, nehirleri ve denizleri olan tek diğer dünya.");
+        t("phobos_survey", EXPLORATION, 2).req("martian_geology").icon("minecraft:tuff").samples(PHOBOS)
+                .en("Phobos Survey", "A captured asteroid or a chip of Mars? Grooved, dusty and so small you could jump off it.")
+                .tr("Phobos Araştırması", "Yakalanmış bir asteroit mi, yoksa Mars'tan kopmuş bir parça mı? Oluklu, tozlu ve üstünden zıplayıp kaçabileceğin kadar küçük.");
         t("icy_moons", EXPLORATION, 3).req("astrobiology", "suit_mk3").icon("minecraft:packed_ice")
-                
+                .samples(EUROPA, ENCELADUS, GANYMEDE, CALLISTO)
                 .en("Icy Moons", "Drill through kilometres of ice to the hidden oceans of Europa and Enceladus.")
                 .tr("Buzlu Uydular", "Europa ve Enceladus'un gizli okyanuslarına ulaşmak için kilometrelerce buzu del.");
     }

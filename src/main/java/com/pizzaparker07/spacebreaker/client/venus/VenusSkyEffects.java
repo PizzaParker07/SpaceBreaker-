@@ -32,8 +32,11 @@ import org.joml.Vector3f;
 public class VenusSkyEffects extends DimensionSpecialEffects {
     private static final ResourceLocation SUN = Spacebreaker.id("textures/environment/sun_vacuum.png");
     private static final ResourceLocation SEA = Spacebreaker.id("textures/environment/venus_cloud_sea.png");
-    static final float[] SURFACE = {0.48F, 0.33F, 0.16F};
-    static final float[] CLOUD = {0.86F, 0.80F, 0.60F};
+    /** Haze colours and surface visibility; defaults, replaced by the body's "haze" data when the level loads. */
+    static float[] SURFACE = {0.48F, 0.33F, 0.16F};
+    static float[] CLOUD = {0.86F, 0.80F, 0.60F};
+    static float visibility = 64F;
+    private static ClientLevel hazeLevel;
     static final float[] ZENITH = {0.62F, 0.72F, 0.84F};
     static final float[] HORIZON = {0.95F, 0.90F, 0.76F};
 
@@ -51,6 +54,19 @@ public class VenusSkyEffects extends DimensionSpecialEffects {
         double lo = Mth.clamp((y - VenusClimate.CLOUD_BASE + 8) / 16.0, 0, 1);
         double hi = Mth.clamp((VenusClimate.CLOUD_TOP + 6 - y) / 12.0, 0, 1);
         return (float) Math.min(lo, hi);
+    }
+
+    /** Reads the haze of Venus from its celestial body data (atmosphere.haze), once per level. */
+    static void loadHaze(ClientLevel level) {
+        if (level == hazeLevel) {
+            return;
+        }
+        hazeLevel = level;
+        com.pizzaparker07.spacebreaker.core.body.Bodies.forLevel(level).flatMap(b -> b.atmosphere().haze()).ifPresent(h -> {
+            SURFACE = com.pizzaparker07.spacebreaker.core.body.CelestialBody.Haze.rgb(h.colour());
+            CLOUD = com.pizzaparker07.spacebreaker.core.body.CelestialBody.Haze.rgb(h.highColour());
+            visibility = (float) h.visibilityBlocks();
+        });
     }
 
     /** Fog / horizon colour at height y for daylight d. */

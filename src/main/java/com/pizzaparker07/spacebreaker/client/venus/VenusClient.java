@@ -46,17 +46,18 @@ public final class VenusClient {
         return level != null && level.dimension() == VenusModule.VENUS;
     }
 
-    /** Thick haze: ~60 blocks of visibility at the surface, a whiteout inside the clouds, clear air above. */
+    /** Thick haze: the body's visibility (64 blocks) at the surface, a whiteout inside the clouds, clear air above. */
     @SubscribeEvent
     static void fog(ViewportEvent.RenderFog event) {
         if (!venus() || event.getMode() != FogRenderer.FogMode.FOG_TERRAIN || event.getCamera().getFluidInCamera() != FogType.NONE) {
             return;
         }
+        VenusSkyEffects.loadHaze(Minecraft.getInstance().level);
         double y = event.getCamera().getPosition().y;
         float far = event.getFarPlaneDistance();
         float in = VenusSkyEffects.inside(y);
         float above = VenusSkyEffects.above(y);
-        float end = Mth.lerp(above, Math.min(far, 64F), far);
+        float end = Mth.lerp(above, Math.min(far, VenusSkyEffects.visibility), far);
         end = Mth.lerp(in, end, 18F);
         float start = Mth.lerp(above, 0F, far * 0.4F);
         start = Mth.lerp(in, start, 0F);
@@ -71,6 +72,7 @@ public final class VenusClient {
             return;
         }
         var level = Minecraft.getInstance().level;
+        VenusSkyEffects.loadHaze(level);
         float[] c = VenusSkyEffects.haze(event.getCamera().getPosition().y, VenusSkyEffects.daylight(level, (float) event.getPartialTick()));
         event.setRed(c[0]);
         event.setGreen(c[1]);

@@ -13,7 +13,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * A machine that runs {@link ProcessingRecipe}s: picks the recipe matching its input slots / tool slot /
@@ -40,21 +39,30 @@ public class ProcessingMachineBlockEntity extends MachineBlockEntity {
         int toolSlot = slotIndex(MachineLayout.Role.TOOL, 0);
         ItemStack tool = toolSlot >= 0 ? items.getStackInSlot(toolSlot) : ItemStack.EMPTY;
         FluidStack fluid = FluidStack.EMPTY;
+        FluidStack fluid2 = FluidStack.EMPTY;
+        int n = 0;
         for (MachineTank t : tanks) {
             if (t.input) {
-                fluid = t.getFluid();
-                break;
+                if (n++ == 0) {
+                    fluid = t.getFluid();
+                } else {
+                    fluid2 = t.getFluid();
+                    break;
+                }
             }
         }
-        return new MachineInput(in, tool, fluid);
+        return new MachineInput(in, tool, fluid, fluid2);
     }
 
     protected @Nullable ProcessingRecipe findRecipe(Level level, MachineInput input) {
         if (input.isEmpty()) {
             return null;
         }
-        Optional<RecipeHolder<ProcessingRecipe>> found = level.getRecipeManager().getRecipeFor(spec.recipe().get().type().get(), input, level);
-        return found.map(RecipeHolder::value).orElse(null);
+        // highest priority wins; ties keep a stable order by recipe id
+        return level.getRecipeManager().getRecipesFor(spec.recipe().get().type().get(), input, level).stream()
+                .sorted(java.util.Comparator.<RecipeHolder<ProcessingRecipe>>comparingInt(h -> -h.value().priority)
+                        .thenComparing(h -> h.id().toString()))
+                .map(RecipeHolder::value).findFirst().orElse(null);
     }
 
     /** Extra condition checked every tick (e.g. a multiblock being complete). Return a status code or 0. */
@@ -144,14 +152,16 @@ public class ProcessingMachineBlockEntity extends MachineBlockEntity {
                 items.extractItem(inSlots.get(assignment[i]), r.ingredients.get(i).count(), false);
             }
         }
-        r.fluidInput.ifPresent(f -> {
-            for (MachineTank t : tanks) {
-                if (t.input) {
-                    t.drain(f.amount(), IFluidHandler.FluidAction.EXECUTE);
-                    break;
+        for (var ing : new java.util.ArrayList<>(java.util.List.of(r.fluidInput, r.fluidInput2))) {
+            ing.ifPresent(f -> {
+                for (MachineTank t : tanks) {
+                    if (t.input && f.test(t.getFluid())) {
+                        t.drain(f.amount(), IFluidHandler.FluidAction.EXECUTE);
+                        break;
+                    }
                 }
-            }
-        });
+            });
+        }
         List<Integer> outs = slots(MachineLayout.Role.OUTPUT);
         for (int k = 0; k < r.results.size(); k++) {
             items.insertItem(outs.get(k), r.results.get(k).copy(), false);

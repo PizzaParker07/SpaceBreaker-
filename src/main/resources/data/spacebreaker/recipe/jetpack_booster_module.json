@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "NBN",
+    "WCW"
+  ],
+  "key": {
+    "C": {
+      "item": "spacebreaker:advanced_circuit"
+    },
+    "B": {
+      "item": "minecraft:piston"
+    },
+    "N": {
+      "tag": "c:plates/nickel_superalloy"
+    },
+    "W": {
+      "item": "minecraft:firework_rocket"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:jetpack_booster_module",
+    "count": 1
+  }
+}

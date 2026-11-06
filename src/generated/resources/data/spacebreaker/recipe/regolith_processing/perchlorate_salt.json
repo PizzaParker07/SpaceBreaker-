@@ -1,0 +1,17 @@
+{
+  "type": "spacebreaker:regolith_processing",
+  "energy": 80,
+  "fluid_results": [
+    {
+      "amount": 750,
+      "id": "spacebreaker:oxygen"
+    }
+  ],
+  "ingredients": [
+    {
+      "count": 1,
+      "tag": "c:dusts/perchlorate"
+    }
+  ],
+  "time": 80
+}

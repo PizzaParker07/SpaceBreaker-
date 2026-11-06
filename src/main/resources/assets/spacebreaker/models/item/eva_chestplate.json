@@ -1,6 +1,7 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "spacebreaker:item/eva_chestplate"
+    "layer0": "spacebreaker:item/eva_chestplate",
+    "layer1": "spacebreaker:item/eva_chestplate_accent"
   }
 }

@@ -31,10 +31,13 @@ public final class MercuryClient {
     @SubscribeEvent
     static void layers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(TerminatorCrawlerModel.LAYER, TerminatorCrawlerModel::createLayer);
+        event.registerLayerDefinition(HollowSnailModel.LAYER, HollowSnailModel::createLayer);
     }
 
     @SubscribeEvent
     static void renderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerEntityRenderer(MercuryEntities.HOLLOW_SNAIL.get(), ctx -> new SimpleMobRenderer<>(ctx,
+                new HollowSnailModel(ctx.bakeLayer(HollowSnailModel.LAYER)), Spacebreaker.id("textures/entity/mercury/hollow_snail.png"), 1.2F, 0.4F, false));
         event.registerEntityRenderer(MercuryEntities.TERMINATOR_CRAWLER.get(), ctx -> {
             var r = new SimpleMobRenderer<>(ctx, new TerminatorCrawlerModel(ctx.bakeLayer(TerminatorCrawlerModel.LAYER)),
                     Spacebreaker.id("textures/entity/mercury/terminator_crawler.png"), 1.1F, 0.55F, false);

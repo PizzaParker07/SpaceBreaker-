@@ -5,5 +5,11 @@
     "spacebreaker:astrobiology",
     "spacebreaker:suit_mk3"
   ],
+  "samples": [
+    "spacebreaker:europa",
+    "spacebreaker:enceladus",
+    "spacebreaker:ganymede",
+    "spacebreaker:callisto"
+  ],
   "tier": 3
 }

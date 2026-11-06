@@ -1,0 +1,8 @@
+{
+  "title": "Field Guide",
+  "categories": {
+    "start": "Getting Started", "research": "Research", "materials": "Materials", "machines": "Energy & Machines",
+    "survival": "Suit & Survival", "rocketry": "Rocketry", "worlds": "Worlds", "ruins": "Ruins",
+    "science": "Science Corner"
+  }
+}

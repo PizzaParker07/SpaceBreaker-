@@ -144,7 +144,6 @@ public final class JupiterModule implements SbModule {
             lang.add("body.spacebreaker." + w[0], w[1], w[2]);
             if (!w[0].equals("jupiter")) {
                 lang.add("dimension.spacebreaker." + w[0], w[1], w[2]);
-                lang.add("sample.spacebreaker." + w[0], w[1], w[2]);
             }
         }
         lang.block(EUROPAN_FROST, "Europan Frost", "Europa Kırağısı");

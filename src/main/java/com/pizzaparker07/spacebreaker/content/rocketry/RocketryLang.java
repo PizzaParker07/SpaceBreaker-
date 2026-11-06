@@ -77,6 +77,8 @@ final class RocketryLang {
         l.add("tooltip.spacebreaker.emergency_beacon", "Away from Earth: calls a capsule that brings you home", "Dünya dışında: seni eve getiren bir kapsül çağırır");
 
         // messages
+        l.add("message.spacebreaker.rocket.loaded", "%s loaded into the rocket", "%s rokete yüklendi");
+        l.add("message.spacebreaker.rocket.tank_full", "No room left for %s", "%s için yer kalmadı");
         l.add("message.spacebreaker.rocket.fuelled", "Tanks full: RP-1 and liquid oxygen loaded", "Tanklar dolu: RP-1 ve sıvı oksijen yüklendi");
         l.add("message.spacebreaker.rocket.no_seat", "This rocket has no crew capsule", "Bu roketin mürettebat kapsülü yok");
         l.add("message.spacebreaker.rocket.pick_up_hint", "Sneak and hit to take the rocket down", "Roketi sökmek için eğilip vur");
@@ -188,14 +190,9 @@ final class RocketryLang {
         l.add("gui.spacebreaker.star_map.pick", "Pick a destination", "Bir hedef seç");
         l.add("gui.spacebreaker.star_map.reach_orbit", "Destinations can be chosen once in orbit", "Hedefler yörüngedeyken seçilebilir");
 
-        for (var loc : com.pizzaparker07.spacebreaker.content.rocketry.nav.Location.values()) {
-            String[] names = switch (loc) {
-                case EARTH_SURFACE -> new String[]{"Earth", "Dünya"};
-                case EARTH_ORBIT -> new String[]{"Earth orbit", "Dünya yörüngesi"};
-                case MOON_ORBIT -> new String[]{"Moon orbit", "Ay yörüngesi"};
-                case MOON_SURFACE -> new String[]{"Moon surface", "Ay yüzeyi"};
-            };
-            l.add(loc.translationKey(), names[0], names[1]);
-        }
+        l.add("location.spacebreaker.earth_surface", "Earth", "Dünya");
+        l.add("gui.spacebreaker.star_map.here", "You are at: %s", "Konum: %s");
+        l.add("location.spacebreaker.orbit_of", "%s orbit", "%s yörüngesi");
+        l.add("body.spacebreaker.earth", "Earth", "Dünya");
     }
 }

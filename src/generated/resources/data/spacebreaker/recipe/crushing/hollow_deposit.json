@@ -1,0 +1,22 @@
+{
+  "type": "spacebreaker:crushing",
+  "bonus": {
+    "count": 1,
+    "id": "spacebreaker:sulfur"
+  },
+  "bonus_chance": 0.3,
+  "energy": 14,
+  "ingredients": [
+    {
+      "count": 1,
+      "item": "spacebreaker:hollow_deposit"
+    }
+  ],
+  "results": [
+    {
+      "count": 1,
+      "id": "spacebreaker:sulfur"
+    }
+  ],
+  "time": 80
+}

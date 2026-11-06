@@ -29,7 +29,14 @@
   "spawners": {
     "ambient": [],
     "axolotls": [],
-    "creature": [],
+    "creature": [
+      {
+        "type": "spacebreaker:hollow_snail",
+        "maxCount": 4,
+        "minCount": 2,
+        "weight": 6
+      }
+    ],
     "misc": [],
     "monster": [
       {

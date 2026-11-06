@@ -102,8 +102,6 @@ public final class BeltModule implements SbModule {
         lang.add("body.spacebreaker.vesta", "Vesta", "Vesta");
         lang.add("dimension.spacebreaker.ceres", "Ceres", "Ceres");
         lang.add("dimension.spacebreaker.vesta", "Vesta", "Vesta");
-        lang.add("sample.spacebreaker.ceres", "Ceres", "Ceres");
-        lang.add("sample.spacebreaker.vesta", "Vesta", "Vesta");
         lang.block(CERES_REGOLITH, "Cerean Regolith", "Ceres Regoliti");
         lang.block(AMMONIATED_CLAY, "Ammoniated Clay", "Amonyaklı Kil");
         lang.block(CARBONATE_CRUST, "Carbonate Salt Crust", "Karbonat Tuz Kabuğu");

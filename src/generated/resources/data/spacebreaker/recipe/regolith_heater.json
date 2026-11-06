@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "spacebreaker:advanced_circuit"
+    },
+    "F": {
+      "item": "minecraft:blast_furnace"
+    },
+    "H": {
+      "item": "minecraft:hopper"
+    },
+    "T": {
+      "tag": "c:plates/titanium"
+    },
+    "W": {
+      "tag": "c:rods/tungsten"
+    }
+  },
+  "pattern": [
+    "THT",
+    "WFW",
+    "TCT"
+  ],
+  "result": {
+    "count": 1,
+    "id": "spacebreaker:regolith_heater"
+  }
+}

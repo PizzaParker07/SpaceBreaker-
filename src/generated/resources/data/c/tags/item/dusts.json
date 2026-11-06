@@ -8,6 +8,8 @@
     "#c:dusts/iron",
     "#c:dusts/copper",
     "#c:dusts/gold",
-    "#c:dusts/coal"
+    "#c:dusts/coal",
+    "#c:dusts/perchlorate",
+    "#c:dusts/sulfur"
   ]
 }

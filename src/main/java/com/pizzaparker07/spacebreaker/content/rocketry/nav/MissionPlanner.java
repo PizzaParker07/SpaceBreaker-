@@ -36,7 +36,7 @@ public final class MissionPlanner {
             if (rating > 0 && layout.payload().heatShield() < rating) {
                 return new Plan(false, i, f, stage, "heat_shield");
             }
-            boolean reentry = to.atmosphere() && !to.orbit();
+            boolean reentry = to.isEarth() && !to.orbit();
             if (reentry) {
                 // the capsule is released before reentry; only the deorbit burn uses the stack
                 RocketMath.Burn burn = RocketMath.burn(layout, stage, f, cost.getAsDouble(), 0);
@@ -81,13 +81,16 @@ public final class MissionPlanner {
         return fly(layout, active, fuel, homeRoute(here), realism).possible();
     }
 
+    /** The way home to Earth's surface: surface → own orbit → (direct entry) Earth. */
     public static List<Location> homeRoute(Location here) {
-        return switch (here) {
-            case EARTH_SURFACE -> List.of(here);
-            case EARTH_ORBIT -> List.of(here, Location.EARTH_SURFACE);
-            case MOON_ORBIT -> List.of(here, Location.EARTH_SURFACE);
-            case MOON_SURFACE -> List.of(here, Location.MOON_ORBIT, Location.EARTH_SURFACE);
-        };
+        if (here.equals(Location.EARTH_SURFACE)) {
+            return List.of(here);
+        }
+        if (here.orbit()) {
+            return List.of(here, Location.EARTH_SURFACE);
+        }
+        Location orbit = Locations.get(here.body(), true).orElse(here);
+        return List.of(here, orbit, Location.EARTH_SURFACE);
     }
 
     /** Whether going to {@code to} would still leave enough to come home afterwards. */

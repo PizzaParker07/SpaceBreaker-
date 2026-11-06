@@ -35,8 +35,8 @@ final class LaunchWindows {
                 ephemeris = new Ephemeris(sys, () -> BodyAdapter.simTime(level));
                 forLevel = level;
             }
-            String a = from.body().location().toString();
-            String b = to.body().location().toString();
+            String a = from.body().toString();
+            String b = to.body().toString();
             Ephemeris.Window w = ephemeris.window(a, b);
             double days = w.plan().transferTime() / 86400.0;
             String transfer = String.format(Locale.ROOT, "%.1f", days);

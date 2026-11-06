@@ -1,522 +1,1408 @@
 package com.pizzaparker07.spacebreaker.client.guide;
 
 import com.pizzaparker07.spacebreaker.Spacebreaker;
+import com.pizzaparker07.spacebreaker.content.machines.recipe.ProcessingRecipe;
 import com.pizzaparker07.spacebreaker.content.research.ResearchClientData;
 import com.pizzaparker07.spacebreaker.core.tech.TechNode;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.PageButton;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
+import org.lwjgl.glfw.GLFW;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
+import java.util.Locale;
+import java.util.Map;
 
 /**
- * The illustrated field guide: a two-page book. The index spread lists chapters (left) and the entries of the selected
- * chapter or the search results (right); an entry flows over as many pages as it needs. Entries tied to a technology
- * stay locked until it is known.
+ * The field guide: a large two-page book scaled to the screen. A bar above the book has back / forward / contents
+ * buttons and a search box; coloured bookmark ribbons on the right jump to each category. Chapters are Markdown
+ * ({@link GuideMarkdown}) laid out over as many pages as they need; arrows, Page Up/Down and the mouse wheel turn
+ * the pages. Nothing is locked: chapters tied to a technology only show a small "Research needed" note.
  */
 public class GuideScreen extends Screen {
     private static final ResourceLocation BOOK = Spacebreaker.id("textures/gui/guide/book.png");
     private static final ResourceLocation SLOT = Spacebreaker.id("guide/slot");
-    private static final ResourceLocation RECIPE = Spacebreaker.id("guide/recipe");
-    private static final ResourceLocation LOCK = Spacebreaker.id("guide/lock");
-    private static final ResourceLocation BACK = Spacebreaker.id("guide/back");
-    public static final int BOOK_W = 300, BOOK_H = 188, TEX_W = 512, TEX_H = 256;
-    private static final int PAGE_W = 118, PAGE_TOP = 16, PAGE_BOTTOM = 164;
-    private static final int LEFT_X = 22, RIGHT_X = 160;
-    private static final int CHAPTER_Y = 29, CHAPTER_ROW = 14;
-    private static final int INK = 0x3B2A1A, INK_SOFT = 0x6E5A44, INK_LINK = 0x1E4E7A;
+    public static final int W = 360, H = 220, TEX_W = 512, TEX_H = 256;
+    private static final int PAGE_W = 142, TOP = 16, BOTTOM = 196, LEFT_X = 24, RIGHT_X = 194;
+    static final int INK = 0x3B2A1A, INK_SOFT = 0x7A6650, LINK = GuideMarkdown.LINK_COLOR;
 
-    /** Remembered between openings (like vanilla's lectern page). */
-    private static @Nullable ResourceLocation lastEntry;
-    private static String lastChapter = "";
+    private enum Mode { CONTENTS, CHAPTER, SEARCH }
 
-    private int bx, by;
-    private EditBox search;
-    private PageButton next, prev;
-    private final List<GuideData.Entry> entries = new ArrayList<>();
-    private String chapter = lastChapter;
-    private @Nullable GuideData.Entry open;
-    private List<List<Laid>> pages = List.of();
-    private int spread;
-    private int listPage;
-
-    /** One element placed on a page. */
-    private record Laid(GuideData.Element el, int y, int h, List<FormattedCharSequence> lines) {
+    private record Place(Mode mode, @Nullable ResourceLocation chapter, int spread, String query) {
     }
+
+    /** Remembered between openings. */
+    private static Place last = new Place(Mode.CONTENTS, null, 0, "");
+
+    private final Deque<Place> back = new ArrayDeque<>();
+    private final Deque<Place> forward = new ArrayDeque<>();
+    private Place place = last;
+    private List<List<Placed>> pages = List.of();
+    private float scale = 1F;
+    private int ox, oy;
+    private EditBox search;
+    private Button backButton, forwardButton;
+    private final Map<ResourceLocation, Entity> entities = new HashMap<>();
 
     public GuideScreen() {
         super(Component.translatable("item.spacebreaker.guide_book"));
     }
 
+    // ================================================================== setup
+
     @Override
     protected void init() {
-        bx = (width - BOOK_W) / 2;
-        by = (height - BOOK_H) / 2;
-        entries.clear();
-        entries.addAll(GuideData.INSTANCE.entries());
-        if (chapter.isEmpty() && !GuideData.INSTANCE.chapters().isEmpty()) {
-            chapter = GuideData.INSTANCE.chapters().get(0).id();
-        }
-        String text = search == null ? "" : search.getValue();
-        search = new EditBox(font, bx + LEFT_X + 2, by + PAGE_TOP + 12, PAGE_W - 4, 12, Component.translatable("gui.spacebreaker.guide.search"));
+        float sx = (width - 40) / (float) W, sy = (height - 46) / (float) H;
+        scale = Math.max(0.75F, Math.min(sx, sy));
+        scale = Math.max(0.75F, (float) Math.floor(scale * 4F) / 4F);
+        ox = (int) ((width - W * scale) / 2);
+        oy = (int) ((height - H * scale) / 2) + 10;
+        int barY = oy - 22;
+        backButton = addRenderableWidget(Button.builder(Component.literal("◀"), b -> goBack()).bounds(ox, barY, 20, 18)
+                .tooltip(Tooltip.create(Component.translatable("gui.spacebreaker.guide.back"))).build());
+        forwardButton = addRenderableWidget(Button.builder(Component.literal("▶"), b -> goForward()).bounds(ox + 22, barY, 20, 18)
+                .tooltip(Tooltip.create(Component.translatable("gui.spacebreaker.guide.forward"))).build());
+        addRenderableWidget(Button.builder(Component.literal("☰"), b -> navigate(new Place(Mode.CONTENTS, null, 0, ""))).bounds(ox + 44, barY, 20, 18)
+                .tooltip(Tooltip.create(Component.translatable("gui.spacebreaker.guide.contents"))).build());
+        String text = search == null ? place.query() : search.getValue();
+        int sw = Math.min(160, (int) (W * scale) - 70);
+        search = new EditBox(font, ox + (int) (W * scale) - sw, barY + 1, sw, 16, Component.translatable("gui.spacebreaker.guide.search"));
         search.setHint(Component.translatable("gui.spacebreaker.guide.search").withStyle(ChatFormatting.GRAY));
-        search.setBordered(true);
-        search.setMaxLength(40);
+        search.setMaxLength(48);
         search.setValue(text);
-        search.setResponder(s -> listPage = 0);
+        search.setResponder(this::onSearch);
         addRenderableWidget(search);
-        next = addRenderableWidget(new PageButton(bx + BOOK_W - 44, by + BOOK_H - 22, true, b -> turn(1), true));
-        prev = addRenderableWidget(new PageButton(bx + 21, by + BOOK_H - 22, false, b -> turn(-1), true));
-        if (open == null && lastEntry != null) {
-            entries.stream().filter(e -> e.id().equals(lastEntry) && unlocked(e)).findFirst().ifPresent(this::openEntry);
-        } else if (open != null) {
-            openEntry(open);
-        }
-        updateWidgets();
+        rebuild();
     }
 
-    private void updateWidgets() {
-        search.visible = open == null;
-        if (open != null) {
-            prev.visible = true;
-            next.visible = (spread + 1) * 2 < pages.size();
-        } else {
-            prev.visible = listPage > 0;
-            next.visible = (listPage + 1) * listCapacity() < visibleEntries().size();
-        }
-    }
-
-    private void turn(int dir) {
-        if (open != null) {
-            if (dir < 0 && spread == 0) {
-                closeEntry();
-                return;
+    private void onSearch(String text) {
+        if (text.isBlank()) {
+            if (place.mode() == Mode.SEARCH) {
+                place = new Place(Mode.CONTENTS, null, 0, "");
+                rebuild();
             }
-            spread = Mth.clamp(spread + dir, 0, Math.max(0, (pages.size() - 1) / 2));
-        } else {
-            listPage = Math.max(0, listPage + dir);
+            return;
         }
-        updateWidgets();
+        place = new Place(Mode.SEARCH, null, 0, text);
+        rebuild();
     }
 
-    // ------------------------------------------------------------------ navigation
-
-    public void openEntry(GuideData.Entry entry) {
-        open = entry;
-        lastEntry = entry.id();
-        spread = 0;
-        pages = paginate(entry);
-        if (search != null) {
-            search.setFocused(false);
+    private void navigate(Place to) {
+        back.push(place);
+        forward.clear();
+        place = to;
+        if (to.mode() != Mode.SEARCH && search != null && !search.getValue().isEmpty()) {
+            search.setResponder(s -> {
+            });
+            search.setValue("");
+            search.setResponder(this::onSearch);
         }
-        if (next != null) {
-            updateWidgets();
+        rebuild();
+        playTurn();
+    }
+
+    private void goBack() {
+        if (!back.isEmpty()) {
+            forward.push(place);
+            place = back.pop();
+            rebuild();
+            playTurn();
         }
     }
 
-    private void closeEntry() {
-        open = null;
-        lastEntry = null;
-        updateWidgets();
+    private void goForward() {
+        if (!forward.isEmpty()) {
+            back.push(place);
+            place = forward.pop();
+            rebuild();
+            playTurn();
+        }
     }
 
-    /** For the showcase: open the first entry of a chapter, or an entry by id. */
-    public void showEntry(ResourceLocation id, int spreadIndex) {
-        entries.stream().filter(e -> e.id().equals(id)).findFirst().ifPresent(e -> {
-            chapter = e.chapter();
-            openEntry(e);
-            spread = Mth.clamp(spreadIndex, 0, Math.max(0, (pages.size() - 1) / 2));
-            updateWidgets();
-        });
+    private void playTurn() {
+        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.BOOK_PAGE_TURN, 1.0F));
     }
 
-    public void showChapter(String id) {
-        chapter = id;
-        open = null;
-        listPage = 0;
-        updateWidgets();
+    /** Opens a chapter (used by item links, other screens and the showcase). */
+    public void openChapter(ResourceLocation id, int spread) {
+        navigate(new Place(Mode.CHAPTER, id, spread, ""));
+    }
+
+    public void showContents() {
+        navigate(new Place(Mode.CONTENTS, null, 0, ""));
     }
 
     public void setSearch(String text) {
-        open = null;
-        lastEntry = null;
         search.setValue(text);
-        updateWidgets();
     }
 
-    private static boolean unlocked(GuideData.Entry e) {
-        return e.requiresTech().map(ResearchClientData::isKnownOnClient).orElse(true)
-                || Minecraft.getInstance().player != null && Minecraft.getInstance().player.isCreative();
-    }
-
-    private List<GuideData.Entry> visibleEntries() {
-        String q = search == null ? "" : search.getValue().trim().toLowerCase(Locale.ROOT);
-        if (!q.isEmpty()) {
-            return entries.stream().filter(e -> e.searchText().contains(q)).toList();
+    private void turn(int dir) {
+        int spreads = Math.max(1, (pages.size() + 1) / 2);
+        int target = place.spread() + dir;
+        if (target >= 0 && target < spreads) {
+            place = new Place(place.mode(), place.chapter(), target, place.query());
+            playTurn();
+            return;
         }
-        return entries.stream().filter(e -> e.chapter().equals(chapter)).toList();
+        if (place.mode() == Mode.CHAPTER && place.chapter() != null) {
+            List<ResourceLocation> order = GuideBook.INSTANCE.order();
+            int i = order.indexOf(place.chapter()) + (dir > 0 ? 1 : -1);
+            if (i >= 0 && i < order.size()) {
+                place = new Place(Mode.CHAPTER, order.get(i), 0, "");
+                rebuild();
+                if (dir < 0) {
+                    place = new Place(Mode.CHAPTER, place.chapter(), Math.max(0, (pages.size() - 1) / 2), "");
+                }
+                playTurn();
+            }
+        }
     }
 
-    private int listCapacity() {
-        return (PAGE_BOTTOM - PAGE_TOP - 16) / 18;
-    }
+    // ================================================================== layout
 
-    // ------------------------------------------------------------------ pagination
-
-    private List<List<Laid>> paginate(GuideData.Entry entry) {
-        List<List<Laid>> out = new ArrayList<>();
-        List<Laid> page = new ArrayList<>();
-        int y = 22; // first page starts below the title
-        int max = PAGE_BOTTOM - PAGE_TOP;
-        for (GuideData.Element el : entry.elements()) {
-            switch (el.type()) {
-                case "page_break" -> {
-                    out.add(page);
-                    page = new ArrayList<>();
-                    y = 0;
-                }
-                case "text", "heading" -> {
-                    Component c = el.type().equals("heading") ? Component.literal(el.text()).withStyle(ChatFormatting.BOLD)
-                            : Component.literal(el.text());
-                    List<FormattedCharSequence> lines = new ArrayList<>(font.split(c, PAGE_W));
-                    while (!lines.isEmpty()) {
-                        int fit = Math.max(0, (max - y) / 9);
-                        if (fit == 0) {
-                            out.add(page);
-                            page = new ArrayList<>();
-                            y = 0;
-                            continue;
-                        }
-                        List<FormattedCharSequence> part = new ArrayList<>(lines.subList(0, Math.min(fit, lines.size())));
-                        lines = new ArrayList<>(lines.subList(part.size(), lines.size()));
-                        page.add(new Laid(el, y, part.size() * 9, part));
-                        y += part.size() * 9 + (el.type().equals("heading") ? 3 : 5);
-                    }
-                }
-                default -> {
-                    List<FormattedCharSequence> caption = el.text().isEmpty() ? List.of()
-                            : font.split(Component.literal(el.text()).withStyle(ChatFormatting.ITALIC), PAGE_W);
-                    int h = switch (el.type()) {
-                        case "items" -> ((el.items().size() + 5) / 6) * 20;
-                        case "image" -> Math.min(el.height() * PAGE_W / Math.max(1, el.width()), el.height()) + 2;
-                        case "recipe" -> 60;
-                        default -> 0;
-                    } + caption.size() * 9;
-                    if (y + h > max && !page.isEmpty()) {
-                        out.add(page);
-                        page = new ArrayList<>();
-                        y = 0;
-                    }
-                    page.add(new Laid(el, y, h, caption));
-                    y += h + 6;
+    private void rebuild() {
+        last = place;
+        Layout l = new Layout(font);
+        switch (place.mode()) {
+            case CONTENTS -> layoutContents(l);
+            case SEARCH -> layoutSearch(l, place.query());
+            case CHAPTER -> {
+                GuideMarkdown.Chapter ch = place.chapter() == null ? null : GuideBook.INSTANCE.chapter(place.chapter());
+                if (ch == null) {
+                    layoutContents(l);
+                } else {
+                    layoutChapter(l, ch);
                 }
             }
         }
-        if (!page.isEmpty() || out.isEmpty()) {
-            out.add(page);
+        pages = l.finish();
+        int spreads = Math.max(1, (pages.size() + 1) / 2);
+        if (place.spread() >= spreads) {
+            place = new Place(place.mode(), place.chapter(), spreads - 1, place.query());
         }
-        return out;
     }
 
-    // ------------------------------------------------------------------ rendering
+    private void layoutContents(Layout l) {
+        l.add(new Title(Component.literal(GuideBook.INSTANCE.title()), new ItemStack(BuiltInRegistries.ITEM.get(Spacebreaker.id("guide_book"))), null));
+        l.text(Component.translatable("gui.spacebreaker.guide.intro").withStyle(Style.EMPTY.withColor(INK_SOFT)), 0, null, 0);
+        l.space(4);
+        for (GuideBook.Category c : GuideBook.INSTANCE.categories()) {
+            l.add(new CategoryHeader(c));
+            for (ResourceLocation id : c.chapters()) {
+                GuideMarkdown.Chapter ch = GuideBook.INSTANCE.chapter(id);
+                if (ch != null) {
+                    l.add(new ChapterLink(id, ch.title(), stack(ch.icon()), null));
+                }
+            }
+            l.space(3);
+        }
+    }
+
+    private void layoutSearch(Layout l, String query) {
+        String q = query.trim().toLowerCase(Locale.forLanguageTag(GuideBook.lang().replace('_', '-')));
+        String qr = query.trim().toLowerCase(Locale.ROOT);
+        l.add(new Title(Component.translatable("gui.spacebreaker.guide.results"), new ItemStack(Items.SPYGLASS), null));
+        int found = 0;
+        for (ResourceLocation id : GuideBook.INSTANCE.order()) {
+            GuideMarkdown.Chapter ch = GuideBook.INSTANCE.chapter(id);
+            if (ch == null) {
+                continue;
+            }
+            String text = ch.searchText();
+            int at = text.indexOf(q);
+            if (at < 0) {
+                at = text.indexOf(qr);
+            }
+            if (at >= 0) {
+                int s = Math.max(0, at - 18);
+                String snippet = (s > 0 ? "…" : "") + stripMarkup(text.substring(s, Math.min(text.length(), at + 40))) + "…";
+                l.add(new ChapterLink(id, ch.title(), stack(ch.icon()), snippet));
+                found++;
+            }
+        }
+        if (found == 0) {
+            l.text(Component.translatable("gui.spacebreaker.guide.none").withStyle(Style.EMPTY.withColor(INK_SOFT)), 0, null, 0);
+        }
+    }
+
+    private static String stripMarkup(String s) {
+        return s.replaceAll("\\{[a-z/]+ ?[^}]*}", "").replace("**", "").replace("*", "").replace("`", "");
+    }
+
+    private void layoutChapter(Layout l, GuideMarkdown.Chapter ch) {
+        Component note = null;
+        if (ch.research().isPresent() && !ResearchClientData.isKnownOnClient(ch.research().get())) {
+            note = Component.translatable("gui.spacebreaker.guide.research_needed",
+                    Component.translatable(TechNode.nameKey(ch.research().get())));
+        }
+        l.add(new Title(Component.literal(ch.title()), stack(ch.icon()), note));
+        for (GuideMarkdown.Block b : ch.blocks()) {
+            switch (b) {
+                case GuideMarkdown.Heading h -> {
+                    l.space(h.level() == 1 ? 5 : 3);
+                    int color = h.level() == 1 ? categoryColor(ch.id()) : (h.level() == 2 ? INK : INK_SOFT);
+                    MutableComponent t = h.text().copy().withStyle(s -> s.withBold(true).withColor(color));
+                    List<FormattedCharSequence> lines = font.split(t, PAGE_W);
+                    for (int i = 0; i < lines.size(); i++) {
+                        l.add(new TextLine(lines.get(i), 0, 0, 0, true));
+                    }
+                    if (h.level() == 1) {
+                        l.add(new Rule(color));
+                    } else {
+                        l.space(2);
+                    }
+                }
+                case GuideMarkdown.Para p -> {
+                    l.text(p.text(), 0, null, 0);
+                    l.space(4);
+                }
+                case GuideMarkdown.ListItem li -> {
+                    l.text(li.text(), 8 + li.indent() * 8, li.marker(), 0);
+                    l.space(1);
+                }
+                case GuideMarkdown.Callout c -> {
+                    int bar = switch (c.kind()) {
+                        case "tip" -> 0x2E6FB8;
+                        case "warning" -> 0xD07020;
+                        default -> 0x8A7A60;
+                    };
+                    l.space(2);
+                    l.add(new BoxEdge(bar, true));
+                    for (int i = 0; i < c.paras().size(); i++) {
+                        if (i > 0) {
+                            l.add(new BoxSpace(bar, 3));
+                        }
+                        l.text(c.paras().get(i), 7, null, bar);
+                    }
+                    l.add(new BoxEdge(bar, false));
+                    l.space(4);
+                }
+                case GuideMarkdown.Table t -> {
+                    l.space(2);
+                    int cols = t.rows().stream().mapToInt(List::size).max().orElse(1);
+                    int[] widths = columnWidths(t, cols);
+                    for (int r = 0; r < t.rows().size(); r++) {
+                        l.add(new TableRow(font, t.rows().get(r), widths, t.header() && r == 0, r == t.rows().size() - 1));
+                    }
+                    l.space(4);
+                }
+                case GuideMarkdown.PageBreak pb -> l.pageBreak();
+                case GuideMarkdown.Recipe r -> {
+                    l.add(new RecipeView(r.id()));
+                    l.space(4);
+                }
+                case GuideMarkdown.Items it -> {
+                    l.add(new ItemRow(it.ids()));
+                    l.space(4);
+                }
+                case GuideMarkdown.EntityView e -> {
+                    l.add(new EntityElem(e.id()));
+                    l.space(4);
+                }
+                case GuideMarkdown.StructureView s -> {
+                    l.add(new StructureElem(s.id()));
+                    l.space(4);
+                }
+                case GuideMarkdown.Image im -> {
+                    l.add(new ImageElem(im));
+                    l.space(4);
+                }
+            }
+        }
+    }
+
+    private static int categoryColor(ResourceLocation chapter) {
+        GuideBook.Category c = GuideBook.INSTANCE.categoryOf(chapter);
+        return c == null ? INK : darken(c.color());
+    }
+
+    /** Category colours are bright for ribbons; text needs a darker tone on cream paper. */
+    static int darken(int rgb) {
+        int r = (rgb >> 16) & 255, g = (rgb >> 8) & 255, b = rgb & 255;
+        return ((int) (r * 0.62) << 16) | ((int) (g * 0.62) << 8) | (int) (b * 0.62);
+    }
+
+    static ItemStack stack(ResourceLocation id) {
+        return new ItemStack(BuiltInRegistries.ITEM.getOptional(id).orElse(Items.BOOK));
+    }
+
+    // ================================================================== rendering
+
+    /** Per-frame drawing context in book coordinates. */
+    final class Ctx {
+        final GuiGraphics g;
+        final double mx, my;
+        final float time;
+        ItemStack hoverStack = ItemStack.EMPTY;
+        @Nullable Style hoverStyle;
+        @Nullable List<Component> hoverText;
+
+        Ctx(GuiGraphics g, double mx, double my, float time) {
+            this.g = g;
+            this.mx = mx;
+            this.my = my;
+            this.time = time;
+        }
+
+        boolean over(int x, int y, int w, int h) {
+            return mx >= x && mx < x + w && my >= y && my < y + h;
+        }
+
+        Font font() {
+            return font;
+        }
+    }
 
     @Override
     public void renderBackground(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
         super.renderBackground(g, mouseX, mouseY, partialTick);
-        g.blit(BOOK, bx, by, 0, 0, BOOK_W, BOOK_H, TEX_W, TEX_H);
     }
 
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
         super.render(g, mouseX, mouseY, partialTick);
-        ItemStack hoverStack = ItemStack.EMPTY;
-        List<Component> hoverText = null;
-        if (open == null) {
-            hoverText = renderIndex(g, mouseX, mouseY);
-        } else {
-            for (int side = 0; side < 2; side++) {
-                int idx = spread * 2 + side;
-                if (idx >= pages.size()) {
-                    break;
-                }
-                int px = bx + (side == 0 ? LEFT_X : RIGHT_X), py = by + PAGE_TOP;
-                if (idx == 0) {
-                    renderTitle(g, open, px, py);
-                }
-                for (Laid l : pages.get(idx)) {
-                    ItemStack s = renderElement(g, l, px, py + l.y(), mouseX, mouseY);
-                    if (!s.isEmpty()) {
-                        hoverStack = s;
-                    }
-                }
-                Component num = Component.literal(String.valueOf(idx + 1));
-                g.drawString(font, num, px + (PAGE_W - font.width(num)) / 2, by + BOOK_H - 18, INK_SOFT, false);
-            }
-            g.blitSprite(BACK, bx + LEFT_X - 4, by + 4, 16, 10);
-            if (inside(mouseX, mouseY, bx + LEFT_X - 4, by + 4, 16, 10)) {
-                hoverText = List.of(Component.translatable("gui.spacebreaker.guide.back"));
-            }
-        }
-        if (!hoverStack.isEmpty()) {
-            g.renderTooltip(font, hoverStack, mouseX, mouseY);
-        } else if (hoverText != null) {
-            g.renderComponentTooltip(font, hoverText, mouseX, mouseY);
-        }
-    }
-
-    private void renderTitle(GuiGraphics g, GuideData.Entry e, int px, int py) {
-        renderIcon(g, e.icon(), px, py);
-        List<FormattedCharSequence> lines = font.split(Component.literal(e.title()).withStyle(ChatFormatting.BOLD), PAGE_W - 20);
-        int ty = py + (lines.size() > 1 ? 0 : 4);
-        for (FormattedCharSequence line : lines.subList(0, Math.min(2, lines.size()))) {
-            g.drawString(font, line, px + 20, ty, INK, false);
-            ty += 9;
-        }
-        g.fill(px, py + 18, px + PAGE_W, py + 19, 0x40000000 | INK_SOFT);
-    }
-
-    private @Nullable List<Component> renderIndex(GuiGraphics g, int mouseX, int mouseY) {
-        List<Component> hover = null;
-        int lx = bx + LEFT_X, rx = bx + RIGHT_X, py = by + PAGE_TOP;
-        Component title = Component.translatable("gui.spacebreaker.guide.title").withStyle(ChatFormatting.BOLD);
-        g.drawString(font, title, lx + (PAGE_W - font.width(title)) / 2, py + 1, INK, false);
-        int y = py + CHAPTER_Y;
-        for (GuideData.Chapter c : GuideData.INSTANCE.chapters()) {
-            if (y > by + BOOK_H - 26) {
+        backButton.active = !back.isEmpty();
+        forwardButton.active = !forward.isEmpty();
+        double mx = (mouseX - ox) / scale, my = (mouseY - oy) / scale;
+        float time = (minecraft.level != null ? minecraft.level.getGameTime() : 0) + partialTick;
+        Ctx c = new Ctx(g, mx, my, time);
+        g.pose().pushPose();
+        g.pose().translate(ox, oy, 0);
+        g.pose().scale(scale, scale, 1F);
+        renderBookmarks(c, true);
+        g.blit(BOOK, 0, 0, 0, 0, W, H, TEX_W, TEX_H);
+        int spread = place.spread();
+        for (int side = 0; side < 2; side++) {
+            int idx = spread * 2 + side;
+            if (idx >= pages.size()) {
                 break;
             }
-            boolean sel = c.id().equals(chapter) && search.getValue().isBlank();
-            boolean hot = inside(mouseX, mouseY, lx, y - 1, PAGE_W, CHAPTER_ROW);
-            if (sel) {
-                g.fill(lx - 2, y - 1, lx + PAGE_W, y + CHAPTER_ROW - 1, 0x30000000 | INK_SOFT);
+            int px = side == 0 ? LEFT_X : RIGHT_X;
+            for (Placed p : pages.get(idx)) {
+                p.elem().render(c, px, TOP + p.y());
             }
-            renderIcon(g, c.icon(), lx, y - 1);
-            Component name = Component.translatable("guide.spacebreaker.chapter." + c.id());
-            g.drawString(font, name, lx + 20, y + 3, hot ? INK_LINK : INK, false);
-            y += CHAPTER_ROW;
+            Component num = Component.literal(String.valueOf(idx + 1));
+            g.drawString(font, num, px + (PAGE_W - font.width(num)) / 2, H - 18, INK_SOFT, false);
         }
-        // right page: entries
-        boolean searching = !search.getValue().isBlank();
-        Component header = searching ? Component.translatable("gui.spacebreaker.guide.results")
-                : Component.translatable("guide.spacebreaker.chapter." + chapter);
-        g.drawString(font, header.copy().withStyle(ChatFormatting.BOLD), rx + (PAGE_W - font.width(header) - 6) / 2, py + 1, INK, false);
-        List<GuideData.Entry> list = visibleEntries();
-        int cap = listCapacity();
-        int start = listPage * cap;
-        y = py + 16;
-        if (list.isEmpty()) {
-            g.drawString(font, Component.translatable("gui.spacebreaker.guide.none"), rx, y + 4, INK_SOFT, false);
+        int spreads = Math.max(1, (pages.size() + 1) / 2);
+        renderArrow(c, true, spread > 0 || canChainChapter(-1));
+        renderArrow(c, false, spread < spreads - 1 || canChainChapter(1));
+        renderBookmarks(c, false);
+        g.pose().popPose();
+        if (!c.hoverStack.isEmpty()) {
+            g.renderTooltip(font, c.hoverStack, mouseX, mouseY);
+        } else if (c.hoverStyle != null && c.hoverStyle.getHoverEvent() != null) {
+            HoverEvent.ItemStackInfo info = c.hoverStyle.getHoverEvent().getValue(HoverEvent.Action.SHOW_ITEM);
+            if (info != null) {
+                g.renderTooltip(font, info.getItemStack(), mouseX, mouseY);
+            }
+        } else if (c.hoverText != null) {
+            g.renderComponentTooltip(font, c.hoverText, mouseX, mouseY);
         }
-        for (int i = start; i < Math.min(list.size(), start + cap); i++) {
-            GuideData.Entry e = list.get(i);
-            boolean unlocked = unlocked(e);
-            boolean hot = inside(mouseX, mouseY, rx, y - 1, PAGE_W, 18);
-            if (unlocked) {
-                renderIcon(g, e.icon(), rx, y);
-            } else {
-                g.blitSprite(LOCK, rx + 3, y + 2, 10, 12);
-            }
-            String t = unlocked ? e.title() : "???";
-            List<FormattedCharSequence> lines = font.split(Component.literal(t), PAGE_W - 22);
-            int color = !unlocked ? INK_SOFT : hot ? INK_LINK : INK;
-            if (lines.size() == 1) {
-                g.drawString(font, lines.get(0), rx + 20, y + 5, color, false);
-            } else {
-                g.drawString(font, lines.get(0), rx + 20, y, color, false);
-                g.drawString(font, lines.get(1), rx + 20, y + 9, color, false);
-            }
-            if (hot && !unlocked && e.requiresTech().isPresent()) {
-                hover = List.of(Component.translatable("gui.spacebreaker.guide.locked",
-                        Component.translatable(TechNode.nameKey(e.requiresTech().get()))));
-            }
-            y += 18;
-        }
-        return hover;
     }
 
-    private void renderIcon(GuiGraphics g, ResourceLocation item, int x, int y) {
-        var it = BuiltInRegistries.ITEM.getOptional(item).orElse(Items.BOOK);
-        g.renderFakeItem(new ItemStack(it), x, y);
+    private boolean canChainChapter(int dir) {
+        if (place.mode() != Mode.CHAPTER || place.chapter() == null) {
+            return false;
+        }
+        List<ResourceLocation> order = GuideBook.INSTANCE.order();
+        int i = order.indexOf(place.chapter()) + dir;
+        return i >= 0 && i < order.size();
     }
 
-    private ItemStack renderElement(GuiGraphics g, Laid l, int x, int y, int mouseX, int mouseY) {
-        GuideData.Element el = l.el();
-        ItemStack hovered = ItemStack.EMPTY;
-        switch (el.type()) {
-            case "text", "heading" -> {
-                int ly = y;
-                for (FormattedCharSequence line : l.lines()) {
-                    g.drawString(font, line, x, ly, INK, false);
-                    ly += 9;
+    private static final int ARROW_Y = H - 21;
+
+    private void renderArrow(Ctx c, boolean left, boolean enabled) {
+        if (!enabled) {
+            return;
+        }
+        int x = left ? 14 : W - 32;
+        boolean hot = c.over(x, ARROW_Y, 18, 10);
+        String sprite = left ? (hot ? "widget/page_backward_highlighted" : "widget/page_backward")
+                : (hot ? "widget/page_forward_highlighted" : "widget/page_forward");
+        c.g.blitSprite(ResourceLocation.withDefaultNamespace(sprite), x, ARROW_Y, 18, 10);
+    }
+
+    /** Coloured ribbons sticking out of the right edge: one per category (behind the cover; tips drawn on top). */
+    private void renderBookmarks(Ctx c, boolean behind) {
+        List<GuideBook.Category> cats = GuideBook.INSTANCE.categories();
+        int n = cats.size();
+        if (n == 0) {
+            return;
+        }
+        int h = Math.min(18, (H - 24) / n);
+        GuideBook.Category current = place.chapter() == null ? null : GuideBook.INSTANCE.categoryOf(place.chapter());
+        for (int i = 0; i < n; i++) {
+            GuideBook.Category cat = cats.get(i);
+            int y = 12 + i * h;
+            boolean active = cat == current;
+            boolean hot = c.over(W - 4, y, 22, h - 2);
+            int len = active || hot ? 20 : 15;
+            if (behind) {
+                int col = 0xFF000000 | cat.color();
+                c.g.fill(W - 6, y, W + len, y + h - 2, col);
+                c.g.fill(W - 6, y + h - 3, W + len, y + h - 2, 0xFF000000 | darken(cat.color()));
+                c.g.fill(W + len - 1, y, W + len, y + h - 2, 0xFF000000 | darken(cat.color()));
+            } else {
+                c.g.pose().pushPose();
+                c.g.pose().translate(W + len - 13, y + (h - 2) / 2F - 5, 0);
+                c.g.pose().scale(0.625F, 0.625F, 1F);
+                c.g.renderFakeItem(new ItemStack(BuiltInRegistries.ITEM.getOptional(cat.icon()).orElse(Items.BOOK)), 0, 0);
+                c.g.pose().popPose();
+                if (hot) {
+                    c.hoverText = List.of(Component.literal(GuideBook.INSTANCE.categoryName(cat.id())).withColor(cat.color()));
                 }
             }
-            case "items" -> {
-                int n = el.items().size();
-                for (int i = 0; i < n; i++) {
-                    int row = i / 6, col = i % 6;
-                    int inRow = Math.min(6, n - row * 6);
-                    int sx = x + (PAGE_W - inRow * 20) / 2 + col * 20;
-                    int sy = y + row * 20;
-                    g.blitSprite(SLOT, sx, sy, 18, 18);
-                    var item = BuiltInRegistries.ITEM.getOptional(el.items().get(i));
-                    if (item.isPresent()) {
-                        ItemStack s = new ItemStack(item.get());
-                        g.renderItem(s, sx + 1, sy + 1);
-                        if (inside(mouseX, mouseY, sx, sy, 18, 18)) {
-                            hovered = s;
-                        }
-                    }
-                }
-                caption(g, l, x, y + ((n + 5) / 6) * 20);
-            }
-            case "image" -> {
-                int w = Math.min(el.width(), PAGE_W);
-                int h = el.height() * w / Math.max(1, el.width());
-                int ix = x + (PAGE_W - w) / 2;
-                g.blit(el.image(), ix, y, w, h, 0, 0, el.width(), el.height(), el.width(), el.height());
-                caption(g, l, x, y + h + 2);
-            }
-            case "recipe" -> {
-                hovered = renderRecipe(g, el.items().get(0), x + (PAGE_W - 100) / 2, y, mouseX, mouseY);
-                caption(g, l, x, y + 60);
-            }
-            default -> {
-            }
-        }
-        return hovered;
-    }
-
-    private void caption(GuiGraphics g, Laid l, int x, int y) {
-        for (FormattedCharSequence line : l.lines()) {
-            g.drawString(font, line, x + (PAGE_W - font.width(line)) / 2, y, INK_SOFT, false);
-            y += 9;
         }
     }
 
-    private ItemStack renderRecipe(GuiGraphics g, ResourceLocation id, int x, int y, int mouseX, int mouseY) {
-        g.blitSprite(RECIPE, x, y, 100, 56);
-        if (minecraft.level == null) {
-            return ItemStack.EMPTY;
-        }
-        Optional<RecipeHolder<?>> holder = minecraft.level.getRecipeManager().byKey(id);
-        if (holder.isEmpty() || !(holder.get().value() instanceof CraftingRecipe recipe)) {
-            g.drawString(font, "?", x + 24, y + 24, INK_SOFT, false);
-            return ItemStack.EMPTY;
-        }
-        ItemStack hovered = ItemStack.EMPTY;
-        int w = recipe instanceof ShapedRecipe shaped ? shaped.getWidth() : 3;
-        List<Ingredient> ings = recipe.getIngredients();
-        long tick = minecraft.level.getGameTime() / 20;
-        for (int i = 0; i < ings.size() && i < 9; i++) {
-            ItemStack[] options = ings.get(i).getItems();
-            if (options.length == 0) {
-                continue;
-            }
-            ItemStack s = options[(int) (tick % options.length)];
-            int sx = x + 2 + (i % w) * 18, sy = y + 2 + (i / w) * 18;
-            g.renderItem(s, sx + 1, sy + 1);
-            if (inside(mouseX, mouseY, sx, sy, 18, 18)) {
-                hovered = s;
-            }
-        }
-        ItemStack result = recipe.getResultItem(minecraft.level.registryAccess());
-        int ox = x + 79, oy = y + 20;
-        g.renderItem(result, ox, oy);
-        g.renderItemDecorations(font, result, ox, oy);
-        if (inside(mouseX, mouseY, ox - 1, oy - 1, 18, 18)) {
-            hovered = result;
-        }
-        return hovered;
-    }
-
-    private static boolean inside(double mx, double my, int x, int y, int w, int h) {
-        return mx >= x && mx < x + w && my >= y && my < y + h;
-    }
-
-    // ------------------------------------------------------------------ input
+    // ================================================================== input
 
     @Override
-    public boolean mouseClicked(double mx, double my, int button) {
-        if (super.mouseClicked(mx, my, button)) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (super.mouseClicked(mouseX, mouseY, button)) {
+            return true;
+        }
+        if (button == 3) {
+            goBack();
+            return true;
+        }
+        if (button == 4) {
+            goForward();
             return true;
         }
         if (button != 0) {
             return false;
         }
-        if (open != null) {
-            if (inside(mx, my, bx + LEFT_X - 4, by + 4, 16, 10)) {
-                closeEntry();
+        double mx = (mouseX - ox) / scale, my = (mouseY - oy) / scale;
+        if (mx >= 14 && mx < 32 && my >= ARROW_Y && my < ARROW_Y + 10) {
+            turn(-1);
+            return true;
+        }
+        if (mx >= W - 32 && mx < W - 14 && my >= ARROW_Y && my < ARROW_Y + 10) {
+            turn(1);
+            return true;
+        }
+        List<GuideBook.Category> cats = GuideBook.INSTANCE.categories();
+        if (!cats.isEmpty() && mx >= W - 4 && mx < W + 22) {
+            int h = Math.min(18, (H - 24) / cats.size());
+            int i = (int) ((my - 12) / h);
+            if (my >= 12 && i >= 0 && i < cats.size() && !cats.get(i).chapters().isEmpty()) {
+                openChapter(cats.get(i).chapters().get(0), 0);
                 return true;
             }
-            return false;
         }
-        int lx = bx + LEFT_X, rx = bx + RIGHT_X, py = by + PAGE_TOP;
-        int y = py + CHAPTER_Y;
-        for (GuideData.Chapter c : GuideData.INSTANCE.chapters()) {
-            if (inside(mx, my, lx, y - 1, PAGE_W, CHAPTER_ROW)) {
-                chapter = c.id();
-                lastChapter = chapter;
-                search.setValue("");
-                listPage = 0;
-                updateWidgets();
-                return true;
+        for (int side = 0; side < 2; side++) {
+            int idx = place.spread() * 2 + side;
+            if (idx >= pages.size()) {
+                break;
             }
-            y += CHAPTER_ROW;
-        }
-        List<GuideData.Entry> list = visibleEntries();
-        int cap = listCapacity();
-        y = py + 16;
-        for (int i = listPage * cap; i < Math.min(list.size(), listPage * cap + cap); i++) {
-            if (inside(mx, my, rx, y - 1, PAGE_W, 18)) {
-                GuideData.Entry e = list.get(i);
-                if (unlocked(e)) {
-                    openEntry(e);
+            int px = side == 0 ? LEFT_X : RIGHT_X;
+            for (Placed p : pages.get(idx)) {
+                String link = p.elem().click(px, TOP + p.y(), mx, my);
+                if (link != null) {
+                    follow(link);
+                    return true;
                 }
-                return true;
             }
-            y += 18;
+        }
+        return false;
+    }
+
+    private void follow(String link) {
+        if (link.startsWith(GuideMarkdown.LINK_CHAPTER)) {
+            ResourceLocation id = ResourceLocation.tryParse(link.substring(GuideMarkdown.LINK_CHAPTER.length()));
+            if (id != null && GuideBook.INSTANCE.chapter(id) != null) {
+                openChapter(id, 0);
+            }
+        } else if (link.startsWith(GuideMarkdown.LINK_ITEM)) {
+            ResourceLocation item = ResourceLocation.tryParse(link.substring(GuideMarkdown.LINK_ITEM.length()));
+            ResourceLocation ch = item == null ? null : GuideBook.INSTANCE.chapterForItem(item);
+            if (ch != null && !ch.equals(place.chapter())) {
+                openChapter(ch, 0);
+            }
+        }
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        if (scrollY != 0) {
+            turn(scrollY < 0 ? 1 : -1);
+            return true;
         }
         return false;
     }
 
     @Override
     public boolean keyPressed(int key, int scan, int mods) {
-        if (open != null && (key == 259 || key == 263)) { // backspace / left
-            turn(-1);
-            return true;
+        if (search.isFocused()) {
+            if (key == GLFW.GLFW_KEY_ESCAPE || key == GLFW.GLFW_KEY_ENTER || key == GLFW.GLFW_KEY_DOWN) {
+                search.setFocused(false);
+                setFocused(null);
+                return true;
+            }
+            return super.keyPressed(key, scan, mods);
         }
-        if (open != null && key == 262) { // right
-            turn(1);
+        switch (key) {
+            case GLFW.GLFW_KEY_RIGHT, GLFW.GLFW_KEY_PAGE_DOWN, GLFW.GLFW_KEY_D -> {
+                turn(1);
+                return true;
+            }
+            case GLFW.GLFW_KEY_LEFT, GLFW.GLFW_KEY_PAGE_UP, GLFW.GLFW_KEY_A -> {
+                turn(-1);
+                return true;
+            }
+            case GLFW.GLFW_KEY_BACKSPACE -> {
+                goBack();
+                return true;
+            }
+            case GLFW.GLFW_KEY_HOME -> {
+                showContents();
+                return true;
+            }
+            default -> {
+            }
+        }
+        if (key == GLFW.GLFW_KEY_F && (mods & GLFW.GLFW_MOD_CONTROL) != 0) {
+            setFocused(search);
+            search.setFocused(true);
             return true;
         }
         return super.keyPressed(key, scan, mods);
     }
 
     @Override
-    public void tick() {
-        updateWidgets();
-    }
-
-    @Override
     public boolean isPauseScreen() {
         return false;
+    }
+
+    // ================================================================== layout engine
+
+    private record Placed(Elem elem, int y) {
+    }
+
+    private final class Layout {
+        private final Font font;
+        private final List<List<Placed>> pages = new ArrayList<>();
+        private List<Placed> page = new ArrayList<>();
+        private int y;
+        private @Nullable Elem held; // a heading waiting for its first line (kept together)
+
+        Layout(Font font) {
+            this.font = font;
+        }
+
+        void add(Elem e) {
+            int h = e.height();
+            if (y + h > BOTTOM - TOP && !page.isEmpty()) {
+                newPage();
+            }
+            page.add(new Placed(e, y));
+            y += h;
+        }
+
+        void space(int h) {
+            if (!page.isEmpty()) {
+                y += h;
+            }
+        }
+
+        void pageBreak() {
+            if (!page.isEmpty()) {
+                newPage();
+            }
+        }
+
+        private void newPage() {
+            // keep a heading together with what follows it
+            List<Placed> carry = new ArrayList<>();
+            while (!page.isEmpty() && page.get(page.size() - 1).elem().keepWithNext()) {
+                carry.add(0, page.remove(page.size() - 1));
+            }
+            if (page.isEmpty()) {
+                page = carry;
+                carry = new ArrayList<>();
+            }
+            pages.add(page);
+            page = new ArrayList<>();
+            y = 0;
+            for (Placed p : carry) {
+                page.add(new Placed(p.elem(), y));
+                y += p.elem().height();
+            }
+        }
+
+        /** Wraps text into lines (each its own element so paragraphs flow across pages). */
+        void text(Component text, int indent, @Nullable Component marker, int box) {
+            int inner = box != 0 ? 14 : 0;
+            Component styled = text.copy().withStyle(s -> s.getColor() == null ? s.withColor(INK) : s);
+            List<FormattedCharSequence> lines = font.split(styled, PAGE_W - indent - inner);
+            for (int i = 0; i < lines.size(); i++) {
+                TextLine l = new TextLine(lines.get(i), indent + (box != 0 ? 7 : 0), box, 0, false);
+                if (i == 0 && marker != null) {
+                    l.marker = marker;
+                }
+                add(l);
+            }
+        }
+
+        List<List<Placed>> finish() {
+            if (!page.isEmpty() || pages.isEmpty()) {
+                pages.add(page);
+            }
+            return pages;
+        }
+    }
+
+    // ================================================================== elements
+
+    private abstract static class Elem {
+        abstract int height();
+
+        abstract void render(Ctx c, int x, int y);
+
+        /** @return a link target if clicked */
+        @Nullable String click(int x, int y, double mx, double my) {
+            return null;
+        }
+
+        boolean keepWithNext() {
+            return false;
+        }
+    }
+
+    private final class TextLine extends Elem {
+        final FormattedCharSequence seq;
+        final int indent, box;
+        final boolean heading;
+        @Nullable Component marker;
+
+        TextLine(FormattedCharSequence seq, int indent, int box, int unused, boolean heading) {
+            this.seq = seq;
+            this.indent = indent;
+            this.box = box;
+            this.heading = heading;
+        }
+
+        @Override
+        int height() {
+            return heading ? 11 : 10;
+        }
+
+        @Override
+        boolean keepWithNext() {
+            return heading;
+        }
+
+        @Override
+        void render(Ctx c, int x, int y) {
+            if (box != 0) {
+                c.g.fill(x, y - 1, x + PAGE_W, y + 9, 0x22000000 | box);
+                c.g.fill(x, y - 1, x + 2, y + 9, 0xFF000000 | box);
+            }
+            if (marker != null) {
+                c.g.drawString(font, marker, x + indent - font.width(marker) - 3, y, box != 0 ? box : INK_SOFT, false);
+            }
+            c.g.drawString(font, seq, x + indent, y, INK, false);
+            if (c.my >= y && c.my < y + 9 && c.mx >= x + indent) {
+                Style s = font.getSplitter().componentStyleAtWidth(seq, (int) (c.mx - x - indent));
+                if (s != null && (s.getHoverEvent() != null || s.getClickEvent() != null)) {
+                    c.hoverStyle = s;
+                }
+            }
+        }
+
+        @Override
+        @Nullable String click(int x, int y, double mx, double my) {
+            if (my >= y && my < y + 9 && mx >= x + indent) {
+                Style s = font.getSplitter().componentStyleAtWidth(seq, (int) (mx - x - indent));
+                if (s != null && s.getClickEvent() != null && s.getClickEvent().getAction() == ClickEvent.Action.CHANGE_PAGE) {
+                    return s.getClickEvent().getValue();
+                }
+            }
+            return null;
+        }
+    }
+
+    private static final class Spacer extends Elem {
+        final int h;
+
+        Spacer(int h) {
+            this.h = h;
+        }
+
+        @Override
+        int height() {
+            return h;
+        }
+
+        @Override
+        void render(Ctx c, int x, int y) {
+        }
+    }
+
+    private static final class Rule extends Elem {
+        final int color;
+
+        Rule(int color) {
+            this.color = color;
+        }
+
+        @Override
+        int height() {
+            return 4;
+        }
+
+        @Override
+        boolean keepWithNext() {
+            return true;
+        }
+
+        @Override
+        void render(Ctx c, int x, int y) {
+            c.g.fill(x, y, x + PAGE_W, y + 1, 0xAA000000 | color);
+        }
+    }
+
+    private static final class BoxEdge extends Elem {
+        final int color;
+        final boolean top;
+
+        BoxEdge(int color, boolean top) {
+            this.color = color;
+            this.top = top;
+        }
+
+        @Override
+        int height() {
+            return 3;
+        }
+
+        @Override
+        boolean keepWithNext() {
+            return top;
+        }
+
+        @Override
+        void render(Ctx c, int x, int y) {
+            c.g.fill(x, y, x + PAGE_W, y + 3, 0x22000000 | color);
+            c.g.fill(x, y, x + 2, y + 3, 0xFF000000 | color);
+        }
+    }
+
+    private static final class BoxSpace extends Elem {
+        final int color, h;
+
+        BoxSpace(int color, int h) {
+            this.color = color;
+            this.h = h;
+        }
+
+        @Override
+        int height() {
+            return h;
+        }
+
+        @Override
+        void render(Ctx c, int x, int y) {
+            c.g.fill(x, y - 1, x + PAGE_W, y + h - 1, 0x22000000 | color);
+            c.g.fill(x, y - 1, x + 2, y + h - 1, 0xFF000000 | color);
+        }
+    }
+
+    private final class Title extends Elem {
+        final Component text;
+        final ItemStack icon;
+        final @Nullable Component note;
+        final List<FormattedCharSequence> lines;
+        final List<FormattedCharSequence> noteLines;
+
+        Title(Component text, ItemStack icon, @Nullable Component note) {
+            this.text = text;
+            this.icon = icon;
+            this.note = note;
+            this.lines = font.split(text.copy().withStyle(ChatFormatting.BOLD), PAGE_W - 22);
+            this.noteLines = note == null ? List.of() : font.split(Component.literal("⚑ ").append(note), PAGE_W - 6);
+        }
+
+        int noteHeight() {
+            return noteLines.isEmpty() ? 0 : noteLines.size() * 10 + 2;
+        }
+
+        @Override
+        int height() {
+            return Math.max(20, lines.size() * 10 + 4) + noteHeight() + 4;
+        }
+
+        @Override
+        void render(Ctx c, int x, int y) {
+            c.g.renderFakeItem(icon, x, y);
+            int ty = y + (lines.size() == 1 ? 4 : 0);
+            for (FormattedCharSequence l : lines) {
+                c.g.drawString(font, l, x + 20, ty, INK, false);
+                ty += 10;
+            }
+            int base = y + Math.max(20, lines.size() * 10 + 4);
+            c.g.fill(x, base - 2, x + PAGE_W, base - 1, 0x55000000 | INK_SOFT);
+            if (!noteLines.isEmpty()) {
+                c.g.fill(x, base + 1, x + PAGE_W, base + 1 + noteHeight() - 2, 0x33D07020);
+                int ny = base + 2;
+                for (FormattedCharSequence l : noteLines) {
+                    c.g.drawString(font, l, x + 3, ny, 0xA05010, false);
+                    ny += 10;
+                }
+            }
+        }
+    }
+
+    private final class CategoryHeader extends Elem {
+        final GuideBook.Category cat;
+
+        CategoryHeader(GuideBook.Category cat) {
+            this.cat = cat;
+        }
+
+        @Override
+        int height() {
+            return 14;
+        }
+
+        @Override
+        boolean keepWithNext() {
+            return true;
+        }
+
+        @Override
+        void render(Ctx c, int x, int y) {
+            c.g.fill(x, y, x + PAGE_W, y + 11, 0xFF000000 | cat.color());
+            c.g.fill(x, y + 11, x + PAGE_W, y + 12, 0xFF000000 | darken(cat.color()));
+            c.g.drawString(font, Component.literal(GuideBook.INSTANCE.categoryName(cat.id())).withStyle(ChatFormatting.BOLD),
+                    x + 4, y + 2, 0xFFFFFF, true);
+        }
+    }
+
+    private final class ChapterLink extends Elem {
+        final ResourceLocation id;
+        final String title;
+        final ItemStack icon;
+        final @Nullable String snippet;
+
+        ChapterLink(ResourceLocation id, String title, ItemStack icon, @Nullable String snippet) {
+            this.id = id;
+            this.title = title;
+            this.icon = icon;
+            this.snippet = snippet;
+        }
+
+        @Override
+        int height() {
+            return snippet != null ? 22 : 13;
+        }
+
+        @Override
+        void render(Ctx c, int x, int y) {
+            boolean hot = c.over(x, y, PAGE_W, height() - 1);
+            if (hot) {
+                c.g.fill(x - 1, y - 1, x + PAGE_W, y + height() - 2, 0x22000000 | LINK);
+            }
+            c.g.pose().pushPose();
+            c.g.pose().translate(x + 2, y, 0);
+            c.g.pose().scale(0.75F, 0.75F, 1F);
+            c.g.renderFakeItem(icon, 0, 0);
+            c.g.pose().popPose();
+            String t = font.plainSubstrByWidth(title, PAGE_W - 18);
+            c.g.drawString(font, t, x + 16, y + 2, hot ? LINK : INK, false);
+            if (snippet != null) {
+                c.g.drawString(font, font.plainSubstrByWidth(snippet, PAGE_W - 18), x + 16, y + 11, INK_SOFT, false);
+            }
+        }
+
+        @Override
+        @Nullable String click(int x, int y, double mx, double my) {
+            return mx >= x && mx < x + PAGE_W && my >= y && my < y + height() - 1 ? GuideMarkdown.LINK_CHAPTER + id : null;
+        }
+    }
+
+    /**
+     * Column widths for a table: every column gets at least its longest word (so words are not cut), and the rest of the
+     * page width goes to the columns with the longest text.
+     */
+    private int[] columnWidths(GuideMarkdown.Table t, int cols) {
+        int[] min = new int[cols], natural = new int[cols];
+        for (int r = 0; r < t.rows().size(); r++) {
+            boolean bold = t.header() && r == 0;
+            List<Component> row = t.rows().get(r);
+            for (int i = 0; i < row.size() && i < cols; i++) {
+                Component cell = bold ? row.get(i).copy().withStyle(ChatFormatting.BOLD) : row.get(i);
+                natural[i] = Math.max(natural[i], font.width(cell) + 5);
+                for (String word : row.get(i).getString().split("\\s+")) {
+                    Component w = Component.literal(word);
+                    min[i] = Math.max(min[i], font.width(bold ? w.copy().withStyle(ChatFormatting.BOLD) : w) + 5);
+                }
+            }
+        }
+        int[] widths = new int[cols];
+        int sumMin = 0, sumExtra = 0;
+        for (int i = 0; i < cols; i++) {
+            sumMin += min[i];
+            sumExtra += Math.max(0, natural[i] - min[i]);
+        }
+        if (sumMin >= PAGE_W) {
+            for (int i = 0; i < cols; i++) {
+                widths[i] = min[i] * PAGE_W / Math.max(1, sumMin);
+            }
+        } else {
+            int spare = PAGE_W - sumMin;
+            for (int i = 0; i < cols; i++) {
+                int extra = Math.max(0, natural[i] - min[i]);
+                widths[i] = min[i] + (sumExtra == 0 ? spare / cols : Math.min(extra, spare * extra / sumExtra));
+            }
+            int used = 0;
+            for (int w : widths) {
+                used += w;
+            }
+            widths[cols - 1] += PAGE_W - used;
+        }
+        return widths;
+    }
+
+    private final class TableRow extends Elem {
+        final List<List<FormattedCharSequence>> cells = new ArrayList<>();
+        final int cols, rows;
+        final int[] widths, offsets;
+        final boolean header, lastRow;
+
+        TableRow(Font font, List<Component> row, int[] widths, boolean header, boolean lastRow) {
+            this.cols = widths.length;
+            this.widths = widths;
+            this.offsets = new int[cols + 1];
+            for (int i = 0; i < cols; i++) {
+                offsets[i + 1] = offsets[i] + widths[i];
+            }
+            this.header = header;
+            this.lastRow = lastRow;
+            int r = 1;
+            for (int i = 0; i < cols; i++) {
+                Component cell = i < row.size() ? row.get(i) : Component.empty();
+                Component styled = cell.copy().withStyle(s -> (s.getColor() == null ? s.withColor(INK) : s).withBold(header || s.isBold()));
+                List<FormattedCharSequence> lines = font.split(styled, widths[i] - 4);
+                cells.add(lines);
+                r = Math.max(r, lines.size());
+            }
+            this.rows = r;
+        }
+
+        @Override
+        int height() {
+            return rows * 9 + 4;
+        }
+
+        @Override
+        void render(Ctx c, int x, int y) {
+            int h = height();
+            if (header) {
+                c.g.fill(x, y, x + offsets[cols], y + h, 0x30000000 | INK_SOFT);
+            }
+            c.g.fill(x, y, x + offsets[cols], y + 1, 0x66000000 | INK_SOFT);
+            if (lastRow) {
+                c.g.fill(x, y + h, x + offsets[cols], y + h + 1, 0x66000000 | INK_SOFT);
+            }
+            for (int i = 0; i < cols; i++) {
+                int cx = x + offsets[i];
+                if (i > 0) {
+                    c.g.fill(cx, y, cx + 1, y + h, 0x33000000 | INK_SOFT);
+                }
+                int ly = y + 3;
+                for (FormattedCharSequence l : cells.get(i)) {
+                    c.g.drawString(font, l, cx + 2, ly, INK, false);
+                    if (c.my >= ly && c.my < ly + 9 && c.mx >= cx + 2 && c.mx < cx + widths[i]) {
+                        Style s = font.getSplitter().componentStyleAtWidth(l, (int) (c.mx - cx - 2));
+                        if (s != null && s.getHoverEvent() != null) {
+                            c.hoverStyle = s;
+                        }
+                    }
+                    ly += 9;
+                }
+            }
+        }
+
+        @Override
+        @Nullable String click(int x, int y, double mx, double my) {
+            for (int i = 0; i < cols; i++) {
+                int cx = x + offsets[i], ly = y + 3;
+                for (FormattedCharSequence l : cells.get(i)) {
+                    if (my >= ly && my < ly + 9 && mx >= cx + 2 && mx < cx + widths[i]) {
+                        Style s = font.getSplitter().componentStyleAtWidth(l, (int) (mx - cx - 2));
+                        if (s != null && s.getClickEvent() != null) {
+                            return s.getClickEvent().getValue();
+                        }
+                    }
+                    ly += 9;
+                }
+            }
+            return null;
+        }
+    }
+
+    // ------------------------------------------------------------------ item widgets
+
+    /** Draws one slot with a stack; returns true if hovered. */
+    private boolean slot(Ctx c, int x, int y, ItemStack s) {
+        c.g.blitSprite(SLOT, x, y, 18, 18);
+        if (!s.isEmpty()) {
+            c.g.renderItem(s, x + 1, y + 1);
+            c.g.renderItemDecorations(font, s, x + 1, y + 1);
+        }
+        boolean hot = c.over(x, y, 18, 18);
+        if (hot && !s.isEmpty()) {
+            c.hoverStack = s;
+        }
+        return hot;
+    }
+
+    /** Draws one slot with a fluid or gas, its amount in millibuckets and a tooltip. */
+    private void fluidSlot(Ctx c, int x, int y, net.neoforged.neoforge.fluids.FluidStack f) {
+        c.g.blitSprite(SLOT, x, y, 18, 18);
+        var ext = net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions.of(f.getFluid());
+        var sprite = minecraft.getTextureAtlas(net.minecraft.world.inventory.InventoryMenu.BLOCK_ATLAS).apply(ext.getStillTexture(f));
+        int tint = ext.getTintColor(f);
+        c.g.blit(x + 1, y + 1, 0, 16, 16, sprite, ((tint >> 16) & 255) / 255F, ((tint >> 8) & 255) / 255F, (tint & 255) / 255F, 1F);
+        String amount = f.getAmount() >= 1000 && f.getAmount() % 1000 == 0 ? f.getAmount() / 1000 + "B" : String.valueOf(f.getAmount());
+        c.g.pose().pushPose();
+        c.g.pose().translate(x + 17, y + 12, 200);
+        c.g.pose().scale(0.5F, 0.5F, 1F);
+        c.g.drawString(font, amount, -font.width(amount), 0, 0xFFFFFF, true);
+        c.g.pose().popPose();
+        if (c.over(x, y, 18, 18)) {
+            c.hoverText = List.of(f.getHoverName(), Component.literal(f.getAmount() + " mB").withStyle(ChatFormatting.GRAY));
+        }
+    }
+
+    private static @Nullable String itemLink(ItemStack s) {
+        return s.isEmpty() ? null : GuideMarkdown.LINK_ITEM + BuiltInRegistries.ITEM.getKey(s.getItem());
+    }
+
+    private final class ItemRow extends Elem {
+        final List<ItemStack> stacks = new ArrayList<>();
+
+        ItemRow(List<ResourceLocation> ids) {
+            ids.forEach(id -> stacks.add(stack(id)));
+        }
+
+        int perRow() {
+            return Math.max(1, PAGE_W / 20);
+        }
+
+        @Override
+        int height() {
+            return ((stacks.size() + perRow() - 1) / perRow()) * 20;
+        }
+
+        private int sx(int x, int i) {
+            int row = i / perRow();
+            int inRow = Math.min(perRow(), stacks.size() - row * perRow());
+            return x + (PAGE_W - inRow * 20) / 2 + (i % perRow()) * 20;
+        }
+
+        @Override
+        void render(Ctx c, int x, int y) {
+            for (int i = 0; i < stacks.size(); i++) {
+                slot(c, sx(x, i), y + (i / perRow()) * 20, stacks.get(i));
+            }
+        }
+
+        @Override
+        @Nullable String click(int x, int y, double mx, double my) {
+            for (int i = 0; i < stacks.size(); i++) {
+                int sx = sx(x, i), sy = y + (i / perRow()) * 20;
+                if (mx >= sx && mx < sx + 18 && my >= sy && my < sy + 18) {
+                    return itemLink(stacks.get(i));
+                }
+            }
+            return null;
+        }
+    }
+
+    private final class RecipeView extends Elem {
+        final ResourceLocation id;
+        final List<Ingredient> inputs = new ArrayList<>();
+        final List<Integer> counts = new ArrayList<>();
+        final List<ItemStack> outputs = new ArrayList<>();
+        final java.util.Map<Integer, net.neoforged.neoforge.fluids.FluidStack> inFluid = new java.util.HashMap<>();
+        final java.util.Map<Integer, net.neoforged.neoforge.fluids.FluidStack> outFluid = new java.util.HashMap<>();
+        ItemStack machine = ItemStack.EMPTY;
+        int gridW = 0; // 0 = row of inputs, otherwise crafting grid width
+        @Nullable Component info;
+        boolean missing;
+
+        RecipeView(ResourceLocation id) {
+            this.id = id;
+            var level = Minecraft.getInstance().level;
+            RecipeHolder<?> holder = level == null ? null : level.getRecipeManager().byKey(id).orElse(null);
+            if (holder == null) {
+                missing = true;
+                return;
+            }
+            Recipe<?> r = holder.value();
+            var regs = level.registryAccess();
+            if (r instanceof ProcessingRecipe p) {
+                p.ingredients.forEach(si -> {
+                    inputs.add(si.ingredient());
+                    counts.add(si.count());
+                });
+                java.util.stream.Stream.of(p.fluidInput, p.fluidInput2).flatMap(Optional::stream).forEach(f -> {
+                    var fs = f.getFluids();
+                    if (fs.length > 0) {
+                        inFluid.put(inputs.size(), new net.neoforged.neoforge.fluids.FluidStack(fs[0].getFluid(), f.amount()));
+                        inputs.add(Ingredient.EMPTY);
+                        counts.add(1);
+                    }
+                });
+                outputs.addAll(p.results);
+                p.bonus.ifPresent(outputs::add);
+                p.fluidResults.forEach(f -> {
+                    outFluid.put(outputs.size(), f);
+                    outputs.add(ItemStack.EMPTY);
+                });
+                info = Component.translatable("gui.spacebreaker.guide.recipe_info", p.energy, Mth.ceil(p.time / 20F));
+            } else if (r instanceof CraftingRecipe cr) {
+                gridW = cr instanceof ShapedRecipe s ? s.getWidth() : Math.min(3, Math.max(1, (int) Math.ceil(Math.sqrt(cr.getIngredients().size()))));
+                inputs.addAll(cr.getIngredients());
+                cr.getIngredients().forEach(x -> counts.add(1));
+                outputs.add(r.getResultItem(regs));
+                machine = new ItemStack(Items.CRAFTING_TABLE);
+            } else if (r instanceof AbstractCookingRecipe cook) {
+                inputs.addAll(cook.getIngredients());
+                cook.getIngredients().forEach(x -> counts.add(1));
+                outputs.add(r.getResultItem(regs));
+                info = Component.translatable("gui.spacebreaker.guide.recipe_time", Mth.ceil(cook.getCookingTime() / 20F));
+            } else {
+                for (Ingredient in : r.getIngredients()) {
+                    if (!in.isEmpty()) {
+                        inputs.add(in);
+                        counts.add(1);
+                    }
+                }
+                outputs.add(r.getResultItem(regs));
+            }
+            if (machine.isEmpty()) {
+                ResourceLocation type = BuiltInRegistries.RECIPE_TYPE.getKey(r.getType());
+                ResourceLocation m = type == null ? null : GuideBook.INSTANCE.machineFor(type);
+                machine = m != null ? stack(m) : r.getToastSymbol();
+            }
+        }
+
+        int cols() {
+            return gridW > 0 ? gridW : Math.min(3, Math.max(1, inputs.size()));
+        }
+
+        int rows() {
+            return Math.max(1, (inputs.size() + cols() - 1) / cols());
+        }
+
+        @Override
+        int height() {
+            return missing ? 12 : Math.max(rows() * 18, 36) + 4 + (info != null ? 10 : 0);
+        }
+
+        private ItemStack shown(int i, float time) {
+            ItemStack[] opts = inputs.get(i).getItems();
+            if (opts.length == 0) {
+                return ItemStack.EMPTY;
+            }
+            ItemStack s = opts[(int) (time / 20) % opts.length].copy();
+            s.setCount(Math.max(1, counts.get(i)));
+            return s;
+        }
+
+        private int gx(int x) {
+            int total = cols() * 18 + 34 + 18 * Math.min(3, outputs.size());
+            return x + (PAGE_W - total) / 2;
+        }
+
+        @Override
+        void render(Ctx c, int x, int y) {
+            if (missing) {
+                c.g.drawString(font, Component.translatable("gui.spacebreaker.guide.no_recipe", id.toString()), x, y, 0xA03020, false);
+                return;
+            }
+            int gx = gx(x), gh = rows() * 18;
+            int top = y + Math.max(0, (36 - gh) / 2);
+            for (int i = 0; i < cols() * rows(); i++) {
+                int sx = gx + (i % cols()) * 18, sy = top + (i / cols()) * 18;
+                if (inFluid.containsKey(i)) {
+                    fluidSlot(c, sx, sy, inFluid.get(i));
+                } else {
+                    slot(c, sx, sy, i < inputs.size() ? shown(i, c.time) : ItemStack.EMPTY);
+                }
+            }
+            int ax = gx + cols() * 18 + 4;
+            int mid = y + Math.max(gh, 36) / 2;
+            // arrow
+            for (int i = 0; i < 18; i++) {
+                c.g.fill(ax + i, mid + 1, ax + i + 1, mid + 3, 0xFF000000 | INK_SOFT);
+            }
+            for (int i = 0; i < 4; i++) {
+                c.g.fill(ax + 18 + i, mid - 2 + i, ax + 19 + i, mid + 6 - i, 0xFF000000 | INK_SOFT);
+            }
+            if (!machine.isEmpty()) {
+                c.g.pose().pushPose();
+                c.g.pose().translate(ax + 5, mid - 14, 0);
+                c.g.pose().scale(0.75F, 0.75F, 1F);
+                c.g.renderFakeItem(machine, 0, 0);
+                c.g.pose().popPose();
+                if (c.over(ax + 5, mid - 14, 12, 12)) {
+                    c.hoverStack = machine;
+                }
+            }
+            int ox2 = ax + 26;
+            for (int i = 0; i < Math.min(3, outputs.size()); i++) {
+                if (outFluid.containsKey(i)) {
+                    fluidSlot(c, ox2 + i * 18, mid - 8, outFluid.get(i));
+                } else {
+                    slot(c, ox2 + i * 18, mid - 8, outputs.get(i));
+                }
+            }
+            if (info != null) {
+                c.g.drawString(font, info, x + (PAGE_W - font.width(info)) / 2, y + Math.max(gh, 36) + 3, INK_SOFT, false);
+            }
+        }
+
+        @Override
+        @Nullable String click(int x, int y, double mx, double my) {
+            if (missing) {
+                return null;
+            }
+            int gx = gx(x), gh = rows() * 18;
+            int top = y + Math.max(0, (36 - gh) / 2);
+            for (int i = 0; i < inputs.size(); i++) {
+                int sx = gx + (i % cols()) * 18, sy = top + (i / cols()) * 18;
+                if (mx >= sx && mx < sx + 18 && my >= sy && my < sy + 18) {
+                    return itemLink(shown(i, minecraft.level == null ? 0 : minecraft.level.getGameTime()));
+                }
+            }
+            int ax = gx + cols() * 18 + 4, mid = y + Math.max(gh, 36) / 2;
+            for (int i = 0; i < Math.min(3, outputs.size()); i++) {
+                int sx = ax + 26 + i * 18, sy = mid - 8;
+                if (mx >= sx && mx < sx + 18 && my >= sy && my < sy + 18) {
+                    return itemLink(outputs.get(i));
+                }
+            }
+            return null;
+        }
+    }
+
+    private final class EntityElem extends Elem {
+        final ResourceLocation id;
+
+        EntityElem(ResourceLocation id) {
+            this.id = id;
+        }
+
+        @Override
+        int height() {
+            return 74;
+        }
+
+        @Override
+        void render(Ctx c, int x, int y) {
+            c.g.fill(x, y, x + PAGE_W, y + 72, 0x16000000 | INK);
+            Entity e = entities.computeIfAbsent(id, k -> {
+                var type = BuiltInRegistries.ENTITY_TYPE.getOptional(k).orElse(null);
+                return type == null || minecraft.level == null ? null : type.create(minecraft.level);
+            });
+            if (!(e instanceof LivingEntity living)) {
+                return;
+            }
+            float size = Math.max(living.getBbHeight(), living.getBbWidth() * 1.3F);
+            float s = Math.min(48F / size, 40F);
+            Quaternionf rot = new Quaternionf().rotateZ((float) Math.PI).rotateX((float) Math.toRadians(-12))
+                    .rotateY((float) Math.toRadians(c.time * 1.2F % 360F));
+            living.yBodyRot = 0;
+            living.yHeadRot = 0;
+            living.setYRot(0);
+            living.setXRot(0);
+            living.tickCount = (int) c.time;
+            InventoryScreen.renderEntityInInventory(c.g, x + PAGE_W / 2F, y + 36 + living.getBbHeight() * s / 2F, s,
+                    new Vector3f(), rot, null, living);
+            if (c.over(x, y, PAGE_W, 72)) {
+                c.hoverText = List.of(living.getType().getDescription());
+            }
+        }
+    }
+
+    private final class StructureElem extends Elem {
+        final ResourceLocation id;
+
+        StructureElem(ResourceLocation id) {
+            this.id = id;
+        }
+
+        @Override
+        int height() {
+            return 96;
+        }
+
+        @Override
+        void render(Ctx c, int x, int y) {
+            c.g.fill(x, y, x + PAGE_W, y + 94, 0x16000000 | INK);
+            GuideStructures.render(c.g, GuideStructures.get(id), x + 2, y + 2, PAGE_W - 4, 90, c.time);
+        }
+    }
+
+    private final class ImageElem extends Elem {
+        final GuideMarkdown.Image im;
+
+        ImageElem(GuideMarkdown.Image im) {
+            this.im = im;
+        }
+
+        @Override
+        int height() {
+            int w = Math.min(im.width(), PAGE_W);
+            return im.height() * w / Math.max(1, im.width());
+        }
+
+        @Override
+        void render(Ctx c, int x, int y) {
+            int w = Math.min(im.width(), PAGE_W);
+            int h = height();
+            c.g.blit(im.texture(), x + (PAGE_W - w) / 2, y, w, h, 0, 0, im.width(), im.height(), im.width(), im.height());
+        }
     }
 }

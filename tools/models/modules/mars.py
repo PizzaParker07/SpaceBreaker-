@@ -98,6 +98,7 @@ def generate():
     ore('gypsum_ore', b('martian_mudstone'), 'gypsum_ore_overlay')
     generated_item('raw_hematite')
     generated_item('gypsum_crystal')
+    generated_item('perchlorate_salt')
     eggs()
 
 

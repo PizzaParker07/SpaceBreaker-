@@ -8,7 +8,7 @@ from sbtex import palettes as P
 S = P.CARBON_STEEL
 GLOW = [(255, 120, 30), (255, 170, 60), (255, 220, 120), (255, 245, 200)]
 HAZ_Y = (214, 170, 44)
-HAZ_K = (36, 34, 32)
+HAZ_K = tuple(S[0])
 
 
 def casing(seed=1, rivets=True, seam=True) -> Canvas:
@@ -23,7 +23,7 @@ def casing(seed=1, rivets=True, seam=True) -> Canvas:
         cv[i, 15] = S[2]
         cv[0, i] = S[3]
         cv[15, i] = S[2]
-        cv[i, 1] = S[6] if 0 < i < 15 else cv[i, 1]
+        cv[i, 1] = S[5] if 0 < i < 15 else cv[i, 1]
         cv[1, i] = S[5] if 0 < i < 15 else cv[1, i]
         cv[14, i] = S[3] if 0 < i < 15 else cv[14, i]
         cv[i, 14] = S[3] if 0 < i < 15 else cv[i, 14]
@@ -32,7 +32,7 @@ def casing(seed=1, rivets=True, seam=True) -> Canvas:
             cv[x, 8] = S[3]
     if rivets:
         for x, y in ((2, 3), (13, 3), (2, 12), (13, 12)):
-            cv[x, y] = S[6]
+            cv[x, y] = S[5]
             cv[x + 0, y + 1] = S[2]
     return cv
 
@@ -66,10 +66,10 @@ def recess(cv, x0, y0, x1, y1, fill):
     """Recessed opening: shadow on top/left, light lip bottom/right."""
     rect(cv, x0, y0, x1, y1, fill)
     for x in range(x0 - 1, x1 + 2):
-        cv[x, y0 - 1] = S[1]
+        cv[x, y0 - 1] = S[2]
         cv[x, y1 + 1] = S[5]
     for y in range(y0 - 1, y1 + 2):
-        cv[x0 - 1, y] = S[1]
+        cv[x0 - 1, y] = S[2]
         cv[x1 + 1, y] = S[5]
 
 
@@ -97,7 +97,7 @@ def generator_front(lit=False):
                 cv[x, y] = S[3]
     for x in range(3, 13):
         cv[x, 7] = S[2]
-    rect(cv, 6, 13, 9, 13, S[6])                 # door handle
+    rect(cv, 6, 13, 9, 13, S[5])                 # door handle
     return cv
 
 
@@ -136,11 +136,11 @@ def arc_front():
     for y in range(3, 13):                       # refractory brick door
         for x in range(3, 13):
             mortar = y % 3 == 2 or (x + (4 if (y // 3) % 2 else 0)) % 8 == 0
-            cv[x, y] = S[2] if mortar else brick[(x + y) % 2]
+            cv[x, y] = S[2] if mortar else brick[1 if y % 3 == 0 else 0]
     for x in range(2, 14):
         cv[x, 2] = S[5]
-        cv[x, 13] = S[1]
-    rect(cv, 7, 6, 8, 7, S[0])                   # peephole
+        cv[x, 13] = S[2]
+    rect(cv, 7, 6, 8, 7, S[2])                   # peephole
     return cv
 
 
@@ -200,7 +200,7 @@ def fabricator_front():
     for x in range(4, 12):
         cv[x, 11] = S[2]
     rect(cv, 4, 11, 5, 12, (150, 40, 30))        # buttons
-    rect(cv, 10, 11, 11, 12, (60, 140, 70))
+    rect(cv, 10, 11, 11, 12, (150, 40, 30))
     return cv
 
 
@@ -251,7 +251,7 @@ def electrolyzer_cell(lit=False):
 
 def liquefier_front():
     cv = casing(19, seam=False)
-    frost = [(200, 214, 226), (226, 236, 244)]
+    frost = [(214, 226, 236), (214, 226, 236)]
     for x in range(1, 15):                       # rime along the cold bottom edge, a few icicle drips above
         cv[x, 14] = frost[1]
         cv[x, 13] = frost[0] if x % 3 else frost[1]
@@ -517,7 +517,7 @@ def heater_front():
         cv[x, 9] = S[2]
     rect(cv, 4, 2, 11, 3, S[2])
     cv[5, 2] = (160, 40, 30)
-    cv[10, 2] = (60, 140, 70)
+    cv[10, 2] = (160, 40, 30)
     return cv
 
 

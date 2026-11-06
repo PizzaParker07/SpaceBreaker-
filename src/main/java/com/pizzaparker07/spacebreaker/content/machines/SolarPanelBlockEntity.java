@@ -18,6 +18,8 @@ public class SolarPanelBlockEntity extends BlockEntity {
     public static final int PEAK_OUTPUT = 20;
     /** Mechanical limit of the tracker, radians either side of horizontal. */
     public static final float MAX_TILT = (float) Math.toRadians(60);
+    /** Upper limit on the sunlight multiplier near the sun (hot cells lose efficiency). */
+    public static final double MAX_SOLAR_FACTOR = 3.0;
     private static final float SLEW_PER_TICK = (float) Math.toRadians(0.6);
 
     private final Buffer energy = new Buffer(8_000, PEAK_OUTPUT * 4);
@@ -64,16 +66,29 @@ public class SolarPanelBlockEntity extends BlockEntity {
         return Math.max(0F, incidence * airMass);
     }
 
+    /**
+     * Cloud cover from rain and storms. Other dimensions share the Overworld's weather flags in vanilla, so only
+     * count weather that actually falls here (biome precipitation) and never in vacuum.
+     */
+    public static float weatherFactor(Level level, BlockPos pos) {
+        return weatherFactor(com.pizzaparker07.spacebreaker.core.env.Environment.isVacuum(level), level.isRainingAt(pos.above()), level.isThundering());
+    }
+
+    /** @param rainingHere rain actually falling at this spot (not the shared world flag) */
+    public static float weatherFactor(boolean vacuum, boolean rainingHere, boolean thundering) {
+        if (vacuum || !rainingHere) {
+            return 1F;
+        }
+        return thundering ? 0.2F : 0.45F;
+    }
+
     public static void serverTick(Level level, BlockPos pos, BlockState state, SolarPanelBlockEntity be) {
         int produced = 0;
         if (level.dimensionType().hasSkyLight() && level.canSeeSky(pos.above())) {
             float factor = irradiance(sunAngle(level, 1F))
-                    * (float) com.pizzaparker07.spacebreaker.core.env.Environment.sunlightModifier(level, pos); // dust storms, clouds
-            if (level.isThundering()) {
-                factor *= 0.2F;
-            } else if (level.isRaining()) {
-                factor *= 0.45F;
-            }
+                    // sunlight at this body's distance from the sun, after dust storms and clouds (capped: cells overheat)
+                    * (float) Math.min(MAX_SOLAR_FACTOR, com.pizzaparker07.spacebreaker.core.env.Environment.solarFactor(level, pos));
+            factor *= weatherFactor(level, pos);
             produced = Math.round(PEAK_OUTPUT * factor);
         }
         be.lastOutput = produced;

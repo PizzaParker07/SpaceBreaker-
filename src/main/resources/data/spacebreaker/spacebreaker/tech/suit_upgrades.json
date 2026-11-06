@@ -1,0 +1,18 @@
+{
+  "category": "life_support",
+  "tier": 2,
+  "requires": [
+    "spacebreaker:suit_mk2"
+  ],
+  "icon": "spacebreaker:suit_upgrade_template",
+  "samples": [
+    "spacebreaker:mars"
+  ],
+  "unlocks": [
+    "spacebreaker:suit_upgrade_template",
+    "spacebreaker:thermal_regulator_module",
+    "spacebreaker:radiation_shield_module",
+    "spacebreaker:extra_oxygen_module",
+    "spacebreaker:jetpack_booster_module"
+  ]
+}

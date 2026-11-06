@@ -5,6 +5,7 @@ import com.pizzaparker07.spacebreaker.content.machines.MachinesModule;
 import com.pizzaparker07.spacebreaker.content.moon.MoonModule;
 import com.pizzaparker07.spacebreaker.content.rocketry.RocketryModule;
 import com.pizzaparker07.spacebreaker.content.suit.SuitModule;
+import com.pizzaparker07.spacebreaker.content.blueprint.BlueprintModule;
 import com.pizzaparker07.spacebreaker.content.worldgen.WorldgenModule;
 
 import java.util.List;
@@ -18,13 +19,15 @@ public final class Modules {
             new MoonModule(),
             new MachinesModule(),
             new SuitModule(),
+            new BlueprintModule(),
             new com.pizzaparker07.spacebreaker.content.research.ResearchModule(),
             new com.pizzaparker07.spacebreaker.content.dungeons.DungeonsModule(),
             new RocketryModule(),
             new com.pizzaparker07.spacebreaker.content.mars.MarsModule(),
             new com.pizzaparker07.spacebreaker.content.venus.VenusModule(),
             new com.pizzaparker07.spacebreaker.content.mercury.MercuryModule(),
-            new com.pizzaparker07.spacebreaker.content.belt.OuterSystemModule()
+            new com.pizzaparker07.spacebreaker.content.belt.OuterSystemModule(),
+            new com.pizzaparker07.spacebreaker.compat.CompatModule()
     );
 
     private Modules() {

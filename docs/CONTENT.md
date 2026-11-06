@@ -35,6 +35,9 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Kırıcı, Elektrik Ark Fırını, Pres (hareketli koç), Petrol Pompası (çok bloklu, animasyonlu), Rafineri (çok bloklu damıtma kulesi) | |
 | 🎨 | Elektroliz Ünitesi, Kriyojenik Sıvılaştırıcı, Sıvı / Basınçlı Gaz / Kriyojenik Tank (dolum görünür), sıvı/gaz borusu (uçtan çekme modu) | |
 | 🎨 | Parça Üretim Tezgâhı | `spacebreaker:fabricating` tarifi; Roket ve Giysi alanları kendi tariflerini ekler |
+| 🎨 | Yerinde üretim (ISRU): Atmosfer İşlemcisi, Sabatier Reaktörü, Regolit Isıtıcı, Buz Eritici | atmosferden gaz (Mars/Venüs CO₂, Dünya O₂, Titan CH₄); CO₂ + H₂ → metan + su; regolit ve perklorattan O₂; buzdan su, kuru buzdan CO₂; `c:regoliths`, `c:ices`, `c:dry_ices`, `c:perchlorate_soils` etiketleriyle beslenir |
+| 🎨 | Karbondioksit gazı (`c:carbon_dioxide`); güneş paneli verimi gezegenin güneşe uzaklığına göre (en fazla 3×) | |
+| 🎨 | Kimyasal Reaktör (`spacebreaker:chemical_reaction`), Sülfürik Asit (`c:sulfuric_acid`), Helyum-3 (`c:helium_3`) | kükürt + su + oksijen → sülfürik asit; Merkür güneş rüzgârı regolitinden (`c:regoliths/solar_wind`) hidrojen + He-3 |
 | 🎨 | Roket Montaj Tezgâhı | 3 kademe + faydalı yük yuvası, canlı 3B önizleme, kademe başına Δv ve itki/ağırlık, ulaşılabilir hedefler (yörünge, Ay, iniş, dönüş) |
 
 ### Paket ③ Roket, rampa, giysi ve Ay
@@ -43,9 +46,15 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Fırlatma tesisi: rampa kaplaması, alev kanalı ızgarası, servis kulesi, erişim kolu (geri sayımda katlanır), yakıt hattı (c:rp1 / c:liquid_oxygen), kontrol konsolu | çok bloklu; boş elle tıklayınca kontrol listesi + eksik bloklar alevle işaretlenir |
 | ⬜ | Uyarı ışığı | |
 | 🎨 | Roket parçaları: burun konisi, kapsül, ısı kalkanı, paraşüt, küçük/orta/büyük tank, deniz seviyesi + vakum kerosen motoru, kademe ayırıcı, ara kademe, kanatçık, ızgara kanatçık, iniş bacakları, manevra iticileri | veriyle tanımlı (`rocket_part/*.json`), gerçekçi kütle/itki/Isp; envanterde 2B, elde ve rokette 3B |
-| 🎨 | Roket, yörünge boyutları (Dünya / Ay yörüngesi), yıldız haritası | geri sayım, ateşleme, kademe ayrılması, gökyüzünün kararması, yörüngede dönen gezegen, Ay'a motorlu iniş + toz, atmosfere giriş (plazma), paraşüt, suya iniş |
+| 🎨 | Roket, yörünge boyutları (Dünya / Ay yörüngesi + diğer cisimler için ortak yörünge), yıldız haritası (gök cismi verisinden: Merkür, Venüs, Mars, Phobos, Deimos ve dış sistem kendiliğinden) | geri sayım, ateşleme, kademe ayrılması, gökyüzünün kararması, yörüngede dönen gezegen, Ay'a motorlu iniş + toz, atmosfere giriş (plazma), paraşüt, suya iniş |
 | 🎨 | Acil Dönüş İşareti, Yaratıcı Yakıt Kartuşu | mahsur kalmama; test için tam yakıt |
 | 🎨 | EVA Giysisi Mk1: Kask, Gövde, Pantolon, Bot | özel 3B modeller: yuvarlak kask, sarmal füme vizör, altın güneş vizörü (eğil + kullan), parlayan yan lambalar; göğüs kontrol kutusu, yaşam destek sırt çantası + oksijen şişeleri; mavi yatak halkaları; tabanlı botlar. Yalnızca dört parça birlikte sızdırmaz |
+| 🎨 | Termal Giysi (Mk2) | gümüş alüminize kumaş, altın vizör siperliği, sırtta altın radyatör kanatları; 500 °C'ye kadar (Venüs, Merkür gündüzü) |
+| 🎨 | Isıtmalı Giysi (Mk2) | turuncu dolgu yalıtım, kalın yaka, kabarık omuz/bacak, ısıtıcı batarya; −250 °C'ye kadar (Titan) |
+| 🎨 | Radyasyon Zırhlı Giysi (Mk3) | kurşun grisi + sarı zırh plakaları, dar vizör yarığı, sırt kalkanı; dozun yalnız %4'ü geçer (Io, Europa) |
+| 🎨 | Hologram Projektörü | çoklu blok yapıların nasıl kurulacağını gösterir: yapı seç, yere yansıt, eğil + tekerlek ile döndür, katman katman mod; eksikler camgöbeği hayalet, yanlış bloklar kırmızı çerçeve, ekranda malzeme listesi; denetleyiciye boş elle eğil + sağ tık eksikleri yansıtır. Yapılar `data/<ns>/spacebreaker/multiblock/*.json` |
+| 🎨 | Giysi yükseltmeleri | demirci masası: Giysi Yükseltme Şablonu + parça + modül (termal regülatör, radyasyon kalkanı, ek oksijen, jetpack güçlendirici) |
+| 🎨 | Boyanabilir aksan | tüm giysi parçalarının halka/aksan rengi boyayla değişir |
 | 🎨 | Manyetik EVA Botları | düşük/sıfır yerçekiminde zemine yapıştırır (eğilince bırakır) |
 | 🎨 | Manevra Ünitesi | gövdeye takılır; soğuk gazla uçuş (sıfır g'de 6 eksen, Ay'da havada kalma) |
 | 🎨 | Oksijen Tüpü (5 dk), Büyük Oksijen Tüpü (15 dk) | envanterde 2B, elde 3B; gövdenin sırt çantasına 2 tüp takılır |
@@ -81,12 +90,12 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 ### Paket ④ Araştırma, zindanlar ve rehber
 | Durum | İçerik | Not |
 |---|---|---|
-| 🎨 | Teknoloji ağacı (Faz 1–3, 55 teknoloji) | itki, yaşam desteği, sanayi, astronomi, inşaat, keşif dalları; ön koşullar dallar arası |
+| 🎨 | Teknoloji ağacı (Faz 1–3, 61 + diğer alanların 4 + Faz 2/3 dünyaları için örnek türleri) | itki, yaşam desteği, sanayi, astronomi, inşaat, keşif dalları; ön koşullar dallar arası |
 | 🎨 | Teknoloji Diski | dal rengine göre etiket; zindanlardan çıkar, laboratuvarda okunur, okunduktan sonra geri verilir |
 | 🎨 | Saha Numunesi, Deney Kaydı, Numune Çantası | her dünyanın numunesi farklı teknolojileri ortaya çıkarır |
 | 🎨 | Araştırma Laboratuvarı | tezgâh + analiz cihazı + mikroskop; FE ile çalışır, çalışırken ekran parlar; takımla paylaşım |
 | 🎨 | Araştırma ağacı ekranı (J) | dallar, ön koşul çizgileri, ipuçları, sürükle/yakınlaştır |
-| 🎨 | Saha Rehberi | iki sayfalık kitap: 9 bölüm, 38 sayfa (malzemeler, makineler, giysi, roketçilik, Ay, zindanlar, fizik), arama, tarifler, çizimler, teknolojiyle açılan sayfalar (TR + EN) |
+| 🎨 | Saha Rehberi | iki sayfalık kitap: 12 bölüm, 47 sayfa (malzemeler, makineler, giysi, roketçilik, Ay, Mars, Venüs, Merkür, zindanlar, fizik), arama, tarifler, çizimler, teknolojiyle açılan sayfalar (TR + EN) |
 | 🎨 | Terk Edilmiş Gözlemevi (Dünya zindanı) | bakır kubbe, kırık teleskop, gizli arşiv (ilk roketçilik diskleri), roket test rampası, muhafızlar |
 | 🎨 | Ana başarım ağacı (28) | cevher → külçe → çelik → RP-1 → sıvı oksijen; numune → laboratuvar → teknolojiler; zindan → roket → yörünge → Ay yörüngesi ve Ay → Ay zindanı, kene, dönüş; tam giysi, manevra ünitesi |
 
@@ -114,10 +123,13 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | 9 biyom | Kraterli Yaylalar, Kuzey Ovaları, Mars Krateri, Kutup Katmanlı Tortulları, Kumul Denizi, Büyük Yarık Kanyonu, Kalkan Volkan, Antik Nehir Vadisi, Kutup Buz Örtüsü |
 | 🎨 | Topraklar | Mars Regoliti, Hematit Kürecikli Toprak, Perkloratlı Toprak, Mars Kili, CO₂ Kırağısı — ayak izi tutar, rüzgâr zamanla siler (fırtınada hızlı) |
 | 🎨 | Kumlar, kayalar, buzlar | Mars Kumu (koyu bazalt kumu), Olivin Kumu, Mars Bazaltı / Cilalı / Tuğla aileleri, Katmanlı Kumtaşı ailesi, Mars Çamurtaşı, Alçıtaşı Bloğu, Mars Su Buzu, Tozlu Buz, Kuru Buz (sıcakta süblimleşir) |
-| 🎨 | Cevherler | Hematit (→ demir), Alçıtaşı Damarı (→ kristal, Taşyiyen yemi); Mars'ta da meteor demiri |
+| 🎨 | Cevherler | Hematit (→ demir), Alçıtaşı Damarı (→ kristal, Taş Otlayan yemi); Mars'ta da meteor demiri |
 | 🎨 | Gökyüzü | karamela rengi gün, gün batımında mavi hale, küçük Güneş, kendi saat açılarıyla Phobos (batıdan doğar) ve Deimos |
 | 🎨 | Toz fırtınaları | seviye başına kayıtlı, sise ve GUI katmanında toz tonu (shader güvenli), uçuşan toz, %85 daha az güneş, kutuplar daha soğuk; `/spacebreaker duststorm` |
 | 🎨 | Zindanlar | Terk Edilmiş Mars Araştırma İstasyonu (sera, ISRU tesisi, garaj, sondaj kulesi), Antik Gömülü Nehir Yatağı (katmanlı mağara, kil yatak, düşmüş sonda) |
+| 🎨 | Lav tüpleri | volkan ve ova altında doğal tüneller (bazalt kabuk, cilalı lav astarı, olivin kumlu taban), çökmüş ışıklıklardan girilir; 5+ blok tavan radyasyonu 1/32'nin altına düşürür: hazır üs yeri |
+| 🎨 | Kutup katmanlı tortuları | temiz buz arasında düzensiz aralıklı ince toz bantları (12 blokta 1–3), kutup oluklarının duvarlarında görünür |
+| 🎨 | Endüstri girdileri | kırıcıda: Perkloratlı Toprak → Perklorat Tuzu (`c:dusts/perchlorate`, oksijen kaynağı); Mars/tozlu/krater buzu → buz (`c:ices/water`, eriyip elektroliz suyu olur) |
 
 ### Phobos ve Deimos
 | Durum | İçerik | Not |
@@ -140,6 +152,14 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Arazi | yoğun kraterler, loblu sarplıklar, düz ovalar, parlak oyuklar, kalıcı gölgeli kutup kraterlerinde buz; dev Güneş, 430 °C gündüz / −180 °C gece |
 | 🎨 | Bloklar | Merkür Regoliti, Oyuk Tortusu (kalıcı ayak izi), Merkür Kabuğu, Düşük Yansıtmalı Kaya, Grafit Cevheri (→ grafit) |
 | 🎨 | Zindan | Terk Edilmiş Kutup Buzu Madeni (gölgeli krater tabanının altında) |
+| 🎨 | Endüstri girdileri | kırıcıda: Oyuk Tortusu → kükürt; Venüs Kükürt Kabuğu → kükürt |
+
+### İç gezegen yörüngeleri `spacebreaker:venus_orbit`, `mercury_orbit`, `mars_orbit`
+| Durum | İçerik | Not |
+|---|---|---|
+| 🎨 | Yörünge gökyüzü | dönen gezegen küresi (gece-gündüz sınırı), uzaklığa göre boyutlu Güneş; Venüs'te kalın parlak pus halkası, Mars'ta ince soluk halka, Merkür'de yok; uzakta Phobos/Deimos, Dünya, Merkür, Venüs |
+| 🎨 | Haritalar | Venüs bulut bantları (yan yatmış Y), Merkür kraterleri + Caloris + ışınlı genç kraterler, Mars coğrafyası (Tharsis, Olympus, Valles + Noctis, kutup başlıkları); hepsi kodla, piksel stilinde |
+| 🎨 | Rehber | yeni "İç Gezegenler" bölümü: Mars, Mars kaynakları, Mars'ta yaşam, Phobos ve Deimos, Venüs, bulutlarda yaşam ve harabeler, Merkür, yörüngeden görünüm (EN + TR, Gezegenlerarası Transferler ile açılır) |
 
 ### Faz 2 teknolojileri (zindan diskleri)
 | Durum | İçerik | Not |
@@ -201,9 +221,9 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | Gök cismi | Yaratıklar |
 |---|---|
 | Ay 🎨 | Regolit Kenesi (tozun altına saklanır, düşük yerçekiminde sıçrar), Yaşlı Regolit Kenesi (lav tüpü muhafızı), Toz Yüzücüsü (regolitin hemen altında süzülen pasif canlı, arkasında toz dalgaları), Keşif Dronu (karakol muhafızı, sersemletme atışı) |
-| Mars 🎨 | Pas Böceği (demir oksit yer, tarafsız), Toz Şeytanı (fırtınalarda canlı hortum), Kanyon Pusucusu, Taşyiyen (iri, pasif otlayıcı), Kutup Kurtçuğu |
+| Mars 🎨 | Pas Böceği (demir oksit yer, tarafsız), Toz Şeytanı (fırtınalarda canlı hortum), Kanyon Pusucusu, Taş Otlayan (iri, pasif otlayıcı), Kutup Kurtçuğu |
 | Venüs (bulutlar) 🎨 | Asit Vatozu (süzülen, tarafsız), Bulut Medüzü (pasif gaz kesesi) |
-| Merkür 🎨 | Alacakaranlık Sürüngeni (gece-gündüz sınırında yaşar; güneş yükselince ya da gece çökünce toprağa gömülür) |
+| Merkür 🎨 | Alacakaranlık Sürüngeni (tehlikeli; gece-gündüz sınırında yaşar; güneş yükselince ya da gece çökünce toprağa gömülür), Oyuk Salyangozu (pasif, faydalı: oyuk tortusunu kazıyıp kükürt bırakır, kükürtle çoğalır) |
 | Io 🎨 | Kükürt Yengeci (ısıya dayanıklı, yakınına gelene saldırır) |
 | Europa 🎨 | Buzaltı Işık Yılanı (biyolüminesan, pasif; tuzlu su havuzlarında ve gömülü okyanusta) |
 | Ganymede 🎨 | Oluk Otlayıcısı (zırhlı, sürü halinde, okyanus tuzuyla çoğalır) |

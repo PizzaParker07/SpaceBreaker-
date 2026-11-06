@@ -56,7 +56,7 @@ public final class LifeSupport {
         boolean immune = player.isCreative() || player.isSpectator();
         boolean hazards = hazards() && !immune;
         tickBreathing(player, data, env.breathable(), immune, hazards);
-        tickTemperature(player, data, env.ambientC(), hazards);
+        tickTemperature(player, data, env.ambientC(), env.pressureKpa(), hazards);
         tickRadiation(player, data, hazards);
     }
 
@@ -92,17 +92,26 @@ public final class LifeSupport {
 
     // ------------------------------------------------------------------ temperature
 
+    /**
+     * How much harder heat flows in a thick atmosphere than in vacuum: Titan (147 kPa) ~2.5x, Venus capped at 4x.
+     * Vacuum and thin air (Mars) barely conduct heat, so only radiation matters there.
+     */
+    public static double convection(double pressureKpa) {
+        return 1.0 + Math.min(3.0, Math.max(0.0, pressureKpa) / 100.0);
+    }
+
     /** Ambient temperature the body actually feels, after the suit's thermal control. */
-    public static double effectiveAmbient(Player player, double ambientC) {
-        SuitTier tier = SpaceSuitItem.sealedTier(player);
-        if (tier == null) {
+    public static double effectiveAmbient(Player player, double ambientC, double pressureKpa) {
+        SuitProtection.Rating rating = SuitProtection.rating(player);
+        if (rating == null) {
             return ambientC;
         }
-        if (ambientC < tier.minTempC()) {
-            return SUIT_CABIN_C + (ambientC - tier.minTempC());
+        double k = convection(pressureKpa);
+        if (ambientC < rating.minTempC()) {
+            return SUIT_CABIN_C + (ambientC - rating.minTempC()) * k;
         }
-        if (ambientC > tier.maxTempC()) {
-            return SUIT_CABIN_C + (ambientC - tier.maxTempC());
+        if (ambientC > rating.maxTempC()) {
+            return SUIT_CABIN_C + (ambientC - rating.maxTempC()) * k;
         }
         return SUIT_CABIN_C;
     }
@@ -123,8 +132,8 @@ public final class LifeSupport {
         return bodyC + (targetC - bodyC) * TEMP_RATE;
     }
 
-    static void tickTemperature(Player player, SurvivalData data, double ambientC, boolean hazards) {
-        double target = targetBodyTemp(effectiveAmbient(player, ambientC));
+    static void tickTemperature(Player player, SurvivalData data, double ambientC, double pressureKpa, boolean hazards) {
+        double target = targetBodyTemp(effectiveAmbient(player, ambientC, pressureKpa));
         if (!hazards) {
             target = SurvivalData.NORMAL_BODY_C; // creative or hazards off: recover
         }
@@ -154,8 +163,8 @@ public final class LifeSupport {
     // ------------------------------------------------------------------ radiation
 
     public static double radiationFactor(Player player) {
-        SuitTier tier = SpaceSuitItem.sealedTier(player);
-        return tier == null ? 1.0 : tier.radiationFactor();
+        SuitProtection.Rating rating = SuitProtection.rating(player);
+        return rating == null ? 1.0 : rating.radiationFactor();
     }
 
     /** Dose after one tick at the given rate (mSv/day, one day = 24000 ticks), with slow natural recovery. */

@@ -1,0 +1,12 @@
+{
+  "category": "exploration",
+  "icon": "minecraft:kelp",
+  "requires": [
+    "spacebreaker:astrobiology",
+    "spacebreaker:cryogenics"
+  ],
+  "samples": [
+    "spacebreaker:titan"
+  ],
+  "tier": 3
+}

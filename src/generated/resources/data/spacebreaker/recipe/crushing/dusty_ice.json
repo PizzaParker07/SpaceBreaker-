@@ -1,0 +1,22 @@
+{
+  "type": "spacebreaker:crushing",
+  "bonus": {
+    "count": 1,
+    "id": "spacebreaker:martian_sand"
+  },
+  "bonus_chance": 0.5,
+  "energy": 12,
+  "ingredients": [
+    {
+      "count": 1,
+      "item": "spacebreaker:dusty_ice"
+    }
+  ],
+  "results": [
+    {
+      "count": 1,
+      "id": "minecraft:ice"
+    }
+  ],
+  "time": 80
+}

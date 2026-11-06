@@ -1,0 +1,67 @@
+package com.pizzaparker07.spacebreaker.testmod.mars;
+
+import com.pizzaparker07.spacebreaker.Spacebreaker;
+import com.pizzaparker07.spacebreaker.client.guide.GuideMarkdown;
+import com.pizzaparker07.spacebreaker.core.body.Bodies;
+import com.pizzaparker07.spacebreaker.core.body.CelestialBody;
+import com.pizzaparker07.spacebreaker.core.tech.Tech;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.gametest.framework.GameTest;
+import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.gametest.GameTestHolder;
+import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+
+@GameTestHolder(Spacebreaker.MOD_ID)
+@PrefixGameTestTemplate(false)
+public final class InnerOrbitGameTests {
+    private static final String[] BODIES = {"venus", "mercury", "mars"};
+    private static final String[] GUIDE = {"mars", "mars_resources", "mars_life", "mars_moons", "venus", "venus_clouds", "mercury", "inner_orbits"};
+
+    @GameTest(template = WorldTests.EMPTY)
+    public static void innerPlanetOrbitsAreSpace(GameTestHelper helper) {
+        for (String b : BODIES) {
+            ResourceKey<Level> key = ResourceKey.create(Registries.DIMENSION, Spacebreaker.id(b + "_orbit"));
+            var stem = WorldTests.stem(helper, b + "_orbit");
+            helper.assertTrue(stem.type().value().effectsLocation().equals(Spacebreaker.id(b + "_orbit")), b + " orbit sky effects");
+            CelestialBody body = Bodies.forDimension(helper.getLevel().registryAccess(), key)
+                    .orElseThrow(() -> new AssertionError(b + " orbit has no body"));
+            helper.assertTrue(body.dimension().map(d -> d.location().getPath().equals(b)).orElse(false), b + " orbit belongs to " + b);
+            // the environment treats a body's orbit dimension as vacuum (Bodies.isOrbit)
+            helper.assertTrue(body.orbitDimension().filter(key::equals).isPresent(), b + " orbit is the body's orbit dimension");
+        }
+        helper.succeed();
+    }
+
+    @GameTest(template = WorldTests.EMPTY)
+    public static void innerPlanetGuidePagesPointAtRealThings(GameTestHelper helper) {
+        var techs = helper.getLevel().registryAccess().registryOrThrow(Tech.REGISTRY);
+        for (String lang : new String[]{"en_us", "tr_tr"}) {
+            for (String name : GUIDE) {
+                String path = "/assets/spacebreaker/guide/" + lang + "/" + name + ".md";
+                try (InputStream in = Spacebreaker.class.getResourceAsStream(path)) {
+                    helper.assertTrue(in != null, "missing guide page " + path);
+                    GuideMarkdown.Chapter c = GuideMarkdown.parse(Spacebreaker.id(name), new String(in.readAllBytes(), StandardCharsets.UTF_8));
+                    ResourceLocation tech = c.research().orElseThrow(() -> new AssertionError(name + " names no research"));
+                    helper.assertTrue(techs.containsKey(tech), name + " requires unknown tech " + tech);
+                    helper.assertTrue(BuiltInRegistries.ITEM.containsKey(c.icon()), name + " icon");
+                    for (ResourceLocation i : c.refs().items()) {
+                        helper.assertTrue(BuiltInRegistries.ITEM.containsKey(i), name + " shows unknown item " + i);
+                    }
+                } catch (java.io.IOException e) {
+                    throw new AssertionError(e);
+                }
+            }
+        }
+        helper.succeed();
+    }
+
+    private InnerOrbitGameTests() {
+    }
+}

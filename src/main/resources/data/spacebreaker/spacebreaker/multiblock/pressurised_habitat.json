@@ -1,0 +1,18 @@
+{
+  "name": "multiblock.spacebreaker.pressurised_habitat",
+  "controller": "D",
+  "tech": "spacebreaker:oxygen_distribution",
+  "layers": [
+    ["FFFFF", "FFFFF", "FFFFF", "FFFFF", "FFFFF"],
+    ["GGGGG", "G___G", "G_D_G", "G___G", "GGLGG"],
+    ["GGGGG", "G___G", "G___G", "G___G", "GGUGG"],
+    ["FFFFF", "FFFFF", "FFFFF", "FFFFF", "FFFFF"]
+  ],
+  "key": {
+    "F": {"any_of": [{"block": "minecraft:smooth_stone"}, {"tag": "minecraft:stone_bricks"}, {"block": "minecraft:iron_block"}]},
+    "G": {"any_of": [{"tag": "c:glass_blocks"}, {"block": "minecraft:smooth_stone"}]},
+    "D": {"block": "spacebreaker:oxygen_distributor"},
+    "L": {"block": "spacebreaker:airlock_door", "properties": {"half": "lower"}},
+    "U": {"block": "spacebreaker:airlock_door", "properties": {"half": "upper"}}
+  }
+}

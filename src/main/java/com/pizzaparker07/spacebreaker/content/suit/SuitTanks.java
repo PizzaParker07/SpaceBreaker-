@@ -17,12 +17,19 @@ import java.util.List;
  */
 public final class SuitTanks {
     public static final int SLOTS = 2;
+    /** Most slots a backpack can have (with the extra oxygen upgrade). */
+    public static final int MAX_SLOTS = 3;
+
+    /** Tank slots of this torso: two, three with the extra oxygen upgrade. */
+    public static int slots(ItemStack torso) {
+        return SuitUpgrade.of(torso) == SuitUpgrade.EXTRA_OXYGEN ? MAX_SLOTS : SLOTS;
+    }
 
     private SuitTanks() {
     }
 
     public static NonNullList<ItemStack> tanks(ItemStack torso) {
-        NonNullList<ItemStack> list = NonNullList.withSize(SLOTS, ItemStack.EMPTY);
+        NonNullList<ItemStack> list = NonNullList.withSize(MAX_SLOTS, ItemStack.EMPTY);
         torso.getOrDefault(SuitModule.SUIT_TANKS.get(), ItemContainerContents.EMPTY).copyInto(list);
         return list;
     }
@@ -38,7 +45,7 @@ public final class SuitTanks {
     /** Inserts a tank into a free slot. Returns false when both slots are taken. */
     public static boolean insert(ItemStack torso, ItemStack tank) {
         NonNullList<ItemStack> list = tanks(torso);
-        for (int i = 0; i < SLOTS; i++) {
+        for (int i = 0; i < slots(torso); i++) {
             if (list.get(i).isEmpty()) {
                 list.set(i, tank.copyWithCount(1));
                 setTanks(torso, list);
@@ -51,7 +58,7 @@ public final class SuitTanks {
     /** Removes the last inserted tank (or EMPTY). */
     public static ItemStack removeLast(ItemStack torso) {
         NonNullList<ItemStack> list = tanks(torso);
-        for (int i = SLOTS - 1; i >= 0; i--) {
+        for (int i = MAX_SLOTS - 1; i >= 0; i--) {
             if (!list.get(i).isEmpty()) {
                 ItemStack out = list.get(i);
                 list.set(i, ItemStack.EMPTY);
@@ -67,7 +74,7 @@ public final class SuitTanks {
         NonNullList<ItemStack> list = tanks(torso);
         int idx = -1;
         int least = Integer.MAX_VALUE;
-        for (int i = 0; i < SLOTS; i++) {
+        for (int i = 0; i < slots(torso); i++) {
             int o = OxygenTankItem.getOxygen(list.get(i));
             if (o < least) {
                 least = o;
@@ -107,7 +114,7 @@ public final class SuitTanks {
         int taken = 0;
         while (taken < amount) {
             int best = -1;
-            for (int i = 0; i < SLOTS; i++) {
+            for (int i = 0; i < MAX_SLOTS; i++) {
                 if (OxygenTankItem.getOxygen(list.get(i)) > 0 && (best < 0 || OxygenTankItem.getOxygen(list.get(i)) > OxygenTankItem.getOxygen(list.get(best)))) {
                     best = i;
                 }
@@ -156,7 +163,7 @@ public final class SuitTanks {
 
     static void appendTooltip(ItemStack torso, List<Component> tooltip) {
         List<ItemStack> list = tanks(torso);
-        for (int i = 0; i < SLOTS; i++) {
+        for (int i = 0; i < slots(torso); i++) {
             ItemStack t = list.get(i);
             if (t.getItem() instanceof OxygenTankItem item) {
                 tooltip.add(Component.translatable("tooltip.spacebreaker.suit.tank", i + 1, t.getHoverName(),

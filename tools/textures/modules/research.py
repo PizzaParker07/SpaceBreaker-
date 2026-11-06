@@ -312,31 +312,33 @@ def lab_unit() -> Canvas:
 
 def lab_screen(on=False) -> Canvas:
     """Analyser front, used at u 2..14, v 2..9 of this sheet: bezel + display (u 4..9, v 3..7), two knobs and a
-    power light. The 'on' version shows a glowing spectrum; the model lights the display up when working."""
+    power light. The 'on' version shows a glowing spectrum; the model lights the display up when working.
+    Flat enamel (no noise) so the face stays within the 6-colour block limit."""
     A = P.ALUMINIUM
-    cv = lab_unit()
-    for y in range(2, 9):
-        for x in range(2, 14):
+    glow = ramp('#14382a', '#2f8a58', '#5fd08a', '#b8f5c9')
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
             cv[x, y] = A[5]
+    _bevel(cv, 0, 0, 15, 15, A[7], A[3])
     for x in range(2, 14):
         cv[x, 2] = A[7]
         cv[x, 8] = A[3]
-    _bevel(cv, 3, 2, 10, 8, A[2], A[7])
-    glow = ramp('#14382a', '#2f8a58', '#5fd08a', '#b8f5c9')
+    _bevel(cv, 3, 2, 10, 8, A[3], A[7])
     for y in range(3, 8):
         for x in range(4, 10):
-            cv[x, y] = PLASTIC[0] if not on else glow[0]
+            cv[x, y] = glow[0] if on else PLASTIC[0]
     if on:
         heights = [2, 4, 3, 5, 2, 3]
         for i, hgt in enumerate(heights):
             for k in range(hgt):
                 cv[4 + i, 7 - k] = glow[1] if k < hgt - 1 else glow[3]
+        cv[12, 3] = glow[3]                  # power light: green while working
     else:
-        cv[4, 3] = PLASTIC[2]
-    cv[12, 3] = (0xb8, 0x3a, 0x2c, 255)   # power light
-    for y in (5, 7):                     # knobs
-        cv[11, y] = PLASTIC[3]
-        cv[12, y] = PLASTIC[1]
+        cv[12, 3] = (0xb8, 0x3a, 0x2c, 255)  # power light: red standby
+    for y in (5, 7):                         # knobs
+        cv[11, y] = A[3]
+        cv[12, y] = A[3]
     return cv
 
 
@@ -655,8 +657,9 @@ def space_background() -> Canvas:
 # ----------------------------------------------------------------------------- guide book GUI
 
 def guide_book_gui() -> Image.Image:
-    """Two-page book, 300×188 inside a 512×256 sheet: deep blue leather, gold corners, cream pages."""
-    W, H = 300, 188
+    """Two-page book, 360×220 inside a 512×256 sheet: deep blue leather, gold corners, cream pages
+    (matches GuideScreen.W/H)."""
+    W, H = 360, 220
     img = Image.new('RGBA', (512, 256), (0, 0, 0, 0))
     px = img.load()
     rng = random.Random(5)
@@ -689,8 +692,8 @@ def guide_book_gui() -> Image.Image:
     # pages
     paper = [c + (255,) for c in PAPER]
     for side in (0, 1):
-        x0 = 10 if side == 0 else 151
-        x1 = 149 if side == 0 else 290
+        x0 = 10 if side == 0 else W // 2 + 1
+        x1 = W // 2 - 1 if side == 0 else W - 10
         for y in range(8, H - 9):
             for x in range(x0, x1):
                 g = (x1 - 1 - x) if side == 0 else (x - x0)  # distance from the gutter
@@ -711,8 +714,8 @@ def guide_book_gui() -> Image.Image:
             px[ox, y] = paper[1]
     # gutter
     for y in range(6, H - 6):
-        px[149, y] = lea[0]
-        px[150, y] = lea[1]
+        px[W // 2 - 1, y] = lea[0]
+        px[W // 2, y] = lea[1]
     # gold corner protectors
     gold = [c + (255,) for c in P.GOLD]
     for (cx, cy, sx, sy) in [(0, 0, 1, 1), (W - 1, 0, -1, 1), (0, H - 1, 1, -1), (W - 1, H - 1, -1, -1)]:

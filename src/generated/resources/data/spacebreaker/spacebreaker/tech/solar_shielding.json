@@ -1,0 +1,12 @@
+{
+  "category": "life_support",
+  "icon": "minecraft:gold_block",
+  "requires": [
+    "spacebreaker:thermal_regulation",
+    "spacebreaker:radio_communication"
+  ],
+  "samples": [
+    "spacebreaker:mercury"
+  ],
+  "tier": 2
+}

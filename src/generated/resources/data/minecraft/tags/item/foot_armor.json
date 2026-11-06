@@ -1,6 +1,9 @@
 {
   "values": [
     "spacebreaker:eva_boots",
-    "spacebreaker:magnetic_boots"
+    "spacebreaker:magnetic_boots",
+    "spacebreaker:thermal_boots",
+    "spacebreaker:heated_boots",
+    "spacebreaker:radiation_boots"
   ]
 }

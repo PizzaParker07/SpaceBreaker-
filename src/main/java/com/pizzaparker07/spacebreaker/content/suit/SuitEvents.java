@@ -54,8 +54,12 @@ public final class SuitEvents {
     static void sendStatus(ServerPlayer player, SurvivalData data) {
         ItemStack torso = SuitTanks.wornTorso(player);
         int flags = 0;
-        if (SpaceSuitItem.isSealed(player)) {
+        SuitProtection.Rating rating = SuitProtection.rating(player);
+        if (rating != null) {
             flags |= SuitStatusPayload.SEALED;
+        }
+        if (SuitProtection.torsoHas(player, SuitUpgrade.JETPACK_BOOSTER)) {
+            flags |= SuitStatusPayload.BOOSTER;
         }
         if (data.breathable) {
             flags |= SuitStatusPayload.BREATHABLE;
@@ -70,7 +74,8 @@ public final class SuitEvents {
         PacketDistributor.sendToPlayer(player, new SuitStatusPayload(SuitTanks.oxygen(torso), SuitTanks.capacity(torso), data.breath,
                 (float) data.bodyTempC, (float) data.ambientC, (float) data.doseMsv, (float) data.doseRateMsvDay,
                 (float) data.pressureKpa, (float) Gravity.factorFor(player), mmu.isEmpty() ? 0 : ManeuveringUnitItem.fuel(mmu),
-                integrity(player), flags));
+                integrity(player), flags, rating == null ? 0 : rating.minTempC(), rating == null ? 0 : rating.maxTempC(),
+                rating == null ? 0 : rating.shieldingPercent()));
     }
 
     /** Suit integrity in percent: the most worn piece counts. */
