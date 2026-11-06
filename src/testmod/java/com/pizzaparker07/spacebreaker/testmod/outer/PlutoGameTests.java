@@ -69,7 +69,7 @@ public final class PlutoGameTests {
             lo = Math.min(lo, o);
             hi = Math.max(hi, o);
         }
-        helper.assertTrue(lo < -1.5 && hi > 0.8, "cells swell and troughs sink: " + lo + ".." + hi);
+        helper.assertTrue(lo < -1.5 && hi > 0.6 && hi < 1.6, "cells gently domed, troughs sunk: " + lo + ".." + hi);
         helper.assertTrue(CellsFeature.weight(t, cells, heart.x() + heart.radius() * 1.5, cz) == 0, "no cells outside the basin");
         // the real feature on a chunk of the test level: nitrogen ice on top, tholin debris in the troughs
         ServerLevel level = helper.getLevel();
@@ -88,12 +88,12 @@ public final class PlutoGameTests {
                         int pz = origin.getZ() + z;
                         var top = level.getBlockState(new BlockPos(px, Columns.top(level, px, pz), pz));
                         ice += top.is(PlutoModule.NITROGEN_ICE.get()) ? 1 : 0;
-                        debris += top.is(PlutoModule.THOLIN_REGOLITH.get()) ? 1 : 0;
+                        debris += top.is(PlutoModule.STAINED_NITROGEN_ICE.get()) ? 1 : 0;
                     }
                 }
             }
         }
-        helper.assertTrue(ice > 500 && debris > 10 && debris < ice, "nitrogen ice with tholin in the troughs: " + ice + " ice, " + debris + " debris");
+        helper.assertTrue(ice > 500 && debris > 10 && debris < ice, "nitrogen ice with stained ice in the troughs: " + ice + " ice, " + debris + " debris");
         helper.succeed();
     }
 

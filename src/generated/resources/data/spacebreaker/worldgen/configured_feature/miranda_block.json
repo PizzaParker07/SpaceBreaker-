@@ -1,0 +1,28 @@
+{
+  "type": "spacebreaker:boulder",
+  "config": {
+    "block": {
+      "type": "minecraft:weighted_state_provider",
+      "entries": [
+        {
+          "data": {
+            "Name": "spacebreaker:mirandan_ice"
+          },
+          "weight": 3
+        },
+        {
+          "data": {
+            "Name": "spacebreaker:dark_band_ice"
+          },
+          "weight": 1
+        }
+      ]
+    },
+    "buried": 0.5,
+    "radius": {
+      "type": "minecraft:uniform",
+      "max_exclusive": 1.8,
+      "min_inclusive": 0.6
+    }
+  }
+}

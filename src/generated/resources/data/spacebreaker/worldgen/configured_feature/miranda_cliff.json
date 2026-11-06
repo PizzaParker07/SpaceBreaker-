@@ -1,0 +1,17 @@
+{
+  "type": "spacebreaker:fault_cliff",
+  "config": {
+    "angle": 18.0,
+    "band": {
+      "Name": "spacebreaker:dark_band_ice"
+    },
+    "height": 96.0,
+    "latitude": -8.0,
+    "length": 1000.0,
+    "rock": {
+      "Name": "spacebreaker:mirandan_ice"
+    },
+    "wall": 7.0,
+    "x": 380.0
+  }
+}

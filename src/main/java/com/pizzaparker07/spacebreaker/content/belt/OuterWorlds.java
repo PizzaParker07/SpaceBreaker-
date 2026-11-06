@@ -55,6 +55,10 @@ public final class OuterWorlds implements SbModule {
             FEATURES.register("buried_layer", com.pizzaparker07.spacebreaker.content.belt.world.LayerFeature::new);
     public static final DeferredHolder<Feature<?>, com.pizzaparker07.spacebreaker.content.belt.world.CellsFeature> CELLS =
             FEATURES.register("polygon_cells", com.pizzaparker07.spacebreaker.content.belt.world.CellsFeature::new);
+    public static final DeferredHolder<Feature<?>, com.pizzaparker07.spacebreaker.content.belt.world.RupesFeature> RUPES =
+            FEATURES.register("fault_cliff", com.pizzaparker07.spacebreaker.content.belt.world.RupesFeature::new);
+    public static final DeferredHolder<Feature<?>, com.pizzaparker07.spacebreaker.content.belt.world.CoronaFeature> CORONAE =
+            FEATURES.register("coronae", com.pizzaparker07.spacebreaker.content.belt.world.CoronaFeature::new);
     public static final DeferredRegister<net.minecraft.world.level.block.entity.BlockEntityType<?>> BLOCK_ENTITIES =
             DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, Spacebreaker.MOD_ID);
     /** Vent blocks of every outer world (added by the region modules before registration). */
@@ -146,12 +150,29 @@ public final class OuterWorlds implements SbModule {
         if (look.particles() != null) {
             fx.ambientParticle(look.particles());
         }
+        var music = music(key, look);
+        if (music != null) {
+            fx.backgroundMusic(new net.minecraft.sounds.Music(music, 3600, 12000, false));
+        }
         return new Biome.BiomeBuilder()
                 .hasPrecipitation(false).temperature(temperature).downfall(0F)
                 .specialEffects(fx.build())
                 .mobSpawnSettings(spawnsFor(key))
                 .generationSettings(gen.build())
                 .build();
+    }
+
+    /**
+     * Ambient music of a biome: Titan's own track under its haze, the Jovian track on Jupiter's moons, and the Moon's low hum
+     * on the other airless worlds.
+     */
+    static net.minecraft.core.Holder<net.minecraft.sounds.SoundEvent> music(ResourceKey<Biome> key, Look look) {
+        String world = key.location().getPath().split("_")[0];
+        return switch (world) {
+            case "titan" -> com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_TITAN;
+            case "io", "europa", "ganymede", "callisto" -> com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_JOVIAN;
+            default -> look.sky() == 0 && look.fog() == 0 ? com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_MOON : null;
+        };
     }
 
     /** Runs several bootstraps in order (used to combine one world's entries). */

@@ -1,0 +1,7 @@
+{
+  "parent": "spacebreaker:block/ore_overlay",
+  "textures": {
+    "stone": "spacebreaker:block/mirandan_ice",
+    "overlay": "spacebreaker:block/mirandan_carbon_ore_overlay"
+  }
+}

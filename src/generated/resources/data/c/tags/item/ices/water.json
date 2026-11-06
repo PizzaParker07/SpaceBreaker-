@@ -5,6 +5,16 @@
     "minecraft:ice",
     "minecraft:packed_ice",
     "spacebreaker:lunar_ice",
-    "spacebreaker:mercury_ice"
+    "spacebreaker:cerean_ice",
+    "spacebreaker:europan_ice",
+    "spacebreaker:grooved_ice",
+    "spacebreaker:titan_ice",
+    "spacebreaker:ice_cobbles",
+    "spacebreaker:enceladus_ice",
+    "spacebreaker:mirandan_ice",
+    "spacebreaker:bright_ridge_ice",
+    "spacebreaker:triton_ice",
+    "spacebreaker:plutonian_ice",
+    "spacebreaker:charon_ice"
   ]
 }

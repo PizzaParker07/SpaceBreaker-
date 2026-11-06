@@ -1,0 +1,13 @@
+{
+  "type": "spacebreaker:miranda",
+  "generator": {
+    "type": "spacebreaker:planet",
+    "terrain": "spacebreaker:miranda",
+    "biome_source": {
+      "type": "spacebreaker:planet",
+      "highlands": "spacebreaker:miranda_plains",
+      "crater": "spacebreaker:miranda_crater",
+      "polar": "spacebreaker:miranda_polar"
+    }
+  }
+}

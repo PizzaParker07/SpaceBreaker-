@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "spacebreaker:block/mirandan_regolith",
+    "up": "spacebreaker:block/mirandan_regolith_footprint_right",
+    "down": "spacebreaker:block/mirandan_regolith",
+    "north": "spacebreaker:block/mirandan_regolith",
+    "south": "spacebreaker:block/mirandan_regolith",
+    "east": "spacebreaker:block/mirandan_regolith",
+    "west": "spacebreaker:block/mirandan_regolith"
+  }
+}

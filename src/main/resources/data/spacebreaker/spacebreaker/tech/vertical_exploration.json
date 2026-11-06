@@ -1,0 +1,13 @@
+{
+  "category": "exploration",
+  "tier": 4,
+  "requires": [
+    "spacebreaker:eva_mobility",
+    "spacebreaker:icy_moons"
+  ],
+  "icon": "spacebreaker:bright_ridge_ice",
+  "samples": [
+    "spacebreaker:miranda"
+  ],
+  "unlocks": []
+}

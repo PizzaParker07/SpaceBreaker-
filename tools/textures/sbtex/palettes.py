@@ -204,3 +204,12 @@ TRITON_ICE = ramp('#5c6359', '#6b7367', '#7a8275', '#889083', '#979f91', '#a7ae9
 # Methane clathrate: milky ice cages with yellowish methane.
 CLATHRATE = ramp('#7c7a63', '#9e9b7c', '#bdb995', '#d6d2ae', '#ecead0')
 BEETLE = ramp('#121112', '#1d1b1d', '#2a272a', '#383438', '#494449', '#5b555b')
+
+# --------------------------------------------------------------------------- Miranda
+MIRANDA_SOIL = ramp('#4c4c4b', '#5c5c5a', '#686866', '#737371', '#7f7f7c', '#8c8c89')
+MIRANDA_ICE = ramp('#515150', '#60605e', '#6e6e6c', '#7c7c79', '#8a8a87', '#9c9c98')
+BRIGHT_RIDGE = ramp('#a6aaad', '#b8bcbf', '#c8cbce', '#d6d9db', '#e3e5e6', '#eff0f1')
+DARK_BAND = ramp('#2c2c2c', '#363635', '#40403f', '#4a4a49', '#555554', '#61615f')
+CLINGER = ramp('#2a2a2b', '#3a3a3b', '#4c4c4d', '#606061', '#78787a', '#929294')
+# Stained nitrogen ice: the dark grey-brown methane-stained ice of the cell troughs, a hint of tholin red.
+STAINED_N2 = ramp('#3b3330', '#4a403b', '#574b44', '#64574e', '#72645a', '#837266')

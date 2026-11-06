@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/inner_stairs",
+  "textures": {
+    "bottom": "spacebreaker:block/mirandan_ice",
+    "side": "spacebreaker:block/mirandan_ice",
+    "top": "spacebreaker:block/mirandan_ice"
+  }
+}

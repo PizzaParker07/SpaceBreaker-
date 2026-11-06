@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_mirandan_ice": {
+      "conditions": {
+        "items": [
+          {
+            "items": "spacebreaker:mirandan_ice"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "spacebreaker:mirandan_ice_slab_from_mirandan_ice_stonecutting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_mirandan_ice"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "spacebreaker:mirandan_ice_slab_from_mirandan_ice_stonecutting"
+    ]
+  }
+}

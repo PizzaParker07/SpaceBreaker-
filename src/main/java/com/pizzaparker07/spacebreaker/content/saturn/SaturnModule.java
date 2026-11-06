@@ -135,6 +135,8 @@ public final class SaturnModule implements SbModule {
 
     @Override
     public void addTags(SbTags tags) {
+        // water ice for the ice melter: water, then hydrogen and oxygen for rocket fuel
+        tags.item(com.pizzaparker07.spacebreaker.content.machines.IsruRecipes.WATER_ICES, TITAN_ICE.base().get().asItem(), ICE_COBBLES.get().asItem(), ENCELADUS_ICE.get().asItem());
         tags.block(BlockTags.MINEABLE_WITH_SHOVEL, THOLIN_SAND.get(), THOLIN_MUD.get(), ICE_COBBLES.get(), ENCELADUS_SNOW.get());
         tags.block(BlockTags.MINEABLE_WITH_PICKAXE, THOLIN_ORE.get(), ENCELADUS_ICE.get(), SULCUS_ICE.get());
         for (BlockKit.Family f : KIT.families()) {

@@ -19,12 +19,14 @@ import org.joml.Matrix4f;
 
 /**
  * Pluto's sky: black and starry like an airless moon's, with Charon hanging still above the near hemisphere - and low
- * over the horizon the thin nitrogen haze, a few separate blue layers that glow when the sun is up (lit from the side,
- * the way they showed against the black sky in the flyby pictures).
+ * over the horizon the thin nitrogen haze: a soft blue glow just above the horizon with a stack of very faint thin
+ * layers in it, lit when the sun is up (the way they showed against the black sky in the flyby pictures).
  */
 public class PlutoSkyEffects extends GiantPlanetSkyEffects {
-    /** Haze layers: elevation (degrees) and strength. */
-    private static final double[][] LAYERS = {{0.6, 1.0}, {2.2, 0.7}, {4.0, 0.5}, {6.3, 0.35}, {9.0, 0.22}};
+    /** Elevations (degrees) of the thin haze layers above the soft band. */
+    private static final double[] LAYERS = {0.7, 1.3, 1.9, 2.6, 3.2, 3.9, 4.5, 5.2, 5.9, 6.7, 7.5, 8.4};
+    /** Top of the soft glow band over the horizon (degrees). */
+    private static final double BAND = 5.0;
     private static final int SEGMENTS = 48;
 
     public PlutoSkyEffects(ResourceKey<CelestialBody> body, Parent look, ResourceKey<CelestialBody> companion) {
@@ -49,14 +51,22 @@ public class PlutoSkyEffects extends GiantPlanetSkyEffects {
         ps.mulPose(modelViewMatrix);
         Matrix4f m = ps.last().pose();
         BufferBuilder bb = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-        for (double[] layer : LAYERS) {
-            double el = Math.toRadians(layer[0]);
-            double w = Math.toRadians(0.55);
-            float a = (float) (0.32 * layer[1] * glow);
+        // a soft blue glow right over the horizon, fading out upward; the zenith stays black
+        double top = Math.toRadians(BAND);
+        for (int k = 0; k < SEGMENTS; k++) {
+            double a0 = Math.PI * 2 * k / SEGMENTS;
+            double a1 = Math.PI * 2 * (k + 1) / SEGMENTS;
+            band(bb, m, a0, a1, Math.toRadians(-1.0), 0, 0F, 0.22F * glow);
+            band(bb, m, a0, a1, 0, top, 0.22F * glow, 0F);
+        }
+        // and a stack of very faint thin layers in it, each a little fainter than the one below
+        for (int l = 0; l < LAYERS.length; l++) {
+            double el = Math.toRadians(LAYERS[l]);
+            double w = Math.toRadians(0.12);
+            float a = (float) (0.09 * (1 - l / (double) LAYERS.length) * glow);
             for (int k = 0; k < SEGMENTS; k++) {
                 double a0 = Math.PI * 2 * k / SEGMENTS;
                 double a1 = Math.PI * 2 * (k + 1) / SEGMENTS;
-                // each layer a soft band: transparent edges, bright middle
                 band(bb, m, a0, a1, el - w, el, 0F, a);
                 band(bb, m, a0, a1, el, el + w, a, 0F);
             }

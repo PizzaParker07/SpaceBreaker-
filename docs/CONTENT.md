@@ -218,6 +218,15 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Zindan | Terk Edilmiş Döner Kanat Hangarı (Titan: tonozlu hangar, sekiz rotorlu uçan araç, atölye, laboratuvar, metan deposu) |
 | 🎨 | Teknolojiler | Hava Hareketliliği (4), Hidrokarbon İşleme (4), Gayzer Örneklemesi (5) |
 
+### Uranüs sistemi
+| Durum | İçerik | Not |
+|---|---|---|
+| 🎨 | Miranda `spacebreaker:miranda` | parçalanıp yeniden birleştirilmiş gibi yamalı bir dünya: eski, kraterli gri ovalar; parlak ve koyu paralel sırtlardan üç dev "yarış pisti" taç yapısı; iniş alanına yakın, yüzü katmanlı çıplak buzdan ~95 blok yüksekliğinde dev fay uçurumu (dibinde moloz yamacı); gökte 22° genişliğinde, ince koyu halkalı soluk camgöbeği Uranüs |
+| 🎨 | Miranda blokları | Miranda Regoliti (kalıcı ayak izi), Miranda Ana Kaya Buzu (+ merdiven, basamak, duvar), Parlak Sırt Buzu, Koyu Bant Buzu, Miranda Karbon Yatağı (→ kömür) |
+| 🎨 | Zindan | Düşmüş İkmal İniş Aracı (Miranda) |
+| 🎨 | Teknoloji | Dikey Keşif (4) |
+| 🎨 | Ortak yüzey özellikleri | fay uçurumu (`fault_cliff`), taç yapıları (`coronae`) |
+
 ### Neptün sistemi
 | Durum | İçerik | Not |
 |---|---|---|
@@ -229,8 +238,8 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 ### Plüton ve Charon
 | Durum | İçerik | Not |
 |---|---|---|
-| 🎨 | Plüton `spacebreaker:pluto` | -230 °C, çok ince azot havası; kalp biçimli dev azot buzu ovası (sığ, düz tabanlı havza) ve üstünde yavaşça dönen konveksiyon hücreleri (çukurlarında kızıl tolin birikintisi); ovanın batı kıyısında su buzu dağları; ekvatorda koyu kızıl tolin ovaları, kutuplarda metan kırağısı; gökte kıpırdamadan duran Charon (3,5°), ufkun üstünde mavi pus katmanları |
-| 🎨 | Plüton blokları | Plüton Kırağısı, Kızıl Tolin Regoliti (kalıcı ayak izi), Azot Buzu (çok kaygan), Metan Kırağısı, Plüton Ana Kaya Buzu (+ merdiven, basamak, duvar), Plüton Tolin Yatağı (→ Tolin) |
+| 🎨 | Plüton `spacebreaker:pluto` | -230 °C, çok ince azot havası; kalp biçimli dev azot buzu ovası (sığ, düz tabanlı havza) ve üstünde yavaşça dönen düz, hafif kubbeli konveksiyon hücreleri (oluklarında metan lekeli koyu buz); ovanın batı kıyısında su buzu dağları; ekvatorda koyu kızıl tolin ovaları, kutuplarda metan kırağısı; gökte kıpırdamadan duran Charon (3,5°), ufkun hemen üstünde yumuşak mavi pus kuşağı ve içinde çok soluk ince katmanlar |
+| 🎨 | Plüton blokları | Plüton Kırağısı, Kızıl Tolin Regoliti (kalıcı ayak izi), Azot Buzu (çok kaygan), Lekeli Azot Buzu, Metan Kırağısı, Plüton Ana Kaya Buzu (+ merdiven, basamak, duvar), Plüton Tolin Yatağı (→ Tolin) |
 | 🎨 | Charon `spacebreaker:charon` | gri su buzu ovaları, ekvator boyunca kanyon kuşağı, kuzey kutbunda koyu kızıl kutup başlığı; gökte 7° genişliğinde, hiç kıpırdamayan Plüton |
 | 🎨 | Charon blokları | Charon Regoliti, Charon Buzu, Kızıl Kutup Kırağısı, Amonyak Hidrat Yatağı (→ Amonyak Kristali → kemik tozu) |
 | 🎨 | Zindanlar | Düşmüş İkmal İniş Aracı (Plüton, Charon) |
@@ -258,6 +267,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | Kallisto 🎨 | Krater Sıçrayıcısı (ürkek, düşük yerçekiminde uzun sıçrayışlarla kaçar) |
 | Titan 🎨 | Metan Kayıcısı (metan göllerinin üstünde yürür) · Tolin Solucanı (kumul denizlerinde halkalı, ürkek kazıcı: yaklaşınca kuma gömülür, sessizlikte çıkar, kumu eleyip ara sıra tolin bırakır; tolin kumuyla çoğalır) |
 | Enceladus 🎨 | Gayzer Süzülücüsü (gayzer bulutlarında süzülen parlak çan) |
+| Miranda 🎨 | Uçurum Yapışkanı (beş kollu, yassı otlayıcı; duvarlara tırmanır, düşme hasarı almaz; kömürle çoğalır) |
 | Triton 🎨 | Gayzer Böceği (gayzer tozuyla beslenir, gayzer fırlatınca kanat kınlarını açıp süzülerek iner, düşme hasarı almaz; gayzer tozuyla çoğalır) |
 | Plüton 🎨 | Azot Kaydırıcısı (azot buzunda karnı üstünde iki kat hızlı kayar, tolinle çoğalır) |
 | Charon 🎨 | Kırağı Kaplumbağası (vurulunca kabuğuna çekilir, içerideyken hasarın dörtte birini alır; amonyakla çoğalır) |

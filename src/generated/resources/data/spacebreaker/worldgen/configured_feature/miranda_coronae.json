@@ -1,0 +1,35 @@
+{
+  "type": "spacebreaker:coronae",
+  "config": {
+    "bright": {
+      "Name": "spacebreaker:bright_ridge_ice"
+    },
+    "coronae": [
+      {
+        "angle": 18.0,
+        "half_length": 420.0,
+        "half_width": 240.0,
+        "latitude": -18.0,
+        "x": 380.0
+      },
+      {
+        "angle": -30.0,
+        "half_length": 300.0,
+        "half_width": 260.0,
+        "latitude": 28.0,
+        "x": -760.0
+      },
+      {
+        "angle": 60.0,
+        "half_length": 380.0,
+        "half_width": 210.0,
+        "latitude": 30.0,
+        "x": 1300.0
+      }
+    ],
+    "dark": {
+      "Name": "spacebreaker:dark_band_ice"
+    },
+    "spacing": 16.0
+  }
+}
