@@ -28,8 +28,8 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | Durum | İçerik | Not |
 |---|---|---|
 | 🎨 | Güneş Takipli Panel | doğu-batı takip, gece düz yatar; 20 FE/t tepe, hava ve güneş açısına bağlı |
-| 🎨 | Oksijen Dolum İstasyonu | tüpü beşiğe koy; solunabilir havadan FE ile doldurur (Manevra Ünitesi gazı da) |
-| 🎨 | Oksijen Dağıtıcı | kapalı odayı tick'lere yayılmış taşkın dolumla bulur (en çok 4096 blok), tüpten oksijen verir; blok değişince yeniden kontrol |
+| 🎨 | Oksijen Dolum İstasyonu | tüpü beşiğe koy; FE ile, gezegenin doğal solunabilir havasından (Dünya) ya da borudan gelen oksijen gazı / sıvı oksijenden doldurur (Manevra Ünitesi gazı da). Dağıtıcının oda havası sayılmaz |
+| 🎨 | Oksijen Dağıtıcı | kapalı odayı tick'lere yayılmış taşkın dolumla bulur (en çok 4096 blok), tüpten ya da borudan gelen oksijenle önce odayı basınçlandırır (blok başına oksijen), sonra hacme göre tüketir; sızıntıda hava boşalır; blok değişince yeniden kontrol |
 | 🎨 | Hava Kilidi Kapısı | 2 blok, kayar kanatlar (animasyonlu); kapalıyken hava geçirmez; el ya da kızıltaşla açılır |
 | 🎨 | Yanmalı Jeneratör, Batarya Bankası, Bakır / Yüksek Gerilim Kablosu | jeneratör yalnız oksijenli havada yanar; batarya önden verir, şarj göstergesi |
 | 🎨 | Kırıcı, Elektrik Ark Fırını, Pres (hareketli koç), Petrol Pompası (çok bloklu, animasyonlu), Rafineri (çok bloklu damıtma kulesi) | |
@@ -177,17 +177,45 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 ### Ceres `spacebreaker:ceres`
 | Durum | İçerik | Not |
 |---|---|---|
-| 🎨 | Arazi | koyu, kraterli ovalar; Occator benzeri kraterlerde parlak sodyum karbonat lekeleri (merkez + dağınık lekeler), Ahuna benzeri kriyovolkanik kubbeler, kutuplarda ve birkaç blok altta su buzu; 0,03 g |
+| 🎨 | Arazi | koyu, kraterli ovalar; Occator benzeri kraterlerde parlak sodyum karbonat lekeleri (merkez + loblu tuz lekeleri), kırık iç duvar ve duvardan düşmüş kayalar, Ahuna benzeri kriyovolkanik kubbeler, kutuplarda ve birkaç blok altta su buzu; 0,03 g |
 | 🎨 | Bloklar | Ceres Regoliti, Amonyaklı Kil, Karbonat Tuz Kabuğu (kalıcı ayak izi), Ceres Kayası (+ merdiven, basamak, duvar), Ceres Buzu, Manyetit Cevheri (→ Ham Manyetit → demir) |
-| 🎨 | Yaratık | Kaya Akarı: çakılın içinde gizlenir; birine vurulunca bütün küme uyanır ve düşük yerçekiminde uzağa sıçrar |
+| 🎨 | Yaratık | Kaya Akarı: yassı, üst üste binen karbonat kabuklu plakalardan bir gövde, 6 kısa bacak; çakılın içinde gizlenir; birine vurulunca bütün küme uyanır ve düşük yerçekiminde uzağa sıçrar |
 | 🎨 | Zindan | Terk Edilmiş Buz Madenciliği Karakolu: mürettebat modülü, buz işleme salonu, iniş pisti, anten, kuyu kulesi; aşağıda buz merceğine açılmış galeri ve akar yuvası |
 | 🎨 | Teknolojiler | Mikro Yerçekiminde Madencilik (4), Tuzlu Su Kimyası (3) |
 
 ### Vesta `spacebreaker:vesta`
 | Durum | İçerik | Not |
 |---|---|---|
-| 🎨 | Arazi | gri, yoğun kraterli yaylalar; güney kutbunda dev Rheasilvia havzası (taraçalı duvar, halka sarplıklar, dev merkez dağı); koyu karbonlu madde lekeleri |
-| 🎨 | Bloklar | Vesta Regoliti, Ökrit (+ merdiven, basamak, duvar), Ökrit Tuğla (+ merdiven, basamak, duvar), Diyojenit, Kromit Cevheri (→ Kromit) |
+| 🎨 | Arazi | gri-bej, yoğun kraterli yaylalar; okra diyojenitli fırlatma örtüsü ve koyu karbonlu madde lekeleri; güney kutbunda dev Rheasilvia havzası (ökrit/diyojenit katmanlı taraçalı duvar, halka sarplıklar, çizgili dev merkez dağı, okra taban) |
+| 🎨 | Bloklar | Vesta Regoliti, Diyojenitli Regolit, Ökrit (+ merdiven, basamak, duvar), Ökrit Tuğla (+ merdiven, basamak, duvar), Diyojenit, Kromit Cevheri (→ Kromit) |
+
+### Vesta zindanı ve diğer küçük dünyalar
+| Durum | İçerik | Not |
+|---|---|---|
+| 🎨 | Düşmüş İkmal İniş Aracı (Vesta, Ganymede, Kallisto, Enceladus) | kayma hendeği ve toprak sırtı, yan yatmış iniş aracı (kırık bacak, ısı kalkanı, kabin sandığı), kopmuş güneş paneli, enkaz, merdivenli gömülü kargo bölmesi; her dünyanın kendi zemini, kargosu ve teknolojisi |
+
+### Jüpiter uyduları
+| Durum | İçerik | Not |
+|---|---|---|
+| 🎨 | Gökyüzü | Jüpiter gerçek boyutunda ve evresiyle sabit durur (Io'dan 19°, Europa'dan 12°, Ganymede'den 7,5°, Kallisto'dan 4°); bantlı piksel disk, Büyük Kırmızı Leke, beyaz ovaller |
+| 🎨 | Europa `spacebreaker:europa` | genç buz kabuğu: çift sırtlı lekeli çatlaklar (lineae), kaos arazisi (eğik buz salları, donmuş tuzlu su), buz gayzerleri, az krater; kabuğun altında gömülü okyanus katmanı (ileride okyanus erişimi için kanca); günde ~5,4 Sv radyasyon - tepedeki her blok yarıya indirir |
+| 🎨 | Europa blokları | Europa Kırağısı (kalıcı ayak izi), Europa Buzu, Europa Buzu Tuğla (+ merdiven, basamak, duvar), Lekeli Buz, Yeniden Donmuş Tuzlu Su, Tuz Cevheri (→ Okyanus Tuzu), Buz Gayzeri (döngüyle püskürür, üstündekini fırlatır) |
+| 🎨 | Io `spacebreaker:io` | krater yok; kükürt ovaları (sarı, beyaz SO₂ kırağısı, kırmızı kükürt), dağlar, lav gölleri (paterae), kırmızı halkalı kükürt bulutu bacaları (yakar), lav yakınında ısı |
+| 🎨 | Io blokları | Kükürt Kumu, Kükürt Dioksit Kırağısı, Kırmızı Kükürt (kalıcı ayak izi), Io Bazaltı (+ merdiven, basamak, duvar), Io Kükürt Cevheri (→ kükürt), Kükürt Bulutu Bacası |
+| 🎨 | Ganymede `spacebreaker:ganymede` | parlak oluklu buz ovaları ile koyu kadim kraterli arazi, parlak kutup örtüleri; Ganymede Regoliti, Oluklu Buz, Koyu Buz Kabuğu |
+| 🎨 | Kallisto `spacebreaker:callisto` | Güneş Sistemi'nin en kraterli yüzeyi, parlak kırağı tümsekleri, Valhalla çok halkalı havzası; düşük radyasyon - güvenli üs yeri; Kallisto Regoliti, Parlak Kırağı, Kallisto Kayası (+ merdiven, basamak, duvar) |
+| 🎨 | Zindanlar | Gömülü Araştırma Sondası (Europa: iniş aracı, eritme kuyusu, tuzlu su havuzlu buz mağarası), Terk Edilmiş Volkan Gözlemevi (Io: bazalt sığınak, teleskop, sismometre kasası) |
+| 🎨 | Teknolojiler | Kriyobot Sondajı (4), Radyasyona Dayanıklı Elektronik (4), Volkanik Isı Kalkanı (4), Manyetosfer Fiziği (4), Derin Uzay Yaşam Alanları (4) |
+
+### Satürn uyduları
+| Durum | İçerik | Not |
+|---|---|---|
+| 🎨 | Titan `spacebreaker:titan` | 1,5 bar azot, oksijen yok, -179 °C; turuncu pus (yoğun sis, yıldızsız gök, soluk güneş), hidrokarbon kumul denizi, organik ovalar, kutuplarda metan gölleri (kaynamayan sıvı metan), metan sağanakları (iri, yavaş düşen soluk amber damlalar); yoğun havada yumuşak düşüş ve uzun süzülme (elytra kaldırma kuvveti kazanır) |
+| 🎨 | Titan blokları | Tolin Kumu, Tolin Çamuru (kalıcı ayak izi), Titan Ana Kaya Buzu (+ merdiven, basamak, duvar), Buz Çakılları, Tolin Yatağı (→ Tolin) |
+| 🎨 | Enceladus `spacebreaker:enceladus` | en parlak buz; güney kutbunda kaplan çizgisi yarıkları ve gayzer alanı; gökte 28° genişliğinde, halkaları neredeyse yandan görünen Satürn (halka gölgesiyle) |
+| 🎨 | Enceladus blokları | Enceladus Karı (kalıcı ayak izi), Enceladus Buzu, Kaplan Çizgisi Buzu (hafif parlar) |
+| 🎨 | Zindan | Terk Edilmiş Döner Kanat Hangarı (Titan: tonozlu hangar, sekiz rotorlu uçan araç, atölye, laboratuvar, metan deposu) |
+| 🎨 | Teknolojiler | Hava Hareketliliği (4), Hidrokarbon İşleme (4), Gayzer Örneklemesi (5) |
 
 ## Yaratıklar (gezegenlere özgü, kan yok)
 | Gök cismi | Yaratıklar |
@@ -196,9 +224,12 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | Mars 🎨 | Pas Böceği (demir oksit yer, tarafsız), Toz Şeytanı (fırtınalarda canlı hortum), Kanyon Pusucusu, Taş Otlayan (iri, pasif otlayıcı), Kutup Kurtçuğu |
 | Venüs (bulutlar) 🎨 | Asit Vatozu (süzülen, tarafsız), Bulut Medüzü (pasif gaz kesesi) |
 | Merkür 🎨 | Alacakaranlık Sürüngeni (tehlikeli; gece-gündüz sınırında yaşar; güneş yükselince ya da gece çökünce toprağa gömülür), Oyuk Salyangozu (pasif, faydalı: oyuk tortusunu kazıyıp kükürt bırakır, kükürtle çoğalır) |
-| Io | Kükürt Yengeci |
-| Europa | Buzaltı Işık Yılanı (biyolüminesan, pasif) |
-| Titan | Metan Kayıcısı, Tolin Solucanı |
+| Io 🎨 | Kükürt Yengeci (ısıya dayanıklı, yakınına gelene saldırır) |
+| Europa 🎨 | Buzaltı Işık Yılanı (biyolüminesan, pasif; tuzlu su havuzlarında ve gömülü okyanusta) |
+| Ganymede 🎨 | Oluk Otlayıcısı (zırhlı, sürü halinde, okyanus tuzuyla çoğalır) |
+| Kallisto 🎨 | Krater Sıçrayıcısı (ürkek, düşük yerçekiminde uzun sıçrayışlarla kaçar) |
+| Titan 🎨 | Metan Kayıcısı (metan göllerinin üstünde yürür) · ⬜ Tolin Solucanı |
+| Enceladus 🎨 | Gayzer Süzülücüsü (gayzer bulutlarında süzülen parlak çan) |
 | Asteroitler 🎨 | Kaya Akarı (Ceres, Vesta) |
 | Ötegezegenler | prosedürel bitki ve hayvanlar (Faz 5) |
 
