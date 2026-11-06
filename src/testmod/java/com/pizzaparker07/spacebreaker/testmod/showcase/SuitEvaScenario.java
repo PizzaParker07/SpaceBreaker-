@@ -159,6 +159,8 @@ final class SuitEvaScenario implements ShowcaseScenario {
         s.add(new Shot(prefix + "_08_tether", 0, -2.5, g + 1.62, 3.5, 0F, 8F, true, front, 60, at(false, this::tethered), null));
         s.add(new Shot(prefix + "_09_mmu", 0, -1.5, g + 4.0, 8.0, 150F, 10F, true, back, 40, at(false, SuitEvaScenario::thrusting), null));
         s.add(new Shot(prefix + "_10_hud", 0, 1.5, g + 1.62, 9.5, 220F, 12F, false, fp, 40, at(false, this::tethered), null));
+        // lamp glow cones from the side (they point the way the helmets face, +z), close to the Mk1 stand
+        s.add(new Shot(prefix + "_11_lamp_cones", 0, -6.8, g + 1.85, 1.6, -100F, 6F, true, fp, 60, at(true, null), null));
         return s;
     }
 }
