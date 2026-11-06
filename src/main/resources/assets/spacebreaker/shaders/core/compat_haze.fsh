@@ -7,6 +7,9 @@
 #moj_import <fog.glsl>
 
 uniform sampler2D Sampler0;
+uniform sampler2D Sampler1; // Distant Horizons depth (UseLod == 1)
+uniform int UseLod;
+uniform float LodFar;
 uniform mat4 InvProjMat;
 uniform mat4 InvViewMat;
 uniform float HazeStart;
@@ -22,14 +25,19 @@ out vec4 fragColor;
 
 void main() {
     float depth = texture(Sampler0, screenUv).r;
+    float dist;
     if (depth >= 1.0) {
-        discard; // sky: already ours
+        if (UseLod == 0 || abs(texture(Sampler1, screenUv).r - LodFar) <= 1.0e-6) {
+            discard; // sky: already ours
+        }
+        dist = 1.0e9; // Distant Horizons terrain: beyond the normal render distance
+    } else {
+        vec4 view = InvProjMat * vec4(vec3(screenUv, depth) * 2.0 - 1.0, 1.0);
+        view.xyz /= view.w;
+        // camera-relative, world-aligned position, as vanilla's fog uses it (the cylinder shape needs world up)
+        vec3 rel = (InvViewMat * vec4(view.xyz, 0.0)).xyz;
+        dist = fog_distance(rel, HazeShape);
     }
-    vec4 view = InvProjMat * vec4(vec3(screenUv, depth) * 2.0 - 1.0, 1.0);
-    view.xyz /= view.w;
-    // camera-relative, world-aligned position, as vanilla's fog uses it (the cylinder shape needs world up)
-    vec3 rel = (InvViewMat * vec4(view.xyz, 0.0)).xyz;
-    float dist = fog_distance(rel, HazeShape);
     float f = 0.0;
     if (dist > HazeStart) {
         f = dist < HazeEnd ? smoothstep(HazeStart, HazeEnd, dist) : 1.0;

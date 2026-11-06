@@ -44,6 +44,7 @@ public final class HazePass {
     private static int copyWidth;
     private static int copyHeight;
     private static boolean warned;
+    private static final PassTimer TIMER = new PassTimer("haze pass");
 
     private HazePass() {
     }
@@ -68,7 +69,7 @@ public final class HazePass {
     }
 
     private static boolean wanted(ClientLevel level) {
-        return SpaceSky.kind(level).ownSky() && ShaderSkyPass.active();
+        return com.pizzaparker07.spacebreaker.compat.CompatConfig.atmosphereHaze() && SpaceSky.kind(level).ownSky() && ShaderSkyPass.active();
     }
 
     /** Called at AFTER_LEVEL, after the sky pass. */
@@ -84,7 +85,7 @@ public final class HazePass {
         }
         SpaceWorlds.Kind kind = SpaceSky.kind(level);
         float renderDistance = mc.gameRenderer.getRenderDistance();
-        boolean haze = !kind.airless() && fogEnd < renderDistance * CLOSE_FOG;
+        boolean haze = fogEnd < renderDistance * CLOSE_FOG; // any world that pulls its fog in (dust, haze)
         Vector3f tint = switch (kind) {
             case THICK_ATMOSPHERE -> daylightTint(level, partialTick);
             case AIRLESS, ORBIT -> dawnBalance(level, partialTick);
@@ -94,7 +95,12 @@ public final class HazePass {
             return;
         }
         try {
-            draw(mc, modelView, projection, haze, tint);
+            TIMER.begin();
+            try {
+                draw(mc, modelView, projection, haze, tint);
+            } finally {
+                TIMER.end();
+            }
         } catch (RuntimeException e) {
             if (!warned) {
                 warned = true;
@@ -159,6 +165,10 @@ public final class HazePass {
         RenderSystem.enableBlend();
         RenderSystem.setShader(() -> shader);
         RenderSystem.setShaderTexture(0, depthCopy);
+        int lod = LodDepth.texture();
+        RenderSystem.setShaderTexture(1, lod > 0 ? lod : depthCopy);
+        shader.safeGetUniform("UseLod").set(lod > 0 ? 1 : 0);
+        shader.safeGetUniform("LodFar").set(lod > 0 ? LodDepth.farDepth() : 1F);
         shader.safeGetUniform("InvProjMat").set(new Matrix4f(projection).invert());
         shader.safeGetUniform("InvViewMat").set(new Matrix4f(viewMatrix).invert());
         shader.safeGetUniform("HazeStart").set(haze ? fogStart : 1.0e9F);

@@ -16,6 +16,7 @@ public final class CompatConfig {
     public static final ModConfigSpec SPEC;
     public static final ModConfigSpec.EnumValue<SkyMode> SHADER_SKY;
     public static final ModConfigSpec.BooleanValue HIDE_PACK_CLOUDS;
+    public static final ModConfigSpec.BooleanValue ATMOSPHERE_HAZE;
 
     static {
         ModConfigSpec.Builder b = new ModConfigSpec.Builder();
@@ -25,12 +26,19 @@ public final class CompatConfig {
                 .defineEnum("spaceSky", SkyMode.AUTO);
         HIDE_PACK_CLOUDS = b.comment("Move the shader pack's own clouds out of sight in space worlds.")
                 .define("hidePackClouds", true);
+        ATMOSPHERE_HAZE = b.comment("Thick and dusty air (Venus, Titan, Mars storms) and the dawn white balance over the shader pack.",
+                        "Two full-screen draws per frame; turn off on slow GPUs (the pack then shows its own clear air).")
+                .define("atmosphereHaze", true);
         b.pop();
         SPEC = b.build();
     }
 
     public static SkyMode skyMode() {
         return SPEC.isLoaded() ? SHADER_SKY.get() : SkyMode.AUTO;
+    }
+
+    public static boolean atmosphereHaze() {
+        return !SPEC.isLoaded() || ATMOSPHERE_HAZE.get();
     }
 
     public static boolean hidePackClouds() {
