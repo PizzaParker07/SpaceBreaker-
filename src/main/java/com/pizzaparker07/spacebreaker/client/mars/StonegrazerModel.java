@@ -12,7 +12,7 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.util.Mth;
 
-/** Stonegrazer: barrel body with an armoured back, low heavy head, six pillar legs and a stubby tail. UVs: mars_creatures.py. */
+/** Stonegrazer: barrel body with a ridge of dorsal plates, a blunt snout with two short horns, low heavy head, six pillar legs and a stubby tail. UVs: mars_creatures.py. */
 public class StonegrazerModel extends HierarchicalModel<Stonegrazer> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Spacebreaker.id("stonegrazer"), "main");
     private final ModelPart root;
@@ -33,16 +33,27 @@ public class StonegrazerModel extends HierarchicalModel<Stonegrazer> {
         MeshDefinition mesh = new MeshDefinition();
         PartDefinition root = mesh.getRoot();
         PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-7F, -10F, -11F, 14F, 10F, 22F),
-                PartPose.offset(0F, 16F, 0F));
-        body.addOrReplaceChild("plates", CubeListBuilder.create().texOffs(0, 32).addBox(-6F, -3F, -9F, 12F, 3F, 18F), PartPose.offset(0F, -10F, 0F));
-        root.addOrReplaceChild("head", CubeListBuilder.create().texOffs(72, 0).addBox(-4F, -3F, -8F, 8F, 7F, 8F), PartPose.offset(0F, 11F, -10F));
+                PartPose.offset(0F, 14F, 0F));
+        float[] pz = {-7F, -2F, 3F, 7.5F};
+        float[] ph = {3F, 4F, 4F, 3F};
+        for (int i = 0; i < 4; i++) {
+            body.addOrReplaceChild("plate" + i, CubeListBuilder.create().texOffs(0, 32).addBox(-3F, -ph[i], -2F, 6F, ph[i], 4F),
+                    PartPose.offsetAndRotation(0F, -9.5F, pz[i], 0.25F, 0F, 0F));
+        }
+        PartDefinition head = root.addOrReplaceChild("head", CubeListBuilder.create().texOffs(72, 0).addBox(-4F, -3F, -8F, 8F, 7F, 8F),
+                PartPose.offset(0F, 9F, -10F));
+        head.addOrReplaceChild("snout", CubeListBuilder.create().texOffs(104, 0).addBox(-3F, 0F, -3F, 6F, 4F, 3F), PartPose.offset(0F, 0F, -8F));
+        head.addOrReplaceChild("horn_left", CubeListBuilder.create().texOffs(104, 10).addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F),
+                PartPose.offsetAndRotation(3F, -3F, -5F, -0.35F, 0F, 0.4F));
+        head.addOrReplaceChild("horn_right", CubeListBuilder.create().texOffs(104, 10).mirror().addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F),
+                PartPose.offsetAndRotation(-3F, -3F, -5F, -0.35F, 0F, -0.4F));
         root.addOrReplaceChild("tail", CubeListBuilder.create().texOffs(72, 30).addBox(-1.5F, -1.5F, 0F, 3F, 3F, 6F),
-                PartPose.offsetAndRotation(0F, 9F, 10.5F, -0.6F, 0F, 0F));
+                PartPose.offsetAndRotation(0F, 7F, 10.5F, -0.6F, 0F, 0F));
         float[] z = {-7F, 0F, 7F};
         for (int i = 0; i < 3; i++) {
-            root.addOrReplaceChild("leg" + i, CubeListBuilder.create().texOffs(72, 16).addBox(-2F, 0F, -2F, 4F, 8F, 4F), PartPose.offset(5F, 16F, z[i]));
-            root.addOrReplaceChild("leg" + (i + 3), CubeListBuilder.create().texOffs(72, 16).mirror().addBox(-2F, 0F, -2F, 4F, 8F, 4F),
-                    PartPose.offset(-5F, 16F, z[i]));
+            root.addOrReplaceChild("leg" + i, CubeListBuilder.create().texOffs(72, 16).addBox(-2F, 0F, -2F, 4F, 10F, 4F), PartPose.offset(5F, 14F, z[i]));
+            root.addOrReplaceChild("leg" + (i + 3), CubeListBuilder.create().texOffs(72, 16).mirror().addBox(-2F, 0F, -2F, 4F, 10F, 4F),
+                    PartPose.offset(-5F, 14F, z[i]));
         }
         return LayerDefinition.create(mesh, 128, 64);
     }

@@ -45,16 +45,17 @@ def _lerp(a, b, t):
     return tuple(int(round(a[i] + (b[i] - a[i]) * t)) for i in range(3))
 
 
-def mars_disc(size=512):
-    """Mars as a full, evenly lit disc for the sky of its moons, at high resolution: rusty plains and darker
-    southern highlands, Syrtis Major, Acidalia and Mare Erythraeum, the Tharsis volcanoes with Olympus Mons, the scar
-    of Valles Marineris, bright Hellas, and the white polar caps. Phase shading is applied in game."""
+def mars_disc(size=256):
+    """Mars as a full, evenly lit disc for the sky of its moons, drawn like the vanilla Moon: crisp albedo regions in a
+    few flat tones rather than smooth gradients. Shown: the bright Tharsis rise with its three shield volcanoes in a
+    row and Olympus Mons apart to the north-west (each with a caldera), Noctis Labyrinthus at the western end of Valles
+    Marineris, the main east-west canyon with parallel chasmata, the wide central troughs and the chaos at its eastern
+    mouth, the dark albedo regions, bright Hellas and the polar caps. Phase shading is applied in game."""
     import math
     from PIL import Image
     rng = random.Random(4402)
-    # value noise for natural mottling, sampled bilinearly at several scales
     grids = []
-    for cell in (64, 24, 9):
+    for cell in (32, 12, 5):
         g = [[rng.random() for _ in range(size // cell + 2)] for _ in range(size // cell + 2)]
         grids.append((cell, g))
 
@@ -67,21 +68,48 @@ def mars_disc(size=512):
             tx, ty = fx - ix, fy - iy
             a = g[iy][ix] * (1 - tx) + g[iy][ix + 1] * tx
             b = g[iy + 1][ix] * (1 - tx) + g[iy + 1][ix + 1] * tx
-            amp = 1 / (k + 1)
+            amp = 0.55 ** k
             v += (a * (1 - ty) + b * ty) * amp
             w += amp
         return v / w
 
-    bright = (217, 160, 102)   # bright dust
-    dust = (193, 104, 60)      # dust
-    dark = (110, 72, 52)       # dark albedo features
-    cap = (232, 228, 218)
-    # (u, v, radius, strength) of dark regions in disc coordinates (-1..1, v down)
-    darks = [(0.42, 0.05, 0.22, 1.0), (0.55, -0.32, 0.18, 0.8), (-0.05, 0.22, 0.35, 0.7), (0.15, 0.32, 0.25, 0.6), (-0.55, 0.15, 0.2, 0.5)]
-    volcanoes = [(-0.62, -0.12, 0.085), (-0.4, -0.05, 0.035), (-0.36, 0.06, 0.035), (-0.32, 0.17, 0.035)]
+    # six flat albedo tones, dark to bright, plus canyon floor, cap and caldera shades
+    tones = [(96, 58, 40), (124, 74, 50), (152, 90, 58), (178, 104, 64), (199, 124, 78), (218, 150, 100)]
+    canyon = (70, 40, 29)
+    wall = (110, 64, 44)
+    caps = [(206, 198, 186), (236, 232, 222)]
+    # dark albedo regions (u, v, ru, rv, depth): Acidalia, Mare Erythraeum, Margaritifer, Syrtis-ward, Sirenum
+    darks = [(0.42, -0.42, 0.22, 0.13, 0.55), (0.25, 0.42, 0.42, 0.13, 0.5), (0.52, 0.18, 0.12, 0.2, 0.45),
+             (0.86, 0.02, 0.14, 0.3, 0.55), (-0.62, 0.48, 0.3, 0.1, 0.35)]
+    shields = [(-0.50, 0.19, 0.06), (-0.44, 0.04, 0.065), (-0.37, -0.11, 0.06)]
+    olympus = (-0.72, -0.22, 0.11)
+
+    def seg_dist(u, v, x0, y0, x1, y1):
+        dx, dy = x1 - x0, y1 - y0
+        t = max(0.0, min(1.0, ((u - x0) * dx + (v - y0) * dy) / (dx * dx + dy * dy)))
+        return math.hypot(u - x0 - t * dx, v - y0 - t * dy)
+
+    # Valles Marineris: (x0, y0, x1, y1, half width) segments, mostly east-west, slightly descending to the east
+    chasma = [(-0.20, 0.140, 0.02, 0.150, 0.016),   # Ius / Tithonium
+              (-0.18, 0.105, -0.02, 0.110, 0.012),  # parallel northern chasma
+              (-0.04, 0.115, 0.12, 0.125, 0.030),   # Melas / Candor: the wide central troughs
+              (-0.02, 0.085, 0.10, 0.090, 0.016),   # Ophir / Candor north
+              (0.10, 0.130, 0.34, 0.165, 0.020),    # Coprates
+              (0.10, 0.180, 0.28, 0.205, 0.008),    # a thinner southern side canyon
+              (0.32, 0.165, 0.44, 0.150, 0.026)]    # Eos / Capri opening eastward
+    # Noctis Labyrinthus: a short criss-cross net at the western end
+    noctis = []
+    nr = random.Random(77)
+    for _ in range(9):
+        cx, cy = -0.27 + nr.uniform(-0.06, 0.06), 0.13 + nr.uniform(-0.05, 0.05)
+        ang = nr.choice((0.0, 1.05, 2.1)) + nr.uniform(-0.2, 0.2)
+        ln = nr.uniform(0.02, 0.035)
+        noctis.append((cx - ln * math.cos(ang), cy - ln * math.sin(ang), cx + ln * math.cos(ang), cy + ln * math.sin(ang), 0.008))
+
     img = Image.new('RGBA', (size, size), (0, 0, 0, 0))
     px = img.load()
     c = (size - 1) / 2
+    jit = random.Random(4403)
     for y in range(size):
         for x in range(size):
             u = (x - c) / c
@@ -90,65 +118,57 @@ def mars_disc(size=512):
             if d > 1:
                 continue
             n = noise(x, y)
-            col = _lerp(dust, bright, max(0.0, min(1.0, (n - 0.35) * 2.2)))
-            # southern highlands a shade darker and more cratered-looking
-            if v > 0:
-                col = _lerp(col, _lerp(dust, dark, 0.35), min(0.6, v * 0.9) * (0.6 + 0.4 * n))
-            for du, dv, r, k in darks:
-                dd = math.hypot(u - du, v - dv) / r
-                if dd < 1.3:
-                    t = max(0.0, 1 - dd) ** 0.8 * k * (0.55 + 0.6 * n)
-                    col = _lerp(col, dark, min(1.0, t))
-            # Hellas: a bright, smooth basin in the south
-            hd = math.hypot(u - 0.3, v - 0.55) / 0.13
+            # albedo, 0 dark .. 1 bright
+            al = 0.62 + (n - 0.5) * 0.5
+            if v > 0.05:  # southern highlands: darker, more mottled
+                al -= min(0.18, (v - 0.05) * 0.35) * (0.7 + 0.6 * n)
+            for du, dv, ru, rv, k in darks:
+                dd = math.hypot((u - du) / ru, (v - dv) / rv) + (n - 0.5) * 1.3 + 0.35 * math.sin(u * 23 + v * 17)
+                if dd < 1:
+                    al -= k * min(1.0, (1 - dd) * 2.5)
+            # Tharsis rise and Hellas: bright and dusty
+            th = math.hypot((u + 0.48) / 0.32, (v - 0.02) / 0.4) + (n - 0.5) * 0.4
+            if th < 1:
+                al += 0.16 * min(1.0, (1 - th) * 3)
+            hd = math.hypot((u - 0.55) / 0.16, (v - 0.62) / 0.1) + (n - 0.5) * 0.4
             if hd < 1:
-                col = _lerp(col, bright, (1 - hd) * 0.8)
-            # Tharsis volcanoes: lit summits with a dark caldera dot, Olympus Mons biggest with its cliff ring
-            for vu, vv, r in volcanoes:
-                vd = math.hypot(u - vu, v - vv) / r
+                al += 0.3 * min(1.0, (1 - hd) * 3)
+            al += (jit.random() - 0.5) * 0.05
+            col = tones[max(0, min(5, int(al * 6)))]
+            # volcanoes: a dome lit from the upper left, a hard shadow side, a dark caldera
+            for vu, vv, r in shields + [olympus]:
+                lu, lv = (u - vu) / r, (v - vv) / r
+                vd = math.hypot(lu, lv)
                 if vd < 1:
-                    # a lit dome: brighter toward the upper-left flank, a soft shadow on the lower-right
-                    lu = (u - vu) / r
-                    lv = (v - vv) / r
-                    shade = -(lu + lv) * 0.5 * (1 - vd)
-                    col = _lerp(col, (214, 150, 104) if shade > 0 else (120, 70, 46), min(1.0, abs(shade) * 2.2 + (1 - vd) * 0.25))
-                    if vd < 0.12 and r > 0.05:
-                        col = _lerp(col, dark, 0.6)
-            # Valles Marineris: a long dark scar east of Tharsis
-            vy = 0.1 + 0.035 * math.sin(u * 7)
-            w = (0.006 + 0.012 * (1 - abs(u - 0.04) / 0.34)) * (0.7 + 0.6 * n)
-            if -0.3 < u < 0.38 and abs(v - vy) < w:
-                col = _lerp(col, (88, 50, 34), 0.55 + 0.25 * (1 - abs(v - vy) / w))
-            # polar caps, ragged edges
+                    if vd < (0.3 if r > 0.1 else 0.22):
+                        col = tones[1] if vd > (0.2 if r > 0.1 else 0.12) else tones[0]
+                    elif lu + lv < -0.25:
+                        col = tones[5]
+                    elif lu + lv > 0.45:
+                        col = tones[2]
+                    else:
+                        col = tones[4]
+                    if r > 0.1 and vd > 0.88:  # Olympus: its basal escarpment
+                        col = tones[1] if lu + lv > 0 else tones[5]
+            # Valles Marineris and Noctis: dark floor with a brown wall band, edges roughened
+            rough = (n - 0.5) * 0.012
+            best = 9.0
+            for x0, y0, x1, y1, w in chasma + noctis:
+                best = min(best, seg_dist(u, v, x0, y0, x1, y1) / max(0.004, w * 1.35 + rough))
+            if best < 1:
+                col = canyon if best < 0.55 else wall
+            # chaos terrain at the eastern mouth: blotchy dark knobs
+            ch = math.hypot((u - 0.47) / 0.07, (v - 0.13) / 0.07)
+            if ch < 1 and n > 0.52:
+                col = wall if n < 0.6 else canyon
+            # polar caps with ragged edges
             lat = -v
-            edge = 0.82 + 0.05 * (n - 0.5)
+            edge = 0.84 + (n - 0.5) * 0.16 + 0.012 * math.sin(u * 31 + 1.3)
             if lat > edge:
-                col = _lerp(col, cap, min(1.0, (lat - edge) * 14))
-            if -lat > edge + 0.04:
-                col = _lerp(col, cap, min(1.0, (-lat - edge - 0.04) * 12))
-            # soft, dusty limb: a little brighter and redder near the edge
-            if d > 0.9:
-                col = _lerp(col, (230, 160, 120), (d - 0.9) * 2.5)
-            a = 255 if d < 0.995 else int(255 * (1 - (d - 0.995) / 0.005))
-            px[x, y] = (col[0], col[1], col[2], max(0, a))
-    return img
-
-
-def mars_halo(size=128):
-    """Thin, pale atmosphere ring drawn around the disc (additive)."""
-    import math
-    from PIL import Image
-    img = Image.new('RGBA', (size, size), (0, 0, 0, 0))
-    px = img.load()
-    c = (size - 1) / 2
-    for y in range(size):
-        for x in range(size):
-            d = math.hypot(x - c, y - c) / c
-            # disc edge sits at 1/1.08 of the halo radius
-            t = (d - 1 / 1.08) / (1 - 1 / 1.08)
-            if -0.6 < t < 1:
-                a = math.exp(-((t - 0.05) / 0.35) ** 2) if t > -0.2 else 0
-                px[x, y] = (int(150 + 80 * a), int(160 + 60 * a), int(190 + 40 * a), int(200 * a))
+                col = caps[1] if lat > edge + 0.04 else caps[0]
+            if -lat > edge + 0.05:
+                col = caps[1] if -lat > edge + 0.09 else caps[0]
+            px[x, y] = (col[0], col[1], col[2], 255)
     return img
 
 
@@ -164,4 +184,6 @@ def export(save):
     import os
     out = os.path.join(os.path.dirname(__file__), '..', '..', '..', 'src', 'main', 'resources', 'assets', 'spacebreaker', 'textures', 'environment')
     mars_disc().save(os.path.join(out, 'mars_disc.png'))
-    mars_halo().save(os.path.join(out, 'mars_halo.png'))
+    halo = os.path.join(out, 'mars_halo.png')
+    if os.path.exists(halo):
+        os.remove(halo)

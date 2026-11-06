@@ -35,19 +35,27 @@ public class RustBeetleModel extends HierarchicalModel<RustBeetle> {
         MeshDefinition mesh = new MeshDefinition();
         PartDefinition root = mesh.getRoot();
         PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-4F, -4F, -5F, 8F, 4F, 10F),
-                PartPose.offset(0F, 22F, 0.5F));
+                PartPose.offset(0F, 20F, 0.5F));
         body.addOrReplaceChild("shell", CubeListBuilder.create().texOffs(0, 14).addBox(-3.5F, -2F, -4.5F, 7F, 2F, 9F), PartPose.offset(0F, -4F, 0.5F));
         PartDefinition head = root.addOrReplaceChild("head", CubeListBuilder.create().texOffs(36, 0).addBox(-2F, -1.5F, -3F, 4F, 3F, 3F),
-                PartPose.offset(0F, 20F, -4.5F));
+                PartPose.offset(0F, 18F, -4.5F));
+        head.addOrReplaceChild("antenna_left", CubeListBuilder.create().texOffs(44, 8).addBox(-0.5F, -0.5F, -4F, 1F, 1F, 4F),
+                PartPose.offsetAndRotation(1.2F, -1.5F, -2.5F, 0.55F, -0.35F, 0F));
+        head.addOrReplaceChild("antenna_right", CubeListBuilder.create().texOffs(44, 8).mirror().addBox(-0.5F, -0.5F, -4F, 1F, 1F, 4F),
+                PartPose.offsetAndRotation(-1.2F, -1.5F, -2.5F, 0.55F, 0.35F, 0F));
         head.addOrReplaceChild("jaw_left", CubeListBuilder.create().texOffs(36, 8).addBox(-0.5F, 0F, -2F, 1F, 1F, 2F), PartPose.offset(1F, 0.5F, -3F));
         head.addOrReplaceChild("jaw_right", CubeListBuilder.create().texOffs(36, 8).mirror().addBox(-0.5F, 0F, -2F, 1F, 1F, 2F),
                 PartPose.offset(-1F, 0.5F, -3F));
         float[] z = {-3F, 0F, 3F};
         for (int i = 0; i < 3; i++) {
-            root.addOrReplaceChild("leg" + i, CubeListBuilder.create().texOffs(14, 28).addBox(0F, -0.5F, -0.5F, 5F, 1F, 1F),
-                    PartPose.offset(3.5F, 21F, z[i]));
-            root.addOrReplaceChild("leg" + (i + 3), CubeListBuilder.create().texOffs(14, 28).mirror().addBox(-5F, -0.5F, -0.5F, 5F, 1F, 1F),
-                    PartPose.offset(-3.5F, 21F, z[i]));
+            PartDefinition l = root.addOrReplaceChild("leg" + i, CubeListBuilder.create().texOffs(14, 28).addBox(0F, -0.5F, -0.5F, 5F, 1F, 1F),
+                    PartPose.offset(3.5F, 19F, z[i]));
+            l.addOrReplaceChild("foot", CubeListBuilder.create().texOffs(14, 32).addBox(-0.5F, 0F, -0.5F, 1F, 3F, 1F),
+                    PartPose.offsetAndRotation(4.6F, 0F, 0F, 0F, 0F, -0.35F));
+            PartDefinition r = root.addOrReplaceChild("leg" + (i + 3), CubeListBuilder.create().texOffs(14, 28).mirror().addBox(-5F, -0.5F, -0.5F, 5F, 1F, 1F),
+                    PartPose.offset(-3.5F, 19F, z[i]));
+            r.addOrReplaceChild("foot", CubeListBuilder.create().texOffs(14, 32).mirror().addBox(-0.5F, 0F, -0.5F, 1F, 3F, 1F),
+                    PartPose.offsetAndRotation(-4.6F, 0F, 0F, 0F, 0F, 0.35F));
         }
         return LayerDefinition.create(mesh, 64, 64);
     }

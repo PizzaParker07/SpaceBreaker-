@@ -37,7 +37,7 @@ public class MarsMoonSkyEffects extends PlanetSkyEffects {
     private static final ResourceLocation SUN = Spacebreaker.id("textures/environment/sun_vacuum.png");
     private static final ResourceLocation MARS = Spacebreaker.id("textures/environment/mars_disc.png");
     private static final int GRID = 40;
-    private static final ResourceLocation HALO = Spacebreaker.id("textures/environment/mars_halo.png");
+    private static final int RING = 128;
     private final String bodyName;
     private final double marsSize;
     private ClientLevel cachedLevel;
@@ -147,21 +147,37 @@ public class MarsMoonSkyEffects extends PlanetSkyEffects {
             }
         }
         BufferUploader.drawWithShader(bb.buildOrThrow());
-        // thin, pale atmosphere ring, brightest on the sunlit limb
-        double lit = Math.max(0.15, 0.5 + 0.5 * sun.z);
+        // thin, pale atmosphere ring as smooth geometry (no texture stairs), brightest on the sunlit limb
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, HALO);
-        RenderSystem.setShaderColor((float) lit, (float) lit, (float) lit, (float) (0.8 * lit));
-        float h = half * 1.08F;
-        BufferBuilder hb = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        for (float[] q : new float[][]{{-1, 1, 0, 0}, {-1, -1, 0, 1}, {1, -1, 1, 1}, {1, 1, 1, 0}}) {
-            hb.addVertex(m, (float) (c.x + right.x * q[0] * h + up.x * q[1] * h), (float) (c.y + right.y * q[0] * h + up.y * q[1] * h),
-                    (float) (c.z + right.z * q[0] * h + up.z * q[1] * h)).setUv(q[2], q[3]);
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        float[] radii = {0.985F, 1.012F, 1.11F};
+        float[] alpha = {0F, 0.55F, 0F};
+        BufferBuilder hb = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        for (int k = 0; k < RING; k++) {
+            double a0 = 2 * Math.PI * k / RING;
+            double a1 = 2 * Math.PI * (k + 1) / RING;
+            for (int band = 0; band < 2; band++) {
+                ringVertex(hb, m, c, right, up, half, sun, a0, radii[band], alpha[band]);
+                ringVertex(hb, m, c, right, up, half, sun, a0, radii[band + 1], alpha[band + 1]);
+                ringVertex(hb, m, c, right, up, half, sun, a1, radii[band + 1], alpha[band + 1]);
+                ringVertex(hb, m, c, right, up, half, sun, a1, radii[band], alpha[band]);
+            }
         }
         BufferUploader.drawWithShader(hb.buildOrThrow());
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.defaultBlendFunc();
+    }
+
+    private static void ringVertex(BufferBuilder bb, Matrix4f m, Vector3d c, Vector3d right, Vector3d up, float half, Vector3d sun,
+                                   double ang, float r, float a) {
+        double dx = Math.cos(ang);
+        double dy = Math.sin(ang);
+        // the limb faces sideways: lit where the sun shines along it, plus some forward scatter when backlit
+        double lit = Math.max(0.12, Math.min(1, 0.35 + 0.65 * (dx * sun.x + dy * sun.y) + 0.3 * sun.z));
+        float px = (float) (c.x + (right.x * dx + up.x * dy) * r * half);
+        float py = (float) (c.y + (right.y * dx + up.y * dy) * r * half);
+        float pz = (float) (c.z + (right.z * dx + up.z * dy) * r * half);
+        bb.addVertex(m, px, py, pz).setColor(0.85F, 0.82F, 0.9F, (float) (a * lit));
     }
 
     private static void vertex(BufferBuilder bb, Matrix4f m, Vector3d c, Vector3d right, Vector3d up, float half, Vector3d sun, int i, int j) {
