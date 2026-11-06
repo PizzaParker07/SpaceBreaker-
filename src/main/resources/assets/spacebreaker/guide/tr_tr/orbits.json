@@ -1,0 +1,18 @@
+{
+  "chapter": "physics",
+  "title": "Yörüngeler",
+  "icon": "minecraft:clock",
+  "order": 1,
+  "requires_tech": "spacebreaker:orbital_mechanics",
+  "pages": [
+    {
+      "image": "spacebreaker:textures/gui/guide/orbit.png",
+      "width": 112,
+      "height": 64,
+      "text": "Hız yana, yerçekimi aşağı"
+    },
+    {
+      "text": "Yörüngede hâlâ düşüyorsundur, ama yana öyle hızlı gidiyorsun ki zemin altından kıvrılıp uzaklaşır. Alçak Dünya yörüngesi yaklaşık 7,8 km/s ister; sürtünme ve yerçekimi kayıplarıyla bir fırlatma yaklaşık 9,4 km/s Δv tutar."
+    }
+  ]
+}

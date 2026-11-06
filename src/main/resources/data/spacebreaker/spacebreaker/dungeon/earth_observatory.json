@@ -1,0 +1,10 @@
+{
+  "structure": "spacebreaker:earth_observatory",
+  "world": "spacebreaker:earth",
+  "guardians": [
+    {"entity": "minecraft:zombie", "count": 2},
+    {"entity": "minecraft:skeleton", "count": 2}
+  ],
+  "guardian_radius": 9,
+  "loot_tables": ["spacebreaker:dungeons/earth/observatory_archive", "spacebreaker:dungeons/earth/observatory_supplies"]
+}

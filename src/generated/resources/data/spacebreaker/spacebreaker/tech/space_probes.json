@@ -1,0 +1,12 @@
+{
+  "category": "astronomy",
+  "icon": "minecraft:ender_eye",
+  "requires": [
+    "spacebreaker:satellites",
+    "spacebreaker:interplanetary_transfers"
+  ],
+  "tier": 2,
+  "unlocks": [
+    "spacebreaker:probe"
+  ]
+}

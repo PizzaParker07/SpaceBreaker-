@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "spacebreaker:item/field_sample",
+    "layer1": "spacebreaker:item/field_sample_contents"
+  }
+}

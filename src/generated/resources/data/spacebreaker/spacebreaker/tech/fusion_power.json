@@ -1,0 +1,11 @@
+{
+  "category": "industry",
+  "icon": "minecraft:beacon",
+  "requires": [
+    "spacebreaker:nuclear_fission"
+  ],
+  "tier": 3,
+  "unlocks": [
+    "spacebreaker:fusion_reactor"
+  ]
+}

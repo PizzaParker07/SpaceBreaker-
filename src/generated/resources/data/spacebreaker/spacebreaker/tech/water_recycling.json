@@ -1,0 +1,11 @@
+{
+  "category": "life_support",
+  "icon": "minecraft:water_bucket",
+  "requires": [
+    "spacebreaker:oxygen_distribution"
+  ],
+  "tier": 2,
+  "unlocks": [
+    "spacebreaker:water_recycler"
+  ]
+}

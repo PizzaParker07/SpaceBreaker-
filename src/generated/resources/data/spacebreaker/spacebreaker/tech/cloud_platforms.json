@@ -1,0 +1,14 @@
+{
+  "category": "construction",
+  "icon": "minecraft:white_wool",
+  "requires": [
+    "spacebreaker:space_stations"
+  ],
+  "samples": [
+    "spacebreaker:venus"
+  ],
+  "tier": 2,
+  "unlocks": [
+    "spacebreaker:cloud_platform"
+  ]
+}

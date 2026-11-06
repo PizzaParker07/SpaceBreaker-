@@ -16,7 +16,9 @@ public final class Modules {
             new WorldgenModule(),
             new MoonModule(),
             new MachinesModule(),
-            new SuitModule()
+            new SuitModule(),
+            new com.pizzaparker07.spacebreaker.content.research.ResearchModule(),
+            new com.pizzaparker07.spacebreaker.content.dungeons.DungeonsModule()
     );
 
     private Modules() {

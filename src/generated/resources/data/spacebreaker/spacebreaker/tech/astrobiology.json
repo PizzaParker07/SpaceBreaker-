@@ -1,0 +1,16 @@
+{
+  "category": "exploration",
+  "icon": "minecraft:sculk_sensor",
+  "requires": [
+    "spacebreaker:martian_geology",
+    "spacebreaker:spectroscopy"
+  ],
+  "samples": [
+    "spacebreaker:mars",
+    "spacebreaker:venus"
+  ],
+  "tier": 2,
+  "unlocks": [
+    "spacebreaker:life_detector"
+  ]
+}

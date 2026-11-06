@@ -1,0 +1,29 @@
+{
+  "parent": "spacebreaker:main/basic_rocketry",
+  "criteria": {
+    "done": {
+      "conditions": {
+        "milestone": "first_rocket"
+      },
+      "trigger": "spacebreaker:milestone"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.spacebreaker.first_rocket.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:firework_star"
+    },
+    "title": {
+      "translate": "advancements.spacebreaker.first_rocket.title"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

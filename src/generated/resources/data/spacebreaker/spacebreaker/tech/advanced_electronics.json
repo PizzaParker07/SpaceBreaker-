@@ -1,0 +1,15 @@
+{
+  "category": "industry",
+  "icon": "minecraft:comparator",
+  "requires": [
+    "spacebreaker:electronics"
+  ],
+  "samples": [
+    "spacebreaker:meteorite"
+  ],
+  "tier": 2,
+  "unlocks": [
+    "spacebreaker:processor",
+    "spacebreaker:silicon_wafer"
+  ]
+}

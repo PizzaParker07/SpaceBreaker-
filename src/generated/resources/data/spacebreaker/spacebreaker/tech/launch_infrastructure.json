@@ -1,0 +1,13 @@
+{
+  "category": "construction",
+  "icon": "minecraft:smooth_stone",
+  "requires": [
+    "spacebreaker:basic_rocketry"
+  ],
+  "unlocks": [
+    "spacebreaker:launch_pad",
+    "spacebreaker:flame_trench",
+    "spacebreaker:service_tower",
+    "spacebreaker:launch_console"
+  ]
+}

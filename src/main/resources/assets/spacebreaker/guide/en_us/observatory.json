@@ -1,0 +1,19 @@
+{
+  "chapter": "dungeons",
+  "title": "Abandoned Observatories",
+  "icon": "minecraft:spyglass",
+  "order": 0,
+  "pages": [
+    {
+      "image": "spacebreaker:textures/gui/guide/observatory.png",
+      "width": 112,
+      "height": 64
+    },
+    {
+      "text": "Copper-domed observatories stand on open plains and hills, each with an old rocket test stand next to it. Look for the broken service gantry and the scorched flame trench."
+    },
+    {
+      "text": "The archive under the floor keeps the first rocketry technologies. The site is not empty: guardians wait there the first time anyone walks in."
+    }
+  ]
+}

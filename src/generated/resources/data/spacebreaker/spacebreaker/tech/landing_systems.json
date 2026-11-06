@@ -1,0 +1,16 @@
+{
+  "category": "propulsion",
+  "icon": "minecraft:feather",
+  "requires": [
+    "spacebreaker:vacuum_engines",
+    "spacebreaker:guidance_systems"
+  ],
+  "samples": [
+    "spacebreaker:orbital_flight"
+  ],
+  "unlocks": [
+    "spacebreaker:landing_legs",
+    "spacebreaker:parachute",
+    "spacebreaker:heat_shield"
+  ]
+}

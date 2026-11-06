@@ -1,0 +1,12 @@
+{
+  "category": "propulsion",
+  "icon": "minecraft:blaze_powder",
+  "requires": [
+    "spacebreaker:basic_rocketry",
+    "spacebreaker:fuel_refining"
+  ],
+  "unlocks": [
+    "spacebreaker:sea_level_engine",
+    "spacebreaker:fuel_tank"
+  ]
+}

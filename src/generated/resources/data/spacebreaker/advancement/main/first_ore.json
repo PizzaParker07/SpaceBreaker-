@@ -1,0 +1,33 @@
+{
+  "parent": "spacebreaker:main/root",
+  "criteria": {
+    "done": {
+      "conditions": {
+        "items": [
+          {
+            "items": "spacebreaker:raw_bauxite"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.spacebreaker.first_ore.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "spacebreaker:raw_bauxite"
+    },
+    "title": {
+      "translate": "advancements.spacebreaker.first_ore.title"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

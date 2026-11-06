@@ -1,0 +1,33 @@
+{
+  "parent": "spacebreaker:main/root",
+  "criteria": {
+    "done": {
+      "conditions": {
+        "items": [
+          {
+            "items": "spacebreaker:eva_helmet"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.spacebreaker.suit_up.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "spacebreaker:eva_helmet"
+    },
+    "title": {
+      "translate": "advancements.spacebreaker.suit_up.title"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

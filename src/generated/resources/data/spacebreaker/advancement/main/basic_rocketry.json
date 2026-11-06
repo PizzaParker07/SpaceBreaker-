@@ -1,0 +1,29 @@
+{
+  "parent": "spacebreaker:main/dungeon_found",
+  "criteria": {
+    "done": {
+      "conditions": {
+        "tech": "spacebreaker:basic_rocketry"
+      },
+      "trigger": "spacebreaker:tech_learned"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.spacebreaker.basic_rocketry.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:firework_rocket"
+    },
+    "title": {
+      "translate": "advancements.spacebreaker.basic_rocketry.title"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

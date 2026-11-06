@@ -1,0 +1,13 @@
+{
+  "category": "construction",
+  "icon": "minecraft:respawn_anchor",
+  "requires": [
+    "spacebreaker:space_stations",
+    "spacebreaker:heavy_launch",
+    "spacebreaker:fusion_power"
+  ],
+  "tier": 3,
+  "unlocks": [
+    "spacebreaker:orbital_shipyard"
+  ]
+}

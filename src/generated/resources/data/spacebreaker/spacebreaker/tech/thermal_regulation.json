@@ -1,0 +1,10 @@
+{
+  "category": "life_support",
+  "icon": "minecraft:leather_chestplate",
+  "requires": [
+    "spacebreaker:pressure_suits"
+  ],
+  "unlocks": [
+    "spacebreaker:cooling_garment"
+  ]
+}

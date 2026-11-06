@@ -1,0 +1,10 @@
+{
+  "category": "industry",
+  "icon": "spacebreaker:aluminum_ingot",
+  "samples": [
+    "spacebreaker:earth"
+  ],
+  "unlocks": [
+    "spacebreaker:aluminum_ingot"
+  ]
+}

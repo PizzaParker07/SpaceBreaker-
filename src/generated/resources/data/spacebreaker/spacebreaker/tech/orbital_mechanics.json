@@ -1,0 +1,14 @@
+{
+  "category": "astronomy",
+  "icon": "minecraft:clock",
+  "requires": [
+    "spacebreaker:observational_astronomy",
+    "spacebreaker:basic_rocketry"
+  ],
+  "samples": [
+    "spacebreaker:suborbital_flight"
+  ],
+  "unlocks": [
+    "spacebreaker:star_map"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "category": "astronomy",
+  "icon": "minecraft:prismarine_crystals",
+  "requires": [
+    "spacebreaker:observational_astronomy",
+    "spacebreaker:advanced_electronics"
+  ],
+  "samples": [
+    "spacebreaker:meteorite"
+  ],
+  "tier": 2,
+  "unlocks": [
+    "spacebreaker:spectrometer"
+  ]
+}

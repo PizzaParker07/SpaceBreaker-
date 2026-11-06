@@ -1,0 +1,15 @@
+{
+  "category": "exploration",
+  "icon": "minecraft:raw_iron",
+  "requires": [
+    "spacebreaker:rovers",
+    "spacebreaker:ion_propulsion"
+  ],
+  "samples": [
+    "spacebreaker:meteorite"
+  ],
+  "tier": 3,
+  "unlocks": [
+    "spacebreaker:asteroid_drill"
+  ]
+}

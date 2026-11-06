@@ -1,0 +1,29 @@
+{
+  "parent": "spacebreaker:main/research_lab",
+  "criteria": {
+    "done": {
+      "trigger": "spacebreaker:tech_learned"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.spacebreaker.first_tech.description"
+    },
+    "icon": {
+      "components": {
+        "spacebreaker:tech": "spacebreaker:electronics"
+      },
+      "count": 1,
+      "id": "spacebreaker:tech_disk"
+    },
+    "title": {
+      "translate": "advancements.spacebreaker.first_tech.title"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

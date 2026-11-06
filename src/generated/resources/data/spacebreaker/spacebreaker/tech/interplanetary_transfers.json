@@ -1,0 +1,14 @@
+{
+  "category": "astronomy",
+  "icon": "minecraft:map",
+  "requires": [
+    "spacebreaker:orbital_mechanics"
+  ],
+  "samples": [
+    "spacebreaker:moon"
+  ],
+  "tier": 2,
+  "unlocks": [
+    "spacebreaker:launch_window_planner"
+  ]
+}

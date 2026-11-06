@@ -1,0 +1,15 @@
+{
+  "category": "astronomy",
+  "icon": "minecraft:daylight_detector",
+  "requires": [
+    "spacebreaker:orbital_mechanics",
+    "spacebreaker:radio_communication"
+  ],
+  "samples": [
+    "spacebreaker:orbital_flight"
+  ],
+  "tier": 2,
+  "unlocks": [
+    "spacebreaker:satellite"
+  ]
+}

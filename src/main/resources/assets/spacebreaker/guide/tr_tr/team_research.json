@@ -1,0 +1,11 @@
+{
+  "chapter": "research",
+  "title": "Takımca Araştırma",
+  "icon": "minecraft:white_banner",
+  "order": 4,
+  "pages": [
+    {
+      "text": "Bir laboratuvarda takımla paylaşımı açarsan, skor tablosu takımındaki herkes onun bulduklarını öğrenir; çevrimdışı oyuncular bile (oyuna girdiklerinde öğrenirler). /team add ile bir takım kur, /team join ile katıl."
+    }
+  ]
+}

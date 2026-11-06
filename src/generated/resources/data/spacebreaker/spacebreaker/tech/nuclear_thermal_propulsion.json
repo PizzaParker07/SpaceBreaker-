@@ -1,0 +1,12 @@
+{
+  "category": "propulsion",
+  "icon": "minecraft:glowstone_dust",
+  "requires": [
+    "spacebreaker:hydrogen_engines",
+    "spacebreaker:nuclear_fission"
+  ],
+  "tier": 3,
+  "unlocks": [
+    "spacebreaker:nuclear_thermal_engine"
+  ]
+}

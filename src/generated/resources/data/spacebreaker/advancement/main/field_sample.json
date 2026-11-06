@@ -1,0 +1,36 @@
+{
+  "parent": "spacebreaker:main/root",
+  "criteria": {
+    "done": {
+      "conditions": {
+        "items": [
+          {
+            "items": "spacebreaker:field_sample"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.spacebreaker.field_sample.description"
+    },
+    "icon": {
+      "components": {
+        "spacebreaker:sample": "spacebreaker:earth"
+      },
+      "count": 1,
+      "id": "spacebreaker:field_sample"
+    },
+    "title": {
+      "translate": "advancements.spacebreaker.field_sample.title"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

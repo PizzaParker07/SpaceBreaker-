@@ -1,0 +1,33 @@
+{
+  "parent": "spacebreaker:main/field_sample",
+  "criteria": {
+    "done": {
+      "conditions": {
+        "items": [
+          {
+            "items": "spacebreaker:research_lab"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.spacebreaker.research_lab.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "spacebreaker:research_lab"
+    },
+    "title": {
+      "translate": "advancements.spacebreaker.research_lab.title"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

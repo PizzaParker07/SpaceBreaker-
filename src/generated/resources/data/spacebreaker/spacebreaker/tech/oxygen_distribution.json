@@ -1,0 +1,14 @@
+{
+  "category": "life_support",
+  "icon": "minecraft:glass",
+  "requires": [
+    "spacebreaker:airlocks",
+    "spacebreaker:electrolysis"
+  ],
+  "samples": [
+    "spacebreaker:moon"
+  ],
+  "unlocks": [
+    "spacebreaker:oxygen_distributor"
+  ]
+}

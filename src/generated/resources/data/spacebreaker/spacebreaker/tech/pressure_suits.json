@@ -1,0 +1,11 @@
+{
+  "category": "life_support",
+  "icon": "spacebreaker:eva_helmet",
+  "samples": [
+    "spacebreaker:earth"
+  ],
+  "unlocks": [
+    "spacebreaker:eva_helmet",
+    "spacebreaker:eva_suit"
+  ]
+}

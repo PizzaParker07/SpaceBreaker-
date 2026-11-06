@@ -1,0 +1,11 @@
+{
+  "category": "life_support",
+  "icon": "minecraft:iron_door",
+  "requires": [
+    "spacebreaker:oxygen_storage",
+    "spacebreaker:pressurised_modules"
+  ],
+  "unlocks": [
+    "spacebreaker:airlock"
+  ]
+}

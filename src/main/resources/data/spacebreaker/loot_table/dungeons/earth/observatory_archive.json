@@ -1,0 +1,45 @@
+{
+  "type": "minecraft:chest",
+  "random_sequence": "spacebreaker:dungeons/earth/observatory_archive",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "spacebreaker:tech_disk",
+          "functions": [{"function": "spacebreaker:random_tech_disk", "techs": ["spacebreaker:basic_rocketry"]}]
+        }
+      ]
+    },
+    {
+      "rolls": {"type": "minecraft:uniform", "min": 1, "max": 2},
+      "entries": [
+        {
+          "type": "minecraft:item", "weight": 3, "name": "spacebreaker:tech_disk",
+          "functions": [{"function": "spacebreaker:random_tech_disk", "categories": ["propulsion"], "max_tier": 1}]
+        },
+        {
+          "type": "minecraft:item", "weight": 2, "name": "spacebreaker:tech_disk",
+          "functions": [{"function": "spacebreaker:random_tech_disk", "categories": ["astronomy"], "max_tier": 1}]
+        },
+        {
+          "type": "minecraft:item", "weight": 2, "name": "spacebreaker:tech_disk",
+          "functions": [{"function": "spacebreaker:random_tech_disk",
+            "techs": ["spacebreaker:fuel_refining", "spacebreaker:launch_infrastructure", "spacebreaker:electronics", "spacebreaker:metal_pressing"]}]
+        }
+      ]
+    },
+    {
+      "rolls": {"type": "minecraft:uniform", "min": 2, "max": 4},
+      "entries": [
+        {"type": "minecraft:item", "weight": 4, "name": "minecraft:paper", "functions": [{"function": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 2, "max": 6}}]},
+        {"type": "minecraft:item", "weight": 2, "name": "minecraft:map"},
+        {"type": "minecraft:item", "weight": 2, "name": "minecraft:compass"},
+        {"type": "minecraft:item", "weight": 1, "name": "minecraft:spyglass"},
+        {"type": "minecraft:item", "weight": 2, "name": "spacebreaker:experiment_data",
+          "functions": [{"function": "minecraft:set_components", "components": {"spacebreaker:sample": "spacebreaker:suborbital_flight"}}]}
+      ]
+    }
+  ]
+}

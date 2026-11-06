@@ -1,0 +1,15 @@
+{
+  "category": "exploration",
+  "icon": "minecraft:red_sand",
+  "requires": [
+    "spacebreaker:field_geology",
+    "spacebreaker:interplanetary_transfers"
+  ],
+  "samples": [
+    "spacebreaker:mars"
+  ],
+  "tier": 2,
+  "unlocks": [
+    "spacebreaker:core_drill"
+  ]
+}

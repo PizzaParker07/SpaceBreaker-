@@ -1,0 +1,33 @@
+{
+  "parent": "spacebreaker:main/first_ingot",
+  "criteria": {
+    "done": {
+      "conditions": {
+        "items": [
+          {
+            "items": "spacebreaker:solar_panel"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.spacebreaker.solar_power.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "spacebreaker:solar_panel"
+    },
+    "title": {
+      "translate": "advancements.spacebreaker.solar_power.title"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

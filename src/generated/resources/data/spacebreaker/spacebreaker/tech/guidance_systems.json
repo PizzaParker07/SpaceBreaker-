@@ -1,0 +1,12 @@
+{
+  "category": "propulsion",
+  "icon": "minecraft:compass",
+  "requires": [
+    "spacebreaker:basic_rocketry",
+    "spacebreaker:electronics"
+  ],
+  "unlocks": [
+    "spacebreaker:guidance_computer",
+    "spacebreaker:rcs_thruster"
+  ]
+}

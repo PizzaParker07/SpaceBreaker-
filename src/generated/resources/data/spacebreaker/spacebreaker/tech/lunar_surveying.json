@@ -1,0 +1,14 @@
+{
+  "category": "exploration",
+  "icon": "spacebreaker:mare_basalt",
+  "requires": [
+    "spacebreaker:field_geology",
+    "spacebreaker:landing_systems"
+  ],
+  "samples": [
+    "spacebreaker:moon"
+  ],
+  "unlocks": [
+    "spacebreaker:environment_sensor"
+  ]
+}

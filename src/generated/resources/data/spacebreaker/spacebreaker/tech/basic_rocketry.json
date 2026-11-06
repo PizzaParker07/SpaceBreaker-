@@ -1,0 +1,9 @@
+{
+  "category": "propulsion",
+  "icon": "minecraft:firework_rocket",
+  "unlocks": [
+    "spacebreaker:rocket_assembler",
+    "spacebreaker:nose_cone",
+    "spacebreaker:fin"
+  ]
+}

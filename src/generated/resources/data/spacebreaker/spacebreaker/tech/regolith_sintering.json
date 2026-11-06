@@ -1,0 +1,13 @@
+{
+  "category": "construction",
+  "icon": "spacebreaker:lunar_regolith",
+  "requires": [
+    "spacebreaker:pressurised_modules"
+  ],
+  "samples": [
+    "spacebreaker:moon"
+  ],
+  "unlocks": [
+    "spacebreaker:sintered_regolith_bricks"
+  ]
+}

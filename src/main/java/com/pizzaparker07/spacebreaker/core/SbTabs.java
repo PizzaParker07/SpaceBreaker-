@@ -26,6 +26,7 @@ public final class SbTabs {
     public static final Tab MACHINES = new Tab("machines");
     public static final Tab SPACEFLIGHT = new Tab("spaceflight");
     public static final Tab EQUIPMENT = new Tab("equipment");
+    public static final Tab RESEARCH = new Tab("research");
 
     public static final class Tab {
         private final List<Supplier<ItemStack>> entries = new ArrayList<>();

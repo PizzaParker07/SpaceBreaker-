@@ -1,0 +1,16 @@
+{
+  "category": "industry",
+  "icon": "spacebreaker:ilmenite_ore",
+  "requires": [
+    "spacebreaker:electrolysis",
+    "spacebreaker:lunar_surveying"
+  ],
+  "samples": [
+    "spacebreaker:moon"
+  ],
+  "tier": 2,
+  "unlocks": [
+    "spacebreaker:regolith_heater",
+    "spacebreaker:ice_drill"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "category": "industry",
+  "icon": "minecraft:glowstone",
+  "requires": [
+    "spacebreaker:advanced_electronics",
+    "spacebreaker:cryogenics"
+  ],
+  "tier": 3,
+  "unlocks": [
+    "spacebreaker:rtg",
+    "spacebreaker:fission_reactor"
+  ]
+}

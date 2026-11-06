@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "spacebreaker:item/experiment_data",
+    "layer1": "spacebreaker:item/experiment_data_band"
+  }
+}

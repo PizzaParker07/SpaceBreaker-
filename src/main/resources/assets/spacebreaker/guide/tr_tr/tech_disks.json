@@ -1,0 +1,19 @@
+{
+  "chapter": "research",
+  "title": "Teknoloji Diskleri",
+  "icon": "spacebreaker:tech_disk",
+  "order": 2,
+  "pages": [
+    {
+      "items": [
+        "spacebreaker:tech_disk"
+      ]
+    },
+    {
+      "text": "Erken uzay çağından kalma veri kartuşları; her dünyadaki harabelerde bulunur. Etiket rengi dalı gösterir: turuncu itki, camgöbeği yaşam desteği, pirinç sanayi, mor astronomi, gri inşaat, yeşil keşif."
+    },
+    {
+      "text": "Laboratuvar bir diski ancak ön koşullarını biliyorsan okuyabilir; ileri seviye diskleri sonraya sakla."
+    }
+  ]
+}

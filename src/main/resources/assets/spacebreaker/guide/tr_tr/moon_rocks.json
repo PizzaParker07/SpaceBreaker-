@@ -1,0 +1,19 @@
+{
+  "chapter": "moon",
+  "title": "Ay Kayaçları",
+  "icon": "spacebreaker:lunar_regolith",
+  "order": 0,
+  "requires_tech": "spacebreaker:basic_rocketry",
+  "pages": [
+    {
+      "items": [
+        "spacebreaker:lunar_regolith",
+        "spacebreaker:mare_basalt",
+        "spacebreaker:ilmenite_ore"
+      ]
+    },
+    {
+      "text": "Regolit, her ayak izini saklayan ince gri tozdur. Karanlık denizler bazalttır; siyah ilmenit kristalleri yerinde çıkarılabilen titanyum ve oksijen içerir."
+    }
+  ]
+}

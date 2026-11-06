@@ -1,0 +1,15 @@
+{
+  "category": "propulsion",
+  "icon": "minecraft:fire_charge",
+  "requires": [
+    "spacebreaker:vacuum_engines",
+    "spacebreaker:sabatier_process"
+  ],
+  "samples": [
+    "spacebreaker:mars"
+  ],
+  "tier": 2,
+  "unlocks": [
+    "spacebreaker:methane_engine"
+  ]
+}
