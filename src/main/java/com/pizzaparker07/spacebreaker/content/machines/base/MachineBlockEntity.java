@@ -50,8 +50,12 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
     /** Free status code shown by the screen (0 = ok); see {@link #statusKey}. */
     protected int status;
     private boolean syncPending;
+    /** Who placed the machine; research gating follows this player's known technologies. */
+    @Nullable private java.util.UUID owner;
+    private boolean locked;
     private boolean contentsChanged = true;
     private int litTimer;
+    private boolean lockCheckPending = true;
 
     protected MachineBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, MachineLayout layout,
                                  int energyCapacity, int maxReceive, int maxExtract, List<TankSpec> tankSpecs) {
@@ -118,6 +122,7 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
             case 4 -> "gui.spacebreaker.status.no_oil";
             case 5 -> "gui.spacebreaker.status.no_fuel";
             case 6 -> "gui.spacebreaker.status.incomplete";
+            case 7 -> "gui.spacebreaker.status.locked";
             default -> null;
         };
     }
@@ -156,7 +161,60 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
 
     // ------------------------------------------------------------------ ticking
 
+    public void setOwner(@Nullable java.util.UUID owner) {
+        this.owner = owner;
+        setChanged();
+    }
+
+    public @Nullable java.util.UUID owner() {
+        return owner;
+    }
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+    /** The technologies that unlock this machine (data-driven via each technology's "unlocks" list). */
+    public com.pizzaparker07.spacebreaker.core.tech.TechRequirement techRequirement() {
+        return level == null ? com.pizzaparker07.spacebreaker.core.tech.TechRequirement.NONE
+                : com.pizzaparker07.spacebreaker.core.tech.TechRequirement.forUnlock(level.registryAccess(),
+                net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(getBlockState().getBlock()));
+    }
+
+    /** Re-checks the owner's research (online owners only; offline owners keep the last result). */
+    private void updateLock(Level level) {
+        var req = techRequirement();
+        if (req.isEmpty() || owner == null || level.getServer() == null) {
+            locked = false;
+            return;
+        }
+        net.minecraft.world.entity.player.Player player = level.getServer().getPlayerList().getPlayer(owner);
+        if (player == null) {
+            player = level.getPlayerByUUID(owner);
+        }
+        if (player != null) {
+            refreshLock(player);
+        }
+    }
+
+    /** Recomputes the research lock against the given (owner) player. */
+    public void refreshLock(net.minecraft.world.entity.player.Player player) {
+        var req = techRequirement();
+        locked = !req.isEmpty() && !player.isCreative()
+                && req.techs().stream().noneMatch(t -> com.pizzaparker07.spacebreaker.core.tech.Tech.knows(player, t));
+        setChanged();
+    }
+
     public static void serverTick(Level level, BlockPos pos, BlockState state, MachineBlockEntity be) {
+        if (level.getGameTime() % 40 == Math.floorMod(pos.hashCode(), 40) || be.lockCheckPending) {
+            be.lockCheckPending = false;
+            be.updateLock(level);
+        }
+        if (be.locked) {
+            be.status = 7;
+            be.updateLit(level, pos, state, false);
+            return;
+        }
         boolean working = be.tickServer(level, pos, state);
         state = level.getBlockState(pos);
         be.updateLit(level, pos, state, working);
@@ -212,13 +270,17 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
 
     /** Pushes output-tank contents into neighbouring fluid handlers (pipes, tanks, other machines). */
     protected void pushFluids(Level level, BlockPos pos, int maxPerTank) {
-        for (MachineTank tank : tanks) {
+        for (int ti = 0; ti < tanks.size(); ti++) {
+            MachineTank tank = tanks.get(ti);
             if (tank.input || tank.isEmpty()) {
                 continue;
             }
             for (Direction dir : Direction.values()) {
                 if (tank.isEmpty()) {
                     break;
+                }
+                if (!canPush(ti, dir)) {
+                    continue;
                 }
                 IFluidHandler target = level.getCapability(Capabilities.FluidHandler.BLOCK, pos.relative(dir), dir.getOpposite());
                 if (target == null || target == fluidHandler || isOwnPart(level, pos.relative(dir))) {
@@ -231,6 +293,11 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
                 }
             }
         }
+    }
+
+    /** Which sides an output tank may push to (default: all). */
+    protected boolean canPush(int tank, Direction side) {
+        return true;
     }
 
     /** Whether a position belongs to this machine (multiblock parts forward to us). */
@@ -425,6 +492,10 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
             list.add(t.writeToNBT(registries, new CompoundTag()));
         }
         tag.put("tanks", list);
+        if (owner != null) {
+            tag.putUUID("owner", owner);
+        }
+        tag.putBoolean("locked", locked);
     }
 
     @Override
@@ -442,6 +513,8 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         for (int i = 0; i < Math.min(list.size(), tanks.size()); i++) {
             tanks.get(i).readFromNBT(registries, list.getCompound(i));
         }
+        owner = tag.hasUUID("owner") ? tag.getUUID("owner") : null;
+        locked = tag.getBoolean("locked");
         contentsChanged = true;
     }
 

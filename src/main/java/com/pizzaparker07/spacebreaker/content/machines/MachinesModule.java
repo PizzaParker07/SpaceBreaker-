@@ -122,9 +122,10 @@ public final class MachinesModule implements SbModule {
     public static final MachineEntry<MachineBlock, ProcessingMachineBlockEntity> FABRICATOR = processing("fabricator", () -> FABRICATING,
             grid(new MachineLayout().energy(10, 17), 30, 16).progress(94, 35, MachineLayout.Progress.ARROW).slot(128, 34, MachineLayout.Role.OUTPUT),
             40_000, List.of(), 0);
-    public static final MachineEntry<MachineBlock, ProcessingMachineBlockEntity> ELECTROLYZER = processing("electrolyzer", () -> ELECTROLYSIS,
+    public static final MachineEntry<MachineBlock, ProcessingMachineBlockEntity> ELECTROLYZER = processingWith("electrolyzer", () -> ELECTROLYSIS,
             new MachineLayout().energy(10, 17).tank(44, 17).progress(70, 35, MachineLayout.Progress.ARROW).tank(104, 17).tank(128, 17),
-            40_000, List.of(TankSpec.in(8_000, f -> f.is(Tags.Fluids.WATER)), TankSpec.out(8_000), TankSpec.out(8_000)), 0);
+            40_000, List.of(TankSpec.in(8_000, f -> f.is(Tags.Fluids.WATER)), TankSpec.out(8_000), TankSpec.out(8_000)), 0,
+            com.pizzaparker07.spacebreaker.content.machines.machine.ElectrolyzerBlockEntity::new);
     public static final MachineEntry<MachineBlock, ProcessingMachineBlockEntity> LIQUEFIER = processing("cryogenic_liquefier", () -> LIQUEFACTION,
             new MachineLayout().energy(10, 17).tank(50, 17).progress(78, 35, MachineLayout.Progress.ARROW).tank(110, 17),
             60_000, List.of(TankSpec.in(8_000, f -> f.getFluidType().isLighterThanAir()), TankSpec.out(8_000)), 0);
