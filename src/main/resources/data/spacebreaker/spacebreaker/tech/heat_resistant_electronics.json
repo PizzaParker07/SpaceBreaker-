@@ -1,0 +1,15 @@
+{
+  "category": "industry",
+  "tier": 2,
+  "requires": [
+    "spacebreaker:advanced_electronics"
+  ],
+  "icon": "minecraft:magma_block",
+  "samples": [
+    "spacebreaker:venus",
+    "spacebreaker:mercury"
+  ],
+  "unlocks": [
+    "spacebreaker:hot_electronics"
+  ]
+}

@@ -237,12 +237,12 @@ final class LandformSampler {
         double c = v.caldera();
         double depth = Math.min(H * 0.14, 26);
         if (s < c * 1.4) {
-            h -= depth * Crater.smooth((c * 1.05 - s) / (c * 0.22));
+            h -= depth * Crater.smooth((c * 1.05 - s) / (c * 0.3));
         }
         double oa = PlanetTerrain.unit(v.bits(), 7) * Mth.TWO_PI;
-        double ox = v.x() + Math.cos(oa) * c * 0.45 * v.radius();
-        double oz = v.z() + Math.sin(oa) * c * 0.45 * v.radius();
-        double s2 = Math.sqrt((x - ox) * (x - ox) + (z - oz) * (z - oz)) / (c * 0.5 * v.radius());
+        double ox = v.x() + Math.cos(oa) * c * 0.3 * v.radius();
+        double oz = v.z() + Math.sin(oa) * c * 0.3 * v.radius();
+        double s2 = Math.sqrt((x - ox) * (x - ox) + (z - oz) * (z - oz)) / (c * 0.45 * v.radius());
         if (s2 < 1.3) {
             h -= depth * 0.55 * Crater.smooth((1.05 - s2) / 0.25);
         }

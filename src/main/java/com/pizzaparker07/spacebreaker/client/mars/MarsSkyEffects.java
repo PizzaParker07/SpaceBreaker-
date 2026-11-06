@@ -126,6 +126,22 @@ public class MarsSkyEffects extends DimensionSpecialEffects {
     }
 
     /** Colour of the sky in direction d (unit), for the sun in direction s. */
+    /** Horizon colour in the camera's horizontal look direction: the fog colour, so distant ground melts into the sky. */
+    public static float[] horizonFog(net.minecraft.client.multiplayer.ClientLevel level, net.minecraft.client.Camera camera, float partialTick) {
+        double pd = level.registryAccess().registry(TerrainProfile.REGISTRY)
+                .flatMap(r -> r.stream().filter(t -> t.body().equals(Spacebreaker.id("mars"))).findFirst())
+                .map(TerrainProfile::poleDistance).orElse(8000.0);
+        double lat = PlanetTerrain.latitude(camera.getPosition().z, pd);
+        Vector3d sun = SkyMath.sunDirection(level.getTimeOfDay(partialTick), lat);
+        org.joml.Vector3f look = camera.getLookVector();
+        Vector3d d = new Vector3d(look.x(), 0, look.z());
+        if (d.lengthSquared() < 1e-6) {
+            d.set(1, 0, 0);
+        }
+        d.normalize();
+        return skyColour(d, sun, MarsWeather.stormStrength(level));
+    }
+
     static float[] skyColour(Vector3d d, Vector3d s, float storm) {
         float day = daylight(s.y);
         double up = Math.max(0, d.y);
@@ -186,15 +202,15 @@ public class MarsSkyEffects extends DimensionSpecialEffects {
             }
         }
         // below the horizon: the ground colour of the far haze, so the void never shows
-        float[] hz = skyColour(new Vector3d(1, 0, 0), sun, storm);
         for (int sgm = 0; sgm < SEGMENTS; sgm++) {
             double a0 = sgm * Mth.TWO_PI / SEGMENTS;
             double a1 = (sgm + 1) * Mth.TWO_PI / SEGMENTS;
-            float k = 0.8F;
-            bb.addVertex(m, (float) Math.cos(a0) * 100, -35, (float) Math.sin(a0) * 100).setColor(hz[0] * k, hz[1] * k, hz[2] * k, 1F);
-            bb.addVertex(m, (float) Math.cos(a1) * 100, -35, (float) Math.sin(a1) * 100).setColor(hz[0] * k, hz[1] * k, hz[2] * k, 1F);
-            bb.addVertex(m, 0, -100, 0).setColor(hz[0] * k, hz[1] * k, hz[2] * k, 1F);
-            bb.addVertex(m, 0, -100, 0).setColor(hz[0] * k, hz[1] * k, hz[2] * k, 1F);
+            float[] h0 = skyColour(new Vector3d(Math.cos(a0), 0, Math.sin(a0)), sun, storm);
+            float[] h1 = skyColour(new Vector3d(Math.cos(a1), 0, Math.sin(a1)), sun, storm);
+            bb.addVertex(m, (float) Math.cos(a0) * 100, -35, (float) Math.sin(a0) * 100).setColor(h0[0], h0[1], h0[2], 1F);
+            bb.addVertex(m, (float) Math.cos(a1) * 100, -35, (float) Math.sin(a1) * 100).setColor(h1[0], h1[1], h1[2], 1F);
+            bb.addVertex(m, 0, -100, 0).setColor(h1[0], h1[1], h1[2], 1F);
+            bb.addVertex(m, 0, -100, 0).setColor(h0[0], h0[1], h0[2], 1F);
         }
         BufferUploader.drawWithShader(bb.buildOrThrow());
 

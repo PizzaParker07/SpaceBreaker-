@@ -122,6 +122,23 @@ public final class MarsData {
         lang.add("biome.spacebreaker.mars_volcano", "Shield Volcano", "Kalkan Volkan");
         lang.add("biome.spacebreaker.mars_valley", "Ancient River Valley", "Antik Nehir Vadisi");
         lang.add("biome.spacebreaker.mars_ice_cap", "Polar Ice Cap", "Kutup Buz Örtüsü");
+        lang.add("dungeon.spacebreaker.mars_research_station", "Abandoned Mars Research Station", "Terk Edilmiş Mars Araştırma İstasyonu");
+        lang.add("dungeon.spacebreaker.mars_riverbed_cave", "Ancient Buried Riverbed", "Antik Gömülü Nehir Yatağı");
+        lang.add("structure.spacebreaker.mars_research_station", "Abandoned Mars Research Station", "Terk Edilmiş Mars Araştırma İstasyonu");
+        lang.add("structure.spacebreaker.mars_riverbed_cave", "Ancient Buried Riverbed", "Antik Gömülü Nehir Yatağı");
+        tech(lang, "dust_proof_seals", "Dust-Proof Seals", "Martian dust is finer than flour and full of salts: labyrinth seals and electrostatic wipers keep joints, airlocks and bearings working.",
+                "Toz Geçirmez Contalar", "Mars tozu undan incedir ve tuzla doludur: labirent contalar ve elektrostatik silecekler eklemleri, hava kilitlerini ve yatakları çalışır tutar.");
+        tech(lang, "heat_resistant_electronics", "Heat-Resistant Electronics", "Silicon carbide chips and ceramic boards that keep thinking at 460 °C, on Venus' surface or Mercury's day side.",
+                "Isıya Dayanıklı Elektronik", "460 °C'de bile çalışmayı sürdüren silisyum karbür yongalar ve seramik kartlar: Venüs yüzeyi ya da Merkür'ün gündüz yüzü için.");
+        tech(lang, "acid_resistant_coatings", "Acid-Resistant Coatings", "Fluoropolymer skins and gold-plated contacts that survive the sulfuric-acid clouds of Venus.",
+                "Aside Dayanıklı Kaplamalar", "Venüs'ün sülfürik asit bulutlarına dayanan floropolimer kaplamalar ve altın kaplı kontaklar.");
+        tech(lang, "polar_ice_mining", "Polar Ice Mining", "Heated drills for the permanently shadowed craters, where ice has waited in the cold for billions of years.",
+                "Kutup Buzu Madenciliği", "Buzun milyarlarca yıldır soğukta beklediği kalıcı gölgeli kraterler için ısıtmalı matkaplar.");
+    }
+
+    static void tech(Lang lang, String id, String en, String enDesc, String tr, String trDesc) {
+        lang.add("tech.spacebreaker." + id, en, tr);
+        lang.add("tech.spacebreaker." + id + ".desc", enDesc, trDesc);
     }
 
     // ------------------------------------------------------------------ datagen

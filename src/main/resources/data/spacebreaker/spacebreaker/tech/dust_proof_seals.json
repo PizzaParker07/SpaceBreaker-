@@ -1,0 +1,14 @@
+{
+  "category": "life_support",
+  "tier": 2,
+  "requires": [
+    "spacebreaker:pressure_suits"
+  ],
+  "icon": "spacebreaker:martian_regolith",
+  "samples": [
+    "spacebreaker:mars"
+  ],
+  "unlocks": [
+    "spacebreaker:dust_seal"
+  ]
+}

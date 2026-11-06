@@ -124,13 +124,14 @@ public final class MarsClient {
         if (!mars()) {
             return;
         }
-        float storm = MarsWeather.stormStrength(Minecraft.getInstance().level);
-        if (storm > 0) {
-            float k = Math.max(event.getRed(), Math.max(event.getGreen(), event.getBlue()));
-            event.setRed(Mth.lerp(storm, event.getRed(), 0.60F * Math.max(0.25F, k)));
-            event.setGreen(Mth.lerp(storm, event.getGreen(), 0.42F * Math.max(0.25F, k)));
-            event.setBlue(Mth.lerp(storm, event.getBlue(), 0.29F * Math.max(0.25F, k)));
+        var mc = Minecraft.getInstance();
+        if (event.getCamera().getFluidInCamera() != net.minecraft.world.level.material.FogType.NONE) {
+            return;
         }
+        float[] c = MarsSkyEffects.horizonFog(mc.level, event.getCamera(), (float) event.getPartialTick());
+        event.setRed(c[0]);
+        event.setGreen(c[1]);
+        event.setBlue(c[2]);
     }
 
     @SubscribeEvent

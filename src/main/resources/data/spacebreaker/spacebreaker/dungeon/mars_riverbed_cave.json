@@ -1,0 +1,8 @@
+{
+  "structure": "spacebreaker:mars_riverbed_cave",
+  "world": "spacebreaker:mars",
+  "guardians": [],
+  "loot_tables": [
+    "spacebreaker:dungeons/mars/riverbed_probe"
+  ]
+}

@@ -46,10 +46,43 @@ final class MarsScenario implements ShowcaseScenario {
 
     /** Hook for later content (creatures, dungeons). */
     void extraBuild(ServerLevel level, PlanetTerrain t) {
+        int y0 = (int) Math.floor(t.height(STAGE_X, STAGE_Z));
+        // creature line-up on the pad, frozen for the photo
+        spawn(level, com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.RUST_BEETLE.get(), STAGE_X - 9, y0 + 1, STAGE_Z + 6, 150F);
+        spawn(level, com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.STONEGRAZER.get(), STAGE_X - 4, y0 + 1, STAGE_Z + 6, 160F);
+        var lurker = spawn(level, com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.CANYON_LURKER.get(), STAGE_X + 2, y0 + 1, STAGE_Z + 6, 200F);
+        if (lurker instanceof com.pizzaparker07.spacebreaker.content.mars.entity.CanyonLurker l) {
+            l.setHidden(false);
+        }
+        spawn(level, com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.CANYON_LURKER.get(), STAGE_X + 6, y0 + 1, STAGE_Z + 6, 200F);
+        spawn(level, com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.POLAR_WORM.get(), STAGE_X + 9, y0 + 1, STAGE_Z + 6, 210F);
+        spawn(level, com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.DUST_DEVIL.get(), STAGE_X + 12, y0 + 1, STAGE_Z + 6, 180F);
+    }
+
+    private static net.minecraft.world.entity.Mob spawn(ServerLevel level, net.minecraft.world.entity.EntityType<? extends net.minecraft.world.entity.Mob> type,
+                                                        double x, double y, double z, float yaw) {
+        var mob = type.create(level);
+        if (mob == null) {
+            return null;
+        }
+        mob.moveTo(x + 0.5, y, z + 0.5, yaw, 0F);
+        mob.setYHeadRot(yaw);
+        mob.setYBodyRot(yaw);
+        mob.setNoAi(true);
+        mob.setPersistenceRequired();
+        mob.setSilent(true);
+        level.addFreshEntity(mob);
+        return mob;
     }
 
     List<ShowcaseDriver.Shot> extraShots(PlanetTerrain t) {
-        return List.of();
+        int y0 = (int) Math.floor(t.height(STAGE_X, STAGE_Z));
+        List<ShowcaseDriver.Shot> s = new ArrayList<>();
+        s.add(new ShowcaseDriver.Shot("13_creatures", 0, STAGE_X + 1.5, y0 + 3.2, STAGE_Z + 12.5, 180F, 14F, true, CameraType.FIRST_PERSON, 120,
+                at(0.18), null));
+        s.add(new ShowcaseDriver.Shot("14_creatures_close", 0, STAGE_X - 5, y0 + 2.6, STAGE_Z + 9.5, 200F, 18F, true, CameraType.FIRST_PERSON, 80,
+                at(0.18), null));
+        return s;
     }
 
     private PlanetTerrain terrain() {
@@ -63,7 +96,7 @@ final class MarsScenario implements ShowcaseScenario {
     private void buildStage(ServerLevel level) {
         int y0 = (int) Math.floor(terrain.height(STAGE_X, STAGE_Z));
         for (int x = STAGE_X - 13; x <= STAGE_X + 13; x++) {
-            for (int z = STAGE_Z - 6; z <= STAGE_Z + 8; z++) {
+            for (int z = STAGE_Z - 6; z <= STAGE_Z + 16; z++) {
                 for (int y = y0 - 3; y <= y0 + 12; y++) {
                     BlockState s = y < y0 ? MarsModule.MARTIAN_SANDSTONE.base().get().defaultBlockState()
                             : y == y0 ? MarsModule.MARTIAN_REGOLITH.get().defaultBlockState() : Blocks.AIR.defaultBlockState();
@@ -132,17 +165,17 @@ final class MarsScenario implements ShowcaseScenario {
 
         // the great rift, from the north rim looking along it
         double rz = t.riftCentre(300);
-        double rimZ = rz - 150;
-        s.add(new ShowcaseDriver.Shot("03_great_rift", 0, 300, ground(300, rimZ) + 8, rimZ, yaw(220, 150), 22F, true, fp, 260, at(0.15), null));
+        double rimZ = rz - 135;
+        s.add(new ShowcaseDriver.Shot("03_great_rift", 0, 300, ground(300, rimZ) + 6, rimZ, -25F, 22F, true, fp, 260, at(0.15), null));
         s.add(new ShowcaseDriver.Shot("04_rift_floor", 0, 520, ground(520, t.riftCentre(520)) + 3, t.riftCentre(520), -90F, -4F, true, fp, 220,
                 at(0.3), null));
 
         // the giant shield volcano from its foot
         double[] v = t.volcanoesNear(-2700, -500, -2500, -300).stream().max((a, b) -> Double.compare(a[2], b[2])).orElse(null);
         if (v != null) {
-            double fx = v[0] + v[2] * 1.45;
-            double fz = v[1] + v[2] * 0.25;
-            s.add(new ShowcaseDriver.Shot("05_shield_volcano", 0, fx, ground(fx, fz) + 30, fz, yaw(v[0] - fx, v[1] - fz), 3F, true, fp, 300,
+            double fx = v[0] + v[2] * 1.08;
+            double fz = v[1];
+            s.add(new ShowcaseDriver.Shot("05_volcano_escarpment", 0, fx, ground(fx, fz) + 6, fz, 90F, -6F, true, fp, 300,
                     at(0.12), null));
             double cx = v[0] + v[2] * 0.08;
             s.add(new ShowcaseDriver.Shot("06_caldera", 0, cx, ground(cx, v[1]) + 10, v[1], yaw(v[0] - cx, 0), 25F, true, fp, 260, at(0.22), null));

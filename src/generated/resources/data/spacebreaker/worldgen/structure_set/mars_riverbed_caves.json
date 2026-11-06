@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 4308701,
+    "separation": 10,
+    "spacing": 28
+  },
+  "structures": [
+    {
+      "structure": "spacebreaker:mars_riverbed_cave",
+      "weight": 1
+    }
+  ]
+}

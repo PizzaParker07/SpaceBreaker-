@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-06T17:36:10.328629862	Spacebreaker inner planets worldgen
+// 1.21.1	2026-11-06T17:44:23.799767715	Spacebreaker inner planets worldgen
 0e3f6ef1b4e6d54878538ded394ab2dea0fe468e data/spacebreaker/worldgen/biome/mars_canyon.json
 b3958de1fd46377fcbf64f8d8b10df1447b2d48b data/spacebreaker/worldgen/biome/mars_crater.json
 3b95c7c5d279206c431a659d0bde56cc55804c10 data/spacebreaker/worldgen/biome/mars_dunes.json
@@ -30,3 +30,7 @@ d845821a582974aad2968c592c78700cdf0f8e06 data/spacebreaker/worldgen/placed_featu
 a0b084cd47fd136980167f4bf4d4a36871348102 data/spacebreaker/worldgen/placed_feature/mars_ore_gypsum.json
 01f5168d9ae0530483a2df74b0692bbe77578eb6 data/spacebreaker/worldgen/placed_feature/mars_ore_hematite.json
 1aa6819895b5dc913df18999208c8bd3dbc17ab8 data/spacebreaker/worldgen/placed_feature/mars_ore_hematite_rich.json
+a359b7a2f8ad33d504a25ae130a5c8fe9f03ec3e data/spacebreaker/worldgen/structure/mars_research_station.json
+f21e6ddcbb3a11ab924625a1bec179390a586d9f data/spacebreaker/worldgen/structure/mars_riverbed_cave.json
+7ab1779e38dd472b902abc400eb8ab7a20291f26 data/spacebreaker/worldgen/structure_set/mars_research_stations.json
+d631663115ab68c254d6d02825fe5698cc326e08 data/spacebreaker/worldgen/structure_set/mars_riverbed_caves.json
