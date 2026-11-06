@@ -1,5 +1,6 @@
 package com.pizzaparker07.spacebreaker.core.astro.galaxy;
 
+import com.pizzaparker07.spacebreaker.core.astro.AstroConstants;
 import com.pizzaparker07.spacebreaker.core.astro.Vec3;
 
 import java.util.ArrayList;
@@ -20,8 +21,8 @@ public final class Galaxy {
     public static final double SECTOR_SIZE = 10.0;
     /** Generated stars closer than this to a fixed star are removed, pc. */
     public static final double FIXED_CLEARANCE = 0.5;
-    /** No generated star is closer to the Sun than Proxima Centauri really is, pc. */
-    public static final double SUN_CLEARANCE = 1.5;
+    /** Inside the real-star catalogue radius only real stars exist, pc. */
+    public static final double SUN_CLEARANCE = NearbyStars.CATALOGUE_RADIUS_LY * AstroConstants.LIGHT_YEAR / AstroConstants.PARSEC;
     private static final int SECTOR_CACHE = 512;
     private static final int SYSTEM_CACHE = 256;
 

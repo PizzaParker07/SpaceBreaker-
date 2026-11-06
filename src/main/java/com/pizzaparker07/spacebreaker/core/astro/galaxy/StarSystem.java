@@ -49,9 +49,16 @@ public record StarSystem(StarSeed seed, String rootId, StarKind kind, StellarMod
      * @param surfaceGravity  m/s²
      * @param ringInnerKm     inner ring radius from the body's centre (0: no rings)
      * @param ringOuterKm     outer ring radius
+     * @param discovered      true for real, confirmed bodies; false for bodies the generator added ("not yet discovered")
      */
     public record Details(String nameEn, String nameTr, double irradiance, double radiation, double axialTiltDeg,
-                          double surfaceGravity, double ringInnerKm, double ringOuterKm) {
+                          double surfaceGravity, double ringInnerKm, double ringOuterKm, boolean discovered) {
+        /** Details of a real (discovered) body. */
+        public Details(String nameEn, String nameTr, double irradiance, double radiation, double axialTiltDeg,
+                       double surfaceGravity, double ringInnerKm, double ringOuterKm) {
+            this(nameEn, nameTr, irradiance, radiation, axialTiltDeg, surfaceGravity, ringInnerKm, ringOuterKm, true);
+        }
+
         public boolean hasRings() {
             return ringOuterKm > ringInnerKm && ringInnerKm > 0;
         }

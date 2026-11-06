@@ -49,7 +49,7 @@ double dv = RocketMath.totalDeltaV(stack, payloadKg);
 | `galaxy.Galaxy` | seed-based Milky Way: lazily generated 10 pc sectors, star lookup by address, `starsWithin`, `system(star)` (cached) |
 | `galaxy.GalaxyModel` | stellar density: thin + thick disk with four spiral arms, bar, halo; 0.1 stars/pc³ at the Sun |
 | `galaxy.StarSystemGenerator` | Kroupa IMF, stellar remnants, planets (snow line, spacing, giants), moons inside a third of the Hill sphere, atmospheres, tidal locking |
-| `galaxy.NearbyStars` | real stars as fixed entries: Sun, Alpha Centauri A/B, Proxima Centauri (+ b), Barnard's Star (+ b), Sirius A/B, Epsilon Eridani (+ b), Tau Ceti, TRAPPIST-1 (+ b–h); unknown planets are filled in by the generator |
+| `galaxy.NearbyStars` | real-star catalogue: the Sun and 43 star systems within 25 ly, Fomalhaut just outside (positions from J2000 RA/Dec and distance, companions such as Alpha Centauri B, Sirius B, Procyon B) plus TRAPPIST-1, with their **confirmed** planets (Proxima b and d, Barnard's Star b–e, Gliese 876, HD 219134, Teegarden's Star, Wolf 1061, GJ 1061, YZ Ceti, Luyten's Star, Lacaille 9352, Ross 128, Lalande 21185, Gliese 581, Gliese 667 C, Epsilon Eridani b, Epsilon Indi Ab, TRAPPIST-1 b–h). Inside 25 ly only real stars exist; planets the generator adds around them have `Details.discovered() == false` ("not yet discovered") |
 | `galaxy.Rng` | SplitMix64: identical numbers on every machine for the same world seed |
 
 ### Conventions
@@ -598,10 +598,11 @@ SkyEphemeris.Horizontal h = SkyEphemeris.toHorizontal(o.direction(), axialTiltRa
 
 `toHorizontal` uses the observer body's axial tilt (about the x axis), how far it has turned
 (local sidereal angle: 0 when the meridian faces +x) and the latitude (z axis in the world). Magnitudes:
-m = H + 5 log₁₀(r·Δ/AU²) − 2.5 log₁₀ Φ(α) with H from diameter and geometric albedo (new optional body
-field `geometric_albedo`, NASA values; Bond albedo when missing) and a Lambert phase law; Saturn's rings
-are not included. `SkyEphemerisTest` checks the Sun, the full Moon, Venus at greatest elongation
-(24 Mar 2020: 46°, −4.4), Jupiter (3 Nov 2023: −2.9, 49.5″), Mars (13 Oct 2020: −2.6, 22″) and Saturn
+m = V(1, α) + 5 log₁₀(r·Δ/AU²). Mercury, Venus, Earth, Mars and Jupiter use their measured phase curves
+(Mallama & Hilton 2018), so Venus stays near −4 even as a thin crescent and −3.3 at inferior conjunction;
+other bodies use H from diameter and geometric albedo (optional body field `geometric_albedo`, NASA values;
+Bond albedo when missing) with a Lambert phase law. Saturn's rings are not included. `SkyEphemerisTest` checks the Sun, the full Moon, Venus over a whole synodic cycle (superior conjunction
+−3.9, greatest elongation 24 Mar 2020: 46°, −4.4, greatest brilliancy −4.7, a 12° crescent brighter than −3.5), Jupiter (3 Nov 2023: −2.9, 49.5″), Mars (13 Oct 2020: −2.6, 22″) and Saturn
 at opposition, Earth from Mars (≈ −2.5) and the Galilean moons from Io.
 
 ## Asteroids and small bodies (`core/astro/smallbody`)
@@ -635,3 +636,30 @@ CelestialBody c = BodyAdapter.toCelestialBody(a.toAstroBody(), a.details(), Opti
 
 Bulk density = grain density × (1 − porosity): rubble-pile C ≈ 1.45 g/cm³ (Bennu and Ryugu 1.19),
 S ≈ 2.0 (Itokawa 1.9, Eros 2.7). `AsteroidGeneratorTest` checks all of the above.
+
+## Gravity assists (`GravityAssist`, `TransferPlanner.planWithAssists`)
+
+`TransferPlanner.planWithAssists(sys, from, to, aerobrake)` returns the cheaper of the direct Hohmann
+plan and a gravity-assist tour; `plan(...)` itself is unchanged. Tours exist for the inner Solar System
+(both ends inside 1.6 AU, a planet orbiting between them): a flyby of that planet lowers the perihelion
+to the target's orbit (a deep-space burn pumps its v∞ first if needed), then resonant flybys of the
+target with small burns cut the arrival speed to ≈ 30 % (at least 1.5 km/s) before capture. Rule of
+thumb: a deep-space burn changes v∞ by 2.5× its Δv (v∞ leveraging). Legs: `departure`, `flyby_pumping`,
+`target_flybys`, `capture`; `synodicPeriod`/`phaseAngle` are those of the first leg.
+
+| Route | Direct | With assists | Time |
+|---|---|---|---|
+| LEO → low Mercury orbit | 13.09 km/s | 8.31 km/s (Venus, 4 Mercury flybys) | 105 d → 3.8 y |
+| Low Mercury orbit → LEO (aerocapture) | 7.57 km/s | 4.85 km/s | 3.8 y |
+| Low Mars orbit → low Mercury orbit | 16.90 km/s | 8.75 km/s (Earth, 6 flybys) | 5.9 y |
+
+MESSENGER needed ≈ 7 km/s from launch to its (elliptical) Mercury orbit, so the numbers are of the right
+size. `GravityAssistTest` checks them.
+
+### Real neighbourhood and the galaxy picture
+
+Inside `NearbyStars.CATALOGUE_RADIUS_LY` (25 ly) the galaxy contains only catalogued real stars; generated
+stars begin outside it. Each `StarSystem.Details` says whether a body is `discovered` (a confirmed, real
+planet) or a generator fill-in for a world nobody has found yet — show the latter as "not yet discovered".
+`GalaxyMap.overview` now draws two major and two minor spiral arms (Scutum–Centaurus and Perseus brightest)
+weighted by the light of young stars, around a bright bar and bulge.
