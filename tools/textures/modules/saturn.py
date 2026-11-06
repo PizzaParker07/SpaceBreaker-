@@ -242,6 +242,27 @@ def saturn_rings(width=256):
 
 # --------------------------------------------------------------------------- export
 
+def methane_drop():
+    """A large, slow raindrop (tinted pale amber in game): a short rounded streak, brighter at the leading end."""
+    cv = Canvas(8, 8)
+    for y, a in ((1, 90), (2, 150), (3, 200), (4, 240), (5, 255)):
+        cv[3, y] = (235, 235, 235, a)
+        cv[4, y] = (210, 210, 210, a)
+    cv[3, 6] = (200, 200, 200, 230)
+    cv[4, 6] = (180, 180, 180, 200)
+    return cv
+
+
+def methane_splash():
+    """The flat splash of a landing drop: a broken ring."""
+    cv = Canvas(8, 8)
+    for x, y in ((1, 4), (2, 3), (5, 3), (6, 4), (2, 5), (5, 5), (3, 6), (4, 6)):
+        cv[x, y] = (225, 225, 225, 210)
+    cv[3, 4] = (200, 200, 200, 120)
+    cv[4, 4] = (200, 200, 200, 120)
+    return cv
+
+
 def export(save):
     dust_spec = (18, 8, 64, None)
     frost_spec = (90, 14, 30, None)
@@ -259,6 +280,8 @@ def export(save):
     glow = lambda c: (200, 20, 0, 230) if c[3] else None
     save(sulcus_ice(), 'block', 'sulcus_ice', (200, 20, 0, glow))
     save(tholin_item(), 'item', 'tholin')
+    save(methane_drop(), 'particle', 'methane_drop')
+    save(methane_splash(), 'particle', 'methane_splash')
     save(methane_skater(), 'entity', 'saturn/methane_skater')
     save(geyser_drifter(), 'entity', 'saturn/geyser_drifter')
     save(geyser_drifter_glow(), 'entity', 'saturn/geyser_drifter_glow')

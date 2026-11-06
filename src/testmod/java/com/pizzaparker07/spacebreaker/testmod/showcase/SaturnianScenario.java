@@ -128,12 +128,12 @@ final class SaturnianScenario extends OuterShowcase {
         }
         if (vent != null) {
             BlockPos v = vent;
-            double y = ground(level, v.getX() + 18, v.getZ() + 12) + 3;
+            double y = Math.max(ground(level, v.getX() + 14, v.getZ() + 9), v.getY() + 1) + 5;
             for (int i = 0; i < 3; i++) {
                 mob(level, SaturnEntities.GEYSER_DRIFTER.get(), v.getX() + 3 + i * 2, ground(level, v.getX() + 3 + i * 2, v.getZ() + 2) + 3 + i, v.getZ() + 2,
                         i * 90F);
             }
-            shot("04_south_polar_geysers", v.getX() + 14.5, y, v.getZ() + 9.5, MoonScenario.yaw(-14, -9), -18F, 220, erupting(v, 0.15, false),
+            shot("04_south_polar_geysers", v.getX() + 14.5, y, v.getZ() + 9.5, MoonScenario.yaw(-14, -9), -18F, 140, erupting(v, 0.15, false),
                     MoonScenario::farView);
         }
         int y0 = stage(level, SaturnModule.ENCELADUS_SNOW.get().defaultBlockState(), SaturnModule.ENCELADUS_ICE.get().defaultBlockState(),

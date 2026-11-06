@@ -97,7 +97,7 @@ abstract class OuterShowcase implements ShowcaseScenario {
         shot(name, x + 0.5, ground(level, x, z) + 1.7, z + 0.5, yaw, pitch, 160, at(dayFraction), MoonScenario::farView);
     }
 
-    /** Jumps the world clock to a moment when the vent at {@code pos} is erupting (plumes in showcase shots). */
+    /** Jumps the world clock to 40 ticks into an eruption of the vent at {@code pos} (plumes in showcase shots). */
     static Consumer<ServerPlayer> erupting(BlockPos pos, double dayFraction, boolean nightVision) {
         return p -> {
             ServerLevel level = p.serverLevel();
@@ -105,7 +105,8 @@ abstract class OuterShowcase implements ShowcaseScenario {
             if (level.getBlockState(pos).getBlock() instanceof VentBlock v) {
                 long now = level.getGameTime();
                 long t = now;
-                while (!VentBlock.erupting(v.kind(), t, pos) && t < now + v.kind().period()) {
+                // the start of the next eruption (not a moment late in one already under way)
+                while (!(VentBlock.erupting(v.kind(), t, pos) && !VentBlock.erupting(v.kind(), t - 1, pos)) && t < now + 2L * v.kind().period()) {
                     t++;
                 }
                 level.getServer().getWorldData().overworldData().setGameTime(t + 40);

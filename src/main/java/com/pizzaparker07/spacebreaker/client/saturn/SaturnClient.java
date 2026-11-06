@@ -5,6 +5,7 @@ import com.pizzaparker07.spacebreaker.Spacebreaker;
 import com.pizzaparker07.spacebreaker.client.jupiter.GiantPlanetSkyEffects;
 import com.pizzaparker07.spacebreaker.client.mars.SimpleMobRenderer;
 import com.pizzaparker07.spacebreaker.content.saturn.SaturnModule;
+import com.pizzaparker07.spacebreaker.content.saturn.SaturnParticles;
 import com.pizzaparker07.spacebreaker.content.saturn.TitanWeather;
 import com.pizzaparker07.spacebreaker.content.saturn.entity.GeyserDrifter;
 import com.pizzaparker07.spacebreaker.content.saturn.entity.SaturnEntities;
@@ -14,7 +15,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.layers.EyesLayer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -24,6 +24,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterDimensionSpecialEffectsEvent;
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 
 /**
  * Client side of Saturn's moons: Titan's hazy orange sky and its methane rain, Enceladus' black sky with Saturn 28°
@@ -42,6 +43,11 @@ public final class SaturnClient {
         event.register(Spacebreaker.id("titan"), new TitanSkyEffects());
         event.register(Spacebreaker.id("enceladus"), new GiantPlanetSkyEffects(Bodies.key("enceladus"),
                 new GiantPlanetSkyEffects.Parent(SATURN_DISC, SATURN_RINGS, 1.24, 2.27, 4.0, 1F)));
+    }
+
+    @SubscribeEvent
+    static void particles(RegisterParticleProvidersEvent event) {
+        event.registerSpriteSet(SaturnParticles.METHANE_DROP.get(), MethaneDropParticle.Provider::new);
     }
 
     @SubscribeEvent
@@ -94,9 +100,9 @@ public final class SaturnClient {
             int ground = mc.level.getHeight(Heightmap.Types.MOTION_BLOCKING, (int) Math.floor(x), (int) Math.floor(z));
             double top = Math.max(ground, mc.player.getY()) + 6 + r.nextDouble() * 10;
             if (r.nextInt(4) == 0) {
-                mc.level.addParticle(ParticleTypes.RAIN, x, ground + 0.05, z, 0, 0, 0);
+                mc.level.addParticle(SaturnParticles.METHANE_DROP.get(), x, ground + 0.3, z, 0, -0.1, 0);
             } else {
-                mc.level.addParticle(ParticleTypes.FALLING_WATER, x, top, z, 0, -0.05, 0);
+                mc.level.addParticle(SaturnParticles.METHANE_DROP.get(), x, top, z, 0, -0.08, 0);
             }
         }
     }
