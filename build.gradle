@@ -15,6 +15,17 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 repositories {
     mavenLocal()
+    // Optional recipe viewers (compile against their APIs only; never bundled)
+    maven {
+        name = 'BlameJared (JEI)'
+        url = 'https://maven.blamejared.com'
+        content { includeGroup 'mezz.jei'; includeGroup 'net.mezzdev.config' }
+    }
+    maven {
+        name = 'TerraformersMC (EMI)'
+        url = 'https://maven.terraformersmc.com/releases'
+        content { includeGroup 'dev.emi' }
+    }
 }
 
 sourceSets {
@@ -98,6 +109,20 @@ neoForge {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
+    // Recipe viewers: optional integrations in compat/jei and compat/emi. Only the APIs are on the compile
+    // classpath; add -PwithJei=true or -PwithEmi=true to run a client/showcase with the full mod.
+    compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
+    compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
+    compileOnly "dev.emi:emi-neoforge:${emi_version}:api"
+    testmodCompileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
+    testmodCompileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
+    testmodCompileOnly "dev.emi:emi-neoforge:${emi_version}:api"
+    if (project.hasProperty('withJei')) {
+        localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+    }
+    if (project.hasProperty('withEmi')) {
+        localRuntime "dev.emi:emi-neoforge:${emi_version}"
+    }
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }

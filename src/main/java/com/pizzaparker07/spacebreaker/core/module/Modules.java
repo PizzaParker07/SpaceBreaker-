@@ -24,7 +24,8 @@ public final class Modules {
             new com.pizzaparker07.spacebreaker.content.mars.MarsModule(),
             new com.pizzaparker07.spacebreaker.content.venus.VenusModule(),
             new com.pizzaparker07.spacebreaker.content.mercury.MercuryModule(),
-            new com.pizzaparker07.spacebreaker.content.belt.OuterSystemModule()
+            new com.pizzaparker07.spacebreaker.content.belt.OuterSystemModule(),
+            new com.pizzaparker07.spacebreaker.compat.CompatModule()
     );
 
     private Modules() {
