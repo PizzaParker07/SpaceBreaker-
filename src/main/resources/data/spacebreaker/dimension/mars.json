@@ -1,0 +1,19 @@
+{
+  "type": "spacebreaker:mars",
+  "generator": {
+    "type": "spacebreaker:planet",
+    "terrain": "spacebreaker:mars",
+    "biome_source": {
+      "type": "spacebreaker:planet",
+      "highlands": "spacebreaker:mars_highlands",
+      "lowlands": "spacebreaker:mars_plains",
+      "crater": "spacebreaker:mars_crater",
+      "polar": "spacebreaker:mars_polar",
+      "dunes": "spacebreaker:mars_dunes",
+      "canyon": "spacebreaker:mars_canyon",
+      "volcano": "spacebreaker:mars_volcano",
+      "valley": "spacebreaker:mars_valley",
+      "ice_cap": "spacebreaker:mars_ice_cap"
+    }
+  }
+}

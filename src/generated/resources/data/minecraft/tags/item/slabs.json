@@ -3,6 +3,10 @@
     "spacebreaker:anorthosite_slab",
     "spacebreaker:polished_anorthosite_slab",
     "spacebreaker:anorthosite_brick_slab",
-    "spacebreaker:sintered_regolith_brick_slab"
+    "spacebreaker:sintered_regolith_brick_slab",
+    "spacebreaker:martian_basalt_slab",
+    "spacebreaker:polished_martian_basalt_slab",
+    "spacebreaker:martian_basalt_brick_slab",
+    "spacebreaker:martian_sandstone_slab"
   ]
 }

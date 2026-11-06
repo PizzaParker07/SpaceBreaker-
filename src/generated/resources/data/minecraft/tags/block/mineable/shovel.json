@@ -4,6 +4,13 @@
     "spacebreaker:lunar_regolith",
     "spacebreaker:mare_regolith",
     "spacebreaker:volcanic_glass_soil",
-    "spacebreaker:icy_regolith"
+    "spacebreaker:icy_regolith",
+    "spacebreaker:martian_regolith",
+    "spacebreaker:hematite_soil",
+    "spacebreaker:perchlorate_soil",
+    "spacebreaker:martian_clay",
+    "spacebreaker:co2_frost",
+    "spacebreaker:martian_sand",
+    "spacebreaker:olivine_sand"
   ]
 }

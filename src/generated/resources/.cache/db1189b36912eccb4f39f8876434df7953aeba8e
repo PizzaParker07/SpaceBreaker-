@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-06T17:01:49.477317328	Tags for minecraft:item mod id spacebreaker
+// 1.21.1	2026-11-06T17:22:15.913993782	Tags for minecraft:item mod id spacebreaker
 7e8e995a94080524a7a2d6280b7b24b5bae0a66f data/c/tags/item/buckets.json
 e8c124d1254042fe6eb9bded9e1ebed66c5d69dd data/c/tags/item/dusts.json
 ad7d32167ffa7ca53078a97903c3d39992237e23 data/c/tags/item/dusts/aluminum.json
@@ -10,6 +10,7 @@ d5ffd76eae6aa5a12b296ef8f91c74c5a83c9360 data/c/tags/item/dusts/iron.json
 2a65a9b853ae53f01f426d1248d101e7d49ab38c data/c/tags/item/dusts/nickel.json
 b8b1c86d18ce0a7c14183c37900e3d1dae9a6c5c data/c/tags/item/dusts/titanium.json
 58682988e1855d5e178aec782df052798999a982 data/c/tags/item/dusts/tungsten.json
+f5d68f9fa141c448101c2d1e358ed431e2ec9ccf data/c/tags/item/gems/gypsum.json
 966297689fbec0dc8857e64a9ecc3028507f4070 data/c/tags/item/ingots.json
 0c9b9ea610564cb730896f559fe5d1669a859c32 data/c/tags/item/ingots/aluminum.json
 2087457c2008df79aaf776d92379e796edd1f1e4 data/c/tags/item/ingots/aluminum_lithium.json
@@ -28,8 +29,10 @@ b9864ba1205ca0bfe05749fe1b054d3d55f93d25 data/c/tags/item/nuggets/aluminum.json
 e2b1acd7ecafb1e12829c81d9760779468454a55 data/c/tags/item/nuggets/steel.json
 668202086fbb6b6e4f1d74c69d57f7a5bde173d0 data/c/tags/item/nuggets/titanium.json
 005301c689a4b9f2a404a8654863325e08b30008 data/c/tags/item/nuggets/tungsten.json
-e715c8ea8f2796b0197452af8e40424757463d2a data/c/tags/item/ores.json
+a416108e9732649e9b062c4f957a525d817bc7eb data/c/tags/item/ores.json
 2e53c12f1069a9431086af8c817e22054d435904 data/c/tags/item/ores/bauxite.json
+2ddf8e684b01bc27f3717269a198a193b926d001 data/c/tags/item/ores/gypsum.json
+74b7b306fed16c39256aea4d6cb125505a0b13a1 data/c/tags/item/ores/hematite.json
 9f653fe92cede5b05d4ff9ac26f101e43ce60cfb data/c/tags/item/ores/ilmenite.json
 9303ecfabb67b55a4a9758c3fa94f957caa99294 data/c/tags/item/ores/kreep.json
 b95696d7cb751fef26f67aa2843a29892b12c05e data/c/tags/item/ores/pentlandite.json
@@ -49,8 +52,9 @@ b706ddd1421a1ffca51761adfc900bcc2e4da767 data/c/tags/item/plates/gold.json
 8662d0b386c91863731912a86dffc56123d95369 data/c/tags/item/plates/steel.json
 93ba6f0ebbb93b5d112bd7dffc45637018ce27f1 data/c/tags/item/plates/titanium.json
 79ee596d62511e904a3a25a1d5cbaa057c9bf9f1 data/c/tags/item/plates/tungsten.json
-c9e664d25121d3279ab141bb9dedc3b1cd48d913 data/c/tags/item/raw_materials.json
+ce7822ead55d710a95dab540325218e545cc447e data/c/tags/item/raw_materials.json
 01c1ab86a98c045b834d4b0eb6f54772b7c672e3 data/c/tags/item/raw_materials/bauxite.json
+8cee4cc123ada4d69c4cb97bedcef311ae63ce3e data/c/tags/item/raw_materials/hematite.json
 c43274ba74875113cd85dbd8ca19b19ce1833a2f data/c/tags/item/raw_materials/ilmenite.json
 0cf21c6f9cd2ca13eb165c95766a8eb3f8e825a2 data/c/tags/item/raw_materials/pentlandite.json
 4338403acae9cc1f7f53040ec0e2dc45d688a625 data/c/tags/item/raw_materials/rutile.json
@@ -86,8 +90,9 @@ f75665d5dc09543412415ed6f91412199640c492 data/minecraft/tags/item/chest_armor.js
 80c2b389f804aa31ae630edb2562f64f80987d56 data/minecraft/tags/item/foot_armor.json
 866d4e35597e8439a3bd31730e069ad3c563da93 data/minecraft/tags/item/head_armor.json
 8833c233fc59c80be0074a5187f08df7235ab6fa data/minecraft/tags/item/leg_armor.json
-f8aabeb1c5ae11ab726d0ebab9bc698a35f54c42 data/minecraft/tags/item/slabs.json
-f05112f20c644458c8a0eb695adbd85afb359f15 data/minecraft/tags/item/stairs.json
-e3825e9a8c6f0fa0d41393d86c631340c01b8595 data/minecraft/tags/item/walls.json
+1137c1ba4d56080deb8301dbb264af90ec575b94 data/minecraft/tags/item/sand.json
+2606c98f3e03435937a8cacc7af63d9e9a301907 data/minecraft/tags/item/slabs.json
+07180392460c91910dcdcffb8b5f2c35bfcffec1 data/minecraft/tags/item/stairs.json
+6b136670bba9dc437818890f0e0fb632113f4f16 data/minecraft/tags/item/walls.json
 8ce8de56c882fde6d0067f4d1a5eecfe4f54c662 data/spacebreaker/tags/item/press_dies.json
 694849f8ef7201ef082dd39d125bd84fe060a97b data/spacebreaker/tags/item/researchable.json

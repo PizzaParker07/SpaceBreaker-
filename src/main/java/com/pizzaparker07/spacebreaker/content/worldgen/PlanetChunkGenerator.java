@@ -140,9 +140,11 @@ public class PlanetChunkGenerator extends ChunkGenerator {
 
     /** Fills one column top-down into {@code sink}. */
     private void column(int wx, int wz, int top, int slope, PlanetTerrain.Column c, int minY, ColumnSink sink) {
-        TerrainProfile p = terrain().profile();
+        PlanetTerrain t = terrain();
+        TerrainProfile p = t.profile();
         TerrainProfile.Materials mat = p.materials();
-        long h = PlanetTerrain.mix(terrain().seed() ^ 0xC0FFEEL, PlanetTerrain.mix(wx, wz));
+        Landforms lf = p.landforms();
+        long h = PlanetTerrain.mix(t.seed() ^ 0xC0FFEEL, PlanetTerrain.mix(wx, wz));
         double jitter = (PlanetTerrain.unit(h, 0) - 0.5) * 0.18;
         boolean lowland = c.lowland + jitter > 0.5;
         boolean shadowed = c.shadowed(p) && mat.polarSoil().isPresent();
@@ -164,6 +166,48 @@ public class PlanetChunkGenerator extends ChunkGenerator {
         BlockState lowRock = mat.lowlandRock();
         BlockState highRock = mat.highlandRock();
         BlockState breccia = mat.breccia();
+        boolean strata = lf.strata().isPresent();
+
+        // ---- optional landforms: soils and rock of volcanoes, valleys, dunes, rifts, ice caps
+        int capDepth = 0;
+        if (!shadowed && !c.volcanic && c.ray + jitter <= 0.45) {
+            if (c.patch >= 0) {
+                soil = lf.patches().get(c.patch).soil();
+            }
+            if (lf.valleys().isPresent()) {
+                Landforms.Valleys v = lf.valleys().get();
+                if (c.valley + jitter > 0.5) {
+                    soil = v.floorSoil();
+                } else if (c.delta + jitter > 0.45 && v.deltaSoil().isPresent()) {
+                    soil = v.deltaSoil().get();
+                }
+            }
+            if (c.rift < 0.45 && lf.rift().flatMap(Landforms.Rift::floorSoil).isPresent()) {
+                soil = lf.rift().get().floorSoil().get();
+            }
+        }
+        if (c.volcanoS < 1.0 + jitter && lf.volcanoes().isPresent()) {
+            Landforms.Volcanoes v = lf.volcanoes().get();
+            lowRock = highRock = v.rock();
+            strata = false;
+            if (v.soil().isPresent() && !shadowed) {
+                soil = v.soil().get();
+            }
+            if (c.volcanoS < v.caldera() * 1.1) {
+                soilDepth = Math.min(soilDepth, 1);
+            }
+        }
+        if (c.dune > 0.35 + jitter && lf.dunes().isPresent()) {
+            Landforms.Dunes d = lf.dunes().get();
+            soil = c.altDune && d.altSoil().isPresent() ? d.altSoil().get() : d.soil();
+            soilDepth = Math.max(mat.soilDepth(), (int) Math.ceil(c.duneHeight) + 2);
+        }
+        if (c.rift > 0.42 && c.rift < 1 && slope >= 2) {
+            soilDepth = 0; // rift walls: bare layered rock
+        }
+        if (c.cap >= 1 && lf.iceCap().isPresent()) {
+            capDepth = (int) c.cap;
+        }
         BlockState surfaceRock = wall || (c.breccia > 0.45 && !lowland) ? breccia : lowland ? lowRock : highRock;
 
         for (int y = top; y >= minY; y--) {
@@ -171,18 +215,32 @@ public class PlanetChunkGenerator extends ChunkGenerator {
             BlockState state;
             if (y <= bedrockTop) {
                 state = mat.bedrock();
-            } else if (depth < soilDepth) {
-                state = soil;
-            } else if (depth < soilDepth + iceDepth) {
-                state = mat.ice().get();
-            } else if (depth < soilDepth + 2) {
-                state = surfaceRock;
-            } else if (lowland && depth < mat.lowlandRockDepth()) {
-                state = lowRock;
-            } else if (depth < 12 && c.breccia > 0.25 && !lowland) {
-                state = breccia;
+            } else if (depth < capDepth) {
+                Landforms.IceCap cap = lf.iceCap().get();
+                if (depth == 0 && c.frost && cap.frost().isPresent()) {
+                    state = cap.frost().get();
+                } else if (cap.dustyIce().isPresent() && Math.floorMod(y + (int) (c.trough * 0.5), 5) == 0) {
+                    state = cap.dustyIce().get();
+                } else {
+                    state = cap.ice();
+                }
             } else {
-                state = highRock;
+                int d = depth - capDepth;
+                if (d < soilDepth) {
+                    state = soil;
+                } else if (d < soilDepth + iceDepth) {
+                    state = mat.ice().get();
+                } else if (d < soilDepth + 2 && !(strata && surfaceRock == highRock)) {
+                    state = surfaceRock;
+                } else if (lowland && d < mat.lowlandRockDepth()) {
+                    state = lowRock;
+                } else if (d < 12 && c.breccia > 0.25 && !lowland && !strata) {
+                    state = breccia;
+                } else if (strata && highRock == mat.highlandRock()) {
+                    state = t.stratum(wx, y, wz);
+                } else {
+                    state = highRock;
+                }
             }
             sink.set(y, state);
         }
@@ -323,5 +381,9 @@ public class PlanetChunkGenerator extends ChunkGenerator {
         info.add(String.format(Locale.ROOT, "Planet: lat %.2f lon %.2f zone %s lowland %.2f crater %.2f%s",
                 c.latitude, t.longitude(pos.getX()), c.zone(t.profile()).name().toLowerCase(Locale.ROOT), c.lowland,
                 Math.min(c.anyCraterS, 9.99), c.shadowed(t.profile()) ? " shadowed" : ""));
+        if (!t.profile().landforms().equals(Landforms.NONE)) {
+            info.add(String.format(Locale.ROOT, "Landforms: dune %.2f valley %.2f delta %.2f volcano %.2f rift %.2f cap %.1f patch %d",
+                    c.dune, c.valley, c.delta, Math.min(c.volcanoS, 9.99), Math.min(c.rift, 9.99), c.cap, c.patch));
+        }
     }
 }

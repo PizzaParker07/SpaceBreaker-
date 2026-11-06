@@ -1,0 +1,238 @@
+{
+  "body": "spacebreaker:mars",
+  "base_height": 86,
+  "pole_distance": 8000,
+  "relief": {
+    "amplitude": 36,
+    "scale": 540,
+    "detail_amplitude": 2.0,
+    "detail_scale": 34
+  },
+  "lowlands": {
+    "threshold": 0.06,
+    "scale": 3200,
+    "depth": 20,
+    "edge": 0.12,
+    "ridge_height": 1.2,
+    "volcanic_patch": 1.0
+  },
+  "craters": {
+    "density": 0.8,
+    "lowland_density": 0.3,
+    "depth_ratio": 0.15,
+    "rim_ratio": 0.04,
+    "complex_radius": 30,
+    "central_peak": 0.4,
+    "fresh_chance": 0.05,
+    "ray_length": 3,
+    "classes": [
+      {
+        "min_radius": 3,
+        "max_radius": 7,
+        "cell": 60,
+        "chance": 0.45,
+        "per_cell": 1
+      },
+      {
+        "min_radius": 7,
+        "max_radius": 18,
+        "cell": 150,
+        "chance": 0.5,
+        "per_cell": 1
+      },
+      {
+        "min_radius": 18,
+        "max_radius": 46,
+        "cell": 380,
+        "chance": 0.5,
+        "per_cell": 1
+      },
+      {
+        "min_radius": 46,
+        "max_radius": 110,
+        "cell": 1100,
+        "chance": 0.55,
+        "per_cell": 1
+      }
+    ]
+  },
+  "poles": {
+    "polar_latitude": 74,
+    "ice_latitude": 82,
+    "ice_depth": 3,
+    "polar_craters": 0.8
+  },
+  "materials": {
+    "highland_soil": {
+      "Name": "spacebreaker:martian_regolith"
+    },
+    "lowland_soil": {
+      "Name": "spacebreaker:martian_regolith"
+    },
+    "ray_soil": {
+      "Name": "spacebreaker:martian_sand"
+    },
+    "highland_rock": {
+      "Name": "spacebreaker:martian_sandstone"
+    },
+    "lowland_rock": {
+      "Name": "spacebreaker:martian_basalt"
+    },
+    "breccia": {
+      "Name": "spacebreaker:martian_basalt"
+    },
+    "polar_soil": {
+      "Name": "spacebreaker:co2_frost"
+    },
+    "ice": {
+      "Name": "spacebreaker:martian_ice"
+    },
+    "bedrock": {
+      "Name": "minecraft:bedrock"
+    },
+    "soil_depth": 3,
+    "lowland_rock_depth": 16
+  },
+  "landforms": {
+    "dunes": {
+      "scale": 600,
+      "threshold": 0.12,
+      "wavelength": 30,
+      "height": 7,
+      "wind_deg": 25,
+      "lowland_only": true,
+      "soil": {
+        "Name": "spacebreaker:martian_sand"
+      },
+      "alt_soil": {
+        "Name": "spacebreaker:olivine_sand"
+      },
+      "alt_share": 0.2
+    },
+    "rift": {
+      "latitude": -8,
+      "x": 0,
+      "length": 7000,
+      "width": 250,
+      "depth": 76,
+      "meander": 320,
+      "terraces": 4
+    },
+    "volcanoes": {
+      "cell": 3400,
+      "chance": 0.3,
+      "min_radius": 260,
+      "max_radius": 720,
+      "height_ratio": 0.18,
+      "max_height": 175,
+      "caldera": 0.09,
+      "escarpment": 18,
+      "anchors": [
+        {
+          "x": -2600,
+          "z": -400,
+          "radius": 950,
+          "height": 180
+        }
+      ],
+      "rock": {
+        "Name": "spacebreaker:martian_basalt"
+      },
+      "soil": {
+        "Name": "spacebreaker:martian_regolith"
+      }
+    },
+    "valleys": {
+      "scale": 1500,
+      "width": 0.045,
+      "depth": 10,
+      "floor_soil": {
+        "Name": "spacebreaker:martian_clay"
+      },
+      "delta_soil": {
+        "Name": "spacebreaker:hematite_soil"
+      }
+    },
+    "strata": {
+      "blocks": [
+        {
+          "Name": "spacebreaker:martian_sandstone"
+        },
+        {
+          "Name": "spacebreaker:martian_sandstone"
+        },
+        {
+          "Name": "spacebreaker:martian_mudstone"
+        },
+        {
+          "Name": "spacebreaker:martian_sandstone"
+        },
+        {
+          "Name": "spacebreaker:martian_mudstone"
+        },
+        {
+          "Name": "spacebreaker:martian_mudstone"
+        }
+      ],
+      "thickness": 3,
+      "warp": 3
+    },
+    "ice_cap": {
+      "latitude": 80,
+      "thickness": 30,
+      "frost_latitude": 85,
+      "troughs": 9,
+      "ice": {
+        "Name": "spacebreaker:martian_ice"
+      },
+      "frost": {
+        "Name": "spacebreaker:dry_ice"
+      },
+      "dusty_ice": {
+        "Name": "spacebreaker:dusty_ice"
+      }
+    },
+    "patches": [
+      {
+        "soil": {
+          "Name": "spacebreaker:hematite_soil"
+        },
+        "scale": 500,
+        "threshold": 0.72,
+        "where": "lowlands"
+      },
+      {
+        "soil": {
+          "Name": "spacebreaker:perchlorate_soil"
+        },
+        "scale": 350,
+        "threshold": 0.75,
+        "where": "highlands"
+      },
+      {
+        "soil": {
+          "Name": "spacebreaker:martian_sandstone"
+        },
+        "scale": 110,
+        "threshold": 0.77,
+        "where": "highlands"
+      },
+      {
+        "soil": {
+          "Name": "spacebreaker:martian_basalt"
+        },
+        "scale": 140,
+        "threshold": 0.79,
+        "where": "lowlands"
+      },
+      {
+        "soil": {
+          "Name": "spacebreaker:martian_sand"
+        },
+        "scale": 70,
+        "threshold": 0.8,
+        "where": "any"
+      }
+    ]
+  }
+}

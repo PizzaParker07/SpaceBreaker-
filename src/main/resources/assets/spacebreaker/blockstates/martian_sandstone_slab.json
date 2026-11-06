@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "spacebreaker:block/martian_sandstone_slab"
+    },
+    "type=top": {
+      "model": "spacebreaker:block/martian_sandstone_slab_top"
+    },
+    "type=double": {
+      "model": "spacebreaker:block/martian_sandstone"
+    }
+  }
+}

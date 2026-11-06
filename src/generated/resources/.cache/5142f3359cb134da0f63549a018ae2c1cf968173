@@ -1,7 +1,9 @@
-// 1.21.1	2026-11-06T17:01:49.472482003	Tags for minecraft:block mod id spacebreaker
+// 1.21.1	2026-11-06T17:22:15.91024788	Tags for minecraft:block mod id spacebreaker
 a1311f0e75224aaa1a20d601adee0df982e21fb6 data/c/tags/block/ore_rates/singular.json
-e715c8ea8f2796b0197452af8e40424757463d2a data/c/tags/block/ores.json
+a416108e9732649e9b062c4f957a525d817bc7eb data/c/tags/block/ores.json
 2e53c12f1069a9431086af8c817e22054d435904 data/c/tags/block/ores/bauxite.json
+2ddf8e684b01bc27f3717269a198a193b926d001 data/c/tags/block/ores/gypsum.json
+74b7b306fed16c39256aea4d6cb125505a0b13a1 data/c/tags/block/ores/hematite.json
 9f653fe92cede5b05d4ff9ac26f101e43ce60cfb data/c/tags/block/ores/ilmenite.json
 9303ecfabb67b55a4a9758c3fa94f957caa99294 data/c/tags/block/ores/kreep.json
 b95696d7cb751fef26f67aa2843a29892b12c05e data/c/tags/block/ores/pentlandite.json
@@ -25,15 +27,18 @@ e21077d057ed0923aae4f9d3cfd999103138de75 data/c/tags/block/storage_blocks/raw_ru
 64503b6cc370a3b323bd12f811f3b2ce7b528e7f data/c/tags/block/storage_blocks/titanium.json
 3a0314482d4f03811bfa706046ea7e26320ae256 data/c/tags/block/storage_blocks/tungsten.json
 37162d797c2ad11e5928f1f300d1d1fd86b427ae data/minecraft/tags/block/beacon_base_blocks.json
-d4cf7107947920e77f4ebad58d807ea3123c27b1 data/minecraft/tags/block/ice.json
-50cafdcdf44540d783f93a7c72f1c3bac7134521 data/minecraft/tags/block/mineable/pickaxe.json
-5af80a47f26d4085b08cd798302d83281a1ebae0 data/minecraft/tags/block/mineable/shovel.json
+dca87b8bfe807cb1b048be394b29fbe2b9c0eb82 data/minecraft/tags/block/ice.json
+059b8e68b897a903107bfc4e7a36f5e8d43a3d48 data/minecraft/tags/block/mineable/pickaxe.json
+e6270187fb7b644d98580c4fb2d0c9d0374d6a5b data/minecraft/tags/block/mineable/shovel.json
 b528c4400e84cccd1d9fd31820885e4d6d7f9ee7 data/minecraft/tags/block/needs_iron_tool.json
-fae5c92ef2bf47e5bd723083bcde2a43f92bc034 data/minecraft/tags/block/needs_stone_tool.json
-f8aabeb1c5ae11ab726d0ebab9bc698a35f54c42 data/minecraft/tags/block/slabs.json
-f05112f20c644458c8a0eb695adbd85afb359f15 data/minecraft/tags/block/stairs.json
-e3825e9a8c6f0fa0d41393d86c631340c01b8595 data/minecraft/tags/block/walls.json
+9d6d5bb2014c699a42ef1ec3c03c9a2dc0be5584 data/minecraft/tags/block/needs_stone_tool.json
+1137c1ba4d56080deb8301dbb264af90ec575b94 data/minecraft/tags/block/sand.json
+2606c98f3e03435937a8cacc7af63d9e9a301907 data/minecraft/tags/block/slabs.json
+07180392460c91910dcdcffb8b5f2c35bfcffec1 data/minecraft/tags/block/stairs.json
+6b136670bba9dc437818890f0e0fb632113f4f16 data/minecraft/tags/block/walls.json
 f5b0ec35249c11810aaa21a5c27270aaf31d4d51 data/spacebreaker/tags/block/airtight.json
 a4e8097fff07f9a74259d6b5dd583f3437ff28a2 data/spacebreaker/tags/block/leaky.json
 65f229612c5d2f11045007d043184bec03af4bbb data/spacebreaker/tags/block/lunar_soils.json
+afb8415bcdce0603de7cf58212b2d8c11a30e053 data/spacebreaker/tags/block/mars_soils.json
+970028c21f102ea541f27978c131fc4101c9c779 data/spacebreaker/tags/block/mars_stone.json
 3fdd2a67f181088985225042c5dc62b5b4a84539 data/spacebreaker/tags/block/moon_stone.json

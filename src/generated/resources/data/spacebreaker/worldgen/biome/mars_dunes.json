@@ -1,0 +1,50 @@
+{
+  "carvers": {},
+  "creature_spawn_probability": 0.05,
+  "downfall": 0.0,
+  "effects": {
+    "fog_color": 12095080,
+    "foliage_color": 10119752,
+    "grass_color": 10119752,
+    "particle": {
+      "options": {
+        "type": "spacebreaker:dust_mote"
+      },
+      "probability": 0.0015
+    },
+    "sky_color": 13214330,
+    "water_color": 5204602,
+    "water_fog_color": 2764854
+  },
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      "spacebreaker:mars_ore_hematite"
+    ]
+  ],
+  "has_precipitation": false,
+  "spawn_costs": {},
+  "spawners": {
+    "ambient": [],
+    "axolotls": [],
+    "creature": [
+      {
+        "type": "spacebreaker:rust_beetle",
+        "maxCount": 3,
+        "minCount": 1,
+        "weight": 6
+      }
+    ],
+    "misc": [],
+    "monster": [],
+    "underground_water_creature": [],
+    "water_ambient": [],
+    "water_creature": []
+  },
+  "temperature": -0.6
+}

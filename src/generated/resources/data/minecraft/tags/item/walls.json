@@ -2,6 +2,9 @@
   "values": [
     "spacebreaker:anorthosite_wall",
     "spacebreaker:anorthosite_brick_wall",
-    "spacebreaker:sintered_regolith_brick_wall"
+    "spacebreaker:sintered_regolith_brick_wall",
+    "spacebreaker:martian_basalt_wall",
+    "spacebreaker:martian_basalt_brick_wall",
+    "spacebreaker:martian_sandstone_wall"
   ]
 }

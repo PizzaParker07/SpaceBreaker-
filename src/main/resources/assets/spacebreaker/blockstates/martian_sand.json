@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "spacebreaker:block/martian_sand"
+      },
+      {
+        "model": "spacebreaker:block/martian_sand",
+        "y": 90
+      },
+      {
+        "model": "spacebreaker:block/martian_sand",
+        "y": 180
+      },
+      {
+        "model": "spacebreaker:block/martian_sand",
+        "y": 270
+      }
+    ]
+  }
+}

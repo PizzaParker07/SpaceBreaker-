@@ -1,0 +1,28 @@
+{
+  "type": "spacebreaker:boulder",
+  "config": {
+    "block": {
+      "type": "minecraft:weighted_state_provider",
+      "entries": [
+        {
+          "data": {
+            "Name": "spacebreaker:martian_basalt"
+          },
+          "weight": 6
+        },
+        {
+          "data": {
+            "Name": "spacebreaker:martian_mudstone"
+          },
+          "weight": 1
+        }
+      ]
+    },
+    "buried": 0.45,
+    "radius": {
+      "type": "minecraft:uniform",
+      "max_exclusive": 1.9,
+      "min_inclusive": 0.8
+    }
+  }
+}

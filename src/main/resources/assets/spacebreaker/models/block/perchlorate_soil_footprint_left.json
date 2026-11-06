@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "spacebreaker:block/perchlorate_soil",
+    "up": "spacebreaker:block/perchlorate_soil_footprint_left",
+    "down": "spacebreaker:block/perchlorate_soil",
+    "north": "spacebreaker:block/perchlorate_soil",
+    "south": "spacebreaker:block/perchlorate_soil",
+    "east": "spacebreaker:block/perchlorate_soil",
+    "west": "spacebreaker:block/perchlorate_soil"
+  }
+}

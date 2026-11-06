@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "spacebreaker:block/martian_clay",
+    "up": "spacebreaker:block/martian_clay_footprint_left",
+    "down": "spacebreaker:block/martian_clay",
+    "north": "spacebreaker:block/martian_clay",
+    "south": "spacebreaker:block/martian_clay",
+    "east": "spacebreaker:block/martian_clay",
+    "west": "spacebreaker:block/martian_clay"
+  }
+}

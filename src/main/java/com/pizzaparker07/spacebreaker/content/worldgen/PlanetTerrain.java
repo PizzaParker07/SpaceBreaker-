@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class PlanetTerrain {
     /** Climate / geology zone of a column, mapped to biomes by {@link PlanetBiomeSource}. */
-    public enum Zone { HIGHLANDS, LOWLANDS, CRATER, VOLCANIC, POLAR }
+    public enum Zone { HIGHLANDS, LOWLANDS, CRATER, VOLCANIC, POLAR, DUNES, CANYON, VOLCANO, VALLEY, ICE_CAP }
 
     /** Craters this large or larger count as a crater zone (biome) inside their rim. */
     public static final double CRATER_ZONE_RADIUS = 22;
@@ -30,6 +30,7 @@ public final class PlanetTerrain {
     private final SimplexNoise volcanicNoise;
     private final SimplexNoise brecciaNoise;
     private final ConcurrentHashMap<Long, List<Crater>> craterCells = new ConcurrentHashMap<>();
+    private final LandformSampler landforms;
 
     public PlanetTerrain(TerrainProfile profile, long seed) {
         this.profile = profile;
@@ -41,6 +42,7 @@ public final class PlanetTerrain {
         this.ridgeNoise = noise(5);
         this.volcanicNoise = noise(6);
         this.brecciaNoise = noise(7);
+        this.landforms = new LandformSampler(profile, seed);
     }
 
     private SimplexNoise noise(int salt) {
@@ -94,13 +96,49 @@ public final class PlanetTerrain {
         public double ray;
         public boolean volcanic;
         public double breccia;
+        // ---- optional landforms (see Landforms); neutral values when a world has none
+        /** Dune field strength 0..1, local dune height and whether this field is made of the second sand. */
+        public double dune;
+        public double duneHeight;
+        public boolean altDune;
+        /** River valley floor 0..1 and sediment fan (delta) 0..1. */
+        public double valley;
+        public double delta;
+        /** Normalized distance to the nearest shield volcano centre (radii), or 99. */
+        public double volcanoS = 99;
+        public double volcanoRadius;
+        /** Normalized distance from the rift centre line (1 = rim), or 99. */
+        public double rift = 99;
+        /** Ice cap thickness on top of the ground, trough depth, and whether the cap wears frost. */
+        public double cap;
+        public double trough;
+        public boolean frost;
+        /** Index of the soil patch covering this column, or -1. */
+        public int patch = -1;
+        /** Tessera share 0..1. */
+        public double tessera;
 
         public Zone zone(TerrainProfile p) {
+            if (cap >= 1) {
+                return Zone.ICE_CAP;
+            }
             if (Math.abs(latitude) >= p.poles().polarLatitude()) {
                 return Zone.POLAR;
             }
+            if (rift < 1) {
+                return Zone.CANYON;
+            }
             if (craterS < 0.9) {
                 return Zone.CRATER;
+            }
+            if (volcanoS < 0.92) {
+                return Zone.VOLCANO;
+            }
+            if (dune > 0.5) {
+                return Zone.DUNES;
+            }
+            if (valley > 0.45) {
+                return Zone.VALLEY;
             }
             if (volcanic) {
                 return Zone.VOLCANIC;
@@ -148,6 +186,7 @@ public final class PlanetTerrain {
         double ds = 1.0 / relief.detailScale();
         double detail = relief.detailAmplitude() * fbm(detailNoise, x * ds, z * ds, 2);
 
+        double built = landforms.active() ? landforms.build(x, z, out) : 0;
         double craterSum = 0;
         double kept = 1;
         double ray = 0;
@@ -183,8 +222,11 @@ public final class PlanetTerrain {
         // very large swells shared by highlands and basins (old basin rims, buried topography)
         double swell = relief.amplitude() * 0.45 * highNoise.getValue(x / (relief.scale() * 4.3) + 77.7, z / (relief.scale() * 4.3) - 19.1);
         double terrain = Mth.lerp(m, high * kept, lowFloor) + swell * (1 - 0.6 * m) + detail * kept * (1 - 0.5 * m);
-        out.height = profile.baseHeight() + terrain + craterSum;
+        out.height = profile.baseHeight() + terrain + built + craterSum;
         out.ray = ray;
+        if (landforms.active()) {
+            out.height = landforms.finish(x, z, out.height, out);
+        }
 
         out.volcanic = low.volcanicPatch() < 1 && m > 0.3 && m < 0.97 && out.anyCraterS > 1.3
                 && fbm(volcanicNoise, x / 150.0, z / 150.0, 2) > low.volcanicPatch() - 0.35 * (1 - Math.abs(m - 0.65) * 2);
@@ -214,6 +256,23 @@ public final class PlanetTerrain {
             f *= 2.03;
         }
         return sum / norm;
+    }
+
+    // ------------------------------------------------------------------ landforms
+
+    /** Shield volcanoes reaching a rectangle: {x, z, radius, height} each (empty without volcanoes). */
+    public List<double[]> volcanoesNear(double x0, double z0, double x1, double z1) {
+        return landforms.volcanoesNear(x0, z0, x1, z1).stream().map(v -> new double[]{v.x(), v.z(), v.radius(), v.height()}).toList();
+    }
+
+    /** Centre line z of the great rift at x (NaN without a rift). */
+    public double riftCentre(double x) {
+        return profile.landforms().rift().isPresent() ? landforms.riftCentre(x) : Double.NaN;
+    }
+
+    /** Layered rock at a position, or null when the profile has no strata. */
+    public net.minecraft.world.level.block.state.BlockState stratum(int x, int y, int z) {
+        return landforms.stratum(x, y, z);
     }
 
     // ------------------------------------------------------------------ craters
