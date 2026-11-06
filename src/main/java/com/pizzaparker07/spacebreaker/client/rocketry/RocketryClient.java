@@ -49,6 +49,14 @@ public final class RocketryClient {
     }
 
     @SubscribeEvent
+    static void setup(net.neoforged.fml.event.lifecycle.FMLClientSetupEvent event) {
+        com.pizzaparker07.spacebreaker.content.rocketry.item.Fmt.localDots = () -> {
+            var mc = net.minecraft.client.Minecraft.getInstance();
+            return mc != null && mc.getLanguageManager() != null && mc.getLanguageManager().getSelected().startsWith("tr");
+        };
+    }
+
+    @SubscribeEvent
     static void keys(RegisterKeyMappingsEvent event) {
         event.register(LAUNCH);
         event.register(STAR_MAP);

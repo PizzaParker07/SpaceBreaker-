@@ -4,6 +4,9 @@
   "requires": [
     "spacebreaker:liquid_fuel_engines"
   ],
+  "samples": [
+    "spacebreaker:earth"
+  ],
   "unlocks": [
     "spacebreaker:decoupler",
     "spacebreaker:interstage"

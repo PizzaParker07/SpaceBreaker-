@@ -11,6 +11,8 @@ Yeni makineler, roket parçaları ve giysiler **teknolojilerle** açılır. Bir 
 
 Üçü de bir [Araştırma Laboratuvarı](research_lab)'nda incelenir.
 
+> Her teknolojinin bir numune kaynağı vardır, şansa bağlı değilsin. Tek istisna **Temel Roketçilik**: diski her gözlemevinin arşivinde kesin bulunur. Diskler kısa yoldur: numune beklemeden o teknolojiyi öğretir.
+
 ## Numune almak
 {recipe spacebreaker:sample_kit}
 

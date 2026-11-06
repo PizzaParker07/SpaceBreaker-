@@ -128,13 +128,16 @@ public final class ResearchTree {
                 .en("Basic Rocketry", "Action and reaction: why a rocket flies, and how thrust, mass and burn time fit together.")
                 .tr("Temel Roketçilik", "Etki ve tepki: bir roket neden uçar; itki, kütle ve yanma süresi birbirine nasıl bağlıdır.");
         t("solid_rocket_motors", PROPULSION, 1).req("basic_rocketry").icon("minecraft:gunpowder")
+                .samples(EARTH)
                 .en("Solid Rocket Motors", "Cast propellant grains: simple, powerful, and impossible to switch off once lit.")
                 .tr("Katı Yakıtlı Motorlar", "Dökme yakıt blokları: basit, güçlü ve bir kez ateşlenince durdurulamaz.");
         t("liquid_fuel_engines", PROPULSION, 1).req("basic_rocketry", "fuel_refining").icon("spacebreaker:kerosene_engine")
+                .samples(EARTH)
                 .unlocks("kerosene_engine", "fuel_tank_small", "fuel_tank_medium", "fuel_tank_large")
                 .en("Liquid-Fuel Engines", "Pump RP-1 and liquid oxygen into a combustion chamber for throttleable, restartable thrust.")
                 .tr("Sıvı Yakıtlı Motorlar", "RP-1 ve sıvı oksijeni yanma odasına pompala: kısılabilen, yeniden ateşlenebilen itki.");
         t("staging", PROPULSION, 1).req("liquid_fuel_engines").icon("spacebreaker:decoupler").unlocks("decoupler", "interstage")
+                .samples(EARTH)
                 .en("Staging", "Drop empty tanks on the way up. The rocket equation rewards every kilogram left behind.")
                 .tr("Kademelendirme", "Boşalan tankları yolda bırak. Roket denklemi geride bırakılan her kilogramı ödüllendirir.");
         t("vacuum_engines", PROPULSION, 1).req("staging").icon("spacebreaker:vacuum_engine").unlocks("vacuum_engine")
@@ -142,6 +145,7 @@ public final class ResearchTree {
                 .en("Vacuum Engines", "Long nozzles that expand exhaust fully in space for a much higher specific impulse.")
                 .tr("Vakum Motorları", "Egzozu uzayda tamamen genleştiren uzun lüleler: çok daha yüksek özgül itki.");
         t("guidance_systems", PROPULSION, 1).req("basic_rocketry", "electronics").icon("spacebreaker:rcs_thrusters")
+                .samples(EARTH)
                 .unlocks("rcs_thrusters", "grid_fins")
                 .en("Guidance Systems", "Gyroscopes, a flight computer and small thrusters to hold attitude and fly a gravity turn.")
                 .tr("Güdüm Sistemleri", "Jiroskoplar, uçuş bilgisayarı ve küçük iticilerle duruşu koru, yerçekimi dönüşü uçur.");
@@ -149,24 +153,24 @@ public final class ResearchTree {
                 .unlocks("landing_legs", "parachute", "heat_shield").samples(ORBIT)
                 .en("Landing Systems", "Heat shields, parachutes and landing legs: getting down is as hard as getting up.")
                 .tr("İniş Sistemleri", "Isı kalkanı, paraşüt ve iniş bacakları: inmek de çıkmak kadar zordur.");
-        t("methane_engines", PROPULSION, 2).req("vacuum_engines", "sabatier_process").icon("minecraft:fire_charge")
+        t("methane_engines", PROPULSION, 2).req("vacuum_engines", "sabatier_process").icon("spacebreaker:methalox_engine").unlocks("methalox_engine", "methalox_vacuum_engine")
                 .samples(MARS)
                 .en("Methane Engines", "Clean-burning methalox engines, fuelled by propellant made on Mars itself.")
                 .tr("Metan Motorları", "Temiz yanan metan-oksijen motorları; yakıtını Mars'ta üretebilirsin.");
         t("hydrogen_engines", PROPULSION, 2).req("vacuum_engines", "cryogenics").icon("minecraft:snowball")
-                
+                .samples(ORBIT)
                 .en("Hydrogen Engines", "Liquid hydrogen gives the highest chemical specific impulse, if you can keep it cold.")
                 .tr("Hidrojen Motorları", "Sıvı hidrojen en yüksek kimyasal özgül itkiyi verir; yeter ki onu soğuk tutabilesin.");
         t("ion_propulsion", PROPULSION, 2).req("hydrogen_engines", "advanced_electronics").icon("minecraft:amethyst_shard")
-                
+                .samples(METEORITE)
                 .en("Ion Propulsion", "A whisper of thrust for months on end: electric fields accelerate xenon ions to huge speeds.")
                 .tr("İyon İtkisi", "Fısıltı kadar zayıf ama aylarca süren itki: elektrik alanı ksenon iyonlarını çok büyük hızlara çıkarır.");
         t("nuclear_thermal_propulsion", PROPULSION, 3).req("hydrogen_engines", "nuclear_fission").icon("minecraft:glowstone_dust")
-                
+                .samples(MARS)
                 .en("Nuclear Thermal Propulsion", "A reactor heats hydrogen directly: twice the efficiency of any chemical engine.")
                 .tr("Nükleer Termal İtki", "Bir reaktör hidrojeni doğrudan ısıtır: her kimyasal motorun iki katı verim.");
         t("fusion_drive", PROPULSION, 3).req("nuclear_thermal_propulsion", "fusion_power").icon("minecraft:nether_star")
-                
+                .samples(GANYMEDE)
                 .en("Fusion Drive", "Magnetically confined fusion exhaust: the road to the outer planets in weeks, not years.")
                 .tr("Füzyon Sürücüsü", "Manyetik alanla hapsedilmiş füzyon egzozu: dış gezegenlere yıllarda değil, haftalarda.");
 
@@ -175,14 +179,17 @@ public final class ResearchTree {
                 .en("Pressure Suits", "A personal spacecraft: a sealed garment that keeps you at one third of an atmosphere.")
                 .tr("Basınçlı Giysiler", "Kişisel bir uzay aracı: seni üçte bir atmosfer basınçta tutan sızdırmaz giysi.");
         t("oxygen_storage", LIFE_SUPPORT, 1).req("pressure_suits", "aluminium_smelting").icon("spacebreaker:oxygen_tank")
+                .samples(EARTH)
                 .unlocks("oxygen_tank", "large_oxygen_tank", "oxygen_filler")
                 .en("Oxygen Storage", "High-pressure aluminium tanks and a filling station: five minutes of air per tank.")
                 .tr("Oksijen Depolama", "Yüksek basınçlı alüminyum tüpler ve dolum istasyonu: tüp başına beş dakika hava.");
         t("thermal_regulation", LIFE_SUPPORT, 1).req("pressure_suits").icon("spacebreaker:gold_foil_insulation")
+                .samples(EARTH)
                 .unlocks("gold_foil_insulation", "orange_foam_insulation")
                 .en("Thermal Regulation", "Water-cooled undergarments and reflective layers for +120 °C sun and −150 °C shade.")
                 .tr("Isı Düzenleme", "Su soğutmalı iç giysi ve yansıtıcı katmanlar: güneşte +120 °C, gölgede −150 °C.");
         t("airlocks", LIFE_SUPPORT, 1).req("oxygen_storage", "pressurised_modules").icon("spacebreaker:airlock_door")
+                .samples(EARTH)
                 .unlocks("airlock_door")
                 .en("Airlocks", "Two doors and a pump: step outside without letting the whole base breathe out.")
                 .tr("Hava Kilitleri", "İki kapı ve bir pompa: bütün üssün havasını boşaltmadan dışarı çık.");
@@ -194,6 +201,7 @@ public final class ResearchTree {
                 .en("Solar Shielding", "Gold-film sunshades and white radiators: on Mercury the Sun is seven times brighter and the ground reaches 430 °C.")
                 .tr("Güneş Kalkanı", "Altın filmli güneşlikler ve beyaz radyatörler: Merkür'de Güneş yedi kat parlaktır ve zemin 430 °C'ye ulaşır.");
         t("eva_mobility", LIFE_SUPPORT, 2).req("thermal_regulation", "guidance_systems").icon("spacebreaker:maneuvering_unit")
+                .samples(ORBIT)
                 .unlocks("maneuvering_unit", "magnetic_boots")
                 .en("EVA Mobility", "A backpack manoeuvring unit: cold-gas thrusters for moving freely in zero gravity.")
                 .tr("EVA Hareketliliği", "Sırt tipi manevra ünitesi: sıfır yerçekiminde serbestçe dolaşmak için soğuk gaz iticileri.");
@@ -202,7 +210,7 @@ public final class ResearchTree {
                 .en("EVA Suit Mk2", "Dust-proof joints, a longer life-support pack and a smarter helmet display.")
                 .tr("EVA Giysisi Mk2", "Toz geçirmez eklemler, daha uzun yaşam desteği ve daha akıllı kask göstergesi.");
         t("water_recycling", LIFE_SUPPORT, 2).req("oxygen_distribution").icon("minecraft:water_bucket")
-                
+                .samples(MOON)
                 .en("Water Recycling", "Recover more than nine litres of every ten: humidity, wash water and the rest.")
                 .tr("Su Geri Kazanımı", "Her on litrenin dokuzundan fazlasını geri kazan: nem, yıkama suyu ve geri kalanı.");
         t("radiation_shielding", LIFE_SUPPORT, 3).req("suit_mk2", "nuclear_fission").icon("minecraft:netherite_scrap")
@@ -210,7 +218,7 @@ public final class ResearchTree {
                 .en("Radiation Shielding", "Layers of water, polyethylene and lead against solar storms and cosmic rays.")
                 .tr("Radyasyon Kalkanı", "Güneş fırtınalarına ve kozmik ışınlara karşı su, polietilen ve kurşun katmanları.");
         t("suit_mk3", LIFE_SUPPORT, 3).req("radiation_shielding").icon("minecraft:diamond_chestplate")
-                
+                .samples(GANYMEDE)
                 .en("EVA Suit Mk3", "A hard-shell suit for the Jovian moons: shielded, heated and built for long walks.")
                 .tr("EVA Giysisi Mk3", "Jüpiter'in uyduları için sert kabuklu giysi: kalkanlı, ısıtmalı, uzun yürüyüşlere hazır.");
 
@@ -229,6 +237,7 @@ public final class ResearchTree {
                 .en("Electronics", "Circuit boards, motors and sensors: the nervous system of every machine.")
                 .tr("Elektronik", "Devre kartları, motorlar ve sensörler: her makinenin sinir sistemi.");
         t("fuel_refining", INDUSTRY, 1).req("electronics").icon("spacebreaker:rp1_bucket").unlocks("pumpjack", "refinery")
+                .samples(EARTH)
                 .en("Fuel Refining", "Pump crude oil and distil it into RP-1 rocket kerosene and plastics.")
                 .tr("Yakıt Rafinasyonu", "Ham petrolü pompala ve RP-1 roket kerosenine ve plastiğe damıt.");
         t("metallurgy", INDUSTRY, 1).req("aluminium_smelting").icon("spacebreaker:steel_ingot")
@@ -240,9 +249,11 @@ public final class ResearchTree {
                 .en("Precision Manufacturing", "A powered fabricator for the parts a hammer cannot make: cells, insulation and shield plates.")
                 .tr("Hassas İmalat", "Çekicin yapamayacağı parçalar için enerjiyle çalışan üretim tezgâhı: hücreler, yalıtım ve kalkan levhaları.");
         t("electrolysis", INDUSTRY, 1).req("solar_power", "electronics").icon("spacebreaker:electrolyzer").unlocks("electrolyzer")
+                .samples(EARTH)
                 .en("Electrolysis", "Split water into hydrogen and oxygen with electricity.")
                 .tr("Elektroliz", "Elektrikle suyu hidrojen ve oksijene ayır.");
         t("cryogenics", INDUSTRY, 2).req("electrolysis").icon("spacebreaker:cryogenic_tank").unlocks("cryogenic_liquefier", "cryogenic_canister")
+                .samples(EARTH)
                 .en("Cryogenics", "Liquefy oxygen at −183 °C and hydrogen at −253 °C, and store them without boil-off.")
                 .tr("Kriyojenik", "Oksijeni −183 °C'de, hidrojeni −253 °C'de sıvılaştır ve buharlaşmadan sakla.");
         t("sabatier_process", INDUSTRY, 2).req("electrolysis").icon("spacebreaker:sabatier_reactor").unlocks("sabatier_reactor", "atmosphere_processor")
@@ -258,10 +269,11 @@ public final class ResearchTree {
                 .en("Advanced Electronics", "Radiation-hardened processors and silicon wafers grown in clean rooms.")
                 .tr("İleri Elektronik", "Radyasyona dayanıklı işlemciler ve temiz odalarda büyütülmüş silisyum plakalar.");
         t("nuclear_fission", INDUSTRY, 3).req("advanced_electronics", "cryogenics").icon("minecraft:glowstone")
-                
+                .samples(MOON)
                 .en("Nuclear Fission", "Radioisotope generators and compact reactors where sunlight is too weak.")
                 .tr("Nükleer Fisyon", "Güneş ışığının yetersiz kaldığı yerler için radyoizotop jeneratörleri ve küçük reaktörler.");
         t("fusion_power", INDUSTRY, 3).req("nuclear_fission").icon("minecraft:beacon")
+                .samples(MOON)
                 .en("Fusion Power", "Helium-3 and deuterium in a magnetic bottle: the power source of the stars.")
                 .tr("Füzyon Enerjisi", "Manyetik şişede helyum-3 ve döteryum: yıldızların enerji kaynağı.");
 
@@ -274,7 +286,7 @@ public final class ResearchTree {
                 .en("Orbital Mechanics", "Orbit is falling and missing the ground: about 7.8 km/s sideways at low altitude.")
                 .tr("Yörünge Mekaniği", "Yörüngede olmak, düşerken yeri ıskalamaktır: alçak irtifada yana doğru yaklaşık 7,8 km/s.");
         t("radio_communication", ASTRONOMY, 1).req("observational_astronomy", "electronics").icon("minecraft:lightning_rod")
-                
+                .samples(EARTH)
                 .en("Radio Communication", "Antennas and transmitters to talk to spacecraft beyond the horizon.")
                 .tr("Radyo İletişimi", "Ufkun ötesindeki uzay araçlarıyla konuşmak için antenler ve vericiler.");
         t("satellites", ASTRONOMY, 2).req("orbital_mechanics", "radio_communication").icon("minecraft:daylight_detector")
@@ -290,7 +302,7 @@ public final class ResearchTree {
                 .en("Interplanetary Transfers", "Hohmann transfers and launch windows: when to leave, and how much Δv it costs.")
                 .tr("Gezegenler Arası Transfer", "Hohmann transferleri ve fırlatma pencereleri: ne zaman yola çıkılır, kaç Δv tutar.");
         t("space_probes", ASTRONOMY, 2).req("satellites", "interplanetary_transfers").icon("minecraft:ender_eye")
-                
+                .samples(MARS)
                 .en("Space Probes", "Uncrewed explorers that fly ahead and send back pictures of worlds no one has seen.")
                 .tr("Uzay Sondaları", "Önden giden ve kimsenin görmediği dünyaların görüntülerini gönderen insansız kâşifler.");
         t("gravity_assists", ASTRONOMY, 3).req("interplanetary_transfers", "space_probes").icon("minecraft:heart_of_the_sea")
@@ -298,17 +310,18 @@ public final class ResearchTree {
                 .en("Gravity Assists", "Steal a little of a planet's orbital speed by flying close behind it.")
                 .tr("Kütleçekim Yardımı", "Bir gezegenin hemen arkasından geç ve onun yörünge hızından biraz kap.");
         t("deep_space_network", ASTRONOMY, 3).req("space_probes", "nuclear_fission").icon("minecraft:conduit")
-                
+                .samples(CALLISTO)
                 .en("Deep Space Network", "Giant dishes that can hear a probe's faint signal from beyond Saturn.")
                 .tr("Derin Uzay Ağı", "Bir sondanın Satürn'ün ötesinden gelen zayıf sinyalini duyabilen dev çanaklar.");
 
         // ============================================================ CONSTRUCTION
         t("launch_infrastructure", CONSTRUCTION, 1).req("basic_rocketry").icon("spacebreaker:launch_pad")
+                .samples(EARTH)
                 .unlocks("launch_pad", "flame_trench", "service_tower", "crew_access_arm", "fuel_umbilical", "launch_control_console")
                 .en("Launch Infrastructure", "Pad, flame trench and service tower: a safe place to light a rocket.")
                 .tr("Fırlatma Altyapısı", "Rampa, alev kanalı ve servis kulesi: bir roketi ateşlemek için güvenli bir yer.");
         t("pressurised_modules", CONSTRUCTION, 1).req("metal_pressing").icon("minecraft:iron_block")
-                
+                .samples(EARTH)
                 .en("Pressurised Modules", "Sealed aluminium hulls, windows and doors that hold an atmosphere.")
                 .tr("Basınçlı Modüller", "Atmosferi içinde tutan sızdırmaz alüminyum gövdeler, pencereler ve kapılar.");
         t("regolith_sintering", CONSTRUCTION, 1).req("pressurised_modules").icon("spacebreaker:sintered_regolith_bricks")
@@ -316,7 +329,7 @@ public final class ResearchTree {
                 .en("Regolith Sintering", "Bake lunar dust into hard bricks: radiation shielding you do not have to launch.")
                 .tr("Regolit Sinterleme", "Ay tozunu sert tuğlalara pişir: fırlatman gerekmeyen radyasyon kalkanı.");
         t("heavy_launch", CONSTRUCTION, 2).req("launch_infrastructure", "staging").icon("spacebreaker:service_tower")
-                
+                .samples(ORBIT)
                 .en("Heavy Launch", "Reinforced pads and bigger towers for super-heavy, three-stage rockets.")
                 .tr("Ağır Fırlatma", "Süper ağır, üç kademeli roketler için güçlendirilmiş rampalar ve daha büyük kuleler.");
         t("space_stations", CONSTRUCTION, 2).req("pressurised_modules", "orbital_mechanics").icon("minecraft:end_rod")
@@ -328,7 +341,7 @@ public final class ResearchTree {
                 .en("Cloud Platforms", "Breathable air is a lifting gas on Venus: float a base 50 km above the furnace.")
                 .tr("Bulut Platformları", "Venüs'te solunabilir hava bir kaldırma gazıdır: üssü fırının 50 km üstünde yüzdür.");
         t("orbital_shipyard", CONSTRUCTION, 3).req("space_stations", "heavy_launch", "fusion_power").icon("minecraft:respawn_anchor")
-                
+                .samples(ORBIT)
                 .en("Orbital Shipyard", "Assemble ships too big to ever lift off a planet.")
                 .tr("Yörünge Tersanesi", "Hiçbir gezegenden kalkamayacak kadar büyük gemileri yörüngede birleştir.");
 
@@ -341,7 +354,7 @@ public final class ResearchTree {
                 .en("Lunar Surveying", "Map the maria and highlands; find ilmenite, ice and the safest landing sites.")
                 .tr("Ay Araştırması", "Denizleri ve yaylaları haritala; ilmeniti, buzu ve en güvenli iniş yerlerini bul.");
         t("rovers", EXPLORATION, 2).req("lunar_surveying", "electronics").icon("minecraft:minecart")
-                
+                .samples(MOON)
                 .en("Rovers", "Electric vehicles with wire-mesh wheels for driving across dusty plains.")
                 .tr("Gezici Araçlar", "Tozlu ovalarda sürmek için tel örgü tekerlekli elektrikli araçlar.");
         t("martian_geology", EXPLORATION, 2).req("field_geology", "interplanetary_transfers").icon("minecraft:red_sand")

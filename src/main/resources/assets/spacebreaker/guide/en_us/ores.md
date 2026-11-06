@@ -8,7 +8,7 @@ The metals of the space age wait deep in the Earth. You can mine all of them wit
 ## Bauxite → aluminium
 {items spacebreaker:bauxite_ore spacebreaker:deepslate_bauxite_ore spacebreaker:raw_bauxite spacebreaker:raw_bauxite_block}
 
-A red-brown rock made of small round grains. It lies close to the surface in warm hills and gives aluminium, the metal of every rocket, tank and panel. You can smelt raw bauxite in a furnace:
+A red-brown rock made of small round grains. It turns up thinly in the stone of every biome and richly near the surface in warm hills and gives aluminium, the metal of every rocket, tank and panel. You can smelt raw bauxite in a furnace:
 
 {recipe spacebreaker:aluminum_ingot_from_raw_smelting}
 

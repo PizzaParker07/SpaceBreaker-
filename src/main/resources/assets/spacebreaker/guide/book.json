@@ -86,6 +86,21 @@
       ]
     },
     {
+      "id": "outer",
+      "color": "#B07A3A",
+      "icon": "spacebreaker:tholin_sand",
+      "chapters": [
+        "ceres",
+        "vesta",
+        "europa",
+        "io",
+        "ganymede",
+        "callisto",
+        "titan",
+        "enceladus"
+      ]
+    },
+    {
       "id": "ruins",
       "color": "#5E8A3A",
       "icon": "spacebreaker:tech_disk",
@@ -103,6 +118,21 @@
         "rocket_equation",
         "orbits",
         "inner_orbits"
+      ]
+    },
+    {
+      "id": "space_science",
+      "color": "#3A6EA5",
+      "icon": "minecraft:spyglass",
+      "chapters": [
+        "sci_orbit",
+        "sci_delta_v",
+        "sci_transfers",
+        "sci_atmosphere",
+        "sci_radiation",
+        "sci_temperature",
+        "sci_sky",
+        "sci_asteroids"
       ]
     }
   ],

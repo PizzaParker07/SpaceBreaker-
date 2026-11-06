@@ -30,6 +30,7 @@ public final class RocketClientEvents {
     private static ResourceKey<Level> lastDimension;
     private static float shake;
     private static final java.util.Map<Integer, EngineSound> SOUNDS = new java.util.HashMap<>();
+    private static final java.util.Map<Integer, EngineSound> ENTRY_SOUNDS = new java.util.HashMap<>();
 
     private RocketClientEvents() {
     }
@@ -42,7 +43,12 @@ public final class RocketClientEvents {
             return;
         }
         RocketEntity ridden = RocketHud.ridden();
-        if (ridden != null && lastDimension != null && lastDimension != level.dimension()) {
+        if (ridden != null) {
+            TransitView.update(ridden);
+        }
+        if (TransitView.active() && TransitView.holding() && !(mc.screen instanceof TransitScreen)) {
+            TransitView.arrived(); // the new dimension is on screen: fade the view out into it
+        } else if (ridden != null && lastDimension != null && lastDimension != level.dimension() && !TransitView.active()) {
             RocketHud.markArrival();
         }
         lastDimension = level.dimension();
@@ -67,14 +73,8 @@ public final class RocketClientEvents {
                 continue;
             }
             effects(level, rocket, quality);
-            if (rocket.burning()) {
-                EngineSound snd = SOUNDS.get(rocket.getId());
-                if (snd == null || snd.isStopped()) {
-                    snd = new EngineSound(rocket);
-                    SOUNDS.put(rocket.getId(), snd);
-                    mc.getSoundManager().play(snd);
-                }
-            }
+            loop(mc, rocket, SOUNDS, EngineSound.Kind.ENGINE);
+            loop(mc, rocket, ENTRY_SOUNDS, EngineSound.Kind.REENTRY);
             if (rocket.burning()) {
                 boolean riding = rocket == ridden;
                 double ground = level.getHeight(Heightmap.Types.MOTION_BLOCKING, rocket.getBlockX(), rocket.getBlockZ());
@@ -97,6 +97,20 @@ public final class RocketClientEvents {
         }
         shake = Mth.lerp(0.2F, shake, targetShake);
         SOUNDS.values().removeIf(EngineSound::isStopped);
+        ENTRY_SOUNDS.values().removeIf(EngineSound::isStopped);
+        MissionVoice.tick(ridden);
+    }
+
+    private static void loop(Minecraft mc, RocketEntity rocket, java.util.Map<Integer, EngineSound> playing, EngineSound.Kind kind) {
+        if (!EngineSound.wanted(rocket, kind)) {
+            return;
+        }
+        EngineSound snd = playing.get(rocket.getId());
+        if (snd == null || snd.isStopped()) {
+            snd = new EngineSound(rocket, kind);
+            playing.put(rocket.getId(), snd);
+            mc.getSoundManager().play(snd);
+        }
     }
 
     private static void effects(ClientLevel level, RocketEntity rocket, int quality) {

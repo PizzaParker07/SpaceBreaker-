@@ -4,6 +4,9 @@
   "requires": [
     "spacebreaker:electronics"
   ],
+  "samples": [
+    "spacebreaker:earth"
+  ],
   "unlocks": [
     "spacebreaker:pumpjack",
     "spacebreaker:refinery"

@@ -75,8 +75,7 @@ public final class UranusModule implements SbModule {
 
     @Override
     public void addTranslations(Lang lang) {
-        lang.add("body.spacebreaker.uranus", "Uranus", "Uranüs");
-        lang.add("body.spacebreaker.miranda", "Miranda", "Miranda");
+        // body names of Uranus and Miranda come from the rocketry star map
         lang.add("dimension.spacebreaker.miranda", "Miranda", "Miranda");
         lang.block(MIRANDAN_REGOLITH, "Mirandan Regolith", "Miranda Regoliti");
         BlockKit.familyNames(lang, MIRANDAN_ICE, "Mirandan Bedrock Ice", "Miranda Ana Kaya Buzu");

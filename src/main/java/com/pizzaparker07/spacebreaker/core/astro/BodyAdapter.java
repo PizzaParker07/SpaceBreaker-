@@ -28,7 +28,7 @@ public final class BodyAdapter {
                 o.semiMajorAxisKm(), o.eccentricity(), o.inclinationDeg(), o.longitudeAscendingNodeDeg(),
                 o.argumentPeriapsisDeg(), o.meanAnomalyDeg(), o.periodDays(), b.rotation().dayLengthHours(),
                 b.rotation().tidallyLocked(), b.atmosphere().pressureKpa(), b.atmosphere().composition(),
-                b.climate().dayTempC(), b.climate().nightTempC(), b.albedo(), b.landable());
+                b.climate().dayTempC(), b.climate().nightTempC(), b.albedo(), b.landable(), b.geometricAlbedo());
     }
 
     /** Simulated orbital time (s since J2000) of a level, from its game time and the server's time scale. */
@@ -82,7 +82,8 @@ public final class BodyAdapter {
                 new CelestialBody.Atmosphere(b.surfacePressureKpa(), false, b.composition()),
                 new CelestialBody.Climate(b.dayTempK() - 273.15, b.nightTempK() - 273.15),
                 d == null ? 0 : d.radiation(), irradiance, b.albedo(),
-                d != null && d.hasRings() ? Optional.of(new CelestialBody.Rings(d.ringInnerKm(), d.ringOuterKm())) : Optional.empty());
+                d != null && d.hasRings() ? Optional.of(new CelestialBody.Rings(d.ringInnerKm(), d.ringOuterKm())) : Optional.empty(),
+                b.geometricAlbedo());
     }
 
     private BodyAdapter() {

@@ -115,6 +115,9 @@ final class MoonShowcaseBuilder {
         spawn(level, MoonEntities.ELDER_REGOLITH_TICK.get(), STAGE_X - 3.0, y0 + 1, STAGE_Z + 4.5, -15F, false);
         spawn(level, MoonEntities.DUST_SWIMMER.get(), STAGE_X - 10.0, y0 + 1, STAGE_Z + 9.0, 60F, false);
         spawn(level, MoonEntities.DUST_SWIMMER.get(), STAGE_X - 5.0, y0 + 1, STAGE_Z + 9.5, -40F, false);
+        spawn(level, MoonEntities.GLIMMER_BEETLE.get(), STAGE_X - 7.5, y0 + 1, STAGE_Z + 8.0, 160F, false);
+        spawn(level, MoonEntities.GLIMMER_BEETLE.get(), STAGE_X - 6.2, y0 + 1, STAGE_Z + 8.6, 200F, false);
+        level.setBlock(new BlockPos(STAGE_X - 9, y0 + 1, STAGE_Z + 7), MoonModule.GLIMMER_LAMP.get().defaultBlockState(), Block.UPDATE_ALL);
         var drone = spawn(level, MoonEntities.SURVEY_DRONE.get(), STAGE_X - 6.0, y0 + 3.2, STAGE_Z + 6.0, 10F, false);
         drone.setNoGravity(true);
         for (int x = hx - 2; x <= hx + 4; x++) {
@@ -192,7 +195,7 @@ final class MoonShowcaseBuilder {
 
     static void buildDungeons(ServerLevel level, PlanetTerrain t) {
         int[] o = outpostSpot(t);
-        placePiece(level, new OutpostPiece(4242L, o[0] - 15, o[1], o[2] - 15, Direction.SOUTH));
+        placePiece(level, new OutpostPiece(4243L, o[0] - 15, o[1], o[2] - 15, Direction.SOUTH));
         int[] st = tubeStart(t);
         placePiece(level, new LavaTubePiece(TUBE_SEED, tubePath(t), st[1]));
     }
@@ -214,6 +217,9 @@ final class MoonShowcaseBuilder {
         s.add(new ShowcaseDriver.Shot("32_outpost_hub", 0, x0 + 15.5, y + 2.7, z0 + 18.6, 180F, 14F, true, fp, 60, dark, null));
         s.add(new ShowcaseDriver.Shot("33_outpost_lab", 0, x0 + 15.5, y + 2.7, z0 + 6.6, 180F, 20F, true, fp, 60, dark, null));
         s.add(new ShowcaseDriver.Shot("34_drone_bay", 0, x0 + 7.4, y + 2.7, z0 + 15.5, 90F, 12F, true, fp, 60, dark, null));
+        s.add(new ShowcaseDriver.Shot("38_crew_quarters", 0, x0 + 7.4, y + 2.7, z0 + 4.5, 90F, 18F, true, fp, 60, dark, null));
+        s.add(new ShowcaseDriver.Shot("39_vault_puzzle", 0, x0 + 19.5, y + 2.6, z0 + 5.5, -90F, 8F, true, fp, 60, dark, null));
+        s.add(new ShowcaseDriver.Shot("40_greenhouse", 0, x0 + 23.5, y + 3.2, z0 + 15.5, -90F, 20F, true, fp, 60, noon, null));
         List<int[]> path = tubePath(t);
         int[] n0 = path.get(0);
         int[] st = tubeStart(t);
@@ -244,6 +250,8 @@ final class MoonShowcaseBuilder {
                 p -> PlanetTime.setDayFraction(p.serverLevel(), 0.12), null));
         s.add(new ShowcaseDriver.Shot("24_tick_macro", 0, STAGE_X - 8.0, y + 1.2, STAGE_Z + 7.6, 190F, 18F, true, fp, 40,
                 p -> PlanetTime.setDayFraction(p.serverLevel(), 0.12), null));
+        s.add(new ShowcaseDriver.Shot("26_glimmer_night", 0, STAGE_X - 7.0, y + 1.4, STAGE_Z + 10.8, 180F, 22F, true, fp, 60,
+                p -> PlanetTime.setDayFraction(p.serverLevel(), 0.75), null));
         s.add(new ShowcaseDriver.Shot("25_drone_macro", 0, STAGE_X - 6.0, y + 3.0, STAGE_Z + 8.6, 180F, 2F, true, fp, 40,
                 p -> PlanetTime.setDayFraction(p.serverLevel(), 0.12), null));
         return s;

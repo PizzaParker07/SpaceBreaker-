@@ -46,7 +46,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Fırlatma tesisi: rampa kaplaması, alev kanalı ızgarası, servis kulesi, erişim kolu (geri sayımda katlanır), yakıt hattı (c:rp1 / c:liquid_oxygen), kontrol konsolu | çok bloklu; boş elle tıklayınca kontrol listesi + eksik bloklar alevle işaretlenir |
 | ⬜ | Uyarı ışığı | |
 | 🎨 | Roket parçaları: burun konisi, kapsül, ısı kalkanı, paraşüt, küçük/orta/büyük tank, deniz seviyesi + vakum kerosen motoru, deniz seviyesi + vakum metaloks motoru (Metan Motorları teknolojisi; Mars'ta üretilen metan + LOX ile dönüş), kademe ayırıcı, ara kademe, kanatçık, ızgara kanatçık, iniş bacakları, manevra iticileri | veriyle tanımlı (`rocket_part/*.json`), gerçekçi kütle/itki/Isp; tanklar kademenin motorunun yakıtını (RP-1 ya da sıvı metan) alır; envanterde 2B, elde ve rokette 3B |
-| 🎨 | Roket, yörünge boyutları (Dünya / Ay yörüngesi + diğer cisimler için ortak yörünge), yıldız haritası (gök cismi verisinden: Merkür, Venüs, Mars, Phobos, Deimos ve dış sistem kendiliğinden) | geri sayım, ateşleme, kademe ayrılması, gökyüzünün kararması, yörüngede dönen gezegen, Ay'a motorlu iniş + toz, atmosfere giriş (plazma), paraşüt, suya iniş |
+| 🎨 | Roket, yörünge boyutları (Dünya / Ay yörüngesi + diğer cisimler için ortak yörünge), yıldız haritası (gök cismi verisinden: Merkür, Venüs, Mars, Phobos, Deimos ve dış sistem kendiliğinden; Güneş solda, gezegene tıklayınca sistemine yakınlaşır, sağ panelde resim, kısa açıklama, tehlikeler, "Yörüngeye git / Yüzeye in", düz dille yakıt kontrolü, dönüş yakıtı, yolculuk süresi, fırlatma penceresi, adım adım rota) | binince roket kamerası (fareyle çevresinde dön, tekerlekle yakınlaş, F5 ile kokpit penceresi), boyut değişiminde yükleme ekranı yerine geçiş animasyonu (gök kararır → yıldızlar, yıldızlar akar → hedef büyür, gezegen yaklaşır → plazma), geri sayım, ateşleme, kademe ayrılması, gökyüzünün kararması, yörüngede dönen gezegen, Ay'a motorlu iniş + toz, atmosfere giriş (plazma), paraşüt, suya iniş |
 | 🎨 | Acil Dönüş İşareti, Yaratıcı Yakıt Kartuşu | mahsur kalmama; test için tam yakıt |
 | 🎨 | EVA Giysisi Mk1: Kask, Gövde, Pantolon, Bot | özel 3B modeller: yuvarlak kask, sarmal füme vizör, altın güneş vizörü (eğil + kullan), parlayan yan lambalar; göğüs kontrol kutusu, yaşam destek sırt çantası + oksijen şişeleri; mavi yatak halkaları; tabanlı botlar. Yalnızca dört parça birlikte sızdırmaz |
 | 🎨 | Termal Giysi (Mk2) | gümüş alüminize kumaş, altın vizör siperliği, sırtta altın radyatör kanatları; 500 °C'ye kadar (Venüs, Merkür gündüzü) |
@@ -82,7 +82,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 ### Ay zindanları
 | Durum | İçerik | Not |
 |---|---|---|
-| 🎨 | Terk Edilmiş Keşif Karakolu | merkez modül, laboratuvar, depo, drone hangarı, hava kilidi (iki demir kapı), güneş paneli tarlası, iniş pisti, anten; muhafız: Keşif Dronları (+ çağırıcı) |
+| 🎨 | Terk Edilmiş Keşif Karakolu | merkez modül, laboratuvar, depo **veya** çökmüş sera, drone hangarı, mürettebat yatakhanesi, hava kilidi (iki demir kapı), güneş paneli tarlası, iniş pisti, anten; **gücü kesik kasa** (bulmaca: komuta sandığındaki güç hücresini kapının üstündeki yuvaya tak) ve basınç plakalı ok tuzağı; muhafız: Keşif Dronları (+ çağırıcı) |
 | 🎨 | Antik Lav Tüpü | çökmüş tavan girişi, kıvrımlı tünel, düşmüş eski sonda enkazı (sandık), Yaşlı Regolit Kenesi yuvası |
 | 🎨 | Ganimet | `chests/moon/tech_data` araştırma diskleri için kanca tablosu (Araştırma alanı `spacebreaker:tech_disk` ekler) |
 | ⬜ | Üs blokları: alüminyum paneller, titanyum levha, ızgara zemin, lombar, basınçlı cam, kayar kapı, uyarı şeridi, LED/panel lamba/projektör, kablo ve boru kanalları, merdiven/korkuluk/platform | |
@@ -245,10 +245,18 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Teknolojiler | Azot Buzulbilimi (5), Kuiper Kuşağı Seyrüseferi (5) |
 | 🎨 | Ortak yüzey özelliği | çokgen hücreler (`polygon_cells`): yastık hücreler + kenar çukurları (Plüton) veya çukurcuklu "kavun kabuğu" (Triton için) |
 
+## Ses
+| Durum | İçerik | Not |
+|---|---|---|
+| 🎨 | Görev kontrol anonsları (Türkçe + İngilizce, oyun diline göre) | geri sayım 10→1, ateşleme, kalkış, kademe ayrılması, yörünge, atmosfere giriş, paraşüt, iniş, yakıt/oksijen uyarısı, geri sayım durdu; telsiz filtresi + sinyal sesleri; istemci ayarı `missionControlVoice` |
+| 🎨 | Roket sesleri | motor döngüsü, ateşleme, kademe ayrılması, paraşüt, atmosfere giriş gürültüsü |
+| 🎨 | Giysi | oksijen alarmı |
+| 🎨 | Müzik | dört özgün ortam parçası (sözsüz): Yörünge (yumuşak piyano + sentezleyici), Ay (alçak uğultular, cam çan sesleri), Mars (sıcak pad'ler, uzak tek melodi), Venüs (havadar cam tınılar, derin org uğultusu); biyomların `music` alanından çalar |
+
 ## Yaratıklar (gezegenlere özgü, kan yok)
 | Gök cismi | Yaratıklar |
 |---|---|
-| Ay 🎨 | Regolit Kenesi (tozun altına saklanır, düşük yerçekiminde sıçrar), Yaşlı Regolit Kenesi (lav tüpü muhafızı), Toz Yüzücüsü (regolitin hemen altında süzülen pasif canlı, arkasında toz dalgaları), Keşif Dronu (karakol muhafızı, sersemletme atışı) |
+| Ay 🎨 | Regolit Kenesi (tozun altına saklanır, düşük yerçekiminde sıçrar), Yaşlı Regolit Kenesi (lav tüpü muhafızı), Toz Yüzücüsü (regolitin hemen altında süzülen pasif canlı, arkasında toz dalgaları), Keşif Dronu (karakol muhafızı, sersemletme atışı), Parıltı Böceği (pasif, ışıyan; fırçayla Parıltı Kabuğu verir → elektriksiz Parıltı Lambası, Ay gecesi için) |
 | Mars 🎨 | Pas Böceği (demir oksit yer, tarafsız), Toz Şeytanı (fırtınalarda canlı hortum), Kanyon Pusucusu, Taş Otlayan (iri, pasif otlayıcı), Kutup Kurtçuğu |
 | Venüs (bulutlar) 🎨 | Asit Vatozu (süzülen, tarafsız), Bulut Medüzü (pasif gaz kesesi) |
 | Merkür 🎨 | Alacakaranlık Sürüngeni (tehlikeli; gece-gündüz sınırında yaşar; güneş yükselince ya da gece çökünce toprağa gömülür), Oyuk Salyangozu (pasif, faydalı: oyuk tortusunu kazıyıp kükürt bırakır, kükürtle çoğalır) |

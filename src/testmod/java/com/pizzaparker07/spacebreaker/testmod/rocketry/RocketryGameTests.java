@@ -388,6 +388,153 @@ public final class RocketryGameTests {
     }
 
     @GameTest(template = EMPTY)
+    public static void transitViewTiming(GameTestHelper helper) {
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.kind(Location.EARTH_SURFACE, Location.EARTH_ORBIT)
+                == com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.Kind.ASCENT, "launch climbs out");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.kind(Location.EARTH_ORBIT, Location.MOON_ORBIT)
+                == com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.Kind.TRANSFER, "orbit to orbit is a transfer");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.kind(Location.MOON_ORBIT, Location.MOON_SURFACE)
+                == com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.Kind.LANDING, "orbit to ground is a landing");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.kind(Location.MOON_ORBIT, Location.EARTH_SURFACE)
+                == com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.Kind.LANDING, "coming home is a landing");
+        float prev = -1;
+        for (float p = 0; p <= 1.0001F; p += 0.05F) {
+            float l = com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.leadIn(FlightState.ASCENT, 0, p);
+            helper.assertTrue(l >= prev && l >= 0 && l <= 1, "ascent lead-in grows from 0 to 1");
+            prev = l;
+        }
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.leadIn(FlightState.ASCENT, 0, 0.5F) == 0, "low in the climb the world stays visible");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.leadIn(FlightState.ASCENT, 0, 1F) == 1, "fully covered before the jump to orbit");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.leadIn(FlightState.TRANSFER, 0, 0) == 0
+                && com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.leadIn(FlightState.TRANSFER,
+                com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.TRANSFER_FADE_TICKS, 0) == 1, "transfer fades in, then covers");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.TRANSFER_FADE_TICKS < RocketEntity.TRANSFER_TICKS,
+                "the view is complete well before the dimension changes");
+        for (FlightState st : new FlightState[]{FlightState.IDLE, FlightState.ORBIT, FlightState.DESCENT, FlightState.PARACHUTE}) {
+            helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.leadIn(st, 50, 1F) == 0, "no view in " + st);
+        }
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.fadeOut(0) == 1
+                && com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.fadeOut(com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.FADE_OUT_SECONDS) == 0,
+                "fades out into the new world");
+        float a = com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.progress(2.5F, 5F);
+        float b = com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.progress(10F, 5F);
+        float c = com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.progress(60F, 5F);
+        helper.assertTrue(within(a, 0.5, 1e-4) && b > 0.9F && c > b && c <= 1F, "a slow load keeps the animation moving: " + a + " " + b + " " + c);
+        helper.succeed();
+    }
+
+    @GameTest(template = EMPTY)
+    public static void starMapTrips(GameTestHelper helper) {
+        RocketLayout l = moonRocket(helper);
+        double[] full = l.fullFuel();
+        double dv = RocketMath.totalDeltaV(l, 0, full, 0);
+        var realism = SbConfig.Realism.BALANCED;
+        var toMoon = com.pizzaparker07.spacebreaker.content.rocketry.nav.StarMapData.trip(l, 0, full, dv, Location.EARTH_ORBIT, Location.MOON_SURFACE, realism, true, true);
+        helper.assertTrue(toMoon.route().equals(List.of(Location.EARTH_ORBIT, Location.MOON_ORBIT, Location.MOON_SURFACE)), "route shows each stop: " + toMoon.route());
+        helper.assertTrue(toMoon.enough() && toMoon.canGo() && toMoon.needed() > 0 && toMoon.shortBy() == 0, "the Moon rocket can land on the Moon: " + toMoon);
+        helper.assertTrue(toMoon.next().equals(Location.MOON_SURFACE) || toMoon.next().equals(Location.MOON_ORBIT), "Go flies the first leg");
+        var fromPad = com.pizzaparker07.spacebreaker.content.rocketry.nav.StarMapData.trip(l, 0, full, dv, Location.EARTH_SURFACE, Location.MOON_ORBIT, realism, false, true);
+        helper.assertTrue(fromPad.block() == com.pizzaparker07.spacebreaker.content.rocketry.nav.StarMapData.Block.NOT_IN_ORBIT
+                && fromPad.route().get(1).equals(Location.EARTH_ORBIT), "on the pad: climb to orbit first");
+        double[] empty = new double[full.length];
+        var dry = com.pizzaparker07.spacebreaker.content.rocketry.nav.StarMapData.trip(l, 0, empty, 0, Location.EARTH_ORBIT, Location.MOON_ORBIT, realism, true, true);
+        helper.assertTrue(!dry.enough() && dry.shortBy() > 0 && dry.block() == com.pizzaparker07.spacebreaker.content.rocketry.nav.StarMapData.Block.NOT_ENOUGH_FUEL,
+                "an empty rocket is told how much it is short");
+        var unbuilt = com.pizzaparker07.spacebreaker.content.rocketry.nav.StarMapData.trip(l, 0, full, dv, Location.EARTH_ORBIT, Location.MOON_SURFACE, realism, true, false);
+        helper.assertTrue(unbuilt.block() == com.pizzaparker07.spacebreaker.content.rocketry.nav.StarMapData.Block.NOT_BUILT, "missing worlds are 'coming soon'");
+        // dangers in plain words
+        java.util.function.Function<String, java.util.Set<com.pizzaparker07.spacebreaker.content.rocketry.nav.StarMapData.Hazard>> hz =
+                n -> com.pizzaparker07.spacebreaker.content.rocketry.nav.StarMapData.hazards(
+                        com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.body(Spacebreaker.id(n)).orElseThrow());
+        helper.assertTrue(hz.apply("earth").isEmpty(), "Earth is safe: " + hz.apply("earth"));
+        helper.assertTrue(hz.apply("moon").contains(com.pizzaparker07.spacebreaker.content.rocketry.nav.StarMapData.Hazard.NO_AIR), "the Moon has no air");
+        helper.assertTrue(hz.apply("venus").containsAll(List.of(com.pizzaparker07.spacebreaker.content.rocketry.nav.StarMapData.Hazard.CRUSHING_AIR,
+                com.pizzaparker07.spacebreaker.content.rocketry.nav.StarMapData.Hazard.HOT)), "Venus crushes and burns: " + hz.apply("venus"));
+        helper.assertTrue(hz.apply("mars").containsAll(List.of(com.pizzaparker07.spacebreaker.content.rocketry.nav.StarMapData.Hazard.THIN_AIR,
+                com.pizzaparker07.spacebreaker.content.rocketry.nav.StarMapData.Hazard.COLD)), "Mars is thin and cold: " + hz.apply("mars"));
+        // the map's layout data
+        var planets = com.pizzaparker07.spacebreaker.content.rocketry.nav.StarMapData.planets();
+        helper.assertTrue(planets.indexOf(Spacebreaker.id("mercury")) == 0 && planets.indexOf(Location.EARTH) < planets.indexOf(Spacebreaker.id("mars")),
+                "planets in order from the Sun: " + planets);
+        helper.assertFalse(planets.contains(Location.MOON), "moons are not planets");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.StarMapData.moons(Spacebreaker.id("mars"))
+                .containsAll(List.of(Spacebreaker.id("phobos"), Spacebreaker.id("deimos"))), "Mars has its two moons");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.StarMapData.system(Location.MOON).equals(Location.EARTH), "the Moon is in Earth's system");
+        helper.succeed();
+    }
+
+    private static com.pizzaparker07.spacebreaker.content.rocketry.entity.MissionCalls.Snapshot snap(FlightState s, int timer, int stage, boolean back) {
+        return new com.pizzaparker07.spacebreaker.content.rocketry.entity.MissionCalls.Snapshot(s, timer, stage, back);
+    }
+
+    @GameTest(template = EMPTY)
+    public static void missionControlCalls(GameTestHelper helper) {
+        java.util.function.BiFunction<com.pizzaparker07.spacebreaker.content.rocketry.entity.MissionCalls.Snapshot,
+                com.pizzaparker07.spacebreaker.content.rocketry.entity.MissionCalls.Snapshot, com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line> call =
+                com.pizzaparker07.spacebreaker.content.rocketry.entity.MissionCalls::call;
+        // walk a whole countdown tick by tick and collect what is said
+        List<com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line> said = new java.util.ArrayList<>();
+        var prev = snap(FlightState.IDLE, 0, 0, true);
+        for (int t = RocketEntity.COUNTDOWN_TICKS; t >= 1; t--) {
+            var now = snap(FlightState.COUNTDOWN, t, 0, true);
+            var line = call.apply(prev, now);
+            if (line != null) {
+                said.add(line);
+            }
+            prev = now;
+        }
+        var liftoff = call.apply(prev, snap(FlightState.ASCENT, 0, 0, true));
+        helper.assertTrue(said.contains(com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line.COUNTDOWN_10)
+                && said.contains(com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line.COUNTDOWN_1), "counts down from 10 to 1: " + said);
+        helper.assertTrue(said.stream().filter(l -> l == com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line.IGNITION).count() == 1,
+                "ignition is called once: " + said);
+        helper.assertFalse(said.contains(com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line.COUNTDOWN_3), "T-3 is the ignition call");
+        helper.assertTrue(said.indexOf(com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line.COUNTDOWN_4)
+                < said.indexOf(com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line.IGNITION)
+                && said.indexOf(com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line.IGNITION)
+                < said.indexOf(com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line.COUNTDOWN_2), "4, ignition, 2, 1");
+        helper.assertTrue(said.size() == 10, "one call per second from T-10: " + said);
+        helper.assertTrue(liftoff == com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line.LIFTOFF, "liftoff");
+        helper.assertTrue(call.apply(snap(FlightState.COUNTDOWN, 90, 0, true), snap(FlightState.IDLE, 0, 0, true))
+                == com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line.COUNTDOWN_HOLD, "abort holds the countdown");
+        helper.assertTrue(call.apply(snap(FlightState.ASCENT, 300, 0, true), snap(FlightState.ASCENT, 301, 1, true))
+                == com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line.STAGE_SEPARATION, "staging");
+        helper.assertTrue(call.apply(snap(FlightState.ASCENT, 900, 1, true), snap(FlightState.ORBIT, 0, 1, true))
+                == com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line.ORBIT_REACHED, "orbit after the climb");
+        helper.assertTrue(call.apply(snap(FlightState.TRANSFER, 119, 1, true), snap(FlightState.ORBIT, 0, 1, true))
+                == com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line.ORBIT_REACHED, "orbit after a transfer");
+        helper.assertTrue(call.apply(snap(FlightState.TRANSFER, 119, 3, true), snap(FlightState.REENTRY, 0, 3, true))
+                == com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line.ENTRY_INTERFACE, "entry interface");
+        helper.assertTrue(call.apply(snap(FlightState.REENTRY, 150, 3, true), snap(FlightState.PARACHUTE, 0, 3, true))
+                == com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line.PARACHUTES, "parachutes");
+        helper.assertTrue(call.apply(snap(FlightState.PARACHUTE, 200, 3, true), snap(FlightState.IDLE, 0, 3, true))
+                == com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line.TOUCHDOWN, "touchdown under chutes");
+        helper.assertTrue(call.apply(snap(FlightState.DESCENT, 200, 2, true), snap(FlightState.IDLE, 0, 2, true))
+                == com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line.TOUCHDOWN, "powered touchdown");
+        helper.assertTrue(call.apply(snap(FlightState.ORBIT, 10, 1, true), snap(FlightState.ORBIT, 11, 1, false))
+                == com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line.FUEL_LOW, "fuel low when home is out of reach");
+        helper.assertTrue(call.apply(snap(FlightState.ORBIT, 10, 1, true), snap(FlightState.ORBIT, 11, 1, true)) == null, "quiet in a steady orbit");
+        helper.assertTrue(call.apply(null, snap(FlightState.ORBIT, 0, 1, true)) == null, "nothing on boarding a parked rocket");
+        helper.succeed();
+    }
+
+    @GameTest(template = EMPTY)
+    public static void launchCostFollowsThrustToWeight(GameTestHelper helper) {
+        var lookup = RocketParts.lookup(helper.getLevel().registryAccess());
+        RocketLayout heavy = moonRocket(helper);
+        RocketLayout light = RocketLayout.of(new RocketDesign(List.of(Spacebreaker.id("kerosene_engine"), Spacebreaker.id("fuel_tank_small"),
+                Spacebreaker.id("crew_capsule"), Spacebreaker.id("parachute"))), lookup);
+        double g = 9.80665;
+        double twrHeavy = RocketMath.twr(heavy, 0, heavy.fullFuel(), g), twrLight = RocketMath.twr(light, 0, light.fullFuel(), g);
+        double costHeavy = Transfers.cost(Location.EARTH_SURFACE, Location.EARTH_ORBIT, heavy, 0, SbConfig.Realism.REALISTIC).orElseThrow();
+        double costLight = Transfers.cost(Location.EARTH_SURFACE, Location.EARTH_ORBIT, light, 0, SbConfig.Realism.REALISTIC).orElseThrow();
+        helper.assertTrue(twrLight > twrHeavy, "the light rocket is punchier: " + twrLight + " vs " + twrHeavy);
+        helper.assertTrue(costLight < costHeavy, "less gravity loss with more thrust: " + costLight + " vs " + costHeavy);
+        helper.assertTrue(costLight > 7800 && costHeavy < 11500, "Earth ascent stays in the real 8-11 km/s range: " + costLight + " / " + costHeavy);
+        helper.succeed();
+    }
+
+    @GameTest(template = EMPTY)
     public static void fuelFromFluidContainers(GameTestHelper helper) {
         RocketEntity rocket = RocketEntity.create(helper.getLevel(), RocketryModule.MOON_ROCKET, helper.absoluteVec(new net.minecraft.world.phys.Vec3(1.5, 2, 1.5)), 0F);
         helper.getLevel().addFreshEntity(rocket);

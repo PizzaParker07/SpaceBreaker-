@@ -6,5 +6,8 @@
     "spacebreaker:heavy_launch",
     "spacebreaker:fusion_power"
   ],
+  "samples": [
+    "spacebreaker:orbital_flight"
+  ],
   "tier": 3
 }

@@ -21,11 +21,14 @@ Per world with Complementary (vanilla reference shots live in each area's screen
 | Mars | thin | own butterscotch sky, blue sunset; dust storm haze (`iris_mars_11_dust_storm` vs `vanilla_mars_11_dust_storm`), a little brighter than vanilla |
 | Venus | thick | dark ground, dense orange haze, whiteout in the clouds, cloud sea above (`venus_vanilla_bug_fixed.jpg`: vanilla / before / after) |
 | Titan | thick | orange haze and dim light from the generic haze pass, no Titan code (`iris_titan_*` vs `vanilla_titan_01_dunes`); ground a little warmer than vanilla, the small methane drizzle particles are hard to see under the pack |
+| Enceladus | airless | black sky with Saturn and its rings, crescent phase (`iris_enceladus_*`): same as vanilla |
 | Europa, Io (and Ganymede, Callisto) | airless | black sky, stars, the huge Jupiter with its terminator, Io's plumes (`iris_europa_01_jupiter`, `iris_io_02_sulfur_plume`); as dark as vanilla where Jupiter's night side faces the ground |
 | Phobos, Deimos | airless | classified and handled like the Moon; no separate shader screenshots yet |
 
 Screen effects and HUDs (all in the GUI layer, drawn over the pack's final frame) were checked under Complementary:
-orbit HUD (`iris_rocketry_12_orbit_hud`), suit HUD on the Moon (`iris_suit_moon_03_hud_vacuum`), launch
+rocket camera and cockpit window (`iris_rocketry_24_rocket_camera`, `iris_rocketry_25_cockpit`), the transit animation
+that replaces the loading screen during dimension changes (`iris_rocketry_26/27/28_transit_*`; the frames differ from
+vanilla only in the animation phase, the shader run is slower), orbit HUD (`iris_rocketry_12_orbit_hud`), suit HUD on the Moon (`iris_suit_moon_03_hud_vacuum`), launch
 (`iris_rocketry_07_ignition`), Mars dust tint. The reentry plasma overlay (`iris_13_reentry_plasma`, compat shot 13 with
 a short view distance so the frame is ready during the heating phase) is drawn over the pack's frame as well.
 
@@ -123,6 +126,12 @@ Complementary the tint is weaker (the pack re-lights translucent entities) but t
 - Not part of this layer, noticed while testing: server-side, `level.isRaining()` on the Moon follows the
   Overworld's weather (vanilla's derived level data). `SolarPanelBlockEntity` uses it — solar output drops on the
   Moon when it rains on Earth (industry area).
+
+- **Blue "water" particles are faded by Complementary:** its `gbuffers_textured` recognises blue particles
+  (`b > 1.15·(r+g)`, as vanilla `FALLING_WATER` / `RAIN`), pales them and drops ~60 % of them by dither. Titan's drizzle
+  now uses its own methane drop particle and is visible under the pack (`iris_titan_03_methane_rain`); it reads darker
+  than in vanilla because Titan's dim light and haze apply to the drops too. Other areas: avoid blue-dominant vanilla
+  water particles for effects that must stay visible with shaders.
 
 ## 4. How to test
 

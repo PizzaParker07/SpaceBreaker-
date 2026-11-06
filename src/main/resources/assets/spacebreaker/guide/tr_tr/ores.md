@@ -8,7 +8,7 @@ Uzay çağının metalleri Dünya'nın derinliklerinde bekliyor. Hepsini en az *
 ## Boksit → alüminyum
 {items spacebreaker:bauxite_ore spacebreaker:deepslate_bauxite_ore spacebreaker:raw_bauxite spacebreaker:raw_bauxite_block}
 
-Kızıl-kahve, küçük yuvarlak taneli bir kaya. Sıcak tepelerde, yüzeye yakın bulunur. Her roketin, tankın ve panelin metali olan alüminyumu verir. Ham boksiti ocakta ergitebilirsin:
+Kızıl-kahve, küçük yuvarlak taneli bir kaya. Her biyomun taşında seyrek, sıcak tepelerde bol ve yüzeye yakın bulunur. Her roketin, tankın ve panelin metali olan alüminyumu verir. Ham boksiti ocakta ergitebilirsin:
 
 {recipe spacebreaker:aluminum_ingot_from_raw_smelting}
 

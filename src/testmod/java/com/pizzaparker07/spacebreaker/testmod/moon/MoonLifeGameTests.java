@@ -149,7 +149,7 @@ public final class MoonLifeGameTests {
         }
         helper.assertTrue(chests >= 4, "outpost needs loot chests, found " + chests);
         helper.assertTrue(spawners == 1, "one drone dispenser");
-        helper.assertTrue(doors == 4, "airlock with two iron doors (4 halves), found " + doors);
+        helper.assertTrue(doors == 6, "airlock with two iron doors plus the vault door (6 halves), found " + doors);
         int drones = level.getEntitiesOfClass(SurveyDrone.class, AABB.of(bb).inflate(2)).size();
         helper.assertTrue(drones >= 2, "drones guard the outpost, found " + drones);
         helper.succeed();
@@ -172,6 +172,67 @@ public final class MoonLifeGameTests {
         helper.assertTrue(loaded.getBoundingBox().equals(piece.getBoundingBox()), "piece survives save and load");
         helper.assertTrue(piece.getBoundingBox().maxY() >= 80, "the skylight reaches the surface");
         helper.succeed();
+    }
+
+    @GameTest(template = EMPTY)
+    public static void glimmerBeetleShedsShellsWhenBrushed(GameTestHelper helper) {
+        var beetle = helper.spawn(MoonEntities.GLIMMER_BEETLE.get(), 2, 2, 2);
+        helper.assertTrue(beetle.hasShell(), "a new beetle has a full shell");
+        net.minecraft.world.entity.player.Player player = helper.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.BRUSH));
+        var first = beetle.interact(player, net.minecraft.world.InteractionHand.MAIN_HAND);
+        helper.assertTrue(first.consumesAction(), "brushing works");
+        helper.assertFalse(beetle.hasShell(), "the shell regrows after brushing");
+        helper.assertTrue(beetle.glow() < 1F, "a beetle without its shell glows dimmer");
+        var shells = helper.getLevel().getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class,
+                new AABB(beetle.blockPosition()).inflate(2), e -> e.getItem().is(MoonModule.GLIMMER_SHELL.get()));
+        helper.assertTrue(shells.size() == 1, "one glimmer shell dropped");
+        helper.assertFalse(beetle.interact(player, net.minecraft.world.InteractionHand.MAIN_HAND).consumesAction(), "no second shell right away");
+        helper.assertTrue(beetle.isAlive() && beetle.getHealth() == beetle.getMaxHealth(), "brushing does not hurt the beetle");
+        helper.setBlock(1, 1, 1, MoonModule.GLIMMER_LAMP.get());
+        helper.assertTrue(helper.getBlockState(new BlockPos(1, 1, 1)).getLightEmission() >= 14, "glimmer lamps light the lunar night without power");
+        helper.succeed();
+    }
+
+    /** The vault puzzle: the door stays shut until a power cell (block of redstone) fills the socket above it. */
+    @GameTest(template = EMPTY, timeoutTicks = 200)
+    public static void outpostVaultOpensWithPowerCell(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos base = helper.absolutePos(BlockPos.ZERO).offset(-4000, 0, 4000);
+        int y = level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.WORLD_SURFACE, base.getX(), base.getZ());
+        OutpostPiece piece = new OutpostPiece(98L, base.getX(), y, base.getZ(), Direction.SOUTH);
+        BoundingBox bb = piece.getBoundingBox();
+        // two passes: in a live level, blocks placed before their neighbour chunk exists can lose support
+        // (world generation has no such shape updates); the second pass settles them
+        for (int pass = 0; pass < 2; pass++)
+        for (int cx = bb.minX() >> 4; cx <= bb.maxX() >> 4; cx++) {
+            for (int cz = bb.minZ() >> 4; cz <= bb.maxZ() >> 4; cz++) {
+                level.getChunk(cx, cz);
+                BoundingBox cb = new BoundingBox(cx << 4, level.getMinBuildHeight(), cz << 4, (cx << 4) + 15, level.getMaxBuildHeight(), (cz << 4) + 15);
+                piece.postProcess(level, level.structureManager(), level.getChunkSource().getGenerator(), RandomSource.create(1),
+                        cb, new ChunkPos(cx, cz), bb.getCenter());
+            }
+        }
+        // local (22, F+1, 5) with F = 4, piece facing south (no rotation)
+        BlockPos door = new BlockPos(bb.minX() + 22, bb.minY() + 5, bb.minZ() + 5);
+        BlockPos socket = door.above(2);
+        helper.assertTrue(level.getBlockState(door).is(Blocks.IRON_DOOR), "vault door in place");
+        helper.assertFalse(level.getBlockState(door).getValue(net.minecraft.world.level.block.DoorBlock.OPEN), "vault starts sealed");
+        helper.assertTrue(level.getBlockState(socket).isAir(), "an empty power socket above the door");
+        boolean trap = false;
+        boolean sign = false;
+        for (BlockPos p : BlockPos.betweenClosed(door.offset(-3, -1, -3), door.offset(1, 3, 3))) {
+            var be = level.getBlockEntity(p);
+            trap |= be instanceof net.minecraft.world.level.block.entity.DispenserBlockEntity d && !d.isEmpty();
+            sign |= be instanceof net.minecraft.world.level.block.entity.SignBlockEntity;
+        }
+        helper.assertTrue(trap, "armed arrow trap near the vault door");
+        helper.assertTrue(sign, "warning sign near the vault door");
+        level.setBlock(socket, Blocks.REDSTONE_BLOCK.defaultBlockState(), 3);
+        helper.runAfterDelay(2, () -> {
+            helper.assertTrue(level.getBlockState(door).getValue(net.minecraft.world.level.block.DoorBlock.OPEN), "the power cell opens the vault");
+            helper.succeed();
+        });
     }
 
     private MoonLifeGameTests() {

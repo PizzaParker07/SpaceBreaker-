@@ -76,6 +76,8 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
     private static final EntityDataAccessor<String> DATA_ORBIT_BODY = SynchedEntityData.defineId(RocketEntity.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<Boolean> DATA_BURNING = SynchedEntityData.defineId(RocketEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Float> DATA_TILT = SynchedEntityData.defineId(RocketEntity.class, EntityDataSerializers.FLOAT);
+    /** Share of the current ascent burn already flown (0..1), so clients can start the transit view in time. */
+    private static final EntityDataAccessor<Float> DATA_ASCENT = SynchedEntityData.defineId(RocketEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<CompoundTag> DATA_FUEL = SynchedEntityData.defineId(RocketEntity.class, EntityDataSerializers.COMPOUND_TAG);
 
     private RocketDesign design = RocketDesign.EMPTY;
@@ -128,6 +130,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         builder.define(DATA_ORBIT_BODY, "");
         builder.define(DATA_BURNING, false);
         builder.define(DATA_TILT, 0F);
+        builder.define(DATA_ASCENT, 0F);
         builder.define(DATA_FUEL, new CompoundTag());
     }
 
@@ -170,6 +173,10 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
     }
 
     /** Pitch of the gravity turn in degrees (towards +x). */
+    public float ascentProgress() {
+        return entityData.get(DATA_ASCENT);
+    }
+
     public float tilt() {
         return entityData.get(DATA_TILT);
     }
@@ -624,7 +631,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         setState(FlightState.BURN);
         setBurning(!reentry || !isCapsuleOnly());
         setTimer(0);
-        level().playSound(null, blockPosition(), SoundEvents.FIRECHARGE_USE, SoundSource.NEUTRAL, 2F, 0.5F);
+        level().playSound(null, blockPosition(), com.pizzaparker07.spacebreaker.content.audio.SbSounds.ROCKET_IGNITION.get(), SoundSource.NEUTRAL, 2F, 1.1F);
         return true;
     }
 
@@ -668,7 +675,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         }
         if (t == IGNITION_TICKS) {
             setBurning(true);
-            level().playSound(null, blockPosition(), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.NEUTRAL, 2F, 0.5F);
+            level().playSound(null, blockPosition(), com.pizzaparker07.spacebreaker.content.audio.SbSounds.ROCKET_IGNITION.get(), SoundSource.NEUTRAL, 4F, 1F);
         }
         if (t <= 0) {
             beginAscent();
@@ -686,6 +693,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         }
         legCost = cost.getAsDouble();
         legDelivered = 0;
+        entityData.set(DATA_ASCENT, 0F);
         ascentFirstStage = activeStage();
         double atmosphere = !here.orbit() && here.atmosphere() ? RocketMath.ASCENT_ATMOSPHERE : 0;
         // run the whole burn once to learn how long it really takes, then compress it to a watchable ascent
@@ -748,7 +756,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
             setActiveStage(s + 1);
             setBurning(false);
             coast = STAGING_COAST_TICKS;
-            level().playSound(null, blockPosition(), SoundEvents.PISTON_EXTEND, SoundSource.NEUTRAL, 2F, 0.6F);
+            level().playSound(null, blockPosition(), com.pizzaparker07.spacebreaker.content.audio.SbSounds.ROCKET_STAGE_SEPARATION.get(), SoundSource.NEUTRAL, 3F, 1F);
             if (s + 1 >= l.stages().size()) {
                 failAscent();
                 return;
@@ -762,6 +770,9 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         entityData.set(DATA_TILT, tilt);
         double vx = vy * Math.sin(Math.toRadians(tilt));
         setDeltaMovement(vx, vy, 0);
+        if (legCost > 0 && t % 2 == 0) {
+            entityData.set(DATA_ASCENT, (float) Mth.clamp(legDelivered / legCost, 0, 1));
+        }
         if (legDelivered >= legCost - 1e-6) {
             syncFuel();
             reachOrbit();
@@ -783,6 +794,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
 
     private void reachOrbit() {
         Location to = destination();
+        entityData.set(DATA_ASCENT, 1F);
         entityData.set(DATA_TILT, 0F);
         arrive(to);
     }
@@ -982,7 +994,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
             } else if (layout().payload().parachute()) {
                 setState(FlightState.PARACHUTE);
                 setTimer(0);
-                level().playSound(null, blockPosition(), SoundEvents.WOOL_PLACE, SoundSource.NEUTRAL, 2F, 0.6F);
+                level().playSound(null, blockPosition(), com.pizzaparker07.spacebreaker.content.audio.SbSounds.ROCKET_PARACHUTE_DEPLOY.get(), SoundSource.NEUTRAL, 3F, 1F);
             } else if (getY() - ground <= Math.abs(vy)) {
                 setPos(getX(), ground, getZ());
                 touchDown(true);

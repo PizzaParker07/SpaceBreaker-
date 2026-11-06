@@ -14,6 +14,7 @@ import java.util.List;
 public final class Modules {
     public static final List<SbModule> ALL = List.of(
             new EarthModule(),
+            new com.pizzaparker07.spacebreaker.content.audio.AudioModule(),
             new com.pizzaparker07.spacebreaker.content.fluids.FluidsModule(),
             new WorldgenModule(),
             new MoonModule(),

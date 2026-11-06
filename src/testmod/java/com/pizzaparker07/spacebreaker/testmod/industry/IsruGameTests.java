@@ -195,6 +195,39 @@ public final class IsruGameTests {
         h.succeed();
     }
 
+    /**
+     * Life support from rock: regolith -> regolith heater -> two gas pipes -> the suit area's oxygen filler (its
+     * piped buffer) -> an oxygen tank. The Overworld air would fill tanks for free, so the test drives the filler
+     * from its buffer explicitly.
+     */
+    @GameTest(template = "empty", timeoutTicks = 600)
+    public static void regolithOxygenFillsSuitTanksThroughPipes(GameTestHelper h) {
+        Item regolith = BuiltInRegistries.ITEM.getTag(IsruRecipes.REGOLITHS).flatMap(set -> set.stream()
+                        .filter(hd -> !hd.is(IsruRecipes.SOLAR_WIND_REGOLITHS)).findFirst())
+                .orElseThrow(() -> new AssertionError("no plain regolith")).value();
+        MachineBlockEntity heater = machine(h, MachinesModule.REGOLITH_HEATER, new BlockPos(1, 1, 2), Direction.NORTH);
+        heater.items().setStackInSlot(0, new ItemStack(regolith, 16));
+        h.setBlock(new BlockPos(2, 1, 2), MachinesModule.GAS_PIPE.get());
+        h.setBlock(new BlockPos(3, 1, 2), MachinesModule.GAS_PIPE.get());
+        BlockPos fillerPos = new BlockPos(4, 1, 2);
+        h.setBlock(fillerPos, com.pizzaparker07.spacebreaker.content.suit.SuitModule.OXYGEN_FILLER.get());
+        var filler = (com.pizzaparker07.spacebreaker.content.suit.block.OxygenFillerBlockEntity) h.getBlockEntity(fillerPos);
+        filler.getEnergy().receiveEnergy(filler.getEnergy().getMaxEnergyStored(), false);
+        h.succeedWhen(() -> {
+            h.assertTrue(heater.tank(0).getFluidAmount() < 250 || filler.storedOxygen() > 0, "heater oxygen is not leaving through the pipes");
+            h.assertTrue(filler.storedOxygen() >= 1_000, "filler buffer " + filler.storedOxygen());
+            ItemStack tank = new ItemStack(com.pizzaparker07.spacebreaker.content.suit.SuitModule.OXYGEN_TANK.get());
+            filler.setStack(tank);
+            int before = filler.storedOxygen();
+            for (int i = 0; i < 20; i++) {
+                filler.pumpTick(false);
+            }
+            int got = com.pizzaparker07.spacebreaker.content.suit.OxygenTankItem.getOxygen(filler.getStack());
+            h.assertTrue(got > 0, "the tank got no oxygen from the piped buffer");
+            h.assertTrue(filler.storedOxygen() == before - got, "oxygen must come out of the piped buffer");
+        });
+    }
+
     private IsruGameTests() {
     }
 }

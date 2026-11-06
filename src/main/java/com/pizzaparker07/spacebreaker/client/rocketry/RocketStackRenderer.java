@@ -44,8 +44,17 @@ public final class RocketStackRenderer {
      */
     public static void render(RocketLayout layout, RocketGeometry geometry, PoseStack pose, MultiBufferSource buffers,
                               int light, float legs) {
+        render(layout, geometry, pose, buffers, light, legs, Integer.MAX_VALUE);
+    }
+
+    /** Draws the parts below index {@code skipFrom} (the cockpit view leaves out the capsule around the camera). */
+    public static void render(RocketLayout layout, RocketGeometry geometry, PoseStack pose, MultiBufferSource buffers,
+                              int light, float legs, int skipFrom) {
         ItemRenderer items = Minecraft.getInstance().getItemRenderer();
         for (RocketGeometry.Placement p : geometry.placements()) {
+            if (p.part() >= skipFrom) {
+                continue;
+            }
             RocketPart part = layout.parts().get(p.part());
             ItemStack stack = stackFor(part.model());
             if (stack.isEmpty()) {

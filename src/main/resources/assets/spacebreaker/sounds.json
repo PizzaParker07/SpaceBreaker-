@@ -1,0 +1,466 @@
+{
+  "rocket.engine_loop": {
+    "subtitle": "subtitles.spacebreaker.rocket.engine",
+    "sounds": [
+      {
+        "name": "spacebreaker:rocket/engine_loop",
+        "stream": false
+      }
+    ]
+  },
+  "rocket.ignition": {
+    "subtitle": "subtitles.spacebreaker.rocket.ignition",
+    "sounds": [
+      {
+        "name": "spacebreaker:rocket/ignition",
+        "stream": false
+      }
+    ]
+  },
+  "rocket.stage_separation": {
+    "subtitle": "subtitles.spacebreaker.rocket.stage_separation",
+    "sounds": [
+      {
+        "name": "spacebreaker:rocket/stage_separation",
+        "stream": false
+      }
+    ]
+  },
+  "rocket.parachute_deploy": {
+    "subtitle": "subtitles.spacebreaker.rocket.parachute_deploy",
+    "sounds": [
+      {
+        "name": "spacebreaker:rocket/parachute_deploy",
+        "stream": false
+      }
+    ]
+  },
+  "rocket.reentry_loop": {
+    "subtitle": "subtitles.spacebreaker.rocket.reentry",
+    "sounds": [
+      {
+        "name": "spacebreaker:rocket/reentry_loop",
+        "stream": false
+      }
+    ]
+  },
+  "suit.oxygen_alarm": {
+    "subtitle": "subtitles.spacebreaker.suit.oxygen_alarm",
+    "sounds": [
+      {
+        "name": "spacebreaker:suit/oxygen_alarm",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.radio_in": {
+    "subtitle": "subtitles.spacebreaker.mission_control.radio",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/radio_in",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.radio_out": {
+    "subtitle": "subtitles.spacebreaker.mission_control.radio",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/radio_out",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.en.countdown_10": {
+    "subtitle": "subtitles.spacebreaker.mission_control.countdown_10",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/en/countdown_10",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.en.countdown_9": {
+    "subtitle": "subtitles.spacebreaker.mission_control.countdown_9",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/en/countdown_9",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.en.countdown_8": {
+    "subtitle": "subtitles.spacebreaker.mission_control.countdown_8",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/en/countdown_8",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.en.countdown_7": {
+    "subtitle": "subtitles.spacebreaker.mission_control.countdown_7",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/en/countdown_7",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.en.countdown_6": {
+    "subtitle": "subtitles.spacebreaker.mission_control.countdown_6",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/en/countdown_6",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.en.countdown_5": {
+    "subtitle": "subtitles.spacebreaker.mission_control.countdown_5",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/en/countdown_5",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.en.countdown_4": {
+    "subtitle": "subtitles.spacebreaker.mission_control.countdown_4",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/en/countdown_4",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.en.countdown_3": {
+    "subtitle": "subtitles.spacebreaker.mission_control.countdown_3",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/en/countdown_3",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.en.countdown_2": {
+    "subtitle": "subtitles.spacebreaker.mission_control.countdown_2",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/en/countdown_2",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.en.countdown_1": {
+    "subtitle": "subtitles.spacebreaker.mission_control.countdown_1",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/en/countdown_1",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.en.ignition": {
+    "subtitle": "subtitles.spacebreaker.mission_control.ignition",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/en/ignition",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.en.liftoff": {
+    "subtitle": "subtitles.spacebreaker.mission_control.liftoff",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/en/liftoff",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.en.stage_separation": {
+    "subtitle": "subtitles.spacebreaker.mission_control.stage_separation",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/en/stage_separation",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.en.orbit_reached": {
+    "subtitle": "subtitles.spacebreaker.mission_control.orbit_reached",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/en/orbit_reached",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.en.entry_interface": {
+    "subtitle": "subtitles.spacebreaker.mission_control.entry_interface",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/en/entry_interface",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.en.parachutes": {
+    "subtitle": "subtitles.spacebreaker.mission_control.parachutes",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/en/parachutes",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.en.touchdown": {
+    "subtitle": "subtitles.spacebreaker.mission_control.touchdown",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/en/touchdown",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.en.fuel_low": {
+    "subtitle": "subtitles.spacebreaker.mission_control.fuel_low",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/en/fuel_low",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.en.oxygen_low": {
+    "subtitle": "subtitles.spacebreaker.mission_control.oxygen_low",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/en/oxygen_low",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.en.countdown_hold": {
+    "subtitle": "subtitles.spacebreaker.mission_control.countdown_hold",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/en/countdown_hold",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.tr.countdown_10": {
+    "subtitle": "subtitles.spacebreaker.mission_control.countdown_10",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/tr/countdown_10",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.tr.countdown_9": {
+    "subtitle": "subtitles.spacebreaker.mission_control.countdown_9",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/tr/countdown_9",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.tr.countdown_8": {
+    "subtitle": "subtitles.spacebreaker.mission_control.countdown_8",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/tr/countdown_8",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.tr.countdown_7": {
+    "subtitle": "subtitles.spacebreaker.mission_control.countdown_7",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/tr/countdown_7",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.tr.countdown_6": {
+    "subtitle": "subtitles.spacebreaker.mission_control.countdown_6",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/tr/countdown_6",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.tr.countdown_5": {
+    "subtitle": "subtitles.spacebreaker.mission_control.countdown_5",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/tr/countdown_5",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.tr.countdown_4": {
+    "subtitle": "subtitles.spacebreaker.mission_control.countdown_4",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/tr/countdown_4",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.tr.countdown_3": {
+    "subtitle": "subtitles.spacebreaker.mission_control.countdown_3",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/tr/countdown_3",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.tr.countdown_2": {
+    "subtitle": "subtitles.spacebreaker.mission_control.countdown_2",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/tr/countdown_2",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.tr.countdown_1": {
+    "subtitle": "subtitles.spacebreaker.mission_control.countdown_1",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/tr/countdown_1",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.tr.ignition": {
+    "subtitle": "subtitles.spacebreaker.mission_control.ignition",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/tr/ignition",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.tr.liftoff": {
+    "subtitle": "subtitles.spacebreaker.mission_control.liftoff",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/tr/liftoff",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.tr.stage_separation": {
+    "subtitle": "subtitles.spacebreaker.mission_control.stage_separation",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/tr/stage_separation",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.tr.orbit_reached": {
+    "subtitle": "subtitles.spacebreaker.mission_control.orbit_reached",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/tr/orbit_reached",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.tr.entry_interface": {
+    "subtitle": "subtitles.spacebreaker.mission_control.entry_interface",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/tr/entry_interface",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.tr.parachutes": {
+    "subtitle": "subtitles.spacebreaker.mission_control.parachutes",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/tr/parachutes",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.tr.touchdown": {
+    "subtitle": "subtitles.spacebreaker.mission_control.touchdown",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/tr/touchdown",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.tr.fuel_low": {
+    "subtitle": "subtitles.spacebreaker.mission_control.fuel_low",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/tr/fuel_low",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.tr.oxygen_low": {
+    "subtitle": "subtitles.spacebreaker.mission_control.oxygen_low",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/tr/oxygen_low",
+        "stream": false
+      }
+    ]
+  },
+  "mission_control.tr.countdown_hold": {
+    "subtitle": "subtitles.spacebreaker.mission_control.countdown_hold",
+    "sounds": [
+      {
+        "name": "spacebreaker:mission_control/tr/countdown_hold",
+        "stream": false
+      }
+    ]
+  },
+  "music.orbit": {
+    "sounds": [
+      {
+        "name": "spacebreaker:music/orbit",
+        "stream": true
+      }
+    ]
+  },
+  "music.moon": {
+    "sounds": [
+      {
+        "name": "spacebreaker:music/moon",
+        "stream": true
+      }
+    ]
+  },
+  "music.mars": {
+    "sounds": [
+      {
+        "name": "spacebreaker:music/mars",
+        "stream": true
+      }
+    ]
+  },
+  "music.venus": {
+    "sounds": [
+      {
+        "name": "spacebreaker:music/venus",
+        "stream": true
+      }
+    ]
+  }
+}

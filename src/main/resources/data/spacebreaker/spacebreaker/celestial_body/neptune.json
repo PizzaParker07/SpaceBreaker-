@@ -11,5 +11,6 @@
   "climate": { "day_temp_c": -201, "night_temp_c": -201 },
   "solar_irradiance": 1.51,
   "albedo": 0.29,
+  "geometric_albedo": 0.442,
   "rings": { "inner_radius_km": 41900, "outer_radius_km": 62930 }
 }

@@ -335,6 +335,14 @@ public final class EarthModule implements SbModule {
         out.accept(Spacebreaker.id("copper_wire_by_hand"), new ToolShapelessRecipe("", net.minecraft.world.item.crafting.CraftingBookCategory.MISC,
                 new net.minecraft.world.item.ItemStack(COPPER.wire.get(), 2),
                 net.minecraft.core.NonNullList.of(Ingredient.EMPTY, Ingredient.of(COPPER.plateTag), Ingredient.of(Items.SHEARS))), null);
+        // rods by hand (the Press gives 1 rod per ingot): three ingots in a column -> 2 rods.
+        // Breaks the loop "electric motor needs a rod, rods need the Press, the Press needs a motor".
+        for (Metal m : METALS) {
+            if (m.rod != null) {
+                ShapedRecipeBuilder.shaped(RecipeCategory.MISC, m.rod.get(), 2).pattern("#").pattern("#").pattern("#")
+                        .define('#', m.ingotTag).unlockedBy("has_ingot", has(m.ingotTag)).save(out, Spacebreaker.id(m.name + "_rod_by_hand"));
+            }
+        }
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, BASIC_CIRCUIT.get(), 2)
                 .pattern("WRW").pattern("RPR").pattern("WRW")
                 .define('W', COPPER.wireTag).define('R', Tags.Items.DUSTS_REDSTONE).define('P', IRON.plateTag)

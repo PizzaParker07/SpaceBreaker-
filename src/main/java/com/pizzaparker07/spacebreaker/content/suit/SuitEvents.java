@@ -38,6 +38,9 @@ public final class SuitEvents {
         if (player.tickCount % 5 == 0) {
             sendStatus(sp, data);
         }
+        if (player.tickCount % 10 == 0) {
+            sealFeedback(sp, data);
+        }
     }
 
     // the raw (unshielded) rate is cached per player between the 1-second updates
@@ -49,6 +52,26 @@ public final class SuitEvents {
 
     private static double lastRate(ServerPlayer player) {
         return RATES.getOrDefault(player, 0.0);
+    }
+
+    /** Tells the wearer when the suit seals (all four pieces on) or opens again. */
+    static void sealFeedback(ServerPlayer player, SurvivalData data) {
+        boolean sealed = SpaceSuitItem.isSealed(player);
+        if (data.wasSealed != null && data.wasSealed != sealed) {
+            if (sealed) {
+                player.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.spacebreaker.suit.sealed")
+                        .withStyle(net.minecraft.ChatFormatting.AQUA), true);
+                player.level().playSound(null, player.blockPosition(), net.minecraft.sounds.SoundEvents.FIRE_EXTINGUISH,
+                        net.minecraft.sounds.SoundSource.PLAYERS, 0.25F, 1.8F);
+            } else {
+                player.displayClientMessage(net.minecraft.network.chat.Component.translatable(data.breathable
+                        ? "message.spacebreaker.suit.unsealed" : "message.spacebreaker.suit.unsealed_vacuum")
+                        .withStyle(data.breathable ? net.minecraft.ChatFormatting.GRAY : net.minecraft.ChatFormatting.RED), true);
+                player.level().playSound(null, player.blockPosition(), net.minecraft.sounds.SoundEvents.ARMOR_EQUIP_GENERIC.value(),
+                        net.minecraft.sounds.SoundSource.PLAYERS, 0.6F, 0.8F);
+            }
+        }
+        data.wasSealed = sealed;
     }
 
     static void sendStatus(ServerPlayer player, SurvivalData data) {

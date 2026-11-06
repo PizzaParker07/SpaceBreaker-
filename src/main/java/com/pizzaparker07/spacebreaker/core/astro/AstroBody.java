@@ -20,11 +20,25 @@ import java.util.Map;
  * @param nightTempK         typical pre-dawn surface temperature, K
  * @param albedo             Bond albedo
  * @param landable           true when the body has a surface dimension
+ * @param geometricAlbedo    geometric (visual) albedo, negative when unknown (then the Bond albedo is used)
  */
 public record AstroBody(String id, String parent, Kind kind, double mass, double radius, OrbitalElements orbit,
                         double rotationPeriod, boolean tidallyLocked, double surfacePressureKpa,
                         Map<String, Double> composition, double dayTempK, double nightTempK, double albedo,
-                        boolean landable) {
+                        boolean landable, double geometricAlbedo) {
+
+    /** Constructor without the geometric albedo. */
+    public AstroBody(String id, String parent, Kind kind, double mass, double radius, OrbitalElements orbit,
+                     double rotationPeriod, boolean tidallyLocked, double surfacePressureKpa,
+                     Map<String, Double> composition, double dayTempK, double nightTempK, double albedo, boolean landable) {
+        this(id, parent, kind, mass, radius, orbit, rotationPeriod, tidallyLocked, surfacePressureKpa, composition,
+                dayTempK, nightTempK, albedo, landable, -1);
+    }
+
+    /** Albedo for brightness in the sky: the geometric albedo when known, otherwise the Bond albedo. */
+    public double visualAlbedo() {
+        return geometricAlbedo >= 0 ? geometricAlbedo : albedo;
+    }
 
     public enum Kind {
         STAR, TERRESTRIAL, GAS_GIANT, ICE_GIANT, DWARF, MOON, ASTEROID, STATION;
@@ -60,6 +74,18 @@ public record AstroBody(String id, String parent, Kind kind, double mass, double
                                           double dayLengthHours, boolean tidallyLocked, double pressureKpa,
                                           Map<String, Double> composition, double dayTempC, double nightTempC,
                                           double albedo, boolean landable) {
+        return fromDataUnits(id, parent, kind, massKg, radiusKm, semiMajorAxisKm, eccentricity, inclinationDeg, lanDeg,
+                argPeriDeg, meanAnomalyDeg, periodDays, dayLengthHours, tidallyLocked, pressureKpa, composition, dayTempC,
+                nightTempC, albedo, landable, -1);
+    }
+
+    /** As above, with the geometric albedo (negative when unknown). */
+    public static AstroBody fromDataUnits(String id, String parent, Kind kind, double massKg, double radiusKm,
+                                          double semiMajorAxisKm, double eccentricity, double inclinationDeg,
+                                          double lanDeg, double argPeriDeg, double meanAnomalyDeg, double periodDays,
+                                          double dayLengthHours, boolean tidallyLocked, double pressureKpa,
+                                          Map<String, Double> composition, double dayTempC, double nightTempC,
+                                          double albedo, boolean landable, double geometricAlbedo) {
         OrbitalElements orbit = null;
         if (semiMajorAxisKm > 0 && periodDays > 0) {
             double a = semiMajorAxisKm * 1000.0;
@@ -69,7 +95,7 @@ public record AstroBody(String id, String parent, Kind kind, double mass, double
         }
         return new AstroBody(id, parent, kind, massKg, radiusKm * 1000.0, orbit, dayLengthHours * 3600.0,
                 tidallyLocked, pressureKpa, Map.copyOf(composition), dayTempC + 273.15, nightTempC + 273.15, albedo,
-                landable);
+                landable, geometricAlbedo);
     }
 
     /** Gravitational parameter μ = GM, m³/s². */
