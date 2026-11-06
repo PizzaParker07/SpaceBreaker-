@@ -10,7 +10,7 @@
           "functions": [{"function": "spacebreaker:random_tech_disk", "techs": [
             "spacebreaker:lunar_surveying", "spacebreaker:field_geology", "spacebreaker:pressurised_modules",
             "spacebreaker:oxygen_storage", "spacebreaker:water_recycling", "spacebreaker:solar_power",
-            "spacebreaker:rovers", "spacebreaker:thermal_regulation", "spacebreaker:radiation_shielding",
+            "spacebreaker:rovers", "spacebreaker:thermal_regulation",
             "spacebreaker:suit_mk2"]}]
         },
         {
@@ -23,7 +23,7 @@
         },
         {
           "type": "minecraft:item", "weight": 1, "name": "spacebreaker:tech_disk",
-          "functions": [{"function": "spacebreaker:random_tech_disk", "categories": ["astronomy", "exploration", "industry"], "min_tier": 2, "max_tier": 3}]
+          "functions": [{"function": "spacebreaker:random_tech_disk", "categories": ["astronomy", "exploration", "industry"], "min_tier": 2, "max_tier": 2}]
         }
       ]
     },

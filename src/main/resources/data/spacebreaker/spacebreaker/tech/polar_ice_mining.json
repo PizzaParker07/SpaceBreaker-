@@ -9,7 +9,5 @@
     "spacebreaker:mercury",
     "spacebreaker:mars"
   ],
-  "unlocks": [
-    "spacebreaker:ice_drill"
-  ]
+  "unlocks": []
 }

@@ -110,8 +110,9 @@ public final class MoonLifeGameTests {
                 .withParameter(net.minecraft.world.level.storage.loot.parameters.LootContextParams.ORIGIN, helper.absoluteVec(net.minecraft.world.phys.Vec3.ZERO))
                 .create(net.minecraft.world.level.storage.loot.parameters.LootContextParamSets.CHEST);
         var disks = server.reloadableRegistries().getLootTable(MoonLoot.TECH_DATA).getRandomItems(params);
-        helper.assertTrue(!disks.isEmpty() && disks.stream().allMatch(st -> net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(st.getItem())
-                .equals(Spacebreaker.id("tech_disk"))), "Moon tech data must roll tech disks, got " + disks);
+        // Every roll yields a tech disk; the second pool may add field samples or experiment data.
+        helper.assertTrue(disks.stream().anyMatch(st -> net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(st.getItem())
+                .equals(Spacebreaker.id("tech_disk"))), "Moon tech data must roll a tech disk, got " + disks);
         helper.succeed();
     }
 

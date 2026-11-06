@@ -8,7 +8,5 @@
   "samples": [
     "spacebreaker:mars"
   ],
-  "unlocks": [
-    "spacebreaker:dust_seal"
-  ]
+  "unlocks": []
 }
