@@ -1,0 +1,8 @@
+{
+  "feature": "spacebreaker:enceladus_stripes",
+  "placement": [
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

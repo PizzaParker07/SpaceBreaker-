@@ -125,10 +125,8 @@ public class LakeFeature extends Feature<LakeFeature.Config> {
                         }
                         int bottom = l.level() - Math.max(1, (int) Math.round(cfg.depth() * Math.sqrt(1 - s * s)));
                         int top = Columns.top(level, x, z);
-                        if (top > bottom) {
-                            Columns.shift(level, x, z, bottom - top, level.getBlockState(p.set(x, top - Columns.CARRY, z)));
-                        }
-                        int floor = Columns.top(level, x, z);
+                        int floor = top > bottom
+                                ? Columns.shift(level, x, z, bottom - top, level.getBlockState(p.set(x, top - Columns.CARRY, z))) : top;
                         if (cfg.bed().isPresent()) {
                             Columns.paint(level, x, z, 1, cfg.bed().get());
                         }

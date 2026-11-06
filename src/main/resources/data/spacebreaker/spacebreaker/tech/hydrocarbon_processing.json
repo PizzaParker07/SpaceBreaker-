@@ -1,0 +1,13 @@
+{
+  "category": "industry",
+  "tier": 4,
+  "requires": [
+    "spacebreaker:fuel_refining",
+    "spacebreaker:methane_engines"
+  ],
+  "icon": "spacebreaker:tholin",
+  "samples": [
+    "spacebreaker:titan"
+  ],
+  "unlocks": []
+}

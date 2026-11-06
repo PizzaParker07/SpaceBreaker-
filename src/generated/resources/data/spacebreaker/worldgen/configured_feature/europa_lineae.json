@@ -5,13 +5,14 @@
       "Name": "spacebreaker:refrozen_brine"
     },
     "chaos_scale": 950.0,
-    "chaos_threshold": 0.64,
+    "chaos_threshold": 0.62,
     "ridge": {
       "Name": "spacebreaker:europan_ice"
     },
+    "scale": 560.0,
+    "sets": 2,
     "stain": {
       "Name": "spacebreaker:stained_ice"
-    },
-    "width": 0.035
+    }
   }
 }

@@ -1,0 +1,23 @@
+{
+  "type": "spacebreaker:lineae",
+  "config": {
+    "chaos_threshold": 0.6,
+    "ridge": {
+      "Name": "spacebreaker:enceladus_snow",
+      "Properties": {
+        "facing": "north",
+        "print": "none"
+      }
+    },
+    "ridge_height": 3.0,
+    "scale": 300.0,
+    "sets": 1,
+    "stain": {
+      "Name": "spacebreaker:sulcus_ice"
+    },
+    "stripe_latitude": -64.0,
+    "stripes": 150.0,
+    "where": "lowlands",
+    "width": 0.06
+  }
+}

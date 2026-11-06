@@ -27,6 +27,10 @@
     "spacebreaker:red_sulfur",
     "spacebreaker:ganymede_regolith",
     "spacebreaker:callisto_regolith",
-    "spacebreaker:bright_frost"
+    "spacebreaker:bright_frost",
+    "spacebreaker:tholin_sand",
+    "spacebreaker:tholin_mud",
+    "spacebreaker:ice_cobbles",
+    "spacebreaker:enceladus_snow"
   ]
 }

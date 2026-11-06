@@ -29,6 +29,7 @@
     "spacebreaker:salt_ore",
     "spacebreaker:ionian_sulfur_ore",
     "spacebreaker:ice_geyser",
-    "spacebreaker:sulfur_vent"
+    "spacebreaker:sulfur_vent",
+    "spacebreaker:tholin_ore"
   ]
 }

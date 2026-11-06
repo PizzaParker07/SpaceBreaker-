@@ -1,0 +1,13 @@
+{
+  "category": "exploration",
+  "tier": 4,
+  "requires": [
+    "spacebreaker:rovers",
+    "spacebreaker:landing_systems"
+  ],
+  "icon": "minecraft:phantom_membrane",
+  "samples": [
+    "spacebreaker:titan"
+  ],
+  "unlocks": []
+}

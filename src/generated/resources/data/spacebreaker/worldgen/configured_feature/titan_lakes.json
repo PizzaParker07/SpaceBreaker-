@@ -1,0 +1,29 @@
+{
+  "type": "spacebreaker:surface_lakes",
+  "config": {
+    "bed": {
+      "Name": "spacebreaker:tholin_mud",
+      "Properties": {
+        "facing": "north",
+        "print": "none"
+      }
+    },
+    "cell": 240,
+    "chance": 0.65,
+    "latitude": 58.0,
+    "liquid": {
+      "Name": "spacebreaker:titan_methane",
+      "Properties": {
+        "level": "0"
+      }
+    },
+    "min_radius": 12.0,
+    "shore": {
+      "Name": "spacebreaker:tholin_mud",
+      "Properties": {
+        "facing": "north",
+        "print": "none"
+      }
+    }
+  }
+}

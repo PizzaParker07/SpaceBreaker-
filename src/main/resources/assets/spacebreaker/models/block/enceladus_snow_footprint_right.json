@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "spacebreaker:block/enceladus_snow",
+    "up": "spacebreaker:block/enceladus_snow_footprint_right",
+    "down": "spacebreaker:block/enceladus_snow",
+    "north": "spacebreaker:block/enceladus_snow",
+    "south": "spacebreaker:block/enceladus_snow",
+    "east": "spacebreaker:block/enceladus_snow",
+    "west": "spacebreaker:block/enceladus_snow"
+  }
+}

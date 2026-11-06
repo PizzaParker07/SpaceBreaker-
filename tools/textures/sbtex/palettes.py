@@ -145,3 +145,19 @@ CALLISTAN_ROCK = ramp('#262523', '#302e2b', '#3a3734', '#45413d', '#504b47', '#5
 SERPENT = ramp('#0d141b', '#142029', '#1c2c38', '#253948', '#304858', '#3d5869')
 SERPENT_GLOW = ramp('#2a9e98', '#5ef0e0', '#c8fff6')
 CRAB = ramp('#4a2a10', '#6e3f15', '#8f5a1c', '#b07c27', '#c99d35', '#dcbd4f', '#ead777')
+
+# --- Outer Solar System: Saturn's moons ---------------------------------------------------
+# Titan: brown hydrocarbon dune sand, orange-brown organic mud, beige water-ice bedrock, grey ice cobbles, tholin.
+THOLIN_SAND = ramp('#3d2b1b', '#513a25', '#59402a', '#61472f', '#6a4e34', '#73563a')
+THOLIN_MUD = ramp('#4a2d16', '#5f3a1d', '#674122', '#704826', '#794f2b', '#835730')
+TITAN_ICE = ramp('#6c6458', '#82796c', '#948b7e', '#a59d90', '#b5ada1', '#c5beb3', '#d4cec5')
+ICE_COBBLES = ramp('#4a3a2a', '#7d766d', '#958e84', '#aba49a', '#c1bbb2', '#d6d1c9')
+THOLIN = ramp('#3a1e0a', '#5c3010', '#7f4517', '#a35e21', '#c27a30', '#d99a4a', '#e8b96e')
+# Enceladus: the whitest snow in the Solar System, bright blue-white ice, deeper blue tiger-stripe ice.
+ENCELADUS_SNOW = ramp('#b4c0c8', '#d2dbe1', '#dde4e9', '#e6ecf0', '#eef2f5', '#f7f9fb')
+ENCELADUS_ICE = ramp('#8fa4b3', '#a6b9c6', '#b9cad5', '#cad8e1', '#dae5ec', '#e9f0f5')
+SULCUS_ICE = ramp('#3e6e86', '#4c8099', '#5a92ab', '#6aa3bc', '#7db4cb', '#97c7da')
+# Creatures: methane skater (dark amber body, pale stripes), geyser drifter (translucent blue-white bell).
+SKATER = ramp('#22150b', '#35210f', '#4a2f15', '#62401d', '#7c5428', '#9a6c36', '#b98a4c')
+DRIFTER = ramp('#7fa7bf', '#9cbfd3', '#b9d6e5', '#d5ebf4', '#eef8fc')
+DRIFTER_GLOW = ramp('#3f9fd9', '#86d3ff', '#d8f4ff')

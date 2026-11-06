@@ -1,0 +1,103 @@
+{
+  "base_height": 74,
+  "body": "spacebreaker:enceladus",
+  "craters": {
+    "central_peak": 0.4,
+    "classes": [
+      {
+        "cell": 32,
+        "chance": 0.55,
+        "max_radius": 6.0,
+        "min_radius": 2.5,
+        "per_cell": 2
+      },
+      {
+        "cell": 96,
+        "chance": 0.55,
+        "max_radius": 16.0,
+        "min_radius": 6.0,
+        "per_cell": 2
+      },
+      {
+        "cell": 270,
+        "chance": 0.51,
+        "max_radius": 37.125,
+        "min_radius": 16.0
+      },
+      {
+        "cell": 577,
+        "chance": 0.47000000000000003,
+        "max_radius": 82.5,
+        "min_radius": 37.125
+      }
+    ],
+    "complex_radius": 30.0,
+    "density": 0.7470000000000001,
+    "fresh_chance": 0.06,
+    "lowland_density": 1.0,
+    "ray_length": 4.0
+  },
+  "lowlands": {
+    "depth": 6.0,
+    "edge": 0.1,
+    "ridge_height": 0.0,
+    "threshold": 0.95,
+    "volcanic_patch": 1.0
+  },
+  "materials": {
+    "breccia": {
+      "Name": "spacebreaker:enceladus_ice"
+    },
+    "highland_rock": {
+      "Name": "spacebreaker:enceladus_ice"
+    },
+    "highland_soil": {
+      "Name": "spacebreaker:enceladus_snow",
+      "Properties": {
+        "facing": "north",
+        "print": "none"
+      }
+    },
+    "ice": {
+      "Name": "spacebreaker:enceladus_ice"
+    },
+    "lowland_rock": {
+      "Name": "spacebreaker:enceladus_ice"
+    },
+    "lowland_soil": {
+      "Name": "spacebreaker:enceladus_snow",
+      "Properties": {
+        "facing": "north",
+        "print": "none"
+      }
+    },
+    "polar_soil": {
+      "Name": "spacebreaker:enceladus_snow",
+      "Properties": {
+        "facing": "north",
+        "print": "none"
+      }
+    },
+    "ray_soil": {
+      "Name": "spacebreaker:enceladus_snow",
+      "Properties": {
+        "facing": "north",
+        "print": "none"
+      }
+    },
+    "soil_depth": 3
+  },
+  "pole_distance": 2550.0,
+  "poles": {
+    "ice_latitude": 90.0,
+    "polar_craters": 1.3,
+    "polar_latitude": 74.0
+  },
+  "relief": {
+    "amplitude": 14.35,
+    "detail_amplitude": 1.1199999999999999,
+    "detail_scale": 26.0,
+    "roughness": 0.385,
+    "scale": 379.0
+  }
+}

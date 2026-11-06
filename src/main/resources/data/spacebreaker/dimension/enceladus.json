@@ -1,0 +1,13 @@
+{
+  "type": "spacebreaker:enceladus",
+  "generator": {
+    "type": "spacebreaker:planet",
+    "terrain": "spacebreaker:enceladus",
+    "biome_source": {
+      "type": "spacebreaker:planet",
+      "highlands": "spacebreaker:enceladus_plains",
+      "crater": "spacebreaker:enceladus_crater",
+      "polar": "spacebreaker:enceladus_polar"
+    }
+  }
+}

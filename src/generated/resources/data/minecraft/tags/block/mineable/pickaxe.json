@@ -141,6 +141,13 @@
     "spacebreaker:callistan_rock",
     "spacebreaker:callistan_rock_stairs",
     "spacebreaker:callistan_rock_slab",
-    "spacebreaker:callistan_rock_wall"
+    "spacebreaker:callistan_rock_wall",
+    "spacebreaker:tholin_ore",
+    "spacebreaker:enceladus_ice",
+    "spacebreaker:sulcus_ice",
+    "spacebreaker:titan_ice",
+    "spacebreaker:titan_ice_stairs",
+    "spacebreaker:titan_ice_slab",
+    "spacebreaker:titan_ice_wall"
   ]
 }

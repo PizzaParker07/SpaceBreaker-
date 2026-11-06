@@ -122,8 +122,8 @@ public final class JupiterData {
     }
 
     public static LineaeFeature.Config europaLineae() {
-        return new LineaeFeature.Config(s(STAINED_ICE), Optional.of(s(EUROPAN_ICE)), 420, 0.035, 2.0, 3, Optional.of(s(REFROZEN_BRINE)),
-                950, 0.64, 0, -70, "any");
+        return new LineaeFeature.Config(s(STAINED_ICE), Optional.of(s(EUROPAN_ICE)), 560, 0.03, 2.0, 2, Optional.of(s(REFROZEN_BRINE)),
+                950, 0.62, 0, -70, "any");
     }
 
     public static TerrainProfile ioProfile() {
