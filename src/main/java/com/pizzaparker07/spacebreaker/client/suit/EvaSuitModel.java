@@ -76,7 +76,7 @@ public class EvaSuitModel extends HumanoidModel<LivingEntity> {
                         .texOffs(40, 16).addBox(-3F, -7F, -3F, 6, 6, 6)     // padded liner (inside a player's head)
                         .texOffs(36, 0).addBox(-6F, -8F, -3F, 1, 2, 4)      // lamp right
                         .texOffs(48, 0).addBox(5F, -8F, -3F, 1, 2, 4)       // lamp left
-                        .texOffs(36, 6).addBox(-1F, -6F, 5F, 2, 2, 1),      // purge valve
+                        .texOffs(36, 6).addBox(-1F, -3F, 5F, 2, 1, 1),      // purge valve
                 PartPose.ZERO);
         return LayerDefinition.create(mesh, 64, 64);
     }

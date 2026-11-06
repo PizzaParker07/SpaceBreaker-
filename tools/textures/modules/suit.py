@@ -32,7 +32,7 @@ HELMET = {
     'liner': (40, 16, 6, 6, 6),
     'lamp_r': (36, 0, 1, 2, 4),
     'lamp_l': (48, 0, 1, 2, 4),
-    'valve': (36, 6, 2, 2, 1),
+    'valve': (36, 6, 2, 1, 1),
 }
 TORSO = {
     'torso': (0, 0, 8, 12, 4),
@@ -251,8 +251,8 @@ def eva_helmet() -> Canvas:
         box(cv, HELMET[name], top=solid(W[7]), bottom=solid(W[4]),
             sides=lambda x, y, w, h: W[6] if y == 0 else W[5], north=solid(L[2]), south=solid(S[4]))
     # purge valve on the back
-    box(cv, HELMET['valve'], north=solid(S[4]), south=lambda x, y, w, h: S[6] if (x, y) == (0, 0) else S[5],
-        top=solid(S[6]), bottom=solid(S[3]), west=solid(S[5]), east=solid(S[3]))
+    box(cv, HELMET['valve'], north=solid(S[5]), south=lambda x, y, w, h: S[7] if x == 0 else S[6],
+        top=solid(S[7]), bottom=solid(S[4]), west=solid(S[6]), east=solid(S[5]))
     return cv
 
 
