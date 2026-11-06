@@ -1,0 +1,15 @@
+{
+  "loader": "neoforge:separate_transforms",
+  "gui_light": "front",
+  "base": {
+    "parent": "spacebreaker:item/hologram_projector_3d"
+  },
+  "perspectives": {
+    "gui": {
+      "parent": "spacebreaker:item/hologram_projector_icon"
+    },
+    "fixed": {
+      "parent": "spacebreaker:item/hologram_projector_icon"
+    }
+  }
+}
