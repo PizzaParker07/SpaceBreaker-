@@ -136,6 +136,36 @@ public final class VenusGameTests {
         }
         helper.assertTrue(chests >= 2, "aerostat lab and stores, found " + chests);
         helper.assertTrue(fabric > 200, "a big envelope, found " + fabric);
+        // valve puzzle: of the three levers above the gondola door exactly one opens it
+        List<BlockPos> levers = new java.util.ArrayList<>();
+        BlockPos doorPos = null;
+        int webs = 0;
+        int trapdoors = 0;
+        for (BlockPos p : BlockPos.betweenClosed(bb.minX(), bb.minY(), bb.minZ(), bb.maxX(), bb.maxY(), bb.maxZ())) {
+            var st = level.getBlockState(p);
+            if (st.is(Blocks.LEVER)) {
+                levers.add(p.immutable());
+            }
+            if (st.is(Blocks.IRON_DOOR) && st.getValue(net.minecraft.world.level.block.DoorBlock.HALF)
+                    == net.minecraft.world.level.block.state.properties.DoubleBlockHalf.LOWER) {
+                doorPos = p.immutable();
+            }
+            webs += st.is(Blocks.COBWEB) ? 1 : 0;
+            trapdoors += st.is(Blocks.IRON_TRAPDOOR) ? 1 : 0;
+        }
+        helper.assertTrue(levers.size() == 3 && doorPos != null, "three valves and a sealed door, levers " + levers.size());
+        helper.assertTrue(webs >= 1 && trapdoors >= 1, "walkway trap with a net");
+        helper.assertFalse(level.getBlockState(doorPos).getValue(net.minecraft.world.level.block.DoorBlock.OPEN), "door starts closed");
+        int opening = 0;
+        for (BlockPos l : levers) {
+            var lever = (net.minecraft.world.level.block.LeverBlock) Blocks.LEVER;
+            lever.pull(level.getBlockState(l), level, l, null);
+            if (level.getBlockState(doorPos).getValue(net.minecraft.world.level.block.DoorBlock.OPEN)) {
+                opening++;
+            }
+            lever.pull(level.getBlockState(l), level, l, null);
+        }
+        helper.assertTrue(opening == 1, "exactly one valve opens the door, got " + opening);
         var area = net.minecraft.world.phys.AABB.of(bb).inflate(48);
         helper.succeedWhen(() -> {
             var rays = level.getEntitiesOfClass(AcidRay.class, area);

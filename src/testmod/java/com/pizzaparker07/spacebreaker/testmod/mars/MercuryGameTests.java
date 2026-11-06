@@ -110,6 +110,19 @@ public final class MercuryGameTests {
         }
         helper.assertTrue(chests >= 2, "office and stores chests, found " + chests);
         helper.assertTrue(ice > 300, "the mine is cut into ice, found " + ice);
+        int frost = 0;
+        int signs = 0;
+        for (BlockPos p : BlockPos.betweenClosed(bb.minX(), bb.minY(), bb.minZ(), bb.maxX(), bb.maxY(), bb.maxZ())) {
+            var be = level.getBlockEntity(p);
+            if (be instanceof net.minecraft.world.level.block.entity.DispenserBlockEntity d && d.getItem(0).is(net.minecraft.world.item.Items.POWDER_SNOW_BUCKET)) {
+                frost++;
+            }
+            if (be instanceof net.minecraft.world.level.block.entity.SignBlockEntity) {
+                signs++;
+            }
+        }
+        helper.assertTrue(frost == 1, "the powder-snow trap, found " + frost);
+        helper.assertTrue(signs == 1, "the sign at the ice-sealed store, found " + signs);
         helper.succeed();
     }
 

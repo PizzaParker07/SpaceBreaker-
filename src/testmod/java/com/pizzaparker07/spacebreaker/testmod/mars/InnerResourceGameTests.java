@@ -65,6 +65,30 @@ public final class InnerResourceGameTests {
         helper.succeed();
     }
 
+    /** Every inner-planet creature is worth something: each has a loot table with at least one useful drop. */
+    @GameTest(template = WorldTests.EMPTY)
+    public static void everyInnerCreatureDropsSomething(GameTestHelper helper) {
+        var server = helper.getLevel().getServer();
+        for (String id : new String[]{"rust_beetle", "stonegrazer", "canyon_lurker", "polar_worm", "dust_devil", "cloud_jelly", "acid_ray",
+                "terminator_crawler", "hollow_snail"}) {
+            var key = net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.LOOT_TABLE, Spacebreaker.id("entities/" + id));
+            helper.assertTrue(server.reloadableRegistries().getLootTable(key) != net.minecraft.world.level.storage.loot.LootTable.EMPTY,
+                    id + " drops nothing");
+        }
+        helper.succeed();
+    }
+
+    /** The Cloud Jelly's gas sac lets you sink slowly. */
+    @GameTest(template = WorldTests.EMPTY)
+    public static void liftGasSacSlowsYourFall(GameTestHelper helper) {
+        var player = helper.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new ItemStack(VenusModule.LIFT_GAS_SAC.get(), 2));
+        VenusModule.LIFT_GAS_SAC.get().use(helper.getLevel(), player, net.minecraft.world.InteractionHand.MAIN_HAND);
+        helper.assertTrue(player.hasEffect(net.minecraft.world.effect.MobEffects.SLOW_FALLING), "slow falling after use");
+        helper.assertTrue(player.getMainHandItem().getCount() == 1, "one sac used up");
+        helper.succeed();
+    }
+
     private InnerResourceGameTests() {
     }
 }

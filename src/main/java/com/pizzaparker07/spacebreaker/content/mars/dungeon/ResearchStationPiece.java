@@ -273,6 +273,14 @@ public class ResearchStationPiece extends StructurePiece {
             spawner.setEntityId(MarsEntities.RUST_BEETLE.get(), RandomSource.create(seed + 7));
         }
         container(level, box, r, 8, F + 1, 13, MarsLoot.STATION_STORAGE, false);
+        // trap: the station's perimeter defence still has power. A plate in the garage tunnel fires a dispenser hidden in
+        // the tunnel wall.
+        placeBlock(level, s(Blocks.POLISHED_BLACKSTONE_PRESSURE_PLATE), 10, F + 1, 16, box);
+        BlockPos disp = getWorldPos(10, F + 1, 15);
+        DungeonBits.placeFacing(level, box, disp, getWorldPos(10, F + 1, 16), s(Blocks.DISPENSER), false);
+        if (box.isInside(disp)) {
+            DungeonBits.load(level, disp, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.ARROW, 12));
+        }
         guard(level, box, com.pizzaparker07.spacebreaker.content.moon.entity.MoonEntities.SURVEY_DRONE.get(), 5, F + 3, 13);
         guard(level, box, com.pizzaparker07.spacebreaker.content.moon.entity.MoonEntities.SURVEY_DRONE.get(), 16, F + 3, 18);
     }

@@ -74,6 +74,10 @@ public final class MercuryModule implements SbModule {
         lang.add("dimension.spacebreaker.mercury_orbit", "Mercury Orbit", "Merkür Yörüngesi");
         lang.block(MERCURY_REGOLITH, "Mercurian Regolith", "Merkür Regoliti");
         lang.block(HOLLOW_DEPOSIT, "Hollow Deposit", "Oyuk Tortusu");
+        String[][] store = {{"STORE", "DEPO"}, {"power lost:", "güç kesildi:"}, {"sealed with ice", "buzla mühürlü"}, {"cut through", "kazıyarak geç"}};
+        for (int i = 0; i < 4; i++) {
+            lang.add("sign.spacebreaker.ice_mine_store." + i, store[i][0], store[i][1]);
+        }
         lang.block(MERCURIAN_CRUST, "Mercurian Crust", "Merkür Kabuğu");
         lang.block(LOW_REFLECTANCE_ROCK, "Low-Reflectance Rock", "Düşük Yansıtmalı Kaya");
         lang.block(GRAPHITE_ORE, "Graphite Ore", "Grafit Cevheri");

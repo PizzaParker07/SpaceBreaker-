@@ -187,6 +187,14 @@ public final class MarsLifeGameTests {
         helper.assertTrue(lootChests(level, bb) >= 4, "station needs loot chests, found " + lootChests(level, bb));
         helper.assertTrue(doors == 4, "airlock with two iron doors, found " + doors);
         helper.assertTrue(spawners == 1, "rust beetle nest in the garage");
+        int traps = 0;
+        for (BlockPos p : BlockPos.betweenClosed(bb.minX(), bb.minY(), bb.minZ(), bb.maxX(), bb.maxY(), bb.maxZ())) {
+            if (level.getBlockEntity(p) instanceof net.minecraft.world.level.block.entity.DispenserBlockEntity d
+                    && d.getItem(0).is(net.minecraft.world.item.Items.ARROW)) {
+                traps++;
+            }
+        }
+        helper.assertTrue(traps == 1, "the perimeter-defence arrow trap, found " + traps);
         helper.succeed();
     }
 
