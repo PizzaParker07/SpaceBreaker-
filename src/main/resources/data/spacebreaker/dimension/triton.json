@@ -1,0 +1,14 @@
+{
+  "type": "spacebreaker:triton",
+  "generator": {
+    "type": "spacebreaker:planet",
+    "terrain": "spacebreaker:triton",
+    "biome_source": {
+      "type": "spacebreaker:planet",
+      "highlands": "spacebreaker:triton_cantaloupe",
+      "crater": "spacebreaker:triton_crater",
+      "polar": "spacebreaker:triton_polar_cap",
+      "ice_cap": "spacebreaker:triton_polar_cap"
+    }
+  }
+}

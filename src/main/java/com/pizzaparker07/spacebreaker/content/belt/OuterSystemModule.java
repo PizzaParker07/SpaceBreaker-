@@ -21,6 +21,7 @@ public final class OuterSystemModule implements SbModule {
             new BeltModule(),
             new com.pizzaparker07.spacebreaker.content.jupiter.JupiterModule(),
             new com.pizzaparker07.spacebreaker.content.saturn.SaturnModule(),
+            new com.pizzaparker07.spacebreaker.content.neptune.NeptuneModule(),
             new com.pizzaparker07.spacebreaker.content.pluto.PlutoModule()
     );
 

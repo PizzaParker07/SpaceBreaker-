@@ -15,6 +15,7 @@
     "#c:ores/salt",
     "#c:ores/sulfur",
     "#c:ores/tholin",
+    "#c:ores/methane_clathrate",
     "#c:ores/ammonia"
   ]
 }

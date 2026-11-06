@@ -191,3 +191,16 @@ AMMONIA = ramp('#5d7a80', '#86a7ad', '#acc9cd', '#cfe5e7', '#eef9fa')
 # Creatures.
 SLIDER = ramp('#4a3a32', '#62503f', '#7f6a55', '#9c876f', '#b9a58b', '#d2c2aa')
 TORTOISE = ramp('#26221f', '#36312d', '#47413b', '#59524a', '#6c645b', '#80786e')
+
+# --------------------------------------------------------------------------- Triton
+# Tritonian frost: grey with a faint green cast (the "cantaloupe" terrain).
+TRITON_FROST = ramp('#6d7369', '#80867b', '#8e9488', '#9ba194', '#a8ada0', '#b6baad')
+# Pink nitrogen frost of the polar cap.
+PINK_FROST = ramp('#a88a86', '#bc9f9a', '#cab0aa', '#d6beb8', '#e1cbc6', '#ecd9d5')
+# Dark plume dust: the streaks laid down by the geysers.
+PLUME_DUST = ramp('#1b1a1a', '#262424', '#302e2e', '#3b3838', '#474343', '#534e4e')
+# Tritonian bedrock ice: grey-green water ice.
+TRITON_ICE = ramp('#5c6359', '#6b7367', '#7a8275', '#889083', '#979f91', '#a7ae9f')
+# Methane clathrate: milky ice cages with yellowish methane.
+CLATHRATE = ramp('#7c7a63', '#9e9b7c', '#bdb995', '#d6d2ae', '#ecead0')
+BEETLE = ramp('#121112', '#1d1b1d', '#2a272a', '#383438', '#494449', '#5b555b')

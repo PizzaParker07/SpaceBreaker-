@@ -1,0 +1,8 @@
+{
+  "feature": "spacebreaker:triton_cantaloupe",
+  "placement": [
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}
