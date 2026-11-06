@@ -16,7 +16,6 @@ import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.ButtonBlock;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.LanternBlock;
 import net.minecraft.world.level.block.TrapDoorBlock;
@@ -183,8 +182,9 @@ public class ResearchStationPiece extends StructurePiece {
     private void airlock(WorldGenLevel level, BoundingBox box) {
         door(level, box, 16, 27, Direction.SOUTH);
         door(level, box, 16, 23, Direction.SOUTH);
-        placeBlock(level, Blocks.STONE_BUTTON.defaultBlockState().setValue(ButtonBlock.FACING, Direction.SOUTH), 17, F + 2, 28, box);
-        placeBlock(level, Blocks.STONE_BUTTON.defaultBlockState().setValue(ButtonBlock.FACING, Direction.NORTH), 15, F + 2, 26, box);
+        // buttons hang on the airlock walls; aimed from world positions so they attach in every orientation
+        DungeonBits.placeFacing(level, box, getWorldPos(17, F + 2, 28), getWorldPos(17, F + 2, 27), s(Blocks.STONE_BUTTON), true);
+        DungeonBits.placeFacing(level, box, getWorldPos(15, F + 2, 26), getWorldPos(15, F + 2, 27), s(Blocks.STONE_BUTTON), true);
         placeBlock(level, s(Blocks.POLISHED_BLACKSTONE_PRESSURE_PLATE), 16, F + 1, 22, box);
         placeBlock(level, s(Blocks.POLISHED_BLACKSTONE_PRESSURE_PLATE), 16, F + 1, 24, box);
         for (int x = 15; x <= 17; x++) {

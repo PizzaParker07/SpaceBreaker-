@@ -193,6 +193,10 @@ public final class MarsLifeGameTests {
                     && d.getItem(0).is(net.minecraft.world.item.Items.ARROW)) {
                 traps++;
             }
+            var st = level.getBlockState(p);
+            if (st.is(Blocks.STONE_BUTTON)) {
+                helper.assertTrue(st.canSurvive(level, p), "an airlock button hangs in the air at " + p);
+            }
         }
         helper.assertTrue(traps == 1, "the perimeter-defence arrow trap, found " + traps);
         helper.succeed();

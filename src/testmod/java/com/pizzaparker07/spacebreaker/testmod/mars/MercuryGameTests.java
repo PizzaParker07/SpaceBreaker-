@@ -120,6 +120,10 @@ public final class MercuryGameTests {
             if (be instanceof net.minecraft.world.level.block.entity.SignBlockEntity) {
                 signs++;
             }
+            var st = level.getBlockState(p);
+            if (st.is(Blocks.LADDER) || st.is(Blocks.OAK_WALL_SIGN)) {
+                helper.assertTrue(st.canSurvive(level, p), "a ladder or sign hangs in the air at " + p);
+            }
         }
         helper.assertTrue(frost == 1, "the powder-snow trap, found " + frost);
         helper.assertTrue(signs == 1, "the sign at the ice-sealed store, found " + signs);

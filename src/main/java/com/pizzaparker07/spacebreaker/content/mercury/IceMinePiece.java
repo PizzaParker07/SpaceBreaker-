@@ -14,7 +14,6 @@ import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.LadderBlock;
 import net.minecraft.world.level.block.LanternBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -129,8 +128,13 @@ public class IceMinePiece extends StructurePiece {
                 for (int dz = -1; dz <= 1; dz++) {
                     boolean centre = dx == 0 && dz == 0;
                     if (y > fy + 3 || centre) {
-                        placeBlock(level, centre ? Blocks.LADDER.defaultBlockState().setValue(LadderBlock.FACING, Direction.SOUTH)
-                                : (dz == -1 && dx == 0 ? wall : (dz == -1 ? wall : s(Blocks.AIR))), 12 + dx, y, 20 + dz, box);
+                        if (centre) {
+                            // the ladder hangs on the shaft wall at local z 19, whatever the piece's orientation
+                            com.pizzaparker07.spacebreaker.content.mars.dungeon.DungeonBits.placeFacing(level, box, getWorldPos(12, y, 20),
+                                    getWorldPos(12, y, 19), s(Blocks.LADDER), true);
+                        } else {
+                            placeBlock(level, dz == -1 ? wall : s(Blocks.AIR), 12 + dx, y, 20 + dz, box);
+                        }
                     }
                 }
             }
