@@ -1083,7 +1083,7 @@ def lamp_beam() -> Canvas:
     """Short visible beam in dusty or misty air: brightest at the lamp (v = 0), fading out in steps."""
     cv = Canvas(16, 32)
     for y in range(32):
-        a = int(110 * (1 - y / 32) ** 1.5) // 8 * 8
+        a = int(170 * (1 - y / 32) ** 1.3) // 8 * 8
         for x in range(16):
             edge = min(x, 15 - x)
             k = 1.0 if edge >= 4 else (0.6 if edge >= 2 else 0.3)
