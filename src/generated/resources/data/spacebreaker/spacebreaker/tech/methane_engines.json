@@ -1,6 +1,6 @@
 {
   "category": "propulsion",
-  "icon": "minecraft:fire_charge",
+  "icon": "spacebreaker:methalox_engine",
   "requires": [
     "spacebreaker:vacuum_engines",
     "spacebreaker:sabatier_process"
@@ -8,5 +8,9 @@
   "samples": [
     "spacebreaker:mars"
   ],
-  "tier": 2
+  "tier": 2,
+  "unlocks": [
+    "spacebreaker:methalox_engine",
+    "spacebreaker:methalox_vacuum_engine"
+  ]
 }

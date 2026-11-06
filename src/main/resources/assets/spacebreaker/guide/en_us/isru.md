@@ -30,9 +30,7 @@ Melts rock and splits it with electricity: **oxygen from rock**.
 
 {page}
 ## Sabatier reactor
-Turns carbon dioxide and hydrogen into **methane and water**. The water goes back to the electrolyser; you can liquefy and store the methane with the [Cryogenics](cryogenics) liquefier.
-
->! Your rocket engines burn **RP-1 and liquid oxygen** for now. Bring RP-1 from Earth for the way home; liquid oxygen you can make on the spot.
+Turns carbon dioxide and hydrogen into **methane and water**. The water goes back to the electrolyser. Turn the methane into **liquid methane** with the [Cryogenics](cryogenics) liquefier: with liquid oxygen it fuels the **methalox engines**. Fill the rocket through the fuel umbilical, a pipe, or by right-clicking with a bucket or cryogenic canister. → [Rocket Parts](rocket_parts)
 {recipe spacebreaker:sabatier/methane}
 
 > [!TIP]

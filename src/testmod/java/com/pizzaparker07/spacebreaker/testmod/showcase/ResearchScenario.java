@@ -267,6 +267,8 @@ final class ResearchScenario implements ShowcaseScenario {
         s.add(new Shot("23_tr_first_flight", 6000, 0.5, g + 1.9, 4.2, 180F, 22F, false, fp, 40, null, guideEntry("first_flight", 0)));
         s.add(new Shot("24_tr_moon_life", 6000, 0.5, g + 1.9, 4.2, 180F, 22F, false, fp, 60, null, guideEntry("moon_life", 0)));
         s.add(new Shot("25_tr_launch_pad", 6000, 0.5, g + 1.9, 4.2, 180F, 22F, false, fp, 60, null, guideEntry("launch_pad", 0)));
+        s.add(new Shot("27_tr_progression", 6000, 0.5, g + 1.9, 4.2, 180F, 22F, false, fp, 40, null, guideEntry("progression", 0)));
+        s.add(new Shot("28_tr_rocket_parts", 6000, 0.5, g + 1.9, 4.2, 180F, 22F, false, fp, 40, null, guideEntry("rocket_parts", 1)));
         s.add(new Shot("26_tr_isru", 6000, 0.5, g + 1.9, 4.2, 180F, 22F, false, fp, 40, null, guideEntry("isru", 0)));
         return s;
     }

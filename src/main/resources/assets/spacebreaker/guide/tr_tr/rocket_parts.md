@@ -1,7 +1,7 @@
 ---
 title: Roket Parçaları
 icon: spacebreaker:kerosene_engine
-items: [spacebreaker:nose_cone, spacebreaker:crew_capsule, spacebreaker:heat_shield, spacebreaker:parachute, spacebreaker:fuel_tank_small, spacebreaker:fuel_tank_medium, spacebreaker:fuel_tank_large, spacebreaker:kerosene_engine, spacebreaker:vacuum_engine, spacebreaker:decoupler, spacebreaker:interstage, spacebreaker:fins, spacebreaker:grid_fins, spacebreaker:landing_legs, spacebreaker:rcs_thrusters]
+items: [spacebreaker:nose_cone, spacebreaker:crew_capsule, spacebreaker:heat_shield, spacebreaker:parachute, spacebreaker:fuel_tank_small, spacebreaker:fuel_tank_medium, spacebreaker:fuel_tank_large, spacebreaker:kerosene_engine, spacebreaker:vacuum_engine, spacebreaker:methalox_engine, spacebreaker:methalox_vacuum_engine, spacebreaker:decoupler, spacebreaker:interstage, spacebreaker:fins, spacebreaker:grid_fins, spacebreaker:landing_legs, spacebreaker:rcs_thrusters]
 research: spacebreaker:basic_rocketry
 ---
 Bir roket, üst üste dizilmiş **kademelerden** ve en üstteki **yükten** oluşur.
@@ -15,9 +15,22 @@ Bir roket, üst üste dizilmiş **kademelerden** ve en üstteki **yükten** olu�
 
 ## Kademe
 {items spacebreaker:kerosene_engine spacebreaker:vacuum_engine spacebreaker:fuel_tank_small spacebreaker:fuel_tank_medium spacebreaker:fuel_tank_large}
-Her kademede altta **bir motor**, üstünde **yakıt tankları** olur. Tanklar RP-1 ve sıvı oksijen taşır.
+Her kademede altta **bir motor**, üstünde **yakıt tankları** olur. Tanklar, o kademenin motoru ne yakıyorsa onu taşır.
 - **Deniz seviyesi motoru** havada iyi çalışır: ilk kademe için.
 - **Vakum motoru** uzayda çok daha verimlidir: üst kademeler için.
+
+## Motorlar ve yakıtlar
+{items spacebreaker:methalox_engine spacebreaker:methalox_vacuum_engine}
+**Metaloks motorları** {tech spacebreaker:methane_engines} ile açılır. **Sıvı metan ve sıvı oksijen** yakarlar; yakıtlarını Mars'ta üretebilirsin. Isp'deki iki sayı: deniz seviyesi / vakum.
+
+| Motor | İtki | Isp | Yakıt |
+|---|---|---|---|
+| Kerosen (deniz) | 560 kN | 282 / 311 s | RP-1 + LOX (1 : 2,56) |
+| Kerosen (vakum) | 190 kN | 345 s | RP-1 + LOX (1 : 2,56) |
+| Metaloks (deniz) | 600 kN | 330 / 350 s | metan + LOX (1 : 3,6) |
+| Metaloks (vakum) | 220 kN | 380 s | metan + LOX (1 : 3,6) |
+
+Montaj tezgâhı her kademenin yakıt türünü ve Δv'sini gösterir.
 
 ## Ayırıcılar
 {items spacebreaker:decoupler spacebreaker:interstage}

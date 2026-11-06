@@ -5,7 +5,7 @@ icon: minecraft:compass
 İlk boksitten Ay'a ve Mars'a, adım adım. Bu kitapta hiçbir sayfa kilitli değil; bir bölümün başındaki **Gereken araştırma** notu, o konuyu uygulamak için hangi teknolojiyi öğrenmen gerektiğini söyler.
 
 ## 1. Boksit ve alüminyum
-Sıcak tepelerin taşında kızıl-kahve {item spacebreaker:bauxite_ore} ara. Ham boksiti ocakta eriterek {item spacebreaker:aluminum_ingot} yap. İki külçeyi üst üste koyarak elle levha yaparsın. → [Cevherler](ores)
+Kızıl-kahve {item spacebreaker:bauxite_ore} her yerde seyrek, sıcak tepelerde bol bulunur. Ham boksiti ocakta eriterek {item spacebreaker:aluminum_ingot} yap. İki külçeyi üst üste koyarak elle levha yaparsın. → [Cevherler](ores)
 {recipe spacebreaker:aluminum_plate_by_hand}
 
 ## 2. İlk enerji
@@ -14,9 +14,12 @@ Laboratuvar enerjiyle çalışır. İlk enerjin {item spacebreaker:combustion_ge
 2. Levha ve bir **makasla** bakır tel yap. Makas tükenmez.
 3. Tel, kızıltaş ve demir levhayla bir {item spacebreaker:basic_circuit} yap.
 4. Devreyle jeneratörü kur.
-{recipe? spacebreaker:copper_wire_by_hand}
+{recipe spacebreaker:copper_wire_by_hand}
 {recipe spacebreaker:basic_circuit}
 {recipe spacebreaker:combustion_generator}
+
+> İlk makinen {item spacebreaker:crusher} için bir {item spacebreaker:electric_motor} gerekir. Motorun istediği demir çubuğu da elle yaparsın: üç demir külçesini dikey koy, iki çubuk çıkar.
+{recipe? spacebreaker:iron_rod_by_hand}
 
 {page}
 ## 3. Laboratuvar ve numuneler
@@ -49,3 +52,8 @@ Sırayla: {tech spacebreaker:launch_infrastructure}, {tech spacebreaker:liquid_f
 2. Veriyle {tech spacebreaker:landing_systems}: ısı kalkanı, paraşüt, iniş bacakları.
 3. Ay'a in, üs kur, harabelerdeki diskleri topla. → [Ay](moon), [Ay'daki Harabeler](moon_ruins)
 4. Ay numuneleri ve diskler seni Mars'a hazırlar. → [Mars](mars)
+
+## 9. Mars ve eve dönüş
+1. {tech spacebreaker:interplanetary_transfers} ile Mars'a git; yanına sızdırmaz giysi ve bol oksijen al.
+2. {tech spacebreaker:sabatier_process} ve {tech spacebreaker:isru}: buzdan su, sudan oksijen; havadaki CO₂'den metan.
+3. Metanı ve oksijeni sıvılaştır; {tech spacebreaker:methane_engines} ile metaloks roketini Mars'ta doldurup eve dön. → [Yerinde Üretim](isru)
