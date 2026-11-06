@@ -38,6 +38,8 @@ public final class JupiterClient {
     static void layers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(GlowSerpentModel.LAYER, GlowSerpentModel::createLayer);
         event.registerLayerDefinition(SulfurCrabModel.LAYER, SulfurCrabModel::createLayer);
+        event.registerLayerDefinition(GrooveGrazerModel.LAYER, GrooveGrazerModel::createLayer);
+        event.registerLayerDefinition(CraterHopperModel.LAYER, CraterHopperModel::createLayer);
     }
 
     @SubscribeEvent
@@ -61,5 +63,9 @@ public final class JupiterClient {
         });
         event.registerEntityRenderer(JupiterEntities.SULFUR_CRAB.get(), ctx -> new SimpleMobRenderer<>(ctx,
                 new SulfurCrabModel(ctx.bakeLayer(SulfurCrabModel.LAYER)), Spacebreaker.id("textures/entity/jupiter/sulfur_crab.png"), 1.0F, 0.5F, false));
+        event.registerEntityRenderer(JupiterEntities.GROOVE_GRAZER.get(), ctx -> new SimpleMobRenderer<>(ctx,
+                new GrooveGrazerModel(ctx.bakeLayer(GrooveGrazerModel.LAYER)), Spacebreaker.id("textures/entity/jupiter/groove_grazer.png"), 1.0F, 0.6F, false));
+        event.registerEntityRenderer(JupiterEntities.CRATER_HOPPER.get(), ctx -> new SimpleMobRenderer<>(ctx,
+                new CraterHopperModel(ctx.bakeLayer(CraterHopperModel.LAYER)), Spacebreaker.id("textures/entity/jupiter/crater_hopper.png"), 1.0F, 0.4F, false));
     }
 }

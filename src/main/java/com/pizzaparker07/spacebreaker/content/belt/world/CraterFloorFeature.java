@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.pizzaparker07.spacebreaker.content.worldgen.Crater;
 import com.pizzaparker07.spacebreaker.content.worldgen.PlanetTerrain;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -13,6 +14,7 @@ import net.minecraft.world.level.levelgen.synth.SimplexNoise;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Bright deposits on the floors of some large craters, like the sodium-carbonate faculae of Ceres' Occator crater: a
@@ -27,10 +29,12 @@ import java.util.List;
  * @param spots     density of the scattered spots (0 = none)
  * @param dome      height of the central dome in blocks for the largest craters (0 = flat)
  * @param depth     how many blocks deep the deposit soaks
+ * @param slump     height of the slumped, broken lobes on the inner wall (0 = leave the wall as generated)
+ * @param debris    optional rock for blocks fallen from the wall onto the floor
  */
 public class CraterFloorFeature extends Feature<CraterFloorFeature.Config> {
-    public record Config(BlockState block, double minRadius, double chance, double extent, double spots, double dome, int depth)
-            implements FeatureConfiguration {
+    public record Config(BlockState block, double minRadius, double chance, double extent, double spots, double dome, int depth,
+                         double slump, Optional<BlockState> debris) implements FeatureConfiguration {
         public static final Codec<Config> CODEC = RecordCodecBuilder.create(i -> i.group(
                 BlockState.CODEC.fieldOf("block").forGetter(Config::block),
                 Codec.DOUBLE.optionalFieldOf("min_radius", 14.0).forGetter(Config::minRadius),
@@ -38,7 +42,9 @@ public class CraterFloorFeature extends Feature<CraterFloorFeature.Config> {
                 Codec.DOUBLE.optionalFieldOf("extent", 0.16).forGetter(Config::extent),
                 Codec.DOUBLE.optionalFieldOf("spots", 0.5).forGetter(Config::spots),
                 Codec.DOUBLE.optionalFieldOf("dome", 3.0).forGetter(Config::dome),
-                Codec.INT.optionalFieldOf("depth", 2).forGetter(Config::depth)
+                Codec.INT.optionalFieldOf("depth", 2).forGetter(Config::depth),
+                Codec.DOUBLE.optionalFieldOf("slump", 0.0).forGetter(Config::slump),
+                BlockState.CODEC.optionalFieldOf("debris").forGetter(Config::debris)
         ).apply(i, Config::new));
     }
 
@@ -65,9 +71,11 @@ public class CraterFloorFeature extends Feature<CraterFloorFeature.Config> {
             return 2;
         }
         if (cfg.spots() > 0 && s < 0.8) {
-            double sp = Columns.fbm(n, x / 5.0 + 300, z / 5.0 - 300, 2);
-            // spots get rarer toward the walls
-            if (sp > 0.6 - 0.45 * cfg.spots() * (1 - s / 0.8)) {
+            // lobate salt patches: warped, clustered toward the central spot and thinning out toward the walls
+            double warp = n.getValue(x / 30.0 + 50, z / 30.0) * 7;
+            double sp = Columns.fbm(n, (x + warp) / 13.0 + 300, (z - warp) / 13.0 - 300, 3);
+            double bias = 0.5 * cfg.spots() * Math.pow(1 - s / 0.8, 1.5);
+            if (sp + bias > 0.58) {
                 return 1.5;
             }
         }
@@ -105,6 +113,9 @@ public class CraterFloorFeature extends Feature<CraterFloorFeature.Config> {
                 for (Crater c : hosts) {
                     best = Math.max(best, strength(c, cfg, n, x + 0.5, z + 0.5, dome));
                 }
+                for (Crater c : hosts) {
+                    any |= wall(level, c, cfg, n, x, z);
+                }
                 if (best <= 0) {
                     continue;
                 }
@@ -113,6 +124,40 @@ public class CraterFloorFeature extends Feature<CraterFloorFeature.Config> {
                     Columns.shift(level, x, z, up, cfg.block());
                 }
                 Columns.paint(level, x, z, best > 1.8 ? cfg.depth() + up : 1, cfg.block());
+                any = true;
+            }
+        }
+        return any;
+    }
+
+    /**
+     * Breaks up the smooth inner wall of a host crater: slumped lobes (a few blocks up or down along the wall, like
+     * collapsed terraces) and a scatter of blocks fallen onto the floor at its foot.
+     */
+    private static boolean wall(WorldGenLevel level, Crater c, Config cfg, SimplexNoise n, int x, int z) {
+        if (cfg.slump() <= 0) {
+            return false;
+        }
+        double s = c.normalizedDistance(x + 0.5, z + 0.5);
+        if (s < 0.6 || s > 1.08) {
+            return false;
+        }
+        boolean any = false;
+        double bump = Math.exp(-Math.pow((s - 0.9) / 0.1, 2));
+        double lobe = Columns.fbm(n, x / 14.0 - 77, z / 14.0 + 77, 2);
+        int dy = (int) Math.round(cfg.slump() * bump * lobe * Math.min(1, c.radius() / 30.0));
+        if (dy != 0) {
+            Columns.shift(level, x, z, dy, cfg.debris().orElse(level.getBlockState(new BlockPos(x, Columns.top(level, x, z) - Columns.CARRY, z))));
+            any = true;
+        }
+        if (cfg.debris().isPresent() && s < 0.8 && s > 0.64) {
+            long h = Columns.cell(c.seed(), 43, x, z);
+            if (Columns.unit(h, 0) < 0.025) {
+                int top = Columns.top(level, x, z);
+                int tall = 1 + (Columns.unit(h, 1) < 0.35 ? 1 : 0);
+                for (int k = 1; k <= tall; k++) {
+                    level.setBlock(new BlockPos(x, top + k, z), cfg.debris().get(), 2);
+                }
                 any = true;
             }
         }

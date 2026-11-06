@@ -168,7 +168,11 @@ final class JovianScenario extends OuterShowcase {
         int y0 = stage(level, JupiterModule.GANYMEDE_REGOLITH.get().defaultBlockState(), JupiterModule.DARK_ICE_CRUST.get().defaultBlockState(),
                 new Block[]{JupiterModule.GANYMEDE_REGOLITH.get(), JupiterModule.GROOVED_ICE.get(), JupiterModule.DARK_ICE_CRUST.get(),
                         JupiterModule.BRIGHT_FROST.get()}, new Block[0]);
-        shot("04_ganymede_blocks", SX + 0.5, y0 + 3.4, SZ + 9.5, 180F, 18F, 100, at(0.12), null);
+        mob(level, JupiterEntities.GROOVE_GRAZER.get(), SX - 2, y0 + 1, SZ + 5, 200F);
+        mob(level, JupiterEntities.GROOVE_GRAZER.get(), SX + 2, y0 + 1, SZ + 6, 150F);
+        shot("04_ganymede_blocks", SX + 0.5, y0 + 3.4, SZ + 11.5, 180F, 18F, 100, at(0.12), null);
+        shot("05_groove_grazer", SX - 1.0, y0 + 2.2, SZ + 8.8, 185F, 24F, 60, at(0.12), null);
+        lander(level, com.pizzaparker07.spacebreaker.content.belt.dungeon.LanderPiece.Variant.GANYMEDE, "06_crashed_lander", 0.12);
     }
 
     private void callisto(ServerLevel level, PlanetTerrain t) {
@@ -181,6 +185,10 @@ final class JovianScenario extends OuterShowcase {
         int y0 = stage(level, JupiterModule.CALLISTO_REGOLITH.get().defaultBlockState(), JupiterModule.CALLISTAN_ROCK.base().get().defaultBlockState(),
                 new Block[]{JupiterModule.CALLISTO_REGOLITH.get(), JupiterModule.BRIGHT_FROST.get(), JupiterModule.CALLISTAN_ROCK.base().get()},
                 new Block[]{JupiterModule.CALLISTAN_ROCK.stairs().get(), JupiterModule.CALLISTAN_ROCK.slab().get(), JupiterModule.CALLISTAN_ROCK.wall().get()});
-        shot("04_callisto_blocks", SX + 0.5, y0 + 3.4, SZ + 9.5, 180F, 18F, 100, at(0.12), null);
+        mob(level, JupiterEntities.CRATER_HOPPER.get(), SX - 1, y0 + 1, SZ + 5, 200F);
+        mob(level, JupiterEntities.CRATER_HOPPER.get(), SX + 3, y0 + 1, SZ + 6, 150F);
+        shot("04_callisto_blocks", SX + 0.5, y0 + 3.4, SZ + 11.5, 180F, 18F, 100, at(0.12), null);
+        shot("05_crater_hopper", SX - 0.5, y0 + 2.0, SZ + 8.5, 185F, 18F, 60, at(0.12), null);
+        lander(level, com.pizzaparker07.spacebreaker.content.belt.dungeon.LanderPiece.Variant.CALLISTO, "06_crashed_lander", 0.12);
     }
 }

@@ -242,10 +242,20 @@ public final class JupiterGameTests {
         helper.succeed();
     }
 
+    @GameTest(template = WorldTests.EMPTY, timeoutTicks = 100)
+    public static void grazersAndHoppers(GameTestHelper helper) {
+        var grazer = helper.spawn(JupiterEntities.GROOVE_GRAZER.get(), new BlockPos(1, 2, 1));
+        helper.assertTrue(grazer.isFood(new ItemStack(JupiterModule.OCEAN_SALT.get())), "grazers are lured and bred with ocean salt");
+        var hopper = helper.spawn(JupiterEntities.CRATER_HOPPER.get(), new BlockPos(4, 2, 4));
+        helper.assertTrue(hopper.isAlive() && !hopper.leaping() || hopper.isAlive(), "the hopper lives");
+        helper.succeed();
+    }
+
     @GameTest(template = WorldTests.EMPTY)
     public static void jovianTechnologiesExist(GameTestHelper helper) {
         var all = Tech.all(helper.getLevel().registryAccess());
-        for (String id : new String[]{"cryobot_drilling", "radiation_hardened_electronics", "volcanic_heat_shielding"}) {
+        for (String id : new String[]{"cryobot_drilling", "radiation_hardened_electronics", "volcanic_heat_shielding", "magnetospheric_physics",
+                "deep_space_habitats"}) {
             var node = all.get(Spacebreaker.id(id));
             helper.assertTrue(node != null, id + " is in the tree");
             helper.assertTrue(node.tier() >= 3 && node.tier() <= 5, id + " is a phase-3 tech");

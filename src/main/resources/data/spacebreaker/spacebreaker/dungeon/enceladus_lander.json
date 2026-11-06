@@ -1,0 +1,9 @@
+{
+  "structure": "spacebreaker:enceladus_lander",
+  "world": "spacebreaker:enceladus",
+  "guardians": [],
+  "loot_tables": [
+    "spacebreaker:dungeons/enceladus/lander_cabin",
+    "spacebreaker:dungeons/enceladus/lander_cargo"
+  ]
+}

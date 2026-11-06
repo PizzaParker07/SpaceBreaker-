@@ -92,11 +92,10 @@ final class SaturnianScenario extends OuterShowcase {
         int hy = (int) ground(level, hx + 8, hz + 12);
         HangarPiece hangar = new HangarPiece(61L, hx, hy, hz, Direction.NORTH);
         MarsScenario.placePiece(level, hangar);
-        BlockPos front = hangar.world(8, 4, -6);
-        BlockPos inside = hangar.world(8, 4, 11);
-        shot("06_rotorcraft_hangar", front.getX() + 0.5, front.getY() + 3, front.getZ() + 0.5,
-                MoonScenario.yaw(inside.getX() - front.getX(), inside.getZ() - front.getZ()), 10F, 160, at(0.22), null);
-        shot("07_titan_night", SX + 0.5, y0 + 3.4, SZ + 12.5, 180F, -10F, 80, at(0.7), null);
+        BlockPos front = hangar.world(8, 4, 0);
+        BlockPos inside = hangar.world(8, 4, 12);
+        shot("06_rotorcraft_hangar", front.getX() + 0.5, front.getY() + 2.6, front.getZ() + 0.5,
+                MoonScenario.yaw(inside.getX() - front.getX(), inside.getZ() - front.getZ()), 12F, 160, at(0.22), null);
     }
 
     private void enceladus(ServerLevel level, PlanetTerrain t) {
@@ -134,12 +133,13 @@ final class SaturnianScenario extends OuterShowcase {
                 mob(level, SaturnEntities.GEYSER_DRIFTER.get(), v.getX() + 3 + i * 2, ground(level, v.getX() + 3 + i * 2, v.getZ() + 2) + 3 + i, v.getZ() + 2,
                         i * 90F);
             }
-            shot("04_south_polar_geysers", v.getX() + 18.5, y, v.getZ() + 12.5, MoonScenario.yaw(-18, -12), -14F, 180, erupting(v, 0.15, false),
+            shot("04_south_polar_geysers", v.getX() + 14.5, y, v.getZ() + 9.5, MoonScenario.yaw(-14, -9), -18F, 220, erupting(v, 0.15, false),
                     MoonScenario::farView);
         }
         int y0 = stage(level, SaturnModule.ENCELADUS_SNOW.get().defaultBlockState(), SaturnModule.ENCELADUS_ICE.get().defaultBlockState(),
                 new Block[]{SaturnModule.ENCELADUS_SNOW.get(), SaturnModule.ENCELADUS_ICE.get(), SaturnModule.SULCUS_ICE.get()}, new Block[0]);
         mob(level, SaturnEntities.GEYSER_DRIFTER.get(), SX, y0 + 2.5, SZ + 5, 180F);
         shot("05_geyser_drifter", SX + 0.5, y0 + 3.2, SZ + 9.5, 180F, 8F, 80, at(0.15), null);
+        lander(level, com.pizzaparker07.spacebreaker.content.belt.dungeon.LanderPiece.Variant.ENCELADUS, "06_crashed_lander", 0.12);
     }
 }

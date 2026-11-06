@@ -1,0 +1,13 @@
+{
+  "category": "astronomy",
+  "tier": 4,
+  "requires": [
+    "spacebreaker:radio_communication",
+    "spacebreaker:radiation_shielding"
+  ],
+  "icon": "minecraft:compass",
+  "samples": [
+    "spacebreaker:ganymede"
+  ],
+  "unlocks": []
+}

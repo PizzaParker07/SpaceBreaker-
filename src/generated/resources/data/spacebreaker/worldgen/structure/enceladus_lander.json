@@ -1,0 +1,10 @@
+{
+  "type": "spacebreaker:supply_lander",
+  "biomes": [
+    "spacebreaker:enceladus_plains",
+    "spacebreaker:enceladus_polar"
+  ],
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "variant": "enceladus"
+}

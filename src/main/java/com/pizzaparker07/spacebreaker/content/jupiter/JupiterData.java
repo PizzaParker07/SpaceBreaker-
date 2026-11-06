@@ -171,7 +171,7 @@ public final class JupiterData {
 
     /** Valhalla: a huge multi-ring basin, a bright central plain ringed by concentric troughs and ridges. */
     public static BasinFeature.Config valhalla() {
-        return new BasinFeature.Config(1400, 15, 1100, 5, 3, 0, 0.3, 0, 0.08, 4.5, s(CALLISTAN_ROCK.base()), Optional.of(s(BRIGHT_FROST)));
+        return new BasinFeature.Config(1400, 15, 1100, 5, 3, 0, 0.3, 0, 0.08, 4.5, s(CALLISTAN_ROCK.base()), Optional.of(s(BRIGHT_FROST)), Optional.empty());
     }
 
     // ------------------------------------------------------------------ datagen

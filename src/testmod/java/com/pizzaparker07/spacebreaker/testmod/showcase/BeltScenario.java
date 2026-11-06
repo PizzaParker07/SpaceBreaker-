@@ -147,6 +147,18 @@ final class BeltScenario implements ShowcaseScenario {
             MoonScenario.farView();
             net.minecraft.client.Minecraft.getInstance().options.renderDistance().set(16);
         });
+        {
+            int x = SX - 50;
+            int z = SZ - 10;
+            int y = (int) ground(level, x + 6, z + 13);
+            var piece = new com.pizzaparker07.spacebreaker.content.belt.dungeon.LanderPiece(91L,
+                    com.pizzaparker07.spacebreaker.content.belt.dungeon.LanderPiece.Variant.VESTA, x, y, z, Direction.NORTH);
+            MarsScenario.placePiece(level, piece);
+            BlockPos eye = piece.world(6, 9, -8);
+            BlockPos target = piece.world(6, 5, 14);
+            shot("05_crashed_lander", eye.getX() + 0.5, eye.getY(), eye.getZ() + 0.5, MoonScenario.yaw(target.getX() - eye.getX(), target.getZ() - eye.getZ()),
+                    MoonScenario.pitch(target.getX() - eye.getX(), target.getY() - eye.getY(), target.getZ() - eye.getZ()), 160, at(0.12), null);
+        }
         look(level, "04_rheasilvia_wall", b.x() - r * 0.6, cz - r * 0.55, 4, b.x() - r * 0.92, cz - r * 0.86, 0.1, 260, MoonScenario::farView);
     }
 

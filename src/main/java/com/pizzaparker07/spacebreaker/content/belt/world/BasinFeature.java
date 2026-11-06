@@ -31,10 +31,12 @@ import java.util.Optional;
  * @param rings      height of the concentric ring scarps on the floor
  * @param rock       ground used to build up the rim and mountain under the carried soil
  * @param floorSoil  optional soil on the floor (impact melt, slumped debris)
+ * @param band       optional second rock: the wall and the central mountain show layers of {@code rock} and {@code band}
  */
 public class BasinFeature extends Feature<BasinFeature.Config> {
     public record Config(double x, double latitude, double radius, double depth, double rim, double peak, double peakRadius, int terraces,
-                         double wall, double rings, BlockState rock, Optional<BlockState> floorSoil) implements FeatureConfiguration {
+                         double wall, double rings, BlockState rock, Optional<BlockState> floorSoil,
+                         Optional<BlockState> band) implements FeatureConfiguration {
         public static final Codec<Config> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.DOUBLE.optionalFieldOf("x", 0.0).forGetter(Config::x),
                 Codec.DOUBLE.optionalFieldOf("latitude", -90.0).forGetter(Config::latitude),
@@ -47,7 +49,8 @@ public class BasinFeature extends Feature<BasinFeature.Config> {
                 Codec.DOUBLE.optionalFieldOf("wall", 0.2).forGetter(Config::wall),
                 Codec.DOUBLE.optionalFieldOf("rings", 1.6).forGetter(Config::rings),
                 BlockState.CODEC.fieldOf("rock").forGetter(Config::rock),
-                BlockState.CODEC.optionalFieldOf("floor_soil").forGetter(Config::floorSoil)
+                BlockState.CODEC.optionalFieldOf("floor_soil").forGetter(Config::floorSoil),
+                BlockState.CODEC.optionalFieldOf("band").forGetter(Config::band)
         ).apply(i, Config::new));
     }
 
@@ -121,6 +124,7 @@ public class BasinFeature extends Feature<BasinFeature.Config> {
             return false;
         }
         boolean any = false;
+        SimplexNoise n = Columns.noise(t.seed(), 59);
         for (int dx = 0; dx < 16; dx++) {
             for (int dz = 0; dz < 16; dz++) {
                 int x = x0 + dx;
@@ -134,8 +138,29 @@ public class BasinFeature extends Feature<BasinFeature.Config> {
                 if (cfg.floorSoil().isPresent() && s < 0.7 && s > cfg.peakRadius() * 0.8) {
                     Columns.paint(level, x, z, 1, cfg.floorSoil().get());
                 }
+                if (cfg.band().isPresent()) {
+                    band(level, cfg, n, x, z, s);
+                }
             }
         }
         return any;
+    }
+
+    /**
+     * Exposed layers: on the wall, wavy bands of the two rocks (two per terrace) broken by slumped soil; on the central
+     * mountain, streaks of the band rock over bare rock.
+     */
+    private static void band(WorldGenLevel level, Config cfg, SimplexNoise n, int x, int z, double s) {
+        double wobble = n.getValue(x / 45.0, z / 45.0);
+        if (s < 1.0 && s > 1 - cfg.wall()) {
+            if (n.getValue(x / 11.0 + 31, z / 11.0) < -0.35) {
+                return;
+            }
+            double k = (1 - s) / cfg.wall() * Math.max(1, cfg.terraces()) * 2 + wobble * 0.9;
+            Columns.paint(level, x, z, 2, ((int) Math.floor(k) & 1) == 0 ? cfg.rock() : cfg.band().get());
+        } else if (s < cfg.peakRadius() * 0.85) {
+            double streak = Math.sin((x * 0.6 + z) / 9.0 + wobble * 3);
+            Columns.paint(level, x, z, 2, streak > 0.55 ? cfg.band().get() : cfg.rock());
+        }
     }
 }

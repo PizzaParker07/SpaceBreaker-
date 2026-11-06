@@ -148,7 +148,10 @@ public final class JupiterModule implements SbModule {
         }
         lang.block(EUROPAN_FROST, "Europan Frost", "Europa Kırağısı");
         lang.block(EUROPAN_ICE, "Europan Ice", "Europa Buzu");
-        BlockKit.familyNames(lang, EUROPAN_ICE_BRICKS, "Europan Ice Brick", "Europa Buzu Tuğla");
+        lang.block(EUROPAN_ICE_BRICKS.base(), "Europan Ice Bricks", "Europa Buz Tuğlası");
+        lang.block(EUROPAN_ICE_BRICKS.stairs(), "Europan Ice Brick Stairs", "Europa Buz Tuğlası Merdiveni");
+        lang.block(EUROPAN_ICE_BRICKS.slab(), "Europan Ice Brick Slab", "Europa Buz Tuğlası Basamağı");
+        lang.block(EUROPAN_ICE_BRICKS.wall(), "Europan Ice Brick Wall", "Europa Buz Tuğlası Duvarı");
         lang.block(STAINED_ICE, "Stained Ice", "Lekeli Buz");
         lang.block(REFROZEN_BRINE, "Refrozen Brine", "Yeniden Donmuş Tuzlu Su");
         lang.block(SALT_ORE, "Salt Ore", "Tuz Cevheri");

@@ -54,12 +54,14 @@ public final class BeltData {
 
     /** Rheasilvia: the south-polar basin of Vesta. */
     public static BasinFeature.Config rheasilvia() {
-        return new BasinFeature.Config(0, -90, 1000, 36, 18, 84, 0.22, 4, 0.16, 1.6, s(BeltModule.DIOGENITE), Optional.empty());
+        return new BasinFeature.Config(0, -90, 1000, 36, 18, 84, 0.22, 4, 0.16, 1.6, s(BeltModule.DIOGENITE),
+                Optional.of(s(BeltModule.DIOGENITIC_REGOLITH)), Optional.of(s(BeltModule.EUCRITE.base())));
     }
 
     /** Occator-like salt deposits on Ceres' crater floors. */
     public static CraterFloorFeature.Config faculae() {
-        return new CraterFloorFeature.Config(s(BeltModule.CARBONATE_CRUST), 16, 0.4, 0.3, 0.8, 0, 2);
+        return new CraterFloorFeature.Config(s(BeltModule.CARBONATE_CRUST), 16, 0.4, 0.3, 0.8, 0, 2, 3.5,
+                Optional.of(s(BeltModule.CEREAN_ROCK.base())));
     }
 
     private BeltData() {
@@ -75,6 +77,18 @@ public final class BeltData {
         lang.add("biome.spacebreaker.vesta_polar", "Vestan Pole", "Vesta Kutbu");
         lang.add("dungeon.spacebreaker.ceres_mining_outpost", "Abandoned Ice Mining Outpost", "Terk Edilmiş Buz Madenciliği Karakolu");
         lang.add("structure.spacebreaker.ceres_mining_outpost", "Abandoned Ice Mining Outpost", "Terk Edilmiş Buz Madenciliği Karakolu");
+        for (String w : new String[]{"vesta", "ganymede", "callisto", "enceladus"}) {
+            lang.add("dungeon.spacebreaker." + w + "_lander", "Crashed Supply Lander", "Düşmüş İkmal İniş Aracı");
+            lang.add("structure.spacebreaker." + w + "_lander", "Crashed Supply Lander", "Düşmüş İkmal İniş Aracı");
+        }
+        tech(lang, "magnetospheric_physics", "Magnetospheric Physics",
+                "Ganymede is the only moon with its own magnetic field, a bubble inside Jupiter's: map it, and you can shelter inside it and read the ocean below by its echo.",
+                "Manyetosfer Fiziği",
+                "Ganymede kendi manyetik alanı olan tek uydudur, Jüpiter'inkinin içinde bir kabarcık: onu haritala; içine sığınabilir, yankısından aşağıdaki okyanusu okuyabilirsin.");
+        tech(lang, "deep_space_habitats", "Deep-Space Habitats",
+                "Buried, pressurised modules with their own power and air, built far from help: Callisto, outside Jupiter's worst radiation, is the place to start.",
+                "Derin Uzay Yaşam Alanları",
+                "Yardımdan çok uzakta kurulan, kendi enerjisi ve havası olan gömülü basınçlı modüller: Jüpiter'in en kötü radyasyonunun dışında kalan Kallisto, başlamak için doğru yer.");
         tech(lang, "microgravity_mining", "Microgravity Mining",
                 "On a world where a hard swing throws you off the ground, drills need anchors: harpoons, screw piles and counter-rotating cutters that push nothing away.",
                 "Mikro Yerçekiminde Madencilik",
@@ -110,7 +124,8 @@ public final class BeltData {
                 s(BeltModule.VESTAN_REGOLITH), Optional.empty(), Optional.empty());
         // dark carbon-rich material splashed in by old impacts
         var lf = new Landforms(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
-                List.of(new Landforms.SoilPatch(s(MarsModule.CARBONACEOUS_CHONDRITE), 170, 0.8, "any")),
+                List.of(new Landforms.SoilPatch(s(MarsModule.CARBONACEOUS_CHONDRITE), 170, 0.8, "any"),
+                        new Landforms.SoilPatch(s(BeltModule.DIOGENITIC_REGOLITH), 260, 0.65, "any")),
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
         return SmallBodyTerrain.of(Spacebreaker.id("vesta"), 262.7).baseHeight(74).roughness(1.05).craters(1.15).age(1.0)
                 .materials(m).landforms(lf).build();

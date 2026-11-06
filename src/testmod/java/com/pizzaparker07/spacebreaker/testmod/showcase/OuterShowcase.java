@@ -116,6 +116,19 @@ abstract class OuterShowcase implements ShowcaseScenario {
         };
     }
 
+    /** Places a crashed supply lander next to the stage and adds a shot of it. */
+    void lander(ServerLevel level, com.pizzaparker07.spacebreaker.content.belt.dungeon.LanderPiece.Variant variant, String name, double dayFraction) {
+        int x = SX - 50;
+        int z = SZ - 10;
+        int y = (int) ground(level, x + 6, z + 13);
+        var piece = new com.pizzaparker07.spacebreaker.content.belt.dungeon.LanderPiece(91L, variant, x, y, z, Direction.NORTH);
+        MarsScenario.placePiece(level, piece);
+        BlockPos eye = piece.world(6, 9, -8);
+        BlockPos target = piece.world(6, 5, 14);
+        shot(name, eye.getX() + 0.5, eye.getY(), eye.getZ() + 0.5, MoonScenario.yaw(target.getX() - eye.getX(), target.getZ() - eye.getZ()),
+                MoonScenario.pitch(target.getX() - eye.getX(), target.getY() - eye.getY(), target.getZ() - eye.getZ()), 160, at(dayFraction), null);
+    }
+
     /** Topmost block of a kind within a radius of (x, z), or null. */
     static BlockPos findBlock(ServerLevel level, int x, int z, int radius, Block block) {
         for (int r = 0; r <= radius; r++) {

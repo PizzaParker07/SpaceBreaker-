@@ -342,6 +342,71 @@ def sulfur_crab():
     return cv
 
 
+def groove_grazer():
+    """64x32 sheet for GrooveGrazerModel: grey-blue banded armour with frost-pale plate edges, dark shovel snout."""
+    cv = Canvas(64, 32)
+    r = P.GRAZER
+    n = clustered(64, 64, 11011, passes=1)
+
+    def body(face, x, y, fw, fh):
+        if face == 'top':
+            band = (y // 3) % 2
+            return noise_pick(r, 4 if band else 3, n, x, y)
+        if face == 'bottom':
+            return r[1]
+        if y == 0:
+            return r[5]
+        return noise_pick(r, 3 if (x // 3) % 2 else 2, n, x + 20, y + 30)
+
+    paint(cv, 0, 0, 8, 5, 14, body)
+    paint(cv, 0, 19, 9, 2, 3, lambda f, x, y, fw, fh: r[6] if (f == 'top' and y == 0) else (r[5] if f == 'top' else r[4]))
+
+    def head(face, x, y, fw, fh):
+        if face == 'front':
+            if y == 1 and x in (1, fw - 2):
+                return hexc('#0c0d0f')
+            return r[3] if y == 0 else r[2]
+        return noise_pick(r, 3 if face == 'top' else 2, n, x + 40, y)
+
+    paint(cv, 44, 0, 6, 4, 4, head)
+    paint(cv, 24, 19, 7, 1, 2, lambda f, x, y, fw, fh: r[1] if f != 'top' else r[2])
+    paint(cv, 44, 8, 2, 5, 2, lambda f, x, y, fw, fh: r[1] if y >= fh - 1 else r[2])
+    return cv
+
+
+def crater_hopper():
+    """64x32 sheet for CraterHopperModel: dark brown-grey hide, frost-white sensory plates and tail tip, pale belly."""
+    cv = Canvas(64, 32)
+    r = P.HOPPER
+    w = P.HOPPER_PLATE
+    n = clustered(64, 64, 11021, passes=1)
+
+    def hide(base):
+        def fn(face, x, y, fw, fh):
+            if face == 'bottom':
+                return r[5]
+            return noise_pick(r, base + (1 if face == 'top' else 0), n, x + base * 7, y)
+        return fn
+
+    paint(cv, 0, 0, 6, 6, 8, hide(2))
+
+    def head(face, x, y, fw, fh):
+        if face == 'front':
+            if y == 1 and x in (0, fw - 1):
+                return hexc('#d9e6ee')
+            if y == 3 and 1 <= x <= 2:
+                return r[0]
+            return r[3]
+        return noise_pick(r, 3, n, x + 30, y)
+
+    paint(cv, 28, 0, 4, 4, 4, head)
+    paint(cv, 44, 0, 1, 5, 2, lambda f, x, y, fw, fh: w[2] if y < 2 else w[1] if y < 4 else w[0])
+    paint(cv, 0, 14, 2, 7, 4, hide(1))
+    paint(cv, 12, 14, 1, 4, 1, hide(1))
+    paint(cv, 16, 14, 2, 2, 6, lambda f, x, y, fw, fh: w[1] if (f == 'back' or (f in ('top', 'left', 'right') and x >= 4)) else r[2])
+    return cv
+
+
 # --------------------------------------------------------------------------- Jupiter's disc
 
 def jupiter_disc(size=256):
@@ -438,6 +503,8 @@ def export(save):
     save(glow_serpent(), 'entity', 'jupiter/glow_serpent')
     save(glow_serpent_glow(), 'entity', 'jupiter/glow_serpent_glow')
     save(sulfur_crab(), 'entity', 'jupiter/sulfur_crab')
+    save(groove_grazer(), 'entity', 'jupiter/groove_grazer')
+    save(crater_hopper(), 'entity', 'jupiter/crater_hopper')
     import os
     out = os.path.join(os.path.dirname(__file__), '..', '..', '..', 'src', 'main', 'resources', 'assets', 'spacebreaker', 'textures', 'environment')
     jupiter_disc().save(os.path.join(out, 'jupiter_disc.png'))
