@@ -462,5 +462,21 @@
         "stream": true
       }
     ]
+  },
+  "music.titan": {
+    "sounds": [
+      {
+        "name": "spacebreaker:music/titan",
+        "stream": true
+      }
+    ]
+  },
+  "music.jovian": {
+    "sounds": [
+      {
+        "name": "spacebreaker:music/jovian",
+        "stream": true
+      }
+    ]
   }
 }
