@@ -83,6 +83,22 @@ public final class BlueprintGameTests {
     }
 
     @GameTest(template = EMPTY)
+    public static void selfAssemblingFlagParses(GameTestHelper helper) {
+        String json = "{\"controller\": \"C\", \"self_assembling\": true, \"layers\": [[\"PCP\"]], "
+                + "\"key\": {\"P\": {\"block\": \"minecraft:stone\"}, \"C\": {\"block\": \"minecraft:furnace\"}}}";
+        var parsed = MultiblockDefinition.CODEC.parse(com.mojang.serialization.JsonOps.INSTANCE, com.google.gson.JsonParser.parseString(json));
+        MultiblockDefinition d = parsed.getOrThrow();
+        helper.assertTrue(d.selfAssembling(), "self_assembling is read");
+        var ps = d.placements(BlockPos.ZERO, Direction.NORTH);
+        helper.assertTrue(ps.stream().filter(d::isController).count() == 1, "exactly one controller placement");
+        helper.assertFalse(def(helper, HABITAT).selfAssembling(), "defaults to false");
+        String bad = "{\"controller\": \"C\", \"layers\": [[\"PP\"]], \"key\": {\"P\": {\"block\": \"minecraft:stone\"}}}";
+        helper.assertTrue(MultiblockDefinition.CODEC.parse(com.mojang.serialization.JsonOps.INSTANCE,
+                com.google.gson.JsonParser.parseString(bad)).error().isPresent(), "a missing controller is rejected");
+        helper.succeed();
+    }
+
+    @GameTest(template = EMPTY)
     public static void hologramStateCycles(GameTestHelper helper) {
         Hologram h = Hologram.of(HABITAT).withAnchor(BlockPos.ZERO, Direction.NORTH);
         helper.assertTrue(h.rotated(1).facing() == Direction.EAST && h.rotated(3).facing() == Direction.WEST, "rotation steps");

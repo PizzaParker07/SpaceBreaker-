@@ -534,6 +534,7 @@
   "hud.spacebreaker.materials": "Malzemeler",
   "hud.spacebreaker.materials.done": "%s / %s yerleştirildi",
   "hud.spacebreaker.materials.missing": "%s eksik",
+  "hud.spacebreaker.materials.self_assembling": "Yalnız denetleyiciyi koy, gerisini kendisi kurar",
   "hud.spacebreaker.open": "AÇIK",
   "hud.spacebreaker.speed": "Hız: %s",
   "hud.spacebreaker.stage": "Kademe %s / %s",

@@ -174,7 +174,9 @@ public final class BlueprintClient {
         }
         var font = mc.font;
         Component title = Component.translatable(CACHE.def().nameKey(CACHE.key().blueprint()));
-        Component progress = Component.translatable("hud.spacebreaker.materials.done", CACHE.built, CACHE.total);
+        Component progress = CACHE.def().selfAssembling() && !CACHE.complete
+                ? Component.translatable("hud.spacebreaker.materials.self_assembling")
+                : Component.translatable("hud.spacebreaker.materials.done", CACHE.built, CACHE.total);
         int rows = Math.min(8, CACHE.needed.size());
         int w = Math.max(110, Math.max(font.width(title), font.width(progress)) + 8);
         for (Map.Entry<Item, Integer> e : CACHE.needed.entrySet()) {
