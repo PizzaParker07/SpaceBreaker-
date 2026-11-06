@@ -1,6 +1,6 @@
-// 1.21.1	2026-11-06T19:21:49.990597498	Tags for minecraft:block mod id spacebreaker
+// 1.21.1	2026-11-06T19:51:45.877610137	Tags for minecraft:block mod id spacebreaker
 a1311f0e75224aaa1a20d601adee0df982e21fb6 data/c/tags/block/ore_rates/singular.json
-c59236b4f8aeb8ebd6e454013dd21f69e6ca6512 data/c/tags/block/ores.json
+11e4b49e97c232707e835a65e9f082f931a0bf17 data/c/tags/block/ores.json
 2e53c12f1069a9431086af8c817e22054d435904 data/c/tags/block/ores/bauxite.json
 6782862eafa384e0cc8f1a2770bc5ab062cfbb5b data/c/tags/block/ores/chromite.json
 b3a2195b57c44989915c892616defef84e1cc40f data/c/tags/block/ores/graphite.json
@@ -11,8 +11,9 @@ b3a2195b57c44989915c892616defef84e1cc40f data/c/tags/block/ores/graphite.json
 6c63f1118a8c474ff7da1b8ec76c66fd4fba7075 data/c/tags/block/ores/magnetite.json
 b95696d7cb751fef26f67aa2843a29892b12c05e data/c/tags/block/ores/pentlandite.json
 c1e9ab087a406ea0d1a295a8302915e64125ae0e data/c/tags/block/ores/rutile.json
+e04da0b4f3f90123ff07d73fd83145c6d7099d42 data/c/tags/block/ores/salt.json
 4855c2782d3cfd4eacfb7f7eea2c8e4117be72a2 data/c/tags/block/ores/spodumene.json
-2e0ea69e8631da04a13ef62d41c3a119bb96c5d8 data/c/tags/block/ores/sulfur.json
+9c6ef292ec5f9b913322481613b6ee4179f966a9 data/c/tags/block/ores/sulfur.json
 0e2e4be0dccac5a97f8194a15aa36781edba362b data/c/tags/block/ores/wolframite.json
 5a61b18a3b7a1ea4e81526899a581d0a0938021f data/c/tags/block/ores_in_ground/deepslate.json
 ec696bf9b2a2ea6f79412fe615f14f4b3a5a35e8 data/c/tags/block/ores_in_ground/stone.json
@@ -31,19 +32,22 @@ e21077d057ed0923aae4f9d3cfd999103138de75 data/c/tags/block/storage_blocks/raw_ru
 64503b6cc370a3b323bd12f811f3b2ce7b528e7f data/c/tags/block/storage_blocks/titanium.json
 3a0314482d4f03811bfa706046ea7e26320ae256 data/c/tags/block/storage_blocks/tungsten.json
 37162d797c2ad11e5928f1f300d1d1fd86b427ae data/minecraft/tags/block/beacon_base_blocks.json
-ebb5108176cba505d804eb125bc6afdb343b55ce data/minecraft/tags/block/ice.json
-578b2dcee6f3b8622191ef5209f9ad9f623364a2 data/minecraft/tags/block/mineable/pickaxe.json
-a520332b9cf7c21e7d14b1b203f68cf5d0b54cf8 data/minecraft/tags/block/mineable/shovel.json
+c7e42b130bd2d2bcb1c724d8fc0f2166d0e76d9c data/minecraft/tags/block/ice.json
+109b862750295e63ae0621a4d677dc0b1540c0b2 data/minecraft/tags/block/mineable/pickaxe.json
+b853d323841ac8999f712b01d41104517456927b data/minecraft/tags/block/mineable/shovel.json
 4ca714698e19297e5cb816e7848a66c21c0e9702 data/minecraft/tags/block/needs_iron_tool.json
-d2e120ac33d2b2fd33b421894eb71f58f6985792 data/minecraft/tags/block/needs_stone_tool.json
+f48f7b6344d2532881616da9ecf2fab2c02e8b03 data/minecraft/tags/block/needs_stone_tool.json
 1137c1ba4d56080deb8301dbb264af90ec575b94 data/minecraft/tags/block/sand.json
-c2b6cd651ad1580e9c0b1a4c4690724198b2ddfb data/minecraft/tags/block/slabs.json
-46efe89f27935f18bc5bd33b11adc1aede6a99f8 data/minecraft/tags/block/stairs.json
-33b0d282d4def72129be36b819914099ffb7279a data/minecraft/tags/block/walls.json
+b049e3525cefb74352e350ce78e877db22daef60 data/minecraft/tags/block/slabs.json
+830bf80d7e9d72d0206867258e8864e77de77530 data/minecraft/tags/block/stairs.json
+fb09feec5b0f33496d60858b61252ed0df859466 data/minecraft/tags/block/walls.json
 2cf3064f119cd0e4fc9fe1821de34e6166897553 data/minecraft/tags/block/wool.json
 f5b0ec35249c11810aaa21a5c27270aaf31d4d51 data/spacebreaker/tags/block/airtight.json
 3b5fbb1840c423949990e13b51d7a53878f9a57e data/spacebreaker/tags/block/belt_stone.json
 18d7027e48d4902eecff551bea0381a6ba5cd40a data/spacebreaker/tags/block/ceres_ground.json
+64a626de38c94c1699f4f19c44a04fff6a8b9de8 data/spacebreaker/tags/block/io_stone.json
+c1204579efcf8b297d6ddffec2292f59a5815228 data/spacebreaker/tags/block/jovian_ground.json
+83b856920949aa64a5d494d9074d959afe6093bf data/spacebreaker/tags/block/jovian_ice.json
 a4e8097fff07f9a74259d6b5dd583f3437ff28a2 data/spacebreaker/tags/block/leaky.json
 65f229612c5d2f11045007d043184bec03af4bbb data/spacebreaker/tags/block/lunar_soils.json
 afb8415bcdce0603de7cf58212b2d8c11a30e053 data/spacebreaker/tags/block/mars_soils.json

@@ -28,12 +28,13 @@ import java.util.Optional;
  * @param peakRadius central mountain base radius in basin radii
  * @param terraces   steps in the wall
  * @param wall       width of the wall in basin radii
+ * @param rings      height of the concentric ring scarps on the floor
  * @param rock       ground used to build up the rim and mountain under the carried soil
  * @param floorSoil  optional soil on the floor (impact melt, slumped debris)
  */
 public class BasinFeature extends Feature<BasinFeature.Config> {
     public record Config(double x, double latitude, double radius, double depth, double rim, double peak, double peakRadius, int terraces,
-                         double wall, BlockState rock, Optional<BlockState> floorSoil) implements FeatureConfiguration {
+                         double wall, double rings, BlockState rock, Optional<BlockState> floorSoil) implements FeatureConfiguration {
         public static final Codec<Config> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.DOUBLE.optionalFieldOf("x", 0.0).forGetter(Config::x),
                 Codec.DOUBLE.optionalFieldOf("latitude", -90.0).forGetter(Config::latitude),
@@ -44,6 +45,7 @@ public class BasinFeature extends Feature<BasinFeature.Config> {
                 Codec.DOUBLE.optionalFieldOf("peak_radius", 0.2).forGetter(Config::peakRadius),
                 Codec.INT.optionalFieldOf("terraces", 4).forGetter(Config::terraces),
                 Codec.DOUBLE.optionalFieldOf("wall", 0.2).forGetter(Config::wall),
+                Codec.DOUBLE.optionalFieldOf("rings", 1.6).forGetter(Config::rings),
                 BlockState.CODEC.fieldOf("rock").forGetter(Config::rock),
                 BlockState.CODEC.optionalFieldOf("floor_soil").forGetter(Config::floorSoil)
         ).apply(i, Config::new));
@@ -89,9 +91,9 @@ public class BasinFeature extends Feature<BasinFeature.Config> {
         double floor = -cfg.depth() * wall;
         // concentric scarps on the floor (the basin's ring faults), low and broken
         double ring = 0;
-        if (s < 1 - cfg.wall() * 0.9 && s > cfg.peakRadius()) {
+        if (s < 1 - cfg.wall() * 0.9 && s > cfg.peakRadius() && cfg.rings() > 0) {
             double r = Math.sin(s * 30 + n.getValue(x / 300.0, z / 300.0) * 2);
-            ring = 1.6 * Columns.smooth((r - 0.2) / 0.8) * (0.5 + 0.5 * n.getValue(x / 90.0, z / 90.0));
+            ring = cfg.rings() * Columns.smooth((r - 0.2) / 0.8) * (0.5 + 0.5 * n.getValue(x / 90.0, z / 90.0));
         }
         // the central mountain: a broad, lumpy massif
         double peak = 0;

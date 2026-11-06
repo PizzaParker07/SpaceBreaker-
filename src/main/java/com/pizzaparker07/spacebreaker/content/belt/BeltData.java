@@ -54,7 +54,7 @@ public final class BeltData {
 
     /** Rheasilvia: the south-polar basin of Vesta. */
     public static BasinFeature.Config rheasilvia() {
-        return new BasinFeature.Config(0, -90, 1000, 36, 18, 84, 0.22, 4, 0.16, s(BeltModule.DIOGENITE), Optional.empty());
+        return new BasinFeature.Config(0, -90, 1000, 36, 18, 84, 0.22, 4, 0.16, 1.6, s(BeltModule.DIOGENITE), Optional.empty());
     }
 
     /** Occator-like salt deposits on Ceres' crater floors. */

@@ -1,0 +1,9 @@
+{
+  "structure": "spacebreaker:europa_probe",
+  "world": "spacebreaker:europa",
+  "guardians": [],
+  "loot_tables": [
+    "spacebreaker:dungeons/europa/probe_instruments",
+    "spacebreaker:dungeons/europa/probe_samples"
+  ]
+}

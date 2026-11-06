@@ -1,0 +1,14 @@
+{
+  "type": "spacebreaker:ganymede",
+  "generator": {
+    "type": "spacebreaker:planet",
+    "terrain": "spacebreaker:ganymede",
+    "biome_source": {
+      "type": "spacebreaker:planet",
+      "highlands": "spacebreaker:ganymede_dark_terrain",
+      "lowlands": "spacebreaker:ganymede_grooved_terrain",
+      "crater": "spacebreaker:ganymede_crater",
+      "polar": "spacebreaker:ganymede_polar"
+    }
+  }
+}

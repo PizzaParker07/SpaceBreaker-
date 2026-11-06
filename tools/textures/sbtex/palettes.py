@@ -119,3 +119,29 @@ CHROMITE = ramp('#141110', '#251f1c', '#3a322d', '#584d46', '#7d726b')
 # Rock mite: dark carbonaceous carapace, pale salt crystals.
 ROCK_MITE = ramp('#1f1d1c', '#2b2826', '#363230', '#423d3a', '#504a46', '#5f5853')
 MITE_SALT = ramp('#9d998f', '#c3bfb5', '#dedad1', '#f1eee8')
+
+# --- Outer Solar System: Jupiter's moons ------------------------------------------------
+# Europa: bright, faintly cream frost; pale blue-grey shell ice; red-brown stained lineae ice; orange-brown chaos brine.
+EUROPA_FROST = ramp('#a9a59c', '#c9c5bc', '#d3cfc6', '#dcd8d0', '#e4e1da', '#ecebe5')
+EUROPA_ICE = ramp('#7f8f99', '#94a4ae', '#a7b6bf', '#b8c6ce', '#c9d5dc', '#dbe4ea')
+STAINED_ICE = ramp('#5e3f2f', '#734e3a', '#865d45', '#976c51', '#a87d60', '#b98f72')
+BRINE_ICE = ramp('#6a4a35', '#7f5a41', '#93694d', '#a6795b', '#b98c6d', '#d9cbb8')
+OCEAN_SALT = ramp('#8b8f96', '#a9adb3', '#c4c8cd', '#dadde1', '#eceef0', '#fbfbfc')
+# Io: muted sulfur yellow sand, white SO2 frost, rusty red short-chain sulfur, near-black silicate lava.
+SULFUR_SAND = ramp('#857429', '#a38f37', '#ac983e', '#b5a045', '#bea94d', '#c7b257')
+SO2_FROST = ramp('#b3b19f', '#cdccbd', '#d6d5c7', '#dfded2', '#e7e7dc', '#efefe7')
+RED_SULFUR = ramp('#6a2915', '#86391e', '#914023', '#9c4829', '#a75130', '#b35b37')
+IONIAN_BASALT = ramp('#161718', '#1e2021', '#27292a', '#313334', '#3c3e40', '#484a4c')
+IO_SULFUR = ramp('#5e4d12', '#8a7419', '#b39b25', '#d4bd3c', '#ead864')
+# Ganymede: grey-brown dirty regolith, bright clean grooved ice, dark ancient crust.
+GANYMEDE_SOIL = ramp('#4f4a44', '#665f57', '#6e665e', '#766e65', '#7e766c', '#877e74')
+GROOVED_ICE = ramp('#8e9196', '#a3a6ab', '#b4b7bb', '#c3c6c9', '#d1d3d6', '#dfe1e3')
+DARK_ICE_CRUST = ramp('#2f2b27', '#3b3631', '#46403a', '#514a43', '#5c544c', '#685f56')
+# Callisto: the darkest Galilean regolith, white frost knobs, dark icy rock.
+CALLISTO_SOIL = ramp('#2e2b27', '#3e3a34', '#45403a', '#4b4640', '#524c45', '#5a534c')
+BRIGHT_FROST = ramp('#a8adb3', '#c6cbd0', '#d1d5d9', '#dbdee2', '#e4e7ea', '#eef0f2')
+CALLISTAN_ROCK = ramp('#262523', '#302e2b', '#3a3734', '#45413d', '#504b47', '#5c5752', '#6a645e')
+# Creatures: glow serpent (deep blue-black skin, cyan glow), sulfur crab (glazed yellow-orange shell).
+SERPENT = ramp('#0d141b', '#142029', '#1c2c38', '#253948', '#304858', '#3d5869')
+SERPENT_GLOW = ramp('#2a9e98', '#5ef0e0', '#c8fff6')
+CRAB = ramp('#4a2a10', '#6e3f15', '#8f5a1c', '#b07c27', '#c99d35', '#dcbd4f', '#ead777')

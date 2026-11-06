@@ -1,0 +1,28 @@
+{
+  "type": "spacebreaker:boulder",
+  "config": {
+    "block": {
+      "type": "minecraft:weighted_state_provider",
+      "entries": [
+        {
+          "data": {
+            "Name": "spacebreaker:dark_ice_crust"
+          },
+          "weight": 3
+        },
+        {
+          "data": {
+            "Name": "spacebreaker:grooved_ice"
+          },
+          "weight": 1
+        }
+      ]
+    },
+    "buried": 0.5,
+    "radius": {
+      "type": "minecraft:uniform",
+      "max_exclusive": 1.7,
+      "min_inclusive": 0.7
+    }
+  }
+}

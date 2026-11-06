@@ -8,6 +8,9 @@
     "spacebreaker:martian_sandstone_wall",
     "spacebreaker:cerean_rock_wall",
     "spacebreaker:eucrite_wall",
-    "spacebreaker:eucrite_brick_wall"
+    "spacebreaker:eucrite_brick_wall",
+    "spacebreaker:europan_ice_brick_wall",
+    "spacebreaker:ionian_basalt_wall",
+    "spacebreaker:callistan_rock_wall"
   ]
 }

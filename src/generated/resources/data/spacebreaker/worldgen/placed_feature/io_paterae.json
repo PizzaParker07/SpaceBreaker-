@@ -1,0 +1,8 @@
+{
+  "feature": "spacebreaker:io_paterae",
+  "placement": [
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

@@ -27,6 +27,12 @@ public final class SmallBodyTerrain {
     private Materials materials;
     private Landforms landforms = Landforms.NONE;
     private double iceLatitude = 80;
+    private TerrainProfile.Lowlands lowlands;
+    private BlockStateLike lowlandSoil;
+    private int soilDepth = 3;
+
+    private record BlockStateLike(BlockState soil, BlockState rock) {
+    }
 
     /** The blocks of the crust. */
     public record Materials(BlockState soil, BlockState rock, BlockState breccia, BlockState raySoil, Optional<BlockState> polarSoil,
@@ -84,6 +90,19 @@ public final class SmallBodyTerrain {
         return this;
     }
 
+    /** Lowland plains (e.g. Ganymede's bright grooved terrain) with their own soil and rock. */
+    public SmallBodyTerrain lowlands(TerrainProfile.Lowlands lowlands, BlockState soil, BlockState rock) {
+        this.lowlands = lowlands;
+        this.lowlandSoil = new BlockStateLike(soil, rock);
+        return this;
+    }
+
+    /** Thickness of the soil layer over the rock. */
+    public SmallBodyTerrain soilDepth(int depth) {
+        this.soilDepth = depth;
+        return this;
+    }
+
     /** Latitude above which deep crater floors stay in permanent shadow. */
     public SmallBodyTerrain iceLatitude(double lat) {
         this.iceLatitude = lat;
@@ -107,7 +126,7 @@ public final class SmallBodyTerrain {
         double amp = reliefAmplitude > 0 ? reliefAmplitude : (12 + 10 * Math.min(1.5, size)) * roughness;
         TerrainProfile.Relief relief = new TerrainProfile.Relief(amp, 260 + 140 * size, 1.6 * roughness, 26, 0.55 * roughness);
         // no maria on these bodies: lowlands effectively off
-        TerrainProfile.Lowlands lowlands = new TerrainProfile.Lowlands(0.95, 2400, 6, 0.1, 0, 1.0);
+        TerrainProfile.Lowlands low = lowlands != null ? lowlands : new TerrainProfile.Lowlands(0.95, 2400, 6, 0.1, 0, 1.0);
         double big = 40 + 50 * Math.min(1.4, size);
         List<TerrainProfile.CraterClass> classes = new ArrayList<>();
         classes.add(new TerrainProfile.CraterClass(2.5, 6, 32, 0.55, 2));
@@ -117,9 +136,11 @@ public final class SmallBodyTerrain {
         TerrainProfile.Craters craters = new TerrainProfile.Craters(classes, craterDensity * (0.5 + 0.6 * age), 1.0, 0.2, 0.05,
                 30, 0.4, 0.06, 4);
         TerrainProfile.Poles poles = new TerrainProfile.Poles(Math.min(iceLatitude, 80) - 6, iceLatitude, 4, 1.3);
-        TerrainProfile.Materials mat = new TerrainProfile.Materials(materials.soil(), materials.soil(), materials.raySoil(), materials.rock(),
-                materials.rock(), materials.breccia(), materials.polarSoil(), materials.ice(), Optional.empty(),
-                Blocks.BEDROCK.defaultBlockState(), 3, 18);
-        return new TerrainProfile(body, baseHeight, pole, relief, lowlands, craters, poles, mat, landforms);
+        BlockState lowSoil = lowlandSoil != null ? lowlandSoil.soil() : materials.soil();
+        BlockState lowRock = lowlandSoil != null ? lowlandSoil.rock() : materials.rock();
+        TerrainProfile.Materials mat = new TerrainProfile.Materials(materials.soil(), lowSoil, materials.raySoil(), materials.rock(),
+                lowRock, materials.breccia(), materials.polarSoil(), materials.ice(), Optional.empty(),
+                Blocks.BEDROCK.defaultBlockState(), soilDepth, 18);
+        return new TerrainProfile(body, baseHeight, pole, relief, low, craters, poles, mat, landforms);
     }
 }

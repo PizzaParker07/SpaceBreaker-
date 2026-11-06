@@ -10,6 +10,9 @@
     "spacebreaker:martian_sandstone_slab",
     "spacebreaker:cerean_rock_slab",
     "spacebreaker:eucrite_slab",
-    "spacebreaker:eucrite_brick_slab"
+    "spacebreaker:eucrite_brick_slab",
+    "spacebreaker:europan_ice_brick_slab",
+    "spacebreaker:ionian_basalt_slab",
+    "spacebreaker:callistan_rock_slab"
   ]
 }

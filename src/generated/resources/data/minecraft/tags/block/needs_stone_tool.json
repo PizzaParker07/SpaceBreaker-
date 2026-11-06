@@ -25,6 +25,10 @@
     "spacebreaker:metal_frost",
     "spacebreaker:composite_panel",
     "spacebreaker:graphite_ore",
-    "spacebreaker:magnetite_ore"
+    "spacebreaker:magnetite_ore",
+    "spacebreaker:salt_ore",
+    "spacebreaker:ionian_sulfur_ore",
+    "spacebreaker:ice_geyser",
+    "spacebreaker:sulfur_vent"
   ]
 }

@@ -1,0 +1,31 @@
+{
+  "type": "spacebreaker:boulder",
+  "config": {
+    "block": {
+      "type": "minecraft:weighted_state_provider",
+      "entries": [
+        {
+          "data": {
+            "Name": "spacebreaker:bright_frost",
+            "Properties": {
+              "facing": "north",
+              "print": "none"
+            }
+          },
+          "weight": 2
+        },
+        {
+          "data": {
+            "Name": "spacebreaker:callistan_rock"
+          },
+          "weight": 3
+        }
+      ]
+    },
+    "radius": {
+      "type": "minecraft:uniform",
+      "max_exclusive": 2.0,
+      "min_inclusive": 0.8
+    }
+  }
+}

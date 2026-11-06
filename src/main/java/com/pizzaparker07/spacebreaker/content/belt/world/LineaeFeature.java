@@ -29,11 +29,12 @@ import java.util.Optional;
  * @param chaosThreshold noise level above which the ground is chaos terrain
  * @param stripes     optional parallel stripes: spacing in blocks (0 = none)
  * @param stripeLatitude stripes only poleward of this latitude (negative = south)
+ * @param where       "any", "lowlands" or "highlands": where the cracks run (chaos and stripes ignore it)
  */
 public class LineaeFeature extends Feature<LineaeFeature.Config> {
     public record Config(BlockState stain, Optional<BlockState> ridge, double scale, double width, double ridgeHeight, int sets,
-                         Optional<BlockState> chaos, double chaosScale, double chaosThreshold, double stripes, double stripeLatitude)
-            implements FeatureConfiguration {
+                         Optional<BlockState> chaos, double chaosScale, double chaosThreshold, double stripes, double stripeLatitude,
+                         String where) implements FeatureConfiguration {
         public static final Codec<Config> CODEC = RecordCodecBuilder.create(i -> i.group(
                 BlockState.CODEC.fieldOf("stain").forGetter(Config::stain),
                 BlockState.CODEC.optionalFieldOf("ridge").forGetter(Config::ridge),
@@ -45,7 +46,8 @@ public class LineaeFeature extends Feature<LineaeFeature.Config> {
                 Codec.DOUBLE.optionalFieldOf("chaos_scale", 900.0).forGetter(Config::chaosScale),
                 Codec.DOUBLE.optionalFieldOf("chaos_threshold", 0.55).forGetter(Config::chaosThreshold),
                 Codec.DOUBLE.optionalFieldOf("stripes", 0.0).forGetter(Config::stripes),
-                Codec.DOUBLE.optionalFieldOf("stripe_latitude", -70.0).forGetter(Config::stripeLatitude)
+                Codec.DOUBLE.optionalFieldOf("stripe_latitude", -70.0).forGetter(Config::stripeLatitude),
+                Codec.STRING.optionalFieldOf("where", "any").forGetter(Config::where)
         ).apply(i, Config::new));
     }
 
@@ -75,7 +77,12 @@ public class LineaeFeature extends Feature<LineaeFeature.Config> {
     /** Distance to the nearest crack centre in units of the crack half-width (0 = centre). */
     public static double crack(PlanetTerrain t, Config cfg, double x, double z) {
         double best = 99;
-        for (int k = 0; k < cfg.sets(); k++) {
+        boolean fits = switch (cfg.where()) {
+            case "lowlands" -> t.lowland(x, z, t.latitude(z)) > 0.5;
+            case "highlands" -> t.lowland(x, z, t.latitude(z)) <= 0.5;
+            default -> true;
+        };
+        for (int k = 0; k < (fits ? cfg.sets() : 0); k++) {
             SimplexNoise n = Columns.noise(t.seed(), 72 + k);
             // each set is stretched along its own direction, so cracks run long and gently curved
             double ang = k * 1.1 + 0.4;

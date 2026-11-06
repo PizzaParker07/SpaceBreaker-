@@ -51,6 +51,18 @@ public final class OuterWorlds implements SbModule {
     public static final DeferredHolder<Feature<?>, LineaeFeature> LINEAE = FEATURES.register("lineae", LineaeFeature::new);
     public static final DeferredHolder<Feature<?>, LakeFeature> LAKES = FEATURES.register("surface_lakes", LakeFeature::new);
     public static final DeferredHolder<Feature<?>, VentFeature> VENTS = FEATURES.register("surface_vents", VentFeature::new);
+    public static final DeferredHolder<Feature<?>, com.pizzaparker07.spacebreaker.content.belt.world.LayerFeature> LAYER =
+            FEATURES.register("buried_layer", com.pizzaparker07.spacebreaker.content.belt.world.LayerFeature::new);
+    public static final DeferredRegister<net.minecraft.world.level.block.entity.BlockEntityType<?>> BLOCK_ENTITIES =
+            DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, Spacebreaker.MOD_ID);
+    /** Vent blocks of every outer world (added by the region modules before registration). */
+    public static final List<Supplier<? extends Block>> VENT_BLOCKS = new ArrayList<>();
+    @SuppressWarnings("DataFlowIssue")
+    public static final DeferredHolder<net.minecraft.world.level.block.entity.BlockEntityType<?>,
+            net.minecraft.world.level.block.entity.BlockEntityType<com.pizzaparker07.spacebreaker.content.belt.block.VentBlockEntity>> VENT =
+            BLOCK_ENTITIES.register("vent", () -> net.minecraft.world.level.block.entity.BlockEntityType.Builder.of(
+                    com.pizzaparker07.spacebreaker.content.belt.block.VentBlockEntity::new,
+                    VENT_BLOCKS.stream().map(Supplier::get).toArray(Block[]::new)).build(null));
 
     /** A creature spawn entry for one biome, collected before datagen builds the biomes. */
     public record Spawn(ResourceKey<Biome> biome, Supplier<? extends EntityType<?>> type, MobCategory category, int weight, int min, int max) {
@@ -66,6 +78,7 @@ public final class OuterWorlds implements SbModule {
     @Override
     public void register(IEventBus modBus) {
         FEATURES.register(modBus);
+        BLOCK_ENTITIES.register(modBus);
     }
 
     // ------------------------------------------------------------------ keys and helpers

@@ -120,6 +120,27 @@
     "spacebreaker:eucrite_bricks",
     "spacebreaker:eucrite_brick_stairs",
     "spacebreaker:eucrite_brick_slab",
-    "spacebreaker:eucrite_brick_wall"
+    "spacebreaker:eucrite_brick_wall",
+    "spacebreaker:europan_ice",
+    "spacebreaker:stained_ice",
+    "spacebreaker:refrozen_brine",
+    "spacebreaker:salt_ore",
+    "spacebreaker:ice_geyser",
+    "spacebreaker:ionian_sulfur_ore",
+    "spacebreaker:sulfur_vent",
+    "spacebreaker:grooved_ice",
+    "spacebreaker:dark_ice_crust",
+    "spacebreaker:europan_ice_bricks",
+    "spacebreaker:europan_ice_brick_stairs",
+    "spacebreaker:europan_ice_brick_slab",
+    "spacebreaker:europan_ice_brick_wall",
+    "spacebreaker:ionian_basalt",
+    "spacebreaker:ionian_basalt_stairs",
+    "spacebreaker:ionian_basalt_slab",
+    "spacebreaker:ionian_basalt_wall",
+    "spacebreaker:callistan_rock",
+    "spacebreaker:callistan_rock_stairs",
+    "spacebreaker:callistan_rock_slab",
+    "spacebreaker:callistan_rock_wall"
   ]
 }

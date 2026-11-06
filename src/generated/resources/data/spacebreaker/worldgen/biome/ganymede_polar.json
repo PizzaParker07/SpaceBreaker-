@@ -1,0 +1,42 @@
+{
+  "carvers": {},
+  "creature_spawn_probability": 0.04,
+  "downfall": 0.0,
+  "effects": {
+    "fog_color": 0,
+    "foliage_color": 9077884,
+    "grass_color": 9077884,
+    "sky_color": 0,
+    "water_color": 4159204,
+    "water_fog_color": 329011
+  },
+  "features": [
+    [
+      "spacebreaker:ganymede_grooves"
+    ],
+    [],
+    [
+      "spacebreaker:ganymede_boulder"
+    ],
+    [],
+    [],
+    [],
+    [
+      "spacebreaker:jovian_salt",
+      "spacebreaker:ganymede_dark_lens"
+    ]
+  ],
+  "has_precipitation": false,
+  "spawn_costs": {},
+  "spawners": {
+    "ambient": [],
+    "axolotls": [],
+    "creature": [],
+    "misc": [],
+    "monster": [],
+    "underground_water_creature": [],
+    "water_ambient": [],
+    "water_creature": []
+  },
+  "temperature": -1.5
+}

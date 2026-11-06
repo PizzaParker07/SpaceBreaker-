@@ -18,7 +18,8 @@ import java.util.List;
 public final class OuterSystemModule implements SbModule {
     private final List<SbModule> parts = List.of(
             new OuterWorlds(),
-            new BeltModule()
+            new BeltModule(),
+            new com.pizzaparker07.spacebreaker.content.jupiter.JupiterModule()
     );
 
     @Override

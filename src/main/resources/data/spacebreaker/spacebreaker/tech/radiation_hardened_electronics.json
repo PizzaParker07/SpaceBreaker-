@@ -1,0 +1,14 @@
+{
+  "category": "industry",
+  "tier": 4,
+  "requires": [
+    "spacebreaker:radiation_shielding",
+    "spacebreaker:advanced_electronics"
+  ],
+  "icon": "minecraft:lead",
+  "samples": [
+    "spacebreaker:europa",
+    "spacebreaker:io"
+  ],
+  "unlocks": []
+}
