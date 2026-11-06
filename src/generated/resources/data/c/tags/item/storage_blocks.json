@@ -10,6 +10,8 @@
     "#c:storage_blocks/lithium",
     "#c:storage_blocks/raw_wolframite",
     "#c:storage_blocks/tungsten",
+    "#c:storage_blocks/raw_uraninite",
+    "#c:storage_blocks/uranium",
     "#c:storage_blocks/steel",
     "#c:storage_blocks/aluminum_lithium",
     "#c:storage_blocks/nickel_superalloy"

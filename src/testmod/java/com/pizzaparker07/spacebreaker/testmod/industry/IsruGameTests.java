@@ -107,6 +107,33 @@ public final class IsruGameTests {
         });
     }
 
+    /**
+     * Mercury polar ice to hydrolox: ice -> melter -> electrolyzer; hydrogen (left outlet) -> liquefier (liquid hydrogen),
+     * oxygen (right outlet) -> liquefier (LOX). Enough propellant for the trip back without hauling it from Earth.
+     */
+    @GameTest(template = "empty", timeoutTicks = 2400)
+    public static void mercuryIceMakesLiquidHydrogenAndLox(GameTestHelper h) {
+        // the block Mercury's polar ice veins actually place
+        var feature = h.getLevel().registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.CONFIGURED_FEATURE)
+                .getOptional(Spacebreaker.id("mercury_ice")).orElseThrow(() -> new AssertionError("mercury_ice feature missing"));
+        var ore = (net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration) feature.config();
+        Item mercuryIce = ore.targetStates.get(0).state.getBlock().asItem();
+        h.assertTrue(mercuryIce != Items.AIR, "Mercury ice has no item");
+        h.assertTrue(mercuryIce.builtInRegistryHolder().is(IsruRecipes.ICES), "mercury ice must melt like any #c:ices");
+        MachineBlockEntity iceMelter = machine(h, MachinesModule.ICE_MELTER, new BlockPos(2, 1, 0), Direction.NORTH);
+        iceMelter.items().setStackInSlot(0, new ItemStack(mercuryIce, 16));
+        machine(h, MachinesModule.ELECTROLYZER, new BlockPos(2, 1, 1), Direction.NORTH);
+        MachineBlockEntity lh2Plant = machine(h, MachinesModule.LIQUEFIER, new BlockPos(3, 1, 1), Direction.NORTH);
+        MachineBlockEntity loxPlant = machine(h, MachinesModule.LIQUEFIER, new BlockPos(1, 1, 1), Direction.NORTH);
+        h.succeedWhen(() -> {
+            h.assertTrue(lh2Plant.tank(1).getFluid().is(FluidsModule.TAG_LH2) && lh2Plant.tank(1).getFluidAmount() >= 250,
+                    "liquid hydrogen " + lh2Plant.tank(1).getFluidAmount());
+            h.assertTrue(loxPlant.tank(1).getFluid().is(FluidsModule.TAG_LOX) && loxPlant.tank(1).getFluidAmount() >= 250,
+                    "LOX " + loxPlant.tank(1).getFluidAmount());
+            h.assertTrue(FluidsModule.LIQUID_HYDROGEN.get().getFluidType().getTemperature() <= 25, "liquid hydrogen is about 20 K");
+        });
+    }
+
     @GameTest(template = "empty")
     public static void solarPanelsFollowTheSunDistance(GameTestHelper h) {
         double earth = com.pizzaparker07.spacebreaker.core.env.Environment.solarFactor(h.getLevel());

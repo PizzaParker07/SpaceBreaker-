@@ -39,6 +39,7 @@ import java.util.List;
  *   <li>Pentlandite: nickel sulphide at mid depth.</li>
  *   <li>Spodumene: lithium pegmatites high up in mountains.</li>
  *   <li>Wolframite: deep greisen veins.</li>
+ *   <li>Uraninite: small pitchblende pods, deepest and rarest.</li>
  *   <li>Crude oil: reservoirs trapped underground, marked by surface seeps.</li>
  * </ul>
  */
@@ -68,7 +69,8 @@ public final class EarthWorldgen {
             new Vein(EarthModule.TITANIUM, 5, 3, -64, 8, true, 0.4F, BiomeTags.IS_OVERWORLD),
             new Vein(EarthModule.NICKEL, 8, 6, -32, 48, true, 0.2F, BiomeTags.IS_OVERWORLD),
             new Vein(EarthModule.LITHIUM, 7, 10, 40, 220, false, 0.0F, Tags.Biomes.IS_MOUNTAIN),
-            new Vein(EarthModule.TUNGSTEN, 6, 3, -64, -16, true, 0.3F, BiomeTags.IS_OVERWORLD));
+            new Vein(EarthModule.TUNGSTEN, 6, 3, -64, -16, true, 0.3F, BiomeTags.IS_OVERWORLD),
+            new Vein(EarthModule.URANIUM, 4, 1, -64, -32, true, 0.5F, BiomeTags.IS_OVERWORLD));
 
     public static final ResourceKey<ConfiguredFeature<?, ?>> OIL_CONFIGURED = ResourceKey.create(Registries.CONFIGURED_FEATURE, Spacebreaker.id("oil_deposit"));
     public static final ResourceKey<PlacedFeature> OIL_PLACED = ResourceKey.create(Registries.PLACED_FEATURE, Spacebreaker.id("oil_deposit"));

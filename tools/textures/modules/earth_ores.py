@@ -77,13 +77,14 @@ ORES = {
     'pentlandite': ('PENTLANDITE', 'blocky', (2, 4, 6), 'c'),
     'spodumene': ('SPODUMENE', 'lath', (3, 5, 7), 'b'),
     'wolframite': ('WOLFRAMITE', 'tabular', (1, 3, 7), 'a'),
+    'uraninite': ('URANINITE', 'round', (1, 4, 7), 'c'),
 }
 METALS = {  # name -> (ramp, block style, has nugget/block)
     'aluminum': ('ALUMINIUM', 'lines'), 'titanium': ('TITANIUM', 'tiles'), 'nickel': ('NICKEL', 'brushed'),
-    'lithium': ('LITHIUM', 'plain'), 'tungsten': ('TUNGSTEN', 'rivets'), 'steel': ('CARBON_STEEL', 'rivets'),
+    'lithium': ('LITHIUM', 'plain'), 'tungsten': ('TUNGSTEN', 'rivets'), 'uranium': ('URANIUM', 'plain'), 'steel': ('CARBON_STEEL', 'rivets'),
     'aluminum_lithium': ('AL_LI', 'lines'), 'nickel_superalloy': ('SUPERALLOY', 'tiles'),
 }
-DUSTS = ['aluminum', 'titanium', 'nickel', 'lithium', 'tungsten', 'iron', 'copper', 'gold']
+DUSTS = ['aluminum', 'titanium', 'nickel', 'lithium', 'tungsten', 'uranium', 'iron', 'copper', 'gold']
 PLATES = ['aluminum', 'titanium', 'nickel', 'lithium', 'tungsten', 'steel', 'aluminum_lithium', 'nickel_superalloy', 'iron', 'copper', 'gold']
 WIRES = ['aluminum', 'tungsten', 'copper', 'gold']
 RODS = ['titanium', 'tungsten', 'steel', 'iron']

@@ -20,6 +20,8 @@ public final class ShowcaseScenarios {
                 net.minecraft.world.level.block.Blocks.IRON_BLOCK::defaultBlockState));
         ALL.put("blueprint", new BlueprintScenario());
         ALL.put("industry", new IndustryScenario());
+        ALL.put("rover_moon", new RoverScenario(com.pizzaparker07.spacebreaker.content.moon.MoonModule.MOON, false));
+        ALL.put("rover_mars", new RoverScenario(com.pizzaparker07.spacebreaker.content.mars.MarsModule.MARS, true));
         ALL.put("moon", new MoonScenario());
         ALL.put("research", new ResearchScenario());
         ALL.put("mars", new MarsScenario());

@@ -1,0 +1,17 @@
+{
+  "type": "spacebreaker:arc_smelting",
+  "energy": 80,
+  "ingredients": [
+    {
+      "count": 1,
+      "tag": "c:raw_materials/uraninite"
+    }
+  ],
+  "results": [
+    {
+      "count": 1,
+      "id": "spacebreaker:uranium_ingot"
+    }
+  ],
+  "time": 160
+}

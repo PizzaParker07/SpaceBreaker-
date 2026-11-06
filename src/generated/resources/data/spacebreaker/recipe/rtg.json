@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "c:plates/aluminum"
+    },
+    "C": {
+      "item": "spacebreaker:advanced_circuit"
+    },
+    "S": {
+      "item": "spacebreaker:silicon_wafer"
+    },
+    "T": {
+      "tag": "c:plates/tungsten"
+    }
+  },
+  "pattern": [
+    "ATA",
+    "SCS",
+    "ATA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "spacebreaker:rtg"
+  }
+}

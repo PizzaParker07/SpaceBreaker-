@@ -1,7 +1,7 @@
-// 1.21.1	2026-11-06T22:17:05.321947689	Tags for minecraft:item mod id spacebreaker
+// 1.21.1	2026-11-06T22:13:55.951968928	Tags for minecraft:item mod id spacebreaker
 7e8e995a94080524a7a2d6280b7b24b5bae0a66f data/c/tags/item/buckets.json
 2a38d13958b33895ff8da9a470c0eb27ca030dfb data/c/tags/item/dry_ices.json
-9f193ba6f1ede8ee1454c64033f45b25b36488c8 data/c/tags/item/dusts.json
+07fbd159d3e0d8a1a05acd85d71e5425c4011142 data/c/tags/item/dusts.json
 ad7d32167ffa7ca53078a97903c3d39992237e23 data/c/tags/item/dusts/aluminum.json
 1e348444b9090d1226540832a636f6aa0935df63 data/c/tags/item/dusts/coal.json
 2a4fb2c5dfaaa7e712a16d0af4b105a1b5e44eb0 data/c/tags/item/dusts/copper.json
@@ -13,10 +13,11 @@ f9b937508de454eb6000e610f9f5889223f0ac9b data/c/tags/item/dusts/perchlorate.json
 4e3b13f481e2b5a2a92f407196e8171b3c635a66 data/c/tags/item/dusts/sulfur.json
 b8b1c86d18ce0a7c14183c37900e3d1dae9a6c5c data/c/tags/item/dusts/titanium.json
 58682988e1855d5e178aec782df052798999a982 data/c/tags/item/dusts/tungsten.json
+5b7772b1f82592a278c5bee3a880b98b09db20fb data/c/tags/item/dusts/uranium.json
 f5d68f9fa141c448101c2d1e358ed431e2ec9ccf data/c/tags/item/gems/gypsum.json
 b02ae2270cf32d771021fa51a9aabbdd3af519a8 data/c/tags/item/ices.json
-0104b6e1a8ba35e265f667fd22ab728e50effe3b data/c/tags/item/ices/water.json
-966297689fbec0dc8857e64a9ecc3028507f4070 data/c/tags/item/ingots.json
+3dc5b910b19db9f4e363dca8653c6748d861c57d data/c/tags/item/ices/water.json
+437fe1c5b97ce6d1a864433ec4a4fb514d941015 data/c/tags/item/ingots.json
 0c9b9ea610564cb730896f559fe5d1669a859c32 data/c/tags/item/ingots/aluminum.json
 2087457c2008df79aaf776d92379e796edd1f1e4 data/c/tags/item/ingots/aluminum_lithium.json
 d4c918de76a4f00b0553b82cfce086b9485302c5 data/c/tags/item/ingots/lithium.json
@@ -25,7 +26,8 @@ d4c918de76a4f00b0553b82cfce086b9485302c5 data/c/tags/item/ingots/lithium.json
 b927de31558ecd9cc8a364470437bba7812d8446 data/c/tags/item/ingots/steel.json
 2afe9a69d8b407903664f5469b1da2e1c11bfb51 data/c/tags/item/ingots/titanium.json
 1455c8945f2c88b8e9ab999d0b29df62f3abe76d data/c/tags/item/ingots/tungsten.json
-97a1f159cfe1eae6a0090763c224f022b90f68dc data/c/tags/item/nuggets.json
+caa6283b1f40f0f94121948b91c9a24d59b66338 data/c/tags/item/ingots/uranium.json
+11f5f9a124604f5f63f4133468f053459cbf9072 data/c/tags/item/nuggets.json
 b9864ba1205ca0bfe05749fe1b054d3d55f93d25 data/c/tags/item/nuggets/aluminum.json
 52b048df2dbe671ffd35327e724c15f64e59e1d6 data/c/tags/item/nuggets/aluminum_lithium.json
 9b8b6b679b24a36a426a2a4bf6ff07a06b0fd824 data/c/tags/item/nuggets/lithium.json
@@ -34,7 +36,8 @@ b9864ba1205ca0bfe05749fe1b054d3d55f93d25 data/c/tags/item/nuggets/aluminum.json
 e2b1acd7ecafb1e12829c81d9760779468454a55 data/c/tags/item/nuggets/steel.json
 668202086fbb6b6e4f1d74c69d57f7a5bde173d0 data/c/tags/item/nuggets/titanium.json
 005301c689a4b9f2a404a8654863325e08b30008 data/c/tags/item/nuggets/tungsten.json
-e27a64b5283ed94d600959120b2b296e6a69b6a5 data/c/tags/item/ores.json
+de576101a9b9cb1ca2f1ed661cb5c786646c85b9 data/c/tags/item/nuggets/uranium.json
+266f21e9f200608ede540f4330eddfd27fdc48fa data/c/tags/item/ores.json
 f9bb0edf7816cfeb62e0fe8f059db745e1f01707 data/c/tags/item/ores/ammonia.json
 2e53c12f1069a9431086af8c817e22054d435904 data/c/tags/item/ores/bauxite.json
 6782862eafa384e0cc8f1a2770bc5ab062cfbb5b data/c/tags/item/ores/chromite.json
@@ -51,6 +54,7 @@ e04da0b4f3f90123ff07d73fd83145c6d7099d42 data/c/tags/item/ores/salt.json
 4855c2782d3cfd4eacfb7f7eea2c8e4117be72a2 data/c/tags/item/ores/spodumene.json
 9c6ef292ec5f9b913322481613b6ee4179f966a9 data/c/tags/item/ores/sulfur.json
 8a715e2e7d33bd4064b569ceaf8da2d435f1367b data/c/tags/item/ores/tholin.json
+54a2d3331d2815c399e72a81a6f6628c1ba66cc5 data/c/tags/item/ores/uraninite.json
 0e2e4be0dccac5a97f8194a15aa36781edba362b data/c/tags/item/ores/wolframite.json
 248ef67421eff92210229db562b72a4280edfeb1 data/c/tags/item/perchlorate_soils.json
 72e4001c68b0486a9036976d9db29fde85b30ca6 data/c/tags/item/plastics.json
@@ -66,7 +70,7 @@ b706ddd1421a1ffca51761adfc900bcc2e4da767 data/c/tags/item/plates/gold.json
 8662d0b386c91863731912a86dffc56123d95369 data/c/tags/item/plates/steel.json
 93ba6f0ebbb93b5d112bd7dffc45637018ce27f1 data/c/tags/item/plates/titanium.json
 79ee596d62511e904a3a25a1d5cbaa057c9bf9f1 data/c/tags/item/plates/tungsten.json
-9599161e48511c18befe9169e5d56e8ac8bd96d9 data/c/tags/item/raw_materials.json
+9c524550e2a78be75505692f5484f509dc435fd9 data/c/tags/item/raw_materials.json
 01c1ab86a98c045b834d4b0eb6f54772b7c672e3 data/c/tags/item/raw_materials/bauxite.json
 8cee4cc123ada4d69c4cb97bedcef311ae63ce3e data/c/tags/item/raw_materials/hematite.json
 c43274ba74875113cd85dbd8ca19b19ce1833a2f data/c/tags/item/raw_materials/ilmenite.json
@@ -74,6 +78,7 @@ d69c241b19f0918261eb73ca04f537e8093fa5ff data/c/tags/item/raw_materials/magnetit
 0cf21c6f9cd2ca13eb165c95766a8eb3f8e825a2 data/c/tags/item/raw_materials/pentlandite.json
 4338403acae9cc1f7f53040ec0e2dc45d688a625 data/c/tags/item/raw_materials/rutile.json
 12fa247c0f157ce1496395bc28b36eda7706a12c data/c/tags/item/raw_materials/spodumene.json
+b8850ad78f83e817fe170204f5808e7f823bbd97 data/c/tags/item/raw_materials/uraninite.json
 20055c2564312e0545794c0b73f9d248ff7fe9bf data/c/tags/item/raw_materials/wolframite.json
 c22847783613b1e721f96baf27a41dc51b2b89e4 data/c/tags/item/regoliths.json
 5a1d4e66e545090f2718cc9aac1b10bea6a69b5c data/c/tags/item/regoliths/solar_wind.json
@@ -83,7 +88,7 @@ befe8c303dfb8febde0e46b5e010deeb8a14baac data/c/tags/item/rods/iron.json
 5804e1a5127f2dd24f1ade8cd5e25d25d6e0aaae data/c/tags/item/rods/titanium.json
 34534087106514e6f02726fdcb1b31f4be129b66 data/c/tags/item/rods/tungsten.json
 be40881da9b3d68d84178b8d3cb978cf686185d9 data/c/tags/item/silicon.json
-3e6b9b3d5362e301efc89cabbe6afb62b66c19ad data/c/tags/item/storage_blocks.json
+e25157e74f1aa55432f02f98aa9f66ccb4affae2 data/c/tags/item/storage_blocks.json
 2fd85c1b9de607caae5a118a1ee4e2b6f5a266ed data/c/tags/item/storage_blocks/aluminum.json
 bbc009009e4c894ad6e5f463641d2030f8695a2f data/c/tags/item/storage_blocks/aluminum_lithium.json
 6b31b85c4065ff25f52187cb3698b813066bb059 data/c/tags/item/storage_blocks/lithium.json
@@ -93,10 +98,12 @@ d157cfc9d88a95c3fd2bc0144ad7e843280738a9 data/c/tags/item/storage_blocks/nickel.
 c05402257d37dd67d863972a8cb23378cc578f8c data/c/tags/item/storage_blocks/raw_pentlandite.json
 e21077d057ed0923aae4f9d3cfd999103138de75 data/c/tags/item/storage_blocks/raw_rutile.json
 085a086ef735dc0fcea72f753dfb1f3c8a521e5b data/c/tags/item/storage_blocks/raw_spodumene.json
+2293efa724b98843684af423845449b500614eef data/c/tags/item/storage_blocks/raw_uraninite.json
 7add64f1ed2add281335c8308a62782df3cd0671 data/c/tags/item/storage_blocks/raw_wolframite.json
 1ec73496455ed411ef143e872fdfbb794db30637 data/c/tags/item/storage_blocks/steel.json
 64503b6cc370a3b323bd12f811f3b2ce7b528e7f data/c/tags/item/storage_blocks/titanium.json
 3a0314482d4f03811bfa706046ea7e26320ae256 data/c/tags/item/storage_blocks/tungsten.json
+83910a18108cc94801011f8bac77eb9816a000fc data/c/tags/item/storage_blocks/uranium.json
 a2178e16af7f388ca68a9ede747ba50a086c9f5e data/c/tags/item/wires.json
 c13a1fd6361eaef0ec8c5028873d11604c98fdc6 data/c/tags/item/wires/aluminum.json
 653c3f96257f55e4589fa1e1ef2e046b5d6c927c data/c/tags/item/wires/copper.json
@@ -109,8 +116,8 @@ c53893040c86bcc09dd84910b2e0945d5107fb1f data/c/tags/item/wires/tungsten.json
 cd7806a652087ef3237bc109bf884f6301b77963 data/minecraft/tags/item/head_armor.json
 f0a0fbdf43cab8de673f6a2a995b934149b396e1 data/minecraft/tags/item/leg_armor.json
 1137c1ba4d56080deb8301dbb264af90ec575b94 data/minecraft/tags/item/sand.json
-da11356f50380c274564c8d4dc10925d3ddfb5cf data/minecraft/tags/item/slabs.json
-2dce56fc0924badb5af2211c330d362f4cf1b5a4 data/minecraft/tags/item/stairs.json
-ac387f94a714d7f44dec89dd72f262e051f6e8a9 data/minecraft/tags/item/walls.json
+442b3dcafda20c7f9ac5bc3bb0ef8790b7ae7ad4 data/minecraft/tags/item/slabs.json
+ee48d8b21d549e91aea4a035da7cf561a08d3cd2 data/minecraft/tags/item/stairs.json
+ac79a60690cf9b1c968c94466581cc7dba07fe00 data/minecraft/tags/item/walls.json
 8ce8de56c882fde6d0067f4d1a5eecfe4f54c662 data/spacebreaker/tags/item/press_dies.json
 694849f8ef7201ef082dd39d125bd84fe060a97b data/spacebreaker/tags/item/researchable.json

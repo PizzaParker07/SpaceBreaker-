@@ -47,6 +47,38 @@ public class SolarPanelBlock extends BaseEntityBlock {
         return SHAPE;
     }
 
+    /** Sunlight at this body's distance from the sun (and local weather) as a whole percentage of Earth's. */
+    public static String sunlightPercent(double factor) {
+        double pct = factor * 100;
+        return pct < 10 ? String.format(java.util.Locale.ROOT, "%.1f", pct) : Long.toString(Math.round(pct));
+    }
+
+    @Override
+    protected net.minecraft.world.InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos,
+                                                                   net.minecraft.world.entity.player.Player player,
+                                                                   net.minecraft.world.phys.BlockHitResult hit) {
+        if (!level.isClientSide && level.getBlockEntity(pos) instanceof SolarPanelBlockEntity be) {
+            double factor = com.pizzaparker07.spacebreaker.core.env.Environment.solarFactor(level, pos);
+            player.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.spacebreaker.solar_panel",
+                    sunlightPercent(factor), String.format(java.util.Locale.ROOT, "%.1f", be.getExactOutput())), true);
+        }
+        return net.minecraft.world.InteractionResult.sidedSuccess(level.isClientSide);
+    }
+
+    @Override
+    public void appendHoverText(net.minecraft.world.item.ItemStack stack, net.minecraft.world.item.Item.TooltipContext context,
+                                java.util.List<net.minecraft.network.chat.Component> tooltip, net.minecraft.world.item.TooltipFlag flag) {
+        tooltip.add(net.minecraft.network.chat.Component.translatable("tooltip.spacebreaker.solar_panel", SolarPanelBlockEntity.PEAK_OUTPUT)
+                .withStyle(net.minecraft.ChatFormatting.GRAY));
+        Level level = context.level();
+        if (level != null) {
+            double factor = com.pizzaparker07.spacebreaker.core.env.Environment.solarFactor(level);
+            tooltip.add(net.minecraft.network.chat.Component.translatable("tooltip.spacebreaker.solar_panel.here", sunlightPercent(factor),
+                    String.format(java.util.Locale.ROOT, "%.1f", SolarPanelBlockEntity.PEAK_OUTPUT * Math.min(SolarPanelBlockEntity.MAX_SOLAR_FACTOR, factor)))
+                    .withStyle(factor < 0.25 ? net.minecraft.ChatFormatting.GOLD : net.minecraft.ChatFormatting.GRAY));
+        }
+    }
+
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new SolarPanelBlockEntity(pos, state);

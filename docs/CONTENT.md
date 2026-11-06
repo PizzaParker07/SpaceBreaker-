@@ -248,6 +248,19 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Teknolojiler | Azot Buzulbilimi (5), Kuiper Kuşağı Seyrüseferi (5) |
 | 🎨 | Ortak yüzey özelliği | çokgen hücreler (`polygon_cells`): yastık hücreler + kenar çukurları (Plüton) veya çukurcuklu "kavun kabuğu" (Triton için) |
 
+### Faz 3 enerji (Endüstri)
+| Durum | İçerik | Not |
+|---|---|---|
+| 🎨 | Uraninit → Uranyum (cevher ×2, ham, ham blok, külçe, parça, blok, toz) | Dünya'da en derin (y −64…−32) ve en nadir cevher; külçe yalnız ark fırınında |
+| 🎨 | RTG Yakıt Peleti | kimyasal reaktör: 4 uranyum tozu + 500 mB sülfürik asit; etkinliği 21 oyun gününde yarıya iner (depoda da); taşınırken pelet başına ~8 mSv/gün doz (ortam radyasyon kancasıyla giysi doz sistemine eklenir) |
+| 🎨 | Radyoizotop Jeneratör (RTG) | taze peletle 40 FE/t, gece gündüz, havasız ve güneşsiz her yerde; kalkanlı gövde (içindeki pelet doz vermez); çıkış peletin etkinliğiyle azalır |
+| 🎨 | Güneş paneli: "burada güneş ışığı %…" | ipucunda gezegene göre yüzde ve öğle tepe değeri, sağ tıkta anlık üretim; 1 FE/t altındaki üretim yuvarlanıp kaybolmaz, birikir |
+
+### Araçlar (Endüstri)
+| Durum | İçerik | Not |
+|---|---|---|
+| 🎨 | Gezegen Gezicisi (`spacebreaker:rover`) | iki kişilik, akülü (400 kFE, blok başına 50 FE → ~8000 blok); düşük yerçekiminde az tutuş ve uzun sıçrayışlar, sert inişte yaylanır; toz parçacıkları, gevşek zeminde (Ay regoliti, Mars toprağı) tekerlek izi; karanlıkta kendiliğinden yanan farlar; 27 yuvalı kargo (eğilip tıkla); güneş paneli ve RTG (+ pelet) yükseltmesi; batarya bankası ya da kablonun yanına park edince şarj; sürücüye akü/hız göstergesi |
+
 ## Ses
 | Durum | İçerik | Not |
 |---|---|---|

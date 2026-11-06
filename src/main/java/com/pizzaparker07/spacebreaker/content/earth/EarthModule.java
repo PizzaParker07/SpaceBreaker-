@@ -61,6 +61,9 @@ public final class EarthModule implements SbModule {
             .ore("spodumene", "Spodumene", "Spodümen", MapColor.TERRACOTTA_PINK, 3).color(MapColor.TERRACOTTA_WHITE).build(BLOCKS, ITEMS);
     public static final Metal TUNGSTEN = Metal.builder("tungsten", "Tungsten", "Tungsten")
             .ore("wolframite", "Wolframite", "Volframit", MapColor.COLOR_BLACK, 5).arcFurnaceOnly().rod().wire().color(MapColor.COLOR_GRAY).build(BLOCKS, ITEMS);
+    /** Pitchblende: the uranium for RTG fuel. Deep and rare; the metal itself is only arc-melted. */
+    public static final Metal URANIUM = Metal.builder("uranium", "Uranium", "Uranyum")
+            .ore("uraninite", "Uraninite", "Uraninit", MapColor.COLOR_BLACK, 6).arcFurnaceOnly().noPlate().color(MapColor.COLOR_GREEN).build(BLOCKS, ITEMS);
 
     // ------------------------------------------------------------------ alloys
     public static final Metal STEEL = Metal.builder("steel", "Steel", "Çelik").rod().noDust().color(MapColor.COLOR_GRAY).build(BLOCKS, ITEMS);
@@ -72,8 +75,8 @@ public final class EarthModule implements SbModule {
     public static final Metal COPPER = Metal.builder("copper", "Copper", "Bakır").vanilla(() -> Items.COPPER_INGOT).wire().build(BLOCKS, ITEMS);
     public static final Metal GOLD = Metal.builder("gold", "Gold", "Altın").vanilla(() -> Items.GOLD_INGOT).wire().build(BLOCKS, ITEMS);
 
-    public static final List<Metal> ORE_METALS = List.of(ALUMINUM, TITANIUM, NICKEL, LITHIUM, TUNGSTEN);
-    public static final List<Metal> METALS = List.of(ALUMINUM, TITANIUM, NICKEL, LITHIUM, TUNGSTEN, STEEL, AL_LI, SUPERALLOY, IRON, COPPER, GOLD);
+    public static final List<Metal> ORE_METALS = List.of(ALUMINUM, TITANIUM, NICKEL, LITHIUM, TUNGSTEN, URANIUM);
+    public static final List<Metal> METALS = List.of(ALUMINUM, TITANIUM, NICKEL, LITHIUM, TUNGSTEN, URANIUM, STEEL, AL_LI, SUPERALLOY, IRON, COPPER, GOLD);
 
     // ------------------------------------------------------------------ backwards-compatible names
     public static final DeferredBlock<DropExperienceBlock> BAUXITE_ORE = ALUMINUM.ore;

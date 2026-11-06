@@ -98,6 +98,13 @@ public final class IsruRecipes {
         shaped(out, CHEMICAL_REACTOR.item().get(), 1, has(EarthModule.STEEL.plateTag), "SGS", "PCP", "SMS",
                 'S', EarthModule.STEEL.plateTag, 'G', Tags.Items.GLASS_BLOCKS_COLORLESS, 'P', FLUID_PIPE.get(),
                 'C', EarthModule.ADVANCED_CIRCUIT.get(), 'M', EarthModule.ELECTRIC_MOTOR.get());
+        // RTG: shielded heat-source cavity (tungsten), silicon thermocouples, aluminium radiator fins
+        shaped(out, RTG.item().get(), 1, has(EarthModule.TUNGSTEN.plateTag), "ATA", "SCS", "ATA",
+                'A', EarthModule.ALUMINUM.plateTag, 'T', EarthModule.TUNGSTEN.plateTag, 'S', EarthModule.SILICON_WAFER.get(),
+                'C', EarthModule.ADVANCED_CIRCUIT.get());
+        // pellet: leach crushed pitchblende in acid, precipitate the oxide and sinter it into a clad pellet
+        ProcessingRecipeBuilder.of(CHEMICAL_REACTION).in(EarthModule.URANIUM.dustTag, 4).fluidIn(FluidsModule.TAG_SULFURIC_ACID, 500)
+                .out(RTG_FUEL_PELLET.get()).time(200).energy(80).save(out, "rtg_fuel_pellet");
         shaped(out, ICE_MELTER.item().get(), 1, has(EarthModule.ALUMINUM.plateTag), "AHA", "GKG", "ACA",
                 'A', EarthModule.ALUMINUM.plateTag, 'H', Items.HOPPER, 'G', Tags.Items.GLASS_BLOCKS_COLORLESS, 'K', Items.CAULDRON,
                 'C', EarthModule.BASIC_CIRCUIT.get());
