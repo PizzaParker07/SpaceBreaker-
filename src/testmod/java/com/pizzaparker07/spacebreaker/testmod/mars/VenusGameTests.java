@@ -108,6 +108,14 @@ public final class VenusGameTests {
         BlockPos base = helper.absolutePos(BlockPos.ZERO).offset(5000, 0, -5000);
         AerostatPiece piece = new AerostatPiece(3L, base.getX(), 200, base.getZ(), Direction.NORTH);
         BoundingBox bb = piece.getBoundingBox();
+        // keep the area loaded (entity sections too) for the whole test, so the guards are always visible to queries
+        List<ChunkPos> forced = new java.util.ArrayList<>();
+        for (int cx = (bb.minX() >> 4) - 1; cx <= (bb.maxX() >> 4) + 1; cx++) {
+            for (int cz = (bb.minZ() >> 4) - 1; cz <= (bb.maxZ() >> 4) + 1; cz++) {
+                level.setChunkForced(cx, cz, true);
+                forced.add(new ChunkPos(cx, cz));
+            }
+        }
         for (int cx = bb.minX() >> 4; cx <= bb.maxX() >> 4; cx++) {
             for (int cz = bb.minZ() >> 4; cz <= bb.maxZ() >> 4; cz++) {
                 level.getChunk(cx, cz);
@@ -128,9 +136,13 @@ public final class VenusGameTests {
         }
         helper.assertTrue(chests >= 2, "aerostat lab and stores, found " + chests);
         helper.assertTrue(fabric > 200, "a big envelope, found " + fabric);
-        var rays = level.getEntitiesOfClass(AcidRay.class, net.minecraft.world.phys.AABB.of(bb).inflate(4));
-        helper.assertTrue(rays.size() >= 2 && rays.stream().allMatch(AcidRay::isGuardian), "acid ray guardians, found " + rays.size());
-        helper.succeed();
+        var area = net.minecraft.world.phys.AABB.of(bb).inflate(16);
+        helper.succeedWhen(() -> {
+            var rays = level.getEntitiesOfClass(AcidRay.class, area);
+            helper.assertTrue(rays.size() >= 2 && rays.stream().allMatch(AcidRay::isGuardian), "acid ray guardians, found " + rays.size());
+            rays.forEach(net.minecraft.world.entity.Entity::discard);
+            forced.forEach(c -> level.setChunkForced(c.x, c.z, false));
+        });
     }
 
     private VenusGameTests() {
