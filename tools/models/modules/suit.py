@@ -48,5 +48,6 @@ def oxygen_tank():
 
 
 def generate():
-    generated_item('eva_helmet')
+    for name in ('eva_helmet', 'eva_chestplate', 'eva_leggings', 'eva_boots', 'magnetic_boots', 'large_oxygen_tank', 'maneuvering_unit'):
+        generated_item(name)
     oxygen_tank()

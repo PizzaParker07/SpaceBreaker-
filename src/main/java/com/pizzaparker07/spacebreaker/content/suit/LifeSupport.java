@@ -1,0 +1,184 @@
+package com.pizzaparker07.spacebreaker.content.suit;
+
+import com.pizzaparker07.spacebreaker.core.config.SbConfig;
+import com.pizzaparker07.spacebreaker.core.env.Environment;
+import net.minecraft.core.BlockPos;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+
+/**
+ * Server-side survival simulation for players: breathing (suit oxygen, held breath, vacuum exposure),
+ * body temperature drifting slowly toward the environment and radiation dose. Pure rules live in
+ * static methods so GameTests can drive them with any environment.
+ */
+public final class LifeSupport {
+    /** Breath regained per tick in breathable air. */
+    static final int BREATH_RECOVERY = 5;
+    /** Body temperature time constant: ~63 % of the way to the target in two minutes. */
+    static final double TEMP_RATE = 1.0 / (20 * 120);
+    /** Inside a working suit the cabin is kept at this temperature. */
+    static final double SUIT_CABIN_C = 21.0;
+    /** Natural recovery of radiation dose per in-game day, mSv (keeps long Moon stays playable). */
+    static final double DOSE_RECOVERY_PER_DAY = 2.0;
+
+    private LifeSupport() {
+    }
+
+    /** What the environment is like at a player's head. */
+    public record Env(boolean breathable, double ambientC, double doseRateMsvDay, double pressureKpa) {
+        public static Env at(Player player, double cachedDoseRate) {
+            Level level = player.level();
+            BlockPos eyes = BlockPos.containing(player.getEyePosition());
+            return new Env(Environment.canBreathe(level, eyes), Environment.temperatureC(level, eyes), cachedDoseRate,
+                    Environment.pressureKpa(level, eyes));
+        }
+    }
+
+    public static SurvivalData data(Player player) {
+        return player.getData(SuitModule.SURVIVAL.get());
+    }
+
+    public static boolean hazards() {
+        return !SbConfig.SERVER_SPEC.isLoaded() || SbConfig.SURVIVAL_HAZARDS.get();
+    }
+
+    /** One server tick of the whole simulation. */
+    public static void tick(Player player, Env env) {
+        SurvivalData data = data(player);
+        data.breathable = env.breathable();
+        data.ambientC = env.ambientC();
+        data.pressureKpa = env.pressureKpa();
+        data.doseRateMsvDay = env.doseRateMsvDay() * radiationFactor(player);
+        boolean immune = player.isCreative() || player.isSpectator();
+        boolean hazards = hazards() && !immune;
+        tickBreathing(player, data, env.breathable(), immune, hazards);
+        tickTemperature(player, data, env.ambientC(), hazards);
+        tickRadiation(player, data, hazards);
+    }
+
+    // ------------------------------------------------------------------ oxygen
+
+    static void tickBreathing(Player player, SurvivalData data, boolean breathable, boolean immune, boolean hazards) {
+        boolean underwater = player.isEyeInFluid(FluidTags.WATER);
+        boolean sealed = SpaceSuitItem.isSealed(player);
+        boolean needsSuit = !breathable || underwater;
+        boolean supplied = false;
+        if (needsSuit && sealed && !immune) {
+            ItemStack torso = SuitTanks.wornTorso(player);
+            supplied = SuitTanks.drain(torso, 1) > 0;
+        } else if (needsSuit && sealed) {
+            supplied = SuitTanks.oxygen(SuitTanks.wornTorso(player)) > 0 || immune;
+        }
+        if (!needsSuit || supplied || immune) {
+            data.breath = Math.min(SurvivalData.MAX_BREATH, data.breath + BREATH_RECOVERY);
+            if (supplied && underwater) {
+                player.setAirSupply(player.getMaxAirSupply());
+            }
+        } else if (!breathable) {
+            data.breath = Math.max(0, data.breath - 1);
+            if (data.breath == 0 && hazards && player.tickCount % 20 == 0) {
+                SuitDamage.hurt(player, SuitDamage.VACUUM, 2.0F);
+            }
+        }
+        if (!breathable && !underwater) {
+            // mirror our breath on the vanilla air bubbles so the hotbar shows it
+            player.setAirSupply(Math.round((float) data.breath / SurvivalData.MAX_BREATH * player.getMaxAirSupply()));
+        }
+    }
+
+    // ------------------------------------------------------------------ temperature
+
+    /** Ambient temperature the body actually feels, after the suit's thermal control. */
+    public static double effectiveAmbient(Player player, double ambientC) {
+        SuitTier tier = SpaceSuitItem.sealedTier(player);
+        if (tier == null) {
+            return ambientC;
+        }
+        if (ambientC < tier.minTempC()) {
+            return SUIT_CABIN_C + (ambientC - tier.minTempC());
+        }
+        if (ambientC > tier.maxTempC()) {
+            return SUIT_CABIN_C + (ambientC - tier.maxTempC());
+        }
+        return SUIT_CABIN_C;
+    }
+
+    /** Core temperature the body settles at for a felt ambient temperature (comfortable from 5 to 35 °C). */
+    public static double targetBodyTemp(double feltC) {
+        if (feltC < 5.0) {
+            return SurvivalData.NORMAL_BODY_C + (feltC - 5.0) * 0.08;
+        }
+        if (feltC > 35.0) {
+            return SurvivalData.NORMAL_BODY_C + (feltC - 35.0) * 0.1;
+        }
+        return SurvivalData.NORMAL_BODY_C;
+    }
+
+    /** Moves the body temperature one tick toward its target; returns the new value. */
+    public static double drift(double bodyC, double targetC) {
+        return bodyC + (targetC - bodyC) * TEMP_RATE;
+    }
+
+    static void tickTemperature(Player player, SurvivalData data, double ambientC, boolean hazards) {
+        double target = targetBodyTemp(effectiveAmbient(player, ambientC));
+        if (!hazards) {
+            target = SurvivalData.NORMAL_BODY_C; // creative or hazards off: recover
+        }
+        data.bodyTempC = drift(data.bodyTempC, target);
+        if (!hazards || player.tickCount % 20 != 0) {
+            return;
+        }
+        double t = data.bodyTempC;
+        if (t < 35.0) {
+            player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, t < 32.0 ? 1 : 0, true, false, true));
+            player.setTicksFrozen(Math.min(player.getTicksRequiredToFreeze() + 20, player.getTicksFrozen() + 6));
+            if (t < 32.0) {
+                player.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 40, 0, true, false, true));
+            }
+            if (t < 30.0 && player.tickCount % 40 == 0) {
+                SuitDamage.hurt(player, SuitDamage.HYPOTHERMIA, 1.0F);
+            }
+        } else if (t > 38.5) {
+            player.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 40, 0, true, false, true));
+            player.causeFoodExhaustion(0.3F);
+            if (t > 41.0 && player.tickCount % 40 == 0) {
+                SuitDamage.hurt(player, SuitDamage.HYPERTHERMIA, 1.0F);
+            }
+        }
+    }
+
+    // ------------------------------------------------------------------ radiation
+
+    public static double radiationFactor(Player player) {
+        SuitTier tier = SpaceSuitItem.sealedTier(player);
+        return tier == null ? 1.0 : tier.radiationFactor();
+    }
+
+    /** Dose after one tick at the given rate (mSv/day, one day = 24000 ticks), with slow natural recovery. */
+    public static double accumulate(double doseMsv, double rateMsvDay) {
+        double d = doseMsv + (rateMsvDay - DOSE_RECOVERY_PER_DAY) / 24000.0;
+        return Math.max(0.0, d);
+    }
+
+    static void tickRadiation(Player player, SurvivalData data, boolean hazards) {
+        data.doseMsv = accumulate(data.doseMsv, data.doseRateMsvDay);
+        if (!hazards || player.tickCount % 100 != 0) {
+            return;
+        }
+        double d = data.doseMsv;
+        if (d >= 1000) {
+            player.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 120, 0, true, false, true));
+            player.addEffect(new MobEffectInstance(MobEffects.HUNGER, 120, 0, true, false, true));
+        }
+        if (d >= 500 && player.getRandom().nextInt(6) == 0) {
+            player.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 100, 0, true, false, true));
+        }
+        if (d >= 3000) {
+            SuitDamage.hurt(player, SuitDamage.RADIATION, d >= 6000 ? 2.0F : 1.0F);
+        }
+    }
+}
