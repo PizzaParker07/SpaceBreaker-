@@ -446,11 +446,14 @@ def eva_suit_overlay() -> Canvas:
     cv = Canvas(64, 32)
 
     def glass(x, y, w, h):
-        # smoked glass, a soft diagonal sky reflection at the top-left, darker towards the chin
-        if (x + y) in (1, 2) and y <= 2:
-            return (*V[7], 200) if (x + y) == 1 else (*V[6], 160)
-        if (x, y) in ((w - 2, 3), (w - 3, 4)):
-            return (*V[5], 150)                    # second, fainter reflection lower right
+        # smoked glass reflecting the scene like a curved visor: a bright diagonal sky glint at the top-left,
+        # a pale horizon band across the lower third, a small second glint lower right, darker at the chin
+        if (x + y) in (1, 2, 3) and y <= 2 and x <= 3:
+            return (*V[7], 215) if (x + y) == 2 else (*V[6], 170)
+        if (x, y) in ((w - 2, 2), (w - 3, 3)):
+            return (*V[6], 160)
+        if y == 3 and 0 < x < w - 1:
+            return (*V[4], 150)
         if y == 0:
             return (*V[1], 170)
         return (*V[2 if y < 3 else 3], 135)
@@ -1047,6 +1050,48 @@ def hud_icons() -> Canvas:
     return cv
 
 
+# Safety tether: a coil of safety-orange line, its tail running up to a steel carabiner
+ICON_TETHER = [
+    "...........oo...",
+    "..........oSSo..",
+    ".........oSoosS.",
+    ".........oSo.os.",
+    ".........oSo.os.",
+    "....oooo.oSo.os.",
+    "..ooHHHHooSo.os.",
+    ".oHHhhhhhooSsso.",
+    "oHhooooooddooo..",
+    "oHo.oHHo.oHdo...",
+    "oho.oHdo.ohdo...",
+    "ohho.oo.ohhdo...",
+    ".ohhhoooohddo...",
+    "..oddhhhhddo....",
+    "...oooooooo.....",
+    "................",
+]
+
+
+def icon_tether() -> Canvas:
+    pal = {'o': (45, 30, 18), 'H': ORANGE[7], 'h': ORANGE[5], 'd': ORANGE[3], 'S': S[7], 's': S[4]}
+    return _icon(ICON_TETHER, pal)
+
+# ----------------------------------------------------------------------------- helmet lamp light
+LAMP_LIGHT = (255, 238, 200)
+
+
+def lamp_beam() -> Canvas:
+    """Short visible beam in dusty or misty air: brightest at the lamp (v = 0), fading out in steps."""
+    cv = Canvas(16, 32)
+    for y in range(32):
+        a = int(170 * (1 - y / 32) ** 1.3) // 8 * 8
+        for x in range(16):
+            edge = min(x, 15 - x)
+            k = 1.0 if edge >= 4 else (0.6 if edge >= 2 else 0.3)
+            if a > 0:
+                cv[x, y] = (*LAMP_LIGHT, int(a * k))
+    return cv
+
+
 def export(save):
     save(hud_icons(), 'gui', 'hud_icons')
     export_blocks(save)
@@ -1054,8 +1099,10 @@ def export(save):
     save(oxygen_tank_model(), 'item', 'oxygen_tank_model')
     save(icon_large_tank(), 'item', 'large_oxygen_tank')
     save(icon_mmu(), 'item', 'maneuvering_unit')
+    save(icon_tether(), 'item', 'safety_tether')
     export_tiers(save)
     save(eva_suit_overlay(), 'models/armor', 'eva_suit_overlay')
+    save(lamp_beam(), 'misc', 'helmet_lamp_beam')
 
 
 # ===================================================================================== life support blocks

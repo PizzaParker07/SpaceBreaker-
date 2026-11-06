@@ -109,6 +109,9 @@ public final class SuitClient {
                 String tier = stack.getItem() instanceof SpaceSuitItem suit ? suit.tier().id() : "eva";
                 EvaSuitModel model = model(layer, tier);
                 model.showManeuveringUnit(SuitTanks.hasManeuveringUnit(stack));
+                if (slot == EquipmentSlot.CHEST) {
+                    model.animatePack(entity, Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false));
+                }
                 return model;
             }
 

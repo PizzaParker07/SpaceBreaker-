@@ -173,6 +173,8 @@ public final class SuitModule implements SbModule {
     }
     public static final DeferredItem<ManeuveringUnitItem> MANEUVERING_UNIT = ITEMS.registerItem("maneuvering_unit",
             ManeuveringUnitItem::new, new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON));
+    public static final DeferredItem<SafetyTetherItem> SAFETY_TETHER = ITEMS.registerItem("safety_tether",
+            SafetyTetherItem::new, new Item.Properties().stacksTo(1));
 
     // ------------------------------------------------------------------ life support blocks
 
@@ -232,7 +234,7 @@ public final class SuitModule implements SbModule {
                 .add(JETPACK_BOOSTER_MODULE)
                 .addStack(() -> OxygenTankItem.filled(OXYGEN_TANK.get()))
                 .addStack(() -> OxygenTankItem.filled(LARGE_OXYGEN_TANK.get()))
-                .addStack(() -> ManeuveringUnitItem.filled(MANEUVERING_UNIT.get()))
+                .addStack(() -> ManeuveringUnitItem.filled(MANEUVERING_UNIT.get())).add(SAFETY_TETHER)
                 .add(OXYGEN_FILLER_ITEM).add(OXYGEN_DISTRIBUTOR_ITEM).add(AIRLOCK_DOOR_ITEM);
     }
 
@@ -274,6 +276,17 @@ public final class SuitModule implements SbModule {
         lang.item(EVA_BOOTS, "EVA Boots", "EVA Botları");
         lang.item(MAGNETIC_BOOTS, "Magnetic EVA Boots", "Manyetik EVA Botları");
         lang.item(MANEUVERING_UNIT, "Maneuvering Unit", "Manevra Ünitesi");
+        lang.item(SAFETY_TETHER, "Safety Tether", "Güvenlik Halatı");
+        lang.add("tooltip.spacebreaker.safety_tether", "A %s-block line from your belt to a block: you cannot drift away",
+                "Kemerden bir bloğa %s blokluk halat: uzaklaşıp sürüklenemezsin");
+        lang.add("tooltip.spacebreaker.safety_tether.hint", "Use on a block to clip on, use again to unclip",
+                "Takmak için bir bloğa kullan, çözmek için yeniden kullan");
+        lang.add("hud.spacebreaker.mag", "MAG", "MANYETİK");
+        lang.add("hud.spacebreaker.tether", "TETHER", "HALAT");
+        lang.add("message.spacebreaker.tether.clipped", "Tether clipped · %s blocks of line", "Halat takıldı · %s blok uzunluk");
+        lang.add("message.spacebreaker.tether.released", "Tether unclipped", "Halat çözüldü");
+        lang.add("message.spacebreaker.tether.anchor_lost", "Tether anchor lost!", "Halatın bağlı olduğu blok gitti!");
+        lang.add("message.spacebreaker.tether.snapped", "The tether clip let go!", "Halat kancası boşaldı!");
         String[][] tiers = {{"thermal", "Thermal", "Termal"}, {"heated", "Heated", "Isıtmalı"}, {"radiation", "Radiation-Hardened", "Radyasyon Zırhlı"}};
         String[][] pieces = {{"helmet", "Helmet", "Kaskı"}, {"chestplate", "Torso", "Gövdesi"}, {"leggings", "Leggings", "Pantolonu"}, {"boots", "Boots", "Botları"}};
         for (String[] t : tiers) {

@@ -32,6 +32,8 @@ public class EvaSuitModel extends HumanoidModel<LivingEntity> {
     private static final CubeDeformation RING = new CubeDeformation(1.25F, 0.25F, 1.25F);
 
     private final ModelPart maneuveringUnit;
+    private final ModelPart pack;
+    private final ModelPart antenna;
 
     /**
      * @param tierId which tier's extra parts to show ("eva", "thermal", "heated", "radiation"); every
@@ -39,7 +41,9 @@ public class EvaSuitModel extends HumanoidModel<LivingEntity> {
      */
     public EvaSuitModel(ModelPart root, String tierId) {
         super(root);
-        this.maneuveringUnit = body.hasChild("mmu") ? body.getChild("mmu") : null;
+        this.pack = body.hasChild("pack") ? body.getChild("pack") : null;
+        this.maneuveringUnit = pack != null ? pack.getChild("mmu") : null;
+        this.antenna = pack != null ? pack.getChild("antenna") : null;
         for (ModelPart part : new ModelPart[]{head, body, rightArm, leftArm, rightLeg, leftLeg}) {
             for (String t : TIERS) {
                 if (part.hasChild("tier_" + t)) {
@@ -56,6 +60,25 @@ public class EvaSuitModel extends HumanoidModel<LivingEntity> {
         if (maneuveringUnit != null) {
             maneuveringUnit.visible = show;
         }
+    }
+
+    /**
+     * Third-person life: the backpack bobs twice per stride and rocks a little sideways, the whip antenna
+     * lags behind it; at rest (and floating) both drift slowly. Angles stay small so nothing clips.
+     */
+    public void animatePack(LivingEntity entity, float partialTick) {
+        if (pack == null) {
+            return;
+        }
+        float pos = entity.walkAnimation.position(partialTick);
+        float speed = Math.min(1F, entity.walkAnimation.speed(partialTick));
+        float age = entity.tickCount + partialTick;
+        float idle = net.minecraft.util.Mth.sin(age * 0.06F) * 0.02F;
+        float stride = pos * 0.6662F;
+        pack.xRot = net.minecraft.util.Mth.cos(stride * 2F) * speed * 0.05F + idle + (entity.isCrouching() ? 0.08F : 0F);
+        pack.zRot = net.minecraft.util.Mth.cos(stride) * speed * 0.035F;
+        antenna.xRot = -net.minecraft.util.Mth.sin(stride * 2F - 0.9F) * speed * 0.3F + idle * 3F;
+        antenna.zRot = net.minecraft.util.Mth.cos(stride - 0.9F) * speed * 0.25F + net.minecraft.util.Mth.sin(age * 0.045F) * 0.05F;
     }
 
     private static ModelLayerLocation layer(String name) {
@@ -92,9 +115,12 @@ public class EvaSuitModel extends HumanoidModel<LivingEntity> {
                         .texOffs(36, 6).addBox(-1F, -3F, 5F, 2, 1, 1),      // purge valve
                 PartPose.ZERO);
         PartDefinition head = mesh.getRoot().getChild("head");
-        // thermal: a reflective sun brim over the (always lowered) gold visor
+        // thermal: a thin reflective sun brim over the (always lowered) gold visor, following the helmet's
+        // rounded front: a front strip and two short corner pieces, only a pixel and a half proud of the visor
         head.addOrReplaceChild("tier_thermal", CubeListBuilder.create()
-                .texOffs(64, 28).addBox(-5F, -9F, -6F, 10, 1, 2), PartPose.ZERO);
+                .texOffs(64, 28).addBox(-4F, -8F, -6F, 8, 1, 1, new CubeDeformation(0F, -0.35F, 0F))
+                .texOffs(64, 28).addBox(-5F, -8F, -5F, 1, 1, 1, new CubeDeformation(0F, -0.35F, 0F))
+                .texOffs(64, 28).addBox(4F, -8F, -5F, 1, 1, 1, new CubeDeformation(0F, -0.35F, 0F)), PartPose.ZERO);
         // heated: a thick insulated collar and a heater pad on the crown
         head.addOrReplaceChild("tier_heated", CubeListBuilder.create()
                 .texOffs(64, 0).addBox(-6F, -2F, -6F, 12, 2, 12)
@@ -116,17 +142,21 @@ public class EvaSuitModel extends HumanoidModel<LivingEntity> {
         PartDefinition root = mesh.getRoot();
         PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create()
                         .texOffs(0, 0).addBox(-4F, 0F, -2F, 8, 12, 4, new CubeDeformation(1.0F)) // upper torso
-                        .texOffs(24, 0).addBox(-3F, 3F, -5F, 6, 3, 2)       // chest control box
-                        .texOffs(0, 32).addBox(-4F, 0F, 3F, 8, 10, 2)       // life support backpack
-                        .texOffs(24, 32).addBox(-3F, 1F, 5F, 2, 8, 2)       // oxygen bottle right
-                        .texOffs(32, 32).addBox(1F, 1F, 5F, 2, 8, 2)        // oxygen bottle left
-                        .texOffs(40, 32).addBox(-3F, -1F, 3F, 6, 1, 2)      // vent cap
-                        .texOffs(56, 32).addBox(2F, -4F, 4F, 1, 3, 1),      // antenna
+                        .texOffs(24, 0).addBox(-3F, 3F, -5F, 6, 3, 2),      // chest control box
                 PartPose.ZERO);
-        body.addOrReplaceChild("mmu", CubeListBuilder.create()
-                        .texOffs(0, 48).addBox(-6F, 0F, 3F, 2, 10, 3)       // thruster tower right
-                        .texOffs(10, 48).addBox(4F, 0F, 3F, 2, 10, 3)       // thruster tower left
-                        .texOffs(20, 48).addBox(-6F, 10F, 3F, 12, 1, 3),    // lower cross frame
+        // the backpack hangs from the shoulders (pivot at its top edge) so it can sway a little
+        PartDefinition pack = body.addOrReplaceChild("pack", CubeListBuilder.create()
+                        .texOffs(0, 32).addBox(-4F, 0F, 0F, 8, 10, 2)       // life support backpack
+                        .texOffs(24, 32).addBox(-3F, 1F, 2F, 2, 8, 2)       // oxygen bottle right
+                        .texOffs(32, 32).addBox(1F, 1F, 2F, 2, 8, 2)        // oxygen bottle left
+                        .texOffs(40, 32).addBox(-3F, -1F, 0F, 6, 1, 2),     // vent cap
+                PartPose.offset(0F, 0F, 3F));
+        pack.addOrReplaceChild("antenna", CubeListBuilder.create()
+                .texOffs(56, 32).addBox(-0.5F, -3F, -0.5F, 1, 3, 1), PartPose.offset(2.5F, -1F, 1.5F));
+        pack.addOrReplaceChild("mmu", CubeListBuilder.create()
+                        .texOffs(0, 48).addBox(-6F, 0F, 0F, 2, 10, 3)       // thruster tower right
+                        .texOffs(10, 48).addBox(4F, 0F, 0F, 2, 10, 3)       // thruster tower left
+                        .texOffs(20, 48).addBox(-6F, 10F, 0F, 12, 1, 3),    // lower cross frame
                 PartPose.ZERO);
         // thermal: radiator wings either side of the backpack
         body.addOrReplaceChild("tier_thermal", CubeListBuilder.create()
@@ -232,8 +262,9 @@ public class EvaSuitModel extends HumanoidModel<LivingEntity> {
         PartDefinition root = mesh.getRoot();
         root.addOrReplaceChild("glass", CubeListBuilder.create()
                 .texOffs(0, 0).addBox(-5F, -7F, -5F, 10, 5, 1, new CubeDeformation(0.02F)), PartPose.ZERO);
+        // the gold visor sits in the visor opening just in front of the glass, recessed like it (no box sticking out)
         root.addOrReplaceChild("sun_visor", CubeListBuilder.create()
-                .texOffs(0, 8).addBox(-5F, -7F, -5F, 10, 5, 1, new CubeDeformation(0.12F)), PartPose.ZERO);
+                .texOffs(0, 8).addBox(-5F, -7F, -5F, 10, 5, 1, new CubeDeformation(0.06F)), PartPose.ZERO);
         root.addOrReplaceChild("sun_visor_up", CubeListBuilder.create()
                 .texOffs(0, 16).addBox(-4F, -8F, -5F, 8, 1, 1, new CubeDeformation(0.06F, -0.3F, 0.06F)), PartPose.ZERO);
         root.addOrReplaceChild("lamps", CubeListBuilder.create()

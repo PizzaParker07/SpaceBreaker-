@@ -111,4 +111,25 @@ public final class BlueprintGameTests {
         helper.assertTrue(h.cleared().anchor().isEmpty(), "clearing removes the anchor");
         helper.succeed();
     }
+
+    /** QA-5: the projector is craftable from the start, from vanilla materials, with no technology. */
+    @GameTest(template = "empty")
+    public static void hologramProjectorHasAnEarlyRecipe(GameTestHelper helper) {
+        var recipe = helper.getLevel().getRecipeManager().byKey(com.pizzaparker07.spacebreaker.Spacebreaker.id("hologram_projector"));
+        helper.assertTrue(recipe.isPresent(), "hologram projector recipe missing");
+        var r = recipe.get().value();
+        helper.assertTrue(r.getResultItem(helper.getLevel().registryAccess()).is(
+                com.pizzaparker07.spacebreaker.content.blueprint.BlueprintModule.HOLOGRAM_PROJECTOR.get()), "recipe makes the projector");
+        for (var ing : r.getIngredients()) {
+            for (var stack : ing.getItems()) {
+                helper.assertTrue(!net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(stack.getItem()).getNamespace()
+                        .equals(com.pizzaparker07.spacebreaker.Spacebreaker.MOD_ID), "only vanilla materials, got " + stack);
+            }
+        }
+        var projector = com.pizzaparker07.spacebreaker.Spacebreaker.id("hologram_projector");
+        for (var tech : com.pizzaparker07.spacebreaker.core.tech.Tech.all(helper.getLevel().registryAccess()).values()) {
+            helper.assertTrue(!tech.unlocks().contains(projector), "no technology may lock the projector");
+        }
+        helper.succeed();
+    }
 }

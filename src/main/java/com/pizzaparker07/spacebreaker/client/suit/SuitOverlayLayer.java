@@ -55,6 +55,12 @@ public class SuitOverlayLayer<T extends LivingEntity, M extends HumanoidModel<T>
                 glass.render(pose, buffers.getBuffer(RenderType.entityTranslucent(TEXTURE)), light, OverlayTexture.NO_OVERLAY);
             }
             lamps.render(pose, buffers.getBuffer(RenderType.eyes(TEXTURE)), light, OverlayTexture.NO_OVERLAY);
+            if (HelmetLamps.lampsOn(entity)) {
+                // short faint beams from both lamps (the light pool itself is drawn by HelmetLamps)
+                var beam = buffers.getBuffer(RenderType.entityTranslucentEmissive(HelmetLamps.BEAM));
+                HelmetLamps.beam(pose, beam, -5.5F, -7F, -3.05F);
+                HelmetLamps.beam(pose, beam, 5.5F, -7F, -3.05F);
+            }
             pose.popPose();
         }
         ItemStack chest = entity.getItemBySlot(EquipmentSlot.CHEST);
