@@ -159,7 +159,11 @@ public final class RocketryGameTests {
         var venus = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(Spacebreaker.id("venus"), false);
         var phobos = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(Spacebreaker.id("phobos"), false);
         helper.assertTrue(mars.isPresent() && marsOrbit.isPresent() && venus.isPresent() && phobos.isPresent(), "Mars, Venus and Phobos come from the body data");
-        helper.assertTrue(marsOrbit.get().dimension().equals(Location.Orbits.SHARED), "bodies without an orbit dimension share one");
+        helper.assertTrue(marsOrbit.get().dimension().location().equals(Spacebreaker.id("mars_orbit")),
+                "Mars has its own orbit dimension (orbit_dimension in its body data)");
+        var phobosOrbit = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(Spacebreaker.id("phobos"), true);
+        helper.assertTrue(phobosOrbit.isPresent() && phobosOrbit.get().dimension().equals(Location.Orbits.SHARED),
+                "bodies without an orbit dimension share one");
         helper.assertTrue(mars.get().atmosphere() && !phobos.get().atmosphere(), "Mars has air, Phobos does not");
         helper.assertTrue(Transfers.destinations(Location.EARTH_ORBIT).contains(marsOrbit.get()), "Mars orbit is a destination from Earth orbit");
         double toMars = Transfers.real(Location.EARTH_ORBIT, marsOrbit.get()).orElseThrow();

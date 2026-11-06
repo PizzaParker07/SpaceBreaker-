@@ -37,6 +37,13 @@ public final class IsruGameTests {
         return BuiltInRegistries.ITEM.getTag(tag).flatMap(s -> s.stream().findFirst()).orElseThrow(() -> new AssertionError("tag empty: " + tag)).value();
     }
 
+    /** A regolith that is not also solar-wind regolith (those give hydrogen and helium-3 first). */
+    private static Item plainRegolith() {
+        return BuiltInRegistries.ITEM.getTag(IsruRecipes.REGOLITHS).flatMap(s -> s.stream()
+                        .filter(h -> !h.is(IsruRecipes.SOLAR_WIND_REGOLITHS)).findFirst())
+                .orElseThrow(() -> new AssertionError("no plain regolith in " + IsruRecipes.REGOLITHS)).value();
+    }
+
     @GameTest(template = "empty", timeoutTicks = 200)
     public static void atmosphereProcessorSeparatesOxygenFromEarthAir(GameTestHelper h) {
         var y = AtmosphereProcessorBlockEntity.yieldAt(h.getLevel(), h.absolutePos(new BlockPos(2, 1, 2)));
@@ -60,7 +67,7 @@ public final class IsruGameTests {
     @GameTest(template = "empty", timeoutTicks = 400)
     public static void regolithHeaterReleasesOxygen(GameTestHelper h) {
         MachineBlockEntity be = machine(h, MachinesModule.REGOLITH_HEATER, new BlockPos(2, 1, 2), Direction.NORTH);
-        be.items().setStackInSlot(0, new ItemStack(first(IsruRecipes.REGOLITHS), 2));
+        be.items().setStackInSlot(0, new ItemStack(plainRegolith(), 2));
         h.succeedWhen(() -> h.assertTrue(be.tank(0).getFluid().is(FluidsModule.TAG_OXYGEN) && be.tank(0).getFluidAmount() >= 500,
                 "oxygen " + be.tank(0).getFluidAmount()));
     }
