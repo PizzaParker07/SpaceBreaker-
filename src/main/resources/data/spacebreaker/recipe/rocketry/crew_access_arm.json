@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "III",
+    "B  ",
+    "O  "
+  ],
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "B": {
+      "item": "minecraft:iron_bars"
+    },
+    "O": {
+      "item": "spacebreaker:service_tower"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:crew_access_arm",
+    "count": 1
+  }
+}

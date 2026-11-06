@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "ATA",
+    "III"
+  ],
+  "key": {
+    "A": {
+      "item": "spacebreaker:aluminum_plate"
+    },
+    "T": {
+      "item": "minecraft:tnt"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:decoupler",
+    "count": 1
+  }
+}

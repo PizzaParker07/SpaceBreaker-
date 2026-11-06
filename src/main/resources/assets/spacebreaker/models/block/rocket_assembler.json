@@ -1,0 +1,10 @@
+{
+  "parent": "minecraft:block/orientable_with_bottom",
+  "textures": {
+    "top": "spacebreaker:block/rocket_assembler_top",
+    "front": "spacebreaker:block/rocket_assembler_front",
+    "side": "spacebreaker:block/rocket_assembler_side",
+    "bottom": "spacebreaker:block/launch_pad_side",
+    "particle": "spacebreaker:block/rocket_assembler_side"
+  }
+}

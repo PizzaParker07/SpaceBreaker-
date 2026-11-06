@@ -6,6 +6,12 @@
     "spacebreaker:mare_basalt",
     "spacebreaker:ilmenite_ore",
     "spacebreaker:solar_panel",
-    "spacebreaker:research_lab"
+    "spacebreaker:rocket_assembler",
+    "spacebreaker:launch_pad",
+    "spacebreaker:flame_trench",
+    "spacebreaker:service_tower",
+    "spacebreaker:crew_access_arm",
+    "spacebreaker:fuel_umbilical",
+    "spacebreaker:launch_control_console"
   ]
 }

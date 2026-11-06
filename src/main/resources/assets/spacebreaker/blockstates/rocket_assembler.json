@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "spacebreaker:block/rocket_assembler"
+    },
+    "facing=east": {
+      "model": "spacebreaker:block/rocket_assembler",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "spacebreaker:block/rocket_assembler",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "spacebreaker:block/rocket_assembler",
+      "y": 270
+    }
+  }
+}

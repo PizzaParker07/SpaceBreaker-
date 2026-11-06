@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " A ",
+    "GRG",
+    "ACA"
+  ],
+  "key": {
+    "A": {
+      "item": "spacebreaker:aluminum_plate"
+    },
+    "G": {
+      "item": "minecraft:glass_pane"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "C": {
+      "item": "minecraft:black_concrete"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:crew_capsule",
+    "count": 1
+  }
+}

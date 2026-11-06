@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "TT"
+  ],
+  "key": {
+    "T": {
+      "item": "spacebreaker:fuel_tank_small"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:fuel_tank_large",
+    "count": 1
+  }
+}

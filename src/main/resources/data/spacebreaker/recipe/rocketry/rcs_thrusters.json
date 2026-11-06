@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " D ",
+    "DAD",
+    " D "
+  ],
+  "key": {
+    "D": {
+      "item": "minecraft:dispenser"
+    },
+    "A": {
+      "item": "spacebreaker:aluminum_plate"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:rcs_thrusters",
+    "count": 1
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GGG",
+    "RCR",
+    "AAA"
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:glass_pane"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "C": {
+      "item": "minecraft:comparator"
+    },
+    "A": {
+      "item": "spacebreaker:aluminum_plate"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:launch_control_console",
+    "count": 1
+  }
+}

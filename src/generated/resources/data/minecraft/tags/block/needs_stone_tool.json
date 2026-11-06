@@ -3,6 +3,8 @@
     "spacebreaker:bauxite_ore",
     "spacebreaker:deepslate_bauxite_ore",
     "spacebreaker:raw_bauxite_block",
-    "spacebreaker:meteoric_iron"
+    "spacebreaker:launch_pad",
+    "spacebreaker:flame_trench",
+    "spacebreaker:service_tower"
   ]
 }

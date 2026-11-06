@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "spacebreaker:block/flame_trench_top",
+    "side": "spacebreaker:block/flame_trench_side",
+    "bottom": "spacebreaker:block/launch_pad_side"
+  }
+}

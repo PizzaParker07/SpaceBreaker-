@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "ABA",
+    "BAB",
+    "ABA"
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:iron_bars"
+    },
+    "B": {
+      "item": "spacebreaker:aluminum_plate"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:grid_fins",
+    "count": 1
+  }
+}
