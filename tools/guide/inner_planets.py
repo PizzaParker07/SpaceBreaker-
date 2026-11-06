@@ -44,9 +44,23 @@ def register(entry, sb):
                    'topped with dry ice, frozen carbon dioxide, that turns straight into gas when it warms up.',
            'Su; kutup başlıklarında buz olarak, tozlu buzda tozun altında ve yüksek enlemlerin toprağında saklanır. Başlıkların üstü, '
            'ısınınca doğrudan gaza dönüşen kuru buzla, yani donmuş karbondioksitle kaplıdır.'),
+          ('items', [sb + 'perchlorate_salt', 'minecraft:ice'], '', ''),
+          ('text', 'Put perchlorate soil through a crusher to get perchlorate salt, the oxygen store of Mars. Crushed Martian or dusty ice '
+                   'gives plain ice that melts into water for the electrolyser. Look closely at the walls of the polar troughs: the '
+                   'caps are built of clean ice and thin dust bands, a record of old climates.',
+           'Perklorat toprağını kırıcıdan geçirerek Mars\'ın oksijen deposu olan perklorat tuzunu elde et. Kırılmış Mars buzu ya da '
+           'tozlu buz, elektroliz cihazı için suya eriyen sade buz verir. Kutup oluklarının duvarlarına dikkatle bak: başlıklar temiz '
+           'buz ve ince toz bantlarından oluşur; eski iklimlerin bir kaydı.'),
           ('items', [sb + 'martian_mudstone', sb + 'martian_clay', sb + 'gypsum_crystal', sb + 'olivine_sand'], '', ''),
           ('text', 'Mudstone, clay and gypsum only form in water. Find them in old river valleys and deltas: Mars was once wet.',
            'Çamurtaşı, kil ve alçıtaşı sadece suda oluşur. Onları eski nehir vadilerinde ve deltalarda bul: Mars bir zamanlar ıslaktı.'),
+          ('heading', 'Lava tubes', 'Lav tüpleri'),
+          ('text', 'Under the volcanic plains run the drained channels of old lava flows. Look for a round hole in the ground: a '
+                   'collapsed skylight. Inside, many blocks of rock overhead stop most of the radiation; every solid block above you '
+                   'halves the dose. A ready-made shelter for your first base.',
+           'Volkanik ovaların altında eski lav akıntılarının boşalmış kanalları uzanır. Yerde yuvarlak bir delik ara: çökmüş bir '
+           'ışıklık. İçeride, tepedeki onlarca kaya bloğu radyasyonun çoğunu durdurur; üstündeki her katı blok dozu yarıya indirir. '
+           'İlk üssün için hazır bir sığınak.'),
           requires=req)
     entry('mars_life', 'mars', 2, sb + 'rust_beetle_spawn_egg', 'Life on Mars', 'Mars\'ta Yaşam',
           ('items', [sb + 'rust_beetle_spawn_egg', sb + 'stonegrazer_spawn_egg', sb + 'canyon_lurker_spawn_egg',
@@ -117,11 +131,15 @@ def register(entry, sb):
                    'volatile minerals boil away. Dark rock is rich in graphite.',
            'Lobat sarplık denen uzun yarlar, gezegen soğuyup büzülürken oluştu. Parlak oyuklar, uçucu minerallerin buharlaşıp '
            'gittiği genç çukurlardır. Koyu kayalar grafitçe zengindir.'),
-          ('items', [sb + 'graphite_ore', sb + 'graphite', sb + 'terminator_crawler_spawn_egg'], '', ''),
+          ('items', [sb + 'graphite_ore', sb + 'graphite', sb + 'terminator_crawler_spawn_egg', sb + 'hollow_snail_spawn_egg'], '', ''),
           ('text', 'Craters near the poles never see the sun and keep water ice. An old ice mine lies in one of them. Terminator '
                    'crawlers roam while the sun is low and dig in when it climbs.',
            'Kutuplara yakın kraterler güneşi hiç görmez ve su buzu saklar. Bunlardan birinde eski bir buz madeni yatar. Alacakaranlık '
            'Sürüngenleri güneş alçakken dolaşır, yükselince toprağa gömülür.'),
+          ('text', 'Hollow Snails are harmless. They rasp the bright hollow crust and leave lumps of sulfur behind; feed them sulfur '
+                   'to breed a herd. A crusher also gets sulfur out of hollow deposits.',
+           'Oyuk Salyangozları zararsızdır. Parlak oyuk kabuğunu kazır ve arkalarında kükürt topakları bırakırlar; bir sürü '
+           'yetiştirmek için onlara kükürt ver. Kırıcı da oyuk tortusundan kükürt çıkarır.'),
           requires=req)
 
     # --------------------------------------------------------------------------------------- orbit

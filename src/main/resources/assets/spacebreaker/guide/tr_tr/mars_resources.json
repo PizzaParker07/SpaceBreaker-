@@ -22,6 +22,15 @@
     },
     {
       "items": [
+        "spacebreaker:perchlorate_salt",
+        "minecraft:ice"
+      ]
+    },
+    {
+      "text": "Perklorat toprağını kırıcıdan geçirerek Mars'ın oksijen deposu olan perklorat tuzunu elde et. Kırılmış Mars buzu ya da tozlu buz, elektroliz cihazı için suya eriyen sade buz verir. Kutup oluklarının duvarlarına dikkatle bak: başlıklar temiz buz ve ince toz bantlarından oluşur; eski iklimlerin bir kaydı."
+    },
+    {
+      "items": [
         "spacebreaker:martian_mudstone",
         "spacebreaker:martian_clay",
         "spacebreaker:gypsum_crystal",
@@ -30,6 +39,12 @@
     },
     {
       "text": "Çamurtaşı, kil ve alçıtaşı sadece suda oluşur. Onları eski nehir vadilerinde ve deltalarda bul: Mars bir zamanlar ıslaktı."
+    },
+    {
+      "heading": "Lav tüpleri"
+    },
+    {
+      "text": "Volkanik ovaların altında eski lav akıntılarının boşalmış kanalları uzanır. Yerde yuvarlak bir delik ara: çökmüş bir ışıklık. İçeride, tepedeki onlarca kaya bloğu radyasyonun çoğunu durdurur; üstündeki her katı blok dozu yarıya indirir. İlk üssün için hazır bir sığınak."
     }
   ]
 }

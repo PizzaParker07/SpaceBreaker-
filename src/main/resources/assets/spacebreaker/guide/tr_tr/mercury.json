@@ -23,11 +23,15 @@
       "items": [
         "spacebreaker:graphite_ore",
         "spacebreaker:graphite",
-        "spacebreaker:terminator_crawler_spawn_egg"
+        "spacebreaker:terminator_crawler_spawn_egg",
+        "spacebreaker:hollow_snail_spawn_egg"
       ]
     },
     {
       "text": "Kutuplara yakın kraterler güneşi hiç görmez ve su buzu saklar. Bunlardan birinde eski bir buz madeni yatar. Alacakaranlık Sürüngenleri güneş alçakken dolaşır, yükselince toprağa gömülür."
+    },
+    {
+      "text": "Oyuk Salyangozları zararsızdır. Parlak oyuk kabuğunu kazır ve arkalarında kükürt topakları bırakırlar; bir sürü yetiştirmek için onlara kükürt ver. Kırıcı da oyuk tortusundan kükürt çıkarır."
     }
   ]
 }

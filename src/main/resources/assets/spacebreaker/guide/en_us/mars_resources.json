@@ -22,6 +22,15 @@
     },
     {
       "items": [
+        "spacebreaker:perchlorate_salt",
+        "minecraft:ice"
+      ]
+    },
+    {
+      "text": "Put perchlorate soil through a crusher to get perchlorate salt, the oxygen store of Mars. Crushed Martian or dusty ice gives plain ice that melts into water for the electrolyser. Look closely at the walls of the polar troughs: the caps are built of clean ice and thin dust bands, a record of old climates."
+    },
+    {
+      "items": [
         "spacebreaker:martian_mudstone",
         "spacebreaker:martian_clay",
         "spacebreaker:gypsum_crystal",
@@ -30,6 +39,12 @@
     },
     {
       "text": "Mudstone, clay and gypsum only form in water. Find them in old river valleys and deltas: Mars was once wet."
+    },
+    {
+      "heading": "Lava tubes"
+    },
+    {
+      "text": "Under the volcanic plains run the drained channels of old lava flows. Look for a round hole in the ground: a collapsed skylight. Inside, many blocks of rock overhead stop most of the radiation; every solid block above you halves the dose. A ready-made shelter for your first base."
     }
   ]
 }

@@ -23,11 +23,15 @@
       "items": [
         "spacebreaker:graphite_ore",
         "spacebreaker:graphite",
-        "spacebreaker:terminator_crawler_spawn_egg"
+        "spacebreaker:terminator_crawler_spawn_egg",
+        "spacebreaker:hollow_snail_spawn_egg"
       ]
     },
     {
       "text": "Craters near the poles never see the sun and keep water ice. An old ice mine lies in one of them. Terminator crawlers roam while the sun is low and dig in when it climbs."
+    },
+    {
+      "text": "Hollow Snails are harmless. They rasp the bright hollow crust and leave lumps of sulfur behind; feed them sulfur to breed a herd. A crusher also gets sulfur out of hollow deposits."
     }
   ]
 }

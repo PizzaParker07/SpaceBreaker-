@@ -118,6 +118,9 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Gökyüzü | karamela rengi gün, gün batımında mavi hale, küçük Güneş, kendi saat açılarıyla Phobos (batıdan doğar) ve Deimos |
 | 🎨 | Toz fırtınaları | seviye başına kayıtlı, sise ve GUI katmanında toz tonu (shader güvenli), uçuşan toz, %85 daha az güneş, kutuplar daha soğuk; `/spacebreaker duststorm` |
 | 🎨 | Zindanlar | Terk Edilmiş Mars Araştırma İstasyonu (sera, ISRU tesisi, garaj, sondaj kulesi), Antik Gömülü Nehir Yatağı (katmanlı mağara, kil yatak, düşmüş sonda) |
+| 🎨 | Lav tüpleri | volkan ve ova altında doğal tüneller (bazalt kabuk, cilalı lav astarı, olivin kumlu taban), çökmüş ışıklıklardan girilir; 5+ blok tavan radyasyonu 1/32'nin altına düşürür: hazır üs yeri |
+| 🎨 | Kutup katmanlı tortuları | temiz buz arasında düzensiz aralıklı ince toz bantları (12 blokta 1–3), kutup oluklarının duvarlarında görünür |
+| 🎨 | Endüstri girdileri | kırıcıda: Perkloratlı Toprak → Perklorat Tuzu (`c:dusts/perchlorate`, oksijen kaynağı); Mars/tozlu/krater buzu → buz (`c:ices/water`, eriyip elektroliz suyu olur) |
 
 ### Phobos ve Deimos
 | Durum | İçerik | Not |
@@ -140,6 +143,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Arazi | yoğun kraterler, loblu sarplıklar, düz ovalar, parlak oyuklar, kalıcı gölgeli kutup kraterlerinde buz; dev Güneş, 430 °C gündüz / −180 °C gece |
 | 🎨 | Bloklar | Merkür Regoliti, Oyuk Tortusu (kalıcı ayak izi), Merkür Kabuğu, Düşük Yansıtmalı Kaya, Grafit Cevheri (→ grafit) |
 | 🎨 | Zindan | Terk Edilmiş Kutup Buzu Madeni (gölgeli krater tabanının altında) |
+| 🎨 | Endüstri girdileri | kırıcıda: Oyuk Tortusu → kükürt; Venüs Kükürt Kabuğu → kükürt |
 
 ### İç gezegen yörüngeleri `spacebreaker:venus_orbit`, `mercury_orbit`, `mars_orbit`
 | Durum | İçerik | Not |
@@ -159,7 +163,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | Ay 🎨 | Regolit Kenesi (tozun altına saklanır, düşük yerçekiminde sıçrar), Yaşlı Regolit Kenesi (lav tüpü muhafızı), Toz Yüzücüsü (regolitin hemen altında süzülen pasif canlı, arkasında toz dalgaları), Keşif Dronu (karakol muhafızı, sersemletme atışı) |
 | Mars 🎨 | Pas Böceği (demir oksit yer, tarafsız), Toz Şeytanı (fırtınalarda canlı hortum), Kanyon Pusucusu, Taşyiyen (iri, pasif otlayıcı), Kutup Kurtçuğu |
 | Venüs (bulutlar) 🎨 | Asit Vatozu (süzülen, tarafsız), Bulut Medüzü (pasif gaz kesesi) |
-| Merkür 🎨 | Alacakaranlık Sürüngeni (gece-gündüz sınırında yaşar; güneş yükselince ya da gece çökünce toprağa gömülür) |
+| Merkür 🎨 | Alacakaranlık Sürüngeni (tehlikeli; gece-gündüz sınırında yaşar; güneş yükselince ya da gece çökünce toprağa gömülür), Oyuk Salyangozu (pasif, faydalı: oyuk tortusunu kazıyıp kükürt bırakır, kükürtle çoğalır) |
 | Io | Kükürt Yengeci |
 | Europa | Buzaltı Işık Yılanı (biyolüminesan, pasif) |
 | Titan | Metan Kayıcısı, Tolin Solucanı |
