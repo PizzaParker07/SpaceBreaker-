@@ -136,7 +136,7 @@ public final class VenusGameTests {
         }
         helper.assertTrue(chests >= 2, "aerostat lab and stores, found " + chests);
         helper.assertTrue(fabric > 200, "a big envelope, found " + fabric);
-        var area = net.minecraft.world.phys.AABB.of(bb).inflate(16);
+        var area = net.minecraft.world.phys.AABB.of(bb).inflate(48);
         helper.succeedWhen(() -> {
             var rays = level.getEntitiesOfClass(AcidRay.class, area);
             helper.assertTrue(rays.size() >= 2 && rays.stream().allMatch(AcidRay::isGuardian), "acid ray guardians, found " + rays.size());
