@@ -1,0 +1,13 @@
+{
+  "category": "exploration",
+  "tier": 5,
+  "requires": [
+    "spacebreaker:deep_space_network",
+    "spacebreaker:gravity_assists"
+  ],
+  "icon": "spacebreaker:red_polar_frost",
+  "samples": [
+    "spacebreaker:charon"
+  ],
+  "unlocks": []
+}

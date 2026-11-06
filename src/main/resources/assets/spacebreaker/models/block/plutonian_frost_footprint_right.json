@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "spacebreaker:block/plutonian_frost",
+    "up": "spacebreaker:block/plutonian_frost_footprint_right",
+    "down": "spacebreaker:block/plutonian_frost",
+    "north": "spacebreaker:block/plutonian_frost",
+    "south": "spacebreaker:block/plutonian_frost",
+    "east": "spacebreaker:block/plutonian_frost",
+    "west": "spacebreaker:block/plutonian_frost"
+  }
+}

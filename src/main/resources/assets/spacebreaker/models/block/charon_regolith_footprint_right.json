@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "spacebreaker:block/charon_regolith",
+    "up": "spacebreaker:block/charon_regolith_footprint_right",
+    "down": "spacebreaker:block/charon_regolith",
+    "north": "spacebreaker:block/charon_regolith",
+    "south": "spacebreaker:block/charon_regolith",
+    "east": "spacebreaker:block/charon_regolith",
+    "west": "spacebreaker:block/charon_regolith"
+  }
+}

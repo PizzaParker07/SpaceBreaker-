@@ -143,6 +143,46 @@ def methane_skater():
     return cv
 
 
+def tholin_worm():
+    """64x32 sheet for TholinWormModel: ringed rust-orange segments (a dark groove every other row), lighter belly, and a
+    round ridged mouth plate on the front of the head."""
+    cv = Canvas(64, 32)
+    r = P.WORM
+    n = clustered(64, 64, 12101, passes=1)
+
+    def ring(face, x, y, fw, fh):
+        if face == 'bottom':
+            return r[4]
+        if face in ('top',):
+            # grooves across the back, between the rings
+            return r[1] if y == 0 else noise_pick(r, 4, n, x, y + 5)
+        if face in ('front', 'back'):
+            return noise_pick(r, 3, n, x + 30, y)
+        # sides: a dark groove line in the middle of each segment, paler near the belly
+        if y == fh - 1:
+            return r[4]
+        return r[2] if x == fw // 2 else noise_pick(r, 4 if y < fh - 2 else 5, n, x + 9, y + 20)
+
+    def head(face, x, y, fw, fh):
+        if face == 'front':
+            # mouth plate: pale ring of ridges around a dark centre (sifts sand; no teeth)
+            cx, cy = (fw - 1) / 2, (fh - 1) / 2
+            d = ((x - cx) ** 2 + (y - cy) ** 2) ** 0.5
+            if d < 0.9:
+                return r[0]
+            if d < 1.9:
+                return r[6] if (x + y) % 2 == 0 else r[5]
+            return r[3]
+        return ring(face, x, y, fw, fh)
+
+    paint(cv, 0, 0, 6, 5, 4, head)
+    paint(cv, 0, 9, 6, 5, 3, ring)
+    paint(cv, 20, 0, 5, 4, 3, ring)
+    paint(cv, 20, 9, 4, 4, 3, ring)
+    paint(cv, 36, 0, 3, 3, 3, ring)
+    return cv
+
+
 def geyser_drifter():
     """64x32 sheet for GeyserDrifterModel: a translucent blue-white bell, brighter rim, pale threads."""
     cv = Canvas(64, 32)
@@ -284,6 +324,7 @@ def export(save):
     save(methane_splash(), 'particle', 'methane_splash')
     save(methane_skater(), 'entity', 'saturn/methane_skater')
     save(geyser_drifter(), 'entity', 'saturn/geyser_drifter')
+    save(tholin_worm(), 'entity', 'saturn/tholin_worm')
     save(geyser_drifter_glow(), 'entity', 'saturn/geyser_drifter_glow')
     import os
     out = os.path.join(os.path.dirname(__file__), '..', '..', '..', 'src', 'main', 'resources', 'assets', 'spacebreaker', 'textures', 'environment')

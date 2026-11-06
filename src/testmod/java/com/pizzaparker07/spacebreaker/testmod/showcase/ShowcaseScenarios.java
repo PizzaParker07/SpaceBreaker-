@@ -34,6 +34,9 @@ public final class ShowcaseScenarios {
         ALL.put("callisto", new JovianScenario("callisto"));
         ALL.put("saturnian", new SaturnianScenario(false));
         ALL.put("enceladus", new SaturnianScenario(true));
+        ALL.put("triton", new TritonScenario());
+        ALL.put("pluto", new PlutoScenario(false));
+        ALL.put("charon", new PlutoScenario(true));
     }
 
     public static ShowcaseScenario get(String name) {

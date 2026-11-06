@@ -19,7 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
  */
 public class VentBlock extends BaseEntityBlock {
     /** How a vent looks and behaves. */
-    public enum Style { ICE, SULFUR }
+    public enum Style { ICE, SULFUR, NITROGEN }
 
     /**
      * @param style   particle style

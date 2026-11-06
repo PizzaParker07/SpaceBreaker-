@@ -1,0 +1,8 @@
+{
+  "feature": "spacebreaker:pluto_cells",
+  "placement": [
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

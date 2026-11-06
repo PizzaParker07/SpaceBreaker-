@@ -80,6 +80,16 @@ public final class BeltGameTests {
     }
 
     @GameTest(template = WorldTests.EMPTY, timeoutTicks = 300)
+    public static void ceresHasADomeNearTheLandingSite(GameTestHelper helper) {
+        PlanetTerrain t = WorldTests.generator(helper, "ceres", 11L).terrain();
+        double top = t.height(420, 260);
+        double plains = (t.height(420 + 160, 260) + t.height(420 - 160, 260) + t.height(420, 260 + 160) + t.height(420, 260 - 160)) / 4;
+        helper.assertTrue(t.column(420, 260).volcanoS < 0.2, "the anchored dome stands at (420, 260)");
+        helper.assertTrue(top - plains > 25, "the dome rises well above the plains: " + top + " vs " + plains);
+        helper.succeed();
+    }
+
+    @GameTest(template = WorldTests.EMPTY, timeoutTicks = 300)
     public static void faculaeBrightenSomeCraterFloors(GameTestHelper helper) {
         PlanetChunkGenerator gen = WorldTests.generator(helper, "ceres", 11L);
         PlanetTerrain t = gen.terrain();
@@ -189,7 +199,7 @@ public final class BeltGameTests {
     }
 
     @GameTest(template = WorldTests.EMPTY, timeoutTicks = 300)
-    public static void crashedLandersOnFourWorlds(GameTestHelper helper) {
+    public static void crashedLandersOnEveryWorld(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         var structures = level.registryAccess().registryOrThrow(Registries.STRUCTURE);
         BlockPos base = helper.absolutePos(BlockPos.ZERO).offset(9000, 0, 9000);

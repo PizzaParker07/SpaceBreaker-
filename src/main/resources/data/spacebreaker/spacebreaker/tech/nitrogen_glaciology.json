@@ -1,0 +1,13 @@
+{
+  "category": "exploration",
+  "tier": 5,
+  "requires": [
+    "spacebreaker:icy_moons",
+    "spacebreaker:cryogenics"
+  ],
+  "icon": "spacebreaker:nitrogen_ice",
+  "samples": [
+    "spacebreaker:pluto"
+  ],
+  "unlocks": []
+}

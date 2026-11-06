@@ -97,6 +97,24 @@ public final class SaturnGameTests {
     }
 
     @GameTest(template = WorldTests.EMPTY, timeoutTicks = 200)
+    public static void tholinWormBurrowsSurfacesAndSiftsTholin(GameTestHelper helper) {
+        com.pizzaparker07.spacebreaker.content.saturn.entity.TholinWorm w = helper.spawn(SaturnEntities.THOLIN_WORM.get(), new BlockPos(2, 2, 2));
+        helper.assertTrue(w.isFood(new net.minecraft.world.item.ItemStack(com.pizzaparker07.spacebreaker.content.saturn.SaturnModule.THOLIN_SAND.get())),
+                "breeds on tholin sand");
+        w.setBurrowed(true);
+        var player = helper.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        w.hurt(helper.getLevel().damageSources().playerAttack(player), 1F);
+        helper.assertFalse(w.isBurrowed(), "a hit drives it out of the sand");
+        w.setBurrowed(true);
+        w.setPelletTime(2);
+        // with nobody near it comes back up, and now and then it leaves a tholin pellet
+        helper.succeedWhen(() -> {
+            helper.assertFalse(w.isBurrowed(), "surfaces once things are quiet");
+            helper.assertItemEntityPresent(com.pizzaparker07.spacebreaker.content.saturn.SaturnModule.THOLIN.get(), new BlockPos(2, 2, 2), 3.0);
+        });
+    }
+
+    @GameTest(template = WorldTests.EMPTY, timeoutTicks = 200)
     public static void enceladusTigerStripesAndGeysersAtTheSouthPole(GameTestHelper helper) {
         PlanetTerrain t = WorldTests.generator(helper, "enceladus", 6L).terrain();
         LineaeFeature.Config stripes = SaturnData.tigerStripes();

@@ -1,0 +1,8 @@
+{
+  "feature": "spacebreaker:pluto_heart",
+  "placement": [
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

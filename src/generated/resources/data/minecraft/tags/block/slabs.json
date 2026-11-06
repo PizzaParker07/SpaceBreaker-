@@ -14,6 +14,8 @@
     "spacebreaker:europan_ice_brick_slab",
     "spacebreaker:ionian_basalt_slab",
     "spacebreaker:callistan_rock_slab",
-    "spacebreaker:titan_ice_slab"
+    "spacebreaker:titan_ice_slab",
+    "spacebreaker:triton_ice_slab",
+    "spacebreaker:plutonian_ice_slab"
   ]
 }
