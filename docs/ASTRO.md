@@ -603,3 +603,35 @@ field `geometric_albedo`, NASA values; Bond albedo when missing) and a Lambert p
 are not included. `SkyEphemerisTest` checks the Sun, the full Moon, Venus at greatest elongation
 (24 Mar 2020: 46°, −4.4), Jupiter (3 Nov 2023: −2.9, 49.5″), Mars (13 Oct 2020: −2.6, 22″) and Saturn
 at opposition, Earth from Mars (≈ −2.5) and the Galilean moons from Io.
+
+## Asteroids and small bodies (`core/astro/smallbody`)
+
+```java
+Asteroid a = AsteroidGenerator.generate(worldSeed, Region.MAIN_BELT, index);   // same seed + index = same rock
+List<Asteroid> belt = AsteroidGenerator.population(worldSeed, Region.MAIN_BELT, 1000);
+a.type();            // SpectralType C / S / M / V / D
+a.diameterKm(); a.shape(); a.rubblePile(); a.density(); a.mass(); a.rotationHours();
+a.surfaceGravity(); a.escapeVelocity(); a.canJumpOff();   // a 1 km rock: v_esc ≈ 0.5 m/s
+a.composition(); a.metalVeins(); a.pgmPpm();               // mining value
+AsteroidTerrain t = a.terrain();   // hints + TerrainParams + rock/regolith, boulders, metal veins, ice
+CelestialBody c = BodyAdapter.toCelestialBody(a.toAstroBody(), a.details(), Optional.empty());
+```
+
+| Model | Rule |
+|---|---|
+| Regions | `MAIN_BELT` 2.1–3.3 AU, `TROJANS` at Jupiter's L4/L5 (±60° in mean longitude, ±12° libration), `KUIPER_BELT` 39–48 AU |
+| Sizes | cumulative power law N(> D) ∝ D^−2.5 between the region's limits (main belt 50 m – 100 km; the real large bodies are data files) |
+| Types | inner belt S-rich (55 % S, 25 % C), outer belt C-rich (75 % C), 7 % M everywhere, V (Vesta family) in the inner belt, D beyond Jupiter |
+| Orbits | no main-belt body inside a Kirkwood gap (3:1 at 2.50, 5:2 at 2.82, 7:3 at 2.96, 2:1 at 3.28 AU); Rayleigh eccentricities and inclinations |
+| Structure | above 200 m most bodies are rubble piles (porosity 30–50 %, spin no faster than the 2.2 h barrier); small monoliths can spin in minutes; triaxial shapes, small bodies more elongated |
+
+| Type | Grain density | Albedo | Main materials | Metal veins | PGM |
+|---|---|---|---|---|---|
+| C carbonaceous | 2400 kg/m³ | 0.03–0.09 | clays, water, organics, magnetite | 0.1 | ≈ 0.8 ppm |
+| S stony | 3400 | 0.15–0.30 | olivine, pyroxene, iron–nickel 15 % | 0.3 | ≈ 1.5 ppm |
+| M metallic | 7000 | 0.10–0.20 | iron–nickel 88 %, sulfides | 0.9 | ≈ 25 ppm |
+| V basaltic | 3300 | 0.30–0.45 | pyroxene, plagioclase | 0.05 | ≈ 0.2 ppm |
+| D primitive icy | 1900 | 0.03–0.10 | water ice, silicates, organics | 0.05 | ≈ 0.5 ppm |
+
+Bulk density = grain density × (1 − porosity): rubble-pile C ≈ 1.45 g/cm³ (Bennu and Ryugu 1.19),
+S ≈ 2.0 (Itokawa 1.9, Eros 2.7). `AsteroidGeneratorTest` checks all of the above.
