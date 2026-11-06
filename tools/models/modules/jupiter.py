@@ -31,5 +31,5 @@ def generate():
     vent('ice_geyser')
     vent('sulfur_vent')
     generated_item('ocean_salt')
-    for e in ('glow_serpent', 'sulfur_crab'):
+    for e in ('glow_serpent', 'sulfur_crab', 'groove_grazer', 'crater_hopper'):
         write(f'models/item/{e}_spawn_egg.json', {'parent': 'minecraft:item/template_spawn_egg'})

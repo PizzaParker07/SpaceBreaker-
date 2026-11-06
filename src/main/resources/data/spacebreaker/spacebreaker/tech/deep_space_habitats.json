@@ -1,0 +1,13 @@
+{
+  "category": "construction",
+  "tier": 4,
+  "requires": [
+    "spacebreaker:pressurised_modules",
+    "spacebreaker:radiation_shielding"
+  ],
+  "icon": "spacebreaker:callistan_rock",
+  "samples": [
+    "spacebreaker:callisto"
+  ],
+  "unlocks": []
+}

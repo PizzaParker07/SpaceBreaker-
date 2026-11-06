@@ -1,0 +1,9 @@
+{
+  "structure": "spacebreaker:vesta_lander",
+  "world": "spacebreaker:vesta",
+  "guardians": [],
+  "loot_tables": [
+    "spacebreaker:dungeons/vesta/lander_cabin",
+    "spacebreaker:dungeons/vesta/lander_cargo"
+  ]
+}

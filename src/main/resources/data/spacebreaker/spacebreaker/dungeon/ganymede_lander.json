@@ -1,0 +1,9 @@
+{
+  "structure": "spacebreaker:ganymede_lander",
+  "world": "spacebreaker:ganymede",
+  "guardians": [],
+  "loot_tables": [
+    "spacebreaker:dungeons/ganymede/lander_cabin",
+    "spacebreaker:dungeons/ganymede/lander_cargo"
+  ]
+}

@@ -161,3 +161,7 @@ SULCUS_ICE = ramp('#3e6e86', '#4c8099', '#5a92ab', '#6aa3bc', '#7db4cb', '#97c7d
 SKATER = ramp('#22150b', '#35210f', '#4a2f15', '#62401d', '#7c5428', '#9a6c36', '#b98a4c')
 DRIFTER = ramp('#7fa7bf', '#9cbfd3', '#b9d6e5', '#d5ebf4', '#eef8fc')
 DRIFTER_GLOW = ramp('#3f9fd9', '#86d3ff', '#d8f4ff')
+# Groove grazer (grey-blue banded plates, pale frosted edges) and crater hopper (dark brown-grey fur-like hide, white plates).
+GRAZER = ramp('#2c3036', '#3d434b', '#4f5761', '#636c77', '#7a838e', '#959ea8', '#b6bec6')
+HOPPER = ramp('#1f1c19', '#2d2925', '#3d3832', '#4f4841', '#625a51', '#776e64')
+HOPPER_PLATE = ramp('#a8adb3', '#d1d5d9', '#eef0f2')

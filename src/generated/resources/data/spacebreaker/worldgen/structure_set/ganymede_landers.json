@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 6734,
+    "separation": 4,
+    "spacing": 11
+  },
+  "structures": [
+    {
+      "structure": "spacebreaker:ganymede_lander",
+      "weight": 1
+    }
+  ]
+}

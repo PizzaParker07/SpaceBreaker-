@@ -28,6 +28,10 @@ public final class BeltStructures {
             TYPES.register("ceres_mining_outpost", () -> () -> MiningOutpostStructure.CODEC);
     public static final DeferredHolder<StructurePieceType, StructurePieceType> OUTPOST_PIECE =
             PIECES.register("ceres_mining_outpost", () -> MiningOutpostPiece::new);
+    public static final DeferredHolder<StructureType<?>, StructureType<LanderStructure>> LANDER =
+            TYPES.register("supply_lander", () -> () -> LanderStructure.CODEC);
+    public static final DeferredHolder<StructurePieceType, StructurePieceType> LANDER_PIECE =
+            PIECES.register("supply_lander", () -> LanderPiece::new);
     public static final ResourceKey<Structure> OUTPOST_KEY = ResourceKey.create(Registries.STRUCTURE, Spacebreaker.id("ceres_mining_outpost"));
     public static final ResourceKey<StructureSet> OUTPOST_SET = ResourceKey.create(Registries.STRUCTURE_SET, Spacebreaker.id("ceres_mining_outposts"));
 
@@ -44,10 +48,36 @@ public final class BeltStructures {
         ctx.register(OUTPOST_KEY, new MiningOutpostStructure(new Structure.StructureSettings(
                 HolderSet.direct(b.getOrThrow(BeltData.CERES_PLAINS), b.getOrThrow(BeltData.CERES_CRATER)),
                 Map.of(), GenerationStep.Decoration.SURFACE_STRUCTURES, TerrainAdjustment.NONE)));
+        for (LanderPiece.Variant v : LanderPiece.Variant.values()) {
+            ctx.register(landerKey(v), new LanderStructure(new Structure.StructureSettings(
+                    HolderSet.direct(landerBiomes(v).stream().map(b::getOrThrow).toList()),
+                    Map.of(), GenerationStep.Decoration.SURFACE_STRUCTURES, TerrainAdjustment.NONE), v));
+        }
     }
 
     public static void sets(BootstrapContext<StructureSet> ctx) {
         ctx.register(OUTPOST_SET, new StructureSet(ctx.lookup(Registries.STRUCTURE).getOrThrow(OUTPOST_KEY),
                 new RandomSpreadStructurePlacement(10, 4, RandomSpreadType.LINEAR, 0xCE2E5)));
+        int salt = 0x1A4D;
+        for (LanderPiece.Variant v : LanderPiece.Variant.values()) {
+            ctx.register(ResourceKey.create(Registries.STRUCTURE_SET, Spacebreaker.id(v.id() + "_landers")), new StructureSet(
+                    ctx.lookup(Registries.STRUCTURE).getOrThrow(landerKey(v)), new RandomSpreadStructurePlacement(11, 4, RandomSpreadType.LINEAR, salt++)));
+        }
+    }
+
+    public static ResourceKey<Structure> landerKey(LanderPiece.Variant v) {
+        return ResourceKey.create(Registries.STRUCTURE, Spacebreaker.id(v.id() + "_lander"));
+    }
+
+    /** Biomes a lander can lie in on each world. */
+    static java.util.List<ResourceKey<net.minecraft.world.level.biome.Biome>> landerBiomes(LanderPiece.Variant v) {
+        return switch (v) {
+            case VESTA -> java.util.List.of(BeltData.VESTA_HIGHLANDS, BeltData.VESTA_CRATER);
+            case GANYMEDE -> java.util.List.of(com.pizzaparker07.spacebreaker.content.jupiter.JupiterData.GANYMEDE_DARK,
+                    com.pizzaparker07.spacebreaker.content.jupiter.JupiterData.GANYMEDE_GROOVED);
+            case CALLISTO -> java.util.List.of(com.pizzaparker07.spacebreaker.content.jupiter.JupiterData.CALLISTO_PLAINS);
+            case ENCELADUS -> java.util.List.of(com.pizzaparker07.spacebreaker.content.saturn.SaturnData.ENCELADUS_PLAINS,
+                    com.pizzaparker07.spacebreaker.content.saturn.SaturnData.ENCELADUS_POLAR);
+        };
     }
 }

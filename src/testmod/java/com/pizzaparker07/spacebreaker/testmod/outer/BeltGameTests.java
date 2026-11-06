@@ -188,6 +188,30 @@ public final class BeltGameTests {
         helper.succeed();
     }
 
+    @GameTest(template = WorldTests.EMPTY, timeoutTicks = 300)
+    public static void crashedLandersOnFourWorlds(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        var structures = level.registryAccess().registryOrThrow(Registries.STRUCTURE);
+        BlockPos base = helper.absolutePos(BlockPos.ZERO).offset(9000, 0, 9000);
+        int i = 0;
+        for (com.pizzaparker07.spacebreaker.content.belt.dungeon.LanderPiece.Variant v
+                : com.pizzaparker07.spacebreaker.content.belt.dungeon.LanderPiece.Variant.values()) {
+            helper.assertTrue(structures.containsKey(BeltStructures.landerKey(v)), v.id() + " lander structure");
+            var piece = new com.pizzaparker07.spacebreaker.content.belt.dungeon.LanderPiece(i, v, base.getX() + i * 40, 110, base.getZ(), Direction.EAST);
+            place(level, piece);
+            BoundingBox bb = piece.getBoundingBox();
+            int chests = 0;
+            for (BlockPos p : BlockPos.betweenClosed(bb.minX(), bb.minY(), bb.minZ(), bb.maxX(), bb.maxY(), bb.maxZ())) {
+                if (level.getBlockState(p).is(Blocks.CHEST) && level.getBlockEntity(p) instanceof ChestBlockEntity ch && ch.getLootTable() != null) {
+                    chests++;
+                }
+            }
+            helper.assertTrue(chests == 2, v.id() + " lander has a cabin and a cargo hold, found " + chests);
+            i++;
+        }
+        helper.succeed();
+    }
+
     @GameTest(template = WorldTests.EMPTY)
     public static void beltTechnologiesExist(GameTestHelper helper) {
         var all = Tech.all(helper.getLevel().registryAccess());

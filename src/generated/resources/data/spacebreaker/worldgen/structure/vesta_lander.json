@@ -1,0 +1,10 @@
+{
+  "type": "spacebreaker:supply_lander",
+  "biomes": [
+    "spacebreaker:vesta_highlands",
+    "spacebreaker:vesta_crater"
+  ],
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "variant": "vesta"
+}

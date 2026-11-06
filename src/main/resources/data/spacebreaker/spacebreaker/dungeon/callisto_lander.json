@@ -1,0 +1,9 @@
+{
+  "structure": "spacebreaker:callisto_lander",
+  "world": "spacebreaker:callisto",
+  "guardians": [],
+  "loot_tables": [
+    "spacebreaker:dungeons/callisto/lander_cabin",
+    "spacebreaker:dungeons/callisto/lander_cargo"
+  ]
+}

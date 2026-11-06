@@ -75,6 +75,18 @@ public final class BeltData {
         lang.add("biome.spacebreaker.vesta_polar", "Vestan Pole", "Vesta Kutbu");
         lang.add("dungeon.spacebreaker.ceres_mining_outpost", "Abandoned Ice Mining Outpost", "Terk Edilmiş Buz Madenciliği Karakolu");
         lang.add("structure.spacebreaker.ceres_mining_outpost", "Abandoned Ice Mining Outpost", "Terk Edilmiş Buz Madenciliği Karakolu");
+        for (String w : new String[]{"vesta", "ganymede", "callisto", "enceladus"}) {
+            lang.add("dungeon.spacebreaker." + w + "_lander", "Crashed Supply Lander", "Düşmüş İkmal İniş Aracı");
+            lang.add("structure.spacebreaker." + w + "_lander", "Crashed Supply Lander", "Düşmüş İkmal İniş Aracı");
+        }
+        tech(lang, "magnetospheric_physics", "Magnetospheric Physics",
+                "Ganymede is the only moon with its own magnetic field, a bubble inside Jupiter's: map it, and you can shelter inside it and read the ocean below by its echo.",
+                "Manyetosfer Fiziği",
+                "Ganymede kendi manyetik alanı olan tek uydudur, Jüpiter'inkinin içinde bir kabarcık: onu haritala; içine sığınabilir, yankısından aşağıdaki okyanusu okuyabilirsin.");
+        tech(lang, "deep_space_habitats", "Deep-Space Habitats",
+                "Buried, pressurised modules with their own power and air, built far from help: Callisto, outside Jupiter's worst radiation, is the place to start.",
+                "Derin Uzay Yaşam Alanları",
+                "Yardımdan çok uzakta kurulan, kendi enerjisi ve havası olan gömülü basınçlı modüller: Jüpiter'in en kötü radyasyonunun dışında kalan Kallisto, başlamak için doğru yer.");
         tech(lang, "microgravity_mining", "Microgravity Mining",
                 "On a world where a hard swing throws you off the ground, drills need anchors: harpoons, screw piles and counter-rotating cutters that push nothing away.",
                 "Mikro Yerçekiminde Madencilik",

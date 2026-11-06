@@ -1,0 +1,10 @@
+{
+  "type": "spacebreaker:supply_lander",
+  "biomes": [
+    "spacebreaker:ganymede_dark_terrain",
+    "spacebreaker:ganymede_grooved_terrain"
+  ],
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "variant": "ganymede"
+}
