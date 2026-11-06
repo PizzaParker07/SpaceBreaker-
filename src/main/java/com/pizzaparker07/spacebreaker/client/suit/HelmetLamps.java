@@ -3,7 +3,8 @@ package com.pizzaparker07.spacebreaker.client.suit;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.pizzaparker07.spacebreaker.Spacebreaker;
-import com.pizzaparker07.spacebreaker.compat.client.GhostBlocks;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import com.pizzaparker07.spacebreaker.content.suit.SpaceSuitItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -36,14 +37,19 @@ import net.neoforged.neoforge.client.model.data.ModelData;
 
 /**
  * Helmet lamp light without a dynamic-lights mod: in the dark the lamps of every EVA helmet in view throw a
- * round pool of warm light where the wearer looks. The lit faces of the surface blocks there are drawn again at
- * full brightness and faded out block by block towards the edge, like vanilla light levels, with the shader-safe ghost render type
- * the holograms use. Seen from outside, each lamp also shows a short faint glow cone (see
+ * round pool of light where the wearer looks. The lit faces of the surface blocks there are added again on top
+ * (additive emissive type, checked with Iris + Complementary) and faded out block by block towards the edge,
+ * like vanilla light levels. Seen from outside, each lamp also shows a short glow cone (see
  * {@link SuitOverlayLayer}).
  */
 @EventBusSubscriber(modid = Spacebreaker.MOD_ID, value = Dist.CLIENT)
 public final class HelmetLamps {
     public static final ResourceLocation BEAM = Spacebreaker.id("textures/misc/helmet_lamp_beam.png");
+    /**
+     * The pool is added on top of the lit faces (additive "eyes" type over the block atlas): shader packs draw it
+     * with their emissive program, so it stays neutral white instead of being tinted like torch light.
+     */
+    private static final RenderType POOL = RenderType.eyes(TextureAtlas.LOCATION_BLOCKS);
     /** How far the lamps reach. */
     public static final double RANGE = 20.0;
 
@@ -92,7 +98,7 @@ public final class HelmetLamps {
             any = true;
         }
         if (any) {
-            GhostBlocks.flush(buffers);
+            buffers.endBatch(POOL);
         }
     }
 
@@ -121,7 +127,7 @@ public final class HelmetLamps {
                         // only the lit face, lifted a hair along its normal: no z-fighting, no seams between blocks
                         pose.translate(p.getX() - cam.x + face.getStepX() * 0.003, p.getY() - cam.y + face.getStepY() * 0.003,
                                 p.getZ() - cam.z + face.getStepZ() * 0.003);
-                        VertexConsumer vc = new LitConsumer(buffers.getBuffer(GhostBlocks.renderType()), a);
+                        VertexConsumer vc = new LitConsumer(buffers.getBuffer(POOL), a);
                         var model = renderer.getBlockModel(state);
                         RandomSource rand = RandomSource.create(state.getSeed(p));
                         for (var quad : model.getQuads(state, face, rand, ModelData.EMPTY, null)) {
@@ -166,7 +172,7 @@ public final class HelmetLamps {
         }
     }
 
-    /** Keeps the block's own colours and shading, warms them slightly and sets the pool's alpha. */
+    /** Adds the block's own colours scaled by the pool's strength (additive, so alpha stays opaque). */
     private static final class LitConsumer implements VertexConsumer {
         private final VertexConsumer delegate;
         private final int alpha;
@@ -184,7 +190,8 @@ public final class HelmetLamps {
 
         @Override
         public VertexConsumer setColor(int red, int green, int blue, int a) {
-            delegate.setColor(red, Math.round(green * 0.96F), Math.round(blue * 0.86F), alpha);
+            float k = alpha / 255F * 0.55F;
+            delegate.setColor(Math.round(red * k), Math.round(green * k), Math.round(blue * k), 255);
             return this;
         }
 
