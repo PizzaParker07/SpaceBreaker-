@@ -31,6 +31,9 @@ public final class MoonEntities {
     public static final DeferredHolder<EntityType<?>, EntityType<DustSwimmer>> DUST_SWIMMER = ENTITIES.register("dust_swimmer",
             () -> EntityType.Builder.of(DustSwimmer::new, MobCategory.CREATURE).sized(1.1F, 0.4F).eyeHeight(0.3F).clientTrackingRange(10)
                     .build("dust_swimmer"));
+    public static final DeferredHolder<EntityType<?>, EntityType<GlimmerBeetle>> GLIMMER_BEETLE = ENTITIES.register("glimmer_beetle",
+            () -> EntityType.Builder.of(GlimmerBeetle::new, MobCategory.CREATURE).sized(0.5F, 0.35F).eyeHeight(0.25F).clientTrackingRange(8)
+                    .build("glimmer_beetle"));
     public static final DeferredHolder<EntityType<?>, EntityType<SurveyDrone>> SURVEY_DRONE = ENTITIES.register("survey_drone",
             () -> EntityType.Builder.of(SurveyDrone::new, MobCategory.MONSTER).sized(0.8F, 0.8F).eyeHeight(0.45F).clientTrackingRange(10)
                     .build("survey_drone"));
@@ -42,6 +45,7 @@ public final class MoonEntities {
     public static DeferredItem<DeferredSpawnEggItem> ELDER_REGOLITH_TICK_EGG;
     public static DeferredItem<DeferredSpawnEggItem> DUST_SWIMMER_EGG;
     public static DeferredItem<DeferredSpawnEggItem> SURVEY_DRONE_EGG;
+    public static DeferredItem<DeferredSpawnEggItem> GLIMMER_BEETLE_EGG;
 
     private MoonEntities() {
     }
@@ -52,12 +56,14 @@ public final class MoonEntities {
         ELDER_REGOLITH_TICK_EGG = items.register("elder_regolith_tick_spawn_egg", () -> new DeferredSpawnEggItem(ELDER_REGOLITH_TICK, 0x4A4640, 0xB2BA62, new Item.Properties()));
         DUST_SWIMMER_EGG = items.register("dust_swimmer_spawn_egg", () -> new DeferredSpawnEggItem(DUST_SWIMMER, 0x9C9A94, 0x5F5E58, new Item.Properties()));
         SURVEY_DRONE_EGG = items.register("survey_drone_spawn_egg", () -> new DeferredSpawnEggItem(SURVEY_DRONE, 0xD8DCE0, 0xC08616, new Item.Properties()));
+        GLIMMER_BEETLE_EGG = items.register("glimmer_beetle_spawn_egg", () -> new DeferredSpawnEggItem(GLIMMER_BEETLE, 0x2E3A3A, 0x7FE0C8, new Item.Properties()));
         ENTITIES.register(modBus);
         modBus.addListener(EntityAttributeCreationEvent.class, e -> {
             e.put(REGOLITH_TICK.get(), RegolithTick.attributes().build());
             e.put(ELDER_REGOLITH_TICK.get(), RegolithTick.elderAttributes().build());
             e.put(DUST_SWIMMER.get(), DustSwimmer.attributes().build());
             e.put(SURVEY_DRONE.get(), SurveyDrone.attributes().build());
+            e.put(GLIMMER_BEETLE.get(), GlimmerBeetle.attributes().build());
         });
         modBus.addListener(RegisterSpawnPlacementsEvent.class, e -> {
             e.register(REGOLITH_TICK.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
@@ -66,11 +72,13 @@ public final class MoonEntities {
                     RegolithTick::checkSpawn, RegisterSpawnPlacementsEvent.Operation.REPLACE);
             e.register(DUST_SWIMMER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                     DustSwimmer::checkSpawn, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+            e.register(GLIMMER_BEETLE.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                    GlimmerBeetle::checkSpawn, RegisterSpawnPlacementsEvent.Operation.REPLACE);
         });
     }
 
     public static List<DeferredItem<DeferredSpawnEggItem>> eggs() {
-        return List.of(REGOLITH_TICK_EGG, ELDER_REGOLITH_TICK_EGG, DUST_SWIMMER_EGG, SURVEY_DRONE_EGG);
+        return List.of(REGOLITH_TICK_EGG, ELDER_REGOLITH_TICK_EGG, DUST_SWIMMER_EGG, GLIMMER_BEETLE_EGG, SURVEY_DRONE_EGG);
     }
 
     public static void translations(Lang lang) {
@@ -82,6 +90,8 @@ public final class MoonEntities {
         lang.item(REGOLITH_TICK_EGG, "Regolith Tick Spawn Egg", "Regolit Kenesi Çağırma Yumurtası");
         lang.item(ELDER_REGOLITH_TICK_EGG, "Elder Regolith Tick Spawn Egg", "Yaşlı Regolit Kenesi Çağırma Yumurtası");
         lang.item(DUST_SWIMMER_EGG, "Dust Swimmer Spawn Egg", "Toz Yüzücüsü Çağırma Yumurtası");
+        lang.add(GLIMMER_BEETLE.get().getDescriptionId(), "Glimmer Beetle", "Parıltı Böceği");
+        lang.item(GLIMMER_BEETLE_EGG, "Glimmer Beetle Spawn Egg", "Parıltı Böceği Çağırma Yumurtası");
         lang.item(SURVEY_DRONE_EGG, "Survey Drone Spawn Egg", "Keşif Dronu Çağırma Yumurtası");
     }
 }

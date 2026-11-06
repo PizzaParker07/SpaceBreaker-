@@ -82,26 +82,38 @@ public class OutpostPiece extends StructurePiece {
         }
         BlockState wall = s(Blocks.WHITE_CONCRETE);
         BlockState frame = s(Blocks.LIGHT_GRAY_CONCRETE);
+        // room variety: the east module is either a storage hall or a collapsed greenhouse
+        boolean greenhouse = (seed & 1) == 1;
         // hub, lab (north), storage (east), drone bay (west), airlock (south)
         module(level, box, r, 10, 10, 20, 20, 6, wall, frame);
         module(level, box, r, 11, 1, 19, 8, 5, wall, frame);
         module(level, box, r, 22, 11, 29, 19, 5, wall, frame);
         module(level, box, r, 1, 11, 8, 19, 5, wall, frame);
         module(level, box, r, 13, 22, 17, 26, 4, wall, frame);
+        module(level, box, r, 1, 1, 8, 8, 5, wall, frame);   // crew quarters (north-west)
+        tunnelX(level, box, 5, 8, 11, frame);
+        vault(level, box, frame);                             // sealed vault (north-east)
+        tunnelX(level, box, 5, 19, 22, frame);
         // short pressurised tunnels between modules
         tunnelZ(level, box, 15, 8, 10, frame);
         tunnelX(level, box, 15, 20, 22, frame);
         tunnelX(level, box, 15, 8, 10, frame);
         tunnelZ(level, box, 15, 20, 22, frame);
         // doorways through the walls
-        for (int[] d : new int[][]{{15, 8}, {15, 10}, {20, 15}, {22, 15}, {8, 15}, {10, 15}, {15, 20}, {15, 22}}) {
+        for (int[] d : new int[][]{{15, 8}, {15, 10}, {20, 15}, {22, 15}, {8, 15}, {10, 15}, {15, 20}, {15, 22}, {8, 5}, {11, 5}, {19, 5}}) {
             placeBlock(level, s(Blocks.AIR), d[0], F + 1, d[1], box);
             placeBlock(level, s(Blocks.AIR), d[0], F + 2, d[1], box);
         }
         airlockDoors(level, box);
         furnishHub(level, box, r);
         furnishLab(level, box, r);
-        furnishStorage(level, box, r);
+        if (greenhouse) {
+            furnishGreenhouse(level, box);
+        } else {
+            furnishStorage(level, box, r);
+        }
+        furnishQuarters(level, box);
+        vaultPuzzle(level, box);
         furnishDroneBay(level, box, r);
         exterior(level, box, r);
         decay(level, box, r);
@@ -266,10 +278,101 @@ public class OutpostPiece extends StructurePiece {
         }
         // radio mast
         for (int y = F + 1; y <= F + 9; y++) {
-            placeBlock(level, y == F + 9 ? s(Blocks.LIGHTNING_ROD) : s(Blocks.IRON_BARS), 25, y, 4, box);
+            placeBlock(level, y == F + 9 ? s(Blocks.LIGHTNING_ROD) : s(Blocks.IRON_BARS), 20, y, 27, box);
         }
-        placeBlock(level, s(Blocks.IRON_BLOCK), 25, F, 4, box);
-        placeBlock(level, s(Blocks.DAYLIGHT_DETECTOR), 26, F + 1, 4, box);
+        placeBlock(level, s(Blocks.IRON_BLOCK), 20, F, 27, box);
+        placeBlock(level, s(Blocks.DAYLIGHT_DETECTOR), 21, F + 1, 27, box);
+    }
+
+    // ------------------------------------------------------------------ extra rooms, trap and puzzle
+
+    /** Crew quarters: three bunks, lockers, a table; the crew left in a hurry. */
+    private void furnishQuarters(WorldGenLevel level, BoundingBox box) {
+        for (int z : new int[]{2, 4, 6}) {
+            bed(level, box, 2, z);
+        }
+        container(level, box, null, 7, F + 1, 2, MoonLoot.OUTPOST_QUARTERS, false);
+        container(level, box, null, 7, F + 1, 3, MoonLoot.OUTPOST_QUARTERS, false);
+        placeBlock(level, s(Blocks.SMOOTH_STONE_SLAB), 6, F + 1, 6, box);
+        placeBlock(level, Blocks.SMOOTH_QUARTZ_STAIRS.defaultBlockState().setValue(StairBlock.FACING, Direction.EAST), 5, F + 1, 6, box);
+        placeBlock(level, s(Blocks.FLOWER_POT), 6, F + 2, 6, box);
+    }
+
+    private void bed(WorldGenLevel level, BoundingBox box, int x, int z) {
+        BlockState foot = Blocks.WHITE_BED.defaultBlockState().setValue(net.minecraft.world.level.block.BedBlock.FACING, Direction.EAST)
+                .setValue(net.minecraft.world.level.block.BedBlock.PART, net.minecraft.world.level.block.state.properties.BedPart.FOOT);
+        placeBlock(level, foot, x, F + 1, z, box);
+        placeBlock(level, foot.setValue(net.minecraft.world.level.block.BedBlock.PART, net.minecraft.world.level.block.state.properties.BedPart.HEAD),
+                x + 1, F + 1, z, box);
+    }
+
+    /** A greenhouse that lost its air: glass roof, dry hydroponic trays, dead plants, a seed store. */
+    private void furnishGreenhouse(WorldGenLevel level, BoundingBox box) {
+        for (int x = 23; x <= 28; x++) {
+            for (int z = 12; z <= 18; z++) {
+                placeBlock(level, s(Blocks.LIGHT_GRAY_STAINED_GLASS), x, F + 5, z, box); // glass roof
+                placeBlock(level, s(Blocks.AIR), x, F + 6, z, box);                      // no regolith shield on glass
+                if ((z == 13 || z == 17) && x >= 23 && x <= 27) {
+                    placeBlock(level, s(Blocks.COARSE_DIRT), x, F, z, box);
+                    placeBlock(level, x % 2 == 0 ? s(Blocks.POTTED_DEAD_BUSH) : s(Blocks.FLOWER_POT), x, F + 1, z, box);
+                }
+            }
+        }
+        placeBlock(level, s(Blocks.COMPOSTER), 28, F + 1, 12, box);
+        placeBlock(level, s(Blocks.REDSTONE_LAMP), 28, F + 4, 15, box);
+        container(level, box, null, 28, F + 1, 18, MoonLoot.OUTPOST_GREENHOUSE, false);
+        container(level, box, null, 23, F + 1, 15, MoonLoot.OUTPOST_GREENHOUSE, true);
+    }
+
+    /** The vault: reinforced walls, no windows, an iron door that only opens with power. */
+    private void vault(WorldGenLevel level, BoundingBox box, BlockState frame) {
+        BlockState armour = s(MoonModule.ANORTHOSITE_BRICKS.base().get());
+        for (int x = 22; x <= 28; x++) {
+            for (int z = 2; z <= 8; z++) {
+                boolean edge = x == 22 || x == 28 || z == 2 || z == 8;
+                placeBlock(level, armour, x, F, z, box);
+                for (int y = F + 1; y <= F + 3; y++) {
+                    placeBlock(level, edge ? armour : s(Blocks.AIR), x, y, z, box);
+                }
+                placeBlock(level, armour, x, F + 4, z, box);
+            }
+        }
+        placeBlock(level, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), 25, F + 3, 5, box);
+        container(level, box, null, 27, F + 1, 4, MoonLoot.OUTPOST_VAULT, true);
+        container(level, box, null, 27, F + 1, 6, MoonLoot.OUTPOST_VAULT, true);
+    }
+
+    /**
+     * Puzzle and trap: the vault door lost its power. A power cell (block of redstone, kept in the command chest)
+     * fits the socket above the door. The approach tunnel is guarded by an arrow trap on a pressure plate.
+     */
+    private void vaultPuzzle(WorldGenLevel level, BoundingBox box) {
+        door(level, box, 22, 5, Direction.EAST);
+        placeBlock(level, s(Blocks.AIR), 22, F + 3, 5, box); // empty socket above the door
+        placeBlock(level, s(Blocks.YELLOW_TERRACOTTA), 22, F + 3, 4, box);
+        placeBlock(level, s(Blocks.YELLOW_TERRACOTTA), 22, F + 3, 6, box);
+        placeBlock(level, s(Blocks.REDSTONE_LAMP), 22, F + 4, 5, box);
+        // warning sign on the tunnel wall
+        BlockPos signPos = getWorldPos(21, F + 2, 5);
+        BlockState sign = Blocks.OAK_WALL_SIGN.defaultBlockState().setValue(net.minecraft.world.level.block.WallSignBlock.FACING, Direction.SOUTH);
+        if (box.isInside(signPos)) {
+            placeBlock(level, sign, 21, F + 2, 5, box);
+            if (level.getBlockEntity(signPos) instanceof net.minecraft.world.level.block.entity.SignBlockEntity be) {
+                net.minecraft.world.level.block.entity.SignText text = new net.minecraft.world.level.block.entity.SignText();
+                for (int i = 0; i < 4; i++) {
+                    text = text.setMessage(i, net.minecraft.network.chat.Component.translatable("sign.spacebreaker.outpost_vault." + i));
+                }
+                be.setText(text, true);
+            }
+        }
+        // arrow trap: a dispenser hidden in the tunnel wall, fired by the pressure plate in front of the door
+        placeBlock(level, s(Blocks.POLISHED_BLACKSTONE_PRESSURE_PLATE), 21, F + 1, 5, box);
+        BlockPos disp = getWorldPos(21, F + 1, 4);
+        placeBlock(level, Blocks.DISPENSER.defaultBlockState().setValue(net.minecraft.world.level.block.DispenserBlock.FACING, Direction.SOUTH),
+                21, F + 1, 4, box);
+        if (box.isInside(disp) && level.getBlockEntity(disp) instanceof net.minecraft.world.level.block.entity.DispenserBlockEntity d) {
+            d.setItem(0, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.ARROW, 16));
+        }
     }
 
     /** Time and impacts: holes, dust drifts, broken windows. Fixed by the seed, like the layout. */
@@ -292,7 +395,8 @@ public class OutpostPiece extends StructurePiece {
         }
     }
 
-    private void container(WorldGenLevel level, BoundingBox box, RandomSource layout, int x, int y, int z, ResourceKey<LootTable> loot, boolean chest) {
+    private void container(WorldGenLevel level, BoundingBox box, @javax.annotation.Nullable RandomSource layout, int x, int y, int z,
+                           ResourceKey<LootTable> loot, boolean chest) {
         // loot seeds come from the position, so the shared layout random is consumed the same way in every chunk
         RandomSource r = RandomSource.create(seed ^ (x * 341873128712L + y * 132897987541L + z));
         if (chest) {
