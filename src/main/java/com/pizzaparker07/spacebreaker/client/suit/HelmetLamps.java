@@ -18,6 +18,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
@@ -35,8 +36,8 @@ import net.neoforged.neoforge.client.model.data.ModelData;
 
 /**
  * Helmet lamp light without a dynamic-lights mod: in the dark the lamps of every EVA helmet in view throw a
- * pool of warm light where the wearer looks. The surface blocks there are drawn again at full brightness and
- * faded out block by block towards the edge, like vanilla block light, with the shader-safe ghost render type
+ * round pool of warm light where the wearer looks. The lit faces of the surface blocks there are drawn again at
+ * full brightness and faded out block by block towards the edge, like vanilla light levels, with the shader-safe ghost render type
  * the holograms use. Seen from outside, each lamp also shows a short faint glow cone (see
  * {@link SuitOverlayLayer}).
  */
@@ -87,7 +88,7 @@ public final class HelmetLamps {
                 continue;
             }
             double d = hit.getLocation().distanceTo(eye);
-            pool(event.getPoseStack(), buffers, mc, hit, cam, 1.8 + d * 0.3, Math.max(0, 1 - d / RANGE));
+            pool(event.getPoseStack(), buffers, mc, hit, cam, 2.2 + d * 0.3, Math.max(0, 1 - d / RANGE));
             any = true;
         }
         if (any) {
@@ -114,16 +115,18 @@ public final class HelmetLamps {
                     double dist = Vec3.atCenterOf(p).relative(face, 0.5).distanceTo(c);
                     double fall = 1 - dist / radius;
                     if (fall > 0) {
-                        // stepped like block light
-                        float a = (float) (Math.ceil(fall * 4) / 4 * 0.7 * strength);
+                        // a round pool fading block by block like vanilla light levels (15 steps)
+                        float a = (float) (Math.ceil(fall * 15) / 15 * 0.9 * strength);
                         pose.pushPose();
-                        pose.translate(p.getX() - cam.x, p.getY() - cam.y, p.getZ() - cam.z);
-                        pose.translate(0.5, 0.5, 0.5);
-                        pose.scale(1.002F, 1.002F, 1.002F);
-                        pose.translate(-0.5, -0.5, -0.5);
+                        // only the lit face, lifted a hair along its normal: no z-fighting, no seams between blocks
+                        pose.translate(p.getX() - cam.x + face.getStepX() * 0.003, p.getY() - cam.y + face.getStepY() * 0.003,
+                                p.getZ() - cam.z + face.getStepZ() * 0.003);
                         VertexConsumer vc = new LitConsumer(buffers.getBuffer(GhostBlocks.renderType()), a);
-                        renderer.getModelRenderer().renderModel(pose.last(), vc, state, renderer.getBlockModel(state), 1F, 1F, 1F,
-                                LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, ModelData.EMPTY, GhostBlocks.renderType());
+                        var model = renderer.getBlockModel(state);
+                        RandomSource rand = RandomSource.create(state.getSeed(p));
+                        for (var quad : model.getQuads(state, face, rand, ModelData.EMPTY, null)) {
+                            vc.putBulkData(pose.last(), quad, 1F, 1F, 1F, 1F, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+                        }
                         pose.popPose();
                     }
                     break; // one surface block per column

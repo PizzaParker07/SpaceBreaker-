@@ -115,9 +115,12 @@ public class EvaSuitModel extends HumanoidModel<LivingEntity> {
                         .texOffs(36, 6).addBox(-1F, -3F, 5F, 2, 1, 1),      // purge valve
                 PartPose.ZERO);
         PartDefinition head = mesh.getRoot().getChild("head");
-        // thermal: a reflective sun brim over the (always lowered) gold visor
+        // thermal: a thin reflective sun brim over the (always lowered) gold visor, following the helmet's
+        // rounded front: a front strip and two short corner pieces, only a pixel and a half proud of the visor
         head.addOrReplaceChild("tier_thermal", CubeListBuilder.create()
-                .texOffs(64, 28).addBox(-5F, -9F, -6F, 10, 1, 2), PartPose.ZERO);
+                .texOffs(64, 28).addBox(-4F, -8F, -6F, 8, 1, 1, new CubeDeformation(0F, -0.35F, 0F))
+                .texOffs(64, 28).addBox(-5F, -8F, -5F, 1, 1, 1, new CubeDeformation(0F, -0.35F, 0F))
+                .texOffs(64, 28).addBox(4F, -8F, -5F, 1, 1, 1, new CubeDeformation(0F, -0.35F, 0F)), PartPose.ZERO);
         // heated: a thick insulated collar and a heater pad on the crown
         head.addOrReplaceChild("tier_heated", CubeListBuilder.create()
                 .texOffs(64, 0).addBox(-6F, -2F, -6F, 12, 2, 12)
@@ -259,8 +262,9 @@ public class EvaSuitModel extends HumanoidModel<LivingEntity> {
         PartDefinition root = mesh.getRoot();
         root.addOrReplaceChild("glass", CubeListBuilder.create()
                 .texOffs(0, 0).addBox(-5F, -7F, -5F, 10, 5, 1, new CubeDeformation(0.02F)), PartPose.ZERO);
+        // the gold visor sits in the visor opening just in front of the glass, recessed like it (no box sticking out)
         root.addOrReplaceChild("sun_visor", CubeListBuilder.create()
-                .texOffs(0, 8).addBox(-5F, -7F, -5F, 10, 5, 1, new CubeDeformation(0.12F)), PartPose.ZERO);
+                .texOffs(0, 8).addBox(-5F, -7F, -5F, 10, 5, 1, new CubeDeformation(0.06F)), PartPose.ZERO);
         root.addOrReplaceChild("sun_visor_up", CubeListBuilder.create()
                 .texOffs(0, 16).addBox(-4F, -8F, -5F, 8, 1, 1, new CubeDeformation(0.06F, -0.3F, 0.06F)), PartPose.ZERO);
         root.addOrReplaceChild("lamps", CubeListBuilder.create()
