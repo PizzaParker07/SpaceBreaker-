@@ -269,8 +269,8 @@ final class RocketryLang {
         l.add("location.spacebreaker.orbit_of", "%s orbit", "%s yörüngesi");
         l.add("body.spacebreaker.earth", "Earth", "Dünya");
         // bodies no other area names yet (the outer system beyond Saturn)
-        for (String[] b : new String[][]{{"uranus", "Uranus", "Uranüs"}, {"neptune", "Neptune", "Neptün"}, {"pluto", "Pluto", "Plüton"},
-                {"charon", "Charon", "Charon"}, {"triton", "Triton", "Triton"}, {"miranda", "Miranda", "Miranda"}}) {
+        // (Neptune, Triton, Pluto and Charon are named by their own world modules)
+        for (String[] b : new String[][]{{"uranus", "Uranus", "Uranüs"}, {"miranda", "Miranda", "Miranda"}}) {
             l.add("body.spacebreaker." + b[0], b[1], b[2]);
         }
     }
