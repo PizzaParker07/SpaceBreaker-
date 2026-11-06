@@ -41,6 +41,7 @@ import java.util.function.Consumer;
 final class CompatScenario implements ShowcaseScenario {
     private static final double ORBIT_Y = RocketEntity.ORBIT_Y;
     private PlanetTerrain moonTerrain;
+    private static volatile BlockPos stageOrigin;
     private PlanetTerrain marsTerrain;
 
     @Override
@@ -52,7 +53,8 @@ final class CompatScenario implements ShowcaseScenario {
     public void build(ServerLevel moon) {
         moonTerrain = terrain(moon);
         int gy = (int) ground(moonTerrain, 0.5, 0.5);
-        stage(moon, new BlockPos(4, gy, -6));
+        stageOrigin = new BlockPos(4, gy, -6);
+        stage(moon, stageOrigin);
         // a small platform in each orbit so terrain/sky depth sorting can be judged against real blocks
         for (Location where : new Location[]{Location.EARTH_ORBIT, Location.MOON_ORBIT}) {
             ServerLevel orbit = moon.getServer().getLevel(where.dimension());
@@ -205,6 +207,10 @@ final class CompatScenario implements ShowcaseScenario {
                 go(MarsModule.MARS, 0.5, my + 12, 0.5, 90F, 4F, 0.49, null), null));
         s.add(new ShowcaseDriver.Shot("12_mars_night", 0, 0, 0, 0, 0F, 0F, true, fp, 140,
                 go(MarsModule.MARS, 0.5, my + 12, 0.5, 30F, -20F, 0.75, null), null));
+        // a hologram-style ghost structure (compat.client.GhostBlocks) between the prop rows, then hidden again
+        s.add(new ShowcaseDriver.Shot("14_ghost_blocks", 0, 0, 0, 0, 0F, 0F, true, fp, 80,
+                go(moonDim, 8.5, ground(t, 8, -6) + 2.2, 2.5, 180F, 22F, 0.15, null),
+                () -> CompatShowcaseClient.ghostOrigin = stageOrigin == null ? null : stageOrigin.offset(3, 0, 1)));
         // reentry plasma (GUI layer) over the pack's frame; a short view distance so the frame is ready while the
         // capsule is still in the heating phase (ticks keep running: ridden entities are never frozen)
         s.add(new ShowcaseDriver.Shot("13_reentry_plasma", 6000, 0, 0, 0, 0F, 0F, false, fp, 50, CompatScenario::reentry,
@@ -213,6 +219,7 @@ final class CompatScenario implements ShowcaseScenario {
     }
 
     private static void reentry(ServerPlayer p) {
+        CompatShowcaseClient.ghostOrigin = null;
         // the driver first brings the player back to the scenario's dimension, so change worlds now and board the
         // capsule a second later (riding across a dimension change in the same tick leaves the client without a view)
         ServerLevel earth = p.server.overworld();

@@ -78,6 +78,17 @@ hidePackClouds = true
 `AUTO` replaces the pack's sky in space worlds unless an LOD mod (Distant Horizons, Voxy) is installed; `ALWAYS`
 does it anyway; `OFF` leaves the pack alone.
 
+## 2b. Holograms and previews: `compat/client/GhostBlocks`
+
+For structure projectors, placement previews and other "ghost" blocks: `GhostBlocks.render(poseStack, buffers, state,
+r, g, b, alpha)` at `RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS` (pose stack translated to the camera,
+`Minecraft.getInstance().renderBuffers().bufferSource()`), then `GhostBlocks.flush(buffers)` once per frame. It draws
+the block's baked model through `Sheets.translucentCullBlockSheet()` with scaled alpha and full-bright light, so Iris
+batches it as a translucent entity and packs shade it with their translucent program (correct alpha and sorting).
+Avoid immediate-mode position/colour drawing for world-space holograms: packs may discard or recolour it.
+`vanilla_14_ghost_blocks` / `iris_14_ghost_blocks`: a 4×2×2 ghost (steel, tanks, glass) between the prop rows; with
+Complementary the tint is weaker (the pack re-lights translucent entities) but the ghost stays clearly visible.
+
 ## 3. Known limitations
 
 - **Ground tint differs slightly per pack:** the ambient fill above is a compromise per pack family; packs not
@@ -137,3 +148,34 @@ Overworld weather in space kinds, server weather untouched, Iris-only mixins gat
 What to look at: sky pure black with stars in airless worlds; Earth/planet discs present and correctly occluded by
 terrain and blocks (sharp silhouettes, no halo); no clouds or rain; regolith grey, not sand; Mars sky butterscotch
 by day, blue-ish around the setting Sun; hand, held items and GUI effects on top.
+
+## 5. Recipe viewers: JEI and EMI
+
+Optional, like the renderer integrations: JEI loads `compat/jei/SpacebreakerJeiPlugin` through its `@JeiPlugin`
+annotation and EMI loads `compat/emi/SpacebreakerEmiPlugin` through `@EmiEntrypoint`; without them nothing in those
+packages is ever loaded. Only their APIs are on the compile classpath (`compileOnly`, versions in
+`gradle.properties`: JEI 19.70.0.469, EMI 1.1.24+1.21.1); they are never bundled.
+
+What is shown (data in `compat/recipes/RecipeViewerData`, shared by both plugins and the GameTests):
+
+| Category | Machine (icon and catalyst) |
+|---|---|
+| Crushing, Arc Smelting, Pressing, Fabricating | crusher, arc furnace, press, fabricator |
+| Refining, Electrolysis, Cryogenic Liquefaction | refinery, electrolyzer, cryogenic liquefier |
+| Sabatier Reaction, Regolith Heating, Ice Melting, Chemical Reaction | Sabatier reactor, regolith heater, ice melter, chemical reactor |
+| Suit Modules (smithing) | smithing table: template + suit piece + module = fitted piece, every fitting combination |
+| Smelting (vanilla) | the arc furnace is added as a catalyst (it smelts anything a furnace can) |
+| Information pages | Rocket Assembler (rockets are assembled from parts, not crafted), Atmosphere Processor |
+
+Each processing recipe shows its item inputs, fluid inputs and outputs as tanks with amounts, the press die or other
+tool (not consumed), bonus outputs with their chance, energy (FE/t and total), time, and in red
+"Research needed: X" / "Gereken araştırma: X" when a technology's `unlocks` lists the recipe id or its result item.
+New recipe kinds only need a line in `RecipeViewerData.CATEGORIES` and a title in `CompatModule` (a GameTest fails
+when a `ProcessingRecipe.Kind` in `MachinesModule` has no category).
+
+Screenshots: `jei_*` and `emi_*`. Test: `./gradlew runShowcase -Pscenario=jei -PwithJei=true` or
+`-Pscenario=emi -PwithEmi=true` (JEI/EMI come from maven.blamejared.com / maven.terraformersmc.com).
+
+Known: EMI's dev mode lists ~98 untranslated item/fluid tags (`#c:ingots/titanium`, `#spacebreaker:press_dies`...);
+players see the raw tag id in tag tooltips. The areas that own those tags can add `tag.item.<ns>.<path>` /
+`tag.fluid.<ns>.<path>` translations. REI is not covered yet.

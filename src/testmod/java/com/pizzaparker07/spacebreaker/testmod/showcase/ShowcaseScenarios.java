@@ -23,6 +23,8 @@ public final class ShowcaseScenarios {
         ALL.put("inner_orbit", new InnerOrbitScenario());
         ALL.put("rocketry", new RocketryScenario());
         ALL.put("compat", new CompatScenario());
+        ALL.put("jei", new JeiScenario(true));
+        ALL.put("emi", new JeiScenario(false));
         ALL.put("belt", new BeltScenario(false));
         ALL.put("vesta", new BeltScenario(true));
     }
