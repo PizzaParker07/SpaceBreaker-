@@ -8,7 +8,6 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Locale;
 
 /**
  * Launch window text for the star map. Uses the same ephemeris as the server's OrbitService (body data
@@ -38,16 +37,14 @@ final class LaunchWindows {
             String a = from.body().toString();
             String b = to.body().toString();
             Ephemeris.Window w = ephemeris.window(a, b);
-            double days = w.plan().transferTime() / 86400.0;
-            String transfer = String.format(Locale.ROOT, "%.1f", days);
             if (w.open()) {
-                return Component.translatable("gui.spacebreaker.star_map.window_open", transfer);
+                return Component.translatable("gui.spacebreaker.star_map.window_open");
             }
             long ticks = GameClock.ticks(w.waitFrom(ephemeris.now()), BodyAdapter.timeScale());
             long secs = ticks / 20;
-            String wait = secs >= 3600 ? String.format(Locale.ROOT, "%dh %02dm", secs / 3600, secs / 60 % 60)
-                    : String.format(Locale.ROOT, "%dm %02ds", secs / 60, secs % 60);
-            return Component.translatable("gui.spacebreaker.star_map.window_wait", wait, transfer);
+            Component wait = secs >= 3600 ? Component.translatable("gui.spacebreaker.star_map.wait_hours", secs / 3600, secs / 60 % 60)
+                    : Component.translatable("gui.spacebreaker.star_map.wait_minutes", Math.max(1, secs / 60));
+            return Component.translatable("gui.spacebreaker.star_map.window_wait", wait);
         } catch (RuntimeException e) {
             return null;
         }

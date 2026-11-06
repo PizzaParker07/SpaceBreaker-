@@ -30,9 +30,7 @@ Kayayı eritip elektrikle ayrıştırır: **kayadan oksijen**.
 
 {page}
 ## Sabatier reaktörü
-Karbondioksit ile hidrojeni **metan ve suya** çevirir. Su, elektroliz ünitesine geri döner; metanı [Kriyojenik](cryogenics) sıvılaştırıcıyla sıvılaştırıp saklayabilirsin.
-
->! Roket motorların şimdilik **RP-1 ve sıvı oksijen** yakar. Dönüş için RP-1'i Dünya'dan getir; sıvı oksijeni yerinde üretebilirsin.
+Karbondioksit ile hidrojeni **metan ve suya** çevirir. Su, elektroliz ünitesine geri döner. Metanı [Kriyojenik](cryogenics) sıvılaştırıcıyla **sıvı metana** çevir: sıvı oksijenle birlikte **metaloks motorlarının** yakıtıdır. Roketi yakıt hattıyla, boruyla ya da kova / kriyojenik kapla sağ tıklayarak doldur. → [Roket Parçaları](rocket_parts)
 {recipe spacebreaker:sabatier/methane}
 
 > [!TIP]

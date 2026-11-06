@@ -125,6 +125,18 @@ final class RocketryScenario implements ShowcaseScenario {
         items.setStackInSlot(AssemblerSlots.TOP, new ItemStack(RocketryModule.PARACHUTE.get()));
     }
 
+    /** Rides a fuelled rocket in Earth orbit with the star map open on a chosen destination. */
+    private static void mapShot(ServerPlayer p, net.minecraft.resources.ResourceLocation body, boolean orbit) {
+        clearScene(p);
+        ServerLevel level = p.server.getLevel(Location.EARTH_ORBIT.dimension());
+        RocketEntity r = spawn(level, new Vec3(0.5, RocketEntity.ORBIT_Y, 0.5), 0F, FlightState.ORBIT, 0, 0, false);
+        toDimension(p, Location.EARTH_ORBIT, 0.5, RocketEntity.ORBIT_Y + 1, 0.5, 30F, 35F);
+        p.startRiding(r, true);
+        RocketryShowcaseClient.preselect = body;
+        RocketryShowcaseClient.preselectOrbit = orbit;
+        RocketryShowcaseClient.openMapWhenRiding = true;
+    }
+
     private static void clearScene(ServerPlayer player) {
         player.stopRiding();
         for (RocketEntity r : scene) {
@@ -274,6 +286,47 @@ final class RocketryScenario implements ShowcaseScenario {
                     spawn(mars, new Vec3(gx + 0.5, ground + 40, gz + 0.5), 0F, FlightState.PARACHUTE, 80, 2, false);
                     p.teleportTo(mars, gx + 14.5, ground + 12, gz + 12.5, 135F, -20F);
                 }, null));
+        // ---- boarding camera, transit view and the new star map (Turkish UI)
+        s.add(new Shot("23_tr_setup", 6000, 0.5, G + 4, 0.5, 0F, 0F, true, fp, 200,
+                p -> clearScene(p), RocketryShowcaseClient::turkish));
+        s.add(new Shot("24_rocket_camera", 6000, 0.5, G + 4, 0.5, 120F, 22F, false, fp, 120,
+                p -> {
+                    clearScene(p);
+                    if (padRocket != null) {
+                        padRocket.discard();
+                    }
+                    RocketEntity r = spawn(p.serverLevel(), Vec3.atBottomCenterOf(PAD.above()), -90F, FlightState.IDLE, 0, 0, false);
+                    p.teleportTo(p.serverLevel(), r.getX(), r.getY() + 8, r.getZ(), 120F, 22F);
+                    p.startRiding(r, true);
+                }, null));
+        s.add(new Shot("25_cockpit", 6000, 0.5, G + 4, 0.5, 200F, 12F, false, fp, 80,
+                p -> {
+                    if (!scene.isEmpty()) {
+                        p.teleportTo(p.serverLevel(), scene.get(0).getX(), scene.get(0).getY() + 8, scene.get(0).getZ(), 200F, 12F);
+                        p.startRiding(scene.get(0), true);
+                    }
+                }, () -> RocketryShowcaseClient.cockpit = true));
+        var mars = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(Spacebreaker.id("mars"), false);
+        var marsOrbit = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(Spacebreaker.id("mars"), true);
+        s.add(new Shot("26_transit_ascent", 6000, 0.5, G + 4, 0.5, 0F, 0F, false, fp, 70,
+                p -> clearScene(p), () -> {
+                    RocketryShowcaseClient.cockpit = false;
+                    com.pizzaparker07.spacebreaker.client.rocketry.TransitView.showcase(
+                            com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.Kind.ASCENT, Location.EARTH_SURFACE, Location.EARTH_ORBIT);
+                }));
+        s.add(new Shot("27_transit_transfer", 6000, 0.5, G + 4, 0.5, 0F, 0F, false, fp, 110,
+                null, () -> com.pizzaparker07.spacebreaker.client.rocketry.TransitView.showcase(
+                        com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.Kind.TRANSFER, Location.EARTH_ORBIT,
+                        marsOrbit.orElse(Location.MOON_ORBIT))));
+        s.add(new Shot("28_transit_landing", 6000, 0.5, G + 4, 0.5, 0F, 0F, false, fp, 92,
+                null, () -> com.pizzaparker07.spacebreaker.client.rocketry.TransitView.showcase(
+                        com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.Kind.LANDING, marsOrbit.orElse(Location.MOON_ORBIT),
+                        mars.orElse(Location.MOON_SURFACE))));
+        s.add(new Shot("29_star_map_system", 6000, 0, 0, 0, 0F, 0F, false, fp, 120,
+                p -> mapShot(p, Spacebreaker.id("mars"), true),
+                () -> com.pizzaparker07.spacebreaker.client.rocketry.TransitView.showcase(null, null, null)));
+        s.add(new Shot("30_star_map_moon", 6000, 0, 0, 0, 0F, 0F, false, fp, 120,
+                p -> mapShot(p, Location.MOON, false), null));
         return s;
     }
 

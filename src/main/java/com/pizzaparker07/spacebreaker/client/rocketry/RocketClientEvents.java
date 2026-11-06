@@ -42,7 +42,12 @@ public final class RocketClientEvents {
             return;
         }
         RocketEntity ridden = RocketHud.ridden();
-        if (ridden != null && lastDimension != null && lastDimension != level.dimension()) {
+        if (ridden != null) {
+            TransitView.update(ridden);
+        }
+        if (TransitView.active() && TransitView.holding() && !(mc.screen instanceof TransitScreen)) {
+            TransitView.arrived(); // the new dimension is on screen: fade the view out into it
+        } else if (ridden != null && lastDimension != null && lastDimension != level.dimension() && !TransitView.active()) {
             RocketHud.markArrival();
         }
         lastDimension = level.dimension();

@@ -28,6 +28,8 @@ public final class SurvivalData {
     public double pressureKpa = 101.325;
     public boolean breathable = true;
     public boolean thrusting;
+    /** Last known seal state, for the sealed / unsealed feedback (null until the first check). */
+    public Boolean wasSealed;
 
     public SurvivalData() {
         this(MAX_BREATH, NORMAL_BODY_C, 0.0);

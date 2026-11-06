@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-06T20:14:31.574421569	spacebreaker tech tree
+// 1.21.1	2026-11-06T21:01:40.018365969	spacebreaker tech tree
 eb99e6fc2778efcc16dc23f020327813f7f85164 data/spacebreaker/spacebreaker/tech/advanced_electronics.json
 8e5f0892a5769469c149ba1b0ef8454962783ce0 data/spacebreaker/spacebreaker/tech/airlocks.json
 537f359ae0acefa3a0666d917ea3d66c22a9f910 data/spacebreaker/spacebreaker/tech/aluminium_smelting.json
@@ -30,7 +30,7 @@ a6181e1b533dd7c206a2dec5a26d38ea6891fbb0 data/spacebreaker/spacebreaker/tech/lun
 6b4b6d59e2fbf64e91140cd99fc195dd653b4e46 data/spacebreaker/spacebreaker/tech/martian_geology.json
 38f5c70b499c9bd280bb29c9ada7c3feeeea324e data/spacebreaker/spacebreaker/tech/metal_pressing.json
 1fc427224c6d8757b99b0dde2ff41290d1ea8738 data/spacebreaker/spacebreaker/tech/metallurgy.json
-4c433d18187c13241601591c2a742dd92d5bfdad data/spacebreaker/spacebreaker/tech/methane_engines.json
+6673d50fbebef0dad1091a446c1d743ef3933615 data/spacebreaker/spacebreaker/tech/methane_engines.json
 a9f7af4b605f221a66d009a1f7aa9f5c1060f7e1 data/spacebreaker/spacebreaker/tech/nuclear_fission.json
 eefb821314315a00a37a5491d5b28e9958903ae8 data/spacebreaker/spacebreaker/tech/nuclear_thermal_propulsion.json
 7496d3b9adc2ffbe9f9ae2aab87e00093d98ffed data/spacebreaker/spacebreaker/tech/observational_astronomy.json

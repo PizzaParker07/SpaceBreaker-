@@ -3,7 +3,7 @@
   "category": "equipment",
   "pattern": [
     "W W",
-    "LCL",
+    "LRL",
     "WPW"
   ],
   "key": {
@@ -13,11 +13,11 @@
     "W": {
       "item": "minecraft:white_wool"
     },
-    "C": {
-      "item": "minecraft:comparator"
-    },
     "P": {
       "tag": "c:plates/aluminum"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
     }
   },
   "result": {

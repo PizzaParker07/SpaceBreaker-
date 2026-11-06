@@ -94,6 +94,7 @@ public final class SaturnModule implements SbModule {
         SaturnEntities.register(modBus, KIT.items);
         com.pizzaparker07.spacebreaker.content.saturn.dungeon.SaturnStructures.register(modBus);
         KIT.blocks.register(modBus);
+        SaturnParticles.register(modBus);
         KIT.items.register(modBus);
         KIT.tab.forEach(SbTabs.PLANETS::add);
         SaturnEntities.eggs().forEach(SbTabs.PLANETS::add);

@@ -149,7 +149,7 @@ public final class ResearchTree {
                 .unlocks("landing_legs", "parachute", "heat_shield").samples(ORBIT)
                 .en("Landing Systems", "Heat shields, parachutes and landing legs: getting down is as hard as getting up.")
                 .tr("İniş Sistemleri", "Isı kalkanı, paraşüt ve iniş bacakları: inmek de çıkmak kadar zordur.");
-        t("methane_engines", PROPULSION, 2).req("vacuum_engines", "sabatier_process").icon("minecraft:fire_charge")
+        t("methane_engines", PROPULSION, 2).req("vacuum_engines", "sabatier_process").icon("spacebreaker:methalox_engine").unlocks("methalox_engine", "methalox_vacuum_engine")
                 .samples(MARS)
                 .en("Methane Engines", "Clean-burning methalox engines, fuelled by propellant made on Mars itself.")
                 .tr("Metan Motorları", "Temiz yanan metan-oksijen motorları; yakıtını Mars'ta üretebilirsin.");

@@ -86,6 +86,21 @@
       ]
     },
     {
+      "id": "outer",
+      "color": "#B07A3A",
+      "icon": "spacebreaker:tholin_sand",
+      "chapters": [
+        "ceres",
+        "vesta",
+        "europa",
+        "io",
+        "ganymede",
+        "callisto",
+        "titan",
+        "enceladus"
+      ]
+    },
+    {
       "id": "ruins",
       "color": "#5E8A3A",
       "icon": "spacebreaker:tech_disk",

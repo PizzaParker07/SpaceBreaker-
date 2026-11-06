@@ -21,6 +21,7 @@ Per world with Complementary (vanilla reference shots live in each area's screen
 | Mars | thin | own butterscotch sky, blue sunset; dust storm haze (`iris_mars_11_dust_storm` vs `vanilla_mars_11_dust_storm`), a little brighter than vanilla |
 | Venus | thick | dark ground, dense orange haze, whiteout in the clouds, cloud sea above (`venus_vanilla_bug_fixed.jpg`: vanilla / before / after) |
 | Titan | thick | orange haze and dim light from the generic haze pass, no Titan code (`iris_titan_*` vs `vanilla_titan_01_dunes`); ground a little warmer than vanilla, the small methane drizzle particles are hard to see under the pack |
+| Enceladus | airless | black sky with Saturn and its rings, crescent phase (`iris_enceladus_*`): same as vanilla |
 | Europa, Io (and Ganymede, Callisto) | airless | black sky, stars, the huge Jupiter with its terminator, Io's plumes (`iris_europa_01_jupiter`, `iris_io_02_sulfur_plume`); as dark as vanilla where Jupiter's night side faces the ground |
 | Phobos, Deimos | airless | classified and handled like the Moon; no separate shader screenshots yet |
 
@@ -123,6 +124,13 @@ Complementary the tint is weaker (the pack re-lights translucent entities) but t
 - Not part of this layer, noticed while testing: server-side, `level.isRaining()` on the Moon follows the
   Overworld's weather (vanilla's derived level data). `SolarPanelBlockEntity` uses it — solar output drops on the
   Moon when it rains on Earth (industry area).
+
+- **Blue "water" particles are faded by Complementary:** its `gbuffers_textured` recognises blue particles
+  (`b > 1.15·(r+g)`, as in `FALLING_WATER` / `RAIN`), pales them (`sqrt`, ×0.7) and drops ~60 % of them by dither. Titan's
+  methane drizzle uses those vanilla particles, so under the pack it is almost invisible in the orange haze
+  (`vanilla_titan_03_methane_rain` vs `iris_titan_03_methane_rain`; the same with our passes off, so it is the pack).
+  Fix for the owning area: a custom drop particle whose colour is not blue-dominant (liquid methane is nearly
+  colourless — e.g. a pale grey/amber tint) is drawn normally by the pack.
 
 ## 4. How to test
 
