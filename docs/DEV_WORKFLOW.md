@@ -75,7 +75,7 @@ small, additive and explained in the commit message.
 |---|---|---|
 | Rocketry & spaceflight | `dev/rocketry` | `content/rocketry`, `client/rocketry`, orbit dimensions (`spacebreaker:earth_orbit`, `spacebreaker:moon_orbit`), star map, launch/landing cinematics |
 | Planet engine & Moon | `dev/moon` | `content/worldgen` (planet chunk generator, planet time/sky), `content/moon`, `client/moon`, `client/sky`, dimension `spacebreaker:moon`, Moon creatures and dungeons |
-| Industry | `dev/industry` | `content/earth`, `content/machines`, `content/fluids`, `client/machines`, Earth ore worldgen, energy, pipes, processing chain |
+| Industry | `dev/industry` | `content/earth`, `content/machines`, `content/fluids`, `client/machines`, Earth ore worldgen, energy, pipes, processing chain, `content/vehicles` + `client/vehicles` (rover) |
 | Suit & survival | `dev/suit` | `content/suit`, `client/suit`, `client/hud`, oxygen/temperature/radiation effects, gravity application, zero-g movement, jetpack, airlock, oxygen distributor; `core/multiblock` (data-driven multiblock definitions), `content/blueprint` + `client/blueprint` (hologram projector) |
 | Astrophysics, Solar System data & procedural universe | `dev/astro` | `core/astro` (pure Java physics library, galaxy and star system generator + tests), `data/spacebreaker/spacebreaker/celestial_body/*.json`, `content/universe` + `client/universe` (runtime worlds for generated bodies) |
 | Inner planets (Mars, Phobos, Deimos, Venus, Mercury) | `dev/inner` | `content/mars`, `content/venus`, `content/mercury`, `client/mars`, `client/venus`, `client/mercury`, their dimensions, terrain profiles, blocks, creatures and dungeons |
