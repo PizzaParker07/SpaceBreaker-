@@ -85,6 +85,13 @@ atmosphereHaze = true    # haze/tint/dawn pass (two full-screen draws); off on s
 `AUTO` replaces the pack's sky in space worlds; with Distant Horizons it also tests DH's depth texture, with Voxy
 (no depth API) it stays off. `ALWAYS` does it anyway; `OFF` leaves the pack alone.
 
+### Drawing "right after the sky"
+Code that draws sky decorations at `RenderLevelStageEvent.Stage.AFTER_SKY` (planet dots, the ascent darkening) works
+with shader packs too: on vanilla-sky worlds (Earth) the pack keeps them; in our space worlds `ShaderSkyPass` replays
+the AFTER_SKY stage into its off-screen sky, so they come back on top of the pack's frame
+(`iris_planet_dots_mars_earth`, `iris_planet_dots_earth_jupiter`). `ShaderSkyPass.replayingAfterSky()` tells a
+listener which of the two calls it is in (draw nothing that is not sky, e.g. no depth writes).
+
 ## 2b. Holograms and previews: `compat/client/GhostBlocks`
 
 For structure projectors, placement previews and other "ghost" blocks: `GhostBlocks.render(poseStack, buffers, state,
@@ -138,6 +145,15 @@ Complementary the tint is weaker (the pack re-lights translucent entities) but t
   now uses its own methane drop particle and is visible under the pack (`iris_titan_03_methane_rain`); it reads darker
   than in vanilla because Titan's dim light and haze apply to the drops too. Other areas: avoid blue-dominant vanilla
   water particles for effects that must stay visible with shaders.
+
+- **Light pools / added light (helmet lamps):** re-drawing lit blocks full-bright through a translucent type works,
+  but packs light full-bright vertices as torch light, so the pool turns orange (`iris_eva_lamp_pool_current`).
+  Drawn additively with `RenderType.eyes(TextureAtlas.LOCATION_BLOCKS)` (packs: emissive "eyes" program) it stays
+  white under Complementary and looks the same in vanilla (`iris_eva_lamp_pool_eyes`): recommended for light effects.
+  The safety tether (`RenderType.leash()`) and the MMU gas puffs (particles) are visible under the pack
+  (`iris_eva_tether`, `iris_eva_mmu`).
+- **Silhouette halo at night on thin-air worlds:** where the pack's own sky is much brighter than ours (Mars at night),
+  its anti-aliasing leaves a one-pixel pack-coloured rim along terrain edges.
 
 ## 3b. Performance
 
