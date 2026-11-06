@@ -35,6 +35,7 @@ public final class SbConfig {
     public static final ModConfigSpec.EnumValue<Quality> EFFECTS_QUALITY;
     public static final ModConfigSpec.DoubleValue HUD_SCALE;
     public static final ModConfigSpec.BooleanValue CINEMATIC_CAMERA;
+    public static final ModConfigSpec.BooleanValue MISSION_CONTROL_VOICE;
 
     public enum Quality { LOW, MEDIUM, HIGH }
 
@@ -55,6 +56,10 @@ public final class SbConfig {
         EFFECTS_QUALITY = client.comment("Particle and effect density.").defineEnum("effectsQuality", Quality.HIGH);
         HUD_SCALE = client.comment("Helmet HUD scale.").defineInRange("hudScale", 1.0, 0.5, 2.0);
         CINEMATIC_CAMERA = client.comment("Use the cinematic camera during launches and landings.").define("cinematicCamera", true);
+        client.pop();
+        client.push("audio");
+        MISSION_CONTROL_VOICE = client.comment("Spoken mission control announcements (countdown, liftoff, staging, orbit, landing, warnings), "
+                + "in Turkish when the game language is Turkish, otherwise in English.").define("missionControlVoice", true);
         client.pop();
         CLIENT_SPEC = client.build();
     }
