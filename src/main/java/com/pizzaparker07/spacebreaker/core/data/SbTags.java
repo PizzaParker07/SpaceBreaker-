@@ -3,6 +3,7 @@ package com.pizzaparker07.spacebreaker.core.data;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluid;
 
 /** Tag sink handed to modules during datagen. */
 public interface SbTags {
@@ -16,4 +17,9 @@ public interface SbTags {
 
     /** Mirror a block tag into an item tag (for block items). */
     void copy(TagKey<Block> blockTag, TagKey<Item> itemTag);
+
+    /** Fluid tags (e.g. c:liquid_oxygen). */
+    default void fluid(TagKey<Fluid> tag, Fluid... fluids) {
+        throw new UnsupportedOperationException("fluid tags not supported by this sink");
+    }
 }

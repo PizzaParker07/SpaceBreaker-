@@ -1,0 +1,15 @@
+{
+  "values": [
+    "#c:plates/aluminum",
+    "#c:plates/titanium",
+    "#c:plates/nickel",
+    "#c:plates/lithium",
+    "#c:plates/tungsten",
+    "#c:plates/steel",
+    "#c:plates/aluminum_lithium",
+    "#c:plates/nickel_superalloy",
+    "#c:plates/iron",
+    "#c:plates/copper",
+    "#c:plates/gold"
+  ]
+}

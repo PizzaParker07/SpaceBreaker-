@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "G": {
+      "item": "spacebreaker:gold_foil_insulation"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "P": {
+      "tag": "c:plates/aluminum"
+    }
+  },
+  "pattern": [
+    " I ",
+    "PGP",
+    "PPP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "spacebreaker:cryogenic_canister"
+  }
+}

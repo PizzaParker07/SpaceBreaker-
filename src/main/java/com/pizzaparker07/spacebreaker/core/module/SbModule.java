@@ -1,8 +1,11 @@
 package com.pizzaparker07.spacebreaker.core.module;
 
 import com.pizzaparker07.spacebreaker.core.data.SbBlockLoot;
+import com.pizzaparker07.spacebreaker.core.data.SbDatapack;
 import com.pizzaparker07.spacebreaker.core.data.SbTags;
 import com.pizzaparker07.spacebreaker.core.lang.Lang;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.neoforged.bus.api.IEventBus;
 
 /**
@@ -29,5 +32,13 @@ public interface SbModule {
 
     /** Block and item tags (datagen). */
     default void addTags(SbTags tags) {
+    }
+
+    /** Recipes (datagen). */
+    default void addRecipes(RecipeOutput output, HolderLookup.Provider registries) {
+    }
+
+    /** Data-pack registry entries such as configured/placed features and biome modifiers (datagen). */
+    default void addDatapackEntries(SbDatapack datapack) {
     }
 }

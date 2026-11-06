@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "tag": "c:silicon"
+    },
+    {
+      "tag": "c:plastics"
+    },
+    {
+      "tag": "c:dyes/red"
+    }
+  ],
+  "result": {
+    "count": 4,
+    "id": "spacebreaker:silicone_seal"
+  }
+}

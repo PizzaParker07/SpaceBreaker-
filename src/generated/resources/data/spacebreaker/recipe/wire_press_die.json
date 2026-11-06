@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "S": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "pattern": [
+    "SSS",
+    "S S",
+    "SSS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "spacebreaker:wire_press_die"
+  }
+}

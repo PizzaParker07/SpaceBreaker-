@@ -6,6 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluid;
 
 /** Helpers for common ("c:") and mod tags. */
 public final class SbTagKeys {
@@ -23,6 +24,10 @@ public final class SbTagKeys {
 
     public static TagKey<Item> modItem(String path) {
         return TagKey.create(Registries.ITEM, Spacebreaker.id(path));
+    }
+
+    public static TagKey<Fluid> commonFluid(String path) {
+        return TagKey.create(Registries.FLUID, ResourceLocation.fromNamespaceAndPath("c", path));
     }
 
     private SbTagKeys() {

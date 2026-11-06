@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "spacebreaker:tungsten_block"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "spacebreaker:tungsten_ingot"
+  }
+}

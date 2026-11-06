@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "tag": "c:rods/iron"
+    },
+    "P": {
+      "tag": "c:plates/iron"
+    },
+    "W": {
+      "tag": "c:wires/copper"
+    }
+  },
+  "pattern": [
+    "PWP",
+    "WIW",
+    "PWP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "spacebreaker:electric_motor"
+  }
+}

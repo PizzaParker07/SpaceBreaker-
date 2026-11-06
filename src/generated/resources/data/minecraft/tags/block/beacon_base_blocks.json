@@ -1,0 +1,12 @@
+{
+  "values": [
+    "spacebreaker:aluminum_block",
+    "spacebreaker:titanium_block",
+    "spacebreaker:nickel_block",
+    "spacebreaker:lithium_block",
+    "spacebreaker:tungsten_block",
+    "spacebreaker:steel_block",
+    "spacebreaker:aluminum_lithium_block",
+    "spacebreaker:nickel_superalloy_block"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_ingot": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:ingots/aluminum_lithium"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "spacebreaker:aluminum_lithium_plate_by_hand"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_ingot"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "spacebreaker:aluminum_lithium_plate_by_hand"
+    ]
+  }
+}

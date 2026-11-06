@@ -1,5 +1,11 @@
 {
   "values": [
+    "spacebreaker:rutile_ore",
+    "spacebreaker:deepslate_rutile_ore",
+    "spacebreaker:raw_rutile_block",
+    "spacebreaker:wolframite_ore",
+    "spacebreaker:deepslate_wolframite_ore",
+    "spacebreaker:raw_wolframite_block",
     "spacebreaker:ilmenite_ore"
   ]
 }
