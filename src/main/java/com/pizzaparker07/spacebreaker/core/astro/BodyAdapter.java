@@ -33,8 +33,12 @@ public final class BodyAdapter {
 
     /** Simulated orbital time (s since J2000) of a level, from its game time and the server's time scale. */
     public static double simTime(Level level) {
-        double scale = SbConfig.SERVER_SPEC.isLoaded() ? SbConfig.TIME_SCALE.get() : 1.0;
-        return GameClock.simSeconds(level.getGameTime(), scale);
+        return GameClock.simSeconds(level.getGameTime(), timeScale());
+    }
+
+    /** The server's orbitalTimeScale (real seconds per simulated hour), 1 when the config is not loaded. */
+    public static double timeScale() {
+        return SbConfig.SERVER_SPEC.isLoaded() ? SbConfig.TIME_SCALE.get() : 1.0;
     }
 
     /** All bodies of the registry as one system (several trees if a data pack adds other stars). */
