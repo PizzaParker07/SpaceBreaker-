@@ -228,7 +228,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | Europa 🎨 | Buzaltı Işık Yılanı (biyolüminesan, pasif; tuzlu su havuzlarında ve gömülü okyanusta) |
 | Ganymede 🎨 | Oluk Otlayıcısı (zırhlı, sürü halinde, okyanus tuzuyla çoğalır) |
 | Kallisto 🎨 | Krater Sıçrayıcısı (ürkek, düşük yerçekiminde uzun sıçrayışlarla kaçar) |
-| Titan 🎨 | Metan Kayıcısı (metan göllerinin üstünde yürür) · ⬜ Tolin Solucanı |
+| Titan 🎨 | Metan Kayıcısı (metan göllerinin üstünde yürür) · Tolin Solucanı (kumul denizlerinde halkalı, ürkek kazıcı: yaklaşınca kuma gömülür, sessizlikte çıkar, kumu eleyip ara sıra tolin bırakır; tolin kumuyla çoğalır) |
 | Enceladus 🎨 | Gayzer Süzülücüsü (gayzer bulutlarında süzülen parlak çan) |
 | Asteroitler 🎨 | Kaya Akarı (Ceres, Vesta) |
 | Ötegezegenler | prosedürel bitki ve hayvanlar (Faz 5) |

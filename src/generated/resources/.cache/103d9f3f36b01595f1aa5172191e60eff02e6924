@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-06T21:17:05.264528766	Registries
+// 1.21.1	2026-11-06T21:21:31.697804003	Registries
 a38072ba4c640199737ebfbbc034c7ff4c262ce1 data/spacebreaker/neoforge/biome_modifier/add_oil_deposit.json
 09748e9f324cff73a2a33cba57c1dd08e29a4564 data/spacebreaker/neoforge/biome_modifier/add_ore_bauxite.json
 f1b6195de59cc1992c67352426f851bd88e82fd9 data/spacebreaker/neoforge/biome_modifier/add_ore_pentlandite.json
@@ -34,9 +34,9 @@ a6d1824e4ff7c57d21408012a8ccc7e7269af0e4 data/spacebreaker/worldgen/biome/io_mou
 a6d1824e4ff7c57d21408012a8ccc7e7269af0e4 data/spacebreaker/worldgen/biome/io_plains.json
 53162f79820cb46b6b3fb84973398b800a05cade data/spacebreaker/worldgen/biome/io_polar.json
 d63ac9b4e408366d5227dbff73ecfd094ac5ec84 data/spacebreaker/worldgen/biome/titan_crater.json
-d63ac9b4e408366d5227dbff73ecfd094ac5ec84 data/spacebreaker/worldgen/biome/titan_dunes.json
+113e086bdb0e38061f6576a83b54deb4330275bb data/spacebreaker/worldgen/biome/titan_dunes.json
 00c07196046ef8dfe8e9d539ac4b065e004d647d data/spacebreaker/worldgen/biome/titan_lake_district.json
-d63ac9b4e408366d5227dbff73ecfd094ac5ec84 data/spacebreaker/worldgen/biome/titan_plains.json
+ccb827adbb08ce60907490fdd0631235986ea08d data/spacebreaker/worldgen/biome/titan_plains.json
 15bffbe682098e36bfb02f6cc47326a762851a0b data/spacebreaker/worldgen/biome/vesta_crater.json
 15bffbe682098e36bfb02f6cc47326a762851a0b data/spacebreaker/worldgen/biome/vesta_highlands.json
 15bffbe682098e36bfb02f6cc47326a762851a0b data/spacebreaker/worldgen/biome/vesta_polar.json

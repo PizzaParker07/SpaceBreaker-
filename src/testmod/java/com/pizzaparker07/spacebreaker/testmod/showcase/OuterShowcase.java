@@ -154,7 +154,7 @@ abstract class OuterShowcase implements ShowcaseScenario {
         int y0 = (int) ground(level, SX, SZ) - 1;
         for (int x = SX - 9; x <= SX + 9; x++) {
             for (int z = SZ - 5; z <= SZ + 12; z++) {
-                for (int y = y0 - 3; y <= y0 + 10; y++) {
+                for (int y = y0 - 3; y <= y0 + 48; y++) {
                     level.setBlock(new BlockPos(x, y, z), y < y0 ? rock : y == y0 ? soil : Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
                 }
             }

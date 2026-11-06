@@ -30,9 +30,13 @@ public final class SaturnEntities {
     public static final DeferredHolder<EntityType<?>, EntityType<GeyserDrifter>> GEYSER_DRIFTER = ENTITIES.register("geyser_drifter",
             () -> EntityType.Builder.of(GeyserDrifter::new, MobCategory.AMBIENT).sized(0.7F, 0.7F).eyeHeight(0.4F).clientTrackingRange(10)
                     .build("geyser_drifter"));
+    public static final DeferredHolder<EntityType<?>, EntityType<TholinWorm>> THOLIN_WORM = ENTITIES.register("tholin_worm",
+            () -> EntityType.Builder.of(TholinWorm::new, MobCategory.CREATURE).sized(0.8F, 0.5F).eyeHeight(0.35F).clientTrackingRange(10)
+                    .build("tholin_worm"));
     private static final List<DeferredItem<DeferredSpawnEggItem>> EGGS = new ArrayList<>();
     private static DeferredItem<DeferredSpawnEggItem> skaterEgg;
     private static DeferredItem<DeferredSpawnEggItem> drifterEgg;
+    private static DeferredItem<DeferredSpawnEggItem> wormEgg;
 
     private SaturnEntities() {
     }
@@ -41,14 +45,19 @@ public final class SaturnEntities {
         skaterEgg = items.register("methane_skater_spawn_egg", () -> new DeferredSpawnEggItem(METHANE_SKATER, 0x5A3A1E, 0xD9A55A, new Item.Properties()));
         drifterEgg = items.register("geyser_drifter_spawn_egg", () -> new DeferredSpawnEggItem(GEYSER_DRIFTER, 0xCFE8F2, 0x6FB8E0, new Item.Properties()));
         EGGS.add(skaterEgg);
+        wormEgg = items.register("tholin_worm_spawn_egg", () -> new DeferredSpawnEggItem(THOLIN_WORM, 0x6B3E1C, 0xC98A4B, new Item.Properties()));
         EGGS.add(drifterEgg);
+        EGGS.add(wormEgg);
         ENTITIES.register(modBus);
         modBus.addListener(EntityAttributeCreationEvent.class, e -> {
             e.put(METHANE_SKATER.get(), MethaneSkater.attributes().build());
             e.put(GEYSER_DRIFTER.get(), GeyserDrifter.attributes().build());
+            e.put(THOLIN_WORM.get(), TholinWorm.attributes().build());
         });
         modBus.addListener(RegisterSpawnPlacementsEvent.class, e -> {
             e.register(METHANE_SKATER.get(), SpawnPlacementTypes.NO_RESTRICTIONS, Heightmap.Types.MOTION_BLOCKING, MethaneSkater::checkSpawn,
+                    RegisterSpawnPlacementsEvent.Operation.REPLACE);
+            e.register(THOLIN_WORM.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, TholinWorm::checkSpawn,
                     RegisterSpawnPlacementsEvent.Operation.REPLACE);
             e.register(GEYSER_DRIFTER.get(), SpawnPlacementTypes.NO_RESTRICTIONS, Heightmap.Types.MOTION_BLOCKING, GeyserDrifter::checkSpawn,
                     RegisterSpawnPlacementsEvent.Operation.REPLACE);
@@ -56,6 +65,8 @@ public final class SaturnEntities {
         for (var biome : SaturnData.TITAN_BIOMES) {
             OuterWorlds.SPAWNS.add(new OuterWorlds.Spawn(biome, METHANE_SKATER, MobCategory.CREATURE, biome == SaturnData.TITAN_LAKES ? 30 : 8, 2, 4));
         }
+        OuterWorlds.SPAWNS.add(new OuterWorlds.Spawn(SaturnData.TITAN_DUNES, THOLIN_WORM, MobCategory.CREATURE, 12, 1, 3));
+        OuterWorlds.SPAWNS.add(new OuterWorlds.Spawn(SaturnData.TITAN_PLAINS, THOLIN_WORM, MobCategory.CREATURE, 4, 1, 2));
         OuterWorlds.SPAWNS.add(new OuterWorlds.Spawn(SaturnData.ENCELADUS_POLAR, GEYSER_DRIFTER, MobCategory.AMBIENT, 20, 2, 5));
     }
 
@@ -68,5 +79,7 @@ public final class SaturnEntities {
         lang.item(skaterEgg, "Methane Skater Spawn Egg", "Metan Kayıcısı Çağırma Yumurtası");
         lang.add("entity.spacebreaker.geyser_drifter", "Geyser Drifter", "Gayzer Süzülücüsü");
         lang.item(drifterEgg, "Geyser Drifter Spawn Egg", "Gayzer Süzülücüsü Çağırma Yumurtası");
+        lang.add("entity.spacebreaker.tholin_worm", "Tholin Worm", "Tolin Solucanı");
+        lang.item(wormEgg, "Tholin Worm Spawn Egg", "Tolin Solucanı Çağırma Yumurtası");
     }
 }
