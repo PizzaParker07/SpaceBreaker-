@@ -205,7 +205,8 @@ class GalaxyTest {
                 }
                 StarSystem.Details d = sys.details(p.id());
                 assertNotNull(d);
-                assertTrue(d.nameEn().startsWith(StarSystemGenerator.designation(s.id())));
+                assertTrue(d.nameEn().startsWith(StarNames.properName(s.id())));
+                assertEquals(StarSystemGenerator.designation(s.id()), sys.designation());
             }
         }
         assertTrue(systems > 500, "systems " + systems);
