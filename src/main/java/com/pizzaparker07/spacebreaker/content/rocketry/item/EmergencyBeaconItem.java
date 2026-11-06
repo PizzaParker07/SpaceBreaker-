@@ -38,15 +38,15 @@ public class EmergencyBeaconItem extends Item {
         if (level.isClientSide) {
             return InteractionResultHolder.success(stack);
         }
-        Location here = Location.of(level.dimension()).orElse(null);
+        Location here = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.at(level.dimension(), null).orElse(null);
         if (player.getVehicle() instanceof RocketEntity rocket) {
-            if (rocket.state() == FlightState.REENTRY || rocket.state() == FlightState.PARACHUTE || here == Location.EARTH_SURFACE) {
+            if (rocket.state() == FlightState.REENTRY || rocket.state() == FlightState.PARACHUTE || Location.EARTH_SURFACE.equals(here)) {
                 player.displayClientMessage(Component.translatable("message.spacebreaker.beacon.not_needed"), true);
                 return InteractionResultHolder.fail(stack);
             }
             rocket.emergencyReturn();
         } else {
-            if (here == null || here == Location.EARTH_SURFACE) {
+            if (here == null || Location.EARTH_SURFACE.equals(here)) {
                 player.displayClientMessage(Component.translatable("message.spacebreaker.beacon.not_needed"), true);
                 return InteractionResultHolder.fail(stack);
             }
