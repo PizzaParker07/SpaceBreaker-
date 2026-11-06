@@ -8,7 +8,14 @@ import com.pizzaparker07.spacebreaker.core.astro.TransferPlanner;
 import com.pizzaparker07.spacebreaker.core.body.Bodies;
 import com.pizzaparker07.spacebreaker.core.body.BodyType;
 import com.pizzaparker07.spacebreaker.core.body.CelestialBody;
+import com.google.gson.JsonElement;
+import com.mojang.serialization.JsonOps;
+import com.pizzaparker07.spacebreaker.core.astro.Vec3;
+import com.pizzaparker07.spacebreaker.core.astro.galaxy.Galaxy;
+import com.pizzaparker07.spacebreaker.core.astro.galaxy.StarSeed;
+import com.pizzaparker07.spacebreaker.core.astro.galaxy.StarSystem;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -17,6 +24,8 @@ import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @GameTestHolder(Spacebreaker.MOD_ID)
 @PrefixGameTestTemplate(false)
@@ -71,6 +80,27 @@ public final class AstroGameTests {
         helper.assertTrue(Math.abs(p.deltaV("departure") - 3600) < 100, "trans-Mars injection " + p.deltaV("departure"));
         helper.assertTrue(Math.abs(p.transferTime() / 86400 - 259) < 2, "Hohmann time " + p.transferTime() / 86400);
         helper.assertTrue(sys.distanceToStar(sys.require("spacebreaker:titan"), 0) > 9e11, "Titan is out at Saturn");
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void generatedSystemsBecomeCelestialBodies(GameTestHelper helper) {
+        Galaxy galaxy = new Galaxy(helper.getLevel().getSeed());
+        StarSystem trappist = galaxy.system(galaxy.fixedStar("trappist_1").orElseThrow()).orElseThrow();
+        Map<ResourceLocation, CelestialBody> bodies = BodyAdapter.toCelestialBodies(trappist, id -> Optional.empty());
+        helper.assertTrue(bodies.size() == 8, "TRAPPIST-1 + 7 planets, got " + bodies.size());
+        CelestialBody e = bodies.get(ResourceLocation.parse("spacebreaker:trappist_1_e"));
+        helper.assertTrue(Math.abs(e.orbit().periodDays() - 6.10) < 0.15, "TRAPPIST-1 e period " + e.orbit().periodDays());
+        helper.assertTrue(e.parent().orElseThrow().equals(ResourceLocation.parse("spacebreaker:trappist_1")), "parent link");
+        // every generated record survives a round trip through the data-pack codec
+        for (StarSeed s : galaxy.starsWithin(galaxy.sun().position().add(new Vec3(40, 0, 0)), 6)) {
+            StarSystem sys = galaxy.system(s).orElseThrow();
+            for (Map.Entry<ResourceLocation, CelestialBody> en : BodyAdapter.toCelestialBodies(sys, id -> Optional.empty()).entrySet()) {
+                JsonElement json = CelestialBody.CODEC.encodeStart(JsonOps.INSTANCE, en.getValue()).getOrThrow();
+                CelestialBody back = CelestialBody.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow();
+                helper.assertTrue(back.equals(en.getValue()), "codec round trip changed " + en.getKey());
+            }
+        }
         helper.succeed();
     }
 

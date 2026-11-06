@@ -1,14 +1,21 @@
 package com.pizzaparker07.spacebreaker.core.astro;
 
+import com.pizzaparker07.spacebreaker.core.astro.galaxy.StarSystem;
 import com.pizzaparker07.spacebreaker.core.body.Bodies;
+import com.pizzaparker07.spacebreaker.core.body.BodyType;
 import com.pizzaparker07.spacebreaker.core.body.CelestialBody;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 
 /** Thin bridge between the data-pack {@link CelestialBody} registry and the pure-Java astro library. */
 public final class BodyAdapter {
@@ -32,6 +39,38 @@ public final class BodyAdapter {
 
     public static Optional<BodySystem> system(RegistryAccess access) {
         return Bodies.registry(access).map(BodyAdapter::system);
+    }
+
+    /**
+     * Converts a generated (or real nearby) star system into celestial body records, keyed by body id.
+     *
+     * @param dimensions surface dimension for a body id, if it has one (the planet engine assigns these)
+     */
+    public static Map<ResourceLocation, CelestialBody> toCelestialBodies(StarSystem system,
+                                                                         Function<String, Optional<ResourceKey<Level>>> dimensions) {
+        Map<ResourceLocation, CelestialBody> out = new LinkedHashMap<>();
+        for (AstroBody b : system.bodies().all()) {
+            StarSystem.Details d = system.details(b.id());
+            out.put(ResourceLocation.parse(b.id()), toCelestialBody(b, d, b.landable() ? dimensions.apply(b.id()) : Optional.empty()));
+        }
+        return out;
+    }
+
+    public static CelestialBody toCelestialBody(AstroBody b, StarSystem.Details d, Optional<ResourceKey<Level>> dimension) {
+        OrbitalElements o = b.orbit();
+        CelestialBody.Orbit orbit = o == null ? CelestialBody.Orbit.NONE : new CelestialBody.Orbit(
+                o.semiMajorAxis() / 1000.0, o.eccentricity(), Math.toDegrees(o.inclination()), o.period() / AstroConstants.DAY,
+                Math.toDegrees(o.longitudeAscendingNode()), Math.toDegrees(o.argumentOfPeriapsis()),
+                Math.toDegrees(o.meanAnomalyAtEpoch()));
+        double irradiance = d == null ? 0 : d.irradiance();
+        return new CelestialBody(BodyType.valueOf(b.kind().name()),
+                Optional.ofNullable(b.parent()).map(ResourceLocation::parse), dimension, Optional.empty(),
+                CelestialBody.Physical.of(b.mass(), b.radius() / 1000.0, d == null ? -1 : d.surfaceGravity()),
+                orbit,
+                new CelestialBody.Rotation(b.rotationPeriod() / 3600.0, d == null ? 0 : d.axialTiltDeg(), b.tidallyLocked()),
+                new CelestialBody.Atmosphere(b.surfacePressureKpa(), false, b.composition()),
+                new CelestialBody.Climate(b.dayTempK() - 273.15, b.nightTempK() - 273.15),
+                d == null ? 0 : d.radiation(), irradiance, b.albedo(), Optional.empty());
     }
 
     private BodyAdapter() {
