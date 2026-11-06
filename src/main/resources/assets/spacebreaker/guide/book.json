@@ -119,6 +119,21 @@
         "orbits",
         "inner_orbits"
       ]
+    },
+    {
+      "id": "space_science",
+      "color": "#3A6EA5",
+      "icon": "minecraft:spyglass",
+      "chapters": [
+        "sci_orbit",
+        "sci_delta_v",
+        "sci_transfers",
+        "sci_atmosphere",
+        "sci_radiation",
+        "sci_temperature",
+        "sci_sky",
+        "sci_asteroids"
+      ]
     }
   ],
   "machines": {

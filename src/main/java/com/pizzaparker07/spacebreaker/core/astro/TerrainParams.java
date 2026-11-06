@@ -31,13 +31,15 @@ import java.util.Optional;
  * @param valleys             add river valleys
  * @param iceCap              add polar ice caps (seasonal caps need air and a climate above 150 K)
  * @param palette             colour family for block choice
+ * @param volatileGlaciers    add smooth, crater-free plains of nitrogen ice in basins
+ * @param plumes              add geyser vents
  */
 public record TerrainParams(int baseHeight, double reliefAmplitude, double reliefScale, double detailAmplitude,
                             double roughness, double lowlandThreshold, double lowlandDepth, double craterDensity,
                             double lowlandCraterDensity, double depthRatio, double rimRatio, double complexRadius,
                             double freshChance, double polarLatitude, double iceLatitude, int iceDepth, int seaLevel,
                             TerrainHints.Liquid liquid, boolean dunes, boolean volcanoes, boolean valleys, boolean iceCap,
-                            TerrainHints.ColorFamily palette) {
+                            TerrainHints.ColorFamily palette, boolean volatileGlaciers, boolean plumes) {
     public static final int BASE_HEIGHT = 80;
     private static final double MOON_G = 1.62;
 
@@ -82,7 +84,7 @@ public record TerrainParams(int baseHeight, double reliefAmplitude, double relie
                 h.liquid(), h.dunes(), h.volcanism() > 0.25, h.liquid() == TerrainHints.Liquid.WATER
                 || h.liquid() == TerrainHints.Liquid.METHANE,
                 air && h.glaciation() > 0.01 && h.glaciation() <= 0.9 && body.meanTempK() > 150,
-                h.colorFamily());
+                h.colorFamily(), h.volatileIce() > 0, h.plumes());
     }
 
     /** A hand-made profile whose blocks fit this palette (until generic colour-variant blocks exist). */
