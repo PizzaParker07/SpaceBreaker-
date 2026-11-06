@@ -160,10 +160,10 @@ public final class MarsEntities {
         lang.add(RUST_BEETLE.get().getDescriptionId(), "Rust Beetle", "Pas Böceği");
         lang.add(DUST_DEVIL.get().getDescriptionId(), "Dust Devil", "Toz Şeytanı");
         lang.add(CANYON_LURKER.get().getDescriptionId(), "Canyon Lurker", "Kanyon Pusucusu");
-        lang.add(STONEGRAZER.get().getDescriptionId(), "Stonegrazer", "Taşyiyen");
+        lang.add(STONEGRAZER.get().getDescriptionId(), "Stonegrazer", "Taş Otlayan");
         lang.add(POLAR_WORM.get().getDescriptionId(), "Polar Worm", "Kutup Kurtçuğu");
         String[][] eggs = {{"Rust Beetle", "Pas Böceği"}, {"Dust Devil", "Toz Şeytanı"}, {"Canyon Lurker", "Kanyon Pusucusu"},
-                {"Stonegrazer", "Taşyiyen"}, {"Polar Worm", "Kutup Kurtçuğu"}};
+                {"Stonegrazer", "Taş Otlayan"}, {"Polar Worm", "Kutup Kurtçuğu"}};
         for (int i = 0; i < eggs.length; i++) {
             lang.item(EGGS.get(i), eggs[i][0] + " Spawn Egg", eggs[i][1] + " Çağırma Yumurtası");
         }
