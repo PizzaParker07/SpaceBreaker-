@@ -14,6 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
@@ -28,7 +29,7 @@ import java.util.Locale;
 
 /**
  * Helmet HUD, drawn in the GUI layer so it stays on top of shader packs: a faint visor frame and a
- * compact vanilla-style gauge cluster right of the hotbar (oxygen, body temperature; suit, radiation,
+ * compact vanilla-style gauge cluster beside the hotbar on the offhand side (oxygen, body temperature; suit, radiation,
  * surroundings and Maneuvering Unit gas only when they matter) with one blinking warning above the
  * hotbar. Visible in first person while an EVA helmet is worn; scale and opacity are configurable.
  */
@@ -149,10 +150,15 @@ public final class HelmetHud {
             width = Math.max(width, 11 + (r.fill() >= 0 ? BAR_W + 3 : 0) + font.width(r.value()));
         }
         int height = rows.size() * ROW_H - 2;
-        // anchor: right of the hotbar, bottom-aligned with it; top-left corner if the screen is too narrow
-        int ax = g.guiWidth() / 2 + 91 + 8;
-        int ay = g.guiHeight() - 2 - Math.round(height * scale);
-        if (ax + width * scale > g.guiWidth() - 2) {
+        // anchor: beside the hotbar on the offhand side (past the offhand slot), away from the held item;
+        // mirrored for left-handed play; top-left corner if the screen is too narrow
+        int pad = 3;
+        int pw = Math.round((width + pad * 2) * scale);
+        int ph = Math.round((height + pad * 2) * scale);
+        boolean rightHanded = mc.options.mainHand().get() == HumanoidArm.RIGHT;
+        int ax = rightHanded ? g.guiWidth() / 2 - 91 - 29 - 6 - pw : g.guiWidth() / 2 + 91 + 29 + 6;
+        int ay = g.guiHeight() - 2 - ph;
+        if (ax < 2 || ax + pw > g.guiWidth() - 2) {
             ax = 4;
             ay = 4;
         }
@@ -161,6 +167,9 @@ public final class HelmetHud {
         g.pose().pushPose();
         g.pose().translate(ax, ay, 0);
         g.pose().scale(scale, scale, 1F);
+        // translucent backing like vanilla's chat/tooltip background, for bright terrain
+        g.fill(0, 0, width + pad * 2, height + pad * 2, argb(0x000000, 0.45F * alpha));
+        g.pose().translate(pad, pad, 0);
         int y = 0;
         for (Row r : rows) {
             g.setColor(1F, 1F, 1F, alpha);
