@@ -1,0 +1,23 @@
+{
+  "chapter": "machines",
+  "title": "Living off the Land (ISRU)",
+  "icon": "spacebreaker:sabatier_reactor",
+  "order": 6,
+  "requires_tech": "spacebreaker:electrolysis",
+  "pages": [
+    {
+      "items": [
+        "spacebreaker:atmosphere_processor",
+        "spacebreaker:sabatier_reactor",
+        "spacebreaker:regolith_heater",
+        "spacebreaker:ice_melter"
+      ]
+    },
+    {
+      "text": "Every kilogram launched from Earth is expensive, so make what you can where you land. The atmosphere processor pulls the main useful gas out of the local air (carbon dioxide on Mars) and needs open sky above it. The ice melter turns ice into clean water and dry ice into carbon dioxide."
+    },
+    {
+      "text": "The Sabatier reactor combines carbon dioxide with hydrogen into methane and water: rocket fuel made on Mars. The regolith heater melts rock and splits it with electricity to free oxygen, even on the airless Moon."
+    }
+  ]
+}

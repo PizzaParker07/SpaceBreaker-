@@ -1,0 +1,37 @@
+{
+  "chapter": "venus",
+  "title": "Life and Ruins in the Clouds",
+  "icon": "spacebreaker:cloud_jelly_spawn_egg",
+  "order": 1,
+  "requires_tech": "spacebreaker:interplanetary_transfers",
+  "pages": [
+    {
+      "items": [
+        "spacebreaker:cloud_jelly_spawn_egg",
+        "spacebreaker:acid_ray_spawn_egg",
+        "spacebreaker:aerogel",
+        "spacebreaker:envelope_fabric"
+      ]
+    },
+    {
+      "text": "Cloud jellies drift on sacs of light gas and sieve sulfur from the air. Acid rays glide in wide curves; leave them alone, or they spray acid that eats into armour."
+    },
+    {
+      "text": "A derelict aerostat floats above the cloud tops. Its lab and stores still hold tech disks, guarded by acid rays."
+    },
+    {
+      "items": [
+        "spacebreaker:acid_coating"
+      ]
+    },
+    {
+      "text": "Put any armour piece and a fluoropolymer coating together in a crafting grid to make it acid-proof."
+    },
+    {
+      "text": "Light composite panels and aerogel build platforms that float in the breathable-air layer."
+    },
+    {
+      "recipe": "spacebreaker:composite_panel"
+    }
+  ]
+}

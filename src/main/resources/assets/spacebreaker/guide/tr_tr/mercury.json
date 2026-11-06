@@ -1,0 +1,33 @@
+{
+  "chapter": "mercury",
+  "title": "Merkür",
+  "icon": "spacebreaker:mercurian_crust",
+  "order": 0,
+  "requires_tech": "spacebreaker:interplanetary_transfers",
+  "pages": [
+    {
+      "items": [
+        "spacebreaker:mercury_regolith",
+        "spacebreaker:mercurian_crust",
+        "spacebreaker:low_reflectance_rock",
+        "spacebreaker:hollow_deposit"
+      ]
+    },
+    {
+      "text": "Hava yok ve güneş evdekinden neredeyse üç kat geniş. Gündüz zemin 400 dereceyi aşar; gece eksi 180'e düşer. Gündüz ile geceyi ayıran çizgi olan terminatörün yakınında yolculuk et."
+    },
+    {
+      "text": "Lobat sarplık denen uzun yarlar, gezegen soğuyup büzülürken oluştu. Parlak oyuklar, uçucu minerallerin buharlaşıp gittiği genç çukurlardır. Koyu kayalar grafitçe zengindir."
+    },
+    {
+      "items": [
+        "spacebreaker:graphite_ore",
+        "spacebreaker:graphite",
+        "spacebreaker:terminator_crawler_spawn_egg"
+      ]
+    },
+    {
+      "text": "Kutuplara yakın kraterler güneşi hiç görmez ve su buzu saklar. Bunlardan birinde eski bir buz madeni yatar. Alacakaranlık Sürüngenleri güneş alçakken dolaşır, yükselince toprağa gömülür."
+    }
+  ]
+}

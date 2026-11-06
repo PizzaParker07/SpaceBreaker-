@@ -1,0 +1,12 @@
+{
+  "chapter": "physics",
+  "title": "Inner Planets from Orbit",
+  "icon": "minecraft:ender_eye",
+  "order": 10,
+  "requires_tech": "spacebreaker:interplanetary_transfers",
+  "pages": [
+    {
+      "text": "From orbit Venus is a smooth, pale ball wrapped in haze, with faint sideways Y-shaped bands in its clouds. Mercury looks like a grey Moon. On Mars you can pick out the volcanoes, the rift canyon and the polar caps."
+    }
+  ]
+}

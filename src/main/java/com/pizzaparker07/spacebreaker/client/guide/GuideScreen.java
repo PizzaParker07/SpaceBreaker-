@@ -41,7 +41,7 @@ public class GuideScreen extends Screen {
     public static final int BOOK_W = 300, BOOK_H = 188, TEX_W = 512, TEX_H = 256;
     private static final int PAGE_W = 118, PAGE_TOP = 16, PAGE_BOTTOM = 164;
     private static final int LEFT_X = 22, RIGHT_X = 160;
-    private static final int CHAPTER_Y = 29, CHAPTER_ROW = 14;
+    private static final int CHAPTER_Y = 16, CHAPTER_ROW = 12;
     private static final int INK = 0x3B2A1A, INK_SOFT = 0x6E5A44, INK_LINK = 0x1E4E7A;
 
     /** Remembered between openings (like vanilla's lectern page). */
@@ -76,7 +76,7 @@ public class GuideScreen extends Screen {
             chapter = GuideData.INSTANCE.chapters().get(0).id();
         }
         String text = search == null ? "" : search.getValue();
-        search = new EditBox(font, bx + LEFT_X + 2, by + PAGE_TOP + 12, PAGE_W - 4, 12, Component.translatable("gui.spacebreaker.guide.search"));
+        search = new EditBox(font, bx + LEFT_X + 2, by + PAGE_TOP, PAGE_W - 4, 12, Component.translatable("gui.spacebreaker.guide.search"));
         search.setHint(Component.translatable("gui.spacebreaker.guide.search").withStyle(ChatFormatting.GRAY));
         search.setBordered(true);
         search.setMaxLength(40);
@@ -296,21 +296,23 @@ public class GuideScreen extends Screen {
     private @Nullable List<Component> renderIndex(GuiGraphics g, int mouseX, int mouseY) {
         List<Component> hover = null;
         int lx = bx + LEFT_X, rx = bx + RIGHT_X, py = by + PAGE_TOP;
-        Component title = Component.translatable("gui.spacebreaker.guide.title").withStyle(ChatFormatting.BOLD);
-        g.drawString(font, title, lx + (PAGE_W - font.width(title)) / 2, py + 1, INK, false);
         int y = py + CHAPTER_Y;
         for (GuideData.Chapter c : GuideData.INSTANCE.chapters()) {
-            if (y > by + BOOK_H - 26) {
+            if (y > by + BOOK_H - 22) {
                 break;
             }
             boolean sel = c.id().equals(chapter) && search.getValue().isBlank();
             boolean hot = inside(mouseX, mouseY, lx, y - 1, PAGE_W, CHAPTER_ROW);
             if (sel) {
-                g.fill(lx - 2, y - 1, lx + PAGE_W, y + CHAPTER_ROW - 1, 0x30000000 | INK_SOFT);
+                g.fill(lx - 2, y - 2, lx + PAGE_W, y + CHAPTER_ROW - 2, 0x30000000 | INK_SOFT);
             }
-            renderIcon(g, c.icon(), lx, y - 1);
+            g.pose().pushPose();
+            g.pose().translate(lx + 1, y - 1, 0);
+            g.pose().scale(0.75F, 0.75F, 1F);
+            renderIcon(g, c.icon(), 0, 0);
+            g.pose().popPose();
             Component name = Component.translatable("guide.spacebreaker.chapter." + c.id());
-            g.drawString(font, name, lx + 20, y + 3, hot ? INK_LINK : INK, false);
+            g.drawString(font, name, lx + 16, y + 1, hot ? INK_LINK : INK, false);
             y += CHAPTER_ROW;
         }
         // right page: entries

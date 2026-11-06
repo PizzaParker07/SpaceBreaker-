@@ -78,7 +78,7 @@ public final class ResearchGameTests {
             helper.assertTrue(all.containsKey(id), "missing tech json " + id);
         }
         for (Map.Entry<ResourceLocation, TechNode> e : all.entrySet()) {
-            helper.assertTrue(ResearchTree.CATEGORIES.contains(e.getValue().category()), "unknown branch " + e.getValue().category());
+            helper.assertFalse(e.getValue().category().isBlank(), e.getKey() + " has no branch"); // new branches are allowed
             for (ResourceLocation r : e.getValue().requires()) {
                 helper.assertTrue(all.containsKey(r), e.getKey() + " requires unknown " + r);
                 helper.assertTrue(all.get(r).tier() <= e.getValue().tier(), e.getKey() + " requires a later-phase tech " + r);

@@ -86,12 +86,12 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 ### Paket ④ Araştırma, zindanlar ve rehber
 | Durum | İçerik | Not |
 |---|---|---|
-| 🎨 | Teknoloji ağacı (Faz 1–3, 55 teknoloji) | itki, yaşam desteği, sanayi, astronomi, inşaat, keşif dalları; ön koşullar dallar arası |
+| 🎨 | Teknoloji ağacı (Faz 1–3, 61 + diğer alanların 4 + Faz 2/3 dünyaları için örnek türleri) | itki, yaşam desteği, sanayi, astronomi, inşaat, keşif dalları; ön koşullar dallar arası |
 | 🎨 | Teknoloji Diski | dal rengine göre etiket; zindanlardan çıkar, laboratuvarda okunur, okunduktan sonra geri verilir |
 | 🎨 | Saha Numunesi, Deney Kaydı, Numune Çantası | her dünyanın numunesi farklı teknolojileri ortaya çıkarır |
 | 🎨 | Araştırma Laboratuvarı | tezgâh + analiz cihazı + mikroskop; FE ile çalışır, çalışırken ekran parlar; takımla paylaşım |
 | 🎨 | Araştırma ağacı ekranı (J) | dallar, ön koşul çizgileri, ipuçları, sürükle/yakınlaştır |
-| 🎨 | Saha Rehberi | iki sayfalık kitap: 9 bölüm, 38 sayfa (malzemeler, makineler, giysi, roketçilik, Ay, zindanlar, fizik), arama, tarifler, çizimler, teknolojiyle açılan sayfalar (TR + EN) |
+| 🎨 | Saha Rehberi | iki sayfalık kitap: 12 bölüm, 47 sayfa (malzemeler, makineler, giysi, roketçilik, Ay, Mars, Venüs, Merkür, zindanlar, fizik), arama, tarifler, çizimler, teknolojiyle açılan sayfalar (TR + EN) |
 | 🎨 | Terk Edilmiş Gözlemevi (Dünya zindanı) | bakır kubbe, kırık teleskop, gizli arşiv (ilk roketçilik diskleri), roket test rampası, muhafızlar |
 | 🎨 | Ana başarım ağacı (28) | cevher → külçe → çelik → RP-1 → sıvı oksijen; numune → laboratuvar → teknolojiler; zindan → roket → yörünge → Ay yörüngesi ve Ay → Ay zindanı, kene, dönüş; tam giysi, manevra ünitesi |
 

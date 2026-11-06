@@ -43,5 +43,20 @@
     "id": "physics",
     "icon": "minecraft:firework_rocket",
     "order": 70
+  },
+  {
+    "id": "mars",
+    "icon": "spacebreaker:martian_regolith",
+    "order": 62
+  },
+  {
+    "id": "venus",
+    "icon": "spacebreaker:venus_basalt",
+    "order": 64
+  },
+  {
+    "id": "mercury",
+    "icon": "spacebreaker:mercurian_crust",
+    "order": 66
   }
 ]
