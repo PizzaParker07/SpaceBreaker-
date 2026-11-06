@@ -157,7 +157,7 @@ public record TerrainHints(ColorFamily colorFamily, int baseColor, int accentCol
         ColorFamily family;
         if (liquid == Liquid.LAVA && tidalV >= 0.9) {
             family = ColorFamily.SULFUR;
-        } else if (t > 600 && p > 1000) {
+        } else if (t > 600 && p > 1000 || liquid == Liquid.LAVA) {
             family = ColorFamily.DARK_BASALT;
         } else if (liquid == Liquid.WATER) {
             family = ColorFamily.OCEAN;

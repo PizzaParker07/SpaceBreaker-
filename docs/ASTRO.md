@@ -464,3 +464,25 @@ nitrogen glaciers but no geysers, Charon and Miranda old and rugged.
 | Surface | water ice with ammonia hydrates; no atmosphere |
 | Albedo / colours | 0.38 (geometric); grey ice `#8C8A86` `#ABA8A3`, Mordor red `#6E3A28` `#8A4A30`, fresh crater ice `#D0CEC9` |
 | Game | grey, rugged and old; deep canyons across the middle, a rusty red north pole; Pluto hangs fixed in the sky (mutual tidal lock) |
+
+## Star map data (`galaxy.GalaxyMap`)
+
+```java
+// local view: stars around a viewpoint, brightest first
+List<GalaxyMap.Marker> sky = GalaxyMap.local(galaxy, galaxy.sun(), 25, 200);  // radius ly, max markers
+GalaxyMap.Marker m = sky.get(0);   // Sirius, m ≈ −1.5
+m.offsetLy();  m.colorRgb();  m.apparentMagnitude();  m.nameEn();  m.nameTr();  m.designation();  m.summary();
+
+// galaxy view: a top-down picture (same for every seed), log-scaled brightness and colour per cell
+GalaxyMap.Overview o = GalaxyMap.overview(128);
+o.brightness()[x][y];  o.color()[x][y];  o.sun();   // Sun cell, x points towards the galactic centre
+```
+
+Apparent magnitudes use the luminosity as if it were visual light (m = 4.83 − 2.5 log L + 5 log d − 5),
+which is right for Sun-like stars and too bright for red dwarfs (Proxima shows as ≈ 7 instead of 11) —
+fine for a map. Overview colours blend an old yellow population (`OLD_STARS`) with young blue stars
+along the spiral arms (`YOUNG_STARS`).
+
+Planets of the real nearby stars use the same `TerrainHints`/`TerrainParams` rules;
+`NearbyPlanetsTerrainTest` checks them for several seeds (liquids only within their temperature range,
+molten worlds look dark, no ice on warm worlds, TRAPPIST-1 sunlight falling outwards).
