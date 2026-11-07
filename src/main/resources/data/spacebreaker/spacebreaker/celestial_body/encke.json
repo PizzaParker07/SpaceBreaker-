@@ -1,0 +1,12 @@
+{
+  "type": "comet",
+  "parent": "spacebreaker:sun",
+  "physical": { "mass_kg": 3.5e13, "radius_km": 2.4 },
+  "orbit": { "semi_major_axis_km": 331389203, "eccentricity": 0.8483, "inclination_deg": 11.78, "period_days": 1204.25, "longitude_ascending_node_deg": 334.57, "argument_periapsis_deg": 186.54, "mean_anomaly_deg": 284.0014 },
+  "rotation": { "day_length_hours": 11.0, "axial_tilt_deg": 0.0 },
+  "climate": { "day_temp_c": -20, "night_temp_c": -150 },
+  "radiation_msv_per_day": 1.4,
+  "solar_irradiance": 277.35,
+  "albedo": 0.015,
+  "geometric_albedo": 0.05
+}

@@ -57,7 +57,7 @@ public final class GravityAssist {
         }
         AstroBody flyby = null;
         for (AstroBody b : sys.children(star.id())) {
-            if (b.isStar() || b.orbit() == null || b.kind() == AstroBody.Kind.ASTEROID || b.kind() == AstroBody.Kind.DWARF) {
+            if (b.isStar() || b.orbit() == null || b.kind() == AstroBody.Kind.ASTEROID || b.kind() == AstroBody.Kind.COMET || b.kind() == AstroBody.Kind.DWARF) {
                 continue;
             }
             double a = b.orbit().semiMajorAxis();

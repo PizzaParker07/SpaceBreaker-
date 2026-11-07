@@ -31,7 +31,8 @@ public final class DeltaVMap {
         sb.append("| Target | Departure | Capture | Capture (aerobraking) | Total | Transfer | Window every | Phase angle |\n");
         sb.append("|---|---:|---:|---:|---:|---:|---:|---:|\n");
         for (AstroBody b : bodies) {
-            if (b.isStar() || b == origin) {
+            // comets: high inclination and eccentricity make a coplanar Hohmann estimate meaningless
+            if (b.isStar() || b == origin || b.kind() == AstroBody.Kind.COMET) {
                 continue;
             }
             TransferPlanner.Plan p;
@@ -85,8 +86,13 @@ public final class DeltaVMap {
 
     private static String name(AstroBody b) {
         String n = b.id().substring(b.id().indexOf(':') + 1);
-        n = n.substring(n.lastIndexOf('/') + 1).replace('_', ' ');
-        return Character.toUpperCase(n.charAt(0)) + n.substring(1);
+        StringBuilder out = new StringBuilder();
+        for (String w : n.substring(n.lastIndexOf('/') + 1).split("_")) {
+            if (w.isEmpty()) continue;
+            if (!out.isEmpty()) out.append(" ");
+            out.append(Character.toUpperCase(w.charAt(0))).append(w.substring(1));
+        }
+        return out.toString();
     }
 
     private static String km(double ms) {

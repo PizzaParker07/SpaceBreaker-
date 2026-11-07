@@ -11,6 +11,7 @@ public enum BodyType implements StringRepresentable {
     DWARF("dwarf"),
     MOON("moon"),
     ASTEROID("asteroid"),
+    COMET("comet"),
     STATION("station");
 
     public static final Codec<BodyType> CODEC = StringRepresentable.fromEnum(BodyType::values);
