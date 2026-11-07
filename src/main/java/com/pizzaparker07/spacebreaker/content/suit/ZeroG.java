@@ -84,8 +84,11 @@ public final class ZeroG {
         return vy;
     }
 
-    /** Below this gravity factor (Earth = 1) a step can send you drifting off: small asteroids like Bennu (~6 µg). */
-    public static final double MICRO_G = 0.001;
+    /**
+     * Below this applied gravity factor (Earth = 1) the free-fall controls take over once off the ground and a jump
+     * can send you drifting off: comets, small asteroids, Phobos and Deimos, orbit. Same threshold as the controls.
+     */
+    public static final double MICRO_G = 0.01;
 
     public static boolean microGravity(double gravityFactor) {
         return gravityFactor < MICRO_G;

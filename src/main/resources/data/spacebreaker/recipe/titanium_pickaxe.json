@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "TTT",
+    " S ",
+    " S "
+  ],
+  "key": {
+    "T": {
+      "tag": "c:ingots/titanium"
+    },
+    "S": {
+      "tag": "c:rods/wooden"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:titanium_pickaxe",
+    "count": 1
+  }
+}

@@ -81,6 +81,9 @@ public final class SuitModule implements SbModule {
     /** Whether the gold sun visor of a helmet is lowered. */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> SUN_VISOR =
             COMPONENTS.registerComponentType("sun_visor", b -> b.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
+    /** Charge of an Electric Drill, in FE. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> DRILL_ENERGY =
+            COMPONENTS.registerComponentType("drill_energy", b -> b.persistent(Codec.INT).networkSynchronized(ByteBufCodecs.VAR_INT));
     /** Helmet lamps in long-beam mode: a narrower, longer cone for lava tubes and cold traps. */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> LONG_BEAM =
             COMPONENTS.registerComponentType("long_beam", b -> b.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
@@ -176,6 +179,14 @@ public final class SuitModule implements SbModule {
     }
     public static final DeferredItem<ManeuveringUnitItem> MANEUVERING_UNIT = ITEMS.registerItem("maneuvering_unit",
             ManeuveringUnitItem::new, new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON));
+    static {
+        TitaniumTools.register(ITEMS);
+    }
+
+    public static final DeferredItem<ElectricDrillItem> ELECTRIC_DRILL = ITEMS.registerItem("electric_drill", ElectricDrillItem::new,
+            new Item.Properties());
+    public static final DeferredItem<EnvironmentSensorItem> ENVIRONMENT_SENSOR = ITEMS.registerItem("environment_sensor",
+            EnvironmentSensorItem::new, new Item.Properties().stacksTo(1));
     public static final DeferredItem<SafetyTetherItem> SAFETY_TETHER = ITEMS.registerItem("safety_tether",
             SafetyTetherItem::new, new Item.Properties().stacksTo(1));
 
@@ -245,7 +256,13 @@ public final class SuitModule implements SbModule {
                 .add(JETPACK_BOOSTER_MODULE)
                 .addStack(() -> OxygenTankItem.filled(OXYGEN_TANK.get()))
                 .addStack(() -> OxygenTankItem.filled(LARGE_OXYGEN_TANK.get()))
-                .addStack(() -> ManeuveringUnitItem.filled(MANEUVERING_UNIT.get())).add(SAFETY_TETHER)
+                .addStack(() -> ManeuveringUnitItem.filled(MANEUVERING_UNIT.get())).add(SAFETY_TETHER).add(ENVIRONMENT_SENSOR)
+                .addStack(() -> {
+                    net.minecraft.world.item.ItemStack drill = new net.minecraft.world.item.ItemStack(ELECTRIC_DRILL.get());
+                    ElectricDrillItem.setEnergy(drill, ElectricDrillItem.CAPACITY);
+                    return drill;
+                })
+                .add(TitaniumTools.PICKAXE).add(TitaniumTools.AXE).add(TitaniumTools.SHOVEL).add(TitaniumTools.HOE).add(TitaniumTools.SWORD)
                 .add(OXYGEN_FILLER_ITEM).add(SUIT_STATION_ITEM).add(OXYGEN_DISTRIBUTOR_ITEM).add(AIRLOCK_DOOR_ITEM);
     }
 
@@ -255,6 +272,9 @@ public final class SuitModule implements SbModule {
         }
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, OXYGEN_FILLER_BE.get(), (be, side) -> be.getEnergy());
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, SUIT_STATION_BE.get(), (be, side) -> be.getEnergy());
+        // standard FE item capability: any charger (or a cable-fed machine of another mod) can fill the drill
+        event.registerItem(Capabilities.EnergyStorage.ITEM, (stack, ctx) -> new net.neoforged.neoforge.energy.ComponentEnergyStorage(
+                stack, DRILL_ENERGY.get(), ElectricDrillItem.CAPACITY, ElectricDrillItem.MAX_TRANSFER, ElectricDrillItem.MAX_TRANSFER), ELECTRIC_DRILL.get());
         for (var type : List.of(OXYGEN_FILLER_BE.get(), OXYGEN_DISTRIBUTOR_BE.get(), SUIT_STATION_BE.get())) {
             event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, type, (be, side) -> be.getOxygenInput());
         }
@@ -292,6 +312,30 @@ public final class SuitModule implements SbModule {
         lang.item(MAGNETIC_BOOTS, "Magnetic EVA Boots", "Manyetik EVA Botları");
         lang.item(MANEUVERING_UNIT, "Maneuvering Unit", "Manevra Ünitesi");
         lang.item(SAFETY_TETHER, "Safety Tether", "Güvenlik Halatı");
+        lang.item(ENVIRONMENT_SENSOR, "Environment Sensor", "Çevre Sensörü");
+        lang.item(ELECTRIC_DRILL, "Electric Drill", "Elektrikli Matkap");
+        lang.add("tooltip.spacebreaker.electric_drill.energy", "Charge: %s / %s FE", "Şarj: %s / %s FE");
+        lang.add("tooltip.spacebreaker.electric_drill", "Digs stone and soil fast while charged. Charge it in the Suit Maintenance Station",
+                "Şarjı varken taşı ve toprağı hızla kazar. Giysi Bakım İstasyonunda şarj olur");
+        lang.item(TitaniumTools.PICKAXE, "Titanium Pickaxe", "Titanyum Kazma");
+        lang.item(TitaniumTools.AXE, "Titanium Axe", "Titanyum Balta");
+        lang.item(TitaniumTools.SHOVEL, "Titanium Shovel", "Titanyum Kürek");
+        lang.item(TitaniumTools.HOE, "Titanium Hoe", "Titanyum Çapa");
+        lang.item(TitaniumTools.SWORD, "Titanium Sword", "Titanyum Kılıç");
+        lang.add("tooltip.spacebreaker.environment_sensor", "Use to read pressure, air, temperature, radiation, gravity and ground",
+                "Basınç, hava, sıcaklık, radyasyon, yerçekimi ve zemini okumak için kullan");
+        lang.add("sensor.spacebreaker.title", "Environment reading", "Çevre ölçümü");
+        lang.add("sensor.spacebreaker.title_at", "Environment reading: %s", "Çevre ölçümü: %s");
+        lang.add("sensor.spacebreaker.pressure", "Pressure: %s kPa (%s bar)", "Basınç: %s kPa (%s bar)");
+        lang.add("sensor.spacebreaker.no_air", "Air: none (vacuum)", "Hava: yok (vakum)");
+        lang.add("sensor.spacebreaker.air", "Air: %s", "Hava: %s");
+        lang.add("sensor.spacebreaker.temperature", "Temperature: %s °C (%s)", "Sıcaklık: %s °C (%s)");
+        lang.add("sensor.spacebreaker.sunlit", "in sunlight", "güneşte");
+        lang.add("sensor.spacebreaker.shade", "in shade", "gölgede");
+        lang.add("sensor.spacebreaker.radiation", "Radiation: %s mSv/day", "Radyasyon: %s mSv/gün");
+        lang.add("sensor.spacebreaker.gravity", "Gravity: %s g", "Yerçekimi: %s g");
+        lang.add("sensor.spacebreaker.ground", "Ground: %s", "Zemin: %s");
+        lang.add("sensor.spacebreaker.dust", "Panel dust: %s %%/day", "Panel tozu: günde %%%s");
         lang.add("tooltip.spacebreaker.safety_tether", "A %s-block line from your belt to a block: you cannot drift away",
                 "Kemerden bir bloğa %s blokluk halat: uzaklaşıp sürüklenemezsin");
         lang.add("tooltip.spacebreaker.safety_tether.hint", "Use on a block to clip on, use again to unclip",
@@ -399,6 +443,12 @@ public final class SuitModule implements SbModule {
                 com.pizzaparker07.spacebreaker.content.rocketry.RocketryModule.STATION_WINDOW.get(),
                 com.pizzaparker07.spacebreaker.content.rocketry.RocketryModule.DOCKING_PORT.get());
         tags.blockTag(LEAKY, BlockTags.LEAVES);
+        tags.blockTag(ElectricDrillItem.MINEABLE, BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.MINEABLE_WITH_SHOVEL);
+        tags.item(ItemTags.PICKAXES, TitaniumTools.PICKAXE.get());
+        tags.item(ItemTags.AXES, TitaniumTools.AXE.get());
+        tags.item(ItemTags.SHOVELS, TitaniumTools.SHOVEL.get());
+        tags.item(ItemTags.HOES, TitaniumTools.HOE.get());
+        tags.item(ItemTags.SWORDS, TitaniumTools.SWORD.get());
         tags.item(ItemTags.HEAD_ARMOR, EVA_HELMET.get());
         tags.item(ItemTags.CHEST_ARMOR, EVA_CHESTPLATE.get());
         tags.item(ItemTags.LEG_ARMOR, EVA_LEGGINGS.get());

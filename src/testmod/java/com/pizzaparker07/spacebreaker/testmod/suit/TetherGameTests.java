@@ -204,4 +204,38 @@ public final class TetherGameTests {
         helper.assertFalse(com.pizzaparker07.spacebreaker.content.suit.ZeroG.needsMicroGravityHint(moon, false, false, false), "the Moon holds you down");
         helper.succeed();
     }
+
+    @GameTest(template = EMPTY)
+    public static void cometsAreMicroGravityAtEveryRealism(GameTestHelper helper) {
+        var access = helper.getLevel().registryAccess();
+        for (String name : new String[]{"churyumov_gerasimenko", "encke", "halley", "bennu", "ryugu", "itokawa"}) {
+            var body = com.pizzaparker07.spacebreaker.core.body.Bodies.get(access, com.pizzaparker07.spacebreaker.core.body.Bodies.key(name));
+            helper.assertTrue(body.isPresent(), "body " + name + " is registered");
+            double real = body.get().physical().surfaceGravity() / com.pizzaparker07.spacebreaker.core.body.CelestialBody.EARTH_GRAVITY;
+            for (var realism : com.pizzaparker07.spacebreaker.core.config.SbConfig.Realism.values()) {
+                double g = realism.scaleGravity(real);
+                helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.ZeroG.needsMicroGravityHint(g, false, false, false),
+                        name + " at " + realism + " (" + g + " g) must warn about drifting off");
+            }
+        }
+        var moon = com.pizzaparker07.spacebreaker.core.body.Bodies.get(access, com.pizzaparker07.spacebreaker.core.body.Bodies.MOON).get();
+        helper.assertFalse(com.pizzaparker07.spacebreaker.content.suit.ZeroG.microGravity(
+                com.pizzaparker07.spacebreaker.core.config.SbConfig.Realism.EASY.scaleGravity(moon.physical().surfaceGravity()
+                        / com.pizzaparker07.spacebreaker.core.body.CelestialBody.EARTH_GRAVITY)), "the Moon is never microgravity");
+        helper.succeed();
+    }
+
+    @GameTest(template = EMPTY)
+    public static void environmentSensorReadsTheSurroundings(GameTestHelper helper) {
+        helper.setBlock(new BlockPos(2, 1, 2), Blocks.SAND);
+        BlockPos at = helper.absolutePos(new BlockPos(2, 2, 2));
+        var r = com.pizzaparker07.spacebreaker.content.suit.EnvironmentSensorItem.read(helper.getLevel(), at);
+        helper.assertTrue(r.pressureKpa() > 90 && r.pressureKpa() < 110, "Earth-like pressure, got " + r.pressureKpa());
+        helper.assertTrue(Math.abs(r.gravity() - 1F) < 0.01F, "1 g here, got " + r.gravity());
+        helper.assertTrue(r.ground().equals(Blocks.SAND.getDescriptionId()), "reads the ground underfoot, got " + r.ground());
+        helper.assertTrue(r.composition().isEmpty() || r.composition().keySet().iterator().next().equals("N2"),
+                "the main gas is listed first, got " + r.composition());
+        helper.assertTrue(r.composition().size() <= 5, "at most five gases");
+        helper.succeed();
+    }
 }

@@ -171,20 +171,29 @@ public final class HelmetHud {
             // inside a pressurised module: breathable air, the helmet may come off
             rows.add(new Row(ICON_PRESSURE, -1F, 0, Component.translatable("hud.spacebreaker.pressurised").getString(), GOOD, false));
         } else if (!breathable || s.gravity() < 0.95F || s.gravity() > 1.05F || s.ambientC() < -20 || s.ambientC() > 50 || mag || tethered) {
-            String env = String.format(Locale.ROOT, "%s kPa %.2fg %.0f°", fmt(s.pressureKpa()), s.gravity(), s.ambientC());
+            // microgravity needs more digits than 0.00g
+            String grav = s.gravity() > 0F && s.gravity() < 0.01F ? String.format(Locale.ROOT, "%.4fg", s.gravity())
+                    : String.format(Locale.ROOT, "%.2fg", s.gravity());
+            String env = String.format(Locale.ROOT, "%s kPa %s %.0f°", fmt(s.pressureKpa()), grav, s.ambientC());
+            rows.add(new Row(ICON_PRESSURE, -1F, 0, env, TEXT, false));
+            // status tags on their own line (no icon), so the panel stays narrow enough to sit beside the hotbar
+            List<String> tags = new ArrayList<>();
             if (mag) {
-                env += " " + Component.translatable("hud.spacebreaker.mag").getString();
+                tags.add(Component.translatable("hud.spacebreaker.mag").getString());
             }
             if (tethered) {
-                env += " " + Component.translatable("hud.spacebreaker.tether").getString();
+                tags.add(Component.translatable("hud.spacebreaker.tether").getString());
             }
             if (s.has(SuitStatusPayload.COLD_TRAP)) {
-                env += " " + Component.translatable("hud.spacebreaker.cold_trap").getString();
+                tags.add(Component.translatable("hud.spacebreaker.cold_trap").getString());
             }
-            if (s.has(SuitStatusPayload.MICRO_G) && !mag && !tethered) {
-                env += " " + Component.translatable("hud.spacebreaker.micro_g").getString();
+            boolean drift = s.has(SuitStatusPayload.MICRO_G) && !mag && !tethered;
+            if (drift) {
+                tags.add(Component.translatable("hud.spacebreaker.micro_g").getString());
             }
-            rows.add(new Row(ICON_PRESSURE, -1F, 0, env, TEXT, false));
+            if (!tags.isEmpty()) {
+                rows.add(new Row(-1, -1F, 0, String.join(" · ", tags), drift || s.has(SuitStatusPayload.COLD_TRAP) ? WARN : GOOD, false));
+            }
         }
         if (s.has(SuitStatusPayload.MMU)) {
             float gas = (float) s.mmuFuel() / com.pizzaparker07.spacebreaker.content.suit.ManeuveringUnitItem.CAPACITY;
@@ -219,7 +228,9 @@ public final class HelmetHud {
         int y = 0;
         for (Row r : rows) {
             g.setColor(1F, 1F, 1F, alpha);
-            g.blit(ICONS, 0, y, r.icon() * 9, 0, 9, 9, 9 * 6, 9);
+            if (r.icon() >= 0) {
+                g.blit(ICONS, 0, y, r.icon() * 9, 0, 9, 9, 9 * 6, 9);
+            }
             g.setColor(1F, 1F, 1F, 1F);
             int x = 11;
             if (r.fill() >= 0) {

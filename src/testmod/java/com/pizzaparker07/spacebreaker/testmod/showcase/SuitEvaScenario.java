@@ -39,10 +39,37 @@ final class SuitEvaScenario implements ShowcaseScenario {
     private final java.util.function.Supplier<BlockState> floor;
     private double ground = Double.NaN;
 
+    private final boolean comet;
+
     SuitEvaScenario(ResourceKey<Level> dimension, String prefix, java.util.function.Supplier<BlockState> floor) {
+        this(dimension, prefix, floor, false);
+    }
+
+    /** {@code comet}: adds the microgravity shots (tethered EVA, hint on the HUD, heated vs Mk1 suit at night). */
+    SuitEvaScenario(ResourceKey<Level> dimension, String prefix, java.util.function.Supplier<BlockState> floor, boolean comet) {
         this.dimension = dimension;
         this.prefix = prefix;
         this.floor = floor;
+        this.comet = comet;
+    }
+
+    /** A sealed heated suit with a full tank, its technology known so it gives its full rating. */
+    private static void heated(ServerPlayer p) {
+        astronaut(p);
+        var set = SuitTiersScenario.SETS[2];
+        EquipmentSlot[] slots = {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
+        for (int i = 0; i < 4; i++) {
+            p.setItemSlot(slots[i], new ItemStack(set.get(i).get()));
+        }
+        com.pizzaparker07.spacebreaker.content.suit.SuitTanks.insert(p.getItemBySlot(EquipmentSlot.CHEST),
+                com.pizzaparker07.spacebreaker.content.suit.OxygenTankItem.filled(SuitModule.LARGE_OXYGEN_TANK.get()));
+        com.pizzaparker07.spacebreaker.core.tech.Tech.learn(p, com.pizzaparker07.spacebreaker.content.suit.SuitTier.HEATED.tech());
+    }
+
+    /** Arriving again, so the microgravity hint shows on this shot. */
+    private static void freshArrival(ServerPlayer p) {
+        astronaut(p);
+        LifeSupport.data(p).wasMicroGravity = false;
     }
 
     @Override
@@ -175,6 +202,32 @@ final class SuitEvaScenario implements ShowcaseScenario {
         }), null));
         s.add(new Shot(prefix + "_14_wide_beam", 0, 0.5, g + 1.62, 9.5, 180F, 12F, true, fp, 60, at(true, SuitEvaScenario::astronaut), null));
         s.add(new Shot(prefix + "_15_suit_station", 0, -6.0, g + 1.9, 7.0, 160F, 22F, true, fp, 40, at(false, null), null));
+        s.add(new Shot(prefix + "_16_sensor", 0, 0.5, g + 1.62, 8.5, 180F, 10F, false, fp, 60, at(false, p -> {
+            astronaut(p);
+            p.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(SuitModule.ENVIRONMENT_SENSOR.get()));
+            net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(p,
+                    com.pizzaparker07.spacebreaker.content.suit.EnvironmentSensorItem.read(p.serverLevel(), p.blockPosition()));
+        }), null));
+        // the prospecting kit in the hotbar, the charged drill in hand
+        s.add(new Shot(prefix + "_17_tools", 0, 0.5, g + 1.62, 8.5, 180F, 25F, false, fp, 60, at(false, p -> {
+            astronaut(p);
+            ItemStack drill = new ItemStack(SuitModule.ELECTRIC_DRILL.get());
+            com.pizzaparker07.spacebreaker.content.suit.ElectricDrillItem.setEnergy(drill, 70000);
+            p.getInventory().setItem(0, drill);
+            p.getInventory().setItem(1, new ItemStack(SuitModule.ENVIRONMENT_SENSOR.get()));
+            int slot = 2;
+            for (var tool : com.pizzaparker07.spacebreaker.content.suit.TitaniumTools.all()) {
+                p.getInventory().setItem(slot++, new ItemStack(tool.get()));
+            }
+            p.getInventory().selected = 0;
+        }), null));
+        if (comet) {
+            s.add(new Shot(prefix + "_20_tethered_eva", 0, -2.5, g + 1.62, 3.5, 0F, 8F, true, CameraType.THIRD_PERSON_FRONT, 80,
+                    at(false, this::tethered), null));
+            s.add(new Shot(prefix + "_21_micro_g_hud", 0, 0.5, g + 1.62, 8.5, 180F, 12F, false, fp, 60, at(false, SuitEvaScenario::freshArrival), null));
+            s.add(new Shot(prefix + "_22_heated_night_hud", 0, 0.5, g + 1.62, 8.5, 180F, 12F, false, fp, 260, at(true, SuitEvaScenario::heated), null));
+            s.add(new Shot(prefix + "_23_mk1_night_frost", 0, 0.5, g + 1.62, 8.5, 180F, 12F, false, fp, 260, at(true, SuitEvaScenario::astronaut), null));
+        }
         return s;
     }
 }

@@ -49,8 +49,8 @@ public final class ZeroGControls {
             boolean down = p.input.shiftKeyDown;
             float fwd = p.input.forwardImpulse;
             float side = p.input.leftImpulse;
-            if (g < 0.01 && !p.onGround()) {
-                double a = mmu ? 0.03 * boost : 0.004;
+            if (ZeroG.microGravity(g) && !p.onGround()) {
+                double a = mmu ? 0.03 * boost : 0.006;
                 Vec3 look = p.getLookAngle();
                 float yaw = p.getYRot() * Mth.DEG_TO_RAD;
                 Vec3 left = new Vec3(Mth.cos(yaw), 0, Mth.sin(yaw));

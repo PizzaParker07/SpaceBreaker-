@@ -170,4 +170,37 @@ public final class StationAirGameTests {
         helper.assertFalse(be.fillWearer(p, false), "no breathable air and nothing piped in: no oxygen to give");
         helper.succeed();
     }
+
+    @GameTest(template = "empty")
+    public static void electricDrillDigsOnChargeAndChargesAtTheStation(GameTestHelper helper) {
+        ItemStack drill = new ItemStack(SuitModule.ELECTRIC_DRILL.get());
+        var stone = Blocks.STONE.defaultBlockState();
+        helper.assertFalse(com.pizzaparker07.spacebreaker.content.suit.ElectricDrillItem.charged(drill), "a new drill is flat");
+        helper.assertTrue(drill.getDestroySpeed(stone) < 2F, "flat, it is barely better than a fist");
+        helper.assertFalse(drill.isCorrectToolForDrops(stone), "and drops nothing");
+        // charge it at a powered station
+        BlockPos pos = new BlockPos(2, 1, 2);
+        helper.setBlock(pos, SuitModule.SUIT_STATION.get());
+        var be = (com.pizzaparker07.spacebreaker.content.suit.block.SuitStationBlockEntity) helper.getBlockEntity(pos);
+        be.getEnergy().receiveEnergy(32000, false);
+        for (int i = 0; i < 10; i++) {
+            be.chargeDrill(drill);
+        }
+        int charge = com.pizzaparker07.spacebreaker.content.suit.ElectricDrillItem.energy(drill);
+        helper.assertTrue(charge == 10 * com.pizzaparker07.spacebreaker.content.suit.block.SuitStationBlockEntity.DRILL_CHARGE_RATE,
+                "the station charges the drill, got " + charge);
+        helper.assertTrue(drill.getDestroySpeed(stone) > net.minecraft.world.item.Tiers.DIAMOND.getSpeed(), "charged, it outdigs a diamond pick");
+        helper.assertTrue(drill.isCorrectToolForDrops(stone) && drill.isCorrectToolForDrops(Blocks.DIRT.defaultBlockState()),
+                "it mines stone and soil");
+        Player p = helper.makeMockPlayer(GameType.SURVIVAL);
+        BlockPos rock = helper.absolutePos(new BlockPos(4, 1, 4));
+        drill.mineBlock(helper.getLevel(), stone, rock, p);
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.ElectricDrillItem.energy(drill)
+                == charge - com.pizzaparker07.spacebreaker.content.suit.ElectricDrillItem.FE_PER_BLOCK, "each block spends charge");
+        helper.assertFalse(drill.isDamageableItem(), "no durability: the battery is what runs down");
+        // the standard FE item capability fills it too
+        var cap = drill.getCapability(net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage.ITEM);
+        helper.assertTrue(cap != null && cap.receiveEnergy(500, false) == 500, "any FE charger can fill it");
+        helper.succeed();
+    }
 }

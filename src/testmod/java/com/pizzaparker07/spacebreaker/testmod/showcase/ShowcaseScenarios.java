@@ -16,6 +16,10 @@ public final class ShowcaseScenarios {
                 () -> com.pizzaparker07.spacebreaker.content.moon.MoonModule.LUNAR_REGOLITH.get().defaultBlockState()));
         ALL.put("suit_eva_mars", new SuitEvaScenario(com.pizzaparker07.spacebreaker.content.mars.MarsModule.MARS, "eva_mars",
                 () -> com.pizzaparker07.spacebreaker.content.mars.MarsModule.MARTIAN_REGOLITH.get().defaultBlockState()));
+        ALL.put("suit_eva_halley", new SuitEvaScenario(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.DIMENSION,
+                com.pizzaparker07.spacebreaker.Spacebreaker.id("halley")), "eva_halley", () -> com.pizzaparker07.spacebreaker.content.belt.Comets.HALLEY.soil.get().defaultBlockState(), true));
+        ALL.put("suit_eva_67p", new SuitEvaScenario(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.DIMENSION,
+                com.pizzaparker07.spacebreaker.Spacebreaker.id("churyumov_gerasimenko")), "eva_67p", () -> com.pizzaparker07.spacebreaker.content.belt.Comets.CHURYUMOV.soil.get().defaultBlockState(), true));
         ALL.put("suit_capsule", new SuitCapsuleScenario());
         ALL.put("suit_eva_titan", new SuitEvaScenario(com.pizzaparker07.spacebreaker.content.saturn.SaturnModule.TITAN, "eva_titan",
                 net.minecraft.world.level.block.Blocks.PACKED_ICE::defaultBlockState));

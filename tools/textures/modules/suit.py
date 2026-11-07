@@ -1167,9 +1167,10 @@ def visor_frame() -> Canvas:
             if d >= 0:
                 step = min(3, int(d / 2.5))
                 cv[x, y] = (*rim, (90, 150, 205, 235)[step])
-            elif d > -2 and x < w * 0.45 and y < h * 0.45:
-                # glass edge catching light along the upper left
-                cv[x, y] = (196, 214, 228, 46)
+            elif d > -1.5:
+                # the visor's glass edge, all the way round, so the frame reads whole even against a dark sky
+                corner = x < left + r and y < top + r
+                cv[x, y] = (196, 214, 228, 70) if corner else (120, 132, 146, 54)
     # two short glints on the glass: an arc in the upper left corner, a dash in the lower right
     for i in range(26):
         a = 3.14159 * (1.05 + 0.4 * i / 25)
@@ -1179,6 +1180,163 @@ def visor_frame() -> Canvas:
     for i in range(14):
         cv[right - 30 + i, bottom - 6 - i // 4] = (226, 238, 246, 44)
     return cv
+
+
+# Environment Sensor: a handheld instrument with a cyan screen, a keypad and a stub antenna
+ICON_SENSOR = [
+    "..........ss....",
+    "..........ms....",
+    "....oooooooso...",
+    "...oHWWWWWWwo...",
+    "...oWkkkkkkwo...",
+    "...oWkCcCckwo...",
+    "...oWkcCcCkwo...",
+    "...oWkCCcckwo...",
+    "...oWkkkkkkwo...",
+    "...oWWWWWWWwo...",
+    "...oWbWrWbWwo...",
+    "...oWWWWWWWwo...",
+    "...oWbWbWbWwo...",
+    "...owwwwwwwwo...",
+    "....oooooooo....",
+    "................",
+]
+
+
+def icon_sensor() -> Canvas:
+    pal = {'o': S[1], 'W': S[5], 'H': S[6], 'w': S[3], 'k': (24, 26, 30), 'C': C[5], 'c': C[3], 'b': S[2],
+           'r': (200, 60, 50), 's': S[5], 'm': S[3]}
+    return _icon(ICON_SENSOR, pal)
+
+
+# ----------------------------------------------------------------------------- titanium tools
+# Titanium heads (cool grey-violet ramp) on dark composite handles with a cyan grip band.
+TOOL_ICONS = {
+    'titanium_pickaxe': [
+        "................",
+        ".....ooooo......",
+        "...ooHHTTToo....",
+        "..oHToooooTTo...",
+        ".oHto...oKotTo..",
+        ".oTo...oKko.oTo.",
+        ".oto..oKko...oo.",
+        ".oo..oKko.......",
+        "....oKko........",
+        "...oCco.........",
+        "..oKko..........",
+        ".oKko...........",
+        "oKko............",
+        "oko.............",
+        ".o..............",
+        "................",
+    ],
+    'titanium_axe': [
+        "................",
+        "...ooooo........",
+        "..oHHTTTo...oo..",
+        ".oHTTTTTTo.oKo..",
+        ".oTTTTTTTtoKko..",
+        ".otTTTTTtoKko...",
+        "..ottttooKko....",
+        "...oooooKko.....",
+        "......oKko......",
+        ".....oCco.......",
+        "....oKko........",
+        "...oKko.........",
+        "..oKko..........",
+        ".oKko...........",
+        ".oo.............",
+        "................",
+    ],
+    'titanium_shovel': [
+        "................",
+        "...........ooo..",
+        "..........oHTto.",
+        ".........oHTTto.",
+        "........oHTTtto.",
+        ".........otttoo.",
+        "........oKkoo...",
+        ".......oKko.....",
+        "......oKko......",
+        ".....oCco.......",
+        "....oKko........",
+        "...oKko.........",
+        "..oKko..........",
+        ".oKko...........",
+        ".oo.............",
+        "................",
+    ],
+    'titanium_hoe': [
+        "................",
+        ".....oooooo.....",
+        "....oHTTTTto....",
+        ".....ooooKtoo...",
+        "........oKko....",
+        ".......oKko.....",
+        "......oKko......",
+        ".....oKko.......",
+        "....oCco........",
+        "...oKko.........",
+        "..oKko..........",
+        ".oKko...........",
+        "oKko............",
+        "oko.............",
+        ".o..............",
+        "................",
+    ],
+    'titanium_sword': [
+        "............ooo.",
+        "...........oHTo.",
+        "..........oHTto.",
+        ".........oHTto..",
+        "........oHTto...",
+        ".......oHTto....",
+        "......oHTto.....",
+        ".oo..oHTto......",
+        ".oTooHTto.......",
+        "..oTTtto........",
+        "...oTto.........",
+        "..oCcoTo........",
+        ".oKko.oo........",
+        "oKko............",
+        ".oo.............",
+        "................",
+    ],
+}
+
+
+def tool_icon(name) -> Canvas:
+    T = P.TITANIUM
+    pal = {'o': T[0], 'H': T[7], 'T': T[5], 't': T[3], 'K': S[2], 'k': S[1], 'C': C[5], 'c': C[3]}
+    return _icon(TOOL_ICONS[name], pal)
+
+
+# Electric Drill: white body with a battery pack, cyan charge window, a steel chuck and a titanium bit
+ICON_DRILL = [
+    "................",
+    "................",
+    "....oooooooo....",
+    "...oHWWWWWWwoooo",
+    "...oWWWWWWWwossb",
+    "...oWCcWWWWwoSSt",
+    "...oWWWWWWwwoooo",
+    "....oowwwoooo...",
+    "......oKko......",
+    "......oKko......",
+    ".....oKKko......",
+    ".....oBBbo......",
+    ".....oBCbo......",
+    ".....oBBbo......",
+    "......oooo......",
+    "................",
+]
+
+
+def icon_drill() -> Canvas:
+    T = P.TITANIUM
+    pal = {'o': S[1], 'W': W[6], 'H': W[7], 'w': W[4], 'C': C[5], 'c': C[5], 'K': S[2], 'k': S[1],
+           'B': S[3], 'b': S[2], 's': S[5], 'S': S[3], 't': T[6]}
+    return _icon(ICON_DRILL, pal)
 
 
 def export(save):
@@ -1191,6 +1349,10 @@ def export(save):
     save(icon_large_tank(), 'item', 'large_oxygen_tank')
     save(icon_mmu(), 'item', 'maneuvering_unit')
     save(icon_tether(), 'item', 'safety_tether')
+    save(icon_sensor(), 'item', 'environment_sensor')
+    save(icon_drill(), 'item', 'electric_drill')
+    for name in TOOL_ICONS:
+        save(tool_icon(name), 'item', name)
     export_tiers(save)
     save(eva_suit_overlay(), 'models/armor', 'eva_suit_overlay')
     save(lamp_beam(), 'misc', 'helmet_lamp_beam')

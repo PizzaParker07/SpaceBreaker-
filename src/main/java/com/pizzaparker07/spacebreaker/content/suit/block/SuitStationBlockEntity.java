@@ -19,7 +19,8 @@ import net.minecraft.world.phys.AABB;
 /**
  * Suit Maintenance Station. Every suited player standing on it or right next to it gets their backpack tanks and
  * Maneuvering Unit topped up (like the Oxygen Filler: the planet's breathable air, else piped oxygen) and their
- * suit pieces slowly mended; a suit piece in its slot is mended too. Runs on FE.
+ * suit pieces slowly mended; a suit piece in its slot is mended too, and an Electric Drill in its slot or in a
+ * serviced player's hand is charged. Runs on FE.
  */
 public class SuitStationBlockEntity extends GasMachineBlockEntity {
     /** Breathing ticks pumped per game tick into a wearer's tanks. */
@@ -35,7 +36,7 @@ public class SuitStationBlockEntity extends GasMachineBlockEntity {
 
     @Override
     public boolean accepts(ItemStack stack) {
-        return stack.getItem() instanceof SpaceSuitItem;
+        return stack.getItem() instanceof SpaceSuitItem || stack.getItem() instanceof com.pizzaparker07.spacebreaker.content.suit.ElectricDrillItem;
     }
 
     /** Players being serviced: on top of the station or beside it. */
@@ -97,9 +98,27 @@ public class SuitStationBlockEntity extends GasMachineBlockEntity {
         return true;
     }
 
+    /** FE per tick a drill takes from the station. */
+    public static final int DRILL_CHARGE_RATE = 400;
+
+    /** Charges an Electric Drill from the station's buffer; true when it took any. */
+    public boolean chargeDrill(ItemStack drill) {
+        if (!(drill.getItem() instanceof com.pizzaparker07.spacebreaker.content.suit.ElectricDrillItem)) {
+            return false;
+        }
+        int took = com.pizzaparker07.spacebreaker.content.suit.ElectricDrillItem.charge(drill, Math.min(DRILL_CHARGE_RATE, energy.getEnergyStored()));
+        if (took > 0) {
+            energy.consume(took);
+            setChanged();
+        }
+        return took > 0;
+    }
+
     /** One service tick for one wearer: tanks every tick, wear every {@link #REPAIR_TICKS}. */
     public boolean service(Player player, boolean naturalAir, long gameTime) {
         boolean worked = fillWearer(player, naturalAir);
+        // a drill held in either hand charges too
+        worked |= chargeDrill(player.getMainHandItem()) | chargeDrill(player.getOffhandItem());
         if (gameTime % REPAIR_TICKS == 0) {
             for (EquipmentSlot slot : SuitProtection.SLOTS) {
                 worked |= mend(player.getItemBySlot(slot));
@@ -114,7 +133,13 @@ public class SuitStationBlockEntity extends GasMachineBlockEntity {
         for (Player p : level.getEntitiesOfClass(Player.class, be.serviceArea(), p -> !p.isSpectator())) {
             working |= be.service(p, air, level.getGameTime());
         }
-        if (level.getGameTime() % REPAIR_TICKS == 0) {
+        if (!be.getStack().isEmpty() && be.getStack().getItem() instanceof com.pizzaparker07.spacebreaker.content.suit.ElectricDrillItem) {
+            ItemStack drill = be.getStack().copy();
+            if (be.chargeDrill(drill)) {
+                be.items.setStackInSlot(0, drill);
+                working = true;
+            }
+        } else if (level.getGameTime() % REPAIR_TICKS == 0) {
             ItemStack piece = be.getStack().copy();
             if (be.mend(piece)) {
                 be.items.setStackInSlot(0, piece);
