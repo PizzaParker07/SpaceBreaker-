@@ -89,12 +89,19 @@ public final class SkyGameTests {
 
     /**
      * Eclipses from the Moon: the total lunar eclipse of 2000-01-21 (greatest at 04:44 UTC) is, seen from the Moon, a
-     * total eclipse of the Sun by Earth; it is found by the search and its middle lies within a few hours of the real one.
+     * total eclipse of the Sun by Earth, and so is the one of 2022-11-08; each is found by the search and its middle lies within a few hours of the real one.
      */
     @GameTest(template = "empty", timeoutTicks = 400)
     public static void earthEclipsesTheSunFromTheMoon(GameTestHelper helper) {
         var sys = BodyAdapter.system(helper.getLevel().registryAccess()).orElseThrow();
-        double greatest = 1701776.0; // 2000-01-21 04:44 UTC in seconds after J2000 (TT)
+        // 2000-01-21 04:44 UTC and 2022-11-08 10:59 UTC, in seconds after J2000 (TT); the second needs the
+        // Moon's nodal precession to line up 23 years later
+        assertEclipse(helper, sys, 1701776.0, "2000-01-21");
+        assertEclipse(helper, sys, 721177220.0, "2022-11-08");
+        helper.succeed();
+    }
+
+    private static void assertEclipse(GameTestHelper helper, com.pizzaparker07.spacebreaker.core.astro.BodySystem sys, double greatest, String label) {
         double best = 0;
         double bestT = 0;
         for (double dt = -12 * 3600; dt <= 12 * 3600; dt += 300) {
@@ -104,14 +111,13 @@ public final class SkyGameTests {
                 bestT = dt;
             }
         }
-        helper.assertTrue(best > 0.99, "Earth fully hides the Sun from the Moon: " + best);
-        helper.assertTrue(Math.abs(bestT) < 4 * 3600, "within a few hours of the real eclipse: " + bestT / 3600 + " h");
+        helper.assertTrue(best > 0.99, label + ": Earth fully hides the Sun from the Moon: " + best);
+        helper.assertTrue(Math.abs(bestT) < 4 * 3600, label + ": within a few hours of the real eclipse: " + bestT / 3600 + " h");
         double start = com.pizzaparker07.spacebreaker.content.worldgen.Eclipses.next(sys, "spacebreaker:moon", "spacebreaker:earth",
                 greatest - 5 * 86400, 10 * 86400, 1800);
-        helper.assertTrue(!Double.isNaN(start) && Math.abs(start - greatest) < 6 * 3600, "the search finds it: " + (start - greatest) / 3600 + " h");
+        helper.assertTrue(!Double.isNaN(start) && Math.abs(start - greatest) < 6 * 3600, label + ": the search finds it: " + (start - greatest) / 3600 + " h");
         helper.assertTrue(com.pizzaparker07.spacebreaker.content.worldgen.Eclipses.coverage(sys, "spacebreaker:moon", "spacebreaker:earth",
-                greatest + 7 * 86400) == 0, "a week later the Sun is clear");
-        helper.succeed();
+                greatest + 7 * 86400) == 0, label + ": a week later the Sun is clear");
     }
 
     /**
