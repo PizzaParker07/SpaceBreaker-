@@ -23,12 +23,31 @@ public class RoverRenderer extends EntityRenderer<RoverEntity> {
     private static final ResourceLocation TEXTURE = Spacebreaker.id("textures/entity/rover.png");
     private static final ResourceLocation LIGHTS = Spacebreaker.id("textures/entity/rover_lights.png");
     private static final ResourceLocation BEAM = Spacebreaker.id("textures/entity/rover_beam.png");
+    private static final ResourceLocation SPRINT_TEXTURE = Spacebreaker.id("textures/entity/sprint_rover.png");
     private final RoverModel model;
+    private final ResourceLocation texture;
 
     public RoverRenderer(EntityRendererProvider.Context ctx) {
+        this(ctx, new RoverModel(ctx.bakeLayer(RoverModel.LAYER)), TEXTURE);
+    }
+
+    private RoverRenderer(EntityRendererProvider.Context ctx, RoverModel model, ResourceLocation texture) {
         super(ctx);
-        this.model = new RoverModel(ctx.bakeLayer(RoverModel.LAYER));
+        this.model = model;
+        this.texture = texture;
         this.shadowRadius = 1.1F;
+    }
+
+    private static final ResourceLocation PRESSURIZED_TEXTURE = Spacebreaker.id("textures/entity/pressurized_rover.png");
+
+    /** The pressurised rover: the standard chassis under a closed cabin. */
+    public static RoverRenderer pressurized(EntityRendererProvider.Context ctx) {
+        return new RoverRenderer(ctx, new RoverModel(ctx.bakeLayer(RoverModel.PRESSURIZED_LAYER), RoverModel.PRESSURIZED), PRESSURIZED_TEXTURE);
+    }
+
+    /** The sprint rover: same parts and UV layout, its own proportions and paint. */
+    public static RoverRenderer sprint(EntityRendererProvider.Context ctx) {
+        return new RoverRenderer(ctx, new RoverModel(ctx.bakeLayer(RoverModel.SPRINT_LAYER), RoverModel.SPRINT), SPRINT_TEXTURE);
     }
 
     /**
@@ -50,19 +69,23 @@ public class RoverRenderer extends EntityRenderer<RoverEntity> {
     @Override
     public void render(RoverEntity rover, float yaw, float partialTick, PoseStack pose, MultiBufferSource buffers, int light) {
         pose.pushPose();
-        pose.translate(0F, 1.5F, 0F);
+        pose.translate(0F, Mth.lerp(partialTick, rover.bodyLiftO, rover.bodyLift), 0F);
         pose.mulPose(Axis.YP.rotationDegrees(180F - yaw));
+        // lean with the ground under the wheels, pivoting where the wheels touch it
+        pose.mulPose(Axis.XP.rotation(Mth.lerp(partialTick, rover.bodyPitchO, rover.bodyPitch)));
+        pose.mulPose(Axis.ZP.rotation(Mth.lerp(partialTick, rover.bodyRollO, rover.bodyRoll)));
+        pose.translate(0F, 1.5F, 0F);
         float hurt = rover.hurtTime() - partialTick;
         if (hurt > 0) {
             pose.mulPose(Axis.ZP.rotationDegrees(Mth.sin(hurt) * hurt * 0.4F));
         }
         pose.scale(-1F, -1F, 1F);
         model.setupAnim(rover, 0, 0, rover.tickCount + partialTick, 0, 0);
-        model.renderToBuffer(pose, buffers.getBuffer(model.renderType(TEXTURE)), light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);
+        model.renderToBuffer(pose, buffers.getBuffer(model.renderType(texture)), light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);
         float dust = rover.hasSolar() ? rover.dust() : 0F;
         if (dust > 0.05F) {
             roofDust(pose, buffers.getBuffer(RenderType.entityTranslucent(net.minecraft.client.renderer.texture.TextureAtlas.LOCATION_BLOCKS)),
-                    dust, model.bodyY(), light);
+                    dust, model.bodyY(), model.style(), light);
         }
         boolean on = lightsOn(rover);
         if (on) {
@@ -74,19 +97,19 @@ public class RoverRenderer extends EntityRenderer<RoverEntity> {
     }
 
     /** The same dust film as on a solar tracker, laid over the deck panel (model space, y down: its top is y = 5). */
-    private static void roofDust(PoseStack pose, VertexConsumer vc, float dust, float bodyY, int light) {
+    private static void roofDust(PoseStack pose, VertexConsumer vc, float dust, float bodyY, RoverModel.Style style, int light) {
         net.minecraft.client.renderer.texture.TextureAtlasSprite sprite = Minecraft.getInstance()
                 .getTextureAtlas(net.minecraft.client.renderer.texture.TextureAtlas.LOCATION_BLOCKS)
                 .apply(com.pizzaparker07.spacebreaker.Spacebreaker.id("block/solar_dust"));
         // the roof cells are small and dark: a thinner film keeps them readable at full cover
         int alpha = Math.round(com.pizzaparker07.spacebreaker.client.machines.SolarPanelRenderer.dustAlpha(dust) * 0.6F * 255);
         PoseStack.Pose last = pose.last();
-        float y = (bodyY + 4.95F) / 16F;
+        float y = (bodyY + style.panelTop() - 0.05F) / 16F;
         float x0 = -12F / 16F;
         float x1 = 12F / 16F;
         // the 24 x 16 panel takes the 16 px dust tile one and a half times across so the grain keeps its size
-        float zs = 15F / 16F;
-        float ze = 31F / 16F;
+        float zs = style.panelFront() / 16F;
+        float ze = (style.panelFront() + 16F) / 16F;
         for (int i = 0; i < 2; i++) {
             float a = i == 0 ? x0 : 0F;
             float b = i == 0 ? 0F : x1;
@@ -112,9 +135,9 @@ public class RoverRenderer extends EntityRenderer<RoverEntity> {
     private static void beams(PoseStack pose, VertexConsumer vc) {
         Matrix4f m = pose.last().pose();
         for (int side = -1; side <= 1; side += 2) {
-            float x = side * 6F / 16F;
-            float y = 13.5F / 16F;
-            float z = -19.2F / 16F;
+            float x = side * 6.5F / 16F;
+            float y = 14F / 16F;
+            float z = -21.6F / 16F;
             float len = 5F;
             float r0 = 0.08F;
             float r1 = 1.1F;
@@ -144,6 +167,6 @@ public class RoverRenderer extends EntityRenderer<RoverEntity> {
 
     @Override
     public ResourceLocation getTextureLocation(RoverEntity rover) {
-        return TEXTURE;
+        return texture;
     }
 }

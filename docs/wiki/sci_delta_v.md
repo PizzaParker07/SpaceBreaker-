@@ -36,11 +36,11 @@ Roket montaj tezgâhı her kademenin Δv'sini ve itki/ağırlık oranını göst
 | Ayar | Bedel | Dünya → yörünge |
 |---|---|---|
 | Gerçekçi | gerçek değer | ≈ 9,0–9,4 km/s |
-| Dengeli | %35 | ≈ 3,2 km/s |
+| Dengeli | %43 | ≈ 4,0 km/s |
 | Kolay | %25 | ≈ 2,3 km/s |
 
 > [!WARNING]
-> **Gerçekçi** ayarda yörüngeye çıkılır; Ay ve Mars ise bugünkü montaj sınırını aşan ağır bir roket ister. Uzak dünyalara gitmek için **Dengeli** ya da **Kolay** ayarı seç.
+> **Gerçekçi** ayarda roket yörüngeye çıkar ve ısı kalkanıyla geri döner; Ay ve Mars ise bugünkü montaj sınırını aşan ağır bir roket ister. Uzak dünyalara gitmek için **Dengeli** ya da **Kolay** ayarı seç.
 
 → [Roket Denklemi](rocket_equation) · [Transfer Yörüngeleri](sci_transfers)
 
@@ -83,11 +83,11 @@ The rocket assembler shows each stage's Δv and thrust-to-weight ratio. The serv
 | Setting | Cost | Earth → orbit |
 |---|---|---|
 | Realistic | real value | ≈ 9.0–9.4 km/s |
-| Balanced | 35 % | ≈ 3.2 km/s |
+| Balanced | 43 % | ≈ 4.0 km/s |
 | Easy | 25 % | ≈ 2.3 km/s |
 
 > [!WARNING]
-> On **Realistic** you can reach orbit; the Moon and Mars need a heavier rocket than today's assembly limit. For farther worlds pick **Balanced** or **Easy**.
+> On **Realistic** a rocket reaches orbit and comes home under its heat shield; the Moon and Mars need a heavier rocket than today's assembly limit. For farther worlds pick **Balanced** or **Easy**.
 
 → [Rocket Equation](rocket_equation) · [Transfer Orbits](sci_transfers)
 

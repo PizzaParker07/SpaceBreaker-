@@ -28,7 +28,7 @@
 
 ### Şarj
 - Bir [Batarya Bankası](power) ya da kablonun yanında **200 FE/t** ile dolar.
-- Elinde [Güneş Takipli Panel](power) ya da [Radyoizotop Jeneratör (RTG)](power) varken geziciye `Sağ Tık`: üstüne takılır, yolda kendini şarj eder.
+- Elinde [Güneş Takipli Panel](power) ya da [Radyoizotop Jeneratör (RTG)](power) varken geziciye `Sağ Tık`: koltukların arkasındaki arka güverteye takılır, yolda kendini şarj eder.
 
 <details>
 <summary>English: Rover</summary>
@@ -61,6 +61,6 @@ An electric vehicle for reaching distant craters, ice fields and ruins from your
 
 ### Charging
 - Next to a [Battery Bank](power) or a cable it charges at **200 FE/t**.
-- `Right Click` the rover with a [Solar Tracker](power) or [Radioisotope Generator (RTG)](power) in hand: it is mounted on top and charges on the move.
+- `Right Click` the rover with a [Solar Tracker](power) or [Radioisotope Generator (RTG)](power) in hand: it is mounted on the rear deck behind the seats and charges on the move.
 
 </details>

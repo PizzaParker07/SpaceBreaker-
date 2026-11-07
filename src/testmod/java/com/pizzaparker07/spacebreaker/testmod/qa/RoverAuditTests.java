@@ -25,8 +25,13 @@ import java.util.Locale;
 @GameTestHolder(Spacebreaker.MOD_ID)
 @PrefixGameTestTemplate(false)
 public final class RoverAuditTests {
-    /** The roof panel in RoverModel: model y 2..3 (y down, ground at 24, renderer lifts 1.5), model z 2..18 (behind). */
-    static final double PANEL_BOTTOM = 1.5 - 3 / 16.0, PANEL_Z_FROM = 2 / 16.0, PANEL_Z_TO = 18 / 16.0;
+    /**
+     * The solar panel in RoverModel since industry 44a83bab: on the rear deck, model y 5..6 (y down, ground at 24,
+     * renderer lifts 1.5), model z 15..31 (behind the centre).
+     */
+    static final double PANEL_BOTTOM = 1.5 - 6 / 16.0, PANEL_Z_FROM = 15 / 16.0, PANEL_Z_TO = 31 / 16.0;
+    /** Half the depth of a seated player's head. */
+    static final double HEAD_HALF = 0.25;
     /** Top of a riding player's head above its position (vanilla player model). */
     static final double HEAD_TOP = 1.8;
 
@@ -58,7 +63,7 @@ public final class RoverAuditTests {
         for (ServerPlayer p : List.of(driver, second)) {
             double head = p.getY() + HEAD_TOP - rover.getY();
             double back = -(p.getZ() - rover.getZ());
-            boolean under = back >= PANEL_Z_FROM - 0.3 && back <= PANEL_Z_TO + 0.3;
+            boolean under = back + HEAD_HALF >= PANEL_Z_FROM && back - HEAD_HALF <= PANEL_Z_TO;
             String who = p == driver ? "driver" : "passenger";
             out.add(String.format(Locale.ROOT, "- %s: seat %.2f above the rover, %.2f behind its centre; head top at %.2f, panel underside at %.2f%s",
                     who, p.getY() - rover.getY(), back, head, PANEL_BOTTOM,

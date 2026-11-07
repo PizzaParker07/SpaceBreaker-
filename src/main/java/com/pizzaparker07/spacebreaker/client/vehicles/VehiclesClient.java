@@ -25,11 +25,15 @@ public final class VehiclesClient {
     @SubscribeEvent
     static void layers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(RoverModel.LAYER, RoverModel::createLayer);
+        event.registerLayerDefinition(RoverModel.SPRINT_LAYER, RoverModel::createSprintLayer);
+        event.registerLayerDefinition(RoverModel.PRESSURIZED_LAYER, RoverModel::createPressurizedLayer);
     }
 
     @SubscribeEvent
     static void renderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(VehiclesModule.ROVER.get(), RoverRenderer::new);
+        event.registerEntityRenderer(VehiclesModule.SPRINT_ROVER.get(), RoverRenderer::sprint);
+        event.registerEntityRenderer(VehiclesModule.PRESSURIZED_ROVER.get(), RoverRenderer::pressurized);
     }
 
     private static final java.util.Map<Integer, RoverSound> SOUNDS = new java.util.HashMap<>();
@@ -88,6 +92,13 @@ public final class VehiclesClient {
         }
         if (rover.hasRtg()) {
             g.drawString(mc.font, Component.translatable("hud.spacebreaker.rover.rtg"), ix, y - 2, rover.hasPellet() ? 0xFFF0C040 : 0xFF808080, true);
+        }
+        if (rover.roverType().cabin()) {
+            // cabin air above the battery line: blue while pressurised, red when the tank is empty
+            int o2 = Math.round(rover.cabinOxygen() * 100F / RoverEntity.CABIN_O2_CAPACITY);
+            Component cabin = rover.cabinPressurized() ? Component.translatable("hud.spacebreaker.rover.cabin", o2)
+                    : Component.translatable("hud.spacebreaker.rover.cabin_empty");
+            g.drawString(mc.font, cabin, x, y - 22, rover.cabinPressurized() ? (o2 > 20 ? 0xFF8FD0F0 : 0xFFE0B030) : 0xFFD04030, true);
         }
     }
 }

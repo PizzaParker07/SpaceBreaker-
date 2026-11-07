@@ -25,8 +25,8 @@ Her kademede altta **bir motor**, üstünde **yakıt tankları** olur. Tanklar, 
 
 | Motor | İtki | Isp | Yakıt |
 |---|---|---|---|
-| Kerosen (deniz) | 560 kN | 282 / 311 s | RP-1 + LOX (1 : 2,56) |
-| Kerosen (vakum) | 190 kN | 345 s | RP-1 + LOX (1 : 2,56) |
+| Kerosen (deniz) | 845 kN | 282 / 311 s | RP-1 + LOX (1 : 2,56) |
+| Kerosen (vakum) | 190 kN | 348 s | RP-1 + LOX (1 : 2,56) |
 | Metaloks (deniz) | 600 kN | 330 / 350 s | metan + LOX (1 : 3,6) |
 | Metaloks (vakum) | 220 kN | 380 s | metan + LOX (1 : 3,6) |
 | Hidroloks (deniz) | 650 kN | 366 / 452 s | hidrojen + LOX (1 : 6) |
