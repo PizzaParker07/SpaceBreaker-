@@ -270,7 +270,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Görev kontrol anonsları (Türkçe + İngilizce, oyun diline göre) | geri sayım 10→1, ateşleme, kalkış, kademe ayrılması, yörünge, atmosfere giriş, paraşüt, iniş, yakıt/oksijen uyarısı, geri sayım durdu; telsiz filtresi + sinyal sesleri; istemci ayarı `missionControlVoice` |
 | 🎨 | Roket sesleri | motor döngüsü, ateşleme, kademe ayrılması, paraşüt, atmosfere giriş gürültüsü |
 | 🎨 | Giysi | oksijen alarmı |
-| 🎨 | Müzik | altı özgün ortam parçası (sözsüz): Yörünge (yumuşak piyano + sentezleyici), Ay (alçak uğultular, cam çan sesleri), Mars (sıcak pad'ler, uzak tek melodi), Venüs (havadar cam tınılar, derin org uğultusu), Titan (amber pus, yumuşak düşen notalar), Jüpiter uyduları (kabaran pad'ler, buz çanları); biyomların `music` alanından çalar |
+| 🎨 | Müzik | sekiz özgün ortam parçası (sözsüz): Yörünge (yumuşak piyano + sentezleyici), Ay (alçak uğultular, cam çan sesleri), Mars (sıcak pad'ler, uzak tek melodi), Venüs (havadar cam tınılar, derin org uğultusu), Titan (amber pus, yumuşak düşen notalar), Jüpiter uyduları (kabaran pad'ler, buz çanları), Buz devleri — Uranüs, Neptün, Plüton ve uyduları (seyrek derin uğultular, uzak tek çanlar), Asteroit kuşağı (yumuşak arpej, uzak metal tınılar); biyomların `music` alanından çalar |
 
 ## Yaratıklar (gezegenlere özgü, kan yok)
 | Gök cismi | Yaratıklar |

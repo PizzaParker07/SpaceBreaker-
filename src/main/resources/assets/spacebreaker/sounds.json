@@ -478,5 +478,21 @@
         "stream": true
       }
     ]
+  },
+  "music.ice_giants": {
+    "sounds": [
+      {
+        "name": "spacebreaker:music/ice_giants",
+        "stream": true
+      }
+    ]
+  },
+  "music.belt": {
+    "sounds": [
+      {
+        "name": "spacebreaker:music/belt",
+        "stream": true
+      }
+    ]
   }
 }

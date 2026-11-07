@@ -42,6 +42,10 @@ public final class SbSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> MUSIC_TITAN = event("music.titan");
     /** Swelling pads and ice chimes under Jupiter for its icy moons. */
     public static final DeferredHolder<SoundEvent, SoundEvent> MUSIC_JOVIAN = event("music.jovian");
+    /** Sparse sub-bass drones, glassy harmonics and far-apart bells for Uranus, Neptune, Pluto and their moons. */
+    public static final DeferredHolder<SoundEvent, SoundEvent> MUSIC_ICE_GIANTS = event("music.ice_giants");
+    /** Soft pulsing arpeggio, warm pads and distant metallic tings for the asteroid belt and its dwarf planets. */
+    public static final DeferredHolder<SoundEvent, SoundEvent> MUSIC_BELT = event("music.belt");
 
     // --- mission control ------------------------------------------------------------------------
     /** Short radio tones played before and after a spoken line. */
