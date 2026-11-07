@@ -52,6 +52,68 @@ public final class ConduitNetwork {
     private long lastTick = -1;
     private int rotate;
     private boolean busy;
+    /** Per-endpoint capability caches (same order as {@link #endpoints}); NeoForge drops a cache's value when the block changes. */
+    private net.neoforged.neoforge.capabilities.BlockCapabilityCache<?, Direction>[] caches;
+
+    private long resolvedTick = -1;
+    private net.neoforged.neoforge.capabilities.BlockCapability<?, Direction> resolvedCap;
+    private Object[] resolved = new Object[0];
+    private int[] resolvedIndex = new int[0];
+    private int resolvedCount;
+
+    /**
+     * Resolves every loaded endpoint's capability once per tick: a big base offers energy to the same network from
+     * dozens of generators each tick, and each offer then only walks this short array. A block change mid-tick drops
+     * the whole network (see {@link ConduitBlock#neighborChanged}), so nothing stale outlives the tick.
+     */
+    private int resolve(net.neoforged.neoforge.capabilities.BlockCapability<?, Direction> capability) {
+        long now = level.getGameTime();
+        if (now == resolvedTick && capability == resolvedCap) {
+            return resolvedCount;
+        }
+        int n = endpoints.size();
+        if (resolved.length < n) {
+            resolved = new Object[n];
+            resolvedIndex = new int[n];
+        }
+        int count = 0;
+        for (int k = 0; k < n; k++) {
+            if (!level.isLoaded(endpoints.get(k).pos())) {
+                continue;
+            }
+            Object c = cap(capability, k);
+            if (c != null) {
+                resolved[count] = c;
+                resolvedIndex[count] = k;
+                count++;
+            }
+        }
+        for (int k = count; k < resolvedCount; k++) {
+            resolved[k] = null;
+        }
+        resolvedTick = now;
+        resolvedCap = capability;
+        resolvedCount = count;
+        return count;
+    }
+
+    /** The capability on an endpoint's face, looked up once and then kept until that block changes. */
+    @SuppressWarnings("unchecked")
+    private <T> @org.jetbrains.annotations.Nullable T cap(net.neoforged.neoforge.capabilities.BlockCapability<T, Direction> capability, int index) {
+        Endpoint e = endpoints.get(index);
+        if (!(level instanceof net.minecraft.server.level.ServerLevel server)) {
+            return level.getCapability(capability, e.pos(), e.face());
+        }
+        if (caches == null || caches.length != endpoints.size()) {
+            caches = new net.neoforged.neoforge.capabilities.BlockCapabilityCache[endpoints.size()];
+        }
+        var cache = caches[index];
+        if (cache == null || cache.getCapability() != capability) {
+            cache = net.neoforged.neoforge.capabilities.BlockCapabilityCache.create(capability, server, e.pos(), e.face());
+            caches[index] = cache;
+        }
+        return (T) cache.getCapability();
+    }
 
     private ConduitNetwork(Level level, ConduitType type) {
         this.level = level;
@@ -134,27 +196,24 @@ public final class ConduitNetwork {
         busy = true;
         try {
             List<IEnergyStorage> targets = new ArrayList<>();
-            for (Endpoint e : endpoints) {
-                if (e.pos().equals(source) || !level.isLoaded(e.pos())) {
+            int count = left > 0 ? resolve(Capabilities.EnergyStorage.BLOCK) : 0;
+            for (int j = 0; j < count; j++) {
+                Endpoint e = endpoints.get(resolvedIndex[j]);
+                if (e.pos().equals(source)) {
                     continue;
                 }
-                IEnergyStorage t = level.getCapability(Capabilities.EnergyStorage.BLOCK, e.pos(), e.face());
-                if (t != null && t.canReceive()) {
+                IEnergyStorage t = (IEnergyStorage) resolved[j];
+                if (t.canReceive()) {
                     targets.add(t);
                 }
             }
             int n = targets.size();
-            int start = n == 0 ? 0 : Math.floorMod(rotate++, n);
+            // round robin: each offer starts at the next consumer and fills it before moving on, so a hundred
+            // generators feeding a hundred machines make a hundred deliveries a tick, not ten thousand 1 FE trickles;
+            // over a few ticks every consumer gets its turn (a dry run does not move the start)
+            int start = n == 0 ? 0 : Math.floorMod(simulate ? rotate : rotate++, n);
             for (int i = 0; i < n && left > 0; i++) {
-                IEnergyStorage t = targets.get((start + i) % n);
-                int share = Math.max(1, left / (n - i));
-                int got = t.receiveEnergy(share, simulate);
-                left -= got;
-                moved += got;
-            }
-            // second pass: let anyone take what the others could not
-            for (int i = 0; i < n && left > 0; i++) {
-                int got = targets.get(i).receiveEnergy(left, simulate);
+                int got = targets.get((start + i) % n).receiveEnergy(left, simulate);
                 left -= got;
                 moved += got;
             }
@@ -178,14 +237,14 @@ public final class ConduitNetwork {
         busy = true;
         try {
             List<IFluidHandler> targets = new ArrayList<>();
-            for (Endpoint e : endpoints) {
-                if (e.extract() || e.pos().equals(source) || !level.isLoaded(e.pos()) || !e.passes(stack)) {
+            int count = left > 0 ? resolve(Capabilities.FluidHandler.BLOCK) : 0;
+            for (int j = 0; j < count; j++) {
+                Endpoint e = endpoints.get(resolvedIndex[j]);
+                if (e.extract() || e.pos().equals(source) || !e.passes(stack)) {
                     continue;
                 }
-                IFluidHandler t = level.getCapability(Capabilities.FluidHandler.BLOCK, e.pos(), e.face());
-                if (t != null) {
-                    targets.add(t);
-                }
+                IFluidHandler t = (IFluidHandler) resolved[j];
+                targets.add(t);
             }
             int n = targets.size();
             int start = n == 0 ? 0 : Math.floorMod(rotate++, n);
@@ -250,14 +309,14 @@ public final class ConduitNetwork {
         busy = true;
         try {
             List<net.neoforged.neoforge.items.IItemHandler> targets = new ArrayList<>();
-            for (Endpoint e : endpoints) {
-                if (e.extract() || e.pos().equals(source) || !level.isLoaded(e.pos()) || !e.passes(stack)) {
+            int count = resolve(Capabilities.ItemHandler.BLOCK);
+            for (int j = 0; j < count; j++) {
+                Endpoint e = endpoints.get(resolvedIndex[j]);
+                if (e.extract() || e.pos().equals(source) || !e.passes(stack)) {
                     continue;
                 }
-                net.neoforged.neoforge.items.IItemHandler t = level.getCapability(Capabilities.ItemHandler.BLOCK, e.pos(), e.face());
-                if (t != null) {
-                    targets.add(t);
-                }
+                net.neoforged.neoforge.items.IItemHandler t = (net.neoforged.neoforge.items.IItemHandler) resolved[j];
+                targets.add(t);
             }
             int n = targets.size();
             int start = n == 0 ? 0 : Math.floorMod(rotate, n);
