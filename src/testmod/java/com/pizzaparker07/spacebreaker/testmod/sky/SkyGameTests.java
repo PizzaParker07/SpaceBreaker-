@@ -88,6 +88,36 @@ public final class SkyGameTests {
     }
 
     /**
+     * Earthshine: under a full Earth overhead the lunar night is clearly lit, under a quarter Earth much less, under a
+     * crescent Earth low in the sky almost not at all, and on the far side, where Earth never rises, not at all.
+     */
+    @GameTest(template = "empty")
+    public static void earthshineFollowsThePhase(GameTestHelper helper) {
+        double sub = com.pizzaparker07.spacebreaker.content.worldgen.SkyMath.SUB_PARENT_LONGITUDE;
+        java.util.function.DoubleBinaryOperator at = (lon, tod) ->
+                com.pizzaparker07.spacebreaker.content.worldgen.Earthshine.brightness(0, lon, tod, 0);
+        double full = at.applyAsDouble(sub, 0.5); // local midnight: the Sun behind us, Earth full overhead
+        double quarter = at.applyAsDouble(sub, 0.25);
+        double max = com.pizzaparker07.spacebreaker.content.worldgen.Earthshine.MAX;
+        helper.assertTrue(full > 0.9 * max, "full Earth overhead: " + full);
+        helper.assertTrue(quarter > 0.2 * full && quarter < 0.45 * full, "quarter Earth gives a third or so: " + quarter / full);
+        helper.assertTrue(at.applyAsDouble(sub, 0) < 0.001 * max, "new Earth at noon gives nothing");
+        // near the limb, Earth low in the sky: the darkest night is under a thin crescent
+        double darkest = Double.MAX_VALUE;
+        for (double tod = 0; tod < 1; tod += 0.005) {
+            if (com.pizzaparker07.spacebreaker.content.worldgen.SkyMath.sunDirection(tod, 0).y < -0.05) {
+                darkest = Math.min(darkest, at.applyAsDouble(sub + 75, tod));
+            }
+        }
+        helper.assertTrue(darkest < 0.05 * full, "crescent Earth: almost dark " + darkest / full);
+        for (double tod = 0; tod < 1; tod += 0.05) {
+            helper.assertTrue(at.applyAsDouble(sub + 180, tod) == 0, "no earthshine on the far side");
+            helper.assertTrue(at.applyAsDouble(sub + 120, tod) == 0, "none where Earth is below the horizon");
+        }
+        helper.succeed();
+    }
+
+    /**
      * Eclipses from the Moon: the total lunar eclipse of 2000-01-21 (greatest at 04:44 UTC) is, seen from the Moon, a
      * total eclipse of the Sun by Earth, and so is the one of 2022-11-08; each is found by the search and its middle lies within a few hours of the real one.
      */

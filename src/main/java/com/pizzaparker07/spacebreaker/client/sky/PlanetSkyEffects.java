@@ -86,13 +86,9 @@ public class PlanetSkyEffects extends DimensionSpecialEffects {
         Vector3d sun = SkyMath.sunDirection(tod, 0);
         double day = smooth((sun.y + 0.04) / 0.16)
                 * (1 - 0.93 * com.pizzaparker07.spacebreaker.content.worldgen.EclipseState.smoothed(level));
-        double night = 0.05;
-        if (parent.isPresent()) {
-            Vector3d e = SkyMath.parentDirection(lat, lon, PlanetTime.dayFraction(level));
-            if (e.y > 0) {
-                night += 0.11 * SkyMath.illuminatedFraction(SkyMath.sunDirection(tod, lat), e) * Math.min(1, e.y * 3);
-            }
-        }
+        double shine = parent.isPresent()
+                ? com.pizzaparker07.spacebreaker.content.worldgen.Earthshine.brightness(lat, lon, tod, PlanetTime.dayFraction(level)) : 0;
+        double night = 0.05 + shine;
         float lunar = (float) (night + (1 - night) * day);
         float sky = net.minecraft.client.renderer.LightTexture.getBrightness(level.dimensionType(), pixelY) * lunar;
         float bl = net.minecraft.client.renderer.LightTexture.getBrightness(level.dimensionType(), pixelX) * blockLightRedFlicker;
@@ -100,7 +96,9 @@ public class PlanetSkyEffects extends DimensionSpecialEffects {
         float bb = bl * (bl * bl * 0.6F + 0.4F);
         // earthshine is faintly blue, sunlight neutral white
         float nightTint = (float) (1 - day);
-        colors.set(bl + sky, bg + sky, bb + sky * (1 + 0.15F * nightTint));
+        float blue = nightTint * (0.15F + com.pizzaparker07.spacebreaker.content.worldgen.Earthshine.BLUE
+                * (float) (shine / com.pizzaparker07.spacebreaker.content.worldgen.Earthshine.MAX));
+        colors.set(bl + sky * (1 - 0.3F * blue), bg + sky * (1 - 0.1F * blue), bb + sky * (1 + blue));
         colors.lerp(new org.joml.Vector3f(0.75F, 0.75F, 0.75F), 0.04F);
     }
 
