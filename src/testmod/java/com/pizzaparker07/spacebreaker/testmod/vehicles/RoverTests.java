@@ -245,6 +245,21 @@ public final class RoverTests {
         });
     }
 
+    /** Working sounds: the rover whine rises with speed; the electrolyser and crusher loop, quiet machines do not. */
+    @GameTest(template = "empty")
+    public static void workingSoundsAreWired(GameTestHelper h) {
+        h.assertTrue(Math.abs(RoverPhysics.motorPitch(0) - 0.8F) < 1e-6 && Math.abs(RoverPhysics.motorPitch(RoverPhysics.MAX_SPEED) - 1.3F) < 1e-6,
+                "pitch 0.8 .. 1.3");
+        h.assertTrue(RoverPhysics.motorPitch(1.0) <= 1.3F, "pitch is capped");
+        var electrolyzer = (com.pizzaparker07.spacebreaker.content.machines.base.MachineBlock) MachinesModule.ELECTROLYZER.block().get();
+        var crusher = (com.pizzaparker07.spacebreaker.content.machines.base.MachineBlock) MachinesModule.CRUSHER.block().get();
+        var press = (com.pizzaparker07.spacebreaker.content.machines.base.MachineBlock) MachinesModule.PRESS.block().get();
+        h.assertTrue(electrolyzer.loopSound() == com.pizzaparker07.spacebreaker.content.audio.SbSounds.ELECTROLYZER_LOOP.get(), "electrolyser hum");
+        h.assertTrue(crusher.loopSound() == com.pizzaparker07.spacebreaker.content.audio.SbSounds.DRILL_LOOP.get(), "crusher grind");
+        h.assertTrue(press.loopSound() == null, "the press has its own ram sounds");
+        h.succeed();
+    }
+
     private static void floor(GameTestHelper h, BlockState state) {
         for (int z = 0; z < 5; z++) {
             for (int x = 0; x < 5; x++) {

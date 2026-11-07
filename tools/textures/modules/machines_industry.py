@@ -586,3 +586,20 @@ def export(save):
     from generate import TEX
     with open(os.path.join(TEX, 'block', 'electrolyzer_cell_on.png.mcmeta'), 'w') as f:
         f.write('{\n  "animation": {"frametime": 3}\n}\n')
+
+
+def power_monitor_front():
+    """Dark screen behind a steel bezel (the numbers are drawn live on top), two status LEDs below."""
+    cv = casing(61, rivets=False, seam=False)
+    rect(cv, 2, 2, 13, 11, S[0])
+    rect(cv, 3, 13, 4, 13, (88, 200, 90))
+    rect(cv, 11, 13, 12, 13, S[5])
+    return cv
+
+
+_export_monitor = export
+
+
+def export(save):  # noqa: F811
+    _export_monitor(save)
+    save(power_monitor_front(), 'block', 'power_monitor_front', (150, 230, 0, None))

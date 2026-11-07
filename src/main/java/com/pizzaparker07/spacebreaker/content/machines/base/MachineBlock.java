@@ -128,6 +128,19 @@ public class MachineBlock extends BaseEntityBlock {
         return out[0];
     }
 
+    /** Set by the client: starts a machine's loop sound at a position (a no-op on servers). */
+    public static java.util.function.BiConsumer<Level, BlockPos> CLIENT_LOOP = (l, p) -> { };
+
+    /** The sound this machine makes while it works, or null for a quiet machine. */
+    public @Nullable net.minecraft.sounds.SoundEvent loopSound() {
+        var id = net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(this).getPath();
+        return switch (id) {
+            case "electrolyzer" -> com.pizzaparker07.spacebreaker.content.audio.SbSounds.ELECTROLYZER_LOOP.get();
+            case "crusher" -> com.pizzaparker07.spacebreaker.content.audio.SbSounds.DRILL_LOOP.get();
+            default -> null;
+        };
+    }
+
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return factory.apply(pos, state);
@@ -136,7 +149,12 @@ public class MachineBlock extends BaseEntityBlock {
     @Override
     public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> beType) {
         if (level.isClientSide) {
-            return null;
+            // only for machines with a working sound: tells the client sound manager every second that it is running
+            return loopSound() != null && beType == type.get() ? (l, p, s, be) -> {
+                if (s.getValue(LIT) && (l.getGameTime() + p.hashCode()) % 20 == 0) {
+                    CLIENT_LOOP.accept(l, p);
+                }
+            } : null;
         }
         return beType == type.get() ? (l, p, s, be) -> MachineBlockEntity.serverTick(l, p, s, (MachineBlockEntity) be) : null;
     }

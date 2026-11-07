@@ -388,3 +388,21 @@ def generate():  # noqa: F811
     pumpjack()
     refinery()
     parts()
+
+
+def power_monitor():
+    t = casing_tex('power_monitor_front')
+    write('models/block/power_monitor.json', {'parent': 'minecraft:block/orientable', 'textures': {
+        'front': t['front'], 'side': t['side'], 'top': t['top'], 'particle': t['side']}})
+    write('blockstates/power_monitor.json', {'variants': {
+        f'facing={f}': ({'model': b('power_monitor'), 'y': r} if r else {'model': b('power_monitor')})
+        for f, r in (('north', 0), ('east', 90), ('south', 180), ('west', 270))}})
+    write('models/item/power_monitor.json', {'parent': b('power_monitor')})
+
+
+_generate_monitor = generate
+
+
+def generate():  # noqa: F811
+    _generate_monitor()
+    power_monitor()

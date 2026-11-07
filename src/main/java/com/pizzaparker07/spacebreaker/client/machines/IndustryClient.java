@@ -28,6 +28,7 @@ public final class IndustryClient {
     static void renderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(MachinesModule.TANK_BE.get(), TankRenderer::new);
         event.registerBlockEntityRenderer(MachinesModule.SOLAR_ARRAY_BE.get(), SolarPanelRenderer::array);
+        event.registerBlockEntityRenderer(MachinesModule.POWER_MONITOR_BE.get(), PowerMonitorRenderer::new);
         event.registerBlockEntityRenderer(MachinesModule.PRESS.type().get(), PressRenderer::new);
         event.registerBlockEntityRenderer(MachinesModule.PUMPJACK.type().get(), PumpjackRenderer::new);
     }
@@ -39,6 +40,10 @@ public final class IndustryClient {
         event.register(PumpjackRenderer.BEAM);
         event.register(PumpjackRenderer.CRANK);
         event.register(PumpjackRenderer.ROD);
+    }
+
+    static {
+        com.pizzaparker07.spacebreaker.content.machines.base.MachineBlock.CLIENT_LOOP = MachineLoopSound::start;
     }
 
     @SubscribeEvent

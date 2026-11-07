@@ -89,6 +89,11 @@ public final class RoverPhysics {
         return vy < -BOUNCE_THRESHOLD ? -vy * RESTITUTION : 0;
     }
 
+    /** Motor whine pitch for a ground speed: 0.8 standing, 1.3 at top speed. */
+    public static float motorPitch(double speed) {
+        return 0.8F + 0.5F * (float) Mth.clamp(speed / MAX_SPEED, 0, 1);
+    }
+
     /** Energy for a stretch of driving. */
     public static int driveCost(double blocks) {
         return (int) Math.ceil(blocks * FE_PER_BLOCK);

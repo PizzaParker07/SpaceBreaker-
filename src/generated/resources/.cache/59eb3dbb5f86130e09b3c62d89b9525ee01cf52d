@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-07T03:14:24.638530217	Loot Tables
+// 1.21.1	2026-11-07T03:10:21.251799381	Loot Tables
 c48f71ca60600cd6230f77a2e146a3df572494ae data/spacebreaker/loot_table/blocks/aerogel.json
 e37973997ec83c5b040a31bf9fcda1757b53fc00 data/spacebreaker/loot_table/blocks/airlock_door.json
 c511e60fe01f6dddc2d2b0e516ca81c11bf4ca91 data/spacebreaker/loot_table/blocks/aluminum_block.json
@@ -14,12 +14,6 @@ cebde755d0e70f5fc6cb4ae8bcb2e37223d60c89 data/spacebreaker/loot_table/blocks/ano
 6f72ff0042c3326328bb485207fbe7969e55efd9 data/spacebreaker/loot_table/blocks/anorthosite_stairs.json
 827bbde2b029d352c4b804251fa86102741fcec7 data/spacebreaker/loot_table/blocks/anorthosite_wall.json
 182214241e8ead5f571690d390e565b62b995ddd data/spacebreaker/loot_table/blocks/arc_furnace.json
-0a3f6786d87918115225a0d4ef2b56a501c97143 data/spacebreaker/loot_table/blocks/ariel_ammonia_ore.json
-03447f917b4805108911fd1711fed5a4e7df5814 data/spacebreaker/loot_table/blocks/ariel_ice.json
-0acd71b0d0c6180a3c7b9bd5c85dd2c83fb3b86e data/spacebreaker/loot_table/blocks/ariel_ice_slab.json
-e5d56e0134cb1d73bb12e57e9675ef43cd05c289 data/spacebreaker/loot_table/blocks/ariel_ice_stairs.json
-39ac28eb99af3b415e4e9860ba3726d445f1e882 data/spacebreaker/loot_table/blocks/ariel_ice_wall.json
-a8c54142d59b8d9c98551030abf5f6323753a36c data/spacebreaker/loot_table/blocks/ariel_regolith.json
 2e74135c3d123c236fdef2105f8eff60ecf8e572 data/spacebreaker/loot_table/blocks/atmosphere_processor.json
 75562bc16dccaaa1c71029f55e38eb56646c5c93 data/spacebreaker/loot_table/blocks/battery_bank.json
 381c22549e872c7388c3d609990ec8528d9a753a data/spacebreaker/loot_table/blocks/bauxite_ore.json
@@ -91,7 +85,6 @@ d27396d04a8e7be3c7aeda6f72504e4f65ad5b65 data/spacebreaker/loot_table/blocks/flu
 afa2d853ffd2fba7d0303cc2fb4d19925857f3fa data/spacebreaker/loot_table/blocks/ganymede_regolith.json
 3e22e09bcd3f6e170c78bdc196ee3ea7af9ec3c2 data/spacebreaker/loot_table/blocks/gas_pipe.json
 e0be94612403e1ca368e10baddda0048850ed3f2 data/spacebreaker/loot_table/blocks/glimmer_lamp.json
-fa5650148331794d151ce2948460254d10936313 data/spacebreaker/loot_table/blocks/graben_floor_ice.json
 2f1163eac10dd448ff616fbd3dbd9f79f504ba48 data/spacebreaker/loot_table/blocks/graphite_ore.json
 cac18213849f6e2cca9f0c9e6d81afc04bf306a5 data/spacebreaker/loot_table/blocks/grooved_ice.json
 6d51a8db543fe3773dd08d4e2af1407dc3ee4c8d data/spacebreaker/loot_table/blocks/gypsum_block.json
@@ -176,6 +169,7 @@ befe63942ae26eba203c977df6d24abf54b40f1f data/spacebreaker/loot_table/blocks/plu
 ef38e5ac3f15fee93e60fc9224165f5f3387ebef data/spacebreaker/loot_table/blocks/polished_martian_basalt.json
 ab4ac8cc9d8b9565e4a8c41c8ce0d0f6753a5934 data/spacebreaker/loot_table/blocks/polished_martian_basalt_slab.json
 9f08b25b95a7504ba39863b67ab0dd431162fd28 data/spacebreaker/loot_table/blocks/polished_martian_basalt_stairs.json
+17e8e8f676a903ff8ae569f7dab7c0debaacde95 data/spacebreaker/loot_table/blocks/power_monitor.json
 abc3bbb6c896a84e643b45bdceea57dd4340c598 data/spacebreaker/loot_table/blocks/press.json
 6d4297786d59c45f5ec6c501fc681a95d44cbf85 data/spacebreaker/loot_table/blocks/pressurized_tank.json
 aa95170403734b3ec90806329bfd015813e8f29d data/spacebreaker/loot_table/blocks/pumpjack.json

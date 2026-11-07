@@ -227,6 +227,14 @@ final class IndustryScenario implements ShowcaseScenario {
             set(level, x, F + 1, 5, MachinesModule.SOLAR_PANEL.get().defaultBlockState());
         }
         set(level, x0 - 4, F + 1, -1, MachinesModule.SOLAR_ARRAY.get().defaultBlockState());
+        // base power: a battery bank with a monitor on its back, charged by the array above
+        set(level, x0 - 4, F + 1, 2, MachinesModule.BATTERY_BANK.block().get().defaultBlockState().setValue(MachineBlock.FACING, Direction.NORTH));
+        if (level.getBlockEntity(new BlockPos(x0 - 4, F + 1, 2)) instanceof MachineBlockEntity bank) {
+            bank.energy().generate(640_000);
+        }
+        set(level, x0 - 4, F + 1, 3, MachinesModule.POWER_MONITOR.get().defaultBlockState()
+                .setValue(com.pizzaparker07.spacebreaker.content.machines.PowerMonitorBlock.FACING, Direction.SOUTH));
+        set(level, x0 - 4, F + 1, 1, MachinesModule.COPPER_CABLE.get().defaultBlockState());
         // display row facing the camera, all running
         List<MachineEntry<?, ?>> show = List.of(MachinesModule.ATMOSPHERE_PROCESSOR, MachinesModule.SABATIER_REACTOR,
                 MachinesModule.REGOLITH_HEATER, MachinesModule.ICE_MELTER, MachinesModule.CHEMICAL_REACTOR, MachinesModule.RTG);
@@ -333,6 +341,7 @@ final class IndustryScenario implements ShowcaseScenario {
         s.add(new Shot("14_isru_night", 18000, ISRU_X + 3.5, G + 2.6, -4.0, 0F, 20F, true, fp, 60, IndustryScenario::rechargeIsru, null));
         s.add(new Shot("15_gui_sabatier", 6000, ISRU_X + 2.5, G + 1.62, -1.0, 0F, 30F, false, fp, 40,
                 p -> openAt(p, new BlockPos(ISRU_X + 2, F + 1, 1)), null));
+        s.add(new Shot("19_power_monitor", 6000, ISRU_X - 3.5, G + 1.7, 5.3, 180F, 12F, true, fp, 120, null, null));
         s.add(new Shot("18_solar_array", 6000, ISRU_X - 0.5, G + 2.4, 2.5, 120F, 18F, true, fp, 60, null, null));
         s.add(new Shot("16_rtg", 6000, ISRU_X + 11.5, G + 2.0, 8.9, 180F, 22F, true, fp, 60, null, null));
         s.add(new Shot("17_gui_rtg", 6000, ISRU_X + 11.5, G + 1.62, 7.0, 180F, 30F, false, fp, 40,

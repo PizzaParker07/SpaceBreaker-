@@ -222,6 +222,33 @@ public final class IndustryRtgTests {
         });
     }
 
+    @GameTest(template = "empty", batch = "industry_power")
+    public static void powerMonitorMaths(GameTestHelper h) {
+        h.assertTrue(com.pizzaparker07.spacebreaker.content.machines.PowerMonitorBlockEntity.ticksLeft(500, 1000, 10) == 50, "fills in 50 ticks");
+        h.assertTrue(com.pizzaparker07.spacebreaker.content.machines.PowerMonitorBlockEntity.ticksLeft(500, 1000, -25) == 20, "empties in 20 ticks");
+        h.assertTrue(com.pizzaparker07.spacebreaker.content.machines.PowerMonitorBlockEntity.ticksLeft(500, 1000, 0) == -1, "steady: no estimate");
+        h.succeed();
+    }
+
+    /** A monitor against a battery bank reads its charge and the net flow into it. */
+    @GameTest(template = "empty", timeoutTicks = 200, batch = "industry_power")
+    public static void powerMonitorReadsABatteryBank(GameTestHelper h) {
+        h.setBlock(new BlockPos(2, 1, 2), MachinesModule.BATTERY_BANK.block().get().defaultBlockState().setValue(MachineBlock.FACING, Direction.NORTH));
+        MachineBlockEntity bank = h.getBlockEntity(new BlockPos(2, 1, 2));
+        bank.energy().generate(250_000);
+        h.setBlock(new BlockPos(2, 1, 3), MachinesModule.POWER_MONITOR.get().defaultBlockState()
+                .setValue(com.pizzaparker07.spacebreaker.content.machines.PowerMonitorBlock.FACING, Direction.SOUTH));
+        com.pizzaparker07.spacebreaker.content.machines.PowerMonitorBlockEntity monitor = h.getBlockEntity(new BlockPos(2, 1, 3));
+        h.succeedWhen(() -> {
+            bank.energy().generate(100);
+            h.assertTrue(monitor.found(), "monitor should find the battery bank behind it");
+            h.assertTrue(monitor.capacity() == 1_000_000 && monitor.stored() >= 250_000, "stored " + monitor.stored() + " / " + monitor.capacity());
+            h.assertTrue(monitor.net() > 80 && monitor.net() < 120, "net flow " + monitor.net());
+            h.assertTrue(h.getLevel().getBlockState(h.absolutePos(new BlockPos(2, 1, 3))).getAnalogOutputSignal(h.getLevel(), h.absolutePos(new BlockPos(2, 1, 3))) >= 3,
+                    "comparator follows the charge");
+        });
+    }
+
     private IndustryRtgTests() {
     }
 }

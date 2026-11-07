@@ -122,6 +122,13 @@ public final class MachinesModule implements SbModule {
                     (pos, state) -> new SolarPanelBlockEntity(MachinesModule.SOLAR_ARRAY_BE.get(), pos, state, SolarArrayBlock.PEAK_OUTPUT),
                     SOLAR_ARRAY.get()).build(null));
 
+    public static final DeferredBlock<PowerMonitorBlock> POWER_MONITOR = BLOCKS.registerBlock("power_monitor", PowerMonitorBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(2.0F, 6.0F).sound(SoundType.METAL).requiresCorrectToolForDrops());
+    public static final DeferredItem<BlockItem> POWER_MONITOR_ITEM = ITEMS.registerSimpleBlockItem(POWER_MONITOR);
+    @SuppressWarnings("DataFlowIssue")
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PowerMonitorBlockEntity>> POWER_MONITOR_BE =
+            BLOCK_ENTITIES.register("power_monitor", () -> BlockEntityType.Builder.of(PowerMonitorBlockEntity::new, POWER_MONITOR.get()).build(null));
+
     public static final MachineEntry<MachineBlock, CombustionGeneratorBlockEntity> COMBUSTION_GENERATOR =
             machine("combustion_generator", CombustionGeneratorBlockEntity::new, null, 13);
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CombustionGeneratorBlockEntity>> COMBUSTION_GENERATOR_BE = COMBUSTION_GENERATOR.type();
@@ -346,7 +353,7 @@ public final class MachinesModule implements SbModule {
         COMPONENTS.register(modBus);
         modBus.addListener(MachinesModule::capabilities);
         com.pizzaparker07.spacebreaker.core.env.Environment.addRadiationSource(RtgFuelPelletItem::carriedDose);
-        SbTabs.Tab tab = SbTabs.MACHINES.icon(SOLAR_PANEL_ITEM).add(SOLAR_PANEL_ITEM).add(SOLAR_ARRAY_ITEM);
+        SbTabs.Tab tab = SbTabs.MACHINES.icon(SOLAR_PANEL_ITEM).add(SOLAR_PANEL_ITEM).add(SOLAR_ARRAY_ITEM).add(POWER_MONITOR_ITEM);
         for (MachineEntry<?, ?> m : MACHINES) {
             tab.add(m.item());
         }
@@ -388,6 +395,16 @@ public final class MachinesModule implements SbModule {
         lang.add("itemGroup.spacebreaker.machines", "Spacebreaker: Machines", "Spacebreaker: Makineler");
         lang.block(SOLAR_PANEL, "Solar Tracker", "Güneş Takipli Panel");
         lang.block(SOLAR_ARRAY, "Solar Array", "Güneş Paneli Dizisi");
+        lang.block(POWER_MONITOR, "Power Monitor", "Güç Göstergesi");
+        lang.add("tooltip.spacebreaker.power_monitor", "Place against a battery bank: charge, net flow and time to full or empty",
+                "Batarya bankasına daya: doluluk, net akış ve dolma/boşalma süresi");
+        lang.add("gui.spacebreaker.power_monitor.none", "No energy store behind the monitor", "Göstergenin arkasında enerji deposu yok");
+        lang.add("gui.spacebreaker.power_monitor.level", "%s%%", "%%%s");
+        lang.add("gui.spacebreaker.power_monitor.flow", "%s FE/t", "%s FE/t");
+        lang.add("gui.spacebreaker.power_monitor.full_in", "full in %s", "%s sonra dolu");
+        lang.add("gui.spacebreaker.power_monitor.empty_in", "empty in %s", "%s sonra boş");
+        lang.add("gui.spacebreaker.power_monitor.full", "full", "dolu");
+        lang.add("gui.spacebreaker.power_monitor.empty", "empty", "boş");
         lang.add("tooltip.spacebreaker.solar_panel", "Follows the sun. Peak output: %s FE/t", "Güneşi takip eder. En yüksek üretim: %s FE/t");
         lang.add("tooltip.spacebreaker.solar_panel.here", "Sunlight here: %s%% of Earth's (noon peak %s FE/t)",
                 "Burada güneş ışığı: Dünya'nın %%%s'i (öğle tepe değeri %s FE/t)");
@@ -400,6 +417,7 @@ public final class MachinesModule implements SbModule {
     public void addBlockLoot(SbBlockLoot loot) {
         loot.self(SOLAR_PANEL.get());
         loot.self(SOLAR_ARRAY.get());
+        loot.self(POWER_MONITOR.get());
         for (MachineEntry<?, ?> m : MACHINES) {
             loot.self(m.block().get());
         }
@@ -419,6 +437,7 @@ public final class MachinesModule implements SbModule {
     public void addTags(SbTags tags) {
         tags.block(BlockTags.MINEABLE_WITH_PICKAXE, SOLAR_PANEL.get());
         tags.block(BlockTags.MINEABLE_WITH_PICKAXE, SOLAR_ARRAY.get());
+        tags.block(BlockTags.MINEABLE_WITH_PICKAXE, POWER_MONITOR.get());
         for (MachineEntry<?, ?> m : MACHINES) {
             tags.block(BlockTags.MINEABLE_WITH_PICKAXE, m.block().get());
         }

@@ -266,6 +266,8 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | RTG Yakıt Peleti | kimyasal reaktör: 4 uranyum tozu + 500 mB sülfürik asit; etkinliği 21 oyun gününde yarıya iner (depoda da); taşınırken pelet başına ~8 mSv/gün doz (ortam radyasyon kancasıyla giysi doz sistemine eklenir) |
 | 🎨 | Radyoizotop Jeneratör (RTG) | taze peletle 40 FE/t, gece gündüz, havasız ve güneşsiz her yerde; kalkanlı gövde (içindeki pelet doz vermez); çıkış peletin etkinliğiyle azalır |
 | 🎨 | Güneş Paneli Dizisi (`spacebreaker:solar_array`) | istasyon ve karakollar için: tek blok taban, kuzey-güney 3 blok kanat, 60 FE/t tepe (3 takipçi); vakumda ufka yakın güneşte hava kaybı yok, yörüngede sürekli öğle |
+| 🎨 | Güç Göstergesi (`spacebreaker:power_monitor`) | batarya bankasının (ya da enerji depolayan herhangi bir bloğun) önüne/arkasına dayanır; ekranında doluluk %, net FE/t ve dolma/boşalma süresi; sağ tıkta özet, karşılaştırıcı çıkışı doluluğa göre |
+| 🎨 | Çalışma sesleri | gezici motoru (hızla incelir, akü boşken susar, vakumda yalnız binenler duyar), elektrolizör uğultusu, kırıcı öğütmesi |
 | 🎨 | Güneş paneli: "burada güneş ışığı %…" | ipucunda gezegene göre yüzde ve öğle tepe değeri, sağ tıkta anlık üretim; 1 FE/t altındaki üretim yuvarlanıp kaybolmaz, birikir |
 
 ### Araçlar (Endüstri)

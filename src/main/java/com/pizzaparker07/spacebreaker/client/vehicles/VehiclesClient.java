@@ -32,6 +32,27 @@ public final class VehiclesClient {
         event.registerEntityRenderer(VehiclesModule.ROVER.get(), RoverRenderer::new);
     }
 
+    private static final java.util.Map<Integer, RoverSound> SOUNDS = new java.util.HashMap<>();
+
+    /** Starts a motor sound for every running rover nearby (each keeps itself up to date and stops on its own). */
+    @SubscribeEvent
+    static void tick(net.neoforged.neoforge.client.event.ClientTickEvent.Post event) {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.level == null || mc.player == null || mc.isPaused()) {
+            SOUNDS.clear();
+            return;
+        }
+        SOUNDS.values().removeIf(RoverSound::isStopped);
+        for (RoverEntity rover : mc.level.getEntitiesOfClass(RoverEntity.class, mc.player.getBoundingBox().inflate(32))) {
+            double speed = Math.hypot(rover.getX() - rover.xo, rover.getZ() - rover.zo);
+            if (!SOUNDS.containsKey(rover.getId()) && RoverSound.wanted(rover, speed)) {
+                RoverSound s = new RoverSound(rover);
+                SOUNDS.put(rover.getId(), s);
+                mc.getSoundManager().play(s);
+            }
+        }
+    }
+
     @SubscribeEvent
     static void gui(RegisterGuiLayersEvent event) {
         event.registerAbove(VanillaGuiLayers.HOTBAR, Spacebreaker.id("rover_hud"), (g, delta) -> hud(g));

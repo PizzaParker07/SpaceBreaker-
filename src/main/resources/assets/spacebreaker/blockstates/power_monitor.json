@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "spacebreaker:block/power_monitor"
+    },
+    "facing=east": {
+      "model": "spacebreaker:block/power_monitor",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "spacebreaker:block/power_monitor",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "spacebreaker:block/power_monitor",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "spacebreaker:block/power_monitor_front",
+    "side": "spacebreaker:block/machine_casing",
+    "top": "spacebreaker:block/machine_top",
+    "particle": "spacebreaker:block/machine_casing"
+  }
+}
