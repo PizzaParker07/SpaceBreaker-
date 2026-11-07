@@ -295,3 +295,38 @@ def export(save):  # noqa: F811
     _export_sinter(save)
     save(sinter_front(), 'block', 'sintering_furnace_front', (150, 230, 0, None))
     save(sinter_glow(), 'block', 'sintering_furnace_glow', (60, 10, 0, lambda c: (60, 10, 0, 200) if c[3] else None), normal=False)
+
+
+def nuclear_fuel_element():
+    """A NERVA-style hexagonal fuel element lying diagonally: tungsten-clad rod with spacer rings, its top end face
+    pierced by the hydrogen channels that run through the uranium carbide."""
+    from sbtex import palettes as PP
+    T = PP.TUNGSTEN
+    cv = Canvas()
+    # rod axis x + y = 15, from lower left to upper right; across = x + y - 15, along = x - y
+    shade = {-2: T[1], -1: T[3], 0: T[5], 1: T[6], 2: T[2]}
+    for y in range(16):
+        for x in range(16):
+            across = x + y - 15
+            along = x - y
+            if -2 <= across <= 2 and -11 <= along <= 7:
+                c = shade[across]
+                if along in (-6, 1) and -1 <= across <= 1:
+                    c = T[2]        # spacer ring
+                cv[x, y] = c
+    # end face (upper right): clad rim round dark coolant channels
+    for y in range(16):
+        for x in range(16):
+            across = x + y - 15
+            along = x - y
+            if along in (8, 9) and -2 <= across <= 2:
+                cv[x, y] = T[0] if (across + along) % 2 == 0 and abs(across) <= 1 else T[7]
+    return cv
+
+
+_export_isru_fuel = export
+
+
+def export(save):  # noqa: F811
+    _export_isru_fuel(save)
+    save(nuclear_fuel_element(), 'item', 'nuclear_fuel_element')

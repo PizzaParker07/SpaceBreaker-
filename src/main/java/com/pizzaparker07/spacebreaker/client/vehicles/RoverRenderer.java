@@ -79,7 +79,7 @@ public class RoverRenderer extends EntityRenderer<RoverEntity> {
                 .getTextureAtlas(net.minecraft.client.renderer.texture.TextureAtlas.LOCATION_BLOCKS)
                 .apply(com.pizzaparker07.spacebreaker.Spacebreaker.id("block/solar_dust"));
         // the roof cells are small and dark: a thinner film keeps them readable at full cover
-        int alpha = Math.round(com.pizzaparker07.spacebreaker.client.machines.SolarPanelRenderer.dustAlpha(dust) * 0.7F * 255);
+        int alpha = Math.round(com.pizzaparker07.spacebreaker.client.machines.SolarPanelRenderer.dustAlpha(dust) * 0.6F * 255);
         PoseStack.Pose last = pose.last();
         float y = (bodyY + 1.95F) / 16F;
         float x0 = -12F / 16F;

@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-07T15:05:33.984810002	Recipes
+// 1.21.1	2026-11-07T15:13:00.619808264	Recipes
 9adaaa5be5385cd4ce86f1592ecb1ea66c0c4dce data/spacebreaker/advancement/recipes/building_blocks/ariel_ice_slab.json
 c8a14effc004b99a09bfd245c11051a06fbb28f6 data/spacebreaker/advancement/recipes/building_blocks/ariel_ice_slab_from_ariel_ice_stonecutting.json
 6754d279fb144c57df42cb3960cf2152443405ff data/spacebreaker/advancement/recipes/building_blocks/ariel_ice_stairs.json
@@ -261,6 +261,7 @@ fca47fdf0f9be17c87ec442029701712b5c464ec data/spacebreaker/recipe/arc_smelting/g
 c78d8e6fac2d2659ec9458dfb86823e91038fdc6 data/spacebreaker/recipe/arc_smelting/lithium_from_dust.json
 7446005ac1b68bba5e3404fe87d14597292eefec data/spacebreaker/recipe/arc_smelting/nickel_from_dust.json
 a520df07b956a20c98d6dff0bf6afba6d4f96971 data/spacebreaker/recipe/arc_smelting/nickel_superalloy.json
+d85195008123dca0de0cc8cd62243b2ecfa2471c data/spacebreaker/recipe/arc_smelting/nuclear_fuel_element.json
 d0b74a0a4c1f87eb59ccbff93e055202b0704850 data/spacebreaker/recipe/arc_smelting/silicon_from_quartz.json
 7769119b15ee8a6c21f6a3593e954596bf46ad9d data/spacebreaker/recipe/arc_smelting/silicon_from_sand.json
 ac24f9e99599b0b5811555bb54636310a9eae450 data/spacebreaker/recipe/arc_smelting/steel.json

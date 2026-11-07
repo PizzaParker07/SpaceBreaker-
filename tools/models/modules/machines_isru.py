@@ -83,6 +83,7 @@ def generate():  # noqa: F811
         box([3, 14, 3], [13, 16, 13], {'north': 'steel', 'south': 'steel', 'east': 'steel', 'west': 'steel', 'up': 'top', 'down': 'bottom'}),
     ])
     write('models/item/rtg_fuel_pellet.json', {'parent': 'minecraft:item/generated', 'textures': {'layer0': i('rtg_fuel_pellet')}})
+    write('models/item/nuclear_fuel_element.json', {'parent': 'minecraft:item/generated', 'textures': {'layer0': i('nuclear_fuel_element')}})
 
 
 _generate_excavator = generate

@@ -92,6 +92,10 @@ final class MachinesLang {
         lang.add("tooltip.spacebreaker.rtg", "Up to %s FE/t, day and night, anywhere. Shielded casing",
                 "En fazla %s FE/t; gece gündüz, her yerde. Kalkanlı gövde");
         lang.item(MachinesModule.RTG_FUEL_PELLET, "RTG Fuel Pellet", "RTG Yakıt Peleti");
+        lang.item(MachinesModule.NUCLEAR_FUEL_ELEMENT, "Nuclear Fuel Element", "Nükleer Yakıt Elemanı");
+        lang.add("tooltip.spacebreaker.nuclear_fuel_element", "Uranium carbide in a tungsten clad: heats a nuclear thermal rocket's hydrogen",
+                "Tungsten kılıflı uranyum karbür: nükleer termal roketin hidrojenini ısıtır");
+        com.pizzaparker07.spacebreaker.content.earth.EarthModule.tag(lang, IsruRecipes.REACTOR_FUEL, "Reactor Fuel", "Reaktör Yakıtı");
         lang.add("tooltip.spacebreaker.rtg_fuel_pellet.activity", "Activity: %s%% (%s FE/t in an RTG)", "Etkinlik: %%%s (RTG'de %s FE/t)");
         lang.add("tooltip.spacebreaker.rtg_fuel_pellet.half_life", "Half-life: %s days, also in storage", "Yarı ömür: %s gün, depoda da azalır");
         lang.add("tooltip.spacebreaker.rtg_fuel_pellet.radiation", "Radioactive: a small dose while carried", "Radyoaktif: taşınırken küçük doz verir");

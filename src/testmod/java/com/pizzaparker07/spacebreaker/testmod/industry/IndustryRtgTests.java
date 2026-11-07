@@ -380,6 +380,18 @@ public final class IndustryRtgTests {
         });
     }
 
+    /** Reactor fuel for the nuclear thermal rocket: made in the arc furnace and listed in spacebreaker:reactor_fuel. */
+    @GameTest(template = "empty", batch = "industry_power")
+    public static void nuclearFuelElementIsMadeAndTagged(GameTestHelper h) {
+        ItemStack element = new ItemStack(MachinesModule.NUCLEAR_FUEL_ELEMENT.get());
+        h.assertTrue(element.is(com.pizzaparker07.spacebreaker.content.machines.IsruRecipes.REACTOR_FUEL), "the element is reactor fuel");
+        var recipe = h.getLevel().getRecipeManager().byKey(com.pizzaparker07.spacebreaker.Spacebreaker.id("arc_smelting/nuclear_fuel_element"));
+        h.assertTrue(recipe.isPresent(), "arc furnace recipe for the fuel element");
+        h.assertTrue(recipe.get().value().getResultItem(h.getLevel().registryAccess()).is(MachinesModule.NUCLEAR_FUEL_ELEMENT.get()),
+                "the recipe makes the element");
+        h.succeed();
+    }
+
     private IndustryRtgTests() {
     }
 }

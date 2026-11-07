@@ -139,6 +139,9 @@ public final class MachinesModule implements SbModule {
     public static final MachineEntry<MachineBlock, com.pizzaparker07.spacebreaker.content.machines.machine.RtgBlockEntity> RTG =
             machine("rtg", com.pizzaparker07.spacebreaker.content.machines.machine.RtgBlockEntity::new,
                     net.minecraft.world.phys.shapes.Shapes.or(Block.box(0, 0, 0, 16, 2, 16), Block.box(1, 2, 1, 15, 14, 15), Block.box(3, 14, 3, 13, 16, 13)), 0);
+    /** Fuel for a nuclear thermal rocket engine (rocketry); listed in {@link IsruRecipes#REACTOR_FUEL}. */
+    public static final DeferredItem<NuclearFuelElementItem> NUCLEAR_FUEL_ELEMENT = ITEMS.registerItem("nuclear_fuel_element", NuclearFuelElementItem::new,
+            new net.minecraft.world.item.Item.Properties().stacksTo(4).rarity(net.minecraft.world.item.Rarity.RARE));
     public static final DeferredItem<RtgFuelPelletItem> RTG_FUEL_PELLET = ITEMS.registerItem("rtg_fuel_pellet", RtgFuelPelletItem::new,
             new net.minecraft.world.item.Item.Properties().stacksTo(16).rarity(net.minecraft.world.item.Rarity.UNCOMMON));
 
@@ -370,6 +373,7 @@ public final class MachinesModule implements SbModule {
             tab.add(m.item());
         }
         tab.add(RTG_FUEL_PELLET);
+        tab.add(NUCLEAR_FUEL_ELEMENT);
         TANK_ITEMS.forEach(tab::add);
         CONDUIT_ITEMS.forEach(tab::add);
     }
