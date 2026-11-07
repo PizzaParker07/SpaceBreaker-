@@ -220,10 +220,11 @@ public final class BlockyBodyRenderer {
             // the stepped body has hidden corners: draw it with its own depth, then clear that depth again so the
             // terrain drawn after the sky is not hidden behind a planet 100 blocks away (the sky comes before terrain,
             // so nothing else has written depth yet)
+            // glClear leaves depth alone while the depth mask is off: open the mask first
+            RenderSystem.depthMask(true);
             RenderSystem.clear(org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
             RenderSystem.enableDepthTest();
             RenderSystem.depthFunc(org.lwjgl.opengl.GL11.GL_LEQUAL);
-            RenderSystem.depthMask(true);
         }
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
@@ -241,9 +242,9 @@ public final class BlockyBodyRenderer {
         BufferUploader.drawWithShader(bb.buildOrThrow());
         RenderSystem.enableCull();
         if (sky) {
+            RenderSystem.clear(org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX); // while the mask is still open
             RenderSystem.depthMask(false);
             RenderSystem.disableDepthTest();
-            RenderSystem.clear(org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
         }
     }
 
