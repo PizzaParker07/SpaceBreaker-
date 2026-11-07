@@ -417,6 +417,39 @@ public final class MarsLifeGameTests {
         throw new net.minecraft.gametest.framework.GameTestAssertException("no solar panel at " + rel);
     }
 
+    /**
+     * Seasons: in northern winter (Ls 270) the northern cap spreads to about 52°, while the south is at its summer edge;
+     * night frost reaches farther. Frost settles on open ground, never under a roof, and sublimates in spring.
+     */
+    @GameTest(template = EMPTY)
+    public static void seasonalFrostGrowsInWinterAndSublimates(GameTestHelper helper) {
+        double winterEdge = com.pizzaparker07.spacebreaker.content.mars.MarsSeasons.capEdge(270, true);
+        helper.assertTrue(Math.abs(winterEdge - 52) < 1e-6, "northern winter cap reaches 52°, got " + winterEdge);
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.mars.MarsSeasons.capEdge(270, false) == 82, "southern summer: residual cap only");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.mars.MarsSeasons.capEdge(90, false) < 53, "southern winter cap spreads too");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.mars.MarsSeasons.wantsFrost(60, 270, false), "frost on the winter cap by day");
+        helper.assertFalse(com.pizzaparker07.spacebreaker.content.mars.MarsSeasons.wantsFrost(45, 270, false), "no daytime frost beyond the cap");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.mars.MarsSeasons.wantsFrost(45, 270, true), "night frost beyond the cap");
+        helper.assertFalse(com.pizzaparker07.spacebreaker.content.mars.MarsSeasons.wantsFrost(60, 90, true), "none in northern summer");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.mars.MarsSeasons.wantsFrost(-60, 90, false), "but on the southern winter cap");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.mars.MarsSeasons.season(275) == 3, "Ls 275 is northern winter");
+
+        ServerLevel level = helper.getLevel();
+        // a column far from the test frame, open to the sky
+        BlockPos base = helper.absolutePos(BlockPos.ZERO).offset(-4000, 0, -4100);
+        level.getChunk(base);
+        int top = level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.WORLD_SURFACE, base.getX(), base.getZ());
+        BlockPos open = new BlockPos(base.getX(), top - 1, base.getZ());
+        level.setBlockAndUpdate(open, Blocks.STONE.defaultBlockState());
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.mars.MarsSeasons.updateColumn(level, open.getX(), open.getZ(), true) == 1, "frost forms");
+        helper.assertTrue(level.getBlockState(open.above()).is(MarsModule.CO2_FROST_LAYER.get()), "a thin frost layer on the ground");
+        helper.assertTrue(level.getBlockState(open).is(Blocks.STONE), "the ground below is untouched");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.mars.MarsSeasons.updateColumn(level, open.getX(), open.getZ(), true) == 0, "no double layers");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.mars.MarsSeasons.updateColumn(level, open.getX(), open.getZ(), false) == -1, "it sublimates");
+        helper.assertTrue(level.getBlockState(open.above()).isAir(), "gone without a trace");
+        helper.succeed();
+    }
+
     private MarsLifeGameTests() {
     }
 }
