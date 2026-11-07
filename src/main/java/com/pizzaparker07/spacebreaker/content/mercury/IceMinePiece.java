@@ -83,8 +83,8 @@ public class IceMinePiece extends StructurePiece {
         // puzzle: when the power failed the store was sealed with an ice plug; the sign says to cut through it
         placeBlock(level, ice, 15, fy + 1, 8, box);
         placeBlock(level, ice, 15, fy + 2, 8, box);
-        com.pizzaparker07.spacebreaker.content.mars.dungeon.DungeonBits.placeFacing(level, box, getWorldPos(13, fy + 2, 9),
-                getWorldPos(14, fy + 2, 9), Blocks.OAK_WALL_SIGN.defaultBlockState(), true);
+        com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.placeToward(level, this, Blocks.OAK_WALL_SIGN.defaultBlockState(),
+                new BlockPos(13, fy + 2, 9), new BlockPos(14, fy + 2, 9), true, box);
         BlockPos sign = getWorldPos(13, fy + 2, 9);
         if (box.isInside(sign)) {
             com.pizzaparker07.spacebreaker.content.mars.dungeon.DungeonBits.signText(level, sign, "ice_mine_store");
@@ -130,8 +130,8 @@ public class IceMinePiece extends StructurePiece {
                     if (y > fy + 3 || centre) {
                         if (centre) {
                             // the ladder hangs on the shaft wall at local z 19, whatever the piece's orientation
-                            com.pizzaparker07.spacebreaker.content.mars.dungeon.DungeonBits.placeFacing(level, box, getWorldPos(12, y, 20),
-                                    getWorldPos(12, y, 19), s(Blocks.LADDER), true);
+                            com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.placeToward(level, this, s(Blocks.LADDER),
+                new BlockPos(12, y, 20), new BlockPos(12, y, 19), true, box);
                         } else {
                             placeBlock(level, dz == -1 ? wall : s(Blocks.AIR), 12 + dx, y, 20 + dz, box);
                         }

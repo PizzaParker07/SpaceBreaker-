@@ -132,7 +132,8 @@ public class MoonletDungeonPiece extends StructurePiece {
         for (int y = fy + 1; y <= G; y++) {
             placeBlock(level, s(Blocks.AIR), 7, y, 4, box);
             placeBlock(level, wall, 7, y, 3, box);
-            DungeonBits.placeFacing(level, box, getWorldPos(7, y, 4), getWorldPos(7, y, 3), s(Blocks.LADDER), true);
+            com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.placeToward(level, this, s(Blocks.LADDER),
+                new BlockPos(7, y, 4), new BlockPos(7, y, 3), true, box);
         }
         placeBlock(level, Blocks.IRON_TRAPDOOR.defaultBlockState().setValue(TrapDoorBlock.HALF, Half.TOP), 7, G + 1, 4, box);
         // a marker beacon: a short mast with a reflector
