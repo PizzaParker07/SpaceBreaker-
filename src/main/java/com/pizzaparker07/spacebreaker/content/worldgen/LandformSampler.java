@@ -40,10 +40,13 @@ final class LandformSampler {
     private final ConcurrentHashMap<Long, List<Volcano>> volcanoCells = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Long, List<Scarp>> scarpCells = new ConcurrentHashMap<>();
 
+    private final RupesShape[] rupes;
+
     LandformSampler(TerrainProfile profile, long seed) {
         this.profile = profile;
         this.lf = profile.landforms();
         this.seed = seed;
+        this.rupes = lf.rupes().stream().map(r -> new RupesShape(r, profile.poleDistance(), seed)).toArray(RupesShape[]::new);
         this.duneField = noise(31);
         this.duneWarp = noise(32);
         this.valleyNoise = noise(33);
@@ -94,7 +97,24 @@ final class LandformSampler {
     // ------------------------------------------------------------------ after craters
 
     /** Erosion and deposits (rift, valleys, grooves, dunes, ice cap, soil patches): returns the new height. */
+    /** The giant cliffs of the profile. */
+    RupesShape[] rupes() {
+        return rupes;
+    }
+
     double finish(double x, double z, double height, PlanetTerrain.Column out) {
+        // giant cliffs last, after the craters: the low side keeps its craters, only dropped
+        for (int i = 0; i < rupes.length; i++) {
+            if (!rupes[i].near(x, z)) {
+                continue;
+            }
+            double[] uv = rupes[i].local(x, z);
+            height += rupes[i].offset(uv);
+            if (rupes[i].face(uv)) {
+                out.rupes = i;
+                out.rupesU = uv[0];
+            }
+        }
         if (lf.rift().isPresent()) {
             height -= rift(x, z, out);
         }

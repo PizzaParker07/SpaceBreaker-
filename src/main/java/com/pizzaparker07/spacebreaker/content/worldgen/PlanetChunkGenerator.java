@@ -255,11 +255,17 @@ public class PlanetChunkGenerator extends ChunkGenerator {
         }
         BlockState surfaceRock = wall || (c.breccia > 0.45 && !lowland) ? breccia : lowland ? lowRock : highRock;
 
+        RupesShape face = c.rupes >= 0 ? t.rupes()[c.rupes] : null;
+        int faceDepth = face == null ? 0 : (int) face.config().height() + 4;
         for (int y = top; y >= minY; y--) {
             int depth = top - y;
             BlockState state;
             if (y <= bedrockTop) {
                 state = mat.bedrock();
+            } else if (depth < faceDepth) {
+                // a giant cliff face: bare rock in layers all the way down
+                Landforms.Rupes r = face.config();
+                state = r.band().isPresent() && face.layer(c.rupesU, y) ? r.band().get() : r.rock();
             } else if (depth < capDepth) {
                 Landforms.IceCap cap = lf.iceCap().get();
                 if (depth == 0 && c.frost && cap.frost().isPresent()) {
@@ -333,7 +339,7 @@ public class PlanetChunkGenerator extends ChunkGenerator {
         for (int lz = 0; lz < 15; lz++) {
             for (int lx = 0; lx < 15; lx++) {
                 PlanetTerrain.Column c = plan.column(lx, lz);
-                if (c.anyCraterRadius < 6 || c.anyCraterS < 0.85 || c.anyCraterS > 1.9 || c.shadowed(terrain().profile())) {
+                if (c.anyCraterRadius < 6 || c.anyCraterS < 0.85 || c.anyCraterS > 1.9 || c.shadowed(terrain().profile()) || c.rupes >= 0) {
                     continue;
                 }
                 long h = PlanetTerrain.mix(seed, PlanetTerrain.mix(baseX + lx, baseZ + lz));

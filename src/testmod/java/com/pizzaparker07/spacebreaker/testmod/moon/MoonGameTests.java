@@ -8,6 +8,7 @@ import com.pizzaparker07.spacebreaker.content.worldgen.Crater;
 import com.pizzaparker07.spacebreaker.content.worldgen.PlanetBiomeSource;
 import com.pizzaparker07.spacebreaker.content.worldgen.PlanetChunkGenerator;
 import com.pizzaparker07.spacebreaker.content.worldgen.PlanetTerrain;
+import com.pizzaparker07.spacebreaker.content.worldgen.RupesShape;
 import com.pizzaparker07.spacebreaker.content.worldgen.PlanetTime;
 import com.pizzaparker07.spacebreaker.content.worldgen.SkyMath;
 import com.pizzaparker07.spacebreaker.content.worldgen.TerrainProfile;
@@ -434,6 +435,91 @@ public final class MoonGameTests {
         double ms = total / 1e6 / n;
         com.pizzaparker07.spacebreaker.Spacebreaker.LOGGER.info("[benchmark] Moon terrain + biomes: {} ms per chunk", String.format(java.util.Locale.ROOT, "%.2f", ms));
         helper.assertTrue(ms < 20, "Moon chunk generation too slow: " + ms + " ms per chunk");
+        helper.succeed();
+    }
+
+    /**
+     * Giant fault cliffs (rupes) built into the terrain: same line and drop as the earlier cliff feature, the low side
+     * drops by the cliff height (craters kept), the face is bare layered rock, and generating through it stays fast.
+     */
+    @GameTest(template = EMPTY, timeoutTicks = 600)
+    public static void rupesCliffsAreBuiltIntoTheTerrain(GameTestHelper helper) {
+        var access = helper.getLevel().registryAccess();
+        var ops = net.minecraft.resources.RegistryOps.create(com.mojang.serialization.JsonOps.INSTANCE, access);
+        var json = TerrainProfile.CODEC.encodeStart(ops, moonProfile(helper)).getOrThrow().getAsJsonObject();
+        var lf = json.has("landforms") ? json.getAsJsonObject("landforms") : new com.google.gson.JsonObject();
+        lf.add("rupes", com.google.gson.JsonParser.parseString("[{\"x\": 0, \"latitude\": 0, \"length\": 400, \"angle\": 0, \"height\": 60, \"wall\": 6,"
+                + " \"rock\": {\"Name\": \"spacebreaker:mare_basalt\"}, \"band\": {\"Name\": \"spacebreaker:anorthosite\"}}]"));
+        json.add("landforms", lf);
+        TerrainProfile cliff = TerrainProfile.CODEC.parse(ops, json).getOrThrow();
+        PlanetTerrain t = new PlanetTerrain(cliff, 9L);
+        PlanetTerrain plain = new PlanetTerrain(moonProfile(helper), 9L);
+        helper.assertTrue(t.rupes().length == 1, "one cliff in the profile");
+        RupesShape shape = t.rupes()[0];
+        // the same line and drop as the cliff feature it replaces
+        var cfg = new com.pizzaparker07.spacebreaker.content.belt.world.RupesFeature.Config(0, 0, 400, 0, 60, 6,
+                com.pizzaparker07.spacebreaker.content.moon.MoonModule.MARE_BASALT.get().defaultBlockState(), java.util.Optional.empty());
+        var rnd = net.minecraft.util.RandomSource.create(3);
+        for (int i = 0; i < 200; i++) {
+            double x = rnd.nextDouble() * 500 - 250;
+            double z = rnd.nextDouble() * 60 - 30;
+            double a = shape.offset(shape.local(x, z));
+            double b = com.pizzaparker07.spacebreaker.content.belt.world.RupesFeature.offset(t, cfg, x, z);
+            helper.assertTrue(Math.abs(a - b) < 1e-9, "same cliff as the feature at " + x + ", " + z + ": " + a + " vs " + b);
+        }
+        double highSide = t.column(0, -60).height - plain.column(0, -60).height;
+        double lowSide = t.column(0, 60).height - plain.column(0, 60).height;
+        helper.assertTrue(Math.abs(highSide) < 1e-6, "the high side keeps its height: " + highSide);
+        helper.assertTrue(lowSide < -50 && lowSide > -61, "the low side drops by the cliff height: " + lowSide);
+        // the face is bare layered rock, generated in one pass
+        var biomes = access.registryOrThrow(net.minecraft.core.registries.Registries.BIOME);
+        var gen = new PlanetChunkGenerator(moonStem(helper).generator().getBiomeSource(), net.minecraft.core.Holder.direct(cliff));
+        gen.bindSeed(9L);
+        PlanetTerrain gt = gen.terrain();
+        var state = net.minecraft.world.level.levelgen.RandomState.create(net.minecraft.world.level.levelgen.NoiseGeneratorSettings.dummy(),
+                access.lookupOrThrow(net.minecraft.core.registries.Registries.NOISE), 9L);
+        LevelHeightAccessor height = LevelHeightAccessor.create(-64, 384);
+        int faces = 0;
+        int bands = 0;
+        long total = 0;
+        int n = 0;
+        for (int cx = -6; cx <= 5; cx++) {
+            for (int cz = -1; cz <= 0; cz++) {
+                var chunk = new net.minecraft.world.level.chunk.ProtoChunk(new net.minecraft.world.level.ChunkPos(cx, cz),
+                        net.minecraft.world.level.chunk.UpgradeData.EMPTY, height, biomes, null);
+                long t0 = System.nanoTime();
+                gen.createBiomes(state, null, null, chunk).join();
+                gen.fillFromNoise(null, state, null, chunk).join();
+                total += System.nanoTime() - t0;
+                n++;
+                for (int lx = 0; lx < 16; lx++) {
+                    for (int lz = 0; lz < 16; lz++) {
+                        int x = (cx << 4) + lx;
+                        int z = (cz << 4) + lz;
+                        PlanetTerrain.Column c = gt.column(x, z);
+                        if (c.rupes < 0) {
+                            continue;
+                        }
+                        int top = chunk.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.WORLD_SURFACE_WG, lx, lz);
+                        for (int y = top; y > top - 20; y--) {
+                            var b = chunk.getBlockState(new BlockPos(x, y, z));
+                            if (b.is(com.pizzaparker07.spacebreaker.content.moon.MoonModule.ANORTHOSITE.base().get())) {
+                                bands++;
+                            } else if (!b.is(com.pizzaparker07.spacebreaker.content.moon.MoonModule.MARE_BASALT.get())) {
+                                helper.fail("cliff face must be bare rock, found " + b + " at " + x + " " + y + " " + z + " top " + top + " h " + c.height
+                                        + " u " + c.rupesU + " depth " + (top - y));
+                            }
+                        }
+                        faces++;
+                    }
+                }
+            }
+        }
+        double ms = total / 1e6 / n;
+        com.pizzaparker07.spacebreaker.Spacebreaker.LOGGER.info("[benchmark] cliff terrain + biomes: {} ms per chunk", String.format(java.util.Locale.ROOT, "%.2f", ms));
+        helper.assertTrue(faces > 100, "cliff face columns: " + faces);
+        helper.assertTrue(bands > 0, "the face shows layers");
+        helper.assertTrue(ms < 20, "cliff chunks too slow: " + ms + " ms");
         helper.succeed();
     }
 
