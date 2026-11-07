@@ -399,3 +399,48 @@ _export_second = export
 def export(save):  # noqa: F811
     _export_second(save)
     save(bucket(), 'block', 'regolith_excavator_bucket', (150, 230, 0, None))
+
+
+# ----------------------------------------------------------------------------- third round: side parts
+
+def copper_pipe():
+    """Copper pipe run with a flange band every 8 pixels (lengthwise along u)."""
+    C = P.COPPER
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            band = x % 8 == 0
+            cv[x, y] = C[5] if y % 4 == 1 else (C[2] if y % 4 == 3 else C[3])
+            if band:
+                cv[x, y] = C[1]
+    return cv
+
+
+def side_panel():
+    """Small control box: dark face, two status lamps, a gauge."""
+    cv = casing(91, rivets=False, seam=False)
+    rect(cv, 3, 3, 12, 12, S[1])
+    rect(cv, 5, 5, 6, 6, (88, 200, 90))
+    rect(cv, 9, 5, 10, 6, (214, 170, 44))
+    rect(cv, 5, 9, 10, 10, S[5])
+    return cv
+
+
+def cable():
+    R = P.RUBBER
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            cv[x, y] = R[4] if y % 4 == 1 else (R[1] if y % 4 == 3 else R[2])
+    return cv
+
+
+_export_third = export
+
+
+def export(save):  # noqa: F811
+    _export_third(save)
+    metal = (150, 230, 0, None)
+    save(copper_pipe(), 'block', 'machine_copper_pipe', metal)
+    save(side_panel(), 'block', 'machine_side_panel', metal)
+    save(cable(), 'block', 'machine_cable', (60, 10, 0, None))
