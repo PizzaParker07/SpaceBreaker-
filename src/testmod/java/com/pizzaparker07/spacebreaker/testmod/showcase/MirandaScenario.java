@@ -2,7 +2,6 @@ package com.pizzaparker07.spacebreaker.testmod.showcase;
 
 import com.pizzaparker07.spacebreaker.content.belt.dungeon.LanderPiece;
 import com.pizzaparker07.spacebreaker.content.belt.world.CoronaFeature;
-import com.pizzaparker07.spacebreaker.content.belt.world.RupesFeature;
 import com.pizzaparker07.spacebreaker.content.uranus.UranusData;
 import com.pizzaparker07.spacebreaker.content.uranus.UranusModule;
 import com.pizzaparker07.spacebreaker.content.uranus.entity.UranusEntities;
@@ -26,8 +25,8 @@ final class MirandaScenario extends OuterShowcase {
     @Override
     protected void build(ServerLevel level, PlanetTerrain t) {
         parent(level, t, "01_uranus_over_miranda", 0, 0, 0.62, 18);
-        RupesFeature.Config cliff = UranusData.cliff();
-        double cz = RupesFeature.centreZ(t, cliff);
+        var cliff = UranusData.cliff();
+        double cz = -cliff.latitude() / 90.0 * t.profile().poleDistance();
         double a = Math.toRadians(cliff.angleDeg());
         double nx = -Math.sin(a);
         double nz = Math.cos(a);

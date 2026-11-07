@@ -4,7 +4,6 @@ import com.pizzaparker07.spacebreaker.Spacebreaker;
 import com.pizzaparker07.spacebreaker.content.belt.OuterWorlds;
 import com.pizzaparker07.spacebreaker.content.belt.SmallBodyTerrain;
 import com.pizzaparker07.spacebreaker.content.belt.world.CoronaFeature;
-import com.pizzaparker07.spacebreaker.content.belt.world.RupesFeature;
 import com.pizzaparker07.spacebreaker.content.worldgen.TerrainProfile;
 import com.pizzaparker07.spacebreaker.core.data.SbDatapack;
 import com.pizzaparker07.spacebreaker.core.lang.Lang;
@@ -87,13 +86,18 @@ public final class UranusData {
     public static TerrainProfile mirandaProfile() {
         var m = new SmallBodyTerrain.Materials(s(MIRANDAN_REGOLITH), s(MIRANDAN_ICE.base()), s(MIRANDAN_ICE.base()), s(MIRANDAN_REGOLITH),
                 Optional.of(s(MIRANDAN_REGOLITH)), Optional.of(s(BRIGHT_RIDGE_ICE)));
+        // the great fault cliff is built into the terrain itself (planet engine rupes): no second pass over the chunk
+        var lf = new com.pizzaparker07.spacebreaker.content.worldgen.Landforms(Optional.empty(), Optional.empty(), Optional.empty(),
+                Optional.empty(), Optional.empty(), Optional.empty(), List.of(), Optional.empty(), Optional.empty(), Optional.empty(),
+                Optional.empty(), List.of(cliff()));
         return SmallBodyTerrain.of(Spacebreaker.id("miranda"), 235.8).baseHeight(76).roughness(1.0).craters(1.0).age(0.8)
-                .iceLatitude(84).materials(m).build();
+                .iceLatitude(84).materials(m).landforms(lf).build();
     }
 
     /** The great fault cliff, a short walk from the landing site. */
-    public static RupesFeature.Config cliff() {
-        return new RupesFeature.Config(380, -8, 1000, 18, 96, 7, s(MIRANDAN_ICE.base()), Optional.of(s(DARK_BAND_ICE)));
+    public static com.pizzaparker07.spacebreaker.content.worldgen.Landforms.Rupes cliff() {
+        return new com.pizzaparker07.spacebreaker.content.worldgen.Landforms.Rupes(380, -8, 1000, 18, 96, 7, s(MIRANDAN_ICE.base()),
+                Optional.of(s(DARK_BAND_ICE)));
     }
 
     /** Three racetrack coronae of bright and dark ridges; the cliff runs along the edge of the first. */
@@ -162,7 +166,6 @@ public final class UranusData {
 
     private static void configured(BootstrapContext<ConfiguredFeature<?, ?>> ctx) {
         ctx.register(cf("miranda_coronae"), new ConfiguredFeature<>(OuterWorlds.CORONAE.get(), coronae()));
-        ctx.register(cf("miranda_cliff"), new ConfiguredFeature<>(OuterWorlds.RUPES.get(), cliff()));
         OuterWorlds.ore(ctx, "miranda_carbon", MIRANDA_STONE, s(CARBON_ORE), 10);
         ctx.register(cf("ariel_chasmata"), new ConfiguredFeature<>(OuterWorlds.GRABENS.get(), chasmata()));
         OuterWorlds.ore(ctx, "ariel_ammonia", ARIEL_STONE, s(ARIEL_AMMONIA_ORE), 8);
@@ -177,7 +180,7 @@ public final class UranusData {
     }
 
     private static void placed(BootstrapContext<PlacedFeature> ctx) {
-        OuterWorlds.placedWhole(ctx, "miranda_coronae", "miranda_cliff", "ariel_chasmata", "titania_canyons", "titania_crater");
+        OuterWorlds.placedWhole(ctx, "miranda_coronae", "ariel_chasmata", "titania_canyons", "titania_crater");
         OuterWorlds.placedOre(ctx, "miranda_carbon", 10);
         OuterWorlds.placedOre(ctx, "ariel_ammonia", 8);
         OuterWorlds.placedOre(ctx, "titania_carbon", 10);
@@ -196,7 +199,7 @@ public final class UranusData {
         var local = GenerationStep.Decoration.LOCAL_MODIFICATIONS;
         for (ResourceKey<Biome> key : MIRANDA_BIOMES) {
             ctx.register(key, OuterWorlds.biome(pf, carvers, key, -2.0F, OuterWorlds.Look.airless(0x9A9A98),
-                    raw, "miranda_coronae", raw, "miranda_cliff", ores, "miranda_carbon", local, "miranda_block"));
+                    raw, "miranda_coronae", ores, "miranda_carbon", local, "miranda_block"));
         }
         for (ResourceKey<Biome> key : ARIEL_BIOMES) {
             ctx.register(key, OuterWorlds.biome(pf, carvers, key, -2.0F, OuterWorlds.Look.airless(0xB3AEA6),
