@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class SolarSystemDataTest {
     private static final Set<String> EXPECTED = Set.of("sun", "mercury", "venus", "earth", "moon", "mars", "phobos",
             "deimos", "ceres", "vesta", "jupiter", "io", "europa", "ganymede", "callisto", "saturn", "titan",
-            "enceladus", "uranus", "miranda", "ariel", "neptune", "triton", "pluto", "charon");
+            "enceladus", "uranus", "miranda", "ariel", "umbriel", "titania", "oberon", "neptune", "triton", "pluto", "charon");
 
     @Test
     void everyBodyIsPresent() {

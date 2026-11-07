@@ -1,0 +1,13 @@
+{
+  "type": "moon",
+  "parent": "spacebreaker:uranus",
+  "dimension": "spacebreaker:titania",
+  "physical": { "mass_kg": 3.400e21, "radius_km": 788.9 },
+  "orbit": { "semi_major_axis_km": 435910, "eccentricity": 0.0011, "inclination_deg": 0.340, "period_days": 8.705872 },
+  "rotation": { "day_length_hours": 208.94, "axial_tilt_deg": 0.0, "tidally_locked": true },
+  "climate": { "day_temp_c": -203, "night_temp_c": -214 },
+  "radiation_msv_per_day": 1.5,
+  "solar_irradiance": 3.7,
+  "albedo": 0.17,
+  "geometric_albedo": 0.35
+}
