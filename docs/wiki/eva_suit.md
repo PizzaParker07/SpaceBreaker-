@@ -59,7 +59,7 @@ Tüpler **EVA Gövdesi** içindeki sırt çantasında durur: **iki tüp**, Ek Ok
 - Oksijen bitince ya da havasız yerde giysi açıkken: hızlı alarm. Göstergedeki uyarı yazısı yanıp söner.
 
 ### Kask
-Kask göstergesi oksijeni, giysinin durumunu, vücut ve dış sıcaklığı, radyasyonu ve yerçekimini gösterir. Güneş göz kamaştırıyorsa **altın güneş vizörünü** indir: kask elindeyken `Shift` + `Sağ Tık`.
+Kask göstergesi oksijeni, giysinin durumunu, vücut ve dış sıcaklığı, radyasyonu ve yerçekimini gösterir. Güneş göz kamaştırıyorsa **altın güneş vizörünü** indir: kask elindeyken `Shift` + `Sağ Tık`. Ekranın kenarındaki yuvarlak vizör çerçevesini istemcinin ayarlarından (**visorFrame**, **visorFrameOpacity**) kapatabilir ya da saydamlaştırabilirsin.
 
 ### Ölünce
 Tüpler gövdenin içinde kalır ve gövde sıradan bir zırh gibi düşer: geri aldığında tüpler de geri gelir. Nefes, vücut ısısı ve radyasyon dozu sıfırlanır.
@@ -155,7 +155,7 @@ The tanks sit in the backpack inside the **EVA Torso**: **two tanks**, three wit
 - Out of oxygen, or the suit open in an airless place: a fast alarm. The warning on the display blinks.
 
 ### Helmet
-The helmet display shows oxygen, suit state, body and outside temperature, radiation and gravity. If the Sun is blinding, lower the **gold sun visor**: `Shift` + `Right Click` with the helmet in hand.
+The helmet display shows oxygen, suit state, body and outside temperature, radiation and gravity. If the Sun is blinding, lower the **gold sun visor**: `Shift` + `Right Click` with the helmet in hand. You can switch off or fade the rounded visor frame round the screen in the client config (**visorFrame**, **visorFrameOpacity**).
 
 ### When you die
 The tanks stay inside the body piece, which drops like any armour: pick it up and the tanks come back with it. Breath, body temperature and radiation dose reset.

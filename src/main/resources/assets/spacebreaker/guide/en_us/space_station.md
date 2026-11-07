@@ -55,6 +55,8 @@ You do not have to carry supplies yourself. In the rocket assembler, fit a {item
 ### Automatic route
 A cargo rocket launched to a target other than Earth's surface keeps shuttling between where it took off and its target (a Moon base ↔ a station in Moon orbit, for example). At each end it unloads into the chests → loads from the barrels → waits **200 ticks** (the fuel depot refuels it) → flies to the other end. With an empty hold or not enough fuel it waits, and tells you once.
 
+> The launch console's last line shows the route: the next stop, how full the hold is and whether the rocket is loading, waiting for cargo or fuel, or under way.
+
 > To switch the route on or off, {key key.use} the rocket with an empty hand while holding {key key.sneak}.
 
 > What does not fit stays in the hold, and chat tells you how many items are waiting. Put enough chests next to the port or beacon.

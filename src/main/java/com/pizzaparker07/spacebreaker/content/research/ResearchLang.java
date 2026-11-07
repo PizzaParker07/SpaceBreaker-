@@ -47,6 +47,14 @@ final class ResearchLang {
         l.add("sample.spacebreaker.titania", "Titania", "Titania");
         l.add("sample.spacebreaker.umbriel", "Umbriel", "Umbriel");
         l.add("sample.spacebreaker.oberon", "Oberon", "Oberon");
+        l.add("sample.spacebreaker.nix", "Nix", "Nix");
+        l.add("sample.spacebreaker.hydra", "Hydra", "Hydra");
+        l.add("sample.spacebreaker.proteus", "Proteus", "Proteus");
+        l.add("sample.spacebreaker.nereid", "Nereid", "Nereid");
+        l.add("sample.spacebreaker.bennu", "Bennu", "Bennu");
+        l.add("sample.spacebreaker.ryugu", "Ryugu", "Ryugu");
+        l.add("sample.spacebreaker.eros", "Eros", "Eros");
+        l.add("sample.spacebreaker.itokawa", "Itokawa", "Itokawa");
         l.add("sample.spacebreaker.triton", "Triton", "Triton");
         l.add("sample.spacebreaker.pluto", "Pluto", "Plüton");
         l.add("sample.spacebreaker.charon", "Charon", "Charon");

@@ -8,6 +8,7 @@
     "spacebreaker:moon"
   ],
   "unlocks": [
-    "spacebreaker:sintered_regolith_bricks"
+    "spacebreaker:sintered_regolith_bricks",
+    "spacebreaker:sintering_furnace"
   ]
 }

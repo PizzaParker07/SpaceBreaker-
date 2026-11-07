@@ -70,6 +70,11 @@ public class SampleItem extends Item {
             case "titania" -> 0x7A726A;    // dark warm grey
             case "umbriel" -> 0x3E3B3A;    // soot-dark carbon
             case "oberon" -> 0x8A7268;     // reddish brown-grey
+            case "nix" -> 0x9A8C88;        // grey ice, reddish tholin stain
+            case "hydra", "nereid" -> 0xDDE3E8; // bright water ice
+            case "proteus" -> 0x45403C;    // soot-dark crust
+            case "bennu", "ryugu" -> 0x2E2B29; // coal-dark rubble
+            case "eros", "itokawa" -> 0x8A7C68; // stony
             case "suborbital_flight" -> 0x6FA0D8;
             case "orbital_flight" -> 0x3E5FA8;
             case "orbital_survey" -> 0x4F8A8B;

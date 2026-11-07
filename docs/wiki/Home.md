@@ -62,6 +62,7 @@ Bu wiki, oyun içindeki **Saha Rehberi**nin metinlerinden otomatik üretilir.
 - [Venüs](venus) · *Venus*
 - [Bulutlarda Yaşam ve Harabeler](venus_clouds) · *Life and Ruins in the Clouds*
 - [Merkür](mercury) · *Mercury*
+- [Dünya'ya Yakın Asteroitler](near_earth_asteroids) · *Near-Earth Asteroids*
 
 ## Dış Güneş Sistemi <sub>(Outer Solar System)</sub>
 
@@ -79,8 +80,12 @@ Bu wiki, oyun içindeki **Saha Rehberi**nin metinlerinden otomatik üretilir.
 - [Umbriel](umbriel) · *Umbriel*
 - [Oberon](oberon) · *Oberon*
 - [Triton](triton) · *Triton*
+- [Proteus](proteus) · *Proteus*
+- [Nereid](nereid) · *Nereid*
 - [Plüton](pluto) · *Pluto*
 - [Charon](charon) · *Charon*
+- [Nix](nix) · *Nix*
+- [Hydra](hydra) · *Hydra*
 
 ## Harabeler <sub>(Ruins)</sub>
 

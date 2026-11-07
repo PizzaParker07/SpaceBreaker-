@@ -71,6 +71,22 @@ Bir katı ve iki sıvıyı birleştirir; örneğin kükürt, su ve oksijenden **
 |---|---|---|
 | Kükürt<br>water (250 mB)<br>oxygen (750 mB) | Çalışma Masası<br>60 FE/t · 5 sn | Sülfürik Asit (250 mB) |
 
+### Sinterleme Fırını
+
+**Sinterleme Fırını** · **Sinterlenmiş Regolit** · **Sinterlenmiş Regolit Tuğla**
+
+**Sinterleme Fırını** her gezegenin regolitini elektrikle ısıtıp **Sinterlenmiş Regolit**'e kaynaştırır; hava gerekmez. Taş kesicide tuğlaya, basamağa, merdivene ve duvara çevirebilirsin.
+
+| Girdi | Makine | Çıktı |
+|---|---|---|
+| Ay Regoliti | Çalışma Masası<br>60 FE/t · 5 sn | Sinterlenmiş Regolit |
+
+> [!TIP]
+> Üssünü yerinde üretilen tuğlayla kur: Dünya'dan blok taşıman gerekmez. **Tam bloklar sızdırmaz**; merdiven, basamak ve duvar gibi tam olmayan bloklardan hava kaçar. → [Üssün Havası](base_air)
+
+> [!TIP]
+> Kazıcıyı fırının yanına koy: kazdığı regolit doğrudan fırına girer ve yapı bloğu kendiliğinden birikir.
+
 <details>
 <summary>English: In-Situ Resources (ISRU)</summary>
 
@@ -142,5 +158,21 @@ Combines one solid and two fluids; for example sulfur, water and oxygen make **s
 | Input | Machine | Output |
 |---|---|---|
 | Sulfur<br>water (250 mB)<br>oxygen (750 mB) | Crafting Table<br>60 FE/t · 5 s | Sulfuric Acid (250 mB) |
+
+### Sintering furnace
+
+**Sintering Furnace** · **Sintered Regolith** · **Sintered Regolith Bricks**
+
+The **Sintering Furnace** heats any planet's regolith with electricity and fuses it into **Sintered Regolith**; no air needed. A stonecutter turns it into bricks, slabs, stairs and walls.
+
+| Input | Machine | Output |
+|---|---|---|
+| Lunar Regolith | Crafting Table<br>60 FE/t · 5 s | Sintered Regolith |
+
+> [!TIP]
+> Build your base from bricks made on site: no need to ship blocks from Earth. **Full blocks are airtight**; stairs, slabs, walls and other partial blocks leak air. → [Air for the Base](base_air)
+
+> [!TIP]
+> Put the excavator next to the furnace: the regolith it digs goes straight in and building blocks pile up on their own.
 
 </details>

@@ -1,7 +1,7 @@
 ---
 title: Yerinde Üretim (ISRU)
 icon: spacebreaker:sabatier_reactor
-items: [spacebreaker:atmosphere_processor, spacebreaker:sabatier_reactor, spacebreaker:regolith_heater, spacebreaker:ice_melter, spacebreaker:chemical_reactor, spacebreaker:regolith_excavator]
+items: [spacebreaker:atmosphere_processor, spacebreaker:sabatier_reactor, spacebreaker:regolith_heater, spacebreaker:ice_melter, spacebreaker:chemical_reactor, spacebreaker:regolith_excavator, spacebreaker:sintering_furnace, spacebreaker:sintered_regolith, spacebreaker:sintered_regolith_bricks]
 research: spacebreaker:isru
 ---
 Dünya'dan fırlatılan her kilogram pahalıdır. Bu yüzden indiğin yerde yapabildiğini **orada** yap. Buna yerinde kaynak kullanımı (ISRU) denir.
@@ -47,3 +47,13 @@ Karbondioksit ile hidrojeni **metan ve suya** çevirir. Su, elektroliz ünitesin
 ## Kimyasal reaktör
 Bir katı ve iki sıvıyı birleştirir; örneğin kükürt, su ve oksijenden **sülfürik asit** yapar.
 {recipe spacebreaker:chemical_reaction/sulfuric_acid}
+
+{page}
+## Sinterleme Fırını
+{items spacebreaker:sintering_furnace spacebreaker:sintered_regolith spacebreaker:sintered_regolith_bricks}
+{item spacebreaker:sintering_furnace} her gezegenin regolitini elektrikle ısıtıp {item spacebreaker:sintered_regolith}'e kaynaştırır; hava gerekmez. Taş kesicide tuğlaya, basamağa, merdivene ve duvara çevirebilirsin.
+{recipe spacebreaker:sintering/regolith}
+
+> Üssünü yerinde üretilen tuğlayla kur: Dünya'dan blok taşıman gerekmez. **Tam bloklar sızdırmaz**; merdiven, basamak ve duvar gibi tam olmayan bloklardan hava kaçar. → [Üssün Havası](base_air)
+
+> Kazıcıyı fırının yanına koy: kazdığı regolit doğrudan fırına girer ve yapı bloğu kendiliğinden birikir.

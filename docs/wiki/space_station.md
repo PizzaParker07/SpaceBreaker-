@@ -72,6 +72,9 @@ Malzemeyi kendin taşımak zorunda değilsin. Montaj tezgâhında kapsül yerine
 Dünya yüzeyi dışındaki bir hedefe fırlatılan kargo roketi, kalktığı yerle hedef arasında kendi kendine gidip gelir (örneğin Ay üssü ↔ Ay yörüngesindeki istasyon). Her uçta: sandıklara boşaltır → varillerden yükler → **200 tick** bekler (yakıt deposu onu doldurur) → öbür uca uçar. Ambar boşsa ya da yakıt yetmezse bekler ve sana bir kez haber verir.
 
 > [!TIP]
+> Fırlatma konsolunun son satırı seferin durumunu gösterir: sonraki durak, ambarın doluluğu ve roketin yüklediğini, yük ya da yakıt beklediğini veya yolda olduğunu.
+
+> [!TIP]
 > Seferi açıp kapatmak için rokete `Shift` basılıyken boş elle `Sağ Tık` yap.
 
 > [!TIP]
@@ -156,6 +159,9 @@ You do not have to carry supplies yourself. In the rocket assembler, fit a **Car
 
 #### Automatic route
 A cargo rocket launched to a target other than Earth's surface keeps shuttling between where it took off and its target (a Moon base ↔ a station in Moon orbit, for example). At each end it unloads into the chests → loads from the barrels → waits **200 ticks** (the fuel depot refuels it) → flies to the other end. With an empty hold or not enough fuel it waits, and tells you once.
+
+> [!TIP]
+> The launch console's last line shows the route: the next stop, how full the hold is and whether the rocket is loading, waiting for cargo or fuel, or under way.
 
 > [!TIP]
 > To switch the route on or off, `Right Click` the rocket with an empty hand while holding `Shift`.

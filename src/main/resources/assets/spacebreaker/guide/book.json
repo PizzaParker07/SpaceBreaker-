@@ -86,7 +86,8 @@
         "mars_moons",
         "venus",
         "venus_clouds",
-        "mercury"
+        "mercury",
+        "near_earth_asteroids"
       ]
     },
     {
@@ -108,8 +109,12 @@
         "umbriel",
         "oberon",
         "triton",
+        "proteus",
+        "nereid",
         "pluto",
-        "charon"
+        "charon",
+        "nix",
+        "hydra"
       ]
     },
     {

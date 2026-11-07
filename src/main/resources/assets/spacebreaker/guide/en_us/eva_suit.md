@@ -36,7 +36,7 @@ The tanks sit in the backpack inside the {item spacebreaker:eva_chestplate}: **t
 
 {page}
 ## Helmet
-The helmet display shows oxygen, suit state, body and outside temperature, radiation and gravity. If the Sun is blinding, lower the **gold sun visor**: {key key.sneak} + {key key.use} with the helmet in hand.
+The helmet display shows oxygen, suit state, body and outside temperature, radiation and gravity. If the Sun is blinding, lower the **gold sun visor**: {key key.sneak} + {key key.use} with the helmet in hand. You can switch off or fade the rounded visor frame round the screen in the client config (**visorFrame**, **visorFrameOpacity**).
 
 ## When you die
 The tanks stay inside the body piece, which drops like any armour: pick it up and the tanks come back with it. Breath, body temperature and radiation dose reset.

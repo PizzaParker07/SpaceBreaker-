@@ -36,7 +36,7 @@ Tüpler {item spacebreaker:eva_chestplate} içindeki sırt çantasında durur: *
 
 {page}
 ## Kask
-Kask göstergesi oksijeni, giysinin durumunu, vücut ve dış sıcaklığı, radyasyonu ve yerçekimini gösterir. Güneş göz kamaştırıyorsa **altın güneş vizörünü** indir: kask elindeyken {key key.sneak} + {key key.use}.
+Kask göstergesi oksijeni, giysinin durumunu, vücut ve dış sıcaklığı, radyasyonu ve yerçekimini gösterir. Güneş göz kamaştırıyorsa **altın güneş vizörünü** indir: kask elindeyken {key key.sneak} + {key key.use}. Ekranın kenarındaki yuvarlak vizör çerçevesini istemcinin ayarlarından (**visorFrame**, **visorFrameOpacity**) kapatabilir ya da saydamlaştırabilirsin.
 
 ## Ölünce
 Tüpler gövdenin içinde kalır ve gövde sıradan bir zırh gibi düşer: geri aldığında tüpler de geri gelir. Nefes, vücut ısısı ve radyasyon dozu sıfırlanır.
