@@ -62,13 +62,22 @@ public final class Columns {
     }
 
     /**
-     * y of the top non-air block of a column. Starts from the generation heightmap but scans the blocks themselves, because
-     * the heightmap is not reliably updated while features dig and build inside one generation step.
+     * y of the top non-air block of a column. Starts just above the generation heightmap and scans the blocks themselves,
+     * because the heightmap is not reliably updated while features dig and build inside one generation step: if the
+     * block there is solid (ground was built up), it climbs until air; otherwise it walks down. Starting close to the
+     * heightmap instead of far above it skips a long scan through empty air in every column.
      */
     public static int top(WorldGenLevel level, int x, int z) {
-        int start = Math.min(level.getMaxBuildHeight() - 1, level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, x, z) + 24);
-        BlockPos.MutableBlockPos p = new BlockPos.MutableBlockPos(x, start, z);
+        int max = level.getMaxBuildHeight() - 1;
         int min = level.getMinBuildHeight();
+        int start = Math.min(max, level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, x, z) + 1);
+        BlockPos.MutableBlockPos p = new BlockPos.MutableBlockPos(x, start, z);
+        if (!level.getBlockState(p).isAir()) {
+            while (p.getY() < max && !level.getBlockState(p.move(0, 1, 0)).isAir()) {
+                // climbing through ground built above the heightmap
+            }
+            return level.getBlockState(p).isAir() ? p.getY() - 1 : p.getY();
+        }
         while (p.getY() > min && level.getBlockState(p).isAir()) {
             p.move(0, -1, 0);
         }
@@ -82,7 +91,11 @@ public final class Columns {
      * @return the new top y
      */
     public static int shift(WorldGenLevel level, int x, int z, int dy, BlockState fill) {
-        int y = top(level, x, z);
+        return shift(level, x, top(level, x, z), z, dy, fill);
+    }
+
+    /** {@link #shift(WorldGenLevel, int, int, int, BlockState)} for a column whose top {@code y} is already known. */
+    public static int shift(WorldGenLevel level, int x, int y, int z, int dy, BlockState fill) {
         if (dy == 0 || y <= level.getMinBuildHeight() + CARRY + 2) {
             return y;
         }
@@ -110,7 +123,11 @@ public final class Columns {
 
     /** Replaces the top {@code depth} solid blocks of a column. */
     public static void paint(WorldGenLevel level, int x, int z, int depth, BlockState block) {
-        int y = top(level, x, z);
+        paint(level, x, top(level, x, z), z, depth, block);
+    }
+
+    /** Replaces the top {@code depth} solid blocks of a column whose top is already known (as {@link #shift} returns it). */
+    public static void paint(WorldGenLevel level, int x, int y, int z, int depth, BlockState block) {
         BlockPos.MutableBlockPos p = new BlockPos.MutableBlockPos();
         for (int i = 0; i < depth; i++) {
             p.set(x, y - i, z);
