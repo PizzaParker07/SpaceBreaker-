@@ -292,7 +292,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Titan blokları | Tolin Kumu, Tolin Çamuru (kalıcı ayak izi), Titan Ana Kaya Buzu (+ merdiven, basamak, duvar), Buz Çakılları, Tolin Yatağı (→ Tolin) |
 | 🎨 | Enceladus `spacebreaker:enceladus` | en parlak buz; güney kutbunda kaplan çizgisi yarıkları ve gayzer alanı; gökte 28° genişliğinde, halkaları neredeyse yandan görünen Satürn (halka gölgesiyle) |
 | 🎨 | Enceladus blokları | Enceladus Karı (kalıcı ayak izi), Enceladus Buzu, Kaplan Çizgisi Buzu (hafif parlar) |
-| 🎨 | Zindan | Terk Edilmiş Döner Kanat Hangarı (Titan: tonozlu hangar, sekiz rotorlu uçan araç, atölye, laboratuvar, metan deposu) |
+| 🎨 | Zindan | Terk Edilmiş Döner Kanat Hangarı (Titan: tonozlu hangar, sekiz rotorlu uçan araç, atölye, laboratuvar, metan deposu; dışarıda iniş ışıklı ve tehlike şeritli güverte önlüğü, kapı direklerinde projektörler, her kaburganın dibinde payanda, yan duvar boyunca kablo kanalı, çatıda ızgara yürüme yolu ve anten direği, arkada boruyla salona bağlı metan tankları) |
 | 🎨 | Teknolojiler | Hava Hareketliliği (4), Hidrokarbon İşleme (4), Gayzer Örneklemesi (5) |
 
 ### Uranüs sistemi
@@ -307,7 +307,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Zindan ve teknoloji | Düşmüş İkmal İniş Aracı (Ariel) → Buz Kabuğu Tektoniği (4) |
 | 🎨 | Titania `spacebreaker:titania` | Uranüs'ün en büyük uydusu: gri, orta yaşlı kraterli yaylalar; üç dev düz kanyon (~64 blok derin, 90 blok geniş, soluk katmanlı duvarlar), merkez tepeli büyük eski krater havzası, kutuplarda CO₂ kırağısı; gökte halkalı Uranüs |
 | 🎨 | Titania blokları | Titania Regoliti (kalıcı ayak izi), Titania Ana Kaya Buzu (+ merdiven, basamak, duvar), Kanyon Duvarı Buzu, Titania Karbon Yatağı (→ kömür) |
-| 🎨 | Zindanlar ve teknoloji | Düşmüş İkmal İniş Aracı (Titania) → Tektonik Haritalama (5); Kanyon Kenarı Karakolu (yalnız dev kanyonların kenarında, kanyona bakar: kenarda uzun camlı taş kulübe, kanyonun üstüne çelik dikmelerle uzanan korkuluklu balkon ve ölçüm lambası, kablosu kanyona sarkan vinç; haritalama tezgâhı, laboratuvar ve depo sandıkları, arka kapıdan savrulmuş regolit) → Tektonik Haritalama / Dikey Keşif |
+| 🎨 | Zindanlar ve teknoloji | Düşmüş İkmal İniş Aracı (Titania) → Tektonik Haritalama (5); Kanyon Kenarı Karakolu (yalnız dev kanyonların kenarında, kanyona bakar: kenarda uzun camlı taş kulübe, kanyonun üstüne çelik dikmelerle uzanan korkuluklu balkon ve ölçüm lambası, kablosu kanyona sarkan vinç; haritalama tezgâhı, laboratuvar ve depo sandıkları, arka kapıdan savrulmuş regolit; içeride titanyum güverte zemin, tavanda LED paneller, duvarlar boyunca kablo kanalı, güç monitörü, kanyona bakan iki koltuk ve harita masası, ranza, 'Etüt Günlüğü' tabelası) → Tektonik Haritalama / Dikey Keşif |
 | 🎨 | Umbriel `spacebreaker:umbriel` | Uranüs'ün en karanlık uydusu: kraterlerle doymuş, isli karbon tabakasıyla kaplı çok eski yüzey; iniş yerinin doğusunda Wunda krateri ve tabanındaki parlak kırağı halkası (CO₂ kırağısı), kutuplarda CO₂ kırağısı; gökte halkalı Uranüs |
 | 🎨 | Umbriel blokları | Umbriel Regoliti (kalıcı ayak izi), Umbriel Ana Kaya Buzu (+ merdiven, basamak, duvar), İsli Buz (eritilince → kömür) |
 | 🎨 | Zindan ve teknoloji | Düşmüş İkmal İniş Aracı (Umbriel) → Tektonik Haritalama (5) |
@@ -325,7 +325,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Proteus blokları | Proteus Regoliti (kalıcı ayak izi), Proteus Kabuğu |
 | 🎨 | Nereid `spacebreaker:nereid` | Neptün'ün en dıştaki büyük uydusu (~170 km), muhtemelen yakalanmış cisim: açık gri, engebeli, kraterli su buzu; uyduların en basık yörüngesi (1,4–9,7 milyon km), gökte yalnız küçük mavi bir Neptün; yakıt için buz |
 | 🎨 | Nereid blokları | Nereid Kırağısı (kalıcı ayak izi), Nereid Buzu |
-| 🎨 | Zindanlar | Düşmüş İkmal İniş Aracı (Proteus, Nereid) → Kriyovolkanizma; Düşmüş İkmal İniş Aracı (Triton); Gayzer Gözlem İstasyonu (güney kutup başlığında bir azot gayzerinin üstüne kurulmuş cam kubbeli istasyon: ortada çubuk halkalı canlı gayzer, kubbe tepesinden yükselen alet direği, numune laboratuvarı ve depo sandıkları, kapıdan içeri savrulmuş pembe kırağı; 2 Gayzer Böceği bekçi) → Kriyovolkanizma |
+| 🎨 | Zindanlar | Düşmüş İkmal İniş Aracı (Proteus, Nereid) → Kriyovolkanizma; Düşmüş İkmal İniş Aracı (Triton); Gayzer Gözlem İstasyonu (güney kutup başlığında bir azot gayzerinin üstüne kurulmuş cam kubbeli istasyon: ortada çubuk halkalı canlı gayzer, kubbe tepesinden yükselen alet direği, numune laboratuvarı ve depo sandıkları, kapıdan içeri savrulmuş pembe kırağı; zemin: titanyum güverte, gayzerin çevresinde ızgara ve tehlike şeridi halkası, kapıdan ızgara yürüme yolu, tezgâh ve depoya giden gömülü borular, köşegenlerde gömme LED'ler, kenarda alüminyum panel bordür; 2 Gayzer Böceği bekçi) → Kriyovolkanizma |
 | 🎨 | Teknoloji | Kriyovolkanizma (5) |
 
 ### Plüton ve Charon

@@ -12,7 +12,6 @@ import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.LanternBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -119,15 +118,60 @@ public class CanyonOutpostPiece extends StructurePiece {
             placeBlock(level, air, MID, y, 1, box);
             placeBlock(level, air, MID, y, 9, box);
         }
-        // the mapping bench (west) and the store (east)
+        // inside: a titanium deck floor between the stone sills, a cable run along both long walls under the roof
+        BlockState deck = s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.TITANIUM_DECK.base().get());
+        BlockState cable = s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.CABLE_DUCT.get());
+        BlockState led = s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.LED_PANEL.get());
+        for (int x = 2; x <= 10; x++) {
+            for (int z = 2; z <= 8; z++) {
+                placeBlock(level, deck, x, y0 - 1, z, box);
+            }
+        }
+        for (int z = 2; z <= 8; z++) {
+            placeBlock(level, cable, 2, y0 + 3, z, box);
+            placeBlock(level, cable, 10, y0 + 3, z, box);
+        }
+        // light panels set into the roof
+        for (int[] l : new int[][]{{4, 4}, {8, 4}, {MID, 7}}) {
+            placeBlock(level, led, l[0], y0 + 4, l[1], box);
+        }
+        // the mapping bench (west): the table, the sample stand, the survey shelf, the log
         placeBlock(level, s(Blocks.CARTOGRAPHY_TABLE), 2, y0, 4, box);
         placeBlock(level, s(Blocks.BREWING_STAND), 2, y0, 5, box);
+        com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, s(Blocks.CHISELED_BOOKSHELF)
+                .setValue(net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING, Direction.EAST), 2, y0 + 1, 4, box);
         createChest(level, box, RandomSource.create(seed + 1), 2, y0, 3, LAB);
+        BlockPos sign = com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this,
+                s(Blocks.BIRCH_WALL_SIGN).setValue(net.minecraft.world.level.block.WallSignBlock.FACING, Direction.EAST), 2, y0 + 1, 6, box);
+        if (sign != null && box.isInside(sign)) {
+            com.pizzaparker07.spacebreaker.content.mars.dungeon.DungeonBits.signText(level, sign, "titania_outpost_log");
+        }
+        // the power board at the back wall, its cable running up to the roof
+        com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this,
+                s(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.POWER_MONITOR.get())
+                        .setValue(net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING, Direction.SOUTH), 4, y0, 2, box);
+        for (int y = y0 + 1; y <= y0 + 3; y++) {
+            placeBlock(level, cable, 4, y, 2, box);
+        }
+        // two chairs at the long window, turned to the canyon, and a little chart table between them
+        BlockState chair = com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.TITANIUM_DECK.stairs().get().defaultBlockState()
+                .setValue(net.minecraft.world.level.block.StairBlock.FACING, Direction.SOUTH);
+        com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, chair, 4, y0, 7, box);
+        com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, chair, 8, y0, 7, box);
+        for (int x = 5; x <= 7; x++) {
+            placeBlock(level, s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.TITANIUM_DECK.slab().get())
+                    .setValue(net.minecraft.world.level.block.SlabBlock.TYPE, net.minecraft.world.level.block.state.properties.SlabType.TOP), x, y0, 8, box);
+        }
+        // the store (east): crates, the chest, the bench, a bunk against the wall
         placeBlock(level, s(Blocks.BARREL), 10, y0, 4, box);
         placeBlock(level, s(Blocks.BARREL), 10, y0, 5, box);
+        placeBlock(level, s(Blocks.BARREL), 10, y0 + 1, 4, box);
         createChest(level, box, RandomSource.create(seed + 2), 10, y0, 3, STORE);
         placeBlock(level, s(Blocks.CRAFTING_TABLE), 10, y0, 7, box);
-        placeBlock(level, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), MID, y0 + 3, 5, box);
+        placeBlock(level, s(Blocks.LIGHT_GRAY_WOOL), 9, y0, 2, box);
+        placeBlock(level, s(Blocks.LIGHT_GRAY_WOOL), 10, y0, 2, box);
+        placeBlock(level, s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.TITANIUM_DECK.slab().get()), 9, y0 + 2, 2, box);
+        placeBlock(level, s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.TITANIUM_DECK.slab().get()), 10, y0 + 2, 2, box);
         // regolith drifted in through the back door
         for (int x = MID - 2; x <= MID + 2; x++) {
             for (int z = 2; z <= 5; z++) {
