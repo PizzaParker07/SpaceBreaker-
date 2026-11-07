@@ -32,6 +32,8 @@ public final class AudioModule implements SbModule {
         lang.add(s + "vehicle.rover_motor", "Rover motors whine", "Gezici motorları vınlıyor");
         lang.add(s + "machine.electrolyzer", "Electrolyzer bubbles", "Elektroliz ünitesi fokurduyor");
         lang.add(s + "machine.drill", "Drill grinds rock", "Matkap kaya öğütüyor");
+        lang.add(s + "machine.centrifuge", "Centrifuges whine", "Santrifüjler vınlıyor");
+        lang.add(s + "machine.fission_reactor", "Reactor hums", "Reaktör uğulduyor");
 
         String m = "Mission control: ";
         String t = "Görev kontrol: ";

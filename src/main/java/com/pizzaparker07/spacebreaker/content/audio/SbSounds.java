@@ -43,6 +43,10 @@ public final class SbSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> ELECTROLYZER_LOOP = event("machine.electrolyzer_loop");
     /** Motor drone and rock grinding for drills and excavators while they run. */
     public static final DeferredHolder<SoundEvent, SoundEvent> DRILL_LOOP = event("machine.drill_loop");
+    /** High rotor whine over a soft electric hum for the gas centrifuge cascade while it runs. */
+    public static final DeferredHolder<SoundEvent, SoundEvent> CENTRIFUGE_LOOP = event("machine.centrifuge_loop");
+    /** Low steady drone with soft engine ticking for the fission surface power unit while it runs. */
+    public static final DeferredHolder<SoundEvent, SoundEvent> FISSION_REACTOR_LOOP = event("machine.fission_reactor_loop");
 
     // --- music (streamed; use in a biome's "music" field) ----------------------------------------
     /** Calm piano and synth pads for drifting in orbit. */
