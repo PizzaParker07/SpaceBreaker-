@@ -12,20 +12,25 @@ import net.minecraft.util.Mth;
 public final class Transit {
     /** What the crew sees. */
     public enum Kind {
-        /** Climbing out of the sky: blue turns black, stars come out, the planet curves away below. */
+        /** Climbing out of the sky to orbit. */
         ASCENT,
-        /** Between worlds: stars stream past and the destination grows ahead. */
+        /** Between worlds. */
         TRANSFER,
-        /** Coming down: the world below swells until it fills the window (with plasma where there is air). */
+        /** Coming down from orbit. */
         LANDING
     }
 
-    /** Share of the ascent burn after which the view starts to take over. */
-    public static final float ASCENT_LEAD_IN = 0.8F;
-    /** Ticks over which the view fades in when a transfer starts. */
-    public static final int TRANSFER_FADE_TICKS = 25;
-    /** Seconds over which the view fades out into the new dimension. */
-    public static final float FADE_OUT_SECONDS = 1.6F;
+    /** Share of the ascent burn after which the screen starts to fade (the last second or two of the climb). */
+    public static final float ASCENT_LEAD_IN = 0.93F;
+    /** Ticks at the end of a transfer over which the screen fades to black (one second). */
+    public static final int TRANSFER_FADE_TICKS = 20;
+    /** Seconds over which the held last frame cross-fades into the new dimension. */
+    public static final float FADE_OUT_SECONDS = 0.3F;
+    /**
+     * How dark the view gets before the jump (0..1): only a slight dip. The screen never goes black; the last frame
+     * is held while the next dimension loads and then cross-fades into it.
+     */
+    public static final float MAX_DIP = 0.25F;
 
     private Transit() {
     }
@@ -38,13 +43,14 @@ public final class Transit {
     }
 
     /**
-     * How strongly the view covers the screen before the jump (0 = not at all, 1 = fully), from the rocket's
-     * state, its timer and its ascent progress. Zero in every state that does not end in a dimension change.
+     * How dark the screen is before the jump (0 = not at all, 1 = black), from the rocket's state, its timer and its
+     * ascent progress: only the last moments before a change of dimension. Zero in every other state.
      */
     public static float leadIn(FlightState state, int timer, float ascentProgress) {
         return switch (state) {
-            case ASCENT -> Mth.clamp((ascentProgress - ASCENT_LEAD_IN) / (0.97F - ASCENT_LEAD_IN), 0F, 1F);
-            case TRANSFER -> Mth.clamp(timer / (float) TRANSFER_FADE_TICKS, 0F, 1F);
+            case ASCENT -> Mth.clamp((ascentProgress - ASCENT_LEAD_IN) / (0.99F - ASCENT_LEAD_IN), 0F, 1F);
+            case TRANSFER -> Mth.clamp((timer - (com.pizzaparker07.spacebreaker.content.rocketry.entity.RocketEntity.TRANSFER_TICKS
+                    - TRANSFER_FADE_TICKS)) / (float) TRANSFER_FADE_TICKS, 0F, 1F);
             default -> 0F;
         };
     }

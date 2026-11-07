@@ -1893,6 +1893,64 @@ def rocket_plume_nuclear():
     return cv
 
 
+def rocket_steam(i):
+    """A billow of launch steam (16x16, tinted in game): a dense white-grey core with lumpy, soft translucent edges;
+    three variants so neighbouring puffs never repeat."""
+    rng = random.Random(7101 + i)
+    cv = Canvas(16, 16)
+    lumps = [(rng.uniform(4.5, 11.5), rng.uniform(4.5, 11.5), rng.uniform(3.0, 4.6)) for _ in range(5)]
+    for y in range(16):
+        for x in range(16):
+            d = min(((x + 0.5 - cx) ** 2 + (y + 0.5 - cy) ** 2) ** 0.5 / r for cx, cy, r in lumps)
+            d += rng.uniform(-0.08, 0.08)
+            if d < 0.55:
+                cv[x, y] = (246, 246, 244, 235)
+            elif d < 0.8:
+                cv[x, y] = (226, 226, 224, 180)
+            elif d < 1.0:
+                cv[x, y] = (206, 206, 204, 110)
+            elif d < 1.2:
+                cv[x, y] = (190, 190, 188, 45)
+    return cv
+
+
+def rocket_smoke_column():
+    """Exhaust smoke column (16x64, tiles vertically): a soft-edged band of white-grey billows, denser in the middle."""
+    rng = random.Random(7201)
+    cv = Canvas(16, 64)
+    bumps = [(rng.uniform(0, 64), rng.uniform(2.5, 4.5)) for _ in range(14)]
+    for y in range(64):
+        # the edge wanders: billows bulge out along the column (wraps at the tile seam)
+        bulge = max(math.exp(-(min(abs(y - by), 64 - abs(y - by)) / w) ** 2) for by, w in bumps)
+        half = 5.2 + 2.3 * bulge
+        for x in range(16):
+            c = abs(x + 0.5 - 8) / half
+            if c >= 1:
+                continue
+            shade = 236 if c < 0.45 else 218 if c < 0.75 else 200
+            a = int(230 * (1 - c ** 2.2))
+            if a < 10:
+                continue
+            cv[x, y] = (shade, shade, shade - 2, a)
+    return cv
+
+
+def rocket_ground_glow():
+    """Glow of the exhaust on the pad (16x16, additive): a hot yellow-white centre fading to orange at the rim."""
+    cv = Canvas(16, 16)
+    for y in range(16):
+        for x in range(16):
+            d = ((x + 0.5 - 8) ** 2 + (y + 0.5 - 8) ** 2) ** 0.5 / 8
+            if d >= 1:
+                continue
+            a = int(255 * (1 - d) ** 1.6)
+            if a < 8:
+                continue
+            col = (255, 240, 200) if d < 0.3 else (255, 190, 100) if d < 0.6 else (240, 130, 50)
+            cv[x, y] = (*col, a)
+    return cv
+
+
 # =========================================================================== GUI backgrounds
 
 GUI_BG, GUI_HI, GUI_LO, GUI_EDGE = (198, 198, 198), (255, 255, 255), (85, 85, 85), (0, 0, 0)
@@ -2641,6 +2699,10 @@ def export_facility(save):
     save(disc(moon_map, 512, 256), 'environment', 'orbit_moon_disc')
     save(rocket_plume(), 'entity', 'rocket_plume')
     save(rocket_plume_nuclear(), 'entity', 'rocket_plume_nuclear')
+    save(rocket_smoke_column(), 'entity', 'rocket_smoke_column')
+    save(rocket_ground_glow(), 'entity', 'rocket_ground_glow')
+    for i in range(3):
+        save(rocket_steam(i), 'particle', f'rocket_steam_{i}')
     save(gui_assembler(), 'gui', 'rocket_assembler')
     save(gui_console(), 'gui', 'launch_console')
 

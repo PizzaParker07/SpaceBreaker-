@@ -165,6 +165,9 @@ final class BaseAirlockScenario implements ShowcaseScenario {
                         at(true, false, true, true), SuitShots.CLEAR_TOASTS),
                 // inside the base, helmet off by the distributor and the suit station
                 new Shot("base_airlock_04_helmet_off", 0, 2.0, y + 1.62, 2.5, 125F, 14F, false, fp, 200,
-                        at(false, false, true, false), SuitShots.CLEAR_TOASTS));
+                        at(false, false, true, false), SuitShots.CLEAR_TOASTS),
+                // suited, looking at the distributor: the small helmet gauge stays clear of block-info tooltips (top centre)
+                new Shot("base_airlock_05_hud_info", 0, -1.2, y + 1.62, 0.2, 135F, 30F, false, fp, 120,
+                        at(false, false, true, true), SuitShots.CLEAR_TOASTS));
     }
 }

@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.pizzaparker07.spacebreaker.client.rocketry.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "HighAltitudeCloudsMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

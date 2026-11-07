@@ -65,6 +65,21 @@ public final class BodyAdapter {
         return new BodySystem(Frames.equatorialMoonOrbits(list, poles));
     }
 
+    /**
+     * How a registered body looks from {@code observer} (heliocentric, m) at simulated time {@code t}: spin axis,
+     * rotation, Sun direction and phase, for drawing it as a model.
+     */
+    public static Optional<BodyLook> look(RegistryAccess access, ResourceLocation id, Vec3 observer, double t) {
+        return Bodies.registry(access).flatMap(reg -> reg.getOptional(id).map(c -> look(system(reg), id, c, observer, t)));
+    }
+
+    /** {@link #look(RegistryAccess, ResourceLocation, Vec3, double)} with a body system the caller keeps (per frame). */
+    public static BodyLook look(BodySystem sys, ResourceLocation id, CelestialBody c, Vec3 observer, double t) {
+        CelestialBody.Rotation r = c.rotation();
+        Vec3 pole = r.hasPole() ? Frames.eclipticFromEquatorial(r.poleRaDeg(), r.poleDecDeg()) : null;
+        return BodyLook.of(sys, sys.require(id.toString()), pole, r.axialTiltDeg(), observer, t);
+    }
+
     public static Optional<BodySystem> system(RegistryAccess access) {
         return Bodies.registry(access).map(BodyAdapter::system);
     }

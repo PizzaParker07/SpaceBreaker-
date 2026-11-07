@@ -59,27 +59,19 @@ public final class RocketHud {
                 float heat = Mth.clamp(t / 30F, 0, 1) * Mth.clamp((170 - t) / 50F, 0, 1);
                 plasma(g, w, h, heat, rocket.tickCount + pt);
             }
-            if (s == FlightState.TRANSFER && !TransitView.active()) {
-                float a = Mth.clamp(t / 25F, 0, 1);
-                g.fill(0, 0, w, h, (int) (a * 255) << 24);
-            }
-            if (s == FlightState.TRANSFER) {
-                float a = Mth.clamp(t / 25F, 0, 1);
-                if (a > 0.6F) {
-                    Component title = Component.translatable("hud.spacebreaker.coasting", rocket.destination().name());
-                    int alpha = (int) ((a - 0.6F) / 0.4F * 255) << 24;
-                    g.drawCenteredString(mc.font, title, w / 2, h / 2 - 10, 0xDDE6F0 | alpha);
-                    float p = Mth.clamp(t / RocketEntity.TRANSFER_TICKS, 0, 1);
-                    int bw = 120;
-                    g.fill(w / 2 - bw / 2, h / 2 + 6, w / 2 + bw / 2, h / 2 + 8, 0x40FFFFFF);
-                    g.fill(w / 2 - bw / 2, h / 2 + 6, w / 2 - bw / 2 + (int) (bw * p), h / 2 + 8, 0xC0FFFFFF);
-                }
+            if (s == FlightState.TRANSFER && t > 1) {
+                // the orbit stays in view: only a thin progress rule at the top (the panel names the destination)
+                float a = Mth.clamp(t / 20F, 0, 1);
+                float p = Mth.clamp(t / RocketEntity.TRANSFER_TICKS, 0, 1);
+                int bw = 100;
+                g.fill(w / 2 - bw / 2, 14, w / 2 + bw / 2, 15, (int) (a * 0x40) << 24 | 0xFFFFFF);
+                g.fill(w / 2 - bw / 2, 14, w / 2 - bw / 2 + (int) (bw * p), 15, (int) (a * 0xC0) << 24 | 0xFFFFFF);
             }
         }
         if (mc.level != null) {
             float since = mc.level.getGameTime() - arrivalTick + pt;
-            if (since < 30) {
-                float a = 1 - Mth.clamp(since / 30F, 0, 1);
+            if (since < 20) {
+                float a = 1 - Mth.clamp(since / 20F, 0, 1);
                 g.fill(0, 0, w, h, (int) (a * 255) << 24);
             }
         }
@@ -173,11 +165,75 @@ public final class RocketHud {
         if (s == FlightState.ASCENT && rocket.timer() < 60) {
             g.drawCenteredString(font, Component.translatable("hud.spacebreaker.liftoff"), w / 2, 40, 0xFFFFFF);
         }
-        // panel
+        Location here = rocket.location();
+        if (details) {
+            panel(g, font, mc, rocket, s, here);
+        } else {
+            brief(g, font, rocket, s, here);
+        }
+        // key hints
+        Component hint = switch (s) {
+            case IDLE -> RocketEntity.launchTarget(here) != null
+                    ? Component.translatable("hud.spacebreaker.hint.launch", RocketryClient.LAUNCH.getTranslatedKeyMessage())
+                    : null;
+            case COUNTDOWN -> Component.translatable("hud.spacebreaker.hint.abort", RocketryClient.LAUNCH.getTranslatedKeyMessage());
+            case ORBIT -> Component.translatable("hud.spacebreaker.hint.map", RocketryClient.STAR_MAP.getTranslatedKeyMessage());
+            default -> null;
+        };
+        if (!com.pizzaparker07.spacebreaker.content.rocketry.mission.Coverage.hasSignal(here.body())) {
+            g.drawString(font, Component.translatable("hud.spacebreaker.no_signal"), 6, details ? 82 : 32, 0xB0A070, true);
+        }
+        if (hint != null) {
+            int hy = g.guiHeight() - 86;
+            g.drawCenteredString(font, hint, w / 2, hy, 0xFFFFFF);
+        }
+        if (s == FlightState.IDLE && !Location.EARTH_SURFACE.equals(here)) {
+            g.drawCenteredString(font, Component.translatable("hud.spacebreaker.hint.map", RocketryClient.STAR_MAP.getTranslatedKeyMessage()),
+                    w / 2, g.guiHeight() - 98, 0xC0C8D0);
+        }
+    }
+
+    private static boolean details;
+
+    static void toggleDetails() {
+        details = !details;
+    }
+
+    /** The default: where the rocket is going and how long it takes, and the fuel. */
+    private static void brief(GuiGraphics g, Font font, RocketEntity rocket, FlightState s, Location here) {
+        int x = 6, y = 6;
+        Location to = s == FlightState.ASCENT || s == FlightState.TRANSFER || s == FlightState.BURN ? rocket.destination() : null;
+        Component top;
+        if (to != null) {
+            String time;
+            if (s == FlightState.ASCENT) {
+                // remaining burn, from the share of the climb's Δv already delivered
+                float p = rocket.ascentProgress();
+                float secs = p > 0.03F ? rocket.timer() / 20F * (1 - p) / p : Float.NaN;
+                time = Float.isNaN(secs) ? "…" : String.format(Locale.ROOT, "%d:%02d", (int) secs / 60, (int) secs % 60);
+            } else {
+                double days = com.pizzaparker07.spacebreaker.content.rocketry.nav.Transfers.coastSeconds(here, to) / 86400.0;
+                time = Component.translatable("hud.spacebreaker.days", String.format(Locale.ROOT, days < 10 ? "%.1f" : "%.0f", days)).getString();
+            }
+            top = Component.translatable("hud.spacebreaker.brief", to.name(), time);
+        } else {
+            top = here.name();
+        }
+        int width = Math.max(100, font.width(top));
+        g.fill(x - 3, y - 3, x + width + 3, y + 21, 0x70000000);
+        g.drawString(font, top, x, y, 0xE8EEF4, false);
+        float fuel = (float) rocket.fuelFraction();
+        g.fill(x, y + 12, x + 100, y + 16, 0xFF202326);
+        g.fill(x, y + 12, x + (int) (100 * fuel), y + 16, fuel > 0.2F ? 0xFF7FC27A : 0xFFD9673A);
+        g.drawString(font, Component.translatable("hud.spacebreaker.details_hint", RocketryClient.FLIGHT_DETAILS.getTranslatedKeyMessage()),
+                x, y + 24, 0x60C0C8D0, false);
+    }
+
+    /** The full instrument panel (toggled with the flight details key). */
+    private static void panel(GuiGraphics g, Font font, Minecraft mc, RocketEntity rocket, FlightState s, Location here) {
         int x = 6, y = 6;
         int lines = 7;
         g.fill(x - 3, y - 3, x + 142, y + lines * 10 + 2, 0x90000000);
-        Location here = rocket.location();
         line(g, font, x, y, Component.translatable("hud.spacebreaker.state." + s.name().toLowerCase(Locale.ROOT)), 0xFFE08A);
         line(g, font, x, y + 10, Component.translatable("hud.spacebreaker.location", here.name()), 0xDDE6F0);
         double alt = here.orbit() ? Double.NaN : rocket.getY() - (mc.level != null ? mc.level.getSeaLevel() : 63);
@@ -189,33 +245,12 @@ public final class RocketHud {
         int stage = Math.min(stages, rocket.activeStage() + 1);
         line(g, font, x, y + 40, Component.translatable(rocket.isCapsuleOnly() ? "hud.spacebreaker.capsule" : "hud.spacebreaker.stage", stage, stages), 0xDDE6F0);
         line(g, font, x, y + 50, Component.translatable("hud.spacebreaker.delta_v", Fmt.ms(rocket.deltaV())), 0x9FE0A0);
-        // fuel bar
         float fuel = (float) rocket.fuelFraction();
         int by = y + 61;
         g.drawString(font, Component.translatable("hud.spacebreaker.fuel"), x, by, 0xDDE6F0, false);
         int bx = x + 40;
         g.fill(bx, by + 1, bx + 96, by + 7, 0xFF202326);
         g.fill(bx, by + 1, bx + (int) (96 * fuel), by + 7, fuel > 0.2F ? 0xFF7FC27A : 0xFFD9673A);
-        // key hints
-        Component hint = switch (s) {
-            case IDLE -> RocketEntity.launchTarget(here) != null
-                    ? Component.translatable("hud.spacebreaker.hint.launch", RocketryClient.LAUNCH.getTranslatedKeyMessage())
-                    : null;
-            case COUNTDOWN -> Component.translatable("hud.spacebreaker.hint.abort", RocketryClient.LAUNCH.getTranslatedKeyMessage());
-            case ORBIT -> Component.translatable("hud.spacebreaker.hint.map", RocketryClient.STAR_MAP.getTranslatedKeyMessage());
-            default -> null;
-        };
-        if (!com.pizzaparker07.spacebreaker.content.rocketry.mission.Coverage.hasSignal(here.body())) {
-            g.drawString(font, Component.translatable("hud.spacebreaker.no_signal"), x, y + lines * 10 + 6, 0xB0A070, true);
-        }
-        if (hint != null) {
-            int hy = g.guiHeight() - 72;
-            g.drawCenteredString(font, hint, w / 2, hy, 0xFFFFFF);
-        }
-        if (s == FlightState.IDLE && here != Location.EARTH_SURFACE) {
-            g.drawCenteredString(font, Component.translatable("hud.spacebreaker.hint.map", RocketryClient.STAR_MAP.getTranslatedKeyMessage()),
-                    w / 2, g.guiHeight() - 82, 0xC0C8D0);
-        }
     }
 
     private static void line(GuiGraphics g, Font font, int x, int y, Component text, int color) {

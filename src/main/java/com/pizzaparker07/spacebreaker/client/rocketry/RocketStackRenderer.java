@@ -129,6 +129,16 @@ public final class RocketStackRenderer {
                 plane(vc, pose.last().pose(), pose.last(), r * 0.95F, width, length, vacuum ? 0.75F : 1F, 255, 255, 255);
                 pose.popPose();
             }
+            if (!vacuum) {
+                // the white-hot core of a sea-level flame: short, narrow and added on top, so it glows even at night
+                VertexConsumer core = buffers.getBuffer(RenderType.eyes(PLUME));
+                for (int k = 0; k < 3; k++) {
+                    pose.pushPose();
+                    pose.mulPose(Axis.YP.rotationDegrees(k * 60F + time * 5F));
+                    plane(core, pose.last().pose(), pose.last(), r * 0.8F, r * 0.45F, length * 0.55F, strength, 255, 235, 200);
+                    pose.popPose();
+                }
+            }
             pose.popPose();
         }
     }

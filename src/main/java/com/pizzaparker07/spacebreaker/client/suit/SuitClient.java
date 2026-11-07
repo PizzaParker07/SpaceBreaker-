@@ -47,6 +47,7 @@ public final class SuitClient {
                 com.pizzaparker07.spacebreaker.client.hud.SensorCard::accept;
         com.pizzaparker07.spacebreaker.content.suit.net.SuitNetwork.onNav = com.pizzaparker07.spacebreaker.client.hud.ClientNav::accept;
         com.pizzaparker07.spacebreaker.content.suit.net.SuitNetwork.onTether = TetherClient::accept;
+        com.pizzaparker07.spacebreaker.client.light.LightBeams.register(HelmetLamps::collect);
     }
 
     @SubscribeEvent
