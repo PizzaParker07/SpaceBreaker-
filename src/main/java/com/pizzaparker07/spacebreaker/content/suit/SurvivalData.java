@@ -53,6 +53,8 @@ public final class SurvivalData {
     public boolean wasPressurised;
     /** In microgravity last time we checked, for the one-time hint on arrival. */
     public boolean wasMicroGravity;
+    /** What the way-home arrow points at (cycled with sneak + use on the Environment Sensor). */
+    public Navigation.Kind navKind = Navigation.Kind.AUTO;
     /** Last known seal state, for the sealed / unsealed feedback (null until the first check). */
     public Boolean wasSealed;
 

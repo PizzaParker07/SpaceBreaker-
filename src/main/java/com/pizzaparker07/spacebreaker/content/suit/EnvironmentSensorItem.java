@@ -60,6 +60,16 @@ public class EnvironmentSensorItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
+        if (player.isShiftKeyDown()) {
+            // sneak + use: choose what the helmet's way-home arrow points at
+            if (!level.isClientSide) {
+                SurvivalData data = LifeSupport.data(player);
+                data.navKind = data.navKind.next();
+                player.displayClientMessage(Component.translatable("message.spacebreaker.nav.target",
+                        Component.translatable(data.navKind.key())).withStyle(ChatFormatting.AQUA), true);
+            }
+            return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
+        }
         if (!level.isClientSide && player instanceof ServerPlayer sp) {
             PacketDistributor.sendToPlayer(sp, read(level, player.blockPosition()));
             level.playSound(null, player.blockPosition(), SoundEvents.NOTE_BLOCK_BIT.value(), SoundSource.PLAYERS, 0.4F, 1.8F);

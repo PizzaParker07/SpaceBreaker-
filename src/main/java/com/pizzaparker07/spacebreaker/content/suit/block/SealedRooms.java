@@ -42,6 +42,15 @@ public final class SealedRooms {
     }
 
     /** Environment.OxygenSource hook. */
+    /** Positions of the distributors keeping a room pressurised in this level (the shelters to head back to). */
+    public static List<BlockPos> activeDistributors(Level level) {
+        List<OxygenDistributorBlockEntity> list = BY_LEVEL.get(level.dimension());
+        if (list == null) {
+            return List.of();
+        }
+        return list.stream().filter(be -> be.getLevel() == level && be.active()).map(OxygenDistributorBlockEntity::getBlockPos).toList();
+    }
+
     public static boolean providesOxygen(Level level, BlockPos pos) {
         if (level.isClientSide) {
             return false;

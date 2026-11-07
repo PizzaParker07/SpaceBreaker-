@@ -66,6 +66,12 @@ public final class SuitEvents {
             }
             data.wasPressurised = pressurised;
         }
+        if (player.tickCount % 20 == 7 && SpaceSuitItem.wearsHelmet(player) && sp.connection != null
+                && sp.connection.hasChannel(com.pizzaparker07.spacebreaker.content.suit.net.NavPayload.TYPE)) {
+            var target = Navigation.find(sp.serverLevel(), player, data.navKind);
+            PacketDistributor.sendToPlayer(sp, new com.pizzaparker07.spacebreaker.content.suit.net.NavPayload(data.navKind.ordinal(),
+                    target.map(t -> t.kind().ordinal()).orElse(0), target.map(Navigation.Target::pos)));
+        }
         if (player.tickCount % 5 == 0) {
             sendStatus(sp, data);
         }

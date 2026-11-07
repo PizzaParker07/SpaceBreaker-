@@ -339,8 +339,18 @@ public final class SuitModule implements SbModule {
         lang.item(TitaniumTools.SHOVEL, "Titanium Shovel", "Titanyum Kürek");
         lang.item(TitaniumTools.HOE, "Titanium Hoe", "Titanyum Çapa");
         lang.item(TitaniumTools.SWORD, "Titanium Sword", "Titanyum Kılıç");
-        lang.add("tooltip.spacebreaker.environment_sensor", "Use to read pressure, air, temperature, radiation, gravity and ground",
-                "Basınç, hava, sıcaklık, radyasyon, yerçekimi ve zemini okumak için kullan");
+        lang.add("tooltip.spacebreaker.environment_sensor", "Use to read pressure, air, temperature, radiation, gravity and ground. Sneak + use: way-home target",
+                "Basınç, hava, sıcaklık, radyasyon, yerçekimi ve zemini okumak için kullan. Eğil + kullan: eve dönüş hedefi");
+        lang.add("message.spacebreaker.nav.target", "Way home: %s", "Eve dönüş: %s");
+        lang.add("nav.spacebreaker.auto", "nearest", "en yakın");
+        lang.add("nav.spacebreaker.rocket", "my rocket", "roketim");
+        lang.add("nav.spacebreaker.beacon", "my landing beacon", "iniş işaretim");
+        lang.add("nav.spacebreaker.base", "pressurised base", "basınçlı üs");
+        lang.add("hud.spacebreaker.nav.rocket", "ROCKET", "ROKET");
+        lang.add("hud.spacebreaker.nav.beacon", "BEACON", "İŞARET");
+        lang.add("hud.spacebreaker.nav.base", "BASE", "ÜS");
+        lang.add("hud.spacebreaker.warn.turn_back", "TURN BACK: O2 FOR THE WAY HOME", "DÖN: DÖNÜŞ İÇİN O2 AZALIYOR");
+        lang.add("hud.spacebreaker.warn.cant_make_it", "NOT ENOUGH O2 TO GET BACK", "GERİ DÖNMEYE O2 YETMİYOR");
         lang.add("sensor.spacebreaker.title", "Environment reading", "Çevre ölçümü");
         lang.add("sensor.spacebreaker.title_at", "Environment reading: %s", "Çevre ölçümü: %s");
         lang.add("sensor.spacebreaker.pressure", "Pressure: %s kPa (%s bar)", "Basınç: %s kPa (%s bar)");

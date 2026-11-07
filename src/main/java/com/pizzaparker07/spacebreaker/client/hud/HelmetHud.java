@@ -6,6 +6,7 @@ import com.pizzaparker07.spacebreaker.content.suit.SpaceSuitItem;
 import com.pizzaparker07.spacebreaker.content.suit.net.SuitStatusPayload;
 import com.pizzaparker07.spacebreaker.core.config.SbConfig;
 import net.minecraft.client.DeltaTracker;
+import net.minecraft.core.BlockPos;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -200,6 +201,25 @@ public final class HelmetHud {
             rows.add(new Row(ICON_MMU, gas, gas < 0.15F ? WARN : 0xE0B040, Math.round(gas * 100) + "%", 0xFFFFFF, false));
         }
 
+        // way home: arrow, target and distance; coloured by whether the oxygen lasts the walk back
+        BlockPos navTarget = ClientNav.target();
+        com.pizzaparker07.spacebreaker.content.suit.Navigation.Status navStatus = com.pizzaparker07.spacebreaker.content.suit.Navigation.Status.OK;
+        float navYaw = 0F;
+        if (navTarget != null && ClientNav.kind() != null) {
+            double dist = Math.sqrt(player.distanceToSqr(net.minecraft.world.phys.Vec3.atCenterOf(navTarget)));
+            if (!breathable) {
+                navStatus = com.pizzaparker07.spacebreaker.content.suit.Navigation.status(dist, s.gravity(), s.oxygen());
+            }
+            navYaw = com.pizzaparker07.spacebreaker.content.suit.Navigation.relativeYaw(player.position(), player.getYRot(), navTarget);
+            int c = switch (navStatus) {
+                case OK -> TEXT;
+                case TURN_BACK -> WARN;
+                case CRITICAL -> ALARM;
+            };
+            String label = Component.translatable("hud.spacebreaker.nav." + ClientNav.kind().name().toLowerCase(Locale.ROOT)).getString();
+            rows.add(new Row(-2, -1F, 0, label + " " + Math.round(dist) + "m", c, false));
+        }
+
         int width = 0;
         for (Row r : rows) {
             width = Math.max(width, 11 + (r.fill() >= 0 ? BAR_W + 3 : 0) + font.width(r.value()));
@@ -230,6 +250,8 @@ public final class HelmetHud {
             g.setColor(1F, 1F, 1F, alpha);
             if (r.icon() >= 0) {
                 g.blit(ICONS, 0, y, r.icon() * 9, 0, 9, 9, 9 * 6, 9);
+            } else if (r.icon() == -2) {
+                drawArrow(g, 4.5F, y + 4.5F, navYaw, argb(r.valueColor(), alpha));
             }
             g.setColor(1F, 1F, 1F, 1F);
             int x = 11;
@@ -249,6 +271,10 @@ public final class HelmetHud {
             warning = Component.translatable("hud.spacebreaker.warn.unsealed");
         } else if (!breathable && s.oxygen() == 0) {
             warning = Component.translatable("hud.spacebreaker.warn.no_oxygen");
+        } else if (!breathable && navStatus == com.pizzaparker07.spacebreaker.content.suit.Navigation.Status.CRITICAL) {
+            warning = Component.translatable("hud.spacebreaker.warn.cant_make_it");
+        } else if (!breathable && navStatus == com.pizzaparker07.spacebreaker.content.suit.Navigation.Status.TURN_BACK) {
+            warning = Component.translatable("hud.spacebreaker.warn.turn_back");
         } else if (!breathable && o2 < 0.15F) {
             warning = Component.translatable("hud.spacebreaker.warn.low_oxygen");
         } else if (beyond) {
@@ -273,6 +299,18 @@ public final class HelmetHud {
             int wy = g.guiHeight() - 59 - (player.isCreative() ? 0 : 10);
             g.drawString(font, warning, wx, wy, argb(ALARM, alpha), true);
         }
+    }
+
+    /** A small arrow (tip up = straight ahead) turned by {@code degrees}, centred on (cx, cy). */
+    private static void drawArrow(GuiGraphics g, float cx, float cy, float degrees, int color) {
+        g.pose().pushPose();
+        g.pose().translate(cx, cy, 0);
+        g.pose().mulPose(com.mojang.math.Axis.ZP.rotationDegrees(degrees));
+        for (int i = 0; i < 4; i++) {
+            g.fill(-i, -4 + i, i + 1, -3 + i, color);   // head
+        }
+        g.fill(-1, 0, 2, 4, color);                   // shaft
+        g.pose().popPose();
     }
 
     /** Vanilla-looking bar: dark frame, coloured fill with a lighter top line; marker style for temperatures. */

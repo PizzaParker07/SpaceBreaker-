@@ -66,6 +66,24 @@ final class SuitEvaScenario implements ShowcaseScenario {
         com.pizzaparker07.spacebreaker.core.tech.Tech.learn(p, com.pizzaparker07.spacebreaker.content.suit.SuitTier.HEATED.tech());
     }
 
+    /** Places the player's own landing beacon ~180 blocks away; {@code oxygenLevel} 1 = only enough for about the walk. */
+    private static void beaconBehind(ServerPlayer p, double g, int oxygenLevel) {
+        astronaut(p);
+        ServerLevel level = p.serverLevel();
+        BlockPos beacon = BlockPos.containing(120.5, g, 140.5);
+        beacon = level.getHeightmapPos(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, beacon);
+        level.setBlock(beacon, com.pizzaparker07.spacebreaker.content.rocketry.RocketryModule.LANDING_BEACON.get().defaultBlockState(), Block.UPDATE_ALL);
+        var beacons = com.pizzaparker07.spacebreaker.content.rocketry.station.LandingBeacons.get(level);
+        beacons.add(beacon);
+        beacons.setOwner(beacon, p.getGameProfile().getName());
+        if (oxygenLevel == 1) {
+            ItemStack torso = p.getItemBySlot(EquipmentSlot.CHEST);
+            int keep = (int) (com.pizzaparker07.spacebreaker.content.suit.Navigation.walkTicks(180, 0.26) * 1.2);
+            com.pizzaparker07.spacebreaker.content.suit.SuitTanks.drain(torso,
+                    Math.max(0, com.pizzaparker07.spacebreaker.content.suit.SuitTanks.oxygen(torso) - keep));
+        }
+    }
+
     /** Arriving again, so the microgravity hint shows on this shot. */
     private static void freshArrival(ServerPlayer p) {
         astronaut(p);
@@ -235,6 +253,11 @@ final class SuitEvaScenario implements ShowcaseScenario {
                         net.minecraft.world.level.block.Blocks.STONE.defaultBlockState(), net.minecraft.core.Direction.UP);
             }
         }), null));
+        // way home: the player's own landing beacon a long walk away (behind and to the right); then low on oxygen
+        s.add(new Shot(prefix + "_19_way_home", 0, 0.5, g + 1.62, 8.5, 180F, 10F, false, fp, 60,
+                at(false, p -> beaconBehind(p, g, 0)), null));
+        s.add(new Shot(prefix + "_19b_turn_back", 0, 0.5, g + 1.62, 8.5, 180F, 10F, false, fp, 60,
+                at(false, p -> beaconBehind(p, g, 1)), null));
         if (comet) {
             s.add(new Shot(prefix + "_20_tethered_eva", 0, -2.5, g + 1.62, 3.5, 0F, 8F, true, CameraType.THIRD_PERSON_FRONT, 80,
                     at(false, this::tethered), null));

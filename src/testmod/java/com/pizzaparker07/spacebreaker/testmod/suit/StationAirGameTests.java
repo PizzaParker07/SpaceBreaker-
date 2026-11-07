@@ -245,4 +245,39 @@ public final class StationAirGameTests {
         helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.ElectricDrillItem.wideFace(sp, centre) == null, "sneaking digs a single block");
         helper.succeed();
     }
+
+    @GameTest(template = "empty")
+    public static void wayHomeArrowAndOxygenCheck(GameTestHelper helper) {
+        // direction: looking south (yaw 0) at a target due south is straight ahead; due east is 90 degrees to the left
+        net.minecraft.world.phys.Vec3 o = net.minecraft.world.phys.Vec3.ZERO;
+        float ahead = com.pizzaparker07.spacebreaker.content.suit.Navigation.relativeYaw(o, 0F, new BlockPos(0, 0, 20));
+        float east = com.pizzaparker07.spacebreaker.content.suit.Navigation.relativeYaw(o, 0F, new BlockPos(20, 0, 0));
+        helper.assertTrue(Math.abs(ahead) < 3F, "straight ahead, got " + ahead);
+        helper.assertTrue(Math.abs(east + 90F) < 3F, "east is to the left when facing south, got " + east);
+        // oxygen: 300 blocks on the Moon take 100 s = 2000 ticks of walking
+        var ok = com.pizzaparker07.spacebreaker.content.suit.Navigation.status(300, 0.26, 6000);
+        var turn = com.pizzaparker07.spacebreaker.content.suit.Navigation.status(300, 0.26, 2500);
+        var crit = com.pizzaparker07.spacebreaker.content.suit.Navigation.status(300, 0.26, 1500);
+        helper.assertTrue(ok == com.pizzaparker07.spacebreaker.content.suit.Navigation.Status.OK, "plenty of oxygen: OK");
+        helper.assertTrue(turn == com.pizzaparker07.spacebreaker.content.suit.Navigation.Status.TURN_BACK, "within the margin: turn back");
+        helper.assertTrue(crit == com.pizzaparker07.spacebreaker.content.suit.Navigation.Status.CRITICAL, "not enough: critical");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.Navigation.walkTicks(30, 1e-5)
+                > com.pizzaparker07.spacebreaker.content.suit.Navigation.walkTicks(30, 0.26), "walking home on a comet is slower");
+        // targets: only the player's own beacon counts
+        Player p = helper.makeMockPlayer(GameType.SURVIVAL);
+        p.setPos(helper.absoluteVec(new net.minecraft.world.phys.Vec3(1, 1, 1)));
+        var beacons = com.pizzaparker07.spacebreaker.content.rocketry.station.LandingBeacons.get(helper.getLevel());
+        BlockPos mine = helper.absolutePos(new BlockPos(5, 1, 5));
+        BlockPos theirs = helper.absolutePos(new BlockPos(2, 1, 2));
+        beacons.add(mine);
+        beacons.setOwner(mine, p.getGameProfile().getName());
+        beacons.add(theirs);
+        beacons.setOwner(theirs, "someone_else");
+        var found = com.pizzaparker07.spacebreaker.content.suit.Navigation.find(helper.getLevel(), p,
+                com.pizzaparker07.spacebreaker.content.suit.Navigation.Kind.BEACON);
+        beacons.remove(mine);
+        beacons.remove(theirs);
+        helper.assertTrue(found.isPresent() && found.get().pos().equals(mine), "the arrow points at my own beacon, not the nearer one of another player");
+        helper.succeed();
+    }
 }

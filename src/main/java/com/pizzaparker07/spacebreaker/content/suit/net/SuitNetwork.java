@@ -27,6 +27,8 @@ public final class SuitNetwork {
                 (payload, ctx) -> com.pizzaparker07.spacebreaker.content.suit.HelmetLamp.toggle(ctx.player()));
         registrar.playToClient(SensorReadingPayload.TYPE, SensorReadingPayload.CODEC,
                 (payload, ctx) -> com.pizzaparker07.spacebreaker.client.hud.SensorCard.accept(payload));
+        registrar.playToClient(NavPayload.TYPE, NavPayload.CODEC,
+                (payload, ctx) -> com.pizzaparker07.spacebreaker.client.hud.ClientNav.accept(payload));
         registrar.playToClient(TetherPayload.TYPE, TetherPayload.CODEC,
                 (payload, ctx) -> com.pizzaparker07.spacebreaker.client.suit.TetherClient.accept(payload));
     }
