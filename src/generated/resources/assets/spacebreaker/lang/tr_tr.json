@@ -1392,6 +1392,7 @@
   "recipe_viewer.spacebreaker.energy": "%s FE/t · %s FE",
   "recipe_viewer.spacebreaker.fabricating": "İmalat",
   "recipe_viewer.spacebreaker.info.atmosphere_processor": "Yerel atmosferi sıkıştırır ve en yararlı gazını ayırır: Mars ve Venüs'te karbondioksit, Dünya havasından oksijen, Titan'da metan. Üretim gazın oranı ve hava basıncıyla artar; boşlukta çalışmaz. Enerji ister.",
+  "recipe_viewer.spacebreaker.info.item_duct": "Bir ucu eğilip boş elle kullan: o envanterden çeker. Elde bir eşyayla eğilip kullan: o uç yalnız o eşyayı geçirir.",
   "recipe_viewer.spacebreaker.info.rocket_assembler": "Roketler üretim masasında yapılmaz. Parçaları (motorlar, tanklar, kapsül, kanatçıklar, paraşütler...) Roket Montaj Tezgâhı'na yerleştir, ekranında tasarımın delta-v ve itki/ağırlık değerlerini kontrol et, sonra roketi fırlatma rampasına monte et. Parçalar İmalatçı'dan gelir; daha iyi parçalar araştırma ister.",
   "recipe_viewer.spacebreaker.liquefaction": "Kriyojenik Sıvılaştırma",
   "recipe_viewer.spacebreaker.melting": "Buz Eritme",

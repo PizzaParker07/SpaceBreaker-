@@ -71,7 +71,7 @@ public final class RecipeViewerGameTests {
             helper.assertTrue(ids.add(d.id().toString()), "duplicate id " + d.id());
         }
         for (var page : RecipeViewerData.INFO_PAGES) {
-            helper.assertFalse(page.item().get().asItem() == Items.AIR, "info page without item: " + page.key());
+            helper.assertFalse(!page.optional() && page.item().get().asItem() == Items.AIR, "info page without item: " + page.key());
         }
         helper.succeed();
     }

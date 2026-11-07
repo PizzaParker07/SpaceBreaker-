@@ -57,6 +57,10 @@ public final class CompatModule implements SbModule {
                 "Roketler üretim masasında yapılmaz. Parçaları (motorlar, tanklar, kapsül, kanatçıklar, paraşütler...) Roket Montaj "
                         + "Tezgâhı'na yerleştir, ekranında tasarımın delta-v ve itki/ağırlık değerlerini kontrol et, sonra roketi fırlatma "
                         + "rampasına monte et. Parçalar İmalatçı'dan gelir; daha iyi parçalar araştırma ister.");
+        lang.add(RecipeViewerData.KEY_INFO_ITEM_DUCT,
+                "Sneak and use one end with an empty hand: it pulls from that inventory. Sneak and use it holding an item: "
+                        + "that end lets only that item through.",
+                "Bir ucu eğilip boş elle kullan: o envanterden çeker. Elde bir eşyayla eğilip kullan: o uç yalnız o eşyayı geçirir.");
         lang.add(RecipeViewerData.KEY_INFO_ATMOSPHERE,
                 "Compresses the local atmosphere and separates its most useful gas: carbon dioxide on Mars and Venus, oxygen "
                         + "from Earth's air, methane on Titan. Output grows with the gas share and the air pressure; it does nothing "
