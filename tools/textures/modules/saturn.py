@@ -116,38 +116,53 @@ def sulcus_ice():
 
 # --------------------------------------------------------------------------- creatures
 
+# Methane skater: dark brown-olive body (it matches Titan's dim, orange-lit shores), a pale blue stripe along the
+# abdomen, big glossy black eyes, banded legs and glossy pads.
+SKATER_BODY = ramp('#17140b', '#221e10', '#2e2916', '#3b351d', '#4a4325', '#5a522e', '#6d643a', '#82784a')
+SKATER_STRIPE = ramp('#4f9aa3', '#7fd0d8', '#c4f0f2')
+
+
 def methane_skater():
-    """64x32 sheet for MethaneSkaterModel: dark amber body with pale lengthwise stripes, banded legs."""
+    """64x32 sheet for MethaneSkaterModel (box layout in moon_creatures.faces)."""
     cv = Canvas(64, 32)
-    r = P.SKATER
+    r = SKATER_BODY
     n = clustered(64, 64, 11901, passes=1)
 
-    stripe = [hexc('#4f9aa3'), hexc('#7fd0d8'), hexc('#c4f0f2')]
+    def shell(base):
+        def f(face, x, y, fw, fh):
+            if face == 'bottom':
+                return r[base - 2]
+            return noise_pick(r, base, n, x * 2 + fw, y * 3 + fh)
+        return f
 
-    def body(face, x, y, fw, fh):
+    def abdomen(face, x, y, fw, fh):
         if face == 'top':
             if x == fw // 2:
-                return stripe[1] if y % 3 else stripe[2]  # the pale blue stripe down the back
-            if x in (1, fw - 2):
-                return r[5]
-            return noise_pick(r, 3, n, x, y)
+                return SKATER_STRIPE[1] if y % 3 else SKATER_STRIPE[2]
+            return noise_pick(r, 4, n, x, y)
         if face == 'bottom':
-            return r[1]
-        return noise_pick(r, 2, n, x + 20, y + 30)
+            return r[2]
+        # faint segment lines along the sides
+        return r[2] if (x % 3 == 2 and face in ('left', 'right')) else noise_pick(r, 3, n, x + 20, y + 30)
 
-    paint(cv, 0, 0, 5, 2, 12, body)
-    paint(cv, 0, 14, 3, 2, 3, lambda f, x, y, fw, fh: hexc('#120a05') if (f == 'front' and y == 0 and x in (0, 2)) else r[4] if f == 'top' else r[3])
-    for y in range(14, 21):
-        for x in range(12, 18):
-            cv[x, y] = r[5]
-    # the raised thorax: the stripe runs over it too
-    paint(cv, 34, 0, 3, 1, 4, lambda f, x, y, fw, fh: (stripe[1] if f == 'top' and x == 1 else (r[4] if f == 'top' else r[3])))
-    # foot pads: glossy, pale where they dimple the liquid
-    paint(cv, 34, 8, 3, 1, 3, lambda f, x, y, fw, fh: stripe[2] if f == 'bottom' else (stripe[1] if f == 'top' and (x + y) % 2 == 0 else stripe[0]))
-    for row, length in ((22, 14), (25, 12)):
-        for yy in range(row, row + 3):
-            for x in range(0, 2 * (length + 1)):
-                cv[x, yy] = r[2] if (x // 3) % 2 else r[4]
+    def eye(face, x, y, fw, fh):
+        if face in ('top', 'front') and x == 0 and y == 0:
+            return SKATER_STRIPE[2]  # the glint
+        return hexc('#0b0b0d') if face != 'bottom' else hexc('#1a1a1e')
+
+    def leg(face, x, y, fw, fh):
+        # banded: dark and lighter every few pixels along the leg
+        return r[2] if (x // 2) % 2 else r[5]
+
+    paint(cv, 0, 0, 3, 2, 3, shell(4))
+    paint(cv, 12, 0, 2, 2, 2, eye)
+    paint(cv, 20, 0, 1, 1, 3, lambda f, x, y, fw, fh: r[6] if f == 'front' else r[4])
+    paint(cv, 28, 0, 2, 1, 2, shell(3))
+    paint(cv, 0, 6, 4, 2, 4, lambda f, x, y, fw, fh: SKATER_STRIPE[0] if f == 'top' and x in (1, 2) and y == 3 else shell(5)(f, x, y, fw, fh))
+    paint(cv, 0, 12, 3, 2, 9, abdomen)
+    paint(cv, 40, 0, 3, 1, 3, lambda f, x, y, fw, fh: SKATER_STRIPE[2] if f == 'bottom' else (SKATER_STRIPE[1] if f == 'top' and (x + y) % 2 == 0 else SKATER_STRIPE[0]))
+    for (u, v, length) in ((0, 24, 8), (0, 26, 9), (20, 24, 7), (20, 26, 8), (40, 24, 3)):
+        paint(cv, u, v, length, 1, 1, leg)
     return cv
 
 

@@ -42,7 +42,7 @@ public final class SaturnEntities {
     }
 
     public static void register(IEventBus modBus, DeferredRegister.Items items) {
-        skaterEgg = items.register("methane_skater_spawn_egg", () -> new DeferredSpawnEggItem(METHANE_SKATER, 0x5A3A1E, 0xD9A55A, new Item.Properties()));
+        skaterEgg = items.register("methane_skater_spawn_egg", () -> new DeferredSpawnEggItem(METHANE_SKATER, 0x3B351D, 0x7FD0D8, new Item.Properties()));
         drifterEgg = items.register("geyser_drifter_spawn_egg", () -> new DeferredSpawnEggItem(GEYSER_DRIFTER, 0xCFE8F2, 0x6FB8E0, new Item.Properties()));
         EGGS.add(skaterEgg);
         wormEgg = items.register("tholin_worm_spawn_egg", () -> new DeferredSpawnEggItem(THOLIN_WORM, 0x8C5A1A, 0xE0AC4C, new Item.Properties()));
