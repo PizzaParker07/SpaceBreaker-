@@ -1,9 +1,0 @@
-{
-  "structure": "spacebreaker:hale_bopp_lander",
-  "world": "spacebreaker:hale_bopp",
-  "guardians": [],
-  "loot_tables": [
-    "spacebreaker:dungeons/hale_bopp/lander_cabin",
-    "spacebreaker:dungeons/hale_bopp/lander_cargo"
-  ]
-}

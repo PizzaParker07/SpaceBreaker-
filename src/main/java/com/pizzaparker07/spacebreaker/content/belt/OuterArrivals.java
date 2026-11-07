@@ -80,8 +80,6 @@ public final class OuterArrivals {
                 "İki bin yılı aşkın süredir Dünya'dan görülen en ünlü kuyruklu yıldız: kömürden kara, uzun bir çekirdek.");
         note("tempel_1", "A small, dark comet. Among the rough, pitted ground lie smooth flat plains that end at low scarps.",
                 "Küçük, karanlık bir kuyruklu yıldız. Engebeli, çukurlu zeminin arasında alçak yamaçlarla biten düz, pürüzsüz ovalar uzanır.");
-        note("hale_bopp", "A giant among comets, some 60 km across, coming back to the Sun only every 2500 years. The cold here is deep.",
-                "Kuyruklu yıldızların devi, 60 km kadar genişlikte; Güneş'e ancak 2500 yılda bir döner. Buradaki soğuk çok derin.");
     }
 
     private OuterArrivals() {

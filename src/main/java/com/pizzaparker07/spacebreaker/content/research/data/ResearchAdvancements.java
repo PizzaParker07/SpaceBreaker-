@@ -164,7 +164,7 @@ public final class ResearchAdvancements implements AdvancementSubProvider {
             {"neptune_system", "nitrogen_geyser", "triton", "proteus", "nereid"},
             {"kuiper_gate", "tholin_sand", "pluto", "charon", "nix", "hydra"},
             {"near_earth", "bennu_boulder", "bennu", "ryugu", "eros", "itokawa"},
-            {"comets", "comet_ice", "churyumov_gerasimenko", "encke", "halley", "tempel_1", "hale_bopp"},
+            {"comets", "comet_ice", "churyumov_gerasimenko", "encke", "halley", "tempel_1"},
     };
 
     private static net.minecraft.world.item.Item item(String path) {

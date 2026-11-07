@@ -431,16 +431,6 @@ def tempel_ice():
     return cv
 
 
-def hale_bopp_dust(v=0):
-    return dust(P.HALE_BOPP_DUST, 20901 + v * 29)
-
-
-def hale_bopp_ice():
-    r = P.HALE_BOPP_ICE
-    f = blend((clustered(16, 16, 21001, passes=1), 0.55), (white(21001 + 1), 0.3), (fbm(16, 16, 21001 + 2, [(8, 1.0)]), 0.15))
-    cv, _ = quant(f, [r[0], r[1], r[2], r[3], r[4], r[5]], [14, 30, 28, 14, 9, 5])
-    return cv
-
 
 def export(save):
     for name, fn, r in (('encke_dust', encke_dust, P.ENCKE_DUST),):
@@ -457,7 +447,7 @@ def export(save):
         for side in ('left', 'right'):
             save(footprint(base, prints(r), side), 'block', f'{name}_footprint_{side}', (22, 8, 64, None))
     save(halley_ice(), 'block', 'halley_ice', (60, 14, 10, None))
-    for name, fn, r, ice in (('tempel_dust', tempel_dust, P.TEMPEL_DUST, tempel_ice), ('hale_bopp_dust', hale_bopp_dust, P.HALE_BOPP_DUST, hale_bopp_ice)):
+    for name, fn, r, ice in (('tempel_dust', tempel_dust, P.TEMPEL_DUST, tempel_ice),):
         base = fn(0)
         save(base, 'block', name, (18, 8, 64, None))
         save(fn(1), 'block', name + '_1', (18, 8, 64, None))

@@ -35,7 +35,7 @@ public final class TinyMoonTests {
             com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.RYUGU, com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.EROS,
             com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.ITOKAWA, com.pizzaparker07.spacebreaker.content.belt.Comets.CHURYUMOV,
             com.pizzaparker07.spacebreaker.content.belt.Comets.ENCKE, com.pizzaparker07.spacebreaker.content.belt.Comets.HALLEY,
-            com.pizzaparker07.spacebreaker.content.belt.Comets.TEMPEL, com.pizzaparker07.spacebreaker.content.belt.Comets.HALE_BOPP);
+            com.pizzaparker07.spacebreaker.content.belt.Comets.TEMPEL);
 
     @GameTest(template = WorldTests.EMPTY, timeoutTicks = 200)
     public static void tinyMoonsAreWorlds(GameTestHelper helper) {

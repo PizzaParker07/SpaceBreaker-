@@ -1,7 +1,7 @@
-// 1.21.1	2026-11-07T16:06:47.264640298	Advancements
+// 1.21.1	2026-11-07T16:15:50.984806741	Advancements
 db5b108fdaf0839567d864164409c3704ae9f1bb data/spacebreaker/advancement/main/basic_rocketry.json
 8c6df4ccb5728d89b9b4415a93d20b1a206341c3 data/spacebreaker/advancement/main/belt.json
-d5ab7993598658d5f0e7e46c7685da591ca06302 data/spacebreaker/advancement/main/comets.json
+624bb82e2d73022dc65b31db51298a98f84534eb data/spacebreaker/advancement/main/comets.json
 ddbc1c91681c8f940a0d8b2591f70825ea7601fb data/spacebreaker/advancement/main/deep_breath.json
 bbe79d161e6ece61472f76bba663cde76be7d29f data/spacebreaker/advancement/main/dungeon_found.json
 ca8adf36873750f94825d68f4395f454d3272006 data/spacebreaker/advancement/main/fabricator.json
@@ -11,7 +11,7 @@ d36c0797e3b964e658d22090c4e6b53da69f1f05 data/spacebreaker/advancement/main/fiel
 d652b91cd5f0d3acdc7f99f76f3dfcd8f02d18a8 data/spacebreaker/advancement/main/first_rocket.json
 1a4cb224e26e3a8ca1374942552196d8d08a2c69 data/spacebreaker/advancement/main/first_tech.json
 ed3d158b8da8ab2978458cfed5494891c14c3c21 data/spacebreaker/advancement/main/full_suit.json
-92748098262be34bc32ff616837def47275593de data/spacebreaker/advancement/main/grand_tour.json
+c5417cbd3ef8a0fe822e664ff86a83e992d4277e data/spacebreaker/advancement/main/grand_tour.json
 2478cc56af4d1bfeb9c7534f26c146511fd88348 data/spacebreaker/advancement/main/inner_planets.json
 f0eff96491a92d5e25b47dd85cc89a0e26a9dc66 data/spacebreaker/advancement/main/jetpack.json
 077eaff5e14203a7238e3e30f52fe2c458b7d8a6 data/spacebreaker/advancement/main/jupiter_system.json

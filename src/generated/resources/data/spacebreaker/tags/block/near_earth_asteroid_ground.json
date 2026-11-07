@@ -15,8 +15,6 @@
     "spacebreaker:halley_dust",
     "spacebreaker:halley_ice",
     "spacebreaker:tempel_dust",
-    "spacebreaker:tempel_ice",
-    "spacebreaker:hale_bopp_dust",
-    "spacebreaker:hale_bopp_ice"
+    "spacebreaker:tempel_ice"
   ]
 }
