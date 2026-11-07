@@ -98,6 +98,14 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
     private BlockPos dockedPort;
     /** Client: ticks left of the docking jolt. */
     private int jolt;
+    /** Automatic cargo route: the two ends (location ids), whether it runs, and the wait before the next step. */
+    private String routeA = "", routeB = "";
+    private boolean routeOn;
+    private int routeWait;
+    /** Where the rocket loads and unloads at its current end (docking port or landing beacon). */
+    @Nullable
+    private BlockPos routeAnchor;
+    private boolean routeToldFuel;
     /** The hold of a cargo module (27 slots), made when first needed. */
     @Nullable
     private net.minecraft.world.SimpleContainer cargo;
@@ -421,6 +429,62 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
                 .map(p -> p.type() == com.pizzaparker07.spacebreaker.content.rocketry.part.PartType.CARGO).orElse(false);
     }
 
+    /**
+     * Sets up a cargo route between where the rocket is launched from and its mission target. It only runs between
+     * two places away from Earth's surface (a station and a base, say): there the rocket comes down on a beacon.
+     */
+    public void startRoute(Location from, Location to) {
+        routeA = from.id();
+        routeB = to.id();
+        routeOn = hasCargoHold() && com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.routeAllowed(from, to);
+        routeToldFuel = false;
+    }
+
+    public boolean routeOn() {
+        return routeOn;
+    }
+
+    /** The other end of the route from {@code at}, if {@code at} is one of its ends. */
+    public java.util.Optional<Location> routeOtherEnd(Location at) {
+        if (at.id().equals(routeA)) {
+            return Location.parse(routeB);
+        }
+        if (at.id().equals(routeB)) {
+            return Location.parse(routeA);
+        }
+        return java.util.Optional.empty();
+    }
+
+    /** Runs the next route step in {@code ticks}, from this anchor. */
+    public void scheduleRoute(int ticks, @Nullable BlockPos anchor) {
+        routeWait = Math.max(1, ticks);
+        if (anchor != null) {
+            routeAnchor = anchor.immutable();
+        }
+    }
+
+    @Nullable
+    public BlockPos routeAnchor() {
+        return routeAnchor;
+    }
+
+    /** Tells the owner once per wait that the route is held up for fuel. */
+    public boolean firstFuelWarning() {
+        boolean first = !routeToldFuel;
+        routeToldFuel = true;
+        return first;
+    }
+
+    public void fuelledForRoute() {
+        routeToldFuel = false;
+    }
+
+    private void tickRoute() {
+        if (routeOn && routeWait > 0 && --routeWait == 0) {
+            com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.routeDepart(this);
+        }
+    }
+
     /** The cargo hold (27 slots); empty for rockets without a cargo module. */
     public net.minecraft.world.SimpleContainer cargo() {
         if (cargo == null) {
@@ -525,6 +589,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
             notifyCrew(Component.translatable("message.spacebreaker.docked"));
             if (hasCargoHold()) {
                 com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.unloadCargo(this, at, location());
+                com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.routeArrived(this, at, location());
             }
             return;
         }
@@ -575,6 +640,19 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
                 }
                 return InteractionResult.sidedSuccess(level().isClientSide);
             }
+        }
+        if (hasCargoHold() && player.isSecondaryUseActive() && held.isEmpty() && !routeA.isEmpty()
+                && (state() == FlightState.IDLE || docked())) {
+            // sneak-use with an empty hand switches the automatic route on and off
+            if (!level().isClientSide) {
+                routeOn = !routeOn && Location.parse(routeA).flatMap(a -> Location.parse(routeB).map(b ->
+                        com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.routeAllowed(a, b))).orElse(false);
+                if (routeOn) {
+                    scheduleRoute(com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.ROUTE_WAIT, null);
+                }
+                player.displayClientMessage(Component.translatable(routeOn ? "message.spacebreaker.cargo.route_on" : "message.spacebreaker.cargo.route_off"), true);
+            }
+            return InteractionResult.sidedSuccess(level().isClientSide);
         }
         if (hasCargoHold() && !player.isSecondaryUseActive() && (state() == FlightState.IDLE || docked())) {
             // open the cargo hold (on the pad to load it, at the station or base to unload)
@@ -918,13 +996,18 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
             setPos(getX() + v.x, getY() + v.y, getZ() + v.z);
         }
         switch (state()) {
-            case IDLE -> setDeltaMovement(Vec3.ZERO);
+            case IDLE -> {
+                setDeltaMovement(Vec3.ZERO);
+                tickRoute();
+            }
             case COUNTDOWN -> tickCountdown();
             case ASCENT -> tickAscent();
             case ORBIT -> {
                 setDeltaMovement(Vec3.ZERO);
                 if (dockTarget != null) {
                     tickDocking();
+                } else if (docked()) {
+                    tickRoute();
                 }
                 if (autoTravel > 0 && --autoTravel == 0) {
                     Location target = missionTarget().orElse(null);
@@ -1432,6 +1515,11 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         coast = tag.getInt("coast");
         homeX = tag.contains("homeX") ? tag.getDouble("homeX") : Double.NaN;
         beenAway = tag.getBoolean("beenAway");
+        routeA = tag.getString("routeA");
+        routeB = tag.getString("routeB");
+        routeOn = tag.getBoolean("routeOn");
+        routeWait = tag.getInt("routeWait");
+        routeAnchor = tag.contains("routeAnchor") ? BlockPos.of(tag.getLong("routeAnchor")) : null;
         if (tag.contains("cargo")) {
             cargo().clearContent();
             net.minecraft.world.ContainerHelper.loadAllItems(tag.getCompound("cargo"), cargo().getItems(), registryAccess());
@@ -1482,6 +1570,13 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         }
         tag.putInt("requiredShield", requiredShield);
         tag.putBoolean("beenAway", beenAway);
+        tag.putString("routeA", routeA);
+        tag.putString("routeB", routeB);
+        tag.putBoolean("routeOn", routeOn);
+        tag.putInt("routeWait", routeWait);
+        if (routeAnchor != null) {
+            tag.putLong("routeAnchor", routeAnchor.asLong());
+        }
         if (cargo != null && !cargo.isEmpty()) {
             // keep every stack in its slot
             tag.put("cargo", net.minecraft.world.ContainerHelper.saveAllItems(new CompoundTag(), cargo.getItems(), registryAccess()));

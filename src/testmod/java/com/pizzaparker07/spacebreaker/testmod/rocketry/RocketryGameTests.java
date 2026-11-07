@@ -1132,6 +1132,23 @@ public final class RocketryGameTests {
         helper.assertTrue(iron == 64, "the iron is in the chest: " + iron);
         var oven = (net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity) level.getBlockEntity(furnace);
         helper.assertTrue(oven.isEmpty(), "nothing went into the machine next to the port");
+        // the automatic route: between two places away from Earth's surface
+        var moonOrbit = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(Location.MOON, true).orElseThrow();
+        helper.assertFalse(com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.routeAllowed(Location.EARTH_SURFACE, Location.EARTH_ORBIT),
+                "no route from Earth's surface (no beacon landing there)");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.routeAllowed(Location.MOON_SURFACE, moonOrbit), "Moon base <-> station");
+        rocket.startRoute(Location.MOON_SURFACE, moonOrbit);
+        helper.assertTrue(rocket.routeOn(), "the route runs");
+        // at the station: a barrel by the port holds what goes down to the base
+        BlockPos barrel = port.south(2);
+        level.setBlock(barrel, net.minecraft.world.level.block.Blocks.BARREL.defaultBlockState(), 3);
+        var out = (net.minecraft.world.level.block.entity.BarrelBlockEntity) level.getBlockEntity(barrel);
+        out.setItem(0, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.COBBLESTONE, 10));
+        com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.routeArrived(rocket, port, moonOrbit);
+        helper.assertTrue(rocket.missionTarget().filter(Location.MOON_SURFACE::equals).isPresent(), "next stop: the base");
+        helper.assertTrue(out.isEmpty() && rocket.cargo().countItem(net.minecraft.world.item.Items.COBBLESTONE) == 10, "the barrel's load came aboard");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.storageNear(level, port).stream().noneMatch(barrel::equals),
+                "barrels are the outbox: deliveries go to chests");
         // a crewed rocket has no hold
         helper.assertFalse(RocketEntity.create(level, RocketryModule.MOON_ROCKET, rocket.position(), 0F).hasCargoHold(), "a crew rocket has no hold");
         rocket.discard();

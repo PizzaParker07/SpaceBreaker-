@@ -54,5 +54,8 @@ public class RocketPartItem extends Item {
             tooltip.add(Component.translatable("tooltip.spacebreaker.part.seats", p.seats()).withStyle(grey));
         }
         tooltip.add(Component.translatable("tooltip.spacebreaker.part." + p.type().getSerializedName()).withStyle(ChatFormatting.DARK_GRAY));
+        if (p.type() == com.pizzaparker07.spacebreaker.content.rocketry.part.PartType.CARGO) {
+            tooltip.add(Component.translatable("tooltip.spacebreaker.part.cargo.route").withStyle(ChatFormatting.DARK_GRAY));
+        }
     }
 }

@@ -41,7 +41,10 @@ public record RocketActionPayload(int entityId, int action, int arg, String targ
         if (payload.action() == SET_TARGET && player.level().getEntity(payload.entityId()) instanceof RocketEntity r
                 && r.isUncrewed() && r.state() == com.pizzaparker07.spacebreaker.content.rocketry.entity.FlightState.IDLE
                 && r.distanceToSqr(player) < 48 * 48) {
-            com.pizzaparker07.spacebreaker.content.rocketry.nav.Location.parse(payload.target()).ifPresent(r::setMissionTarget);
+            com.pizzaparker07.spacebreaker.content.rocketry.nav.Location.parse(payload.target()).ifPresent(t -> {
+                r.setMissionTarget(t);
+                r.startRoute(r.location(), t); // cargo rockets shuttle back and forth where they can
+            });
             r.setOwner(player.getUUID());
             return;
         }

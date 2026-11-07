@@ -123,6 +123,7 @@ public final class UncrewedMissions {
             net.minecraft.core.BlockPos anchor = com.pizzaparker07.spacebreaker.content.rocketry.station.LandingBeacons.get(here)
                     .nearest(rocket.position()).filter(b -> b.closerToCenterThan(rocket.position(), UNLOAD_REACH + 4)).orElse(rocket.blockPosition());
             unloadCargo(rocket, anchor, at);
+            routeArrived(rocket, anchor, at);
             return;
         }
         if (!(rocket.level() instanceof ServerLevel level) || payload(rocket).map(p -> p.type() != PartType.PROBE).orElse(true)) {
@@ -149,7 +150,7 @@ public final class UncrewedMissions {
      * how many items moved.
      */
     /**
-     * Storage within reach of {@code anchor}, nearest first: chests, barrels and shulker boxes only, so cargo never
+     * Storage within reach of {@code anchor}, nearest first: chests and shulker boxes only, so cargo never
      * ends up in a machine (coal in a generator, regolith in a heater).
      */
     public static java.util.List<net.minecraft.core.BlockPos> storageNear(ServerLevel level, net.minecraft.core.BlockPos anchor) {
@@ -157,13 +158,113 @@ public final class UncrewedMissions {
         for (net.minecraft.core.BlockPos pos : net.minecraft.core.BlockPos.betweenClosed(anchor.offset(-UNLOAD_REACH, -UNLOAD_REACH, -UNLOAD_REACH),
                 anchor.offset(UNLOAD_REACH, UNLOAD_REACH, UNLOAD_REACH))) {
             var state = level.getBlockState(pos);
-            if (state.is(net.neoforged.neoforge.common.Tags.Blocks.CHESTS) || state.is(net.neoforged.neoforge.common.Tags.Blocks.BARRELS)
-                    || state.is(net.minecraft.tags.BlockTags.SHULKER_BOXES)) {
+            // chests and shulker boxes take deliveries; barrels hold what goes out (see loadCargo)
+            if (state.is(net.neoforged.neoforge.common.Tags.Blocks.CHESTS) || state.is(net.minecraft.tags.BlockTags.SHULKER_BOXES)) {
                 out.add(pos.immutable());
             }
         }
         out.sort(java.util.Comparator.comparingDouble(p -> p.distSqr(anchor)));
         return out;
+    }
+
+    /** Barrels within reach of {@code anchor}, nearest first: the outbox an automatic route loads from. */
+    public static java.util.List<net.minecraft.core.BlockPos> outboxNear(ServerLevel level, net.minecraft.core.BlockPos anchor) {
+        java.util.List<net.minecraft.core.BlockPos> out = new java.util.ArrayList<>();
+        for (net.minecraft.core.BlockPos pos : net.minecraft.core.BlockPos.betweenClosed(anchor.offset(-UNLOAD_REACH, -UNLOAD_REACH, -UNLOAD_REACH),
+                anchor.offset(UNLOAD_REACH, UNLOAD_REACH, UNLOAD_REACH))) {
+            if (level.getBlockState(pos).is(net.neoforged.neoforge.common.Tags.Blocks.BARRELS)) {
+                out.add(pos.immutable());
+            }
+        }
+        out.sort(java.util.Comparator.comparingDouble(p -> p.distSqr(anchor)));
+        return out;
+    }
+
+    /** Loads the hold from the barrels near {@code anchor}; returns how many items came aboard. */
+    public static int loadCargo(RocketEntity rocket, net.minecraft.core.BlockPos anchor) {
+        if (!(rocket.level() instanceof ServerLevel level)) {
+            return 0;
+        }
+        var hold = rocket.cargo();
+        int loaded = 0;
+        for (net.minecraft.core.BlockPos pos : outboxNear(level, anchor)) {
+            var source = level.getCapability(net.neoforged.neoforge.capabilities.Capabilities.ItemHandler.BLOCK, pos, null);
+            if (source == null) {
+                continue;
+            }
+            for (int slot = 0; slot < source.getSlots(); slot++) {
+                var peek = source.extractItem(slot, 64, true);
+                if (peek.isEmpty()) {
+                    continue;
+                }
+                var left = hold.addItem(peek.copy());
+                int n = peek.getCount() - left.getCount();
+                if (n > 0) {
+                    source.extractItem(slot, n, false);
+                    loaded += n;
+                }
+            }
+        }
+        return loaded;
+    }
+
+    /** Ticks a route rocket waits at each end (for loading, and for the depot to refuel it). */
+    public static final int ROUTE_WAIT = 200;
+
+    /** A route runs only between two different places, neither of them Earth's surface (no beacon landing there). */
+    public static boolean routeAllowed(Location a, Location b) {
+        return !a.equals(b) && !a.equals(Location.EARTH_SURFACE) && !b.equals(Location.EARTH_SURFACE);
+    }
+
+    /** At one end of the route, after unloading: load from the barrels, aim at the other end and wait. */
+    public static void routeArrived(RocketEntity rocket, net.minecraft.core.BlockPos anchor, Location at) {
+        if (!rocket.routeOn()) {
+            return;
+        }
+        rocket.routeOtherEnd(at).ifPresent(next -> {
+            loadCargo(rocket, anchor);
+            rocket.setMissionTarget(next);
+            rocket.scheduleRoute(ROUTE_WAIT, anchor);
+        });
+    }
+
+    /** The wait at an end is over: fly on if there is cargo and fuel for the leg, else wait again. */
+    public static void routeDepart(RocketEntity rocket) {
+        if (!(rocket.level() instanceof ServerLevel level)) {
+            return;
+        }
+        Location here = rocket.location();
+        Location target = rocket.missionTarget().orElse(null);
+        if (target == null || target.equals(here)) {
+            target = rocket.routeOtherEnd(here).orElse(null);
+            if (target == null) {
+                return;
+            }
+            rocket.setMissionTarget(target);
+        }
+        if (rocket.cargo().isEmpty() && rocket.routeAnchor() != null) {
+            loadCargo(rocket, rocket.routeAnchor());
+        }
+        if (rocket.cargo().isEmpty()) {
+            rocket.scheduleRoute(ROUTE_WAIT, null); // nothing to carry yet
+            return;
+        }
+        var path = com.pizzaparker07.spacebreaker.content.rocketry.nav.StarMapData.flightPath(here, target);
+        boolean fuelled = com.pizzaparker07.spacebreaker.content.rocketry.nav.MissionPlanner.fly(rocket.layout(), rocket.activeStage(), rocket.fuel(), path,
+                com.pizzaparker07.spacebreaker.core.config.SbConfig.realism()).possible();
+        if (!fuelled) {
+            if (rocket.firstFuelWarning()) {
+                tell(level.getServer(), rocket.owner(), Component.translatable("message.spacebreaker.cargo.route_fuel", here.name(), target.name())
+                        .withStyle(ChatFormatting.GOLD));
+            }
+            rocket.scheduleRoute(ROUTE_WAIT, null);
+            return;
+        }
+        rocket.fuelledForRoute();
+        boolean gone = here.orbit() ? rocket.tryTravel(null, target) : rocket.tryStartCountdown(null);
+        if (!gone) {
+            rocket.scheduleRoute(ROUTE_WAIT, null);
+        }
     }
 
     public static int unloadCargo(RocketEntity rocket, net.minecraft.core.BlockPos anchor, Location at) {

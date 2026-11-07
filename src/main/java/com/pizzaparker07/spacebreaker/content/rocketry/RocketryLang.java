@@ -72,6 +72,11 @@ final class RocketryLang {
         l.add("hud.spacebreaker.no_signal", "No signal (no relay satellite)", "Sinyal yok (röle uydusu yok)");
         l.add("tooltip.spacebreaker.part.cargo", "Uncrewed cargo: goes in the capsule slot; docks at the station or lands on the beacon and unloads into the nearest chests",
                 "İnsansız kargo: kapsül yuvasına takılır; istasyona yanaşır ya da iniş işaretine iner ve en yakın sandıklara boşaltır");
+        l.add("tooltip.spacebreaker.part.cargo.route", "Between a station and a base it shuttles by itself: chests take deliveries, barrels hold what goes out",
+                "İstasyon ile üs arasında kendi kendine gidip gelir: sandıklar gelen yükü alır, variller giden yükü tutar");
+        l.add("message.spacebreaker.cargo.route_on", "Automatic cargo route on", "Otomatik kargo seferi açık");
+        l.add("message.spacebreaker.cargo.route_off", "Automatic cargo route off", "Otomatik kargo seferi kapalı");
+        l.add("message.spacebreaker.cargo.route_fuel", "Cargo route %s → %s: waiting for fuel", "Kargo seferi %s → %s: yakıt bekleniyor");
         l.add("tooltip.spacebreaker.part.probe", "Uncrewed probe: goes in the capsule slot; launch it from the console", "İnsansız sonda: kapsül yuvasına takılır; konsoldan fırlatılır");
         l.item(RocketryModule.HYDROLOX_ENGINE, "Hydrolox Engine (Sea Level)", "Hidroloks Motoru (Deniz Seviyesi)");
         l.item(RocketryModule.HYDROLOX_VACUUM_ENGINE, "Hydrolox Engine (Vacuum)", "Hidroloks Motoru (Vakum)");
