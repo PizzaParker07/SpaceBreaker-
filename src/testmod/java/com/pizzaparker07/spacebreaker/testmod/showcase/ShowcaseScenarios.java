@@ -21,6 +21,7 @@ public final class ShowcaseScenarios {
         ALL.put("suit_eva_67p", new SuitEvaScenario(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.DIMENSION,
                 com.pizzaparker07.spacebreaker.Spacebreaker.id("churyumov_gerasimenko")), "eva_67p", () -> com.pizzaparker07.spacebreaker.content.belt.Comets.CHURYUMOV.soil.get().defaultBlockState(), true));
         ALL.put("suit_capsule", new SuitCapsuleScenario());
+        ALL.put("base_airlock", new BaseAirlockScenario());
         ALL.put("suit_eva_titan", new SuitEvaScenario(com.pizzaparker07.spacebreaker.content.saturn.SaturnModule.TITAN, "eva_titan",
                 net.minecraft.world.level.block.Blocks.PACKED_ICE::defaultBlockState));
         ALL.put("suit_eva_orbit", new SuitEvaScenario(com.pizzaparker07.spacebreaker.content.rocketry.nav.Location.Orbits.EARTH_ORBIT, "eva_orbit",
