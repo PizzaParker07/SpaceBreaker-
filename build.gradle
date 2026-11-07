@@ -26,6 +26,12 @@ repositories {
         url = 'https://maven.terraformersmc.com/releases'
         content { includeGroup 'dev.emi' }
     }
+    // Optional block info overlays (Jade, WTHIT): compile only, never bundled
+    maven {
+        name = 'Modrinth'
+        url = 'https://api.modrinth.com/maven'
+        content { includeGroup 'maven.modrinth' }
+    }
 }
 
 sourceSets {
@@ -117,6 +123,16 @@ dependencies {
     testmodCompileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
     testmodCompileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
     testmodCompileOnly "dev.emi:emi-neoforge:${emi_version}:api"
+    // Block info overlays: optional integrations in compat/jade and compat/wthit; -PwithJade / -PwithWthit to run with them
+    compileOnly "maven.modrinth:jade:${jade_version}"
+    compileOnly "maven.modrinth:wthit:${wthit_version}"
+    if (project.hasProperty('withJade')) {
+        localRuntime "maven.modrinth:jade:${jade_version}"
+    }
+    if (project.hasProperty('withWthit')) {
+        localRuntime "maven.modrinth:wthit:${wthit_version}"
+        localRuntime "maven.modrinth:badpackets:${badpackets_version}"
+    }
     if (project.hasProperty('withJei')) {
         localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
     }
