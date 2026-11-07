@@ -18,10 +18,17 @@ The road from uraninite ore to the fuel of a nuclear thermal rocket.
 ## The centrifuge cascade
 One centrifuge alone is slow. Real plants run thousands one after another. Here **every working centrifuge** placed beside one on the same level adds **half a stage of speed**; up to four neighbours, so at most **3×**. Line them up in a row or a plus shape.
 
-> Every enrichment leaves a big pile of {item spacebreaker:depleted_uranium}: the natural by-product of enrichment. It is very dense: the press with a plate die turns it into {item spacebreaker:depleted_uranium_plate}, which counts as **radiation shielding** material alongside tungsten plate ({tech spacebreaker:radiation_shielding}).
+> Every enrichment leaves a big pile of {item spacebreaker:depleted_uranium}: the natural by-product of enrichment. It is very dense: the press with a plate die turns it into {item spacebreaker:depleted_uranium_plate}, which counts as **radiation shielding** material alongside tungsten plate ({tech spacebreaker:radiation_shielding}). It goes into the recipes of the fission power unit and the nuclear thermal engine.
 {recipe spacebreaker:pressing/depleted_uranium_plate}
 
 {recipe spacebreaker:arc_smelting/nuclear_fuel_element}
+
+## Fission power unit {#fission}
+{items spacebreaker:fission_reactor}
+The {item spacebreaker:fission_reactor} is a kilowatt-class fission surface power unit. Load a {item spacebreaker:nuclear_fuel_element} and it gives **320 FE/t**, day and night, wherever you are. One element lasts **10 game days**, and fuel only burns while power is drawn.
+{recipe spacebreaker:fission_reactor}
+
+>! A running core is radioactive: about **50 Sv/day** one block away, falling with the square of the distance. Every solid block in between lets only **30 %** through, so three blocks of regolith cut it to about **3 %**. Bury the unit or build a regolith berm round it, and keep your base out of its line of sight.
 
 ## RTG pellet
 The {item spacebreaker:rtg_fuel_pellet} is now made from **4 yellowcake in the sintering furnace**. → [Power](power)

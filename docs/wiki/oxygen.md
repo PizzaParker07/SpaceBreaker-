@@ -11,6 +11,9 @@
 
 Giysinin sırt çantasına iki tüp takılır (Ek Oksijen modülüyle üç). Tam dolu iki büyük tüple yarım saat dışarıda kalabilirsin.
 
+> [!TIP]
+> Bu süreler yürüyüşe göredir. Koşarken **1,5 kat**, kazarken ya da dövüşürken **1,25 kat** hava harcarsın, dururken yalnız **0,8 kat**; termal, ısıtmalı ve radyasyon giysileri **1,1 kat** harcar. HUD'daki süre ve geri dönüş uyarısı son birkaç saniyenin ortalamasını kullanır; koşarsan kalan süre kısalır.
+
 |   |   |   |
 |---|---|---|
 |   | Demir Külçesi |   |
@@ -56,6 +59,9 @@ Giysinin sırt çantasına iki tüp takılır (Ek Oksijen modülüyle üç). Tam
 | **Large Oxygen Tank** | about **15 minutes** |
 
 The suit's backpack holds two tanks (three with the Extra Oxygen module). Two full large tanks keep you outside for half an hour.
+
+> [!TIP]
+> The times are for walking. Sprinting uses **1.5 ×** as much air, mining and fighting **1.25 ×**, standing still only **0.8 ×**; the thermal, heated and radiation suits use **1.1 ×**. The HUD time and the turn-back warning average the last few seconds, so if you run, the time left shrinks.
 
 |   |   |   |
 |---|---|---|

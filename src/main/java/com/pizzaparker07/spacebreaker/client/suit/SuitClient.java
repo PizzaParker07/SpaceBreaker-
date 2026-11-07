@@ -38,6 +38,17 @@ public final class SuitClient {
     private SuitClient() {
     }
 
+    /** Client handlers for the suit's play-to-client payloads (see SuitNetwork). */
+    @SubscribeEvent
+    static void clientSetup(net.neoforged.fml.event.lifecycle.FMLClientSetupEvent event) {
+        com.pizzaparker07.spacebreaker.content.suit.net.SuitNetwork.onSuitStatus =
+                com.pizzaparker07.spacebreaker.client.hud.ClientSuitState::accept;
+        com.pizzaparker07.spacebreaker.content.suit.net.SuitNetwork.onSensorReading =
+                com.pizzaparker07.spacebreaker.client.hud.SensorCard::accept;
+        com.pizzaparker07.spacebreaker.content.suit.net.SuitNetwork.onNav = com.pizzaparker07.spacebreaker.client.hud.ClientNav::accept;
+        com.pizzaparker07.spacebreaker.content.suit.net.SuitNetwork.onTether = TetherClient::accept;
+    }
+
     @SubscribeEvent
     static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(SuitModule.AIRLOCK_DOOR_BE.get(), AirlockDoorRenderer::new);

@@ -43,6 +43,9 @@ public final class ShowcaseScenarios {
         ALL.put("mercury_sunrise", new MercurySunriseScenario());
         ALL.put("mars_clouds", new MarsCloudsScenario());
         ALL.put("mars_earth", new MarsEarthScenario());
+        ALL.put("daycycle_mars", new InnerDayCycleScenario(com.pizzaparker07.spacebreaker.content.mars.MarsModule.MARS, "mars", Double.NaN));
+        ALL.put("daycycle_venus", new InnerDayCycleScenario(com.pizzaparker07.spacebreaker.content.venus.VenusModule.VENUS, "venus_clouds", 222));
+        ALL.put("daycycle_mercury", new InnerDayCycleScenario(com.pizzaparker07.spacebreaker.content.mercury.MercuryModule.MERCURY, "mercury", Double.NaN));
         ALL.put("phobos", new MarsMoonScenario(false));
         ALL.put("deimos", new MarsMoonScenario(true));
         ALL.put("venus", new VenusScenario());

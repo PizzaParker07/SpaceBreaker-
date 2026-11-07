@@ -61,6 +61,13 @@ Tüpler **EVA Gövdesi** içindeki sırt çantasında durur: **iki tüp**, Ek Ok
 ### Kask
 Kask göstergesi oksijeni, giysinin durumunu, vücut ve dış sıcaklığı, radyasyonu ve yerçekimini gösterir. Güneş göz kamaştırıyorsa **altın güneş vizörünü** indir: kask elindeyken `Shift` + `Sağ Tık`. Ekranın kenarındaki yuvarlak vizör çerçevesini istemcinin ayarlarından (**visorFrame**, **visorFrameOpacity**) kapatabilir ya da saydamlaştırabilirsin.
 
+<a id="sound"></a>
+### Ses
+Ses için hava gerekir. Mars'taki gibi ince havada dünya kısık ve boğuk duyulur, önce tiz sesler kaybolur. Vakumda (Ay, yörünge, asteroitler, kuyruklu yıldızlar) dışarıdaki sesleri neredeyse duymazsın. Giysinin dokunduğu şeyler yine de boğuk gelir: kendi adımların, elindeki alet, kazdığın blok, üstünde durduğun makine. Kask içi sesler (telsiz, görev kontrol, uyarı bipleri) normaldir; solunabilir havada ve basınçlı odalarda da her şey normal duyulur.
+
+> [!TIP]
+> Bu, istemcideki **gerçekçi ses** ayarıdır (realisticSound); varsayılan olarak açıktır.
+
 ### Ölünce
 Tüpler gövdenin içinde kalır ve gövde sıradan bir zırh gibi düşer: geri aldığında tüpler de geri gelir. Nefes, vücut ısısı ve radyasyon dozu sıfırlanır.
 
@@ -139,7 +146,7 @@ In space, your suit is your personal spacecraft. You make the first one before l
 → **EVA Boots** (Crafting Table)
 
 ### Sealing
-Put on all four pieces and you hear a hiss and see **"Suit sealed · life support running"**. Take one off and it says **"Suit open"**; in an airless place the warning is red.
+Put on all four pieces and you hear a hiss and see **"Suit sealed · life support online"**. Take one off and it says **"Suit unsealed"**; in an airless place the warning is red.
 
 > [!WARNING]
 > With even one piece missing you cannot breathe in a vacuum.
@@ -156,6 +163,13 @@ The tanks sit in the backpack inside the **EVA Torso**: **two tanks**, three wit
 
 ### Helmet
 The helmet display shows oxygen, suit state, body and outside temperature, radiation and gravity. If the Sun is blinding, lower the **gold sun visor**: `Shift` + `Right Click` with the helmet in hand. You can switch off or fade the rounded visor frame round the screen in the client config (**visorFrame**, **visorFrameOpacity**).
+
+<a id="sound"></a>
+### Sound
+Sound needs air. In thin air, as on Mars, the world sounds faint and dull and the high notes go first. In vacuum (the Moon, orbit, asteroids, comets) you hardly hear anything outside. What the suit touches still comes through, muffled: your own steps, the tool in your hand, the block you dig, the machine you stand on. Helmet sounds (radio, mission control, warning beeps) stay normal, and so does everything in breathable air and pressurised rooms.
+
+> [!TIP]
+> This is the **realistic sound** client setting (realisticSound), on by default.
 
 ### When you die
 The tanks stay inside the body piece, which drops like any armour: pick it up and the tanks come back with it. Breath, body temperature and radiation dose reset.
