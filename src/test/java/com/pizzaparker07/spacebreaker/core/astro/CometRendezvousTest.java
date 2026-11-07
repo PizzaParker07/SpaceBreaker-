@@ -41,4 +41,38 @@ class CometRendezvousTest {
         Files.createDirectories(Path.of("build/astro"));
         Files.writeString(Path.of("build/astro/comet_rendezvous.md"), sb.toString());
     }
+
+    @Test
+    void precomputedTable() {
+        long start = System.nanoTime();
+        CometRendezvous.Table table = CometRendezvous.Table.compute(SYS, 0, 2);
+        double seconds = (System.nanoTime() - start) / 1e9;
+        assertTrue(seconds < 20, "table took " + seconds + " s");
+        for (Comet c : Comet.CATALOGUE) {
+            var list = table.of(c.id());
+            assertEquals(4, list.size(), c.id());
+            for (int i = 1; i < list.size(); i++) {
+                assertTrue(list.get(i).arrivalTime() > list.get(i - 1).arrivalTime(), "arrival order");
+            }
+            assertTrue(list.stream().allMatch(r -> r.cometId().equals(c.id())));
+            // two passages: the second perihelion is one period after the first
+            var peri = list.stream().filter(r -> r.point() == Point.PERIHELION).toList();
+            assertEquals(c.periodSeconds(), peri.get(1).arrivalTime() - peri.get(0).arrivalTime(), 121 * AstroConstants.DAY);
+        }
+        assertTrue(table.of("nope").isEmpty());
+        double chemical = 15e3, years = 20;
+        assertTrue(table.reachable("churyumov_gerasimenko", 0, chemical, years));
+        assertTrue(table.reachable("tempel_1", 0, chemical, years));
+        assertTrue(table.reachable("encke", 0, chemical, years));
+        assertFalse(table.reachable("halley", 0, 30e3, years), "Halley: too fast near perihelion, too far near aphelion");
+        assertFalse(table.reachable("hale_bopp", 0, 30e3, years));
+        assertTrue(table.reachable("halley", 0, 60e3, years), "a late-game drive reaches Halley near perihelion");
+        var cheap = table.cheapest("churyumov_gerasimenko", 0, chemical, years).orElseThrow();
+        var soon = table.soonest("churyumov_gerasimenko", 0, 1e9, 1e9).orElseThrow();
+        assertTrue(cheap.totalDv() <= soon.totalDv() || cheap.equals(soon));
+        assertTrue(soon.arrivalTime() <= cheap.arrivalTime());
+        // options whose departure has passed drop out
+        double later = table.of("encke").get(0).departureTime() + 1;
+        assertEquals(table.of("encke").size() - 1, table.upcoming("encke", later).size());
+    }
 }
