@@ -14,7 +14,7 @@ Your body temperature changes **slowly**; a few seconds of sun or shade will not
 
 Your suit balances a range (Mk1: −190 °C to 130 °C). Even outside that range you warm up or cool down gradually at first.
 
-> When the cold is beyond your suit's rating, **rime creeps in from the visor rim** and the HUD warns you. It thaws once you are back in range or inside a pressurised module. The **cold traps** in polar craters exist only on airless worlds where ice stays stable: the Moon (≈ −233 °C), Mercury (≈ −213 °C) and Ceres. Mars and Pluto have none. Go down in a heated suit or with enough thermal modules.
+> When the cold is beyond your suit's rating, the HUD shows the temperature icon and warns **BEYOND SUIT RATING** (**COLD TRAP: BEYOND SUIT RATING** in a cold trap). With the **visorRim** setting on, rime also creeps in from the visor rim; it thaws once you are back in range or inside a pressurised module. The **cold traps** in polar craters exist only on airless worlds where ice stays stable: the Moon (≈ −233 °C), Mercury (≈ −213 °C) and Ceres. Mars and Pluto have none. Go down in a heated suit or with enough thermal modules.
 
 > **Underground is shelter:** on airless worlds, at least **4 blocks** below the surface and out of sight of the sky, the temperature stays at the day-night average (about −26 °C on the Moon). That makes lava tubes natural shelters. Cold traps are the exception.
 

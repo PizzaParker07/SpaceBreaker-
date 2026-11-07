@@ -30,12 +30,14 @@ public final class IndustryClient {
         event.registerBlockEntityRenderer(MachinesModule.SOLAR_ARRAY_BE.get(), SolarPanelRenderer::array);
         event.registerBlockEntityRenderer(MachinesModule.POWER_MONITOR_BE.get(), PowerMonitorRenderer::new);
         event.registerBlockEntityRenderer(MachinesModule.PRESS.type().get(), PressRenderer::new);
+        event.registerBlockEntityRenderer(MachinesModule.REGOLITH_EXCAVATOR.type().get(), RegolithExcavatorRenderer::new);
         event.registerBlockEntityRenderer(MachinesModule.PUMPJACK.type().get(), PumpjackRenderer::new);
     }
 
     @SubscribeEvent
     static void models(ModelEvent.RegisterAdditional event) {
         event.register(PressRenderer.RAM);
+        event.register(RegolithExcavatorRenderer.WHEEL);
         event.register(SolarPanelRenderer.ARRAY_HEAD_MODEL);
         event.register(PumpjackRenderer.BEAM);
         event.register(PumpjackRenderer.CRANK);

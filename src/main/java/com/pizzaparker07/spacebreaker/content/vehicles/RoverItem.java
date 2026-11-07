@@ -49,6 +49,10 @@ public class RoverItem extends Item {
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         tooltip.add(Component.translatable("tooltip.spacebreaker.rover").withStyle(ChatFormatting.GRAY));
+        if (type == VehiclesModule.AMPHIBIOUS_ROVER) {
+            tooltip.add(Component.translatable("tooltip.spacebreaker.amphibious_rover",
+                    String.format(java.util.Locale.ROOT, "%.0f", RoverType.AMPHIBIOUS.swimSpeed() * 20)).withStyle(ChatFormatting.AQUA));
+        }
         if (type == VehiclesModule.PRESSURIZED_ROVER) {
             tooltip.add(Component.translatable("tooltip.spacebreaker.pressurized_rover",
                     String.format(java.util.Locale.ROOT, "%.0f", RoverType.PRESSURIZED.maxSpeed() * 20)).withStyle(ChatFormatting.AQUA));

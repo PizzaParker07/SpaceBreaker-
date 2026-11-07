@@ -339,4 +339,23 @@ public final class SuitTierGameTests {
         helper.assertFalse(com.pizzaparker07.spacebreaker.client.hud.HudConfig.REALISTIC_SOUND.getDefault(), "the option is off by default");
         helper.succeed();
     }
+
+    /** The cockpit HUD's number formats and Δv share. */
+    @GameTest(template = "empty")
+    public static void cockpitReadoutFormats(GameTestHelper helper) {
+        helper.assertTrue(com.pizzaparker07.spacebreaker.client.hud.FlightFormat.speed(-4.62).equals("-4.6 m/s"), "slow speeds to 0.1 m/s");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.client.hud.FlightFormat.speed(845).equals("845 m/s"), "hundreds of m/s");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.client.hud.FlightFormat.speed(-1240).equals("-1.24 km/s"), "km/s from 1000");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.client.hud.FlightFormat.speed(11020).equals("11.0 km/s"), "escape speeds");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.client.hud.FlightFormat.distance(38).equals("38 m"), "metres");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.client.hud.FlightFormat.distance(12_400).equals("12.4 km"), "km with a decimal");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.client.hud.FlightFormat.distance(3.844e8).equals("384,400 km"), "the Moon's distance");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.client.hud.FlightFormat.distance(Double.POSITIVE_INFINITY).equals("∞"), "escape apoapsis");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.client.hud.FlightFormat.time(45).equals("0:45")
+                && com.pizzaparker07.spacebreaker.client.hud.FlightFormat.time(11_112).equals("3:05:12"), "times");
+        var r = new com.pizzaparker07.spacebreaker.client.hud.CockpitReadout(net.minecraft.network.chat.Component.literal("Moon"), -1240, 3.3e8, false,
+                975, 3900, false, Double.NaN, Double.NaN, null, Double.NaN, Double.NaN, Double.NaN);
+        helper.assertTrue(Math.abs(r.dvFraction() - 0.25F) < 1e-6 && !r.hasNode(), "Δv share and no node");
+        helper.succeed();
+    }
 }

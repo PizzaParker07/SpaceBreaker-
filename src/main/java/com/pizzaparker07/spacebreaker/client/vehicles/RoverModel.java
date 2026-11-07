@@ -36,9 +36,14 @@ public class RoverModel extends EntityModel<RoverEntity> {
      * @param noseLength length of the sloping nose plate
      * @param noseAngle  its slope, radians
      */
-    public record Style(float halfWidth, float wheelX, float wheelScale, float fenderY, float noseLength, float noseAngle, boolean cabin) {
+    public record Style(float halfWidth, float wheelX, float wheelScale, float fenderY, float noseLength, float noseAngle, boolean cabin,
+                        boolean floats) {
         public Style(float halfWidth, float wheelX, float wheelScale, float fenderY, float noseLength, float noseAngle) {
-            this(halfWidth, wheelX, wheelScale, fenderY, noseLength, noseAngle, false);
+            this(halfWidth, wheelX, wheelScale, fenderY, noseLength, noseAngle, false, false);
+        }
+
+        public Style(float halfWidth, float wheelX, float wheelScale, float fenderY, float noseLength, float noseAngle, boolean cabin) {
+            this(halfWidth, wheelX, wheelScale, fenderY, noseLength, noseAngle, cabin, false);
         }
 
         public float wheelY() {
@@ -62,6 +67,11 @@ public class RoverModel extends EntityModel<RoverEntity> {
     /** The standard chassis under a closed cabin with windows; the solar panel goes on the cabin roof. */
     public static final Style PRESSURIZED = new Style(11F, 13F, 1F, 13F, 8F, 0.5F, true);
     public static final ModelLayerLocation PRESSURIZED_LAYER = new ModelLayerLocation(Spacebreaker.id("pressurized_rover"), "main");
+    /** The pressurised cabin with sealed side floats and a stern propeller. */
+    public static final Style AMPHIBIOUS = new Style(11F, 13F, 1F, 13F, 8F, 0.5F, true, true);
+    public static final ModelLayerLocation AMPHIBIOUS_LAYER = new ModelLayerLocation(Spacebreaker.id("amphibious_rover"), "main");
+
+    private ModelPart propeller;
 
     public Style style() {
         return style;
@@ -86,6 +96,7 @@ public class RoverModel extends EntityModel<RoverEntity> {
             wheels[i] = root.getChild("wheel" + i);
             wheels[i].xScale = wheels[i].yScale = wheels[i].zScale = style.wheelScale();
         }
+        this.propeller = style.floats() ? body.getChild("propeller") : null;
     }
 
     private static void seat(CubeListBuilder b, float z0) {
@@ -105,6 +116,10 @@ public class RoverModel extends EntityModel<RoverEntity> {
 
     public static LayerDefinition createPressurizedLayer() {
         return createLayer(PRESSURIZED);
+    }
+
+    public static LayerDefinition createAmphibiousLayer() {
+        return createLayer(AMPHIBIOUS);
     }
 
     public static LayerDefinition createLayer(Style st) {
@@ -156,6 +171,17 @@ public class RoverModel extends EntityModel<RoverEntity> {
                     .texOffs(180, 170).addBox(-hw + 1, -10F, 15F, 2 * hw - 2, 23F, 1F),    // rear wall
                     PartPose.ZERO);
         }
+        if (st.floats()) {
+            // sealed floats along both sides, outside the wheels, and a propeller at the stern
+            for (int sd = -1; sd <= 1; sd += 2) {
+                body.addOrReplaceChild("float_" + (sd < 0 ? "l" : "r"), CubeListBuilder.create()
+                        .texOffs(0, 200).addBox(-1.5F, -2F, -18F, 3F, 4F, 36F), PartPose.offset((st.wheelX() + 4.5F) * sd, 15F, 0F));
+            }
+            body.addOrReplaceChild("propeller", CubeListBuilder.create()
+                    .texOffs(90, 200).addBox(-1F, -1F, -1F, 2F, 2F, 2F)
+                    .texOffs(100, 200).addBox(-0.5F, -3.5F, -0.3F, 1F, 7F, 0.6F)
+                    .texOffs(100, 200).addBox(-3.5F, -0.5F, -0.3F, 7F, 1F, 0.6F), PartPose.offset(0F, 18F, 31F));
+        }
         // the solar panel: flat on posts over the rear deck, behind the passenger's head; on the roof of a cabin
         CubeListBuilder solar = CubeListBuilder.create().texOffs(0, 72).addBox(-12F, st.panelTop(), st.panelFront(), 24F, 1F, 16F);
         if (!st.cabin()) {
@@ -195,6 +221,9 @@ public class RoverModel extends EntityModel<RoverEntity> {
             w.xRot = spin;
         }
         solar.visible = rover.hasSolar();
+        if (propeller != null) {
+            propeller.zRot = spin * 3F;
+        }
         rtg.visible = rover.hasRtg();
     }
 

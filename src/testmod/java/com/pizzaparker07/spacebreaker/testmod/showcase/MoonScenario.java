@@ -186,7 +186,7 @@ final class MoonScenario implements ShowcaseScenario {
             }
         }
         float lowYaw = yaw(low.x, low.z);
-        s.add(new ShowcaseDriver.Shot("10c_earthshine_full", 0, ex, ground(ex, ez) + 2.5, ez, lowYaw, 4F, true, fp, 80, at(fullAt), null));
+        s.add(new ShowcaseDriver.Shot("10c_earthshine_full", 0, ex, ground(ex, ez) + 2.5, ez, lowYaw, 4F, true, fp, 400, at(fullAt), null));
         s.add(new ShowcaseDriver.Shot("10d_earthshine_crescent", 0, ex, ground(ex, ez) + 2.5, ez, lowYaw, 4F, true, fp, 80, at(crescentAt), null));
         // the rare horizon glow, two degrees after sunset, on a day that shows it
         double glowAt = 0.5;

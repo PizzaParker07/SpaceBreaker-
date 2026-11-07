@@ -43,8 +43,12 @@ public class InnerOrbitSkyEffects extends DimensionSpecialEffects {
     private record Look(ResourceLocation texture, float sunDeg, float[] haze, float thickness, Far... far) {
     }
 
-    /** A distant body: texture, direction and half size of its billboard. */
-    private record Far(ResourceLocation texture, Vector3f dir, float size) {
+    /** A distant body: texture, direction and half size of its billboard, and its colours for the blocky style. */
+    private record Far(ResourceLocation texture, Vector3f dir, float size, com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.ColorMap map) {
+    }
+
+    private static com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.ColorMap flat(int rgb) {
+        return com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.flat(rgb);
     }
 
     private final Look look;
@@ -56,13 +60,16 @@ public class InnerOrbitSkyEffects extends DimensionSpecialEffects {
         this.bodyId = Spacebreaker.id(body);
         this.look = switch (body) {
             case "venus" -> new Look(env("orbit_venus"), 0.72F, new float[]{1F, 0.93F, 0.72F, 0.85F}, 0.085F,
-                    new Far(env("orbit_earth_disc"), new Vector3f(-0.55F, 0.4F, 0.7F), 1.1F),
-                    new Far(env("mercury_disc"), new Vector3f(0.75F, 0.5F, -0.3F), 0.7F));
+                    new Far(env("orbit_earth_disc"), new Vector3f(-0.55F, 0.4F, 0.7F), 1.1F,
+                            com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.texture(env("earth_map"))),
+                    new Far(env("mercury_disc"), new Vector3f(0.75F, 0.5F, -0.3F), 0.7F,
+                            com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.texture(env("orbit_mercury"))));
             case "mercury" -> new Look(env("orbit_mercury"), 1.4F, null, 0F,
-                    new Far(env("venus_disc"), new Vector3f(-0.6F, 0.45F, 0.6F), 1.0F));
+                    new Far(env("venus_disc"), new Vector3f(-0.6F, 0.45F, 0.6F), 1.0F,
+                            com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.texture(env("orbit_venus"))));
             default -> new Look(env("orbit_mars"), 0.35F, new float[]{0.78F, 0.82F, 0.95F, 0.5F}, 0.035F,
-                    new Far(env("phobos"), new Vector3f(0.5F, 0.25F, -0.8F), 3.2F),
-                    new Far(env("deimos"), new Vector3f(-0.7F, 0.55F, -0.3F), 1.2F));
+                    new Far(env("phobos"), new Vector3f(0.5F, 0.25F, -0.8F), 3.2F, flat(0x5E554D)),
+                    new Far(env("deimos"), new Vector3f(-0.7F, 0.55F, -0.3F), 1.2F, flat(0x8C8072)));
         };
     }
 
@@ -149,13 +156,30 @@ public class InnerOrbitSkyEffects extends DimensionSpecialEffects {
             billboard(modelView, SUN, sun, sunHalf, true);
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         }
-        for (Far f : look.far) {
-            billboard(modelView, f.texture, f.dir, f.size, false);
-        }
+        var blocky = com.pizzaparker07.spacebreaker.client.sky.SkyConfig.blockyStyle();
         Vector3f center = new Vector3f(0, -DISTANCE, 0);
-        sphere(modelView, center, orbit * 0.5F, sun);
-        if (look.haze != null) {
-            haze(modelView, sun);
+        if (blocky != null) {
+            // the planet below and its neighbours as balls of blocks, all lit by the same sun
+            for (Far f : look.far) {
+                Vector3f c = new Vector3f(f.dir).normalize().mul(DISTANCE);
+                var pose = new com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.Pose(c, f.size * 0.4F, new Vector3f(0, 1, 0),
+                        new Vector3f(c).negate(), 0F);
+                com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.draw(modelView, blocky, 0, f.map, pose, sun, 0.03F, 1F, 1F, null);
+            }
+            // the planet below stays a true sphere: it fills half the view, and the blocky renderer flattens a body's
+            // depth toward the viewer, which only holds for bodies far away (asked of the renderer's owners)
+            sphere(modelView, center, orbit * 0.5F, sun);
+            if (look.haze != null) {
+                haze(modelView, sun);
+            }
+        } else {
+            for (Far f : look.far) {
+                billboard(modelView, f.texture, f.dir, f.size, false);
+            }
+            sphere(modelView, center, orbit * 0.5F, sun);
+            if (look.haze != null) {
+                haze(modelView, sun);
+            }
         }
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.defaultBlendFunc();

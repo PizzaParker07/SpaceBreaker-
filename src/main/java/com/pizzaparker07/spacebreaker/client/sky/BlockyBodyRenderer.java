@@ -107,7 +107,11 @@ public final class BlockyBodyRenderer {
         return style == BlockyBodyMesh.Style.VOXEL ? (small ? 10 : 16) : (small ? 6 : 10);
     }
 
-    /** A colour map from an equirectangular surface texture (longitude -180..180 left to right, north at the top). */
+    /**
+     * A colour map from an equirectangular surface texture (longitude -180..180 left to right, north at the top). The
+     * texture's alpha is passed on in the top byte, but bodies ignore it (their faces are always opaque; only ring bands
+     * use alpha), so a transparent pixel shows its stored colour, often black: fill or pull in soft edges first.
+     */
     public static ColorMap texture(ResourceLocation id) {
         return MAPS.computeIfAbsent(id, BlockyBodyRenderer::textureMap);
     }
@@ -154,7 +158,8 @@ public final class BlockyBodyRenderer {
      * @param sun    unit direction toward the sun, same frame
      * @param night  brightness of the night side (0..1)
      * @param tint   overall brightness (1 normally; less while an eclipse darkens a planet)
-     * @param n      blocks across, or 0 to choose by size on screen (steps through {@link #LEVELS}, fading between them)
+     * @param n      blocks across; 0 to choose by size on screen (steps through {@link #LEVELS} up to 64, fading between
+     *               them); {@link #APPROACH} the same but up to 128 (flying close to a planet)
      * @param ring   optional ring
      */
     public static void draw(Matrix4f pose, BlockyBodyMesh.Style style, int n, ColorMap map, Pose body, Vector3f sun, float night,
@@ -162,16 +167,37 @@ public final class BlockyBodyRenderer {
         render(pose, style, n, map, body, sun, night, tint, alpha, ring, null);
     }
 
-    /** Draws a body on a flat view looking down -Z (GUI screens: x right, y down). */
+    /**
+     * Draws a body on a flat view looking down -Z (GUI screens: x right, y down). With {@code n} 0 the size is chosen from
+     * the body's size in real screen pixels (GUI units times the GUI scale), a block every few pixels.
+     */
     public static void drawFlat(Matrix4f pose, BlockyBodyMesh.Style style, int n, ColorMap map, Pose body, Vector3f sun, float night,
                                 float tint, float alpha, Ring ring) {
-        render(pose, style, n, map, body, sun, night, tint, alpha, ring, new Vector3f(0, 0, -1));
+        int size = n > 0 ? n : flatResolution(style, body.radius(), Minecraft.getInstance().getWindow().getGuiScale());
+        render(pose, style, size, map, body, sun, night, tint, alpha, ring, new Vector3f(0, 0, -1));
+    }
+
+    /** Blocks across for a body {@code radius} GUI units wide drawn at {@code guiScale}: about one block per 3 screen pixels. */
+    public static int flatResolution(BlockyBodyMesh.Style style, float radius, double guiScale) {
+        double pixels = 2 * radius * guiScale;
+        int n = (int) Math.round(pixels / 3);
+        if (style == BlockyBodyMesh.Style.CUBE) {
+            n = n * 2 / 3;
+        }
+        return Mth.clamp(n, 8, 64);
     }
 
     /** Voxel resolutions a body steps through as it grows on screen. */
     public static final int[] LEVELS = {16, 32, 64, 128};
-    /** Screen pixels per block a level aims for: finer levels come in only when blocks would get this big. */
-    static final float BLOCK_PX = 14F;
+    /**
+     * Screen pixels per block a level aims for: finer levels come in only when blocks would get this big, so a body stays
+     * clearly blocky at every size.
+     */
+    static final float BLOCK_PX = 30F;
+    /** Finest level for bodies in the sky; the finest of all ({@link #LEVELS}' last) only on a close approach in flight. */
+    static final int SKY_MAX = 64;
+    /** Pass as {@code n} for a close approach in flight: chosen by size like 0, but may go up to the finest level. */
+    public static final int APPROACH = -1;
     /** Length of the cross-fade between two levels, ms. */
     static final long FADE_MS = 350;
 
@@ -217,7 +243,7 @@ public final class BlockyBodyRenderer {
         RenderSystem.disableCull();
         int level = n > 0 ? n : 0;
         if (n <= 0) {
-            Lod lod = lod(map, style, body);
+            Lod lod = lod(map, style, body, n == APPROACH ? LEVELS[LEVELS.length - 1] : SKY_MAX);
             float t = lod.previous == 0 ? 1F : Mth.clamp((net.minecraft.Util.getMillis() - lod.since) / (float) FADE_MS, 0F, 1F);
             if (t < 1F) {
                 // cross-fade: the old level underneath, the new one fading in over it
@@ -242,7 +268,7 @@ public final class BlockyBodyRenderer {
     }
 
     /** The resolution to draw a body at, stepping up as it grows on screen and fading between steps. */
-    private static Lod lod(ColorMap map, BlockyBodyMesh.Style style, Pose body) {
+    private static Lod lod(ColorMap map, BlockyBodyMesh.Style style, Pose body, int max) {
         Minecraft mc = Minecraft.getInstance();
         double distance = Math.max(1e-3, body.center().length());
         double fov = Math.toRadians(mc.options.fov().get());
@@ -254,19 +280,23 @@ public final class BlockyBodyRenderer {
             return l;
         });
         for (int l : LEVELS) {
-            BlockyBodyMesh.prepare(style, l); // build every size in the background once
+            if (l <= max) {
+                BlockyBodyMesh.prepare(style, l); // build every size in use in the background once
+            }
         }
         if (lod.previous != 0) {
             return lod; // finish the running fade first
         }
         int index = java.util.Arrays.binarySearch(LEVELS, lod.current);
         int next = lod.current;
-        if (want > lod.current * 1.25 && index + 1 < LEVELS.length) {
+        if (lod.current > max) {
+            next = LEVELS[index - 1];
+        } else if (want > lod.current * 1.25 && index + 1 < LEVELS.length && LEVELS[index + 1] <= max) {
             next = LEVELS[index + 1];
         } else if (want < lod.current / 2.0 * 0.8 && index > 0) {
             next = LEVELS[index - 1];
         }
-        if (next != lod.current && BlockyBodyMesh.ready(style, next)) {
+        if (next != lod.current && coloursReady(map, style, next)) {
             lod.previous = lod.current;
             lod.current = next;
             lod.since = net.minecraft.Util.getMillis();
@@ -280,7 +310,7 @@ public final class BlockyBodyRenderer {
      */
     private static void cached(Matrix4f pose, BlockyBodyMesh.Style style, int n, ColorMap map, Pose body, Vector3f sun, float night,
                                float tint, float alpha) {
-        if (!BlockyBodyMesh.ready(style, n) && n > LEVELS[0]) {
+        if (n > LEVELS[0] && !coloursReady(map, style, n)) {
             BlockyBodyMesh.prepare(style, n);
             n = LEVELS[0];
         }
@@ -472,6 +502,16 @@ public final class BlockyBodyRenderer {
      */
     static final float DEPTH_KEPT = 0.04F;
 
+    /**
+     * Depth kept for a body: flattened while it looks small (up to about 17° in radius), fully round once it fills much
+     * of the view (a planet seen from orbit, or while landing), with a smooth change in between.
+     */
+    static float depthKept(Pose body) {
+        float ang = (float) Math.asin(Math.min(1F, body.radius() / Math.max(1e-3F, body.center().length())));
+        float t = Mth.clamp((ang - 0.3F) / 0.25F, 0F, 1F);
+        return Mth.lerp(t * t * (3 - 2 * t), DEPTH_KEPT, 1F);
+    }
+
     private static Quad quad(BlockyBodyMesh.Face f, Matrix3f rot, Pose body, int rgb, float light, float alpha, Vector3f viewDir,
                              Vector3f look) {
         Vector3f c = rot.transform(new Vector3f(f.center())).mul(body.radius()).add(body.center());
@@ -481,11 +521,12 @@ public final class BlockyBodyRenderer {
         int k = 0;
         for (float[] s : new float[][]{{-1, -1}, {1, -1}, {1, 1}, {-1, 1}}) {
             Vector3f p = new Vector3f(c).add(new Vector3f(u).mul(s[0])).add(new Vector3f(v).mul(s[1]));
-            if (viewDir == null) {
+            float kept = viewDir == null ? depthKept(body) : 1F;
+            if (kept < 1F) {
                 // offset from the body centre: keep its sideways part, squeeze its depth
                 Vector3f d = p.sub(body.center());
                 float along = d.dot(look);
-                d.sub(new Vector3f(look).mul(along * (1 - DEPTH_KEPT)));
+                d.sub(new Vector3f(look).mul(along * (1 - kept)));
                 p = d.add(body.center());
             }
             xyz[k++] = p.x;
@@ -501,18 +542,98 @@ public final class BlockyBodyRenderer {
         return new Quad(depth, xyz, a << 24 | r << 16 | g << 8 | b);
     }
 
-    /** Map colours of every face, cached per map and mesh. */
+    /**
+     * Map colours of every face, cached per map and mesh. A body face takes the average colour over the patch of surface
+     * its block covers (a 3 x 3 sample), so a small ball of blocks shows the land and sea it really stands for instead
+     * of whichever single map pixel its centre happens to hit.
+     */
     private static int[] colours(ColorMap map, List<BlockyBodyMesh.Face> faces, boolean ring) {
+        int[] done = readyColours(map, faces);
+        if (done != null) {
+            return done;
+        }
+        int[] out = computeColours(map, faces, ring);
         synchronized (COLOURS) {
-            return COLOURS.computeIfAbsent(map, m -> new java.util.IdentityHashMap<>()).computeIfAbsent(faces, fs -> {
-                int[] out = new int[fs.size()];
-                for (int i = 0; i < fs.size(); i++) {
-                    Vector3f d = fs.get(i).surface();
-                    out[i] = ring ? map.argb(d.x, 0) : map.argb(BlockyBodyMesh.longitude(d), BlockyBodyMesh.latitude(d));
+            COLOURS.computeIfAbsent(map, m -> new java.util.IdentityHashMap<>()).put(faces, out);
+        }
+        return out;
+    }
+
+    private static int[] readyColours(ColorMap map, List<BlockyBodyMesh.Face> faces) {
+        synchronized (COLOURS) {
+            Map<List<BlockyBodyMesh.Face>, int[]> m = COLOURS.get(map);
+            return m == null ? null : m.get(faces);
+        }
+    }
+
+    private static final java.util.Set<Object> COLOURING = ConcurrentHashMap.newKeySet();
+
+    /** Whether a body size's colours are ready; if not, they are worked out in the background (big balls take a moment). */
+    private static boolean coloursReady(ColorMap map, BlockyBodyMesh.Style style, int n) {
+        if (!BlockyBodyMesh.ready(style, n)) {
+            return false;
+        }
+        List<BlockyBodyMesh.Face> faces = BlockyBodyMesh.body(style, n);
+        if (readyColours(map, faces) != null) {
+            return true;
+        }
+        if (COLOURING.add(List.of(map, faces))) {
+            java.util.concurrent.CompletableFuture.runAsync(() -> {
+                int[] out = computeColours(map, faces, false);
+                synchronized (COLOURS) {
+                    COLOURS.computeIfAbsent(map, m -> new java.util.IdentityHashMap<>()).put(faces, out);
                 }
-                return out;
             });
         }
+        return false;
+    }
+
+    private static int[] computeColours(ColorMap map, List<BlockyBodyMesh.Face> fs, boolean ring) {
+        int[] out = new int[fs.size()];
+        // block size as an angle on the unit sphere, from the face's half-edge
+        float footprint = fs.isEmpty() ? 0F : 2F * fs.get(0).u().length();
+        for (int i = 0; i < fs.size(); i++) {
+            Vector3f d = fs.get(i).surface();
+            out[i] = ring ? map.argb(d.x, 0) : average(map, BlockyBodyMesh.longitude(d), BlockyBodyMesh.latitude(d), footprint);
+        }
+        return out;
+    }
+
+    private static int average(ColorMap map, double lon, double lat, double size) {
+        double dLat = size / 3;
+        double dLon = dLat / Math.max(0.15, Math.cos(lat));
+        int r = 0, g = 0, b = 0;
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; j++) {
+                int c = map.argb(lon + i * dLon, Mth.clamp(lat + j * dLat, -Math.PI / 2, Math.PI / 2));
+                r += c >> 16 & 255;
+                g += c >> 8 & 255;
+                b += c & 255;
+            }
+        }
+        return 0xFF000000 | (r / 9) << 16 | (g / 9) << 8 | b / 9;
+    }
+
+    private static final Map<String, ColorMap> SURFACES = new ConcurrentHashMap<>();
+
+    /**
+     * The detailed surface map of a body for close views (orbit, approach): Earth with its clouds, the Moon, Mars, Venus
+     * and Mercury, drawn by code at 512-2048 pixels around. Null for bodies without one (use their sky disc colours).
+     *
+     * @param body body id path, e.g. "earth"
+     */
+    public static ColorMap surface(String body) {
+        return switch (body) {
+            case "earth" -> SURFACES.computeIfAbsent(body, k -> withClouds(texture(Spacebreaker.id("textures/environment/orbit_earth.png")),
+                    texture(Spacebreaker.id("textures/environment/orbit_earth_clouds.png"))));
+            case "moon" -> SURFACES.computeIfAbsent(body, k -> texture(Spacebreaker.id("textures/environment/orbit_moon.png")));
+            // these maps start at longitude 0 on the left edge
+            case "mars", "venus", "mercury" -> SURFACES.computeIfAbsent(body, k -> {
+                ColorMap m = texture(Spacebreaker.id("textures/environment/orbit_" + k + ".png"));
+                return (lon, lat) -> m.argb(lon + Math.PI, lat);
+            });
+            default -> null;
+        };
     }
 
     /** Forgets loaded textures, colours and buffers (resource reload, leaving a world). */
@@ -526,6 +647,7 @@ public final class BlockyBodyRenderer {
         });
         BUFFERS.clear();
         LODS.clear();
+        COLOURING.clear();
         synchronized (COLOURS) {
             COLOURS.clear();
         }

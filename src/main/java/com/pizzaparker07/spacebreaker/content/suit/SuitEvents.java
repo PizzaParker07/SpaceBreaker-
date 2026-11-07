@@ -50,7 +50,7 @@ public final class SuitEvents {
                 ItemStack torso = SuitTanks.wornTorso(player);
                 ItemStack mmu = torso.isEmpty() ? ItemStack.EMPTY : SuitTanks.maneuveringUnit(torso);
                 boolean boots = player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.FEET).is(SuitModule.MAGNETIC_BOOTS.get());
-                if (ZeroG.needsMicroGravityHint(g, boots, Tether.anchor(player).isPresent(), !mmu.isEmpty() && ManeuveringUnitItem.fuel(mmu) > 0)) {
+                if (ZeroG.needsMicroGravityHint(g, boots, Tether.isTethered(player), !mmu.isEmpty() && ManeuveringUnitItem.fuel(mmu) > 0)) {
                     player.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.spacebreaker.suit.micro_g")
                             .withStyle(net.minecraft.ChatFormatting.GOLD), true);
                 }
@@ -167,7 +167,7 @@ public final class SuitEvents {
         if (com.pizzaparker07.spacebreaker.content.worldgen.ColdTraps.inColdTrap(player.level(), player.blockPosition())) {
             flags |= SuitStatusPayload.COLD_TRAP;
         }
-        if (Tether.anchor(player).isPresent()) {
+        if (Tether.isTethered(player)) {
             flags |= SuitStatusPayload.TETHERED;
         }
         ItemStack mmu = torso.isEmpty() ? ItemStack.EMPTY : SuitTanks.maneuveringUnit(torso);
@@ -206,12 +206,32 @@ public final class SuitEvents {
         }
     }
 
+    /** Using the safety tether on an entity with a clip ring (a spacecraft): clip to it, or unclip from it. */
+    @SubscribeEvent
+    static void onInteractEntity(net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.EntityInteract event) {
+        Player player = event.getEntity();
+        if (!event.getItemStack().is(SuitModule.SAFETY_TETHER.get())
+                || !(event.getTarget() instanceof com.pizzaparker07.spacebreaker.core.env.TetherAnchor anchor) || !anchor.acceptsTether(player)) {
+            return;
+        }
+        if (!player.level().isClientSide) {
+            if (Tether.anchorEntity(player).filter(e -> e == event.getTarget()).isPresent()) {
+                Tether.release(player, "message.spacebreaker.tether.released");
+            } else {
+                Tether.clip(player, event.getTarget());
+            }
+        }
+        event.setCancellationResult(net.minecraft.world.InteractionResult.sidedSuccess(player.level().isClientSide));
+        event.setCanceled(true);
+    }
+
     @SubscribeEvent
     static void onStartTracking(net.neoforged.neoforge.event.entity.player.PlayerEvent.StartTracking event) {
         if (event.getTarget() instanceof Player target && event.getEntity() instanceof ServerPlayer tracker
                 && tracker.connection.hasChannel(com.pizzaparker07.spacebreaker.content.suit.net.TetherPayload.TYPE)) {
-            Tether.anchor(target).ifPresent(a -> PacketDistributor.sendToPlayer(tracker,
-                    new com.pizzaparker07.spacebreaker.content.suit.net.TetherPayload(target.getId(), java.util.Optional.of(a))));
+            if (Tether.isTethered(target)) {
+                PacketDistributor.sendToPlayer(tracker, Tether.payload(target));
+            }
         }
     }
 

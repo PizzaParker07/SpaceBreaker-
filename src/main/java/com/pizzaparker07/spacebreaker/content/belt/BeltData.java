@@ -156,15 +156,25 @@ public final class BeltData {
         Comets.configured(ctx);
         var stone = new TagMatchTest(BeltModule.BELT_STONE);
         ctx.register(cf("ceres_faculae"), new ConfiguredFeature<>(OuterWorlds.CRATER_FLOOR.get(), faculae()));
-        ctx.register(cf("ceres_magnetite"), new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(stone, s(BeltModule.MAGNETITE_ORE), 8)));
+        // Ores replace the rock and every ore below them (ice < clay < magnetite), so where blobs from neighbouring chunks
+        // overlap the cell ends the same whichever chunk is decorated first
+        var ice = new BlockMatchTest(BeltModule.CEREAN_ICE.get());
+        var clay = new BlockMatchTest(BeltModule.AMMONIATED_CLAY.get());
+        ctx.register(cf("ceres_magnetite"), new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(java.util.List.of(
+                OreConfiguration.target(stone, s(BeltModule.MAGNETITE_ORE)), OreConfiguration.target(ice, s(BeltModule.MAGNETITE_ORE)),
+                OreConfiguration.target(clay, s(BeltModule.MAGNETITE_ORE))), 8)));
         ctx.register(cf("ceres_ice_lens"), new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(stone, s(BeltModule.CEREAN_ICE), 40)));
-        ctx.register(cf("ceres_clay_lens"), new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(stone, s(BeltModule.AMMONIATED_CLAY), 32)));
+        ctx.register(cf("ceres_clay_lens"), new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(java.util.List.of(
+                OreConfiguration.target(stone, s(BeltModule.AMMONIATED_CLAY)), OreConfiguration.target(ice, s(BeltModule.AMMONIATED_CLAY))), 32)));
         ctx.register(cf("ceres_boulder"), OuterWorlds.boulder(0.7F, 1.8F, 0.5F, s(BeltModule.CEREAN_ROCK.base()), 5, s(BeltModule.CEREAN_ICE), 1));
         ctx.register(cf("vesta_rheasilvia"), new ConfiguredFeature<>(OuterWorlds.BASIN.get(), rheasilvia()));
         ctx.register(cf("vesta_diogenite_mass"), new ConfiguredFeature<>(Feature.ORE,
                 new OreConfiguration(new BlockMatchTest(BeltModule.EUCRITE.base().get()), s(BeltModule.DIOGENITE), 56)));
-        ctx.register(cf("vesta_chromite"), new ConfiguredFeature<>(Feature.ORE,
-                new OreConfiguration(new BlockMatchTest(BeltModule.DIOGENITE.get()), s(BeltModule.CHROMITE_ORE), 7)));
+        // chromite may replace both rocks (diogenite never replaces chromite), so it does not depend on whether a
+        // neighbouring chunk's diogenite mass was placed before it; it keeps to the diogenite depths
+        ctx.register(cf("vesta_chromite"), new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(java.util.List.of(
+                OreConfiguration.target(new BlockMatchTest(BeltModule.DIOGENITE.get()), s(BeltModule.CHROMITE_ORE)),
+                OreConfiguration.target(new BlockMatchTest(BeltModule.EUCRITE.base().get()), s(BeltModule.CHROMITE_ORE))), 7)));
         ctx.register(cf("vesta_boulder"), OuterWorlds.boulder(0.8F, 2.2F, 0.45F, s(BeltModule.EUCRITE.base()), 5, s(BeltModule.DIOGENITE), 2));
     }
 
@@ -186,8 +196,8 @@ public final class BeltData {
         PlacementUtils.register(ctx, pf("vesta_rheasilvia"), cf.getOrThrow(cf("vesta_rheasilvia")), BiomeFilter.biome());
         PlacementUtils.register(ctx, pf("vesta_diogenite_mass"), cf.getOrThrow(cf("vesta_diogenite_mass")), CountPlacement.of(6),
                 InSquarePlacement.spread(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-60), VerticalAnchor.absolute(36)), BiomeFilter.biome());
-        PlacementUtils.register(ctx, pf("vesta_chromite"), cf.getOrThrow(cf("vesta_chromite")), CountPlacement.of(10), InSquarePlacement.spread(),
-                HeightRangePlacement.uniform(VerticalAnchor.absolute(-60), VerticalAnchor.absolute(100)), BiomeFilter.biome());
+        PlacementUtils.register(ctx, pf("vesta_chromite"), cf.getOrThrow(cf("vesta_chromite")), CountPlacement.of(2), InSquarePlacement.spread(),
+                HeightRangePlacement.uniform(VerticalAnchor.absolute(-60), VerticalAnchor.absolute(36)), BiomeFilter.biome());
         PlacementUtils.register(ctx, pf("vesta_boulder"), cf.getOrThrow(cf("vesta_boulder")), RarityFilter.onAverageOnceEvery(2),
                 InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_TOP_SOLID, BiomeFilter.biome());
     }

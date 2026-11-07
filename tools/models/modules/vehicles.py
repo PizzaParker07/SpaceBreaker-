@@ -6,3 +6,4 @@ def generate():
     generated_item('rover')
     generated_item('sprint_rover')
     generated_item('pressurized_rover')
+    generated_item('amphibious_rover')

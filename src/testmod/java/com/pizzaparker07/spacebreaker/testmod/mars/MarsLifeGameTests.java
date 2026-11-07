@@ -177,7 +177,7 @@ public final class MarsLifeGameTests {
         int spawners = 0;
         for (BlockPos p : BlockPos.betweenClosed(bb.minX(), bb.minY(), bb.minZ(), bb.maxX(), bb.maxY(), bb.maxZ())) {
             var st = level.getBlockState(p);
-            if (st.is(Blocks.IRON_DOOR)) {
+            if (st.is(com.pizzaparker07.spacebreaker.content.suit.SuitModule.AIRLOCK_DOOR.get())) {
                 doors++;
             }
             if (st.is(Blocks.SPAWNER)) {
@@ -185,7 +185,7 @@ public final class MarsLifeGameTests {
             }
         }
         helper.assertTrue(lootChests(level, bb) >= 4, "station needs loot chests, found " + lootChests(level, bb));
-        helper.assertTrue(doors == 4, "airlock with two iron doors, found " + doors);
+        helper.assertTrue(doors == 4, "airlock with two airlock doors, found " + doors);
         helper.assertTrue(spawners == 1, "rust beetle nest in the garage");
         int traps = 0;
         for (BlockPos p : BlockPos.betweenClosed(bb.minX(), bb.minY(), bb.minZ(), bb.maxX(), bb.maxY(), bb.maxZ())) {

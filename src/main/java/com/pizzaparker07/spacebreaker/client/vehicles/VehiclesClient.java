@@ -22,11 +22,18 @@ public final class VehiclesClient {
     private VehiclesClient() {
     }
 
+    /** Headlights as moving lights through the shared light helper (dynamic lights mod, or soft pools). */
+    @SubscribeEvent
+    static void clientSetup(net.neoforged.fml.event.lifecycle.FMLClientSetupEvent event) {
+        com.pizzaparker07.spacebreaker.client.light.LightBeams.register(RoverLights::collect);
+    }
+
     @SubscribeEvent
     static void layers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(RoverModel.LAYER, RoverModel::createLayer);
         event.registerLayerDefinition(RoverModel.SPRINT_LAYER, RoverModel::createSprintLayer);
         event.registerLayerDefinition(RoverModel.PRESSURIZED_LAYER, RoverModel::createPressurizedLayer);
+        event.registerLayerDefinition(RoverModel.AMPHIBIOUS_LAYER, RoverModel::createAmphibiousLayer);
     }
 
     @SubscribeEvent
@@ -34,6 +41,7 @@ public final class VehiclesClient {
         event.registerEntityRenderer(VehiclesModule.ROVER.get(), RoverRenderer::new);
         event.registerEntityRenderer(VehiclesModule.SPRINT_ROVER.get(), RoverRenderer::sprint);
         event.registerEntityRenderer(VehiclesModule.PRESSURIZED_ROVER.get(), RoverRenderer::pressurized);
+        event.registerEntityRenderer(VehiclesModule.AMPHIBIOUS_ROVER.get(), RoverRenderer::amphibious);
     }
 
     private static final java.util.Map<Integer, RoverSound> SOUNDS = new java.util.HashMap<>();

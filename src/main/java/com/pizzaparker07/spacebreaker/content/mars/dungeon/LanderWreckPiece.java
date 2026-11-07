@@ -17,8 +17,8 @@ import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 
 /**
- * The wreck of an old lander: a hexagonal white body slumped on a broken leg, its heat shield half buried a little way
- * off, the orange-and-white parachute spread over the dust, and the data recorder still sealed inside. Everything that
+ * The wreck of an old lander: an octagonal bus on four splayed legs, one of them snapped so the body sags at that
+ * corner, a solar wing torn off, its heat shield standing half buried a little way off, the orange-and-white parachute spread over the dust, and the data recorder still sealed inside. Everything that
  * lies on the ground follows the terrain; drifting dust has partly covered it.
  */
 public class LanderWreckPiece extends StructurePiece {
@@ -86,63 +86,99 @@ public class LanderWreckPiece extends StructurePiece {
         BlockState white = s(Blocks.WHITE_CONCRETE);
         BlockState grey = s(Blocks.LIGHT_GRAY_CONCRETE);
         BlockState foil = s(Blocks.GOLD_BLOCK);
-        // a shallow scuffed patch where it came down hard
-        for (int dx = -4; dx <= 4; dx++) {
-            for (int dz = -4; dz <= 4; dz++) {
-                if (dx * dx + dz * dz <= 17) {
-                    int gy = ground(level, cx + dx, cz + dz);
-                    set(level, box, cx + dx, gy - 1, cz + dz, (dx + dz) % 3 == 0 ? s(MarsModule.MARTIAN_SAND.get()) : s(MarsModule.MARTIAN_REGOLITH.get()));
-                }
+        BlockState deck = s(Blocks.SMOOTH_STONE_SLAB).setValue(net.minecraft.world.level.block.SlabBlock.TYPE, net.minecraft.world.level.block.state.properties.SlabType.BOTTOM);
+        // skid marks: it bounced in from the east before it came to rest
+        for (int i = 3; i <= 9; i++) {
+            for (int side : new int[]{-1, 1}) {
+                int gx = cx + i;
+                int gz = cz + side * 2;
+                set(level, box, gx, ground(level, gx, gz) - 1, gz, s(MarsModule.MARTIAN_SAND.get()));
             }
         }
-        // the body: a squat hexagon (3 layers), tilted down toward its broken leg
-        for (int layer = 0; layer < 3; layer++) {
-            for (int dx = -2; dx <= 2; dx++) {
-                for (int dz = -2; dz <= 2; dz++) {
-                    if (Math.abs(dx) + Math.abs(dz) > 3) {
-                        continue;
-                    }
-                    int tilt = dx >= 1 ? 0 : 1; // the west side sits a block higher
-                    boolean shell = Math.abs(dx) == 2 || Math.abs(dz) == 2 || Math.abs(dx) + Math.abs(dz) == 3 || layer != 1;
-                    BlockState st = shell ? (layer == 1 && (dx + dz) % 2 == 0 ? foil : layer == 2 ? grey : white) : s(Blocks.AIR);
-                    set(level, box, cx + dx, y + layer + tilt, cz + dz, st);
+        // the body: an octagonal bus on a deck, standing a block clear of the ground on its legs. The south-east leg gave
+        // way, so that corner of the body sits a block lower.
+        int b = y + 2;
+        for (int dx = -2; dx <= 2; dx++) {
+            for (int dz = -2; dz <= 2; dz++) {
+                if (Math.abs(dx) == 2 && Math.abs(dz) == 2) {
+                    continue;
                 }
+                int t = dx + dz >= 2 ? -1 : 0;
+                boolean edge = Math.abs(dx) == 2 || Math.abs(dz) == 2;
+                boolean diagonal = Math.abs(dx) + Math.abs(dz) == 3;
+                set(level, box, cx + dx, b + t, cz + dz, grey);
+                for (int dy = 1; dy <= 2; dy++) {
+                    BlockState wall = diagonal ? white : (dy == 1 ? foil : white);
+                    set(level, box, cx + dx, b + dy + t, cz + dz, edge ? wall : s(Blocks.AIR));
+                }
+                set(level, box, cx + dx, b + 3 + t, cz + dz, deck);
             }
         }
-        // the data recorder inside, and a torn panel to reach it
-        set(level, box, cx, y + 2, cz, s(Blocks.AIR));
-        set(level, box, cx + 2, y + 1, cz, s(Blocks.AIR));
-        set(level, box, cx + 2, y + 2, cz, s(Blocks.AIR));
-        BlockPos chest = new BlockPos(cx, y + 1, cz);
+        // the torn side panel and the data recorder inside
+        set(level, box, cx, b + 1, cz + 2, s(Blocks.AIR));
+        set(level, box, cx, b + 2, cz + 2, s(Blocks.AIR));
+        set(level, box, cx + 1, b + 1, cz + 2, s(Blocks.AIR));
+        BlockPos chest = new BlockPos(cx, b + 1, cz);
         if (box.isInside(chest)) {
             level.setBlock(chest, s(Blocks.CHEST), Block.UPDATE_CLIENTS);
             if (level.getBlockEntity(chest) instanceof net.minecraft.world.level.block.entity.ChestBlockEntity be) {
                 be.setLootTable(MarsLoot.LANDER_DATA, seed);
             }
         }
-        // legs: two still standing, one snapped off and lying in the dust
-        for (int[] leg : new int[][]{{-3, -2}, {-3, 2}}) {
-            int ly = ground(level, cx + leg[0], cz + leg[1]);
-            for (int dy = ly; dy <= y + 2; dy++) {
-                set(level, box, cx + leg[0], dy, cz + leg[1], s(Blocks.IRON_BARS));
+        // legs: struts out to footpads at the four diagonals; the south-east one snapped and lies flat
+        for (int[] leg : new int[][]{{-1, -1}, {1, -1}, {-1, 1}, {1, 1}}) {
+            int fx = cx + leg[0] * 4;
+            int fz = cz + leg[1] * 4;
+            int fy = ground(level, fx, fz);
+            if (leg[0] == 1 && leg[1] == 1) {
+                for (int i = 0; i < 3; i++) {
+                    set(level, box, cx + 3 + i, ground(level, cx + 3 + i, cz + 4), cz + 4, s(Blocks.CHAIN).setValue(net.minecraft.world.level.block.ChainBlock.AXIS, net.minecraft.core.Direction.Axis.X));
+                }
+                set(level, box, cx + 6, ground(level, cx + 6, cz + 4), cz + 4, s(Blocks.HEAVY_WEIGHTED_PRESSURE_PLATE));
+                continue;
+            }
+            set(level, box, fx, fy, fz, s(Blocks.HEAVY_WEIGHTED_PRESSURE_PLATE));
+            int sx = cx + leg[0] * 3;
+            int sz = cz + leg[1] * 3;
+            for (int dy = ground(level, sx, sz); dy <= b + 1; dy++) {
+                set(level, box, sx, dy, sz, s(Blocks.IRON_BARS));
             }
         }
+        // a solar wing still folded out to the west; the east wing broke off and lies in the dust
+        for (int i = 3; i <= 6; i++) {
+            set(level, box, cx - i, b + 2, cz, i == 3 ? s(Blocks.CHAIN).setValue(net.minecraft.world.level.block.ChainBlock.AXIS, net.minecraft.core.Direction.Axis.X)
+                    : s(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.SOLAR_PANEL.get()));
+        }
         for (int i = 0; i < 3; i++) {
-            set(level, box, cx + 4 + i, ground(level, cx + 4 + i, cz + 1), cz + 1, s(Blocks.CHAIN));
+            int wx = cx + 5 + i;
+            int wz = cz - 2;
+            set(level, box, wx, ground(level, wx, wz), wz, s(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.SOLAR_PANEL.get()));
         }
-        // mast and a bent high-gain antenna
-        for (int dy = 4; dy <= 5; dy++) {
-            set(level, box, cx - 1, y + dy, cz, s(Blocks.LIGHTNING_ROD));
-        }
-        set(level, box, cx - 1, y + 6, cz, s(Blocks.DAYLIGHT_DETECTOR));
-        // the heat shield, half buried a little way north-east
-        int hx = cx + 8;
-        int hz = cz - 5;
-        for (int dx = -2; dx <= 2; dx++) {
+        // on the top deck: the camera mast and the high-gain dish, still pointed at the sky
+        set(level, box, cx - 1, b + 3, cz - 1, s(Blocks.LIGHT_GRAY_CONCRETE));
+        set(level, box, cx - 1, b + 4, cz - 1, s(Blocks.LIGHTNING_ROD));
+        set(level, box, cx - 1, b + 5, cz - 1, s(Blocks.OBSERVER));
+        set(level, box, cx, b + 3, cz - 1, s(Blocks.IRON_BARS));
+        set(level, box, cx, b + 4, cz - 1, s(Blocks.DAYLIGHT_DETECTOR));
+        // dust drifted against the west side, up to the deck
+        for (int dx = -5; dx <= -3; dx++) {
             for (int dz = -2; dz <= 2; dz++) {
-                if (dx * dx + dz * dz <= 5) {
-                    int gy = ground(level, hx + dx, hz + dz);
-                    set(level, box, hx + dx, gy - (dx < 0 ? 1 : 0), hz + dz, dx * dx + dz * dz <= 1 ? s(Blocks.BROWN_TERRACOTTA) : s(Blocks.TERRACOTTA));
+                int top = y + (dx + 5) - (Math.abs(dz) == 2 ? 1 : 0);
+                for (int dy = ground(level, cx + dx, cz + dz); dy <= top; dy++) {
+                    if (level.getBlockState(new BlockPos(cx + dx, dy, cz + dz)).isAir()) {
+                        set(level, box, cx + dx, dy, cz + dz, s(MarsModule.MARTIAN_REGOLITH.get()));
+                    }
+                }
+            }
+        }
+        // the heat shield, dropped before landing: a dish standing on its edge, half buried, a little way north-east
+        int hx = cx + 8;
+        int hz = cz - 6;
+        int hy = ground(level, hx, hz);
+        for (int dx = -2; dx <= 2; dx++) {
+            for (int dy = -2; dy <= 2; dy++) {
+                if (dx * dx + dy * dy <= 5) {
+                    set(level, box, hx + dx, hy + dy, hz, dx * dx + dy * dy <= 1 ? s(Blocks.BROWN_TERRACOTTA) : s(Blocks.TERRACOTTA));
                 }
             }
         }

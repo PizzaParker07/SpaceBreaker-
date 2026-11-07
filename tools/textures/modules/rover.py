@@ -368,7 +368,24 @@ def cabin_rear(face, x, y, fw, fh):
     return WHITE[2]
 
 
-def sheet(glow=False, sprint=False, cabin=False):
+def float_hull(face, x, y, fw, fh):
+    # sealed float: safety orange with a white band and a dark seam along the bottom
+    if face in ('left', 'right', 'top'):
+        if face != 'top' and y == fh - 1:
+            return DARK[1]
+        if face != 'top' and y == 1:
+            return WHITE[3]
+        return ORANGE if (x // 6) % 2 == 0 else (204, 104, 30)
+    if face == 'bottom':
+        return DARK[1]
+    return (204, 104, 30)
+
+
+def prop(face, x, y, fw, fh):
+    return AL[5] if (x + y) % 2 else AL[3]
+
+
+def sheet(glow=False, sprint=False, cabin=False, floats=False):
     global WHITE, FABRIC
     saved = (WHITE, FABRIC)
     if sprint:
@@ -377,6 +394,10 @@ def sheet(glow=False, sprint=False, cabin=False):
         FABRIC = ramp('#3a0e0e', '#5a1616', '#7a2020', '#962a26', '#b03a30', '#c64f40')
     try:
         cv = _sheet(glow)
+        if floats and not glow:
+            paint(cv, 0, 200, 3, 4, 36, float_hull)
+            paint(cv, 90, 200, 2, 2, 2, prop)
+            paint(cv, 100, 200, 7, 7, 1, prop)   # covers both blades' UVs
         if cabin and not glow:
             paint(cv, 0, 140, 22, 1, 32, cabin_roof)
             paint(cv, 110, 140, 1, 23, 32, cabin_side)
@@ -435,6 +456,7 @@ def beam():
 def export(save):
     save(sheet(sprint=True), 'entity', 'sprint_rover')
     save(sheet(cabin=True), 'entity', 'pressurized_rover')
+    save(sheet(cabin=True, floats=True), 'entity', 'amphibious_rover')
     save(sheet(), 'entity', 'rover')
     save(sheet(glow=True), 'entity', 'rover_lights')
     save(beam(), 'entity', 'rover_beam')
@@ -522,6 +544,16 @@ def pressurized_icon():
 _export_rover_cabin = export
 
 
+def amphibious_icon():
+    """The amphibious rover: the cabin rover with an orange float along its side."""
+    cv = pressurized_icon()
+    for x in range(1, 15):
+        cv[x, 10] = ORANGE
+        cv[x, 11] = (204, 104, 30)
+    return cv
+
+
 def export(save):  # noqa: F811
     _export_rover_cabin(save)
     save(pressurized_icon(), 'item', 'pressurized_rover')
+    save(amphibious_icon(), 'item', 'amphibious_rover')
