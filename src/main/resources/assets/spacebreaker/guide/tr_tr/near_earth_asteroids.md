@@ -6,7 +6,7 @@ research: spacebreaker:interplanetary_transfers
 ---
 Ay'dan sonraki ilk küçük hedefler: dört minik, havasız asteroit. Örneğin Bennu'ya alçak Dünya yörüngesinden yaklaşık **4,1 km/s** Δv yeter. → [Asteroitler](sci_asteroids)
 
->! Dördünde de su buzu yok, yani **yakıt ikmali yapamazsın**. Dönüş yakıtını yanında getir.
+>! Dördünde de doğal su buzu yok. Bennu ve Ryugu'da suyu **regolitten** çıkarabilirsin; Eros ve Itokawa'da su yoktur. Dönüş yakıtını yanında getir ya da üretimi kur. → [Asteroit madenciliği](#mining)
 
 ## Bennu
 {items spacebreaker:bennu_regolith spacebreaker:bennu_boulder}
@@ -24,6 +24,13 @@ Yaklaşık 17 km'lik uzun, taşlı, yoğun kraterli bir asteroit; bir yanında b
 ## Itokawa
 {items spacebreaker:itokawa_gravel spacebreaker:itokawa_rock}
 İki parçalı, kayalık bir fıstık; boynunda, tam iniş yerinde düz bir çakıl ovası: **Muses Denizi**.
+
+{page}
+## Asteroit madenciliği {#mining}
+- **Karbonlu asteroitler (Bennu, Ryugu):** regolit ısıtıcıda kayadaki hidratlı kil **200 mB su** ve **50 mB CO₂** verir, %30 şansla kömür tozu da. Suyu elektrolizle oksijen ve hidrojene ayır: yerinde yakıt. Phobos ve Deimos'un {item spacebreaker:carbonaceous_chondrite}'i de aynı şekilde işlenir.
+{recipe spacebreaker:regolith_processing/carbonaceous_water}
+- **Taşlı asteroitler (Eros, Itokawa):** kırıcıda **demir tozu** ve %25 şansla **nikel tozu** verir. Regolit ısıtıcıda oksijen verir ve sinterleme fırınında yapı bloğuna döner. → [Yerinde Üretim](isru)
+{recipe spacebreaker:crushing/stony_asteroid_metal}
 
 ## Harabeler
 Her birinde düşmüş bir ikmal iniş aracı var: {tech spacebreaker:microgravity_mining} ya da {tech spacebreaker:spectroscopy} diski verir.

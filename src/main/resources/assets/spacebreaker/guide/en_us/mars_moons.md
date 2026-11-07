@@ -8,7 +8,7 @@ research: spacebreaker:interplanetary_transfers
 Two tiny, dark moons, probably captured asteroids.
 - Their gravity is very weak: a jump carries you **a long way**.
 - Mars fills the sky: about 40 degrees across from Phobos, 16 from Deimos, always in the same place.
-- Their soil is **rich in carbon**, like the oldest meteorites.
+- Their soil is **rich in carbon**, like the oldest meteorites: {item spacebreaker:carbonaceous_chondrite} gives water in the regolith heater. → [Asteroid mining](near_earth_asteroids#mining)
 
 > [!WARNING]
 > Careful jumping near edges: gravity is so low that coming back down takes a long time.
