@@ -3,7 +3,7 @@ title: Enerji
 icon: spacebreaker:combustion_generator
 items: [spacebreaker:combustion_generator, spacebreaker:solar_panel, spacebreaker:battery_bank, spacebreaker:copper_cable, spacebreaker:hv_cable, spacebreaker:rtg, spacebreaker:rtg_fuel_pellet, spacebreaker:power_monitor]
 ---
-Bütün makineler **FE** (enerji) ile çalışır. Üretim ve tüketim "FE/t" ile, yani her oyun tikinde (saniyede 20 tik) ölçülür.
+Bütün makineler **FE** (enerji) ile çalışır. Pelet sinterleme fırınında sarı pastadan yapılır. → [Nükleer Yakıt](nuclear_fuel) Üretim ve tüketim "FE/t" ile, yani her oyun tikinde (saniyede 20 tik) ölçülür.
 
 {items spacebreaker:combustion_generator spacebreaker:solar_panel spacebreaker:battery_bank spacebreaker:copper_cable spacebreaker:hv_cable}
 

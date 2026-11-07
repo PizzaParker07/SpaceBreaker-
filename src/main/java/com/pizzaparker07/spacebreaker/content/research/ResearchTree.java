@@ -276,6 +276,7 @@ public final class ResearchTree {
                 .en("Advanced Electronics", "Radiation-hardened processors and silicon wafers grown in clean rooms.")
                 .tr("İleri Elektronik", "Radyasyona dayanıklı işlemciler ve temiz odalarda büyütülmüş silisyum plakalar.");
         t("nuclear_fission", INDUSTRY, 3).req("advanced_electronics", "cryogenics").icon("minecraft:glowstone")
+                .unlocks("gas_centrifuge", "yellowcake", "enriched_uranium", "nuclear_fuel_element")
                 .samples(MOON)
                 .en("Nuclear Fission", "Radioisotope generators and compact reactors where sunlight is too weak.")
                 .tr("Nükleer Fisyon", "Güneş ışığının yetersiz kaldığı yerler için radyoizotop jeneratörleri ve küçük reaktörler.");

@@ -39,6 +39,7 @@
       "icon": "spacebreaker:press",
       "chapters": [
         "power",
+        "nuclear_fuel",
         "processing",
         "fabricator",
         "oil_refining",
