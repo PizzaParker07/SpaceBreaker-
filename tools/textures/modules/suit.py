@@ -1144,9 +1144,47 @@ def visor_frost() -> Canvas:
     return cv
 
 
+def visor_frame() -> Canvas:
+    """Inside of the helmet seen in first person: a rounded visor opening (curved corners, a little more brow at the
+    top), the dark rim fading in over a few pixels in steps, and faint reflections of the visor glass along the
+    upper left curve and the lower right corner. 320 x 180, stretched over the screen; drawn on the GUI layer."""
+    w, h = 320, 180
+    cv = Canvas(w, h)
+    left, right, top, bottom, r = 9, w - 10, 13, h - 8, 34
+    rim = (16, 19, 24)
+
+    def outside(x, y):
+        """Distance outside the rounded opening (negative inside)."""
+        cx = min(max(x, left + r), right - r)
+        cy = min(max(y, top + r), bottom - r)
+        if left + r <= x <= right - r or top + r <= y <= bottom - r:
+            return max(left - x, x - right, top - y, y - bottom)
+        return ((x - cx) ** 2 + (y - cy) ** 2) ** 0.5 - r
+
+    for y in range(h):
+        for x in range(w):
+            d = outside(x + 0.5, y + 0.5)
+            if d >= 0:
+                step = min(3, int(d / 2.5))
+                cv[x, y] = (*rim, (90, 150, 205, 235)[step])
+            elif d > -2 and x < w * 0.45 and y < h * 0.45:
+                # glass edge catching light along the upper left
+                cv[x, y] = (196, 214, 228, 46)
+    # two short glints on the glass: an arc in the upper left corner, a dash in the lower right
+    for i in range(26):
+        a = 3.14159 * (1.05 + 0.4 * i / 25)
+        x = int(left + r + (r - 6) * __import__('math').cos(a))
+        y = int(top + r + (r - 6) * __import__('math').sin(a))
+        cv[x, y] = (226, 238, 246, 70)
+    for i in range(14):
+        cv[right - 30 + i, bottom - 6 - i // 4] = (226, 238, 246, 44)
+    return cv
+
+
 def export(save):
     save(hud_icons(), 'gui', 'hud_icons')
     save(visor_frost(), 'gui', 'visor_frost')
+    save(visor_frame(), 'gui', 'visor_frame')
     export_blocks(save)
     save(icon_small_tank(), 'item', 'oxygen_tank')
     save(oxygen_tank_model(), 'item', 'oxygen_tank_model')

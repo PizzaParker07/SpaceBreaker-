@@ -61,20 +61,18 @@ public final class HelmetHud {
 
     static void renderFrame(GuiGraphics g, DeltaTracker delta) {
         Minecraft mc = Minecraft.getInstance();
-        if (!active(mc) || !HudConfig.visorFrame()) {
+        if (!active(mc)) {
             return;
         }
         int w = g.guiWidth();
         int h = g.guiHeight();
-        int band = Math.max(8, h / 14);
-        // soft dark edges, a little heavier at the top where the helmet's brow is
-        g.fillGradient(0, 0, w, band + 4, 0x70000000, 0x00000000);
-        g.fillGradient(0, h - band, w, h, 0x00000000, 0x50000000);
-        int side = Math.max(6, w / 40);
-        for (int i = 0; i < side; i++) {
-            int a = (int) (0x48 * (1.0 - (double) i / side));
-            g.fill(i, 0, i + 1, h, a << 24);
-            g.fill(w - 1 - i, 0, w - i, h, a << 24);
+        if (HudConfig.visorFrame()) {
+            // the rounded visor rim with its glass reflections, stretched over the screen
+            RenderSystem.enableBlend();
+            g.setColor(1F, 1F, 1F, HudConfig.visorFrameOpacity());
+            g.blit(FRAME, 0, 0, 0, 0, w, h, w, h);
+            g.setColor(1F, 1F, 1F, 1F);
+            RenderSystem.disableBlend();
         }
         ItemStack helmet = mc.player.getItemBySlot(EquipmentSlot.HEAD);
         if (SpaceSuitItem.isSunVisorDown(helmet)
@@ -92,6 +90,7 @@ public final class HelmetHud {
         }
     }
 
+    private static final ResourceLocation FRAME = Spacebreaker.id("textures/gui/visor_frame.png");
     private static final ResourceLocation FROST = Spacebreaker.id("textures/gui/visor_frost.png");
     private static float frostLevel, frostPrev;
 

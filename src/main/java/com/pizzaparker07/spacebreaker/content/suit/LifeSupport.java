@@ -76,12 +76,7 @@ public final class LifeSupport {
         if (!hazards || pressureKpa < STRAIN_KPA || player.tickCount % STRAIN_WEAR_TICKS != 0 || !SpaceSuitItem.isSealed(player)) {
             return;
         }
-        for (EquipmentSlot slot : SuitProtection.SLOTS) {
-            ItemStack stack = player.getItemBySlot(slot);
-            if (stack.isDamageableItem() && stack.getDamageValue() + 1 <= stack.getMaxDamage() * STRAIN_WEAR_LIMIT) {
-                stack.setDamageValue(stack.getDamageValue() + 1);
-            }
-        }
+        SuitWear.wearAll(player, 1, STRAIN_WEAR_LIMIT);
     }
 
     // ------------------------------------------------------------------ oxygen
