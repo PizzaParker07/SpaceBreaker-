@@ -44,11 +44,16 @@ public final class RoverAuditTests {
                 level.setBlock(h.absolutePos(new BlockPos(x, 0, z)), Blocks.STONE.defaultBlockState(), 3);
             }
         }
-        RoverEntity rover = VehiclesModule.ROVER.get().create(level);
+        for (var type : List.of(VehiclesModule.ROVER, VehiclesModule.SPRINT_ROVER, VehiclesModule.PRESSURIZED_ROVER)) {
+        RoverEntity rover = type.get().create(level);
+        out.add("### " + type.getId().getPath());
         Vec3 at = h.absoluteVec(new Vec3(4, 1, 4));
         rover.moveTo(at.x, at.y, at.z, 0F, 0F);
         level.addFreshEntity(rover);
-        rover.installSolar();
+        boolean base = type == VehiclesModule.ROVER;
+        if (base) {
+            rover.installSolar();
+        }
         ServerPlayer driver = h.makeMockServerPlayerInLevel();
         ServerPlayer second = h.makeMockServerPlayerInLevel();
         driver.moveTo(at.x + 2, at.y, at.z);
@@ -60,7 +65,7 @@ public final class RoverAuditTests {
         out.add("- two seats: driver " + d + ", passenger " + s + "; a third rider refused: "
                 + !h.makeMockServerPlayerInLevel().startRiding(rover));
         // heads against the roof panel (rover facing +z: "behind" is -z)
-        for (ServerPlayer p : List.of(driver, second)) {
+        for (ServerPlayer p : base ? List.of(driver, second) : List.<ServerPlayer>of()) {
             double head = p.getY() + HEAD_TOP - rover.getY();
             double back = -(p.getZ() - rover.getZ());
             boolean under = back + HEAD_HALF >= PANEL_Z_FROM && back - HEAD_HALF <= PANEL_Z_TO;
@@ -79,10 +84,26 @@ public final class RoverAuditTests {
         Entity controller = rover.getControllingPassenger();
         out.add("- after the driver leaves, the passenger " + (controller == second ? "takes the wheel" : "does not drive")
                 + String.format(Locale.ROOT, " and sits %.2f behind the centre", -(second.getZ() - rover.getZ())));
+        if (rover.roverType().cabin()) {
+            // closed cabin: a rider breathes the cabin air while it has oxygen and power, the suit's otherwise
+            rover.setEnergy(10_000);
+            rover.setCabinOxygen(0);
+            boolean emptyCabin = rover.cabinPressurized() || rover.breathe(second, 1);
+            rover.setCabinOxygen(1000);
+            boolean full = rover.cabinPressurized() && rover.breathe(second, 1) && rover.cabinOxygen() < 1000;
+            rover.setEnergy(0);
+            boolean noPower = rover.cabinPressurized();
+            out.add("- cabin: empty tank gives air " + emptyCabin + (emptyCabin ? " **(should not)**" : "")
+                    + "; filled and powered gives air " + full + (full ? "" : " **(should)**")
+                    + "; without power still pressurised " + noPower + (noPower ? " **(should not)**" : ""));
+        }
         second.stopRiding();
         out.add(String.format(Locale.ROOT, "- step height %.1f block; bounding box %.1f × %.1f", rover.maxUpStep(), rover.getBbWidth(), rover.getBbHeight()));
-        ProgressionReport.write("rover.md", "## Rover sweep (`qa/RoverAuditTests`)\n\n" + String.join("\n", out) + "\n");
         rover.discard();
+        driver.discard();
+        second.discard();
+        }
+        ProgressionReport.write("rover.md", "## Rover sweep (`qa/RoverAuditTests`)\n\n" + String.join("\n", out) + "\n");
         h.succeed();
     }
 
