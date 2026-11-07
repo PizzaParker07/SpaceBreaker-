@@ -212,6 +212,50 @@ final class MoonShowcaseBuilder {
         placePiece(level, new OutpostPiece(4243L, o[0] - 15, o[1], o[2] - 15, Direction.SOUTH));
         int[] st = tubeStart(t);
         placePiece(level, new LavaTubePiece(TUBE_SEED, tubePath(t), st[1]));
+        int[] ice = iceDrillSpot(t);
+        if (ice != null) {
+            placePiece(level, new com.pizzaparker07.spacebreaker.content.moon.dungeon.IceDrillPiece(77L, ice[0] - 8, ice[1], ice[2] - 8, Direction.SOUTH));
+        }
+    }
+
+    private static int[] iceSpot;
+
+    /** A cold-trap floor near the pole that fits an ice-drilling station (same rules as natural placement). */
+    static int[] iceDrillSpot(PlanetTerrain t) {
+        if (iceSpot != null) {
+            return iceSpot;
+        }
+        var level = net.minecraft.client.Minecraft.getInstance().getSingleplayerServer().getLevel(MoonModule.MOON);
+        var gen = (com.pizzaparker07.spacebreaker.content.worldgen.PlanetChunkGenerator) level.getChunkSource().getGenerator();
+        int pole = (int) (t.profile().poleDistance() / 16);
+        for (int r = 0; r <= 60; r++) {
+            for (int cx = -r; cx <= r; cx++) {
+                for (int cz = pole - 40; cz <= pole + 4; cz++) {
+                    if (Math.abs(cx) != r) {
+                        continue;
+                    }
+                    int x = cx * 16 + 8;
+                    int z = cz * 16 + 8;
+                    if (gen.coldTrapFloor(x, z) == Integer.MIN_VALUE) {
+                        continue;
+                    }
+                    int shadowed = 0;
+                    double min = Double.MAX_VALUE;
+                    double max = -Double.MAX_VALUE;
+                    for (int[] o : new int[][]{{0, 0}, {-8, -8}, {8, -8}, {-8, 8}, {8, 8}}) {
+                        shadowed += gen.coldTrapFloor(x + o[0], z + o[1]) != Integer.MIN_VALUE ? 1 : 0;
+                        double h = t.height(x + o[0], z + o[1]);
+                        min = Math.min(min, h);
+                        max = Math.max(max, h);
+                    }
+                    if (shadowed >= 4 && max - min <= 5) {
+                        iceSpot = new int[]{x, (int) Math.floor(min) + 1, z};
+                        return iceSpot;
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     static List<ShowcaseDriver.Shot> dungeonShots(PlanetTerrain t) {
@@ -234,6 +278,14 @@ final class MoonShowcaseBuilder {
         s.add(new ShowcaseDriver.Shot("38_crew_quarters", 0, x0 + 7.4, y + 2.7, z0 + 4.5, 90F, 18F, true, fp, 60, dark, null));
         s.add(new ShowcaseDriver.Shot("39_vault_puzzle", 0, x0 + 19.5, y + 2.6, z0 + 5.5, -90F, 8F, true, fp, 60, dark, null));
         s.add(new ShowcaseDriver.Shot("40_greenhouse", 0, x0 + 23.5, y + 3.2, z0 + 15.5, -90F, 20F, true, fp, 60, noon, null));
+        int[] ice = iceDrillSpot(t);
+        if (ice != null) {
+            // the station sits in permanent shadow; the camera looks down from the crater wall side
+            s.add(new ShowcaseDriver.Shot("41_ice_drill_station", 0, ice[0] + 14.5, ice[1] + 12, ice[2] + 16.5, MoonScenario.yaw(-14, -16), 28F,
+                    true, fp, 200, noon, null));
+            s.add(new ShowcaseDriver.Shot("42_ice_drill_hut", 0, ice[0] - 3.5, ice[1] + 1.6, ice[2] - 4.5, MoonScenario.yaw(-3, -3), 14F,
+                    true, fp, 80, dark, null));
+        }
         List<int[]> path = tubePath(t);
         int[] n0 = path.get(0);
         int[] st = tubeStart(t);

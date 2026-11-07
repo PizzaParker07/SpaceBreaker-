@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "spacebreaker:ice_core_sample"
+    }
+  ],
+  "result": {
+    "count": 4,
+    "id": "spacebreaker:lunar_ice"
+  }
+}

@@ -31,6 +31,10 @@ public final class MoonStructures {
             TYPES.register("survey_outpost", () -> () -> SurveyOutpostStructure.CODEC);
     public static final DeferredHolder<StructureType<?>, StructureType<LavaTubeStructure>> LAVA_TUBE =
             TYPES.register("lava_tube", () -> () -> LavaTubeStructure.CODEC);
+    public static final DeferredHolder<StructureType<?>, StructureType<IceDrillStructure>> ICE_DRILL =
+            TYPES.register("ice_drill_station", () -> () -> IceDrillStructure.CODEC);
+    public static final DeferredHolder<StructurePieceType, StructurePieceType> ICE_DRILL_PIECE =
+            PIECES.register("ice_drill_station", () -> IceDrillPiece::new);
     public static final DeferredHolder<StructurePieceType, StructurePieceType> OUTPOST_PIECE =
             PIECES.register("survey_outpost", () -> OutpostPiece::new);
     public static final DeferredHolder<StructurePieceType, StructurePieceType> LAVA_TUBE_PIECE =
@@ -38,6 +42,8 @@ public final class MoonStructures {
 
     public static final ResourceKey<Structure> OUTPOST_KEY = ResourceKey.create(Registries.STRUCTURE, Spacebreaker.id("survey_outpost"));
     public static final ResourceKey<Structure> LAVA_TUBE_KEY = ResourceKey.create(Registries.STRUCTURE, Spacebreaker.id("lava_tube"));
+    public static final ResourceKey<Structure> ICE_DRILL_KEY = ResourceKey.create(Registries.STRUCTURE, Spacebreaker.id("ice_drill_station"));
+    public static final ResourceKey<StructureSet> ICE_DRILL_SET = ResourceKey.create(Registries.STRUCTURE_SET, Spacebreaker.id("ice_drill_stations"));
     public static final ResourceKey<StructureSet> OUTPOST_SET = ResourceKey.create(Registries.STRUCTURE_SET, Spacebreaker.id("survey_outposts"));
     public static final ResourceKey<StructureSet> LAVA_TUBE_SET = ResourceKey.create(Registries.STRUCTURE_SET, Spacebreaker.id("lava_tubes"));
 
@@ -57,6 +63,9 @@ public final class MoonStructures {
         ctx.register(LAVA_TUBE_KEY, new LavaTubeStructure(new Structure.StructureSettings(
                 HolderSet.direct(biomes.getOrThrow(MoonData.MARE), biomes.getOrThrow(MoonData.VOLCANIC)),
                 Map.of(), GenerationStep.Decoration.UNDERGROUND_STRUCTURES, TerrainAdjustment.NONE)));
+        ctx.register(ICE_DRILL_KEY, new IceDrillStructure(new Structure.StructureSettings(
+                HolderSet.direct(biomes.getOrThrow(MoonData.POLAR), biomes.getOrThrow(MoonData.CRATER), biomes.getOrThrow(MoonData.HIGHLANDS)),
+                Map.of(), GenerationStep.Decoration.SURFACE_STRUCTURES, TerrainAdjustment.NONE)));
     }
 
     public static void sets(BootstrapContext<StructureSet> ctx) {
@@ -65,5 +74,8 @@ public final class MoonStructures {
                 new RandomSpreadStructurePlacement(36, 14, RandomSpreadType.LINEAR, 0x5B0071)));
         ctx.register(LAVA_TUBE_SET, new StructureSet(structures.getOrThrow(LAVA_TUBE_KEY),
                 new RandomSpreadStructurePlacement(26, 9, RandomSpreadType.LINEAR, 0x1A7A70)));
+        // cold traps are rare, so candidates are tried often; most fail the shadow check
+        ctx.register(ICE_DRILL_SET, new StructureSet(structures.getOrThrow(ICE_DRILL_KEY),
+                new RandomSpreadStructurePlacement(6, 2, RandomSpreadType.LINEAR, 0x1CEC0E)));
     }
 }

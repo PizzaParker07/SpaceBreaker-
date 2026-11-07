@@ -18,6 +18,8 @@ public final class MoonLoot {
     public static final ResourceKey<LootTable> OUTPOST_GREENHOUSE = key("chests/moon/outpost_greenhouse");
     public static final ResourceKey<LootTable> OUTPOST_VAULT = key("chests/moon/outpost_vault");
     public static final ResourceKey<LootTable> LAVA_TUBE_PROBE = key("chests/moon/lava_tube_probe");
+    public static final ResourceKey<LootTable> ICE_DRILL_CONTROL = key("chests/moon/ice_drill_control");
+    public static final ResourceKey<LootTable> ICE_DRILL_CORES = key("chests/moon/ice_drill_cores");
     public static final ResourceKey<LootTable> TECH_DATA = key("chests/moon/tech_data");
 
     private static ResourceKey<LootTable> key(String path) {

@@ -347,6 +347,67 @@ public final class MoonLifeGameTests {
         helper.succeed();
     }
 
+    /**
+     * The polar ice-drilling station in all four orientations: running RTG with its pellet, station data chest,
+     * core racks, the drill string down the bore hole, supported fittings and its heat siphon guards.
+     */
+    @GameTest(template = EMPTY, timeoutTicks = 300)
+    public static void iceDrillStationIsComplete(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Direction[] dirs = {Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST};
+        List<BoundingBox> boxes = new java.util.ArrayList<>();
+        for (int i = 0; i < dirs.length; i++) {
+            BlockPos base = helper.absolutePos(BlockPos.ZERO).offset(3000 + i * 48, 0, -3000);
+            level.getChunk(base);
+            int y = level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.WORLD_SURFACE, base.getX(), base.getZ());
+            var piece = new com.pizzaparker07.spacebreaker.content.moon.dungeon.IceDrillPiece(7L + i, base.getX(), y, base.getZ(), dirs[i]);
+            BoundingBox bb = piece.getBoundingBox();
+            for (int cx = bb.minX() >> 4; cx <= bb.maxX() >> 4; cx++) {
+                for (int cz = bb.minZ() >> 4; cz <= bb.maxZ() >> 4; cz++) {
+                    level.getChunk(cx, cz);
+                }
+            }
+            for (int cx = bb.minX() >> 4; cx <= bb.maxX() >> 4; cx++) {
+                for (int cz = bb.minZ() >> 4; cz <= bb.maxZ() >> 4; cz++) {
+                    BoundingBox cb = new BoundingBox(cx << 4, level.getMinBuildHeight(), cz << 4, (cx << 4) + 15, level.getMaxBuildHeight(), (cz << 4) + 15);
+                    piece.postProcess(level, level.structureManager(), level.getChunkSource().getGenerator(), RandomSource.create(1),
+                            cb, new ChunkPos(cx, cz), bb.getCenter());
+                }
+            }
+            String o = " (" + dirs[i] + ")";
+            BlockPos rtg = piece.localToWorld(1, 4, 1);
+            helper.assertTrue(level.getBlockEntity(rtg) instanceof com.pizzaparker07.spacebreaker.content.machines.base.MachineBlockEntity be
+                    && be.items().getStackInSlot(0).is(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.RTG_FUEL_PELLET.get()),
+                    "the RTG still holds its pellet" + o);
+            helper.assertTrue(level.getBlockEntity(piece.localToWorld(2, 4, 1)) instanceof ChestBlockEntity chest
+                    && MoonLoot.ICE_DRILL_CONTROL.equals(chest.getLootTable()), "station data chest" + o);
+            int racks = 0;
+            for (int z = 9; z <= 10; z++) {
+                if (level.getBlockEntity(piece.localToWorld(12, 4, z)) instanceof net.minecraft.world.level.block.entity.BarrelBlockEntity barrel
+                        && MoonLoot.ICE_DRILL_CORES.equals(barrel.getLootTable())) {
+                    racks++;
+                }
+            }
+            helper.assertTrue(racks == 2, "two ice core racks" + o);
+            for (int yy = 0; yy <= 10; yy++) {
+                helper.assertTrue(level.getBlockState(piece.localToWorld(9, yy, 9)).is(Blocks.CHAIN), "drill string at local y " + yy + o + ": " + level.getBlockState(piece.localToWorld(9, yy, 9)) + " at " + piece.localToWorld(9, yy, 9) + " bb " + bb);
+            }
+            for (BlockPos p : BlockPos.betweenClosed(bb.minX(), bb.minY(), bb.minZ(), bb.maxX(), bb.maxY(), bb.maxZ())) {
+                var st = level.getBlockState(p);
+                if (st.getBlock() instanceof net.minecraft.world.level.block.LanternBlock || st.is(Blocks.LIGHTNING_ROD)) {
+                    helper.assertTrue(st.canSurvive(level, p), st.getBlock().getName().getString() + " is supported at " + p.immutable() + o);
+                }
+            }
+            boxes.add(bb);
+        }
+        helper.succeedWhen(() -> {
+            for (BoundingBox bb : boxes) {
+                int siphons = level.getEntitiesOfClass(HeatSiphon.class, AABB.of(bb).inflate(4)).size();
+                helper.assertTrue(siphons >= 2, "heat siphons haunt the station, found " + siphons);
+            }
+        });
+    }
+
     private MoonLifeGameTests() {
     }
 }

@@ -47,7 +47,8 @@ import java.util.EnumSet;
 /**
  * Heat Siphon: a frost-crystal creature of the two-week lunar night. It hunts warmth: its touch chills a player
  * to the bone, and it latches onto batteries and generators to drink their stored charge, glowing brighter as it
- * fills. It cannot stand sunlight and sublimates at dawn, and it never appears where a lamp shines, so a lit base
+ * fills. It cannot stand sunlight and sublimates at dawn (except in the cold traps of polar craters, where it lives
+ * all the time), and it never appears where a lamp shines, so a lit base
  * and a guarded battery room matter when the solar panels go dark.
  */
 public class HeatSiphon extends Monster {
@@ -78,7 +79,7 @@ public class HeatSiphon extends Monster {
         return Environment.sunElevation(level) < -0.05F;
     }
 
-    /** Natural spawning: night only, on lunar ground, never in lamp light, never on peaceful. */
+    /** Natural spawning: at night or in a cold trap, on lunar ground, never in lamp light, never on peaceful. */
     public static boolean checkSpawn(EntityType<? extends HeatSiphon> type, ServerLevelAccessor level, MobSpawnType reason, BlockPos pos, RandomSource random) {
         if (level.getDifficulty() == Difficulty.PEACEFUL || !level.getBlockState(pos).isAir()) {
             return false;
@@ -88,7 +89,8 @@ public class HeatSiphon extends Monster {
         }
         BlockState below = level.getBlockState(pos.below());
         return (below.is(MoonModule.LUNAR_SOILS) || below.is(MoonModule.MOON_STONE))
-                && isNight(level.getLevel()) && level.getBrightness(LightLayer.BLOCK, pos) < 6;
+                && (isNight(level.getLevel()) || com.pizzaparker07.spacebreaker.content.worldgen.ColdTraps.inColdTrap(level.getLevel(), pos))
+                && level.getBrightness(LightLayer.BLOCK, pos) < 6;
     }
 
     @Override
@@ -151,7 +153,8 @@ public class HeatSiphon extends Monster {
             return;
         }
         // sunlight boils the frost body away
-        if (!isNoAi() && !isNight(level()) && level().canSeeSky(blockPosition()) && tickCount % 20 == 0) {
+        if (!isNoAi() && tickCount % 20 == 0 && !isNight(level()) && level().canSeeSky(blockPosition())
+                && !com.pizzaparker07.spacebreaker.content.worldgen.ColdTraps.inColdTrap(level(), blockPosition())) {
             ((ServerLevel) level()).sendParticles(ParticleTypes.CLOUD, getX(), getY() + 0.4, getZ(), 6, 0.3, 0.2, 0.3, 0.01);
             hurt(damageSources().dryOut(), 3F);
         }

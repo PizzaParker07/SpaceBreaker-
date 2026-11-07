@@ -327,6 +327,10 @@ public final class MoonData {
                     .define('S', MoonModule.GLIMMER_SHELL.get()).define('G', Items.GLASS).define('B', MoonModule.SINTERED_REGOLITH.get())
                     .pattern(" S ").pattern("SGS").pattern(" B ")
                     .unlockedBy(getHasName(MoonModule.GLIMMER_SHELL.get()), has(MoonModule.GLIMMER_SHELL.get())).save(out);
+            // an ice core sample melts down into plenty of clean lunar ice
+            ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, MoonModule.LUNAR_ICE.get(), 4).requires(MoonModule.ICE_CORE_SAMPLE.get())
+                    .unlockedBy(getHasName(MoonModule.ICE_CORE_SAMPLE.get()), has(MoonModule.ICE_CORE_SAMPLE.get()))
+                    .save(out, Spacebreaker.id("lunar_ice_from_ice_core_sample"));
             // meteoric iron: almost pure iron-nickel
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.RAW_IRON, 4).requires(MoonModule.METEORIC_IRON.get())
                     .unlockedBy(getHasName(MoonModule.METEORIC_IRON.get()), has(MoonModule.METEORIC_IRON.get()))

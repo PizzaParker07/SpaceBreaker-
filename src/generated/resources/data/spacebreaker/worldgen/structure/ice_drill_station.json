@@ -1,0 +1,10 @@
+{
+  "type": "spacebreaker:ice_drill_station",
+  "biomes": [
+    "spacebreaker:moon_polar",
+    "spacebreaker:moon_crater",
+    "spacebreaker:moon_highlands"
+  ],
+  "spawn_overrides": {},
+  "step": "surface_structures"
+}

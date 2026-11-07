@@ -83,6 +83,15 @@ public final class MoonModule implements SbModule {
     public static final DeferredItem<Item> RAW_ILMENITE = ITEMS.registerSimpleItem("raw_ilmenite");
     public static final DeferredItem<Item> KREEP_FRAGMENT = ITEMS.registerSimpleItem("kreep_fragment");
     public static final DeferredItem<Item> GLIMMER_SHELL = ITEMS.registerSimpleItem("glimmer_shell");
+    /** A drilled core of polar cold-trap ice: billions of years of layered water ice and frozen volatiles. */
+    public static final DeferredItem<Item> ICE_CORE_SAMPLE = ITEMS.registerItem("ice_core_sample", p -> new Item(p) {
+        @Override
+        public void appendHoverText(net.minecraft.world.item.ItemStack stack, TooltipContext ctx, java.util.List<net.minecraft.network.chat.Component> tooltip,
+                                    net.minecraft.world.item.TooltipFlag flag) {
+            tooltip.add(net.minecraft.network.chat.Component.translatable("tooltip.spacebreaker.ice_core_sample")
+                    .withStyle(net.minecraft.ChatFormatting.GRAY));
+        }
+    }, new Item.Properties().rarity(net.minecraft.world.item.Rarity.UNCOMMON));
     /** A lamp of glimmer beetle shells: steady light with no power, for the long lunar night. */
     public static final DeferredBlock<Block> GLIMMER_LAMP = block("glimmer_lamp", BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_CYAN)
             .instrument(NoteBlockInstrument.HAT).strength(0.6F).sound(SoundType.GLASS).lightLevel(st -> 14));
@@ -183,6 +192,7 @@ public final class MoonModule implements SbModule {
         TAB.add(RAW_ILMENITE);
         TAB.add(KREEP_FRAGMENT);
         TAB.add(GLIMMER_SHELL);
+        TAB.add(ICE_CORE_SAMPLE);
     }
 
     public static List<DeferredBlock<LunarRegolithBlock>> soils() {
@@ -260,6 +270,9 @@ public final class MoonModule implements SbModule {
         lang.item(RAW_ILMENITE, "Raw Ilmenite", "Ham İlmenit");
         lang.item(KREEP_FRAGMENT, "KREEP Fragment", "KREEP Parçası");
         lang.item(GLIMMER_SHELL, "Glimmer Shell", "Parıltı Kabuğu");
+        lang.item(ICE_CORE_SAMPLE, "Ice Core Sample", "Buz Çekirdeği Numunesi");
+        lang.add("tooltip.spacebreaker.ice_core_sample", "Ancient cold-trap ice in layers: water and frozen volatiles",
+                "Katman katman kadim soğuk tuzak buzu: su ve donmuş uçucular");
         lang.block(GLIMMER_LAMP, "Glimmer Lamp", "Parıltı Lambası");
         lang.add("biome.spacebreaker.moon_highlands", "Lunar Highlands", "Ay Yaylaları");
         lang.add("biome.spacebreaker.moon_mare", "Lunar Mare", "Ay Denizi (Mare)");

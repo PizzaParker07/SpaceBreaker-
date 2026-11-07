@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [ { "type": "minecraft:loot_table", "value": "spacebreaker:chests/moon/tech_data" } ]
+    },
+    {
+      "rolls": { "type": "minecraft:uniform", "min": 3, "max": 5 },
+      "entries": [
+        { "type": "minecraft:item", "name": "spacebreaker:ice_core_sample", "weight": 8,
+          "functions": [ { "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 1, "max": 2 } } ] },
+        { "type": "minecraft:item", "name": "spacebreaker:lunar_ice", "weight": 10,
+          "functions": [ { "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 2, "max": 6 } } ] },
+        { "type": "minecraft:item", "name": "spacebreaker:rtg_fuel_pellet", "weight": 2 },
+        { "type": "minecraft:item", "name": "minecraft:redstone", "weight": 6,
+          "functions": [ { "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 2, "max": 7 } } ] },
+        { "type": "minecraft:item", "name": "minecraft:iron_ingot", "weight": 6,
+          "functions": [ { "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 1, "max": 4 } } ] },
+        { "type": "minecraft:item", "name": "spacebreaker:glimmer_shell", "weight": 3 }
+      ]
+    }
+  ]
+}

@@ -278,6 +278,73 @@ public final class MoonGameTests {
         helper.succeed();
     }
 
+    /** Ice-drilling stations find places on shadowed polar crater floors (and only there). */
+    @GameTest(template = EMPTY, timeoutTicks = 600)
+    public static void iceDrillStationsGenerateInColdTraps(GameTestHelper helper) {
+        long seed = 20261106L;
+        PlanetChunkGenerator gen = moonGenerator(helper, seed);
+        var access = helper.getLevel().registryAccess();
+        var state = net.minecraft.world.level.levelgen.RandomState.create(net.minecraft.world.level.levelgen.NoiseGeneratorSettings.dummy(),
+                access.lookupOrThrow(net.minecraft.core.registries.Registries.NOISE), seed);
+        var structureState = gen.createState(access.lookupOrThrow(net.minecraft.core.registries.Registries.STRUCTURE_SET), state, seed);
+        LevelHeightAccessor height = LevelHeightAccessor.create(-64, 384);
+        var holder = access.registryOrThrow(net.minecraft.core.registries.Registries.STRUCTURE)
+                .getHolderOrThrow(com.pizzaparker07.spacebreaker.content.moon.dungeon.MoonStructures.ICE_DRILL_KEY);
+        var placements = structureState.getPlacementsForStructure(holder);
+        helper.assertTrue(!placements.isEmpty(), "ice drill stations have a placement on the Moon");
+        int pole = (int) (gen.terrain().profile().poleDistance() / 16);
+        int valid = 0;
+        int candidates = 0;
+        for (int cx = -160; cx <= 160 && valid < 2; cx++) {
+            for (int cz = pole - 40; cz <= pole + 4 && valid < 2; cz++) {
+                if (!placements.get(0).isStructureChunk(structureState, cx, cz)) {
+                    continue;
+                }
+                candidates++;
+                var ctx = new net.minecraft.world.level.levelgen.structure.Structure.GenerationContext(access, gen, gen.getBiomeSource(), state,
+                        helper.getLevel().getStructureManager(), seed, new net.minecraft.world.level.ChunkPos(cx, cz), height,
+                        b -> holder.value().biomes().contains(b));
+                var point = holder.value().findValidGenerationPoint(ctx);
+                if (point.isPresent()) {
+                    BlockPos p = point.get().position();
+                    helper.assertTrue(gen.coldTrapFloor(p.getX(), p.getZ()) != Integer.MIN_VALUE, "a station stands in a cold trap");
+                    valid++;
+                }
+            }
+        }
+        int traps = 0;
+        int full = 0;
+        for (int cx = -160; cx <= 160; cx++) {
+            for (int cz = pole - 40; cz <= pole + 4; cz++) {
+                if (placements.get(0).isStructureChunk(structureState, cx, cz)) {
+                    int x = cx * 16 + 8;
+                    int z = cz * 16 + 8;
+                    if (gen.coldTrapFloor(x, z) != Integer.MIN_VALUE) {
+                        traps++;
+                        boolean all = true;
+                        for (int[] o : new int[][]{{-8, -8}, {8, -8}, {-8, 8}, {8, 8}}) {
+                            all &= gen.coldTrapFloor(x + o[0], z + o[1]) != Integer.MIN_VALUE;
+                        }
+                        if (all) {
+                            full++;
+                        }
+                    }
+                }
+            }
+        }
+        helper.assertTrue(valid > 0, "ice drill stations: " + candidates + " candidate chunks near the pole but none valid; centre in trap "
+                + traps + ", all corners " + full + ", pole chunk " + pole);
+        // nowhere near the equator
+        for (int cx = -20; cx <= 20; cx++) {
+            for (int cz = -20; cz <= 20; cz++) {
+                var ctx = new net.minecraft.world.level.levelgen.structure.Structure.GenerationContext(access, gen, gen.getBiomeSource(), state,
+                        helper.getLevel().getStructureManager(), seed, new net.minecraft.world.level.ChunkPos(cx, cz), height, b -> true);
+                helper.assertTrue(holder.value().findValidGenerationPoint(ctx).isEmpty(), "no ice drill at the equator");
+            }
+        }
+        helper.succeed();
+    }
+
     /**
      * Performance budget of the planet engine: terrain + biomes for fresh chunks, measured on real proto-chunks.
      * Vanilla noise chunks take roughly 5-15 ms each on one core; the Moon must stay well inside that.

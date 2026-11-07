@@ -120,7 +120,7 @@ def generate():
     ore('ilmenite_ore', b('mare_basalt'), 'ilmenite_ore_overlay')
     ore('kreep_ore', b('impact_breccia'), 'kreep_ore_overlay')
     simple_block('glimmer_lamp')
-    for item in ('raw_ilmenite', 'kreep_fragment', 'glimmer_shell'):
+    for item in ('raw_ilmenite', 'kreep_fragment', 'glimmer_shell', 'ice_core_sample'):
         generated_item(item)
     for mob in ('regolith_tick', 'elder_regolith_tick', 'dust_swimmer', 'survey_drone', 'glimmer_beetle', 'heat_siphon'):
         write(f'models/item/{mob}_spawn_egg.json', {'parent': 'minecraft:item/template_spawn_egg'})

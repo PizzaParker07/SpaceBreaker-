@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_ice_core_sample": {
+      "conditions": {
+        "items": [
+          {
+            "items": "spacebreaker:ice_core_sample"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "spacebreaker:lunar_ice_from_ice_core_sample"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_ice_core_sample"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "spacebreaker:lunar_ice_from_ice_core_sample"
+    ]
+  }
+}

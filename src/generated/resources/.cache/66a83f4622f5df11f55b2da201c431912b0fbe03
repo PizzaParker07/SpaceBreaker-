@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-07T00:37:34.628783131	Spacebreaker Moon worldgen
+// 1.21.1	2026-11-07T03:07:39.992660598	Spacebreaker Moon worldgen
 9bbb4ab7909eec5f90dfa0daa619aa4f58ff6b78 data/spacebreaker/worldgen/biome/moon_crater.json
 fdce2fe11ca38fc0f34291d8a4fd1aed0dd3beec data/spacebreaker/worldgen/biome/moon_highlands.json
 240a09001417baa7bf5205549b034ab235e575fc data/spacebreaker/worldgen/biome/moon_mare.json
@@ -26,7 +26,9 @@ b29e93a802d1328fc3c42ccd4f6587d8bc0e3713 data/spacebreaker/worldgen/placed_featu
 ba3c8f7de29d87876b9b5978483abed98373f64b data/spacebreaker/worldgen/placed_feature/moon_ore_ilmenite.json
 002e5b0039b11c794c7611de6b6b965de86e4389 data/spacebreaker/worldgen/placed_feature/moon_ore_ilmenite_rich.json
 e17d78b821fb30bb07ceb8efac6b4390cfcae4fc data/spacebreaker/worldgen/placed_feature/moon_ore_kreep.json
+38b23fcd6929277559671e347347f611ee332a2c data/spacebreaker/worldgen/structure/ice_drill_station.json
 8f17e1b3dd4a4e7464c049a4bf1487e20b49ab08 data/spacebreaker/worldgen/structure/lava_tube.json
 ec96d9fb1880c9ee7dde15cf0e1d418998379fb7 data/spacebreaker/worldgen/structure/survey_outpost.json
+583784dbf8d44c2fa73e96437a26ce790bae28bb data/spacebreaker/worldgen/structure_set/ice_drill_stations.json
 da962896941c097b30218f486aa06bf40ef1fb2d data/spacebreaker/worldgen/structure_set/lava_tubes.json
 c4841111ec3de41db1022544fbf9b0c82c16d28c data/spacebreaker/worldgen/structure_set/survey_outposts.json

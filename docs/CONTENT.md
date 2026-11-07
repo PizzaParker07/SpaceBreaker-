@@ -91,6 +91,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 |---|---|---|
 | 🎨 | Terk Edilmiş Keşif Karakolu | merkez modül, laboratuvar, depo **veya** çökmüş sera, drone hangarı, mürettebat yatakhanesi, hava kilidi (iki demir kapı), güneş paneli tarlası, iniş pisti, anten; **gücü kesik kasa** (bulmaca: komuta sandığındaki güç hücresini kapının üstündeki yuvaya tak) ve basınç plakalı ok tuzağı; muhafız: Keşif Dronları (+ çağırıcı) |
 | 🎨 | Antik Lav Tüpü | çökmüş tavan girişi, kıvrımlı tünel, düşmüş eski sonda enkazı (sandık), Yaşlı Regolit Kenesi yuvası |
+| 🎨 | Eski Buz Sondaj İstasyonu | yalnız kutup kraterlerinin kalıcı gölgeli tabanında (soğuk tuzak, ısıtmalı giysi gerekir): sondaj kulesi ve buza inen sondaj dizisi, hâlâ çalışan RTG'li kontrol kulübesi, çekirdek rafları; ödül: **Buz Çekirdeği Numunesi** (→ 4 Ay buzu), RTG yakıt peleti şansı, araştırma diski; muhafız: Isı Emiciler (soğuk tuzakta sürekli yaşar, RTG'nin enerjisini emer) |
 | 🎨 | Ganimet | `chests/moon/tech_data` araştırma diskleri için kanca tablosu (Araştırma alanı `spacebreaker:tech_disk` ekler) |
 | ⬜ | Üs blokları: alüminyum paneller, titanyum levha, ızgara zemin, lombar, basınçlı cam, kayar kapı, uyarı şeridi, LED/panel lamba/projektör, kablo ve boru kanalları, merdiven/korkuluk/platform | |
 

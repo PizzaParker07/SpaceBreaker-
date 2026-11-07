@@ -681,3 +681,26 @@ def export(save):  # noqa: F811 - extend the module export
     glow = lambda c: (120, 20, 0, 200) if c[3] and c[1] > 140 else None
     save(glimmer_lamp(), 'block', 'glimmer_lamp', (120, 20, 0, glow))
     save(glimmer_shell(), 'item', 'glimmer_shell')
+
+
+def ice_core_sample():
+    """A drilled ice core lying diagonally: pale blue-white layered ice with darker dust bands, metal end caps."""
+    ice = [(140, 180, 206), (186, 218, 234), (226, 242, 250)]
+    dust = [(84, 96, 106), (110, 122, 130), (132, 144, 152)]
+    cap = [(52, 56, 62), (104, 110, 118), (158, 164, 170)]
+    cv = Canvas()
+    for i in range(12):
+        x, y = 2 + i, 13 - i
+        r = cap if i in (0, 11) else dust if i in (4, 7) else ice
+        cv[x, y - 1] = r[2]   # upper-left edge catches the light
+        cv[x, y] = r[1]
+        cv[x + 1, y] = r[0]   # lower-right edge in shade
+    return cv
+
+
+_export_moon_ice = export
+
+
+def export(save):  # noqa: F811 - extend the module export
+    _export_moon_ice(save)
+    save(ice_core_sample(), 'item', 'ice_core_sample')
