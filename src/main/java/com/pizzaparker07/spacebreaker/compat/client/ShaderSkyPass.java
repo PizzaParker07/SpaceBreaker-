@@ -48,6 +48,34 @@ public final class ShaderSkyPass {
     static void setCompositeShader(net.minecraft.client.renderer.ShaderInstance shader) {
         composite = shader;
     }
+
+    private static net.minecraft.client.renderer.ShaderInstance glass;
+    private static final DepthCopy OPAQUE_DEPTH = new DepthCopy();
+    private static boolean opaqueDepthCaptured;
+
+    static void setGlassShader(net.minecraft.client.renderer.ShaderInstance shader) {
+        glass = shader;
+    }
+
+    /**
+     * Called at AFTER_BLOCK_ENTITIES, before the translucent pass: keeps the depth of opaque geometry only. Glass and
+     * water write depth too, so without this the sky behind a window would stay the pack's.
+     */
+    public static void captureOpaqueDepth() {
+        opaqueDepthCaptured = false;
+        if (glass == null || !active()) {
+            return;
+        }
+        try {
+            OPAQUE_DEPTH.copyFrom(Minecraft.getInstance().getMainRenderTarget());
+            opaqueDepthCaptured = true;
+        } catch (RuntimeException e) {
+            if (!warned) {
+                warned = true;
+                Spacebreaker.LOGGER.error("Space sky over the shader pack: depth copy failed", e);
+            }
+        }
+    }
     private static boolean warned;
     private static final PassTimer TIMER = new PassTimer("sky pass");
 
@@ -173,6 +201,26 @@ public final class ShaderSkyPass {
             b.addVertex(-1F, 1F, 0F).setUv(0F, 1F);
             BufferUploader.drawWithShader(b.buildOrThrow());
         }
+        if (opaqueDepthCaptured && glass != null) {
+            // 3) behind translucent surfaces: where only glass/water covers the sky
+            opaqueDepthCaptured = false;
+            RenderSystem.depthFunc(GL11.GL_GREATER);
+            RenderSystem.enableBlend();
+            RenderSystem.blendFunc(com.mojang.blaze3d.platform.GlStateManager.SourceFactor.SRC_ALPHA,
+                    com.mojang.blaze3d.platform.GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+            RenderSystem.setShader(() -> glass);
+            RenderSystem.setShaderTexture(0, target.getColorTextureId());
+            RenderSystem.setShaderTexture(1, OPAQUE_DEPTH.texture());
+            BufferBuilder b = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
+            b.addVertex(-1F, -1F, 0F);
+            b.addVertex(1F, -1F, 0F);
+            b.addVertex(1F, 1F, 0F);
+            b.addVertex(-1F, 1F, 0F);
+            BufferUploader.drawWithShader(b.buildOrThrow());
+            RenderSystem.defaultBlendFunc();
+            RenderSystem.disableBlend();
+            RenderSystem.depthFunc(GL11.GL_LEQUAL);
+        }
         GL11.glDepthRange(0.0, 1.0);
 
         RenderSystem.enableCull();
@@ -188,6 +236,8 @@ public final class ShaderSkyPass {
             target.destroyBuffers();
             target = null;
         }
+        OPAQUE_DEPTH.release();
+        opaqueDepthCaptured = false;
     }
 
     /**

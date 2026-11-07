@@ -157,8 +157,20 @@ Complementary the tint is weaker (the pack re-lights translucent entities) but t
   `rover_mars_vanilla_vs_iris`). Satellites in orbit, the station and the capsule render as without shaders
   (`rocketry_satellites_station_vanilla_vs_iris`). The rover's blob shadow is replaced by the pack's real shadow.
   Station window: its texture is semi-transparent but the model is `cutout`, so vanilla draws an opaque blue pane while
-  the pack shows it dark (`rocketry_station_window`); a `translucent` render type would make both agree (reported to
-  the rocketry area).
+  the pack shows it dark (`rocketry_station_window`); it is `translucent` now (see the next point).
+  Habitat module, Heat Siphon at night and the solar array: `habitat_siphon_solar_vanilla_vs_iris.jpg`.
+- **Windows, water and other translucent surfaces in front of the sky:** they write depth, so the sky pass alone
+  left the pack's (pale, Overworld) sky behind them. The depth is also kept before the translucent pass
+  (`AFTER_BLOCK_ENTITIES`, `compat/client/DepthCopy`); where only translucent geometry covers the sky, our sky is
+  blended in and the pack's glass colour is kept at 35 % (`compat_sky_glass`). After the translucent pass the opaque
+  frame of a window cannot be told from its pane, so a block whose texture mixes an opaque frame with a see-through
+  pane should put them in two layers (NeoForge `neoforge:composite` model: frame `cutout`, pane `translucent`); in
+  one translucent layer the frame darkens with the pane. `habitat_window_steps.jpg`: vanilla, pack before, after,
+  and with the split model.
+- **Inside a closed module the pack's ambient fill is blue:** the airless sky colour handed to the pack
+  (see above) is what lights a room that only gets sky light through windows; a lamp brings it back to neutral.
+- **Pack border fog on airless worlds:** terrain at the edge of the render distance fades to the pack's fog colour,
+  derived from the sky colour we hand it (pale blue), not to black.
 - **Silhouette halo at night on thin-air worlds:** where the pack's own sky is much brighter than ours (Mars at night),
   its anti-aliasing leaves a one-pixel pack-coloured rim along terrain edges.
 

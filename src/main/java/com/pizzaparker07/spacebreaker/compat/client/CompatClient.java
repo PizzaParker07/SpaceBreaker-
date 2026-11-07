@@ -20,6 +20,8 @@ public final class CompatClient {
     static void stage(RenderLevelStageEvent event) {
         if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_SOLID_BLOCKS) {
             HazePass.captureFog();
+        } else if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES) {
+            ShaderSkyPass.captureOpaqueDepth();
         } else if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_LEVEL) {
             float partialTick = event.getPartialTick().getGameTimeDeltaPartialTick(false);
             ShaderSkyPass.afterLevel(event.getModelViewMatrix(), event.getProjectionMatrix(), partialTick);
@@ -38,6 +40,8 @@ public final class CompatClient {
                     HazePass::setShader);
             event.registerShader(new ShaderInstance(event.getResourceProvider(), Spacebreaker.id("compat_sky_composite"), DefaultVertexFormat.POSITION),
                     ShaderSkyPass::setCompositeShader);
+            event.registerShader(new ShaderInstance(event.getResourceProvider(), Spacebreaker.id("compat_sky_glass"), DefaultVertexFormat.POSITION),
+                    ShaderSkyPass::setGlassShader);
         }
     }
 
