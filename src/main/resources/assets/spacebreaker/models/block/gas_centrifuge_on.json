@@ -10,8 +10,8 @@
     "pipe": "spacebreaker:block/machine_copper_pipe",
     "panel": "spacebreaker:block/machine_side_panel",
     "cable": "spacebreaker:block/machine_cable",
-    "steel": "spacebreaker:block/press_steel",
     "panel_glow": "spacebreaker:block/machine_side_panel_glow",
+    "steel": "spacebreaker:block/press_steel",
     "tube": "spacebreaker:block/gas_centrifuge_tube",
     "lamps": "spacebreaker:block/gas_centrifuge_lamps"
   },

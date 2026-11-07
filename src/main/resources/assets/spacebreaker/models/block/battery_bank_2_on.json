@@ -17,7 +17,8 @@
     "c4": "spacebreaker:block/battery_bank_charge_4",
     "pipe": "spacebreaker:block/machine_copper_pipe",
     "panel": "spacebreaker:block/machine_side_panel",
-    "cable": "spacebreaker:block/machine_cable"
+    "cable": "spacebreaker:block/machine_cable",
+    "panel_glow": "spacebreaker:block/machine_side_panel_glow"
   },
   "elements": [
     {

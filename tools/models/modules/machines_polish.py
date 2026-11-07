@@ -24,7 +24,19 @@ def sides(key, **over):
     return d
 
 
+# which kind of control box each machine carries, so they do not all look alike (default: two lamps)
+PANEL_KIND = {
+    'crusher': 'buttons', 'press': 'buttons', 'fabricator': 'buttons', 'atmosphere_processor': 'buttons',
+    'chemical_reactor': 'screen', 'fission_reactor': 'screen', 'electrolyzer': 'screen', 'rtg': 'screen',
+    'cryogenic_liquefier': 'dial', 'sabatier_reactor': 'dial', 'regolith_heater': 'dial', 'sintering_furnace': 'dial',
+    'ice_melter': 'valve', 'combustion_generator': 'valve',
+}
+
+
 def model(name, textures, elements):
+    kind = PANEL_KIND.get(name.removesuffix('_on'))
+    if kind and 'panel' in textures:
+        textures = textures | {'panel': b(f'machine_panel_{kind}'), 'panel_glow': b(f'machine_panel_{kind}_glow')}
     write(f'models/block/{name}.json', {'parent': 'minecraft:block/block', 'render_type': 'minecraft:cutout',
                                         'textures': textures, 'elements': elements})
 
@@ -55,7 +67,8 @@ def front_frame(x0, x1, y0, y1, z=1, depth=1):
             box([x0 + 1, y1 - 1, z], [x1 - 1, y1, z + depth], STEEL6), box([x0 + 1, y0, z], [x1 - 1, y0 + 1, z + depth], STEEL6)]
 
 
-PARTS = {'pipe': b('machine_copper_pipe'), 'panel': b('machine_side_panel'), 'cable': b('machine_cable')}
+PARTS = {'pipe': b('machine_copper_pipe'), 'panel': b('machine_side_panel'), 'cable': b('machine_cable'),
+         'panel_glow': b('machine_side_panel_glow')}
 
 
 def generate():
@@ -71,7 +84,8 @@ def generate():
         box([0, 6, 7], [1, 8, 9], STEEL6),
         box([15, 3, 4], [17, 8, 11], sides('steel', east='panel', up='steel', down='steel'), uv={'east': [3, 3, 10, 8]}),
         box([15.5, 0, 12], [16.5, 6, 13], 'cable'),
-    ], on_textures={'front': b('crusher_front_on'), 'wheel': b('crusher_flywheel_on')})
+    ], on_textures={'front': b('crusher_front_on'), 'wheel': b('crusher_flywheel_on')},
+        on_glow=[lit_glow([17.01, 3, 4], [17.01, 8, 11], 'east', 'panel_glow', [3, 3, 10, 8])])
 
     # regolith heater: 14 px furnace on feet with a recessed firebox front, regolith hopper on a neck, flue at the
     # back, the gas feed pipe on the left and a control box on the right
@@ -86,7 +100,8 @@ def generate():
         box([15, 4, 4], [16.5, 5.5, 14], 'pipe'), box([15, 5.5, 12.5], [16.5, 13, 14], 'pipe'),
         box([-1, 4, 5], [1, 10, 11], sides('steel', west='panel'), uv={'west': [5, 4, 11, 10]}),
     ], on_glow=[lit_glow([1, 2, 1.99], [15, 13, 1.99], 'north', 'glow', [1, 2, 15, 13]),
-                lit_glow([11, 23.01, 11], [15, 23.01, 15], 'up', 'ember', [6, 6, 10, 10])])
+                lit_glow([11, 23.01, 11], [15, 23.01, 15], 'up', 'ember', [6, 6, 10, 10]),
+                lit_glow([-1.01, 4, 5], [-1.01, 10, 11], 'west', 'panel_glow', [5, 4, 11, 10])])
 
     # sintering furnace: 14 px kiln on feet, recessed door in a proud frame, brick crown, chimney, a burner gas line on
     # the left and the temperature controller on the right
@@ -100,7 +115,8 @@ def generate():
         box([15, 3, 3], [16.5, 4.5, 13], 'pipe'), box([15, 4.5, 3], [16.5, 9, 4.5], 'pipe'),
         box([-1, 5, 5], [1, 11, 11], sides('steel', west='panel'), uv={'west': [5, 4, 11, 10]}),
     ], on_glow=[lit_glow([1, 2, 1.99], [15, 13, 1.99], 'north', 'glow', [1, 2, 15, 13]),
-                lit_glow([10, 22.01, 10], [14, 22.01, 14], 'up', 'ember', [6, 6, 10, 10])])
+                lit_glow([10, 22.01, 10], [14, 22.01, 14], 'up', 'ember', [6, 6, 10, 10]),
+                lit_glow([-1.01, 5, 5], [-1.01, 11, 11], 'west', 'panel_glow', [5, 4, 11, 10])])
 
     # regolith excavator: 12 px drive housing on feet, auger column on its right-hand side, hydraulic line and
     # cable on the left, conveyor chute on top, two arms holding the bucket wheel (turned by the renderer)
@@ -137,12 +153,14 @@ def generate():
         box([-0.5, 2, 6], [1, 4, 12], 'pipe'), box([-0.5, 4, 10.5], [1, 12, 12], 'pipe'),
         box([15, 5, 9], [17, 11, 14], sides('steel', east='panel'), uv={'east': [5, 4, 10, 10]}),
     ], on_textures={'tank': b('ice_melter_tank_on')},
-        on_glow=[lit_glow([1, 1, 0.99], [15, 3, 0.99], 'north', 'glow', [1, 13, 15, 15])])
+        on_glow=[lit_glow([1, 1, 0.99], [15, 3, 0.99], 'north', 'glow', [1, 13, 15, 15]),
+                 lit_glow([17.01, 5, 9], [17.01, 11, 14], 'east', 'panel_glow', [5, 4, 10, 10])])
 
     battery_bank()
     group_one()
     group_two()
     group_three()
+    multiblocks()
 
 
 def battery_bank():
@@ -468,3 +486,92 @@ def group_three():
         box([16, 3, 3], [17, 4, 13], STEEL6), box([16, 4, 3], [17, 10, 4], STEEL6), box([16, 4, 12], [17, 10, 13], STEEL6),
     ]
     model('power_monitor', t, els)
+
+
+def multiblocks():
+    """Pumpjack and refinery in the same language: a control cabinet with its own panel, copper lines, feet,
+    railings. The pumpjack's beam, crank and rod keep moving through PumpjackRenderer while it pumps."""
+    from modules.machines_industry import PJ, RF, static_model, pumpjack as _unused  # noqa: F401
+    pj = PJ | PARTS | {'panel': b('machine_panel_buttons'), 'panel_glow': b('machine_panel_buttons_glow'),
+                       'wheel': b('machine_panel_valve')}
+
+    # main block: skid, A-frame, Samson post cap, plus the control cabinet beside the skid and its lead to the motor
+    skid = [
+        box([3, 0, -16], [5, 2, 32], 'steel'), box([11, 0, -16], [13, 2, 32], 'steel'),
+        box([3, 0, -15], [13, 1, -13], 'steel'), box([3, 0, 29], [13, 1, 31], 'steel'), box([3, 0, 7], [13, 1, 9], 'steel'),
+        box([2, 2, 3], [14, 4, 13], 'paint'),
+    ]
+    for x0 in (3, 11):
+        for ang in (22.5, -22.5):
+            leg = box([x0, 2, 7], [x0 + 2, 31, 9], 'lattice')
+            leg['rotation'] = {'origin': [8, 31, 8], 'axis': 'x', 'angle': ang}
+            skid.append(leg)
+    skid.append(box([3, 14, 3], [13, 15, 13], 'steel'))
+    cab = [box([14, 0, 9], [17, 8, 15], sides('steel', east='panel', up='steel', down='steel'), uv={'east': [5, 4, 11, 10]}),
+           box([14, 8, 8.5], [17.5, 8.5, 15.5], 'steel'),
+           box([15, 0, 15], [16, 1, 30], 'cable')]
+    glow_el = lit_glow([17.01, 2, 9], [17.01, 8, 15], 'east', 'panel_glow', [5, 4, 11, 10])
+    static_model('pumpjack', pj, skid + cab)
+    static_model('pumpjack_on', pj, skid + cab + [glow_el])
+    variants = {}
+    for facing, y in ROT.items():
+        for lit in ('false', 'true'):
+            v = {'model': b('pumpjack' + ('_on' if lit == 'true' else ''))}
+            if y:
+                v['y'] = y
+            variants[f'facing={facing},lit={lit}'] = v
+    write('blockstates/pumpjack.json', {'variants': variants})
+    static_model('pumpjack_item', pj, skid + cab + [box([6, 16, 6], [10, 20, 10], 'paint')])
+    # wellhead: base flange on feet, Christmas tree with a red handwheel on top and a copper flowline
+    static_model('pumpjack_well', pj, legs(3, 3, 13, 13, h=1) + [
+        box([3, 1, 3], [13, 2, 13], 'steel'),
+        box([6, 2, 6], [10, 9, 10], 'well'),
+        box([4, 6, 7], [12, 8, 9], 'well'),
+        box([7, 9, 7], [9, 11, 9], 'steel'),
+        box([5, 11, 5], [11, 11.5, 11], {'up': 'wheel', 'down': 'wheel', 'north': 'steel', 'south': 'steel', 'east': 'steel', 'west': 'steel'},
+            uv={'up': [2, 2, 14, 14], 'down': [2, 2, 14, 14]}),
+        box([12, 6, 7], [16, 8, 9], 'pipe'), box([13, 5.5, 6.5], [14, 8.5, 9.5], 'steel'),
+    ])
+    # rear: motor on its own feet with a cable gland where the lead from the cabinet comes in
+    static_model('pumpjack_rear', pj, [
+        box([3, 0, 2], [13, 2, 14], 'steel'),
+        box([5, 2, 4], [11, 10, 12], 'paint'),
+        box([6, 2, 12], [10, 7, 16], 'motor'),
+        box([11, 2, 5], [13, 5, 8], 'steel'), box([13, 2, 6], [15, 3, 7], 'cable'), box([14, 0, 6], [15, 2, 7], 'cable'),
+    ])
+
+    # refinery: fired base on feet behind a frame, dial control box, the column with copper draw-off lines and a
+    # railing round its platform
+    rf = RF | PARTS | {'panel': b('machine_panel_dial'), 'panel_glow': b('machine_panel_dial_glow')}
+    base = legs(1, 1, 15, 15) + front_frame(1, 15, 2, 10) + [
+        box([1, 2, 2], [15, 10, 15], sides('side', north='front', up='top', down='bottom'), uv={'north': [1, 5, 15, 13]}),
+        box([1, 9, 1], [15, 10, 15], sides('steel', up='top')),
+        box([2, 10, 2], [14, 16, 14], {f: 'column' for f in SIDES}),
+        box([13, 10, 3], [15, 16, 5], 'steel'),
+        box([14.5, 4, 9], [16, 16, 10.5], 'pipe'), box([14, 4, 9], [14.5, 5.5, 10.5], 'pipe'),
+        box([-1, 3, 5], [1, 9, 11], sides('steel', west='panel'), uv={'west': [5, 4, 11, 10]}),
+    ]
+    on = [lit_glow([1, 2, 1.99], [15, 10, 1.99], 'north', 'glow', [1, 5, 15, 13]),
+          lit_glow([-1.01, 3, 5], [-1.01, 9, 11], 'west', 'panel_glow', [5, 4, 11, 10])]
+    static_model('refinery', rf, base)
+    static_model('refinery_on', rf, base + on)
+    ladder = box([5, 0, 14.5], [11, 16, 14.5], 'ladder', faces=('south', 'north'), uv={'south': [5, 0, 11, 16], 'north': [5, 0, 11, 16]})
+    rail = [box([0, 1, 0], [1, 6, 1], STEEL6), box([15, 1, 0], [16, 6, 1], STEEL6),
+            box([0, 1, 15], [1, 6, 16], STEEL6), box([15, 1, 15], [16, 6, 16], STEEL6),
+            box([0, 5, 0], [16, 6, 1], STEEL6), box([0, 5, 1], [1, 6, 15], STEEL6), box([15, 5, 1], [16, 6, 15], STEEL6)]
+    static_model('refinery_column', rf, [
+        box([2, 0, 2], [14, 16, 14], {f: 'column' for f in SIDES}),
+        box([0, 0, 0], [16, 1, 16], {'up': 'grating', 'down': 'grating', 'north': 'steel', 'south': 'steel', 'east': 'steel', 'west': 'steel'}),
+        box([13, 1, 3], [15, 16, 5], 'steel'),
+        box([14.5, 1, 9], [16, 16, 10.5], 'pipe'), box([14, 10, 9], [14.5, 11.5, 10.5], 'pipe'),
+        ladder,
+    ] + rail)
+    static_model('refinery_top', rf, [
+        box([2, 0, 2], [14, 8, 14], {f: 'column' for f in SIDES}),
+        box([3, 8, 3], [13, 10, 13], {'north': 'column', 'south': 'column', 'east': 'column', 'west': 'column', 'up': 'ctop'}),
+        box([7, 10, 7], [9, 16, 9], 'steel'),
+        box([6, 15, 6], [10, 16, 10], 'steel'),
+        box([13, 0, 3], [15, 6, 5], 'steel'),
+        box([14.5, 0, 9], [16, 6, 10.5], 'pipe'), box([14, 4.5, 9], [14.5, 6, 10.5], 'pipe'),
+        box([9, 13, 7.5], [12, 14, 8.5], 'pipe'),
+    ])

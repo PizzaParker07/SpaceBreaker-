@@ -8,8 +8,9 @@
     "bottom": "spacebreaker:block/machine_bottom",
     "particle": "spacebreaker:block/machine_casing",
     "pipe": "spacebreaker:block/machine_copper_pipe",
-    "panel": "spacebreaker:block/machine_side_panel",
+    "panel": "spacebreaker:block/machine_panel_dial",
     "cable": "spacebreaker:block/machine_cable",
+    "panel_glow": "spacebreaker:block/machine_panel_dial_glow",
     "steel": "spacebreaker:block/press_steel",
     "flue": "spacebreaker:block/machine_flue_top",
     "glow": "spacebreaker:block/sintering_furnace_glow_on",
@@ -978,6 +979,34 @@
             6,
             6,
             10,
+            10
+          ]
+        }
+      },
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      },
+      "shade": false
+    },
+    {
+      "from": [
+        -1.01,
+        5,
+        5
+      ],
+      "to": [
+        -1.01,
+        11,
+        11
+      ],
+      "faces": {
+        "west": {
+          "texture": "#panel_glow",
+          "uv": [
+            5,
+            4,
+            11,
             10
           ]
         }

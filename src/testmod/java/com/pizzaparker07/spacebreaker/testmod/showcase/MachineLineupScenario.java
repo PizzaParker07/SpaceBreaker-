@@ -73,6 +73,17 @@ final class MachineLineupScenario implements ShowcaseScenario {
             }
             level.setBlock(new BlockPos(X0 + i * 2, gy, Z0 - 12), es, Block.UPDATE_ALL);
         }
+        // the two multiblocks behind the rest, running
+        BlockPos pj = new BlockPos(X0 + 2, gy, Z0 - 18);
+        BlockState pjs = MachinesModule.PUMPJACK.block().get().defaultBlockState().setValue(MachineBlock.FACING, Direction.SOUTH)
+                .setValue(MachineBlock.LIT, true);
+        level.setBlock(pj, pjs, Block.UPDATE_ALL);
+        MachinesModule.PUMPJACK.block().get().build(level, pj, pjs);
+        BlockPos rf = new BlockPos(X0 + 9, gy, Z0 - 18);
+        BlockState rfs = MachinesModule.REFINERY.block().get().defaultBlockState().setValue(MachineBlock.FACING, Direction.SOUTH)
+                .setValue(MachineBlock.LIT, true);
+        level.setBlock(rf, rfs, Block.UPDATE_ALL);
+        MachinesModule.REFINERY.block().get().build(level, rf, rfs);
         // hold the LIT (running) look for the photos: idle machines would switch it off on their first tick
         level.getServer().tickRateManager().setFrozen(true);
     }
@@ -107,6 +118,10 @@ final class MachineLineupScenario implements ShowcaseScenario {
             s.add(new ShowcaseDriver.Shot("polish_" + id, 6000, bx + 1.25, gy + 1.35, bz + 1.65, 143F, 24F, true,
                     CameraType.FIRST_PERSON, 40, null, null));
         }
+        s.add(new ShowcaseDriver.Shot("polish_pumpjack", 6000, X0 + 2.5 + 4.0, gy + 4.0, Z0 - 17.5 + 4.5, 138F, 22F, true,
+                CameraType.FIRST_PERSON, 40, null, null));
+        s.add(new ShowcaseDriver.Shot("polish_refinery", 6000, X0 + 9.5 + 3.5, gy + 3.5, Z0 - 17.5 + 4.5, 142F, 15F, true,
+                CameraType.FIRST_PERSON, 40, null, null));
         s.add(new ShowcaseDriver.Shot("lineup_blocks", 6000, X0 + 5.5, gy + 2.3, Z0 - 12 + 4.0, 180F, 18F, true,
                 CameraType.FIRST_PERSON, 40, null, null));
         return s;

@@ -10,8 +10,8 @@
     "pipe": "spacebreaker:block/machine_copper_pipe",
     "panel": "spacebreaker:block/machine_side_panel",
     "cable": "spacebreaker:block/machine_cable",
-    "steel": "spacebreaker:block/press_steel",
     "panel_glow": "spacebreaker:block/machine_side_panel_glow",
+    "steel": "spacebreaker:block/press_steel",
     "electrode": "spacebreaker:block/arc_furnace_electrode",
     "glow": "spacebreaker:block/arc_furnace_glow"
   },

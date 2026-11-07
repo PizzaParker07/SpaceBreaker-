@@ -510,3 +510,113 @@ def export(save):  # noqa: F811
     mcmeta('gas_centrifuge_lamps', 4)
     save(reactor_window(), 'block', 'fission_reactor_window')
     mcmeta('fission_reactor_window', 30, True)
+
+
+# ----------------------------------------------------------------------------- control box variants
+
+SCREEN = (18, 32, 28)
+SCREEN_LIT = (110, 230, 170)
+RED = (160, 40, 30)
+GREEN = (88, 200, 90)
+
+
+def panel_screen():
+    cv = casing(92, rivets=False, seam=False)
+    rect(cv, 3, 3, 12, 12, S[1])
+    rect(cv, 4, 4, 11, 10, SCREEN)
+    return cv
+
+
+def panel_screen_glow():
+    """Scrolling readout lines on the screen while running."""
+    cv = strip(4)
+    for f in range(4):
+        def draw(c, f=f):
+            for k, y in enumerate((5, 7, 9)):
+                n = 3 + (k * 2 + f) % 5
+                for x in range(5, 5 + n):
+                    c[x, y] = SCREEN_LIT
+        frame(cv, f, draw)
+    return cv
+
+
+def panel_dial():
+    """Round pressure dial with a needle and a red limit mark."""
+    cv = casing(93, rivets=False, seam=False)
+    for y in range(3, 13):
+        for x in range(3, 13):
+            d = math.hypot(x + 0.5 - 8, y + 0.5 - 8)
+            if d < 5:
+                cv[x, y] = S[1] if d > 4 else S[5]
+    cv[11, 5] = RED
+    for i in range(3):
+        cv[7 - i, 7 + i] = S[1]
+    return cv
+
+
+def panel_dial_glow():
+    """Backlit dial while running: the needle swings."""
+    cv = strip(4)
+    for f in range(4):
+        def draw(c, f=f):
+            a = math.radians(225 - 30 * (f if f < 3 else 1))
+            for r in (1, 2, 3):
+                c[int(8 + math.cos(a) * r), int(8 - math.sin(a) * r)] = RED
+            c[8, 8] = S[1]
+        frame(cv, f, draw)
+    return cv
+
+
+def panel_buttons():
+    """Push-button panel: a 2 x 3 grid of red and green buttons."""
+    cv = casing(94, rivets=False, seam=False)
+    rect(cv, 3, 3, 12, 12, S[2])
+    for i, (x, y) in enumerate((x, y) for y in (4, 7, 10) for x in (5, 9)):
+        rect(cv, x, y, x + 1, y + 1, RED if i % 3 == 0 else (GREEN if i % 3 == 1 else S[5]))
+    return cv
+
+
+def panel_buttons_glow():
+    cv = strip(4)
+    for f in range(4):
+        def draw(c, f=f):
+            rect(c, 9, 4, 10, 5, (150, 250, 150))
+            if f in (1, 2):
+                rect(c, 5, 10, 6, 11, (250, 120, 90))
+        frame(cv, f, draw)
+    return cv
+
+
+def panel_valve():
+    """Valve station: a red handwheel on a stem between pipe flanges."""
+    cv = casing(95, rivets=False, seam=False)
+    for y in range(3, 13):
+        for x in range(3, 13):
+            d = math.hypot(x + 0.5 - 8, y + 0.5 - 8)
+            if 3.4 < d < 5:
+                cv[x, y] = RED
+            elif d <= 3.4 and (x in (7, 8) or y in (7, 8)):
+                cv[x, y] = (110, 28, 22)
+    rect(cv, 7, 7, 8, 8, S[5])
+    return cv
+
+
+def panel_valve_glow():
+    """A small green 'open' lamp beside the wheel while running."""
+    cv = strip(2)
+    frame(cv, 0, lambda c: rect(c, 11, 11, 12, 12, (140, 250, 140)))
+    frame(cv, 1, lambda c: rect(c, 11, 11, 12, 12, (110, 220, 120)))
+    return cv
+
+
+_export_panels = export
+
+
+def export(save):  # noqa: F811
+    _export_panels(save)
+    metal = (150, 230, 0, None)
+    for name, fn, glow, ft in (('screen', panel_screen, panel_screen_glow, 6), ('dial', panel_dial, panel_dial_glow, 8),
+                               ('buttons', panel_buttons, panel_buttons_glow, 8), ('valve', panel_valve, panel_valve_glow, 20)):
+        save(fn(), 'block', f'machine_panel_{name}', metal)
+        save(glow(), 'block', f'machine_panel_{name}_glow')
+        mcmeta(f'machine_panel_{name}_glow', ft, name == 'valve')

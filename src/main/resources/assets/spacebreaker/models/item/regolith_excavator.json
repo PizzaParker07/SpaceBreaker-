@@ -10,6 +10,7 @@
     "pipe": "spacebreaker:block/machine_copper_pipe",
     "panel": "spacebreaker:block/machine_side_panel",
     "cable": "spacebreaker:block/machine_cable",
+    "panel_glow": "spacebreaker:block/machine_side_panel_glow",
     "steel": "spacebreaker:block/press_steel",
     "chute": "spacebreaker:block/regolith_excavator_chute",
     "drill": "spacebreaker:block/regolith_excavator_drill",

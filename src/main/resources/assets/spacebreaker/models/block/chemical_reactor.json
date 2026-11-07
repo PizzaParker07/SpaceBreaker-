@@ -8,10 +8,10 @@
     "bottom": "spacebreaker:block/machine_bottom",
     "particle": "spacebreaker:block/machine_casing",
     "pipe": "spacebreaker:block/machine_copper_pipe",
-    "panel": "spacebreaker:block/machine_side_panel",
+    "panel": "spacebreaker:block/machine_panel_screen",
     "cable": "spacebreaker:block/machine_cable",
+    "panel_glow": "spacebreaker:block/machine_panel_screen_glow",
     "steel": "spacebreaker:block/press_steel",
-    "panel_glow": "spacebreaker:block/machine_side_panel_glow",
     "vessel": "spacebreaker:block/chemical_reactor_vessel"
   },
   "elements": [
