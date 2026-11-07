@@ -76,6 +76,27 @@ Bunlar da çekirdek ve kenetlenme modülü gibi bağlanır ve teslim edilir.
 
 → **Güneş Kanatları** (Çalışma Masası)
 
+<a id="shipyard"></a>
+### Tersane (taslak)
+
+**Tersane Modülü**
+
+**Tersane Modülü** öteki modüller gibi bir ağza bağlanır ama gövdenin dışına kurulur: bir uzay aracı için yuvası (en fazla **13 × 13 × 29**) olan açık **15 × 15 × 31**'lik bir çerçeve, ağızda bir kenetlenme portu, bir yakıt deposu ve projektörler. **Tersane Konsolu** tasarım ekranını açar.
+- Bölümleri burundan kıça doğru ekle: **kokpit** (burun kenetlenme portuyla), kabin, kargo bölmesi, küçük ya da büyük tank ve en sonda bir **metan** ya da **nükleer** motor. RCS kümelerini ve güneş kanadı çiftlerini say.
+- Yandan ve üstten görünümler aracı yuvanın içinde gösterir; panelde boyutu, kütlesi, yakıtı, itkisi, Isp'si, dolu tankla Δv'si ve ivmesi yazar.
+- Yapılmasını engelleyen her şey açıkça listelenir: kokpit başta ve tek olmalı, motor sonda, en az bir tank ve iki RCS kümesi gerekir, araç yuvaya sığmalıdır. Her şey yolundaysa **İnşaya hazır ✔** der. Tasarımı konsolda saklamak için **Tasarımı kaydet**'e bas.
+
+> [!TIP]
+> Şimdilik tersane yalnız aracı tasarlar ve kaydeder; inşa etmek ve uçurmak sonraki bir sürümde gelecek.
+
+|   |   |   |
+|---|---|---|
+| Alüminyum Panel | Korkuluk | Alüminyum Panel |
+| Yanaşma Portu | Yakıt Deposu | Yanaşma Portu |
+| Alüminyum Panel | Projektör | Alüminyum Panel |
+
+→ **Tersane Modülü** (Çalışma Masası)
+
 ### Yaşam modülü kiti
 
 **Yaşam Modülü Kiti**
@@ -228,6 +249,27 @@ They are attached and delivered like the core and the docking module.
 |   | Copper Cable |   |
 
 → **Solar Wings** (Crafting Table)
+
+<a id="shipyard"></a>
+### Shipyard (draft)
+
+**Shipyard Module**
+
+The **Shipyard Module** attaches to a mouth like the other modules, but it is built outside the hull: an open **15 × 15 × 31** frame with a berth for one spacecraft (up to **13 × 13 × 29**), a docking port in the mouth, a fuel depot and floodlights. Its **Shipyard Console** opens the design screen.
+- Add sections nose to tail: **cockpit** (with the nose docking port), cabin, cargo bay, small or large tank, and a **methane** or **nuclear** engine last. Count the RCS clusters and solar wing pairs.
+- Side and top views show the craft inside the berth; the panel shows its size, mass, propellant, thrust, Isp, Δv with full tanks and acceleration.
+- Anything that stops it is listed in plain words: the cockpit must come first and only once, an engine last, at least one tank and two RCS clusters, and it must fit the berth. When all is well it says **Ready to build ✔**. Press **Save design** to keep it on the console.
+
+> [!TIP]
+> For now the shipyard only designs and saves a craft; building and flying it come in a later version.
+
+|   |   |   |
+|---|---|---|
+| Aluminium Panel | Safety Railing | Aluminium Panel |
+| Docking Port | Fuel Depot | Docking Port |
+| Aluminium Panel | Floodlight | Aluminium Panel |
+
+→ **Shipyard Module** (Crafting Table)
 
 ### Habitat module kit
 

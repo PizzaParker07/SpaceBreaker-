@@ -33,7 +33,7 @@ Hafif kompozit paneller ve aerojel, solunabilir hava katmanında yüzen platform
 
 **Aerostat Platform Kiti**
 
-Bulutlarda bir eve en kısa yol. **Aerostat Platform Kiti**'ni **yaşanabilir bulut kuşağında** (yaklaşık 1 bar ve oda sıcaklığı; bulut tabanından bulut tepelerinin ~30 blok üstüne kadar) kullan: yüzen bir üs şişer. **9×9** kompozit güverte, kapılı korkuluk, halatlar, bir fener ve tepede kaldırma gazı zarfı.
+Bulutlarda bir eve en kısa yol. **Aerostat Platform Kiti**'ni **yaşanabilir bulut kuşağında** (yaklaşık 1 bar ve oda sıcaklığı; bulut tabanından bulut tepelerinin ~30 blok üstüne kadar) kullan: yüzen bir üs şişer. **9×9** kompozit güverte, iki kapılı güvenlik korkuluğu ve köşelerde bağlama babaları; tepede gri ekvator halkalı, iki renkli yuvarlak bir kaldırma gazı zarfı, LED lambalı bir yük halkasına asılı.
 
 |   |   |   |
 |---|---|---|
@@ -70,7 +70,7 @@ Yüzey (464 °C, 92 bar) insana kapalıdır. **Venüs İniş Sondası**'nı bulu
 > Bulut Medüzü → aerostat kiti → bulutta üs → iniş sondası → Venüs numuneleri → Venüs teknolojileri.
 
 > [!NOTE]
-> Bulut tepelerinin üstünde terk edilmiş bir araştırma balonu süzülür. Laboratuvarında hâlâ teknoloji diskleri var; Asit Vatozları onları korur.
+> Bulut tepelerinin üstünde terk edilmiş bir araştırma aerostatı süzülür: kanatçıklı ve iki motor bölmeli uzun bir zarf, altında altın renkli asit geçirmez bantlı sekizgen bir gondol. İçeride camlı bir köprü, mürettebat ranzaları, araştırma tezgâhı ve atmosfer işlemcili bir laboratuvar ve teknoloji diskli malzeme dolapları var; Asit Vatozları onları korur. Kıç bölmeyi asit delmiş, bölme kapatılmış; kapının yanındaki son kaydı oku.
 
 ### Balonun bulmacaları
 - Üç **gaz vanası** var; gondol kapısını yalnızca **kükürt sarısı** işaretli olan açar.
@@ -112,7 +112,7 @@ Light composite panels and aerogel let you build platforms that float in the bre
 
 **Aerostat Platform Kit**
 
-The quickest way to a home in the clouds. Use an **Aerostat Platform Kit** in the **habitable cloud band** (about 1 bar and room temperature, from the cloud base to about 30 blocks above the cloud tops) and it inflates a floating base: a **9×9** composite deck with a gated railing, rigging, a lantern and a lift-gas envelope overhead.
+The quickest way to a home in the clouds. Use an **Aerostat Platform Kit** in the **habitable cloud band** (about 1 bar and room temperature, from the cloud base to about 30 blocks above the cloud tops) and it inflates a floating base: a **9×9** composite deck with a safety railing, two gates and mooring cleats at the corners, and overhead a round two-tone envelope of lift gas with a grey equator ring, hung from a load ring with an LED lamp.
 
 |   |   |   |
 |---|---|---|
@@ -149,7 +149,7 @@ The surface (464 °C, 92 bar) is closed to people. Release a **Venus Descent Pro
 > Cloud jelly → aerostat kit → base in the clouds → descent probe → Venus samples → Venus technologies.
 
 > [!NOTE]
-> A derelict research balloon floats above the cloud tops. Its lab still holds tech disks, guarded by acid rays.
+> A derelict research aerostat floats above the cloud tops: a long envelope with fins and two engine pods over an octagonal gondola with a gold acid-proof band. Inside are a glazed bridge, crew berths, a lab with a research bench and an atmosphere processor, and supply lockers with tech disks, guarded by acid rays. The stern compartment has been eaten through by acid and sealed off; read the last log by the door.
 
 ### The balloon's puzzles
 - There are three **gas valves**; only the one marked **sulfur yellow** opens the gondola door.
