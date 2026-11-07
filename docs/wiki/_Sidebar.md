@@ -84,6 +84,7 @@
 - [Charon](charon)
 - [Nix](nix)
 - [Hydra](hydra)
+- [Kuyruklu Yıldızlar](comets)
 
 **Harabeler**
 

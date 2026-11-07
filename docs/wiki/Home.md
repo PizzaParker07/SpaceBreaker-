@@ -86,6 +86,7 @@ Bu wiki, oyun içindeki **Saha Rehberi**nin metinlerinden otomatik üretilir.
 - [Charon](charon) · *Charon*
 - [Nix](nix) · *Nix*
 - [Hydra](hydra) · *Hydra*
+- [Kuyruklu Yıldızlar](comets) · *Comets*
 
 ## Harabeler <sub>(Ruins)</sub>
 

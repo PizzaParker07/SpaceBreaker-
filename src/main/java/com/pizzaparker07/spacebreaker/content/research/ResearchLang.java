@@ -55,6 +55,9 @@ final class ResearchLang {
         l.add("sample.spacebreaker.ryugu", "Ryugu", "Ryugu");
         l.add("sample.spacebreaker.eros", "Eros", "Eros");
         l.add("sample.spacebreaker.itokawa", "Itokawa", "Itokawa");
+        l.add("sample.spacebreaker.churyumov_gerasimenko", "67P/Churyumov-Gerasimenko", "67P/Çuryumov-Gerasimenko");
+        l.add("sample.spacebreaker.encke", "Encke", "Encke");
+        l.add("sample.spacebreaker.halley", "Halley", "Halley");
         l.add("sample.spacebreaker.triton", "Triton", "Triton");
         l.add("sample.spacebreaker.pluto", "Pluto", "Plüton");
         l.add("sample.spacebreaker.charon", "Charon", "Charon");
