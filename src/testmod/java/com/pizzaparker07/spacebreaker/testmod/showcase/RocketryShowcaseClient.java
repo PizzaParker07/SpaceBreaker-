@@ -18,6 +18,8 @@ final class RocketryShowcaseClient {
     static volatile boolean preselectOrbit;
     /** Keep the cockpit (first-person) view while riding, overriding the rocket camera. */
     static volatile boolean cockpit;
+    /** Keep the shipyard design screen open with this design (null: not shown). */
+    static volatile com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipDesign shipDesign;
     /** Open the map's nearby-stars view with this star selected. */
     static volatile String star;
 
@@ -39,6 +41,15 @@ final class RocketryShowcaseClient {
                 }
             }
         } else if (!openMapWhenRiding && mc.screen instanceof StarMapScreen) {
+            mc.setScreen(null);
+        }
+        if (shipDesign != null) {
+            mc.getToasts().clear(); // advancement pop-ups would cover the panel
+        }
+        if (shipDesign != null && mc.player != null && !(mc.screen instanceof com.pizzaparker07.spacebreaker.client.rocketry.ShipyardScreen)) {
+            mc.setScreen(new com.pizzaparker07.spacebreaker.client.rocketry.ShipyardScreen(net.minecraft.core.BlockPos.ZERO, shipDesign));
+            mc.getToasts().clear();
+        } else if (shipDesign == null && mc.screen instanceof com.pizzaparker07.spacebreaker.client.rocketry.ShipyardScreen) {
             mc.setScreen(null);
         }
         if (cockpit && mc.player != null && mc.player.getVehicle() instanceof RocketEntity) {
