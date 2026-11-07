@@ -90,6 +90,7 @@ public final class ShowcaseScenarios {
         ALL.put("charon", new PlutoScenario(true));
         ALL.put("qa_playthrough", new QaPlaythroughScenario(new RocketryScenario()));
         ALL.put("qa_launch", new QaLaunchScenario(new RocketryScenario()));
+        ALL.put("qa_hud_overlay", new QaHudOverlayScenario());
     }
 
     public static ShowcaseScenario get(String name) {

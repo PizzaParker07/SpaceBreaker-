@@ -319,6 +319,20 @@ flight between dimensions, rovers being driven, and client-side frame time.
   area; a freshly added entity can be missing from the area query for a tick). The failure message names the kind that
   changed. Two full runs green.
 
+## Helmet HUD and block info overlays (2026-11-07, 1.0.0 feedback)
+
+Client scenario `qa_hud_overlay` (`-PwithJade=true` / `-PwithWthit=true`): full EVA suit on the Moon, looking at a
+dusty solar panel. Shots: `docs/screenshots/qa/qa_hud_jade.jpg`, `qa_hud_wthit.jpg`.
+
+- QA-25 (suit, high): the helmet visor's dark top band is drawn **over** the Jade and WTHIT tooltips. Their first
+  lines (block name, and the Spacebreaker dust line) are hidden; WTHIT's "Energy" line is cut in half. The HUD panels
+  themselves (bottom left) do not collide. Fix idea: draw the visor frame before other mods' overlays (a lower GUI
+  layer) or leave the top ~10 % of the screen clear.
+- QA-26 (compat, medium): Jade asserts `Missing config translation: config.jade.plugin_spacebreaker.info_lines`. In a
+  development client (assertions on) this breaks the title screen and the game never reaches a world; in a release
+  the Jade settings show the raw key. Needs the key in en_us/tr_tr. (For these shots it was added locally, not
+  committed.)
+
 ## Launch to orbit, frame by frame (2026-11-07, 1.0.0 feedback)
 
 New client scenario `qa_launch` (`./gradlew runShowcase -Pscenario=qa_launch`): the player sits in the pad rocket,
@@ -795,10 +809,10 @@ None.
 | spacebreaker:io/orbit | round_trip | 11850 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 13391 m/s vacuum Δv |
 | spacebreaker:europa/surface | round_trip | 12372 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 13391 m/s vacuum Δv |
 | spacebreaker:europa/orbit | round_trip | 10965 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 11475 m/s vacuum Δv |
-| spacebreaker:ganymede/surface | round_trip | 11908 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 13391 m/s vacuum Δv |
-| spacebreaker:ganymede/orbit | round_trip | 9993 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 11475 m/s vacuum Δv |
 | spacebreaker:callisto/surface | round_trip | 11164 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 11260 m/s vacuum Δv |
 | spacebreaker:callisto/orbit | round_trip | 9447 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 11475 m/s vacuum Δv |
+| spacebreaker:ganymede/surface | round_trip | 11908 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 13391 m/s vacuum Δv |
+| spacebreaker:ganymede/orbit | round_trip | 9993 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 11475 m/s vacuum Δv |
 | spacebreaker:saturn/orbit | round_trip | 11454 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 13391 m/s vacuum Δv |
 | spacebreaker:enceladus/surface | round_trip | 11682 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 13065 m/s vacuum Δv |
 | spacebreaker:enceladus/orbit | round_trip | 11524 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 13391 m/s vacuum Δv |
