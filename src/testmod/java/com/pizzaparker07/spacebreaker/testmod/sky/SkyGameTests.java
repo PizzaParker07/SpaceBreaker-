@@ -116,6 +116,38 @@ public final class SkyGameTests {
     }
 
     /**
+     * The Earth–Moon travel scene: Earth sits at the scene origin at its drawn radius, the Moon about 2,200 blocks out and
+     * never smaller than the minimum radius, Earth's pole leans about 23° from the scene's up (ecliptic north), and the
+     * ecliptic-to-scene axes round-trip.
+     */
+    @GameTest(template = "empty")
+    public static void spaceSceneLayout(GameTestHelper helper) {
+        var access = helper.getLevel().registryAccess();
+        var sys = BodyAdapter.system(access).orElseThrow();
+        var reg = com.pizzaparker07.spacebreaker.core.body.Bodies.registry(access).orElseThrow();
+        double t = 7.0e8;
+        var earthPos = sys.position(sys.require("spacebreaker:earth"), t);
+        var bodies = com.pizzaparker07.spacebreaker.content.worldgen.SpaceSceneLayout.layout(sys,
+                com.pizzaparker07.spacebreaker.core.astro.flight.SceneScale.EARTH_MOON, "spacebreaker:earth",
+                List.of("spacebreaker:earth", "spacebreaker:moon"), t,
+                id -> BodyAdapter.look(sys, net.minecraft.resources.ResourceLocation.parse(id), reg.get(net.minecraft.resources.ResourceLocation.parse(id)), earthPos, t));
+        var earth = bodies.get(0);
+        var moon = bodies.get(1);
+        helper.assertTrue(earth.center().length() < 1e-6 && earth.radius() == 128, "Earth at the origin, 128 blocks: " + earth);
+        double d = moon.center().length();
+        helper.assertTrue(d > 2000 && d < 2400, "the Moon about 2,200 blocks out: " + d);
+        helper.assertTrue(moon.radius() >= com.pizzaparker07.spacebreaker.content.worldgen.SpaceSceneLayout.MOON_MIN_RADIUS, "the Moon reads as a landable target: " + moon.radius());
+        helper.assertTrue(Math.abs(moon.center().y) < d * 0.1, "the Moon stays near the ecliptic plane (scene horizontal): " + moon.center().y);
+        double tilt = Math.toDegrees(Math.acos(earth.pole().y));
+        helper.assertTrue(Math.abs(tilt - 23.4) < 1.0, "Earth's pole leans 23.4 degrees from ecliptic north: " + tilt);
+        var v = new com.pizzaparker07.spacebreaker.core.astro.Vec3(1, 2, 3);
+        var back = com.pizzaparker07.spacebreaker.content.worldgen.SpaceSceneLayout.fromScene(
+                com.pizzaparker07.spacebreaker.content.worldgen.SpaceSceneLayout.toScene(v));
+        helper.assertTrue(back.sub(v).length() < 1e-9, "scene axes round-trip");
+        helper.succeed();
+    }
+
+    /**
      * Blocky planets: the voxel ball is closed (every face points outward, as many faces on each side), the cube has six
      * full pixel faces, the day/night line is a hard step with the night side at the night brightness, and ring tiles stay
      * between the ring's edges.
