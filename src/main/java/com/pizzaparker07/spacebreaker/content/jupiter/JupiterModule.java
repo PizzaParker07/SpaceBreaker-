@@ -188,7 +188,7 @@ public final class JupiterModule implements SbModule {
     @Override
     public void addTags(SbTags tags) {
         // water ice for the ice melter: water, then hydrogen and oxygen for rocket fuel
-        tags.item(com.pizzaparker07.spacebreaker.content.machines.IsruRecipes.WATER_ICES, EUROPAN_ICE.get().asItem(), GROOVED_ICE.get().asItem());
+        tags.item(com.pizzaparker07.spacebreaker.content.machines.IsruRecipes.WATER_ICES, EUROPAN_ICE.get().asItem(), GROOVED_ICE.get().asItem(), BRIGHT_FROST.get().asItem());
         tags.block(BlockTags.MINEABLE_WITH_SHOVEL, EUROPAN_FROST.get(), SULFUR_SAND.get(), SO2_FROST.get(), RED_SULFUR.get(), GANYMEDE_REGOLITH.get(),
                 CALLISTO_REGOLITH.get(), BRIGHT_FROST.get());
         tags.block(BlockTags.MINEABLE_WITH_PICKAXE, EUROPAN_ICE.get(), STAINED_ICE.get(), REFROZEN_BRINE.get(), SALT_ORE.get(), ICE_GEYSER.get(),
