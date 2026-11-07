@@ -20,7 +20,7 @@ Malzemeleri içine koy; tarif uyuyorsa üretim kendiliğinden başlar.
 
 | Girdi | Makine | Çıktı |
 |---|---|---|
-| Temel Devre Kartı ×2<br>Silisyum Plaka ×2<br>Altın Tel<br>Plastik Levha | Parça Üretim Tezgâhı<br>60 FE/t · 5 sn | Gelişmiş Devre Kartı |
+| Temel Devre Kartı ×2<br>Silisyum Plaka ×2<br>Altın Tel<br>Plastik Levha | Parça Üretim Tezgâhı<br>60 FE/t · 10 sn | Gelişmiş Devre Kartı |
 
 <details>
 <summary>English: Fabricator</summary>
@@ -45,6 +45,6 @@ Put the materials in; if they match a recipe, it starts on its own.
 
 | Input | Machine | Output |
 |---|---|---|
-| Basic Circuit ×2<br>Silicon Wafer ×2<br>Gold Wire<br>Plastic Sheet | Fabricator<br>60 FE/t · 5 s | Advanced Circuit |
+| Basic Circuit ×2<br>Silicon Wafer ×2<br>Gold Wire<br>Plastic Sheet | Fabricator<br>60 FE/t · 10 s | Advanced Circuit |
 
 </details>

@@ -12,11 +12,11 @@ Uraninit cevherinden nükleer termal roketin yakıtına giden yol.
 
 | Girdi | Makine | Çıktı |
 |---|---|---|
-| Uranyum Tozu<br>sulfuric acid (125 mB) | Çalışma Masası<br>60 FE/t · 4 sn | Sarı Pasta |
+| Uranyum Tozu<br>sulfuric acid (125 mB) | Kimyasal Reaktör<br>60 FE/t · 4 sn | Sarı Pasta |
 
 | Girdi | Makine | Çıktı |
 |---|---|---|
-| Sarı Pasta ×4 | Çalışma Masası<br>160 FE/t · 40 sn | Zenginleştirilmiş Uranyum<br>Tükenmiş Uranyum ×3 |
+| Sarı Pasta ×4 | Gaz Santrifüjü<br>160 FE/t · 40 sn | Zenginleştirilmiş Uranyum<br>Tükenmiş Uranyum ×3 |
 
 ### Santrifüj dizisi
 Tek bir santrifüj yavaştır. Gerçek tesislerde binlercesi art arda çalışır. Burada aynı seviyede yanına konan ve **çalışan her santrifüj yarım kademe hız** ekler; en çok dört komşu, yani en fazla **3 kat**. Santrifüjleri bir sıra ya da artı biçiminde diz.
@@ -33,7 +33,7 @@ Tek bir santrifüj yavaştır. Gerçek tesislerde binlercesi art arda çalışı
 
 | Girdi | Makine | Çıktı |
 |---|---|---|
-| Sarı Pasta ×4 | Çalışma Masası<br>80 FE/t · 5 sn | RTG Yakıt Peleti |
+| Sarı Pasta ×4 | Sinterleme Fırını<br>80 FE/t · 10 sn | RTG Yakıt Peleti |
 
 > [!WARNING]
 > Peletin kendisi ise ışınım yayar: üstünde taşırken doz alırsın. RTG'ye tak ve uzak dur.
@@ -56,11 +56,11 @@ The road from uraninite ore to the fuel of a nuclear thermal rocket.
 
 | Input | Machine | Output |
 |---|---|---|
-| Uranium Dust<br>sulfuric acid (125 mB) | Crafting Table<br>60 FE/t · 4 s | Yellowcake |
+| Uranium Dust<br>sulfuric acid (125 mB) | Chemical Reactor<br>60 FE/t · 4 s | Yellowcake |
 
 | Input | Machine | Output |
 |---|---|---|
-| Yellowcake ×4 | Crafting Table<br>160 FE/t · 40 s | Enriched Uranium<br>Depleted Uranium ×3 |
+| Yellowcake ×4 | Gas Centrifuge<br>160 FE/t · 40 s | Enriched Uranium<br>Depleted Uranium ×3 |
 
 ### The centrifuge cascade
 One centrifuge alone is slow. Real plants run thousands one after another. Here **every working centrifuge** placed beside one on the same level adds **half a stage of speed**; up to four neighbours, so at most **3×**. Line them up in a row or a plus shape.
@@ -77,7 +77,7 @@ The [RTG Fuel Pellet](power) is now made from **4 yellowcake in the sintering fu
 
 | Input | Machine | Output |
 |---|---|---|
-| Yellowcake ×4 | Crafting Table<br>80 FE/t · 5 s | RTG Fuel Pellet |
+| Yellowcake ×4 | Sintering Furnace<br>80 FE/t · 10 s | RTG Fuel Pellet |
 
 > [!WARNING]
 > The pellet itself does give off radiation: carrying it gives you a dose. Put it in the RTG and keep your distance.

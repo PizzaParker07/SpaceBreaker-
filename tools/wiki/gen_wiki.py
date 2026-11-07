@@ -222,7 +222,7 @@ def recipe_md(lang, rid, machines):
     if 'bonus' in r:
         outs.append(f'{stack(lang, r["bonus"])} ({t["chance"].format(p=int(round(r.get("bonus_chance", 0) * 100)))})')
     outs += [fluid(lang, f) for f in r.get('fluid_results', [])]
-    info = t['energy'].format(e=r.get('energy', 20), t=round(r.get('time', 100) / 20, 1)).replace('.0 ', ' ')
+    info = t['energy'].format(e=r.get('energy', 20), t=round(r.get('time', 200) / 20, 1)).replace('.0 ', ' ')
     return (f'| {t["in"]} | {t["machine"]} | {t["out"]} |\n|---|---|---|\n'
             f'| {"<br>".join(ins)} | {machine}<br>{info} | {"<br>".join(outs)} |')
 

@@ -21,7 +21,7 @@ Buzu temiz suya, kuru buzu karbondioksite çevirir.
 
 | Girdi | Makine | Çıktı |
 |---|---|---|
-| Ay Buzu | Çalışma Masası<br>30 FE/t · 3 sn | Su (1000 mB) |
+| Ay Buzu | Buz Eritici<br>30 FE/t · 3 sn | Su (1000 mB) |
 
 ### Atmosfer işlemcisi
 Bulunduğun yerin havasından en yararlı gazı ayırır: Mars'ta **karbondioksit**. Üstünde **açık hava** olmalı; kapalı bir odada çalışmaz.
@@ -31,11 +31,11 @@ Kayayı eritip elektrikle ayrıştırır: **kayadan oksijen**. Bir regolit **250
 
 | Girdi | Makine | Çıktı |
 |---|---|---|
-| Ay Regoliti | Çalışma Masası<br>120 FE/t · 8 sn | Demir Tozu (%20 şansla)<br>Oksijen (250 mB) |
+| Ay Regoliti | Regolit Isıtıcı<br>120 FE/t · 8 sn | Demir Tozu (%20 şansla)<br>Oksijen (250 mB) |
 
 | Girdi | Makine | Çıktı |
 |---|---|---|
-| Merkür Regoliti | Çalışma Masası<br>120 FE/t · 8 sn | Oksijen (250 mB)<br>Helyum-3 (20 mB) |
+| Merkür Regoliti | Regolit Isıtıcı<br>120 FE/t · 8 sn | Oksijen (250 mB)<br>Helyum-3 (20 mB) |
 
 ### Regolit Kazıcı
 
@@ -69,7 +69,7 @@ Bir katı ve iki sıvıyı birleştirir; örneğin kükürt, su ve oksijenden **
 
 | Girdi | Makine | Çıktı |
 |---|---|---|
-| Kükürt<br>water (250 mB)<br>oxygen (750 mB) | Çalışma Masası<br>60 FE/t · 5 sn | Sülfürik Asit (250 mB) |
+| Kükürt<br>water (250 mB)<br>oxygen (750 mB) | Kimyasal Reaktör<br>60 FE/t · 5 sn | Sülfürik Asit (250 mB) |
 
 ### Sinterleme Fırını
 
@@ -79,7 +79,7 @@ Bir katı ve iki sıvıyı birleştirir; örneğin kükürt, su ve oksijenden **
 
 | Girdi | Makine | Çıktı |
 |---|---|---|
-| Ay Regoliti | Çalışma Masası<br>60 FE/t · 5 sn | Sinterlenmiş Regolit |
+| Ay Regoliti | Sinterleme Fırını<br>60 FE/t · 5 sn | Sinterlenmiş Regolit |
 
 > [!TIP]
 > Üssünü yerinde üretilen tuğlayla kur: Dünya'dan blok taşıman gerekmez. **Tam bloklar sızdırmaz**; merdiven, basamak ve duvar gibi tam olmayan bloklardan hava kaçar. → [Üssün Havası](base_air)
@@ -132,7 +132,7 @@ Turns ice into clean water and dry ice into carbon dioxide.
 
 | Input | Machine | Output |
 |---|---|---|
-| Lunar Ice | Crafting Table<br>30 FE/t · 3 s | Water (1000 mB) |
+| Lunar Ice | Ice Melter<br>30 FE/t · 3 s | Water (1000 mB) |
 
 ### Atmosphere processor
 Separates the most useful gas from the local air: **carbon dioxide** on Mars. It needs **open air** above it; it does not work in a closed room.
@@ -142,11 +142,11 @@ Melts rock and splits it with electricity: **oxygen from rock**. One regolith gi
 
 | Input | Machine | Output |
 |---|---|---|
-| Lunar Regolith | Crafting Table<br>120 FE/t · 8 s | Iron Dust (20% chance)<br>Oxygen (250 mB) |
+| Lunar Regolith | Regolith Heater<br>120 FE/t · 8 s | Iron Dust (20% chance)<br>Oxygen (250 mB) |
 
 | Input | Machine | Output |
 |---|---|---|
-| Mercurian Regolith | Crafting Table<br>120 FE/t · 8 s | Oxygen (250 mB)<br>Helium-3 (20 mB) |
+| Mercurian Regolith | Regolith Heater<br>120 FE/t · 8 s | Oxygen (250 mB)<br>Helium-3 (20 mB) |
 
 ### Regolith excavator
 
@@ -180,7 +180,7 @@ Combines one solid and two fluids; for example sulfur, water and oxygen make **s
 
 | Input | Machine | Output |
 |---|---|---|
-| Sulfur<br>water (250 mB)<br>oxygen (750 mB) | Crafting Table<br>60 FE/t · 5 s | Sulfuric Acid (250 mB) |
+| Sulfur<br>water (250 mB)<br>oxygen (750 mB) | Chemical Reactor<br>60 FE/t · 5 s | Sulfuric Acid (250 mB) |
 
 ### Sintering furnace
 
@@ -190,7 +190,7 @@ The **Sintering Furnace** heats any planet's regolith with electricity and fuses
 
 | Input | Machine | Output |
 |---|---|---|
-| Lunar Regolith | Crafting Table<br>60 FE/t · 5 s | Sintered Regolith |
+| Lunar Regolith | Sintering Furnace<br>60 FE/t · 5 s | Sintered Regolith |
 
 > [!TIP]
 > Build your base from bricks made on site: no need to ship blocks from Earth. **Full blocks are airtight**; stairs, slabs, walls and other partial blocks leak air. → [Air for the Base](base_air)

@@ -21,7 +21,7 @@ Kumu ya da kuvarsı [Elektrik Ark Fırını](processing)'nda erit, çıkan silis
 
 | Girdi | Makine | Çıktı |
 |---|---|---|
-| #c:sands ×2<br>Kömür Tozu | Elektrik Ark Fırını<br>80 FE/t · 5 sn | Silisyum |
+| #c:sands ×2<br>Kömür Tozu | Elektrik Ark Fırını<br>80 FE/t · 10 sn | Silisyum |
 
 | Girdi | Makine | Çıktı |
 |---|---|---|
@@ -51,7 +51,7 @@ Melt sand or quartz in the [Electric Arc Furnace](processing) and press the sili
 
 | Input | Machine | Output |
 |---|---|---|
-| #c:sands ×2<br>Coal Dust | Electric Arc Furnace<br>80 FE/t · 5 s | Silicon |
+| #c:sands ×2<br>Coal Dust | Electric Arc Furnace<br>80 FE/t · 10 s | Silicon |
 
 | Input | Machine | Output |
 |---|---|---|

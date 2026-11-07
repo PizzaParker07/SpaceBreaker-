@@ -31,7 +31,7 @@ Tankların, gövdelerin ve makine kasalarının çoğu **levhadan** yapılır. B
 
 | Girdi | Makine | Çıktı |
 |---|---|---|
-| Alüminyum Külçe ×3<br>Lityum Külçe | Elektrik Ark Fırını<br>80 FE/t · 5 sn | Al-Li Alaşımı Külçe ×4 |
+| Alüminyum Külçe ×3<br>Lityum Külçe | Elektrik Ark Fırını<br>80 FE/t · 10 sn | Al-Li Alaşımı Külçe ×4 |
 
 <details>
 <summary>English: Metals and Alloys</summary>
@@ -67,6 +67,6 @@ The [Electric Arc Furnace](processing) melts metals together:
 
 | Input | Machine | Output |
 |---|---|---|
-| Aluminum Ingot ×3<br>Lithium Ingot | Electric Arc Furnace<br>80 FE/t · 5 s | Al-Li Alloy Ingot ×4 |
+| Aluminum Ingot ×3<br>Lithium Ingot | Electric Arc Furnace<br>80 FE/t · 10 s | Al-Li Alloy Ingot ×4 |
 
 </details>
