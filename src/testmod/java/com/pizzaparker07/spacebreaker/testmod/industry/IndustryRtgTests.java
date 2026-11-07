@@ -16,6 +16,7 @@ import com.pizzaparker07.spacebreaker.content.worldgen.PlanetTime;
 import com.pizzaparker07.spacebreaker.core.body.Bodies;
 import com.pizzaparker07.spacebreaker.core.env.Environment;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -445,6 +446,56 @@ public final class IndustryRtgTests {
                         && r.value().ingredients.stream().anyMatch(i -> i.ingredient().test(new ItemStack(MachinesModule.DEPLETED_URANIUM.get())))),
                 "the press makes the plate from depleted uranium");
         h.succeed();
+    }
+
+    /** The fission unit burns fuel only while its power is taken: with a full buffer and no load it idles. */
+    @GameTest(template = "empty", timeoutTicks = 400, batch = "industry_power")
+    public static void fissionReactorFollowsTheLoad(GameTestHelper h) {
+        var R = com.pizzaparker07.spacebreaker.content.machines.machine.FissionReactorBlockEntity.class;
+        MachineBlockEntity be = machine(h, MachinesModule.FISSION_REACTOR, new BlockPos(2, 1, 2), false);
+        var reactor = R.cast(be);
+        be.items().setStackInSlot(0, new ItemStack(MachinesModule.NUCLEAR_FUEL_ELEMENT.get()));
+        h.runAfterDelay(5, () -> {
+            h.assertTrue(be.items().getStackInSlot(0).isEmpty(), "the element was loaded");
+            h.assertTrue(be.energy().getEnergyStored() > 0, "making power");
+        });
+        int[] idle = new int[1];
+        h.runAfterDelay(260, () -> {
+            h.assertTrue(be.energy().getEnergyStored() > be.energy().getMaxEnergyStored() - com.pizzaparker07.spacebreaker.content.machines.machine.FissionReactorBlockEntity.OUTPUT,
+                    "buffer full with no load: " + be.energy().getEnergyStored());
+            idle[0] = reactor.burnLeft();
+        });
+        h.runAfterDelay(300, () -> {
+            h.assertTrue(reactor.burnLeft() == idle[0], "no burn while idle: " + idle[0] + " -> " + reactor.burnLeft());
+            h.assertTrue(idle[0] > com.pizzaparker07.spacebreaker.content.machines.machine.FissionReactorBlockEntity.BURN_TICKS - 300, "only the working ticks burned");
+            h.succeed();
+        });
+    }
+
+    /** A running reactor's dose falls with the square of the distance and drops sharply behind a regolith bank. */
+    @GameTest(template = "empty", timeoutTicks = 100, batch = "industry_power")
+    public static void fissionReactorRadiationIsShieldedByBlocks(GameTestHelper h) {
+        double near = com.pizzaparker07.spacebreaker.content.machines.machine.FissionReactorBlockEntity.dose(5, 0);
+        double far = com.pizzaparker07.spacebreaker.content.machines.machine.FissionReactorBlockEntity.dose(10, 0);
+        h.assertTrue(Math.abs(near / far - 4) < 1e-9, "inverse square");
+        MachineBlockEntity be = machine(h, MachinesModule.FISSION_REACTOR, new BlockPos(1, 1, 2), false);
+        be.items().setStackInSlot(0, new ItemStack(MachinesModule.NUCLEAR_FUEL_ELEMENT.get()));
+        BlockPos spot = new BlockPos(6, 1, 2);
+        double[] open = new double[1];
+        h.runAfterDelay(5, () -> {
+            open[0] = com.pizzaparker07.spacebreaker.content.machines.machine.FissionReactorBlockEntity.doseMsvDay(h.getLevel(), h.absolutePos(spot));
+            h.assertTrue(open[0] > 1000, "standing in the open five blocks away is dangerous: " + open[0]);
+            for (int x = 3; x <= 5; x++) {
+                h.setBlock(new BlockPos(x, 1, 2), Blocks.STONE);
+            }
+        });
+        h.runAfterDelay(10, () -> {
+            double behind = com.pizzaparker07.spacebreaker.content.machines.machine.FissionReactorBlockEntity.doseMsvDay(h.getLevel(), h.absolutePos(spot));
+            h.assertTrue(behind < open[0] * 0.05, "three blocks of rock cut it to a few percent: " + open[0] + " -> " + behind);
+            h.assertTrue(com.pizzaparker07.spacebreaker.core.env.Environment.radiation(h.getLevel(), h.absolutePos(spot)) >= behind,
+                    "the reactor counts in the environment's radiation");
+            h.succeed();
+        });
     }
 
     private IndustryRtgTests() {
