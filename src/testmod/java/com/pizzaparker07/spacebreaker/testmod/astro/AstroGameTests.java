@@ -151,6 +151,33 @@ public final class AstroGameTests {
         helper.succeed();
     }
 
+    @GameTest(template = "empty")
+    public static void everyNearbySystemConvertsWithoutRegistering(GameTestHelper helper) {
+        Galaxy galaxy = new Galaxy(helper.getLevel().getSeed());
+        int before = Bodies.registry(helper.getLevel().registryAccess()).orElseThrow().size();
+        int converted = 0;
+        for (StarSeed seed : galaxy.fixedStars()) {
+            Optional<StarSystem> sys = galaxy.system(seed);
+            if (sys.isEmpty()) {
+                continue; // the Sun: data registry
+            }
+            for (Map.Entry<ResourceLocation, CelestialBody> en : BodyAdapter.toCelestialBodies(sys.get(), id -> Optional.empty()).entrySet()) {
+                CelestialBody c = en.getValue();
+                AstroBody a = sys.get().bodies().require(en.getKey().toString());
+                helper.assertTrue(Math.abs(c.physical().radiusKm() * 1000 - a.radius()) < 1, "radius kept for " + en.getKey());
+                helper.assertTrue(Math.abs(c.physical().massKg() - a.mass()) <= a.mass() * 1e-9, "mass kept for " + en.getKey());
+                helper.assertTrue(c.climate().dayTempC() >= c.climate().nightTempC(), "climate order for " + en.getKey());
+                helper.assertTrue(c.dimension().isEmpty(), "no dimension until the planet engine opens one");
+                JsonElement json = CelestialBody.CODEC.encodeStart(JsonOps.INSTANCE, c).getOrThrow();
+                helper.assertTrue(CelestialBody.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow().equals(c), "codec round trip " + en.getKey());
+                converted++;
+            }
+        }
+        helper.assertTrue(converted > 100, "converted " + converted + " bodies");
+        helper.assertTrue(Bodies.registry(helper.getLevel().registryAccess()).orElseThrow().size() == before, "nothing was registered");
+        helper.succeed();
+    }
+
     private AstroGameTests() {
     }
 }

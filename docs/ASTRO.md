@@ -663,3 +663,13 @@ stars begin outside it. Each `StarSystem.Details` says whether a body is `discov
 planet) or a generator fill-in for a world nobody has found yet — show the latter as "not yet discovered".
 `GalaxyMap.overview` now draws two major and two minor spiral arms (Scutum–Centaurus and Perseus brightest)
 weighted by the light of young stars, around a bright bar and bulge.
+
+### System cards for the star map (`galaxy.SystemCard`)
+
+`SystemCard.of(galaxy, starSeed)` is everything the "nearby stars" view needs about one system: names,
+designation, distance, star summary, `binary`, `knownPlanets` (confirmed — show this count),
+`undiscoveredPlanets` (generator fill-ins), the habitable zone and a `PlanetCard` per planet (innermost
+first: kind, discovered, mass and radius in Earth units, a, period, equilibrium temperature, habitable-zone
+flag, landable, moons, rings, colour family). `BodyAdapter.toCelestialBodies(system, dims)` turns any system
+into `CelestialBody` records without registering them; a GameTest converts every catalogued system and
+round-trips it through the data-pack codec.
