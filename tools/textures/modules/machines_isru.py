@@ -390,3 +390,6 @@ def export(save):  # noqa: F811
     save(yellowcake(), 'item', 'yellowcake')
     save(enriched_uranium(), 'item', 'enriched_uranium')
     save(depleted_uranium(), 'item', 'depleted_uranium')
+    from sbtex.shapes import plate
+    from sbtex import palettes as PP
+    save(plate(PP.URANIUM, seed=23), 'item', 'depleted_uranium_plate')

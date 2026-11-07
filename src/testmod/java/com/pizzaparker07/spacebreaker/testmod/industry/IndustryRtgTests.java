@@ -434,6 +434,19 @@ public final class IndustryRtgTests {
         h.succeed();
     }
 
+    /** Depleted uranium from the centrifuge is pressed into plate that counts as radiation shielding, like tungsten. */
+    @GameTest(template = "empty")
+    public static void depletedUraniumIsRadiationShielding(GameTestHelper h) {
+        var shielding = com.pizzaparker07.spacebreaker.content.machines.IsruRecipes.RADIATION_SHIELDING;
+        h.assertTrue(new ItemStack(MachinesModule.DEPLETED_URANIUM_PLATE.get()).is(shielding), "depleted uranium plate shields");
+        h.assertTrue(new ItemStack(EarthModule.TUNGSTEN.plate.get()).is(shielding), "tungsten plate shields too");
+        h.assertTrue(h.getLevel().getRecipeManager().getAllRecipesFor(MachinesModule.PRESSING.type().get()).stream()
+                .anyMatch(r -> r.value().results.stream().anyMatch(s -> s.is(MachinesModule.DEPLETED_URANIUM_PLATE.get()))
+                        && r.value().ingredients.stream().anyMatch(i -> i.ingredient().test(new ItemStack(MachinesModule.DEPLETED_URANIUM.get())))),
+                "the press makes the plate from depleted uranium");
+        h.succeed();
+    }
+
     private IndustryRtgTests() {
     }
 }

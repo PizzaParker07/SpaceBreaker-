@@ -124,5 +124,5 @@ def generate():  # noqa: F811
         tubes.append(box([x, 6, z], [x + 4, 16, z + 4], {'north': 'tube', 'south': 'tube', 'east': 'tube', 'west': 'tube', 'up': 'top'},
                          uv={f: [x, 0, x + 4, 10] for f in ('north', 'south', 'east', 'west')}))
     machine('gas_centrifuge', t, [body(6, top='top')] + tubes)
-    for name in ('yellowcake', 'enriched_uranium', 'depleted_uranium'):
+    for name in ('yellowcake', 'enriched_uranium', 'depleted_uranium', 'depleted_uranium_plate'):
         write(f'models/item/{name}.json', {'parent': 'minecraft:item/generated', 'textures': {'layer0': i(name)}})

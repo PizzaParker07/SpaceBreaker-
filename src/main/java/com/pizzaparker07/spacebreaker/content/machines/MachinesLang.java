@@ -95,6 +95,8 @@ final class MachinesLang {
         lang.item(MachinesModule.YELLOWCAKE, "Yellowcake", "Sarı Pasta");
         lang.item(MachinesModule.ENRICHED_URANIUM, "Enriched Uranium", "Zenginleştirilmiş Uranyum");
         lang.item(MachinesModule.DEPLETED_URANIUM, "Depleted Uranium", "Tükenmiş Uranyum");
+        lang.item(MachinesModule.DEPLETED_URANIUM_PLATE, "Depleted Uranium Plate", "Tükenmiş Uranyum Levhası");
+        com.pizzaparker07.spacebreaker.content.earth.EarthModule.tag(lang, IsruRecipes.RADIATION_SHIELDING, "Radiation Shielding", "Radyasyon Kalkanı Malzemesi");
         lang.block(MachinesModule.GAS_CENTRIFUGE.block(), "Gas Centrifuge", "Gaz Santrifüjü");
         lang.add("tooltip.spacebreaker.gas_centrifuge", "Enriches uranium slowly; each working centrifuge beside it adds half a stage of speed (up to 3x)",
                 "Uranyumu yavaşça zenginleştirir; yanındaki her çalışan santrifüj yarım kademe hız ekler (en çok 3 kat)");

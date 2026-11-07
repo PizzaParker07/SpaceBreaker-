@@ -36,6 +36,11 @@ public final class IsruRecipes {
     public static final TagKey<Item> SOLAR_WIND_REGOLITHS = SbTagKeys.commonItem("regoliths/solar_wind");
     public static final TagKey<Item> SULFUR = SbTagKeys.commonItem("dusts/sulfur");
     /** Carbon-rich rubble (C-type asteroids, carbonaceous chondrite): clay minerals that hold water, and organics. */
+    /**
+     * Dense plates that stop radiation (spacebreaker:radiation_shielding): tungsten or depleted uranium. Shield
+     * recipes (suit radiation module, the NTR's shadow shield) take either.
+     */
+    public static final TagKey<Item> RADIATION_SHIELDING = SbTagKeys.modItem("radiation_shielding");
     /** Fuel a nuclear reactor or nuclear thermal rocket accepts (spacebreaker:reactor_fuel). */
     public static final TagKey<Item> REACTOR_FUEL = SbTagKeys.modItem("reactor_fuel");
     public static final TagKey<Item> CARBONACEOUS_REGOLITHS = SbTagKeys.commonItem("regoliths/carbonaceous");
@@ -59,6 +64,8 @@ public final class IsruRecipes {
         tags.item(REGOLITHS, byId(REGOLITH_IDS));
         tags.item(CARBONACEOUS_REGOLITHS, byId(CARBONACEOUS_IDS));
         tags.item(REACTOR_FUEL, NUCLEAR_FUEL_ELEMENT.get());
+        tags.item(RADIATION_SHIELDING, DEPLETED_URANIUM_PLATE.get());
+        tags.itemTag(RADIATION_SHIELDING, EarthModule.TUNGSTEN.plateTag);
         tags.item(STONY_REGOLITHS, byId(STONY_IDS));
         // asteroid rubble is regolith too: it sinters, and stony rubble gives oxygen in the heater like any other
         tags.item(REGOLITHS, byId(STONY_IDS));
@@ -148,6 +155,9 @@ public final class IsruRecipes {
         // reactor fuel: carbothermic reduction of enriched uranium to carbide kernels, sealed in a tungsten cermet clad
         ProcessingRecipeBuilder.of(ARC_SMELTING).in(ENRICHED_URANIUM.get(), 2).in(EarthModule.COAL_DUST_TAG, 2)
                 .in(EarthModule.TUNGSTEN.rodTag, 2).out(NUCLEAR_FUEL_ELEMENT.get()).time(400).energy(120).save(out, "nuclear_fuel_element");
+        // depleted uranium is pressed into shielding plate on the same die as any metal
+        ProcessingRecipeBuilder.of(PRESSING).in(DEPLETED_URANIUM.get()).tool(EarthModule.PLATE_DIE.get()).out(DEPLETED_URANIUM_PLATE.get())
+                .time(60).energy(30).save(out, "depleted_uranium_plate");
         // gas centrifuge: a tall rotor on magnetic bearings in a vacuum casing
         shaped(out, GAS_CENTRIFUGE.item().get(), 1, has(EarthModule.TITANIUM.plateTag), "SRS", "MCM", "SAS",
                 'S', EarthModule.STEEL.plateTag, 'R', EarthModule.TITANIUM.rodTag, 'M', EarthModule.ELECTRIC_MOTOR.get(),
