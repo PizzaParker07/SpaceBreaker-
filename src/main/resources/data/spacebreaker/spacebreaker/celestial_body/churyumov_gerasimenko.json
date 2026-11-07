@@ -1,6 +1,7 @@
 {
   "type": "comet",
   "parent": "spacebreaker:sun",
+  "dimension": "spacebreaker:churyumov_gerasimenko",
   "physical": { "mass_kg": 9.982e12, "radius_km": 1.65 },
   "orbit": { "semi_major_axis_km": 518057426, "eccentricity": 0.6410, "inclination_deg": 7.04, "period_days": 2353.84, "longitude_ascending_node_deg": 50.14, "argument_periapsis_deg": 12.78, "mean_anomaly_deg": 207.8373 },
   "rotation": { "day_length_hours": 12.40, "axial_tilt_deg": 0.0 },

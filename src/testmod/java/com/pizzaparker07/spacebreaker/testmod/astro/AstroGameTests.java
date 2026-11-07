@@ -54,7 +54,8 @@ public final class AstroGameTests {
             boolean giant = b.type() == BodyType.GAS_GIANT || b.type() == BodyType.ICE_GIANT;
             boolean skyOnly = b.type() == BodyType.STAR || b.type() == BodyType.COMET;
             helper.assertTrue(giant != b.landable() || skyOnly, name + " landable flag wrong");
-            helper.assertTrue(b.type() != BodyType.COMET || b.dimension().isEmpty(), name + ": comets have no dimension");
+            helper.assertTrue(b.type() != BodyType.COMET || b.dimension().isEmpty() || b.dimension().get().location().equals(Spacebreaker.id(name)),
+                    name + ": comet dimension id");
             if (b.landable() && !name.equals("earth")) {
                 ResourceKey<net.minecraft.world.level.Level> dim = ResourceKey.create(Registries.DIMENSION, Spacebreaker.id(name));
                 helper.assertTrue(b.dimension().orElseThrow().equals(dim), name + " should use dimension spacebreaker:" + name);
