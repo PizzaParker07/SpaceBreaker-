@@ -17,7 +17,6 @@ import net.minecraft.client.renderer.ShaderInstance;
 import org.joml.Matrix4f;
 import org.joml.Matrix4fStack;
 import org.joml.Vector3f;
-import org.lwjgl.opengl.GL11;
 
 /**
  * Thick and dusty atmospheres over a shader pack's finished frame.
@@ -40,9 +39,7 @@ public final class HazePass {
     private static float fogEnd;
     private static int fogShape;
     private static final float[] FOG_COLOR = new float[4];
-    private static int depthCopy = -1;
-    private static int copyWidth;
-    private static int copyHeight;
+    private static final DepthCopy DEPTH = new DepthCopy();
     private static boolean warned;
     private static final PassTimer TIMER = new PassTimer("haze pass");
 
@@ -148,7 +145,8 @@ public final class HazePass {
 
     private static void draw(Minecraft mc, Matrix4f viewMatrix, Matrix4f projection, boolean haze, Vector3f tint) {
         RenderTarget main = mc.getMainRenderTarget();
-        copyDepth(main);
+        DEPTH.copyFrom(main);
+        int depthCopy = DEPTH.texture();
 
         Matrix4f oldProjection = new Matrix4f(RenderSystem.getProjectionMatrix());
         VertexSorting oldSorting = RenderSystem.getVertexSorting();
@@ -206,38 +204,9 @@ public final class HazePass {
         BufferUploader.drawWithShader(b.buildOrThrow());
     }
 
-    /**
-     * Copies the frame's depth into our own texture, so it is not sampled while it is attached to the framebuffer
-     * being drawn to (a feedback loop). glCopyTexSubImage2D converts between depth formats, unlike a blit.
-     */
-    private static void copyDepth(RenderTarget main) {
-        if (depthCopy < 0 || copyWidth != main.width || copyHeight != main.height) {
-            if (depthCopy < 0) {
-                depthCopy = GlStateManager._genTexture();
-            }
-            copyWidth = main.width;
-            copyHeight = main.height;
-            GlStateManager._bindTexture(depthCopy);
-            GlStateManager._texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-            GlStateManager._texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-            GlStateManager._texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE);
-            GlStateManager._texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE);
-            GlStateManager._texParameter(GL11.GL_TEXTURE_2D, org.lwjgl.opengl.GL14.GL_TEXTURE_COMPARE_MODE, 0);
-            GlStateManager._texImage2D(GL11.GL_TEXTURE_2D, 0, org.lwjgl.opengl.GL30.GL_DEPTH_COMPONENT32F, copyWidth, copyHeight, 0,
-                    GL11.GL_DEPTH_COMPONENT, GL11.GL_FLOAT, null);
-        }
-        main.bindWrite(false); // binds the frame's framebuffer for reading too
-        GlStateManager._bindTexture(depthCopy);
-        GL11.glCopyTexSubImage2D(GL11.GL_TEXTURE_2D, 0, 0, 0, 0, 0, copyWidth, copyHeight);
-        GlStateManager._bindTexture(0);
-    }
-
     /** Frees the depth copy (world unload). */
     public static void release() {
-        if (depthCopy >= 0) {
-            RenderSystem.deleteTexture(depthCopy);
-            depthCopy = -1;
-        }
+        DEPTH.release();
         captured = false;
     }
 }

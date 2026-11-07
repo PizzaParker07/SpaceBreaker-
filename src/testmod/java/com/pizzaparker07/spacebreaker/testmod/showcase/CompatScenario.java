@@ -211,6 +211,12 @@ final class CompatScenario implements ShowcaseScenario {
         s.add(new ShowcaseDriver.Shot("14_ghost_blocks", 0, 0, 0, 0, 0F, 0F, true, fp, 80,
                 go(moonDim, 8.5, ground(t, 8, -6) + 2.2, 2.5, 180F, 22F, 0.15, null),
                 () -> CompatShowcaseClient.ghostOrigin = stageOrigin == null ? null : stageOrigin.offset(3, 0, 1)));
+        // habitat module (rocketry HabitatKitItem): translucent window band seen from inside and outside, roof solar row
+        double hy = ground(t, 40.5, 0.5);
+        s.add(new ShowcaseDriver.Shot("15_habitat_inside", 0, 0, 0, 0, 0F, 0F, true, fp, 120,
+                go(moonDim, 40.5, hy + 1 + 1.62, 0.5, -90F, 4F, 0.15, p -> habitat(p, hy)), null));
+        s.add(new ShowcaseDriver.Shot("16_habitat_outside", 0, 0, 0, 0, 0F, 0F, true, fp, 80,
+                go(moonDim, 51.5, hy + 5.5, 8.5, 125F, 18F, 0.15, null), null));
         // reentry plasma (GUI layer) over the pack's frame; a short view distance so the frame is ready while the
         // capsule is still in the heating phase (ticks keep running: ridden entities are never frozen)
         s.add(new ShowcaseDriver.Shot("13_reentry_plasma", 6000, 0, 0, 0, 0F, 0F, false, fp, 50, CompatScenario::reentry,
@@ -233,5 +239,19 @@ final class CompatScenario implements ShowcaseScenario {
             capsule.stageScene(com.pizzaparker07.spacebreaker.content.rocketry.entity.FlightState.REENTRY, 0, 3, false);
             p.startRiding(capsule, true);
         }));
+    }
+
+    /** Unfolds a habitat module with its floor at the ground (terrain cleared first). */
+    private static void habitat(ServerPlayer p, double groundY) {
+        ServerLevel level = (ServerLevel) p.level();
+        BlockPos centre = BlockPos.containing(40.5, groundY, 0.5);
+        for (BlockPos q : BlockPos.betweenClosed(centre.offset(-4, 0, -4), centre.offset(4, 8, 4))) {
+            level.setBlock(q, Blocks.AIR.defaultBlockState(), 3);
+        }
+        for (BlockPos q : BlockPos.betweenClosed(centre.offset(-4, -1, -4), centre.offset(4, -1, 4))) {
+            level.setBlock(q, EarthModule.STEEL.block.get().defaultBlockState(), 3);
+        }
+        com.pizzaparker07.spacebreaker.content.rocketry.station.HabitatKitItem.unfold(level, centre, Direction.NORTH);
+        p.teleportTo(level, 40.5, groundY + 1, 0.5, -90F, 4F);
     }
 }
