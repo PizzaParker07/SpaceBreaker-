@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-07T05:59:49.577504654	Loot Tables
+// 1.21.1	2026-11-07T06:04:26.424315015	Loot Tables
 c48f71ca60600cd6230f77a2e146a3df572494ae data/spacebreaker/loot_table/blocks/aerogel.json
 e37973997ec83c5b040a31bf9fcda1757b53fc00 data/spacebreaker/loot_table/blocks/airlock_door.json
 c511e60fe01f6dddc2d2b0e516ca81c11bf4ca91 data/spacebreaker/loot_table/blocks/aluminum_block.json
@@ -223,6 +223,7 @@ ffa9b85dea0733d27c3cfcb05899011c14689c3a data/spacebreaker/loot_table/blocks/sta
 a4499145abfbc8994b6600e9a4e8c584e85d86b6 data/spacebreaker/loot_table/blocks/station_hull.json
 baf725b5577471f08a2c9d672de8262eb9977b82 data/spacebreaker/loot_table/blocks/station_window.json
 9668587894b6dd2ba67f82f6fbd2b651f5fa6a01 data/spacebreaker/loot_table/blocks/steel_block.json
+6c0e6d7c364f25e63f72b3e787166e657b9a1bd2 data/spacebreaker/loot_table/blocks/suit_station.json
 977d42da1c4b4c689eedb4c3e79b0c3e9d6be19e data/spacebreaker/loot_table/blocks/sulcus_ice.json
 76b96b7a52ed1bbf54a1aaf74f22d13dafd4a6aa data/spacebreaker/loot_table/blocks/sulfur_crust.json
 ea96242faf6b4c4af60382624f936f9f07eb47d3 data/spacebreaker/loot_table/blocks/sulfur_sand.json

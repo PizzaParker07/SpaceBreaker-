@@ -77,6 +77,7 @@
     "spacebreaker:fluid_tank",
     "spacebreaker:pressurized_tank",
     "spacebreaker:cryogenic_tank",
+    "spacebreaker:suit_station",
     "spacebreaker:oxygen_filler",
     "spacebreaker:oxygen_distributor",
     "spacebreaker:airlock_door",

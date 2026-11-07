@@ -13,6 +13,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -138,6 +139,35 @@ public final class StationAirGameTests {
         com.pizzaparker07.spacebreaker.core.env.Environment.addOxygenSource((level, pos) -> level.getBlockState(pos).is(Blocks.BEACON));
         helper.setBlock(new BlockPos(1, 1, 1), Blocks.BEACON);
         helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.SuitEvents.pressurisedAt(p), "an Environment oxygen source counts");
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void suitStationTopsUpTanksAndMendsWear(GameTestHelper helper) {
+        BlockPos pos = new BlockPos(2, 1, 2);
+        helper.setBlock(pos, SuitModule.SUIT_STATION.get());
+        var be = (com.pizzaparker07.spacebreaker.content.suit.block.SuitStationBlockEntity) helper.getBlockEntity(pos);
+        Player p = helper.makeMockPlayer(GameType.SURVIVAL);
+        ItemStack torso = new ItemStack(SuitModule.EVA_CHESTPLATE.get());
+        com.pizzaparker07.spacebreaker.content.suit.SuitTanks.insert(torso, new ItemStack(SuitModule.OXYGEN_TANK.get()));
+        torso.setDamageValue(30);
+        p.setItemSlot(net.minecraft.world.entity.EquipmentSlot.CHEST, torso);
+        helper.assertFalse(be.service(p, true, 0), "without power nothing happens");
+        be.getEnergy().receiveEnergy(32000, false);
+        for (int t = 0; t <= 400; t++) {
+            be.service(p, true, t);
+        }
+        ItemStack worn = p.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.CHEST);
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.SuitTanks.oxygen(worn) == com.pizzaparker07.spacebreaker.content.suit.SuitTanks.capacity(worn),
+                "the worn tank is topped up, got " + com.pizzaparker07.spacebreaker.content.suit.SuitTanks.oxygen(worn));
+        helper.assertTrue(worn.getDamageValue() == 30 - 401 / com.pizzaparker07.spacebreaker.content.suit.block.SuitStationBlockEntity.REPAIR_TICKS - 1
+                || worn.getDamageValue() < 30, "wear is mended slowly, damage now " + worn.getDamageValue());
+        ItemStack loose = new ItemStack(SuitModule.EVA_HELMET.get());
+        loose.setDamageValue(5);
+        helper.assertTrue(be.mend(loose) && loose.getDamageValue() == 4, "a loose piece in the slot is mended too");
+        // off-planet without piped oxygen the station cannot fill tanks
+        com.pizzaparker07.spacebreaker.content.suit.SuitTanks.drain(worn, 100);
+        helper.assertFalse(be.fillWearer(p, false), "no breathable air and nothing piped in: no oxygen to give");
         helper.succeed();
     }
 }

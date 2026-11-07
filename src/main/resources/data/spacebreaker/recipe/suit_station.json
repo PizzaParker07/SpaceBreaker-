@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PGP",
+    "AFA",
+    "PRP"
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:anvil"
+    },
+    "F": {
+      "item": "spacebreaker:oxygen_filler"
+    },
+    "G": {
+      "item": "minecraft:iron_bars"
+    },
+    "P": {
+      "tag": "c:plates/aluminum"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:suit_station",
+    "count": 1
+  }
+}

@@ -1274,6 +1274,43 @@ def filler_top() -> Canvas:
     return cv
 
 
+def station_front(on=False) -> Canvas:
+    """Suit maintenance station front: an amber service band, a small helmet sign and a status lamp."""
+    cv = casing()
+    for x in range(1, 15):
+        cv[x, 2] = G[5]                      # amber service band
+    sign = parse_mask([
+        "..www...",
+        ".wwwww..",
+        "wwvvvww.",
+        "wwvvvww.",
+        ".wwwww..",
+        "..bbb...",
+    ])
+    for y, row in enumerate(sign):
+        for x, ch in enumerate(row):
+            if ch == 'w':
+                cv[4 + x, 5 + y] = W[7]
+            elif ch == 'v':
+                cv[4 + x, 5 + y] = V[2]
+            elif ch == 'b':
+                cv[4 + x, 5 + y] = V[2]
+    cv[12, 12] = LAMP_ON if on else S[3]   # status lamp
+    return cv
+
+
+def station_top() -> Canvas:
+    """Standing grate of the maintenance station: steel bars over the service ducts."""
+    cv = steel_top()
+    for y in range(2, 14):
+        for x in range(2, 14):
+            cv[x, y] = S[5] if (x - 2) % 3 != 2 else S[2]
+    for x in range(2, 14):
+        cv[x, 2] = S[3]
+        cv[x, 13] = S[3]
+    return cv
+
+
 def distributor_front(on=False) -> Canvas:
     """Casing with an air outlet louvre and a status lamp."""
     cv = casing()
@@ -1392,6 +1429,9 @@ def export_blocks(save):
     save(distributor_front(), 'block', 'oxygen_distributor_front', paint, wrap=False)
     save(distributor_front(True), 'block', 'oxygen_distributor_front_on', paint, wrap=False)
     save(distributor_top(), 'block', 'oxygen_distributor_top', metal, wrap=False)
+    save(station_front(), 'block', 'suit_station_front', paint, wrap=False)
+    save(station_front(True), 'block', 'suit_station_front_on', paint, wrap=False)
+    save(station_top(), 'block', 'suit_station_top', metal, wrap=False)
     save(airlock_frame(), 'block', 'airlock_door_frame', metal, wrap=False)
     save(airlock_panel(), 'block', 'airlock_door_panel', paint, wrap=False)
     save(airlock_panel(True), 'block', 'airlock_door_panel_window', paint, wrap=False)

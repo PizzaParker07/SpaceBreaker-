@@ -63,6 +63,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Boyanabilir aksan | tüm giysi parçalarının halka/aksan rengi boyayla değişir |
 | 🎨 | Manyetik EVA Botları | düşük/sıfır yerçekiminde zemine yapıştırır (eğilince bırakır); tutunurken metalik tık sesi, HUD'da MAG |
 | 🎨 | Manevra Ünitesi | gövdeye takılır; soğuk gazla uçuş (sıfır g'de 6 eksen, Ay'da havada kalma); dört lüleden itişe ters küçük gaz pufları (herkes görür) |
+| 🎨 | Giysi Bakım İstasyonu | giysiyle üstünde ya da yanında dur: tüpler ve Manevra Ünitesi dolar (gezegen havası ya da boruyla oksijen), aşınma yavaşça onarılır; yuvaya konan giysi parçası da onarılır; FE ile çalışır |
 | 🎨 | Güvenlik Halatı | bir bloğa takılır (kullan / tekrar kullan çözer); 16 bloktan uzağa sürüklenmeyi ve gergin halatta düşmeyi önler; turuncu halat herkese görünür, alçak yerçekiminde az sarkar; blok kırılınca ya da eşya bırakılınca çözülür |
 | 🎨 | Kask lambaları ve canlı giysi | karanlıkta lambalar kendiliğinden yanar (H tuşu: geniş / uzun huzme — lav tüpleri ve soğuk tuzaklar için dar, 40 bloğa uzanan koni): bakılan yere blok ışığı gibi kademeli ışık havuzu (dinamik ışık modu gerekmez, shader güvenli), dışarıdan kısa ışık konisi; vizörde gökyüzü yansıması; giysi dayanımının ötesindeki soğukta (ör. soğuk tuzak, Titan) vizör kenarına kırağı çöker, HUD'da SOĞUK TUZAK etiketi ve uyarısı; yürürken sırt çantası ve anten hafifçe sallanır |
 | 🎨 | Oksijen Tüpü (5 dk), Büyük Oksijen Tüpü (15 dk) | envanterde 2B, elde 3B; gövdenin sırt çantasına 2 tüp takılır |
