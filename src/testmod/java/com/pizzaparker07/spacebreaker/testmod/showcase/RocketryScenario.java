@@ -694,6 +694,50 @@ final class RocketryScenario implements ShowcaseScenario {
             moon.setBlock(new BlockPos(gx + 1, gy, gz - 2), RocketryModule.WARNING_LIGHT.get().defaultBlockState(), 3);
             toDimension(p, Location.MOON_SURFACE, gx + 0.5, gy + 1.8, gz + 1.5, -115F, 12F);
         }, null));
+        s.add(new Shot("51_airlock", 6000, 0, 0, 0, 0F, 0F, true, fp, 80, p -> {
+            clearScene(p);
+            ServerLevel moon = p.server.getLevel(Location.MOON_SURFACE.dimension());
+            int gx = 200, gz = 40;
+            moon.getChunk(gx >> 4, gz >> 4);
+            int gy = moon.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, gx, gz);
+            var panel = com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.ALUMINUM_PANEL.base().get();
+            var stripe = com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.HAZARD_STRIPE.base().get();
+            var deck = com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.TITANIUM_DECK.base().get();
+            // an airlock chamber three blocks deep between two sliding doors; the outer one cycles open, the inner stays shut
+            for (int dz = -1; dz <= 5; dz++) {
+                for (int dx = -2; dx <= 2; dx++) {
+                    for (int up = -1; up <= 3; up++) {
+                        boolean shell = Math.abs(dx) == 2 || up == -1 || up == 3;
+                        net.minecraft.world.level.block.Block b = !shell ? net.minecraft.world.level.block.Blocks.AIR
+                                : up == -1 ? (dz >= 1 && dz <= 3 && Math.abs(dx) < 2 ? stripe : deck) : panel;
+                        moon.setBlock(new BlockPos(gx + dx, gy + up, gz + dz), b.defaultBlockState(), 3);
+                    }
+                }
+            }
+            var door = com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.SLIDING_DOOR.get();
+            BlockPos outer = new BlockPos(gx, gy, gz), inner = outer.south(4);
+            for (BlockPos d : new BlockPos[]{outer, inner}) {
+                for (int dx = -1; dx <= 1; dx += 2) {
+                    for (int up = 0; up < 3; up++) {
+                        moon.setBlock(d.offset(dx, up, 0), panel.defaultBlockState(), 3);
+                    }
+                }
+                moon.setBlock(d.above(2), panel.defaultBlockState(), 3);
+                com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock.place(moon, d, door.defaultBlockState());
+            }
+            // the outer door sits open (the inner one shut); the outside beyond it is left as Moon
+            moon.setBlock(outer, moon.getBlockState(outer).setValue(com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock.OPEN, true), 3);
+            for (int dx = -1; dx <= 1; dx++) {
+                for (int up = 0; up < 3; up++) {
+                    moon.setBlock(new BlockPos(gx + dx, gy + up, gz - 1), net.minecraft.world.level.block.Blocks.AIR.defaultBlockState(), 3);
+                }
+            }
+            moon.setBlock(new BlockPos(gx, gy + 2, gz + 2), com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.LED_PANEL.get().defaultBlockState(), 3);
+            moon.setBlock(new BlockPos(gx - 1, gy + 2, gz + 1), RocketryModule.WARNING_LIGHT.get().defaultBlockState()
+                    .setValue(com.pizzaparker07.spacebreaker.content.rocketry.pad.WarningLightBlock.FACING, net.minecraft.core.Direction.DOWN), 3);
+            moon.setBlock(new BlockPos(gx - 1, gy + 3, gz + 1), net.minecraft.world.level.block.Blocks.REDSTONE_BLOCK.defaultBlockState(), 3);
+            toDimension(p, Location.MOON_SURFACE, gx + 0.5, gy + 0.9, gz - 1.2, 0F, 4F);
+        }, null));
         s.add(new Shot("31_nearby_stars", 6000, 0, 0, 0, 0F, 0F, false, fp, 120,
                 p -> {
                     RocketryShowcaseClient.star = "Alpha Centauri";
