@@ -119,7 +119,7 @@ final class VenusScenario implements ShowcaseScenario {
         s.add(new ShowcaseDriver.Shot("08b_aerostat_gondola_outside", 0, AX + 23.5, AY + 5, AZ - 11.5, 20F, 7F, true, fp, 100, at(0.22), null));
         s.add(new ShowcaseDriver.Shot("09_aerostat_gondola", 0, AX + 12.5, AY + 3.6, AZ + 7.5, -40F, 4F, true, fp, 80, at(0.22), null));
         s.add(new ShowcaseDriver.Shot("09b_aerostat_bridge", 0, AX + 17.5, AY + 3.6, AZ + 8.5, -90F, 4F, true, fp, 80, at(0.22), null));
-        s.add(new ShowcaseDriver.Shot("11_aerostat_kit_base", 0, KX + 14.5, KY + 7, KZ + 14.5, 135F, 18F, true, fp, 140, at(0.22), null));
+        s.add(new ShowcaseDriver.Shot("11_aerostat_kit_base", 0, KX + 18.5, KY + 9, KZ + 18.5, 135F, 4F, true, fp, 140, at(0.22), null));
         s.add(new ShowcaseDriver.Shot("10_sunset_above_clouds", 0, PX + 0.5, PY + 6, PZ + 0.5, -90F, 2F, true, fp, 120, at(0.49), null));
         return s;
     }

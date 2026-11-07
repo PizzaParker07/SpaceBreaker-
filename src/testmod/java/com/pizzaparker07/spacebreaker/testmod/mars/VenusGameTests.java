@@ -195,7 +195,7 @@ public final class VenusGameTests {
         int placed = com.pizzaparker07.spacebreaker.content.venus.AerostatKitItem.deploy(level, deck);
         int panels = 0;
         int fabric = 0;
-        for (BlockPos p : BlockPos.betweenClosed(deck.offset(-6, 0, -6), deck.offset(6, 13, 6))) {
+        for (BlockPos p : BlockPos.betweenClosed(deck.offset(-6, 0, -6), deck.offset(6, 17, 6))) {
             panels += level.getBlockState(p).is(VenusModule.COMPOSITE_PANEL.get()) ? 1 : 0;
             fabric += level.getBlockState(p).is(VenusModule.ENVELOPE_FABRIC.get()) ? 1 : 0;
         }
