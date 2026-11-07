@@ -205,6 +205,9 @@ Complementary the tint is weaker (the pack re-lights translucent entities) but t
 - **Comets:** in space worlds the comet tails are part of our sky. On the Overworld the pack keeps its own sky
   and clouds: Halley in 2061 is drawn, its dust tail partly hidden behind the pack's blocky night clouds (they are in
   front of it, as clouds are). 67P's surface and jets look as without shaders (`comets_vanilla_vs_iris.jpg`).
+- **Base blocks (pressurised glass, porthole, LED panels, sliding door, warning light):** the glass is see-through and
+  tinted under the pack, the LED panels light the corridor at night as in vanilla, door and warning light render
+  (`base_blocks_vanilla_vs_iris.jpg`). The rotating warning-light beam was not caught in a still frame.
 - **Docking jolt:** a camera roll/pitch from `ViewportEvent.ComputeCameraAngles`; Iris builds its matrices from the
   same camera, so the shake is the same with a pack (at most about 2°, too small to tell apart in a still frame).
 - **Inside a closed module the pack's ambient fill is blue:** the airless sky colour handed to the pack
