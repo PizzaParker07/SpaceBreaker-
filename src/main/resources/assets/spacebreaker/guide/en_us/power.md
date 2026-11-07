@@ -22,3 +22,21 @@ Every machine runs on **FE** (energy). Production and use are measured in "FE/t"
 
 > [!TIP]
 > The solar panel gives power out of every side except the top. Placing it right next to the lab is enough.
+
+{page}
+## Night and power {#night}
+For a steady 10 FE/t load (a panel gives at most 20 FE/t at noon, a battery bank holds 1,000,000 FE):
+
+| World | Night | Sunlight | Panels | Battery banks |
+|---|---|---|---|---|
+| Mercury | 115 min | 667% (capped at 3×) | 0.4 | 1.4 |
+| Moon | 47 min | 100% | 1.1 | 0.6 |
+| Mars | 9 min | 43% | 2.5 | 0.1 |
+| Ceres | 5 min | 13% | 8 | 0.06 |
+| Europa | 16 min | 3.7% | 29 | 0.2 |
+| Ganymede | 23 min | 3.7% | 29 | 0.3 |
+| Callisto | 35 min | 3.7% | 29 | 0.4 |
+| Titan | 35 min | 1.1% | 100 | 0.4 |
+| Pluto | 22 min | 0.06% | ~1000 | 0.3 |
+
+>! From Europa outwards solar panels are not practical: the Sun is too far. Use a **radioisotope generator (RTG)** there; one RTG carries four 10 FE/t loads.

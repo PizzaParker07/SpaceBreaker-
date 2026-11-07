@@ -52,7 +52,7 @@ import java.util.Map;
  * The field guide: a large two-page book scaled to the screen. A bar above the book has back / forward / contents
  * buttons and a search box; coloured bookmark ribbons on the right jump to each category. Chapters are Markdown
  * ({@link GuideMarkdown}) laid out over as many pages as they need; arrows, Page Up/Down and the mouse wheel turn
- * the pages. Nothing is locked: chapters tied to a technology only show a small "Research needed" note.
+ * the pages. Nothing is locked: chapters tied to a technology only show a small "Related research" note.
  */
 public class GuideScreen extends Screen {
     private static final ResourceLocation COVER = Spacebreaker.id("guide/cover"), PAGE_L = Spacebreaker.id("guide/page_left"),

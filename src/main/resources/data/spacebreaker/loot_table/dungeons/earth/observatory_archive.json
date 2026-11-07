@@ -90,7 +90,8 @@
                 "spacebreaker:fuel_refining",
                 "spacebreaker:launch_infrastructure",
                 "spacebreaker:electronics",
-                "spacebreaker:metal_pressing"
+                "spacebreaker:metal_pressing",
+                "spacebreaker:electrolysis"
               ]
             }
           ]

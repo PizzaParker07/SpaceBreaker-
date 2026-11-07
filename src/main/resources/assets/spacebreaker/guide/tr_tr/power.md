@@ -22,3 +22,21 @@ Bütün makineler **FE** (enerji) ile çalışır. Üretim ve tüketim "FE/t" il
 
 > [!TIP]
 > Güneş paneli enerjiyi üst yüzü hariç her yöne verir. Laboratuvarın hemen yanına koymak yeter.
+
+{page}
+## Gece ve enerji {#night}
+10 FE/t'lik sürekli bir yük için (panel öğlede en çok 20 FE/t, akü bankası 1 000 000 FE):
+
+| Dünya | Gece | Güneş | Panel | Akü bankası |
+|---|---|---|---|---|
+| Merkür | 115 dk | %667 (en çok 3×) | 0,4 | 1,4 |
+| Ay | 47 dk | %100 | 1,1 | 0,6 |
+| Mars | 9 dk | %43 | 2,5 | 0,1 |
+| Ceres | 5 dk | %13 | 8 | 0,06 |
+| Europa | 16 dk | %3,7 | 29 | 0,2 |
+| Ganymede | 23 dk | %3,7 | 29 | 0,3 |
+| Kallisto | 35 dk | %3,7 | 29 | 0,4 |
+| Titan | 35 dk | %1,1 | 100 | 0,4 |
+| Plüton | 22 dk | %0,06 | ~1000 | 0,3 |
+
+>! Europa ve ötesinde güneş paneli pratik değildir: Güneş çok uzaktır. Oralarda bir **radyoizotop jeneratörü (RTG)** kullan; tek bir RTG dört tane 10 FE/t'lik yükü taşır.

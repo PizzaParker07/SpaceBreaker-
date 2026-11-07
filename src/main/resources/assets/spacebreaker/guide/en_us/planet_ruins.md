@@ -5,7 +5,7 @@ research: spacebreaker:interplanetary_transfers
 ---
 | Where | Ruin |
 |---|---|
-| Mars | Abandoned research station: greenhouse, ISRU plant, drilling rig |
+| Mars | Abandoned research station: greenhouse, ISRU plant, drilling rig; an arrow trap in the garage tunnel |
 | Mars | Buried ancient riverbed with a fallen probe |
 | Phobos | Crashed sample-return probe |
 | Deimos | Deimos ice cache |

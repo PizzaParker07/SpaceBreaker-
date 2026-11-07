@@ -2,7 +2,7 @@
 title: İlerleme Yolu
 icon: minecraft:compass
 ---
-İlk boksitten Ay'a ve Mars'a, adım adım. Bu kitapta hiçbir sayfa kilitli değil; bir bölümün başındaki **Gereken araştırma** notu, o konuyu uygulamak için hangi teknolojiyi öğrenmen gerektiğini söyler.
+İlk boksitten Ay'a ve Mars'a, adım adım. Bu kitapta hiçbir sayfa kilitli değil; bir bölümün başındaki **İlgili araştırma** notu, o konuyla ilgili teknolojiyi gösterir. Neyin gerçekten kilitlendiğini [Araştırma Nasıl İşler?](research_basics#locks) anlatır.
 
 ## 1. Boksit ve alüminyum
 Kızıl-kahve {item spacebreaker:bauxite_ore} her yerde seyrek, sıcak tepelerde bol bulunur. Ham boksiti ocakta eriterek {item spacebreaker:aluminum_ingot} yap. İki külçeyi üst üste koyarak elle levha yaparsın. → [Cevherler](ores)
@@ -19,7 +19,7 @@ Laboratuvar enerjiyle çalışır. İlk enerjin {item spacebreaker:combustion_ge
 {recipe spacebreaker:combustion_generator}
 
 > İlk makinen {item spacebreaker:crusher} için bir {item spacebreaker:electric_motor} gerekir. Motorun istediği demir çubuğu da elle yaparsın: üç demir külçesini dikey koy, iki çubuk çıkar.
-{recipe? spacebreaker:iron_rod_by_hand}
+{recipe spacebreaker:iron_rod_by_hand}
 
 {page}
 ## 3. Laboratuvar ve numuneler
@@ -34,7 +34,7 @@ Dünya numuneleriyle şunları araştır:
 - {tech spacebreaker:electronics}, sonra {tech spacebreaker:precision_manufacturing}: parça üretim tezgâhı.
 - {tech spacebreaker:pressure_suits} ve {tech spacebreaker:oxygen_storage}: EVA giysisi ve tüpler.
 
-> Makineler, onları açan teknolojiyi bilmeyen birine aitse çalışmaz. Tarifler ise herkese açıktır.
+> Makineler, onları açan teknolojiyi bilmeyen birine aitse çalışmaz. Tarifler ise herkese açıktır. → [Araştırma neyi kilitler?](research_basics#locks)
 
 {page}
 ## 5. Yakıt

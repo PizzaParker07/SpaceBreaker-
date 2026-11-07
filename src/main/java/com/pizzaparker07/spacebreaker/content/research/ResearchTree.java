@@ -44,6 +44,9 @@ public final class ResearchTree {
     public static final ResourceLocation METEORITE = Spacebreaker.id("meteorite");
     public static final ResourceLocation SUBORBITAL = Spacebreaker.id("suborbital_flight");
     public static final ResourceLocation ORBIT = Spacebreaker.id("orbital_flight");
+    /** Flight records from uncrewed missions (rocketry: observation satellites and landing probes). */
+    public static final ResourceLocation ORBITAL_SURVEY = Spacebreaker.id("orbital_survey");
+    public static final ResourceLocation PROBE_LANDING = Spacebreaker.id("probe_landing");
 
     public record Def(ResourceLocation id, TechNode node, String en, String tr, String enDesc, String trDesc) {
     }
@@ -294,7 +297,7 @@ public final class ResearchTree {
                 .en("Satellites", "Put eyes and relays in orbit: mapping, weather and communication satellites.")
                 .tr("Uydular", "Yörüngeye göz ve aktarıcı yerleştir: haritalama, hava durumu ve iletişim uyduları.");
         t("spectroscopy", ASTRONOMY, 2).req("observational_astronomy", "advanced_electronics").icon("minecraft:prismarine_crystals")
-                .samples(METEORITE)
+                .samples(METEORITE, ORBITAL_SURVEY)
                 .en("Spectroscopy", "Split starlight into a rainbow and read what distant worlds are made of.")
                 .tr("Spektroskopi", "Yıldız ışığını gökkuşağına ayır ve uzak dünyaların neyden yapıldığını oku.");
         t("interplanetary_transfers", ASTRONOMY, 2).req("orbital_mechanics").icon("minecraft:map")
@@ -306,11 +309,11 @@ public final class ResearchTree {
                 .en("Space Probes", "Uncrewed explorers that fly ahead and send back pictures of worlds no one has seen.")
                 .tr("Uzay Sondaları", "Önden giden ve kimsenin görmediği dünyaların görüntülerini gönderen insansız kâşifler.");
         t("gravity_assists", ASTRONOMY, 3).req("interplanetary_transfers", "space_probes").icon("minecraft:heart_of_the_sea")
-                .samples(CALLISTO)
+                .samples(CALLISTO, ORBITAL_SURVEY)
                 .en("Gravity Assists", "Steal a little of a planet's orbital speed by flying close behind it.")
                 .tr("Kütleçekim Yardımı", "Bir gezegenin hemen arkasından geç ve onun yörünge hızından biraz kap.");
         t("deep_space_network", ASTRONOMY, 3).req("space_probes", "nuclear_fission").icon("minecraft:conduit")
-                .samples(CALLISTO)
+                .samples(CALLISTO, ORBITAL_SURVEY)
                 .en("Deep Space Network", "Giant dishes that can hear a probe's faint signal from beyond Saturn.")
                 .tr("Derin Uzay Ağı", "Bir sondanın Satürn'ün ötesinden gelen zayıf sinyalini duyabilen dev çanaklar.");
 
@@ -354,7 +357,7 @@ public final class ResearchTree {
                 .en("Lunar Surveying", "Map the maria and highlands; find ilmenite, ice and the safest landing sites.")
                 .tr("Ay Araştırması", "Denizleri ve yaylaları haritala; ilmeniti, buzu ve en güvenli iniş yerlerini bul.");
         t("rovers", EXPLORATION, 2).req("lunar_surveying", "electronics").icon("minecraft:minecart")
-                .samples(MOON)
+                .samples(MOON, PROBE_LANDING)
                 .en("Rovers", "Electric vehicles with wire-mesh wheels for driving across dusty plains.")
                 .tr("Gezici Araçlar", "Tozlu ovalarda sürmek için tel örgü tekerlekli elektrikli araçlar.");
         t("martian_geology", EXPLORATION, 2).req("field_geology", "interplanetary_transfers").icon("minecraft:red_sand")
@@ -362,7 +365,7 @@ public final class ResearchTree {
                 .en("Martian Geology", "Ancient riverbeds, hematite spherules and perchlorate soils tell the story of Mars.")
                 .tr("Mars Jeolojisi", "Eski nehir yatakları, hematit kürecikleri ve perkloratlı topraklar Mars'ın hikâyesini anlatır.");
         t("astrobiology", EXPLORATION, 2).req("martian_geology", "spectroscopy").icon("minecraft:sculk_sensor")
-                .samples(MARS, VENUS)
+                .samples(MARS, VENUS, PROBE_LANDING)
                 .en("Astrobiology", "Where could life survive out there, and how would we recognise it?")
                 .tr("Astrobiyoloji", "Orada yaşam nerede hayatta kalabilir ve onu nasıl tanırız?");
         t("asteroid_mining", EXPLORATION, 3).req("rovers", "ion_propulsion").icon("minecraft:raw_iron")

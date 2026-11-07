@@ -13,10 +13,16 @@ Yeni makineler, roket parçaları ve giysiler **teknolojilerle** açılır. Bir 
 
 > Her teknolojinin bir numune kaynağı vardır, şansa bağlı değilsin. Tek istisna **Temel Roketçilik**: diski her gözlemevinin arşivinde kesin bulunur. Diskler kısa yoldur: numune beklemeden o teknolojiyi öğretir.
 
+## Araştırma neyi kilitler? {#locks}
+Tarifler **herkese açıktır**: her şeyi araştırmadan da üretebilirsin. Araştırma yalnızca üç yerde gerekir:
+- **Makineler** (ark fırını, pres, parça üretim tezgâhı, rafineri, petrol pompası, elektroliz ünitesi, kriyojenik sıvılaştırıcı, ISRU makineleri, kimyasal reaktör): kurarsın ama sahibi teknolojiyi bilmiyorsa **"Araştırma gerekli"** der ve çalışmaz.
+- **Roket parçaları:** teknolojisini bilmediğin parçayı montaj tezgâhına koyamazsın.
+- **Gelişmiş giysiler:** teknolojisini bilmiyorsan ısıtmalı, termal ya da radyasyon giysisi yalnızca EVA giysisi kadar korur.
+
 ## Numune almak
 {recipe spacebreaker:sample_kit}
 
-{item spacebreaker:sample_kit} elindeyken doğal zemine (taş, toprak, kum, çakıl, cevher) {key key.use} tuşuna bas. Çanta, üstünde durduğun dünyanın numunesini kavanoza koyar. Çantanın 32 kullanımı vardır.
+{item spacebreaker:sample_kit} elindeyken doğal zemine (taş, toprak, kum, çakıl, cevher) {key key.use} tuşuna bas. Kit, üstünde durduğun dünyanın numunesini kavanoza koyar. Kitin 32 kullanımı vardır.
 
 {items spacebreaker:field_sample spacebreaker:experiment_data spacebreaker:tech_disk}
 

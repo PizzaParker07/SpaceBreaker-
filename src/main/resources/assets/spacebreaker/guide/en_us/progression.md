@@ -2,7 +2,7 @@
 title: The Road Ahead
 icon: minecraft:compass
 ---
-From your first bauxite to the Moon and Mars, step by step. No page in this book is locked; a **Research needed** note at the top of a chapter tells you which technology you need to put it into practice.
+From your first bauxite to the Moon and Mars, step by step. No page in this book is locked; a **Related research** note at the top of a chapter names the technology behind it. [How Research Works](research_basics#locks) explains what is really locked.
 
 ## 1. Bauxite and aluminium
 Red-brown {item spacebreaker:bauxite_ore} is thin everywhere and rich in warm hills. Smelt raw bauxite in a furnace into {item spacebreaker:aluminum_ingot}. Two ingots stacked make a plate by hand. → [Ores](ores)
@@ -19,7 +19,7 @@ The lab runs on energy. Your first power is the {item spacebreaker:combustion_ge
 {recipe spacebreaker:combustion_generator}
 
 > Your first machine, the {item spacebreaker:crusher}, needs an {item spacebreaker:electric_motor}. Make the iron rods the motor needs by hand: three iron ingots in a column give two rods.
-{recipe? spacebreaker:iron_rod_by_hand}
+{recipe spacebreaker:iron_rod_by_hand}
 
 {page}
 ## 3. Lab and samples
@@ -34,7 +34,7 @@ Research these with Earth samples:
 - {tech spacebreaker:electronics}, then {tech spacebreaker:precision_manufacturing}: the fabricator.
 - {tech spacebreaker:pressure_suits} and {tech spacebreaker:oxygen_storage}: EVA suit and tanks.
 
-> A machine does not run if its owner does not know the technology that unlocks it. Recipes are open to everyone.
+> A machine does not run if its owner does not know the technology that unlocks it. Recipes are open to everyone. → [What does research lock?](research_basics#locks)
 
 {page}
 ## 5. Fuel

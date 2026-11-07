@@ -5,7 +5,7 @@ research: spacebreaker:interplanetary_transfers
 ---
 | Yer | Harabe |
 |---|---|
-| Mars | Terk edilmiş araştırma istasyonu: sera, ISRU tesisi, sondaj kulesi |
+| Mars | Terk edilmiş araştırma istasyonu: sera, ISRU tesisi, sondaj kulesi; garaj tünelinde ok tuzağı |
 | Mars | Gömülü eski nehir yatağı ve düşmüş bir sonda |
 | Phobos | Düşmüş Numune Dönüş Sondası |
 | Deimos | Deimos Buz Deposu |

@@ -18,3 +18,5 @@ Isp 300 s, 100 t full, 25 t empty: Δv = 300 · 9.81 · ln(4) ≈ **4,080 m/s**.
 
 > [!TIP]
 > To lift off, **thrust must beat weight**: thrust-to-weight above 1, ideally 1.3–1.5.
+
+→ More: [Delta-v and the Rocket Equation](sci_delta_v)

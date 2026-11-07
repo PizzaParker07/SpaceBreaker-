@@ -6,7 +6,8 @@
     "spacebreaker:space_probes"
   ],
   "samples": [
-    "spacebreaker:callisto"
+    "spacebreaker:callisto",
+    "spacebreaker:orbital_survey"
   ],
   "tier": 3
 }

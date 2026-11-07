@@ -12,5 +12,8 @@ Düşüşler yumuşaktır, elytra çok uzağa süzülür. Buranın temel kaynağ
 {entity spacebreaker:methane_skater}
 **Metan Kayıcıları** göllerin üstünde yürür.
 
+{entity spacebreaker:tholin_worm}
+**Tolin Solucanı** kuma gömülür ve ara sıra tolin bırakır. Ürkektir; tolin kumuyla çoğalır.
+
 ## Harabe
 Bir döner kanat hangarı {tech spacebreaker:hydrocarbon_processing} ve şunu öğretir: {tech spacebreaker:aerial_mobility}.
