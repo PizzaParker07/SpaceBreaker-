@@ -214,6 +214,13 @@ Reviewed: no missing textures (purple/black), no untranslated keys, no invisible
   GameTest `stationArrayCarriesTheDepotThroughShadow`). Rocketry asked not to add the sunlight modifier as well (it would
   apply the shadow twice). To confirm on 1.21.1 after the 05:00 merge.
 
+- Model rule updated (inner planets, Moon change 8a61c8e: Mercury cold traps about −213 °C): Mercury's local industry now
+  needs the heated suit **or** Mk1 with thermal regulator modules. Mercury stays a plain hydrolox round trip (step 15).
+- QA-17 (rocketry, low): `RocketryGameTests.dockingApproach` is flaky on 1.21.1 @ 8dc7d6f — failed 2 of 5 full runs at the
+  300-tick timeout with "approach finished" (`RocketryGameTests.java:927`): the rocket was still `docking()` when the test
+  ended. The other runs pass. Possibly the approach speed depends on the tick the entity first ticks (spawned in a chunk
+  that starts ticking late); a longer timeout or waiting for the first entity tick before `approachPort` would tell.
+
 ## Localization (round 1)
 - Key parity en_us/tr_tr is complete (1305 each), placeholders and colour codes match, no broken characters.
 - Turkish reads naturally overall. Small suggestions (research keeps docs/GLOSSARY.md):
@@ -509,10 +516,10 @@ None.
 | spacebreaker:io/orbit | round_trip | 9875 | 2-stage [hydrolox_engine, 3× fuel_tank_large / decoupler / hydrolox_vacuum_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 10292 m/s vacuum Δv |
 | spacebreaker:europa/surface | round_trip | 10310 | 3-stage [hydrolox_engine, 2× fuel_tank_large / decoupler / hydrolox_vacuum_engine, 2× fuel_tank_large / decoupler / hydrolox_vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 10479 m/s vacuum Δv |
 | spacebreaker:europa/orbit | round_trip | 9138 | 2-stage [hydrolox_engine, 3× fuel_tank_large / decoupler / hydrolox_vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 9408 m/s vacuum Δv |
-| spacebreaker:callisto/surface | round_trip | 9304 | 2-stage [hydrolox_engine, 3× fuel_tank_large / decoupler / hydrolox_vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 9996 m/s vacuum Δv |
-| spacebreaker:callisto/orbit | round_trip | 7872 | 2-stage [hydrolox_engine, 2× fuel_tank_large / decoupler / hydrolox_vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 8502 m/s vacuum Δv |
 | spacebreaker:ganymede/surface | round_trip | 9924 | 2-stage [hydrolox_engine, 3× fuel_tank_large / decoupler / hydrolox_vacuum_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 10292 m/s vacuum Δv |
 | spacebreaker:ganymede/orbit | round_trip | 8327 | 2-stage [hydrolox_engine, 2× fuel_tank_large / decoupler / hydrolox_vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 8502 m/s vacuum Δv |
+| spacebreaker:callisto/surface | round_trip | 9304 | 2-stage [hydrolox_engine, 3× fuel_tank_large / decoupler / hydrolox_vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 9996 m/s vacuum Δv |
+| spacebreaker:callisto/orbit | round_trip | 7872 | 2-stage [hydrolox_engine, 2× fuel_tank_large / decoupler / hydrolox_vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 8502 m/s vacuum Δv |
 | spacebreaker:saturn/orbit | round_trip | 9545 | 2-stage [hydrolox_engine, 3× fuel_tank_large / decoupler / hydrolox_vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 9996 m/s vacuum Δv |
 | spacebreaker:enceladus/surface | round_trip | 9735 | 2-stage [hydrolox_engine, 3× fuel_tank_large / decoupler / hydrolox_vacuum_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 10292 m/s vacuum Δv |
 | spacebreaker:enceladus/orbit | round_trip | 9604 | 2-stage [hydrolox_engine, 3× fuel_tank_large / decoupler / hydrolox_vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 9996 m/s vacuum Δv |

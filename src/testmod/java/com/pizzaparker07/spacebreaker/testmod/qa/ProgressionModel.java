@@ -790,9 +790,9 @@ final class ProgressionModel {
 
     /**
      * Suit a world's local industry needs (its resources sit somewhere a lighter suit cannot go). Mercury: the polar ice
-     * lies in cold-trap crater floors (about −240 °C), so its ice mine needs the heated suit (inner planets, by design).
+     * lies in cold-trap crater floors (about −213 °C): the heated suit, or Mk1 with thermal regulator modules.
      */
-    static final Map<String, String> WORK_SUIT = Map.of("spacebreaker:mercury", "heated");
+    static final Map<String, String> WORK_SUIT = Map.of("spacebreaker:mercury", "heated|eva+thermal_regulator_module");
 
     /** The fact "a full suit of this tier can be worn with its protection", or null. */
     String suit(String tierId) {
@@ -830,13 +830,31 @@ final class ProgressionModel {
         List<String> deps = new ArrayList<>();
         deps.add(item(it));
         deps.add(landed(w));
-        String tier = WORK_SUIT.get(w.location().toString());
-        if (tier != null) {
-            String suit = suit(tier);
-            if (suit == null) {
+        String rule = WORK_SUIT.get(w.location().toString());
+        if (rule != null) {
+            // alternatives separated by '|'; "tier+module" = that suit with the module item (Mk1 + thermal regulators)
+            List<String> ok = null;
+            for (String option : rule.split("\\|")) {
+                String[] parts = option.split("\\+");
+                String suit = suit(parts[0]);
+                if (suit == null) {
+                    continue;
+                }
+                List<String> d = new ArrayList<>(List.of(suit));
+                if (parts.length > 1) {
+                    Item module = BuiltInRegistries.ITEM.get(Spacebreaker.id(parts[1]));
+                    if (!hasItem(module)) {
+                        continue;
+                    }
+                    d.add(item(module));
+                }
+                ok = d;
+                break;
+            }
+            if (ok == null) {
                 return null;
             }
-            deps.add(suit);
+            deps.addAll(ok);
         }
         ResourceLocation id = BuiltInRegistries.BLOCK.getKey(machine);
         if (machinesThatEnforce.contains(id)) {
