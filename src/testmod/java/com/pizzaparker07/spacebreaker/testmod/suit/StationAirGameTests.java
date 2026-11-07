@@ -203,4 +203,46 @@ public final class StationAirGameTests {
         helper.assertTrue(cap != null && cap.receiveEnergy(500, false) == 500, "any FE charger can fill it");
         helper.succeed();
     }
+
+    @GameTest(template = "empty")
+    public static void wideBoreDrillDigsThreeByThree(GameTestHelper helper) {
+        // smithing: template + drill + head keeps the charge and adds the wide bore
+        ItemStack drill = new ItemStack(SuitModule.ELECTRIC_DRILL.get());
+        com.pizzaparker07.spacebreaker.content.suit.ElectricDrillItem.setEnergy(drill, 5000);
+        var input = new net.minecraft.world.item.crafting.SmithingRecipeInput(new ItemStack(SuitModule.SUIT_UPGRADE_TEMPLATE.get()), drill,
+                new ItemStack(SuitModule.WIDE_BORE_HEAD.get()));
+        var recipe = helper.getLevel().getRecipeManager().getRecipeFor(net.minecraft.world.item.crafting.RecipeType.SMITHING, input, helper.getLevel());
+        helper.assertTrue(recipe.isPresent(), "the wide-bore smithing recipe matches");
+        ItemStack wide = recipe.get().value().assemble(input, helper.getLevel().registryAccess());
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.ElectricDrillItem.wideBore(wide), "the result has the wide bore");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.ElectricDrillItem.energy(wide) == 5000, "and keeps its charge");
+        // a 3 x 3 floor of stone; the centre has just been mined, looking down at it
+        for (int x = 1; x <= 3; x++) {
+            for (int z = 1; z <= 3; z++) {
+                helper.setBlock(x, 1, z, Blocks.STONE);
+            }
+        }
+        helper.setBlock(2, 1, 2, Blocks.AIR);
+        // a survival miner (the GameTest mock player is creative, which spends no charge)
+        net.minecraft.server.level.ServerPlayer sp = net.neoforged.neoforge.common.util.FakePlayerFactory.getMinecraft(helper.getLevel());
+        sp.gameMode.changeGameModeForPlayer(GameType.SURVIVAL);
+        helper.assertFalse(sp.isCreative(), "the miner is in survival");
+        sp.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, wide);
+        BlockPos centre = helper.absolutePos(new BlockPos(2, 1, 2));
+        com.pizzaparker07.spacebreaker.content.suit.ElectricDrillItem.breakAround(sp, centre, Blocks.STONE.defaultBlockState(), Direction.UP);
+        int left = 0;
+        for (int x = 1; x <= 3; x++) {
+            for (int z = 1; z <= 3; z++) {
+                if (!helper.getBlockState(new BlockPos(x, 1, z)).isAir()) {
+                    left++;
+                }
+            }
+        }
+        helper.assertTrue(left == 0, "the eight neighbours are dug too, " + left + " left");
+        int spent = 5000 - com.pizzaparker07.spacebreaker.content.suit.ElectricDrillItem.energy(sp.getMainHandItem());
+        helper.assertTrue(spent == 8 * com.pizzaparker07.spacebreaker.content.suit.ElectricDrillItem.FE_PER_BLOCK, "each block spends its own charge, spent " + spent);
+        sp.setShiftKeyDown(true);
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.ElectricDrillItem.wideFace(sp, centre) == null, "sneaking digs a single block");
+        helper.succeed();
+    }
 }

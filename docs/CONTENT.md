@@ -75,7 +75,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Hayatta kalma | boşlukta nefes tutma ve boğulma, yavaş değişen vücut ısısı (hipotermi/aşırı ısınma), radyasyon dozu, gerçek yerçekimi (zıplama ve düşme hasarı ölçekli) |
 | 🎨 | Çevre Sensörü | kullan: 10 sn'lik okuma kartı — basınç (kPa/bar), hava bileşimi (gövde verisinden), sıcaklık (güneşte/gölgede), radyasyon doz hızı, yerçekimi, ayak altındaki zemin; Mars panel tozu için kanca |
 | 🎨 | Titanyum aletler: kazma, balta, kürek, çapa, kılıç | demir ile elmas arası (1100 kullanım, hız 7, demir kazma seviyesi), daha hafif ve hızlı savruluyor, soğukta kırılganlaşmıyor; titanyum külçesiyle onarılır |
-| 🎨 | Elektrikli Matkap | FE ile çalışır (100.000 FE, blok başına 100 FE): şarjlıyken taş ve toprağı elmas kazmadan hızlı kazar, aşınmaz; şarjsızken işe yaramaz; Giysi Bakım İstasyonunda (yuvada ya da elde) ve her FE eşya şarjcısında dolar; motor sesi |
+| 🎨 | Elektrikli Matkap | FE ile çalışır (100.000 FE, blok başına 100 FE): şarjlıyken taş ve toprağı elmas kazmadan hızlı kazar, aşınmaz; şarjsızken işe yaramaz; Giysi Bakım İstasyonunda (yuvada ya da elde) ve her FE eşya şarjcısında dolar; motor sesi. Geniş Kazı Matkap Başlığı (titanyum + kızıltaş bloğu) ile demirci masasında (Giysi Yükseltme Şablonu) 3 × 3 kazar, eğilince tek blok; her blok ayrı şarj harcar |
 | 🎨 | Mare Bazaltı, İlmenit Cevheri | |
 | 🎨 | EVA Kaskı | özel 3B model, saydam vizör, altın güneş vizörü (eğil + kullan), parlayan lambalar |
 | 🎨 | Oksijen Tüpü | envanterde 2B, elde 3B; 5 dakikalık oksijen |

@@ -84,6 +84,9 @@ public final class SuitModule implements SbModule {
     /** Charge of an Electric Drill, in FE. */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> DRILL_ENERGY =
             COMPONENTS.registerComponentType("drill_energy", b -> b.persistent(Codec.INT).networkSynchronized(ByteBufCodecs.VAR_INT));
+    /** Electric Drill with the wide-bore head: digs 3 x 3. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> WIDE_BORE =
+            COMPONENTS.registerComponentType("wide_bore", b -> b.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
     /** Helmet lamps in long-beam mode: a narrower, longer cone for lava tubes and cold traps. */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> LONG_BEAM =
             COMPONENTS.registerComponentType("long_beam", b -> b.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
@@ -185,6 +188,14 @@ public final class SuitModule implements SbModule {
 
     public static final DeferredItem<ElectricDrillItem> ELECTRIC_DRILL = ITEMS.registerItem("electric_drill", ElectricDrillItem::new,
             new Item.Properties());
+    public static final DeferredItem<Item> WIDE_BORE_HEAD = ITEMS.registerItem("wide_bore_drill_head", p -> new Item(p) {
+        @Override
+        public void appendHoverText(net.minecraft.world.item.ItemStack stack, TooltipContext ctx, java.util.List<net.minecraft.network.chat.Component> tooltip,
+                                    net.minecraft.world.item.TooltipFlag flag) {
+            tooltip.add(net.minecraft.network.chat.Component.translatable("tooltip.spacebreaker.wide_bore_drill_head")
+                    .withStyle(net.minecraft.ChatFormatting.GRAY));
+        }
+    });
     public static final DeferredItem<EnvironmentSensorItem> ENVIRONMENT_SENSOR = ITEMS.registerItem("environment_sensor",
             EnvironmentSensorItem::new, new Item.Properties().stacksTo(1));
     public static final DeferredItem<SafetyTetherItem> SAFETY_TETHER = ITEMS.registerItem("safety_tether",
@@ -262,6 +273,7 @@ public final class SuitModule implements SbModule {
                     ElectricDrillItem.setEnergy(drill, ElectricDrillItem.CAPACITY);
                     return drill;
                 })
+                .add(WIDE_BORE_HEAD)
                 .add(TitaniumTools.PICKAXE).add(TitaniumTools.AXE).add(TitaniumTools.SHOVEL).add(TitaniumTools.HOE).add(TitaniumTools.SWORD)
                 .add(OXYGEN_FILLER_ITEM).add(SUIT_STATION_ITEM).add(OXYGEN_DISTRIBUTOR_ITEM).add(AIRLOCK_DOOR_ITEM);
     }
@@ -314,6 +326,11 @@ public final class SuitModule implements SbModule {
         lang.item(SAFETY_TETHER, "Safety Tether", "Güvenlik Halatı");
         lang.item(ENVIRONMENT_SENSOR, "Environment Sensor", "Çevre Sensörü");
         lang.item(ELECTRIC_DRILL, "Electric Drill", "Elektrikli Matkap");
+        lang.item(WIDE_BORE_HEAD, "Wide-Bore Drill Head", "Geniş Kazı Matkap Başlığı");
+        lang.add("tooltip.spacebreaker.wide_bore_drill_head", "Smithing table: Suit Upgrade Template + Electric Drill + this head",
+                "Demirci masası: Giysi Yükseltme Şablonu + Elektrikli Matkap + bu başlık");
+        lang.add("tooltip.spacebreaker.electric_drill.wide", "Wide bore: digs 3 × 3 (sneak for a single block), charge per block",
+                "Geniş kazı: 3 × 3 kazar (tek blok için eğil), her blok ayrı şarj harcar");
         lang.add("tooltip.spacebreaker.electric_drill.energy", "Charge: %s / %s FE", "Şarj: %s / %s FE");
         lang.add("tooltip.spacebreaker.electric_drill", "Digs stone and soil fast while charged. Charge it in the Suit Maintenance Station",
                 "Şarjı varken taşı ve toprağı hızla kazar. Giysi Bakım İstasyonunda şarj olur");

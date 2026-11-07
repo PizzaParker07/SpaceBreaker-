@@ -187,6 +187,19 @@ public final class SuitEvents {
     }
 
     @SubscribeEvent
+    static void onBlockBreak(net.neoforged.neoforge.event.level.BlockEvent.BreakEvent event) {
+        if (event.getPlayer() instanceof ServerPlayer sp && !event.isCanceled()) {
+            // after this block goes, the wide-bore drill takes its neighbours (scheduled so this break finishes first)
+            BlockPos pos = event.getPos().immutable();
+            var face = ElectricDrillItem.wideFace(sp, pos);
+            if (face != null) {
+                var state = event.getState();
+                sp.server.execute(() -> ElectricDrillItem.breakAround(sp, pos, state, face));
+            }
+        }
+    }
+
+    @SubscribeEvent
     static void onStartTracking(net.neoforged.neoforge.event.entity.player.PlayerEvent.StartTracking event) {
         if (event.getTarget() instanceof Player target && event.getEntity() instanceof ServerPlayer tracker
                 && tracker.connection.hasChannel(com.pizzaparker07.spacebreaker.content.suit.net.TetherPayload.TYPE)) {

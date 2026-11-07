@@ -221,6 +221,20 @@ final class SuitEvaScenario implements ShowcaseScenario {
             }
             p.getInventory().selected = 0;
         }), null));
+        // the wide-bore drill has dug a 3 x 3 pit (and one more square beside it) in front of the player
+        s.add(new Shot(prefix + "_18_wide_bore", 0, 0.5, g + 1.62, 9.0, 180F, 40F, false, fp, 60, at(false, p -> {
+            astronaut(p);
+            ItemStack drill = new ItemStack(SuitModule.ELECTRIC_DRILL.get());
+            com.pizzaparker07.spacebreaker.content.suit.ElectricDrillItem.setEnergy(drill, 60000);
+            drill.set(SuitModule.WIDE_BORE.get(), true);
+            p.setItemSlot(EquipmentSlot.MAINHAND, drill);
+            for (BlockPos centre : new BlockPos[]{BlockPos.containing(0.5, g - 1, 6.5), BlockPos.containing(0.5, g - 2, 6.5),
+                    BlockPos.containing(-2.5, g - 1, 6.5)}) {
+                p.gameMode.destroyBlock(centre);
+                com.pizzaparker07.spacebreaker.content.suit.ElectricDrillItem.breakAround(p, centre,
+                        net.minecraft.world.level.block.Blocks.STONE.defaultBlockState(), net.minecraft.core.Direction.UP);
+            }
+        }), null));
         if (comet) {
             s.add(new Shot(prefix + "_20_tethered_eva", 0, -2.5, g + 1.62, 3.5, 0F, 8F, true, CameraType.THIRD_PERSON_FRONT, 80,
                     at(false, this::tethered), null));

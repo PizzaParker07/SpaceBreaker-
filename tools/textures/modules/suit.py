@@ -1339,6 +1339,33 @@ def icon_drill() -> Canvas:
     return _icon(ICON_DRILL, pal)
 
 
+# Wide-bore drill head: a broad titanium cutter crown with three teeth around a redstone-driven hub
+ICON_DRILL_HEAD = [
+    "................",
+    "..oo...oo...oo..",
+    "..oTo.oTTo.oTo..",
+    "..oTToTHTToTTo..",
+    "...oTTHHHTTto...",
+    "...oTHHttTTto...",
+    "....oTRRrTto....",
+    "....oTRrrTto....",
+    ".....otTTto.....",
+    ".....oSSSso.....",
+    "......oSso......",
+    "......oSso......",
+    "......oSso......",
+    ".......oo.......",
+    "................",
+    "................",
+]
+
+
+def icon_drill_head() -> Canvas:
+    T = P.TITANIUM
+    pal = {'o': T[0], 'H': T[7], 'T': T[5], 't': T[3], 'R': (220, 40, 30), 'r': (150, 20, 15), 'S': S[5], 's': S[3]}
+    return _icon(ICON_DRILL_HEAD, pal)
+
+
 def export(save):
     save(hud_icons(), 'gui', 'hud_icons')
     save(visor_frost(), 'gui', 'visor_frost')
@@ -1351,6 +1378,7 @@ def export(save):
     save(icon_tether(), 'item', 'safety_tether')
     save(icon_sensor(), 'item', 'environment_sensor')
     save(icon_drill(), 'item', 'electric_drill')
+    save(icon_drill_head(), 'item', 'wide_bore_drill_head')
     for name in TOOL_ICONS:
         save(tool_icon(name), 'item', name)
     export_tiers(save)
