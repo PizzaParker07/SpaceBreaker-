@@ -293,7 +293,9 @@ Crafting category with no help from us (`jei_crafted_vehicles.jpg`, `emi_crafted
 `*_recipe_<item>`). Also checked: cargo module, landing beacon, suit maintenance station, regolith excavator,
 aerostat platform kit, Venus descent probe and solar array (`jei_emi_night_additions.jpg`, JEI top, EMI bottom);
 their recipe tags are named, so EMI reports no untranslated tags. The Sintering category (industry) shows with the sintering furnace as icon and catalyst
-(`jei_emi_sintering.jpg`). The Mars lander, like every rocket, is assembled,
+(`jei_emi_sintering.jpg`). Asteroid mining (`jei_emi_asteroid_mining.jpg`, uses of Bennu and Eros regolith): carbonaceous rubble
+in Regolith Heating (water, CO2, coal dust), stony rubble in Crushing (iron, nickel dust); the `c:regoliths/*` tags
+are named. JEI opens a uses view on its own Block Tags tab; our categories are the other tabs. The Mars lander, like every rocket, is assembled,
 not crafted: the Rocket Assembler information page covers it.
 
 Screenshots: `jei_*` and `emi_*`. Test: `./gradlew runShowcase -Pscenario=jei -PwithJei=true` or

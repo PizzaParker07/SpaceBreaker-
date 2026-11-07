@@ -62,6 +62,18 @@ final class JeiScenario implements ShowcaseScenario {
                         }
                     }));
         }
+        // asteroid mining: what the rubble of carbonaceous (Bennu) and stony (Eros) asteroids is used for
+        for (String item : new String[]{"bennu_regolith", "eros_regolith"}) {
+            String name = String.format("%02d_uses_%s", ++n, item);
+            s.add(new ShowcaseDriver.Shot(name, 6000, 0.5, -55, 0.5, 0F, 20F, false, fp, 60, null,
+                    () -> {
+                        if (jei) {
+                            JeiScreens.showUsesOf(Spacebreaker.id(item));
+                        } else {
+                            EmiScreens.showUsesOf(Spacebreaker.id(item));
+                        }
+                    }));
+        }
         return s;
     }
 }

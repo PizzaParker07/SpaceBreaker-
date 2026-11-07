@@ -20,6 +20,17 @@ final class JeiScreens {
                 () -> ShowcaseDriver.log("no JEI category " + uid));
     }
 
+    /** Recipes that use the item with this id. */
+    static void showUsesOf(ResourceLocation itemId) {
+        var rt = ShowcaseJeiPlugin.runtime;
+        if (rt == null) {
+            return;
+        }
+        var stack = new net.minecraft.world.item.ItemStack(net.minecraft.core.registries.BuiltInRegistries.ITEM.get(itemId));
+        rt.getRecipesGui().show(rt.getJeiHelpers().getFocusFactory().createFocus(
+                mezz.jei.api.recipe.RecipeIngredientRole.INPUT, mezz.jei.api.constants.VanillaTypes.ITEM_STACK, stack));
+    }
+
     /** Recipes that make the item with this id. */
     static void showRecipesFor(ResourceLocation itemId) {
         var rt = ShowcaseJeiPlugin.runtime;
