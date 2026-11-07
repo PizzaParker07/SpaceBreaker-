@@ -61,6 +61,14 @@ public class DockingPortBlockEntity extends BlockEntity {
         super(RocketryModule.DOCKING_PORT_BE.get(), pos, state);
     }
 
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        if (level instanceof net.minecraft.server.level.ServerLevel server) {
+            DockingPorts.get(server).add(worldPosition, getBlockState().getValue(DockingPortBlock.FACING));
+        }
+    }
+
     public IFluidHandler handler() {
         return handler;
     }

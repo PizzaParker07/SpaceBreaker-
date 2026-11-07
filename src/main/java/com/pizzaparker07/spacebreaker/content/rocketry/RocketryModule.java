@@ -229,8 +229,13 @@ public final class RocketryModule implements SbModule {
                 data.flush(sp);
                 com.pizzaparker07.spacebreaker.content.rocketry.mission.CoveragePayload.send(sp,
                         com.pizzaparker07.spacebreaker.content.rocketry.mission.CoveragePayload.of(sp.server));
+                com.pizzaparker07.spacebreaker.content.rocketry.station.Stations.send(sp,
+                        new com.pizzaparker07.spacebreaker.content.rocketry.station.Stations.Payload(
+                                com.pizzaparker07.spacebreaker.content.rocketry.station.Stations.of(sp.server)));
             }
         });
+        NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.tick.ServerTickEvent.Post e) ->
+                com.pizzaparker07.spacebreaker.content.rocketry.station.Stations.tick(e.getServer()));
         NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.server.ServerStartedEvent e) ->
                 com.pizzaparker07.spacebreaker.content.rocketry.nav.AstroTransferModel.install(e.getServer().registryAccess()));
         SbTabs.SPACEFLIGHT.icon(CREW_CAPSULE);
@@ -270,6 +275,9 @@ public final class RocketryModule implements SbModule {
         reg.playToServer(com.pizzaparker07.spacebreaker.content.rocketry.net.NearbyStarsPayload.Request.TYPE,
                 com.pizzaparker07.spacebreaker.content.rocketry.net.NearbyStarsPayload.Request.STREAM_CODEC,
                 com.pizzaparker07.spacebreaker.content.rocketry.net.NearbyStarsPayload.Request::handle);
+        reg.playToClient(com.pizzaparker07.spacebreaker.content.rocketry.station.Stations.Payload.TYPE,
+                com.pizzaparker07.spacebreaker.content.rocketry.station.Stations.Payload.STREAM_CODEC,
+                com.pizzaparker07.spacebreaker.content.rocketry.station.Stations.Payload::handle);
         reg.playToClient(com.pizzaparker07.spacebreaker.content.rocketry.mission.CoveragePayload.TYPE,
                 com.pizzaparker07.spacebreaker.content.rocketry.mission.CoveragePayload.STREAM_CODEC,
                 com.pizzaparker07.spacebreaker.content.rocketry.mission.CoveragePayload::handle);

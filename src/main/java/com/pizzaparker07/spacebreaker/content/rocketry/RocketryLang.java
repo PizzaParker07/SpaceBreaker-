@@ -33,8 +33,8 @@ final class RocketryLang {
         l.item(RocketryModule.HABITAT_KIT, "Habitat Module Kit", "Yaşam Modülü Kiti");
         l.block(RocketryModule.STATION_BUNK, "Station Bunk", "İstasyon Ranzası");
         l.block(RocketryModule.FUEL_DEPOT, "Fuel Depot", "Yakıt Deposu");
-        l.add("tooltip.spacebreaker.habitat_kit", "Use in empty space: unfolds a sealed 7×5×7 room with an airlock, windows, docking port, bunk and solar panels",
-                "Boşlukta kullan: hava kilidi, pencereler, yanaşma portu, ranza ve güneş panelleriyle kapalı 7×5×7 bir oda açar");
+        l.add("tooltip.spacebreaker.habitat_kit", "Use in empty space: unfolds a sealed 7×5×7 room with an airlock, windows, docking port, bunk and a solar array",
+                "Boşlukta kullan: hava kilidi, pencereler, yanaşma portu, ranza ve güneş paneli dizisiyle kapalı 7×5×7 bir oda açar");
         l.add("tooltip.spacebreaker.habitat_kit.air", "Put an oxygen tank in the distributor to fill it with air",
                 "Havayla doldurmak için dağıtıcıya bir oksijen tüpü tak");
         l.add("message.spacebreaker.station_bunk.set", "Respawn point set", "Yeniden doğma noktası ayarlandı");
@@ -42,6 +42,7 @@ final class RocketryLang {
                 "Yakıt deposu: RP-1 %s mB, LOX %s mB, metan %s mB, hidrojen %s mB · %s FE · %s yanaşma portu");
         l.add("tooltip.spacebreaker.station_kit", "Use in empty space: unfolds a 5×5 hull floor in front of you", "Boşlukta kullan: önüne 5×5 gövde zemini açar");
         l.add("message.spacebreaker.station_kit.blocked", "Something is in the way", "Önünde bir şey var");
+        l.add("message.spacebreaker.docking.approach", "Station in sight: approaching the docking port…", "İstasyon göründü: yanaşma portuna yaklaşılıyor…");
         l.add("message.spacebreaker.docked", "Docked: you can step out into the station", "Yanaşıldı: istasyona çıkabilirsin");
         l.item(RocketryModule.COMM_SATELLITE, "Communications Relay Satellite", "İletişim Rölesi Uydusu");
         l.item(RocketryModule.OBSERVATION_SATELLITE, "Observation Satellite", "Gözlem Uydusu");
@@ -238,6 +239,10 @@ final class RocketryLang {
         l.add("gui.spacebreaker.star_map.star_kind.black_hole", "A black hole: not even light escapes it", "Kara delik: ışık bile kaçamaz");
         l.add("gui.spacebreaker.star_map.star_distance", "Distance: %s light years", "Uzaklık: %s ışık yılı");
         l.add("gui.spacebreaker.star_map.star_planets", "Planets: %s", "Gezegen sayısı: %s");
+        l.add("gui.spacebreaker.star_map.station", "Space station in orbit · docking ports: %s", "Yörüngede uzay istasyonu · %s yanaşma portu");
+        l.add("gui.spacebreaker.star_map.station_owner", "%s's space station in orbit · docking ports: %s", "Yörüngede uzay istasyonu (kuran: %s) · %s yanaşma portu");
+        l.add("gui.spacebreaker.star_map.star_habitable", "In the habitable zone: %s", "Yaşanabilir bölgede: %s");
+        l.add("gui.spacebreaker.star_map.star_binary", "Double star: two suns", "Çift yıldız: iki güneş");
         l.add("gui.spacebreaker.star_map.star_planets_mixed", "Planets: %s known, %s not yet discovered", "Gezegenler: %s bilinen, %s henüz keşfedilmedi");
         l.add("gui.spacebreaker.star_map.star_mass", "Mass: %s × the Sun", "Kütle: Güneş'in %s katı");
         l.add("gui.spacebreaker.star_map.star_light", "Brightness: %s × the Sun", "Parlaklık: Güneş'in %s katı");

@@ -383,6 +383,27 @@ final class RocketryScenario implements ShowcaseScenario {
                     RocketEntity r = spawn(orbit, Vec3.atBottomCenterOf(c.offset(7, -4, 0)), 0F, FlightState.ORBIT, 0, 2, false);
                     toDimension(p, Location.EARTH_ORBIT, 47.5, RocketEntity.ORBIT_Y + 3.5, 13.5, 160F, 8F);
                 }, null));
+        s.add(new Shot("35_habitat_docking", 6000, 0, 0, 0, 0F, 0F, true, fp, 160,
+                p -> {
+                    clearScene(p);
+                    ServerLevel orbit = p.server.getLevel(Location.EARTH_ORBIT.dimension());
+                    BlockPos c = BlockPos.containing(120, RocketEntity.ORBIT_Y, 0);
+                    net.minecraft.core.Direction east = net.minecraft.core.Direction.EAST;
+                    com.pizzaparker07.spacebreaker.content.rocketry.station.HabitatKitItem.unfold(orbit, c, east);
+                    RocketEntity r = spawn(orbit, Vec3.atBottomCenterOf(c.offset(30, 0, 0)), 0F, FlightState.ORBIT, 0, 2, false);
+                    r.approachPort(com.pizzaparker07.spacebreaker.content.rocketry.station.HabitatKitItem.port(c, east), east, 30);
+                    toDimension(p, Location.EARTH_ORBIT, 136.5, RocketEntity.ORBIT_Y + 6.5, 17.5, 140F, 12F);
+                }, null));
+        s.add(new Shot("36_map_station", 6000, 0, 0, 0, 0F, 0F, false, fp, 120,
+                p -> {
+                    ServerLevel orbit = p.server.getLevel(Location.EARTH_ORBIT.dimension());
+                    BlockPos c = BlockPos.containing(-120, RocketEntity.ORBIT_Y, 40);
+                    net.minecraft.core.Direction east = net.minecraft.core.Direction.EAST;
+                    com.pizzaparker07.spacebreaker.content.rocketry.station.HabitatKitItem.unfold(orbit, c, east);
+                    com.pizzaparker07.spacebreaker.content.rocketry.station.DockingPorts.get(orbit).setOwner(
+                            com.pizzaparker07.spacebreaker.content.rocketry.station.HabitatKitItem.port(c, east), "PizzaParker07");
+                    mapShot(p, Location.EARTH_ORBIT.body(), true);
+                }, null));
         s.add(new Shot("31_nearby_stars", 6000, 0, 0, 0, 0F, 0F, false, fp, 120,
                 p -> {
                     RocketryShowcaseClient.star = "Alpha Centauri";

@@ -392,6 +392,9 @@ public class StarMapScreen extends Screen {
             Component name = Location.bodyName(n.body);
             int col = sel ? 0xFFFFE9A8 : 0xFFC8D0D8;
             g.drawCenteredString(font, name, n.x, n.y + n.r + 5, col);
+            if (!com.pizzaparker07.spacebreaker.content.rocketry.station.Stations.around(n.body).isEmpty()) {
+                stationIcon(g, n.x + n.r + 1, n.y - n.r - 5);
+            }
             if (focus == null) {
                 int moons = StarMapData.moons(n.body).size();
                 for (int i = 0; i < Math.min(moons, 8); i++) {
@@ -399,6 +402,15 @@ public class StarMapScreen extends Screen {
                 }
             }
         }
+    }
+
+    /** A tiny station: white module with blue solar wings, top-right of a world that has one in orbit. */
+    private static void stationIcon(GuiGraphics g, int x, int y) {
+        g.fill(x - 1, y - 1, x + 10, y + 6, 0xFF101418);
+        g.fill(x, y + 1, x + 3, y + 4, 0xFF4A6AA8);
+        g.fill(x + 6, y + 1, x + 9, y + 4, 0xFF4A6AA8);
+        g.fill(x + 3, y + 2, x + 6, y + 3, 0xFF8A96A4);
+        g.fill(x + 3, y, x + 6, y + 5, 0xFFEEF0F2);
     }
 
     private void drawHere(GuiGraphics g, float time) {
@@ -505,6 +517,16 @@ public class StarMapScreen extends Screen {
         if (!com.pizzaparker07.spacebreaker.content.rocketry.mission.Coverage.hasSignal(body)) {
             for (FormattedCharSequence line : font.split(Component.translatable("gui.spacebreaker.star_map.no_signal"), w)) {
                 g.drawString(font, line, x, y, 0xFFB0A070, false);
+                y += 9;
+            }
+        }
+        for (var st : com.pizzaparker07.spacebreaker.content.rocketry.station.Stations.around(body)) {
+            Component line = st.owner().isEmpty()
+                    ? Component.translatable("gui.spacebreaker.star_map.station", st.ports())
+                    : Component.translatable("gui.spacebreaker.star_map.station_owner", st.owner(), st.ports());
+            stationIcon(g, x, y);
+            for (FormattedCharSequence l : font.split(line, w - 14)) {
+                g.drawString(font, l, x + 14, y, 0xFFE1E3E6, false);
                 y += 9;
             }
         }
@@ -821,6 +843,12 @@ public class StarMapScreen extends Screen {
         y = fact(g, x, y, w, unknown > 0
                 ? Component.translatable("gui.spacebreaker.star_map.star_planets_mixed", s.knownPlanets(), unknown)
                 : Component.translatable("gui.spacebreaker.star_map.star_planets", s.planets()));
+        if (s.habitablePlanets() > 0) {
+            y = fact(g, x, y, w, Component.translatable("gui.spacebreaker.star_map.star_habitable", s.habitablePlanets()));
+        }
+        if (s.binary()) {
+            y = fact(g, x, y, w, Component.translatable("gui.spacebreaker.star_map.star_binary"));
+        }
         y = fact(g, x, y, w, Component.translatable("gui.spacebreaker.star_map.star_mass", decimal(s.mass())));
         y = fact(g, x, y, w, Component.translatable("gui.spacebreaker.star_map.star_light", s.luminosity() >= 0.1F ? decimal(s.luminosity())
                 : String.format(Locale.ROOT, "%.4f", s.luminosity()).replace('.', turkish() ? ',' : '.')));

@@ -4,7 +4,7 @@
   "pattern": ["WSW", "HOH", "BPA"],
   "key": {
     "W": {"item": "spacebreaker:station_window"},
-    "S": {"item": "spacebreaker:solar_panel"},
+    "S": {"item": "spacebreaker:solar_array"},
     "H": {"item": "spacebreaker:station_kit"},
     "O": {"item": "spacebreaker:oxygen_distributor"},
     "B": {"item": "spacebreaker:station_bunk"},

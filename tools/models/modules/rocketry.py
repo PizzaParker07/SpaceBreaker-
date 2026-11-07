@@ -567,8 +567,13 @@ def station_blocks():
     write('models/block/station_hull.json', {'parent': 'minecraft:block/cube_all', 'textures': {'all': b('station_hull')}})
     write('models/item/station_hull.json', {'parent': b('station_hull')})
     write('blockstates/station_window.json', {'variants': {'': {'model': b('station_window')}}})
-    write('models/block/station_window.json', {'parent': 'minecraft:block/cube_all', 'render_type': 'minecraft:translucent',
-                                                 'textures': {'all': b('station_window')}})
+    # frame on the cutout layer, tinted glass on the translucent layer: shaders darken only the glass
+    write('models/block/station_window.json', {
+        'loader': 'neoforge:composite', 'parent': 'minecraft:block/block',
+        'children': {
+            'frame': {'parent': 'minecraft:block/cube_all', 'render_type': 'minecraft:cutout', 'textures': {'all': b('station_window_frame')}},
+            'pane': {'parent': 'minecraft:block/cube_all', 'render_type': 'minecraft:translucent', 'textures': {'all': b('station_window_pane')}}},
+        'textures': {'particle': b('station_window')}})
     write('models/item/station_window.json', {'parent': b('station_window')})
     write('models/block/docking_port.json', {'parent': 'minecraft:block/cube_bottom_top', 'textures': {
         'top': b('docking_port_top'), 'side': b('docking_port_side'), 'bottom': b('station_hull')}})

@@ -1,0 +1,136 @@
+package com.pizzaparker07.spacebreaker.content.rocketry.station;
+
+import com.pizzaparker07.spacebreaker.Spacebreaker;
+import com.pizzaparker07.spacebreaker.content.rocketry.nav.Location;
+import com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * The space stations the star map shows: the docking ports of every orbit, grouped into stations (ports within
+ * {@link #CLUSTER} blocks of each other are one station). Worked out on the server, sent to every client when a
+ * port is built or broken and when a player joins.
+ */
+public final class Stations {
+    /** Ports this close belong to the same station. */
+    public static final int CLUSTER = 48;
+
+    /** One station: the body it circles, who built it (first known builder) and how many docking ports it has. */
+    public record Station(ResourceLocation body, String owner, int ports) {
+        public static final StreamCodec<ByteBuf, Station> STREAM_CODEC = StreamCodec.composite(
+                ResourceLocation.STREAM_CODEC, Station::body,
+                ByteBufCodecs.STRING_UTF8, Station::owner,
+                ByteBufCodecs.VAR_INT, Station::ports,
+                Station::new);
+    }
+
+    private static volatile boolean dirty;
+    private static volatile List<Station> received = List.of();
+
+    private Stations() {
+    }
+
+    static void markDirty() {
+        dirty = true;
+    }
+
+    /** Every station in every orbit of this server. */
+    public static List<Station> of(MinecraftServer server) {
+        List<Station> out = new ArrayList<>();
+        for (ServerLevel level : server.getAllLevels()) {
+            DockingPorts ports = DockingPorts.get(level);
+            if (ports.size() == 0) {
+                continue;
+            }
+            out.addAll(group(ports.all(), pos -> {
+                ResourceLocation shared = Location.Orbits.SHARED.equals(level.dimension()) ? Locations.bodyForSharedX(pos.getX()).orElse(null) : null;
+                return Locations.at(level.dimension(), shared);
+            }));
+        }
+        return out;
+    }
+
+    /** Groups ports into stations (pure, for tests): {@code where} tells the place of a port; only orbits count. */
+    public static List<Station> group(java.util.Collection<DockingPorts.Port> ports, java.util.function.Function<BlockPos, java.util.Optional<Location>> where) {
+        List<List<DockingPorts.Port>> groups = new ArrayList<>();
+        for (DockingPorts.Port p : ports) {
+            List<DockingPorts.Port> home = null;
+            for (List<DockingPorts.Port> g : groups) {
+                if (g.stream().anyMatch(q -> q.pos().closerThan(p.pos(), CLUSTER))) {
+                    home = g;
+                    break;
+                }
+            }
+            if (home == null) {
+                home = new ArrayList<>();
+                groups.add(home);
+            }
+            home.add(p);
+        }
+        List<Station> out = new ArrayList<>();
+        for (List<DockingPorts.Port> g : groups) {
+            Location loc = where.apply(g.get(0).pos()).orElse(null);
+            if (loc == null || !loc.orbit()) {
+                continue;
+            }
+            String owner = g.stream().map(DockingPorts.Port::owner).filter(o -> !o.isEmpty()).findFirst().orElse("");
+            out.add(new Station(loc.body(), owner, g.size()));
+        }
+        return out;
+    }
+
+    /** Client: the stations last received. */
+    public static List<Station> received() {
+        return received;
+    }
+
+    /** Client: the stations around this body. */
+    public static List<Station> around(ResourceLocation body) {
+        return received.stream().filter(s -> s.body().equals(body)).toList();
+    }
+
+    /** Server tick: tell everyone when the stations changed. */
+    public static void tick(MinecraftServer server) {
+        if (dirty) {
+            dirty = false;
+            Payload p = new Payload(of(server));
+            for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+                send(player, p);
+            }
+        }
+    }
+
+    public static void send(ServerPlayer player, Payload p) {
+        if (player.connection != null && player.connection.hasChannel(Payload.TYPE)) {
+            PacketDistributor.sendToPlayer(player, p);
+        }
+    }
+
+    /** Server → client: the list of stations. */
+    public record Payload(List<Station> stations) implements CustomPacketPayload {
+        public static final Type<Payload> TYPE = new Type<>(Spacebreaker.id("stations"));
+        public static final StreamCodec<ByteBuf, Payload> STREAM_CODEC = Station.STREAM_CODEC.apply(ByteBufCodecs.list(1024))
+                .map(Payload::new, Payload::stations);
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return TYPE;
+        }
+
+        public static void handle(Payload payload, IPayloadContext context) {
+            received = List.copyOf(payload.stations());
+        }
+    }
+}

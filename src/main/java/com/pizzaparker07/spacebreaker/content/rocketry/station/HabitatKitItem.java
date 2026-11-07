@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * Habitat module kit: unfolds a sealed 7 × 5 × 7 room of station hull in front of the player, with a band of
  * windows, an airlock door facing the player, a docking port on the far wall, an oxygen distributor and a
- * bunk inside, and a row of solar panels on the roof. Slot an oxygen tank into the distributor (or pipe
+ * bunk inside, and a solar array on the roof. Slot an oxygen tank into the distributor (or pipe
  * oxygen in) and the room fills with air.
  */
 public class HabitatKitItem extends Item {
@@ -94,9 +94,8 @@ public class HabitatKitItem extends Item {
         level.setBlock(distributor(centre), SuitModule.OXYGEN_DISTRIBUTOR.get().defaultBlockState(), 3);
         level.setBlock(bunk(centre, forward), RocketryModule.STATION_BUNK.get().defaultBlockState()
                 .setValue(HorizontalDirectionalBlock.FACING, forward.getClockWise()), 3);
-        for (int f = -1; f <= 1; f++) {
-            level.setBlock(at(centre, forward, 0, HEIGHT, f), MachinesModule.SOLAR_PANEL.get().defaultBlockState(), 3);
-        }
+        // one solar array on the roof: its wings fold out north and south, over open roof
+        level.setBlock(centre.above(HEIGHT), MachinesModule.SOLAR_ARRAY.get().defaultBlockState(), 3);
         return true;
     }
 
@@ -111,6 +110,9 @@ public class HabitatKitItem extends Item {
         if (!unfold(level, centre, facing)) {
             player.displayClientMessage(Component.translatable("message.spacebreaker.station_kit.blocked"), true);
             return InteractionResultHolder.fail(stack);
+        }
+        if (level instanceof net.minecraft.server.level.ServerLevel server) {
+            DockingPorts.get(server).setOwner(port(centre, facing), player.getGameProfile().getName());
         }
         level.playSound(null, centre, SoundEvents.ARMOR_EQUIP_IRON.value(), SoundSource.BLOCKS, 1F, 0.7F);
         if (!player.getAbilities().instabuild) {

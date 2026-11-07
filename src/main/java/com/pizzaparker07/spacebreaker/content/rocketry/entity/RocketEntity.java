@@ -18,6 +18,7 @@ import com.pizzaparker07.spacebreaker.core.config.SbConfig;
 import com.pizzaparker07.spacebreaker.core.env.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -82,6 +83,21 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
     private java.util.UUID owner;
     private int autoTravel;
     private long dockCheckedAt = Long.MIN_VALUE;
+    /** Approaching a station: thrusters puff (synced for the client effects). */
+    private static final EntityDataAccessor<Boolean> DATA_DOCKING = SynchedEntityData.defineId(RocketEntity.class, EntityDataSerializers.BOOLEAN);
+    /** Entity event: the docking latches closed (client camera jolt). */
+    public static final byte EVENT_DOCKED = 70;
+    /** How far out from the port a rocket arriving in orbit starts its approach, blocks. */
+    public static final double APPROACH_DISTANCE = 36;
+    private static final int JOLT_TICKS = 14;
+    /** Where the approach ends, while approaching. */
+    @Nullable
+    private Vec3 dockTarget;
+    /** The port this rocket last docked at (tall rockets reach past the port's block scan). */
+    @Nullable
+    private BlockPos dockedPort;
+    /** Client: ticks left of the docking jolt. */
+    private int jolt;
     private boolean dockedCache;
     /** Share of the current ascent burn already flown (0..1), so clients can start the transit view in time. */
     private static final EntityDataAccessor<Float> DATA_ASCENT = SynchedEntityData.defineId(RocketEntity.class, EntityDataSerializers.FLOAT);
@@ -102,6 +118,8 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
     private int ascentFirstStage;
     private int coast;
     private double homeX = Double.NaN;
+    /** This flight has been to another world (orbit or surface away from Earth): its Earth landing is a safe return. */
+    private boolean beenAway;
     private double homeZ = Double.NaN;
     private int requiredShield;
     private boolean teleporting;
@@ -140,6 +158,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         builder.define(DATA_TILT, 0F);
         builder.define(DATA_ASCENT, 0F);
         builder.define(DATA_MISSION, "");
+        builder.define(DATA_DOCKING, false);
         builder.define(DATA_FUEL, new CompoundTag());
     }
 
@@ -378,16 +397,100 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
 
     /** In orbit next to a station's docking port: the crew may step out into the station and back in. */
     public boolean docked() {
-        if (state() != FlightState.ORBIT) {
+        if (state() != FlightState.ORBIT || docking()) {
             return false;
         }
         long now = level().getGameTime();
         if (now != dockCheckedAt) {
             // a block scan around the rocket: cheap enough once a tick, and pipes may ask many times per tick
             dockCheckedAt = now;
-            dockedCache = com.pizzaparker07.spacebreaker.content.rocketry.station.DockingPortBlockEntity.nearPort(this);
+            double reach = com.pizzaparker07.spacebreaker.content.rocketry.station.DockingPortBlock.RANGE + getBbHeight();
+            dockedCache = dockedPort != null && level().getBlockState(dockedPort).is(com.pizzaparker07.spacebreaker.content.rocketry.RocketryModule.DOCKING_PORT.get())
+                    && dockedPort.getCenter().distanceToSqr(position()) < reach * reach
+                    || com.pizzaparker07.spacebreaker.content.rocketry.station.DockingPortBlockEntity.nearPort(this);
         }
         return dockedCache;
+    }
+
+    /** Flying in towards a docking port. */
+    public boolean docking() {
+        return entityData.get(DATA_DOCKING);
+    }
+
+    /** Client: docking jolt strength, 1 at the latch, fading to 0. */
+    public float jolt(float partialTick) {
+        return jolt <= 0 ? 0F : Mth.clamp((jolt - partialTick) / JOLT_TICKS, 0F, 1F);
+    }
+
+    /**
+     * Where the rocket (its base) parks at a port: on top of an upward port, under a downward one, and beside a
+     * sideways one with the capsule level with the hatch.
+     */
+    public static Vec3 dockPoint(BlockPos port, Direction facing, double height, double width) {
+        Vec3 c = port.getCenter();
+        return switch (facing) {
+            case UP -> new Vec3(c.x, port.getY() + 2, c.z);
+            case DOWN -> new Vec3(c.x, port.getY() - 1 - height, c.z);
+            default -> c.add(Vec3.atLowerCornerOf(facing.getNormal()).scale(1.5 + width / 2)).add(0, 1.0 - height, 0);
+        };
+    }
+
+    /** Places the rocket {@code distance} blocks out from the port and starts the approach. */
+    public void approachPort(BlockPos port, Direction facing, double distance) {
+        Vec3 end = dockPoint(port, facing, getBbHeight(), getBbWidth());
+        Vec3 start = end.add(Vec3.atLowerCornerOf(facing.getNormal()).scale(distance));
+        moveTo(start.x, start.y, start.z);
+        setDeltaMovement(Vec3.ZERO);
+        dockTarget = end;
+        dockedPort = port.immutable();
+        entityData.set(DATA_DOCKING, true);
+    }
+
+    /** Arrived in orbit: if a station is in this orbit, fly to its nearest docking port. */
+    private void seekStation(Location to) {
+        if (!(level() instanceof ServerLevel server) || isUncrewed()) {
+            return;
+        }
+        boolean shared = Location.Orbits.SHARED.equals(to.dimension());
+        com.pizzaparker07.spacebreaker.content.rocketry.station.DockingPorts.get(server).nearest(position(), p -> !shared
+                        || com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.bodyForSharedX(p.pos().getX()).filter(to.body()::equals).isPresent())
+                .ifPresent(p -> {
+                    approachPort(p.pos(), p.facing(), APPROACH_DISTANCE);
+                    notifyCrew(Component.translatable("message.spacebreaker.docking.approach"));
+                });
+    }
+
+    private void tickDocking() {
+        Vec3 to = dockTarget.subtract(position());
+        double d = to.length();
+        if (d < 0.06) {
+            setPos(dockTarget.x, dockTarget.y, dockTarget.z);
+            dockTarget = null;
+            entityData.set(DATA_DOCKING, false);
+            dockCheckedAt = Long.MIN_VALUE;
+            BlockPos at = dockedPort != null ? dockedPort : blockPosition();
+            level().playSound(null, at, SoundEvents.IRON_DOOR_CLOSE, SoundSource.NEUTRAL, 1.6F, 0.55F);
+            level().playSound(null, at, SoundEvents.PISTON_CONTRACT, SoundSource.NEUTRAL, 1.0F, 0.6F);
+            level().broadcastEntityEvent(this, EVENT_DOCKED);
+            notifyCrew(Component.translatable("message.spacebreaker.docked"));
+            return;
+        }
+        // fast from far out, then an ever slower creep for the last metres
+        double step = Math.min(d, Mth.clamp(d * 0.05, 0.04, 1.0));
+        Vec3 next = position().add(to.scale(step / d));
+        setPos(next.x, next.y, next.z);
+        if (tickCount % 12 == 0) {
+            level().playSound(null, blockPosition().above((int) getBbHeight()), SoundEvents.FIRE_EXTINGUISH, SoundSource.NEUTRAL, 0.35F, 1.7F);
+        }
+    }
+
+    @Override
+    public void handleEntityEvent(byte id) {
+        if (id == EVENT_DOCKED) {
+            jolt = JOLT_TICKS;
+        } else {
+            super.handleEntityEvent(id);
+        }
     }
 
     // ------------------------------------------------------------------ interaction
@@ -724,6 +827,19 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
             return;
         }
         if (level().isClientSide) {
+            if (jolt > 0) {
+                jolt--;
+            }
+            if (docking() && tickCount % 3 == 0) {
+                // attitude thrusters puffing around the capsule
+                double y = getY() + getBbHeight() - 1.2;
+                for (int i = 0; i < 2; i++) {
+                    double a = random.nextDouble() * Math.PI * 2;
+                    double r = getBbWidth() / 2 + 0.1;
+                    level().addParticle(net.minecraft.core.particles.ParticleTypes.POOF, getX() + Math.cos(a) * r, y, getZ() + Math.sin(a) * r,
+                            Math.cos(a) * 0.08, 0, Math.sin(a) * 0.08);
+                }
+            }
             return;
         }
         teleporting = false;
@@ -737,6 +853,9 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
             case ASCENT -> tickAscent();
             case ORBIT -> {
                 setDeltaMovement(Vec3.ZERO);
+                if (dockTarget != null) {
+                    tickDocking();
+                }
                 if (autoTravel > 0 && --autoTravel == 0) {
                     Location target = missionTarget().orElse(null);
                     if (target == null || !tryTravel(null, target)) {
@@ -959,11 +1078,17 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
                 moveTo(pos.x, pos.y, pos.z);
                 setDeltaMovement(speed);
             }
+            if (to.orbit()) {
+                r.seekStation(to);
+            }
             r.onArrived(to);
         }
     }
 
     private void onArrived(Location to) {
+        if (!to.body().equals(Location.EARTH_SURFACE.body())) {
+            beenAway = true;
+        }
         if (!to.orbit() && !to.isEarth() && !layout().hasLegsFrom(activeStage())) {
             notifyCrew(Component.translatable("message.spacebreaker.warn.no_legs").withStyle(ChatFormatting.GOLD));
         }
@@ -984,6 +1109,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
             autoTravel = old.autoTravel;
             teleporting = true; // passengers re-mount right after this
             homeX = old.homeX;
+            beenAway = old.beenAway;
             homeZ = old.homeZ;
             requiredShield = old.requiredShield;
         }
@@ -1053,7 +1179,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         } else {
             if (location().equals(Location.MOON_SURFACE)) {
                 award(com.pizzaparker07.spacebreaker.content.research.Milestones.MOON_LANDING);
-            } else if (location().equals(Location.EARTH_SURFACE) && isCapsuleOnly()) {
+            } else if (location().equals(Location.EARTH_SURFACE) && isCapsuleOnly() && beenAway) {
                 award(com.pizzaparker07.spacebreaker.content.research.Milestones.SAFE_RETURN);
             }
             notifyCrew(Component.translatable("message.spacebreaker.landing.ok", location().name()).withStyle(ChatFormatting.GREEN));
@@ -1209,6 +1335,9 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         geometry = null;
         readFuel(tag.getCompound("fuel"));
         entityData.set(DATA_STATE, tag.getInt("state"));
+        dockTarget = tag.contains("dockX") ? new Vec3(tag.getDouble("dockX"), tag.getDouble("dockY"), tag.getDouble("dockZ")) : null;
+        entityData.set(DATA_DOCKING, dockTarget != null);
+        dockedPort = tag.contains("dockPort") ? BlockPos.of(tag.getLong("dockPort")) : null;
         entityData.set(DATA_STAGE, tag.getInt("stage"));
         entityData.set(DATA_TIMER, tag.getInt("timer"));
         entityData.set(DATA_DEST, tag.getString("dest"));
@@ -1221,6 +1350,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         ascentFirstStage = tag.getInt("ascentFirst");
         coast = tag.getInt("coast");
         homeX = tag.contains("homeX") ? tag.getDouble("homeX") : Double.NaN;
+        beenAway = tag.getBoolean("beenAway");
         entityData.set(DATA_MISSION, tag.getString("mission"));
         autoTravel = tag.getInt("autoTravel");
         owner = tag.hasUUID("owner") ? tag.getUUID("owner") : null;
@@ -1237,6 +1367,14 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         writeFuel(f);
         tag.put("fuel", f);
         tag.putInt("state", entityData.get(DATA_STATE));
+        if (dockTarget != null) {
+            tag.putDouble("dockX", dockTarget.x);
+            tag.putDouble("dockY", dockTarget.y);
+            tag.putDouble("dockZ", dockTarget.z);
+        }
+        if (dockedPort != null) {
+            tag.putLong("dockPort", dockedPort.asLong());
+        }
         tag.putInt("stage", activeStage());
         tag.putInt("timer", timer());
         tag.putString("dest", entityData.get(DATA_DEST));
@@ -1258,6 +1396,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
             tag.putDouble("homeZ", homeZ);
         }
         tag.putInt("requiredShield", requiredShield);
+        tag.putBoolean("beenAway", beenAway);
     }
 
     @Override

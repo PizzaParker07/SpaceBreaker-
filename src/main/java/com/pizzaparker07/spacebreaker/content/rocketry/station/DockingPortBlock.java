@@ -62,6 +62,35 @@ public class DockingPortBlock extends BaseEntityBlock {
         return RenderShape.MODEL;
     }
 
+    @Override
+    public void setPlacedBy(net.minecraft.world.level.Level level, BlockPos pos, BlockState state,
+                            @Nullable net.minecraft.world.entity.LivingEntity placer, net.minecraft.world.item.ItemStack stack) {
+        super.setPlacedBy(level, pos, state, placer, stack);
+        if (level instanceof net.minecraft.server.level.ServerLevel server && placer instanceof net.minecraft.world.entity.player.Player player) {
+            DockingPorts.get(server).setOwner(pos, player.getGameProfile().getName());
+        }
+    }
+
+    @Override
+    protected void onPlace(BlockState state, net.minecraft.world.level.Level level, BlockPos pos, BlockState oldState, boolean moved) {
+        super.onPlace(state, level, pos, oldState, moved);
+        if (level instanceof net.minecraft.server.level.ServerLevel server) {
+            DockingPorts.get(server).add(pos, state.getValue(FACING));
+        }
+    }
+
+    @Override
+    protected void onRemove(BlockState state, net.minecraft.world.level.Level level, BlockPos pos, BlockState newState, boolean moved) {
+        if (level instanceof net.minecraft.server.level.ServerLevel server) {
+            if (newState.is(this)) {
+                DockingPorts.get(server).add(pos, newState.getValue(FACING));
+            } else {
+                DockingPorts.get(server).remove(pos);
+            }
+        }
+        super.onRemove(state, level, pos, newState, moved);
+    }
+
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {

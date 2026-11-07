@@ -1927,6 +1927,19 @@ def station_window():
     return cv
 
 
+def window_part(cv, frame):
+    """The opaque pixels of a window (frame) or the see-through ones (pane); everything else fully clear."""
+    out = Canvas()
+    for y in range(16):
+        for x in range(16):
+            c = cv[x, y]
+            if c is not None and len(c) == 4 and ((c[3] == 255) == frame) and c[3] > 0:
+                out[x, y] = c
+            elif c is not None and len(c) == 3 and frame:
+                out[x, y] = c
+    return out
+
+
 def docking_port_top():
     """Looking at the port: grey docking ring, dark hatch and yellow alignment marks."""
     cv = Canvas()
@@ -2087,6 +2100,9 @@ def export_facility(save):
     save(limit_colours(launch_pad_top()), 'block', 'launch_pad_top', blk)
     save(limit_colours(station_hull()), 'block', 'station_hull', (180, 30, 0, None))
     save(station_window(), 'block', 'station_window', (200, 20, 0, None))
+    # split for the composite model: opaque frame (cutout layer) and tinted pane (translucent layer)
+    save(window_part(station_window(), True), 'block', 'station_window_frame', (200, 20, 0, None))
+    save(window_part(station_window(), False), 'block', 'station_window_pane', (200, 20, 0, None))
     save(limit_colours(docking_port_top()), 'block', 'docking_port_top', (180, 30, 0, None))
     save(limit_colours(docking_port_side()), 'block', 'docking_port_side', (180, 30, 0, None))
     save(station_kit_icon(), 'item', 'station_kit')

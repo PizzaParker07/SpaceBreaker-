@@ -67,6 +67,21 @@ public final class RocketCamera {
         }
     }
 
+    /** The docking latch jolts the cabin: a short, fading shake. */
+    @SubscribeEvent
+    static void jolt(net.neoforged.neoforge.client.event.ViewportEvent.ComputeCameraAngles event) {
+        var mc = net.minecraft.client.Minecraft.getInstance();
+        if (mc.player != null && mc.player.getVehicle() instanceof com.pizzaparker07.spacebreaker.content.rocketry.entity.RocketEntity rocket) {
+            float pt = (float) event.getPartialTick();
+            float j = rocket.jolt(pt);
+            if (j > 0) {
+                float t = mc.player.tickCount + pt;
+                event.setRoll(event.getRoll() + j * j * 2.2F * net.minecraft.util.Mth.sin(t * 2.7F));
+                event.setPitch(event.getPitch() + j * j * 1.2F * net.minecraft.util.Mth.sin(t * 3.9F));
+            }
+        }
+    }
+
     @SubscribeEvent
     static void distance(CalculateDetachedCameraDistanceEvent event) {
         if (RocketHud.ridden() != null && zoom > 0) {

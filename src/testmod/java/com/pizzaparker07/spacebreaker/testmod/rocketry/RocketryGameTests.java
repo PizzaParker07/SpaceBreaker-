@@ -659,6 +659,8 @@ public final class RocketryGameTests {
         }
         helper.assertTrue(stars.stream().anyMatch(s -> !s.nameTr().isEmpty()), "names in Turkish too");
         helper.assertTrue(stars.stream().allMatch(s -> s.knownPlanets() >= 0 && s.knownPlanets() <= s.planets()), "known planets are a part of all planets");
+        var proxima = stars.stream().filter(s -> s.nameEn().startsWith("Proxima")).findFirst();
+        helper.assertTrue(proxima.isEmpty() || proxima.get().knownPlanets() == 2, "Proxima Centauri has two confirmed planets");
         // the payload carries the list unchanged
         var buf = io.netty.buffer.Unpooled.buffer();
         var payload = new com.pizzaparker07.spacebreaker.content.rocketry.net.NearbyStarsPayload(stars);
@@ -841,7 +843,7 @@ public final class RocketryGameTests {
         helper.assertTrue(level.getBlockState(com.pizzaparker07.spacebreaker.content.rocketry.station.HabitatKitItem.bunk(centre, forward))
                 .is(RocketryModule.STATION_BUNK.get()), "a bunk inside");
         helper.assertTrue(level.getBlockState(centre.above(com.pizzaparker07.spacebreaker.content.rocketry.station.HabitatKitItem.HEIGHT))
-                .is(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.SOLAR_PANEL.get()), "solar panels on the roof");
+                .is(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.SOLAR_ARRAY.get()), "a solar array on the roof");
         // the distributor finds a closed room: hull, windows, port and the shut airlock keep the air in
         helper.succeedWhen(() -> {
             var be = (com.pizzaparker07.spacebreaker.content.suit.block.OxygenDistributorBlockEntity) level.getBlockEntity(dist);
@@ -895,6 +897,68 @@ public final class RocketryGameTests {
                 helper.succeed();
             });
         });
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 300)
+    public static void dockingApproach(GameTestHelper helper) {
+        var level = helper.getLevel();
+        BlockPos port = helper.absolutePos(new BlockPos(2, 30, 2));
+        level.setBlock(port, RocketryModule.DOCKING_PORT.get().defaultBlockState()
+                .setValue(com.pizzaparker07.spacebreaker.content.rocketry.station.DockingPortBlock.FACING, Direction.EAST), 3);
+        var ports = com.pizzaparker07.spacebreaker.content.rocketry.station.DockingPorts.get(level);
+        helper.assertTrue(ports.nearest(port.getCenter(), p -> true).filter(p -> p.pos().equals(port) && p.facing() == Direction.EAST).isPresent(),
+                "the port registers itself for arriving rockets");
+        RocketEntity rocket = RocketEntity.create(level, RocketryModule.MOON_ROCKET, port.getCenter(), 0F);
+        level.addFreshEntity(rocket);
+        rocket.stageScene(FlightState.ORBIT, 0, 0, false);
+        rocket.approachPort(port, Direction.EAST, 12);
+        net.minecraft.world.phys.Vec3 end = RocketEntity.dockPoint(port, Direction.EAST, rocket.getBbHeight(), rocket.getBbWidth());
+        helper.assertTrue(rocket.docking() && !rocket.docked() && !rocket.canDismount(), "still flying in: nobody steps out");
+        helper.assertTrue(rocket.position().distanceTo(end) > 11, "starts well out from the port");
+        helper.assertTrue(end.y + rocket.getBbHeight() > port.getY() && end.y < port.getY(), "the capsule ends up level with the hatch");
+        double[] last = {rocket.position().distanceTo(end)};
+        helper.onEachTick(() -> {
+            double d = rocket.position().distanceTo(end);
+            helper.assertTrue(d <= last[0] + 1e-6, "always closing in");
+            last[0] = d;
+        });
+        helper.succeedWhen(() -> {
+            helper.assertFalse(rocket.docking(), "approach finished");
+            helper.assertTrue(rocket.position().distanceTo(end) < 0.01 && rocket.docked() && rocket.canDismount(), "latched on");
+            level.removeBlock(port, false);
+            helper.assertTrue(ports.nearest(port.getCenter(), p -> p.pos().equals(port)).isEmpty(), "a broken port leaves the list");
+            rocket.discard();
+        });
+    }
+
+    @GameTest(template = EMPTY)
+    public static void stationsOnTheStarMap(GameTestHelper helper) {
+        var level = helper.getLevel();
+        BlockPos a = helper.absolutePos(new BlockPos(1, 2, 1));
+        level.setBlock(a, RocketryModule.DOCKING_PORT.get().defaultBlockState(), 3);
+        var ports = com.pizzaparker07.spacebreaker.content.rocketry.station.DockingPorts.get(level);
+        ports.setOwner(a, "PizzaParker07");
+        helper.assertTrue(ports.nearest(a.getCenter(), p -> p.pos().equals(a)).map(p -> p.owner().equals("PizzaParker07")).orElse(false),
+                "the port knows who built it");
+        // ports near each other make one station; a far one is another; only orbits count
+        List<com.pizzaparker07.spacebreaker.content.rocketry.station.DockingPorts.Port> list = List.of(
+                new com.pizzaparker07.spacebreaker.content.rocketry.station.DockingPorts.Port(new BlockPos(0, 160, 0), Direction.UP, ""),
+                new com.pizzaparker07.spacebreaker.content.rocketry.station.DockingPorts.Port(new BlockPos(12, 160, 4), Direction.EAST, "PizzaParker07"),
+                new com.pizzaparker07.spacebreaker.content.rocketry.station.DockingPorts.Port(new BlockPos(900, 160, 0), Direction.UP, ""));
+        var stations = com.pizzaparker07.spacebreaker.content.rocketry.station.Stations.group(list, p -> java.util.Optional.of(Location.EARTH_ORBIT));
+        helper.assertTrue(stations.size() == 2, "two stations: " + stations);
+        var big = stations.stream().filter(st -> st.ports() == 2).findFirst();
+        helper.assertTrue(big.isPresent() && big.get().owner().equals("PizzaParker07") && big.get().body().equals(Location.EARTH_ORBIT.body()),
+                "the first station: 2 ports, built by its owner, around Earth");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.station.Stations.group(list, p -> java.util.Optional.of(Location.EARTH_SURFACE)).isEmpty(),
+                "ports on the ground are no space station");
+        // the list survives the network
+        var buf = io.netty.buffer.Unpooled.buffer();
+        var payload = new com.pizzaparker07.spacebreaker.content.rocketry.station.Stations.Payload(stations);
+        com.pizzaparker07.spacebreaker.content.rocketry.station.Stations.Payload.STREAM_CODEC.encode(buf, payload);
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.station.Stations.Payload.STREAM_CODEC.decode(buf).equals(payload), "sent intact");
+        level.removeBlock(a, false);
+        helper.succeed();
     }
 
     @GameTest(template = EMPTY)
