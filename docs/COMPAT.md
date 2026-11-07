@@ -223,7 +223,9 @@ Complementary the tint is weaker (the pack re-lights translucent entities) but t
   (`blocky_earth_vanilla_vs_iris.jpg`; rows: voxel vanilla/pack ×2, cube vanilla/pack ×2).
   Since the bodies depth-test among themselves (hidden corners), the sky pass's off-screen target has a depth
   buffer and clears it with depth writes on: `glClear` skips depth while the mask is off, and the never-cleared 0
-  hid every planet under the pack (`blocky_earth_depth_iris.jpg`; left vanilla, right Complementary, cube style).
+  hid every planet under the pack (`blocky_earth_depth_iris.jpg`, with moon's 0c04bca9: columns voxel vanilla/pack,
+  cube vanilla/pack). Shot 10c shows no ground under the pack only because the 80-tick wait is too short for the
+  slower chunk builds; with 400 ticks the ground is there and not hidden by the planet.
 - **Docking jolt:** a camera roll/pitch from `ViewportEvent.ComputeCameraAngles`; Iris builds its matrices from the
   same camera, so the shake is the same with a pack (at most about 2°, too small to tell apart in a still frame).
 - **Inside a closed module the pack's ambient fill is blue:** the airless sky colour handed to the pack
