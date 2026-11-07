@@ -326,7 +326,25 @@ def cabin_roof(face, x, y, fw, fh):
         if x in (0, fw - 1) or y in (0, fh - 1):
             return WHITE[1]
         return WHITE[3] if y % 8 else WHITE[2]
+    if face == 'bottom':
+        # ceiling seen from the seats: lining panels with seams, rivets at the joints and two grab rails
+        if x in (4, fw - 5) and 3 <= y <= fh - 4 and y % 8 not in (0, 7):
+            return WHITE[1]
+        if y % 8 == 0:
+            return WHITE[2]
+        if y % 8 == 1 and x in (1, fw - 2, fw // 2):
+            return WHITE[1]
+        return WHITE[3]
     return WHITE[2]
+
+
+def lining(x, y, fw, fh):
+    """Inner wall lining: a seam every 8 pixels across, rivets beside each seam, otherwise plain."""
+    if x % 8 == 0 and x not in (0, fw - 1):
+        return WHITE[2]
+    if (x % 8 == 1 or x % 8 == 7) and y % 6 == 3:
+        return WHITE[1]
+    return WHITE[3]
 
 
 def cabin_side(face, x, y, fw, fh):
@@ -341,7 +359,7 @@ def cabin_side(face, x, y, fw, fh):
             return ORANGE
         if y >= fh - 2:
             return WHITE[1]
-        return WHITE[3]
+        return lining(x, y, fw, fh)
     return WHITE[2]
 
 
@@ -354,7 +372,7 @@ def cabin_front(face, x, y, fw, fh):
             return None
         if y == 9:
             return DARK[1]
-        return WHITE[3] if y < fh - 2 else WHITE[1]
+        return lining(x, y, fw, fh) if y < fh - 2 else WHITE[1]
     return WHITE[2]
 
 
