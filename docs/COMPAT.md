@@ -285,7 +285,7 @@ What is shown (data in `compat/recipes/RecipeViewerData`, shared by both plugins
 | Sabatier Reaction, Regolith Heating, Ice Melting, Chemical Reaction | Sabatier reactor, regolith heater, ice melter, chemical reactor |
 | Suit Modules (smithing) | smithing table: template + suit piece + module = fitted piece, every fitting combination |
 | Smelting (vanilla) | the arc furnace is added as a catalyst (it smelts anything a furnace can) |
-| Information pages | Rocket Assembler (rockets are assembled from parts, not crafted), Atmosphere Processor |
+| Information pages | Rocket Assembler (rockets are assembled from parts, not crafted), Atmosphere Processor, Item Duct (sneak-use an end: pull / filter) |
 
 Each processing recipe shows its item inputs, fluid inputs and outputs as tanks with amounts, the press die or other
 tool (not consumed), bonus outputs with their chance, energy (FE/t and total), time, and in red

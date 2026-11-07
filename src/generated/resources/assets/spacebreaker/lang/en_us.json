@@ -1384,6 +1384,7 @@
   "recipe_viewer.spacebreaker.energy": "%s FE/t · %s FE",
   "recipe_viewer.spacebreaker.fabricating": "Fabricating",
   "recipe_viewer.spacebreaker.info.atmosphere_processor": "Compresses the local atmosphere and separates its most useful gas: carbon dioxide on Mars and Venus, oxygen from Earth's air, methane on Titan. Output grows with the gas share and the air pressure; it does nothing in vacuum. Needs power.",
+  "recipe_viewer.spacebreaker.info.item_duct": "Sneak and use one end with an empty hand: it pulls from that inventory. Sneak and use it holding an item: that end lets only that item through.",
   "recipe_viewer.spacebreaker.info.rocket_assembler": "Rockets are not crafted. Place parts (engines, tanks, capsule, fins, parachutes...) in the Rocket Assembler, check the design's delta-v and thrust-to-weight on its screen, then assemble the rocket onto a launch pad. Parts come from the Fabricator; better parts need research.",
   "recipe_viewer.spacebreaker.liquefaction": "Cryogenic Liquefaction",
   "recipe_viewer.spacebreaker.melting": "Ice Melting",
