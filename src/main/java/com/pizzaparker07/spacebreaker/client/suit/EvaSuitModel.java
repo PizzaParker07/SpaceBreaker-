@@ -125,13 +125,10 @@ public class EvaSuitModel extends HumanoidModel<LivingEntity> {
         head.addOrReplaceChild("tier_heated", CubeListBuilder.create()
                 .texOffs(64, 0).addBox(-6F, -2F, -6F, 12, 2, 12)
                 .texOffs(64, 14).addBox(-2F, -11F, -2F, 4, 1, 4), PartPose.ZERO);
-        // radiation: armoured brow and chin plates leave a narrow visor slit; cheek guards; a crest
+        // radiation: lead cheek guards only, flush with the shell; the visor stays open and round
         head.addOrReplaceChild("tier_radiation", CubeListBuilder.create()
-                .texOffs(64, 20).addBox(-5F, -8F, -6F, 10, 2, 1)
-                .texOffs(64, 24).addBox(-5F, -3F, -6F, 10, 2, 1)
-                .texOffs(88, 20).addBox(-6F, -5F, -4F, 1, 4, 6)
-                .texOffs(104, 20).addBox(5F, -5F, -4F, 1, 4, 6)
-                .texOffs(64, 30).addBox(-1F, -11F, -4F, 2, 2, 8), PartPose.ZERO);
+                .texOffs(88, 20).addBox(-6F, -5F, -4F, 1, 4, 6, new CubeDeformation(-0.2F, 0F, 0F))
+                .texOffs(104, 20).addBox(5F, -5F, -4F, 1, 4, 6, new CubeDeformation(-0.2F, 0F, 0F)), PartPose.ZERO);
         return LayerDefinition.create(mesh, 128, 64);
     }
 
@@ -175,7 +172,8 @@ public class EvaSuitModel extends HumanoidModel<LivingEntity> {
             PartDefinition a = left ? leftArm : rightArm;
             float x = left ? -1F : -3F;
             a.addOrReplaceChild("tier_heated", mirrored(left).texOffs(64, 16).addBox(x, -2F, -2F, 4, 3, 4, new CubeDeformation(1.5F)), PartPose.ZERO);
-            a.addOrReplaceChild("tier_radiation", mirrored(left).texOffs(64, 32).addBox(x - 1F, -3F, -3F, 6, 2, 6, new CubeDeformation(0.5F)), PartPose.ZERO);
+            // radiation: a thin lead shoulder plate, just over the sleeve
+            a.addOrReplaceChild("tier_radiation", mirrored(left).texOffs(64, 32).addBox(x, -2.5F, -2F, 4, 2, 4, new CubeDeformation(1.25F, 0.2F, 1.25F)), PartPose.ZERO);
         }
         return LayerDefinition.create(mesh, 128, 64);
     }

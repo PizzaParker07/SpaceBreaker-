@@ -795,12 +795,9 @@ def helmet_extras(cv, tier):
         box(cv, (64, 0, 12, 2, 12), sides=_quilted(ORANGE), top=_quilted(ORANGE), bottom=solid(ORANGE[2]))
         box(cv, (64, 14, 4, 1, 4), top=lambda x, y, w, h: S[6] if (x + y) % 2 else S[4], sides=solid(S[4]), bottom=solid(S[2]))
     elif tier == 'radiation':
-        plate = _flat(HAZARD, 6, 5, 3)
-        box(cv, (64, 20, 10, 2, 1), all=plate, bottom=solid(HAZARD[2]))
-        box(cv, (64, 24, 10, 2, 1), all=plate, top=solid(HAZARD[3]))
+        # lead cheek guards only (the gold brow, chin plate and crest are gone: they read as a bucket)
         for u in (88, 104):
             box(cv, (u, 20, 1, 4, 6), all=_flat(LEAD, 6, 5, 3))
-        box(cv, (64, 30, 2, 2, 8), sides=_ribbed(HAZARD), top=_flat(HAZARD), bottom=solid(HAZARD[2]))
 
 
 def torso_extras(cv, tier):
@@ -817,9 +814,11 @@ def torso_extras(cv, tier):
     elif tier == 'radiation':
         def abdomen(x, y, w, h):
             if y in (1, 2) and x in (1, w - 2):
-                return HAZARD[2]                                  # bolts
-            return _flat(HAZARD, 6, 5, 3)(x, y, w, h)
-        box(cv, (64, 40, 8, 4, 1), north=abdomen, sides=solid(HAZARD[3]), top=solid(HAZARD[6]), bottom=solid(HAZARD[2]))
+                return LEAD[2]                                    # bolts
+            if y == 0 and 0 < x < w - 1:
+                return HAZARD[5]                                  # one thin hazard edge
+            return _flat(LEAD, 6, 5, 3)(x, y, w, h)
+        box(cv, (64, 40, 8, 4, 1), north=abdomen, sides=solid(LEAD[3]), top=solid(LEAD[6]), bottom=solid(LEAD[2]))
 
         def shield(x, y, w, h):
             if x in (0, w - 1) or y in (0, h - 1):
@@ -828,7 +827,7 @@ def torso_extras(cv, tier):
                 return HAZARD[5]                                  # hazard chevrons
             return LEAD[4]
         box(cv, (88, 32, 10, 12, 1), south=shield, north=solid(LEAD[3]), sides=solid(LEAD[3]), top=solid(LEAD[5]), bottom=solid(LEAD[2]))
-        box(cv, (64, 32, 6, 2, 6), sides=_flat(HAZARD, 6, 5, 3), top=_flat(HAZARD), bottom=solid(HAZARD[2]))
+        box(cv, (64, 32, 4, 2, 4), sides=_flat(LEAD, 6, 5, 3), top=_flat(LEAD), bottom=solid(LEAD[2]))
 
 
 def legs_extras(cv, tier):
@@ -837,14 +836,14 @@ def legs_extras(cv, tier):
     elif tier == 'heated':
         box(cv, (64, 4, 4, 5, 4), sides=_quilted(ORANGE), top=solid(ORANGE[5]), bottom=solid(ORANGE[3]))
     elif tier == 'radiation':
-        box(cv, (64, 16, 4, 5, 1), north=_flat(HAZARD, 6, 5, 3), sides=solid(HAZARD[3]), top=solid(HAZARD[6]), bottom=solid(HAZARD[2]))
+        box(cv, (64, 16, 4, 5, 1), north=_flat(LEAD, 6, 5, 3), sides=solid(LEAD[3]), top=solid(LEAD[6]), bottom=solid(LEAD[2]))
 
 
 def boots_extras(cv, tier):
     if tier == 'heated':
         box(cv, (64, 0, 6, 2, 6), sides=_quilted(ORANGE), top=solid(ORANGE[6]), bottom=solid(ORANGE[3]))
     elif tier == 'radiation':
-        box(cv, (64, 8, 6, 4, 1), north=_flat(HAZARD, 6, 5, 3), sides=solid(HAZARD[3]), top=solid(HAZARD[6]), bottom=solid(HAZARD[2]))
+        box(cv, (64, 8, 6, 4, 1), north=_flat(LEAD, 6, 5, 3), sides=solid(LEAD[3]), top=solid(LEAD[6]), bottom=solid(LEAD[2]))
 
 
 def tier_sheets(tier):
