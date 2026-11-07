@@ -168,6 +168,12 @@ final class ProgressionReport {
                     .append(Math.round(bestDv)).append(" | ").append(oneWay).append(" |\n");
         }
         out.append('\n');
+        out.append("## Uncrewed missions (satellites and probes, one way)\n\n");
+        if (m.uncrewedResults.isEmpty()) {
+            out.append("No satellite or probe can be built and launched.\n");
+        }
+        m.uncrewedResults.forEach((k, v) -> out.append("- ").append(k).append(": ").append(v).append('\n'));
+        out.append('\n');
         if (!m.notes.isEmpty()) {
             out.append("## Notes\n\n");
             m.notes.forEach(n -> out.append("- ").append(n).append('\n'));

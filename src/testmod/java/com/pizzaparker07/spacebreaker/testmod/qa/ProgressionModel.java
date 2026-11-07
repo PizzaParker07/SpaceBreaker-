@@ -124,6 +124,10 @@ final class ProgressionModel {
     private final RegistryOps<JsonElement> ops;
     private final Map<String, String> lastRocketKey = new HashMap<>();
 
+    /** Creatures a module spawns from code (not from biome spawn lists): dimension → entity ids. */
+    static final Map<String, List<String>> CODE_SPAWNS = Map.of(
+            "spacebreaker:venus", List.of("spacebreaker:cloud_jelly", "spacebreaker:acid_ray"));
+
     static final Map<String, String> MACHINE_FOR_KIND = Map.ofEntries(
             Map.entry("crushing", "crusher"), Map.entry("arc_smelting", "arc_furnace"), Map.entry("pressing", "press"),
             Map.entry("fabricating", "fabricator"), Map.entry("refining", "refinery"), Map.entry("electrolysis", "electrolyzer"),
@@ -376,6 +380,9 @@ final class ProgressionModel {
                 spawns.spawners().forEach(sp -> entities.add(sp.type));
             }
         }));
+        // creatures spawned by code instead of biome spawn lists
+        CODE_SPAWNS.getOrDefault(dim.location().toString(), List.of()).forEach(e ->
+                BuiltInRegistries.ENTITY_TYPE.getOptional(ResourceLocation.parse(e)).ifPresent(entities::add));
         body.ifPresent(id -> todo.add(new com.google.gson.JsonPrimitive(id.toString())));
         List<ResourceKey<? extends Registry<?>>> follow = List.of(Registries.BIOME, Registries.PLACED_FEATURE, Registries.CONFIGURED_FEATURE,
                 Registries.NOISE_SETTINGS, TerrainProfile.REGISTRY);
@@ -1017,6 +1024,7 @@ final class ProgressionModel {
         }
         boolean changed = add("item:spacebreaker:rocket", "assembled in the rocket assembler", partDeps);
         best = designs;
+        changed |= uncrewed(lookup, parts, earthFuels, partDeps, key);
         double gEarth = gravityOf(Level.OVERWORLD);
         for (Location target : Locations.all()) {
             ResourceKey<Level> dim = target.dimension();
@@ -1049,6 +1057,74 @@ final class ProgressionModel {
                 changed |= add(world(dim), (r.mode().equals("round_trip") ? "round trip to " : "flight with refuelling at ") + target.id()
                         + " with " + describe(r.rocket()), deps);
                 survival.put(dim, survivalAt(worlds.get(dim)));
+            }
+        }
+        return changed;
+    }
+
+    /** Uncrewed missions: per destination, flown or the reason why not (satellite orbits and probe landings). */
+    final Map<String, String> uncrewedResults = new java.util.TreeMap<>();
+    private final Set<String> uncrewedDone = new HashSet<>();
+
+    /**
+     * Observation satellites (released in a target orbit, send the orbital survey records) and landing probes (land on a
+     * world, send two field samples of it and the probe landing records), flown one way on the cheapest route.
+     */
+    private boolean uncrewed(java.util.function.Function<ResourceLocation, RocketPart> lookup, Set<ResourceLocation> parts,
+                             Set<Propellant> fuels, List<String> partDeps, String key) {
+        boolean changed = false;
+        double gEarth = gravityOf(Level.OVERWORLD);
+        for (String payload : List.of("observation_satellite", "space_probe")) {
+            ResourceLocation id = Spacebreaker.id(payload);
+            if (!parts.contains(id) || !uncrewedDone.add(payload + "|" + key)) {
+                continue;
+            }
+            List<RocketSearch.Candidate> designs = RocketSearch.designs(lookup, parts, fuels, id);
+            boolean probe = payload.equals("space_probe");
+            for (Location target : Locations.all()) {
+                if (target.orbit() == probe || target.isEarth() || target.dimension() == null || !worlds.containsKey(target.dimension())) {
+                    continue;
+                }
+                // an uncrewed rocket flies the star map's own path to its mission target (no stop-overs)
+                List<Location> out = com.pizzaparker07.spacebreaker.content.rocketry.nav.StarMapData.flightPath(Location.EARTH_SURFACE, target);
+                String reason = out.size() < 2 ? "no route" : null;
+                RocketSearch.Candidate flown = null;
+                String lastFailure = "no design";
+                for (RocketSearch.Candidate c : designs) {
+                    if (reason != null) {
+                        break;
+                    }
+                    if (com.pizzaparker07.spacebreaker.content.rocketry.design.RocketMath.twr(c.layout(), 0, c.layout().fullFuel(), gEarth) < 1.05) {
+                        continue;
+                    }
+                    var plan = com.pizzaparker07.spacebreaker.content.rocketry.nav.MissionPlanner.fly(c.layout(), 0, c.layout().fullFuel(), out, realism);
+                    if (plan.possible()) {
+                        flown = c;
+                        break;
+                    }
+                    if (!"delta_v".equals(lastFailure)) {
+                        lastFailure = plan.failure() + " (leg " + plan.legsFlown() + ")";
+                    }
+                }
+                String label = payload + " → " + target.id();
+                if (flown != null) {
+                    uncrewedResults.put(label, "flown: " + describe(flown));
+                    List<String> deps = new ArrayList<>(partDeps);
+                    if (probe) {
+                        target.body();
+                        changed |= add(kind(Spacebreaker.id("probe_landing")), "probe landed on " + target.id(), deps);
+                        changed |= add(kind(target.body()), "probe samples from " + target.id(), deps);
+                    } else {
+                        changed |= add(kind(Spacebreaker.id("orbital_survey")), "observation satellite in " + target.id(), deps);
+                    }
+                } else {
+                    StringBuilder legs = new StringBuilder();
+                    for (int i = 0; i + 1 < out.size(); i++) {
+                        legs.append(i == 0 ? "" : " → ").append(out.get(i + 1).id()).append(" (shield ")
+                                .append(com.pizzaparker07.spacebreaker.content.rocketry.nav.Transfers.reentryRating(out.get(i), out.get(i + 1))).append(')');
+                    }
+                    uncrewedResults.put(label, "NOT POSSIBLE: " + (reason != null ? reason : lastFailure) + "; path " + legs);
+                }
             }
         }
         return changed;
