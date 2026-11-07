@@ -40,7 +40,7 @@ import java.util.Optional;
 public final class AstroGameTests {
     private static final List<String> BODIES = List.of("sun", "mercury", "venus", "earth", "moon", "mars", "phobos",
             "deimos", "ceres", "vesta", "jupiter", "io", "europa", "ganymede", "callisto", "saturn", "titan",
-            "enceladus", "uranus", "miranda", "ariel", "umbriel", "titania", "oberon", "neptune", "triton", "pluto", "charon");
+            "enceladus", "uranus", "miranda", "ariel", "umbriel", "titania", "oberon", "neptune", "proteus", "triton", "nereid", "pluto", "charon", "nix", "hydra");
 
     @GameTest(template = "empty")
     public static void everyCelestialBodyLoads(GameTestHelper helper) {

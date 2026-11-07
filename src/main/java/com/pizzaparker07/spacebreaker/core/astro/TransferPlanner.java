@@ -124,6 +124,52 @@ public final class TransferPlanner {
         return descent(b, useAtmosphere, DEFAULT_TWR);
     }
 
+    /**
+     * A surface ↔ low-orbit leg with its timing.
+     *
+     * @param deltaV        Δv, m/s (same as {@link #ascent} / {@link #descent})
+     * @param burnSeconds   powered flight time
+     * @param coastSeconds  unpowered time (descent: the half orbit from the deorbit burn down to the surface,
+     *                      plus atmospheric entry where there is air)
+     */
+    public record SurfaceLeg(double deltaV, double burnSeconds, double coastSeconds) {
+        public double totalSeconds() {
+            return burnSeconds + coastSeconds;
+        }
+    }
+
+    /** Average thrust-to-weight over a burn is higher than at lift-off as propellant is used: ≈ 1.3×. */
+    static final double TWR_GROWTH = 1.3;
+    /** Entry, parachutes and landing through an atmosphere, s. */
+    static final double ENTRY_SECONDS = 600;
+
+    /** Ascent from the surface to the default low orbit (Moon at TWR 2: ≈ 1.9 km/s, ≈ 7.5 min like the Apollo ascent stage). */
+    public static SurfaceLeg ascentLeg(AstroBody b, double twr) {
+        double dv = ascent(b, twr);
+        double burn = Double.isFinite(dv) ? dv / (b.surfaceGravity() * twr * TWR_GROWTH) : Double.POSITIVE_INFINITY;
+        return new SurfaceLeg(dv, burn, 0);
+    }
+
+    /**
+     * Descent from the default low orbit: a short deorbit burn, a half-orbit coast down (Moon ≈ 56 min, like
+     * Apollo between descent orbit insertion and powered descent), then the powered landing (or entry and
+     * parachutes where there is air).
+     */
+    public static SurfaceLeg descentLeg(AstroBody b, boolean useAtmosphere, double twr) {
+        double dv = descent(b, useAtmosphere, twr);
+        double a = (b.lowOrbitRadius() + b.radius()) / 2;
+        double coast = Math.PI * Math.sqrt(a * a * a / b.mu());
+        double burn;
+        if (b.hasAtmosphere() && useAtmosphere) {
+            double landing = Math.max(0, dv - Transfers.hohmann(b.mu(), b.lowOrbitRadius(), b.radius()).dv1());
+            burn = landing / (b.surfaceGravity() * twr * TWR_GROWTH);
+            coast += ENTRY_SECONDS;
+        } else {
+            burn = dv / (b.surfaceGravity() * twr * TWR_GROWTH);
+        }
+        return new SurfaceLeg(dv, burn, coast);
+    }
+
     /** From the default low orbit to escape. */
     public static double escape(AstroBody b) {
         return Transfers.escapeFromCircular(b.mu(), b.lowOrbitRadius());
