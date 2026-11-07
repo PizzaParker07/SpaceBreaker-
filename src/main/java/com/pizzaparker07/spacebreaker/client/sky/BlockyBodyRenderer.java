@@ -63,6 +63,23 @@ public final class BlockyBodyRenderer {
             return r;
         }
 
+        /** {@link #rotation(BlockyBodyMesh.Style)} written into {@code dest}, allocating nothing (render thread only). */
+        Matrix3f rotationInto(BlockyBodyMesh.Style style, Matrix3f dest) {
+            Vector3f y = S_Y.set(pole).normalize();
+            Vector3f z = S_Z.set(facing).sub(S_T.set(y).mul(y.dot(facing)));
+            if (z.lengthSquared() < 1e-8F) {
+                z.set(Math.abs(y.x) < 0.9F ? 1 : 0, 0, Math.abs(y.x) < 0.9F ? 0 : 1);
+                z.sub(S_T.set(y).mul(y.dot(z)));
+            }
+            z.normalize();
+            Vector3f x = S_X.set(y).cross(z).normalize();
+            dest.set(x, y, z).mul(S_M.rotationY(-spin));
+            if (style == BlockyBodyMesh.Style.CUBE) {
+                dest.mul(S_M.rotationY(spin)).mul(S_M.rotationX(CUBE_TILT)).mul(S_M.rotationY(-spin + (float) Math.PI / 4));
+            }
+            return dest;
+        }
+
         /** Rotation from body space (pole +Y, longitude 0 +Z, 90 E +X) into the drawing frame. */
         Matrix3f rotation() {
             Vector3f y = new Vector3f(pole).normalize();
@@ -90,6 +107,15 @@ public final class BlockyBodyRenderer {
 
     private record Quad(float depth, float[] xyz, int argb) {
     }
+
+    // scratch for the every-frame path (render thread only), so drawing a cached body allocates nothing
+    private static final Vector3f S_X = new Vector3f(), S_Y = new Vector3f(), S_Z = new Vector3f(), S_T = new Vector3f();
+    private static final Matrix3f S_M = new Matrix3f(), S_ROT = new Matrix3f(), S_ROT_T = new Matrix3f();
+    private static final Vector3f S_LOOK = new Vector3f(), S_UP = new Vector3f(), S_RIGHT = new Vector3f();
+    private static final Vector3f S_SUN_B = new Vector3f(), S_LOOK_B = new Vector3f(), S_UP_B = new Vector3f(), S_RIGHT_B = new Vector3f(),
+            S_CAM_B = new Vector3f();
+    private static final Matrix4f S_MODEL = new Matrix4f(), S_M4 = new Matrix4f();
+    private static final float[] S_SIG = new float[16];
 
     /** How far a cube's pole is tipped toward the viewer (radians). */
     static final float CUBE_TILT = 0.45F;
@@ -161,16 +187,22 @@ public final class BlockyBodyRenderer {
         if (d <= ra * 1.0005F) {
             return; // inside the air
         }
-        Vector3f u = new Vector3f(c).div(d);
+        float ux = c.x / d, uy = c.y / d, uz = c.z / d;
         // the outline of a sphere seen from the camera: a circle in the plane square to the line of sight
         float inner = r * (float) Math.sqrt(1 - (r * r) / (d * d));
         float outer = ra * (float) Math.sqrt(1 - (ra * ra) / (d * d));
-        Vector3f ci = new Vector3f(u).mul(d - r * r / d);
-        Vector3f co = new Vector3f(u).mul(d - ra * ra / d);
-        Vector3f a = Math.abs(u.y) < 0.9F ? new Vector3f(0, 1, 0) : new Vector3f(1, 0, 0);
-        Vector3f e1 = new Vector3f(a).sub(new Vector3f(u).mul(u.dot(a))).normalize();
-        Vector3f e2 = new Vector3f(u).cross(e1).normalize();
-        Vector3f s = new Vector3f(sun).normalize();
+        float di = d - r * r / d, dout = d - ra * ra / d;
+        // two axes in that plane
+        float ax = Math.abs(uy) < 0.9F ? 0 : 1, ay = Math.abs(uy) < 0.9F ? 1 : 0;
+        float dot = ux * ax + uy * ay;
+        float e1x = ax - ux * dot, e1y = ay - uy * dot, e1z = -uz * dot;
+        float l1 = (float) Math.sqrt(e1x * e1x + e1y * e1y + e1z * e1z);
+        e1x /= l1;
+        e1y /= l1;
+        e1z /= l1;
+        float e2x = uy * e1z - uz * e1y, e2y = uz * e1x - ux * e1z, e2z = ux * e1y - uy * e1x;
+        float sl = sun.length();
+        float sx = sun.x / sl, sy = sun.y / sl, sz = sun.z / sl;
         int segs = 160;
         int steps = 3;
         RenderSystem.enableBlend();
@@ -182,25 +214,33 @@ public final class BlockyBodyRenderer {
         BufferBuilder bb = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
         int cr = rgb >> 16 & 255, cg = rgb >> 8 & 255, cb = rgb & 255;
         for (int i = 0; i < segs; i++) {
-            double t0 = Math.PI * 2 * i / segs;
-            double t1 = Math.PI * 2 * (i + 1) / segs;
-            Vector3f dir = new Vector3f(e1).mul((float) Math.cos((t0 + t1) / 2)).add(new Vector3f(e2).mul((float) Math.sin((t0 + t1) / 2)));
-            float day = Mth.clamp(dir.dot(s) * 2F + 0.5F, 0.12F, 1F);
+            float t0 = Mth.TWO_PI * i / segs;
+            float t1 = Mth.TWO_PI * (i + 1) / segs;
+            float tm = (t0 + t1) / 2;
+            float mx = e1x * Mth.cos(tm) + e2x * Mth.sin(tm), my = e1y * Mth.cos(tm) + e2y * Mth.sin(tm), mz = e1z * Mth.cos(tm) + e2z * Mth.sin(tm);
+            float day = Mth.clamp((mx * sx + my * sy + mz * sz) * 2F + 0.5F, 0.12F, 1F);
             for (int k = 0; k < steps; k++) {
                 float f0 = (float) k / steps;
                 float f1 = (float) (k + 1) / steps;
                 // hard steps: each ring of the band one shade, thinning outward
                 int al = (int) (Mth.clamp(alpha * (1 - f0) * day, 0, 1) * 255);
-                for (float[] v : new float[][]{{f0, (float) t0}, {f1, (float) t0}, {f1, (float) t1}, {f0, (float) t1}}) {
-                    float rad = Mth.lerp(v[0], inner, outer);
-                    Vector3f cen = new Vector3f(ci).lerp(co, v[0]);
-                    Vector3f p = new Vector3f(e1).mul(rad * (float) Math.cos(v[1])).add(new Vector3f(e2).mul(rad * (float) Math.sin(v[1]))).add(cen);
-                    bb.addVertex(pose, p.x, p.y, p.z).setColor(cr, cg, cb, al);
-                }
+                limbVertex(bb, pose, f0, t0, inner, outer, di, dout, ux, uy, uz, e1x, e1y, e1z, e2x, e2y, e2z, cr, cg, cb, al);
+                limbVertex(bb, pose, f1, t0, inner, outer, di, dout, ux, uy, uz, e1x, e1y, e1z, e2x, e2y, e2z, cr, cg, cb, al);
+                limbVertex(bb, pose, f1, t1, inner, outer, di, dout, ux, uy, uz, e1x, e1y, e1z, e2x, e2y, e2z, cr, cg, cb, al);
+                limbVertex(bb, pose, f0, t1, inner, outer, di, dout, ux, uy, uz, e1x, e1y, e1z, e2x, e2y, e2z, cr, cg, cb, al);
             }
         }
         BufferUploader.drawWithShader(bb.buildOrThrow());
         RenderSystem.enableCull();
+    }
+
+    private static void limbVertex(BufferBuilder bb, Matrix4f pose, float f, float t, float inner, float outer, float di, float dout,
+                                   float ux, float uy, float uz, float e1x, float e1y, float e1z, float e2x, float e2y, float e2z,
+                                   int r, int g, int b, int a) {
+        float rad = Mth.lerp(f, inner, outer);
+        float along = Mth.lerp(f, di, dout);
+        float c = Mth.cos(t) * rad, sn = Mth.sin(t) * rad;
+        bb.addVertex(pose, ux * along + e1x * c + e2x * sn, uy * along + e1y * c + e2y * sn, uz * along + e1z * c + e2z * sn).setColor(r, g, b, a);
     }
 
     /** Blocks across a body for a style: a voxel ball needs a few more than a cube face. */
@@ -322,8 +362,8 @@ public final class BlockyBodyRenderer {
         long since;
     }
 
-    private static final Map<Object, Cached> BUFFERS = new java.util.HashMap<>();
-    private static final Map<CacheKey, Lod> LODS = new java.util.HashMap<>();
+    /** Level-of-detail state per colour map and style (found without building a key). */
+    private static final Map<ColorMap, Lod[]> LODS = new java.util.IdentityHashMap<>();
     private static long rebuildNanos;
     private static int rebuilds;
     private static long drawNanos;
@@ -332,8 +372,51 @@ public final class BlockyBodyRenderer {
 
     private static void render(Matrix4f pose, BlockyBodyMesh.Style style, int n, ColorMap map, Pose body, Vector3f sun, float night,
                                float tint, float alpha, Ring ring, Vector3f viewDir) {
+        if (!timingOn()) {
+            renderBody(pose, style, n, map, body, sun, night, tint, alpha, ring, viewDir);
+            return;
+        }
+        // development measurement: time and memory of draws that rebuilt nothing (the steady, every-frame cost)
+        int rebuildsBefore = rebuilds;
+        long a0 = allocated();
+        long t0 = System.nanoTime();
+        renderBody(pose, style, n, map, body, sun, night, tint, alpha, ring, viewDir);
+        long t1 = System.nanoTime();
+        long a1 = allocated();
         if (viewDir != null) {
-            immediate(pose, style, n, map, body, sun, night, tint, alpha, ring, viewDir, true);
+            timing(t1 - t0, false);
+        }
+        if (rebuilds == rebuildsBefore) {
+            steadyNanos += t1 - t0;
+            steadyBytes += Math.max(0, a1 - a0);
+            steadyDraws++;
+        }
+    }
+
+    private static long steadyNanos;
+    private static long steadyBytes;
+    private static int steadyDraws;
+
+    private static long allocated() {
+        java.lang.management.ThreadMXBean bean = java.lang.management.ManagementFactory.getThreadMXBean();
+        return bean instanceof com.sun.management.ThreadMXBean sun ? sun.getCurrentThreadAllocatedBytes() : 0;
+    }
+
+    private static void renderBody(Matrix4f pose, BlockyBodyMesh.Style style, int n, ColorMap map, Pose body, Vector3f sun, float night,
+                                   float tint, float alpha, Ring ring, Vector3f viewDir) {
+        if (viewDir != null) {
+            if (ring != null) {
+                // a ringed body on a flat view: body and ring sorted together, drawn each time (rare: a map's ringed planets)
+                immediate(pose, style, n, map, body, sun, night, tint, alpha, ring, viewDir, true);
+                return;
+            }
+            List<BlockyBodyMesh.Face> faces = BlockyBodyMesh.body(style, n);
+            RenderSystem.enableBlend();
+            RenderSystem.defaultBlendFunc();
+            RenderSystem.disableCull();
+            drawFaces(pose, slot(FLAT_BUFFERS, map, style.ordinal() * (BlockyBodyMesh.MAX_SIZE + 1) + Math.min(n, BlockyBodyMesh.MAX_SIZE)), faces,
+                    colours(map, faces, false), body, body.rotationInto(style, S_ROT), sun, night, tint, alpha, viewDir, false);
+            RenderSystem.enableCull();
             return;
         }
         long t0 = System.nanoTime();
@@ -370,7 +453,10 @@ public final class BlockyBodyRenderer {
             cached(pose, style, level, map, body, sun, night, tint, alpha);
         }
         if (ring != null) {
-            immediate(pose, style, Math.max(level, LEVELS[0]), map, body, sun, night, tint, alpha, ring, null, false);
+            int tn = Math.max(24, Math.min(Math.max(level, LEVELS[0]), 64) * 3);
+            List<BlockyBodyMesh.Face> tiles = BlockyBodyMesh.ring(ring.inner(), ring.outer(), tn);
+            drawFaces(pose, slot(RING_BUFFERS, ring.bands(), Math.min(tn, 2 * BlockyBodyMesh.MAX_SIZE + 1)), tiles, colours(ring.bands(), tiles, true),
+                    body, body.rotationInto(style, S_ROT), sun, night, tint, alpha, null, true);
         }
         RenderSystem.enableCull();
         RenderSystem.clear(org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX); // while the mask is still open
@@ -392,6 +478,7 @@ public final class BlockyBodyRenderer {
 
     private static final class Patch {
         final float halfAngle;
+        final Cached buffer = new Cached();
         volatile List<BlockyBodyMesh.Face> faces;
         volatile int[] colours;
 
@@ -403,10 +490,17 @@ public final class BlockyBodyRenderer {
     private static final Map<PatchKey, Patch> PATCHES = new java.util.LinkedHashMap<>(16, 0.75F, true) {
         @Override
         protected boolean removeEldestEntry(Map.Entry<PatchKey, Patch> e) {
-            return size() > 6;
+            if (size() > 6) {
+                if (e.getValue().buffer.buffer != null) {
+                    e.getValue().buffer.buffer.close();
+                }
+                return true;
+            }
+            return false;
         }
     };
-    private static final Map<ColorMap, PatchKey> LAST_PATCH = new java.util.HashMap<>();
+    private static final Map<ColorMap, PatchKey> LAST_PATCH = new java.util.IdentityHashMap<>();
+    private static final Map<ColorMap, PatchKey> LAST_WANTED = new java.util.IdentityHashMap<>();
 
     /**
      * Very close to a body (low orbit): the whole ball even at its finest level has blocks far bigger than intended, so only
@@ -433,19 +527,24 @@ public final class BlockyBodyRenderer {
         while (n * 2 <= Math.min(PATCH_MAX, want)) {
             n *= 2;
         }
-        Matrix3f rot = body.rotation(style);
+        Matrix3f rot = body.rotationInto(style, S_ROT);
         // the camera's direction from the body's centre, in the body's own frame
-        Vector3f toward = new Matrix3f(rot).transpose().transform(new Vector3f(body.center()).negate().normalize());
+        Vector3f toward = S_ROT_T.set(rot).transpose().transform(S_T.set(body.center()).negate().normalize());
         float horizon = (float) Math.acos(Math.min(1F, body.radius() / dist));
         float half = horizon + 4F / n + 0.03F;
         float q = 8F / half;
-        PatchKey key = new PatchKey(map, n, Math.round(toward.x * q), Math.round(toward.y * q), Math.round(toward.z * q));
+        int qx = Math.round(toward.x * q), qy = Math.round(toward.y * q), qz = Math.round(toward.z * q);
+        PatchKey key = LAST_WANTED.get(map);
+        if (key == null || key.n() != n || key.qx() != qx || key.qy() != qy || key.qz() != qz) {
+            key = new PatchKey(map, n, qx, qy, qz); // only when the patch in view changes
+            LAST_WANTED.put(map, key);
+        }
         Patch patch = PATCHES.get(key);
         if (patch == null) {
             Patch p = new Patch(half * 1.2F);
             PATCHES.put(key, p);
             patch = p;
-            Vector3f centre = new Vector3f(key.qx(), key.qy(), key.qz()).div(q).normalize();
+            Vector3f centre = new Vector3f(qx, qy, qz).div(q).normalize();
             int size = n;
             java.util.concurrent.CompletableFuture.runAsync(() -> {
                 List<BlockyBodyMesh.Face> faces = BlockyBodyMesh.patch(size, centre, p.halfAngle);
@@ -463,7 +562,7 @@ public final class BlockyBodyRenderer {
             key = last;
         }
         LAST_PATCH.put(map, key);
-        drawFaces(pose, key, patch.faces, patch.colours, key.n(), body, rot, sun, night, tint, alpha);
+        drawFaces(pose, patch.buffer, patch.faces, patch.colours, body, rot, sun, night, tint, alpha, null, false);
         return true;
     }
 
@@ -476,11 +575,17 @@ public final class BlockyBodyRenderer {
         double fov = Math.toRadians(mc.options.fov().get());
         double pixels = 2 * body.radius() / near / (2 * Math.tan(fov / 2)) * mc.getWindow().getHeight();
         double want = pixels / BLOCK_PX;
-        Lod lod = LODS.computeIfAbsent(new CacheKey(map, style, 0), k -> {
-            Lod l = new Lod();
-            l.current = LEVELS[0];
-            return l;
-        });
+        Lod[] row = LODS.get(map);
+        if (row == null) {
+            row = new Lod[BlockyBodyMesh.Style.values().length];
+            LODS.put(map, row);
+        }
+        Lod lod = row[style.ordinal()];
+        if (lod == null) {
+            lod = new Lod();
+            lod.current = LEVELS[0];
+            row[style.ordinal()] = lod;
+        }
         for (int l : LEVELS) {
             if (l <= max) {
                 BlockyBodyMesh.prepare(style, l); // build every size in use in the background once
@@ -519,19 +624,67 @@ public final class BlockyBodyRenderer {
             n = LEVELS[0];
         }
         List<BlockyBodyMesh.Face> faces = BlockyBodyMesh.body(style, n);
-        drawFaces(pose, new CacheKey(map, style, n), faces, colours(map, faces, false), n, body, body.rotation(style), sun, night, tint, alpha);
+        drawFaces(pose, slot(BODY_BUFFERS, map, style.ordinal() * (BlockyBodyMesh.MAX_SIZE + 1) + n), faces, colours(map, faces, false), body,
+                body.rotationInto(style, S_ROT), sun, night, tint, alpha, null, false);
     }
 
-    /** Draws faces from a vertex buffer kept under {@code key}, rebuilt only when what it shows changes. */
-    private static void drawFaces(Matrix4f pose, Object key, List<BlockyBodyMesh.Face> faces, int[] colours, int n, Pose body, Matrix3f rot,
-                                  Vector3f sun, float night, float tint, float alpha) {
-        Cached c = BUFFERS.computeIfAbsent(key, k -> new Cached());
-        float[] sig = {rot.m00, rot.m01, rot.m02, rot.m10, rot.m11, rot.m12, rot.m20, rot.m21, rot.m22, sun.x, sun.y, sun.z,
-                body.center().x, body.center().y, body.center().z, body.radius(), night, tint, alpha};
-        if (c.buffer == null || c.faces != faces || !same(sig, c.signature, n)) {
+    /** Cache slots per colour map, found by index so the every-frame lookup builds no key. */
+    private static final Map<ColorMap, Cached[]> BODY_BUFFERS = new java.util.IdentityHashMap<>();
+    private static final Map<ColorMap, Cached[]> FLAT_BUFFERS = new java.util.IdentityHashMap<>();
+    private static final Map<ColorMap, Cached[]> RING_BUFFERS = new java.util.IdentityHashMap<>();
+
+    private static Cached slot(Map<ColorMap, Cached[]> table, ColorMap map, int index) {
+        Cached[] row = table.get(map);
+        if (row == null) {
+            row = new Cached[2 * (BlockyBodyMesh.MAX_SIZE + 1)];
+            table.put(map, row);
+        }
+        Cached c = row[index];
+        if (c == null) {
+            c = new Cached();
+            row[index] = c;
+        }
+        return c;
+    }
+
+    /**
+     * Draws faces from a vertex buffer kept in {@code c}. The buffer holds the body in its own frame (a unit ball), so
+     * turning, moving and growing it is only a matrix; it is rebuilt only when what the faces show changes: where the sun
+     * is and where the viewer is, seen from the body (light, which faces are in view), or brightness.
+     *
+     * @param viewDir null in the sky (camera at the origin); the view direction on a flat GUI view (then sorted, no depth)
+     * @param ring    the faces are ring tiles (lit as a flat sheet, shadowed by the body, sorted far to near)
+     */
+    private static void drawFaces(Matrix4f pose, Cached c, List<BlockyBodyMesh.Face> faces, int[] colours, Pose body, Matrix3f rot,
+                                  Vector3f sun, float night, float tint, float alpha, Vector3f viewDir, boolean ring) {
+        Vector3f look = viewDir != null ? S_LOOK.set(viewDir) : S_LOOK.set(body.center()).normalize();
+        Vector3f up = viewDir != null ? S_UP.set(0, -1, 0) : S_UP.set(0, 1, 0);
+        up.sub(S_T.set(look).mul(look.dot(up)));
+        if (up.lengthSquared() < 1e-6F) {
+            up.set(0, 0, -1);
+        }
+        up.normalize();
+        Vector3f right = S_RIGHT.set(look).cross(up).normalize();
+        Matrix3f inv = S_ROT_T.set(rot).transpose();
+        Vector3f sunB = inv.transform(S_SUN_B.set(sun).normalize());
+        Vector3f lookB = inv.transform(S_LOOK_B.set(look));
+        Vector3f upB = inv.transform(S_UP_B.set(up));
+        Vector3f rightB = inv.transform(S_RIGHT_B.set(right));
+        float kept = viewDir != null ? 1F : depthKept(body);
+        boolean flat = viewDir != null || kept < 0.5F;
+        // the camera in body units (only matters for a big near body, whose faces are judged one by one)
+        Vector3f camB = flat ? S_CAM_B.set(0, 0, 0) : inv.transform(S_CAM_B.set(body.center()).negate()).div(body.radius());
+        float[] sig = S_SIG;
+        sig[0] = sunB.x; sig[1] = sunB.y; sig[2] = sunB.z;
+        sig[3] = lookB.x; sig[4] = lookB.y; sig[5] = lookB.z;
+        sig[6] = upB.x; sig[7] = upB.y; sig[8] = upB.z;
+        sig[9] = camB.x; sig[10] = camB.y; sig[11] = camB.z;
+        sig[12] = night; sig[13] = tint; sig[14] = alpha; sig[15] = flat ? 1 : 0;
+        if (c.buffer == null || c.faces != faces || !same(sig, c.signature)) {
             long t0 = System.nanoTime();
             BufferBuilder bb = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-            int count = emitBody(bb, faces, colours, body, rot, sun, night, tint, alpha);
+            int count = ring ? emitRing(bb, faces, colours, sunB, lookB, night, tint, alpha)
+                    : emitBody(bb, faces, colours, sunB, lookB, upB, rightB, camB, flat, viewDir != null, night, tint, alpha);
             var mesh = bb.build();
             if (c.buffer == null) {
                 c.buffer = new com.mojang.blaze3d.vertex.VertexBuffer(com.mojang.blaze3d.vertex.VertexBuffer.Usage.DYNAMIC);
@@ -544,25 +697,41 @@ public final class BlockyBodyRenderer {
             } else if (mesh != null) {
                 mesh.close();
             }
-            c.signature = sig;
+            if (c.signature == null) {
+                c.signature = new float[sig.length];
+            }
+            System.arraycopy(sig, 0, c.signature, 0, sig.length);
             c.faces = faces;
             timing(System.nanoTime() - t0, true);
         }
         if (c.empty) {
             return;
         }
+        // model: the screen's model-view, the caller's pose, then place, flatten along the line of sight, turn and size
+        Matrix4f model = S_MODEL.set(RenderSystem.getModelViewMatrix()).mul(pose).translate(body.center());
+        if (kept < 1F) {
+            float k = 1 - kept;
+            model.mul(S_M4.set(1 - k * look.x * look.x, -k * look.x * look.y, -k * look.x * look.z, 0,
+                    -k * look.y * look.x, 1 - k * look.y * look.y, -k * look.y * look.z, 0,
+                    -k * look.z * look.x, -k * look.z * look.y, 1 - k * look.z * look.z, 0,
+                    0, 0, 0, 1));
+        }
+        model.mul(S_M4.set(rot)).scale(body.radius());
         c.buffer.bind();
-        c.buffer.drawWithShader(pose, RenderSystem.getProjectionMatrix(), GameRenderer.getPositionColorShader());
+        c.buffer.drawWithShader(model, RenderSystem.getProjectionMatrix(), GameRenderer.getPositionColorShader());
         com.mojang.blaze3d.vertex.VertexBuffer.unbind();
     }
 
-    private static boolean same(float[] a, float[] b, int n) {
+    /**
+     * Whether a cached build still shows the body closely enough: sun and viewer may move about a degree (as seen from
+     * the body), the near camera a little, brightness by a hundredth.
+     */
+    private static boolean same(float[] a, float[] b) {
         if (b == null || a.length != b.length) {
             return false;
         }
-        float turn = 0.25F * 2F / n;
         for (int i = 0; i < a.length; i++) {
-            float eps = i < 12 ? turn : i < 16 ? 1e-3F * Math.max(1F, Math.abs(a[i])) : 0.01F;
+            float eps = i < 9 ? 0.015F : i < 12 ? 0.004F * Math.max(1F, Math.abs(a[i])) : 0.01F;
             if (Math.abs(a[i] - b[i]) > eps) {
                 return false;
             }
@@ -570,33 +739,82 @@ public final class BlockyBodyRenderer {
         return true;
     }
 
-    /** The body's faces toward the viewer into {@code bb}, in the camera-centred frame (the pose matrix is applied when drawing). */
-    private static int emitBody(BufferBuilder bb, List<BlockyBodyMesh.Face> faces, int[] colours, Pose body, Matrix3f rot,
-                                Vector3f sun, float night, float tint, float alpha) {
-        Vector3f s = new Vector3f(sun).normalize();
-        Vector3f look = new Vector3f(body.center()).normalize();
-        Vector3f screenUp = new Vector3f(0, 1, 0);
-        screenUp.sub(new Vector3f(look).mul(look.dot(screenUp)));
-        if (screenUp.lengthSquared() < 1e-6F) {
-            screenUp.set(0, 0, -1);
-        }
-        screenUp.normalize();
-        Vector3f screenRight = new Vector3f(look).cross(screenUp).normalize();
-        boolean flat = depthKept(body) < 0.5F;
+    /**
+     * The body's faces in its own frame (unit ball), those toward the viewer (with a small margin, the rest is hidden by
+     * depth), coloured and lit. On a flat view they are sorted far to near instead, as there is no depth.
+     */
+    private static int emitBody(BufferBuilder bb, List<BlockyBodyMesh.Face> faces, int[] colours, Vector3f sunB, Vector3f lookB,
+                                Vector3f upB, Vector3f rightB, Vector3f camB, boolean flat, boolean sorted, float night, float tint, float alpha) {
+        int a = (int) (Mth.clamp(alpha, 0, 1) * 255);
+        List<float[]> order = sorted ? new ArrayList<>() : null;
         int count = 0;
         for (int i = 0; i < faces.size(); i++) {
             BlockyBodyMesh.Face f = faces.get(i);
-            Vector3f normal = rot.transform(new Vector3f(f.normal()));
-            Vector3f centre = rot.transform(new Vector3f(f.center())).mul(body.radius()).add(body.center());
-            if (facesAway(normal, centre, look, flat)) {
-                continue;
+            Vector3f nrm = f.normal();
+            Vector3f cen = f.center();
+            if (flat) {
+                if (nrm.dot(lookB) >= (sorted ? 0F : 0.08F)) {
+                    continue;
+                }
+            } else {
+                float dx = cen.x - camB.x, dy = cen.y - camB.y, dz = cen.z - camB.z;
+                float d = (float) Math.sqrt(dx * dx + dy * dy + dz * dz);
+                if (nrm.x * dx + nrm.y * dy + nrm.z * dz >= 0.02F * d) {
+                    continue;
+                }
             }
-            float light = BlockyBodyMesh.light(rot.transform(new Vector3f(f.surface())), normal, s, night)
-                    * BlockyBodyMesh.blockShade(normal.dot(screenUp), normal.dot(screenRight)) * tint;
-            put(bb, null, quad(f, rot, body, colours[i], light, alpha, null, look));
+            float light = BlockyBodyMesh.light(f.surface(), nrm, sunB, night) * BlockyBodyMesh.blockShade(nrm.dot(upB), nrm.dot(rightB)) * tint;
+            int argb = shade(colours[i], light, a);
+            if (sorted) {
+                order.add(new float[]{cen.dot(lookB), i, Float.intBitsToFloat(argb)});
+            } else {
+                face(bb, f, argb);
+            }
             count++;
         }
+        if (sorted) {
+            order.sort((x, y) -> Float.compare(y[0], x[0]));
+            for (float[] o : order) {
+                face(bb, faces.get((int) o[1]), Float.floatToRawIntBits(o[2]));
+            }
+        }
         return count;
+    }
+
+    /** Ring tiles in the body's frame, sorted far to near, lit as a flat sheet and dark in the body's shadow. */
+    private static int emitRing(BufferBuilder bb, List<BlockyBodyMesh.Face> tiles, int[] bands, Vector3f sunB, Vector3f lookB, float night,
+                                float tint, float alpha) {
+        List<float[]> order = new ArrayList<>();
+        float sheet = Math.max(night, 0.55F + 0.45F * Math.abs(sunB.y));
+        for (int i = 0; i < tiles.size(); i++) {
+            Vector3f p = tiles.get(i).center();
+            float along = p.dot(sunB);
+            float ox = p.x - sunB.x * along, oy = p.y - sunB.y * along, oz = p.z - sunB.z * along;
+            boolean shadow = along < 0 && ox * ox + oy * oy + oz * oz < 1;
+            int c = bands[i];
+            int argb = shade(c, (shadow ? night : sheet) * tint, (int) (Mth.clamp(alpha * ((c >>> 24) / 255F), 0, 1) * 255));
+            order.add(new float[]{p.dot(lookB), i, Float.intBitsToFloat(argb)});
+        }
+        order.sort((x, y) -> Float.compare(y[0], x[0]));
+        for (float[] o : order) {
+            face(bb, tiles.get((int) o[1]), Float.floatToRawIntBits(o[2]));
+        }
+        return order.size();
+    }
+
+    private static int shade(int rgb, float light, int alpha) {
+        float l = Mth.clamp(light, 0, 1);
+        return alpha << 24 | (int) ((rgb >> 16 & 255) * l) << 16 | (int) ((rgb >> 8 & 255) * l) << 8 | (int) ((rgb & 255) * l);
+    }
+
+    /** One face's four corners, counter-clockwise from outside, in the body's own units. */
+    private static void face(BufferBuilder bb, BlockyBodyMesh.Face f, int argb) {
+        Vector3f c = f.center(), u = f.u(), v = f.v();
+        int a = argb >>> 24, r = argb >> 16 & 255, g = argb >> 8 & 255, b = argb & 255;
+        bb.addVertex(c.x - u.x - v.x, c.y - u.y - v.y, c.z - u.z - v.z).setColor(r, g, b, a);
+        bb.addVertex(c.x + u.x - v.x, c.y + u.y - v.y, c.z + u.z - v.z).setColor(r, g, b, a);
+        bb.addVertex(c.x + u.x + v.x, c.y + u.y + v.y, c.z + u.z + v.z).setColor(r, g, b, a);
+        bb.addVertex(c.x - u.x + v.x, c.y - u.y + v.y, c.z - u.z + v.z).setColor(r, g, b, a);
     }
 
     private static void put(BufferBuilder bb, Matrix4f pose, Quad q) {
@@ -613,8 +831,13 @@ public final class BlockyBodyRenderer {
     }
 
     /** Frame cost of blocky bodies, logged every ten seconds when -Dspacebreaker.blockyTiming=true. */
+    /** Measuring on: -Dspacebreaker.blockyTiming=true, or a showcase run with -PshotPrefix=blockyperf. */
+    private static boolean timingOn() {
+        return Boolean.getBoolean("spacebreaker.blockyTiming") || "blockyperf".equals(System.getProperty("spacebreaker.shotPrefix"));
+    }
+
     private static void timing(long nanos, boolean rebuild) {
-        if (!Boolean.getBoolean("spacebreaker.blockyTiming")) {
+        if (!timingOn()) {
             return;
         }
         if (rebuild) {
@@ -626,13 +849,15 @@ public final class BlockyBodyRenderer {
         }
         long now = net.minecraft.Util.getMillis();
         if (now - lastReport > 10000 && draws > 0) {
-            Spacebreaker.LOGGER.info("Blocky bodies: {} draws, {} ms each on average ({} rebuilds, {} ms each); levels {}",
+            Spacebreaker.LOGGER.info("Blocky bodies: {} draws, {} ms each on average ({} rebuilds, {} ms each); steady {} draws, {} ms and {} bytes each; {} fps; levels {}",
                     draws, String.format("%.3f", drawNanos / 1e6 / draws), rebuilds,
-                    String.format("%.3f", rebuilds == 0 ? 0 : rebuildNanos / 1e6 / rebuilds),
-                    LODS.values().stream().map(l -> l.current).toList());
+                    String.format("%.3f", rebuilds == 0 ? 0 : rebuildNanos / 1e6 / rebuilds), steadyDraws,
+                    String.format("%.3f", steadyDraws == 0 ? 0 : steadyNanos / 1e6 / steadyDraws), steadyDraws == 0 ? 0 : steadyBytes / steadyDraws,
+                    Minecraft.getInstance().getFps(), LODS.values().stream().flatMap(java.util.Arrays::stream)
+                            .filter(java.util.Objects::nonNull).map(l -> l.current).toList());
             lastReport = now;
-            drawNanos = rebuildNanos = 0;
-            draws = rebuilds = 0;
+            drawNanos = rebuildNanos = steadyNanos = steadyBytes = 0;
+            draws = rebuilds = steadyDraws = 0;
         }
     }
 
@@ -952,16 +1177,26 @@ public final class BlockyBodyRenderer {
     public static void reset() {
         PIXELS.clear();
         SIZES.clear();
-        BUFFERS.values().forEach(c -> {
-            if (c.buffer != null) {
-                c.buffer.close();
+        for (Map<ColorMap, Cached[]> table : List.of(BODY_BUFFERS, FLAT_BUFFERS, RING_BUFFERS)) {
+            for (Cached[] row : table.values()) {
+                for (Cached c : row) {
+                    if (c != null && c.buffer != null) {
+                        c.buffer.close();
+                    }
+                }
             }
-        });
-        BUFFERS.clear();
+            table.clear();
+        }
+        for (Patch p : PATCHES.values()) {
+            if (p.buffer.buffer != null) {
+                p.buffer.buffer.close();
+            }
+        }
         LODS.clear();
         COLOURING.clear();
         PATCHES.clear();
         LAST_PATCH.clear();
+        LAST_WANTED.clear();
         synchronized (COLOURS) {
             COLOURS.clear();
         }
