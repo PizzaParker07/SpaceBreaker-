@@ -12,13 +12,19 @@ import java.util.List;
 
 /**
  * Active comets in another world's (or Earth's) sky, in the same sun frame as {@link PlanetPoints}: a glowing head
- * where the comet is and a tail toward where its tail ends, which always points away from the sun. Only comets the
+ * where the comet is, a straight blue ion tail pointing exactly away from the sun and a broad, curved, yellowish
+ * dust tail that lags behind along the orbit. Only comets the
  * astro activity model calls ACTIVE or GREAT are shown; GREAT ones are bright. Pure maths; drawn by client/sky.
  */
 public final class CometPoints {
     /** A comet in the sky: head and tail tip directions in the sun frame, head radius (sky units at 100 m), brightness. */
-    public record Sighting(String id, String nameEn, String nameTr, Vector3f head, Vector3f tip, float headSize, float alpha,
-                           CometActivity.Level level) {
+    /**
+     * @param tip     end of the straight blue ion (gas) tail, exactly away from the sun
+     * @param dustMid control point of the curved dust tail (it lags behind along the orbit)
+     * @param dustTip end of the dust tail
+     */
+    public record Sighting(String id, String nameEn, String nameTr, Vector3f head, Vector3f tip, Vector3f dustMid, Vector3f dustTip,
+                           float headSize, float alpha, CometActivity.Level level) {
         public boolean great() {
             return level == CometActivity.Level.GREAT;
         }
@@ -49,14 +55,23 @@ public final class CometPoints {
             Vec3 pos = c.position(t);
             Vec3 rel = pos.sub(obs);
             double d = rel.length();
-            Vec3 tipPos = pos.add(a.tailDirection().normalize().scale(a.tailLengthKm() * 1000));
+            boolean great = a.level() == CometActivity.Level.GREAT;
+            double tail = a.tailLengthKm() * 1000 * (great ? 1.0 : 0.5);
+            Vec3 away = a.tailDirection().normalize();
+            // the dust tail curves back along the orbit: grains leave slowly and fall behind the nucleus
+            Vec3 motion = c.position(t + 86400).sub(c.position(t - 86400)).normalize();
+            Vec3 dustTipPos = pos.add(away.scale(tail * 0.7)).sub(motion.scale(tail * 0.45));
+            Vec3 dustMidPos = pos.add(away.scale(tail * 0.45)).sub(motion.scale(tail * 0.1));
+            Vec3 ionTipPos = pos.add(away.scale(tail));
             Vector3f head = b.local(rel);
-            Vector3f tip = b.local(tipPos.sub(obs));
-            // apparent head radius, at the 100-block sky sphere; at least a few pixels, at most a few degrees
-            float size = (float) Mth.clamp(100 * a.comaRadiusKm() * 1000 / d, 0.35, 4.0);
+            Vector3f tip = b.local(ionTipPos.sub(obs));
+            Vector3f dustMid = b.local(dustMidPos.sub(obs));
+            Vector3f dustTip = b.local(dustTipPos.sub(obs));
+            // apparent coma radius at the 100-block sky sphere: a clear halo for great comets, a small smudge otherwise
+            float size = (float) Mth.clamp(100 * a.comaRadiusKm() * 1000 / d, great ? 1.3 : 0.45, great ? 4.0 : 1.5);
             double au = d / 1.495978707e11;
-            float alpha = (float) Mth.clamp((a.level() == CometActivity.Level.GREAT ? 0.95 : 0.4) * Math.min(1.0, 1.2 / Math.max(0.05, au)), 0.12, 1.0);
-            out.add(new Sighting(c.id(), c.nameEn(), c.nameTr(), head, tip, size, alpha, a.level()));
+            float alpha = (float) Mth.clamp((great ? 0.95 : 0.4) * Math.min(1.0, 1.2 / Math.max(0.05, au)), 0.12, 1.0);
+            out.add(new Sighting(c.id(), c.nameEn(), c.nameTr(), head, tip, dustMid, dustTip, size, alpha, a.level()));
         }
         return out;
     }

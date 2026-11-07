@@ -96,32 +96,50 @@ final class SkyPlanetsScenario implements ShowcaseScenario {
         return shots;
     }
 
-    /** Halley's 2061 return over Earth: the date its tail looks longest (away from the sun's glare), then the darkest moment it is up. */
+    /**
+     * Halley's 2061 return over Earth: one shot at the date its tails look longest (low in the dusk), one at the date it
+     * stands well away from the sun with its tails still long, high in a dark night.
+     */
     private static void cometShot(ServerLevel level, double y, List<ShowcaseDriver.Shot> shots) {
         var sys = BodyAdapter.system(level.registryAccess()).orElseThrow();
         var halley = com.pizzaparker07.spacebreaker.core.astro.smallbody.Comet.HALLEY;
         double peri = halley.nextPerihelion(0);
-        double bestT = 0;
-        com.pizzaparker07.spacebreaker.content.worldgen.CometPoints.Sighting best = null;
-        for (int day = -80; day <= 80; day += 2) {
+        double longT = 0;
+        double farT = 0;
+        com.pizzaparker07.spacebreaker.content.worldgen.CometPoints.Sighting longest = null;
+        com.pizzaparker07.spacebreaker.content.worldgen.CometPoints.Sighting farthest = null;
+        for (int day = -90; day <= 90; day += 2) {
             double t = peri + day * 86400.0;
             for (var s : com.pizzaparker07.spacebreaker.content.worldgen.CometPoints.compute(sys, "spacebreaker:earth", t)) {
-                if (s.id().equals(halley.id()) && s.great() && s.head().y < 0.85F && (best == null || s.head().angle(s.tip()) > best.head().angle(best.tip()))) {
-                    best = s;
-                    bestT = t;
+                if (!s.id().equals(halley.id()) || !s.great()) {
+                    continue;
+                }
+                if (s.head().y < 0.85F && (longest == null || s.head().angle(s.dustTip()) > longest.head().angle(longest.dustTip()))) {
+                    longest = s;
+                    longT = t;
+                }
+                if (s.head().y < 0.72F && (farthest == null || s.head().angle(s.dustTip()) > farthest.head().angle(farthest.dustTip()))) {
+                    farthest = s;
+                    farT = t;
                 }
             }
         }
-        if (best == null) {
+        add(shots, "03_earth_halley_2061", longest, longT, y, -0.15, 8, 35);
+        add(shots, "04_earth_halley_2061_night", farthest, farT, y, -0.3, 10, 60);
+    }
+
+    private static void add(List<ShowcaseDriver.Shot> shots, String name, com.pizzaparker07.spacebreaker.content.worldgen.CometPoints.Sighting s,
+                            double t, double y, double maxSun, double minAlt, double maxAlt) {
+        if (s == null) {
             return;
         }
         double fraction = -1;
         double darkest = 2;
         for (int i = 0; i < 400; i++) {
             double f = i / 400.0;
-            double alt = Math.toDegrees(Math.asin(world(best.head(), f).y));
+            double alt = Math.toDegrees(Math.asin(world(s.head(), f).y));
             double sun = world(new Vector3f(0, 1, 0), f).y;
-            if (alt > 8 && alt < 35 && sun < -0.15 && sun < darkest) {
+            if (alt > minAlt && alt < maxAlt && sun < maxSun && sun < darkest) {
                 darkest = sun;
                 fraction = f;
             }
@@ -129,14 +147,14 @@ final class SkyPlanetsScenario implements ShowcaseScenario {
         if (fraction < 0) {
             return;
         }
-        Vector3f dir = world(best.head(), fraction);
-        Vector3f tip = world(best.tip(), fraction);
+        Vector3f dir = world(s.head(), fraction);
+        Vector3f tip = world(s.dustTip(), fraction);
         Vector3f mid = new Vector3f(dir).add(tip).normalize();
         float yaw = (float) Math.toDegrees(Math.atan2(-mid.x, mid.z));
         float pitch = (float) -Math.toDegrees(Math.asin(mid.y));
-        long ticks = com.pizzaparker07.spacebreaker.core.astro.GameClock.ticks(bestT, BodyAdapter.timeScale());
+        long ticks = com.pizzaparker07.spacebreaker.core.astro.GameClock.ticks(t, BodyAdapter.timeScale());
         long dayTime = Math.round(fraction * 24000);
-        shots.add(new ShowcaseDriver.Shot("03_earth_halley_2061", dayTime, 0.5, y, 0.5, yaw, pitch, true, CameraType.FIRST_PERSON, 160,
+        shots.add(new ShowcaseDriver.Shot(name, dayTime, 0.5, y, 0.5, yaw, pitch, true, CameraType.FIRST_PERSON, 160,
                 p -> ((net.minecraft.world.level.storage.ServerLevelData) p.server.getWorldData().overworldData()).setGameTime(ticks), null));
     }
 }
