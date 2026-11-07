@@ -456,16 +456,12 @@ public final class MoonGameTests {
         PlanetTerrain plain = new PlanetTerrain(moonProfile(helper), 9L);
         helper.assertTrue(t.rupes().length == 1, "one cliff in the profile");
         RupesShape shape = t.rupes()[0];
-        // the same line and drop as the cliff feature it replaces
-        var cfg = new com.pizzaparker07.spacebreaker.content.belt.world.RupesFeature.Config(0, 0, 400, 0, 60, 6,
-                com.pizzaparker07.spacebreaker.content.moon.MoonModule.MARE_BASALT.get().defaultBlockState(), java.util.Optional.empty());
-        var rnd = net.minecraft.util.RandomSource.create(3);
-        for (int i = 0; i < 200; i++) {
-            double x = rnd.nextDouble() * 500 - 250;
-            double z = rnd.nextDouble() * 60 - 30;
-            double a = shape.offset(shape.local(x, z));
-            double b = com.pizzaparker07.spacebreaker.content.belt.world.RupesFeature.offset(t, cfg, x, z);
-            helper.assertTrue(Math.abs(a - b) < 1e-9, "same cliff as the feature at " + x + ", " + z + ": " + a + " vs " + b);
+        // the same line and drop as the cliff feature it replaced (values recorded from that feature, seed 9)
+        double[][] golden = {{-150, 3, 0}, {-40, -1, -40.95495380447941}, {0, 5, -53.53349192389857}, {37, 12, -49.74041088399441},
+                {120, 20, -60}, {190, 4, 0}};
+        for (double[] g : golden) {
+            double a = shape.offset(shape.local(g[0], g[1]));
+            helper.assertTrue(Math.abs(a - g[2]) < 1e-9, "cliff offset at " + g[0] + ", " + g[1] + ": " + a + " (expected " + g[2] + ")");
         }
         double highSide = t.column(0, -60).height - plain.column(0, -60).height;
         double lowSide = t.column(0, 60).height - plain.column(0, 60).height;
