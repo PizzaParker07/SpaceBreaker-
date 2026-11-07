@@ -1276,7 +1276,7 @@
   "message.spacebreaker.cargo.route_off": "Otomatik kargo seferi kapalı",
   "message.spacebreaker.cargo.route_on": "Otomatik kargo seferi açık",
   "message.spacebreaker.cargo.waiting": "Kargo roketi %s konumunda: %s eşya ambarda bekliyor (port ya da işaretin yanında sandık yok)",
-  "message.spacebreaker.cold_trap.enter": "Kalıcı gölgeli krater: %s °C, buraya hiç güneş ulaşmaz",
+  "message.spacebreaker.cold_trap.enter": "Kalıcı gölgeli krater: %s °C, buraya hiç güneş ulaşmaz. Zeminde buz var; ısıtmalı giysi seni sıcak tutar",
   "message.spacebreaker.cold_trap.leave": "Soğuk tuzaktan çıktın",
   "message.spacebreaker.console.no_rocket": "Rampada roket yok",
   "message.spacebreaker.descent_probe.landed": "İniş sondası Venüs yüzeyinde: numuneler ve veri alındı",
