@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-/** Stores 1 MFE. Charges from every side except the front; discharges only through the front. */
+/** Stores 1 MFE. Charges from every side except the front; discharges only through the front (facing down when ceiling-mounted). */
 public class BatteryBankBlockEntity extends MachineBlockEntity {
     public static final int CAPACITY = 1_000_000;
     public static final int RATE = 2_048;
@@ -32,12 +32,12 @@ public class BatteryBankBlockEntity extends MachineBlockEntity {
         if (side == null) {
             return energy;
         }
-        return side == getBlockState().getValue(MachineBlock.FACING) ? output : input;
+        return side == BatteryBankBlock.front(getBlockState()) ? output : input;
     }
 
     @Override
     protected boolean tickServer(Level level, BlockPos pos, BlockState state) {
-        Direction front = state.getValue(MachineBlock.FACING);
+        Direction front = BatteryBankBlock.front(state);
         pushEnergy(level, pos, List.of(front), RATE);
         int charge = Math.round(energy.fraction() * 4);
         if (state.getValue(BatteryBankBlock.CHARGE) != charge) {

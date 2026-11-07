@@ -31,7 +31,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Oksijen Dolum İstasyonu | tüpü beşiğe koy; FE ile, gezegenin doğal solunabilir havasından (Dünya) ya da borudan gelen oksijen gazı / sıvı oksijenden doldurur (Manevra Ünitesi gazı da). Dağıtıcının oda havası sayılmaz |
 | 🎨 | Oksijen Dağıtıcı | kapalı odayı tick'lere yayılmış taşkın dolumla bulur (en çok 4096 blok), tüpten ya da borudan gelen oksijenle önce odayı basınçlandırır (blok başına oksijen), sonra hacme göre tüketir; sızıntıda hava boşalır; blok değişince yeniden kontrol |
 | 🎨 | Hava Kilidi Kapısı | 2 blok, kayar kanatlar (animasyonlu); kapalıyken hava geçirmez; el ya da kızıltaşla açılır |
-| 🎨 | Yanmalı Jeneratör, Batarya Bankası, Bakır / Yüksek Gerilim Kablosu | jeneratör yalnız oksijenli havada yanar; batarya önden verir, şarj göstergesi |
+| 🎨 | Yanmalı Jeneratör, Batarya Bankası, Bakır / Yüksek Gerilim Kablosu | jeneratör yalnız oksijenli havada yanar; batarya önden verir (tavana takılınca ön yüzü aşağı bakar: çatıdaki batarya üstteki panelden dolar, alttaki odaya verir), şarj göstergesi |
 | 🎨 | Kırıcı, Elektrik Ark Fırını, Pres (hareketli koç), Petrol Pompası (çok bloklu, animasyonlu), Rafineri (çok bloklu damıtma kulesi) | |
 | 🎨 | Elektroliz Ünitesi, Kriyojenik Sıvılaştırıcı, Sıvı / Basınçlı Gaz / Kriyojenik Tank (dolum görünür; kırınca içerik eşyada kalır, yerleştirince geri gelir), sıvı/gaz borusu (uçtan çekme modu; sıvı borusu sonsuz su kaynağından 100 mB/t su çeker) | |
 | 🎨 | Parça Üretim Tezgâhı | `spacebreaker:fabricating` tarifi; Roket ve Giysi alanları kendi tariflerini ekler |
@@ -275,7 +275,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Uraninit → Uranyum (cevher ×2, ham, ham blok, külçe, parça, blok, toz) | Dünya'da en derin (y −64…−32) ve en nadir cevher; külçe yalnız ark fırınında |
 | 🎨 | RTG Yakıt Peleti | kimyasal reaktör: 4 uranyum tozu + 500 mB sülfürik asit; etkinliği 21 oyun gününde yarıya iner (depoda da); taşınırken pelet başına ~8 mSv/gün doz (ortam radyasyon kancasıyla giysi doz sistemine eklenir) |
 | 🎨 | Radyoizotop Jeneratör (RTG) | taze peletle 40 FE/t, gece gündüz, havasız ve güneşsiz her yerde; kalkanlı gövde (içindeki pelet doz vermez); çıkış peletin etkinliğiyle azalır |
-| 🎨 | Güneş Paneli Dizisi (`spacebreaker:solar_array`) | istasyon ve karakollar için: tek blok taban, kuzey-güney 3 blok kanat, 60 FE/t tepe (3 takipçi); vakumda ufka yakın güneşte hava kaybı yok, yörüngede sürekli öğle |
+| 🎨 | Güneş Paneli Dizisi (`spacebreaker:solar_array`) | istasyon ve karakollar için: tek blok taban, kuzey-güney 3 blok kanat, 60 FE/t tepe (3 takipçi); vakumda ufka yakın güneşte hava kaybı yok; yörüngede gezegenin gölgesine girince (turun ~1/3'ü) üretim düşer, yaşam modülü kitinin tek dizisi + yakıt deposunun tamponu gölgede yakıt basmaya yeter |
 | 🎨 | Güç Göstergesi (`spacebreaker:power_monitor`) | batarya bankasının (ya da enerji depolayan herhangi bir bloğun) önüne/arkasına dayanır; ekranında doluluk %, net FE/t ve dolma/boşalma süresi; sağ tıkta özet, karşılaştırıcı çıkışı doluluğa göre |
 | 🎨 | Çalışma sesleri | gezici motoru (hızla incelir, akü boşken susar, vakumda yalnız binenler duyar), elektrolizör uğultusu, kırıcı öğütmesi |
 | 🎨 | Güneş paneli: "burada güneş ışığı %…" | ipucunda gezegene göre yüzde ve öğle tepe değeri, sağ tıkta anlık üretim; 1 FE/t altındaki üretim yuvarlanıp kaybolmaz, birikir |

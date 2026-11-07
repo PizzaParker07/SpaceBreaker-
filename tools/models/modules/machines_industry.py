@@ -178,10 +178,13 @@ def generate():
     for facing, y in ROT.items():
         for lit in ('false', 'true'):
             for lvl in range(5):
-                v = {'model': b('battery_bank' + (f'_{lvl}' if lvl else ''))}
-                if y:
-                    v['y'] = y
-                variants[f'charge={lvl},facing={facing},lit={lit}'] = v
+                for down in ('false', 'true'):
+                    v = {'model': b('battery_bank' + (f'_{lvl}' if lvl else ''))}
+                    if down == 'true':
+                        v['x'] = 90  # ceiling-mounted: the front (output) faces down
+                    if y:
+                        v['y'] = y
+                    variants[f'charge={lvl},facing={facing},lit={lit},output_down={down}'] = v
     write('blockstates/battery_bank.json', {'variants': variants})
     write('models/item/battery_bank.json', {'parent': b('battery_bank_4')})
 

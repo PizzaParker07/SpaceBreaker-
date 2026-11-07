@@ -113,6 +113,7 @@ public class SolarPanelBlockEntity extends BlockEntity {
                     // sunlight at this body's distance from the sun, after dust storms and clouds (capped: cells overheat)
                     * (float) Math.min(MAX_SOLAR_FACTOR, com.pizzaparker07.spacebreaker.core.env.Environment.solarFactor(level, pos));
             factor *= weatherFactor(level, pos);
+            // the orbit's shadow comes in through Environment.solarFactor (rocketry registers it as a sunlight modifier)
             // keep the fraction: far from the sun a panel makes well under 1 FE/t, and rounding would lose all of it
             be.exactOutput = be.peak * factor;
             be.carry += be.exactOutput;
