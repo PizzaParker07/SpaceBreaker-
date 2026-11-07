@@ -160,13 +160,18 @@ Complementary the tint is weaker (the pack re-lights translucent entities) but t
   the pack shows it dark (`rocketry_station_window`); it is `translucent` now (see the next point).
   Habitat module, Heat Siphon at night and the solar array: `habitat_siphon_solar_vanilla_vs_iris.jpg`.
 - **Windows, water and other translucent surfaces in front of the sky:** they write depth, so the sky pass alone
-  left the pack's (pale, Overworld) sky behind them. The depth is also kept before the translucent pass
-  (`AFTER_BLOCK_ENTITIES`, `compat/client/DepthCopy`); where only translucent geometry covers the sky, our sky is
-  blended in and the pack's glass colour is kept at 35 % (`compat_sky_glass`). After the translucent pass the opaque
-  frame of a window cannot be told from its pane, so a block whose texture mixes an opaque frame with a see-through
-  pane should put them in two layers (NeoForge `neoforge:composite` model: frame `cutout`, pane `translucent`); in
-  one translucent layer the frame darkens with the pane. `habitat_window_steps.jpg`: vanilla, pack before, after,
-  and with the split model.
+  left the pack's (pale, Overworld) sky behind them. Iris keeps a copy of the depth from just before its translucent
+  pass (the pack's `depthtex1`: terrain and entities, no glass or water), read by reflection in
+  `ShaderState.opaqueDepthTexture()`; where only translucent geometry covers the sky, our sky is blended in and the
+  pack's glass colour is kept at 35 % (`compat_sky_glass`). (A copy of our own at `AFTER_BLOCK_ENTITIES` was tried
+  first: Iris draws entities after that point, so rockets in front of the sky turned dark.) After the translucent
+  pass the opaque frame of a window cannot be told from its pane, so a block whose texture mixes an opaque frame with
+  a see-through pane puts them in two layers (NeoForge `neoforge:composite` model: frame `cutout`, pane
+  `translucent`), as the station window does. `habitat_window_steps.jpg`: vanilla, pack before, after, and with the
+  split model; `station_jolt_coldtrap_aerostat_vanilla_vs_iris.jpg`: habitat inside, docked capsule, docking jolt,
+  polar cold-trap crater, Venus aerostat.
+- **Docking jolt:** a camera roll/pitch from `ViewportEvent.ComputeCameraAngles`; Iris builds its matrices from the
+  same camera, so the shake is the same with a pack (at most about 2°, too small to tell apart in a still frame).
 - **Inside a closed module the pack's ambient fill is blue:** the airless sky colour handed to the pack
   (see above) is what lights a room that only gets sky light through windows; a lamp brings it back to neutral.
 - **Pack border fog on airless worlds:** terrain at the edge of the render distance fades to the pack's fog colour,

@@ -1,5 +1,6 @@
 package com.pizzaparker07.spacebreaker.testmod.showcase;
 
+import com.pizzaparker07.spacebreaker.Spacebreaker;
 import com.pizzaparker07.spacebreaker.content.earth.EarthModule;
 import com.pizzaparker07.spacebreaker.content.machines.MachinesModule;
 import com.pizzaparker07.spacebreaker.content.mars.MarsModule;
@@ -217,6 +218,13 @@ final class CompatScenario implements ShowcaseScenario {
                 go(moonDim, 40.5, hy + 1 + 1.62, 0.5, -90F, 4F, 0.15, p -> habitat(p, hy)), null));
         s.add(new ShowcaseDriver.Shot("16_habitat_outside", 0, 0, 0, 0, 0F, 0F, true, fp, 80,
                 go(moonDim, 51.5, hy + 5.5, 8.5, 125F, 18F, 0.15, null), null));
+        // docking jolt (ViewportEvent.ComputeCameraAngles roll/pitch) seen through the pack: horizon tilts in both
+        s.add(new ShowcaseDriver.Shot("17_docking_jolt", 0, 0, 0, 0, 0F, 0F, false, fp, 80,
+                go(moonDim, 60.5, ground(t, 60.5, 0.5) + 2, 0.5, 0F, 0F, 0.15, p -> board(p, ground(t, 60.5, 0.5))),
+                () -> CompatShowcaseClient.joltLoop = true));
+        // permanently shadowed polar crater floor (cold trap)
+        s.add(new ShowcaseDriver.Shot("18_cold_trap", 0, 0, 0, 0, 0F, 0F, true, fp, 260, CompatScenario::coldTrap,
+                () -> CompatShowcaseClient.joltLoop = false));
         // reentry plasma (GUI layer) over the pack's frame; a short view distance so the frame is ready while the
         // capsule is still in the heating phase (ticks keep running: ridden entities are never frozen)
         s.add(new ShowcaseDriver.Shot("13_reentry_plasma", 6000, 0, 0, 0, 0F, 0F, false, fp, 50, CompatScenario::reentry,
@@ -253,5 +261,37 @@ final class CompatScenario implements ShowcaseScenario {
         }
         com.pizzaparker07.spacebreaker.content.rocketry.station.HabitatKitItem.unfold(level, centre, Direction.NORTH);
         p.teleportTo(level, 40.5, groundY + 1, 0.5, -90F, 4F);
+    }
+
+    /** Boards a landed capsule a second after arriving (as for the reentry shot). */
+    private static void board(ServerPlayer p, double groundY) {
+        ServerLevel level = (ServerLevel) p.level();
+        var server = p.server;
+        server.tell(new net.minecraft.server.TickTask(server.getTickCount() + 20, () -> {
+            RocketEntity capsule = RocketEntity.create(level, RocketryModule.MOON_ROCKET, new net.minecraft.world.phys.Vec3(64.5, groundY, 0.5), 0F);
+            level.addFreshEntity(capsule);
+            p.startRiding(capsule, true);
+        }));
+    }
+
+    /** Rim of the first cold-trap crater near the Moon's north pole, looking down at its floor at local noon. */
+    private static void coldTrap(ServerPlayer p) {
+        p.stopRiding();
+        ServerLevel moon = p.server.getLevel(MoonModule.MOON);
+        if (moon == null || !(moon.getChunkSource().getGenerator() instanceof PlanetChunkGenerator gen)) {
+            return;
+        }
+        PlanetTerrain t = gen.terrain();
+        double pole = t.profile().poleDistance();
+        for (var c : t.cratersNear(-1500, pole * 0.9, 1500, pole)) {
+            int floor = gen.coldTrapFloor((int) c.x(), (int) c.z());
+            if (c.radius() >= 10 && floor != Integer.MIN_VALUE) {
+                double x = c.x() + c.radius() * 1.1;
+                p.teleportTo(moon, x, t.height(x, c.z()) + 6, c.z(), 90F, 28F);
+                PlanetTime.setDayFraction(moon, 0.25);
+                return;
+            }
+        }
+        Spacebreaker.LOGGER.warn("showcase: no cold trap crater found");
     }
 }
