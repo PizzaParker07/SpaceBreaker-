@@ -108,6 +108,7 @@ final class MachinesLang {
         lang.item(MachinesModule.NUCLEAR_FUEL_ELEMENT, "Nuclear Fuel Element", "Nükleer Yakıt Elemanı");
         lang.add("tooltip.spacebreaker.nuclear_fuel_element", "Enriched uranium carbide in a tungsten clad: heats a nuclear thermal rocket's hydrogen",
                 "Tungsten kılıflı zenginleştirilmiş uranyum karbür: nükleer termal roketin hidrojenini ısıtır");
+        lang.add("tooltip.spacebreaker.nuclear_fuel_element.left", "Partly burnt: %s%% left", "Kısmen yanmış: %%%s kaldı");
         com.pizzaparker07.spacebreaker.content.earth.EarthModule.tag(lang, IsruRecipes.REACTOR_FUEL, "Reactor Fuel", "Reaktör Yakıtı");
         lang.add("tooltip.spacebreaker.rtg_fuel_pellet.activity", "Activity: %s%% (%s FE/t in an RTG)", "Etkinlik: %%%s (RTG'de %s FE/t)");
         lang.add("tooltip.spacebreaker.rtg_fuel_pellet.half_life", "Half-life: %s days, also in storage", "Yarı ömür: %s gün, depoda da azalır");

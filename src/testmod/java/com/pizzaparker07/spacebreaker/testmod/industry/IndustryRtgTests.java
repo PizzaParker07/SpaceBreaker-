@@ -498,6 +498,42 @@ public final class IndustryRtgTests {
         });
     }
 
+    /** Breaking a reactor mid-burn gives back the element with the burn that was left; a second reactor carries on with it. */
+    @GameTest(template = "empty", timeoutTicks = 200, batch = "industry_power")
+    public static void fissionReactorKeepsPartialBurnWhenBroken(GameTestHelper h) {
+        var R = com.pizzaparker07.spacebreaker.content.machines.machine.FissionReactorBlockEntity.class;
+        int full = com.pizzaparker07.spacebreaker.content.machines.machine.FissionReactorBlockEntity.BURN_TICKS;
+        BlockPos at = new BlockPos(2, 1, 2);
+        MachineBlockEntity be = machine(h, MachinesModule.FISSION_REACTOR, at, false);
+        be.items().setStackInSlot(0, new ItemStack(MachinesModule.NUCLEAR_FUEL_ELEMENT.get()));
+        int[] left = new int[1];
+        h.runAfterDelay(20, () -> {
+            left[0] = R.cast(be).burnLeft();
+            h.assertTrue(left[0] > 0 && left[0] < full, "burning: " + left[0]);
+            h.getLevel().destroyBlock(h.absolutePos(at), true);
+        });
+        h.runAfterDelay(25, () -> {
+            var drops = h.getLevel().getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class,
+                    new net.minecraft.world.phys.AABB(h.absolutePos(at)).inflate(2));
+            ItemStack element = drops.stream().map(net.minecraft.world.entity.item.ItemEntity::getItem)
+                    .filter(st -> st.is(MachinesModule.NUCLEAR_FUEL_ELEMENT.get())).findFirst().orElse(ItemStack.EMPTY);
+            h.assertFalse(element.isEmpty(), "the element dropped");
+            Integer kept = element.get(MachinesModule.FUEL_BURN_LEFT.get());
+            h.assertTrue(kept != null && Math.abs(kept - left[0]) <= 5, "burn kept on the element: " + kept + " vs " + left[0]);
+            h.assertTrue(com.pizzaparker07.spacebreaker.content.machines.NuclearFuelElementItem.percentLeft(element) < 100, "shows as partly burnt");
+            h.assertFalse(ItemStack.isSameItemSameComponents(element, new ItemStack(MachinesModule.NUCLEAR_FUEL_ELEMENT.get())),
+                    "does not stack with fresh elements");
+            drops.forEach(net.minecraft.world.entity.Entity::discard);
+            MachineBlockEntity second = machine(h, MachinesModule.FISSION_REACTOR, new BlockPos(4, 1, 2), false);
+            second.items().setStackInSlot(0, element.copy());
+            h.runAfterDelay(5, () -> {
+                int b = R.cast(second).burnLeft();
+                h.assertTrue(b <= kept && b > kept - 10, "the second reactor carries on with the kept burn: " + b + " vs " + kept);
+                h.succeed();
+            });
+        });
+    }
+
     private IndustryRtgTests() {
     }
 }

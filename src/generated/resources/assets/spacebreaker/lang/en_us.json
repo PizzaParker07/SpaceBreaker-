@@ -1976,6 +1976,7 @@
   "tooltip.spacebreaker.module.hint": "Smithing table: Suit Upgrade Template + suit piece + module",
   "tooltip.spacebreaker.multiblock": "Needs free space around it (%s)",
   "tooltip.spacebreaker.nuclear_fuel_element": "Enriched uranium carbide in a tungsten clad: heats a nuclear thermal rocket's hydrogen",
+  "tooltip.spacebreaker.nuclear_fuel_element.left": "Partly burnt: %s%% left",
   "tooltip.spacebreaker.oil_seep": "Crude oil lies somewhere below",
   "tooltip.spacebreaker.oxygen": "Oxygen: %s / %s",
   "tooltip.spacebreaker.oxygen.hint": "Use while wearing an EVA torso to slot it in",

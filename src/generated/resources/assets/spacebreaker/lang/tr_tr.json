@@ -1976,6 +1976,7 @@
   "tooltip.spacebreaker.module.hint": "Demirci masası: Giysi Yükseltme Şablonu + giysi parçası + modül",
   "tooltip.spacebreaker.multiblock": "Çevresinde boş alan gerekir (%s)",
   "tooltip.spacebreaker.nuclear_fuel_element": "Tungsten kılıflı zenginleştirilmiş uranyum karbür: nükleer termal roketin hidrojenini ısıtır",
+  "tooltip.spacebreaker.nuclear_fuel_element.left": "Kısmen yanmış: %%%s kaldı",
   "tooltip.spacebreaker.oil_seep": "Altında bir yerde ham petrol var",
   "tooltip.spacebreaker.oxygen": "Oksijen: %s / %s",
   "tooltip.spacebreaker.oxygen.hint": "EVA gövdesi giyiliyken kullanınca sırt çantasına takılır",
