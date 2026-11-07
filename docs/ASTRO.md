@@ -739,6 +739,36 @@ CelestialBody c = BodyAdapter.toCelestialBody(a.toAstroBody(), a.details(), Opti
 Bulk density = grain density × (1 − porosity): rubble-pile C ≈ 1.45 g/cm³ (Bennu and Ryugu 1.19),
 S ≈ 2.0 (Itokawa 1.9, Eros 2.7). `AsteroidGeneratorTest` checks all of the above.
 
+### Comets (`Comet`, `CometActivity`)
+`Comet.CATALOGUE` holds three real periodic comets with J2000 elements and a perihelion time
+(M₀ at J2000 follows from it). `CometActivity.at(comet, t)` gives the outgassing at simulated time t:
+
+| Quantity | Model |
+|---|---|
+| Water production | Q = Z₁ · A_active · g(r), Z₁ = 4·10²¹ m⁻² s⁻¹ (sunlight at 1 AU over the latent heat of water, rotating-nucleus average) |
+| g(r) | Marsden water-ice law α (r/r₀)^−2.15 (1 + (r/r₀)^5.093)^−4.6142, r₀ = 2.808 AU, g(1 AU) = 1: ≈ r^−2.15 inside 1 AU, collapses beyond 3 AU |
+| Dust | dust-to-gas mass ratio per comet |
+| Coma | Haser profile n(ρ) = Q/(4πvρ²)·e^(−ρ/L), edge at 10⁸ m⁻³; v = 0.85 km/s · r^−½, L = v · 8.3·10⁴ s · r² |
+| Tail | empirical 2·10⁶ km · √(Q/10²⁸) / r, along the Sun → comet direction |
+| Level | DORMANT < 10²⁴ s⁻¹ ≤ WEAK < 10²⁷ ≤ ACTIVE < 10²⁹ ≤ GREAT (bilingual names) |
+
+Active fractions are calibrated to observed water production:
+
+| Comet | a (AU) | e | q (AU) | P (y) | R (km) | ρ (kg/m³) | v_esc (m/s) | Q at q (s⁻¹) | switches on | water lost / orbit | erosion / orbit |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 67P/Churyumov–Gerasimenko | 3.463 | 0.641 | 1.243 | 6.44 | 1.65 | 530 | 0.9 | 1.6·10²⁸ (Rosetta 1–3·10²⁸) | 3.7 AU | 7.7·10⁹ kg (Rosetta ≈ 6·10⁹) | 1.1 m |
+| 1P/Halley (retrograde) | 17.83 | 0.967 | 0.586 | 75.3 | 4.4 | 617 | 2.6 | 9.4·10²⁹ at q (Giotto ≈ 7·10²⁹ at 0.89 AU) | 4.1 AU | 1.7·10¹¹ kg | 2.3 m |
+| 2P/Encke | 2.215 | 0.848 | 0.336 | 3.30 | 2.4 | 604 | 1.4 | 9.3·10²⁷ | 3.1 AU | 9.2·10⁸ kg | 0.1 m |
+
+For the game, a comet nucleus is like the near-Earth asteroids (escape speed about 1 m/s) but its
+surface changes along the orbit. Beyond about 3.5 AU it is dormant: dark, cold and dusty. Near the
+Sun it has a coma tens of thousands of km wide and a tail of 10⁶–10⁷ km pointing away from the Sun,
+and its surface vents gas and dust. The orbit does not need a dimension to be useful: `Activity`
+can drive sky rendering, and `level()` can switch surface hazards on and off. Comet bodies are not
+in the `celestial_body` data yet, because `BodyType` has no `comet` entry (core/body). Adding one
+would be an additive change. `CometActivityTest` checks orbits, perihelion timing, production
+against Rosetta, Giotto and Encke values, mass loss per orbit, the coma and the tail.
+
 ## Gravity assists (`GravityAssist`, `TransferPlanner.planWithAssists`)
 
 `TransferPlanner.planWithAssists(sys, from, to, aerobrake)` returns the cheaper of the direct Hohmann
