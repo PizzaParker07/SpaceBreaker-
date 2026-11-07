@@ -248,7 +248,7 @@ public class AerostatPiece extends StructurePiece {
                         st = cap ? (bow ? glass : hull) : s(Blocks.AIR);
                     } else if (au == hw + 1 && v >= 1 && v <= 3) {
                         boolean window = bow ? v >= 2 : !rib && v == 2 && (x - GX0) % 2 == 0;
-                        st = window ? glass : !rib && v == 1 ? s(Blocks.GOLD_BLOCK) : rib ? hull : base("panel");
+                        st = window ? glass : !rib && v == 1 ? s(com.pizzaparker07.spacebreaker.content.belt.LanderBlocks.GOLD_FOIL_CLADDING.get()) : rib ? hull : base("panel");
                     } else if (au == hw + 1 && v == 4) {
                         st = bow ? glass : stair.setValue(StairBlock.FACING, in);
                     } else if (au == hw && v == 4) {
