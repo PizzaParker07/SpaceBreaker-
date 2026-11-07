@@ -125,35 +125,27 @@ public final class IndustryAutomationTests {
     }
 
     /**
-     * Cargo rockets unload into any ItemHandler block near their port (UncrewedMissions.unloadCargo, null side).
-     * Industry machines take only what they can use into their input slots; the excavator, whose slots are output
-     * only, and fluid tanks take nothing; a chest next to them takes the rest.
+     * Cargo rockets unload only into chests, barrels and shulker boxes near their port, never into machines. No
+     * industry block may carry those tags (a heater or RTG would swallow cargo); a vanilla chest beside them still
+     * takes items through the block item capability.
      */
     @GameTest(template = "empty", batch = "industry_automation")
-    public static void cargoUnloadsIntoIndustryStorage(GameTestHelper h) {
-        machine(h, MachinesModule.REGOLITH_HEATER, new BlockPos(1, 1, 1), Direction.NORTH);
-        machine(h, MachinesModule.RTG, new BlockPos(2, 1, 1), Direction.NORTH);
-        machine(h, MachinesModule.REGOLITH_EXCAVATOR, new BlockPos(3, 1, 1), Direction.NORTH);
-        h.setBlock(new BlockPos(4, 1, 1), MachinesModule.CRYOGENIC_TANK.get());
-        h.setBlock(new BlockPos(1, 1, 3), Blocks.CHEST);
-        var level = h.getLevel();
-        java.util.function.Function<BlockPos, net.neoforged.neoforge.items.IItemHandler> cap =
-                p -> level.getCapability(net.neoforged.neoforge.capabilities.Capabilities.ItemHandler.BLOCK, h.absolutePos(p), null);
-        ItemStack regolith = new ItemStack(BuiltInRegistries.ITEM.get(Spacebreaker.id("lunar_regolith")), 16);
-        ItemStack pellet = new ItemStack(MachinesModule.RTG_FUEL_PELLET.get());
-        ItemStack diamonds = new ItemStack(Items.DIAMOND, 5);
-        // the heater takes regolith, not diamonds
-        h.assertTrue(net.neoforged.neoforge.items.ItemHandlerHelper.insertItemStacked(cap.apply(new BlockPos(1, 1, 1)), regolith.copy(), false).isEmpty(),
-                "the regolith heater takes regolith");
-        h.assertTrue(net.neoforged.neoforge.items.ItemHandlerHelper.insertItemStacked(cap.apply(new BlockPos(1, 1, 1)), diamonds.copy(), false).getCount() == 5,
-                "the heater refuses what it cannot process");
-        h.assertTrue(net.neoforged.neoforge.items.ItemHandlerHelper.insertItemStacked(cap.apply(new BlockPos(2, 1, 1)), pellet.copy(), false).isEmpty(),
-                "the RTG takes a fuel pellet");
-        h.assertTrue(net.neoforged.neoforge.items.ItemHandlerHelper.insertItemStacked(cap.apply(new BlockPos(3, 1, 1)), regolith.copy(), false).getCount() == 16,
-                "the excavator's slots are output only");
-        h.assertTrue(cap.apply(new BlockPos(4, 1, 1)) == null, "a fluid tank holds no items");
-        h.assertTrue(net.neoforged.neoforge.items.ItemHandlerHelper.insertItemStacked(cap.apply(new BlockPos(1, 1, 3)), diamonds.copy(), false).isEmpty(),
-                "the rest goes to a chest");
+    public static void cargoSkipsIndustryMachines(GameTestHelper h) {
+        java.util.List<Block> industry = new java.util.ArrayList<>();
+        MachinesModule.MACHINES.forEach(m -> industry.add(m.block().get()));
+        MachinesModule.TANKS.forEach(t -> industry.add(t.get()));
+        industry.add(MachinesModule.SOLAR_PANEL.get());
+        industry.add(MachinesModule.SOLAR_ARRAY.get());
+        industry.add(MachinesModule.POWER_MONITOR.get());
+        for (Block b : industry) {
+            var state = b.defaultBlockState();
+            h.assertTrue(!state.is(net.neoforged.neoforge.common.Tags.Blocks.CHESTS) && !state.is(net.neoforged.neoforge.common.Tags.Blocks.BARRELS)
+                    && !state.is(net.minecraft.tags.BlockTags.SHULKER_BOXES), BuiltInRegistries.BLOCK.getKey(b) + " must not look like cargo storage");
+        }
+        h.setBlock(new BlockPos(1, 1, 1), Blocks.CHEST);
+        var chest = h.getLevel().getCapability(net.neoforged.neoforge.capabilities.Capabilities.ItemHandler.BLOCK, h.absolutePos(new BlockPos(1, 1, 1)), null);
+        h.assertTrue(chest != null && net.neoforged.neoforge.items.ItemHandlerHelper.insertItemStacked(chest,
+                new ItemStack(MachinesModule.RTG_FUEL_PELLET.get(), 4), false).isEmpty(), "a chest takes the cargo");
         h.succeed();
     }
 
