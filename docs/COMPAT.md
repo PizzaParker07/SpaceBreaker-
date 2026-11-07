@@ -363,6 +363,15 @@ environment; the plugins compile against both APIs and the line itself is covere
   Look for: our black sky with stars and planets (not the pack's blue), no pack clouds, haze on Venus/Titan/Mars
   storms, plumes and glows in front of space, windows showing space, orbit night darkening.
 
+- **Outline boxes (`RenderType.lines()`):** Iris's line programs widen each segment in screen space, so an edge
+  that runs behind the camera becomes a large flat quad across the view (seen as a lavender square over the station
+  core while holding a docking module: the outline reaches back past the player). `compat.client.ClippedLines` cuts
+  edges at a plane just in front of the camera (`box` for world boxes with the pose moved by minus the camera,
+  `boxRelative` for camera-relative boxes); without a pack it draws what `renderLineBox` does
+  (`station_stage1_machines_vanilla_vs_iris.jpg`: rows 55, 56 before, 56 with the clipped outline, 57, 58, and the
+  excavator with its bucket wheel; vanilla left, Complementary right). The station modules, the voxel Earth below,
+  and the reworked and animated machines (`machine_lineup`) look the same under the pack apart from its lighting.
+
 ## 8. Notes for 1.1
 
 - **HUD layers vs. Jade / WTHIT:** vanilla stacks GUI layers 200 units apart in depth (`LayeredDraw.Z_SEPARATION`) and
