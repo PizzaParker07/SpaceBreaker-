@@ -366,10 +366,17 @@ public final class MoonLifeGameTests {
             }
             boxes.add(bb);
         }
+        // the guards appear a few ticks after the build; in this sunny test world they then slowly sublimate, so the
+        // check is on the most seen at once, not on the count at one moment
+        int[] most = new int[boxes.size()];
+        helper.onEachTick(() -> {
+            for (int i = 0; i < boxes.size(); i++) {
+                most[i] = Math.max(most[i], level.getEntitiesOfClass(HeatSiphon.class, AABB.of(boxes.get(i)).inflate(4)).size());
+            }
+        });
         helper.succeedWhen(() -> {
-            for (BoundingBox bb : boxes) {
-                int siphons = level.getEntitiesOfClass(HeatSiphon.class, AABB.of(bb).inflate(4)).size();
-                helper.assertTrue(siphons >= 2, "heat siphons haunt the station, found " + siphons);
+            for (int i = 0; i < boxes.size(); i++) {
+                helper.assertTrue(most[i] >= 2, "heat siphons haunt the station, most seen " + most[i]);
             }
         });
     }

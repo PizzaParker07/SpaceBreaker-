@@ -84,7 +84,8 @@ public class PlanetSkyEffects extends DimensionSpecialEffects {
         double lon = 90 * cam.getPosition().x / poleDistance;
         float tod = level.getTimeOfDay(partialTicks);
         Vector3d sun = SkyMath.sunDirection(tod, 0);
-        double day = smooth((sun.y + 0.04) / 0.16);
+        double day = smooth((sun.y + 0.04) / 0.16)
+                * (1 - 0.93 * com.pizzaparker07.spacebreaker.content.worldgen.EclipseState.smoothed(level));
         double night = 0.05;
         if (parent.isPresent()) {
             Vector3d e = SkyMath.parentDirection(lat, lon, PlanetTime.dayFraction(level));
@@ -209,6 +210,9 @@ public class PlanetSkyEffects extends DimensionSpecialEffects {
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 
         float sunHalf = (float) (100 * Math.tan(Math.toRadians(sunSize * scale / 2)) / SUN_DISC_FRACTION);
+        // eclipse: the planet slides over the sun's disc
+        float eclipse = (float) com.pizzaparker07.spacebreaker.content.worldgen.EclipseState.coverage(level);
+        RenderSystem.setShaderColor(1F - eclipse, 1F - eclipse, 1F - eclipse, 1F);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, SUN);
         Matrix4f m = ps.last().pose();
@@ -218,6 +222,7 @@ public class PlanetSkyEffects extends DimensionSpecialEffects {
         bb.addVertex(m, sunHalf, 100F, sunHalf).setUv(1F, 1F);
         bb.addVertex(m, -sunHalf, 100F, sunHalf).setUv(0F, 1F);
         BufferUploader.drawWithShader(bb.buildOrThrow());
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         // standing on an active comet: its own coma glows around the sun and, fainter, along the tail away from it
         if (coma > 0) {
             CometTrails.skyGlow(ps, new Vector3f(0, 1, 0), 1.2F, coma, 0.75F, 0.85F, 1F);
@@ -267,15 +272,57 @@ public class PlanetSkyEffects extends DimensionSpecialEffects {
         float half = (float) (100 * Math.tan(Math.toRadians(parentSize * scale / 2)));
         Vector3d c = new Vector3d(e).mul(100);
         Matrix4f m = ps.last().pose();
+        float eclipse = (float) com.pizzaparker07.spacebreaker.content.worldgen.EclipseState.coverage(level);
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, tex);
+        // during an eclipse the planet shows us its night side, lit only by its own atmosphere
+        float lit = 1F - 0.9F * eclipse;
+        RenderSystem.setShaderColor(lit, lit, lit, 1F);
         BufferBuilder bb = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         vertex(bb, m, c, right, up, -half, half, 0, 0);
         vertex(bb, m, c, right, up, -half, -half, 0, 1);
         vertex(bb, m, c, right, up, half, -half, 1, 1);
         vertex(bb, m, c, right, up, half, half, 1, 0);
         BufferUploader.drawWithShader(bb.buildOrThrow());
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+        if (eclipse > 0.01F) {
+            sunsetRing(m, c, right, up, half * 0.985F, eclipse);
+        }
+    }
+
+    /**
+     * The ring of every sunrise and sunset on the planet at once: sunlight bent through its atmosphere, a thin red-orange
+     * band hugging the dark disc, brighter on the side toward the hidden sun. Additive, no texture.
+     */
+    private static void sunsetRing(Matrix4f m, Vector3d c, Vector3d right, Vector3d up, float radius, float strength) {
+        RenderSystem.enableBlend();
+        RenderSystem.blendFunc(com.mojang.blaze3d.platform.GlStateManager.SourceFactor.ONE, com.mojang.blaze3d.platform.GlStateManager.DestFactor.ONE);
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        BufferBuilder bb = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        int sectors = 48;
+        float[][] bands = {{0.97F, 0F}, {1.0F, 1F}, {1.035F, 0.55F}, {1.09F, 0F}};
+        for (int b = 0; b + 1 < bands.length; b++) {
+            for (int j = 0; j < sectors; j++) {
+                double a0 = j * Math.PI * 2 / sectors;
+                double a1 = (j + 1) * Math.PI * 2 / sectors;
+                float k0 = bands[b][1] * strength;
+                float k1 = bands[b + 1][1] * strength;
+                ringVertex(bb, m, c, right, up, radius * bands[b][0], a0, k0);
+                ringVertex(bb, m, c, right, up, radius * bands[b][0], a1, k0);
+                ringVertex(bb, m, c, right, up, radius * bands[b + 1][0], a1, k1);
+                ringVertex(bb, m, c, right, up, radius * bands[b + 1][0], a0, k1);
+            }
+        }
+        BufferUploader.drawWithShader(bb.buildOrThrow());
+        RenderSystem.defaultBlendFunc();
+    }
+
+    private static void ringVertex(BufferBuilder bb, Matrix4f m, Vector3d c, Vector3d right, Vector3d up, float r, double a, float k) {
+        float dx = (float) (Math.cos(a) * r);
+        float dy = (float) (Math.sin(a) * r);
+        bb.addVertex(m, (float) (c.x + right.x * dx + up.x * dy), (float) (c.y + right.y * dx + up.y * dy), (float) (c.z + right.z * dx + up.z * dy))
+                .setColor(1F * k, 0.42F * k, 0.16F * k, 1F);
     }
 
     private static void vertex(BufferBuilder bb, Matrix4f m, Vector3d c, Vector3d right, Vector3d up, float dx, float dy, float u, float v) {
