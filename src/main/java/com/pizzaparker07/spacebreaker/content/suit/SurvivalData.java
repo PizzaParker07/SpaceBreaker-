@@ -65,6 +65,8 @@ public final class SurvivalData {
     public Navigation.Kind navKind = Navigation.Kind.AUTO;
     /** Last known seal state, for the sealed / unsealed feedback (null until the first check). */
     public Boolean wasSealed;
+    /** When the "suit sealed" note was last shown (player tick), so it does not repeat on every quick swap. */
+    public int lastSealNoteTick = -10000;
 
     public SurvivalData() {
         this(MAX_BREATH, NORMAL_BODY_C, 0.0);
