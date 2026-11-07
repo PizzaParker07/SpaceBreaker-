@@ -24,7 +24,6 @@ import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.StandingSignBlock;
 import net.minecraft.world.level.block.TrapDoorBlock;
-import net.minecraft.world.level.block.entity.BarrelBlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
@@ -449,7 +448,7 @@ public class ResearchStationPiece extends StructurePiece {
             put(level, box, p[0], F + 2, p[1], s(Blocks.SMOOTH_QUARTZ_SLAB));
             put(level, box, p[0], F + 3, p[1], s(Blocks.LIGHT_GRAY_WOOL));
         }
-        container(level, box, C + 4, F + 1, C + 4, MarsLoot.STATION_COMMAND, true); // a locker set into the drum wall
+        container(level, box, C + 4, F + 1, C + 4, MarsLoot.STATION_COMMAND, Direction.NORTH); // a locker set into the drum wall
         put(level, box, C - 3, F + 1, C - 3, s(Blocks.WATER_CAULDRON));
         put(level, box, C - 4, F + 1, C - 2, s(com.pizzaparker07.spacebreaker.content.suit.SuitModule.OXYGEN_DISTRIBUTOR.get()));
         // the last log, on a stand by the table
@@ -472,7 +471,7 @@ public class ResearchStationPiece extends StructurePiece {
                 put(level, box, C + u, F + 3, z, Blocks.IRON_TRAPDOOR.defaultBlockState().setValue(TrapDoorBlock.HALF, Half.TOP));
             }
         }
-        container(level, box, C + 3, F + 1, GREENHOUSE.a0() + 2, MarsLoot.STATION_LAB, true);
+        container(level, box, C + 3, F + 1, GREENHOUSE.a0() + 2, MarsLoot.STATION_LAB, Direction.WEST);
         put(level, box, C - 2, F + 1, GREENHOUSE.a0() + 1, s(Blocks.COMPOSTER));
         put(level, box, C, F + 1, GREENHOUSE.a0() + 1, s(Blocks.CAULDRON));
     }
@@ -492,16 +491,14 @@ public class ResearchStationPiece extends StructurePiece {
         put(level, box, a + 2, F + 2, C - 2, s(Blocks.AIR));
         put(level, box, a + 4, F + 2, C - 3, s(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.POWER_MONITOR.get())
                 .setValue(net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING, Direction.SOUTH));
-        // core racks: drilled cores of the ground below, layer by layer
-        BlockState[] cores = {s(MarsModule.MARTIAN_BASALT.base().get()), s(MarsModule.MARTIAN_SANDSTONE.base().get()), s(MarsModule.MARTIAN_CLAY.get())};
-        for (int i = 0; i < 3; i++) {
-            put(level, box, a + 1 + i, F + 1, C + 2, cores[i]);
-            put(level, box, a + 1 + i, F + 2, C + 2, cores[2 - i]);
-            put(level, box, a + 1 + i, F + 3, C + 2, Blocks.IRON_TRAPDOOR.defaultBlockState().setValue(TrapDoorBlock.HALF, Half.TOP));
+        // the sample shelf: a long shelf along the south wall with sample jars and a cored rock on it
+        for (int i = 1; i <= 3; i++) {
+            put(level, box, a + i, F + 1, C + 2, s(Blocks.POLISHED_ANDESITE_SLAB).setValue(SlabBlock.TYPE, SlabType.TOP));
         }
-        container(level, box, a + 4, F + 1, C + 3, MarsLoot.STATION_LAB, true);
-        put(level, box, a + 5, F + 1, C + 2, s(MarsModule.MARTIAN_ICE.get()));
-        put(level, box, a + 5, F + 2, C + 2, s(MarsModule.DRY_ICE.get()));
+        put(level, box, a + 1, F + 2, C + 2, s(Blocks.DECORATED_POT));
+        put(level, box, a + 2, F + 2, C + 2, s(Blocks.FLOWER_POT));
+        put(level, box, a + 3, F + 2, C + 2, s(Blocks.DECORATED_POT));
+        container(level, box, a + 4, F + 1, C + 3, MarsLoot.STATION_LAB, Direction.NORTH);
         // ISRU control: the Sabatier reactor, electrolysis cell, the propellant log and stores
         int e = LAB.a1() - 1;
         put(level, box, e, F + 1, C - 2, s(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.SABATIER_REACTOR.block().get())
@@ -509,9 +506,9 @@ public class ResearchStationPiece extends StructurePiece {
         put(level, box, e - 2, F + 1, C - 2, s(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.ATMOSPHERE_PROCESSOR.block().get())
                 .setValue(net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING, Direction.SOUTH));
         put(level, box, e - 1, F + 1, C - 2, s(Blocks.CAULDRON));
-        container(level, box, e, F + 1, C + 3, MarsLoot.STATION_ISRU, true);
-        container(level, box, e - 1, F + 1, C + 3, MarsLoot.STATION_STORAGE, true);
-        container(level, box, e - 3, F + 1, C + 3, MarsLoot.STATION_STORAGE, true);
+        container(level, box, e, F + 1, C + 3, MarsLoot.STATION_ISRU, Direction.NORTH);
+        container(level, box, e - 1, F + 1, C + 3, MarsLoot.STATION_STORAGE, Direction.NORTH);
+        container(level, box, e - 3, F + 1, C + 3, MarsLoot.STATION_STORAGE, Direction.NORTH);
     }
 
     /** The garage: the storm broke in through the far end; dust half fills it, rust beetles nest in the rover wreck. */
@@ -556,7 +553,7 @@ public class ResearchStationPiece extends StructurePiece {
         if (box.isInside(sp) && level.getBlockEntity(sp) instanceof SpawnerBlockEntity spawner) {
             spawner.setEntityId(MarsEntities.RUST_BEETLE.get(), RandomSource.create(seed + 7));
         }
-        container(level, box, GARAGE.a1() - 1, F + 1, C + 3, MarsLoot.STATION_STORAGE, true);
+        container(level, box, GARAGE.a1() - 1, F + 1, C + 3, MarsLoot.STATION_STORAGE, Direction.NORTH);
         // trap: the perimeter defence still has power; a plate in the garage link fires a dispenser in the link wall
         int link = GARAGE.a1() + 2;
         put(level, box, link, F + 1, C, s(Blocks.POLISHED_BLACKSTONE_PRESSURE_PLATE));
@@ -730,16 +727,10 @@ public class ResearchStationPiece extends StructurePiece {
         }
     }
 
-    private void container(WorldGenLevel level, BoundingBox box, int x, int y, int z, ResourceKey<LootTable> loot, boolean chest) {
-        RandomSource r = RandomSource.create(seed ^ (x * 341873128712L + y * 132897987541L + z));
-        if (chest) {
-            createChest(level, box, r, x, y, z, loot);
-            return;
-        }
-        BlockPos pos = PieceOrientation.place(level, this, s(Blocks.BARREL), x, y, z, box);
-        if (pos != null && level.getBlockEntity(pos) instanceof BarrelBlockEntity barrel) {
-            barrel.setLootTable(loot, r.nextLong());
-        }
+    /** A supply locker set into a wall at (x, y, z), its doors facing into the room, filled from the loot table. */
+    private void container(WorldGenLevel level, BoundingBox box, int x, int y, int z, ResourceKey<LootTable> loot, Direction facing) {
+        long lootSeed = seed ^ (x * 341873128712L + y * 132897987541L + z);
+        com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.place(level, this, x, y, z, facing, loot, lootSeed, box);
     }
 
     private void guard(WorldGenLevel level, BoundingBox box, EntityType<? extends Mob> type, int x, int y, int z) {
