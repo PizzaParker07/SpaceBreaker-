@@ -46,7 +46,7 @@ final class LodScenario implements ShowcaseScenario {
      */
     private static ShowcaseDriver.Shot moonTarget(String name, java.util.function.Function<PlanetTerrain, double[]> target,
                                                   double distance, double height, double dayFraction) {
-        return new ShowcaseDriver.Shot(name, 6000, 0, 0, 0, 0F, 0F, true, CameraType.FIRST_PERSON, 1800,
+        return new ShowcaseDriver.Shot(name, 6000, 0, 0, 0, 0F, 0F, true, CameraType.FIRST_PERSON, 3600,
                 p -> {
                     ServerLevel level = p.server.getLevel(MoonModule.MOON);
                     if (level == null) {
@@ -58,8 +58,13 @@ final class LodScenario implements ShowcaseScenario {
                     double cz = tg[1] + distance * 0.7071;
                     double ty = groundY(level, tg[0], tg[1]);
                     double cy = Math.max(ty, groundY(level, cx, cz)) + height;
-                    p.teleportTo(level, cx, cy, cz, MoonScenario.yaw(tg[0] - cx, tg[1] - cz),
-                            MoonScenario.pitch(tg[0] - cx, ty - cy, tg[1] - cz) * 0.8F);
+                    float yaw = MoonScenario.yaw(tg[0] - cx, tg[1] - cz);
+                    // Minecraft pitch: positive looks down. Aim a little below the target so its base and the plain
+                    // in front of it fill the lower half of the frame.
+                    float pitch = (float) Math.toDegrees(Math.atan2(cy - ty, distance)) + 4F;
+                    p.teleportTo(level, cx, cy, cz, yaw, pitch);
+                    com.pizzaparker07.spacebreaker.Spacebreaker.LOGGER.info("LOD shot {}: target {} {} (ground {}), camera {} {} {}, yaw {} pitch {} (down)",
+                            name, Math.round(tg[0]), Math.round(tg[1]), Math.round(ty), Math.round(cx), Math.round(cy), Math.round(cz), yaw, pitch);
                     PlanetTime.setDayFraction(level, dayFraction);
                 },
                 () -> Minecraft.getInstance().options.renderDistance().set(6));
@@ -103,7 +108,7 @@ final class LodScenario implements ShowcaseScenario {
     public List<ShowcaseDriver.Shot> shots() {
         return List.of(shot("01_lod_moon", MoonModule.MOON, 30F, 12F, 0.15), shot("02_lod_venus", VenusModule.VENUS, 30F, 12F, 0.25),
                 // low morning sun so the low relief shows; both targets lie far beyond the 6-chunk view distance
-                moonTarget("03_lod_moon_dome", LodScenario::dome, 420, 45, 0.03),
-                moonTarget("04_lod_moon_central_peak", LodScenario::peakCrater, 520, 70, 0.06));
+                moonTarget("03_lod_moon_dome", LodScenario::dome, 280, 40, 0.03),
+                moonTarget("04_lod_moon_central_peak", LodScenario::peakCrater, 330, 60, 0.06));
     }
 }
