@@ -1,0 +1,8 @@
+{
+  "structure": "spacebreaker:mars_lander_wreck",
+  "world": "spacebreaker:mars",
+  "guardians": [],
+  "loot_tables": [
+    "spacebreaker:dungeons/mars/lander_data"
+  ]
+}

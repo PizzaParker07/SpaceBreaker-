@@ -11,6 +11,7 @@ public final class MarsLoot {
     public static final ResourceKey<LootTable> STATION_ISRU = Dungeons.lootTable("mars", "station_isru");
     public static final ResourceKey<LootTable> STATION_STORAGE = Dungeons.lootTable("mars", "station_storage");
     public static final ResourceKey<LootTable> RIVERBED_PROBE = Dungeons.lootTable("mars", "riverbed_probe");
+    public static final ResourceKey<LootTable> LANDER_DATA = Dungeons.lootTable("mars", "lander_data");
     public static final ResourceKey<LootTable> PHOBOS_PROBE = Dungeons.lootTable("phobos", "probe_vault");
     public static final ResourceKey<LootTable> DEIMOS_CACHE = Dungeons.lootTable("deimos", "ice_cache");
 

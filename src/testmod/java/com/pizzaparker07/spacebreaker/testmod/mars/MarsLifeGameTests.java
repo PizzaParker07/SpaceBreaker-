@@ -202,6 +202,27 @@ public final class MarsLifeGameTests {
         helper.succeed();
     }
 
+    /** The lost lander: a sealed data recorder with probe data, a spread parachute and the wreck, far out for a rover. */
+    @GameTest(template = EMPTY, timeoutTicks = 200)
+    public static void lostLanderHoldsProbeData(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        helper.assertTrue(level.registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.STRUCTURE)
+                .containsKey(com.pizzaparker07.spacebreaker.content.mars.dungeon.MarsStructures.LANDER_KEY), "lander structure");
+        BlockPos base = helper.absolutePos(BlockPos.ZERO).offset(-4000, 0, -4000);
+        int y = level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.WORLD_SURFACE, base.getX(), base.getZ());
+        var piece = new com.pizzaparker07.spacebreaker.content.mars.dungeon.LanderWreckPiece(9L, base.getX(), y, base.getZ());
+        place(level, piece);
+        BoundingBox bb = piece.getBoundingBox();
+        int carpet = 0;
+        for (BlockPos p : BlockPos.betweenClosed(bb.minX(), bb.minY(), bb.minZ(), bb.maxX(), bb.maxY(), bb.maxZ())) {
+            var st = level.getBlockState(p);
+            carpet += st.is(Blocks.ORANGE_CARPET) || st.is(Blocks.WHITE_CARPET) ? 1 : 0;
+        }
+        helper.assertTrue(lootChests(level, bb) == 1, "one data recorder, found " + lootChests(level, bb));
+        helper.assertTrue(carpet > 15, "a spread parachute, found " + carpet);
+        helper.succeed();
+    }
+
     @GameTest(template = EMPTY, timeoutTicks = 200)
     public static void riverbedCaveIsContinuousAndSaves(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();

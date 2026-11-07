@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 1723877,
+    "separation": 28,
+    "spacing": 64
+  },
+  "structures": [
+    {
+      "structure": "spacebreaker:mars_lander_wreck",
+      "weight": 1
+    }
+  ]
+}
