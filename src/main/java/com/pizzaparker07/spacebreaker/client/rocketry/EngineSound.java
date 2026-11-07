@@ -55,6 +55,15 @@ public class EngineSound extends AbstractTickableSoundInstance {
         float target;
         if (kind == Kind.ENGINE) {
             target = riding ? (vacuum ? 0.35F : 1.0F) : (vacuum ? 0F : 1.6F);
+            if (!vacuum) {
+                if (rocket.state() == FlightState.COUNTDOWN) {
+                    // engines spooling up on the pad: the roar builds
+                    target *= 0.35F + 0.65F * Mth.clamp((RocketEntity.IGNITION_TICKS - rocket.timer()) / (float) RocketEntity.IGNITION_TICKS, 0, 1);
+                } else if (rocket.state() == FlightState.ASCENT) {
+                    // loudest just after liftoff, then thinner and quieter as the air runs out
+                    target *= (1.15F - 0.75F * RocketClientEvents.spaceFactor());
+                }
+            }
             // more thrust: a deeper roar
             RocketLayout l = rocket.layout();
             int s = Math.min(rocket.activeStage(), l.stages().size() - 1);

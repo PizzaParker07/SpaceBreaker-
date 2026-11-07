@@ -215,8 +215,9 @@ public final class PlanetTerrain {
         double ds = 1.0 / relief.detailScale();
         double detail = relief.detailAmplitude() * fbm(detailNoise, x * ds, z * ds, 2);
         if (relief.roughness() > 0) {
-            // ragged block-scale unevenness: breaks long smooth slopes into irregular steps instead of clean contour lines
-            detail += relief.roughness() * (0.65 * detailNoise.getValue(x / 4.3 + 91.1, z / 4.3 - 17.7) + 0.35 * detailNoise.getValue(x / 1.9 - 5.5, z / 1.9 + 44.4));
+            // ragged block-scale unevenness: breaks long smooth slopes into irregular steps instead of clean contour lines.
+            // Nothing finer than about three blocks, or the ground fills with lone one-block pits and pillars.
+            detail += relief.roughness() * (0.65 * detailNoise.getValue(x / 6.1 + 91.1, z / 6.1 - 17.7) + 0.35 * detailNoise.getValue(x / 3.4 - 5.5, z / 3.4 + 44.4));
         }
 
         double built = landforms.active() ? landforms.build(x, z, out) : 0;

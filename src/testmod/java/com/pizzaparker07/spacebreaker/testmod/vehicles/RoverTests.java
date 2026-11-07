@@ -318,6 +318,12 @@ public final class RoverTests {
             h.assertTrue(!driver.isPassenger() && !passenger.isPassenger(), "both get off");
             h.assertTrue(!h.getLevel().getBlockState(driver.blockPosition()).isSuffocating(h.getLevel(), driver.blockPosition()),
                     "dismounted into free space");
+            // beside the rover on the ground, not on its roof or panel (QA R2)
+            for (var p : new net.minecraft.world.entity.player.Player[]{driver, passenger}) {
+                double horiz = Math.hypot(p.getX() - rover.getX(), p.getZ() - rover.getZ());
+                h.assertTrue(p.getY() < rover.getY() + 0.5, "stepped down, not onto the roof: y " + (p.getY() - rover.getY()));
+                h.assertTrue(horiz > rover.getBbWidth() / 2, "stepped out to the side: " + horiz);
+            }
             h.succeed();
         });
     }
@@ -339,6 +345,86 @@ public final class RoverTests {
             rover.setSpeed(0.25);
             h.assertTrue(rover.getY() >= h.absolutePos(new BlockPos(2, 2, 7)).getY() - 0.01 && rover.getZ() > h.absolutePos(new BlockPos(2, 2, 6)).getZ(),
                     "up on the step: y " + rover.getY() + " z " + rover.getZ());
+        });
+    }
+
+    /** The body leans with the ground under the wheels: level on flat ground, nose up onto a half step, never past the limit. */
+    @GameTest(template = "empty")
+    public static void bodyLeansWithTheGround(GameTestHelper h) {
+        h.assertTrue(com.pizzaparker07.spacebreaker.content.vehicles.RoverPhysics.tilt(0, 0, 1.5) == 0, "flat ground: level");
+        float halfStep = com.pizzaparker07.spacebreaker.content.vehicles.RoverPhysics.tilt(0.5, 0, 1.5);
+        h.assertTrue(Math.abs(Math.toDegrees(halfStep) - 18.43) < 0.1, "half a block over the wheelbase: ~18 degrees, got " + Math.toDegrees(halfStep));
+        h.assertTrue(com.pizzaparker07.spacebreaker.content.vehicles.RoverPhysics.tilt(3, 0, 1.5)
+                == com.pizzaparker07.spacebreaker.content.vehicles.RoverPhysics.MAX_TILT, "a wall does not stand it on end");
+        h.succeed();
+    }
+
+    /** The sprint rover: faster and further on a smaller battery, a small cargo bay, and it keeps its type when saved. */
+    @GameTest(template = "empty", timeoutTicks = 40)
+    public static void sprintRoverIsFastLightAndQuiet(GameTestHelper h) {
+        var sprint = com.pizzaparker07.spacebreaker.content.vehicles.RoverType.SPRINT;
+        var standard = com.pizzaparker07.spacebreaker.content.vehicles.RoverType.STANDARD;
+        double v1 = 0, v2 = 0;
+        for (int i = 0; i < 400; i++) {
+            v1 = com.pizzaparker07.spacebreaker.content.vehicles.RoverPhysics.speed(v1, 1, true, 1, standard.maxSpeed(), standard.accel());
+            v2 = com.pizzaparker07.spacebreaker.content.vehicles.RoverPhysics.speed(v2, 1, true, 1, sprint.maxSpeed(), sprint.accel());
+        }
+        h.assertTrue(Math.abs(v1 - standard.maxSpeed()) < 1e-9 && Math.abs(v2 - sprint.maxSpeed()) < 1e-9, "top speeds " + v1 + " / " + v2);
+        h.assertTrue(sprint.maxSpeed() * 20 >= 13 - 1e-9, "13 m/s");
+        h.assertTrue(sprint.range() > standard.range(), "goes further on less: " + sprint.range() + " vs " + standard.range());
+        h.assertTrue(sprint.loudness() < standard.loudness() && sprint.grip() < standard.grip(), "quieter, skids sooner");
+        floor(h, Blocks.STONE.defaultBlockState());
+        RoverEntity rover = h.spawn(VehiclesModule.SPRINT_ROVER.get(), Vec3.atBottomCenterOf(new BlockPos(2, 1, 2)));
+        h.assertTrue(rover.roverType() == sprint, "the entity knows its type");
+        h.assertTrue(rover.cargo().getContainerSize() == 9, "one row of cargo");
+        h.assertTrue(rover.getPickResult().is(VehiclesModule.SPRINT_ROVER_ITEM.get()), "picks as a sprint rover");
+        rover.setEnergy(1_000_000);
+        h.assertTrue(rover.energy() == sprint.capacity(), "battery capped at its own capacity");
+        CompoundTag tag = new CompoundTag();
+        rover.save(tag);
+        var copy = net.minecraft.world.entity.EntityType.create(tag, h.getLevel()).orElseThrow();
+        h.assertTrue(copy instanceof RoverEntity r && r.roverType() == sprint, "loads back as a sprint rover");
+        h.assertTrue(h.getLevel().getRecipeManager().byKey(com.pizzaparker07.spacebreaker.Spacebreaker.id("sprint_rover")).isPresent(), "craftable");
+        h.succeed();
+    }
+
+    /**
+     * The pressurised rover: it fills its cabin tank from an oxygen tank it is parked beside, riders breathe from it,
+     * and the cabin loses pressure when the oxygen or the power runs out. The cabin keeps out half the radiation.
+     */
+    @GameTest(template = "empty", timeoutTicks = 80)
+    public static void pressurizedRoverKeepsItsCrewBreathing(GameTestHelper h) {
+        floor(h, Blocks.STONE.defaultBlockState());
+        var type = com.pizzaparker07.spacebreaker.content.vehicles.RoverType.PRESSURIZED;
+        h.assertTrue(type.cabin() && type.range() >= 15_000, "a cabin and a long range: " + type.range());
+        h.setBlock(new BlockPos(0, 1, 2), MachinesModule.PRESSURIZED_TANK.get());
+        com.pizzaparker07.spacebreaker.content.machines.machine.TankBlockEntity tank = h.getBlockEntity(new BlockPos(0, 1, 2));
+        tank.tank().fill(com.pizzaparker07.spacebreaker.content.fluids.FluidsModule.OXYGEN.stack(8_000),
+                net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE);
+        RoverEntity rover = h.spawn(VehiclesModule.PRESSURIZED_ROVER.get(), Vec3.atBottomCenterOf(new BlockPos(2, 1, 2)));
+        rover.setYRot(0F);
+        rover.setEnergy(100_000);
+        h.assertTrue(!rover.cabinPressurized(), "no air before filling");
+        h.assertTrue(rover.radiationFactor() == 0.5, "the cabin walls stop half the radiation");
+        h.runAfterDelay(30, () -> {
+            h.assertTrue(rover.cabinOxygen() > 0 && rover.cabinPressurized(), "filled from the tank beside it: " + rover.cabinOxygen());
+            h.assertTrue(tank.tank().getFluidAmount() < 8_000, "the tank gave its oxygen");
+            var crew = h.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+            h.assertTrue(crew.startRiding(rover, true), "gets in");
+            int before = rover.cabinOxygen();
+            h.assertTrue(rover.breathe(crew, 100), "breathes cabin air");
+            h.assertTrue(rover.cabinOxygen() == before - 100, "used 100 breathing ticks");
+            h.assertTrue(!rover.breathe(h.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL), 10), "only riders breathe it");
+            CompoundTag tag = new CompoundTag();
+            rover.save(tag);
+            var copy = net.minecraft.world.entity.EntityType.create(tag, h.getLevel()).orElseThrow();
+            h.assertTrue(copy instanceof RoverEntity r && r.cabinOxygen() == rover.cabinOxygen(), "cabin oxygen is saved");
+            rover.setEnergy(0);
+            h.assertTrue(!rover.cabinPressurized(), "no power, no life support");
+            rover.setEnergy(1_000);
+            rover.setCabinOxygen(0);
+            h.assertTrue(!rover.cabinPressurized() && !rover.breathe(crew, 1), "an empty tank means no cabin air");
+            h.succeed();
         });
     }
 

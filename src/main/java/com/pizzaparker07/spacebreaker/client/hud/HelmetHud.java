@@ -22,17 +22,18 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
-import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 /**
- * Helmet HUD, drawn in the GUI layer so it stays on top of shader packs: a faint visor frame and a
- * compact vanilla-style gauge cluster beside the hotbar on the offhand side (oxygen, body temperature; suit, radiation,
- * surroundings and Maneuvering Unit gas only when they matter) with one blinking warning above the
- * hotbar. Visible in first person while an EVA helmet is worn; scale and opacity are configurable.
+ * Helmet HUD, drawn in the GUI layer so it stays on top of shader packs, kept small and out of the way: by default a
+ * little oxygen gauge (bar and time left) beside the hotbar on the offhand side, small hazard icons there only while
+ * something is wrong (cold or heat, radiation, pressure, a damaged or open suit), the way-home arrow only when the
+ * oxygen runs short, and one warning line above the hotbar. The detailed HUD (an option) shows every gauge; the thin
+ * visor rim is an option too. Nothing is drawn at the top centre, where block-info mods show their tooltip, and the
+ * layers sit below vanilla's, so other mods' overlays stay on top. Visible in first person while an EVA helmet is worn.
  */
 @EventBusSubscriber(modid = Spacebreaker.MOD_ID, value = Dist.CLIENT)
 public final class HelmetHud {
@@ -47,8 +48,9 @@ public final class HelmetHud {
 
     @SubscribeEvent
     static void register(RegisterGuiLayersEvent event) {
-        event.registerBelow(VanillaGuiLayers.CROSSHAIR, Spacebreaker.id("visor_frame"), HelmetHud::renderFrame);
-        event.registerAbove(VanillaGuiLayers.BOSS_OVERLAY, Spacebreaker.id("helmet_hud"), HelmetHud::renderPanel);
+        // below all vanilla layers (each registerBelowAll goes first): the visor tint/rim, then the gauges
+        event.registerBelowAll(Spacebreaker.id("helmet_hud"), HelmetHud::renderPanel);
+        event.registerBelowAll(Spacebreaker.id("visor_frame"), HelmetHud::renderFrame);
     }
 
     private static boolean active(Minecraft mc) {
@@ -69,8 +71,9 @@ public final class HelmetHud {
         }
         int w = g.guiWidth();
         int h = g.guiHeight();
-        if (HudConfig.visorFrame()) {
-            // the rounded visor rim with its glass reflections, stretched over the screen
+        boolean rim = HudConfig.visorFrame();
+        if (rim) {
+            // the thin visor rim, stretched over the screen (an option, off by default)
             RenderSystem.enableBlend();
             g.setColor(1F, 1F, 1F, HudConfig.visorFrameOpacity());
             g.blit(FRAME, 0, 0, 0, 0, w, h, w, h);
@@ -83,7 +86,7 @@ public final class HelmetHud {
             g.fill(0, 0, w, h, 0x38C08616); // warm gold filter
         }
         // rime on the visor rim when the cold is beyond the suit's rating (a light touch in any cold trap)
-        float frost = frost(delta.getGameTimeDeltaPartialTick(false));
+        float frost = rim ? frost(delta.getGameTimeDeltaPartialTick(false)) * HudConfig.visorFrameOpacity() / 0.7F : 0F;
         if (frost > 0.01F) {
             RenderSystem.enableBlend();
             g.setColor(1F, 1F, 1F, frost);
@@ -138,30 +141,52 @@ public final class HelmetHud {
         boolean breathable = s.has(SuitStatusPayload.BREATHABLE);
         boolean sealed = s.has(SuitStatusPayload.SEALED);
 
+        boolean detailed = HudConfig.detailed();
         List<Row> rows = new ArrayList<>();
+        // small hazard icons after the oxygen time (simple HUD): only while something is wrong
+        List<int[]> hazards = new ArrayList<>();
         // oxygen: always
         float o2 = s.capacity() > 0 ? (float) s.oxygen() / s.capacity() : 0F;
         boolean o2Low = s.capacity() == 0 || o2 < 0.15F;
         rows.add(new Row(ICON_OXYGEN, o2, o2Low ? ALARM : (o2 < 0.3F ? WARN : OXYGEN),
                 s.capacity() > 0 ? OxygenTankItem.time(s.oxygenTicksLeft()) : "--:--", o2Low && !breathable ? ALARM : 0xFFFFFF, false));
+        float body = s.bodyTempC();
+        boolean beyond = sealed && (s.ambientC() < s.ratingMinC() || s.ambientC() > s.ratingMaxC());
+        if (!detailed) {
+            if (!breathable && (!sealed || s.integrity() < 20)) {
+                hazards.add(new int[]{ICON_SUIT, ALARM});
+            }
+            if (beyond || body < 35 || body > 38.5F) {
+                hazards.add(new int[]{ICON_TEMP, body < 32 || body > 41 ? ALARM : WARN});
+            }
+            if (s.doseRate() > 50 || s.doseMsv() >= 250) {
+                hazards.add(new int[]{ICON_RAD, s.doseMsv() >= 1000 ? ALARM : WARN});
+            }
+            if (sealed && s.pressureKpa() >= com.pizzaparker07.spacebreaker.content.suit.LifeSupport.STRAIN_KPA) {
+                hazards.add(new int[]{ICON_PRESSURE, WARN});
+            }
+            if (s.has(SuitStatusPayload.MMU) && s.mmuFuel() * 10 < com.pizzaparker07.spacebreaker.content.suit.ManeuveringUnitItem.CAPACITY) {
+                hazards.add(new int[]{ICON_MMU, WARN});
+            }
+        }
         // suit: only when it matters
-        if (!sealed || s.integrity() < 50) {
+        if (detailed && (!sealed || s.integrity() < 50)) {
             int c = !sealed ? WARN : (s.integrity() < 20 ? ALARM : WARN);
             rows.add(new Row(ICON_SUIT, s.integrity() / 100F, c,
                     sealed ? s.integrity() + "%" : Component.translatable("hud.spacebreaker.open").getString(), c, false));
         }
         // suit rating: only when the surroundings are beyond it
-        boolean beyond = sealed && (s.ambientC() < s.ratingMinC() || s.ambientC() > s.ratingMaxC());
-        if (beyond) {
+        if (detailed && beyond) {
             rows.add(new Row(ICON_SUIT, -1F, 0, String.format(Locale.ROOT, "%d..%d°", s.ratingMinC(), s.ratingMaxC()), WARN, false));
         }
         // body temperature: marker on a 30..44 °C scale, normal band in the middle
-        float body = s.bodyTempC();
         int bodyCol = body < 32 || body > 41 ? ALARM : (body < 35 || body > 38.5F ? WARN : GOOD);
-        rows.add(new Row(ICON_TEMP, Mth.clamp((body - 30F) / 14F, 0F, 1F), bodyCol,
-                String.format(Locale.ROOT, "%.1f°", body), bodyCol == GOOD ? 0xFFFFFF : bodyCol, true));
+        if (detailed) {
+            rows.add(new Row(ICON_TEMP, Mth.clamp((body - 30F) / 14F, 0F, 1F), bodyCol,
+                    String.format(Locale.ROOT, "%.1f°", body), bodyCol == GOOD ? 0xFFFFFF : bodyCol, true));
+        }
         // radiation: only when there is some
-        if (s.doseRate() > 0.05F || s.doseMsv() >= 1F) {
+        if (detailed && (s.doseRate() > 0.05F || s.doseMsv() >= 1F)) {
             int c = s.doseMsv() >= 1000 ? ALARM : (s.doseMsv() >= 250 || s.doseRate() > 50 ? WARN : 0xD8C040);
             float fill = (float) (Math.log10(1 + s.doseMsv()) / Math.log10(1 + 3000));
             rows.add(new Row(ICON_RAD, Mth.clamp(fill, 0F, 1F), c, fmt(s.doseRate()) + "/d" + (s.doseMsv() >= 1F ? " " + fmt(s.doseMsv()) + "mSv" : ""), c == ALARM ? ALARM : 0xFFFFFF, false));
@@ -170,7 +195,9 @@ public final class HelmetHud {
         // magnetic boots gripping / tether clipped: short tags after the surroundings
         boolean mag = s.has(SuitStatusPayload.MAGNETISED), tethered = s.has(SuitStatusPayload.TETHERED);
         boolean pressurised = s.has(SuitStatusPayload.PRESSURISED);
-        if (pressurised) {
+        if (!detailed) {
+            // simple HUD: no surroundings row
+        } else if (pressurised) {
             // inside a pressurised module: breathable air, the helmet may come off
             rows.add(new Row(ICON_PRESSURE, -1F, 0, Component.translatable("hud.spacebreaker.pressurised").getString(), GOOD, false));
         } else if (!breathable || s.gravity() < 0.95F || s.gravity() > 1.05F || s.ambientC() < -20 || s.ambientC() > 50 || mag || tethered) {
@@ -198,7 +225,7 @@ public final class HelmetHud {
                 rows.add(new Row(-1, -1F, 0, String.join(" · ", tags), drift || s.has(SuitStatusPayload.COLD_TRAP) ? WARN : GOOD, false));
             }
         }
-        if (s.has(SuitStatusPayload.MMU)) {
+        if (detailed && s.has(SuitStatusPayload.MMU)) {
             float gas = (float) s.mmuFuel() / com.pizzaparker07.spacebreaker.content.suit.ManeuveringUnitItem.CAPACITY;
             rows.add(new Row(ICON_MMU, gas, gas < 0.15F ? WARN : 0xE0B040, Math.round(gas * 100) + "%", 0xFFFFFF, false));
         }
@@ -219,12 +246,20 @@ public final class HelmetHud {
                 case CRITICAL -> ALARM;
             };
             String label = Component.translatable("hud.spacebreaker.nav." + ClientNav.kind().name().toLowerCase(Locale.ROOT)).getString();
-            rows.add(new Row(-2, -1F, 0, label + " " + Math.round(dist) + "m", c, false));
+            // simple HUD: the way home only shows once the oxygen runs short for it
+            if (detailed || navStatus != com.pizzaparker07.spacebreaker.content.suit.Navigation.Status.OK) {
+                rows.add(new Row(-2, -1F, 0, label + " " + Math.round(dist) + "m", c, false));
+            }
         }
 
         int width = 0;
         for (Row r : rows) {
             width = Math.max(width, 11 + (r.fill() >= 0 ? BAR_W + 3 : 0) + font.width(r.value()));
+        }
+        // the hazard icons sit after the oxygen time
+        int hazardX = 11 + BAR_W + 3 + font.width(rows.get(0).value()) + 4;
+        if (!hazards.isEmpty()) {
+            width = Math.max(width, hazardX + hazards.size() * 10 - 1);
         }
         int height = rows.size() * ROW_H - 2;
         // anchor: beside the hotbar on the offhand side (past the offhand slot), away from the held item;
@@ -262,6 +297,18 @@ public final class HelmetHud {
                 x += BAR_W + 3;
             }
             g.drawString(font, r.value(), x, y + 1, argb(r.valueColor(), alpha), true);
+            if (y == 0) {
+                for (int i = 0; i < hazards.size(); i++) {
+                    int[] h = hazards.get(i);
+                    boolean show = h[1] != ALARM || blink;
+                    if (show) {
+                        // the icon tinted in the hazard's colour
+                        g.setColor(((h[1] >> 16) & 0xFF) / 255F, ((h[1] >> 8) & 0xFF) / 255F, (h[1] & 0xFF) / 255F, alpha);
+                        g.blit(ICONS, hazardX + i * 10, 0, h[0] * 9, 0, 9, 9, 9 * 6, 9);
+                        g.setColor(1F, 1F, 1F, 1F);
+                    }
+                }
+            }
             y += ROW_H;
         }
         g.pose().popPose();

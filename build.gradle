@@ -114,6 +114,39 @@ neoForge {
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
+configurations {
+    // the LambDynamicLights mod jar, only to pull its API jar out (see extractLambDynLightsApi)
+    lambDynLightsBundle { transitive = false }
+}
+
+// LambDynamicLights ships its API as a jar inside a jar inside the mod jar: unpack both levels into build/lambdynlights
+tasks.register('extractLambDynLightsApi') {
+    def bundle = configurations.lambDynLightsBundle
+    def out = layout.buildDirectory.dir('lambdynlights')
+    inputs.files(bundle)
+    outputs.file(out.map { it.file('lambdynamiclights-api.jar') })
+    doLast {
+        def dir = out.get().asFile
+        dir.mkdirs()
+        def inner = new File(dir, 'inner')
+        project.copy {
+            from(project.zipTree(bundle.singleFile)) { include 'META-INF/jars/*-neoforge.jar' }
+            into inner
+        }
+        def neo = project.fileTree(inner).matching { include '**/*-neoforge.jar' }.singleFile
+        project.copy {
+            from(project.zipTree(neo)) { include 'META-INF/jars/lambdynamiclights-api-*.jar' }
+            into inner
+            eachFile { it.path = 'lambdynamiclights-api.jar' }
+            includeEmptyDirs = false
+        }
+        project.copy {
+            from new File(inner, 'lambdynamiclights-api.jar')
+            into dir
+        }
+    }
+}
+
 dependencies {
     // Recipe viewers: optional integrations in compat/jei and compat/emi. Only the APIs are on the compile
     // classpath; add -PwithJei=true or -PwithEmi=true to run a client/showcase with the full mod.
@@ -132,6 +165,13 @@ dependencies {
     if (project.hasProperty('withWthit')) {
         localRuntime "maven.modrinth:wthit:${wthit_version}"
         localRuntime "maven.modrinth:badpackets:${badpackets_version}"
+    }
+    // Dynamic lights (LambDynamicLights): optional, client/light + compat/dynlights. Its API jar is nested inside the
+    // mod jar on Modrinth; extractLambDynLightsApi pulls it out for compiling only. -PwithDynLights runs with the mod.
+    lambDynLightsBundle "maven.modrinth:lambdynamiclights:${lambdynlights_version}"
+    compileOnly files(layout.buildDirectory.file('lambdynlights/lambdynamiclights-api.jar')) { builtBy 'extractLambDynLightsApi' }
+    if (project.hasProperty('withDynLights')) {
+        localRuntime "maven.modrinth:lambdynamiclights:${lambdynlights_version}"
     }
     if (project.hasProperty('withJei')) {
         localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
