@@ -24,4 +24,4 @@ An electric vehicle for reaching distant craters, ice fields and ruins from your
 
 ## Charging
 - Next to a {item spacebreaker:battery_bank} or a cable it charges at **200 FE/t**.
-- {key key.use} the rover with a {item spacebreaker:solar_panel} or {item spacebreaker:rtg} in hand: it is mounted on top and charges on the move.
+- {key key.use} the rover with a {item spacebreaker:solar_panel} or {item spacebreaker:rtg} in hand: it is mounted on the rear deck behind the seats and charges on the move.

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": {
+      "tag": "c:glass_panes/colorless"
+    },
+    "O": {
+      "item": "spacebreaker:oxygen_distributor"
+    },
+    "R": {
+      "item": "spacebreaker:rover"
+    },
+    "S": {
+      "tag": "spacebreaker:radiation_shielding"
+    },
+    "T": {
+      "tag": "c:plates/titanium"
+    }
+  },
+  "pattern": [
+    "TGT",
+    "SRS",
+    "TOT"
+  ],
+  "result": {
+    "count": 1,
+    "id": "spacebreaker:pressurized_rover"
+  }
+}

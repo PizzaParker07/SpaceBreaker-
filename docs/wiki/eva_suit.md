@@ -63,10 +63,7 @@ Kask göstergesi oksijeni, giysinin durumunu, vücut ve dış sıcaklığı, rad
 
 <a id="sound"></a>
 ### Ses
-Ses için hava gerekir. Mars'taki gibi ince havada dünya kısık ve boğuk duyulur, önce tiz sesler kaybolur. Vakumda (Ay, yörünge, asteroitler, kuyruklu yıldızlar) dışarıdaki sesleri neredeyse duymazsın. Giysinin dokunduğu şeyler yine de boğuk gelir: kendi adımların, elindeki alet, kazdığın blok, üstünde durduğun makine. Kask içi sesler (telsiz, görev kontrol, uyarı bipleri) normaldir; solunabilir havada ve basınçlı odalarda da her şey normal duyulur.
-
-> [!TIP]
-> Bu, istemcideki **gerçekçi ses** ayarıdır (realisticSound); varsayılan olarak açıktır.
+İstemcideki **gerçekçi ses** ayarı (realisticSound, varsayılan olarak **kapalı**) açıksa, havanın ince olduğu yerlerde dünya biraz daha kısık ve yumuşak duyulur: Mars'ta ses en az %80, vakumda (Ay, yörünge, asteroitler, kuyruklu yıldızlar) yaklaşık yarı yarıya, önce de tizler kaybolur. Kendi adımların ve aletin, kask içi sesler (telsiz, görev kontrol, uyarı bipleri), solunabilir hava ve basınçlı odalar normaldir. Ayar kapalıyken her şey her zamanki gibi duyulur.
 
 ### Ölünce
 Tüpler gövdenin içinde kalır ve gövde sıradan bir zırh gibi düşer: geri aldığında tüpler de geri gelir. Nefes, vücut ısısı ve radyasyon dozu sıfırlanır.
@@ -166,10 +163,7 @@ The helmet display shows oxygen, suit state, body and outside temperature, radia
 
 <a id="sound"></a>
 ### Sound
-Sound needs air. In thin air, as on Mars, the world sounds faint and dull and the high notes go first. In vacuum (the Moon, orbit, asteroids, comets) you hardly hear anything outside. What the suit touches still comes through, muffled: your own steps, the tool in your hand, the block you dig, the machine you stand on. Helmet sounds (radio, mission control, warning beeps) stay normal, and so does everything in breathable air and pressurised rooms.
-
-> [!TIP]
-> This is the **realistic sound** client setting (realisticSound), on by default.
+With the **realistic sound** client setting (realisticSound, **off** by default) the world sounds a little quieter and softer where the air is thin: on Mars at least 80 % of the volume, in vacuum (the Moon, orbit, asteroids, comets) about half, and the high notes fade first. Your own steps and tools, helmet sounds (radio, mission control, warning beeps), breathable air and pressurised rooms stay normal. With the setting off everything sounds as usual.
 
 ### When you die
 The tanks stay inside the body piece, which drops like any armour: pick it up and the tanks come back with it. Breath, body temperature and radiation dose reset.

@@ -116,6 +116,46 @@ public final class SkyGameTests {
     }
 
     /**
+     * Blocky planets: the voxel ball is closed (every face points outward, as many faces on each side), the cube has six
+     * full pixel faces, the day/night line is a hard step with the night side at the night brightness, and ring tiles stay
+     * between the ring's edges.
+     */
+    @GameTest(template = "empty")
+    public static void blockyBodiesAreSoundShapes(GameTestHelper helper) {
+        for (int n : new int[]{6, 10, 16, 128}) {
+            var vox = com.pizzaparker07.spacebreaker.content.worldgen.BlockyBodyMesh.body(
+                    com.pizzaparker07.spacebreaker.content.worldgen.BlockyBodyMesh.Style.VOXEL, n);
+            int[] perSide = new int[6];
+            for (var f : vox) {
+                helper.assertTrue(f.normal().dot(f.center()) > 0, "voxel faces point outward (n=" + n + ")");
+                helper.assertTrue(f.center().length() < 1.25F, "the ball stays about one radius: " + f.center().length());
+                helper.assertTrue(Math.abs(new org.joml.Vector3f(f.u()).cross(f.v()).normalize().dot(f.normal()) - 1) < 1e-4,
+                        "u x v is the outward normal");
+                int side = f.normal().x > 0 ? 0 : f.normal().x < 0 ? 1 : f.normal().y > 0 ? 2 : f.normal().y < 0 ? 3 : f.normal().z > 0 ? 4 : 5;
+                perSide[side]++;
+            }
+            for (int k = 1; k < 6; k++) {
+                helper.assertTrue(perSide[k] == perSide[0], "symmetric ball (n=" + n + "): " + java.util.Arrays.toString(perSide));
+            }
+            var cube = com.pizzaparker07.spacebreaker.content.worldgen.BlockyBodyMesh.body(
+                    com.pizzaparker07.spacebreaker.content.worldgen.BlockyBodyMesh.Style.CUBE, n);
+            helper.assertTrue(cube.size() == 6 * n * n, "six full faces of " + n + "x" + n + ": " + cube.size());
+        }
+        org.joml.Vector3f sun = new org.joml.Vector3f(0, 0, 1);
+        org.joml.Vector3f toward = new org.joml.Vector3f(0, 0, 1);
+        org.joml.Vector3f away = new org.joml.Vector3f(0, 0, -1);
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.worldgen.BlockyBodyMesh.light(toward, toward, sun, 0.07F) == 1F, "full day facing the sun");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.worldgen.BlockyBodyMesh.light(away, away, sun, 0.07F) == 0.07F, "night side at the night brightness");
+        float edge = com.pizzaparker07.spacebreaker.content.worldgen.BlockyBodyMesh.light(new org.joml.Vector3f(1, 0, 0), new org.joml.Vector3f(1, 0, 0), sun, 0.07F);
+        helper.assertTrue(edge > 0.07F && edge < 1F, "one step of twilight on the terminator: " + edge);
+        for (var f : com.pizzaparker07.spacebreaker.content.worldgen.BlockyBodyMesh.ring(1.24F, 2.27F, 40)) {
+            float r = (float) Math.hypot(f.center().x, f.center().z);
+            helper.assertTrue(r >= 1.24F && r <= 2.27F && f.surface().x >= 0 && f.surface().x <= 1, "ring tile inside the ring: " + r);
+        }
+        helper.succeed();
+    }
+
+    /**
      * From Mars: Phobos and Deimos are not planet points (Mars' sky draws them as discs), and the Moon never hides in
      * Earth's point but shows beside it on its true side; Earth, when brighter than magnitude -1, shows earlier at dusk.
      */
