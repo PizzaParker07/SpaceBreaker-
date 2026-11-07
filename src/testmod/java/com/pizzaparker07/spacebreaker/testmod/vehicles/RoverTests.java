@@ -318,6 +318,12 @@ public final class RoverTests {
             h.assertTrue(!driver.isPassenger() && !passenger.isPassenger(), "both get off");
             h.assertTrue(!h.getLevel().getBlockState(driver.blockPosition()).isSuffocating(h.getLevel(), driver.blockPosition()),
                     "dismounted into free space");
+            // beside the rover on the ground, not on its roof or panel (QA R2)
+            for (var p : new net.minecraft.world.entity.player.Player[]{driver, passenger}) {
+                double horiz = Math.hypot(p.getX() - rover.getX(), p.getZ() - rover.getZ());
+                h.assertTrue(p.getY() < rover.getY() + 0.5, "stepped down, not onto the roof: y " + (p.getY() - rover.getY()));
+                h.assertTrue(horiz > rover.getBbWidth() / 2, "stepped out to the side: " + horiz);
+            }
             h.succeed();
         });
     }

@@ -193,6 +193,38 @@ public class RoverEntity extends Entity {
         }
     }
 
+    /**
+     * Riders step off to the side, not onto the roof: left side first, then right, behind, in front, each checked for
+     * a safe spot to stand (like getting out of a boat). Only if all four are blocked does the vanilla spot on top apply.
+     */
+    @Override
+    public Vec3 getDismountLocationForPassenger(LivingEntity passenger) {
+        float yaw = getYRot() * Mth.DEG_TO_RAD;
+        Vec3 forward = new Vec3(-Mth.sin(yaw), 0, Mth.cos(yaw));
+        Vec3 left = new Vec3(forward.z, 0, -forward.x);
+        double side = getBbWidth() / 2 + passenger.getBbWidth() / 2 + 0.25;
+        Vec3[] tries = {left.scale(side), left.scale(-side), forward.scale(-(side + 0.6)), forward.scale(side + 0.6)};
+        for (Vec3 off : tries) {
+            Vec3 at = position().add(off);
+            BlockPos base = BlockPos.containing(at);
+            for (BlockPos p : new BlockPos[]{base, base.above(), base.below()}) {
+                double floor = level().getBlockFloorHeight(p);
+                if (!net.minecraft.world.entity.vehicle.DismountHelper.isBlockFloorValid(floor)) {
+                    continue;
+                }
+                Vec3 spot = new Vec3(at.x, p.getY() + floor, at.z);
+                for (net.minecraft.world.entity.Pose pose : passenger.getDismountPoses()) {
+                    net.minecraft.world.phys.AABB box = passenger.getLocalBoundsForPose(pose);
+                    if (net.minecraft.world.entity.vehicle.DismountHelper.canDismountTo(level(), passenger, box.move(spot))) {
+                        passenger.setPose(pose);
+                        return spot;
+                    }
+                }
+            }
+        }
+        return super.getDismountLocationForPassenger(passenger);
+    }
+
     @Override
     public void onPassengerTurned(Entity passenger) {
         float rel = Mth.wrapDegrees(passenger.getYRot() - getYRot());
