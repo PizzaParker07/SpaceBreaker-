@@ -28,7 +28,7 @@ final class JeiScenario implements ShowcaseScenario {
         List<ShowcaseDriver.Shot> s = new ArrayList<>();
         CameraType fp = CameraType.FIRST_PERSON;
         String[] categories = {"crushing", "arc_smelting", "fabricating", "refining", "electrolysis", "sabatier", "regolith_processing",
-                "chemical_reaction", "sintering", "suit_modules"};
+                "chemical_reaction", "sintering", "centrifuging", "suit_modules"};
         int n = 1;
         for (String c : categories) {
             String name = String.format("%02d_%s", n++, c);
@@ -62,6 +62,15 @@ final class JeiScenario implements ShowcaseScenario {
                         }
                     }));
         }
+        // the item duct's information page (EMI: the page itself; JEI: the duct's recipes, with an Information tab)
+        s.add(new ShowcaseDriver.Shot(String.format("%02d_info_item_duct", ++n), 6000, 0.5, -55, 0.5, 0F, 20F, false, fp, 60, null,
+                () -> {
+                    if (jei) {
+                        JeiScreens.showRecipesFor(Spacebreaker.id("item_duct"));
+                    } else {
+                        EmiScreens.showInfo(Spacebreaker.id("/info/item_duct"));
+                    }
+                }));
         // asteroid mining: what the rubble of carbonaceous (Bennu) and stony (Eros) asteroids is used for
         for (String item : new String[]{"bennu_regolith", "eros_regolith", "comet_ice", "comet_dust"}) {
             String name = String.format("%02d_uses_%s", ++n, item);
