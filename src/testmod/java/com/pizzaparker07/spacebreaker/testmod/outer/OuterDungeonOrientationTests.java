@@ -48,7 +48,7 @@ public final class OuterDungeonOrientationTests {
                 for (BlockPos p : BlockPos.betweenClosed(bb.minX(), bb.minY(), bb.maxZ() >= bb.minZ() ? bb.minZ() : bb.maxZ(), bb.maxX(), bb.maxY(),
                         bb.maxZ())) {
                     var st = level.getBlockState(p);
-                    if (st.is(Blocks.LADDER)) {
+                    if (st.getBlock() instanceof net.minecraft.world.level.block.LadderBlock) {
                         helper.assertTrue(st.canSurvive(level, p), piece.getClass().getSimpleName() + " " + d + ": ladder hangs on nothing at " + p);
                         checked++;
                     }

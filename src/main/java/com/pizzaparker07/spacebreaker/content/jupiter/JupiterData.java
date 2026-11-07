@@ -89,6 +89,10 @@ public final class JupiterData {
         lang.add("biome.spacebreaker.callisto_crater", "Callistan Crater", "Kallisto Krateri");
         lang.add("biome.spacebreaker.callisto_polar", "Callistan Pole", "Kallisto Kutbu");
         lang.add("dungeon.spacebreaker.europa_probe", "Buried Research Probe", "Gömülü Araştırma Sondası");
+        lang.add("sign.spacebreaker.europa_probe_log.0", "PROBE LOG", "SONDA GÜNLÜĞÜ");
+        lang.add("sign.spacebreaker.europa_probe_log.1", "Tether cut", "Kablo 22 m'de");
+        lang.add("sign.spacebreaker.europa_probe_log.2", "at 22 m. Still", "koptu. Sinyal");
+        lang.add("sign.spacebreaker.europa_probe_log.3", "pinging. Going.", "var. İniyoruz.");
         lang.add("structure.spacebreaker.europa_probe", "Buried Research Probe", "Gömülü Araştırma Sondası");
         lang.add("dungeon.spacebreaker.io_observatory", "Abandoned Volcano Observatory", "Terk Edilmiş Volkan Gözlemevi");
         lang.add("structure.spacebreaker.io_observatory", "Abandoned Volcano Observatory", "Terk Edilmiş Volkan Gözlemevi");

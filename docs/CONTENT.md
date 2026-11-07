@@ -282,7 +282,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Io blokları | Kükürt Kumu, Kükürt Dioksit Kırağısı, Kırmızı Kükürt (kalıcı ayak izi), Io Bazaltı (+ merdiven, basamak, duvar), Io Kükürt Cevheri (→ kükürt), Kükürt Bulutu Bacası |
 | 🎨 | Ganymede `spacebreaker:ganymede` | parlak oluklu buz ovaları ile koyu kadim kraterli arazi, parlak kutup örtüleri; Ganymede Regoliti, Oluklu Buz, Koyu Buz Kabuğu |
 | 🎨 | Kallisto `spacebreaker:callisto` | Güneş Sistemi'nin en kraterli yüzeyi, parlak kırağı tümsekleri, Valhalla çok halkalı havzası; düşük radyasyon - güvenli üs yeri; Kallisto Regoliti, Parlak Kırağı, Kallisto Kayası (+ merdiven, basamak, duvar) |
-| 🎨 | Zindanlar | Gömülü Araştırma Sondası (Europa: iniş aracı, eritme kuyusu, tuzlu su havuzlu buz mağarası), Terk Edilmiş Volkan Gözlemevi (Io: bazalt sığınak, teleskop, sismometre kasası) |
+| 🎨 | Zindanlar | Gömülü Araştırma Sondası (Europa: buz delme kampı - kuyunun üstünde dört ayaklı sondaj kulesi, vinç ve tepe güvertesi, korkuluklu ızgara platform, hava kilitli lomboz pencereli yaşam modülünde araştırma laboratuvarı ve "kablo 22 m'de koptu" günlüğü, güneş panelli güç direği; çelik merdivenli eritme kuyusu, sıkışmış kriyobot ve tuzlu su havuzlu buz mağarası), Terk Edilmiş Volkan Gözlemevi (Io: bazalt sığınak, teleskop, sismometre kasası) |
 | 🎨 | Teknolojiler | Kriyobot Sondajı (4), Radyasyona Dayanıklı Elektronik (4), Volkanik Isı Kalkanı (4), Manyetosfer Fiziği (4), Derin Uzay Yaşam Alanları (4) |
 
 ### Satürn uyduları
