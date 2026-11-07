@@ -7,6 +7,7 @@ import com.pizzaparker07.spacebreaker.core.astro.BodySystem;
 import com.pizzaparker07.spacebreaker.core.astro.Ephemeris;
 import com.pizzaparker07.spacebreaker.core.astro.GameClock;
 import com.pizzaparker07.spacebreaker.core.astro.OrbitService;
+import com.pizzaparker07.spacebreaker.core.astro.PolarIllumination;
 import com.pizzaparker07.spacebreaker.core.astro.SkyEphemeris;
 import com.pizzaparker07.spacebreaker.core.astro.smallbody.Asteroid;
 import com.pizzaparker07.spacebreaker.core.astro.smallbody.AsteroidGenerator;
@@ -39,7 +40,7 @@ import java.util.Optional;
 public final class AstroGameTests {
     private static final List<String> BODIES = List.of("sun", "mercury", "venus", "earth", "moon", "mars", "phobos",
             "deimos", "ceres", "vesta", "jupiter", "io", "europa", "ganymede", "callisto", "saturn", "titan",
-            "enceladus", "uranus", "miranda", "neptune", "triton", "pluto", "charon");
+            "enceladus", "uranus", "miranda", "ariel", "neptune", "triton", "pluto", "charon");
 
     @GameTest(template = "empty")
     public static void everyCelestialBodyLoads(GameTestHelper helper) {
@@ -175,6 +176,16 @@ public final class AstroGameTests {
         }
         helper.assertTrue(converted > 100, "converted " + converted + " bodies");
         helper.assertTrue(Bodies.registry(helper.getLevel().registryAccess()).orElseThrow().size() == before, "nothing was registered");
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void polarColdTrapsFromRegistry(GameTestHelper helper) {
+        var access = helper.getLevel().registryAccess();
+        PolarIllumination moon = BodyAdapter.polarIllumination(access, "spacebreaker:moon").orElseThrow();
+        helper.assertTrue(moon.iceStable() && Math.abs(moon.psrLatitudeDeg() - 80.5) < 1.5, "lunar cold traps near 80°: " + moon.psrLatitudeDeg());
+        helper.assertTrue(!BodyAdapter.polarIllumination(access, "spacebreaker:mars").orElseThrow().iceStable(), "no cold traps on Mars");
+        helper.assertTrue(BodyAdapter.polarIllumination(access, "spacebreaker:nowhere").isEmpty(), "unknown body");
         helper.succeed();
     }
 

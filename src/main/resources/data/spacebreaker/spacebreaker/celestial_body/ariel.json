@@ -1,0 +1,13 @@
+{
+  "type": "moon",
+  "parent": "spacebreaker:uranus",
+  "dimension": "spacebreaker:ariel",
+  "physical": { "mass_kg": 1.251e21, "radius_km": 578.9 },
+  "orbit": { "semi_major_axis_km": 191020, "eccentricity": 0.0012, "inclination_deg": 0.26, "period_days": 2.520379 },
+  "rotation": { "day_length_hours": 60.49, "axial_tilt_deg": 0.0, "tidally_locked": true },
+  "climate": { "day_temp_c": -189, "night_temp_c": -213 },
+  "radiation_msv_per_day": 1.5,
+  "solar_irradiance": 3.7,
+  "albedo": 0.23,
+  "geometric_albedo": 0.53
+}
