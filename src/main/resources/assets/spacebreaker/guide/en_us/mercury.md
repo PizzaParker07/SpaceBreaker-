@@ -1,7 +1,7 @@
 ---
 title: Mercury
 icon: spacebreaker:mercurian_crust
-items: [spacebreaker:mercury_regolith, spacebreaker:mercurian_crust, spacebreaker:low_reflectance_rock, spacebreaker:hollow_deposit, spacebreaker:graphite_ore, spacebreaker:graphite, spacebreaker:terminator_crawler_spawn_egg]
+items: [spacebreaker:mercury_regolith, spacebreaker:mercurian_crust, spacebreaker:low_reflectance_rock, spacebreaker:hollow_deposit, spacebreaker:graphite_ore, spacebreaker:graphite, spacebreaker:mercury_ice, spacebreaker:terminator_crawler_spawn_egg]
 research: spacebreaker:interplanetary_transfers
 ---
 No air, and a sun almost **three times** as wide as at home.
@@ -19,9 +19,11 @@ No air, and a sun almost **three times** as wide as at home.
 - **Hollows**: bright young pits where volatile minerals boil away.
 - **Dark rock** is rich in graphite.
 
+> **Getting there:** hydrolox engines can take you to Mercury orbit and back; landing and taking off again is still out of reach. → [Rocket Parts](rocket_parts)
+
 {page}
 {items spacebreaker:graphite_ore spacebreaker:graphite}
-Craters near the poles never see the sun and keep **Mercury polar ice**. Melt it for water, then split the water into hydrogen and oxygen.
+Craters near the poles never see the sun and keep {item spacebreaker:mercury_ice}. Melt it for water, then split the water into hydrogen and oxygen.
 
 > **Fuel on Mercury:** graphite + oxygen → CO₂ (chemical reactor); CO₂ + hydrogen → methane (Sabatier reactor). That tops up methalox fuel on the spot. → [In-Situ Resources](isru)
 

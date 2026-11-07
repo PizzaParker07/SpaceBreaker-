@@ -1,6 +1,6 @@
 {
   "category": "propulsion",
-  "icon": "minecraft:snowball",
+  "icon": "spacebreaker:hydrolox_engine",
   "requires": [
     "spacebreaker:vacuum_engines",
     "spacebreaker:cryogenics"
@@ -8,5 +8,9 @@
   "samples": [
     "spacebreaker:orbital_flight"
   ],
-  "tier": 2
+  "tier": 2,
+  "unlocks": [
+    "spacebreaker:hydrolox_engine",
+    "spacebreaker:hydrolox_vacuum_engine"
+  ]
 }

@@ -1,6 +1,6 @@
 {
   "category": "construction",
-  "icon": "minecraft:end_rod",
+  "icon": "spacebreaker:docking_port",
   "requires": [
     "spacebreaker:pressurised_modules",
     "spacebreaker:orbital_mechanics"
@@ -8,5 +8,9 @@
   "samples": [
     "spacebreaker:orbital_flight"
   ],
-  "tier": 2
+  "tier": 2,
+  "unlocks": [
+    "spacebreaker:station_kit",
+    "spacebreaker:docking_port"
+  ]
 }

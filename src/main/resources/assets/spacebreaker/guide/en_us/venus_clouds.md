@@ -1,12 +1,12 @@
 ---
 title: Life and Ruins in the Clouds
 icon: spacebreaker:cloud_jelly_spawn_egg
-items: [spacebreaker:cloud_jelly_spawn_egg, spacebreaker:acid_ray_spawn_egg, spacebreaker:aerogel, spacebreaker:envelope_fabric, spacebreaker:acid_coating, spacebreaker:composite_panel]
+items: [spacebreaker:cloud_jelly_spawn_egg, spacebreaker:acid_ray_spawn_egg, spacebreaker:aerogel, spacebreaker:envelope_fabric, spacebreaker:acid_coating, spacebreaker:composite_panel, spacebreaker:lift_gas_sac]
 research: spacebreaker:interplanetary_transfers
 ---
 {entity spacebreaker:cloud_jelly}
 ## Cloud Jelly
-Drifts on sacs of light gas and sieves sulfur from the air. Harmless. It drops a **lift gas sac**: use it to fall slowly for 30 seconds.
+Drifts on sacs of light gas and sieves sulfur from the air. Harmless. It drops a {item spacebreaker:lift_gas_sac}: use it to fall slowly for 30 seconds.
 
 ## Acid Ray
 Glides in wide curves. Leave it alone: it **sprays acid** that eats into armour. Drops sulfur and leather.

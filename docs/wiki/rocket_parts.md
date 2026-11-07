@@ -25,7 +25,7 @@ Her kademede altta **bir motor**, üstünde **yakıt tankları** olur. Tanklar, 
 
 ### Motorlar ve yakıtlar
 
-**Metaloks Motoru (Deniz Seviyesi)** · **Metaloks Motoru (Vakum)**
+**Metaloks Motoru (Deniz Seviyesi)** · **Metaloks Motoru (Vakum)** · **Hidroloks Motoru (Deniz Seviyesi)** · **Hidroloks Motoru (Vakum)**
 
 **Metaloks motorları** *Metan Motorları* ile açılır. **Sıvı metan ve sıvı oksijen** yakarlar; yakıtlarını Mars'ta üretebilirsin. Isp'deki iki sayı: deniz seviyesi / vakum.
 
@@ -35,6 +35,10 @@ Her kademede altta **bir motor**, üstünde **yakıt tankları** olur. Tanklar, 
 | Kerosen (vakum) | 190 kN | 345 s | RP-1 + LOX (1 : 2,56) |
 | Metaloks (deniz) | 600 kN | 330 / 350 s | metan + LOX (1 : 3,6) |
 | Metaloks (vakum) | 220 kN | 380 s | metan + LOX (1 : 3,6) |
+| Hidroloks (deniz) | 650 kN | 366 / 452 s | hidrojen + LOX (1 : 6) |
+| Hidroloks (vakum) | 110 kN | 465 s | hidrojen + LOX (1 : 6) |
+
+**Hidroloks motorları** *Hidrojen Motorları* ile açılır. Sıvı hidrojen en verimli yakıttır ama çok **hacimlidir** (yoğunluğu suyun on dörtte biri): aynı kütle için çok daha büyük tank gerekir.
 
 Montaj tezgâhı her kademenin yakıt türünü ve Δv'sini gösterir.
 
@@ -87,7 +91,7 @@ Each stage has **one engine** at the bottom and **fuel tanks** above it. The tan
 
 ### Engines and fuels
 
-**Methalox Engine (Sea Level)** · **Methalox Engine (Vacuum)**
+**Methalox Engine (Sea Level)** · **Methalox Engine (Vacuum)** · **Hydrolox Engine (Sea Level)** · **Hydrolox Engine (Vacuum)**
 
 **Methalox engines** are unlocked by *Methane Engines*. They burn **liquid methane and liquid oxygen**; you can make that fuel on Mars. Two Isp numbers: sea level / vacuum.
 
@@ -97,6 +101,10 @@ Each stage has **one engine** at the bottom and **fuel tanks** above it. The tan
 | Kerosene (vacuum) | 190 kN | 345 s | RP-1 + LOX (1 : 2.56) |
 | Methalox (sea level) | 600 kN | 330 / 350 s | methane + LOX (1 : 3.6) |
 | Methalox (vacuum) | 220 kN | 380 s | methane + LOX (1 : 3.6) |
+| Hydrolox (sea level) | 650 kN | 366 / 452 s | hydrogen + LOX (1 : 6) |
+| Hydrolox (vacuum) | 110 kN | 465 s | hydrogen + LOX (1 : 6) |
+
+**Hydrolox engines** are unlocked by *Hydrogen Engines*. Liquid hydrogen is the most efficient fuel but very **bulky** (a fourteenth of water's density): the same mass needs far bigger tanks.
 
 The assembler shows each stage's fuel type and Δv.
 

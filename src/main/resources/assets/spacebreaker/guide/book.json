@@ -54,7 +54,8 @@
         "oxygen",
         "base_air",
         "eva_mobility",
-        "hazards"
+        "hazards",
+        "rover"
       ]
     },
     {
@@ -66,7 +67,9 @@
         "rocket_assembler",
         "launch_pad",
         "first_flight",
-        "navigation"
+        "navigation",
+        "probes",
+        "space_station"
       ]
     },
     {
@@ -98,6 +101,7 @@
         "callisto",
         "titan",
         "enceladus",
+        "miranda",
         "triton",
         "pluto",
         "charon"

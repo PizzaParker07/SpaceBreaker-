@@ -38,6 +38,7 @@ Bu wiki, oyun içindeki **Saha Rehberi**nin metinlerinden otomatik üretilir.
 - [Üssün Havası](base_air) · *Air for the Base*
 - [Düşük Yerçekiminde Hareket](eva_mobility) · *Moving in Low Gravity*
 - [Tehlikeler](hazards) · *Hazards*
+- [Gezici](rover) · *Rover*
 
 ## Roketçilik <sub>(Rocketry)</sub>
 
@@ -46,6 +47,8 @@ Bu wiki, oyun içindeki **Saha Rehberi**nin metinlerinden otomatik üretilir.
 - [Fırlatma Rampası](launch_pad) · *Launch Pad*
 - [İlk Uçuşun](first_flight) · *Your First Flight*
 - [Uçuş ve Yön Bulma](navigation) · *Flight and Navigation*
+- [Uydular ve Sondalar](probes) · *Satellites and Probes*
+- [Uzay İstasyonu](space_station) · *Space Station*
 
 ## Dünyalar <sub>(Worlds)</sub>
 
@@ -69,6 +72,7 @@ Bu wiki, oyun içindeki **Saha Rehberi**nin metinlerinden otomatik üretilir.
 - [Kallisto](callisto) · *Callisto*
 - [Titan](titan) · *Titan*
 - [Enceladus](enceladus) · *Enceladus*
+- [Miranda](miranda) · *Miranda*
 - [Triton](triton) · *Triton*
 - [Plüton](pluto) · *Pluto*
 - [Charon](charon) · *Charon*

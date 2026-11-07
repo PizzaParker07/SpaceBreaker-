@@ -6,6 +6,7 @@
 |---|---|
 | Mars | Terk edilmiş araştırma istasyonu: sera, ISRU tesisi, sondaj kulesi; garaj tünelinde ok tuzağı |
 | Mars | Gömülü eski nehir yatağı ve düşmüş bir sonda |
+| Mars | **Kayıp İniş Aracı**: kırık bacağına çökmüş eski bir araç, yanında yarı gömülü ısı kalkanı ve toza serilmiş paraşüt. Seyrek (yaklaşık kilometrede bir); [gezici](rover) gerekir. Veri kaydedicisinde disk, deney verisi ve parçalar var. |
 | Phobos | Düşmüş Numune Dönüş Sondası |
 | Deimos | Deimos Buz Deposu |
 | Venüs | Terk Edilmiş Araştırma Balonu |
@@ -25,6 +26,7 @@ Bu harabelerin diskleri **metan motorlarını**, **Sabatier sürecini** ve **Mar
 |---|---|
 | Mars | Abandoned research station: greenhouse, ISRU plant, drilling rig; an arrow trap in the garage tunnel |
 | Mars | Buried ancient riverbed with a fallen probe |
+| Mars | **Lost lander**: an old lander slumped on a broken leg, its heat shield half buried nearby and its parachute spread over the dust. Rare (about one per kilometre); you need a [rover](rover). Its data recorder holds a disk, experiment data and parts. |
 | Phobos | Crashed sample-return probe |
 | Deimos | Deimos ice cache |
 | Venus | Abandoned research balloon |

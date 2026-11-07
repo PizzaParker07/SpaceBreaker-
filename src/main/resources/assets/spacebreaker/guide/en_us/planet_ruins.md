@@ -7,6 +7,7 @@ research: spacebreaker:interplanetary_transfers
 |---|---|
 | Mars | Abandoned research station: greenhouse, ISRU plant, drilling rig; an arrow trap in the garage tunnel |
 | Mars | Buried ancient riverbed with a fallen probe |
+| Mars | **Lost lander**: an old lander slumped on a broken leg, its heat shield half buried nearby and its parachute spread over the dust. Rare (about one per kilometre); you need a [rover](rover). Its data recorder holds a disk, experiment data and parts. |
 | Phobos | Crashed sample-return probe |
 | Deimos | Deimos ice cache |
 | Venus | Abandoned research balloon |

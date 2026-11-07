@@ -1,7 +1,7 @@
 ---
 title: Enerji
 icon: spacebreaker:combustion_generator
-items: [spacebreaker:combustion_generator, spacebreaker:solar_panel, spacebreaker:battery_bank, spacebreaker:copper_cable, spacebreaker:hv_cable]
+items: [spacebreaker:combustion_generator, spacebreaker:solar_panel, spacebreaker:battery_bank, spacebreaker:copper_cable, spacebreaker:hv_cable, spacebreaker:rtg, spacebreaker:rtg_fuel_pellet]
 ---
 Bütün makineler **FE** (enerji) ile çalışır. Üretim ve tüketim "FE/t" ile, yani her oyun tikinde (saniyede 20 tik) ölçülür.
 
@@ -39,4 +39,6 @@ Bütün makineler **FE** (enerji) ile çalışır. Üretim ve tüketim "FE/t" il
 | Titan | 35 dk | %1,1 | 100 | 0,4 |
 | Plüton | 22 dk | %0,06 | ~1000 | 0,3 |
 
->! Europa ve ötesinde güneş paneli pratik değildir: Güneş çok uzaktır. Oralarda bir **radyoizotop jeneratörü (RTG)** kullan; tek bir RTG dört tane 10 FE/t'lik yükü taşır.
+>! Europa ve ötesinde güneş paneli pratik değildir: Güneş çok uzaktır. Oralarda bir {item spacebreaker:rtg} kullan ({tech spacebreaker:radioisotope_power}); tek bir RTG dört tane 10 FE/t'lik yükü taşır ve {item spacebreaker:rtg_fuel_pellet} ile çalışır.
+
+{recipe? spacebreaker:rtg}

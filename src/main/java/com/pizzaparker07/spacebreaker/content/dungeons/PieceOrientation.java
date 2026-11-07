@@ -94,7 +94,9 @@ public final class PieceOrientation {
         if (!box.isInside(pos)) {
             return null;
         }
-        level.setBlock(pos, transform(piece, state), Block.UPDATE_CLIENTS);
+        // no shape updates, as in world generation: a wall sign or lever must not drop because its wall cell is
+        // briefly air while a neighbouring chunk is built (matters when a piece is placed in a live world, e.g. tests)
+        level.setBlock(pos, transform(piece, state), Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE);
         return pos;
     }
 

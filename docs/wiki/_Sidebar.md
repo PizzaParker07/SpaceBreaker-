@@ -36,6 +36,7 @@
 - [Üssün Havası](base_air)
 - [Düşük Yerçekiminde Hareket](eva_mobility)
 - [Tehlikeler](hazards)
+- [Gezici](rover)
 
 **Roketçilik**
 
@@ -44,6 +45,8 @@
 - [Fırlatma Rampası](launch_pad)
 - [İlk Uçuşun](first_flight)
 - [Uçuş ve Yön Bulma](navigation)
+- [Uydular ve Sondalar](probes)
+- [Uzay İstasyonu](space_station)
 
 **Dünyalar**
 
@@ -67,6 +70,7 @@
 - [Kallisto](callisto)
 - [Titan](titan)
 - [Enceladus](enceladus)
+- [Miranda](miranda)
 - [Triton](triton)
 - [Plüton](pluto)
 - [Charon](charon)

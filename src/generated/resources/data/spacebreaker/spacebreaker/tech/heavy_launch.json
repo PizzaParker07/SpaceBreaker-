@@ -8,5 +8,8 @@
   "samples": [
     "spacebreaker:orbital_flight"
   ],
-  "tier": 2
+  "tier": 2,
+  "unlocks": [
+    "spacebreaker:crew_capsule_large"
+  ]
 }

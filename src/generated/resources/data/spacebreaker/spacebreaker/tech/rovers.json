@@ -1,6 +1,6 @@
 {
   "category": "exploration",
-  "icon": "minecraft:minecart",
+  "icon": "spacebreaker:rover",
   "requires": [
     "spacebreaker:lunar_surveying",
     "spacebreaker:electronics"
@@ -9,5 +9,8 @@
     "spacebreaker:moon",
     "spacebreaker:probe_landing"
   ],
-  "tier": 2
+  "tier": 2,
+  "unlocks": [
+    "spacebreaker:rover"
+  ]
 }

@@ -20,6 +20,9 @@ Hava yok ve güneş evdekinden neredeyse **üç kat** büyük.
 - **Oyuklar**: uçucu minerallerin buharlaştığı parlak, genç çukurlar.
 - **Koyu kayalar** grafitçe zengindir.
 
+> [!TIP]
+> **Ulaşmak:** hidroloks motorlarıyla Merkür yörüngesine gidip dönebilirsin; yüzeye inip kalkmak için şimdilik yetmez. → [Roket Parçaları](rocket_parts)
+
 **Grafit Cevheri** · **Grafit**
 
 Kutuplara yakın kraterler güneşi hiç görmez ve **Merkür Kutup Buzu** saklar. Eritince su, sudan hidrojen ve oksijen elde edersin.
@@ -58,9 +61,12 @@ No air, and a sun almost **three times** as wide as at home.
 - **Hollows**: bright young pits where volatile minerals boil away.
 - **Dark rock** is rich in graphite.
 
+> [!TIP]
+> **Getting there:** hydrolox engines can take you to Mercury orbit and back; landing and taking off again is still out of reach. → [Rocket Parts](rocket_parts)
+
 **Graphite Ore** · **Graphite**
 
-Craters near the poles never see the sun and keep **Mercury polar ice**. Melt it for water, then split the water into hydrogen and oxygen.
+Craters near the poles never see the sun and keep **Mercurian Polar Ice**. Melt it for water, then split the water into hydrogen and oxygen.
 
 > [!TIP]
 > **Fuel on Mercury:** graphite + oxygen → CO₂ (chemical reactor); CO₂ + hydrogen → methane (Sabatier reactor). That tops up methalox fuel on the spot. → [In-Situ Resources](isru)

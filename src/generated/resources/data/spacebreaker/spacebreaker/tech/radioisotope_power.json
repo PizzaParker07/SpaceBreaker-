@@ -1,0 +1,15 @@
+{
+  "category": "industry",
+  "icon": "spacebreaker:rtg",
+  "requires": [
+    "spacebreaker:advanced_electronics"
+  ],
+  "samples": [
+    "spacebreaker:europa"
+  ],
+  "tier": 2,
+  "unlocks": [
+    "spacebreaker:rtg",
+    "spacebreaker:rtg_fuel_pellet"
+  ]
+}

@@ -1,10 +1,14 @@
 {
   "category": "construction",
-  "icon": "minecraft:iron_block",
+  "icon": "spacebreaker:station_hull",
   "requires": [
     "spacebreaker:metal_pressing"
   ],
   "samples": [
     "spacebreaker:earth"
+  ],
+  "unlocks": [
+    "spacebreaker:station_hull",
+    "spacebreaker:station_window"
   ]
 }

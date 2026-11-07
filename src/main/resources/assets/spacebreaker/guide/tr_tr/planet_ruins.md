@@ -7,6 +7,7 @@ research: spacebreaker:interplanetary_transfers
 |---|---|
 | Mars | Terk edilmiş araştırma istasyonu: sera, ISRU tesisi, sondaj kulesi; garaj tünelinde ok tuzağı |
 | Mars | Gömülü eski nehir yatağı ve düşmüş bir sonda |
+| Mars | **Kayıp İniş Aracı**: kırık bacağına çökmüş eski bir araç, yanında yarı gömülü ısı kalkanı ve toza serilmiş paraşüt. Seyrek (yaklaşık kilometrede bir); [gezici](rover) gerekir. Veri kaydedicisinde disk, deney verisi ve parçalar var. |
 | Phobos | Düşmüş Numune Dönüş Sondası |
 | Deimos | Deimos Buz Deposu |
 | Venüs | Terk Edilmiş Araştırma Balonu |

@@ -1380,6 +1380,8 @@
   "tech.spacebreaker.radiation_shielding.desc": "Layers of water, polyethylene and lead against solar storms and cosmic rays.",
   "tech.spacebreaker.radio_communication": "Radio Communication",
   "tech.spacebreaker.radio_communication.desc": "Antennas and transmitters to talk to spacecraft beyond the horizon.",
+  "tech.spacebreaker.radioisotope_power": "Radioisotope Power",
+  "tech.spacebreaker.radioisotope_power.desc": "Plutonium-238 decay heat turned into power: steady electricity where the Sun is too weak.",
   "tech.spacebreaker.regolith_sintering": "Regolith Sintering",
   "tech.spacebreaker.regolith_sintering.desc": "Bake lunar dust into hard bricks: radiation shielding you do not have to launch.",
   "tech.spacebreaker.rovers": "Rovers",

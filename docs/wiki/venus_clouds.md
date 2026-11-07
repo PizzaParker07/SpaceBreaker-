@@ -44,7 +44,7 @@ Hafif kompozit paneller ve aerojel, solunabilir hava katmanında yüzen platform
 **Creature:** Cloud Jelly
 
 ### Cloud Jelly
-Drifts on sacs of light gas and sieves sulfur from the air. Harmless. It drops a **lift gas sac**: use it to fall slowly for 30 seconds.
+Drifts on sacs of light gas and sieves sulfur from the air. Harmless. It drops a **Lift Gas Sac**: use it to fall slowly for 30 seconds.
 
 ### Acid Ray
 Glides in wide curves. Leave it alone: it **sprays acid** that eats into armour. Drops sulfur and leather.

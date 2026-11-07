@@ -1,7 +1,7 @@
 ---
 title: Roket Parçaları
 icon: spacebreaker:kerosene_engine
-items: [spacebreaker:nose_cone, spacebreaker:crew_capsule, spacebreaker:heat_shield, spacebreaker:parachute, spacebreaker:fuel_tank_small, spacebreaker:fuel_tank_medium, spacebreaker:fuel_tank_large, spacebreaker:kerosene_engine, spacebreaker:vacuum_engine, spacebreaker:methalox_engine, spacebreaker:methalox_vacuum_engine, spacebreaker:decoupler, spacebreaker:interstage, spacebreaker:fins, spacebreaker:grid_fins, spacebreaker:landing_legs, spacebreaker:rcs_thrusters]
+items: [spacebreaker:nose_cone, spacebreaker:crew_capsule, spacebreaker:heat_shield, spacebreaker:parachute, spacebreaker:fuel_tank_small, spacebreaker:fuel_tank_medium, spacebreaker:fuel_tank_large, spacebreaker:kerosene_engine, spacebreaker:vacuum_engine, spacebreaker:methalox_engine, spacebreaker:methalox_vacuum_engine, spacebreaker:hydrolox_engine, spacebreaker:hydrolox_vacuum_engine, spacebreaker:decoupler, spacebreaker:interstage, spacebreaker:fins, spacebreaker:grid_fins, spacebreaker:landing_legs, spacebreaker:rcs_thrusters]
 research: spacebreaker:basic_rocketry
 ---
 Bir roket, üst üste dizilmiş **kademelerden** ve en üstteki **yükten** oluşur.
@@ -20,7 +20,7 @@ Her kademede altta **bir motor**, üstünde **yakıt tankları** olur. Tanklar, 
 - **Vakum motoru** uzayda çok daha verimlidir: üst kademeler için.
 
 ## Motorlar ve yakıtlar
-{items spacebreaker:methalox_engine spacebreaker:methalox_vacuum_engine}
+{items spacebreaker:methalox_engine spacebreaker:methalox_vacuum_engine spacebreaker:hydrolox_engine spacebreaker:hydrolox_vacuum_engine}
 **Metaloks motorları** {tech spacebreaker:methane_engines} ile açılır. **Sıvı metan ve sıvı oksijen** yakarlar; yakıtlarını Mars'ta üretebilirsin. Isp'deki iki sayı: deniz seviyesi / vakum.
 
 | Motor | İtki | Isp | Yakıt |
@@ -29,6 +29,10 @@ Her kademede altta **bir motor**, üstünde **yakıt tankları** olur. Tanklar, 
 | Kerosen (vakum) | 190 kN | 345 s | RP-1 + LOX (1 : 2,56) |
 | Metaloks (deniz) | 600 kN | 330 / 350 s | metan + LOX (1 : 3,6) |
 | Metaloks (vakum) | 220 kN | 380 s | metan + LOX (1 : 3,6) |
+| Hidroloks (deniz) | 650 kN | 366 / 452 s | hidrojen + LOX (1 : 6) |
+| Hidroloks (vakum) | 110 kN | 465 s | hidrojen + LOX (1 : 6) |
+
+**Hidroloks motorları** {tech spacebreaker:hydrogen_engines} ile açılır. Sıvı hidrojen en verimli yakıttır ama çok **hacimlidir** (yoğunluğu suyun on dörtte biri): aynı kütle için çok daha büyük tank gerekir.
 
 Montaj tezgâhı her kademenin yakıt türünü ve Δv'sini gösterir.
 

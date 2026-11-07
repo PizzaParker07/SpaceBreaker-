@@ -160,7 +160,7 @@ public final class ResearchTree {
                 .samples(MARS)
                 .en("Methane Engines", "Clean-burning methalox engines, fuelled by propellant made on Mars itself.")
                 .tr("Metan Motorları", "Temiz yanan metan-oksijen motorları; yakıtını Mars'ta üretebilirsin.");
-        t("hydrogen_engines", PROPULSION, 2).req("vacuum_engines", "cryogenics").icon("minecraft:snowball")
+        t("hydrogen_engines", PROPULSION, 2).req("vacuum_engines", "cryogenics").icon("spacebreaker:hydrolox_engine").unlocks("hydrolox_engine", "hydrolox_vacuum_engine")
                 .samples(ORBIT)
                 .en("Hydrogen Engines", "Liquid hydrogen gives the highest chemical specific impulse, if you can keep it cold.")
                 .tr("Hidrojen Motorları", "Sıvı hidrojen en yüksek kimyasal özgül itkiyi verir; yeter ki onu soğuk tutabilesin.");
@@ -267,6 +267,10 @@ public final class ResearchTree {
                 .samples(MOON)
                 .en("In-Situ Resources", "Live off the land: oxygen from ilmenite, water from polar ice.")
                 .tr("Yerinde Kaynak Kullanımı", "Ne gerekiyorsa indiğin yerde üret: ilmenitten oksijen, kutup buzundan su.");
+        t("radioisotope_power", INDUSTRY, 2).req("advanced_electronics").icon("spacebreaker:rtg").unlocks("rtg", "rtg_fuel_pellet")
+                .samples(EUROPA)
+                .en("Radioisotope Power", "Plutonium-238 decay heat turned into power: steady electricity where the Sun is too weak.")
+                .tr("Radyoizotop Enerjisi", "Plütonyum-238'in bozunma ısısından elektrik: Güneşin zayıf kaldığı yerde kesintisiz enerji.");
         t("advanced_electronics", INDUSTRY, 2).req("electronics").icon("spacebreaker:advanced_circuit").unlocks("advanced_circuit", "silicon_wafer", "solar_cell")
                 .samples(METEORITE)
                 .en("Advanced Electronics", "Radiation-hardened processors and silicon wafers grown in clean rooms.")
@@ -292,7 +296,7 @@ public final class ResearchTree {
                 .samples(EARTH)
                 .en("Radio Communication", "Antennas and transmitters to talk to spacecraft beyond the horizon.")
                 .tr("Radyo İletişimi", "Ufkun ötesindeki uzay araçlarıyla konuşmak için antenler ve vericiler.");
-        t("satellites", ASTRONOMY, 2).req("orbital_mechanics", "radio_communication").icon("minecraft:daylight_detector")
+        t("satellites", ASTRONOMY, 2).req("orbital_mechanics", "radio_communication").icon("minecraft:daylight_detector").unlocks("observation_satellite", "comm_satellite")
                 .samples(ORBIT)
                 .en("Satellites", "Put eyes and relays in orbit: mapping, weather and communication satellites.")
                 .tr("Uydular", "Yörüngeye göz ve aktarıcı yerleştir: haritalama, hava durumu ve iletişim uyduları.");
@@ -304,8 +308,8 @@ public final class ResearchTree {
                 .samples(MOON)
                 .en("Interplanetary Transfers", "Hohmann transfers and launch windows: when to leave, and how much Δv it costs.")
                 .tr("Gezegenler Arası Transfer", "Hohmann transferleri ve fırlatma pencereleri: ne zaman yola çıkılır, kaç Δv tutar.");
-        t("space_probes", ASTRONOMY, 2).req("satellites", "interplanetary_transfers").icon("minecraft:ender_eye")
-                .samples(MARS)
+        t("space_probes", ASTRONOMY, 2).req("satellites", "interplanetary_transfers").icon("spacebreaker:space_probe").unlocks("space_probe")
+                .samples(MOON, ORBIT, MARS)
                 .en("Space Probes", "Uncrewed explorers that fly ahead and send back pictures of worlds no one has seen.")
                 .tr("Uzay Sondaları", "Önden giden ve kimsenin görmediği dünyaların görüntülerini gönderen insansız kâşifler.");
         t("gravity_assists", ASTRONOMY, 3).req("interplanetary_transfers", "space_probes").icon("minecraft:heart_of_the_sea")
@@ -323,7 +327,7 @@ public final class ResearchTree {
                 .unlocks("launch_pad", "flame_trench", "service_tower", "crew_access_arm", "fuel_umbilical", "launch_control_console")
                 .en("Launch Infrastructure", "Pad, flame trench and service tower: a safe place to light a rocket.")
                 .tr("Fırlatma Altyapısı", "Rampa, alev kanalı ve servis kulesi: bir roketi ateşlemek için güvenli bir yer.");
-        t("pressurised_modules", CONSTRUCTION, 1).req("metal_pressing").icon("minecraft:iron_block")
+        t("pressurised_modules", CONSTRUCTION, 1).req("metal_pressing").icon("spacebreaker:station_hull").unlocks("station_hull", "station_window")
                 .samples(EARTH)
                 .en("Pressurised Modules", "Sealed aluminium hulls, windows and doors that hold an atmosphere.")
                 .tr("Basınçlı Modüller", "Atmosferi içinde tutan sızdırmaz alüminyum gövdeler, pencereler ve kapılar.");
@@ -331,11 +335,11 @@ public final class ResearchTree {
                 .unlocks("sintered_regolith_bricks").samples(MOON)
                 .en("Regolith Sintering", "Bake lunar dust into hard bricks: radiation shielding you do not have to launch.")
                 .tr("Regolit Sinterleme", "Ay tozunu sert tuğlalara pişir: fırlatman gerekmeyen radyasyon kalkanı.");
-        t("heavy_launch", CONSTRUCTION, 2).req("launch_infrastructure", "staging").icon("spacebreaker:service_tower")
+        t("heavy_launch", CONSTRUCTION, 2).req("launch_infrastructure", "staging").icon("spacebreaker:service_tower").unlocks("crew_capsule_large")
                 .samples(ORBIT)
                 .en("Heavy Launch", "Reinforced pads and bigger towers for super-heavy, three-stage rockets.")
                 .tr("Ağır Fırlatma", "Süper ağır, üç kademeli roketler için güçlendirilmiş rampalar ve daha büyük kuleler.");
-        t("space_stations", CONSTRUCTION, 2).req("pressurised_modules", "orbital_mechanics").icon("minecraft:end_rod")
+        t("space_stations", CONSTRUCTION, 2).req("pressurised_modules", "orbital_mechanics").icon("spacebreaker:docking_port").unlocks("station_kit", "docking_port")
                 .samples(ORBIT)
                 .en("Space Stations", "Dock modules together in orbit: a home, a workshop and a fuel depot above the sky.")
                 .tr("Uzay İstasyonları", "Modülleri yörüngede birleştir: gökyüzünün üstünde bir ev, atölye ve yakıt deposu.");
@@ -356,7 +360,7 @@ public final class ResearchTree {
                 .samples(MOON)
                 .en("Lunar Surveying", "Map the maria and highlands; find ilmenite, ice and the safest landing sites.")
                 .tr("Ay Araştırması", "Denizleri ve yaylaları haritala; ilmeniti, buzu ve en güvenli iniş yerlerini bul.");
-        t("rovers", EXPLORATION, 2).req("lunar_surveying", "electronics").icon("minecraft:minecart")
+        t("rovers", EXPLORATION, 2).req("lunar_surveying", "electronics").icon("spacebreaker:rover").unlocks("rover")
                 .samples(MOON, PROBE_LANDING)
                 .en("Rovers", "Electric vehicles with wire-mesh wheels for driving across dusty plains.")
                 .tr("Gezici Araçlar", "Tozlu ovalarda sürmek için tel örgü tekerlekli elektrikli araçlar.");

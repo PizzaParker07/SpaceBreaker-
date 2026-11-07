@@ -2,6 +2,14 @@
 
 Büyük yapıları kurarken nereye ne koyacağını gösterir: yapı, dünyada **yarı saydam bir hologram** olarak belirir.
 
+|   |   |   |
+|---|---|---|
+|   | Ametist Parçası |   |
+| Redstone Tozu | #c:glass_panes | Redstone Tozu |
+| Demir Külçesi | Bakır Külçesi | Demir Külçesi |
+
+→ **Hologram Projektörü** (Çalışma Masası)
+
 ### Kullanım
 1. Projektör elindeyken `Sağ Tık`: **plan listesi** açılır. Bir yapı seç.
 2. Bir bloğa bakıp `Sağ Tık`: hologram o bloğun yanına yerleşir.
@@ -22,6 +30,14 @@ Eksik ya da yanlış bloklar hologramda görünmeye devam eder. Yapı tamamlanı
 <summary>English: Hologram Projector</summary>
 
 Shows where everything goes when you build a large structure: it appears in the world as a **see-through hologram**.
+
+|   |   |   |
+|---|---|---|
+|   | Amethyst Shard |   |
+| Redstone Dust | #c:glass_panes | Redstone Dust |
+| Iron Ingot | Copper Ingot | Iron Ingot |
+
+→ **Hologram Projector** (Crafting Table)
 
 ### How to use it
 1. `Right Click` with the projector in hand: the **blueprint list** opens. Pick a structure.

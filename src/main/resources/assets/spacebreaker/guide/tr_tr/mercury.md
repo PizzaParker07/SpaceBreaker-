@@ -1,7 +1,7 @@
 ---
 title: Merkür
 icon: spacebreaker:mercurian_crust
-items: [spacebreaker:mercury_regolith, spacebreaker:mercurian_crust, spacebreaker:low_reflectance_rock, spacebreaker:hollow_deposit, spacebreaker:graphite_ore, spacebreaker:graphite, spacebreaker:terminator_crawler_spawn_egg]
+items: [spacebreaker:mercury_regolith, spacebreaker:mercurian_crust, spacebreaker:low_reflectance_rock, spacebreaker:hollow_deposit, spacebreaker:graphite_ore, spacebreaker:graphite, spacebreaker:mercury_ice, spacebreaker:terminator_crawler_spawn_egg]
 research: spacebreaker:interplanetary_transfers
 ---
 Hava yok ve güneş evdekinden neredeyse **üç kat** büyük.
@@ -19,9 +19,11 @@ Hava yok ve güneş evdekinden neredeyse **üç kat** büyük.
 - **Oyuklar**: uçucu minerallerin buharlaştığı parlak, genç çukurlar.
 - **Koyu kayalar** grafitçe zengindir.
 
+> **Ulaşmak:** hidroloks motorlarıyla Merkür yörüngesine gidip dönebilirsin; yüzeye inip kalkmak için şimdilik yetmez. → [Roket Parçaları](rocket_parts)
+
 {page}
 {items spacebreaker:graphite_ore spacebreaker:graphite}
-Kutuplara yakın kraterler güneşi hiç görmez ve **Merkür Kutup Buzu** saklar. Eritince su, sudan hidrojen ve oksijen elde edersin.
+Kutuplara yakın kraterler güneşi hiç görmez ve {item spacebreaker:mercury_ice} saklar. Eritince su, sudan hidrojen ve oksijen elde edersin.
 
 > **Merkür'de yakıt:** grafit + oksijen → CO₂ (kimyasal reaktör); CO₂ + hidrojen → metan (Sabatier reaktörü). Böylece metaloks yakıtını yerinde tamamlarsın. → [Yerinde Üretim](isru)
 

@@ -1,7 +1,7 @@
 ---
 title: Power
 icon: spacebreaker:combustion_generator
-items: [spacebreaker:combustion_generator, spacebreaker:solar_panel, spacebreaker:battery_bank, spacebreaker:copper_cable, spacebreaker:hv_cable]
+items: [spacebreaker:combustion_generator, spacebreaker:solar_panel, spacebreaker:battery_bank, spacebreaker:copper_cable, spacebreaker:hv_cable, spacebreaker:rtg, spacebreaker:rtg_fuel_pellet]
 ---
 Every machine runs on **FE** (energy). Production and use are measured in "FE/t": per game tick (20 ticks per second).
 
@@ -39,4 +39,6 @@ For a steady 10 FE/t load (a panel gives at most 20 FE/t at noon, a battery bank
 | Titan | 35 min | 1.1% | 100 | 0.4 |
 | Pluto | 22 min | 0.06% | ~1000 | 0.3 |
 
->! From Europa outwards solar panels are not practical: the Sun is too far. Use a **radioisotope generator (RTG)** there; one RTG carries four 10 FE/t loads.
+>! From Europa outwards solar panels are not practical: the Sun is too far. Use an {item spacebreaker:rtg} there ({tech spacebreaker:radioisotope_power}); one RTG carries four 10 FE/t loads and runs on {item spacebreaker:rtg_fuel_pellet}.
+
+{recipe? spacebreaker:rtg}

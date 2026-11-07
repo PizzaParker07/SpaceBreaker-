@@ -1,12 +1,17 @@
 {
   "category": "astronomy",
-  "icon": "minecraft:ender_eye",
+  "icon": "spacebreaker:space_probe",
   "requires": [
     "spacebreaker:satellites",
     "spacebreaker:interplanetary_transfers"
   ],
   "samples": [
+    "spacebreaker:moon",
+    "spacebreaker:orbital_flight",
     "spacebreaker:mars"
   ],
-  "tier": 2
+  "tier": 2,
+  "unlocks": [
+    "spacebreaker:space_probe"
+  ]
 }

@@ -2,7 +2,7 @@
 
 *İlgili araştırma: Gezegenler Arası Transfer*
 
-**Plüton Kırağısı** · **Azot Buzu** · **Kızıl Tolin Regoliti** · **Metan Kırağısı** · **Plüton Ana Kaya Buzu** · **Plüton Tolin Yatağı**
+**Plüton Kırağısı** · **Azot Buzu** · **Lekeli Azot Buzu** · **Kızıl Tolin Regoliti** · **Metan Kırağısı** · **Plüton Ana Kaya Buzu** · **Plüton Tolin Yatağı**
 
 Yumuşak azot buzundan, kalp biçimli dev bir ova: düz hücreler hâlinde yavaşça döner, aralarındaki oluklarda koyu lekeli buz vardır. Kıyısında su buzu dağları, ekvatorda koyu kızıl tolin ovaları. Charon kara gökte hiç kıpırdamaz; ufkun hemen üstünde ince, mavi bir pus parlar.
 
@@ -18,7 +18,7 @@ Düşmüş bir iniş aracı şunu öğretir: *Azot Buzulbilimi*.
 
 *Related research: Interplanetary Transfers*
 
-**Plutonian Frost** · **Nitrogen Ice** · **Red Tholin Regolith** · **Methane Frost** · **Plutonian Bedrock Ice** · **Plutonian Tholin Deposit**
+**Plutonian Frost** · **Nitrogen Ice** · **Stained Nitrogen Ice** · **Red Tholin Regolith** · **Methane Frost** · **Plutonian Bedrock Ice** · **Plutonian Tholin Deposit**
 
 A vast heart-shaped plain of soft nitrogen ice, slowly turning over in flat cells with dark stained ice in the troughs; mountains of water ice on its shore; dark red tholin lowlands along the equator. Charon hangs still in the black sky and a thin blue haze glows just above the horizon.
 

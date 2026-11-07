@@ -1380,6 +1380,8 @@
   "tech.spacebreaker.radiation_shielding.desc": "Güneş fırtınalarına ve kozmik ışınlara karşı su, polietilen ve kurşun katmanları.",
   "tech.spacebreaker.radio_communication": "Radyo İletişimi",
   "tech.spacebreaker.radio_communication.desc": "Ufkun ötesindeki uzay araçlarıyla konuşmak için antenler ve vericiler.",
+  "tech.spacebreaker.radioisotope_power": "Radyoizotop Enerjisi",
+  "tech.spacebreaker.radioisotope_power.desc": "Plütonyum-238'in bozunma ısısından elektrik: Güneşin zayıf kaldığı yerde kesintisiz enerji.",
   "tech.spacebreaker.regolith_sintering": "Regolit Sinterleme",
   "tech.spacebreaker.regolith_sintering.desc": "Ay tozunu sert tuğlalara pişir: fırlatman gerekmeyen radyasyon kalkanı.",
   "tech.spacebreaker.rovers": "Gezici Araçlar",

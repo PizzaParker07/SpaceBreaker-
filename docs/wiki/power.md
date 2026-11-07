@@ -43,7 +43,15 @@ Bütün makineler **FE** (enerji) ile çalışır. Üretim ve tüketim "FE/t" il
 | Plüton | 22 dk | %0,06 | ~1000 | 0,3 |
 
 > [!WARNING]
-> Europa ve ötesinde güneş paneli pratik değildir: Güneş çok uzaktır. Oralarda bir **radyoizotop jeneratörü (RTG)** kullan; tek bir RTG dört tane 10 FE/t'lik yükü taşır.
+> Europa ve ötesinde güneş paneli pratik değildir: Güneş çok uzaktır. Oralarda bir **Radyoizotop Jeneratör (RTG)** kullan (*Radyoizotop Enerjisi*); tek bir RTG dört tane 10 FE/t'lik yükü taşır ve **RTG Yakıt Peleti** ile çalışır.
+
+|   |   |   |
+|---|---|---|
+| Alüminyum Levha | Tungsten Levha | Alüminyum Levha |
+| Silisyum Plaka | Gelişmiş Devre Kartı | Silisyum Plaka |
+| Alüminyum Levha | Tungsten Levha | Alüminyum Levha |
+
+→ **Radyoizotop Jeneratör (RTG)** (Çalışma Masası)
 
 <details>
 <summary>English: Power</summary>
@@ -91,6 +99,14 @@ For a steady 10 FE/t load (a panel gives at most 20 FE/t at noon, a battery bank
 | Pluto | 22 min | 0.06% | ~1000 | 0.3 |
 
 > [!WARNING]
-> From Europa outwards solar panels are not practical: the Sun is too far. Use a **radioisotope generator (RTG)** there; one RTG carries four 10 FE/t loads.
+> From Europa outwards solar panels are not practical: the Sun is too far. Use an **Radioisotope Generator (RTG)** there (*Radioisotope Power*); one RTG carries four 10 FE/t loads and runs on **RTG Fuel Pellet**.
+
+|   |   |   |
+|---|---|---|
+| Aluminum Plate | Tungsten Plate | Aluminum Plate |
+| Silicon Wafer | Advanced Circuit | Silicon Wafer |
+| Aluminum Plate | Tungsten Plate | Aluminum Plate |
+
+→ **Radioisotope Generator (RTG)** (Crafting Table)
 
 </details>
