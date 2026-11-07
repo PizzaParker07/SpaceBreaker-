@@ -353,6 +353,33 @@ def hydrolox_vacuum_engine():
     return cv
 
 
+def nuclear_thermal_engine():
+    cv = new_sheet()
+    thrust_structure(cv, 28, 32, 171)
+    bell(cv, 25, 28, lambda y: 11, NIOBIUM, 1, 4, 172)                   # tungsten shadow shield
+    bell(cv, 15, 25, lambda y: 9, WHITE, 3, 7, 173)                      # reactor vessel under white insulation
+    for y in (16, 24):
+        ring(cv, SIDE, y, 9, NIOBIUM, 2, 4)
+    for y in range(19, 22):                                              # yellow-black radiation band
+        for c in range(32):
+            if radius_at(c, 9):
+                put_side(cv, SIDE, c, y, HAZARD[3] if (c // 3) % 2 else CARBON[2])
+    bell(cv, 13, 15, lambda y: 5, STEEL, 2, 5, 174)
+    radii = {}
+    for y0, y1, r in [(11, 13, 3), (8, 11, 6), (4, 8, 9), (0, 4, 12)]:
+        for y in range(y0, y1):
+            radii[y] = r
+    bell(cv, 0, 13, lambda y: radii[y], NIOBIUM, 2, 6, 175, lip=NIOBIUM)   # radiatively cooled bell
+    for y in range(1, 11):
+        for c in range(0, 32, 4):
+            if radius_at(c, radii[y]):
+                put_side(cv, SIDE, c, y, NIOBIUM[1])
+    turbopump(cv, (20, 24), 176)
+    engine_top(cv, TOP, 177)
+    nozzle_exit(cv, BOTTOM, 12, 3)
+    return cv
+
+
 PANEL = ramp('#0b1430', '#13214a', '#1c3166', '#2a4682', '#4a6aa8', '#8aa6d8')
 
 
@@ -1186,6 +1213,25 @@ def icons():
         ".....oFFffo.....",
     ], {'o': w[0], 'W': w[7], 'w': w[5], 'g': w[3], 'K': k[4], 'k': k[2], 'V': k[2], 'A': w[5], 'a': w[3],
         'S': w[3], 's': k[2], 'C': COPPER[5], 'c': k[2], 'F': (232, 170, 70), 'f': (204, 106, 44)})
+    out['nuclear_thermal_engine'] = grid_icon([
+        "..oooooooooooo..",
+        ".oKKKKKKKKKKkko.",
+        "..oNNNNNNNNNno..",
+        "....oWWWWwwo....",
+        "....oWWWWwwo....",
+        "....oYkYkYko....",
+        "....oWWWWwwo....",
+        "......oSso......",
+        "......nNno......",
+        ".....nNNnno.....",
+        ".....NNnnno.....",
+        "....nNNnnnno....",
+        "...nNNnnnnnno...",
+        "...NNnnnnnnnno..",
+        "......cCcc......",
+        "................",
+    ], {'o': k[0], 'K': k[4], 'k': k[2], 'N': NIOBIUM[5], 'n': NIOBIUM[3], 'W': w[6], 'w': w[4], 'Y': HAZARD[3],
+        'S': NIOBIUM[5], 's': NIOBIUM[3], 'c': k[2], 'C': (150, 200, 255)})
     return out
 
 
@@ -1199,6 +1245,7 @@ SHEETS = {
     'methalox_vacuum_engine': methalox_vacuum_engine,
     'hydrolox_engine': hydrolox_engine,
     'hydrolox_vacuum_engine': hydrolox_vacuum_engine,
+    'nuclear_thermal_engine': nuclear_thermal_engine,
     'comm_satellite': comm_satellite,
     'observation_satellite': observation_satellite,
     'space_probe': space_probe,

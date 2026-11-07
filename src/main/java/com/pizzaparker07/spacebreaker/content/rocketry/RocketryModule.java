@@ -89,7 +89,12 @@ public final class RocketryModule implements SbModule {
     public static final DeferredItem<RocketPartItem> METHALOX_VACUUM_ENGINE = part("methalox_vacuum_engine");
     public static final DeferredItem<RocketPartItem> HYDROLOX_ENGINE = part("hydrolox_engine");
     public static final DeferredItem<RocketPartItem> HYDROLOX_VACUUM_ENGINE = part("hydrolox_vacuum_engine");
+    /** Nuclear thermal engine: a fission reactor heats liquid hydrogen; vacuum only, very efficient, radioactive while it burns. */
+    public static final DeferredItem<RocketPartItem> NUCLEAR_THERMAL_ENGINE = part("nuclear_thermal_engine");
     public static final DeferredItem<RocketPartItem> CREW_CAPSULE_LARGE = part("crew_capsule_large");
+    /** Reactor fuel for nuclear thermal engines (industry's fuel elements join this tag). */
+    public static final net.minecraft.tags.TagKey<Item> REACTOR_FUEL = net.minecraft.tags.TagKey.create(
+            net.minecraft.core.registries.Registries.ITEM, com.pizzaparker07.spacebreaker.Spacebreaker.id("reactor_fuel"));
     public static final DeferredItem<RocketPartItem> COMM_SATELLITE = part("comm_satellite");
     public static final DeferredItem<RocketPartItem> OBSERVATION_SATELLITE = part("observation_satellite");
     public static final DeferredItem<RocketPartItem> SPACE_PROBE = part("space_probe");
@@ -242,6 +247,8 @@ public final class RocketryModule implements SbModule {
         NeoForge.EVENT_BUS.addListener(RocketryModule::onMount);
         // the crew capsule is pressurised: seated crew breathe without a suit (in orbit and on the way)
         com.pizzaparker07.spacebreaker.core.env.Environment.addOxygenSource(RocketEntity::cabinAir);
+        com.pizzaparker07.spacebreaker.core.env.Environment.addRadiationSource(
+                com.pizzaparker07.spacebreaker.content.rocketry.entity.NuclearExhaust::doseMsvDay);
         // night in orbit: stations pass through their planet's shadow; every Environment.solarFactor user (solar
         // panels, arrays, rovers) feels it. This is the single source: machines must not multiply by it again.
         com.pizzaparker07.spacebreaker.core.env.Environment.addSunlightModifier(
@@ -394,6 +401,8 @@ public final class RocketryModule implements SbModule {
             }
         }
         tags.block(com.pizzaparker07.spacebreaker.content.suit.SuitModule.LEAKY, com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.GRATE.get());
+        // until industry's own fuel element arrives, enriched pellets stand in as reactor fuel
+        tags.item(REACTOR_FUEL, com.pizzaparker07.spacebreaker.content.machines.MachinesModule.RTG_FUEL_PELLET.get());
         tags.block(BlockTags.CLIMBABLE, com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.STEEL_LADDER.get());
         tags.block(BlockTags.SLABS, com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.GRATE_PLATFORM.get());
         // the sliding door holds air while shut (the airtight tag honours its OPEN property)

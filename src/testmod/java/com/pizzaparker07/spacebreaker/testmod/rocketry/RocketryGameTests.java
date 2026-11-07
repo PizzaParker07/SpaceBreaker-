@@ -362,6 +362,79 @@ public final class RocketryGameTests {
         helper.succeed();
     }
 
+    /** Hydrolox first stage, nuclear thermal (or hydrolox vacuum) upper stage, crew capsule. */
+    private static RocketDesign nuclearRocket(String upperEngine) {
+        return new RocketDesign(List.of(Spacebreaker.id("hydrolox_engine"), Spacebreaker.id("fuel_tank_large"), Spacebreaker.id("fuel_tank_large"),
+                Spacebreaker.id("fuel_tank_large"), Spacebreaker.id("interstage"), Spacebreaker.id(upperEngine), Spacebreaker.id("fuel_tank_large"),
+                Spacebreaker.id("fuel_tank_large"), Spacebreaker.id("heat_shield"), Spacebreaker.id("crew_capsule"), Spacebreaker.id("parachute")));
+    }
+
+    @GameTest(template = EMPTY)
+    public static void nuclearThermalEngine(GameTestHelper helper) {
+        var NUCLEAR = com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant.NUCLEAR;
+        var lookup = RocketParts.lookup(helper.getLevel().registryAccess());
+        RocketLayout ntr = RocketLayout.of(nuclearRocket("nuclear_thermal_engine"), lookup);
+        RocketLayout chem = RocketLayout.of(nuclearRocket("hydrolox_vacuum_engine"), lookup);
+        helper.assertTrue(ntr.problems().isEmpty(), "valid design: " + ntr.problems());
+        RocketLayout.Stage upper = ntr.stages().get(1);
+        helper.assertTrue(upper.propellant() == NUCLEAR, "the upper stage burns hydrogen through the reactor");
+        helper.assertTrue(within(upper.ispVacuum(), 880, 1), "Isp 880 s in vacuum, got " + upper.ispVacuum());
+        helper.assertTrue(upper.ispVacuum() > 1.8 * chem.stages().get(1).ispVacuum(), "close to twice any chemical engine");
+        double dvNtr = RocketMath.stageDeltaV(ntr, 1, ntr.fullFuel(), 0);
+        double dvChem = RocketMath.stageDeltaV(chem, 1, chem.fullFuel(), 0);
+        helper.assertTrue(dvNtr > 1.3 * dvChem, "the same tanks give far more Δv: " + (int) dvNtr + " vs " + (int) dvChem + " m/s");
+        // weak thrust: it cannot lift its own fully fuelled stage off the Earth
+        double m0 = upper.dryKg() + upper.propellantKg() + ntr.payload().massKg();
+        helper.assertTrue(upper.thrustKn() * 1000 / (m0 * RocketPart.G0) < 1, "TWR below 1 on Earth: not a launch engine");
+        // hydrogen alone fills it: no oxygen for the nuclear stage
+        RocketEntity rocket = RocketEntity.create(helper.getLevel(), nuclearRocket("nuclear_thermal_engine"),
+                helper.absoluteVec(new net.minecraft.world.phys.Vec3(1.5, 2, 1.5)), 0F);
+        helper.getLevel().addFreshEntity(rocket);
+        var HYDROLOX = com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant.HYDROLOX;
+        int h2Room = rocket.roomFor(HYDROLOX);
+        int loxRoom = rocket.roomFor((com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant) null);
+        RocketLayout.Stage first = ntr.stages().get(0);
+        helper.assertTrue(within(h2Room, HYDROLOX.fuelMillibuckets(first.propellantKg()) + NUCLEAR.fuelMillibuckets(upper.propellantKg()), 3),
+                "hydrogen room covers both stages: " + h2Room);
+        helper.assertTrue(within(loxRoom, HYDROLOX.loxMillibuckets(first.propellantKg()), 3), "oxygen room only for the hydrolox stage: " + loxRoom);
+        var handler = new com.pizzaparker07.spacebreaker.content.rocketry.entity.RocketFluidHandler(rocket);
+        var exec = net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
+        handler.fill(com.pizzaparker07.spacebreaker.content.fluids.FluidsModule.LIQUID_HYDROGEN.stack(h2Room), exec);
+        helper.assertTrue(within(rocket.fuel()[1], upper.propellantKg(), 1), "hydrogen alone fills the nuclear stage");
+        handler.fill(com.pizzaparker07.spacebreaker.content.fluids.FluidsModule.LIQUID_OXYGEN.stack(loxRoom), exec);
+        helper.assertTrue(rocket.fullyFuelled(), "fully fuelled: " + java.util.Arrays.toString(rocket.fuel()));
+        rocket.discard();
+        helper.succeed();
+    }
+
+    @GameTest(template = EMPTY)
+    public static void nuclearEngineRadiation(GameTestHelper helper) {
+        var level = helper.getLevel();
+        RocketEntity rocket = RocketEntity.create(level, nuclearRocket("nuclear_thermal_engine"),
+                helper.absoluteVec(new net.minecraft.world.phys.Vec3(4.5, 2, 4.5)), 0F);
+        rocket.setNoGravity(true);
+        level.addFreshEntity(rocket);
+        BlockPos base = BlockPos.containing(rocket.position());
+        BlockPos side = base.east(3), above = base.above(12), far = base.east(40);
+        java.util.function.Function<BlockPos, Double> dose = p ->
+                com.pizzaparker07.spacebreaker.content.rocketry.entity.NuclearExhaust.doseMsvDay(level, p);
+        helper.assertTrue(dose.apply(side) == 0, "a cold reactor is safe");
+        rocket.stageScene(FlightState.COUNTDOWN, 0, 0, true);
+        helper.assertTrue(dose.apply(side) == 0, "the chemical first stage burning gives no dose");
+        rocket.stageScene(FlightState.COUNTDOWN, 0, 1, true);
+        double beside = dose.apply(side);
+        helper.assertTrue(beside > 10_000, "standing next to a burning reactor is dangerous: " + (int) beside + " mSv/day");
+        helper.assertTrue(dose.apply(far) < beside / 100, "it falls off with distance");
+        double crew = dose.apply(above);
+        helper.assertTrue(crew < 50, "the shadow shield protects the crew above: " + crew + " mSv/day");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.core.env.Environment.radiation(level, side) >= beside,
+                "the suit's radiation model sees it");
+        rocket.stageScene(FlightState.COUNTDOWN, 0, 1, false);
+        helper.assertTrue(dose.apply(side) == 0, "shut down, the dose stops");
+        rocket.discard();
+        helper.succeed();
+    }
+
     @GameTest(template = EMPTY)
     public static void fuelWithMethaneAndOxygen(GameTestHelper helper) {
         RocketEntity rocket = RocketEntity.create(helper.getLevel(), marsReturnRocket("methalox_engine", "methalox_vacuum_engine"),

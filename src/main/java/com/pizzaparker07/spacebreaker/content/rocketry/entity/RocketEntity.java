@@ -787,7 +787,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
     private double buffer(Propellant p) {
         return switch (p) {
             case METHALOX -> ch4Kg;
-            case HYDROLOX -> h2Kg;
+            case HYDROLOX, NUCLEAR -> h2Kg;
             default -> rp1Kg;
         };
     }
@@ -795,7 +795,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
     private void addBuffer(Propellant p, double kg) {
         switch (p) {
             case METHALOX -> ch4Kg += kg;
-            case HYDROLOX -> h2Kg += kg;
+            case HYDROLOX, NUCLEAR -> h2Kg += kg;
             default -> rp1Kg += kg;
         }
     }
@@ -816,8 +816,8 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
             double space = s.propellantKg() - this.fuel[i];
             if (fuel == null) {
                 roomKg += space * (1 - s.propellant().fuelFraction());
-            } else if (s.propellant() == fuel) {
-                roomKg += space * fuel.fuelFraction();
+            } else if (s.propellant().takes(fuel)) {
+                roomKg += space * s.propellant().fuelFraction();
             }
         }
         double density = fuel == null ? Propellant.LOX_DENSITY : fuel.fuelDensity();
@@ -836,7 +836,8 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
             RocketLayout.Stage s = l.stages().get(i);
             Propellant p = s.propellant();
             double f = p.fuelFraction();
-            double pairs = Math.min(buffer(p) / f, loxKg / (1 - f));
+            // a nuclear stage burns hydrogen alone: nothing to pair with oxygen
+            double pairs = p.needsOxygen() ? Math.min(buffer(p) / f, loxKg / (1 - f)) : buffer(p);
             double add = Math.min(s.propellantKg() - this.fuel[i], pairs);
             if (add <= 1e-9) {
                 continue;

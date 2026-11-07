@@ -214,6 +214,21 @@ def hydrolox_vacuum_engine():
     return els
 
 
+def nuclear_thermal_engine():
+    """Nuclear thermal engine: shadow shield under the mount, a squat reactor vessel, then a long hydrogen bell."""
+    els = []
+    els += prism(28, 32, 16)                              # mount ring
+    els += prism(25, 28, 11, top=False)                   # tungsten shadow shield
+    els += prism(15, 25, 9, top=False, bottom=False)      # reactor pressure vessel
+    els += prism(13, 15, 5, top=False, bottom=False)      # plenum
+    els += prism(11, 13, 3, top=False, bottom=False)      # throat
+    els += prism(8, 11, 6, top=False, bottom=False)
+    els += prism(4, 8, 9, top=False, bottom=False)
+    els += prism(0, 4, 12, top=False)
+    els.append(box([12, 17, 6], [15, 25, 9], region='aux'))   # hydrogen turbopump and feed line
+    return els
+
+
 def _wings(y0, y1):
     """Two solar panel wings on short booms (aux view), spanning the full two-block width."""
     return [
@@ -378,6 +393,7 @@ PARTS = {
     'methalox_vacuum_engine': (methalox_vacuum_engine, False),
     'hydrolox_engine': (hydrolox_engine, False),
     'hydrolox_vacuum_engine': (hydrolox_vacuum_engine, False),
+    'nuclear_thermal_engine': (nuclear_thermal_engine, False),
     'comm_satellite': (comm_satellite, False),
     'observation_satellite': (observation_satellite, False),
     'space_probe': (space_probe, False),
