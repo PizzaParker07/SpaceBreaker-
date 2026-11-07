@@ -27,6 +27,8 @@ final class RocketryLang {
         l.add("propellant.spacebreaker.hydrolox", "Hydrogen/LOX", "Hidrojen/LOX");
         l.add("propellant.spacebreaker.nuclear", "Hydrogen (nuclear thermal)", "Hidrojen (nükleer termal)");
         l.item(RocketryModule.NUCLEAR_THERMAL_ENGINE, "Nuclear Thermal Engine (Vacuum)", "Nükleer Termal Motor (Vakum)");
+        l.add("tooltip.spacebreaker.part.hydrogen_note", "Real liquid hydrogen is very bulky; in the game a tank's capacity counts as mass, whatever it holds",
+                "Gerçekte sıvı hidrojen çok hacimlidir; oyunda tank kapasitesi, içinde ne olursa olsun kütle olarak sayılır");
         l.add("tooltip.spacebreaker.part.propellant_nuclear", "In a nuclear thermal stage: LH2 %s mB, no LOX", "Nükleer termal kademede: LH2 %s mB, LOX yok");
         l.add("tooltip.spacebreaker.part.nuclear", "Radioactive while it burns: keep clear of the engine. Safe when cold; the crew rides behind a shadow shield",
                 "Yanarken radyasyon yayar: motordan uzak dur. Soğukken güvenlidir; mürettebat gölge kalkanının arkasında kalır");

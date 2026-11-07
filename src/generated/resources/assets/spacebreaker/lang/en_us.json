@@ -1907,6 +1907,7 @@
   "tooltip.spacebreaker.part.heat_shield": "Mount under the capsule",
   "tooltip.spacebreaker.part.heat_shield.1": "Heat shield: rated for reentry from low orbit",
   "tooltip.spacebreaker.part.heat_shield.2": "Heat shield: rated for reentry from the Moon",
+  "tooltip.spacebreaker.part.hydrogen_note": "Real liquid hydrogen is very bulky; in the game a tank's capacity counts as mass, whatever it holds",
   "tooltip.spacebreaker.part.interstage": "Drops the stage below; shields the engine above",
   "tooltip.spacebreaker.part.isp": "Isp: %s s sea level / %s s vacuum",
   "tooltip.spacebreaker.part.landing_legs": "Radial: needed to land on the Moon",

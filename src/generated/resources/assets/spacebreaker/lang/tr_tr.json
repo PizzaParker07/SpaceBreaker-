@@ -1907,6 +1907,7 @@
   "tooltip.spacebreaker.part.heat_shield": "Kapsülün altına takılır",
   "tooltip.spacebreaker.part.heat_shield.1": "Isı kalkanı: alçak yörüngeden dönüş için",
   "tooltip.spacebreaker.part.heat_shield.2": "Isı kalkanı: Ay'dan dönüş için",
+  "tooltip.spacebreaker.part.hydrogen_note": "Gerçekte sıvı hidrojen çok hacimlidir; oyunda tank kapasitesi, içinde ne olursa olsun kütle olarak sayılır",
   "tooltip.spacebreaker.part.interstage": "Alt kademeyi bırakır; üstteki motoru korur",
   "tooltip.spacebreaker.part.isp": "Özgül itki: %s s deniz seviyesi / %s s vakum",
   "tooltip.spacebreaker.part.landing_legs": "Yanal: Ay'a inmek için gerekli",
