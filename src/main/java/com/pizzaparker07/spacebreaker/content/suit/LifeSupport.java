@@ -32,6 +32,11 @@ public final class LifeSupport {
     /** What the environment is like at a player's head. */
     public record Env(boolean breathable, double ambientC, double doseRateMsvDay, double pressureKpa) {
         public static Env at(Player player, double cachedDoseRate) {
+            var cabin = PressurizedCabin.holding(player);
+            if (cabin.isPresent()) {
+                // a shirt-sleeve cabin: its own air, temperature and shielding
+                return new Env(true, cabin.get().cabinTemperatureC(player), cachedDoseRate * cabin.get().cabinRadiationFactor(player), 101.325);
+            }
             Level level = player.level();
             BlockPos eyes = BlockPos.containing(player.getEyePosition());
             return new Env(Environment.canBreathe(level, eyes), Environment.temperatureC(level, eyes), cachedDoseRate,

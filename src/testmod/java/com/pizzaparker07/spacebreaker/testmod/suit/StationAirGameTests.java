@@ -341,4 +341,45 @@ public final class StationAirGameTests {
                 .thenExecute(() -> helper.assertTrue(SealedRooms.providesOxygen(level, room), "the room still holds its air"))
                 .thenSucceed();
     }
+
+    /** A vehicle with a pressurised cabin (a stand-in boat here): its passenger breathes, is warm and shielded. */
+    static final class TestCabin extends net.minecraft.world.entity.vehicle.Boat implements com.pizzaparker07.spacebreaker.content.suit.PressurizedCabin {
+        boolean sealed = true;
+
+        TestCabin(net.minecraft.world.level.Level level) {
+            super(net.minecraft.world.entity.EntityType.BOAT, level);
+        }
+
+        @Override
+        public boolean cabinPressurised(Player passenger) {
+            return sealed;
+        }
+
+        @Override
+        public double cabinTemperatureC(Player passenger) {
+            return 19.0;
+        }
+    }
+
+    @GameTest(template = "empty")
+    public static void pressurisedCabinKeepsItsPassengerAlive(GameTestHelper helper) {
+        var level = helper.getLevel();
+        Player p = helper.makeMockPlayer(GameType.SURVIVAL);
+        BlockPos at = helper.absolutePos(new BlockPos(2, 2, 2));
+        TestCabin cabin = new TestCabin(level);
+        cabin.setPos(at.getX() + 0.5, at.getY(), at.getZ() + 0.5);
+        level.addFreshEntity(cabin);
+        p.setPos(at.getX() + 0.5, at.getY(), at.getZ() + 0.5);
+        helper.assertTrue(p.startRiding(cabin, true), "the passenger boards");
+        LifeSupport.Env env = LifeSupport.Env.at(p, 100.0);
+        helper.assertTrue(env.breathable() && env.ambientC() == 19.0 && Math.abs(env.doseRateMsvDay() - 30.0) < 1e-9
+                && env.pressureKpa() > 100, "cabin air, its temperature and 30 % of the outside dose, got " + env);
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.SuitEvents.pressurisedAt(p), "the HUD shows pressurised");
+        cabin.sealed = false;
+        helper.assertFalse(com.pizzaparker07.spacebreaker.content.suit.SuitEvents.pressurisedAt(p)
+                && LifeSupport.Env.at(p, 100.0).ambientC() == 19.0, "an open hatch is the outside again");
+        p.stopRiding();
+        cabin.discard();
+        helper.succeed();
+    }
 }
