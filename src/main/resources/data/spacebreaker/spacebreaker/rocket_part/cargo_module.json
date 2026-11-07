@@ -1,0 +1,6 @@
+{
+  "type": "cargo",
+  "mass_kg": 900,
+  "height": 22,
+  "model": "spacebreaker:cargo_module"
+}

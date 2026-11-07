@@ -98,6 +98,9 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
     private BlockPos dockedPort;
     /** Client: ticks left of the docking jolt. */
     private int jolt;
+    /** The hold of a cargo module (27 slots), made when first needed. */
+    @Nullable
+    private net.minecraft.world.SimpleContainer cargo;
     private boolean dockedCache;
     /** Share of the current ascent burn already flown (0..1), so clients can start the transit view in time. */
     private static final EntityDataAccessor<Float> DATA_ASCENT = SynchedEntityData.defineId(RocketEntity.class, EntityDataSerializers.FLOAT);
@@ -412,6 +415,20 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         return dockedCache;
     }
 
+    /** Whether this rocket carries a cargo module. */
+    public boolean hasCargoHold() {
+        return !design.isEmpty() && com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.payload(this)
+                .map(p -> p.type() == com.pizzaparker07.spacebreaker.content.rocketry.part.PartType.CARGO).orElse(false);
+    }
+
+    /** The cargo hold (27 slots); empty for rockets without a cargo module. */
+    public net.minecraft.world.SimpleContainer cargo() {
+        if (cargo == null) {
+            cargo = new net.minecraft.world.SimpleContainer(27);
+        }
+        return cargo;
+    }
+
     /** A crewed capsule is a pressurised cabin: whoever sits in it breathes without a suit. */
     public boolean hasCabin() {
         return !design.isEmpty() && layout().payload().seats() > 0;
@@ -479,7 +496,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
 
     /** Arrived in orbit: if a station is in this orbit, fly to its nearest docking port. */
     private void seekStation(Location to) {
-        if (!(level() instanceof ServerLevel server) || isUncrewed()) {
+        if (!(level() instanceof ServerLevel server) || isUncrewed() && !hasCargoHold()) {
             return;
         }
         boolean shared = Location.Orbits.SHARED.equals(to.dimension());
@@ -504,6 +521,9 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
             level().playSound(null, at, SoundEvents.PISTON_CONTRACT, SoundSource.NEUTRAL, 1.0F, 0.6F);
             level().broadcastEntityEvent(this, EVENT_DOCKED);
             notifyCrew(Component.translatable("message.spacebreaker.docked"));
+            if (hasCargoHold()) {
+                com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.unloadCargo(this, at, location());
+            }
             return;
         }
         // fast from far out, then an ever slower creep for the last metres
@@ -554,6 +574,14 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
                 return InteractionResult.sidedSuccess(level().isClientSide);
             }
         }
+        if (hasCargoHold() && !player.isSecondaryUseActive() && (state() == FlightState.IDLE || docked())) {
+            // open the cargo hold (on the pad to load it, at the station or base to unload)
+            if (!level().isClientSide) {
+                player.openMenu(new net.minecraft.world.SimpleMenuProvider((id, inv, p) -> net.minecraft.world.inventory.ChestMenu.threeRows(id, inv, cargo()),
+                        Component.translatable("container.spacebreaker.cargo_hold")));
+            }
+            return InteractionResult.sidedSuccess(level().isClientSide);
+        }
         if (player.isSecondaryUseActive() || player.getVehicle() == this) {
             return InteractionResult.PASS;
         }
@@ -589,7 +617,10 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         if (activeStage() == 0) {
             drop = RocketItem.of(design);
         } else {
-            drop = new ItemStack(RocketryModule.CREW_CAPSULE.get());
+            drop = new ItemStack(hasCargoHold() ? RocketryModule.CARGO_MODULE.get() : RocketryModule.CREW_CAPSULE.get());
+        }
+        if (cargo != null) {
+            net.minecraft.world.Containers.dropContents(level(), blockPosition(), cargo);
         }
         if (!player.getAbilities().instabuild || activeStage() > 0) {
             spawnAtLocation(drop, 1F);
@@ -1391,6 +1422,10 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         coast = tag.getInt("coast");
         homeX = tag.contains("homeX") ? tag.getDouble("homeX") : Double.NaN;
         beenAway = tag.getBoolean("beenAway");
+        if (tag.contains("cargo")) {
+            cargo().clearContent();
+            net.minecraft.world.ContainerHelper.loadAllItems(tag.getCompound("cargo"), cargo().getItems(), registryAccess());
+        }
         entityData.set(DATA_MISSION, tag.getString("mission"));
         autoTravel = tag.getInt("autoTravel");
         owner = tag.hasUUID("owner") ? tag.getUUID("owner") : null;
@@ -1437,6 +1472,10 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         }
         tag.putInt("requiredShield", requiredShield);
         tag.putBoolean("beenAway", beenAway);
+        if (cargo != null && !cargo.isEmpty()) {
+            // keep every stack in its slot
+            tag.put("cargo", net.minecraft.world.ContainerHelper.saveAllItems(new CompoundTag(), cargo.getItems(), registryAccess()));
+        }
     }
 
     @Override

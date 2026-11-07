@@ -1074,6 +1074,47 @@ public final class RocketryGameTests {
     }
 
     @GameTest(template = EMPTY)
+    public static void cargoRocket(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var lookup = RocketParts.lookup(level.registryAccess());
+        RocketLayout layout = RocketLayout.of(uncrewed("cargo_module"), lookup);
+        helper.assertTrue(layout.problems().isEmpty(), "a valid cargo rocket: " + layout.problems());
+        var cargoType = com.pizzaparker07.spacebreaker.content.rocketry.part.PartType.CARGO;
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.onArrival(cargoType, Location.EARTH_ORBIT, Location.EARTH_ORBIT)
+                == com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.Next.NOTHING, "cargo is not released in orbit: it docks");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.onArrival(cargoType, Location.EARTH_ORBIT, Location.MOON_SURFACE)
+                == com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.Next.CONTINUE, "and flies on to a base");
+        // the hold
+        BlockPos port = helper.absolutePos(new BlockPos(1, 2, 1));
+        BlockPos chest = port.east(2);
+        level.setBlock(port, RocketryModule.DOCKING_PORT.get().defaultBlockState(), 3);
+        level.setBlock(chest, net.minecraft.world.level.block.Blocks.CHEST.defaultBlockState(), 3);
+        RocketEntity rocket = RocketEntity.create(level, uncrewed("cargo_module"), helper.absoluteVec(new net.minecraft.world.phys.Vec3(4.5, 2, 4.5)), 0F);
+        level.addFreshEntity(rocket);
+        helper.assertTrue(rocket.hasCargoHold() && rocket.cargo().getContainerSize() == 27, "a 27-slot hold");
+        rocket.cargo().setItem(0, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.IRON_INGOT, 64));
+        rocket.cargo().setItem(5, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.BREAD, 20));
+        // the hold survives saving (and so dimension changes)
+        var tag = rocket.saveWithoutId(new net.minecraft.nbt.CompoundTag());
+        RocketEntity copy = RocketEntity.create(level, uncrewed("cargo_module"), rocket.position(), 0F);
+        copy.load(tag);
+        helper.assertTrue(copy.cargo().getItem(0).getCount() == 64 && copy.cargo().getItem(5).is(net.minecraft.world.item.Items.BREAD), "the hold is saved");
+        // docked at the port: the hold empties into the chest next to it
+        int moved = com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.unloadCargo(rocket, port, Location.EARTH_ORBIT);
+        helper.assertTrue(moved == 84 && rocket.cargo().isEmpty(), "84 items unloaded: " + moved);
+        var box = (net.minecraft.world.level.block.entity.ChestBlockEntity) level.getBlockEntity(chest);
+        int iron = 0;
+        for (int i = 0; i < box.getContainerSize(); i++) {
+            iron += box.getItem(i).is(net.minecraft.world.item.Items.IRON_INGOT) ? box.getItem(i).getCount() : 0;
+        }
+        helper.assertTrue(iron == 64, "the iron is in the chest: " + iron);
+        // a crewed rocket has no hold
+        helper.assertFalse(RocketEntity.create(level, RocketryModule.MOON_ROCKET, rocket.position(), 0F).hasCargoHold(), "a crew rocket has no hold");
+        rocket.discard();
+        helper.succeed();
+    }
+
+    @GameTest(template = EMPTY)
     public static void fuelFromFluidContainers(GameTestHelper helper) {
         RocketEntity rocket = RocketEntity.create(helper.getLevel(), RocketryModule.MOON_ROCKET, helper.absoluteVec(new net.minecraft.world.phys.Vec3(1.5, 2, 1.5)), 0F);
         helper.getLevel().addFreshEntity(rocket);

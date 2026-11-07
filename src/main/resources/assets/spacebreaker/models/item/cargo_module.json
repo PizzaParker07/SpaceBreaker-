@@ -1,0 +1,12 @@
+{
+  "loader": "neoforge:separate_transforms",
+  "gui_light": "front",
+  "base": {
+    "parent": "spacebreaker:item/cargo_module_3d"
+  },
+  "perspectives": {
+    "gui": {
+      "parent": "spacebreaker:item/cargo_module_icon"
+    }
+  }
+}
