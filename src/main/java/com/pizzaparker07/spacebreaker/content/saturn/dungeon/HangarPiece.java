@@ -127,8 +127,8 @@ public class HangarPiece extends StructurePiece {
         for (int[] a : new int[][]{{-2, -2}, {2, -2}, {-2, 2}, {2, 2}}) {
             placeBlock(level, s(Blocks.IRON_BARS), cx + a[0], F, 11 + a[1], box);
             BlockState rotor = Blocks.IRON_TRAPDOOR.defaultBlockState().setValue(TrapDoorBlock.HALF, Half.TOP);
-            placeBlock(level, rotor, cx + a[0], F + 1, 11 + a[1], box);
-            placeBlock(level, rotor, cx + a[0], F + 2, 11 + a[1], box);
+            com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, rotor, cx + a[0], F + 1, 11 + a[1], box);
+            com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, rotor, cx + a[0], F + 2, 11 + a[1], box);
         }
         // workshop (west wall) and lab (east wall)
         placeBlock(level, s(Blocks.SMITHING_TABLE), 3, F, 17, box);

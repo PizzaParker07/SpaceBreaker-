@@ -101,8 +101,8 @@ public class ObservatoryPiece extends StructurePiece {
             placeBlock(level, slab, c[0], F + 4, c[1], box);
         }
         BlockState door = Blocks.IRON_DOOR.defaultBlockState().setValue(DoorBlock.FACING, Direction.SOUTH);
-        placeBlock(level, door.setValue(DoorBlock.HALF, DoubleBlockHalf.LOWER), 8, F, 13, box);
-        placeBlock(level, door.setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER), 8, F + 1, 13, box);
+        com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, door.setValue(DoorBlock.HALF, DoubleBlockHalf.LOWER), 8, F, 13, box);
+        com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, door.setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER), 8, F + 1, 13, box);
         // telescope turret on the roof
         for (int x = 6; x <= 10; x++) {
             for (int z = 6; z <= 10; z++) {
@@ -127,7 +127,7 @@ public class ObservatoryPiece extends StructurePiece {
         placeBlock(level, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), 8, F + 3, 8, box);
         // stairs down to the vault cut into the rock
         for (int i = 0; i < 4; i++) {
-            placeBlock(level, Blocks.POLISHED_BLACKSTONE_STAIRS.defaultBlockState().setValue(StairBlock.FACING, Direction.SOUTH), 11, F - 1 - i, 9 - i, box);
+            com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, Blocks.POLISHED_BLACKSTONE_STAIRS.defaultBlockState().setValue(StairBlock.FACING, Direction.SOUTH), 11, F - 1 - i, 9 - i, box);
             for (int y = F - i; y <= F + 1 - i + 2; y++) {
                 placeBlock(level, s(Blocks.AIR), 11, y, 9 - i, box);
             }

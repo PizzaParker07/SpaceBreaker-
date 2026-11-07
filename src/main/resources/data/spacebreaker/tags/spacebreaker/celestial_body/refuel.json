@@ -3,6 +3,16 @@
     "spacebreaker:earth",
     "spacebreaker:moon",
     "spacebreaker:mars",
-    "spacebreaker:mercury"
+    "spacebreaker:mercury",
+    "spacebreaker:ceres",
+    "spacebreaker:europa",
+    "spacebreaker:ganymede",
+    "spacebreaker:callisto",
+    "spacebreaker:titan",
+    "spacebreaker:enceladus",
+    "spacebreaker:miranda",
+    "spacebreaker:triton",
+    "spacebreaker:pluto",
+    "spacebreaker:charon"
   ]
 }

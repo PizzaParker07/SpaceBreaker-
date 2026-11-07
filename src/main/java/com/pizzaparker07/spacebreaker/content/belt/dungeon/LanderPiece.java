@@ -204,9 +204,9 @@ public class LanderPiece extends StructurePiece {
             }
         }
         for (int y = 1; y <= F - 1; y++) {
-            placeBlock(level, Blocks.LADDER.defaultBlockState().setValue(LadderBlock.FACING, Direction.SOUTH), 2, y, 21, box);
+            com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, Blocks.LADDER.defaultBlockState().setValue(LadderBlock.FACING, Direction.SOUTH), 2, y, 21, box);
         }
-        placeBlock(level, s(Blocks.IRON_TRAPDOOR), 2, F - 1, 21, box);
+        com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, s(Blocks.IRON_TRAPDOOR), 2, F - 1, 21, box);
         placeBlock(level, s(Blocks.IRON_BLOCK), 3, F, 21, box);
         createChest(level, box, RandomSource.create(seed + 2), 3, 1, 24, variant.cargo());
         placeBlock(level, s(Blocks.BARREL), 2, 1, 24, box);
