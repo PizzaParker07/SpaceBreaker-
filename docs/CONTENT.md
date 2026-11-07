@@ -150,8 +150,9 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | Durum | İçerik | Not |
 |---|---|---|
 | 🎨 | Boyutlar `spacebreaker:phobos`, `spacebreaker:deimos` | çok küçük, havasız; Phobos'ta oluk zincirleri; gökte dev Mars (≈40° / 16°), evresiyle |
+| 🎨 | Stickney krateri | Phobos'un dev krateri sabit yerde (doğuş noktasının ~320 blok doğusu, 230 blok yarıçap, 58 blok derin kase); arazi motoruna `named_craters` (ad, x, enlem, yarıçap, derinlik, tepe) eklendi |
 | 🎨 | Bloklar | Phobos Regoliti, Deimos Regoliti (kalıcı ayak izi), Karbonlu Kondrit |
-| 🎨 | Zindanlar | Düşmüş Numune Dönüş Sondası (Phobos), Deimos Buz Deposu |
+| 🎨 | Zindanlar | Düşmüş Numune Dönüş Sondası (Phobos), Deimos Buz Deposu, Stickney'nin Çapalı İniş Aracı (dünyada tek: Stickney tabanında, 3 harpun zinciriyle zemine bağlı, "1/2000 g: geri sekti" levhası; güvenlik ipi, mikro-yerçekimi madenciliği / uzay sondası diskleri) |
 
 ### Venüs `spacebreaker:venus`
 | Durum | İçerik | Not |

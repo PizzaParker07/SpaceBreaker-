@@ -47,6 +47,14 @@ final class MarsMoonScenario implements ShowcaseScenario {
         terrain = ((PlanetChunkGenerator) level.getChunkSource().getGenerator()).terrain();
         int y = (int) Math.floor(terrain.height(DX + 7, DZ + 7));
         MarsScenario.placePiece(level, new MoonletDungeonPiece(77L, deimos, DX, y, DZ));
+        if (!deimos) {
+            // the showcase world is made without structures: build Stickney's lander where the world would put it
+            com.pizzaparker07.spacebreaker.content.mars.dungeon.StickneyLanderStructure.site(level.getChunkSource().getGenerator()).ifPresent(site -> {
+                int half = com.pizzaparker07.spacebreaker.content.mars.dungeon.StickneyLanderPiece.SIZE / 2;
+                int ly = (int) Math.floor(terrain.height(site.getX() + half, site.getZ() + half)) + 1;
+                MarsScenario.placePiece(level, new com.pizzaparker07.spacebreaker.content.mars.dungeon.StickneyLanderPiece(31L, site.getX(), ly, site.getZ()));
+            });
+        }
     }
 
     private static Consumer<ServerPlayer> at(double f) {
@@ -73,6 +81,20 @@ final class MarsMoonScenario implements ShowcaseScenario {
         };
         s.add(new ShowcaseDriver.Shot("04_" + w + "_dungeon", 0, DX + 7.5, y + (deimos ? -4.4 : 5), DZ + (deimos ? 7.5 : 13.5), 180F,
                 deimos ? 10F : 38F, true, fp, 120, deimos ? lit : at(0.2), null));
+        if (!deimos) {
+            t.namedCrater("stickney").ifPresent(c -> {
+                // the floor of Stickney from its western slope: the anchored lander small on the floor, the far wall behind
+                double lx0 = c.x() + com.pizzaparker07.spacebreaker.content.mars.dungeon.StickneyLanderStructure.OFFSET_X;
+                double lz0 = c.z() + com.pizzaparker07.spacebreaker.content.mars.dungeon.StickneyLanderStructure.OFFSET_Z;
+                double rx = lx0 - 45;
+                s.add(new ShowcaseDriver.Shot("05_phobos_stickney", 0, rx, Math.floor(t.height(rx, lz0)) + 18, lz0 + 0.5, -90F, 12F,
+                        true, fp, 300, at(0.26), MoonScenario::farView));
+                double lx = c.x() + com.pizzaparker07.spacebreaker.content.mars.dungeon.StickneyLanderStructure.OFFSET_X + 0.5;
+                double lz = c.z() + com.pizzaparker07.spacebreaker.content.mars.dungeon.StickneyLanderStructure.OFFSET_Z + 0.5;
+                s.add(new ShowcaseDriver.Shot("06_phobos_stickney_lander", 0, lx - 9, Math.floor(t.height(lx, lz)) + 7, lz + 9, -135F, 28F,
+                        true, fp, 200, at(0.26), MoonScenario::farView));
+            });
+        }
         return s;
     }
 }

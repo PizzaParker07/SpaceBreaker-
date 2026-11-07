@@ -13,6 +13,7 @@ public final class MarsLoot {
     public static final ResourceKey<LootTable> RIVERBED_PROBE = Dungeons.lootTable("mars", "riverbed_probe");
     public static final ResourceKey<LootTable> LANDER_DATA = Dungeons.lootTable("mars", "lander_data");
     public static final ResourceKey<LootTable> PHOBOS_PROBE = Dungeons.lootTable("phobos", "probe_vault");
+    public static final ResourceKey<LootTable> STICKNEY_LANDER = Dungeons.lootTable("phobos", "stickney_lander");
     public static final ResourceKey<LootTable> DEIMOS_CACHE = Dungeons.lootTable("deimos", "ice_cache");
 
     private MarsLoot() {

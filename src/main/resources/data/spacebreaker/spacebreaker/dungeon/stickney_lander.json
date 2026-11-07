@@ -1,0 +1,8 @@
+{
+  "structure": "spacebreaker:stickney_lander",
+  "world": "spacebreaker:phobos",
+  "guardians": [],
+  "loot_tables": [
+    "spacebreaker:dungeons/phobos/stickney_lander"
+  ]
+}

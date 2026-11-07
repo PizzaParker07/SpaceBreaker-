@@ -1,0 +1,106 @@
+{
+  "type": "minecraft:chest",
+  "random_sequence": "spacebreaker:dungeons/phobos/stickney_lander",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "spacebreaker:safety_tether"
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "weight": 2,
+          "name": "spacebreaker:tech_disk",
+          "functions": [
+            {
+              "function": "spacebreaker:random_tech_disk",
+              "techs": [
+                "spacebreaker:microgravity_mining"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 1,
+          "name": "spacebreaker:tech_disk",
+          "functions": [
+            {
+              "function": "spacebreaker:random_tech_disk",
+              "techs": [
+                "spacebreaker:space_probes",
+                "spacebreaker:orbital_mechanics"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": {
+        "type": "minecraft:uniform",
+        "min": 2,
+        "max": 3
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "weight": 2,
+          "name": "spacebreaker:experiment_data",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 2
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 3,
+          "name": "spacebreaker:carbonaceous_chondrite",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 3,
+                "max": 8
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 2,
+          "name": "minecraft:chain",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 6
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 1,
+          "name": "spacebreaker:basic_circuit"
+        }
+      ]
+    }
+  ]
+}

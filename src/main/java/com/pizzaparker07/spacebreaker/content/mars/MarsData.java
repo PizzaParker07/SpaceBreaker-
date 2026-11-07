@@ -146,6 +146,12 @@ public final class MarsData {
         lang.add("structure.spacebreaker.mars_lava_tube", "Martian Lava Tube", "Mars Lav Tüpü");
         lang.add("structure.spacebreaker.mars_research_station", "Abandoned Mars Research Station", "Terk Edilmiş Mars Araştırma İstasyonu");
         lang.add("dungeon.spacebreaker.phobos_probe_wreck", "Crashed Sample-Return Probe", "Düşmüş Numune Dönüş Sondası");
+        lang.add("dungeon.spacebreaker.stickney_lander", "Anchored Lander of Stickney", "Stickney'nin Çapalı İniş Aracı");
+        lang.add("structure.spacebreaker.stickney_lander", "Anchored Lander of Stickney", "Stickney'nin Çapalı İniş Aracı");
+        lang.add("sign.spacebreaker.stickney_lander.0", "GRAVITY 1/2000 G", "YERÇEKİMİ 1/2000 G");
+        lang.add("sign.spacebreaker.stickney_lander.1", "It bounced off;", "Önce geri sekti;");
+        lang.add("sign.spacebreaker.stickney_lander.2", "3 harpoons and a", "3 harpun ve vinç");
+        lang.add("sign.spacebreaker.stickney_lander.3", "winch held it", "onu yerde tuttu");
         lang.add("dungeon.spacebreaker.deimos_ice_cache", "Deimos Ice Cache", "Deimos Buz Deposu");
         lang.add("structure.spacebreaker.phobos_probe_wreck", "Crashed Sample-Return Probe", "Düşmüş Numune Dönüş Sondası");
         lang.add("structure.spacebreaker.deimos_ice_cache", "Deimos Ice Cache", "Deimos Buz Deposu");

@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-07T00:18:37.058670172	Spacebreaker inner planets worldgen
+// 1.21.1	2026-11-07T10:08:30.511231521	Spacebreaker inner planets worldgen
 16676fef966d898c9a200173130207149689a794 data/spacebreaker/worldgen/biome/deimos_surface.json
 a38bd155cbf32cd8a4fc3ed4b226773a6ca531ed data/spacebreaker/worldgen/biome/mars_canyon.json
 850d48863e1922b235d124c0eaa44a4d68de9604 data/spacebreaker/worldgen/biome/mars_crater.json
@@ -63,6 +63,7 @@ a359b7a2f8ad33d504a25ae130a5c8fe9f03ec3e data/spacebreaker/worldgen/structure/ma
 f21e6ddcbb3a11ab924625a1bec179390a586d9f data/spacebreaker/worldgen/structure/mars_riverbed_cave.json
 1f2ff87f8dff99b1c92a22a8f4a7526ad8fb2ba1 data/spacebreaker/worldgen/structure/mercury_ice_mine.json
 ab9041d59226cc553658fa0cf0b2eafd1f25d264 data/spacebreaker/worldgen/structure/phobos_probe_wreck.json
+bcf8b8e57913d88877c78c23d56ca13a07c135a0 data/spacebreaker/worldgen/structure/stickney_lander.json
 f7bf688e27039deb132edac12acb3228415276c5 data/spacebreaker/worldgen/structure/venus_aerostat.json
 c66c9129ef40dcfb60ab2651f5691da89c9073a3 data/spacebreaker/worldgen/structure_set/deimos_ice_caches.json
 4bb7c7efc4b3559cd2afd504b161e414838c7cff data/spacebreaker/worldgen/structure_set/mars_lander_wrecks.json
@@ -71,4 +72,5 @@ a49ea2931877cdc5d3f235a08f8c1a79bb645f7f data/spacebreaker/worldgen/structure_se
 d631663115ab68c254d6d02825fe5698cc326e08 data/spacebreaker/worldgen/structure_set/mars_riverbed_caves.json
 8fbb6dc4499ccba03591b5541ad1bb42c2456652 data/spacebreaker/worldgen/structure_set/mercury_ice_mines.json
 65f304d0862de44bd48cf85b2892473a2f5473fa data/spacebreaker/worldgen/structure_set/phobos_probe_wrecks.json
+435c01f9d73e5f3c95f6c54ab72dcf39331a7e4a data/spacebreaker/worldgen/structure_set/stickney_lander.json
 0b3622357fa6e2b5716c2ffed23ffd80532d3bf8 data/spacebreaker/worldgen/structure_set/venus_aerostats.json

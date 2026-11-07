@@ -1,0 +1,9 @@
+{
+  "type": "spacebreaker:stickney_lander",
+  "biomes": [
+    "spacebreaker:phobos_surface",
+    "spacebreaker:phobos_crater"
+  ],
+  "spawn_overrides": {},
+  "step": "surface_structures"
+}

@@ -240,6 +240,42 @@ public final class MarsLifeGameTests {
         helper.succeed();
     }
 
+    /** Phobos' Stickney: a real, fixed giant crater, with one anchored lander on its floor held down by harpoon tethers. */
+    @GameTest(template = EMPTY, timeoutTicks = 200)
+    public static void stickneyHoldsTheAnchoredLander(GameTestHelper helper) {
+        var profile = WorldTests.profile(helper, "phobos");
+        var terrain = new com.pizzaparker07.spacebreaker.content.worldgen.PlanetTerrain(profile, 1234L);
+        var stickney = terrain.namedCrater("stickney").orElseThrow(() -> new AssertionError("Phobos must have Stickney"));
+        helper.assertTrue(stickney.radius() >= 200, "Stickney spans a large part of the moon");
+        double floor = terrain.height(stickney.x(), stickney.z());
+        double outside = terrain.height(stickney.x() + stickney.radius() * 2.5, stickney.z());
+        helper.assertTrue(outside - floor > 35, "Stickney is a deep bowl: floor " + floor + ", outside " + outside);
+        helper.assertTrue(Math.hypot(stickney.x(), stickney.z()) < 600, "Stickney lies near the landing site");
+        var site = com.pizzaparker07.spacebreaker.content.mars.dungeon.StickneyLanderStructure.site(WorldTests.stem(helper, "phobos").generator())
+                .orElseThrow(() -> new AssertionError("the lander has a site"));
+        helper.assertTrue(Math.hypot(site.getX() - stickney.x(), site.getZ() - stickney.z()) < stickney.radius() * 0.3, "the lander sits on the floor");
+        helper.assertTrue(access(helper).registryOrThrow(net.minecraft.core.registries.Registries.STRUCTURE)
+                .containsKey(com.pizzaparker07.spacebreaker.content.mars.dungeon.MarsStructures.STICKNEY_KEY), "stickney structure");
+
+        ServerLevel level = helper.getLevel();
+        BlockPos base = helper.absolutePos(BlockPos.ZERO).offset(-4000, 0, 4000);
+        int y = level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.WORLD_SURFACE, base.getX(), base.getZ());
+        var piece = new com.pizzaparker07.spacebreaker.content.mars.dungeon.StickneyLanderPiece(5L, base.getX(), y, base.getZ());
+        place(level, piece);
+        BoundingBox bb = piece.getBoundingBox();
+        int chains = 0;
+        int signs = 0;
+        for (BlockPos p : BlockPos.betweenClosed(bb.minX(), bb.minY(), bb.minZ(), bb.maxX(), bb.maxY(), bb.maxZ())) {
+            var st = level.getBlockState(p);
+            chains += st.is(Blocks.CHAIN) ? 1 : 0;
+            signs += st.is(Blocks.OAK_SIGN) ? 1 : 0;
+        }
+        helper.assertTrue(lootChests(level, bb) == 1, "one survey recorder, found " + lootChests(level, bb));
+        helper.assertTrue(chains >= 12, "three harpoon tethers, found " + chains + " chain blocks");
+        helper.assertTrue(signs == 1, "the plate that explains the anchoring");
+        helper.succeed();
+    }
+
     private MarsLifeGameTests() {
     }
 }

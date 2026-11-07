@@ -43,6 +43,27 @@ public final class PlanetTerrain {
         this.volcanicNoise = noise(6);
         this.brecciaNoise = noise(7);
         this.landforms = new LandformSampler(profile, seed);
+        List<Crater> named = new ArrayList<>();
+        for (Landforms.NamedCrater n : profile.landforms().namedCraters()) {
+            Crater c = shape(n.x(), -n.latitude() / 90.0 * profile.poleDistance(), n.radius(), false, mix(seed, n.name().hashCode()));
+            double depth = n.depth() > 0 ? n.depth() : c.depth();
+            double floor = n.depth() > 0 ? 0 : c.floor();
+            named.add(new Crater(c.x(), c.z(), c.radius(), depth, c.rim(), depth * n.peak(), floor, false, c.seed()));
+        }
+        this.named = List.copyOf(named);
+    }
+
+    private final List<Crater> named;
+
+    /** The named crater with this name (e.g. "stickney"), if the world has it. */
+    public java.util.Optional<Crater> namedCrater(String name) {
+        List<Landforms.NamedCrater> cfg = profile.landforms().namedCraters();
+        for (int i = 0; i < cfg.size(); i++) {
+            if (cfg.get(i).name().equals(name)) {
+                return java.util.Optional.of(named.get(i));
+            }
+        }
+        return java.util.Optional.empty();
     }
 
     private SimplexNoise noise(int salt) {
@@ -316,6 +337,12 @@ public final class PlanetTerrain {
                         }
                     }
                 }
+            }
+        }
+        for (Crater c : named) {
+            double r = c.radius() * Crater.EJECTA_END;
+            if (c.x() + r >= x0 && c.x() - r <= x1 && c.z() + r >= z0 && c.z() - r <= z1) {
+                out.add(c);
             }
         }
         // big craters first, so later (smaller) ones are "younger" and sit on top
