@@ -165,6 +165,21 @@ public final class ProgressionAuditTests {
         h.succeed();
     }
 
+    /**
+     * The realistic setting (1.0 target, decided with rocketry after QA-20): a fresh world reaches Earth orbit. The Moon and
+     * Mars need heavier rockets there and are not required.
+     */
+    @GameTest(template = "empty", timeoutTicks = 400)
+    public static void realisticSettingReachesOrbit(GameTestHelper h) {
+        var probe = h.makeMockPlayer(GameType.SURVIVAL);
+        ProgressionModel m = new ProgressionModel(h.getLevel().getServer(), probe, SbConfig.Realism.REALISTIC);
+        m.scan();
+        m.run();
+        ProgressionReport.Goal first = ProgressionReport.goals().get(0);
+        h.assertTrue(m.has(first.fact()), "realistic setting: " + first.title() + " is reachable");
+        h.succeed();
+    }
+
     /** Requirement groups of grand_tour with no world the model reaches and returns from. */
     static List<String> grandTourGaps(net.minecraft.server.MinecraftServer server, ProgressionModel m) {
         var holder = server.getAdvancements().get(Spacebreaker.id("main/grand_tour"));

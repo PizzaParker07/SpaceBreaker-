@@ -319,6 +319,18 @@ flight between dimensions, rovers being driven, and client-side frame time.
   area; a freshly added entity can be missing from the area query for a tick). The failure message names the kind that
   changed. Two full runs green.
 
+## 1.0.0 check and 1.0.1 notes (2026-11-07, 1.21.1 @ 182a4ef6)
+
+- 1.0.0 merged: runData clean, 420/420 GameTests green.
+- **QA-20 fixed** (rocketry e9968379, tank dry mass ~5 %, stronger kerosene engine, balanced Δv scale 0.42): realism
+  matrix — BALANCED 4/4 goals, 87/87 techs, grand_tour complete, 40 round-trip worlds, Earth orbit / Moon / Mars at
+  step 10 (unchanged); EASY the same; **REALISTIC reaches Earth orbit** (goal 1/4; best rocket 9523 m/s for 9022 m/s).
+  It cannot yet fly orbit and back with a capsule, so research stops at 26/87 there; 1.0 accepts orbit as the realistic
+  target. New regression test `ProgressionAuditTests.realisticSettingReachesOrbit`.
+- Showcase: `ShowcaseDriver.fov(int)` clamps a field of view below 30 (which the game ignores silently) and logs it.
+- Open for 1.0.1: names of `dimension.spacebreaker.earth_orbit`, `.moon_orbit`, `.orbit` (rocketry); comet asserts to
+  follow rocketry 19c62d87 (Halley ≤ step 21, only by refuelling there).
+
 ## 1.0 test matrix (2026-11-07, 1.21.1 @ 7dca25ba + dev/qa 452e75bc)
 
 | # | check | how | result |
@@ -458,7 +470,7 @@ liquid hydrogen it is never the best upper stage, so it would only make sense to
 
 - recipes analysed: 1825, special recipes skipped: 15
 - worlds: 43, technologies: 87, model steps: 21
-- machines that lock themselves until researched: arc_furnace, atmosphere_processor, chemical_reactor, cryogenic_liquefier, electrolyzer, fabricator, gas_centrifuge, ice_melter, press, pumpjack, refinery, regolith_excavator, regolith_heater, rtg, sabatier_reactor, sintering_furnace
+- machines that lock themselves until researched: arc_furnace, atmosphere_processor, chemical_reactor, cryogenic_liquefier, electrolyzer, fabricator, fission_reactor, gas_centrifuge, ice_melter, press, pumpjack, refinery, regolith_excavator, regolith_heater, rtg, sabatier_reactor, sintering_furnace
 
 ### Goals
 
@@ -508,7 +520,7 @@ Machines built on the way: arc_furnace, combustion_generator, cryogenic_liquefie
 
 Flights:
 
-- step 10: spacebreaker:earth_orbit — round trip to spacebreaker:earth/orbit with 1-stage [kerosene_engine, fuel_tank_large, heat_shield, crew_capsule], 3274 m/s vacuum Δv
+- step 10: spacebreaker:earth_orbit — round trip to spacebreaker:earth/orbit with 1-stage [kerosene_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 4878 m/s vacuum Δv
 
 ### ✅ Moon landing and return
 
@@ -534,7 +546,7 @@ Machines built on the way: arc_furnace, combustion_generator, cryogenic_liquefie
 
 Flights:
 
-- step 10: spacebreaker:moon — round trip to spacebreaker:moon/surface with 2-stage [kerosene_engine, 3× fuel_tank_large / decoupler / vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 6625 m/s vacuum Δv
+- step 10: spacebreaker:moon — round trip to spacebreaker:moon/surface with 2-stage [kerosene_engine, 3× fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 7634 m/s vacuum Δv
 
 ### ✅ Mars landing and return
 
@@ -560,7 +572,7 @@ Machines built on the way: arc_furnace, combustion_generator, cryogenic_liquefie
 
 Flights:
 
-- step 10: spacebreaker:mars — round trip to spacebreaker:mars/surface with 2-stage [kerosene_engine, 3× fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 7130 m/s vacuum Δv
+- step 10: spacebreaker:mars — round trip to spacebreaker:mars/surface with 3-stage [kerosene_engine, 2× fuel_tank_large / decoupler / vacuum_engine, 3× fuel_tank_large / decoupler / vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 8392 m/s vacuum Δv
 
 ### Technologies in the order a fresh world can learn them
 
@@ -663,46 +675,46 @@ None.
 | minecraft:overworld | yes | step 0: start | 8…22 °C, 101.3 kPa breathable, radiation 0.01; suits: eva; power there yes |
 | minecraft:the_nether | yes | step 0: nether portal (vanilla) | — |
 | minecraft:the_end | yes | step 0: end portal (vanilla) | — |
-| spacebreaker:ariel | yes | step 16: round trip to spacebreaker:ariel/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 10731 m/s vacuum Δv | -213…-189 °C, 0.0 kPa, radiation 1.50; suits: heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
-| spacebreaker:bennu | yes | step 10: round trip to spacebreaker:bennu/surface with 1-stage [kerosene_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 5083 m/s vacuum Δv | -70…60 °C, 0.0 kPa, radiation 1.40; suits: eva; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there NO; power there yes |
-| spacebreaker:callisto | yes | step 16: round trip to spacebreaker:callisto/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 10924 m/s vacuum Δv | -193…-108 °C, 0.0 kPa, radiation 0.10; suits: heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
-| spacebreaker:ceres | yes | step 16: round trip to spacebreaker:ceres/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, fuel_tank_large, heat_shield, crew_capsule], 8335 m/s vacuum Δv | -143…-38 °C, 0.0 kPa, radiation 1.40; suits: eva/thermal/heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
-| spacebreaker:charon | yes | step 16: round trip to spacebreaker:charon/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 12295 m/s vacuum Δv | -230…-220 °C, 0.0 kPa, radiation 1.40; suits: heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
-| spacebreaker:churyumov_gerasimenko | yes | step 10: round trip to spacebreaker:churyumov_gerasimenko/surface with 2-stage [kerosene_engine, 3× fuel_tank_large / decoupler / vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 6625 m/s vacuum Δv | -180…-70 °C, 0.0 kPa, radiation 1.40; suits: eva; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there NO; power there NO |
-| spacebreaker:deimos | yes | step 10: round trip to spacebreaker:deimos/surface with 2-stage [kerosene_engine, 2× fuel_tank_large / decoupler / vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 6003 m/s vacuum Δv | -110…-40 °C, 0.0 kPa, radiation 1.20; suits: eva; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there NO; power there yes |
-| spacebreaker:earth_orbit | yes | step 10: round trip to spacebreaker:earth/orbit with 1-stage [kerosene_engine, fuel_tank_large, heat_shield, crew_capsule], 3274 m/s vacuum Δv | in orbit (vacuum, inside the capsule); oxygen tank yes, filler yes, O₂ at home yes, O₂ made there NO; power there yes |
-| spacebreaker:enceladus | yes | step 16: round trip to spacebreaker:enceladus/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 10731 m/s vacuum Δv | -223…-198 °C, 0.0 kPa, radiation 2.00; suits: heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there NO; power there yes |
-| spacebreaker:encke | yes | step 16: round trip to spacebreaker:encke/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, fuel_tank_large, heat_shield, crew_capsule], 8335 m/s vacuum Δv | -150…-20 °C, 0.0 kPa, radiation 1.40; suits: eva/thermal/heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
-| spacebreaker:eros | yes | step 10: round trip to spacebreaker:eros/surface with 2-stage [kerosene_engine, 2× fuel_tank_large / decoupler / vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 6003 m/s vacuum Δv | -120…20 °C, 0.0 kPa, radiation 1.40; suits: eva; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there NO; power there yes |
-| spacebreaker:europa | yes | step 16: round trip to spacebreaker:europa/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 10924 m/s vacuum Δv | -190…-150 °C, 0.0 kPa, radiation 5400.00; suits: eva/thermal/heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
-| spacebreaker:ganymede | yes | step 16: round trip to spacebreaker:ganymede/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 10924 m/s vacuum Δv | -200…-121 °C, 0.0 kPa, radiation 80.00; suits: heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
-| spacebreaker:halley | yes | step 16: round trip to spacebreaker:halley/surface with 2-stage [hydrolox_engine, 2× fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 13032 m/s vacuum Δv | -230…-150 °C, 0.0 kPa, radiation 1.40; suits: heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there NO; power there yes |
-| spacebreaker:hydra | yes | step 16: round trip to spacebreaker:hydra/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 12295 m/s vacuum Δv | -235…-230 °C, 0.0 kPa, radiation 1.40; suits: heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
-| spacebreaker:io | yes | step 16: round trip to spacebreaker:io/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 12577 m/s vacuum Δv | -183…-143 °C, 0.0 kPa, radiation 36000.00; suits: eva/thermal/heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there NO; power there yes |
-| spacebreaker:itokawa | yes | step 10: round trip to spacebreaker:itokawa/surface with 2-stage [kerosene_engine, 2× fuel_tank_large / decoupler / vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 6003 m/s vacuum Δv | -100…30 °C, 0.0 kPa, radiation 1.40; suits: eva; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there NO; power there yes |
-| spacebreaker:mars | yes | step 10: round trip to spacebreaker:mars/surface with 2-stage [kerosene_engine, 3× fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 7130 m/s vacuum Δv | -90…-10 °C, 0.6 kPa, radiation 0.67; suits: eva; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there NO; power there yes |
-| spacebreaker:mars_orbit | yes | step 10: round trip to spacebreaker:mars/orbit with 2-stage [kerosene_engine, fuel_tank_large / decoupler / vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 5123 m/s vacuum Δv | in orbit (vacuum, inside the capsule); oxygen tank yes, filler yes, O₂ at home yes, O₂ made there NO; power there yes |
-| spacebreaker:mercury | yes | step 16: round trip to spacebreaker:mercury/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 10924 m/s vacuum Δv | -180…430 °C, 0.0 kPa, radiation 2.00; suits: thermal; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
-| spacebreaker:mercury_orbit | yes | step 10: round trip to spacebreaker:mercury/orbit with 2-stage [kerosene_engine, 3× fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 7130 m/s vacuum Δv | in orbit (vacuum, inside the capsule); oxygen tank yes, filler yes, O₂ at home yes, O₂ made there NO; power there yes |
-| spacebreaker:miranda | yes | step 16: round trip to spacebreaker:miranda/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 10731 m/s vacuum Δv | -213…-187 °C, 0.0 kPa, radiation 1.50; suits: heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
-| spacebreaker:moon | yes | step 10: round trip to spacebreaker:moon/surface with 2-stage [kerosene_engine, 3× fuel_tank_large / decoupler / vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 6625 m/s vacuum Δv | -173…120 °C, 0.0 kPa, radiation 1.37; suits: eva; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there NO; power there yes |
-| spacebreaker:moon_orbit | yes | step 10: round trip to spacebreaker:moon/orbit with 1-stage [kerosene_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 5083 m/s vacuum Δv | in orbit (vacuum, inside the capsule); oxygen tank yes, filler yes, O₂ at home yes, O₂ made there NO; power there yes |
-| spacebreaker:nereid | yes | step 16: round trip to spacebreaker:nereid/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 10731 m/s vacuum Δv | -226…-218 °C, 0.0 kPa, radiation 1.40; suits: heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
-| spacebreaker:nix | yes | step 16: round trip to spacebreaker:nix/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 12295 m/s vacuum Δv | -235…-230 °C, 0.0 kPa, radiation 1.40; suits: heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
-| spacebreaker:oberon | yes | step 16: round trip to spacebreaker:oberon/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 10731 m/s vacuum Δv | -214…-198 °C, 0.0 kPa, radiation 1.50; suits: heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
-| spacebreaker:orbit | yes | step 10: round trip to spacebreaker:bennu/orbit with 1-stage [kerosene_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 5083 m/s vacuum Δv | in orbit (vacuum, inside the capsule); oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
-| spacebreaker:phobos | yes | step 10: round trip to spacebreaker:phobos/surface with 2-stage [kerosene_engine, 2× fuel_tank_large / decoupler / vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 6003 m/s vacuum Δv | -112…-4 °C, 0.0 kPa, radiation 1.00; suits: eva; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there NO; power there yes |
-| spacebreaker:pluto | yes | step 16: round trip to spacebreaker:pluto/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 12295 m/s vacuum Δv | -233…-223 °C, 0.0 kPa, radiation 1.40; suits: heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
-| spacebreaker:proteus | yes | step 16: round trip to spacebreaker:proteus/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 10731 m/s vacuum Δv | -226…-218 °C, 0.0 kPa, radiation 1.50; suits: heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
-| spacebreaker:ryugu | yes | step 10: round trip to spacebreaker:ryugu/surface with 2-stage [kerosene_engine, fuel_tank_large / decoupler / vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 5123 m/s vacuum Δv | -70…50 °C, 0.0 kPa, radiation 1.40; suits: eva; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there NO; power there yes |
-| spacebreaker:tempel_1 | yes | step 10: round trip to spacebreaker:tempel_1/surface with 2-stage [kerosene_engine, 3× fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 7130 m/s vacuum Δv | -170…-60 °C, 0.0 kPa, radiation 1.40; suits: eva; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there NO; power there yes |
-| spacebreaker:titan | yes | step 16: round trip to spacebreaker:titan/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, fuel_tank_large_insulated, heat_shield, crew_capsule], 8244 m/s vacuum Δv | -180…-179 °C, 146.7 kPa, radiation 0.01; suits: eva/thermal/heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
-| spacebreaker:titania | yes | step 16: round trip to spacebreaker:titania/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 10731 m/s vacuum Δv | -214…-203 °C, 0.0 kPa, radiation 1.50; suits: heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
-| spacebreaker:triton | yes | step 16: round trip to spacebreaker:triton/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 10731 m/s vacuum Δv | -236…-235 °C, 0.0 kPa, radiation 1.50; suits: heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
-| spacebreaker:umbriel | yes | step 16: round trip to spacebreaker:umbriel/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 10731 m/s vacuum Δv | -214…-198 °C, 0.0 kPa, radiation 1.50; suits: heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
-| spacebreaker:venus | yes | step 16: round trip to spacebreaker:venus/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 12577 m/s vacuum Δv | 464…464 °C, 9200.0 kPa, radiation 0.00; suits: thermal; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
-| spacebreaker:venus_orbit | yes | step 10: round trip to spacebreaker:venus/orbit with 2-stage [kerosene_engine, 2× fuel_tank_large / decoupler / vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 6003 m/s vacuum Δv | in orbit (vacuum, inside the capsule); oxygen tank yes, filler yes, O₂ at home yes, O₂ made there NO; power there yes |
-| spacebreaker:vesta | yes | step 10: round trip to spacebreaker:vesta/surface with 3-stage [kerosene_engine, fuel_tank_large, fuel_tank_medium / decoupler / vacuum_engine, 3× fuel_tank_large / decoupler / vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 7848 m/s vacuum Δv | -190…-20 °C, 0.0 kPa, radiation 1.40; suits: eva; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there NO; power there yes |
+| spacebreaker:ariel | yes | step 16: round trip to spacebreaker:ariel/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 13065 m/s vacuum Δv | -213…-189 °C, 0.0 kPa, radiation 1.50; suits: heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
+| spacebreaker:bennu | yes | step 10: round trip to spacebreaker:bennu/surface with 2-stage [kerosene_engine, fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 6357 m/s vacuum Δv | -70…60 °C, 0.0 kPa, radiation 1.40; suits: eva; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there NO; power there yes |
+| spacebreaker:callisto | yes | step 16: round trip to spacebreaker:callisto/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 11260 m/s vacuum Δv | -193…-108 °C, 0.0 kPa, radiation 0.10; suits: heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
+| spacebreaker:ceres | yes | step 16: round trip to spacebreaker:ceres/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 11475 m/s vacuum Δv | -143…-38 °C, 0.0 kPa, radiation 1.40; suits: eva/thermal/heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
+| spacebreaker:charon | yes | step 16: round trip to spacebreaker:charon/surface with 2-stage [hydrolox_engine, 2× fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 13835 m/s vacuum Δv | -230…-220 °C, 0.0 kPa, radiation 1.40; suits: heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
+| spacebreaker:churyumov_gerasimenko | yes | step 10: round trip to spacebreaker:churyumov_gerasimenko/surface with 2-stage [kerosene_engine, 3× fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 7634 m/s vacuum Δv | -180…-70 °C, 0.0 kPa, radiation 1.40; suits: eva; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there NO; power there NO |
+| spacebreaker:deimos | yes | step 10: round trip to spacebreaker:deimos/surface with 2-stage [kerosene_engine, 2× fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 7074 m/s vacuum Δv | -110…-40 °C, 0.0 kPa, radiation 1.20; suits: eva; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there NO; power there yes |
+| spacebreaker:earth_orbit | yes | step 10: round trip to spacebreaker:earth/orbit with 1-stage [kerosene_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 4878 m/s vacuum Δv | in orbit (vacuum, inside the capsule); oxygen tank yes, filler yes, O₂ at home yes, O₂ made there NO; power there yes |
+| spacebreaker:enceladus | yes | step 16: round trip to spacebreaker:enceladus/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 13065 m/s vacuum Δv | -223…-198 °C, 0.0 kPa, radiation 2.00; suits: heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there NO; power there yes |
+| spacebreaker:encke | yes | step 16: round trip to spacebreaker:encke/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 11475 m/s vacuum Δv | -150…-20 °C, 0.0 kPa, radiation 1.40; suits: eva/thermal/heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
+| spacebreaker:eros | yes | step 10: round trip to spacebreaker:eros/surface with 2-stage [kerosene_engine, 2× fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 7074 m/s vacuum Δv | -120…20 °C, 0.0 kPa, radiation 1.40; suits: eva; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there NO; power there yes |
+| spacebreaker:europa | yes | step 16: round trip to spacebreaker:europa/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 13391 m/s vacuum Δv | -190…-150 °C, 0.0 kPa, radiation 5400.00; suits: eva/thermal/heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there NO; power there yes |
+| spacebreaker:ganymede | yes | step 16: round trip to spacebreaker:ganymede/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 13391 m/s vacuum Δv | -200…-121 °C, 0.0 kPa, radiation 80.00; suits: heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
+| spacebreaker:halley | yes | step 16: round trip to spacebreaker:halley/surface with 3-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 15960 m/s vacuum Δv | -230…-150 °C, 0.0 kPa, radiation 1.40; suits: heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there NO; power there yes |
+| spacebreaker:hydra | yes | step 16: round trip to spacebreaker:hydra/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 13065 m/s vacuum Δv | -235…-230 °C, 0.0 kPa, radiation 1.40; suits: heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
+| spacebreaker:io | yes | step 16: round trip to spacebreaker:io/surface with 2-stage [hydrolox_engine, 3× fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 14813 m/s vacuum Δv | -183…-143 °C, 0.0 kPa, radiation 36000.00; suits: eva/thermal/heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there NO; power there yes |
+| spacebreaker:itokawa | yes | step 10: round trip to spacebreaker:itokawa/surface with 2-stage [kerosene_engine, 2× fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 7074 m/s vacuum Δv | -100…30 °C, 0.0 kPa, radiation 1.40; suits: eva; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there NO; power there yes |
+| spacebreaker:mars | yes | step 10: round trip to spacebreaker:mars/surface with 3-stage [kerosene_engine, 2× fuel_tank_large / decoupler / vacuum_engine, 3× fuel_tank_large / decoupler / vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 8392 m/s vacuum Δv | -90…-10 °C, 0.6 kPa, radiation 0.67; suits: eva; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there NO; power there yes |
+| spacebreaker:mars_orbit | yes | step 10: round trip to spacebreaker:mars/orbit with 2-stage [kerosene_engine, fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 6357 m/s vacuum Δv | in orbit (vacuum, inside the capsule); oxygen tank yes, filler yes, O₂ at home yes, O₂ made there NO; power there yes |
+| spacebreaker:mercury | yes | step 16: round trip to spacebreaker:mercury/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 11260 m/s vacuum Δv | -180…430 °C, 0.0 kPa, radiation 2.00; suits: thermal; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
+| spacebreaker:mercury_orbit | yes | step 10: round trip to spacebreaker:mercury/orbit with 2-stage [kerosene_engine, 3× fuel_tank_large, fins / decoupler / vacuum_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 8016 m/s vacuum Δv | in orbit (vacuum, inside the capsule); oxygen tank yes, filler yes, O₂ at home yes, O₂ made there NO; power there yes |
+| spacebreaker:miranda | yes | step 16: round trip to spacebreaker:miranda/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 11260 m/s vacuum Δv | -213…-187 °C, 0.0 kPa, radiation 1.50; suits: heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
+| spacebreaker:moon | yes | step 10: round trip to spacebreaker:moon/surface with 2-stage [kerosene_engine, 3× fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 7634 m/s vacuum Δv | -173…120 °C, 0.0 kPa, radiation 1.37; suits: eva; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there NO; power there yes |
+| spacebreaker:moon_orbit | yes | step 10: round trip to spacebreaker:moon/orbit with 2-stage [kerosene_engine, fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 6357 m/s vacuum Δv | in orbit (vacuum, inside the capsule); oxygen tank yes, filler yes, O₂ at home yes, O₂ made there NO; power there yes |
+| spacebreaker:nereid | yes | step 16: round trip to spacebreaker:nereid/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 13065 m/s vacuum Δv | -226…-218 °C, 0.0 kPa, radiation 1.40; suits: heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
+| spacebreaker:nix | yes | step 16: round trip to spacebreaker:nix/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 13065 m/s vacuum Δv | -235…-230 °C, 0.0 kPa, radiation 1.40; suits: heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
+| spacebreaker:oberon | yes | step 16: round trip to spacebreaker:oberon/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 11260 m/s vacuum Δv | -214…-198 °C, 0.0 kPa, radiation 1.50; suits: heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
+| spacebreaker:orbit | yes | step 10: round trip to spacebreaker:bennu/orbit with 2-stage [kerosene_engine, fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 6357 m/s vacuum Δv | in orbit (vacuum, inside the capsule); oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
+| spacebreaker:phobos | yes | step 10: round trip to spacebreaker:phobos/surface with 2-stage [kerosene_engine, 2× fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 7074 m/s vacuum Δv | -112…-4 °C, 0.0 kPa, radiation 1.00; suits: eva; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there NO; power there yes |
+| spacebreaker:pluto | yes | step 16: round trip to spacebreaker:pluto/surface with 2-stage [hydrolox_engine, 3× fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 14476 m/s vacuum Δv | -233…-223 °C, 0.0 kPa, radiation 1.40; suits: heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
+| spacebreaker:proteus | yes | step 16: round trip to spacebreaker:proteus/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 13065 m/s vacuum Δv | -226…-218 °C, 0.0 kPa, radiation 1.50; suits: heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
+| spacebreaker:ryugu | yes | step 10: round trip to spacebreaker:ryugu/surface with 2-stage [kerosene_engine, fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 6357 m/s vacuum Δv | -70…50 °C, 0.0 kPa, radiation 1.40; suits: eva; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there NO; power there yes |
+| spacebreaker:tempel_1 | yes | step 10: round trip to spacebreaker:tempel_1/surface with 2-stage [kerosene_engine, 3× fuel_tank_large / decoupler / vacuum_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 8023 m/s vacuum Δv | -170…-60 °C, 0.0 kPa, radiation 1.40; suits: eva; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there NO; power there yes |
+| spacebreaker:titan | yes | step 16: round trip to spacebreaker:titan/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 11475 m/s vacuum Δv | -180…-179 °C, 146.7 kPa, radiation 0.01; suits: eva/thermal/heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
+| spacebreaker:titania | yes | step 16: round trip to spacebreaker:titania/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 11260 m/s vacuum Δv | -214…-203 °C, 0.0 kPa, radiation 1.50; suits: heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
+| spacebreaker:triton | yes | step 16: round trip to spacebreaker:triton/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 13065 m/s vacuum Δv | -236…-235 °C, 0.0 kPa, radiation 1.50; suits: heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
+| spacebreaker:umbriel | yes | step 16: round trip to spacebreaker:umbriel/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 11260 m/s vacuum Δv | -214…-198 °C, 0.0 kPa, radiation 1.50; suits: heated; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
+| spacebreaker:venus | yes | step 16: round trip to spacebreaker:venus/surface with 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 13391 m/s vacuum Δv | 464…464 °C, 9200.0 kPa, radiation 0.00; suits: thermal; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there yes; power there yes |
+| spacebreaker:venus_orbit | yes | step 10: round trip to spacebreaker:venus/orbit with 2-stage [kerosene_engine, 2× fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 7074 m/s vacuum Δv | in orbit (vacuum, inside the capsule); oxygen tank yes, filler yes, O₂ at home yes, O₂ made there NO; power there yes |
+| spacebreaker:vesta | yes | step 10: round trip to spacebreaker:vesta/surface with 3-stage [kerosene_engine, 3× fuel_tank_large / decoupler / vacuum_engine, 3× fuel_tank_large / decoupler / vacuum_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 9300 m/s vacuum Δv | -190…-20 °C, 0.0 kPa, radiation 1.40; suits: eva; oxygen tank yes, filler yes, O₂ at home yes, O₂ made there NO; power there yes |
 
 ### Items that cannot be obtained
 
@@ -730,80 +742,80 @@ None.
 
 | Destination | Mode | Δv needed (gameplay) | Smallest rocket |
 |---|---|---|---|
-| spacebreaker:mercury/orbit | round_trip | 6657 | 2-stage [kerosene_engine, 3× fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 7130 m/s vacuum Δv |
-| spacebreaker:venus/orbit | round_trip | 5559 | 2-stage [kerosene_engine, 2× fuel_tank_large / decoupler / vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 6003 m/s vacuum Δv |
-| spacebreaker:earth/surface | round_trip | 0 | 1-stage [vacuum_engine, fuel_tank_large, crew_capsule], 3887 m/s vacuum Δv |
-| spacebreaker:earth/orbit | round_trip | 3180 | 1-stage [kerosene_engine, fuel_tank_large, heat_shield, crew_capsule], 3274 m/s vacuum Δv |
-| spacebreaker:moon/surface | round_trip | 6226 | 2-stage [kerosene_engine, 3× fuel_tank_large / decoupler / vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 6625 m/s vacuum Δv |
-| spacebreaker:moon/orbit | round_trip | 4830 | 1-stage [kerosene_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 5083 m/s vacuum Δv |
-| spacebreaker:bennu/surface | round_trip | 4891 | 1-stage [kerosene_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 5083 m/s vacuum Δv |
-| spacebreaker:bennu/orbit | round_trip | 4891 | 1-stage [kerosene_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 5083 m/s vacuum Δv |
-| spacebreaker:ryugu/surface | round_trip | 5158 | 2-stage [kerosene_engine, fuel_tank_large / decoupler / vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 5123 m/s vacuum Δv |
-| spacebreaker:ryugu/orbit | round_trip | 5157 | 2-stage [kerosene_engine, fuel_tank_large / decoupler / vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 5123 m/s vacuum Δv |
-| spacebreaker:itokawa/surface | round_trip | 5660 | 2-stage [kerosene_engine, 2× fuel_tank_large / decoupler / vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 6003 m/s vacuum Δv |
-| spacebreaker:itokawa/orbit | round_trip | 5660 | 2-stage [kerosene_engine, 2× fuel_tank_large / decoupler / vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 6003 m/s vacuum Δv |
-| spacebreaker:eros/surface | round_trip | 5872 | 2-stage [kerosene_engine, 2× fuel_tank_large / decoupler / vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 6003 m/s vacuum Δv |
-| spacebreaker:eros/orbit | round_trip | 5867 | 2-stage [kerosene_engine, 2× fuel_tank_large / decoupler / vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 6003 m/s vacuum Δv |
-| spacebreaker:mars/surface | round_trip | 6562 | 2-stage [kerosene_engine, 3× fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 7130 m/s vacuum Δv |
-| spacebreaker:mars/orbit | round_trip | 5164 | 2-stage [kerosene_engine, fuel_tank_large / decoupler / vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 5123 m/s vacuum Δv |
-| spacebreaker:phobos/surface | round_trip | 5524 | 2-stage [kerosene_engine, 2× fuel_tank_large / decoupler / vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 6003 m/s vacuum Δv |
-| spacebreaker:phobos/orbit | round_trip | 5520 | 2-stage [kerosene_engine, 2× fuel_tank_large / decoupler / vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 6003 m/s vacuum Δv |
-| spacebreaker:deimos/surface | round_trip | 5713 | 2-stage [kerosene_engine, 2× fuel_tank_large / decoupler / vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 6003 m/s vacuum Δv |
-| spacebreaker:deimos/orbit | round_trip | 5710 | 2-stage [kerosene_engine, 2× fuel_tank_large / decoupler / vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 6003 m/s vacuum Δv |
-| spacebreaker:vesta/surface | round_trip | 7456 | 3-stage [kerosene_engine, fuel_tank_large, fuel_tank_medium / decoupler / vacuum_engine, 3× fuel_tank_large / decoupler / vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 7848 m/s vacuum Δv |
-| spacebreaker:vesta/orbit | round_trip | 7302 | 3-stage [kerosene_engine, fuel_tank_large / decoupler / vacuum_engine, 3× fuel_tank_large / decoupler / vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 7515 m/s vacuum Δv |
-| spacebreaker:tempel_1/surface | round_trip | 6598 | 2-stage [kerosene_engine, 3× fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 7130 m/s vacuum Δv |
-| spacebreaker:tempel_1/orbit | round_trip | 6597 | 2-stage [kerosene_engine, 3× fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 7130 m/s vacuum Δv |
-| spacebreaker:churyumov_gerasimenko/surface | round_trip | 6178 | 2-stage [kerosene_engine, 3× fuel_tank_large / decoupler / vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 6625 m/s vacuum Δv |
-| spacebreaker:churyumov_gerasimenko/orbit | round_trip | 6178 | 2-stage [kerosene_engine, 3× fuel_tank_large / decoupler / vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 6625 m/s vacuum Δv |
-| spacebreaker:titan/orbit | round_trip | 6743 | 2-stage [kerosene_engine, 3× fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 7130 m/s vacuum Δv |
-| spacebreaker:mercury/surface | round_trip | 9161 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 10924 m/s vacuum Δv |
-| spacebreaker:venus/surface | round_trip | 9187 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 12577 m/s vacuum Δv |
-| spacebreaker:encke/surface | round_trip | 7943 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, fuel_tank_large, heat_shield, crew_capsule], 8335 m/s vacuum Δv |
-| spacebreaker:encke/orbit | round_trip | 7943 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, fuel_tank_large, heat_shield, crew_capsule], 8335 m/s vacuum Δv |
-| spacebreaker:ceres/surface | round_trip | 7980 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, fuel_tank_large, heat_shield, crew_capsule], 8335 m/s vacuum Δv |
-| spacebreaker:ceres/orbit | round_trip | 7739 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, fuel_tank_large, heat_shield, crew_capsule], 8335 m/s vacuum Δv |
-| spacebreaker:jupiter/orbit | round_trip | 11631 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 12295 m/s vacuum Δv |
-| spacebreaker:io/surface | round_trip | 11331 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 12577 m/s vacuum Δv |
-| spacebreaker:io/orbit | round_trip | 9875 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 10924 m/s vacuum Δv |
-| spacebreaker:europa/surface | round_trip | 10310 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 10924 m/s vacuum Δv |
-| spacebreaker:europa/orbit | round_trip | 9138 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 10924 m/s vacuum Δv |
-| spacebreaker:callisto/surface | round_trip | 9304 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 10924 m/s vacuum Δv |
-| spacebreaker:callisto/orbit | round_trip | 7872 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, fuel_tank_large, heat_shield, crew_capsule], 8335 m/s vacuum Δv |
-| spacebreaker:ganymede/surface | round_trip | 9924 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 10924 m/s vacuum Δv |
-| spacebreaker:ganymede/orbit | round_trip | 8327 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 10924 m/s vacuum Δv |
-| spacebreaker:saturn/orbit | round_trip | 9545 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 10731 m/s vacuum Δv |
-| spacebreaker:enceladus/surface | round_trip | 9735 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 10731 m/s vacuum Δv |
-| spacebreaker:enceladus/orbit | round_trip | 9604 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 10731 m/s vacuum Δv |
-| spacebreaker:titan/surface | round_trip | 7615 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, fuel_tank_large_insulated, heat_shield, crew_capsule], 8244 m/s vacuum Δv |
-| spacebreaker:halley/surface | round_trip | 11124 | 2-stage [hydrolox_engine, 2× fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 13032 m/s vacuum Δv |
-| spacebreaker:halley/orbit | round_trip | 11123 | 2-stage [hydrolox_engine, 2× fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 13032 m/s vacuum Δv |
-| spacebreaker:uranus/orbit | round_trip | 8313 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 10731 m/s vacuum Δv |
-| spacebreaker:miranda/surface | round_trip | 8665 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 10731 m/s vacuum Δv |
-| spacebreaker:miranda/orbit | round_trip | 8560 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 10924 m/s vacuum Δv |
-| spacebreaker:ariel/surface | round_trip | 8478 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 10731 m/s vacuum Δv |
-| spacebreaker:ariel/orbit | round_trip | 8173 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 10731 m/s vacuum Δv |
-| spacebreaker:umbriel/surface | round_trip | 8317 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 10731 m/s vacuum Δv |
-| spacebreaker:umbriel/orbit | round_trip | 8005 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 10731 m/s vacuum Δv |
-| spacebreaker:titania/surface | round_trip | 8214 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 10731 m/s vacuum Δv |
-| spacebreaker:titania/orbit | round_trip | 7772 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 10731 m/s vacuum Δv |
-| spacebreaker:oberon/surface | round_trip | 8148 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 10731 m/s vacuum Δv |
-| spacebreaker:oberon/orbit | round_trip | 7718 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 10731 m/s vacuum Δv |
-| spacebreaker:neptune/orbit | round_trip | 8578 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 10731 m/s vacuum Δv |
-| spacebreaker:proteus/surface | round_trip | 8781 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 10731 m/s vacuum Δv |
-| spacebreaker:proteus/orbit | round_trip | 8692 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 10731 m/s vacuum Δv |
-| spacebreaker:triton/surface | round_trip | 8525 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 10731 m/s vacuum Δv |
-| spacebreaker:triton/orbit | round_trip | 7681 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, fuel_tank_large_insulated, heat_shield, crew_capsule], 8244 m/s vacuum Δv |
-| spacebreaker:nereid/surface | round_trip | 7906 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 10731 m/s vacuum Δv |
-| spacebreaker:nereid/orbit | round_trip | 7832 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 10731 m/s vacuum Δv |
-| spacebreaker:pluto/surface | round_trip | 8608 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 12295 m/s vacuum Δv |
-| spacebreaker:pluto/orbit | round_trip | 7904 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 10731 m/s vacuum Δv |
-| spacebreaker:charon/surface | round_trip | 8275 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 12295 m/s vacuum Δv |
-| spacebreaker:charon/orbit | round_trip | 7932 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 10731 m/s vacuum Δv |
-| spacebreaker:nix/surface | round_trip | 8156 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 12295 m/s vacuum Δv |
-| spacebreaker:nix/orbit | round_trip | 8146 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 10731 m/s vacuum Δv |
-| spacebreaker:hydra/surface | round_trip | 8162 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 12295 m/s vacuum Δv |
-| spacebreaker:hydra/orbit | round_trip | 8154 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 12295 m/s vacuum Δv |
+| spacebreaker:mercury/orbit | round_trip | 7988 | 2-stage [kerosene_engine, 3× fuel_tank_large, fins / decoupler / vacuum_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 8016 m/s vacuum Δv |
+| spacebreaker:venus/orbit | round_trip | 6670 | 2-stage [kerosene_engine, 2× fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 7074 m/s vacuum Δv |
+| spacebreaker:earth/surface | round_trip | 0 | 1-stage [vacuum_engine, fuel_tank_large, crew_capsule], 4097 m/s vacuum Δv |
+| spacebreaker:earth/orbit | round_trip | 3816 | 1-stage [kerosene_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 4878 m/s vacuum Δv |
+| spacebreaker:moon/surface | round_trip | 7472 | 2-stage [kerosene_engine, 3× fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 7634 m/s vacuum Δv |
+| spacebreaker:moon/orbit | round_trip | 5796 | 2-stage [kerosene_engine, fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 6357 m/s vacuum Δv |
+| spacebreaker:bennu/surface | round_trip | 5869 | 2-stage [kerosene_engine, fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 6357 m/s vacuum Δv |
+| spacebreaker:bennu/orbit | round_trip | 5869 | 2-stage [kerosene_engine, fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 6357 m/s vacuum Δv |
+| spacebreaker:ryugu/surface | round_trip | 6189 | 2-stage [kerosene_engine, fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 6357 m/s vacuum Δv |
+| spacebreaker:ryugu/orbit | round_trip | 6189 | 2-stage [kerosene_engine, fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 6357 m/s vacuum Δv |
+| spacebreaker:itokawa/surface | round_trip | 6793 | 2-stage [kerosene_engine, 2× fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 7074 m/s vacuum Δv |
+| spacebreaker:itokawa/orbit | round_trip | 6792 | 2-stage [kerosene_engine, 2× fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 7074 m/s vacuum Δv |
+| spacebreaker:eros/surface | round_trip | 7046 | 2-stage [kerosene_engine, 2× fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 7074 m/s vacuum Δv |
+| spacebreaker:eros/orbit | round_trip | 7041 | 2-stage [kerosene_engine, 2× fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 7074 m/s vacuum Δv |
+| spacebreaker:mars/surface | round_trip | 7875 | 3-stage [kerosene_engine, 2× fuel_tank_large / decoupler / vacuum_engine, 3× fuel_tank_large / decoupler / vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 8392 m/s vacuum Δv |
+| spacebreaker:mars/orbit | round_trip | 6197 | 2-stage [kerosene_engine, fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 6357 m/s vacuum Δv |
+| spacebreaker:phobos/surface | round_trip | 6629 | 2-stage [kerosene_engine, 2× fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 7074 m/s vacuum Δv |
+| spacebreaker:phobos/orbit | round_trip | 6623 | 2-stage [kerosene_engine, 2× fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 7074 m/s vacuum Δv |
+| spacebreaker:deimos/surface | round_trip | 6855 | 2-stage [kerosene_engine, 2× fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 7074 m/s vacuum Δv |
+| spacebreaker:deimos/orbit | round_trip | 6851 | 2-stage [kerosene_engine, 2× fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 7074 m/s vacuum Δv |
+| spacebreaker:vesta/surface | round_trip | 8947 | 3-stage [kerosene_engine, 3× fuel_tank_large / decoupler / vacuum_engine, 3× fuel_tank_large / decoupler / vacuum_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 9300 m/s vacuum Δv |
+| spacebreaker:vesta/orbit | round_trip | 8763 | 3-stage [kerosene_engine, 3× fuel_tank_large / decoupler / vacuum_engine, 3× fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 9119 m/s vacuum Δv |
+| spacebreaker:tempel_1/surface | round_trip | 7918 | 2-stage [kerosene_engine, 3× fuel_tank_large / decoupler / vacuum_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 8023 m/s vacuum Δv |
+| spacebreaker:tempel_1/orbit | round_trip | 7917 | 2-stage [kerosene_engine, 3× fuel_tank_large / decoupler / vacuum_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 8023 m/s vacuum Δv |
+| spacebreaker:churyumov_gerasimenko/surface | round_trip | 7414 | 2-stage [kerosene_engine, 3× fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 7634 m/s vacuum Δv |
+| spacebreaker:churyumov_gerasimenko/orbit | round_trip | 7414 | 2-stage [kerosene_engine, 3× fuel_tank_large / decoupler / vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 7634 m/s vacuum Δv |
+| spacebreaker:titan/orbit | round_trip | 8091 | 3-stage [kerosene_engine, 2× fuel_tank_large / decoupler / vacuum_engine, 3× fuel_tank_large / decoupler / vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 8392 m/s vacuum Δv |
+| spacebreaker:mercury/surface | round_trip | 10993 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 11260 m/s vacuum Δv |
+| spacebreaker:venus/surface | round_trip | 11025 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 13391 m/s vacuum Δv |
+| spacebreaker:encke/surface | round_trip | 9532 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 11475 m/s vacuum Δv |
+| spacebreaker:encke/orbit | round_trip | 9531 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 11475 m/s vacuum Δv |
+| spacebreaker:ceres/surface | round_trip | 9576 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 11475 m/s vacuum Δv |
+| spacebreaker:ceres/orbit | round_trip | 9287 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 11475 m/s vacuum Δv |
+| spacebreaker:jupiter/orbit | round_trip | 13957 | 3-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 14673 m/s vacuum Δv |
+| spacebreaker:io/surface | round_trip | 13597 | 2-stage [hydrolox_engine, 3× fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 14813 m/s vacuum Δv |
+| spacebreaker:io/orbit | round_trip | 11850 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 13391 m/s vacuum Δv |
+| spacebreaker:europa/surface | round_trip | 12372 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 13391 m/s vacuum Δv |
+| spacebreaker:europa/orbit | round_trip | 10965 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 11475 m/s vacuum Δv |
+| spacebreaker:callisto/surface | round_trip | 11164 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 11260 m/s vacuum Δv |
+| spacebreaker:callisto/orbit | round_trip | 9447 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 11475 m/s vacuum Δv |
+| spacebreaker:ganymede/surface | round_trip | 11908 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 13391 m/s vacuum Δv |
+| spacebreaker:ganymede/orbit | round_trip | 9993 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 11475 m/s vacuum Δv |
+| spacebreaker:saturn/orbit | round_trip | 11454 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 13391 m/s vacuum Δv |
+| spacebreaker:enceladus/surface | round_trip | 11682 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 13065 m/s vacuum Δv |
+| spacebreaker:enceladus/orbit | round_trip | 11524 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 13391 m/s vacuum Δv |
+| spacebreaker:titan/surface | round_trip | 9138 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 11475 m/s vacuum Δv |
+| spacebreaker:halley/surface | round_trip | 13349 | 3-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 15960 m/s vacuum Δv |
+| spacebreaker:halley/orbit | round_trip | 13348 | 3-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 15960 m/s vacuum Δv |
+| spacebreaker:uranus/orbit | round_trip | 9975 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 11260 m/s vacuum Δv |
+| spacebreaker:miranda/surface | round_trip | 10398 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 11260 m/s vacuum Δv |
+| spacebreaker:miranda/orbit | round_trip | 10272 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 11260 m/s vacuum Δv |
+| spacebreaker:ariel/surface | round_trip | 10174 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 13065 m/s vacuum Δv |
+| spacebreaker:ariel/orbit | round_trip | 9808 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 11260 m/s vacuum Δv |
+| spacebreaker:umbriel/surface | round_trip | 9981 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 11260 m/s vacuum Δv |
+| spacebreaker:umbriel/orbit | round_trip | 9606 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 11260 m/s vacuum Δv |
+| spacebreaker:titania/surface | round_trip | 9857 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 11260 m/s vacuum Δv |
+| spacebreaker:titania/orbit | round_trip | 9326 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 11260 m/s vacuum Δv |
+| spacebreaker:oberon/surface | round_trip | 9777 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 11260 m/s vacuum Δv |
+| spacebreaker:oberon/orbit | round_trip | 9261 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 11260 m/s vacuum Δv |
+| spacebreaker:neptune/orbit | round_trip | 10293 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 13065 m/s vacuum Δv |
+| spacebreaker:proteus/surface | round_trip | 10537 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 13065 m/s vacuum Δv |
+| spacebreaker:proteus/orbit | round_trip | 10430 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 13065 m/s vacuum Δv |
+| spacebreaker:triton/surface | round_trip | 10230 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 13065 m/s vacuum Δv |
+| spacebreaker:triton/orbit | round_trip | 9217 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 11260 m/s vacuum Δv |
+| spacebreaker:nereid/surface | round_trip | 9487 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 13065 m/s vacuum Δv |
+| spacebreaker:nereid/orbit | round_trip | 9399 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large_insulated, heat_shield, crew_capsule], 11260 m/s vacuum Δv |
+| spacebreaker:pluto/surface | round_trip | 10330 | 2-stage [hydrolox_engine, 3× fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 14476 m/s vacuum Δv |
+| spacebreaker:pluto/orbit | round_trip | 9485 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 13065 m/s vacuum Δv |
+| spacebreaker:charon/surface | round_trip | 9930 | 2-stage [hydrolox_engine, 2× fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 13835 m/s vacuum Δv |
+| spacebreaker:charon/orbit | round_trip | 9518 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 13065 m/s vacuum Δv |
+| spacebreaker:nix/surface | round_trip | 9787 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 13065 m/s vacuum Δv |
+| spacebreaker:nix/orbit | round_trip | 9775 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 13065 m/s vacuum Δv |
+| spacebreaker:hydra/surface | round_trip | 9794 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 13065 m/s vacuum Δv |
+| spacebreaker:hydra/orbit | round_trip | 9784 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 13065 m/s vacuum Δv |
 
 ### Missions the best buildable rocket cannot fly
 
@@ -813,83 +825,83 @@ None.
 
 ### Uncrewed missions (satellites and probes, one way)
 
-- observation_satellite → spacebreaker:ariel/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, observation_satellite], 7849 m/s vacuum Δv
-- observation_satellite → spacebreaker:bennu/orbit: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, observation_satellite], 8008 m/s vacuum Δv
-- observation_satellite → spacebreaker:callisto/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, observation_satellite], 7849 m/s vacuum Δv
-- observation_satellite → spacebreaker:ceres/orbit: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, observation_satellite], 8008 m/s vacuum Δv
-- observation_satellite → spacebreaker:charon/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, observation_satellite], 7849 m/s vacuum Δv
-- observation_satellite → spacebreaker:churyumov_gerasimenko/orbit: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, observation_satellite], 8008 m/s vacuum Δv
-- observation_satellite → spacebreaker:deimos/orbit: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, observation_satellite], 8008 m/s vacuum Δv
-- observation_satellite → spacebreaker:enceladus/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, observation_satellite], 7849 m/s vacuum Δv
-- observation_satellite → spacebreaker:encke/orbit: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, observation_satellite], 8008 m/s vacuum Δv
-- observation_satellite → spacebreaker:eros/orbit: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, observation_satellite], 8008 m/s vacuum Δv
-- observation_satellite → spacebreaker:europa/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, observation_satellite], 7849 m/s vacuum Δv
-- observation_satellite → spacebreaker:ganymede/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, observation_satellite], 7849 m/s vacuum Δv
+- observation_satellite → spacebreaker:ariel/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, observation_satellite], 8655 m/s vacuum Δv
+- observation_satellite → spacebreaker:bennu/orbit: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, observation_satellite], 8340 m/s vacuum Δv
+- observation_satellite → spacebreaker:callisto/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, observation_satellite], 8655 m/s vacuum Δv
+- observation_satellite → spacebreaker:ceres/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, observation_satellite], 8655 m/s vacuum Δv
+- observation_satellite → spacebreaker:charon/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, observation_satellite], 8655 m/s vacuum Δv
+- observation_satellite → spacebreaker:churyumov_gerasimenko/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, observation_satellite], 8655 m/s vacuum Δv
+- observation_satellite → spacebreaker:deimos/orbit: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, observation_satellite], 8340 m/s vacuum Δv
+- observation_satellite → spacebreaker:enceladus/orbit: flown: 1-stage [hydrolox_engine, 3× fuel_tank_large, observation_satellite], 9679 m/s vacuum Δv
+- observation_satellite → spacebreaker:encke/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, observation_satellite], 8655 m/s vacuum Δv
+- observation_satellite → spacebreaker:eros/orbit: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, observation_satellite], 8340 m/s vacuum Δv
+- observation_satellite → spacebreaker:europa/orbit: flown: 1-stage [hydrolox_engine, 3× fuel_tank_large, observation_satellite], 9679 m/s vacuum Δv
+- observation_satellite → spacebreaker:ganymede/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, observation_satellite], 8655 m/s vacuum Δv
 - observation_satellite → spacebreaker:hale_bopp/orbit: NOT POSSIBLE: no_route (leg 1); path spacebreaker:earth/orbit (shield 0) → spacebreaker:hale_bopp/orbit (shield 0)
-- observation_satellite → spacebreaker:halley/orbit: flown: 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, fuel_tank_large, observation_satellite], 9915 m/s vacuum Δv
-- observation_satellite → spacebreaker:hydra/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, observation_satellite], 7849 m/s vacuum Δv
-- observation_satellite → spacebreaker:io/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, observation_satellite], 7849 m/s vacuum Δv
-- observation_satellite → spacebreaker:itokawa/orbit: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, observation_satellite], 8008 m/s vacuum Δv
-- observation_satellite → spacebreaker:jupiter/orbit: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, heat_shield, observation_satellite], 7714 m/s vacuum Δv
-- observation_satellite → spacebreaker:mars/orbit: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, heat_shield, observation_satellite], 7714 m/s vacuum Δv
-- observation_satellite → spacebreaker:mercury/orbit: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, observation_satellite], 8008 m/s vacuum Δv
-- observation_satellite → spacebreaker:miranda/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, observation_satellite], 7849 m/s vacuum Δv
-- observation_satellite → spacebreaker:moon/orbit: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, observation_satellite], 8008 m/s vacuum Δv
-- observation_satellite → spacebreaker:neptune/orbit: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, heat_shield, observation_satellite], 7714 m/s vacuum Δv
-- observation_satellite → spacebreaker:nereid/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, observation_satellite], 7849 m/s vacuum Δv
-- observation_satellite → spacebreaker:nix/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, observation_satellite], 7849 m/s vacuum Δv
-- observation_satellite → spacebreaker:oberon/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, observation_satellite], 7849 m/s vacuum Δv
-- observation_satellite → spacebreaker:phobos/orbit: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, observation_satellite], 8008 m/s vacuum Δv
-- observation_satellite → spacebreaker:pluto/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, observation_satellite], 7849 m/s vacuum Δv
-- observation_satellite → spacebreaker:proteus/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, observation_satellite], 7849 m/s vacuum Δv
-- observation_satellite → spacebreaker:ryugu/orbit: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, observation_satellite], 8008 m/s vacuum Δv
-- observation_satellite → spacebreaker:saturn/orbit: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, heat_shield, observation_satellite], 7714 m/s vacuum Δv
-- observation_satellite → spacebreaker:tempel_1/orbit: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, observation_satellite], 8008 m/s vacuum Δv
-- observation_satellite → spacebreaker:titan/orbit: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, heat_shield, observation_satellite], 7714 m/s vacuum Δv
-- observation_satellite → spacebreaker:titania/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, observation_satellite], 7849 m/s vacuum Δv
-- observation_satellite → spacebreaker:triton/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, observation_satellite], 7849 m/s vacuum Δv
-- observation_satellite → spacebreaker:umbriel/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, observation_satellite], 7849 m/s vacuum Δv
-- observation_satellite → spacebreaker:uranus/orbit: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, heat_shield, observation_satellite], 7714 m/s vacuum Δv
-- observation_satellite → spacebreaker:venus/orbit: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, heat_shield, observation_satellite], 7714 m/s vacuum Δv
-- observation_satellite → spacebreaker:vesta/orbit: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, observation_satellite], 8008 m/s vacuum Δv
-- space_probe → spacebreaker:ariel/surface: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, space_probe], 8214 m/s vacuum Δv
-- space_probe → spacebreaker:bennu/surface: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, space_probe], 8329 m/s vacuum Δv
-- space_probe → spacebreaker:callisto/surface: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, space_probe], 8214 m/s vacuum Δv
-- space_probe → spacebreaker:ceres/surface: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, space_probe], 8329 m/s vacuum Δv
-- space_probe → spacebreaker:charon/surface: flown: 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, fuel_tank_large_insulated, space_probe], 10124 m/s vacuum Δv
-- space_probe → spacebreaker:churyumov_gerasimenko/surface: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, space_probe], 8329 m/s vacuum Δv
-- space_probe → spacebreaker:deimos/surface: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, space_probe], 8329 m/s vacuum Δv
-- space_probe → spacebreaker:enceladus/surface: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, space_probe], 8214 m/s vacuum Δv
-- space_probe → spacebreaker:encke/surface: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, space_probe], 8329 m/s vacuum Δv
-- space_probe → spacebreaker:eros/surface: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, space_probe], 8329 m/s vacuum Δv
-- space_probe → spacebreaker:europa/surface: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, space_probe], 8214 m/s vacuum Δv
-- space_probe → spacebreaker:ganymede/surface: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, space_probe], 8214 m/s vacuum Δv
-- space_probe → spacebreaker:halley/surface: flown: 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, fuel_tank_large, space_probe], 10268 m/s vacuum Δv
-- space_probe → spacebreaker:hydra/surface: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, space_probe], 8214 m/s vacuum Δv
-- space_probe → spacebreaker:io/surface: flown: 1-stage [hydrolox_engine, 3× fuel_tank_large, space_probe], 8931 m/s vacuum Δv
-- space_probe → spacebreaker:itokawa/surface: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, space_probe], 8329 m/s vacuum Δv
-- space_probe → spacebreaker:mars/surface: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, space_probe], 8329 m/s vacuum Δv
-- space_probe → spacebreaker:mercury/surface: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, space_probe], 8214 m/s vacuum Δv
-- space_probe → spacebreaker:miranda/surface: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, space_probe], 8214 m/s vacuum Δv
-- space_probe → spacebreaker:moon/surface: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, space_probe], 8329 m/s vacuum Δv
-- space_probe → spacebreaker:nereid/surface: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, space_probe], 8214 m/s vacuum Δv
-- space_probe → spacebreaker:nix/surface: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, space_probe], 8214 m/s vacuum Δv
-- space_probe → spacebreaker:oberon/surface: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, space_probe], 8214 m/s vacuum Δv
-- space_probe → spacebreaker:phobos/surface: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, space_probe], 8329 m/s vacuum Δv
-- space_probe → spacebreaker:pluto/surface: flown: 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, fuel_tank_large_insulated, space_probe], 10124 m/s vacuum Δv
-- space_probe → spacebreaker:proteus/surface: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, space_probe], 8214 m/s vacuum Δv
-- space_probe → spacebreaker:ryugu/surface: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, space_probe], 8329 m/s vacuum Δv
-- space_probe → spacebreaker:tempel_1/surface: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, space_probe], 8329 m/s vacuum Δv
-- space_probe → spacebreaker:titan/surface: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, space_probe], 8329 m/s vacuum Δv
-- space_probe → spacebreaker:titania/surface: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, space_probe], 8214 m/s vacuum Δv
-- space_probe → spacebreaker:triton/surface: flown: 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, fuel_tank_large, space_probe], 10268 m/s vacuum Δv
-- space_probe → spacebreaker:umbriel/surface: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, space_probe], 8214 m/s vacuum Δv
-- space_probe → spacebreaker:venus/surface: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, space_probe], 8329 m/s vacuum Δv
-- space_probe → spacebreaker:vesta/surface: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, space_probe], 8329 m/s vacuum Δv
+- observation_satellite → spacebreaker:halley/orbit: flown: 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large, observation_satellite], 13329 m/s vacuum Δv
+- observation_satellite → spacebreaker:hydra/orbit: flown: 1-stage [hydrolox_engine, 3× fuel_tank_large, observation_satellite], 9679 m/s vacuum Δv
+- observation_satellite → spacebreaker:io/orbit: flown: 1-stage [hydrolox_engine, 3× fuel_tank_large, observation_satellite], 9679 m/s vacuum Δv
+- observation_satellite → spacebreaker:itokawa/orbit: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, observation_satellite], 8340 m/s vacuum Δv
+- observation_satellite → spacebreaker:jupiter/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, heat_shield, observation_satellite], 8240 m/s vacuum Δv
+- observation_satellite → spacebreaker:mars/orbit: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, heat_shield, observation_satellite], 8019 m/s vacuum Δv
+- observation_satellite → spacebreaker:mercury/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, observation_satellite], 8655 m/s vacuum Δv
+- observation_satellite → spacebreaker:miranda/orbit: flown: 1-stage [hydrolox_engine, 3× fuel_tank_large, observation_satellite], 9679 m/s vacuum Δv
+- observation_satellite → spacebreaker:moon/orbit: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, observation_satellite], 8340 m/s vacuum Δv
+- observation_satellite → spacebreaker:neptune/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, heat_shield, observation_satellite], 8240 m/s vacuum Δv
+- observation_satellite → spacebreaker:nereid/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, observation_satellite], 8655 m/s vacuum Δv
+- observation_satellite → spacebreaker:nix/orbit: flown: 1-stage [hydrolox_engine, 3× fuel_tank_large, observation_satellite], 9679 m/s vacuum Δv
+- observation_satellite → spacebreaker:oberon/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, observation_satellite], 8655 m/s vacuum Δv
+- observation_satellite → spacebreaker:phobos/orbit: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, observation_satellite], 8340 m/s vacuum Δv
+- observation_satellite → spacebreaker:pluto/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, observation_satellite], 8655 m/s vacuum Δv
+- observation_satellite → spacebreaker:proteus/orbit: flown: 1-stage [hydrolox_engine, 3× fuel_tank_large, observation_satellite], 9679 m/s vacuum Δv
+- observation_satellite → spacebreaker:ryugu/orbit: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, observation_satellite], 8340 m/s vacuum Δv
+- observation_satellite → spacebreaker:saturn/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, heat_shield, observation_satellite], 8240 m/s vacuum Δv
+- observation_satellite → spacebreaker:tempel_1/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, observation_satellite], 8655 m/s vacuum Δv
+- observation_satellite → spacebreaker:titan/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, heat_shield, observation_satellite], 8240 m/s vacuum Δv
+- observation_satellite → spacebreaker:titania/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, observation_satellite], 8655 m/s vacuum Δv
+- observation_satellite → spacebreaker:triton/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, observation_satellite], 8655 m/s vacuum Δv
+- observation_satellite → spacebreaker:umbriel/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, observation_satellite], 8655 m/s vacuum Δv
+- observation_satellite → spacebreaker:uranus/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, heat_shield, observation_satellite], 8240 m/s vacuum Δv
+- observation_satellite → spacebreaker:venus/orbit: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, heat_shield, observation_satellite], 8019 m/s vacuum Δv
+- observation_satellite → spacebreaker:vesta/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, observation_satellite], 8655 m/s vacuum Δv
+- space_probe → spacebreaker:ariel/surface: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, space_probe], 9129 m/s vacuum Δv
+- space_probe → spacebreaker:bennu/surface: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, space_probe], 8690 m/s vacuum Δv
+- space_probe → spacebreaker:callisto/surface: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, space_probe], 9129 m/s vacuum Δv
+- space_probe → spacebreaker:ceres/surface: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, space_probe], 9129 m/s vacuum Δv
+- space_probe → spacebreaker:charon/surface: flown: 2-stage [hydrolox_engine, fuel_tank_large / decoupler / hydrolox_vacuum_engine, fuel_tank_large_insulated, space_probe], 10684 m/s vacuum Δv
+- space_probe → spacebreaker:churyumov_gerasimenko/surface: flown: 1-stage [hydrolox_vacuum_engine, fuel_tank_large, space_probe], 8558 m/s vacuum Δv
+- space_probe → spacebreaker:deimos/surface: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, space_probe], 8690 m/s vacuum Δv
+- space_probe → spacebreaker:enceladus/surface: flown: 1-stage [hydrolox_engine, 3× fuel_tank_large, space_probe], 10101 m/s vacuum Δv
+- space_probe → spacebreaker:encke/surface: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, space_probe], 9129 m/s vacuum Δv
+- space_probe → spacebreaker:eros/surface: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, space_probe], 8690 m/s vacuum Δv
+- space_probe → spacebreaker:europa/surface: flown: 1-stage [hydrolox_engine, 3× fuel_tank_large, space_probe], 10101 m/s vacuum Δv
+- space_probe → spacebreaker:ganymede/surface: flown: 1-stage [hydrolox_engine, 3× fuel_tank_large, space_probe], 10101 m/s vacuum Δv
+- space_probe → spacebreaker:halley/surface: flown: 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large, space_probe], 13735 m/s vacuum Δv
+- space_probe → spacebreaker:hydra/surface: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, space_probe], 9129 m/s vacuum Δv
+- space_probe → spacebreaker:io/surface: flown: 2-stage [hydrolox_engine, fuel_tank_large / decoupler / hydrolox_vacuum_engine, fuel_tank_large, space_probe], 11019 m/s vacuum Δv
+- space_probe → spacebreaker:itokawa/surface: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, space_probe], 8690 m/s vacuum Δv
+- space_probe → spacebreaker:mars/surface: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, space_probe], 8690 m/s vacuum Δv
+- space_probe → spacebreaker:mercury/surface: flown: 1-stage [hydrolox_engine, 3× fuel_tank_large, space_probe], 10101 m/s vacuum Δv
+- space_probe → spacebreaker:miranda/surface: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, space_probe], 9129 m/s vacuum Δv
+- space_probe → spacebreaker:moon/surface: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, space_probe], 8690 m/s vacuum Δv
+- space_probe → spacebreaker:nereid/surface: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, space_probe], 9129 m/s vacuum Δv
+- space_probe → spacebreaker:nix/surface: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, space_probe], 9129 m/s vacuum Δv
+- space_probe → spacebreaker:oberon/surface: flown: 1-stage [hydrolox_engine, 3× fuel_tank_large, space_probe], 10101 m/s vacuum Δv
+- space_probe → spacebreaker:phobos/surface: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, space_probe], 8690 m/s vacuum Δv
+- space_probe → spacebreaker:pluto/surface: flown: 2-stage [hydrolox_engine, fuel_tank_large / decoupler / hydrolox_vacuum_engine, fuel_tank_large_insulated, space_probe], 10684 m/s vacuum Δv
+- space_probe → spacebreaker:proteus/surface: flown: 1-stage [hydrolox_engine, 3× fuel_tank_large, space_probe], 10101 m/s vacuum Δv
+- space_probe → spacebreaker:ryugu/surface: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, space_probe], 8690 m/s vacuum Δv
+- space_probe → spacebreaker:tempel_1/surface: flown: 1-stage [hydrolox_engine, fuel_tank_large, space_probe], 7245 m/s vacuum Δv
+- space_probe → spacebreaker:titan/surface: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, space_probe], 8690 m/s vacuum Δv
+- space_probe → spacebreaker:titania/surface: flown: 1-stage [hydrolox_engine, 3× fuel_tank_large, space_probe], 10101 m/s vacuum Δv
+- space_probe → spacebreaker:triton/surface: flown: 2-stage [hydrolox_engine, fuel_tank_large / decoupler / hydrolox_vacuum_engine, fuel_tank_large_insulated, space_probe], 10684 m/s vacuum Δv
+- space_probe → spacebreaker:umbriel/surface: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, space_probe], 9129 m/s vacuum Δv
+- space_probe → spacebreaker:venus/surface: flown: 1-stage [nuclear_thermal_engine, fuel_tank_large, space_probe], 8690 m/s vacuum Δv
+- space_probe → spacebreaker:vesta/surface: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, space_probe], 9129 m/s vacuum Δv
 
 # Localization audit (`tools/qa/lang_audit.py`)
 
-2004 English and 2004 Turkish keys.
+2010 English and 2010 Turkish keys.
 
 ## Errors (0)
 
