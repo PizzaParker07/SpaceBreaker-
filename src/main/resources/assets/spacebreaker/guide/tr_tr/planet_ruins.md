@@ -15,5 +15,7 @@ research: spacebreaker:interplanetary_transfers
 
 Bu harabelerin diskleri **metan motorlarını**, **Sabatier sürecini** ve **Mars jeolojisini** öğretir.
 
+> Mars araştırma istasyonu gibi bazı harabelerde ganimet bir {item spacebreaker:supply_locker} içinde bekler: ilk açıldığında dolan, 27 yuvalı bir duvar dolabı. Karşılaştırıcıya sinyal verir; kırıp eve götürebilirsin.
+
 > [!TIP]
 > Her harabeyi ilk keşfettiğinde bir başarım kazanırsın. Yanına numune kiti al: harabelerin çevresi iyi numune verir.
