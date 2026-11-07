@@ -29,6 +29,11 @@ Kuyruklu yıldız, kirli bir kartopudur: kömürden koyu bir toz kabuğunun alt�
 
 > **Hale–Bopp** da katalogdadır, ama inilebilecek bir dünyası yoktur: yalnızca gökyüzünde ve yıldız haritasında görünür. Günberisinde dev bir kuyruklu yıldızdır.
 
+## Oraya gitmek {#route}
+Yıldız haritasında bütün kuyruklu yıldızlar gezegenlerin yanında tek bir düğümde durur: **Kuyruklu yıldızlar**. Onu aç: ortada Güneş, her kuyruklu yıldızın da kendi uzun, basık yörüngesi var. Kuyruk her zaman Güneş'in tersini gösterir ve yalnız kuyruklu yıldız uyanıkken uzundur. Bir kuyruklu yıldızı seçince kartını görürsün: Güneş'e uzaklık, Güneş'e en yakın geçiş (tarih ve AU), bir turun kaç yıl sürdüğü ve etkinlik.
+
+> **Halley** bir turunu yaklaşık 75 yılda tamamlar ve Neptün'ün ötesine, Güneş'ten yaklaşık 35 AU uzağa kadar savrulur. Dönüş yolundan önce buzunu erit ve yakıtını orada üret.
+
 ## Yakıt
 Kuyruklu yıldız tozu da işe yarar: regolit ısıtıcıda bir blok **300 mB su** ve **100 mB CO₂** verir, %15 şansla da bir topak {item spacebreaker:tholin}. → [Asteroit madenciliği](near_earth_asteroids#mining)
 {recipe spacebreaker:regolith_processing/comet_dust}
