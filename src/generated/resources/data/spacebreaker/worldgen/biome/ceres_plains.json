@@ -10,7 +10,7 @@
       "max_delay": 12000,
       "min_delay": 3600,
       "replace_current_music": false,
-      "sound": "spacebreaker:music.moon"
+      "sound": "spacebreaker:music.belt"
     },
     "sky_color": 0,
     "water_color": 4159204,

@@ -163,14 +163,16 @@ public final class OuterWorlds implements SbModule {
     }
 
     /**
-     * Ambient music of a biome: Titan's own track under its haze, the Jovian track on Jupiter's moons, and the Moon's low hum
-     * on the other airless worlds.
+     * Ambient music of a biome: Titan's own track under its haze, the Jovian track on Jupiter's moons, the belt's
+     * track on Ceres and Vesta, the ice giants' track from Uranus out to Pluto, and the Moon's low hum on the rest (Enceladus).
      */
     static net.minecraft.core.Holder<net.minecraft.sounds.SoundEvent> music(ResourceKey<Biome> key, Look look) {
         String world = key.location().getPath().split("_")[0];
         return switch (world) {
             case "titan" -> com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_TITAN;
             case "io", "europa", "ganymede", "callisto" -> com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_JOVIAN;
+            case "ceres", "vesta" -> com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_BELT;
+            case "miranda", "triton", "pluto", "charon" -> com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_ICE_GIANTS;
             default -> look.sky() == 0 && look.fog() == 0 ? com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_MOON : null;
         };
     }
