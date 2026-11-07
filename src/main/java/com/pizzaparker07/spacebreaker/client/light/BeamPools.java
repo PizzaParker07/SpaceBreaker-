@@ -37,7 +37,7 @@ import java.util.Map;
 public final class BeamPools {
     private static final RenderType POOL = RenderType.eyes(TextureAtlas.LOCATION_BLOCKS);
     /** Brightest the pool gets on top of a surface's own colours. */
-    private static final float MAX_ADD = 0.55F;
+    private static final float MAX_ADD = 0.7F;
     /** Eased landing points, by beam key. */
     private static final Map<Object, Vec3> EASED = new HashMap<>();
 
