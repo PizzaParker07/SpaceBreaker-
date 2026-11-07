@@ -48,6 +48,7 @@ public final class ShowcaseScenarios {
         ALL.put("lod", new LodScenario());
         ALL.put("jei", new JeiScenario(true));
         ALL.put("emi", new JeiScenario(false));
+        ALL.put("info", new InfoOverlayScenario());
         ALL.put("belt", new BeltScenario(false));
         ALL.put("vesta", new BeltScenario(true));
         ALL.put("jovian", new JovianScenario("europa"));
