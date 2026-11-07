@@ -577,13 +577,18 @@ public final class RocketryGameTests {
             helper.assertTrue(l >= prev && l >= 0 && l <= 1, "ascent lead-in grows from 0 to 1");
             prev = l;
         }
-        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.leadIn(FlightState.ASCENT, 0, 0.5F) == 0, "low in the climb the world stays visible");
-        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.leadIn(FlightState.ASCENT, 0, 1F) == 1, "fully covered before the jump to orbit");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.leadIn(FlightState.ASCENT, 0, 0.9F) == 0,
+                "the world stays in view for almost the whole climb");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.leadIn(FlightState.ASCENT, 0, 1F) == 1, "fully dipped just before the jump to orbit");
+        int fade = com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.TRANSFER_FADE_TICKS;
         helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.leadIn(FlightState.TRANSFER, 0, 0) == 0
-                && com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.leadIn(FlightState.TRANSFER,
-                com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.TRANSFER_FADE_TICKS, 0) == 1, "transfer fades in, then covers");
-        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.TRANSFER_FADE_TICKS < RocketEntity.TRANSFER_TICKS,
-                "the view is complete well before the dimension changes");
+                && com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.leadIn(FlightState.TRANSFER, RocketEntity.TRANSFER_TICKS - fade, 0) == 0,
+                "a transfer keeps the orbit in view");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.leadIn(FlightState.TRANSFER, RocketEntity.TRANSFER_TICKS, 0) == 1,
+                "and dips only in its last second");
+        helper.assertTrue(fade <= 20 && com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.FADE_OUT_SECONDS <= 0.3F
+                && com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.MAX_DIP <= 0.3F,
+                "no black screen: a slight dip, then a 0.3 s cross-fade");
         for (FlightState st : new FlightState[]{FlightState.IDLE, FlightState.ORBIT, FlightState.DESCENT, FlightState.PARACHUTE}) {
             helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.leadIn(st, 50, 1F) == 0, "no view in " + st);
         }

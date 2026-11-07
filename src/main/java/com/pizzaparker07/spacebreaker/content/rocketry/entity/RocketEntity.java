@@ -1554,6 +1554,11 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
     }
 
     /** Puts the rocket straight into a flight phase (scripted scenes, tests and admin tools). */
+    /** Where a staged scene is headed (for showcase and tests). */
+    public void stageDestination(Location to) {
+        entityData.set(DATA_DEST, to.id());
+    }
+
     public void stageScene(FlightState state, int timer, int activeStage, boolean burning) {
         setActiveStage(Math.min(activeStage, layout().stages().size()));
         setState(state);
