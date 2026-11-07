@@ -16,6 +16,8 @@ Put the parts into the assembler's slots and it works out the rocket for you.
 
 You get a {item spacebreaker:rocket}. Its tooltip shows the height, mass, number of stages and total Δv.
 
+> A stage with a nuclear thermal engine is marked **☢ Nuclear**. On the first stage the mark turns red: it is too weak to lift off and would irradiate the pad, so put it on an upper stage. → [Nuclear thermal engine](rocket_parts#ntr)
+
 ## How much Δv?
 | Trip | Δv (m/s) |
 |---|---|

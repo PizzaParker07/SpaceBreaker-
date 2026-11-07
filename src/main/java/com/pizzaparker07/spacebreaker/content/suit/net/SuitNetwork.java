@@ -1,6 +1,5 @@
 package com.pizzaparker07.spacebreaker.content.suit.net;
 
-import com.pizzaparker07.spacebreaker.client.hud.ClientSuitState;
 import com.pizzaparker07.spacebreaker.content.suit.LifeSupport;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
@@ -10,10 +9,17 @@ public final class SuitNetwork {
     private SuitNetwork() {
     }
 
+    // Client-side handlers of the play-to-client payloads, set by client.suit.SuitClient at client setup. Common code
+    // names no client class, so nothing client-only can be resolved on a dedicated server (there these stay no-ops).
+    public static java.util.function.BiConsumer<SuitStatusPayload, Long> onSuitStatus = (payload, gameTime) -> { };
+    public static java.util.function.Consumer<SensorReadingPayload> onSensorReading = payload -> { };
+    public static java.util.function.Consumer<NavPayload> onNav = payload -> { };
+    public static java.util.function.Consumer<TetherPayload> onTether = payload -> { };
+
     public static void register(RegisterPayloadHandlersEvent event) {
         PayloadRegistrar registrar = event.registrar("1").optional();
         registrar.playToClient(SuitStatusPayload.TYPE, SuitStatusPayload.CODEC,
-                (payload, ctx) -> ClientSuitState.accept(payload, ctx.player().level().getGameTime()));
+                (payload, ctx) -> onSuitStatus.accept(payload, ctx.player().level().getGameTime()));
         registrar.playToServer(ThrustPayload.TYPE, ThrustPayload.CODEC,
                 (payload, ctx) -> {
                     var data = LifeSupport.data(ctx.player());
@@ -26,10 +32,10 @@ public final class SuitNetwork {
         registrar.playToServer(LampModePayload.TYPE, LampModePayload.CODEC,
                 (payload, ctx) -> com.pizzaparker07.spacebreaker.content.suit.HelmetLamp.toggle(ctx.player()));
         registrar.playToClient(SensorReadingPayload.TYPE, SensorReadingPayload.CODEC,
-                (payload, ctx) -> com.pizzaparker07.spacebreaker.client.hud.SensorCard.accept(payload));
+                (payload, ctx) -> onSensorReading.accept(payload));
         registrar.playToClient(NavPayload.TYPE, NavPayload.CODEC,
-                (payload, ctx) -> com.pizzaparker07.spacebreaker.client.hud.ClientNav.accept(payload));
+                (payload, ctx) -> onNav.accept(payload));
         registrar.playToClient(TetherPayload.TYPE, TetherPayload.CODEC,
-                (payload, ctx) -> com.pizzaparker07.spacebreaker.client.suit.TetherClient.accept(payload));
+                (payload, ctx) -> onTether.accept(payload));
     }
 }

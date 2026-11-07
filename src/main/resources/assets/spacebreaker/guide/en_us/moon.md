@@ -37,5 +37,8 @@ Seen from a moon, its planet passes in front of the Sun now and then. The Sun di
 
 > Panels go dark during an eclipse, so keep your batteries full. → [Night and power](power#night)
 
+## Night sky
+On the near side, Earth lights the lunar night: under a full Earth the ground glows a faint blue-white; under a crescent it is nearly dark. On the far side Earth never rises. Now and then, just after sunset or before sunrise, a thin glowing band hugs the horizon above the hidden Sun: dust lifted by static charge, rare and brief.
+
 ## Volcanic domes
 In places steep, smooth domes of light anorthosite rise from the plains: 45–95 blocks across, up to 28 high, with a tiny pit on top.

@@ -43,10 +43,17 @@ Her kademede altta **bir motor**, üstünde **yakıt tankları** olur. Tanklar, 
 
 >! Yanarken bir **radyasyon kaynağıdır**: doz uzaklığın karesiyle azalır, motorun üstündeki gölge kalkanı mürettebatı korur. Soğukken (taze yakıtla) güvenlidir. Egzozu neredeyse görünmez: soluk, mavimsi-mor bir ışıma.
 
-Tarifinde bir nükleer yakıt elemanı, gölge kalkanı için tungsten levha, nikel süperalaşım, titanyum levha ve bir hidroloks vakum motoru var. → [Nükleer Yakıt](nuclear_fuel)
+Tarifinde bir nükleer yakıt elemanı, gölge kalkanı için radyasyon kalkanı levhası (tükenmiş uranyum ya da tungsten), nikel süperalaşım, titanyum levha ve bir hidroloks vakum motoru var. → [Nükleer Yakıt](nuclear_fuel)
 {recipe spacebreaker:rocketry/nuclear_thermal_engine}
 
 Montaj tezgâhı her kademenin yakıt türünü ve Δv'sini gösterir.
+
+## Buharlaşma {#boil_off}
+Kriyojenik yakıt uzun yolculuklarda ve roket yörüngede beklerken ısınıp kaçar; rampada asla, çünkü göbek bağlantısı tankları doldurmaya devam eder. Günde: sıvı hidrojen **%0,1**, sıvı oksijen ve metan **%0,02**, kerosen hiç. Bir kademe en hızlı kaynayan sıvısının oranıyla kaybeder. Gerçekçilik ayarı bunu ölçekler: **Dengeli** beşte bir, **Kolay** onda bir.
+- Parçanın ipucunda günlük oran yazar; yıldız haritası yolculuğa "Yolda buharlaşma kaybı" satırını ekler, bu kayıp gereken yakıta zaten dahildir.
+- **Yalıtımlı** yakıt tankları buharlaşmayı **%75** azaltır.
+
+> Mars ve ötesi için hidrojenli kademelerde yedek yakıt bırak, yalıtımlı tank tak ya da kerosen veya metan seç.
 
 ## Ayırıcılar
 {items spacebreaker:decoupler spacebreaker:interstage}
