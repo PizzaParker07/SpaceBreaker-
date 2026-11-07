@@ -35,7 +35,7 @@ public final class Lambert {
         if (y(lo, r1, r2, a) < 0) {
             if (y(hi, r1, r2, a) < 0) return Optional.empty();
             double bad = lo, good = hi;
-            for (int i = 0; i < 200; i++) {
+            for (int i = 0; i < 64; i++) {
                 double mid = 0.5 * (bad + good);
                 if (y(mid, r1, r2, a) < 0) bad = mid;
                 else good = mid;
@@ -45,7 +45,7 @@ public final class Lambert {
         if (y(lo, r1, r2, a) < 0 || f(lo, r1, r2, a) > target || f(hi, r1, r2, a) < target) {
             return Optional.empty();
         }
-        for (int i = 0; i < 200; i++) {
+        for (int i = 0; i < 64; i++) {
             double mid = 0.5 * (lo + hi);
             if (y(mid, r1, r2, a) < 0 || f(mid, r1, r2, a) < target) lo = mid;
             else hi = mid;

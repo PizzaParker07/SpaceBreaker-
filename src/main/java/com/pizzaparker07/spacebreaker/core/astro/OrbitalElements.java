@@ -15,10 +15,37 @@ package com.pizzaparker07.spacebreaker.core.astro;
  * @param nodeRate              secular dΩ/dt, rad/s (0 = fixed orbit; the Moon's node regresses once in 18.6 years)
  * @param periapsisArgRate      secular dω/dt, rad/s. The mean longitude keeps advancing at the mean motion,
  *                              so the mean anomaly advances at n − dΩ/dt − dω/dt (the anomalistic rate)
+ * @param referencePole         pole of the reference plane as an ecliptic unit vector, or null for the ecliptic itself.
+ *                              Moons use their planet's spin axis: i, Ω and ω are then measured in the planet's
+ *                              equator, with Ω counted from the equator's ascending node on the ecliptic
  */
 public record OrbitalElements(double mu, double semiMajorAxis, double eccentricity, double inclination,
                               double longitudeAscendingNode, double argumentOfPeriapsis, double meanAnomalyAtEpoch,
-                              double nodeRate, double periapsisArgRate) {
+                              double nodeRate, double periapsisArgRate, Vec3 referencePole) {
+
+    /** Precessing orbit referred to the ecliptic. */
+    public OrbitalElements(double mu, double semiMajorAxis, double eccentricity, double inclination,
+                           double longitudeAscendingNode, double argumentOfPeriapsis, double meanAnomalyAtEpoch,
+                           double nodeRate, double periapsisArgRate) {
+        this(mu, semiMajorAxis, eccentricity, inclination, longitudeAscendingNode, argumentOfPeriapsis, meanAnomalyAtEpoch,
+                nodeRate, periapsisArgRate, null);
+    }
+
+    /** The same elements measured in the plane whose pole is {@code pole} (ecliptic unit vector; null = ecliptic). */
+    public OrbitalElements withReferencePole(Vec3 pole) {
+        return new OrbitalElements(mu, semiMajorAxis, eccentricity, inclination, longitudeAscendingNode, argumentOfPeriapsis,
+                meanAnomalyAtEpoch, nodeRate, periapsisArgRate, pole == null ? null : pole.normalize());
+    }
+
+    /** Rotates a vector from the reference-plane frame to the ecliptic frame. */
+    public Vec3 toEcliptic(Vec3 v) {
+        if (referencePole == null) return v;
+        Vec3 z = referencePole;
+        Vec3 x = new Vec3(0, 0, 1).cross(z);
+        x = x.length() < 1e-12 ? new Vec3(1, 0, 0) : x.normalize();
+        Vec3 y = z.cross(x);
+        return x.scale(v.x()).add(y.scale(v.y())).add(z.scale(v.z()));
+    }
 
     /** Fixed (non-precessing) orbit. */
     public OrbitalElements(double mu, double semiMajorAxis, double eccentricity, double inclination,
@@ -30,7 +57,7 @@ public record OrbitalElements(double mu, double semiMajorAxis, double eccentrici
     public OrbitalElements withSecularRates(double nodeDegPerYear, double periapsisArgDegPerYear) {
         double k = Math.toRadians(1) / AstroConstants.YEAR;
         return new OrbitalElements(mu, semiMajorAxis, eccentricity, inclination, longitudeAscendingNode, argumentOfPeriapsis,
-                meanAnomalyAtEpoch, nodeDegPerYear * k, periapsisArgDegPerYear * k);
+                meanAnomalyAtEpoch, nodeDegPerYear * k, periapsisArgDegPerYear * k, referencePole);
     }
 
     public boolean precessing() {

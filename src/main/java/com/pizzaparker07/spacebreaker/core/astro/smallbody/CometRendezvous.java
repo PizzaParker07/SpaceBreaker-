@@ -25,6 +25,8 @@ public final class CometRendezvous {
     }
 
     /**
+     * @param cometId       {@link Comet#id()}
+     * @param point         which end of the orbit the arrival is near
      * @param departureDv   burn in low Earth orbit, m/s
      * @param arrivalDv     velocity match at the comet, m/s
      * @param flightSeconds time of flight
@@ -32,7 +34,7 @@ public final class CometRendezvous {
      * @param arrivalTime   simulated time of arrival
      * @param arrivalAu     distance from the Sun at arrival
      */
-    public record Result(Point point, double departureDv, double arrivalDv, double flightSeconds, double departureTime,
+    public record Result(String cometId, Point point, double departureDv, double arrivalDv, double flightSeconds, double departureTime,
                          double arrivalTime, double arrivalAu) {
         public double totalDv() {
             return departureDv + arrivalDv;
@@ -40,6 +42,66 @@ public final class CometRendezvous {
 
         public double flightYears() {
             return flightSeconds / AstroConstants.YEAR;
+        }
+
+        /** Within a mission budget: total Δv and flight time limits. */
+        public boolean within(double maxDv, double maxYears) {
+            return totalDv() <= maxDv && flightYears() <= maxYears;
+        }
+    }
+
+    /**
+     * Precomputed rendezvous options for the whole catalogue: for each comet, its next {@code passages} perihelion and
+     * aphelion passages after a start time. Computing takes a few seconds; build it once (off the main thread) and
+     * reuse it. Immutable and thread-safe.
+     */
+    public record Table(double after, int passages, java.util.Map<String, java.util.List<Result>> options) {
+        public Table {
+            options = java.util.Map.copyOf(options);
+        }
+
+        public static Table compute(BodySystem sys, double after, int passages) {
+            java.util.Map<String, java.util.List<Result>> out = new java.util.LinkedHashMap<>();
+            for (Comet c : Comet.CATALOGUE) {
+                java.util.List<Result> list = new java.util.ArrayList<>();
+                double t = after;
+                for (int k = 0; k < passages; k++) {
+                    for (Point p : Point.values()) {
+                        estimate(sys, c, p, t).ifPresent(list::add);
+                    }
+                    t = c.nextPerihelion(t) + c.periodSeconds() * 0.75; // move past this perihelion and aphelion
+                }
+                list.sort(java.util.Comparator.comparingDouble(Result::arrivalTime));
+                out.put(c.id(), java.util.List.copyOf(list));
+            }
+            return new Table(after, passages, out);
+        }
+
+        /** All options for a comet, in arrival order (empty for an unknown id). */
+        public java.util.List<Result> of(String cometId) {
+            return options.getOrDefault(cometId, java.util.List.of());
+        }
+
+        /** Options whose departure is still ahead at simulated time {@code now}. */
+        public java.util.List<Result> upcoming(String cometId, double now) {
+            return of(cometId).stream().filter(r -> r.departureTime() >= now).toList();
+        }
+
+        /** Cheapest upcoming option within the budget, if any. */
+        public Optional<Result> cheapest(String cometId, double now, double maxDv, double maxYears) {
+            return upcoming(cometId, now).stream().filter(r -> r.within(maxDv, maxYears))
+                    .min(java.util.Comparator.comparingDouble(Result::totalDv));
+        }
+
+        /** Earliest-arriving upcoming option within the budget, if any. */
+        public Optional<Result> soonest(String cometId, double now, double maxDv, double maxYears) {
+            return upcoming(cometId, now).stream().filter(r -> r.within(maxDv, maxYears))
+                    .min(java.util.Comparator.comparingDouble(Result::arrivalTime));
+        }
+
+        /** Whether any upcoming option fits the budget: false means "observation only" for that budget. */
+        public boolean reachable(String cometId, double now, double maxDv, double maxYears) {
+            return cheapest(cometId, now, maxDv, maxYears).isPresent();
         }
     }
 
@@ -72,7 +134,7 @@ public final class CometRendezvous {
                     double dep = Math.sqrt(vInf * vInf + 2 * earth.mu() / rLeo) - vLeo;
                     double arr = cs.velocity().sub(s.get().v2()).length();
                     if (best == null || dep + arr < best.totalDv()) {
-                        best = new Result(point, dep, arr, tof, tDep, tArr, cs.position().length() / AstroConstants.AU);
+                        best = new Result(comet.id(), point, dep, arr, tof, tDep, tArr, cs.position().length() / AstroConstants.AU);
                     }
                 }
             }
