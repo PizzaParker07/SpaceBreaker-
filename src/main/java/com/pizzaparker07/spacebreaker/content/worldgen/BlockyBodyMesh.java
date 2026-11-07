@@ -43,6 +43,20 @@ public final class BlockyBodyMesh {
         return CACHE.computeIfAbsent(style + "/" + size, k -> style == Style.VOXEL ? voxels(size) : cube(size));
     }
 
+    /** Whether {@link #body} for this style and size is already built (so asking for it costs nothing). */
+    public static boolean ready(Style style, int n) {
+        return CACHE.containsKey(style + "/" + Math.max(2, n));
+    }
+
+    /** Builds a size in the background (big voxel balls take a moment), so the render thread never waits for it. */
+    public static void prepare(Style style, int n) {
+        if (!ready(style, n) && PREPARING.add(style + "/" + n)) {
+            java.util.concurrent.CompletableFuture.runAsync(() -> body(style, n));
+        }
+    }
+
+    private static final java.util.Set<String> PREPARING = ConcurrentHashMap.newKeySet();
+
     /**
      * A flat ring in the equator plane made of square tiles, between {@code inner} and {@code outer} body radii,
      * {@code n} tiles across the outer diameter. {@code surface.x} carries the tile's radius as a fraction 0..1 from the
@@ -78,7 +92,7 @@ public final class BlockyBodyMesh {
             for (int j = 0; j < n; j++) {
                 for (int k = 0; k < n; k++) {
                     // a little past the sphere so the stepped outline is not eaten away at the equator and poles
-                    in[i][j][k] = sq(centre(i, n).x) + sq(centre(j, n).x) + sq(centre(k, n).x) <= 1.0F + 0.5F / n;
+                    in[i][j][k] = sq(coord(i, n)) + sq(coord(j, n)) + sq(coord(k, n)) <= 1.0F + 0.5F / n;
                 }
             }
         }
@@ -90,7 +104,7 @@ public final class BlockyBodyMesh {
                     if (!in[i][j][k]) {
                         continue;
                     }
-                    Vector3f c = new Vector3f(centre(i, n).x, centre(j, n).x, centre(k, n).x);
+                    Vector3f c = new Vector3f(coord(i, n), coord(j, n), coord(k, n));
                     Vector3f surface = new Vector3f(c).normalize();
                     for (int[] d : dirs) {
                         int a = i + d[0], b = j + d[1], e = k + d[2];
@@ -183,8 +197,8 @@ public final class BlockyBodyMesh {
         return Math.asin(Math.max(-1, Math.min(1, d.y / d.length())));
     }
 
-    private static Vector3f centre(int i, int n) {
-        return new Vector3f(-1 + (i + 0.5F) * 2F / n, 0, 0);
+    private static float coord(int i, int n) {
+        return -1 + (i + 0.5F) * 2F / n;
     }
 
     private static float sq(float x) {

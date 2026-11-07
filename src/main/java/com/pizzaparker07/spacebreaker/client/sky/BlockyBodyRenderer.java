@@ -154,6 +154,7 @@ public final class BlockyBodyRenderer {
      * @param sun    unit direction toward the sun, same frame
      * @param night  brightness of the night side (0..1)
      * @param tint   overall brightness (1 normally; less while an eclipse darkens a planet)
+     * @param n      blocks across, or 0 to choose by size on screen (steps through {@link #LEVELS}, fading between them)
      * @param ring   optional ring
      */
     public static void draw(Matrix4f pose, BlockyBodyMesh.Style style, int n, ColorMap map, Pose body, Vector3f sun, float night,
@@ -167,8 +168,243 @@ public final class BlockyBodyRenderer {
         render(pose, style, n, map, body, sun, night, tint, alpha, ring, new Vector3f(0, 0, -1));
     }
 
+    /** Voxel resolutions a body steps through as it grows on screen. */
+    public static final int[] LEVELS = {16, 32, 64, 128};
+    /** Screen pixels per block a level aims for: finer levels come in only when blocks would get this big. */
+    static final float BLOCK_PX = 14F;
+    /** Length of the cross-fade between two levels, ms. */
+    static final long FADE_MS = 350;
+
+    private record CacheKey(ColorMap map, BlockyBodyMesh.Style style, int n) {
+    }
+
+    private static final class Cached {
+        com.mojang.blaze3d.vertex.VertexBuffer buffer;
+        float[] signature;
+        boolean empty;
+    }
+
+    private static final class Lod {
+        int current;
+        int previous;
+        long since;
+    }
+
+    private static final Map<CacheKey, Cached> BUFFERS = new java.util.HashMap<>();
+    private static final Map<CacheKey, Lod> LODS = new java.util.HashMap<>();
+    private static long rebuildNanos;
+    private static int rebuilds;
+    private static long drawNanos;
+    private static int draws;
+    private static long lastReport;
+
     private static void render(Matrix4f pose, BlockyBodyMesh.Style style, int n, ColorMap map, Pose body, Vector3f sun, float night,
                                float tint, float alpha, Ring ring, Vector3f viewDir) {
+        if (viewDir != null) {
+            immediate(pose, style, n, map, body, sun, night, tint, alpha, ring, viewDir, true);
+            return;
+        }
+        long t0 = System.nanoTime();
+        // the stepped body has hidden corners: draw it with its own depth, then clear that depth again so the terrain
+        // drawn after the sky is not hidden behind a planet 100 blocks away (the sky comes before terrain, so nothing
+        // else has written depth yet). glClear leaves depth alone while the depth mask is off: open the mask first.
+        RenderSystem.depthMask(true);
+        RenderSystem.clear(org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
+        RenderSystem.enableDepthTest();
+        RenderSystem.depthFunc(org.lwjgl.opengl.GL11.GL_LEQUAL);
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.disableCull();
+        int level = n > 0 ? n : 0;
+        if (n <= 0) {
+            Lod lod = lod(map, style, body);
+            float t = lod.previous == 0 ? 1F : Mth.clamp((net.minecraft.Util.getMillis() - lod.since) / (float) FADE_MS, 0F, 1F);
+            if (t < 1F) {
+                // cross-fade: the old level underneath, the new one fading in over it
+                cached(pose, style, lod.previous, map, body, sun, night, tint, alpha);
+                cached(pose, style, lod.current, map, body, sun, night, tint, alpha * t);
+            } else {
+                lod.previous = 0;
+                cached(pose, style, lod.current, map, body, sun, night, tint, alpha);
+            }
+            level = lod.current;
+        } else {
+            cached(pose, style, level, map, body, sun, night, tint, alpha);
+        }
+        if (ring != null) {
+            immediate(pose, style, level, map, body, sun, night, tint, alpha, ring, null, false);
+        }
+        RenderSystem.enableCull();
+        RenderSystem.clear(org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX); // while the mask is still open
+        RenderSystem.depthMask(false);
+        RenderSystem.disableDepthTest();
+        timing(System.nanoTime() - t0, false);
+    }
+
+    /** The resolution to draw a body at, stepping up as it grows on screen and fading between steps. */
+    private static Lod lod(ColorMap map, BlockyBodyMesh.Style style, Pose body) {
+        Minecraft mc = Minecraft.getInstance();
+        double distance = Math.max(1e-3, body.center().length());
+        double fov = Math.toRadians(mc.options.fov().get());
+        double pixels = 2 * body.radius() / distance / (2 * Math.tan(fov / 2)) * mc.getWindow().getHeight();
+        double want = pixels / BLOCK_PX;
+        Lod lod = LODS.computeIfAbsent(new CacheKey(map, style, 0), k -> {
+            Lod l = new Lod();
+            l.current = LEVELS[0];
+            return l;
+        });
+        for (int l : LEVELS) {
+            BlockyBodyMesh.prepare(style, l); // build every size in the background once
+        }
+        if (lod.previous != 0) {
+            return lod; // finish the running fade first
+        }
+        int index = java.util.Arrays.binarySearch(LEVELS, lod.current);
+        int next = lod.current;
+        if (want > lod.current * 1.25 && index + 1 < LEVELS.length) {
+            next = LEVELS[index + 1];
+        } else if (want < lod.current / 2.0 * 0.8 && index > 0) {
+            next = LEVELS[index - 1];
+        }
+        if (next != lod.current && BlockyBodyMesh.ready(style, next)) {
+            lod.previous = lod.current;
+            lod.current = next;
+            lod.since = net.minecraft.Util.getMillis();
+        }
+        return lod;
+    }
+
+    /**
+     * Draws the opaque body from a vertex buffer that is rebuilt only when what it shows changes (the body turns, the
+     * sun moves, the viewer moves). Only the faces toward the viewer are in it.
+     */
+    private static void cached(Matrix4f pose, BlockyBodyMesh.Style style, int n, ColorMap map, Pose body, Vector3f sun, float night,
+                               float tint, float alpha) {
+        if (!BlockyBodyMesh.ready(style, n) && n > LEVELS[0]) {
+            BlockyBodyMesh.prepare(style, n);
+            n = LEVELS[0];
+        }
+        CacheKey key = new CacheKey(map, style, n);
+        Cached c = BUFFERS.computeIfAbsent(key, k -> new Cached());
+        Matrix3f rot = body.rotation(style);
+        float[] sig = {rot.m00, rot.m01, rot.m02, rot.m10, rot.m11, rot.m12, rot.m20, rot.m21, rot.m22, sun.x, sun.y, sun.z,
+                body.center().x, body.center().y, body.center().z, body.radius(), night, tint, alpha};
+        if (c.buffer == null || !same(sig, c.signature, n)) {
+            long t0 = System.nanoTime();
+            BufferBuilder bb = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+            int count = emitBody(bb, style, n, map, body, rot, sun, night, tint, alpha);
+            var mesh = bb.build();
+            if (c.buffer == null) {
+                c.buffer = new com.mojang.blaze3d.vertex.VertexBuffer(com.mojang.blaze3d.vertex.VertexBuffer.Usage.DYNAMIC);
+            }
+            c.empty = mesh == null || count == 0;
+            if (!c.empty) {
+                c.buffer.bind();
+                c.buffer.upload(mesh);
+                com.mojang.blaze3d.vertex.VertexBuffer.unbind();
+            } else if (mesh != null) {
+                mesh.close();
+            }
+            c.signature = sig;
+            timing(System.nanoTime() - t0, true);
+        }
+        if (c.empty) {
+            return;
+        }
+        c.buffer.bind();
+        c.buffer.drawWithShader(pose, RenderSystem.getProjectionMatrix(), GameRenderer.getPositionColorShader());
+        com.mojang.blaze3d.vertex.VertexBuffer.unbind();
+    }
+
+    /**
+     * Whether a cached build still shows the body closely enough: the turn and the sunlight may drift by about a quarter
+     * of a block before the buffer is rebuilt (so the body turns in small block steps, as Minecraft things do), position
+     * and size by a thousandth, brightness by a hundredth.
+     */
+    private static boolean same(float[] a, float[] b, int n) {
+        if (b == null || a.length != b.length) {
+            return false;
+        }
+        float turn = 0.25F * 2F / n;
+        for (int i = 0; i < a.length; i++) {
+            float eps = i < 12 ? turn : i < 16 ? 1e-3F * Math.max(1F, Math.abs(a[i])) : 0.01F;
+            if (Math.abs(a[i] - b[i]) > eps) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /** The body's faces toward the viewer into {@code bb}, in the camera-centred frame (the pose matrix is applied when drawing). */
+    private static int emitBody(BufferBuilder bb, BlockyBodyMesh.Style style, int n, ColorMap map, Pose body, Matrix3f rot,
+                                Vector3f sun, float night, float tint, float alpha) {
+        Vector3f s = new Vector3f(sun).normalize();
+        Vector3f look = new Vector3f(body.center()).normalize();
+        Vector3f screenUp = new Vector3f(0, 1, 0);
+        screenUp.sub(new Vector3f(look).mul(look.dot(screenUp)));
+        if (screenUp.lengthSquared() < 1e-6F) {
+            screenUp.set(0, 0, -1);
+        }
+        screenUp.normalize();
+        Vector3f screenRight = new Vector3f(look).cross(screenUp).normalize();
+        List<BlockyBodyMesh.Face> faces = BlockyBodyMesh.body(style, n);
+        int[] colours = colours(map, faces, false);
+        int count = 0;
+        for (int i = 0; i < faces.size(); i++) {
+            BlockyBodyMesh.Face f = faces.get(i);
+            Vector3f normal = rot.transform(new Vector3f(f.normal()));
+            Vector3f centre = rot.transform(new Vector3f(f.center())).mul(body.radius()).add(body.center());
+            if (normal.dot(centre) >= 0) {
+                continue; // faces away from the viewer
+            }
+            float light = BlockyBodyMesh.light(rot.transform(new Vector3f(f.surface())), normal, s, night)
+                    * BlockyBodyMesh.blockShade(normal.dot(screenUp), normal.dot(screenRight)) * tint;
+            put(bb, null, quad(f, rot, body, colours[i], light, alpha, null, look));
+            count++;
+        }
+        return count;
+    }
+
+    private static void put(BufferBuilder bb, Matrix4f pose, Quad q) {
+        float[] v = q.xyz();
+        int c = q.argb();
+        int a = c >>> 24, r = c >> 16 & 255, g = c >> 8 & 255, b = c & 255;
+        for (int k = 0; k < 4; k++) {
+            if (pose == null) {
+                bb.addVertex(v[k * 3], v[k * 3 + 1], v[k * 3 + 2]).setColor(r, g, b, a);
+            } else {
+                bb.addVertex(pose, v[k * 3], v[k * 3 + 1], v[k * 3 + 2]).setColor(r, g, b, a);
+            }
+        }
+    }
+
+    /** Frame cost of blocky bodies, logged every ten seconds when -Dspacebreaker.blockyTiming=true. */
+    private static void timing(long nanos, boolean rebuild) {
+        if (!Boolean.getBoolean("spacebreaker.blockyTiming")) {
+            return;
+        }
+        if (rebuild) {
+            rebuildNanos += nanos;
+            rebuilds++;
+        } else {
+            drawNanos += nanos;
+            draws++;
+        }
+        long now = net.minecraft.Util.getMillis();
+        if (now - lastReport > 10000 && draws > 0) {
+            Spacebreaker.LOGGER.info("Blocky bodies: {} draws, {} ms each on average ({} rebuilds, {} ms each); levels {}",
+                    draws, String.format("%.3f", drawNanos / 1e6 / draws), rebuilds,
+                    String.format("%.3f", rebuilds == 0 ? 0 : rebuildNanos / 1e6 / rebuilds),
+                    LODS.values().stream().map(l -> l.current).toList());
+            lastReport = now;
+            drawNanos = rebuildNanos = 0;
+            draws = rebuilds = 0;
+        }
+    }
+
+    /** Sorted, immediate drawing: GUI views, and rings (translucent tiles) in the sky. */
+    private static void immediate(Matrix4f pose, BlockyBodyMesh.Style style, int n, ColorMap map, Pose body, Vector3f sun, float night,
+                                  float tint, float alpha, Ring ring, Vector3f viewDir, boolean withBody) {
         Matrix3f rot = body.rotation(style);
         Vector3f s = new Vector3f(sun).normalize();
         // line of sight to the body, and "up" on screen around it (for Minecraft's block shading: tops light, sides darker)
@@ -181,22 +417,24 @@ public final class BlockyBodyRenderer {
         screenUp.normalize();
         Vector3f screenRight = new Vector3f(look).cross(screenUp).normalize();
         List<Quad> quads = new ArrayList<>();
-        List<BlockyBodyMesh.Face> faces = BlockyBodyMesh.body(style, n);
-        int[] colours = colours(map, faces, false);
-        for (int i = 0; i < faces.size(); i++) {
-            BlockyBodyMesh.Face f = faces.get(i);
-            Vector3f normal = rot.transform(new Vector3f(f.normal()));
-            Vector3f centre = rot.transform(new Vector3f(f.center())).mul(body.radius()).add(body.center());
-            float toward = viewDir == null ? normal.dot(centre) : normal.dot(viewDir);
-            if (toward >= 0) {
-                continue; // faces away from the viewer
+        if (withBody) {
+            List<BlockyBodyMesh.Face> faces = BlockyBodyMesh.body(style, n);
+            int[] colours = colours(map, faces, false);
+            for (int i = 0; i < faces.size(); i++) {
+                BlockyBodyMesh.Face f = faces.get(i);
+                Vector3f normal = rot.transform(new Vector3f(f.normal()));
+                Vector3f centre = rot.transform(new Vector3f(f.center())).mul(body.radius()).add(body.center());
+                float toward = viewDir == null ? normal.dot(centre) : normal.dot(viewDir);
+                if (toward >= 0) {
+                    continue; // faces away from the viewer
+                }
+                float light = BlockyBodyMesh.light(rot.transform(new Vector3f(f.surface())), normal, s, night)
+                        * BlockyBodyMesh.blockShade(normal.dot(screenUp), normal.dot(screenRight)) * tint;
+                quads.add(quad(f, rot, body, colours[i], light, alpha, viewDir, look));
             }
-            float light = BlockyBodyMesh.light(rot.transform(new Vector3f(f.surface())), normal, s, night)
-                    * BlockyBodyMesh.blockShade(normal.dot(screenUp), normal.dot(screenRight)) * tint;
-            quads.add(quad(f, rot, body, colours[i], light, alpha, viewDir, look));
         }
         if (ring != null) {
-            List<BlockyBodyMesh.Face> tiles = BlockyBodyMesh.ring(ring.inner(), ring.outer(), Math.max(24, n * 3));
+            List<BlockyBodyMesh.Face> tiles = BlockyBodyMesh.ring(ring.inner(), ring.outer(), Math.max(24, Math.min(n, 64) * 3));
             int[] bands = colours(ring.bands(), tiles, true);
             Vector3f sunBody = new Matrix3f(rot).transpose().transform(new Vector3f(s));
             for (int i = 0; i < tiles.size(); i++) {
@@ -215,37 +453,16 @@ public final class BlockyBodyRenderer {
             return;
         }
         quads.sort((a, b) -> Float.compare(b.depth(), a.depth()));
-        boolean sky = viewDir == null;
-        if (sky) {
-            // the stepped body has hidden corners: draw it with its own depth, then clear that depth again so the
-            // terrain drawn after the sky is not hidden behind a planet 100 blocks away (the sky comes before terrain,
-            // so nothing else has written depth yet)
-            // glClear leaves depth alone while the depth mask is off: open the mask first
-            RenderSystem.depthMask(true);
-            RenderSystem.clear(org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
-            RenderSystem.enableDepthTest();
-            RenderSystem.depthFunc(org.lwjgl.opengl.GL11.GL_LEQUAL);
-        }
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.disableCull();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
         BufferBuilder bb = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
         for (Quad q : quads) {
-            float[] v = q.xyz();
-            int c = q.argb();
-            int a = c >>> 24, r = c >> 16 & 255, g = c >> 8 & 255, b = c & 255;
-            for (int k = 0; k < 4; k++) {
-                bb.addVertex(pose, v[k * 3], v[k * 3 + 1], v[k * 3 + 2]).setColor(r, g, b, a);
-            }
+            put(bb, pose, q);
         }
         BufferUploader.drawWithShader(bb.buildOrThrow());
         RenderSystem.enableCull();
-        if (sky) {
-            RenderSystem.clear(org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX); // while the mask is still open
-            RenderSystem.depthMask(false);
-            RenderSystem.disableDepthTest();
-        }
     }
 
     /**
@@ -298,10 +515,17 @@ public final class BlockyBodyRenderer {
         }
     }
 
-    /** Forgets loaded textures and colours (resource reload). */
+    /** Forgets loaded textures, colours and buffers (resource reload, leaving a world). */
     public static void reset() {
         PIXELS.clear();
         SIZES.clear();
+        BUFFERS.values().forEach(c -> {
+            if (c.buffer != null) {
+                c.buffer.close();
+            }
+        });
+        BUFFERS.clear();
+        LODS.clear();
         synchronized (COLOURS) {
             COLOURS.clear();
         }

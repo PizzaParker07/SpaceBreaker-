@@ -345,7 +345,7 @@ public class PlanetSkyEffects extends DimensionSpecialEffects {
             Vector3f centre = new Vector3f((float) e.x, (float) e.y, (float) e.z).mul(100);
             var pose = new BlockyBodyRenderer.Pose(centre, radius, new Vector3f((float) up.x, (float) up.y, (float) up.z),
                     new Vector3f((float) toViewer.x, (float) toViewer.y, (float) toViewer.z), (float) spin);
-            BlockyBodyRenderer.draw(ps.last().pose(), blocky, BlockyBodyRenderer.resolution(blocky, false), earthMap(), pose,
+            BlockyBodyRenderer.draw(ps.last().pose(), blocky, 0, earthMap(), pose,
                     new Vector3f((float) s.x, (float) s.y, (float) s.z), 0.07F, 1F - 0.9F * eclipseNow, 1F, null);
             if (eclipseNow > 0.01F) {
                 sunsetRing(ps.last().pose(), new Vector3d(e).mul(100), right, up, radius * 0.985F, eclipseNow);

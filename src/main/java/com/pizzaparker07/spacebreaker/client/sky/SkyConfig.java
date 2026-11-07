@@ -30,6 +30,15 @@ public final class SkyConfig {
     }
 
     public static double bodyScale() {
+        // dev checks (showcase) may enlarge bodies past the setting's range to walk through every level of detail
+        String dev = System.getProperty("spacebreaker.bodyScale");
+        if (dev != null) {
+            try {
+                return Double.parseDouble(dev);
+            } catch (NumberFormatException ignored) {
+                // fall through to the setting
+            }
+        }
         return SPEC.isLoaded() ? BODY_SCALE.get() : 8.0;
     }
 

@@ -122,7 +122,7 @@ public final class SkyGameTests {
      */
     @GameTest(template = "empty")
     public static void blockyBodiesAreSoundShapes(GameTestHelper helper) {
-        for (int n : new int[]{6, 10, 16}) {
+        for (int n : new int[]{6, 10, 16, 128}) {
             var vox = com.pizzaparker07.spacebreaker.content.worldgen.BlockyBodyMesh.body(
                     com.pizzaparker07.spacebreaker.content.worldgen.BlockyBodyMesh.Style.VOXEL, n);
             int[] perSide = new int[6];

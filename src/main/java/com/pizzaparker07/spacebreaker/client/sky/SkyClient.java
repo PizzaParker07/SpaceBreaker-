@@ -105,6 +105,7 @@ public final class SkyClient {
     static void loggingOut(ClientPlayerNetworkEvent.LoggingOut event) {
         PlanetTime.clearClient();
         EarthDisc.reset();
+        BlockyBodyRenderer.reset();
         com.pizzaparker07.spacebreaker.content.worldgen.ShowerClientState.clear();
         MeteorStreaks.clear();
     }
