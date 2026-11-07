@@ -78,16 +78,25 @@ def generate():
     ], on_glow=[lit_glow([1, 2, 0.99], [15, 14, 0.99], 'north', 'glow', [1, 2, 15, 14]),
                 lit_glow([10, 23.01, 10], [14, 23.01, 14], 'up', 'ember', [6, 6, 10, 10])])
 
-    # regolith excavator: bucket wheel on two arms in front of the drive housing, conveyor chute on top
+    # regolith excavator: drive housing with the auger column on its right-hand side, conveyor chute on top, two arms
+    # holding the bucket wheel in front. The wheel is a separate model turned by RegolithExcavatorRenderer.
     t = casing_tex('regolith_excavator_body')
-    t |= {'steel': b('press_steel'), 'wheel': b('regolith_excavator_wheel'), 'chute': b('regolith_excavator_chute')}
+    t |= {'steel': b('press_steel'), 'chute': b('regolith_excavator_chute'), 'drill': b('regolith_excavator_drill')}
     polished('regolith_excavator', t, [
-        box([0, 0, 4], [16, 13, 16], sides('side', north='front', up='top', down='bottom')),
-        box([2, 1, 1], [14, 13, 3], {'north': 'wheel', 'south': 'wheel'}, uv={'north': [2, 2, 14, 14], 'south': [2, 2, 14, 14]}),
-        box([2, 6, 2], [14, 8, 4], STEEL6),
-        box([0, 5, 0], [2, 9, 4], STEEL6), box([14, 5, 0], [16, 9, 4], STEEL6),
-        box([5, 13, 5], [11, 15, 16], {f: 'steel' for f in SIDES} | {'up': 'chute'}, uv={'up': [5, 0, 11, 11]}),
-    ], on_textures={'wheel': b('regolith_excavator_wheel_on'), 'chute': b('regolith_excavator_chute_on')})
+        box([3, 0, 4], [16, 13, 16], sides('side', north='front', up='top', down='bottom')),
+        box([0, 0, 9], [3, 12, 12], {f: 'drill' for f in SIDES}, uv={f: [4, 0, 7, 12] for f in SIDES}),
+        box([0, 12, 8], [4, 14, 13], STEEL6),
+        box([0, 5, 0], [1, 9, 4], STEEL6), box([15, 5, 0], [16, 9, 4], STEEL6), box([0, 6, 3], [16, 8, 4], STEEL6),
+        box([6, 13, 5], [12, 15, 16], {f: 'steel' for f in SIDES} | {'up': 'chute'}, uv={'up': [5, 0, 11, 11]}),
+    ], on_textures={'chute': b('regolith_excavator_chute_on'), 'drill': b('regolith_excavator_drill_on')})
+    wheel_t, wheel_els = excavator_wheel()
+    # inventory icon: housing and wheel in one model (in the world the renderer draws the wheel)
+    import json, os
+    with open(os.path.join(ASSETS, 'models/block/regolith_excavator.json'), encoding='utf-8') as fh:
+        housing = json.load(fh)
+    write('models/item/regolith_excavator.json', {'parent': 'minecraft:block/block', 'render_type': 'minecraft:cutout',
+                                                  'textures': housing['textures'] | {'bucket': wheel_t['bucket']},
+                                                  'elements': housing['elements'] + wheel_els})
 
     # ice melter: plinth with heating coil, glass tank, lid with an ice hopper
     t = casing_tex('machine_casing')
@@ -140,3 +149,26 @@ def battery_bank():
                     variants[f'charge={lvl},facing={facing},lit={lit},output_down={down}'] = v
     write('blockstates/battery_bank.json', {'variants': variants})
     write('models/item/battery_bank.json', {'parent': b('battery_bank_4')})
+
+
+def excavator_wheel():
+    """Bucket wheel, centred on (8, 7) in the plane z 0..2: an octagonal rim, four crossed spokes, eight buckets.
+    Diagonal parts use 45-degree element rotations; the renderer spins the whole model."""
+    t = {'steel': b('press_steel'), 'bucket': b('regolith_excavator_bucket'), 'particle': b('press_steel')}
+    straight = [
+        box([2, 6.5, 0.5], [14, 7.5, 1.5], 'steel'),                 # spokes
+        box([7.5, 1, 0.5], [8.5, 13, 1.5], 'steel'),
+        box([5, 12, 0], [11, 13, 2], 'steel'), box([5, 1, 0], [11, 2, 2], 'steel'),     # rim
+        box([2, 4, 0], [3, 10, 2], 'steel'), box([13, 4, 0], [14, 10, 2], 'steel'),
+        box([6.5, 13, -0.5], [9.5, 14.5, 2.5], 'bucket'), box([6.5, -0.5, -0.5], [9.5, 1, 2.5], 'bucket'),  # buckets
+        box([0.5, 5.5, -0.5], [2, 8.5, 2.5], 'bucket'), box([14, 5.5, -0.5], [15.5, 8.5, 2.5], 'bucket'),
+    ]
+    els = list(straight)
+    for el in straight:
+        r = dict(el)
+        r['rotation'] = {'origin': [8, 7, 1], 'axis': 'z', 'angle': 45}
+        els.append(r)
+    els.append(box([6.5, 5.5, -0.5], [9.5, 8.5, 2.5], 'steel'))     # hub
+    write('models/block/regolith_excavator_wheel.json', {'parent': 'minecraft:block/block', 'render_type': 'minecraft:cutout',
+                                                         'textures': t, 'elements': els})
+    return t, els

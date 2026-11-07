@@ -223,13 +223,6 @@ def sinter_glow_on():
 
 # ----------------------------------------------------------------------------- regolith excavator
 
-def excavator_wheel(frames=1):
-    cv = strip(frames)
-    for f in range(frames):
-        frame(cv, f, lambda c, f=f: wheel(c, 8, 8, 6.0, 8, f * (math.pi / 16), S[4], S[3], S[5], buckets=(S[1], S[6])))
-    return cv
-
-
 def excavator_body():
     cv = casing(72, seam=False)
     rect(cv, 3, 4, 12, 9, S[2])
@@ -334,9 +327,6 @@ def export(save):
     save(sinter_glow_on(), 'block', 'sintering_furnace_glow_on')
     mcmeta('sintering_furnace_glow_on', 4, True)
 
-    save(excavator_wheel(), 'block', 'regolith_excavator_wheel', metal)
-    save(excavator_wheel(4), 'block', 'regolith_excavator_wheel_on')
-    mcmeta('regolith_excavator_wheel_on', 2)
     save(excavator_body(), 'block', 'regolith_excavator_body', metal)
     save(chute(), 'block', 'regolith_excavator_chute', metal)
     save(chute_on(), 'block', 'regolith_excavator_chute_on')
@@ -347,3 +337,65 @@ def export(save):
     save(melter_top(), 'block', 'ice_melter_top', metal)
     save(coil_glow_on(), 'block', 'ice_melter_glow_on')
     mcmeta('ice_melter_glow_on', 5, True)
+
+
+# ----------------------------------------------------------------------------- second round: readable charge, drill
+
+CHARGE = {1: [(200, 60, 40), (240, 110, 80)], 2: [(220, 150, 40), (250, 200, 90)],
+          3: [(90, 220, 110), (150, 240, 160)], 4: [(90, 220, 110), (150, 240, 160)]}
+
+
+def battery_charge_bars(level):
+    """Charge bars readable from across a base: every lit bar takes the level's colour (red, amber, green)."""
+    lo, hi = CHARGE[level]
+    px = []
+    for i in range(level):
+        x0 = 2 + i * 3
+        for y in range(3, 13):
+            px.append((x0 + 1, y, lo))
+            px.append((x0 + 2, y, hi if y < 6 else lo))
+    return glow_overlay(px)
+
+
+def drill(frames=1):
+    """Auger under the excavator: a helical flight that climbs as the drill turns."""
+    cv = strip(frames)
+    for f in range(frames):
+        def draw(c, f=f):
+            for y in range(16):
+                for x in range(16):
+                    c[x, y] = S[5] if (x + y + f) % 4 < 2 else S[2]
+                    if x in (0, 15):
+                        c[x, y] = S[1]
+        frame(cv, f, draw)
+    return cv
+
+
+_export_first = export
+
+
+def export(save):  # noqa: F811
+    _export_first(save)
+    glow_rule = lambda c: (60, 10, 0, 200) if c[3] else None
+    for lvl in range(1, 5):
+        save(battery_charge_bars(lvl), 'block', f'battery_bank_charge_{lvl}', (60, 10, 0, glow_rule), normal=False)
+    save(drill(), 'block', 'regolith_excavator_drill', (150, 230, 0, None))
+    save(drill(4), 'block', 'regolith_excavator_drill_on')
+    mcmeta('regolith_excavator_drill_on', 2)
+
+
+def bucket():
+    """Digging bucket: dark mouth with a worn steel lip and teeth."""
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            cv[x, y] = S[1] if 2 < x < 13 and 2 < y < 13 else (S[6] if (x + y) % 3 else S[4])
+    return cv
+
+
+_export_second = export
+
+
+def export(save):  # noqa: F811
+    _export_second(save)
+    save(bucket(), 'block', 'regolith_excavator_bucket', (150, 230, 0, None))

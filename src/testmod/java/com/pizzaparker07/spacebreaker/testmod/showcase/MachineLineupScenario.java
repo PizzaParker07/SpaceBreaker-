@@ -56,6 +56,9 @@ final class MachineLineupScenario implements ShowcaseScenario {
             if (s.hasProperty(MachineBlock.LIT)) {
                 s = s.setValue(MachineBlock.LIT, true);
             }
+            if (s.hasProperty(com.pizzaparker07.spacebreaker.content.machines.machine.BatteryBankBlock.CHARGE)) {
+                s = s.setValue(com.pizzaparker07.spacebreaker.content.machines.machine.BatteryBankBlock.CHARGE, 3);
+            }
             level.setBlock(p, s, Block.UPDATE_ALL);
         }
         // other industry blocks: tanks, solar trackers, the power monitor
