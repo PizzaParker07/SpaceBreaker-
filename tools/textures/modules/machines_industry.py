@@ -603,3 +603,26 @@ _export_monitor = export
 def export(save):  # noqa: F811
     _export_monitor(save)
     save(power_monitor_front(), 'block', 'power_monitor_front', (150, 230, 0, None))
+
+
+def solar_dust():
+    """Settled regolith dust on solar cells: an even rust-tan film with fine grain, no pattern. Drawn
+    translucent over the panel by SolarPanelRenderer (alpha from the dust cover), so it stays opaque here."""
+    base = (176, 112, 63)  # #B0703F
+    shades = [tuple(max(0, min(255, c + d)) for c in base) for d in (-14, -6, 0, 7, 14)]
+    rnd = random.Random(41)
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            r = rnd.random()
+            cv[x, y] = shades[2] if r < 0.46 else shades[1] if r < 0.66 else shades[3] if r < 0.86 \
+                else shades[0] if r < 0.94 else shades[4]
+    return cv
+
+
+_export_dust_prev = export
+
+
+def export(save):  # noqa: F811
+    _export_dust_prev(save)
+    save(solar_dust(), 'block', 'solar_dust')

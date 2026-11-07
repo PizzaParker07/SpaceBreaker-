@@ -25,7 +25,7 @@ public class SolarPanelRenderer implements BlockEntityRenderer<SolarPanelBlockEn
     private static final float PIVOT_Y = 12.5F / 16F; // must match the torque tube in solar_panel_head.json
     /** Dust below this cover is not drawn. */
     private static final float DUST_SHOWN = 0.05F;
-    private static final net.minecraft.resources.ResourceLocation DUST_TEXTURE = net.minecraft.resources.ResourceLocation.withDefaultNamespace("block/red_sand");
+    private static final net.minecraft.resources.ResourceLocation DUST_TEXTURE = Spacebreaker.id("block/solar_dust");
     private final ModelResourceLocation head;
     private final double reach;
 
@@ -55,35 +55,49 @@ public class SolarPanelRenderer implements BlockEntityRenderer<SolarPanelBlockEn
                 1F, 1F, 1F, light, overlay, ModelData.EMPTY, RenderType.cutout());
         float dust = be.dust();
         if (dust > DUST_SHOWN) {
-            renderDust(pose, buffers.getBuffer(RenderType.translucent()), dust, light);
+            renderDust(pose, buffers.getBuffer(RenderType.translucent()), dust, be.getTilt(partialTick), light);
         }
         pose.popPose();
     }
 
-    /** A rust-coloured film of settled dust over the cells; thicker cover is more opaque. */
-    private void renderDust(PoseStack pose, VertexConsumer out, float dust, int light) {
+    /** Film opacity for a dust cover: cells clear at 30%, faint but still visible when fully covered. */
+    static float dustAlpha(float dust) {
+        return 0.65F * (float) Math.pow(Math.max(0F, Math.min(1F, dust)), 1.2);
+    }
+
+    /**
+     * A translucent film of settled dust over the cells. On a tilted panel the dust creeps down, so the
+     * lower edge carries more than the upper one.
+     */
+    private void renderDust(PoseStack pose, VertexConsumer out, float dust, float tilt, int light) {
         TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(DUST_TEXTURE);
-        float alpha = Math.min(1F, dust * 0.6F); // at 80% cover the cell pattern still shows faintly
+        float alpha = dustAlpha(dust);
+        // tilt > 0 lifts the east edge (x = 1): the west edge (x = 0) is the low one
+        float slope = Math.min(1F, Math.abs(net.minecraft.util.Mth.sin(tilt)) / net.minecraft.util.Mth.sin(SolarPanelBlockEntity.MAX_TILT));
+        float low = Math.min(1F, alpha * (1F + 0.45F * slope));
+        float high = alpha * (1F - 0.45F * slope);
+        float a0 = tilt > 0 ? low : high;   // x = 0
+        float a1 = tilt > 0 ? high : low;   // x = 1
         float y = 15.05F / 16F;
         float z0 = (float) (0.5 - reach);
         float z1 = (float) (0.5 + reach);
         PoseStack.Pose last = pose.last();
         float u0 = sprite.getU0();
         float u1 = sprite.getU1();
-        // one texture tile per block along the array so the grains keep their size
+        // one texture tile per block along the array so the grain keeps its size
         int tiles = Math.max(1, Math.round(z1 - z0));
         for (int i = 0; i < tiles; i++) {
             float a = z0 + i;
             float b = Math.min(z1, a + 1);
-            vertex(out, last, 0, y, a, u0, sprite.getV0(), alpha, light);
-            vertex(out, last, 0, y, b, u0, sprite.getV1(), alpha, light);
-            vertex(out, last, 1, y, b, u1, sprite.getV1(), alpha, light);
-            vertex(out, last, 1, y, a, u1, sprite.getV0(), alpha, light);
+            vertex(out, last, 0, y, a, u0, sprite.getV0(), a0, light);
+            vertex(out, last, 0, y, b, u0, sprite.getV1(), a0, light);
+            vertex(out, last, 1, y, b, u1, sprite.getV1(), a1, light);
+            vertex(out, last, 1, y, a, u1, sprite.getV0(), a1, light);
         }
     }
 
     private static void vertex(VertexConsumer out, PoseStack.Pose pose, float x, float y, float z, float u, float v, float alpha, int light) {
-        out.addVertex(pose, x, y, z).setColor(0.66F, 0.38F, 0.24F, alpha).setUv(u, v).setLight(light).setNormal(pose, 0, 1, 0);
+        out.addVertex(pose, x, y, z).setColor(1F, 1F, 1F, alpha).setUv(u, v).setLight(light).setNormal(pose, 0, 1, 0);
     }
 
     @Override

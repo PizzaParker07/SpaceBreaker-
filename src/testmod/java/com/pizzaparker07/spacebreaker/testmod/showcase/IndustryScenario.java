@@ -259,19 +259,6 @@ final class IndustryScenario implements ShowcaseScenario {
         }
     }
 
-    /** Settled dust in steps across the tracker row, the station array fully covered. */
-    private static void dustPanels(ServerPlayer player) {
-        float[] cover = {0.3F, 0.55F, 0.8F};
-        for (int i = 0; i < cover.length; i++) {
-            if (player.level().getBlockEntity(new BlockPos(ISRU_X - 3 + i, F + 1, 5)) instanceof com.pizzaparker07.spacebreaker.content.machines.SolarPanelBlockEntity be) {
-                be.setDust(cover[i]);
-            }
-        }
-        if (player.level().getBlockEntity(new BlockPos(ISRU_X - 4, F + 1, -1)) instanceof com.pizzaparker07.spacebreaker.content.machines.SolarPanelBlockEntity be) {
-            be.setDust(0.8F);
-        }
-    }
-
     /** Keeps the ISRU bay running between photos (software rendering is slow, the machines are hungry). */
     private static void rechargeIsru(ServerPlayer player) {
         for (int x = ISRU_X - 1; x <= ISRU_X + 16; x++) {
@@ -359,7 +346,6 @@ final class IndustryScenario implements ShowcaseScenario {
         s.add(new Shot("20_excavator_sinter", 6000, ISRU_X + 14.0, G + 2.2, 10.6, 180F, 16F, true, fp, 120, IndustryScenario::rechargeIsru, null));
         s.add(new Shot("19_power_monitor", 6000, ISRU_X - 3.5, G + 1.7, 5.3, 180F, 12F, true, fp, 120, null, null));
         s.add(new Shot("18_solar_array", 6000, ISRU_X - 0.5, G + 2.4, 2.5, 120F, 18F, true, fp, 60, null, null));
-        s.add(new Shot("21_dusty_panels", 6000, ISRU_X - 0.5, G + 2.4, 2.5, 120F, 18F, true, fp, 60, IndustryScenario::dustPanels, null));
         s.add(new Shot("16_rtg", 6000, ISRU_X + 11.5, G + 2.0, 8.9, 180F, 22F, true, fp, 60, null, null));
         s.add(new Shot("17_gui_rtg", 6000, ISRU_X + 11.5, G + 1.62, 7.0, 180F, 30F, false, fp, 40,
                 p -> openAt(p, new BlockPos(ISRU_X + 11, F + 1, 6)), null));
