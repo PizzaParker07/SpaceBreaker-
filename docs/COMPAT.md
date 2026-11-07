@@ -189,6 +189,11 @@ Complementary the tint is weaker (the pack re-lights translucent entities) but t
   haze like the ground around them. Showcase note: `server.tell(new TickTask(t, ...))` does not wait for tick `t`
   (it only defers under load); delayed showcase actions use `RocketryScenario.later`. With a pack the client is
   much slower than the server, so moving things are released continuously rather than timed to the frame.
+- **Mars dust storm:** the storm closes vanilla's terrain fog in to 22 blocks; the haze pass captures exactly that
+  (start 0, end 22 at full strength) and applies it over the pack's frame. The pack adds next to no fog of its own
+  there, so the two do not stack. With a pack the storm looks a little thinner than vanilla because the pack lights
+  the ground brighter under the same fog amount and colour. Dust devils render and cast pack shadows.
+  `mars_storm_haze_steps.jpg`: vanilla, pack with `atmosphereHaze = false`, pack with the haze, dust devil.
 - **Docking jolt:** a camera roll/pitch from `ViewportEvent.ComputeCameraAngles`; Iris builds its matrices from the
   same camera, so the shake is the same with a pack (at most about 2°, too small to tell apart in a still frame).
 - **Inside a closed module the pack's ambient fill is blue:** the airless sky colour handed to the pack
