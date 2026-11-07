@@ -1167,9 +1167,10 @@ def visor_frame() -> Canvas:
             if d >= 0:
                 step = min(3, int(d / 2.5))
                 cv[x, y] = (*rim, (90, 150, 205, 235)[step])
-            elif d > -2 and x < w * 0.45 and y < h * 0.45:
-                # glass edge catching light along the upper left
-                cv[x, y] = (196, 214, 228, 46)
+            elif d > -1.5:
+                # the visor's glass edge, all the way round, so the frame reads whole even against a dark sky
+                corner = x < left + r and y < top + r
+                cv[x, y] = (196, 214, 228, 70) if corner else (120, 132, 146, 54)
     # two short glints on the glass: an arc in the upper left corner, a dash in the lower right
     for i in range(26):
         a = 3.14159 * (1.05 + 0.4 * i / 25)
