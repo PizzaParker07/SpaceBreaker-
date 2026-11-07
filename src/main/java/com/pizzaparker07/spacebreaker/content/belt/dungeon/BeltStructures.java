@@ -87,6 +87,10 @@ public final class BeltStructures {
             case HYDRA -> java.util.List.of(com.pizzaparker07.spacebreaker.content.pluto.PlutoMoonlets.HYDRA.plains);
             case PROTEUS -> java.util.List.of(com.pizzaparker07.spacebreaker.content.neptune.Proteus.PROTEUS.plains);
             case NEREID -> java.util.List.of(com.pizzaparker07.spacebreaker.content.neptune.Nereid.NEREID.plains);
+            case BENNU -> java.util.List.of(com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.BENNU.plains);
+            case RYUGU -> java.util.List.of(com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.RYUGU.plains);
+            case EROS -> java.util.List.of(com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.EROS.plains);
+            case ITOKAWA -> java.util.List.of(com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.ITOKAWA.plains);
             case TRITON -> java.util.List.of(com.pizzaparker07.spacebreaker.content.neptune.NeptuneData.TRITON_CANTALOUPE,
                     com.pizzaparker07.spacebreaker.content.neptune.NeptuneData.TRITON_POLAR);
             case PLUTO -> java.util.List.of(com.pizzaparker07.spacebreaker.content.pluto.PlutoData.PLUTO_PLAINS);

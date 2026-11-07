@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-07T10:13:26.009233432	Loot Tables
+// 1.21.1	2026-11-07T10:18:41.423282958	Loot Tables
 c48f71ca60600cd6230f77a2e146a3df572494ae data/spacebreaker/loot_table/blocks/aerogel.json
 e37973997ec83c5b040a31bf9fcda1757b53fc00 data/spacebreaker/loot_table/blocks/airlock_door.json
 c511e60fe01f6dddc2d2b0e516ca81c11bf4ca91 data/spacebreaker/loot_table/blocks/aluminum_block.json
@@ -23,6 +23,8 @@ a8c54142d59b8d9c98551030abf5f6323753a36c data/spacebreaker/loot_table/blocks/ari
 2e74135c3d123c236fdef2105f8eff60ecf8e572 data/spacebreaker/loot_table/blocks/atmosphere_processor.json
 75562bc16dccaaa1c71029f55e38eb56646c5c93 data/spacebreaker/loot_table/blocks/battery_bank.json
 381c22549e872c7388c3d609990ec8528d9a753a data/spacebreaker/loot_table/blocks/bauxite_ore.json
+07fbccf0dffd296b3df36b587543ba9bee89af45 data/spacebreaker/loot_table/blocks/bennu_boulder.json
+9d4368e2154699083e5deefca790f3811601ae47 data/spacebreaker/loot_table/blocks/bennu_regolith.json
 683bb021732db8f8ada2187f49a3f3be0d0ca33c data/spacebreaker/loot_table/blocks/bright_frost.json
 c0cee9c5527eea2fe3de9148cd0cf204de77359b data/spacebreaker/loot_table/blocks/bright_ridge_ice.json
 3cbd98fbe375c902327bd549869ba7181a146754 data/spacebreaker/loot_table/blocks/callistan_rock.json
@@ -70,6 +72,8 @@ e05c65602a0c1dca09be81b5b215a1d187ff0ae2 data/spacebreaker/loot_table/blocks/doc
 3e17a680b5127a26bbfedc8de877e1048718cc5a data/spacebreaker/loot_table/blocks/enceladus_ice.json
 07933699355fba2821225ee8095d692f29d26b4d data/spacebreaker/loot_table/blocks/enceladus_snow.json
 c65ebdfbc4e0d16441aa38709394c22b14a0096f data/spacebreaker/loot_table/blocks/envelope_fabric.json
+805b92bd966d615bef4fa00e82aa4ad4fcd10304 data/spacebreaker/loot_table/blocks/eros_chondrite.json
+58c038996c30daaa16d077b8f743fd22f3761f0f data/spacebreaker/loot_table/blocks/eros_regolith.json
 2ee77549e06e26be05f79189e287d73cdc3ea672 data/spacebreaker/loot_table/blocks/eucrite.json
 b8a57e4623ed6f49c8a65368008ee7edeb72176e data/spacebreaker/loot_table/blocks/eucrite_brick_slab.json
 fe2d28c2101f5defc965267bab379e6af65aaf6e data/spacebreaker/loot_table/blocks/eucrite_brick_stairs.json
@@ -115,6 +119,8 @@ bf6e45d8b1fec3c1ea5a1762fc9418d60666c35b data/spacebreaker/loot_table/blocks/ion
 a167786a151be60653789942dd4705ebbb90ab9a data/spacebreaker/loot_table/blocks/ionian_basalt_stairs.json
 ebda587025ca63981fb7acf0fd08559e2099744f data/spacebreaker/loot_table/blocks/ionian_basalt_wall.json
 33525458edb9a5cf8d1343ad83ce609f6fd119ba data/spacebreaker/loot_table/blocks/ionian_sulfur_ore.json
+389024c28e82816a7f9c72fb6c919048ae1dbe59 data/spacebreaker/loot_table/blocks/itokawa_gravel.json
+58f47e91bf46cc22a9914a0980b9a077f2bdbe18 data/spacebreaker/loot_table/blocks/itokawa_rock.json
 93fac53325008f2437b22913aad76c2c6f8744ad data/spacebreaker/loot_table/blocks/kreep_ore.json
 f22fa8dea2237236b62e1c642a6a6d182d803ba8 data/spacebreaker/loot_table/blocks/landing_beacon.json
 9f5522bc770693605af89b8ad447640dd4aa3855 data/spacebreaker/loot_table/blocks/launch_control_console.json
@@ -212,6 +218,8 @@ a51f44dc97f5effa98958f0d1e006a531cda343d data/spacebreaker/loot_table/blocks/reg
 f19e5bf435aabce4dd06d7c8213b46787b994e32 data/spacebreaker/loot_table/blocks/rocket_assembler.json
 2612159d1e6015986dff729271492febd06102b1 data/spacebreaker/loot_table/blocks/rtg.json
 22722d279f2f72315e24ce455bd2d4cdf26b4c1c data/spacebreaker/loot_table/blocks/rutile_ore.json
+313adc7bbdf249989946a0c6e6ed71aa5a285fea data/spacebreaker/loot_table/blocks/ryugu_regolith.json
+bd870dc5aa9f79ca9d2980b2617dc18393b15a8b data/spacebreaker/loot_table/blocks/ryugu_rock.json
 e39bf08259fa919a27df54bef9094d90a19c5573 data/spacebreaker/loot_table/blocks/sabatier_reactor.json
 8af676cb979154992088bf52dbb6a8dc93eccea6 data/spacebreaker/loot_table/blocks/salt_ore.json
 215e60e135f5ac1699b4eba00cd380b702f8ffc2 data/spacebreaker/loot_table/blocks/service_tower.json

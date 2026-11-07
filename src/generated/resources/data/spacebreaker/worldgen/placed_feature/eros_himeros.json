@@ -1,0 +1,8 @@
+{
+  "feature": "spacebreaker:eros_himeros",
+  "placement": [
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

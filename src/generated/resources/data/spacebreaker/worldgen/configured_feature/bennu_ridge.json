@@ -1,0 +1,10 @@
+{
+  "type": "spacebreaker:latitude_ridge",
+  "config": {
+    "height": 8.0,
+    "rock": {
+      "Name": "spacebreaker:bennu_boulder"
+    },
+    "width": 18.0
+  }
+}

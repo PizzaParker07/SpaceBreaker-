@@ -23,7 +23,7 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import java.util.List;
 
 /**
- * The tiny irregular moons (Nix, Hydra, Proteus, Nereid): each body with a dimension has a world, a planet-engine terrain much
+ * The tiny irregular worlds (the moons Nix, Hydra, Proteus and Nereid; the near-Earth asteroids Bennu, Ryugu, Eros and Itokawa): each body with a dimension has a world, a planet-engine terrain much
  * smaller and lumpier than a round moon's, very weak gravity, its own ground at the surface, a lander, and refuelling
  * only where the ice is clean water ice.
  */
@@ -31,7 +31,9 @@ import java.util.List;
 @PrefixGameTestTemplate(false)
 public final class TinyMoonTests {
     private static final List<TinyWorld> WORLDS = List.of(PlutoMoonlets.NIX, PlutoMoonlets.HYDRA, Proteus.PROTEUS,
-            com.pizzaparker07.spacebreaker.content.neptune.Nereid.NEREID);
+            com.pizzaparker07.spacebreaker.content.neptune.Nereid.NEREID, com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.BENNU,
+            com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.RYUGU, com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.EROS,
+            com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.ITOKAWA);
 
     @GameTest(template = WorldTests.EMPTY, timeoutTicks = 200)
     public static void tinyMoonsAreWorlds(GameTestHelper helper) {
@@ -57,13 +59,33 @@ public final class TinyMoonTests {
                     BeltStructures.landerKey(LanderPiece.Variant.valueOf(w.name.toUpperCase(java.util.Locale.ROOT)))), w.name + " has a lander");
             var holder = Bodies.registry(access).orElseThrow().getHolder(ResourceKey.create(Bodies.REGISTRY, Spacebreaker.id(w.name))).orElseThrow();
             boolean refuels = holder.is(refuel);
-            helper.assertTrue(refuels == (w != Proteus.PROTEUS), w.name + (refuels ? " refuels" : " does not refuel"));
+            boolean water = w == PlutoMoonlets.NIX || w == PlutoMoonlets.HYDRA || w == com.pizzaparker07.spacebreaker.content.neptune.Nereid.NEREID;
+            helper.assertTrue(refuels == water, w.name + (refuels ? " refuels" : " does not refuel"));
         }
         // Proteus: Pharos scoops out its west side
         var t = WorldTests.generator(helper, "proteus", 4L).terrain();
         var pharos = Proteus.pharos();
         double floor = BasinFeature.offset(t, pharos, pharos.x(), BasinFeature.centreZ(t, pharos));
         helper.assertTrue(floor < -20, "Pharos is a deep basin: " + floor);
+        // the near-Earth asteroids' own shapes
+        var ryugu = WorldTests.generator(helper, "ryugu", 4L).terrain();
+        var ridge = com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.ryuguRidge();
+        double crest = com.pizzaparker07.spacebreaker.content.belt.world.RidgeFeature.offset(ryugu, ridge, 0, 0);
+        double off = com.pizzaparker07.spacebreaker.content.belt.world.RidgeFeature.offset(ryugu, ridge, 0, ryugu.profile().poleDistance() * 0.5);
+        helper.assertTrue(crest > 12 && off == 0, "Ryugu's equatorial ridge: " + crest + " / " + off);
+        var bennuRidge = com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.bennuRidge();
+        helper.assertTrue(bennuRidge.height() < ridge.height(), "Bennu's bulge is lower than Ryugu's ridge");
+        var itokawa = WorldTests.generator(helper, "itokawa", 4L).terrain();
+        var sea = com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.musesSea();
+        double sz = BasinFeature.centreZ(itokawa, sea);
+        double a = BasinFeature.offset(itokawa, sea, sea.x(), sz);
+        double b = BasinFeature.offset(itokawa, sea, sea.x() + sea.radius() * 0.4, sz);
+        helper.assertTrue(a < 0 && Math.abs(a - b) < 2, "the Muses Sea is a flat, low plain: " + a + " / " + b);
+        var eros = WorldTests.generator(helper, "eros", 4L).terrain();
+        var himeros = com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.himeros();
+        helper.assertTrue(BasinFeature.offset(eros, himeros, himeros.x(), BasinFeature.centreZ(eros, himeros)) < -15, "Himeros is a deep saddle");
+        helper.assertTrue(WorldTests.profile(helper, "eros").poleDistance() > WorldTests.profile(helper, "bennu").poleDistance(),
+                "Eros is far bigger than Bennu");
         helper.succeed();
     }
 }

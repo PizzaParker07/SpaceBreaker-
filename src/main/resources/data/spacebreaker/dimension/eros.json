@@ -1,0 +1,13 @@
+{
+  "type": "spacebreaker:eros",
+  "generator": {
+    "type": "spacebreaker:planet",
+    "terrain": "spacebreaker:eros",
+    "biome_source": {
+      "type": "spacebreaker:planet",
+      "highlands": "spacebreaker:eros_plains",
+      "crater": "spacebreaker:eros_crater",
+      "polar": "spacebreaker:eros_polar"
+    }
+  }
+}

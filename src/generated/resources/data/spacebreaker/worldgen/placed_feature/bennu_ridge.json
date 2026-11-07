@@ -1,0 +1,8 @@
+{
+  "feature": "spacebreaker:bennu_ridge",
+  "placement": [
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

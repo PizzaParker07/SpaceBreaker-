@@ -1,0 +1,8 @@
+{
+  "feature": "spacebreaker:ryugu_ridge",
+  "placement": [
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

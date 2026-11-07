@@ -1,0 +1,10 @@
+{
+  "type": "spacebreaker:latitude_ridge",
+  "config": {
+    "height": 18.0,
+    "rock": {
+      "Name": "spacebreaker:ryugu_rock"
+    },
+    "width": 12.0
+  }
+}

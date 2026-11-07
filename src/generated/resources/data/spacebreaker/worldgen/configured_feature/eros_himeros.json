@@ -1,0 +1,25 @@
+{
+  "type": "spacebreaker:impact_basin",
+  "config": {
+    "depth": 22.0,
+    "floor_soil": {
+      "Name": "spacebreaker:eros_regolith",
+      "Properties": {
+        "facing": "north",
+        "print": "none"
+      }
+    },
+    "latitude": 4.0,
+    "peak": 0.0,
+    "peak_radius": 0.1,
+    "radius": 200.0,
+    "rim": 6.0,
+    "rings": 0.0,
+    "rock": {
+      "Name": "spacebreaker:eros_chondrite"
+    },
+    "terraces": 2,
+    "wall": 0.3,
+    "x": 260.0
+  }
+}

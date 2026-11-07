@@ -108,11 +108,21 @@ public final class TinyWorld {
 
     /** Boulders of the bedrock with some of the accent block. */
     public void configured(BootstrapContext<ConfiguredFeature<?, ?>> ctx, BlockState accent) {
-        ctx.register(OuterWorlds.cf(name + "_block"), OuterWorlds.boulder(0.5F, 1.6F, 0.5F, rock.get().defaultBlockState(), 3, accent, 1));
+        configured(ctx, accent, 0.5F, 1.6F);
+    }
+
+    /** Boulders of a chosen size range (radius in blocks). */
+    public void configured(BootstrapContext<ConfiguredFeature<?, ?>> ctx, BlockState accent, float min, float max) {
+        ctx.register(OuterWorlds.cf(name + "_block"), OuterWorlds.boulder(min, max, 0.5F, rock.get().defaultBlockState(), 3, accent, 1));
     }
 
     public void placed(BootstrapContext<PlacedFeature> ctx) {
-        OuterWorlds.placedBoulder(ctx, name + "_block", 3);
+        placed(ctx, 3);
+    }
+
+    /** Boulders on average once every {@code rarity} chunks (1 = in every chunk). */
+    public void placed(BootstrapContext<PlacedFeature> ctx, int rarity) {
+        OuterWorlds.placedBoulder(ctx, name + "_block", rarity);
     }
 
     /**

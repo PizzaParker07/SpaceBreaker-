@@ -213,6 +213,17 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 |---|---|---|
 | 🎨 | Düşmüş İkmal İniş Aracı (Vesta, Ganymede, Kallisto, Enceladus) | kayma hendeği ve toprak sırtı, yan yatmış iniş aracı (kırık bacak, ısı kalkanı, kabin sandığı), kopmuş güneş paneli, enkaz, merdivenli gömülü kargo bölmesi; her dünyanın kendi zemini, kargosu ve teknolojisi |
 
+### Dünya'ya yakın asteroitler (ortak `TinyWorld` paketi)
+| Durum | İçerik | Not |
+|---|---|---|
+| 🎨 | Bennu `spacebreaker:bennu` | ~0,5 km'lik moloz yığını, kömürden koyu; her yerde iri kayalar, ekvator boyunca alçak bir şişkinlik; neredeyse sıfır yerçekimi; Ay'dan sonra en ucuz hedeflerden |
+| 🎨 | Ryugu `spacebreaker:ryugu` | topaç biçimli koyu karbonlu moloz; ekvatorda keskin sırt, koyu kayalar |
+| 🎨 | Eros `spacebreaker:eros` | ~17 km'lik uzun, taşlı (S-tipi) asteroit; yoğun kraterli bej-gri yüzey, yanında büyük Himeros çukuru |
+| 🎨 | Itokawa `spacebreaker:itokawa` | iki parçalı "fıstık"; engebeli, kayalık yüzey ve boynundaki düz çakıl ovası Muses Denizi (iniş yerinde) |
+| 🎨 | Bloklar | Bennu Regoliti, Bennu Kaya Bloğu, Ryugu Regoliti, Ryugu Kayası, Eros Regoliti, Eros Kondriti, Itokawa Çakılı, Itokawa Kayası (regolit/çakıl kalıcı ayak izi tutar); su buzu yok, yakıt ikmali yok |
+| 🎨 | Zindanlar | Düşmüş İkmal İniş Aracı (Bennu, Ryugu, Eros, Itokawa) → Mikro Yerçekiminde Madencilik / Spektroskopi |
+| 🎨 | Ortak yüzey özelliği | enlem sırtı (`latitude_ridge`): bir enlem çizgisi boyunca gövdeyi saran yükselti (Ryugu, Bennu) |
+
 ### Jüpiter uyduları
 | Durum | İçerik | Not |
 |---|---|---|

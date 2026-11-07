@@ -56,6 +56,10 @@ public final class ShowcaseScenarios {
         ALL.put("oberon", new OberonScenario());
         ALL.put("nix", new TinyMoonScenario(com.pizzaparker07.spacebreaker.content.pluto.PlutoMoonlets.NIX, null, 0, 0));
         ALL.put("hydra", new TinyMoonScenario(com.pizzaparker07.spacebreaker.content.pluto.PlutoMoonlets.HYDRA, null, 0, 0));
+        ALL.put("bennu", new TinyMoonScenario(com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.BENNU, null, 0, 0));
+        ALL.put("ryugu", new TinyMoonScenario(com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.RYUGU, "equatorial_ridge", 0, 0));
+        ALL.put("eros", new TinyMoonScenario(com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.EROS, "himeros", com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.himeros().x(), com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.himeros().latitude()));
+        ALL.put("itokawa", new TinyMoonScenario(com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.ITOKAWA, "muses_sea", com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.musesSea().x(), com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.musesSea().latitude()));
         ALL.put("nereid", new TinyMoonScenario(com.pizzaparker07.spacebreaker.content.neptune.Nereid.NEREID, null, 0, 0));
         ALL.put("proteus", new TinyMoonScenario(com.pizzaparker07.spacebreaker.content.neptune.Proteus.PROTEUS, "pharos_basin",
                 com.pizzaparker07.spacebreaker.content.neptune.Proteus.pharos().x(), com.pizzaparker07.spacebreaker.content.neptune.Proteus.pharos().latitude()));

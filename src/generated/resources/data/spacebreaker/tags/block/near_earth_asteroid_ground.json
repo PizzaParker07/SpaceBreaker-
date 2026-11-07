@@ -1,0 +1,12 @@
+{
+  "values": [
+    "spacebreaker:bennu_regolith",
+    "spacebreaker:bennu_boulder",
+    "spacebreaker:ryugu_regolith",
+    "spacebreaker:ryugu_rock",
+    "spacebreaker:eros_regolith",
+    "spacebreaker:eros_chondrite",
+    "spacebreaker:itokawa_gravel",
+    "spacebreaker:itokawa_rock"
+  ]
+}

@@ -31,14 +31,14 @@ import java.util.Locale;
  * A supply lander that came down hard: a skid trench ploughed through the local soil and thrown up in a ridge, the
  * lander on its side at the end of it with one leg folded under, a solar wing torn off and lying flat, scattered debris -
  * and the survey team's cargo hold, buried beside it with a hatch and a ladder. One piece, dressed in each world's own
- * ground: Vesta, Ganymede, Callisto, Enceladus, Miranda, Ariel, Titania, Umbriel, Oberon, Triton, Proteus, Nereid, Nix, Hydra, Pluto and Charon each have their own cargo and technology.
+ * ground: Vesta, Ganymede, Callisto, Enceladus, Miranda, Ariel, Titania, Umbriel, Oberon, Triton, Proteus, Nereid, Nix, Hydra, Bennu, Ryugu, Eros, Itokawa, Pluto and Charon each have their own cargo and technology.
  */
 public class LanderPiece extends StructurePiece {
     /** The worlds a lander can lie on, with the ground it digs into. */
     public enum Variant {
         VESTA, GANYMEDE, CALLISTO, ENCELADUS, MIRANDA, TRITON, PLUTO, CHARON,
         // new worlds go last: the order sets each world's structure-set salt
-        ARIEL, TITANIA, UMBRIEL, OBERON, NIX, HYDRA, PROTEUS, NEREID;
+        ARIEL, TITANIA, UMBRIEL, OBERON, NIX, HYDRA, PROTEUS, NEREID, BENNU, RYUGU, EROS, ITOKAWA;
 
         public String id() {
             return name().toLowerCase(Locale.ROOT);
@@ -59,6 +59,10 @@ public class LanderPiece extends StructurePiece {
                 case HYDRA -> com.pizzaparker07.spacebreaker.content.pluto.PlutoMoonlets.HYDRA.soil.get().defaultBlockState();
                 case PROTEUS -> com.pizzaparker07.spacebreaker.content.neptune.Proteus.PROTEUS.soil.get().defaultBlockState();
                 case NEREID -> com.pizzaparker07.spacebreaker.content.neptune.Nereid.NEREID.soil.get().defaultBlockState();
+                case BENNU -> com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.BENNU.soil.get().defaultBlockState();
+                case RYUGU -> com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.RYUGU.soil.get().defaultBlockState();
+                case EROS -> com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.EROS.soil.get().defaultBlockState();
+                case ITOKAWA -> com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.ITOKAWA.soil.get().defaultBlockState();
                 case TRITON -> com.pizzaparker07.spacebreaker.content.neptune.NeptuneModule.TRITON_FROST.get().defaultBlockState();
                 case PLUTO -> com.pizzaparker07.spacebreaker.content.pluto.PlutoModule.PLUTONIAN_FROST.get().defaultBlockState();
                 case CHARON -> com.pizzaparker07.spacebreaker.content.pluto.PlutoModule.CHARON_REGOLITH.get().defaultBlockState();
@@ -80,6 +84,10 @@ public class LanderPiece extends StructurePiece {
                 case HYDRA -> com.pizzaparker07.spacebreaker.content.pluto.PlutoMoonlets.HYDRA.rock.get().defaultBlockState();
                 case PROTEUS -> com.pizzaparker07.spacebreaker.content.neptune.Proteus.PROTEUS.rock.get().defaultBlockState();
                 case NEREID -> com.pizzaparker07.spacebreaker.content.neptune.Nereid.NEREID.rock.get().defaultBlockState();
+                case BENNU -> com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.BENNU.rock.get().defaultBlockState();
+                case RYUGU -> com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.RYUGU.rock.get().defaultBlockState();
+                case EROS -> com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.EROS.rock.get().defaultBlockState();
+                case ITOKAWA -> com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.ITOKAWA.rock.get().defaultBlockState();
                 case TRITON -> com.pizzaparker07.spacebreaker.content.neptune.NeptuneModule.TRITON_ICE.base().get().defaultBlockState();
                 case PLUTO -> com.pizzaparker07.spacebreaker.content.pluto.PlutoModule.PLUTONIAN_ICE.base().get().defaultBlockState();
                 case CHARON -> com.pizzaparker07.spacebreaker.content.pluto.PlutoModule.CHARON_ICE.get().defaultBlockState();

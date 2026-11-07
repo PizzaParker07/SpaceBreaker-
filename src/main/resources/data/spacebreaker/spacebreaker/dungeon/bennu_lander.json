@@ -1,0 +1,9 @@
+{
+  "structure": "spacebreaker:bennu_lander",
+  "world": "spacebreaker:bennu",
+  "guardians": [],
+  "loot_tables": [
+    "spacebreaker:dungeons/bennu/lander_cabin",
+    "spacebreaker:dungeons/bennu/lander_cargo"
+  ]
+}

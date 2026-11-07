@@ -323,7 +323,81 @@ def vesta_disc():
 
 # --------------------------------------------------------------------------- export
 
+# --------------------------------------------------------------------------- near-Earth asteroids
+
+def bennu_regolith(v=0):
+    return dust(P.BENNU_SOIL, 19101 + v * 29)
+
+
+def bennu_boulder():
+    r = P.BENNU_ROCK
+    f = blend((clustered(16, 16, 19201, passes=1), 0.55), (white(19201 + 1), 0.3), (fbm(16, 16, 19201 + 2, [(8, 1.0)]), 0.15))
+    cv, _ = quant(f, [r[0], r[1], r[2], r[3], r[4], r[5]], [3, 12, 32, 32, 15, 6])
+    return cv
+
+
+def ryugu_regolith(v=0):
+    return dust(P.RYUGU_SOIL, 19301 + v * 29)
+
+
+def ryugu_rock():
+    r = P.RYUGU_ROCK
+    f = blend((clustered(16, 16, 19401, passes=1), 0.55), (white(19401 + 1), 0.3), (fbm(16, 16, 19401 + 2, [(8, 1.0)]), 0.15))
+    cv, _ = quant(f, [r[0], r[1], r[2], r[3], r[4], r[5]], [3, 12, 32, 32, 15, 6])
+    return cv
+
+
+def eros_regolith(v=0):
+    return dust(P.EROS_SOIL, 19501 + v * 29)
+
+
+def eros_chondrite():
+    r = P.EROS_ROCK
+    f = blend((clustered(16, 16, 19601, passes=1), 0.55), (white(19601 + 1), 0.3), (fbm(16, 16, 19601 + 2, [(8, 1.0)]), 0.15))
+    cv, _ = quant(f, [r[0], r[1], r[2], r[3], r[4], r[5]], [3, 12, 32, 32, 15, 6])
+    return cv
+
+
+def itokawa_gravel(v=0):
+    return dust(P.ITOKAWA_SOIL, 19701 + v * 29)
+
+
+def itokawa_rock():
+    r = P.ITOKAWA_ROCK
+    f = blend((clustered(16, 16, 19801, passes=1), 0.55), (white(19801 + 1), 0.3), (fbm(16, 16, 19801 + 2, [(8, 1.0)]), 0.15))
+    cv, _ = quant(f, [r[0], r[1], r[2], r[3], r[4], r[5]], [3, 12, 32, 32, 15, 6])
+    return cv
+
+
 def export(save):
+    for name, fn, r in (('bennu_regolith', bennu_regolith, P.BENNU_SOIL),):
+        base = fn(0)
+        save(base, 'block', name, (18, 8, 64, None))
+        save(fn(1), 'block', name + '_1', (18, 8, 64, None))
+        for side in ('left', 'right'):
+            save(footprint(base, prints(r), side), 'block', f'{name}_footprint_{side}', (22, 8, 64, None))
+    save(bennu_boulder(), 'block', 'bennu_boulder', (40, 12, 20, None))
+    for name, fn, r in (('ryugu_regolith', ryugu_regolith, P.RYUGU_SOIL),):
+        base = fn(0)
+        save(base, 'block', name, (18, 8, 64, None))
+        save(fn(1), 'block', name + '_1', (18, 8, 64, None))
+        for side in ('left', 'right'):
+            save(footprint(base, prints(r), side), 'block', f'{name}_footprint_{side}', (22, 8, 64, None))
+    save(ryugu_rock(), 'block', 'ryugu_rock', (40, 12, 20, None))
+    for name, fn, r in (('eros_regolith', eros_regolith, P.EROS_SOIL),):
+        base = fn(0)
+        save(base, 'block', name, (18, 8, 64, None))
+        save(fn(1), 'block', name + '_1', (18, 8, 64, None))
+        for side in ('left', 'right'):
+            save(footprint(base, prints(r), side), 'block', f'{name}_footprint_{side}', (22, 8, 64, None))
+    save(eros_chondrite(), 'block', 'eros_chondrite', (40, 12, 20, None))
+    for name, fn, r in (('itokawa_gravel', itokawa_gravel, P.ITOKAWA_SOIL),):
+        base = fn(0)
+        save(base, 'block', name, (18, 8, 64, None))
+        save(fn(1), 'block', name + '_1', (18, 8, 64, None))
+        for side in ('left', 'right'):
+            save(footprint(base, prints(r), side), 'block', f'{name}_footprint_{side}', (22, 8, 64, None))
+    save(itokawa_rock(), 'block', 'itokawa_rock', (40, 12, 20, None))
     dust_spec = (18, 8, 64, None)
     for name, fn, r in (('ceres_regolith', ceres_regolith, P.CERES_SOIL), ('ammoniated_clay', ammoniated_clay, P.AMMONIA_CLAY),
                         ('carbonate_crust', carbonate_crust, P.CARBONATE), ('vestan_regolith', vestan_regolith, P.VESTA_SOIL),
