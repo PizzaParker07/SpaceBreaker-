@@ -18,8 +18,8 @@ public final class BoilOff {
     public static double scale(SbConfig.Realism realism) {
         return switch (realism) {
             case REALISTIC -> 1.0;
-            case BALANCED -> 0.5;
-            case EASY -> 0.25;
+            case BALANCED -> 0.2;
+            case EASY -> 0.1;
         };
     }
 
