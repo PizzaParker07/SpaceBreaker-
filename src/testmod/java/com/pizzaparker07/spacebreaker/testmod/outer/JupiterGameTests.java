@@ -32,7 +32,6 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.gametest.GameTestHolder;
@@ -229,7 +228,7 @@ public final class JupiterGameTests {
             int water = 0;
             for (BlockPos p : BlockPos.betweenClosed(bb.minX(), bb.minY(), bb.minZ(), bb.maxX(), bb.maxY(), bb.maxZ())) {
                 var st = level.getBlockState(p);
-                if (st.is(Blocks.CHEST) && level.getBlockEntity(p) instanceof ChestBlockEntity ch && ch.getLootTable() != null) {
+                if (level.getBlockEntity(p) instanceof com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlockEntity ch && ch.getLootTable() != null) {
                     chests++;
                 }
                 if (st.is(Blocks.WATER)) {
@@ -243,7 +242,7 @@ public final class JupiterGameTests {
             int obsChests = 0;
             BoundingBox ob = obs.getBoundingBox();
             for (BlockPos p : BlockPos.betweenClosed(ob.minX(), ob.minY(), ob.minZ(), ob.maxX(), ob.maxY(), ob.maxZ())) {
-                if (level.getBlockState(p).is(Blocks.CHEST) && level.getBlockEntity(p) instanceof ChestBlockEntity ch && ch.getLootTable() != null) {
+                if (level.getBlockEntity(p) instanceof com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlockEntity ch && ch.getLootTable() != null) {
                     obsChests++;
                 }
             }

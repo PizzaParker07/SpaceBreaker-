@@ -22,7 +22,7 @@ from PIL import Image, ImageChops, ImageStat
 ROOT = Path(__file__).resolve().parents[2]
 SHOTS = ROOT / "run-showcase/screenshots"
 BASE = ROOT / "docs/screenshots/qa/visual_baseline"
-SCENARIOS = ["sky_planets", "sky_planets_mars", "blocky_lod"]
+SCENARIOS = ["sky_planets", "sky_planets_mars", "blocky_lod", "space_scene", "inner_orbit"]
 SIZE = (480, 270)
 THRESHOLD = 6.0
 

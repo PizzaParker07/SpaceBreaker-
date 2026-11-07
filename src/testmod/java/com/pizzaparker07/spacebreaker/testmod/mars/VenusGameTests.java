@@ -131,40 +131,43 @@ public final class VenusGameTests {
             int fabric = 0;
             for (BlockPos p : BlockPos.betweenClosed(bb.minX(), bb.minY(), bb.minZ(), bb.maxX(), bb.maxY(), bb.maxZ())) {
                 var st = level.getBlockState(p);
-                if (st.is(Blocks.CHEST) && level.getBlockEntity(p) instanceof ChestBlockEntity c && c.getLootTable() != null) {
+                if (level.getBlockEntity(p) instanceof com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlockEntity c
+                        && c.getLootTable() != null) {
                     chests++;
                 }
                 if (st.is(VenusModule.ENVELOPE_FABRIC.get())) {
                     fabric++;
                 }
             }
-            helper.assertTrue(chests >= 2, "aerostat lab and stores, found " + chests);
+            helper.assertTrue(chests >= 2, "aerostat lab and stores lockers, found " + chests);
             helper.assertTrue(fabric > 200, "a big envelope, found " + fabric);
             // valve puzzle: of the three levers above the gondola door exactly one opens it
             List<BlockPos> levers = new java.util.ArrayList<>();
-            BlockPos doorPos = null;
+            List<BlockPos> doors = new java.util.ArrayList<>();
             int webs = 0;
             int trapdoors = 0;
+            var airlock = com.pizzaparker07.spacebreaker.content.suit.SuitModule.AIRLOCK_DOOR.get();
+            var open = com.pizzaparker07.spacebreaker.content.suit.block.AirlockDoorBlock.OPEN;
             for (BlockPos p : BlockPos.betweenClosed(bb.minX(), bb.minY(), bb.minZ(), bb.maxX(), bb.maxY(), bb.maxZ())) {
                 var st = level.getBlockState(p);
                 if (st.is(Blocks.LEVER)) {
                     levers.add(p.immutable());
                 }
-                if (st.is(Blocks.IRON_DOOR) && st.getValue(net.minecraft.world.level.block.DoorBlock.HALF)
+                if (st.is(airlock) && st.getValue(com.pizzaparker07.spacebreaker.content.suit.block.AirlockDoorBlock.HALF)
                         == net.minecraft.world.level.block.state.properties.DoubleBlockHalf.LOWER) {
-                    doorPos = p.immutable();
+                    doors.add(p.immutable());
                 }
                 webs += st.is(Blocks.COBWEB) ? 1 : 0;
                 trapdoors += st.is(Blocks.IRON_TRAPDOOR) ? 1 : 0;
             }
-            helper.assertTrue(levers.size() == 3 && doorPos != null, "three valves and a sealed door, levers " + levers.size());
+            helper.assertTrue(levers.size() == 3 && !doors.isEmpty(), "three valves and a sealed door, levers " + levers.size());
             helper.assertTrue(webs >= 1 && trapdoors >= 1, "walkway trap with a net");
-            helper.assertFalse(level.getBlockState(doorPos).getValue(net.minecraft.world.level.block.DoorBlock.OPEN), "door starts closed");
+            helper.assertTrue(doors.stream().noneMatch(d -> level.getBlockState(d).getValue(open)), "doors start closed");
             int opening = 0;
             for (BlockPos l : levers) {
                 var lever = (net.minecraft.world.level.block.LeverBlock) Blocks.LEVER;
                 lever.pull(level.getBlockState(l), level, l, null);
-                if (level.getBlockState(doorPos).getValue(net.minecraft.world.level.block.DoorBlock.OPEN)) {
+                if (doors.stream().anyMatch(d -> level.getBlockState(d).getValue(open))) {
                     opening++;
                 }
                 lever.pull(level.getBlockState(l), level, l, null);
@@ -192,7 +195,7 @@ public final class VenusGameTests {
         int placed = com.pizzaparker07.spacebreaker.content.venus.AerostatKitItem.deploy(level, deck);
         int panels = 0;
         int fabric = 0;
-        for (BlockPos p : BlockPos.betweenClosed(deck.offset(-6, 0, -6), deck.offset(6, 13, 6))) {
+        for (BlockPos p : BlockPos.betweenClosed(deck.offset(-6, 0, -6), deck.offset(6, 17, 6))) {
             panels += level.getBlockState(p).is(VenusModule.COMPOSITE_PANEL.get()) ? 1 : 0;
             fabric += level.getBlockState(p).is(VenusModule.ENVELOPE_FABRIC.get()) ? 1 : 0;
         }

@@ -108,6 +108,14 @@ final class SaturnianScenario extends OuterShowcase {
         BlockPos inside = hangar.world(8, 4, 12);
         shot("06_rotorcraft_hangar", front.getX() + 0.5, front.getY() + 2.6, front.getZ() + 0.5,
                 MoonScenario.yaw(inside.getX() - front.getX(), inside.getZ() - front.getZ()), 12F, 160, at(0.22), null);
+        // the outside: apron, floodlights, buttresses, the roof walkway and mast, the tanks behind
+        BlockPos away = hangar.world(18, 12, -12);
+        BlockPos mid = hangar.world(8, 6, 11);
+        shot("06b_hangar_outside", away.getX() + 0.5, away.getY(), away.getZ() + 0.5,
+                MoonScenario.yaw(mid.getX() - away.getX(), mid.getZ() - away.getZ()), 18F, 160, at(0.22), null);
+        BlockPos back = hangar.world(-4, 11, 30);
+        shot("06c_hangar_back", back.getX() + 0.5, back.getY(), back.getZ() + 0.5,
+                MoonScenario.yaw(mid.getX() - back.getX(), mid.getZ() - back.getZ()), 22F, 160, at(0.22), null);
     }
 
     private void enceladus(ServerLevel level, PlanetTerrain t) {

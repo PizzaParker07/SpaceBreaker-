@@ -363,6 +363,12 @@ environment; the plugins compile against both APIs and the line itself is covere
   Look for: our black sky with stars and planets (not the pack's blue), no pack clouds, haze on Venus/Titan/Mars
   storms, plumes and glows in front of space, windows showing space, orbit night darkening.
 
+- **Shared orbit world (`spacebreaker:orbit`):** the orbit space of every body without its own orbit world (Mars
+  and the rest) belongs to no body file, so it was classified as a vanilla world: under a pack it showed the pack's
+  grey sky and clouds instead of space and the planet below (and would have shown Overworld rain). `SpaceWorlds`
+  now classifies it as ORBIT (GameTest `spaceWorldsAreClassified`). `space_scene_orbits_vanilla_vs_iris.jpg`: the
+  Earth-Moon space scene (01, 02, 04) and orbit views (10, 14, 38) vanilla left, pack right; the Mars orbit row is
+  the pack before (left) and after (right) the fix.
 - **Outline boxes (`RenderType.lines()`):** Iris's line programs widen each segment in screen space, so an edge
   that runs behind the camera becomes a large flat quad across the view (seen as a lavender square over the station
   core while holding a docking module: the outline reaches back past the player). `compat.client.ClippedLines` cuts

@@ -1056,6 +1056,9 @@ built on them.
 - `EntryGate` gives a body's layers: `zone(body, altitude)` returns SPACE, ORBIT_SHELL (below twice the
   low-orbit altitude), ENTRY (below the top of the air, or half the low-orbit altitude on airless worlds) or
   SURFACE. `descendsThroughEntry(body, state)` is the hand-over test to the surface world.
+- `StationRendezvous.orbit(body, altitude, inclination, phase)` builds a station's fixed circular orbit (from
+  rocketry's `Stations.orbit`). `returnsToPocket(craft, orbit, t)` is true within 50 km and below 50 m/s
+  relative speed.
 - `SurfacePoint(lat, lon, altitude)` converts to and from a position over a turning body through `BodyLook`.
   `mapXZ(blocksPerDegree)` maps it onto a surface world (x east, z south).
 

@@ -1,7 +1,7 @@
 ---
 title: Uzay İstasyonu
 icon: spacebreaker:docking_port
-items: [spacebreaker:station_kit, spacebreaker:habitat_kit, spacebreaker:station_hull, spacebreaker:station_window, spacebreaker:docking_port, spacebreaker:station_bunk, spacebreaker:fuel_depot, spacebreaker:solar_array, spacebreaker:crew_capsule_large, spacebreaker:cargo_module, spacebreaker:station_core_module, spacebreaker:docking_module, spacebreaker:station_hatch]
+items: [spacebreaker:station_kit, spacebreaker:habitat_kit, spacebreaker:station_hull, spacebreaker:station_window, spacebreaker:docking_port, spacebreaker:station_bunk, spacebreaker:fuel_depot, spacebreaker:solar_array, spacebreaker:crew_capsule_large, spacebreaker:cargo_module, spacebreaker:station_core_module, spacebreaker:docking_module, spacebreaker:habitation_module, spacebreaker:airlock_module, spacebreaker:solar_wings, spacebreaker:station_hatch]
 research: spacebreaker:space_stations
 ---
 Yörüngede bir ev, atölye ve yakıt deposu. Roketini her seferinde yerden doldurmak zorunda kalmazsın.
@@ -25,6 +25,17 @@ Hazır modüller standart **ağızlardan** birleşir: yürüme yüksekliğinde 3
 **Roketle:** modüller kapsül yuvasına takılır. Modül taşıyan roket yörüngesindeki istasyona kenetlenir ve modülü çekirdek konsolunda bekletir; almak için konsolu aç. 512 blok içinde istasyon yoksa çekirdek modülü roketin önünde yeni bir istasyon açar, roket de onun çatısına kenetlenir.
 {recipe spacebreaker:rocketry/station_core_module}
 {recipe spacebreaker:rocketry/docking_module}
+
+### Yaşam, hava kilidi ve enerji {#stage2}
+{items spacebreaker:habitation_module spacebreaker:airlock_module spacebreaker:solar_wings}
+- **{item spacebreaker:habitation_module}** (7 × 5 × 9): uyku bölmelerinde üç ranza, iki fıçı dolap, iki pencere bandı, tavan ışıkları ve istasyonu büyütmek için uçta kapalı bir ağız.
+- **{item spacebreaker:airlock_module}** (5 × 5 × 5): istasyona açılan bir hava kilidi kapısı, uzaya açılan bir hava kilidi kapısı ve aralarında küçük bir oda. Dış kapıyı açmadan önce iç kapıyı kapat; sen dışarı çıkarken istasyon havasını korur.
+- **{item spacebreaker:solar_wings}**: gövdenin dışına kurulur, ağız kapalı kalır; ortadaki kapak istasyonu besleyen bir batarya bankasına dönüşür. Döner bir eklemden ızgara ve bakır kablodan bir kol uzanır; üstünde her yanda ikişer olmak üzere **dört güneş paneli dizisi** ve ucunda bir anten vardır.
+
+Bunlar da çekirdek ve kenetlenme modülü gibi bağlanır ve teslim edilir.
+{recipe spacebreaker:rocketry/habitation_module}
+{recipe spacebreaker:rocketry/airlock_module}
+{recipe spacebreaker:rocketry/solar_wings}
 
 ## Yaşam modülü kiti
 {items spacebreaker:habitat_kit}
