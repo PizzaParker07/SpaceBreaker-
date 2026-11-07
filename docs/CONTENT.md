@@ -202,6 +202,15 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Haritalar | Venüs bulut bantları (yan yatmış Y), Merkür kraterleri + Caloris + ışınlı genç kraterler, Mars coğrafyası (Tharsis, Olympus, Valles + Noctis, kutup başlıkları); hepsi kodla, piksel stilinde |
 | 🎨 | Rehber | yeni "İç Gezegenler" bölümü: Mars, Mars kaynakları, Mars'ta yaşam, Phobos ve Deimos, Venüs, bulutlarda yaşam ve harabeler, Merkür, yörüngeden görünüm (EN + TR, Gezegenlerarası Transferler ile açılır) |
 
+### İç gezegen varış notları ve bilinen sorunlar
+| Durum | İçerik | Not |
+|---|---|---|
+| 🎨 | Varış notları | Mars, Phobos, Deimos, Venüs ve Merkür'e ilk inişte sohbette tek satırlık ipucu (oyuncu ve dünya başına bir kez; EN + TR): Mars'ta solunamaz hava, önceden görülen fırtınalar ve panel tozu; Venüs'te yüzey yerine bulut katmanı (y 195-245); Merkür'de gölgede yolculuk ve kutup buzu |
+| ⚠️ | Bilinen sorun | Venüs bulut katmanının içinden gökyüzü düz bir pus olarak görünür (kasıtlı: bulut içindesin); bulutun üstüne çıkınca Güneş görünür |
+| ⚠️ | Bilinen sorun | Merkür'de çift gün doğumu var, ama oyunun günü geceden uzun olduğu için akşam çift gün batımı yerine Güneş batıda yalnızca duraklar |
+| ⚠️ | Bilinen sorun | Phobos'un Güneş önünden geçişi (transit) yok: gerçek ölçekte oyun zamanında ~0,6 saniye süreceği için eklenmedi |
+| ⚠️ | Bilinen sorun | Vitrin (showcase) kameralarında görüş açısı en az 30°: oyun 30'un altındaki değerleri sessizce yok sayar |
+
 ### Faz 2 teknolojileri (zindan diskleri)
 | Durum | İçerik | Not |
 |---|---|---|
