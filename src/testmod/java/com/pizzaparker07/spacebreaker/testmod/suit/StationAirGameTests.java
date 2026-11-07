@@ -280,4 +280,65 @@ public final class StationAirGameTests {
         helper.assertTrue(found.isPresent() && found.get().pos().equals(mine), "the arrow points at my own beacon, not the nearer one of another player");
         helper.succeed();
     }
+
+    /**
+     * A base room behind an airlock of two sliding doors (rocketry's base blocks): the room keeps its air through a
+     * whole cycle, because the outer door only opens once the inner one is shut.
+     */
+    @GameTest(template = "empty", timeoutTicks = 600)
+    public static void baseAirlockKeepsTheAirThroughACycle(GameTestHelper helper) {
+        var level = helper.getLevel();
+        BlockState panel = com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.ALUMINUM_PANEL.base().get().defaultBlockState();
+        // the room: shell x 0..6, y 1..5, z 0..6
+        for (int x = 0; x <= 6; x++) {
+            for (int y = 1; y <= 5; y++) {
+                for (int z = 0; z <= 6; z++) {
+                    boolean shell = x == 0 || x == 6 || y == 1 || y == 5 || z == 0 || z == 6;
+                    helper.setBlock(x, y, z, shell ? panel : Blocks.AIR.defaultBlockState());
+                }
+            }
+        }
+        // the airlock: one block wide (x = 3), two deep (z = 7..8), two high, roofed at y = 4
+        for (int x = 2; x <= 4; x++) {
+            for (int z = 7; z <= 9; z++) {
+                for (int y = 1; y <= 4; y++) {
+                    boolean inside = x == 3 && z <= 8 && y >= 2 && y <= 3;
+                    helper.setBlock(x, y, z, inside ? Blocks.AIR.defaultBlockState() : panel);
+                }
+            }
+        }
+        var door = com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.SLIDING_DOOR.get();
+        BlockState shut = door.defaultBlockState().setValue(com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock.FACING, Direction.SOUTH);
+        BlockPos inner = helper.absolutePos(new BlockPos(3, 2, 6)), outer = helper.absolutePos(new BlockPos(3, 2, 9));
+        com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock.place(level, inner, shut);
+        com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock.place(level, outer, shut);
+        BlockPos d = new BlockPos(1, 2, 1);
+        helper.setBlock(d, SuitModule.OXYGEN_DISTRIBUTOR.get());
+        OxygenDistributorBlockEntity be = helper.getBlockEntity(d);
+        be.setStack(OxygenTankItem.filled(SuitModule.LARGE_OXYGEN_TANK.get()));
+        BlockPos room = helper.absolutePos(new BlockPos(4, 3, 3)), airlock = helper.absolutePos(new BlockPos(3, 2, 8));
+        var OPEN = com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock.OPEN;
+        boolean[] cycling = {false};
+        helper.onEachTick(() -> {
+            if (cycling[0]) {
+                helper.assertTrue(SealedRooms.providesOxygen(level, room), "the room keeps its air during the cycle");
+                helper.assertFalse(level.getBlockState(inner).getValue(OPEN) && level.getBlockState(outer).getValue(OPEN),
+                        "never both doors open");
+            }
+        });
+        helper.startSequence()
+                .thenWaitUntil(() -> helper.assertTrue(SealedRooms.providesOxygen(level, room), "the room behind shut sliding doors pressurises"))
+                // step into the airlock: the inner door opens, the airlock fills from the room
+                .thenExecute(() -> door.request(level, inner, level.getBlockState(inner), true))
+                .thenWaitUntil(() -> helper.assertTrue(SealedRooms.providesOxygen(level, airlock), "the airlock fills from the room"))
+                // go out: asking the outer door shuts the inner one first, then the outer one opens after the cycle
+                .thenExecute(() -> {
+                    cycling[0] = true;
+                    door.request(level, outer, level.getBlockState(outer), true);
+                })
+                .thenWaitUntil(() -> helper.assertTrue(level.getBlockState(outer).getValue(OPEN), "the outer door opens after the cycle"))
+                .thenWaitUntil(() -> helper.assertFalse(SealedRooms.providesOxygen(level, airlock), "the open airlock vents"))
+                .thenExecute(() -> helper.assertTrue(SealedRooms.providesOxygen(level, room), "the room still holds its air"))
+                .thenSucceed();
+    }
 }
