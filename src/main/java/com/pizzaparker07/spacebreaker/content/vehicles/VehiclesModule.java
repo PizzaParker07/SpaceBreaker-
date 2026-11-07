@@ -52,6 +52,7 @@ public final class VehiclesModule implements SbModule {
         lang.add("hud.spacebreaker.rover.battery", "Battery %s%%", "Akü %%%s");
         lang.add("hud.spacebreaker.rover.speed", "%s m/s", "%s m/s");
         lang.add("hud.spacebreaker.rover.solar", "Solar", "Güneş");
+        lang.add("message.spacebreaker.rover.whirl_cleaned", "A dust whirl swept the roof panel clean", "Bir toz hortumu tavan panelini temizledi");
         lang.add("hud.spacebreaker.rover.solar_dusty", "Solar (dust %s%%)", "Güneş (toz %%%s)");
         lang.add("hud.spacebreaker.rover.rtg", "RTG", "RTG");
         lang.add("hud.spacebreaker.rover.empty", "Battery empty", "Akü boş");

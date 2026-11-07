@@ -403,11 +403,16 @@ public class RoverEntity extends Entity {
                 }
             }
         }
-        if (hasSolar() && tickCount % 10 == 0 && dust() > 0 && !level().getEntitiesOfClass(
+        if (hasSolar() && tickCount % 20 == 0 && dust() > 0.01F && !level().getEntitiesOfClass(
                 com.pizzaparker07.spacebreaker.content.mars.entity.DustWhirl.class,
                 getBoundingBox().inflate(com.pizzaparker07.spacebreaker.content.mars.entity.DustWhirl.REACH, 3, com.pizzaparker07.spacebreaker.content.mars.entity.DustWhirl.REACH)).isEmpty()) {
-            // a passing dust whirl scours the roof panel clean, as it does a parked tracker
+            // a passing dust whirl scours the roof panel clean, as it does a parked tracker (and as it did for real rovers)
             setDust(0F);
+            for (Entity rider : getPassengers()) {
+                if (rider instanceof Player p) {
+                    p.displayClientMessage(Component.translatable("message.spacebreaker.rover.whirl_cleaned"), true);
+                }
+            }
         }
         if (hasRtg() && !pellet.isEmpty()) {
             gain += RTG_OUTPUT * RtgFuelPelletItem.activity(pellet, level().getGameTime());

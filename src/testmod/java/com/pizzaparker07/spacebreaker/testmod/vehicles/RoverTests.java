@@ -159,12 +159,12 @@ public final class RoverTests {
             double ratio = dusty.energy() / (double) clean.energy();
             h.assertTrue(clean.energy() > 0, "the clean panel charges");
             h.assertTrue(Math.abs(ratio - SolarPanelBlockEntity.dustFactor(1F)) < 0.05, "dusty / clean = " + ratio);
-            var whirl = h.spawn(com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.DUST_WHIRL.get(), Vec3.atBottomCenterOf(new BlockPos(3, 1, 4)));
-            whirl.setLife(100);
-            h.runAfterDelay(15, () -> {
-                h.assertTrue(dusty.dust() == 0F, "the whirl swept the roof panel, dust " + dusty.dust());
-                h.succeed();
-            });
+            // with no player near, a whirl dies away after a second; keep one passing until the rover's next check
+            for (int k = 0; k < 4; k++) {
+                h.runAfterDelay(k * 15L, () -> h.spawn(com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.DUST_WHIRL.get(),
+                        Vec3.atBottomCenterOf(new BlockPos(2, 1, 4))).setLife(100));
+            }
+            h.succeedWhen(() -> h.assertTrue(dusty.dust() == 0F, "the whirl swept the roof panel, dust " + dusty.dust()));
         });
     }
 
