@@ -564,6 +564,39 @@ final class RocketryScenario implements ShowcaseScenario {
         s.add(new Shot("44_map_system_asteroids", 6000, 0, 0, 0, 0F, 0F, false, fp, 120, p -> mapShot(p, Spacebreaker.id("mars"), true), null));
         s.add(new Shot("45_map_comets", 6000, 0, 0, 0, 0F, 0F, false, fp, 120, p -> mapShot(p, Spacebreaker.id("churyumov_gerasimenko"), false), null));
         s.add(new Shot("46_map_comet_landing", 6000, 0, 0, 0, 0F, 0F, false, fp, 120, p -> mapShot(p, Spacebreaker.id("churyumov_gerasimenko"), false), null));
+        s.add(new Shot("47_comet_landing", 6000, 0, 0, 0, 0F, 0F, true, fp, 900, p -> {
+            clearScene(p);
+            var cometSurface = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(Spacebreaker.id("churyumov_gerasimenko"), false).orElse(null);
+            ServerLevel level = cometSurface == null ? null : p.server.getLevel(cometSurface.dimension());
+            if (level == null) {
+                Spacebreaker.LOGGER.info("[showcase] comet: no 67P world");
+                return;
+            }
+            // a shuttle coming down from 67P orbit, as the arrival does; then a launch back to orbit
+            int gx = 8, gz = 8;
+            level.getChunk(gx >> 4, gz >> 4);
+            int ground = level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, gx, gz);
+            RocketEntity r = RocketEntity.create(level, RocketryModule.LUNAR_SHUTTLE, new Vec3(gx + 0.5, ground + 60, gz + 0.5), 0F);
+            r.fillCompletely();
+            level.addFreshEntity(r);
+            scene.add(r);
+            r.stageScene(FlightState.DESCENT, 0, 0, true);
+            toDimension(p, cometSurface, gx + 12.5, ground + 6, gz + 12.5, 135F, 10F);
+            Spacebreaker.LOGGER.info("[showcase] comet: gravity {} m/s2, ground y {}", String.format(java.util.Locale.ROOT, "%.5f",
+                    com.pizzaparker07.spacebreaker.core.env.Environment.gravity(level)), ground);
+            later(p.server, 300, () -> {
+                Spacebreaker.LOGGER.info("[showcase] comet: after descent state {} y {} (ground {}) vy {}", r.state(),
+                        String.format(java.util.Locale.ROOT, "%.2f", r.getY()), ground, String.format(java.util.Locale.ROOT, "%.3f", r.getDeltaMovement().y));
+                boolean go = r.tryStartCountdown(null);
+                Spacebreaker.LOGGER.info("[showcase] comet: countdown started {} problem {}", go, r.launchProblem());
+            });
+            later(p.server, 560, () -> Spacebreaker.LOGGER.info("[showcase] comet: during ascent state {} y {} ascent {}", r.state(),
+                    String.format(java.util.Locale.ROOT, "%.1f", r.getY()), String.format(java.util.Locale.ROOT, "%.2f", r.ascentProgress())));
+            later(p.server, 880, () -> {
+                RocketEntity now = scene.stream().filter(e -> !e.isRemoved()).findFirst().orElse(r);
+                Spacebreaker.LOGGER.info("[showcase] comet: end state {} dim {} removed {}", now.state(), now.level().dimension().location(), r.isRemoved());
+            });
+        }, null));
         s.add(new Shot("31_nearby_stars", 6000, 0, 0, 0, 0F, 0F, false, fp, 120,
                 p -> {
                     RocketryShowcaseClient.star = "Alpha Centauri";
