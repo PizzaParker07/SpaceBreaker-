@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "spacebreaker:fuel_tank_large"
+    },
+    {
+      "item": "spacebreaker:multi_layer_insulation"
+    },
+    {
+      "item": "spacebreaker:multi_layer_insulation"
+    },
+    {
+      "item": "spacebreaker:multi_layer_insulation"
+    }
+  ],
+  "result": {
+    "id": "spacebreaker:fuel_tank_large_insulated",
+    "count": 1
+  }
+}

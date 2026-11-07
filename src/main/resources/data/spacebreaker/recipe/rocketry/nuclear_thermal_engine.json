@@ -8,7 +8,7 @@
   ],
   "key": {
     "T": {
-      "tag": "c:plates/tungsten"
+      "tag": "spacebreaker:radiation_shielding"
     },
     "F": {
       "tag": "spacebreaker:reactor_fuel"
