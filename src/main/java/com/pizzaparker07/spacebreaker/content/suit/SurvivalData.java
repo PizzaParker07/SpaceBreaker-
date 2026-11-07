@@ -45,6 +45,10 @@ public final class SurvivalData {
     public double pressureKpa = 101.325;
     public boolean breathable = true;
     public boolean thrusting;
+    /** Running average of the breathing rate (tank ticks per tick, see {@link OxygenUse}). */
+    public double oxygenRate = OxygenUse.WALK;
+    /** Fraction of a tank tick breathed but not yet taken from the tanks. */
+    public double oxygenOwed;
     /** World direction of the Maneuvering Unit push, for the thruster puffs. */
     public net.minecraft.world.phys.Vec3 thrustDir = net.minecraft.world.phys.Vec3.ZERO;
     /** Last magnetic boots state, for the clank when they grip. */

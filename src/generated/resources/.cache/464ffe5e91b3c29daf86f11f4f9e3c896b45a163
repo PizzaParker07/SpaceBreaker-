@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-07T16:09:01.694377555	spacebreaker tech tree
+// 1.21.1	2026-11-07T17:06:41.903675124	spacebreaker tech tree
 eb99e6fc2778efcc16dc23f020327813f7f85164 data/spacebreaker/spacebreaker/tech/advanced_electronics.json
 37b86031d2662acffe53c51b4ca65ba988094711 data/spacebreaker/spacebreaker/tech/airlocks.json
 537f359ae0acefa3a0666d917ea3d66c22a9f910 data/spacebreaker/spacebreaker/tech/aluminium_smelting.json
@@ -32,7 +32,7 @@ a6181e1b533dd7c206a2dec5a26d38ea6891fbb0 data/spacebreaker/spacebreaker/tech/lun
 1fc427224c6d8757b99b0dde2ff41290d1ea8738 data/spacebreaker/spacebreaker/tech/metallurgy.json
 6673d50fbebef0dad1091a446c1d743ef3933615 data/spacebreaker/spacebreaker/tech/methane_engines.json
 68310acdd9f9b186a2a857d267cae8f53d4eef0f data/spacebreaker/spacebreaker/tech/nuclear_fission.json
-ac5c928b4d17a04955f66046c81b351bd19746ce data/spacebreaker/spacebreaker/tech/nuclear_thermal_propulsion.json
+79ead156333946bb9a99a8864f0c77cd41d3c234 data/spacebreaker/spacebreaker/tech/nuclear_thermal_propulsion.json
 7496d3b9adc2ffbe9f9ae2aab87e00093d98ffed data/spacebreaker/spacebreaker/tech/observational_astronomy.json
 4df9e42165c02047c0e7685f1a71b6385d69a425 data/spacebreaker/spacebreaker/tech/orbital_mechanics.json
 54a60b3cf839b5422e0d4bf94d4d3884f039cb6f data/spacebreaker/spacebreaker/tech/orbital_shipyard.json
@@ -42,7 +42,7 @@ ac5c928b4d17a04955f66046c81b351bd19746ce data/spacebreaker/spacebreaker/tech/nuc
 5d1199a027f9e6eb2c5f1e636adee8c4b1d19f86 data/spacebreaker/spacebreaker/tech/precision_manufacturing.json
 39923c89b160082799564c21937af9b83af65245 data/spacebreaker/spacebreaker/tech/pressure_suits.json
 7632a4aa0c088850baffbc47926fc16c2766e070 data/spacebreaker/spacebreaker/tech/pressurised_modules.json
-53f3b51d4558fe0bd9ee3e0c5502bd863f56e942 data/spacebreaker/spacebreaker/tech/radiation_shielding.json
+e50e69207bb549568fbd4fadb2a10dde21beb565 data/spacebreaker/spacebreaker/tech/radiation_shielding.json
 546e297b196e21f618258e99c627f161550880ee data/spacebreaker/spacebreaker/tech/radio_communication.json
 254162caa0dc01d78ddb8f206f09552035122fc4 data/spacebreaker/spacebreaker/tech/radioisotope_power.json
 fb0b46a7a029632f046238a08ae8ad492f01808c data/spacebreaker/spacebreaker/tech/regolith_sintering.json

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GPG",
+    "PAP",
+    "GPG"
+  ],
+  "key": {
+    "G": {
+      "item": "spacebreaker:gold_foil_insulation"
+    },
+    "P": {
+      "tag": "c:plastics"
+    },
+    "A": {
+      "tag": "c:plates/aluminum"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:multi_layer_insulation",
+    "count": 2
+  }
+}

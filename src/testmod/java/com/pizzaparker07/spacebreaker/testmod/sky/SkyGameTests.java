@@ -88,6 +88,34 @@ public final class SkyGameTests {
     }
 
     /**
+     * Comet brightness follows the real apparent magnitude: Hale-Bopp at its 1997 perihelion (about -0.7) is at full
+     * brightness, Halley in 1986 (a few magnitudes, near the naked-eye limit) in between, and 67P (about 11, a
+     * telescope comet) only a faint smudge.
+     */
+    @GameTest(template = "empty")
+    public static void cometBrightnessFollowsMagnitude(GameTestHelper helper) {
+        var sys = BodyAdapter.system(helper.getLevel().registryAccess()).orElseThrow();
+        var hb = sighting(helper, sys, com.pizzaparker07.spacebreaker.core.astro.smallbody.Comet.HALE_BOPP);
+        var halley = sighting(helper, sys, com.pizzaparker07.spacebreaker.core.astro.smallbody.Comet.HALLEY);
+        var cg = sighting(helper, sys, com.pizzaparker07.spacebreaker.core.astro.smallbody.Comet.CHURYUMOV_GERASIMENKO);
+        String all = "Hale-Bopp " + hb.magnitude() + ", Halley " + halley.magnitude() + ", 67P " + cg.magnitude();
+        helper.assertTrue(hb.magnitude() < 1 && hb.alpha() > 0.99F, "Hale-Bopp is a great naked-eye comet: " + all);
+        helper.assertTrue(halley.magnitude() > 1 && halley.magnitude() < 7 && halley.alpha() > 0.15F && halley.alpha() < 0.99F,
+                "Halley 1986 is modest: " + all);
+        helper.assertTrue(cg.magnitude() > 8 && cg.alpha() < 0.2F, "67P needs a telescope: " + all);
+        helper.assertTrue(hb.alpha() > halley.alpha() && halley.alpha() > cg.alpha(), "brighter comets are drawn brighter: " + all);
+        helper.succeed();
+    }
+
+    private static com.pizzaparker07.spacebreaker.content.worldgen.CometPoints.Sighting sighting(GameTestHelper helper,
+            com.pizzaparker07.spacebreaker.core.astro.BodySystem sys, com.pizzaparker07.spacebreaker.core.astro.smallbody.Comet c) {
+        double t = c.perihelionDays() * 86400.0;
+        return com.pizzaparker07.spacebreaker.content.worldgen.CometPoints.compute(sys, "spacebreaker:earth", t).stream()
+                .filter(s -> s.id().equals(c.id())).findFirst()
+                .orElseThrow(() -> new net.minecraft.gametest.framework.GameTestAssertException(c.id() + " is in the sky at perihelion"));
+    }
+
+    /**
      * From Mars: Phobos and Deimos are not planet points (Mars' sky draws them as discs), and the Moon never hides in
      * Earth's point but shows beside it on its true side; Earth, when brighter than magnitude -1, shows earlier at dusk.
      */

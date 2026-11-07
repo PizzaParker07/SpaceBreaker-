@@ -187,7 +187,7 @@ public final class SuitTierGameTests {
 
     private static com.pizzaparker07.spacebreaker.content.suit.net.SuitStatusPayload status(float ambientC, int flags, int minC) {
         return new com.pizzaparker07.spacebreaker.content.suit.net.SuitStatusPayload(1000, 2000, 300, 37F, ambientC, 0F, 0F, 0F, 0.165F,
-                0, 100, flags, minC, 130, 30);
+                0, 100, flags, minC, 130, 30, 1F);
     }
 
     @GameTest(template = EMPTY)
@@ -254,6 +254,93 @@ public final class SuitTierGameTests {
                 "repaired with titanium ingots");
         var recipe = helper.getLevel().getRecipeManager().byKey(com.pizzaparker07.spacebreaker.Spacebreaker.id("titanium_pickaxe"));
         helper.assertTrue(recipe.isPresent(), "the pickaxe has a recipe");
+        helper.succeed();
+    }
+
+    /** Radiation suits and the shield module take any radiation shielding plate: tungsten or depleted uranium. */
+    @GameTest(template = "empty")
+    public static void radiationSuitsTakeEitherShieldingPlate(GameTestHelper helper) {
+        var manager = helper.getLevel().getRecipeManager();
+        ItemStack uranium = new ItemStack(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.DEPLETED_URANIUM_PLATE.get());
+        var tungsten = net.minecraft.core.registries.BuiltInRegistries.ITEM.getTag(
+                net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.ITEM, net.minecraft.resources.ResourceLocation.parse("c:plates/tungsten")));
+        helper.assertTrue(tungsten.isPresent() && tungsten.get().size() > 0, "there is a tungsten plate");
+        ItemStack tungstenPlate = new ItemStack(tungsten.get().get(0));
+        for (String id : new String[]{"radiation_helmet", "radiation_chestplate", "radiation_leggings", "radiation_boots", "radiation_shield_module"}) {
+            var holder = manager.byKey(com.pizzaparker07.spacebreaker.Spacebreaker.id(id));
+            helper.assertTrue(holder.isPresent(), id + " has a recipe");
+            boolean takesUranium = false, takesTungsten = false;
+            for (var ing : holder.get().value().getIngredients()) {
+                takesUranium |= ing.test(uranium);
+                takesTungsten |= ing.test(tungstenPlate);
+            }
+            helper.assertTrue(takesUranium, id + " takes a depleted uranium plate");
+            helper.assertTrue(takesTungsten, id + " still takes a tungsten plate");
+        }
+        helper.succeed();
+    }
+
+    /** Oxygen use follows the activity: sprinting and work cost more, rest less, heavy suits a little more. */
+    @GameTest(template = "empty")
+    public static void oxygenUseFollowsActivity(GameTestHelper helper) {
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.OxygenUse.activity(true, true, 0.3) == 1.5, "sprinting x1.5");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.OxygenUse.activity(false, true, 0.0) == 1.25, "mining or hitting x1.25");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.OxygenUse.activity(false, false, 0.2) == 1.0, "walking x1");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.OxygenUse.activity(false, false, 0.0) == 0.8, "standing still x0.8");
+        // a sprinting wearer in a thermal suit: 1.5 x 1.1 tank ticks per tick
+        var player = net.neoforged.neoforge.common.util.FakePlayerFactory.getMinecraft(helper.getLevel());
+        player.setItemSlot(net.minecraft.world.entity.EquipmentSlot.CHEST, new ItemStack(SuitModule.THERMAL_CHESTPLATE.get()));
+        helper.assertTrue(Math.abs(com.pizzaparker07.spacebreaker.content.suit.OxygenUse.suitFactor(player) - 1.1) < 1e-9, "heavy suits x1.1");
+        player.setItemSlot(net.minecraft.world.entity.EquipmentSlot.CHEST, new ItemStack(SuitModule.EVA_CHESTPLATE.get()));
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.OxygenUse.suitFactor(player) == 1.0, "the Mk1 suit x1");
+        // the tanks drain by the rate, fractions carried over
+        ItemStack torso = new ItemStack(SuitModule.EVA_CHESTPLATE.get());
+        com.pizzaparker07.spacebreaker.content.suit.SuitTanks.insert(torso,
+                com.pizzaparker07.spacebreaker.content.suit.OxygenTankItem.filled(SuitModule.OXYGEN_TANK.get()));
+        int full = com.pizzaparker07.spacebreaker.content.suit.SuitTanks.oxygen(torso);
+        var data = new com.pizzaparker07.spacebreaker.content.suit.SurvivalData();
+        for (int i = 0; i < 100; i++) {
+            com.pizzaparker07.spacebreaker.content.suit.OxygenUse.breathe(torso, data, 1.5);
+        }
+        helper.assertTrue(full - com.pizzaparker07.spacebreaker.content.suit.SuitTanks.oxygen(torso) == 150, "100 ticks of sprinting use 150");
+        for (int i = 0; i < 100; i++) {
+            com.pizzaparker07.spacebreaker.content.suit.OxygenUse.breathe(torso, data, 0.8);
+        }
+        helper.assertTrue(full - com.pizzaparker07.spacebreaker.content.suit.SuitTanks.oxygen(torso) == 230, "100 ticks of rest use 80");
+        // the HUD time follows a running average: it moves smoothly, about 63 % of the way in 5 s
+        double avg = 1.0;
+        for (int i = 0; i < com.pizzaparker07.spacebreaker.content.suit.OxygenUse.AVERAGE_TICKS; i++) {
+            avg = com.pizzaparker07.spacebreaker.content.suit.OxygenUse.follow(avg, 1.5);
+        }
+        helper.assertTrue(avg > 1.30 && avg < 1.33, "after 5 s of sprinting the average is ~1.32, got " + avg);
+        // 10 min of oxygen lasts 12.5 min at rest and 6:40 sprinting; the way-home check uses the same time
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.OxygenUse.ticksLeft(12000, 0.8) == 15000, "12:30 at rest");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.OxygenUse.ticksLeft(12000, 1.5) == 8000, "6:40 sprinting");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.Navigation.status(300, 0.26,
+                com.pizzaparker07.spacebreaker.content.suit.OxygenUse.ticksLeft(3600, 1.0)) == com.pizzaparker07.spacebreaker.content.suit.Navigation.Status.OK
+                && com.pizzaparker07.spacebreaker.content.suit.Navigation.status(300, 0.26,
+                com.pizzaparker07.spacebreaker.content.suit.OxygenUse.ticksLeft(3600, 1.5)) == com.pizzaparker07.spacebreaker.content.suit.Navigation.Status.TURN_BACK,
+                "the same oxygen is enough walking but means turn back after a sprint");
+        helper.succeed();
+    }
+
+    /** Realistic sound: the air around decides how loud and how dull the world sounds. */
+    @GameTest(template = "empty")
+    public static void soundCarriesByTheAir(GameTestHelper helper) {
+        var earth = com.pizzaparker07.spacebreaker.content.suit.SoundMuffling.outside(101.325, true);
+        helper.assertTrue(earth.none(), "Earth: normal");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.SoundMuffling.outside(147, false).none(), "Titan's thick air: normal");
+        var mars = com.pizzaparker07.spacebreaker.content.suit.SoundMuffling.outside(0.6, false);
+        helper.assertTrue(mars.gain() > 0.3F && mars.gain() < 0.45F, "Mars: faint, got " + mars.gain());
+        helper.assertTrue(mars.highGain() < 0.15F, "Mars: dull, the highs cut, got " + mars.highGain());
+        var moon = com.pizzaparker07.spacebreaker.content.suit.SoundMuffling.outside(0.0, false);
+        helper.assertTrue(moon.gain() <= 0.05F, "vacuum: outside sounds all but gone");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.SoundMuffling.outside(0.0, true).none(), "a pressurised room: normal");
+        var steps = com.pizzaparker07.spacebreaker.content.suit.SoundMuffling.contact(0.0, false);
+        helper.assertTrue(steps.gain() > 0.3F && steps.gain() < 0.6F && steps.highGain() < 0.3F, "vacuum: own steps and tools dull through the suit");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.SoundMuffling.contact(0.6, false).gain() >= mars.gain(),
+                "on Mars what the suit touches is at least as loud as the air");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.SoundMuffling.contact(101.325, true).none(), "in air: normal");
         helper.succeed();
     }
 }

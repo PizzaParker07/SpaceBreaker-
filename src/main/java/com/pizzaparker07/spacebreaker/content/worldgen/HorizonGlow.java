@@ -2,7 +2,7 @@ package com.pizzaparker07.spacebreaker.content.worldgen;
 
 /**
  * Lunar horizon glow: just after sunset (and before sunrise) on an airless world, electrostatically lofted dust
- * scatters sunlight into a thin bright band along the horizon above the hidden Sun, as the Surveyor landers saw.
+ * scatters sunlight into a thin bright band along the horizon above the hidden Sun, as early lunar landers photographed.
  * It is rare: only some sunsets and sunrises show it. Purely visual, decided the same way on every client.
  */
 public final class HorizonGlow {

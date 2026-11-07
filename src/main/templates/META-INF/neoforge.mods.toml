@@ -9,7 +9,7 @@ version = "${mod_version}"
 displayName = "${mod_name}"
 displayURL = "https://github.com/PizzaParker07/SpaceBreaker-"
 logoFile = "spacebreaker_logo.png"
-credits = "PizzaParker07 / Pizzaci Cocuk"
+credits = "PizzaParker07 / Pizzacı Çocuk"
 authors = "${mod_authors}"
 description = '''${mod_description}'''
 
@@ -47,5 +47,35 @@ side = "CLIENT"
 modId = "sodium"
 type = "optional"
 versionRange = "[0.6,)"
+ordering = "NONE"
+side = "CLIENT"
+
+# Optional recipe viewers and block info overlays (compat/jei, compat/emi, compat/jade, compat/wthit; never required).
+# Their plugins are compiled against these API versions: older ones are refused with a clear message instead of a crash.
+[[dependencies.${mod_id}]]
+modId = "jei"
+type = "optional"
+versionRange = "[19.0,)"
+ordering = "NONE"
+side = "CLIENT"
+
+[[dependencies.${mod_id}]]
+modId = "emi"
+type = "optional"
+versionRange = "[1.1,)"
+ordering = "NONE"
+side = "CLIENT"
+
+[[dependencies.${mod_id}]]
+modId = "jade"
+type = "optional"
+versionRange = "[15.0,)"
+ordering = "NONE"
+side = "CLIENT"
+
+[[dependencies.${mod_id}]]
+modId = "wthit"
+type = "optional"
+versionRange = "[12.0,)"
 ordering = "NONE"
 side = "CLIENT"

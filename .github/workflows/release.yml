@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Release tag, e.g. v0.1.0-alpha.1 (created on the selected branch if missing)'
+        description: 'Release tag, e.g. v1.0.0 (created on the selected branch if missing)'
         required: true
 
 permissions:
@@ -40,4 +40,4 @@ jobs:
           name: Spacebreaker ${{ env.TAG }}
           body_path: docs/releases/${{ env.TAG }}.md
           files: build/libs/*.jar
-          prerelease: ${{ contains(env.TAG, 'alpha') || contains(env.TAG, 'beta') }}
+          prerelease: ${{ contains(env.TAG, 'alpha') || contains(env.TAG, 'beta') || contains(env.TAG, 'rc') }}

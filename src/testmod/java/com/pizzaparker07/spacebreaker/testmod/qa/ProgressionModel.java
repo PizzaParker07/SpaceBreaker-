@@ -907,28 +907,41 @@ final class ProgressionModel {
             add(fact, "solar panels", List.of(item(solar), landed(w)));
             return fact;
         }
-        Item rtg = BuiltInRegistries.ITEM.get(Spacebreaker.id("rtg"));
-        Item pellet = BuiltInRegistries.ITEM.get(Spacebreaker.id("rtg_fuel_pellet"));
-        if (rtg != net.minecraft.world.item.Items.AIR && hasItem(rtg) && hasItem(pellet)) {
-            List<String> deps = new ArrayList<>(List.of(item(rtg), item(pellet), landed(w)));
-            ResourceLocation id = BuiltInRegistries.ITEM.getKey(rtg);
-            if (machinesThatEnforce.contains(id)) {
-                String known = null;
-                for (ResourceLocation t : TechRequirement.forUnlock(server.registryAccess(), id).techs()) {
-                    if (has(tech(t))) {
-                        known = tech(t);
-                        break;
-                    }
-                }
-                if (known == null) {
-                    return null;
-                }
-                deps.add(known);
+        // nuclear sources need neither air nor sky: an RTG with a pellet, or a fission unit with a fuel element
+        for (String[] source : new String[][]{{"rtg", "rtg_fuel_pellet", "RTG + fuel pellet"},
+                {"fission_reactor", "nuclear_fuel_element", "fission reactor + fuel element"}}) {
+            List<String> deps = nuclearSource(w, source[0], source[1]);
+            if (deps != null) {
+                add(fact, source[2], deps);
+                return fact;
             }
-            add(fact, "RTG + fuel pellet", deps);
-            return fact;
         }
         return null;
+    }
+
+    /** Dependencies of running {@code machine} on {@code fuel} in {@code w}, or null (not buildable, no fuel, tech missing). */
+    private List<String> nuclearSource(ResourceKey<Level> w, String machine, String fuel) {
+        Item m = BuiltInRegistries.ITEM.get(Spacebreaker.id(machine));
+        Item f = BuiltInRegistries.ITEM.get(Spacebreaker.id(fuel));
+        if (m == net.minecraft.world.item.Items.AIR || f == net.minecraft.world.item.Items.AIR || !hasItem(m) || !hasItem(f)) {
+            return null;
+        }
+        List<String> deps = new ArrayList<>(List.of(item(m), item(f), landed(w)));
+        ResourceLocation id = BuiltInRegistries.ITEM.getKey(m);
+        if (machinesThatEnforce.contains(id)) {
+            String known = null;
+            for (ResourceLocation t : TechRequirement.forUnlock(server.registryAccess(), id).techs()) {
+                if (has(tech(t))) {
+                    known = tech(t);
+                    break;
+                }
+            }
+            if (known == null) {
+                return null;
+            }
+            deps.add(known);
+        }
+        return deps;
     }
 
     private boolean produce() {
@@ -1139,8 +1152,9 @@ final class ProgressionModel {
             List<Location> out = RocketSearch.route(Location.EARTH_SURFACE, target, realism);
             if (!out.isEmpty() && !has(landed(dim))) {
                 for (RocketSearch.Candidate c : designs) {
-                    if (com.pizzaparker07.spacebreaker.content.rocketry.design.RocketMath.twr(c.layout(), 0, c.layout().fullFuel(), gEarth) >= 1.05
-                            && com.pizzaparker07.spacebreaker.content.rocketry.nav.MissionPlanner.fly(c.layout(), 0, c.layout().fullFuel(), out, realism).possible()) {
+                    var cl = c.layout();
+                    if (com.pizzaparker07.spacebreaker.content.rocketry.design.RocketMath.twr(cl, 0, cl.fullFuel(), gEarth) >= 1.05
+                            && com.pizzaparker07.spacebreaker.content.rocketry.nav.MissionPlanner.fly(cl, 0, cl.fullFuel(), out, realism).possible()) {
                         changed |= add(landed(dim), "one-way flight to " + target.id() + " with " + describe(c), deps);
                         break;
                     }
@@ -1190,10 +1204,11 @@ final class ProgressionModel {
                     if (reason != null) {
                         break;
                     }
-                    if (com.pizzaparker07.spacebreaker.content.rocketry.design.RocketMath.twr(c.layout(), 0, c.layout().fullFuel(), gEarth) < 1.05) {
+                    var cl = c.layout();
+                    if (com.pizzaparker07.spacebreaker.content.rocketry.design.RocketMath.twr(cl, 0, cl.fullFuel(), gEarth) < 1.05) {
                         continue;
                     }
-                    var plan = com.pizzaparker07.spacebreaker.content.rocketry.nav.MissionPlanner.fly(c.layout(), 0, c.layout().fullFuel(), out, realism);
+                    var plan = com.pizzaparker07.spacebreaker.content.rocketry.nav.MissionPlanner.fly(cl, 0, cl.fullFuel(), out, realism);
                     if (plan.possible()) {
                         flown = c;
                         break;

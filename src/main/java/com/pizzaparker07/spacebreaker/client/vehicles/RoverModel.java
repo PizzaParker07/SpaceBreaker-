@@ -15,7 +15,7 @@ import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.util.Mth;
 
 /**
- * Open two-seat rover in the spirit of the Apollo LRV: a flat aluminium chassis on four wire-mesh wheels with
+ * Open two-seat rover in the spirit of the crewed lunar rovers: a flat aluminium chassis on four wire-mesh wheels with
  * fenders, tandem seats, a console with headlights at the front, a cargo box, a high-gain antenna mast, and the
  * optional roof solar panel and rear RTG. Front is model -Z; the ground is model y = 24. UVs: tools/textures/modules/rover.py.
  */
