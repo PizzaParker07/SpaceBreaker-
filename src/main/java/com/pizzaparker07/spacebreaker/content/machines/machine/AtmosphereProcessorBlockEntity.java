@@ -61,8 +61,16 @@ public class AtmosphereProcessorBlockEntity extends MachineBlockEntity {
         if (best == null) {
             return null;
         }
-        double pressureFactor = Mth.clamp(pressure / 10.0, 0.25, 2.0);
-        return new Yield(best, Math.max(10, (int) Math.round(BASE_RATE * fraction * pressureFactor)));
+        return new Yield(best, Math.max(10, (int) Math.round(BASE_RATE * fraction * pressureFactor(pressure))));
+    }
+
+    /**
+     * Compressor intake factor for an ambient pressure: thin air takes longer to fill a cycle, thick air is capped by
+     * the compressor. Scaled so Mars' mean 0.6 kPa gives a quarter of the full rate and its seasonal swing (about
+     * 13 % either way, CO2 freezing out at the poles) shows in the output; anything from about 5 kPa up runs flat out.
+     */
+    public static double pressureFactor(double kPa) {
+        return Mth.clamp(kPa / 2.4, 0.2, 2.0);
     }
 
     @Override

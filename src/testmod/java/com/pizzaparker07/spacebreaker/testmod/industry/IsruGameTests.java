@@ -52,6 +52,19 @@ public final class IsruGameTests {
         h.succeedWhen(() -> h.assertTrue(be.tank(0).getFluid().is(FluidsModule.TAG_OXYGEN), "no oxygen collected"));
     }
 
+    /** Mars' seasonal pressure swing shows in the atmosphere processor; thick air stays capped. */
+    @GameTest(template = "empty")
+    public static void atmosphereProcessorFollowsMarsSeasons(GameTestHelper h) {
+        double mean = AtmosphereProcessorBlockEntity.pressureFactor(0.6);
+        h.assertTrue(Math.abs(mean - 0.25) < 1e-9, "Mars mean pressure gives a quarter rate, got " + mean);
+        double low = AtmosphereProcessorBlockEntity.pressureFactor(0.6 * 0.87);
+        double high = AtmosphereProcessorBlockEntity.pressureFactor(0.6 * 1.13);
+        h.assertTrue(low < mean && high > mean, "the season moves the output: " + low + " / " + high);
+        h.assertTrue(AtmosphereProcessorBlockEntity.pressureFactor(101.3) == 2.0
+                && AtmosphereProcessorBlockEntity.pressureFactor(9200) == 2.0, "Earth and Venus run at the compressor cap");
+        h.succeed();
+    }
+
     @GameTest(template = "empty", timeoutTicks = 300)
     public static void sabatierMakesMethaneAndWater(GameTestHelper h) {
         MachineBlockEntity be = machine(h, MachinesModule.SABATIER_REACTOR, new BlockPos(2, 1, 2), Direction.NORTH);

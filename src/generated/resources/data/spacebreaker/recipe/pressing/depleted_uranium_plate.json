@@ -1,0 +1,20 @@
+{
+  "type": "spacebreaker:pressing",
+  "energy": 30,
+  "ingredients": [
+    {
+      "count": 1,
+      "item": "spacebreaker:depleted_uranium"
+    }
+  ],
+  "results": [
+    {
+      "count": 1,
+      "id": "spacebreaker:depleted_uranium_plate"
+    }
+  ],
+  "time": 60,
+  "tool": {
+    "item": "spacebreaker:plate_press_die"
+  }
+}

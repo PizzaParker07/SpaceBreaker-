@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-07T16:15:50.971215462	Recipes
+// 1.21.1	2026-11-07T16:07:09.852728329	Recipes
 9adaaa5be5385cd4ce86f1592ecb1ea66c0c4dce data/spacebreaker/advancement/recipes/building_blocks/ariel_ice_slab.json
 c8a14effc004b99a09bfd245c11051a06fbb28f6 data/spacebreaker/advancement/recipes/building_blocks/ariel_ice_slab_from_ariel_ice_stonecutting.json
 6754d279fb144c57df42cb3960cf2152443405ff data/spacebreaker/advancement/recipes/building_blocks/ariel_ice_stairs.json
@@ -472,6 +472,7 @@ b7e5321c56006c719ec663767268fccb7f6b62cc data/spacebreaker/recipe/pressing/alumi
 b8376b6d4dcd3183e2acf2b2aa108d57c9ca0702 data/spacebreaker/recipe/pressing/aluminum_wire.json
 90dded56b9ef34b1218a63a029e5d9322b2f2683 data/spacebreaker/recipe/pressing/copper_plate.json
 35366ec1160620ecc1a79431bb755596fe83bc01 data/spacebreaker/recipe/pressing/copper_wire.json
+c01565d94a0c0235407777fd99dfe2e0eda4ed5a data/spacebreaker/recipe/pressing/depleted_uranium_plate.json
 fb62fb45a4ccf08ab92a54435f569e2ec43e06c2 data/spacebreaker/recipe/pressing/gold_plate.json
 8ef8da2a08ce3b5ce57e6f953102bf8fd8fde521 data/spacebreaker/recipe/pressing/gold_wire.json
 1c2d7b608ee5daaee99c23f3396ba7ac1690334a data/spacebreaker/recipe/pressing/iron_plate.json
@@ -513,7 +514,6 @@ be7705014b8b4b68bedf55ab6bb7508e4f0d7086 data/spacebreaker/recipe/regolith_proce
 0a50463e67864e776ced7d737dccedc8acb8f1cf data/spacebreaker/recipe/regolith_processing/perchlorate_salt.json
 b8a70dc20ad4c05d6311b37457ed37994dc56803 data/spacebreaker/recipe/regolith_processing/regolith.json
 a7f53bc41747c21d10e4473866c8a5efa3399252 data/spacebreaker/recipe/regolith_processing/solar_wind_volatiles.json
-4601546a071a21cb2d04ba94c0ea3d0a5b0c0728 data/spacebreaker/recipe/regolith_processing/tempel_dust.json
 528c41d23487c961361d289271888dd198443173 data/spacebreaker/recipe/rod_press_die.json
 ff846378b3a32793c473203a0cd0110b90f4c5cd data/spacebreaker/recipe/rover.json
 1f98cd259dae76257bf4152fc61a2c6c50dd3e06 data/spacebreaker/recipe/rtg.json

@@ -147,6 +147,8 @@ public final class MachinesModule implements SbModule {
             new net.minecraft.world.item.Item.Properties().rarity(net.minecraft.world.item.Rarity.UNCOMMON));
     /** What the centrifuge leaves behind: dense, barely radioactive (armour, ballast). */
     public static final DeferredItem<net.minecraft.world.item.Item> DEPLETED_URANIUM = ITEMS.registerSimpleItem("depleted_uranium");
+    /** Pressed depleted uranium: about twice as dense as lead, so a thin plate stops what a thick lead one would. */
+    public static final DeferredItem<net.minecraft.world.item.Item> DEPLETED_URANIUM_PLATE = ITEMS.registerSimpleItem("depleted_uranium_plate");
     /** Fuel for a nuclear thermal rocket engine (rocketry); listed in {@link IsruRecipes#REACTOR_FUEL}. */
     public static final DeferredItem<NuclearFuelElementItem> NUCLEAR_FUEL_ELEMENT = ITEMS.registerItem("nuclear_fuel_element", NuclearFuelElementItem::new,
             new net.minecraft.world.item.Item.Properties().stacksTo(4).rarity(net.minecraft.world.item.Rarity.RARE));
@@ -388,6 +390,7 @@ public final class MachinesModule implements SbModule {
         tab.add(YELLOWCAKE);
         tab.add(ENRICHED_URANIUM);
         tab.add(DEPLETED_URANIUM);
+        tab.add(DEPLETED_URANIUM_PLATE);
         tab.add(RTG_FUEL_PELLET);
         tab.add(NUCLEAR_FUEL_ELEMENT);
         TANK_ITEMS.forEach(tab::add);
