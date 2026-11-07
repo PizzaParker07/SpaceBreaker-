@@ -45,6 +45,13 @@ def main(selected):
             before = len(written)
             mod.export(save)
             print(f'  {info.name}: {len(written) - before} textures')
+    # finishing passes run after all modules (e.g. textures derived from other modules' output)
+    for info in pkgutil.iter_modules(modules.__path__):
+        mod = importlib.import_module(f'modules.{info.name}')
+        if hasattr(mod, 'finish'):
+            before = len(written)
+            mod.finish(save)
+            print(f'  {info.name} (finish): {len(written) - before} textures')
     print(f'{len(written)} textures written to {TEX}')
 
 

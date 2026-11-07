@@ -534,6 +534,271 @@ public final class RocketryGameTests {
         helper.succeed();
     }
 
+    /** Biggest three-stage rocket the assembler can build with these engines, with landing legs and a capsule for home. */
+    static RocketDesign threeStage(String first, String upper) {
+        java.util.List<net.minecraft.resources.ResourceLocation> p = new java.util.ArrayList<>();
+        for (int stage = 0; stage < 3; stage++) {
+            p.add(Spacebreaker.id(stage == 0 ? first : upper));
+            for (int t = 0; t < 3; t++) {
+                p.add(Spacebreaker.id("fuel_tank_large"));
+            }
+            if (stage == 2) {
+                p.add(Spacebreaker.id("landing_legs"));
+            }
+            if (stage < 2) {
+                p.add(Spacebreaker.id("interstage"));
+            }
+        }
+        p.addAll(List.of(Spacebreaker.id("heat_shield"), Spacebreaker.id("crew_capsule"), Spacebreaker.id("parachute")));
+        return new RocketDesign(p);
+    }
+
+    @GameTest(template = EMPTY)
+    public static void hydroloxReachesMercuryOrbit(GameTestHelper helper) {
+        var lookup = RocketParts.lookup(helper.getLevel().registryAccess());
+        RocketLayout h2 = RocketLayout.of(threeStage("hydrolox_engine", "hydrolox_vacuum_engine"), lookup);
+        RocketLayout ch4 = RocketLayout.of(threeStage("methalox_engine", "methalox_vacuum_engine"), lookup);
+        helper.assertTrue(h2.problems().isEmpty(), "valid: " + h2.problems());
+        helper.assertTrue(h2.stages().stream().allMatch(s -> s.propellant() == com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant.HYDROLOX),
+                "every stage burns hydrogen");
+        var mercury = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(Spacebreaker.id("mercury"), false).orElseThrow();
+        var mercuryOrbit = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(Spacebreaker.id("mercury"), true).orElseThrow();
+        List<Location> round = new java.util.ArrayList<>(List.of(Location.EARTH_SURFACE, Location.EARTH_ORBIT, mercuryOrbit, mercury));
+        List<Location> home = com.pizzaparker07.spacebreaker.content.rocketry.nav.MissionPlanner.homeRoute(mercury);
+        round.addAll(home.subList(1, home.size()));
+        var realism = SbConfig.Realism.BALANCED;
+        double need = 0;
+        StringBuilder legs = new StringBuilder();
+        for (int i = 0; i + 1 < round.size(); i++) {
+            double c = Transfers.cost(round.get(i), round.get(i + 1), realism).orElseThrow();
+            need += c;
+            legs.append(round.get(i).id()).append("->").append(round.get(i + 1).id()).append('=').append((int) c).append(' ');
+        }
+        double dvH2 = RocketMath.totalDeltaV(h2, 0, h2.fullFuel(), 0), dvCh4 = RocketMath.totalDeltaV(ch4, 0, ch4.fullFuel(), 0);
+        helper.assertTrue(dvH2 > dvCh4 * 1.15, "hydrogen gives the most Δv: " + (int) dvH2 + " vs " + (int) dvCh4);
+        // with hydrogen, Mercury orbit and back is now possible; the methalox rocket cannot
+        List<Location> orbitTrip = new java.util.ArrayList<>(List.of(Location.EARTH_SURFACE, Location.EARTH_ORBIT, mercuryOrbit, Location.EARTH_SURFACE));
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.MissionPlanner.fly(h2, 0, h2.fullFuel(), orbitTrip, realism).possible(),
+                "a hydrolox rocket flies to Mercury orbit and home");
+        helper.assertFalse(com.pizzaparker07.spacebreaker.content.rocketry.nav.MissionPlanner.fly(ch4, 0, ch4.fullFuel(), orbitTrip, realism).possible(),
+                "methalox alone cannot");
+        // and it lands on Mercury, where propellant can be made for the way home
+        List<Location> oneWay = List.of(Location.EARTH_SURFACE, Location.EARTH_ORBIT, mercuryOrbit, mercury);
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.MissionPlanner.fly(h2, 0, h2.fullFuel(), oneWay, realism).possible(),
+                "a hydrolox rocket lands on Mercury");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.canRefuel(Spacebreaker.id("mercury")), "and can refuel there");
+        Spacebreaker.LOGGER.info("[rocketry] Mercury surface round trip needs {} m/s, best hydrolox rocket has {} ({})", (int) need, (int) dvH2, legs);
+        helper.succeed();
+    }
+
+    @GameTest(template = EMPTY)
+    public static void refuelAwayFromHome(GameTestHelper helper) {
+        for (String w : new String[]{"earth", "moon", "mars", "mercury"}) {
+            helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.canRefuel(Spacebreaker.id(w)), w + " can make propellant");
+        }
+        helper.assertFalse(com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.canRefuel(Spacebreaker.id("jupiter")), "no fuel on a gas giant");
+        // a rocket that can reach Mars but not come back is told it can refuel there
+        var lookup = RocketParts.lookup(helper.getLevel().registryAccess());
+        RocketLayout l = RocketLayout.of(marsReturnRocket("methalox_engine", "methalox_vacuum_engine"), lookup);
+        var mars = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(Spacebreaker.id("mars"), false).orElseThrow();
+        var marsOrbit = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(Spacebreaker.id("mars"), true).orElseThrow();
+        double[] fuel = l.fullFuel();
+        var realism = SbConfig.Realism.REALISTIC;
+        // drain until the way there still works but the way back does not
+        double[] f = fuel.clone();
+        com.pizzaparker07.spacebreaker.content.rocketry.nav.StarMapData.Trip trip = null;
+        for (int i = 0; i < 400; i++) {
+            trip = com.pizzaparker07.spacebreaker.content.rocketry.nav.StarMapData.trip(l, 1, f, RocketMath.totalDeltaV(l, 1, f, 0),
+                    Location.EARTH_ORBIT, mars, realism, true, true);
+            if (trip.enough() && !trip.returnHome()) {
+                break;
+            }
+            f[1] *= 0.97;
+            f[0] = 0;
+        }
+        helper.assertTrue(trip != null && trip.enough() && !trip.returnHome() && trip.refuelThere(),
+                "Mars: reachable, no fuel for home, but propellant can be made there: " + trip);
+        var jupiterTrip = com.pizzaparker07.spacebreaker.content.rocketry.nav.StarMapData.trip(l, 1, f, 0, Location.EARTH_ORBIT,
+                com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(Spacebreaker.id("jupiter"), true).orElseThrow(), realism, true, true);
+        helper.assertFalse(jupiterTrip.refuelThere(), "nothing to refuel with at Jupiter");
+        // a pad with an umbilical works the same anywhere: fill a methalox rocket through it (pipes feed the umbilical)
+        BlockPos center = buildPad(helper, true);
+        RocketEntity rocket = RocketEntity.create(helper.getLevel(), marsReturnRocket("methalox_engine", "methalox_vacuum_engine"),
+                net.minecraft.world.phys.Vec3.atBottomCenterOf(center.above()), 0F);
+        helper.getLevel().addFreshEntity(rocket);
+        BlockPos umbilical = helper.absolutePos(new BlockPos(1, 3, 3));
+        var handler = helper.getLevel().getCapability(net.neoforged.neoforge.capabilities.Capabilities.FluidHandler.BLOCK, umbilical, null);
+        helper.assertTrue(handler != null, "the umbilical takes fluids");
+        var exec = net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
+        int ch4 = rocket.roomFor(com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant.METHALOX);
+        int lox = rocket.roomFor((com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant) null);
+        helper.assertTrue(handler.fill(com.pizzaparker07.spacebreaker.content.fluids.FluidsModule.LIQUID_METHANE.stack(ch4), exec) == ch4
+                && handler.fill(com.pizzaparker07.spacebreaker.content.fluids.FluidsModule.LIQUID_OXYGEN.stack(lox), exec) == lox,
+                "methane and LOX go through the umbilical");
+        helper.assertTrue(rocket.fullyFuelled(), "fuelled on the pad");
+        rocket.discard();
+        helper.succeed();
+    }
+
+    @GameTest(template = EMPTY)
+    public static void nearbyStarsForTheMap(GameTestHelper helper) {
+        var stars = com.pizzaparker07.spacebreaker.content.rocketry.nav.NearbyStars.forServer(helper.getLevel().getServer());
+        helper.assertTrue(!stars.isEmpty() && stars.size() <= com.pizzaparker07.spacebreaker.content.rocketry.nav.NearbyStars.MAX_STARS, "stars found: " + stars.size());
+        helper.assertTrue(stars.stream().allMatch(s -> s.distanceLy() <= com.pizzaparker07.spacebreaker.content.rocketry.nav.NearbyStars.RADIUS_LY + 0.01),
+                "all within 25 light years");
+        var alpha = stars.stream().filter(s -> s.nameEn().equals("Alpha Centauri")).findFirst();
+        helper.assertTrue(alpha.isPresent() && within(alpha.get().distanceLy(), 4.37, 0.1), "Alpha Centauri at 4.37 ly");
+        helper.assertTrue(stars.stream().anyMatch(s -> s.nameEn().startsWith("Sirius")), "Sirius is on the map");
+        for (int i = 1; i < stars.size(); i++) {
+            helper.assertTrue(stars.get(i).magnitude() >= stars.get(i - 1).magnitude(), "brightest first");
+        }
+        helper.assertTrue(stars.stream().anyMatch(s -> !s.nameTr().isEmpty()), "names in Turkish too");
+        // the payload carries the list unchanged
+        var buf = io.netty.buffer.Unpooled.buffer();
+        var payload = new com.pizzaparker07.spacebreaker.content.rocketry.net.NearbyStarsPayload(stars);
+        com.pizzaparker07.spacebreaker.content.rocketry.net.NearbyStarsPayload.STREAM_CODEC.encode(buf, payload);
+        var back = com.pizzaparker07.spacebreaker.content.rocketry.net.NearbyStarsPayload.STREAM_CODEC.decode(buf);
+        helper.assertTrue(back.stars().equals(stars), "the list survives the network");
+        helper.succeed();
+    }
+
+    private static RocketDesign uncrewed(String payload) {
+        return new RocketDesign(List.of(Spacebreaker.id("kerosene_engine"), Spacebreaker.id("fuel_tank_large"), Spacebreaker.id("interstage"),
+                Spacebreaker.id("vacuum_engine"), Spacebreaker.id("fuel_tank_medium"), Spacebreaker.id(payload), Spacebreaker.id("nose_cone")));
+    }
+
+    @GameTest(template = EMPTY)
+    public static void satellitesAndProbes(GameTestHelper helper) {
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.assembler.AssemblerSlots.accepts(
+                com.pizzaparker07.spacebreaker.content.rocketry.assembler.AssemblerSlots.CAPSULE,
+                com.pizzaparker07.spacebreaker.content.rocketry.part.PartType.SATELLITE), "satellites go in the capsule slot");
+        // mission decisions
+        var mars = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(Spacebreaker.id("mars"), false).orElseThrow();
+        var marsOrbit = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(Spacebreaker.id("mars"), true).orElseThrow();
+        var sat = com.pizzaparker07.spacebreaker.content.rocketry.part.PartType.SATELLITE;
+        var probe = com.pizzaparker07.spacebreaker.content.rocketry.part.PartType.PROBE;
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.onArrival(sat, Location.EARTH_ORBIT, null)
+                == com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.Next.DEPLOY, "no target: release in Earth orbit");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.onArrival(sat, Location.EARTH_ORBIT, marsOrbit)
+                == com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.Next.CONTINUE, "carry on to Mars orbit");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.onArrival(sat, marsOrbit, marsOrbit)
+                == com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.Next.DEPLOY, "release at the target");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.onArrival(probe, marsOrbit, mars)
+                == com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.Next.CONTINUE, "a probe heads down to the surface");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.onArrival(probe, mars, mars)
+                == com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.Next.NOTHING, "landing is handled at touchdown");
+        // a real release: the rocket becomes a satellite and the world remembers it
+        var server = helper.getLevel().getServer();
+        var data = com.pizzaparker07.spacebreaker.content.rocketry.mission.SatelliteData.get(server);
+        int before = data.crafts().size();
+        ServerPlayer owner = helper.makeMockServerPlayerInLevel();
+        RocketEntity relay = RocketEntity.create(helper.getLevel(), uncrewed("comm_satellite"), helper.absoluteVec(new net.minecraft.world.phys.Vec3(2.5, 2, 2.5)), 0F);
+        helper.getLevel().addFreshEntity(relay);
+        helper.assertTrue(relay.isUncrewed() && relay.layout().payload().seats() == 0, "a satellite rocket has no crew");
+        relay.setOwner(owner.getUUID());
+        relay.setMissionTarget(marsOrbit);
+        helper.assertTrue(relay.missionTarget().orElseThrow().equals(marsOrbit), "the console sets a mission target");
+        com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.deploy(relay, marsOrbit);
+        helper.assertTrue(relay.isRemoved(), "the rocket is gone, the satellite is out");
+        helper.assertTrue(data.crafts().size() == before + 1 && data.crafts().get(before).owner().equals(owner.getUUID()), "the world remembers the satellite");
+        helper.assertTrue(data.relaySystems().contains(Spacebreaker.id("mars")), "Mars now has a relay");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.mission.Coverage.covered(data.relaySystems(), Spacebreaker.id("phobos")),
+                "the relay covers Mars's moons too");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.mission.Coverage.covered(data.relaySystems(), Location.MOON), "Earth's system is always covered");
+        helper.assertFalse(helper.getLevel().getEntitiesOfClass(com.pizzaparker07.spacebreaker.content.rocketry.mission.SatelliteEntity.class,
+                new net.minecraft.world.phys.AABB(relay.blockPosition()).inflate(8)).isEmpty(), "the satellite is visible where it was released");
+        // a probe lands and sends samples home
+        RocketEntity lander = RocketEntity.create(helper.getLevel(), uncrewed("space_probe"), helper.absoluteVec(new net.minecraft.world.phys.Vec3(5.5, 2, 5.5)), 0F);
+        helper.getLevel().addFreshEntity(lander);
+        lander.setOwner(owner.getUUID());
+        com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.landed(lander, mars);
+        int samples = 0, records = 0;
+        for (var stack : owner.getInventory().items) {
+            if (stack.is(com.pizzaparker07.spacebreaker.content.research.ResearchModule.FIELD_SAMPLE.get())) {
+                samples += stack.getCount();
+            }
+            if (stack.is(com.pizzaparker07.spacebreaker.content.research.ResearchModule.EXPERIMENT_DATA.get())) {
+                records += stack.getCount();
+            }
+        }
+        helper.assertTrue(samples == 2 && records == 1, "Mars samples and probe data arrive: " + samples + " / " + records);
+        helper.assertTrue(data.observed().contains(Spacebreaker.id("mars")), "a probe landing maps the world");
+        // an offline owner gets them on the next login
+        java.util.UUID away = java.util.UUID.randomUUID();
+        data.deliver(server, away, com.pizzaparker07.spacebreaker.content.research.Research.sample(Spacebreaker.id("mars")));
+        helper.assertTrue(data.save(new net.minecraft.nbt.CompoundTag(), server.registryAccess()).getCompound("pending").contains(away.toString()),
+                "kept for an offline player");
+        lander.discard();
+        helper.succeed();
+    }
+
+    @GameTest(template = EMPTY)
+    public static void threeSeatCapsule(GameTestHelper helper) {
+        RocketDesign d = new RocketDesign(List.of(Spacebreaker.id("kerosene_engine"), Spacebreaker.id("fuel_tank_large"),
+                Spacebreaker.id("heat_shield"), Spacebreaker.id("crew_capsule_large"), Spacebreaker.id("parachute")));
+        RocketEntity rocket = RocketEntity.create(helper.getLevel(), d, helper.absoluteVec(new net.minecraft.world.phys.Vec3(3.5, 2, 3.5)), 0F);
+        helper.getLevel().addFreshEntity(rocket);
+        helper.assertTrue(rocket.layout().payload().seats() == 3, "three seats");
+        List<ServerPlayer> crew = new java.util.ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+            ServerPlayer p = helper.makeMockServerPlayerInLevel();
+            p.moveTo(rocket.position());
+            crew.add(p);
+        }
+        for (int i = 0; i < 3; i++) {
+            helper.assertTrue(crew.get(i).startRiding(rocket, false), "crew member " + (i + 1) + " boards");
+        }
+        helper.assertFalse(crew.get(3).startRiding(rocket, false), "a fourth does not fit");
+        helper.runAfterDelay(3, () -> {
+            var seats = crew.subList(0, 3).stream().map(net.minecraft.world.entity.Entity::position).toList();
+            helper.assertTrue(seats.get(0).distanceTo(seats.get(1)) > 0.4 && seats.get(1).distanceTo(seats.get(2)) > 0.4, "they sit side by side: " + seats);
+            rocket.ejectPassengers();
+            rocket.discard();
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = EMPTY)
+    public static void stationModulesAndDocking(GameTestHelper helper) {
+        var level = helper.getLevel();
+        // the kit unfolds a 5x5 floor in empty space, and refuses when something is in the way
+        BlockPos floor = helper.absolutePos(new BlockPos(4, 6, 4));
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.station.StationKitItem.unfold(level, floor), "the kit unfolds");
+        int hull = 0;
+        for (BlockPos p : BlockPos.betweenClosed(floor.offset(-2, 0, -2), floor.offset(2, 0, 2))) {
+            if (level.getBlockState(p).is(RocketryModule.STATION_HULL.get())) {
+                hull++;
+            }
+        }
+        helper.assertTrue(hull == 25, "a 5x5 hull floor: " + hull);
+        helper.assertFalse(com.pizzaparker07.spacebreaker.content.rocketry.station.StationKitItem.unfold(level, floor), "not over existing blocks");
+        // hull, windows and the port keep the air in (the suit area's oxygen distributor)
+        for (var block : List.of(RocketryModule.STATION_HULL.get(), RocketryModule.STATION_WINDOW.get(), RocketryModule.DOCKING_PORT.get())) {
+            BlockPos p = floor.above(2);
+            level.setBlock(p, block.defaultBlockState(), 3);
+            helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.block.SealedRoom.airtight(level, p, level.getBlockState(p)),
+                    block + " is airtight");
+        }
+        // a rocket parked in orbit next to the port is docked: the crew may step out, and the port fills its tanks
+        BlockPos port = floor.above(2);
+        RocketEntity rocket = RocketEntity.create(level, marsReturnRocket("methalox_engine", "methalox_vacuum_engine"),
+                net.minecraft.world.phys.Vec3.atBottomCenterOf(port.above(3)), 0F);
+        level.addFreshEntity(rocket);
+        rocket.stageScene(FlightState.ORBIT, 0, 0, false);
+        rocket.setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);
+        helper.assertTrue(rocket.docked() && rocket.canDismount(), "docked at the station");
+        var handler = level.getCapability(net.neoforged.neoforge.capabilities.Capabilities.FluidHandler.BLOCK, port, null);
+        int lox = rocket.roomFor((com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant) null);
+        helper.assertTrue(handler != null && lox > 0 && handler.fill(com.pizzaparker07.spacebreaker.content.fluids.FluidsModule.LIQUID_OXYGEN.stack(1000),
+                net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE) == 1000, "LOX goes through the port into the rocket");
+        level.removeBlock(port, false);
+        helper.runAfterDelay(1, () -> {
+            helper.assertFalse(rocket.docked() || rocket.canDismount(), "without a port, nobody steps out into space");
+            rocket.discard();
+            helper.succeed();
+        });
+    }
+
     @GameTest(template = EMPTY)
     public static void fuelFromFluidContainers(GameTestHelper helper) {
         RocketEntity rocket = RocketEntity.create(helper.getLevel(), RocketryModule.MOON_ROCKET, helper.absoluteVec(new net.minecraft.world.phys.Vec3(1.5, 2, 1.5)), 0F);

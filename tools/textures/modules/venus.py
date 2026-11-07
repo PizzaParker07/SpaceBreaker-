@@ -203,6 +203,41 @@ def acid_coating_item():
     return cv
 
 
+def lift_gas_sac():
+    """A Cloud Jelly's gas bladder: a pale, translucent-looking lilac balloon with a tied neck and a soft highlight."""
+    m = mask_from(parse_mask([
+        "................",
+        "......####......",
+        "....########....",
+        "...##########...",
+        "..############..",
+        "..############..",
+        "..############..",
+        "...##########...",
+        "....########....",
+        ".....######.....",
+        "......####......",
+        ".......##.......",
+        "......####......",
+        ".......##.......",
+        "................",
+        "................",
+    ]))
+    sh = dome_shade(m, roundness=2.4)
+    r = ramp('#5e4a68', '#7d6488', '#9d84a8', '#bba3c4', '#d6c4dc', '#efe6f2')
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            if m[y][x]:
+                cv[x, y] = pick(r[1:5], 0.1 + 0.85 * sh[y][x]) if y < 11 else (r[0] if y == 12 else r[1])
+    for x, y in [(5, 3), (6, 3), (5, 4)]:
+        cv[x, y] = r[5]
+    for x, y, side in edge_pixels(m):
+        if y < 11:
+            cv[x, y] = r[0] if side == 'br' else r[1]
+    return cv
+
+
 def export(save):
     rock = (40, 12, 20, None)
     save(venus_basalt(), 'block', 'venus_basalt', rock)
@@ -216,6 +251,7 @@ def export(save):
     save(envelope_fabric(), 'block', 'envelope_fabric', (10, 10, 0, None))
     save(sulfur_item(), 'item', 'sulfur')
     save(acid_coating_item(), 'item', 'acid_coating')
+    save(lift_gas_sac(), 'item', 'lift_gas_sac')
     export_more(save)
 
 

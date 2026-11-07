@@ -25,6 +25,15 @@ import java.util.Optional;
 public final class Locations {
     private static volatile List<Location> all = List.of(Location.EARTH_SURFACE, Location.EARTH_ORBIT, Location.MOON_ORBIT, Location.MOON_SURFACE);
     private static volatile Map<ResourceLocation, CelestialBody> bodies = Map.of();
+    private static volatile java.util.Set<ResourceLocation> refuel = java.util.Set.of(Location.EARTH);
+
+    /**
+     * Worlds where rocket propellant can be made on the ground (RP-1 on Earth; LOX with methane or hydrogen from
+     * ice, CO₂ or graphite elsewhere): the {@code spacebreaker:refuel} tag of the celestial body registry, so
+     * areas that add a fuel chain on a world add the world to the tag.
+     */
+    public static final net.minecraft.tags.TagKey<CelestialBody> REFUEL = net.minecraft.tags.TagKey.create(Bodies.REGISTRY,
+            com.pizzaparker07.spacebreaker.Spacebreaker.id("refuel"));
 
     private Locations() {
     }
@@ -53,6 +62,10 @@ public final class Locations {
                 });
         bodies = Map.copyOf(b);
         all = List.copyOf(out);
+        java.util.Set<ResourceLocation> fuel = new java.util.HashSet<>();
+        reg.get().getTag(REFUEL).ifPresent(tag -> tag.forEach(h -> h.unwrapKey().ifPresent(k -> fuel.add(k.location()))));
+        fuel.add(Location.EARTH);
+        refuel = java.util.Set.copyOf(fuel);
     }
 
     /** Sort key: distance from the sun of the body (or of its planet), moons right after their planet. */
@@ -63,6 +76,11 @@ public final class Locations {
             return parent.get().orbit().semiMajorAxisKm() + Math.min(own, 1e6) * 1e-3;
         }
         return own;
+    }
+
+    /** Whether propellant can be made on this world's surface (see {@link #REFUEL}). */
+    public static boolean canRefuel(ResourceLocation body) {
+        return refuel.contains(body);
     }
 
     public static List<Location> all() {

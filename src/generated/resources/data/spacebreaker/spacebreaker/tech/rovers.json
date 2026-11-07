@@ -6,7 +6,8 @@
     "spacebreaker:electronics"
   ],
   "samples": [
-    "spacebreaker:moon"
+    "spacebreaker:moon",
+    "spacebreaker:probe_landing"
   ],
   "tier": 2
 }

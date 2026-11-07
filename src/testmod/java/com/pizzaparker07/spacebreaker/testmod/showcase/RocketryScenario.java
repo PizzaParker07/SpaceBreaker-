@@ -327,6 +327,67 @@ final class RocketryScenario implements ShowcaseScenario {
                 () -> com.pizzaparker07.spacebreaker.client.rocketry.TransitView.showcase(null, null, null)));
         s.add(new Shot("30_star_map_moon", 6000, 0, 0, 0, 0F, 0F, false, fp, 120,
                 p -> mapShot(p, Location.MOON, false), null));
+        s.add(new Shot("32_satellites", 6000, 0, 0, 0, 0F, 0F, true, fp, 120,
+                p -> {
+                    clearScene(p);
+                    RocketryShowcaseClient.star = null;
+                    ServerLevel orbit = p.server.getLevel(Location.EARTH_ORBIT.dimension());
+                    orbit.addFreshEntity(com.pizzaparker07.spacebreaker.content.rocketry.mission.SatelliteEntity.create(orbit,
+                            Spacebreaker.id("comm_satellite"), new Vec3(0.5, RocketEntity.ORBIT_Y, 0.5)));
+                    orbit.addFreshEntity(com.pizzaparker07.spacebreaker.content.rocketry.mission.SatelliteEntity.create(orbit,
+                            Spacebreaker.id("observation_satellite"), new Vec3(5.5, RocketEntity.ORBIT_Y - 2, -3.5)));
+                    toDimension(p, Location.EARTH_ORBIT, 2.5, RocketEntity.ORBIT_Y + 2.2, 5.5, 160F, 22F);
+                }, () -> RocketryShowcaseClient.cockpit = false));
+        s.add(new Shot("33_uncrewed_console", 6000, 5.5, G + 1.6, 8.5, 180F, 20F, false, fp, 60,
+                p -> {
+                    clearScene(p);
+                    if (padRocket != null) {
+                        padRocket.discard();
+                    }
+                    RocketEntity probe = RocketEntity.create(p.serverLevel(), new com.pizzaparker07.spacebreaker.content.rocketry.design.RocketDesign(List.of(
+                            Spacebreaker.id("kerosene_engine"), Spacebreaker.id("fuel_tank_large"), Spacebreaker.id("interstage"),
+                            Spacebreaker.id("vacuum_engine"), Spacebreaker.id("fuel_tank_medium"), Spacebreaker.id("space_probe"),
+                            Spacebreaker.id("nose_cone"))), Vec3.atBottomCenterOf(PAD.above()), -90F);
+                    probe.fillCompletely();
+                    probe.setOwner(p.getUUID());
+                    com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(Spacebreaker.id("mars"), false).ifPresent(probe::setMissionTarget);
+                    p.serverLevel().addFreshEntity(probe);
+                    scene.add(probe);
+                    p.getServer().execute(() -> {
+                        if (p.serverLevel().getBlockEntity(CONSOLE) instanceof LaunchConsoleBlockEntity be) {
+                            be.refresh();
+                            p.openMenu(be, CONSOLE);
+                        }
+                    });
+                }, null));
+        s.add(new Shot("34_station", 6000, 0, 0, 0, 0F, 0F, true, fp, 140,
+                p -> {
+                    clearScene(p);
+                    ServerLevel orbit = p.server.getLevel(Location.EARTH_ORBIT.dimension());
+                    BlockPos c = BlockPos.containing(40, RocketEntity.ORBIT_Y, 0);
+                    // a small pressurised module: hull box with a row of windows and a docking port on the side
+                    for (int dx = -3; dx <= 3; dx++) {
+                        for (int dy = 0; dy <= 4; dy++) {
+                            for (int dz = -2; dz <= 2; dz++) {
+                                boolean shell = Math.abs(dx) == 3 || dy == 0 || dy == 4 || Math.abs(dz) == 2;
+                                if (!shell) {
+                                    continue;
+                                }
+                                var block = dy == 2 && dz == 2 && Math.abs(dx) < 3 ? RocketryModule.STATION_WINDOW.get() : RocketryModule.STATION_HULL.get();
+                                orbit.setBlock(c.offset(dx, dy, dz), block.defaultBlockState(), 3);
+                            }
+                        }
+                    }
+                    orbit.setBlock(c.offset(3, 2, 0), RocketryModule.DOCKING_PORT.get().defaultBlockState()
+                            .setValue(com.pizzaparker07.spacebreaker.content.rocketry.station.DockingPortBlock.FACING, net.minecraft.core.Direction.EAST), 3);
+                    RocketEntity r = spawn(orbit, Vec3.atBottomCenterOf(c.offset(7, -4, 0)), 0F, FlightState.ORBIT, 0, 2, false);
+                    toDimension(p, Location.EARTH_ORBIT, 47.5, RocketEntity.ORBIT_Y + 3.5, 13.5, 160F, 8F);
+                }, null));
+        s.add(new Shot("31_nearby_stars", 6000, 0, 0, 0, 0F, 0F, false, fp, 120,
+                p -> {
+                    RocketryShowcaseClient.star = "Alpha Centauri";
+                    mapShot(p, Location.MOON, false);
+                }, null));
         return s;
     }
 

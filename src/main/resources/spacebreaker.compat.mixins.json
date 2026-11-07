@@ -9,6 +9,7 @@
   ],
   "client": [
     "iris.PackAmbientMixin",
+    "iris.SkipPackSkyMixin",
     "iris.PackCloudsMixin"
   ],
   "injectors": {

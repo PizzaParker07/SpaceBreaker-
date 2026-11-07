@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "spacebreaker:block/europan_frost",
+    "up": "spacebreaker:block/europan_frost_footprint_track",
+    "down": "spacebreaker:block/europan_frost",
+    "north": "spacebreaker:block/europan_frost",
+    "south": "spacebreaker:block/europan_frost",
+    "east": "spacebreaker:block/europan_frost",
+    "west": "spacebreaker:block/europan_frost"
+  }
+}

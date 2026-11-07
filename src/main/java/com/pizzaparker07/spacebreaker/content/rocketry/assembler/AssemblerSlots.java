@@ -41,7 +41,7 @@ public final class AssemblerSlots {
         if (slot >= PAYLOAD_START) {
             return switch (slot - PAYLOAD_START) {
                 case 0 -> type == PartType.HEAT_SHIELD;
-                case 1 -> type == PartType.CAPSULE;
+                case 1 -> type == PartType.CAPSULE || type.uncrewed();
                 default -> type == PartType.PARACHUTE || type == PartType.NOSE_CONE;
             };
         }

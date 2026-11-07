@@ -67,6 +67,8 @@ public class SampleItem extends Item {
             case "pluto", "charon" -> 0xC9A98E;
             case "suborbital_flight" -> 0x6FA0D8;
             case "orbital_flight" -> 0x3E5FA8;
+            case "orbital_survey" -> 0x4F8A8B;
+            case "probe_landing" -> 0xB0703A;
             default -> 0xA0A0A0;
         };
     }

@@ -14,3 +14,5 @@ Yörüngede hâlâ **düşüyorsundur**; ama yana öyle hızlı gidersin ki zemi
 
 > [!NOTE]
 > Aradaki fark **sürtünme** ve **yerçekimi kayıplarıdır**: atmosferden geçerken ve dik tırmanırken harcanan Δv.
+
+→ Ayrıntısı: [Yörünge Nedir?](sci_orbit), [Transfer Yörüngeleri](sci_transfers)

@@ -7,6 +7,7 @@ def generate():
     soil('mercury_regolith')
     soil('hollow_deposit')
     simple_block('mercurian_crust')
+    simple_block('mercury_ice')
     simple_block('low_reflectance_rock')
     ore('graphite_ore', b('low_reflectance_rock'), 'graphite_ore_overlay')
     generated_item('graphite')

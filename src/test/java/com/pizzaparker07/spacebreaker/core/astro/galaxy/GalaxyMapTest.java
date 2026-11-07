@@ -23,8 +23,10 @@ class GalaxyMapTest {
         assertTrue(m.size() <= 50);
         assertTrue(m.stream().noneMatch(x -> x.seed().id() == g.sun().id()));
         assertEquals(m, GalaxyMap.local(new Galaxy(7), new Galaxy(7).sun(), 20, 50), "deterministic");
-        GalaxyMap.Marker gen = m.stream().filter(x -> !x.seed().fixed()).findFirst().orElseThrow();
+        assertTrue(m.stream().allMatch(x -> x.seed().fixed()), "only real stars within the catalogue radius");
+        GalaxyMap.Marker gen = GalaxyMap.local(g, g.sun(), 40, 2000).stream().filter(x -> !x.seed().fixed()).findFirst().orElseThrow();
         assertTrue(gen.designation().startsWith("SB "));
+        assertTrue(gen.distanceLy() >= NearbyStars.CATALOGUE_RADIUS_LY, "generated stars start outside 25 ly");
     }
 
     @Test

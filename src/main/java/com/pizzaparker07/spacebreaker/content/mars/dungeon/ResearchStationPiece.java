@@ -16,7 +16,6 @@ import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.ButtonBlock;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.LanternBlock;
 import net.minecraft.world.level.block.TrapDoorBlock;
@@ -183,8 +182,9 @@ public class ResearchStationPiece extends StructurePiece {
     private void airlock(WorldGenLevel level, BoundingBox box) {
         door(level, box, 16, 27, Direction.SOUTH);
         door(level, box, 16, 23, Direction.SOUTH);
-        placeBlock(level, Blocks.STONE_BUTTON.defaultBlockState().setValue(ButtonBlock.FACING, Direction.SOUTH), 17, F + 2, 28, box);
-        placeBlock(level, Blocks.STONE_BUTTON.defaultBlockState().setValue(ButtonBlock.FACING, Direction.NORTH), 15, F + 2, 26, box);
+        // buttons hang on the airlock walls; aimed from world positions so they attach in every orientation
+        DungeonBits.placeFacing(level, box, getWorldPos(17, F + 2, 28), getWorldPos(17, F + 2, 27), s(Blocks.STONE_BUTTON), true);
+        DungeonBits.placeFacing(level, box, getWorldPos(15, F + 2, 26), getWorldPos(15, F + 2, 27), s(Blocks.STONE_BUTTON), true);
         placeBlock(level, s(Blocks.POLISHED_BLACKSTONE_PRESSURE_PLATE), 16, F + 1, 22, box);
         placeBlock(level, s(Blocks.POLISHED_BLACKSTONE_PRESSURE_PLATE), 16, F + 1, 24, box);
         for (int x = 15; x <= 17; x++) {
@@ -273,6 +273,14 @@ public class ResearchStationPiece extends StructurePiece {
             spawner.setEntityId(MarsEntities.RUST_BEETLE.get(), RandomSource.create(seed + 7));
         }
         container(level, box, r, 8, F + 1, 13, MarsLoot.STATION_STORAGE, false);
+        // trap: the station's perimeter defence still has power. A plate in the garage tunnel fires a dispenser hidden in
+        // the tunnel wall.
+        placeBlock(level, s(Blocks.POLISHED_BLACKSTONE_PRESSURE_PLATE), 10, F + 1, 16, box);
+        BlockPos disp = getWorldPos(10, F + 1, 15);
+        DungeonBits.placeFacing(level, box, disp, getWorldPos(10, F + 1, 16), s(Blocks.DISPENSER), false);
+        if (box.isInside(disp)) {
+            DungeonBits.load(level, disp, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.ARROW, 12));
+        }
         guard(level, box, com.pizzaparker07.spacebreaker.content.moon.entity.MoonEntities.SURVEY_DRONE.get(), 5, F + 3, 13);
         guard(level, box, com.pizzaparker07.spacebreaker.content.moon.entity.MoonEntities.SURVEY_DRONE.get(), 16, F + 3, 18);
     }

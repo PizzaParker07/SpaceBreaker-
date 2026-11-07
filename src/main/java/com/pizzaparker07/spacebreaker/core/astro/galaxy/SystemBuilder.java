@@ -32,6 +32,7 @@ final class SystemBuilder {
     private final double ageYears;
     private String designation;
     private StarSystem.Binary binary;
+    private boolean discovered;
 
     SystemBuilder(StarSeed seed, String rootId, StarKind kind, StellarModel.Star primary, String nameEn, String nameTr) {
         this.seed = seed;
@@ -128,7 +129,7 @@ final class SystemBuilder {
         AstroBody b = new AstroBody(id, parentId, kindFor(massKg, comp, parent.isStar()), massKg, radiusM, orbit,
                 day * 3600.0, locked, pressure, air, dayK, nightK, albedo, !giant);
         bodies.add(b);
-        details.put(id, new StarSystem.Details(nameEn, nameTr, flux, radiation, axialTilt, AstroConstants.G * massKg / (radiusM * radiusM), 0, 0));
+        details.put(id, new StarSystem.Details(nameEn, nameTr, flux, radiation, axialTilt, AstroConstants.G * massKg / (radiusM * radiusM), 0, 0, discovered));
         return b;
     }
 
@@ -148,6 +149,11 @@ final class SystemBuilder {
     /** Body from mass and radius in Earth units and the semi-major axis in AU (or km for moons). */
     AstroBody planet(String id, String nameEn, String nameTr, double massEarths, double radiusEarths, double aAu,
                      double e, double incDeg, Rng rng) {
+        if (radiusEarths <= 0) { // unknown: estimate from the mass
+            PlanetModel.Composition guess = massEarths < 10 ? PlanetModel.Composition.ROCKY
+                    : massEarths < 50 ? PlanetModel.Composition.ICE_GIANT : PlanetModel.Composition.GAS_GIANT;
+            radiusEarths = PlanetModel.radiusFor(massEarths, guess);
+        }
         double massKg = massEarths * EARTH_MASS;
         double radius = radiusEarths * EARTH_RADIUS;
         PlanetModel.Composition comp = PlanetModel.composition(massEarths, PlanetModel.density(massKg, radius));
@@ -173,6 +179,11 @@ final class SystemBuilder {
         this.designation = d;
     }
 
+    /** Bodies added from now on are real, confirmed ones (true) or generator fill-ins (false, the default). */
+    void discovered(boolean d) {
+        this.discovered = d;
+    }
+
     void binary(StarSystem.Binary b) {
         this.binary = b;
     }
@@ -181,7 +192,7 @@ final class SystemBuilder {
     void rings(String id, double innerKm, double outerKm) {
         StarSystem.Details d = details.get(id);
         details.put(id, new StarSystem.Details(d.nameEn(), d.nameTr(), d.irradiance(), d.radiation(), d.axialTiltDeg(),
-                d.surfaceGravity(), innerKm, outerKm));
+                d.surfaceGravity(), innerKm, outerKm, d.discovered()));
     }
 
     StarSystem build() {

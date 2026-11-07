@@ -24,6 +24,8 @@ public class SolarPanelBlockEntity extends BlockEntity {
 
     private final Buffer energy = new Buffer(8_000, PEAK_OUTPUT * 4);
     private int lastOutput;
+    private double carry;
+    private double exactOutput;
 
     // client-side animation state
     private float tilt;
@@ -40,6 +42,11 @@ public class SolarPanelBlockEntity extends BlockEntity {
 
     public int getLastOutput() {
         return lastOutput;
+    }
+
+    /** Output this tick before whole-FE rounding (FE/t). */
+    public double getExactOutput() {
+        return exactOutput;
     }
 
     /** Sun angle in radians, 0 = noon, negative = morning (east), positive = afternoon (west). */
@@ -89,7 +96,14 @@ public class SolarPanelBlockEntity extends BlockEntity {
                     // sunlight at this body's distance from the sun, after dust storms and clouds (capped: cells overheat)
                     * (float) Math.min(MAX_SOLAR_FACTOR, com.pizzaparker07.spacebreaker.core.env.Environment.solarFactor(level, pos));
             factor *= weatherFactor(level, pos);
-            produced = Math.round(PEAK_OUTPUT * factor);
+            // keep the fraction: far from the sun a panel makes well under 1 FE/t, and rounding would lose all of it
+            be.exactOutput = PEAK_OUTPUT * factor;
+            be.carry += be.exactOutput;
+            produced = (int) be.carry;
+            be.carry -= produced;
+        } else {
+            be.carry = 0;
+            be.exactOutput = 0;
         }
         be.lastOutput = produced;
         if (produced > 0) {

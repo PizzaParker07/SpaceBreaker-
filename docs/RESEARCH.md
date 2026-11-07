@@ -61,6 +61,12 @@ Entering `spacebreaker:earth_orbit` / `spacebreaker:moon` also completes orbit /
    guardians spawn once per generated site.
 4. Java behaviour: `DungeonHooks.onFirstDiscovery(id, ...)` / `DungeonHooks.onEnter(id, ...)`.
 5. Name: language key `dungeon.<ns>.<name>`. Add your structure to the tag `#spacebreaker:dungeons`.
+6. Hand-built `StructurePiece`s: vanilla `placeBlock` turns block states with a mirror that does not match its own
+   coordinate mapping, so levers, signs, doors, stairs, dispensers and observers face the wrong way in some orientations.
+   Use `content/dungeons/PieceOrientation.place(level, piece, state, x, y, z, box)` for anything with a direction
+   (write the state as it looks in piece space), `placeToward(...)` to aim a block at another cell (or, with `away`,
+   to hang a lever or sign on a wall) and `direction(piece, localDir)` / `worldPos(...)` for your own maths.
+   GameTest `dungeonBlocksFaceTheRightWayInEveryOrientation` checks all four orientations.
 
 ## Field guide
 The guide is a two-page book (`client/guide/GuideScreen.java`) built from Markdown, one file per chapter and language:
@@ -71,7 +77,7 @@ The guide is a two-page book (`client/guide/GuideScreen.java`) built from Markdo
 - `assets/<ns>/guide/<lang>/<chapter>.md`: the chapter. English is the fallback for a missing language.
 
 Front matter: `title`, `icon`, `items: [..]` (clicking these items anywhere in the book opens the chapter) and an optional
-`research: <tech>`, which only shows a "Research needed" note: pages are never hidden.
+`research: <tech>`, which only shows a "Related research" note: pages are never hidden.
 
 Body (see `GuideMarkdown.java`): `#`/`##` headings, `-` and `1.` lists, `**bold**`, `*italic*`, `` `code` ``,
 `{color gold}…{/color}` or `{blue}…{/}`, tables, `---` dividers, `>` tip and `>!` warning boxes (also `> [!TIP]`, `> [!WARNING]`,
@@ -85,3 +91,9 @@ The language `book.json` also takes `subtitle` and `intro` for the contents page
 
 The GameTest `guideChaptersExistInBothLanguagesAndResolve` checks that every chapter exists in English and Turkish and that
 every item, recipe, entity, structure, link, tech, image and key it names exists. Terms: `docs/GLOSSARY.md`.
+
+## Wiki
+`python3 tools/wiki/gen_wiki.py` turns the guide chapters into `docs/wiki` (GitHub wiki layout: `Home.md`, `_Sidebar.md`,
+one page per chapter). Each page is Turkish with the English text in a collapsible section; recipes become tables, keys
+show their defaults, item names link to the chapter that lists them, and screenshots come from `docs/screenshots`.
+Run it again after changing the guide.

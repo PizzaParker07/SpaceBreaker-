@@ -36,6 +36,8 @@ public final class CompatClient {
         static void shaders(RegisterShadersEvent event) throws java.io.IOException {
             event.registerShader(new ShaderInstance(event.getResourceProvider(), Spacebreaker.id("compat_haze"), DefaultVertexFormat.POSITION),
                     HazePass::setShader);
+            event.registerShader(new ShaderInstance(event.getResourceProvider(), Spacebreaker.id("compat_sky_composite"), DefaultVertexFormat.POSITION),
+                    ShaderSkyPass::setCompositeShader);
         }
     }
 

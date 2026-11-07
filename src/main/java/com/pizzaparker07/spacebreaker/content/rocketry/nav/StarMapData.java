@@ -44,12 +44,15 @@ public final class StarMapData {
      * @param have         fuel on board, as Δv in m/s
      * @param enough       whether the rocket can fly the whole route with what it has
      * @param returnHome   whether, after arriving, there is still enough to get back to Earth
+     * @param refuelThere  whether propellant can be made at the destination (on its surface), so the way home
+     *                     can be fuelled there
      * @param heatShield   heat shield rating the route needs (0 = none)
      * @param shieldOk     whether the rocket's heat shield is good enough
      * @param legsMissing  landing on an airless world without landing legs
      * @param block        why the trip cannot be started right now
      */
     public record Trip(Location to, Location next, List<Location> route, double needed, double have, boolean enough, boolean returnHome,
+                       boolean refuelThere,
                        int heatShield, boolean shieldOk, boolean legsMissing, Block block) {
         public double shortBy() {
             return Math.max(0, needed - have);
@@ -173,7 +176,7 @@ public final class StarMapData {
             block = Block.NONE;
         }
         Location next = path.size() > 1 ? path.get(1) : to;
-        return new Trip(to, next, route(here, to), needed, have, enough, home, shield, shieldOk, legs, block);
+        return new Trip(to, next, route(here, to), needed, have, enough, home, Locations.canRefuel(to.body()), shield, shieldOk, legs, block);
     }
 
     /** Planets in order from the sun, each followed by nothing: moons are listed by {@link #moons}. */

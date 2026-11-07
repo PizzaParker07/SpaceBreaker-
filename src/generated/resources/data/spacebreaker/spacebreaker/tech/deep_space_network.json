@@ -6,7 +6,8 @@
     "spacebreaker:nuclear_fission"
   ],
   "samples": [
-    "spacebreaker:callisto"
+    "spacebreaker:callisto",
+    "spacebreaker:orbital_survey"
   ],
   "tier": 3
 }

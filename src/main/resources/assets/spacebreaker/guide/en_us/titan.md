@@ -12,5 +12,8 @@ Falls are gentle and an elytra glides far. **Tholin** is the key resource here.
 {entity spacebreaker:methane_skater}
 **Methane skaters** walk on the lakes.
 
+{entity spacebreaker:tholin_worm}
+The shy **tholin worm** burrows into the sand and now and then leaves tholin behind. It breeds with tholin sand.
+
 ## Ruins
 A rotorcraft hangar teaches {tech spacebreaker:hydrocarbon_processing} and {tech spacebreaker:aerial_mobility}.

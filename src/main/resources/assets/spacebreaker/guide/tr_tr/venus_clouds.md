@@ -6,10 +6,10 @@ research: spacebreaker:interplanetary_transfers
 ---
 {entity spacebreaker:cloud_jelly}
 ## Bulut Medüzü
-Hafif gaz keseleriyle süzülür ve havadan kükürt süzer. Zararsızdır.
+Hafif gaz keseleriyle süzülür ve havadan kükürt süzer. Zararsızdır. **Kaldırma Gazı Kesesi** bırakır: kullanınca 30 saniye yavaş düşersin.
 
 ## Asit Vatozu
-Geniş kavislerle süzülür. Ona dokunma: zırhı aşındıran **asit püskürtür**.
+Geniş kavislerle süzülür. Ona dokunma: zırhı aşındıran **asit püskürtür**. Kükürt ve deri bırakır.
 
 {page}
 ## Asit kaplaması
@@ -23,3 +23,7 @@ Hafif kompozit paneller ve aerojel, solunabilir hava katmanında yüzen platform
 
 > [!NOTE]
 > Bulut tepelerinin üstünde terk edilmiş bir araştırma balonu süzülür. Laboratuvarında hâlâ teknoloji diskleri var; Asit Vatozları onları korur.
+
+## Balonun bulmacaları
+- Üç **gaz vanası** var; gondol kapısını yalnızca **kükürt sarısı** işaretli olan açar.
+- İskelede **düşen döşeme** tuzağı var; altındaki ağ seni yakalar.

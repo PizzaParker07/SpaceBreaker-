@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " D ",
+    "PCP",
+    " A "
+  ],
+  "key": {
+    "D": {"item": "minecraft:daylight_detector"},
+    "P": {"item": "minecraft:blue_stained_glass_pane"},
+    "C": {"item": "minecraft:comparator"},
+    "A": {"item": "spacebreaker:aluminum_plate"}
+  },
+  "result": {"id": "spacebreaker:comm_satellite", "count": 1}
+}

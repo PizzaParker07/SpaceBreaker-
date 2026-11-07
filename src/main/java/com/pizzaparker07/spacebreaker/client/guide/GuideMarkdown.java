@@ -26,7 +26,7 @@ import java.util.Optional;
  * title: First Flight
  * icon: spacebreaker:rocket
  * items: [spacebreaker:rocket, spacebreaker:launch_pad]      # clicking these items anywhere opens this chapter
- * research: spacebreaker:basic_rocketry                       # shows "Research needed: ..." while unknown (never locks)
+ * research: spacebreaker:basic_rocketry                       # shows "Related research: ..." while unknown (never locks)
  * ---
  * # Heading 1 / ## Heading 2 / ### Heading 3
  * Paragraph text with **bold**, *italic*, `code`, {color #D8673A}coloured{/color} or {color gold}named{/color} text,

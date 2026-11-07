@@ -38,6 +38,9 @@ public class RocketPartItem extends Item {
             tooltip.add(Component.translatable("tooltip.spacebreaker.part.propellant_methalox",
                     com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant.METHALOX.fuelMillibuckets(p.propellantKg()),
                     com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant.METHALOX.loxMillibuckets(p.propellantKg())).withStyle(grey));
+            tooltip.add(Component.translatable("tooltip.spacebreaker.part.propellant_hydrolox",
+                    com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant.HYDROLOX.fuelMillibuckets(p.propellantKg()),
+                    com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant.HYDROLOX.loxMillibuckets(p.propellantKg())).withStyle(grey));
         }
         if (p.isEngine()) {
             tooltip.add(Component.translatable("tooltip.spacebreaker.part.thrust", Fmt.num(p.thrustKn())).withStyle(grey));

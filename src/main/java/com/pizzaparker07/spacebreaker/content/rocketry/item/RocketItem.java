@@ -59,6 +59,9 @@ public class RocketItem extends Item {
         }
         com.pizzaparker07.spacebreaker.content.rocketry.entity.RocketEntity rocket =
                 com.pizzaparker07.spacebreaker.content.rocketry.entity.RocketEntity.create(level, design, pad.rocketPos(), player == null ? 0F : player.getYRot());
+        if (player != null) {
+            rocket.setOwner(player.getUUID());
+        }
         level.addFreshEntity(rocket);
         level.playSound(null, pad.center(), net.minecraft.sounds.SoundEvents.ANVIL_PLACE, net.minecraft.sounds.SoundSource.BLOCKS, 0.6F, 0.7F);
         if (player == null || !player.getAbilities().instabuild) {

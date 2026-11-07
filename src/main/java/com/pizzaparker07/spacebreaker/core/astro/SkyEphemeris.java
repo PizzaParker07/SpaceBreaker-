@@ -11,8 +11,9 @@ import java.util.List;
  * <p>
  * Directions are unit vectors in the system frame (ecliptic J2000 for the Solar System) and are seen from
  * the observer body's centre; {@link #toHorizontal} turns one into azimuth/altitude for a place on the surface.
- * Brightness: planets and moons m = H + 5 log₁₀(r·Δ / AU²) − 2.5 log₁₀ Φ(α) with H from size and geometric albedo
- * and a Lambert phase law Φ; stars m = M + 5 log₁₀(d / 10 pc). Saturn's rings are not included in its brightness.
+ * Brightness: m = V(1, α) + 5 log₁₀(r·Δ / AU²); V(1, α) is the measured phase curve for Mercury, Venus, Earth,
+ * Mars and Jupiter (Mallama &amp; Hilton 2018), otherwise H (from size and geometric albedo) plus a Lambert phase law.
+ * Stars: m = M + 5 log₁₀(d / 10 pc). Saturn's rings are not included in its brightness.
  */
 public final class SkyEphemeris {
     /** H = 5 log₁₀(1329 km / (D √p)): the standard magnitude–size relation. */
@@ -91,13 +92,49 @@ public final class SkyEphemeris {
         Vec3 bToStar = ps.sub(pb);
         double r = bToStar.length();
         double alpha = angle(bToStar.normalize(), po.sub(pb).normalize());
-        double mag = absoluteMagnitude(b) + 5 * Math.log10(r * delta / (AstroConstants.AU * AstroConstants.AU))
-                - 2.5 * Math.log10(Math.max(lambert(alpha), 1e-9));
+        double mag = reducedMagnitude(b, alpha) + 5 * Math.log10(r * delta / (AstroConstants.AU * AstroConstants.AU));
         // scale for stars other than the Sun: brightness ∝ stellar luminosity
         double lStar = luminositySolar(star);
         mag -= 2.5 * Math.log10(lStar);
         double lit = (1 + Math.cos(alpha)) / 2;
         return new SkyObject(b.id(), dir, delta, mag, size, alpha, lit, elong, color(b), false);
+    }
+
+    /**
+     * Magnitude at 1 AU from the star and the observer at phase angle α ("reduced magnitude").
+     * Mercury, Venus, Earth, Mars and Jupiter use their measured phase curves (Mallama &amp; Hilton 2018), which keep
+     * Venus bright as a thin crescent; every other body uses H plus a Lambert-sphere phase law.
+     */
+    public static double reducedMagnitude(AstroBody b, double alpha) {
+        double a = Math.toDegrees(alpha);
+        switch (b.id()) {
+            case "spacebreaker:mercury" -> {
+                a = Math.min(a, 170);
+                return -0.613 + 6.3280e-2 * a - 1.6336e-3 * a * a + 3.3644e-5 * a * a * a - 3.4265e-7 * Math.pow(a, 4)
+                        + 1.6893e-9 * Math.pow(a, 5) - 3.0334e-12 * Math.pow(a, 6);
+            }
+            case "spacebreaker:venus" -> {
+                if (a <= 163.7) {
+                    return -4.384 - 1.044e-3 * a + 3.687e-4 * a * a - 2.814e-6 * a * a * a + 8.938e-9 * Math.pow(a, 4);
+                }
+                a = Math.min(a, 179);
+                return 236.05828 - 2.81914 * a + 8.39034e-3 * a * a;
+            }
+            case "spacebreaker:earth" -> {
+                return -3.99 - 1.060e-3 * a + 2.054e-4 * a * a;
+            }
+            case "spacebreaker:mars" -> {
+                return a <= 50 ? -1.601 + 0.02267 * a - 0.0001302 * a * a : -0.367 - 0.02573 * a + 0.0003445 * a * a;
+            }
+            case "spacebreaker:jupiter" -> {
+                return a <= 12 ? -9.395 - 3.7e-4 * a + 6.16e-4 * a * a
+                        : -9.428 - 2.5 * Math.log10(1 - 1.507 * (a / 180) - 0.363 * Math.pow(a / 180, 2)
+                        - 0.062 * Math.pow(a / 180, 3) + 2.809 * Math.pow(a / 180, 4) - 1.876 * Math.pow(a / 180, 5));
+            }
+            default -> {
+                return absoluteMagnitude(b) - 2.5 * Math.log10(Math.max(lambert(alpha), 1e-9));
+            }
+        }
     }
 
     /** Absolute magnitude H of a body from its diameter and geometric albedo. */

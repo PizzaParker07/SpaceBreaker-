@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-06T21:54:15.801387795	Spacebreaker inner planets recipes
+// 1.21.1	2026-11-06T22:17:47.852812248	Spacebreaker inner planets recipes
 ea6a05797061b01256ddc22d4b818ba0c3c92238 data/spacebreaker/advancement/recipes/building_blocks/aerogel.json
 9b7cff5c72a5ba7dc92a04601c1af32f7d61c349 data/spacebreaker/advancement/recipes/building_blocks/composite_panel.json
 f46d66f4e27e5564e14498f719b0e24f696fe219 data/spacebreaker/advancement/recipes/building_blocks/envelope_fabric.json
@@ -43,6 +43,7 @@ e40575726b0ec158c002cb66f9f4aa60f30fb778 data/spacebreaker/recipe/acid_coating.j
 e877ca5735af35ecf3868fbe9c304bb81a38cd38 data/spacebreaker/recipe/crushing/dusty_ice.json
 6c5993188417929cbd93e8f4cd566b1a2c686ed3 data/spacebreaker/recipe/crushing/hollow_deposit.json
 f9e0f6eb837b89db9a2ca232478fc4c8e57b46d0 data/spacebreaker/recipe/crushing/martian_ice.json
+bc5404dd1d5bf1ee1d5705e240a972bf3a57fdb4 data/spacebreaker/recipe/crushing/mercury_ice.json
 ff1b4e4aef6d320cdd14c3ce6e57c8984812e798 data/spacebreaker/recipe/crushing/perchlorate_soil.json
 36cee3cbd5433c93786d4f7b81827fb1a8433a9b data/spacebreaker/recipe/crushing/polar_crater_ice.json
 b3897cb6a7157b9df7ec1e518aef400de815f852 data/spacebreaker/recipe/crushing/sulfur_crust.json

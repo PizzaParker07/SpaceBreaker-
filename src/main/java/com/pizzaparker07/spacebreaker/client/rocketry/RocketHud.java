@@ -205,6 +205,9 @@ public final class RocketHud {
             case ORBIT -> Component.translatable("hud.spacebreaker.hint.map", RocketryClient.STAR_MAP.getTranslatedKeyMessage());
             default -> null;
         };
+        if (!com.pizzaparker07.spacebreaker.content.rocketry.mission.Coverage.hasSignal(here.body())) {
+            g.drawString(font, Component.translatable("hud.spacebreaker.no_signal"), x, y + lines * 10 + 6, 0xB0A070, true);
+        }
         if (hint != null) {
             int hy = g.guiHeight() - 72;
             g.drawCenteredString(font, hint, w / 2, hy, 0xFFFFFF);

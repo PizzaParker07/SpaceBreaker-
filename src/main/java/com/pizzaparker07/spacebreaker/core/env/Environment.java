@@ -22,6 +22,20 @@ public final class Environment {
     private static final List<TemperatureModifier> TEMPERATURE_MODIFIERS = new CopyOnWriteArrayList<>();
     private static final List<SunlightModifier> SUNLIGHT_MODIFIERS = new CopyOnWriteArrayList<>();
     private static final List<PressureModifier> PRESSURE_MODIFIERS = new CopyOnWriteArrayList<>();
+    private static final List<RadiationSource> RADIATION_SOURCES = new CopyOnWriteArrayList<>();
+
+    /**
+     * A local source of radiation (e.g. an unshielded RTG pellet someone carries), in mSv/day at a position.
+     * Added on top of the body's sky dose; overhead cover does not shield it.
+     */
+    @FunctionalInterface
+    public interface RadiationSource {
+        double doseMsvDay(Level level, BlockPos pos);
+    }
+
+    public static void addRadiationSource(RadiationSource source) {
+        RADIATION_SOURCES.add(source);
+    }
 
     /** Multiplies the ambient pressure at a position (e.g. thinner air with altitude); 1 = unchanged. */
     @FunctionalInterface
@@ -137,9 +151,19 @@ public final class Environment {
 
     /**
      * Radiation dose rate in mSv/day at this position. Every solid block overhead (up to 16) halves the dose,
-     * so living under regolith or deep underground is a real defence.
+     * so living under regolith or deep underground is a real defence. Local sources (see {@link RadiationSource})
+     * are added on top.
      */
     public static double radiation(Level level, BlockPos pos) {
+        double local = 0;
+        for (RadiationSource source : RADIATION_SOURCES) {
+            local += source.doseMsvDay(level, pos);
+        }
+        return skyRadiation(level, pos) + local;
+    }
+
+    /** Only the body's own (cosmic and solar) dose at a position, after overhead cover. */
+    public static double skyRadiation(Level level, BlockPos pos) {
         double surface = body(level).map(CelestialBody::radiation).orElse(0.0);
         if (surface <= 0) {
             return 0;

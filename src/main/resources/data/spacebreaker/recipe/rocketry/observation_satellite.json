@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " R ",
+    "PCP",
+    " S "
+  ],
+  "key": {
+    "R": {"item": "minecraft:lightning_rod"},
+    "P": {"item": "minecraft:blue_stained_glass_pane"},
+    "C": {"item": "minecraft:comparator"},
+    "S": {"item": "minecraft:spyglass"}
+  },
+  "result": {"id": "spacebreaker:observation_satellite", "count": 1}
+}

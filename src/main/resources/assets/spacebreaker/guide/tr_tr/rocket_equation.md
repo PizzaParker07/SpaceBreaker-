@@ -18,3 +18,5 @@ Isp 300 s, dolu 100 t, boş 25 t: Δv = 300 · 9,81 · ln(4) ≈ **4080 m/s**. Y
 
 > [!TIP]
 > Kalkmak için **itki ağırlığı yenmelidir**: itki/ağırlık oranı 1'in üstünde, ideal olarak 1,3–1,5 arası.
+
+→ Ayrıntısı: [Delta-v ve Roket Denklemi](sci_delta_v)

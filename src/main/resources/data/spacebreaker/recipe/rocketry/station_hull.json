@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": ["AWA", "W W", "AWA"],
+  "key": {"A": {"item": "spacebreaker:aluminum_plate"}, "W": {"item": "minecraft:white_wool"}},
+  "result": {"id": "spacebreaker:station_hull", "count": 8}
+}

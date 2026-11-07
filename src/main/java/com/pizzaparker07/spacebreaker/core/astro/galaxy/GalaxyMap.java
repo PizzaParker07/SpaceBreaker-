@@ -120,7 +120,11 @@ public final class GalaxyMap {
         double floor = max * 1e-4;
         for (int i = 0; i < cells; i++) {
             for (int j = 0; j < cells; j++) {
-                bright[i][j] = Math.max(0, Math.log(Math.max(col[i][j], floor) / floor) / Math.log(max / floor));
+                // light, not star counts: young arm stars outshine the old disk, so the arms stand out
+                double base = Math.max(0, Math.log(Math.max(col[i][j], floor) / floor) / Math.log(max / floor));
+                double x = -half + (i + 0.5) * cell, y = -half + (j + 0.5) * cell;
+                double w = Math.max(0, Math.min(1, (Math.hypot(x, y) - 2500) / 1500)); // bulge keeps its own glow
+                bright[i][j] = Math.min(1, base * ((1 - w) + w * (0.55 + 0.75 * armShare[i][j])));
                 color[i][j] = mix(OLD_STARS, YOUNG_STARS, 0.85 * armShare[i][j]);
             }
         }

@@ -20,6 +20,8 @@ import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 final class CompatShowcaseClient {
     /** Minimum corner of the ghost structure, or null for none. */
     static volatile BlockPos ghostOrigin;
+    private static final com.pizzaparker07.spacebreaker.compat.client.PassTimer TIMER =
+            new com.pizzaparker07.spacebreaker.compat.client.PassTimer("ghost blocks (16)");
 
     private CompatShowcaseClient() {
     }
@@ -30,6 +32,7 @@ final class CompatShowcaseClient {
         if (origin == null || event.getStage() != RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) {
             return;
         }
+        TIMER.begin();
         var buffers = Minecraft.getInstance().renderBuffers().bufferSource();
         Vec3 cam = event.getCamera().getPosition();
         PoseStack ps = event.getPoseStack();
@@ -48,5 +51,6 @@ final class CompatShowcaseClient {
             }
         }
         GhostBlocks.flush(buffers);
+        TIMER.end();
     }
 }

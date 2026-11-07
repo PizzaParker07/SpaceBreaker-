@@ -1,0 +1,6 @@
+{
+  "type": "probe",
+  "mass_kg": 700,
+  "height": 20,
+  "model": "spacebreaker:space_probe"
+}

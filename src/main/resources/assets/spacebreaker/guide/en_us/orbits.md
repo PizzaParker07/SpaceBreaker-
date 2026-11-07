@@ -14,3 +14,5 @@ In orbit you are still **falling**, but moving sideways so fast that the ground 
 
 > [!NOTE]
 > The difference is **drag** and **gravity losses**: Δv spent pushing through air and climbing straight up.
+
+→ More: [What Is an Orbit?](sci_orbit), [Transfer Orbits](sci_transfers)

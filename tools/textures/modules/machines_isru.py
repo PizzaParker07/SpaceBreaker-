@@ -160,3 +160,89 @@ def export(save):  # noqa: F811
     metal = (150, 230, 0, None)
     save(reactor_vessel(), 'block', 'chemical_reactor_vessel', (210, 40, 0, None))
     save(reactor_front(), 'block', 'chemical_reactor_front', metal)
+
+
+# ---------------------------------------------------------------- RTG and its fuel pellet
+AL = P.ALUMINIUM
+W = P.TUNGSTEN
+TREFOIL_Y = (222, 182, 48)
+
+
+def rtg_fins():
+    """Radiator fins all round, a tungsten band where the thermocouples sit."""
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            cv[x, y] = (AL[5], AL[3], AL[3], AL[1])[x % 4]
+    for x in range(16):
+        cv[x, 0] = AL[1]
+        cv[x, 15] = AL[1]
+        cv[x, 7] = W[4]
+        cv[x, 8] = W[2]
+    return cv
+
+
+def rtg_front():
+    """Fins with a radiation warning plate."""
+    import math
+    cv = rtg_fins()
+    rect(cv, 4, 3, 11, 12, TREFOIL_Y)
+    cx, cy = 7.5, 7.5
+    for y in range(4, 12):
+        for x in range(5, 11):
+            dx, dy = x - cx, y - cy
+            d = (dx * dx + dy * dy) ** 0.5
+            ang = math.degrees(math.atan2(-dy, dx)) % 360
+            blade = any(abs((ang - a + 180) % 360 - 180) < 30 for a in (90, 210, 330))
+            if d < 0.9 or (1.6 < d < 3.3 and blade):
+                cv[x, y] = W[2]
+    return cv
+
+
+def rtg_top():
+    """Bolted cap over the heat-source cavity."""
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            d = ((x - 7.5) ** 2 + (y - 7.5) ** 2) ** 0.5
+            cv[x, y] = W[4] if d < 5.2 else (AL[1] if d < 6.3 else (AL[3] if (x + y) % 4 else AL[5]))
+    for x, y in ((7, 3), (11, 5), (11, 10), (7, 12), (3, 10), (3, 5)):
+        cv[x, y] = AL[5]
+        cv[x + 1, y] = W[2]
+    rect(cv, 6, 6, 9, 9, W[2])
+    rect(cv, 7, 7, 8, 8, AL[5])
+    return cv
+
+
+def rtg_pellet():
+    """Clad fuel capsule; the end face glows with decay heat."""
+    cv = Canvas()
+    shade = [W[2], W[4], W[5], W[6], W[5], W[4], W[3], W[1]]
+    for y in range(5, 14):
+        for i, x in enumerate(range(4, 12)):
+            cv[x, y] = shade[i]
+    for x in range(4, 12):
+        cv[x, 14] = W[1]
+    for x in range(5, 11):
+        cv[x, 3] = W[3]
+    cv[4, 4] = W[3]
+    cv[11, 4] = W[2]
+    for x in range(5, 11):
+        cv[x, 4] = GLOW[1] if 6 <= x <= 9 else GLOW[0]
+    cv[7, 4] = GLOW[2]
+    cv[8, 4] = GLOW[2]
+    for x in range(5, 11):
+        cv[x, 9] = W[1] if x in (5, 10) else W[3]
+    return cv
+
+
+_export_isru = export
+
+
+def export(save):  # noqa: F811
+    _export_isru(save)
+    metal = (150, 230, 0, None)
+    save(rtg_fins(), 'block', 'rtg_side', (190, 230, 0, None))
+    save(rtg_front(), 'block', 'rtg_front', metal)
+    save(rtg_top(), 'block', 'rtg_top', metal)
+    save(rtg_pellet(), 'item', 'rtg_fuel_pellet')

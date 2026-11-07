@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": ["HHH", "HPH", "HHH"],
+  "key": {"H": {"item": "spacebreaker:station_hull"}, "P": {"item": "minecraft:piston"}},
+  "result": {"id": "spacebreaker:station_kit", "count": 1}
+}

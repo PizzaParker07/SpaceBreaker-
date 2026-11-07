@@ -43,6 +43,8 @@ PENTLANDITE = ramp('#3a2c10', '#5b4618', '#7d6322', '#9e812f', '#b99d40', '#cfb7
 SPODUMENE = ramp('#4a3a46', '#6a5566', '#8b7387', '#a891a5', '#c1abbf', '#d6c3d4', '#e7d8e5', '#f4ecf2')
 # Wolframite: black-brown, sub-metallic.
 WOLFRAMITE = ramp('#110d0b', '#1d1714', '#2b2320', '#3a302b', '#4b3f38', '#605148', '#7a685d', '#9a877a')
+# Uraninite (pitchblende): pitch-black botryoidal grains weathering to yellow-green crusts.
+URANINITE = ramp('#0c0b09', '#16150f', '#211f16', '#2d2b1d', '#3b3a24', '#4e4f2a', '#7c8634', '#c2cf5a')
 # Crude oil / bitumen: brown-black with a greasy sheen.
 CRUDE = ramp('#0b0907', '#15110d', '#201a14', '#2c241b', '#3a3025', '#4a3e30', '#5e4f3d', '#7a6852')
 
@@ -55,6 +57,8 @@ NICKEL = ramp('#3a372c', '#55513f', '#706b55', '#8d8770', '#aaa48c', '#c6c0a8', 
 LITHIUM = ramp('#3f3540', '#5c4f5e', '#7b6c7d', '#9a8a9b', '#b6a7b6', '#cfc2ce', '#e3d9e2', '#f4eef3')
 # Tungsten: heavy dark steel grey.
 TUNGSTEN = ramp('#16171b', '#24262c', '#33363e', '#444851', '#575c66', '#6c727d', '#858b96', '#a3a9b3')
+# Uranium metal: dense grey that tarnishes towards a dull olive.
+URANIUM = ramp('#1b1d18', '#2a2d25', '#3b3f34', '#4d5245', '#616757', '#777e6b', '#8f9782', '#acb49e')
 # Carbon steel (ingots, plates, rods, dies).
 CARBON_STEEL = ramp('#1f2124', '#303338', '#42464c', '#565a61', '#6b7077', '#82878e', '#9da1a7', '#bcc0c5')
 # Aluminium-lithium alloy: champagne-tinted aluminium.

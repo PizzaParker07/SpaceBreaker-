@@ -228,7 +228,7 @@ final class IndustryScenario implements ShowcaseScenario {
         }
         // display row facing the camera, all running
         List<MachineEntry<?, ?>> show = List.of(MachinesModule.ATMOSPHERE_PROCESSOR, MachinesModule.SABATIER_REACTOR,
-                MachinesModule.REGOLITH_HEATER, MachinesModule.ICE_MELTER, MachinesModule.CHEMICAL_REACTOR);
+                MachinesModule.REGOLITH_HEATER, MachinesModule.ICE_MELTER, MachinesModule.CHEMICAL_REACTOR, MachinesModule.RTG);
         for (int i = 0; i < show.size(); i++) {
             BlockPos pos = new BlockPos(x0 + 1 + i * 2, F + 1, 6);
             level.setBlock(pos, show.get(i).block().get().defaultBlockState().setValue(MachineBlock.FACING, Direction.SOUTH), Block.UPDATE_ALL);
@@ -241,6 +241,7 @@ final class IndustryScenario implements ShowcaseScenario {
                     }
                     case 2 -> be.items().setStackInSlot(0, new ItemStack(floor.getBlock().asItem(), 64));
                     case 3 -> be.items().setStackInSlot(0, new ItemStack(Items.PACKED_ICE, 64));
+                    case 5 -> be.items().setStackInSlot(0, new ItemStack(MachinesModule.RTG_FUEL_PELLET.get()));
                     default -> { }
                 }
             }
@@ -331,6 +332,9 @@ final class IndustryScenario implements ShowcaseScenario {
         s.add(new Shot("14_isru_night", 18000, ISRU_X + 3.5, G + 2.6, -4.0, 0F, 20F, true, fp, 60, IndustryScenario::rechargeIsru, null));
         s.add(new Shot("15_gui_sabatier", 6000, ISRU_X + 2.5, G + 1.62, -1.0, 0F, 30F, false, fp, 40,
                 p -> openAt(p, new BlockPos(ISRU_X + 2, F + 1, 1)), null));
+        s.add(new Shot("16_rtg", 6000, ISRU_X + 11.5, G + 2.0, 8.9, 180F, 22F, true, fp, 60, null, null));
+        s.add(new Shot("17_gui_rtg", 6000, ISRU_X + 11.5, G + 1.62, 7.0, 180F, 30F, false, fp, 40,
+                p -> openAt(p, new BlockPos(ISRU_X + 11, F + 1, 6)), null));
         s.add(new Shot("01_hall_wide", 6000, -1.0, G + 4.0, 11.5, 180F, 22F, true, fp, 200, null, null));
         s.add(new Shot("02_hall_left", 6000, -5.5, G + 1.9, 3.3, 180F, 14F, true, fp, 60, null, null));
         s.add(new Shot("03_hall_right", 6000, 3.5, G + 1.9, 3.3, 180F, 14F, true, fp, 60, null, null));

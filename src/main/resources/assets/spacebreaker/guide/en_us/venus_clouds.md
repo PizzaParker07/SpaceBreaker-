@@ -6,10 +6,10 @@ research: spacebreaker:interplanetary_transfers
 ---
 {entity spacebreaker:cloud_jelly}
 ## Cloud Jelly
-Drifts on sacs of light gas and sieves sulfur from the air. Harmless.
+Drifts on sacs of light gas and sieves sulfur from the air. Harmless. It drops a **lift gas sac**: use it to fall slowly for 30 seconds.
 
 ## Acid Ray
-Glides in wide curves. Leave it alone: it **sprays acid** that eats into armour.
+Glides in wide curves. Leave it alone: it **sprays acid** that eats into armour. Drops sulfur and leather.
 
 {page}
 ## Acid coating
@@ -23,3 +23,7 @@ Light composite panels and aerogel let you build platforms that float in the bre
 
 > [!NOTE]
 > A derelict research balloon floats above the cloud tops. Its lab still holds tech disks, guarded by acid rays.
+
+## The balloon's puzzles
+- There are three **gas valves**; only the one marked **sulfur yellow** opens the gondola door.
+- The gangway has a **falling floor** trap; the net below catches you.

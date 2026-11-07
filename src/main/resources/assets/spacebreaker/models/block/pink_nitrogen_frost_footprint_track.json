@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "spacebreaker:block/pink_nitrogen_frost",
+    "up": "spacebreaker:block/pink_nitrogen_frost_footprint_track",
+    "down": "spacebreaker:block/pink_nitrogen_frost",
+    "north": "spacebreaker:block/pink_nitrogen_frost",
+    "south": "spacebreaker:block/pink_nitrogen_frost",
+    "east": "spacebreaker:block/pink_nitrogen_frost",
+    "west": "spacebreaker:block/pink_nitrogen_frost"
+  }
+}

@@ -6,7 +6,8 @@
     "spacebreaker:advanced_electronics"
   ],
   "samples": [
-    "spacebreaker:meteorite"
+    "spacebreaker:meteorite",
+    "spacebreaker:orbital_survey"
   ],
   "tier": 2
 }

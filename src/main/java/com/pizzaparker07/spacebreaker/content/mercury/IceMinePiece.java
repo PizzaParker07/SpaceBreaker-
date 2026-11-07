@@ -1,7 +1,6 @@
 package com.pizzaparker07.spacebreaker.content.mercury;
 
 import com.pizzaparker07.spacebreaker.content.dungeons.Dungeons;
-import com.pizzaparker07.spacebreaker.content.moon.MoonModule;
 import com.pizzaparker07.spacebreaker.content.moon.entity.MoonEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -15,7 +14,6 @@ import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.LadderBlock;
 import net.minecraft.world.level.block.LanternBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -60,7 +58,7 @@ public class IceMinePiece extends StructurePiece {
     @Override
     public void postProcess(WorldGenLevel level, StructureManager structures, ChunkGenerator generator, RandomSource random,
                             BoundingBox box, ChunkPos chunkPos, BlockPos pivot) {
-        BlockState ice = s(MoonModule.LUNAR_ICE.get());
+        BlockState ice = s(MercuryModule.MERCURY_ICE.get());
         BlockState wall = s(MercuryModule.MERCURIAN_CRUST.get());
         int fy = 2; // mine level floor (local y)
         // the ice body: a lens of ice around the workings
@@ -82,6 +80,24 @@ public class IceMinePiece extends StructurePiece {
         room(level, box, 16, fy, 5, 22, fy + 4, 11, wall);
         door(level, box, 9, fy, 8);
         door(level, box, 15, fy, 8);
+        // puzzle: when the power failed the store was sealed with an ice plug; the sign says to cut through it
+        placeBlock(level, ice, 15, fy + 1, 8, box);
+        placeBlock(level, ice, 15, fy + 2, 8, box);
+        com.pizzaparker07.spacebreaker.content.mars.dungeon.DungeonBits.placeFacing(level, box, getWorldPos(13, fy + 2, 9),
+                getWorldPos(14, fy + 2, 9), Blocks.OAK_WALL_SIGN.defaultBlockState(), true);
+        BlockPos sign = getWorldPos(13, fy + 2, 9);
+        if (box.isInside(sign)) {
+            com.pizzaparker07.spacebreaker.content.mars.dungeon.DungeonBits.signText(level, sign, "ice_mine_store");
+        }
+        // trap: the old frost-protection system; a plate in the drift makes a dispenser in the floor throw powder snow
+        placeBlock(level, s(Blocks.POLISHED_BLACKSTONE_PRESSURE_PLATE), 12, fy + 1, 12, box);
+        placeBlock(level, Blocks.DISPENSER.defaultBlockState().setValue(net.minecraft.world.level.block.DispenserBlock.FACING, Direction.UP),
+                12, fy, 11, box);
+        BlockPos disp = getWorldPos(12, fy, 11);
+        if (box.isInside(disp)) {
+            com.pizzaparker07.spacebreaker.content.mars.dungeon.DungeonBits.load(level, disp,
+                    new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.POWDER_SNOW_BUCKET));
+        }
         // the cutting face: raw ice exposed at the end of the drift, with the stalled cutter
         placeBlock(level, s(Blocks.ANVIL), 12, fy + 1, 3, box);
         placeBlock(level, s(Blocks.GRINDSTONE), 11, fy + 1, 3, box);
@@ -112,8 +128,13 @@ public class IceMinePiece extends StructurePiece {
                 for (int dz = -1; dz <= 1; dz++) {
                     boolean centre = dx == 0 && dz == 0;
                     if (y > fy + 3 || centre) {
-                        placeBlock(level, centre ? Blocks.LADDER.defaultBlockState().setValue(LadderBlock.FACING, Direction.SOUTH)
-                                : (dz == -1 && dx == 0 ? wall : (dz == -1 ? wall : s(Blocks.AIR))), 12 + dx, y, 20 + dz, box);
+                        if (centre) {
+                            // the ladder hangs on the shaft wall at local z 19, whatever the piece's orientation
+                            com.pizzaparker07.spacebreaker.content.mars.dungeon.DungeonBits.placeFacing(level, box, getWorldPos(12, y, 20),
+                                    getWorldPos(12, y, 19), s(Blocks.LADDER), true);
+                        } else {
+                            placeBlock(level, dz == -1 ? wall : s(Blocks.AIR), 12 + dx, y, 20 + dz, box);
+                        }
                     }
                 }
             }
@@ -148,7 +169,7 @@ public class IceMinePiece extends StructurePiece {
                         placeBlock(level, s(Blocks.IRON_BLOCK), x, y, z, box);
                     } else if (x == x0 || x == x1 || y == y1 || z == z0 || z == z1) {
                         if (here.isAir() || !here.is(Blocks.IRON_BLOCK)) {
-                            placeBlock(level, here.is(MoonModule.LUNAR_ICE.get()) ? here : wall, x, y, z, box);
+                            placeBlock(level, here.is(MercuryModule.MERCURY_ICE.get()) ? here : wall, x, y, z, box);
                         }
                     } else {
                         placeBlock(level, s(Blocks.AIR), x, y, z, box);
@@ -158,9 +179,12 @@ public class IceMinePiece extends StructurePiece {
         }
     }
 
+    /** A doorway through both walls between two rooms (x-1 .. x+1). */
     private void door(WorldGenLevel level, BoundingBox box, int x, int y, int z) {
-        placeBlock(level, s(Blocks.AIR), x, y + 1, z, box);
-        placeBlock(level, s(Blocks.AIR), x, y + 2, z, box);
+        for (int dx = -1; dx <= 1; dx++) {
+            placeBlock(level, s(Blocks.AIR), x + dx, y + 1, z, box);
+            placeBlock(level, s(Blocks.AIR), x + dx, y + 2, z, box);
+        }
     }
 
     private void guard(WorldGenLevel level, BoundingBox box, int x, int y, int z) {

@@ -12,9 +12,19 @@ public final class ShowcaseScenarios {
         ALL.put("suit", new SuitScenario());
         ALL.put("suit_moon", new SuitMoonScenario());
         ALL.put("suit_tiers", new SuitTiersScenario());
+        ALL.put("suit_eva_moon", new SuitEvaScenario(com.pizzaparker07.spacebreaker.content.moon.MoonModule.MOON, "eva_moon",
+                () -> com.pizzaparker07.spacebreaker.content.moon.MoonModule.LUNAR_REGOLITH.get().defaultBlockState()));
+        ALL.put("suit_eva_mars", new SuitEvaScenario(com.pizzaparker07.spacebreaker.content.mars.MarsModule.MARS, "eva_mars",
+                () -> com.pizzaparker07.spacebreaker.content.mars.MarsModule.MARTIAN_REGOLITH.get().defaultBlockState()));
+        ALL.put("suit_eva_orbit", new SuitEvaScenario(com.pizzaparker07.spacebreaker.content.rocketry.nav.Location.Orbits.EARTH_ORBIT, "eva_orbit",
+                net.minecraft.world.level.block.Blocks.IRON_BLOCK::defaultBlockState));
         ALL.put("blueprint", new BlueprintScenario());
         ALL.put("industry", new IndustryScenario());
+        ALL.put("rover_moon", new RoverScenario(com.pizzaparker07.spacebreaker.content.moon.MoonModule.MOON, false));
+        ALL.put("rover_mars", new RoverScenario(com.pizzaparker07.spacebreaker.content.mars.MarsModule.MARS, true));
         ALL.put("moon", new MoonScenario());
+        ALL.put("sky_planets", new SkyPlanetsScenario(false));
+        ALL.put("sky_planets_mars", new SkyPlanetsScenario(true));
         ALL.put("research", new ResearchScenario());
         ALL.put("mars", new MarsScenario());
         ALL.put("phobos", new MarsMoonScenario(false));
@@ -24,6 +34,8 @@ public final class ShowcaseScenarios {
         ALL.put("inner_orbit", new InnerOrbitScenario());
         ALL.put("rocketry", new RocketryScenario());
         ALL.put("compat", new CompatScenario());
+        ALL.put("perf", new PerfScenario());
+        ALL.put("lod", new LodScenario());
         ALL.put("jei", new JeiScenario(true));
         ALL.put("emi", new JeiScenario(false));
         ALL.put("belt", new BeltScenario(false));

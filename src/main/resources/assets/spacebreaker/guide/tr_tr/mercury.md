@@ -7,11 +7,12 @@ research: spacebreaker:interplanetary_transfers
 Hava yok ve güneş evdekinden neredeyse **üç kat** büyük.
 | | |
 |---|---|
-| Gündüz | 400 °C'nin üstü |
+| Gündüz | 430 °C'ye kadar |
 | Gece | −180 °C |
 
-> [!TIP]
-> Gündüz ile geceyi ayıran çizginin, yani **terminatörün** yakınında yolculuk et. Orada sıcaklık katlanılabilir.
+>! Hiçbir giysi bu aralığın tamamına dayanmaz: termal giysi −170 / 500 °C, ısıtmalı giysi −250 / 80 °C. → [EVA Giysisi](eva_suit)
+
+> Gündüz ile geceyi ayıran **terminatör** kuşağında dolaş. Gölgeli kraterlere ısıtmalı giysiyle, gündüz ovalarına termal giysiyle gir.
 
 {items spacebreaker:mercury_regolith spacebreaker:mercurian_crust spacebreaker:low_reflectance_rock spacebreaker:hollow_deposit}
 - **Lobat sarplıklar**: gezegen soğuyup büzülürken oluşan uzun yarlar.
@@ -20,8 +21,13 @@ Hava yok ve güneş evdekinden neredeyse **üç kat** büyük.
 
 {page}
 {items spacebreaker:graphite_ore spacebreaker:graphite}
-Kutuplara yakın kraterler güneşi hiç görmez ve **su buzu** saklar. Bunlardan birinde eski bir buz madeni yatar.
+Kutuplara yakın kraterler güneşi hiç görmez ve **Merkür Kutup Buzu** saklar. Eritince su, sudan hidrojen ve oksijen elde edersin.
+
+> **Merkür'de yakıt:** grafit + oksijen → CO₂ (kimyasal reaktör); CO₂ + hidrojen → metan (Sabatier reaktörü). Böylece metaloks yakıtını yerinde tamamlarsın. → [Yerinde Üretim](isru)
+
+## Buz Madeni
+Bu kraterlerden birinde terk edilmiş bir buz madeni yatar. Deposu **buzla mühürlüdür**: kazıyarak geç. Koridordaki basınç plakası toz kar püskürtür.
 
 {entity spacebreaker:terminator_crawler}
 ## Alacakaranlık Sürüngeni
-Güneş alçakken dolaşır, yükselince toprağa gömülür.
+Güneş alçakken dolaşır, yükselince toprağa gömülür. Öldüğünde **grafit** bırakır.

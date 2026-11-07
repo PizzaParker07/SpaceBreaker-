@@ -18,6 +18,8 @@ public record RocketActionPayload(int entityId, int action, int arg, String targ
     public static final int LAUNCH = 0;
     public static final int TRAVEL = 1;
     public static final int ABORT = 2;
+    /** Set the mission target of an uncrewed rocket on the ground (from the star map opened at its console). */
+    public static final int SET_TARGET = 3;
 
     public static final Type<RocketActionPayload> TYPE = new Type<>(Spacebreaker.id("rocket_action"));
     public static final StreamCodec<ByteBuf, RocketActionPayload> STREAM_CODEC = StreamCodec.composite(
@@ -34,6 +36,13 @@ public record RocketActionPayload(int entityId, int action, int arg, String targ
 
     public static void handle(RocketActionPayload payload, IPayloadContext context) {
         if (!(context.player() instanceof ServerPlayer player)) {
+            return;
+        }
+        if (payload.action() == SET_TARGET && player.level().getEntity(payload.entityId()) instanceof RocketEntity r
+                && r.isUncrewed() && r.state() == com.pizzaparker07.spacebreaker.content.rocketry.entity.FlightState.IDLE
+                && r.distanceToSqr(player) < 48 * 48) {
+            com.pizzaparker07.spacebreaker.content.rocketry.nav.Location.parse(payload.target()).ifPresent(r::setMissionTarget);
+            r.setOwner(player.getUUID());
             return;
         }
         if (player.level().getEntity(payload.entityId()) instanceof RocketEntity rocket && player.getVehicle() == rocket) {

@@ -65,3 +65,21 @@ def generate():  # noqa: F811
         box([6, 17, 6], [10, 21, 10], 'steel'),
         box([12, 13, 0], [14, 15, 2], 'steel'),
     ])
+
+
+_generate_isru = generate
+
+
+def generate():  # noqa: F811
+    _generate_isru()
+    # RTG: plinth, finned radiator body with a warning plate, bolted cap
+    t = {'front': b('rtg_front'), 'side': b('rtg_side'), 'top': b('rtg_top'), 'bottom': b('machine_bottom'),
+         'steel': b('press_steel'), 'particle': b('rtg_side')}
+    machine('rtg', t, [
+        box([0, 0, 0], [16, 2, 16], {'north': 'steel', 'south': 'steel', 'east': 'steel', 'west': 'steel', 'up': 'bottom', 'down': 'bottom'},
+            uv={f: [0, 14, 16, 16] for f in ('north', 'south', 'east', 'west')}),
+        box([1, 2, 1], [15, 14, 15], {'north': 'front', 'south': 'side', 'east': 'side', 'west': 'side', 'up': 'top', 'down': 'bottom'},
+            uv={f: [1, 2, 15, 14] for f in ('north', 'south', 'east', 'west')}),
+        box([3, 14, 3], [13, 16, 13], {'north': 'steel', 'south': 'steel', 'east': 'steel', 'west': 'steel', 'up': 'top', 'down': 'bottom'}),
+    ])
+    write('models/item/rtg_fuel_pellet.json', {'parent': 'minecraft:item/generated', 'textures': {'layer0': i('rtg_fuel_pellet')}})

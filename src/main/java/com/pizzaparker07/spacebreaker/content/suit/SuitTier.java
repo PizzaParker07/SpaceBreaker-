@@ -21,10 +21,13 @@ import java.util.List;
  * @param tech            technology the wearer must know for the tier's protection (null = always)
  */
 public record SuitTier(String id, int level, int minTempC, int maxTempC, double radiationFactor, @Nullable ResourceLocation tech) {
-    /** Mk1 EVA suit: lunar day and most of the lunar night, light shielding. */
-    public static final SuitTier MK1 = new SuitTier("eva", 1, -160, 125, 0.7, null);
-    /** Mk2 thermal suit: gold-foil reflective layers and a liquid cooling loop for Mercury's day and Venus. */
-    public static final SuitTier THERMAL = new SuitTier("thermal", 2, -170, 500, 0.6, Spacebreaker.id("thermal_suits"));
+    /** Mk1 EVA suit: the whole lunar day and night (-173 °C) and Vesta (-190 °C) with its heaters, light shielding. */
+    public static final SuitTier MK1 = new SuitTier("eva", 1, -190, 130, 0.7, null);
+    /**
+     * Mk2 thermal suit: gold-foil reflective layers, a liquid cooling loop and heaters: all of Mercury (day and
+     * night) and Venus. In dense air convection narrows the effective range, so Titan still needs the heated suit.
+     */
+    public static final SuitTier THERMAL = new SuitTier("thermal", 2, -190, 500, 0.6, Spacebreaker.id("thermal_suits"));
     /** Mk2 heated suit: thick insulation and battery heaters for Titan's -180 °C nitrogen air and polar nights. */
     public static final SuitTier HEATED = new SuitTier("heated", 2, -250, 80, 0.6, Spacebreaker.id("heated_suits"));
     /** Mk3 radiation-hardened suit: layered polyethylene and tungsten plates for Jupiter's moons. */

@@ -76,6 +76,7 @@ public final class VenusModule implements SbModule {
 
     public static final DeferredItem<Item> SULFUR = KIT.item("sulfur");
     public static final DeferredItem<Item> ACID_COATING = KIT.item("acid_coating");
+    public static final DeferredItem<LiftGasSacItem> LIFT_GAS_SAC = KIT.item("lift_gas_sac", () -> new LiftGasSacItem(new Item.Properties().stacksTo(16)));
 
     /** Armour with this component resists the acid clouds. */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> ACID_COATED =
@@ -125,6 +126,12 @@ public final class VenusModule implements SbModule {
         lang.block(AEROGEL, "Aerogel", "Aerojel");
         lang.block(ENVELOPE_FABRIC, "Envelope Fabric", "Balon Kumaşı");
         lang.item(SULFUR, "Sulfur", "Kükürt");
+        lang.item(LIFT_GAS_SAC, "Lift Gas Sac", "Kaldırma Gazı Kesesi");
+        String[][] valve = {{"GONDOLA SEALED", "GONDOL KAPALI"}, {"open the gas", "kükürt sarısı"}, {"valve under the", "işaretin altındaki"}, {"sulfur mark", "vanayı aç"}};
+        for (int i = 0; i < 4; i++) {
+            lang.add("sign.spacebreaker.aerostat_valve." + i, valve[i][0], valve[i][1]);
+        }
+        lang.add("item.spacebreaker.lift_gas_sac.desc", "Use to sink slowly for 30 seconds", "Kullanınca 30 saniye yavaşça alçalırsın");
         lang.item(ACID_COATING, "Fluoropolymer Coating", "Floropolimer Kaplama");
         lang.add("tooltip.spacebreaker.acid_coated", "Acid-resistant coating", "Aside dayanıklı kaplama");
         lang.add("message.spacebreaker.acid_clouds", "The acid clouds are eating into your gear!", "Asit bulutları ekipmanını aşındırıyor!");

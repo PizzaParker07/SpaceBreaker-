@@ -20,7 +20,9 @@ public enum Propellant implements StringRepresentable {
     /** RP-1 kerosene, mixture ratio O/F 2.56. */
     KEROLOX(1.0 / 3.56, 0.81, "rp1"),
     /** Liquid methane, mixture ratio O/F 3.6 (made on Mars by the Sabatier process). */
-    METHALOX(1.0 / 4.6, 0.422, "liquid_methane");
+    METHALOX(1.0 / 4.6, 0.422, "liquid_methane"),
+    /** Liquid hydrogen, mixture ratio O/F 6: the highest specific impulse, but very bulky and very cold. */
+    HYDROLOX(1.0 / 7.0, 0.071, "liquid_hydrogen");
 
     public static final Codec<Propellant> CODEC = StringRepresentable.fromEnum(Propellant::values);
     /** Liquid oxygen, the oxidiser of every propellant. */

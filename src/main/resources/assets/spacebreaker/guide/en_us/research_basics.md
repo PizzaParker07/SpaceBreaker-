@@ -13,6 +13,12 @@ All three are analysed in a [Research Lab](research_lab).
 
 > Every technology has a sample source, so you never depend on luck. The one exception is **Basic Rocketry**: its disk is always in an observatory archive. Disks are a shortcut: they teach that technology without waiting for samples.
 
+## What does research lock? {#locks}
+Recipes are **open to everyone**: you can craft anything without research. Research matters in three places only:
+- **Machines** (arc furnace, press, fabricator, refinery, pumpjack, electrolyser, cryogenic liquefier, ISRU machines, chemical reactor): you can build them, but if their owner does not know the technology they say **"Research needed"** and do not run.
+- **Rocket parts:** you cannot put a part into the assembler without its technology.
+- **Advanced suits:** without their technology, heated, thermal and radiation suits protect only as much as an EVA suit.
+
 ## Taking samples
 {recipe spacebreaker:sample_kit}
 

@@ -34,7 +34,8 @@ public final class Gravity {
         return factor;
     }
 
-    static boolean magnetised(LivingEntity entity) {
+    /** Magnetic boots on, not sneaking, and a solid block right underfoot. */
+    public static boolean magnetised(LivingEntity entity) {
         if (!entity.getItemBySlot(EquipmentSlot.FEET).is(SuitModule.MAGNETIC_BOOTS.get()) || entity.isShiftKeyDown()) {
             return false;
         }

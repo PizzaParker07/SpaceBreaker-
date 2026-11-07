@@ -20,7 +20,11 @@ public final class SuitProtection {
     public static final double SHIELD_MODULE_FACTOR = 0.75;
 
     /** @param minTempC coldest compensated temperature; @param maxTempC hottest; @param radiationFactor dose fraction */
-    public record Rating(int minTempC, int maxTempC, double radiationFactor) {
+    /**
+     * @param denseCold every piece is built for dense cold air (heated suit): convection does not narrow the cold side
+     * @param denseHot  every piece is built for dense hot air (thermal suit): convection does not narrow the hot side
+     */
+    public record Rating(int minTempC, int maxTempC, double radiationFactor, boolean denseCold, boolean denseHot) {
         public boolean covers(double ambientC) {
             return ambientC >= minTempC && ambientC <= maxTempC;
         }
@@ -50,6 +54,7 @@ public final class SuitProtection {
         double rad = 0.0;
         int thermal = 0;
         int shields = 0;
+        boolean denseCold = true, denseHot = true;
         for (EquipmentSlot slot : SLOTS) {
             ItemStack stack = entity.getItemBySlot(slot);
             if (!(stack.getItem() instanceof SpaceSuitItem suit) || suit.getEquipmentSlot() != slot) {
@@ -62,6 +67,8 @@ public final class SuitProtection {
             min = Math.max(min, t.minTempC());
             max = Math.min(max, t.maxTempC());
             rad = Math.max(rad, t.radiationFactor());
+            denseCold &= t == SuitTier.HEATED;
+            denseHot &= t == SuitTier.THERMAL;
             SuitUpgrade upgrade = SuitUpgrade.of(stack);
             if (upgrade == SuitUpgrade.THERMAL_REGULATOR) {
                 thermal++;
@@ -69,7 +76,8 @@ public final class SuitProtection {
                 shields++;
             }
         }
-        return new Rating(min - thermal * THERMAL_MODULE_C, max + thermal * THERMAL_MODULE_C, rad * Math.pow(SHIELD_MODULE_FACTOR, shields));
+        return new Rating(min - thermal * THERMAL_MODULE_C, max + thermal * THERMAL_MODULE_C, rad * Math.pow(SHIELD_MODULE_FACTOR, shields),
+                denseCold, denseHot);
     }
 
     /** Whether the worn torso carries the given upgrade. */

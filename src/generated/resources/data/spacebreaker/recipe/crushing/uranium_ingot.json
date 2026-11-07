@@ -1,0 +1,17 @@
+{
+  "type": "spacebreaker:crushing",
+  "energy": 16,
+  "ingredients": [
+    {
+      "count": 1,
+      "tag": "c:ingots/uranium"
+    }
+  ],
+  "results": [
+    {
+      "count": 1,
+      "id": "spacebreaker:uranium_dust"
+    }
+  ],
+  "time": 80
+}

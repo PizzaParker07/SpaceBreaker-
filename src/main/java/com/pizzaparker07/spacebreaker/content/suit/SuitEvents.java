@@ -30,11 +30,19 @@ public final class SuitEvents {
             return;
         }
         SurvivalData data = LifeSupport.data(player);
+        Tether.tick(player);
         if (player.tickCount % 20 == 0 || player.tickCount < 2) {
             data.doseRateMsvDay = Environment.radiation(player.level(), BlockPos.containing(player.getEyePosition()));
             cachedRate(sp, data.doseRateMsvDay);
         }
         LifeSupport.tick(player, LifeSupport.Env.at(player, lastRate(sp)));
+        boolean magnetised = Environment.gravityFactor(player.level()) < 1.0 && Gravity.magnetised(player);
+        if (magnetised && !data.wasMagnetised) {
+            // the boots grip: a short metallic clank
+            player.level().playSound(null, player.blockPosition(), net.minecraft.sounds.SoundEvents.IRON_TRAPDOOR_CLOSE,
+                    net.minecraft.sounds.SoundSource.PLAYERS, 0.35F, 1.7F);
+        }
+        data.wasMagnetised = magnetised;
         if (player.tickCount % 5 == 0) {
             sendStatus(sp, data);
         }
@@ -90,6 +98,12 @@ public final class SuitEvents {
         if (LifeSupport.hazards()) {
             flags |= SuitStatusPayload.HAZARDS;
         }
+        if (data.wasMagnetised) {
+            flags |= SuitStatusPayload.MAGNETISED;
+        }
+        if (Tether.anchor(player).isPresent()) {
+            flags |= SuitStatusPayload.TETHERED;
+        }
         ItemStack mmu = torso.isEmpty() ? ItemStack.EMPTY : SuitTanks.maneuveringUnit(torso);
         if (!mmu.isEmpty()) {
             flags |= SuitStatusPayload.MMU;
@@ -97,7 +111,8 @@ public final class SuitEvents {
         PacketDistributor.sendToPlayer(player, new SuitStatusPayload(SuitTanks.oxygen(torso), SuitTanks.capacity(torso), data.breath,
                 (float) data.bodyTempC, (float) data.ambientC, (float) data.doseMsv, (float) data.doseRateMsvDay,
                 (float) data.pressureKpa, (float) Gravity.factorFor(player), mmu.isEmpty() ? 0 : ManeuveringUnitItem.fuel(mmu),
-                integrity(player), flags, rating == null ? 0 : rating.minTempC(), rating == null ? 0 : rating.maxTempC(),
+                integrity(player), flags, rating == null ? 0 : (int) Math.round(LifeSupport.ratedRange(rating, data.pressureKpa)[0]),
+                rating == null ? 0 : (int) Math.round(LifeSupport.ratedRange(rating, data.pressureKpa)[1]),
                 rating == null ? 0 : rating.shieldingPercent()));
     }
 
@@ -110,6 +125,31 @@ public final class SuitEvents {
             }
         }
         return worst;
+    }
+
+    @SubscribeEvent
+    static void onStartTracking(net.neoforged.neoforge.event.entity.player.PlayerEvent.StartTracking event) {
+        if (event.getTarget() instanceof Player target && event.getEntity() instanceof ServerPlayer tracker
+                && tracker.connection.hasChannel(com.pizzaparker07.spacebreaker.content.suit.net.TetherPayload.TYPE)) {
+            Tether.anchor(target).ifPresent(a -> PacketDistributor.sendToPlayer(tracker,
+                    new com.pizzaparker07.spacebreaker.content.suit.net.TetherPayload(target.getId(), java.util.Optional.of(a))));
+        }
+    }
+
+    @SubscribeEvent
+    static void onLogin(net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent event) {
+        Tether.sync(event.getEntity());
+    }
+
+    @SubscribeEvent
+    static void onRespawn(net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerRespawnEvent event) {
+        Tether.sync(event.getEntity());
+    }
+
+    @SubscribeEvent
+    static void onChangeDimension(net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerChangedDimensionEvent event) {
+        Tether.release(event.getEntity(), "message.spacebreaker.tether.released");
+        Tether.sync(event.getEntity());
     }
 
     @SubscribeEvent

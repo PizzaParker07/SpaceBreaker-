@@ -1,0 +1,17 @@
+{
+  "type": "spacebreaker:arc_smelting",
+  "energy": 40,
+  "ingredients": [
+    {
+      "count": 1,
+      "tag": "c:dusts/uranium"
+    }
+  ],
+  "results": [
+    {
+      "count": 1,
+      "id": "spacebreaker:uranium_ingot"
+    }
+  ],
+  "time": 80
+}

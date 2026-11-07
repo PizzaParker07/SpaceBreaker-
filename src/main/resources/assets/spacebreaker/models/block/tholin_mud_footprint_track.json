@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "spacebreaker:block/tholin_mud",
+    "up": "spacebreaker:block/tholin_mud_footprint_track",
+    "down": "spacebreaker:block/tholin_mud",
+    "north": "spacebreaker:block/tholin_mud",
+    "south": "spacebreaker:block/tholin_mud",
+    "east": "spacebreaker:block/tholin_mud",
+    "west": "spacebreaker:block/tholin_mud"
+  }
+}

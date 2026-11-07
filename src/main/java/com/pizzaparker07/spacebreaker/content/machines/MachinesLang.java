@@ -69,6 +69,13 @@ final class MachinesLang {
         lang.add("tooltip.spacebreaker.electrolyzer", "Hydrogen leaves on the left, oxygen on the right (seen from the front)",
                 "Hidrojen soldan, oksijen sağdan çıkar (önden bakınca)");
         lang.add("tooltip.spacebreaker.generator", "%s FE/t. Needs breathable air", "%s FE/t. Solunabilir hava gerekir");
+        name(lang, MachinesModule.RTG, "Radioisotope Generator (RTG)", "Radyoizotop Jeneratör (RTG)");
+        lang.add("tooltip.spacebreaker.rtg", "Up to %s FE/t, day and night, anywhere. Shielded casing",
+                "En fazla %s FE/t; gece gündüz, her yerde. Kalkanlı gövde");
+        lang.item(MachinesModule.RTG_FUEL_PELLET, "RTG Fuel Pellet", "RTG Yakıt Peleti");
+        lang.add("tooltip.spacebreaker.rtg_fuel_pellet.activity", "Activity: %s%% (%s FE/t in an RTG)", "Etkinlik: %%%s (RTG'de %s FE/t)");
+        lang.add("tooltip.spacebreaker.rtg_fuel_pellet.half_life", "Half-life: %s days, also in storage", "Yarı ömür: %s gün, depoda da azalır");
+        lang.add("tooltip.spacebreaker.rtg_fuel_pellet.radiation", "Radioactive: a small dose while carried", "Radyoaktif: taşınırken küçük doz verir");
     }
 
     private static void name(Lang lang, MachineEntry<?, ?> m, String en, String tr) {

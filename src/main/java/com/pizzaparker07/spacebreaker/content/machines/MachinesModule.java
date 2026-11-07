@@ -73,6 +73,11 @@ public final class MachinesModule implements SbModule {
     public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(Registries.MENU, Spacebreaker.MOD_ID);
     public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(Registries.RECIPE_TYPE, Spacebreaker.MOD_ID);
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(Registries.RECIPE_SERIALIZER, Spacebreaker.MOD_ID);
+    public static final DeferredRegister.DataComponents COMPONENTS = DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, Spacebreaker.MOD_ID);
+    /** Game time an RTG pellet started decaying. */
+    public static final DeferredHolder<net.minecraft.core.component.DataComponentType<?>, net.minecraft.core.component.DataComponentType<Long>> DECAY_START =
+            COMPONENTS.registerComponentType("decay_start", b -> b.persistent(com.mojang.serialization.Codec.LONG)
+                    .networkSynchronized(net.minecraft.network.codec.ByteBufCodecs.VAR_LONG));
 
     /** Every machine with a block entity, for capability registration and lang. */
     public static final List<MachineEntry<?, ?>> MACHINES = new ArrayList<>();
@@ -109,6 +114,13 @@ public final class MachinesModule implements SbModule {
     public static final MachineEntry<MachineBlock, CombustionGeneratorBlockEntity> COMBUSTION_GENERATOR =
             machine("combustion_generator", CombustionGeneratorBlockEntity::new, null, 13);
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CombustionGeneratorBlockEntity>> COMBUSTION_GENERATOR_BE = COMBUSTION_GENERATOR.type();
+
+    /** Radioisotope thermoelectric generator: small, steady power where the sun is weak or gone. */
+    public static final MachineEntry<MachineBlock, com.pizzaparker07.spacebreaker.content.machines.machine.RtgBlockEntity> RTG =
+            machine("rtg", com.pizzaparker07.spacebreaker.content.machines.machine.RtgBlockEntity::new,
+                    net.minecraft.world.phys.shapes.Shapes.or(Block.box(0, 0, 0, 16, 2, 16), Block.box(1, 2, 1, 15, 14, 15), Block.box(3, 14, 3, 13, 16, 13)), 0);
+    public static final DeferredItem<RtgFuelPelletItem> RTG_FUEL_PELLET = ITEMS.registerItem("rtg_fuel_pellet", RtgFuelPelletItem::new,
+            new net.minecraft.world.item.Item.Properties().stacksTo(16).rarity(net.minecraft.world.item.Rarity.UNCOMMON));
 
     public static final MachineEntry<BatteryBankBlock, BatteryBankBlockEntity> BATTERY_BANK =
             entry("battery_bank", BatteryBankBlock::new, BatteryBankBlockEntity::new);
@@ -320,11 +332,14 @@ public final class MachinesModule implements SbModule {
         MENUS.register(modBus);
         RECIPE_TYPES.register(modBus);
         RECIPE_SERIALIZERS.register(modBus);
+        COMPONENTS.register(modBus);
         modBus.addListener(MachinesModule::capabilities);
+        com.pizzaparker07.spacebreaker.core.env.Environment.addRadiationSource(RtgFuelPelletItem::carriedDose);
         SbTabs.Tab tab = SbTabs.MACHINES.icon(SOLAR_PANEL_ITEM).add(SOLAR_PANEL_ITEM);
         for (MachineEntry<?, ?> m : MACHINES) {
             tab.add(m.item());
         }
+        tab.add(RTG_FUEL_PELLET);
         TANK_ITEMS.forEach(tab::add);
         CONDUIT_ITEMS.forEach(tab::add);
     }
@@ -360,6 +375,10 @@ public final class MachinesModule implements SbModule {
         lang.add("itemGroup.spacebreaker.machines", "Spacebreaker: Machines", "Spacebreaker: Makineler");
         lang.block(SOLAR_PANEL, "Solar Tracker", "Güneş Takipli Panel");
         lang.add("tooltip.spacebreaker.solar_panel", "Follows the sun. Peak output: %s FE/t", "Güneşi takip eder. En yüksek üretim: %s FE/t");
+        lang.add("tooltip.spacebreaker.solar_panel.here", "Sunlight here: %s%% of Earth's (noon peak %s FE/t)",
+                "Burada güneş ışığı: Dünya'nın %%%s'i (öğle tepe değeri %s FE/t)");
+        lang.add("message.spacebreaker.solar_panel", "Sunlight here: %s%% of Earth's - making %s FE/t now",
+                "Burada güneş ışığı: Dünya'nın %%%s'i - şu an %s FE/t üretiyor");
         MachinesLang.add(lang);
     }
 

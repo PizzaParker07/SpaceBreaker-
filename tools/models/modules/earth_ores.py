@@ -1,9 +1,9 @@
 """Earth ores, metals, alloys and intermediates."""
 from sbmodels.common import *  # noqa: F401,F403
 
-ORES = ['bauxite', 'rutile', 'pentlandite', 'spodumene', 'wolframite']
-METAL_BLOCKS = ['aluminum', 'titanium', 'nickel', 'lithium', 'tungsten', 'steel', 'aluminum_lithium', 'nickel_superalloy']
-DUSTS = ['aluminum', 'titanium', 'nickel', 'lithium', 'tungsten', 'iron', 'copper', 'gold']
+ORES = ['bauxite', 'rutile', 'pentlandite', 'spodumene', 'wolframite', 'uraninite']
+METAL_BLOCKS = ['aluminum', 'titanium', 'nickel', 'lithium', 'tungsten', 'uranium', 'steel', 'aluminum_lithium', 'nickel_superalloy']
+DUSTS = ['aluminum', 'titanium', 'nickel', 'lithium', 'tungsten', 'uranium', 'iron', 'copper', 'gold']
 PLATES = ['aluminum', 'titanium', 'nickel', 'lithium', 'tungsten', 'steel', 'aluminum_lithium', 'nickel_superalloy', 'iron', 'copper', 'gold']
 WIRES = ['aluminum', 'tungsten', 'copper', 'gold']
 RODS = ['titanium', 'tungsten', 'steel', 'iron']

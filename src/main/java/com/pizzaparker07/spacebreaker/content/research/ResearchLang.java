@@ -14,7 +14,7 @@ final class ResearchLang {
         l.add("item.spacebreaker.field_sample.named", "Field Sample (%s)", "Saha Numunesi (%s)");
         l.add("item.spacebreaker.experiment_data", "Experiment Record", "Deney Kaydı");
         l.add("item.spacebreaker.experiment_data.named", "Experiment Record (%s)", "Deney Kaydı (%s)");
-        l.add("item.spacebreaker.sample_kit", "Sample Kit", "Numune Çantası");
+        l.add("item.spacebreaker.sample_kit", "Sample Kit", "Numune Kiti");
         l.add("item.spacebreaker.guide_book", "Spacebreaker Field Guide", "Spacebreaker Saha Rehberi");
         l.add("block.spacebreaker.research_lab", "Research Lab", "Araştırma Laboratuvarı");
         l.add("tooltip.spacebreaker.tech_disk.hint", "Analyse in a Research Lab to learn it", "Öğrenmek için Araştırma Laboratuvarı'nda incele");
@@ -42,11 +42,14 @@ final class ResearchLang {
         l.add("sample.spacebreaker.callisto", "Callisto", "Kallisto");
         l.add("sample.spacebreaker.titan", "Titan", "Titan");
         l.add("sample.spacebreaker.enceladus", "Enceladus", "Enceladus");
+        l.add("sample.spacebreaker.miranda", "Miranda", "Miranda");
         l.add("sample.spacebreaker.triton", "Triton", "Triton");
         l.add("sample.spacebreaker.pluto", "Pluto", "Plüton");
         l.add("sample.spacebreaker.charon", "Charon", "Charon");
         l.add("sample.spacebreaker.meteorite", "Meteorite", "Göktaşı");
         l.add("sample.spacebreaker.suborbital_flight", "Suborbital Flight", "Yörünge Altı Uçuş");
+        l.add("sample.spacebreaker.orbital_survey", "Orbital Survey", "Yörünge Taraması");
+        l.add("sample.spacebreaker.probe_landing", "Probe Landing", "Sonda İnişi");
         l.add("sample.spacebreaker.orbital_flight", "Orbital Flight", "Yörünge Uçuşu");
         // lab GUI
         l.add("container.spacebreaker.research_lab", "Research Lab", "Araştırma Laboratuvarı");
@@ -97,7 +100,7 @@ final class ResearchLang {
         l.add("gui.spacebreaker.guide.contents", "Contents", "İçindekiler");
         l.add("gui.spacebreaker.guide.intro", "Click a chapter to open it. Arrows or the mouse wheel turn pages; the ribbons on the right jump between topics.",
                 "Açmak için bir bölüme tıkla. Sayfaları oklarla ya da fare tekerleğiyle çevir; sağdaki şeritler konular arasında atlar.");
-        l.add("gui.spacebreaker.guide.research_needed", "Research needed: %s", "Gereken araştırma: %s");
+        l.add("gui.spacebreaker.guide.research_needed", "Related research: %s", "İlgili araştırma: %s");
         l.add("gui.spacebreaker.guide.recipe_info", "%s FE/t · %s s", "%s FE/t · %s sn");
         l.add("gui.spacebreaker.guide.recipe_time", "%s s", "%s sn");
         l.add("gui.spacebreaker.guide.show_hologram", "Show hologram", "Hologramı göster");

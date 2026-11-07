@@ -87,6 +87,12 @@ public final class RocketryModule implements SbModule {
     public static final DeferredItem<RocketPartItem> VACUUM_ENGINE = part("vacuum_engine");
     public static final DeferredItem<RocketPartItem> METHALOX_ENGINE = part("methalox_engine");
     public static final DeferredItem<RocketPartItem> METHALOX_VACUUM_ENGINE = part("methalox_vacuum_engine");
+    public static final DeferredItem<RocketPartItem> HYDROLOX_ENGINE = part("hydrolox_engine");
+    public static final DeferredItem<RocketPartItem> HYDROLOX_VACUUM_ENGINE = part("hydrolox_vacuum_engine");
+    public static final DeferredItem<RocketPartItem> CREW_CAPSULE_LARGE = part("crew_capsule_large");
+    public static final DeferredItem<RocketPartItem> COMM_SATELLITE = part("comm_satellite");
+    public static final DeferredItem<RocketPartItem> OBSERVATION_SATELLITE = part("observation_satellite");
+    public static final DeferredItem<RocketPartItem> SPACE_PROBE = part("space_probe");
     public static final DeferredItem<RocketPartItem> DECOUPLER = part("decoupler");
     public static final DeferredItem<RocketPartItem> INTERSTAGE = part("interstage");
     public static final DeferredItem<RocketPartItem> FINS = part("fins");
@@ -119,6 +125,28 @@ public final class RocketryModule implements SbModule {
     public static final DeferredBlock<LaunchConsoleBlock> LAUNCH_CONSOLE = BLOCKS.registerBlock("launch_control_console", LaunchConsoleBlock::new,
             steel().noOcclusion().lightLevel(s -> 5));
 
+    // space station
+    private static BlockBehaviour.Properties hull() {
+        return BlockBehaviour.Properties.of().mapColor(MapColor.SNOW).strength(3.0F, 6.0F).sound(SoundType.METAL).requiresCorrectToolForDrops();
+    }
+
+    /** Pressurised hull panel: a full block, so rooms built of it hold air (oxygen distributor). */
+    public static final DeferredBlock<net.minecraft.world.level.block.Block> STATION_HULL = BLOCKS.registerSimpleBlock("station_hull", hull());
+    /** Hull window: see out, air stays in. */
+    public static final DeferredBlock<net.minecraft.world.level.block.TransparentBlock> STATION_WINDOW = BLOCKS.registerBlock("station_window",
+            net.minecraft.world.level.block.TransparentBlock::new, hull().noOcclusion().isViewBlocking((s, l, p) -> false).isSuffocating((s, l, p) -> false));
+    public static final DeferredBlock<com.pizzaparker07.spacebreaker.content.rocketry.station.DockingPortBlock> DOCKING_PORT = BLOCKS.registerBlock(
+            "docking_port", com.pizzaparker07.spacebreaker.content.rocketry.station.DockingPortBlock::new, hull().lightLevel(s -> 3));
+    public static final DeferredItem<BlockItem> STATION_HULL_ITEM = ITEMS.registerSimpleBlockItem(STATION_HULL);
+    public static final DeferredItem<BlockItem> STATION_WINDOW_ITEM = ITEMS.registerSimpleBlockItem(STATION_WINDOW);
+    public static final DeferredItem<BlockItem> DOCKING_PORT_ITEM = ITEMS.registerSimpleBlockItem(DOCKING_PORT);
+    public static final DeferredItem<com.pizzaparker07.spacebreaker.content.rocketry.station.StationKitItem> STATION_KIT = ITEMS.registerItem(
+            "station_kit", com.pizzaparker07.spacebreaker.content.rocketry.station.StationKitItem::new, new Item.Properties().stacksTo(16));
+    @SuppressWarnings("DataFlowIssue")
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.pizzaparker07.spacebreaker.content.rocketry.station.DockingPortBlockEntity>> DOCKING_PORT_BE =
+            BLOCK_ENTITIES.register("docking_port", () -> BlockEntityType.Builder.of(
+                    com.pizzaparker07.spacebreaker.content.rocketry.station.DockingPortBlockEntity::new, DOCKING_PORT.get()).build(null));
+
     public static final DeferredItem<BlockItem> ROCKET_ASSEMBLER_ITEM = ITEMS.registerSimpleBlockItem(ROCKET_ASSEMBLER);
     public static final DeferredItem<BlockItem> LAUNCH_PAD_ITEM = ITEMS.registerSimpleBlockItem(LAUNCH_PAD);
     public static final DeferredItem<BlockItem> FLAME_TRENCH_ITEM = ITEMS.registerSimpleBlockItem(FLAME_TRENCH);
@@ -148,6 +176,11 @@ public final class RocketryModule implements SbModule {
             () -> EntityType.Builder.<SpentStageEntity>of(SpentStageEntity::new, MobCategory.MISC).sized(1.8F, 2F)
                     .clientTrackingRange(24).updateInterval(2).fireImmune().noSave().build("spent_stage"));
 
+    public static final DeferredHolder<EntityType<?>, EntityType<com.pizzaparker07.spacebreaker.content.rocketry.mission.SatelliteEntity>> SATELLITE_ENTITY =
+            ENTITIES.register("satellite", () -> EntityType.Builder.<com.pizzaparker07.spacebreaker.content.rocketry.mission.SatelliteEntity>of(
+                    com.pizzaparker07.spacebreaker.content.rocketry.mission.SatelliteEntity::new, MobCategory.MISC).sized(1.5F, 1.5F)
+                    .clientTrackingRange(16).updateInterval(20).fireImmune().build("satellite"));
+
     public static final DeferredHolder<MenuType<?>, MenuType<RocketAssemblerMenu>> ASSEMBLER_MENU = MENUS.register("rocket_assembler",
             () -> IMenuTypeExtension.create(RocketAssemblerMenu::new));
     public static final DeferredHolder<MenuType<?>, MenuType<LaunchConsoleMenu>> LAUNCH_CONSOLE_MENU = MENUS.register("launch_control_console",
@@ -176,12 +209,21 @@ public final class RocketryModule implements SbModule {
         modBus.addListener(RocketryModule::capabilities);
         modBus.addListener(RocketryModule::payloads);
         NeoForge.EVENT_BUS.addListener(RocketryModule::onMount);
+        NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent e) -> {
+            if (e.getEntity() instanceof net.minecraft.server.level.ServerPlayer sp) {
+                var data = com.pizzaparker07.spacebreaker.content.rocketry.mission.SatelliteData.get(sp.server);
+                data.flush(sp);
+                com.pizzaparker07.spacebreaker.content.rocketry.mission.CoveragePayload.send(sp,
+                        com.pizzaparker07.spacebreaker.content.rocketry.mission.CoveragePayload.of(sp.server));
+            }
+        });
         NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.server.ServerStartedEvent e) ->
                 com.pizzaparker07.spacebreaker.content.rocketry.nav.AstroTransferModel.install(e.getServer().registryAccess()));
         SbTabs.SPACEFLIGHT.icon(CREW_CAPSULE);
         SbTabs.SPACEFLIGHT.add(ROCKET_ASSEMBLER_ITEM).add(LAUNCH_PAD_ITEM).add(FLAME_TRENCH_ITEM).add(SERVICE_TOWER_ITEM)
                 .add(CREW_ARM_ITEM).add(FUEL_UMBILICAL_ITEM).add(LAUNCH_CONSOLE_ITEM);
         PARTS.forEach(SbTabs.SPACEFLIGHT::add);
+        SbTabs.SPACEFLIGHT.add(STATION_KIT).add(STATION_HULL_ITEM).add(STATION_WINDOW_ITEM).add(DOCKING_PORT_ITEM);
         SbTabs.SPACEFLIGHT.addStack(RocketryModule::exampleRocket);
         SbTabs.SPACEFLIGHT.add(PROPELLANT_CARTRIDGE).add(EMERGENCY_BEACON);
     }
@@ -201,11 +243,22 @@ public final class RocketryModule implements SbModule {
 
     private static void capabilities(RegisterCapabilitiesEvent event) {
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, FUEL_UMBILICAL_BE.get(), (be, side) -> be.handler());
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, DOCKING_PORT_BE.get(), (be, side) -> be.handler());
         event.registerEntity(Capabilities.FluidHandler.ENTITY, ROCKET_ENTITY.get(), (rocket, ctx) -> new com.pizzaparker07.spacebreaker.content.rocketry.entity.RocketFluidHandler(rocket));
     }
 
     private static void payloads(RegisterPayloadHandlersEvent event) {
-        event.registrar("1").playToServer(RocketActionPayload.TYPE, RocketActionPayload.STREAM_CODEC, RocketActionPayload::handle);
+        var reg = event.registrar("1");
+        reg.playToServer(RocketActionPayload.TYPE, RocketActionPayload.STREAM_CODEC, RocketActionPayload::handle);
+        reg.playToServer(com.pizzaparker07.spacebreaker.content.rocketry.net.NearbyStarsPayload.Request.TYPE,
+                com.pizzaparker07.spacebreaker.content.rocketry.net.NearbyStarsPayload.Request.STREAM_CODEC,
+                com.pizzaparker07.spacebreaker.content.rocketry.net.NearbyStarsPayload.Request::handle);
+        reg.playToClient(com.pizzaparker07.spacebreaker.content.rocketry.mission.CoveragePayload.TYPE,
+                com.pizzaparker07.spacebreaker.content.rocketry.mission.CoveragePayload.STREAM_CODEC,
+                com.pizzaparker07.spacebreaker.content.rocketry.mission.CoveragePayload::handle);
+        reg.playToClient(com.pizzaparker07.spacebreaker.content.rocketry.net.NearbyStarsPayload.TYPE,
+                com.pizzaparker07.spacebreaker.content.rocketry.net.NearbyStarsPayload.STREAM_CODEC,
+                com.pizzaparker07.spacebreaker.content.rocketry.net.NearbyStarsPayload::handle);
     }
 
     /** Nobody climbs out of a rocket in flight (there is nothing to stand on up there). */
@@ -227,12 +280,15 @@ public final class RocketryModule implements SbModule {
         loot.self(CREW_ARM.get());
         loot.self(FUEL_UMBILICAL.get());
         loot.self(LAUNCH_CONSOLE.get());
+        loot.self(STATION_HULL.get());
+        loot.self(STATION_WINDOW.get());
+        loot.self(DOCKING_PORT.get());
     }
 
     @Override
     public void addTags(SbTags tags) {
         tags.block(BlockTags.MINEABLE_WITH_PICKAXE, ROCKET_ASSEMBLER.get(), LAUNCH_PAD.get(), FLAME_TRENCH.get(), SERVICE_TOWER.get(),
-                CREW_ARM.get(), FUEL_UMBILICAL.get(), LAUNCH_CONSOLE.get());
+                CREW_ARM.get(), FUEL_UMBILICAL.get(), LAUNCH_CONSOLE.get(), STATION_HULL.get(), STATION_WINDOW.get(), DOCKING_PORT.get());
         tags.block(BlockTags.NEEDS_STONE_TOOL, LAUNCH_PAD.get(), FLAME_TRENCH.get(), SERVICE_TOWER.get());
     }
 

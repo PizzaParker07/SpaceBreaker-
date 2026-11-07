@@ -194,45 +194,104 @@ public final class MoonLifeGameTests {
         helper.succeed();
     }
 
-    /** The vault puzzle: the door stays shut until a power cell (block of redstone) fills the socket above it. */
-    @GameTest(template = EMPTY, timeoutTicks = 200)
+    /**
+     * The vault puzzle in all four piece orientations: the sign hangs on its wall, the arrow trap aims across the
+     * pressure plate, and the door stays shut until a power cell (block of redstone) fills the socket above it.
+     */
+    @GameTest(template = EMPTY, timeoutTicks = 300)
     public static void outpostVaultOpensWithPowerCell(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
-        BlockPos base = helper.absolutePos(BlockPos.ZERO).offset(-4000, 0, 4000);
-        int y = level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.WORLD_SURFACE, base.getX(), base.getZ());
-        OutpostPiece piece = new OutpostPiece(98L, base.getX(), y, base.getZ(), Direction.SOUTH);
-        BoundingBox bb = piece.getBoundingBox();
-        // two passes: in a live level, blocks placed before their neighbour chunk exists can lose support
-        // (world generation has no such shape updates); the second pass settles them
-        for (int pass = 0; pass < 2; pass++)
-        for (int cx = bb.minX() >> 4; cx <= bb.maxX() >> 4; cx++) {
-            for (int cz = bb.minZ() >> 4; cz <= bb.maxZ() >> 4; cz++) {
-                level.getChunk(cx, cz);
-                BoundingBox cb = new BoundingBox(cx << 4, level.getMinBuildHeight(), cz << 4, (cx << 4) + 15, level.getMaxBuildHeight(), (cz << 4) + 15);
-                piece.postProcess(level, level.structureManager(), level.getChunkSource().getGenerator(), RandomSource.create(1),
-                        cb, new ChunkPos(cx, cz), bb.getCenter());
+        java.util.List<BlockPos> doors = new java.util.ArrayList<>();
+        Direction[] dirs = {Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST};
+        for (int i = 0; i < dirs.length; i++) {
+            BlockPos base = helper.absolutePos(BlockPos.ZERO).offset(-4000 - i * 64, 0, 4000);
+            int y = level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.WORLD_SURFACE, base.getX(), base.getZ());
+            OutpostPiece piece = new OutpostPiece(98L, base.getX(), y, base.getZ(), dirs[i]);
+            BoundingBox bb = piece.getBoundingBox();
+            // two passes: in a live level, blocks placed before their neighbour chunk exists can lose support
+            // (world generation has no such shape updates); the second pass settles them
+            for (int pass = 0; pass < 2; pass++) {
+                for (int cx = bb.minX() >> 4; cx <= bb.maxX() >> 4; cx++) {
+                    for (int cz = bb.minZ() >> 4; cz <= bb.maxZ() >> 4; cz++) {
+                        level.getChunk(cx, cz);
+                        BoundingBox cb = new BoundingBox(cx << 4, level.getMinBuildHeight(), cz << 4, (cx << 4) + 15, level.getMaxBuildHeight(), (cz << 4) + 15);
+                        piece.postProcess(level, level.structureManager(), level.getChunkSource().getGenerator(), RandomSource.create(1),
+                                cb, new ChunkPos(cx, cz), bb.getCenter());
+                    }
+                }
             }
+            String o = " (" + dirs[i] + ")";
+            // local (22, F+1, 5) with F = 4
+            BlockPos door = piece.localToWorld(22, 5, 5);
+            BlockPos socket = piece.localToWorld(22, 7, 5);
+            BlockPos signPos = piece.localToWorld(21, 6, 5);
+            BlockPos plate = piece.localToWorld(21, 5, 5);
+            BlockPos dispPos = piece.localToWorld(21, 5, 4);
+            helper.assertTrue(level.getBlockState(door).is(Blocks.IRON_DOOR), "vault door in place" + o);
+            helper.assertFalse(level.getBlockState(door).getValue(net.minecraft.world.level.block.DoorBlock.OPEN), "vault starts sealed" + o);
+            helper.assertTrue(level.getBlockState(socket).isAir(), "an empty power socket above the door" + o);
+            var sign = level.getBlockState(signPos);
+            helper.assertTrue(sign.getBlock() instanceof net.minecraft.world.level.block.WallSignBlock && sign.canSurvive(level, signPos),
+                    "warning sign hangs on the tunnel wall" + o);
+            helper.assertTrue(level.getBlockEntity(signPos) instanceof net.minecraft.world.level.block.entity.SignBlockEntity,
+                    "warning sign has its text" + o);
+            var disp = level.getBlockState(dispPos);
+            helper.assertTrue(disp.is(Blocks.DISPENSER), "dispenser in the tunnel wall" + o);
+            helper.assertTrue(dispPos.relative(disp.getValue(net.minecraft.world.level.block.DispenserBlock.FACING)).equals(plate),
+                    "the trap aims across the pressure plate" + o);
+            helper.assertTrue(level.getBlockEntity(dispPos) instanceof net.minecraft.world.level.block.entity.DispenserBlockEntity d && !d.isEmpty(),
+                    "armed arrow trap" + o);
+            // every attached block (buttons, signs, lanterns, doors, plates) survives in this orientation
+            for (BlockPos p : BlockPos.betweenClosed(bb.minX(), bb.minY(), bb.minZ(), bb.maxX(), bb.maxY(), bb.maxZ())) {
+                var st = level.getBlockState(p);
+                if (st.getBlock() instanceof net.minecraft.world.level.block.ButtonBlock || st.getBlock() instanceof net.minecraft.world.level.block.SignBlock
+                        || st.getBlock() instanceof net.minecraft.world.level.block.DoorBlock || st.getBlock() instanceof net.minecraft.world.level.block.LanternBlock
+                        || st.getBlock() instanceof net.minecraft.world.level.block.BasePressurePlateBlock) {
+                    helper.assertTrue(st.canSurvive(level, p), st.getBlock().getName().getString() + " is supported at " + p.immutable() + o);
+                }
+            }
+            level.setBlock(socket, Blocks.REDSTONE_BLOCK.defaultBlockState(), 3);
+            doors.add(door);
         }
-        // local (22, F+1, 5) with F = 4, piece facing south (no rotation)
-        BlockPos door = new BlockPos(bb.minX() + 22, bb.minY() + 5, bb.minZ() + 5);
-        BlockPos socket = door.above(2);
-        helper.assertTrue(level.getBlockState(door).is(Blocks.IRON_DOOR), "vault door in place");
-        helper.assertFalse(level.getBlockState(door).getValue(net.minecraft.world.level.block.DoorBlock.OPEN), "vault starts sealed");
-        helper.assertTrue(level.getBlockState(socket).isAir(), "an empty power socket above the door");
-        boolean trap = false;
-        boolean sign = false;
-        for (BlockPos p : BlockPos.betweenClosed(door.offset(-3, -1, -3), door.offset(1, 3, 3))) {
-            var be = level.getBlockEntity(p);
-            trap |= be instanceof net.minecraft.world.level.block.entity.DispenserBlockEntity d && !d.isEmpty();
-            sign |= be instanceof net.minecraft.world.level.block.entity.SignBlockEntity;
-        }
-        helper.assertTrue(trap, "armed arrow trap near the vault door");
-        helper.assertTrue(sign, "warning sign near the vault door");
-        level.setBlock(socket, Blocks.REDSTONE_BLOCK.defaultBlockState(), 3);
         helper.runAfterDelay(2, () -> {
-            helper.assertTrue(level.getBlockState(door).getValue(net.minecraft.world.level.block.DoorBlock.OPEN), "the power cell opens the vault");
+            for (BlockPos door : doors) {
+                helper.assertTrue(level.getBlockState(door).getValue(net.minecraft.world.level.block.DoorBlock.OPEN), "the power cell opens the vault at " + door);
+            }
             helper.succeed();
         });
+    }
+
+    /**
+     * Every soil that keeps boot prints also takes rover wheel tracks: the print property offers "track" and the
+     * blockstate file has a model for it in every facing.
+     */
+    @GameTest(template = EMPTY)
+    public static void soilsTakeWheelTracks(GameTestHelper helper) {
+        int soils = 0;
+        for (var block : net.minecraft.core.registries.BuiltInRegistries.BLOCK) {
+            if (!(block instanceof com.pizzaparker07.spacebreaker.content.moon.LunarRegolithBlock)) {
+                continue;
+            }
+            soils++;
+            var id = net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(block);
+            var state = block.defaultBlockState().setValue(com.pizzaparker07.spacebreaker.content.moon.LunarRegolithBlock.PRINT,
+                    com.pizzaparker07.spacebreaker.content.moon.Footprint.TRACK);
+            String path = "/assets/" + id.getNamespace() + "/blockstates/" + id.getPath() + ".json";
+            try (var in = MoonLifeGameTests.class.getResourceAsStream(path)) {
+                helper.assertTrue(in != null, "blockstate file for " + id);
+                String json = new String(in.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
+                for (Direction d : Direction.Plane.HORIZONTAL) {
+                    helper.assertTrue(json.contains("facing=" + d.getSerializedName() + ",print=track"), "wheel track model for " + id + " facing " + d);
+                }
+            } catch (java.io.IOException e) {
+                helper.fail("cannot read " + path + ": " + e);
+            }
+            helper.setBlock(1, 1, 1, state);
+            helper.assertBlockProperty(new BlockPos(1, 1, 1), com.pizzaparker07.spacebreaker.content.moon.LunarRegolithBlock.PRINT,
+                    com.pizzaparker07.spacebreaker.content.moon.Footprint.TRACK);
+        }
+        helper.assertTrue(soils >= 4, "print soils found: " + soils);
+        helper.succeed();
     }
 
     private MoonLifeGameTests() {

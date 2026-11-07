@@ -193,6 +193,9 @@ public class PlanetSkyEffects extends DimensionSpecialEffects {
         bb.addVertex(m, sunHalf, 100F, sunHalf).setUv(1F, 1F);
         bb.addVertex(m, -sunHalf, 100F, sunHalf).setUv(0F, 1F);
         BufferUploader.drawWithShader(bb.buildOrThrow());
+        // planets at their real positions along the sun's arc (no air: visible by day too)
+        PlanetDots.render(level, ps, projectionMatrix, starBrightness);
+        RenderSystem.blendFunc(com.mojang.blaze3d.platform.GlStateManager.SourceFactor.ONE, com.mojang.blaze3d.platform.GlStateManager.DestFactor.ONE);
         ps.popPose();
 
         // ---- the parent planet, fixed above a tidally locked moon

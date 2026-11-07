@@ -9,6 +9,8 @@
     "spacebreaker:spodumene_ore",
     "spacebreaker:deepslate_spodumene_ore",
     "spacebreaker:wolframite_ore",
-    "spacebreaker:deepslate_wolframite_ore"
+    "spacebreaker:deepslate_wolframite_ore",
+    "spacebreaker:uraninite_ore",
+    "spacebreaker:deepslate_uraninite_ore"
   ]
 }

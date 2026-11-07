@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "c:plates/aluminum_lithium"
+    },
+    "B": {
+      "item": "spacebreaker:battery_bank"
+    },
+    "C": {
+      "item": "spacebreaker:advanced_circuit"
+    },
+    "M": {
+      "item": "spacebreaker:electric_motor"
+    }
+  },
+  "pattern": [
+    "AAA",
+    "MCM",
+    "MBM"
+  ],
+  "result": {
+    "count": 1,
+    "id": "spacebreaker:rover"
+  }
+}

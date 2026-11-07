@@ -1,0 +1,151 @@
+package com.pizzaparker07.spacebreaker.testmod.industry;
+
+import com.pizzaparker07.spacebreaker.Spacebreaker;
+import com.pizzaparker07.spacebreaker.content.earth.EarthModule;
+import com.pizzaparker07.spacebreaker.content.earth.EarthWorldgen;
+import com.pizzaparker07.spacebreaker.content.fluids.FluidsModule;
+import com.pizzaparker07.spacebreaker.content.machines.MachineEntry;
+import com.pizzaparker07.spacebreaker.content.machines.MachinesModule;
+import com.pizzaparker07.spacebreaker.content.machines.RtgFuelPelletItem;
+import com.pizzaparker07.spacebreaker.content.machines.SolarPanelBlock;
+import com.pizzaparker07.spacebreaker.content.machines.base.MachineBlock;
+import com.pizzaparker07.spacebreaker.content.machines.base.MachineBlockEntity;
+import com.pizzaparker07.spacebreaker.content.machines.machine.BatteryBankBlockEntity;
+import com.pizzaparker07.spacebreaker.content.machines.machine.RtgBlockEntity;
+import com.pizzaparker07.spacebreaker.content.worldgen.PlanetTime;
+import com.pizzaparker07.spacebreaker.core.body.Bodies;
+import com.pizzaparker07.spacebreaker.core.env.Environment;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.gametest.framework.GameTest;
+import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.GameType;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.gametest.GameTestHolder;
+import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+
+/** RTG power, pellet decay and dose, the uraninite fuel chain, and what the sun is worth on each world. */
+@GameTestHolder(Spacebreaker.MOD_ID)
+@PrefixGameTestTemplate(false)
+public final class IndustryRtgTests {
+    private static MachineBlockEntity machine(GameTestHelper h, MachineEntry<?, ?> m, BlockPos pos, boolean charged) {
+        h.setBlock(pos, m.block().get().defaultBlockState().setValue(MachineBlock.FACING, Direction.NORTH));
+        MachineBlockEntity be = h.getBlockEntity(pos);
+        if (charged) {
+            be.energy().generate(be.energy().getMaxEnergyStored());
+        }
+        return be;
+    }
+
+    /** Fresh pellet: full output under a roof (no sky needed); the battery next to it fills. */
+    @GameTest(template = "empty", timeoutTicks = 200)
+    public static void rtgPowersABatteryUnderARoof(GameTestHelper h) {
+        MachineBlockEntity rtg = machine(h, MachinesModule.RTG, new BlockPos(2, 1, 2), false);
+        rtg.items().setStackInSlot(0, new ItemStack(MachinesModule.RTG_FUEL_PELLET.get()));
+        h.setBlock(new BlockPos(2, 2, 2), net.minecraft.world.level.block.Blocks.STONE);
+        MachineBlockEntity battery = machine(h, MachinesModule.BATTERY_BANK, new BlockPos(3, 1, 2), false);
+        h.succeedWhen(() -> {
+            h.assertTrue(rtg.items().getStackInSlot(0).has(MachinesModule.DECAY_START.get()), "the pellet is time-stamped in the RTG");
+            h.assertTrue(rtg.progress() >= 999, "fresh pellet shows full activity, got " + rtg.progress());
+            h.assertTrue(battery.energy().getEnergyStored() >= RtgBlockEntity.OUTPUT * 40, "battery " + battery.energy().getEnergyStored());
+        });
+    }
+
+    @GameTest(template = "empty")
+    public static void pelletDecaysWithItsHalfLife(GameTestHelper h) {
+        h.assertTrue(RtgBlockEntity.output(RtgFuelPelletItem.activity(0)) == RtgBlockEntity.OUTPUT, "fresh = full output");
+        h.assertTrue(RtgBlockEntity.output(RtgFuelPelletItem.activity(RtgFuelPelletItem.HALF_LIFE)) == RtgBlockEntity.OUTPUT / 2, "one half-life = half");
+        h.assertTrue(RtgFuelPelletItem.HALF_LIFE >= 24_000L * 7 && RtgFuelPelletItem.HALF_LIFE <= 24_000L * 60,
+                "half-life should be a few in-game weeks");
+        ItemStack pellet = new ItemStack(MachinesModule.RTG_FUEL_PELLET.get());
+        pellet.set(MachinesModule.DECAY_START.get(), 1_000L);
+        double a = RtgFuelPelletItem.activity(pellet, 1_000L + 2 * RtgFuelPelletItem.HALF_LIFE);
+        h.assertTrue(Math.abs(a - 0.25) < 1e-9, "two half-lives = a quarter, got " + a);
+        h.succeed();
+    }
+
+    /** Carried pellets add a small dose through the Environment hook; the shielded RTG adds none. */
+    @GameTest(template = "empty")
+    public static void carriedPelletsGiveASmallDose(GameTestHelper h) {
+        Player player = h.makeMockPlayer(GameType.SURVIVAL);
+        long now = h.getLevel().getGameTime();
+        h.assertTrue(RtgFuelPelletItem.inventoryDose(player, now) == 0, "empty inventory, no dose");
+        player.getInventory().add(new ItemStack(MachinesModule.RTG_FUEL_PELLET.get(), 4));
+        double dose = RtgFuelPelletItem.inventoryDose(player, now);
+        h.assertTrue(Math.abs(dose - 4 * RtgFuelPelletItem.DOSE_PER_PELLET) < 1e-6, "4 fresh pellets, got " + dose);
+        // small: one pellet is a few times the Moon's surface dose, far below the 500 mSv where symptoms start in a day
+        h.assertTrue(RtgFuelPelletItem.DOSE_PER_PELLET < 50, "one pellet should be a small dose");
+        BlockPos at = h.absolutePos(new BlockPos(1, 1, 1));
+        h.assertTrue(Environment.radiation(h.getLevel(), at) >= Environment.skyRadiation(h.getLevel(), at), "local sources only add");
+        machine(h, MachinesModule.RTG, new BlockPos(1, 1, 1), false).items()
+                .setStackInSlot(0, new ItemStack(MachinesModule.RTG_FUEL_PELLET.get()));
+        h.assertTrue(RtgFuelPelletItem.carriedDose(h.getLevel(), at.above()) == 0, "a pellet inside the RTG is shielded");
+        h.succeed();
+    }
+
+    /** Uraninite ore -> crusher -> uranium dust; dust + sulfuric acid -> chemical reactor -> pellet. */
+    @GameTest(template = "empty", timeoutTicks = 1200)
+    public static void uraniniteBecomesRtgFuel(GameTestHelper h) {
+        h.assertTrue(EarthWorldgen.VEINS.stream().anyMatch(v -> v.metal() == EarthModule.URANIUM && v.maxY() <= 0),
+                "uraninite must generate deep");
+        h.assertTrue(EarthModule.URANIUM.oreItem.get().builtInRegistryHolder().is(net.neoforged.neoforge.common.Tags.Items.ORES), "#c:ores");
+        MachineBlockEntity crusher = machine(h, MachinesModule.CRUSHER, new BlockPos(1, 1, 1), true);
+        crusher.items().setStackInSlot(0, new ItemStack(EarthModule.URANIUM.oreItem.get(), 2));
+        MachineBlockEntity reactor = machine(h, MachinesModule.CHEMICAL_REACTOR, new BlockPos(3, 1, 1), true);
+        reactor.tank(0).fill(new FluidStack(FluidsModule.SULFURIC_ACID.get(), 1000), net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE);
+        h.succeedWhen(() -> {
+            int dust = 0;
+            for (int i = 1; i < crusher.items().getSlots(); i++) {
+                ItemStack s = crusher.items().getStackInSlot(i);
+                if (s.is(EarthModule.URANIUM.dust.get())) {
+                    dust += s.getCount();
+                }
+            }
+            if (dust >= 4 && reactor.items().getStackInSlot(0).isEmpty()) {
+                reactor.items().setStackInSlot(0, new ItemStack(EarthModule.URANIUM.dust.get(), 4));
+            }
+            h.assertTrue(reactor.items().getStackInSlot(1).is(MachinesModule.RTG_FUEL_PELLET.get()), "no pellet yet; crusher dust " + dust);
+        });
+    }
+
+    @GameTest(template = "empty")
+    public static void pelletRecipeIsAChemicalReaction(GameTestHelper h) {
+        boolean found = h.getLevel().getRecipeManager().getAllRecipesFor(MachinesModule.CHEMICAL_REACTION.type().get()).stream()
+                .anyMatch(r -> r.value().results.stream().anyMatch(s -> s.is(MachinesModule.RTG_FUEL_PELLET.get())));
+        h.assertTrue(found, "no chemical reaction makes RTG pellets");
+        h.succeed();
+    }
+
+    /** The panel tells the player how much sunlight there is: about 4 % of Earth's at Jupiter. */
+    @GameTest(template = "empty")
+    public static void solarPanelShowsSunlightHere(GameTestHelper h) {
+        var bodies = h.getLevel().registryAccess().registryOrThrow(Bodies.REGISTRY);
+        var europa = bodies.getOptional(Spacebreaker.id("europa")).orElseThrow(() -> new AssertionError("europa body missing"));
+        double f = europa.solarIrradiance() / 1361.0;
+        String pct = SolarPanelBlock.sunlightPercent(f);
+        h.assertTrue(pct.equals("3.7"), "Europa sunlight should read 3.7 %, got " + pct);
+        h.assertTrue(SolarPanelBlock.sunlightPercent(1.0).equals("100"), "Earth reads 100 %");
+        h.assertTrue(SolarPanelBlock.sunlightPercent(0.0006).equals("0.1"), "Pluto still shows a value");
+        h.succeed();
+    }
+
+    /**
+     * Moon night: one battery bank carries a modest base through the dark. Numbers for the guide table:
+     * night length from the planet clock, energy for a 10 FE/t load.
+     */
+    @GameTest(template = "empty")
+    public static void oneBatteryBankCoversAMoonNightAt10FePerTick(GameTestHelper h) {
+        var moon = Bodies.get(h.getLevel().registryAccess(), Bodies.MOON).orElseThrow(() -> new AssertionError("moon body missing"));
+        long day = PlanetTime.dayTicks(moon.rotation().dayLengthHours());
+        long night = day / 2;
+        long need = night * 10L;
+        h.assertTrue(need <= BatteryBankBlockEntity.CAPACITY, "Moon night " + night + " ticks needs " + need + " FE for 10 FE/t");
+        h.assertTrue(need * 4 > BatteryBankBlockEntity.CAPACITY, "the night should still matter for a 40 FE/t base");
+        h.succeed();
+    }
+
+    private IndustryRtgTests() {
+    }
+}

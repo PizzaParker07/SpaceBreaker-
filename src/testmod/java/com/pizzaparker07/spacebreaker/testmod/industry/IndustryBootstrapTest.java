@@ -49,6 +49,60 @@ public final class IndustryBootstrapTest {
         expect(h, reachable(h, false), "with research", machines.toArray(String[]::new));
     }
 
+    /**
+     * Liquid oxygen on Earth: analysing Earth samples alone must lead to electrolysis and cryogenics, and then water ->
+     * electrolyzer -> oxygen -> liquefier -> LOX with only machines those technologies unlock.
+     */
+    @GameTest(template = "empty")
+    public static void loxIsReachableThroughEarthResearch(GameTestHelper h) {
+        var access = h.getLevel().registryAccess();
+        var techs = com.pizzaparker07.spacebreaker.core.tech.Tech.all(access);
+        Set<ResourceLocation> known = new HashSet<>();
+        boolean grew = true;
+        while (grew) {
+            grew = false;
+            for (var e : techs.entrySet()) {
+                var node = e.getValue();
+                if (!known.contains(e.getKey()) && node.samples().contains(com.pizzaparker07.spacebreaker.content.research.ResearchTree.EARTH)
+                        && known.containsAll(node.requires())) {
+                    known.add(e.getKey());
+                    grew = true;
+                }
+            }
+        }
+        for (String t : java.util.List.of("electrolysis", "cryogenics")) {
+            h.assertTrue(known.contains(Spacebreaker.id(t)), "Earth samples cannot reveal " + t + "; known from Earth: " + known);
+        }
+        Set<Item> have = reachable(h, false);
+        h.assertTrue(have.contains(MachinesModule.ELECTROLYZER.item().get()) && have.contains(MachinesModule.LIQUEFIER.item().get()),
+                "electrolyzer and liquefier must be craftable");
+        for (var m : java.util.List.of(MachinesModule.ELECTROLYZER, MachinesModule.LIQUEFIER)) {
+            var req = TechRequirement.forUnlock(access, BuiltInRegistries.BLOCK.getKey(m.block().get()));
+            h.assertTrue(known.containsAll(req.techs()), BuiltInRegistries.BLOCK.getKey(m.block().get()) + " needs " + req.techs());
+        }
+        // fluid chain: water from a bucket; follow electrolysis and liquefaction recipes to LOX
+        Set<net.minecraft.world.level.material.Fluid> fluids = new HashSet<>(java.util.List.of(net.minecraft.world.level.material.Fluids.WATER));
+        boolean more = true;
+        while (more) {
+            more = false;
+            for (RecipeHolder<?> holder : h.getLevel().getRecipeManager().getRecipes()) {
+                if (!(holder.value() instanceof ProcessingRecipe pr) || pr.fluidInput.isEmpty() || !pr.ingredients.isEmpty()
+                        || !(pr.kind() == MachinesModule.ELECTROLYSIS || pr.kind() == MachinesModule.LIQUEFACTION)) {
+                    continue;
+                }
+                if (fluids.stream().noneMatch(f -> pr.fluidInput.get().ingredient().test(new net.neoforged.neoforge.fluids.FluidStack(f, 1000)))) {
+                    continue;
+                }
+                for (var out : pr.fluidResults) {
+                    more |= fluids.add(out.getFluid());
+                }
+            }
+        }
+        h.assertTrue(fluids.stream().anyMatch(f -> f.is(com.pizzaparker07.spacebreaker.content.fluids.FluidsModule.TAG_LOX)),
+                "no recipe path from water to LOX: " + fluids);
+        h.succeed();
+    }
+
     private static void expect(GameTestHelper h, Set<Item> have, String when, String... goals) {
         java.util.List<String> missing = new java.util.ArrayList<>();
         for (String goal : goals) {

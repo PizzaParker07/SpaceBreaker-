@@ -52,6 +52,35 @@ public final class SkyClient {
         }
     }
 
+    /**
+     * Planets in skies this package does not draw itself (Earth's vanilla sky, other worlds' own sky effects):
+     * drawn right after the sky, in vanilla's sun frame, fading with the stars.
+     */
+    @SubscribeEvent
+    static void afterSky(net.neoforged.neoforge.client.event.RenderLevelStageEvent event) {
+        if (event.getStage() != net.neoforged.neoforge.client.event.RenderLevelStageEvent.Stage.AFTER_SKY) {
+            return;
+        }
+        var level = Minecraft.getInstance().level;
+        if (level == null || level.effects() instanceof PlanetSkyEffects
+                || level.effects().skyType() == net.minecraft.client.renderer.DimensionSpecialEffects.SkyType.END) {
+            return;
+        }
+        float pt = event.getPartialTick().getGameTimeDeltaPartialTick(false);
+        float visibility = Math.min(1F, level.getStarBrightness(pt) * 2F) * (1F - level.getRainLevel(pt));
+        if (visibility <= 0.01F) {
+            return;
+        }
+        com.mojang.blaze3d.vertex.PoseStack pose = new com.mojang.blaze3d.vertex.PoseStack();
+        pose.mulPose(event.getModelViewMatrix());
+        PlanetDots.vanillaSunFrame(pose, level, pt);
+        com.mojang.blaze3d.systems.RenderSystem.depthMask(false);
+        net.minecraft.client.renderer.FogRenderer.setupNoFog();
+        PlanetDots.render(level, pose, event.getProjectionMatrix(), visibility);
+        com.mojang.blaze3d.systems.RenderSystem.depthMask(true);
+        com.mojang.blaze3d.systems.RenderSystem.disableBlend();
+    }
+
     @SubscribeEvent
     static void loggingOut(ClientPlayerNetworkEvent.LoggingOut event) {
         PlanetTime.clearClient();

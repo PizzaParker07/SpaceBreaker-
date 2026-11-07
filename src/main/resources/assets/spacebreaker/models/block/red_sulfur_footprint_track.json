@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "spacebreaker:block/red_sulfur",
+    "up": "spacebreaker:block/red_sulfur_footprint_track",
+    "down": "spacebreaker:block/red_sulfur",
+    "north": "spacebreaker:block/red_sulfur",
+    "south": "spacebreaker:block/red_sulfur",
+    "east": "spacebreaker:block/red_sulfur",
+    "west": "spacebreaker:block/red_sulfur"
+  }
+}

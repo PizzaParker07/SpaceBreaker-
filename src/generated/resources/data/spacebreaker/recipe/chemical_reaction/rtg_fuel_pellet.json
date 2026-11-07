@@ -1,0 +1,20 @@
+{
+  "type": "spacebreaker:chemical_reaction",
+  "energy": 80,
+  "fluid_input": {
+    "amount": 500,
+    "tag": "c:sulfuric_acid"
+  },
+  "ingredients": [
+    {
+      "count": 4,
+      "tag": "c:dusts/uranium"
+    }
+  ],
+  "results": [
+    {
+      "count": 1,
+      "id": "spacebreaker:rtg_fuel_pellet"
+    }
+  ]
+}
