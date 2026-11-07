@@ -55,7 +55,11 @@ public class RocketRenderer extends EntityRenderer<RocketEntity> {
             boolean vacuum = rocket.location() != Location.EARTH_SURFACE || rocket.getY() > 400;
             float strength = state == FlightState.COUNTDOWN ? Mth.clamp((RocketEntity.IGNITION_TICKS - rocket.timer() + partialTick) / 30F, 0.15F, 1F)
                     : state == FlightState.DESCENT ? 0.65F : 1F;
-            RocketStackRenderer.renderPlume(rocket.layout(), geo, rocket.activeStage(), pose, buffers, time, strength, vacuum);
+            // the plume writes no depth: with a shader pack and our sky it is drawn after the sky (LateEffects)
+            var layout = rocket.layout();
+            int stage = rocket.activeStage();
+            com.pizzaparker07.spacebreaker.compat.client.LateEffects.drawOrDefer(pose, buffers,
+                    (p, b) -> RocketStackRenderer.renderPlume(layout, geo, stage, p, b, time, strength, vacuum));
         }
         if (state == FlightState.PARACHUTE && !cockpit) {
             float open = Mth.clamp((rocket.timer() + partialTick) / 30F, 0.15F, 1F);
