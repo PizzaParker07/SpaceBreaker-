@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class SolarSystemDataTest {
     private static final Set<String> EXPECTED = Set.of("sun", "mercury", "venus", "earth", "moon", "mars", "phobos",
             "deimos", "ceres", "vesta", "jupiter", "io", "europa", "ganymede", "callisto", "saturn", "titan",
-            "enceladus", "uranus", "miranda", "ariel", "umbriel", "titania", "oberon", "neptune", "triton", "pluto", "charon");
+            "enceladus", "uranus", "miranda", "ariel", "umbriel", "titania", "oberon", "neptune", "proteus", "triton", "nereid", "pluto", "charon", "nix", "hydra");
 
     @Test
     void everyBodyIsPresent() {
@@ -57,7 +57,15 @@ class SolarSystemDataTest {
             AstroBody parent = sys.require(b.parent());
             assertNotNull(b.orbit(), id + " needs an orbit");
             // Kepler's third law: the stated period matches a and the masses
-            double muTrue = AstroConstants.G * (parent.mass() + b.mass());
+            // a moon orbiting outside a massive inner sibling (Nix and Hydra beyond Charon) circles both
+            double inner = 0;
+            for (AstroBody sib : sys.children(parent.id())) {
+                if (sib != b && sib.orbit() != null && sib.orbit().semiMajorAxis() < b.orbit().semiMajorAxis()
+                        && sib.mass() > 0.01 * parent.mass()) {
+                    inner += sib.mass();
+                }
+            }
+            double muTrue = AstroConstants.G * (parent.mass() + inner + b.mass());
             assertEquals(muTrue, b.orbit().mu(), muTrue * 0.02, id + ": period inconsistent with semi-major axis");
             // irradiance at the star distance
             double d = parent.isStar() ? b.orbit().semiMajorAxis() : parent.orbit().semiMajorAxis();

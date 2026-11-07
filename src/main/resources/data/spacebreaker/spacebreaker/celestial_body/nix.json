@@ -1,0 +1,13 @@
+{
+  "type": "moon",
+  "parent": "spacebreaker:pluto",
+  "dimension": "spacebreaker:nix",
+  "physical": { "mass_kg": 4.5e16, "radius_km": 18.6 },
+  "orbit": { "semi_major_axis_km": 48694, "eccentricity": 0.002, "inclination_deg": 0.133, "period_days": 24.85463 },
+  "rotation": { "day_length_hours": 43.9, "axial_tilt_deg": 0.0 },
+  "climate": { "day_temp_c": -230, "night_temp_c": -235 },
+  "radiation_msv_per_day": 1.4,
+  "solar_irradiance": 0.87,
+  "albedo": 0.30,
+  "geometric_albedo": 0.56
+}

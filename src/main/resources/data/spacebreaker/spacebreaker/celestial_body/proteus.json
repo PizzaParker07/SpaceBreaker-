@@ -1,0 +1,13 @@
+{
+  "type": "moon",
+  "parent": "spacebreaker:neptune",
+  "dimension": "spacebreaker:proteus",
+  "physical": { "mass_kg": 4.4e19, "radius_km": 210.0 },
+  "orbit": { "semi_major_axis_km": 117647, "eccentricity": 0.0005, "inclination_deg": 0.524, "period_days": 1.122315 },
+  "rotation": { "day_length_hours": 26.94, "axial_tilt_deg": 0.0, "tidally_locked": true },
+  "climate": { "day_temp_c": -218, "night_temp_c": -226 },
+  "radiation_msv_per_day": 1.5,
+  "solar_irradiance": 1.51,
+  "albedo": 0.04,
+  "geometric_albedo": 0.096
+}
