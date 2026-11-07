@@ -58,7 +58,7 @@ Tarifinde bir nükleer yakıt elemanı, gölge kalkanı için tungsten levha, ni
 
 |   |   |   |
 |---|---|---|
-| Tungsten Levha | Nükleer Yakıt Elemanı | Tungsten Levha |
+| Tükenmiş Uranyum Levhası | Nükleer Yakıt Elemanı | Tükenmiş Uranyum Levhası |
 | Nikel Süper Alaşımı Külçe | Hidroloks Motoru (Vakum) | Nikel Süper Alaşımı Külçe |
 | Titanyum Levha | Titanyum Levha | Titanyum Levha |
 
@@ -148,7 +148,7 @@ Its recipe takes a nuclear fuel element, tungsten plate for the shadow shield, n
 
 |   |   |   |
 |---|---|---|
-| Tungsten Plate | Nuclear Fuel Element | Tungsten Plate |
+| Depleted Uranium Plate | Nuclear Fuel Element | Depleted Uranium Plate |
 | Nickel Superalloy Ingot | Hydrolox Engine (Vacuum) | Nickel Superalloy Ingot |
 | Titanium Plate | Titanium Plate | Titanium Plate |
 

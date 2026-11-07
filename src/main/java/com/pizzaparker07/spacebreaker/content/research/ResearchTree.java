@@ -185,8 +185,8 @@ public final class ResearchTree {
         t("oxygen_storage", LIFE_SUPPORT, 1).req("pressure_suits", "aluminium_smelting").icon("spacebreaker:oxygen_tank")
                 .samples(EARTH)
                 .unlocks("oxygen_tank", "large_oxygen_tank", "oxygen_filler")
-                .en("Oxygen Storage", "High-pressure aluminium tanks and a filling station: five minutes of air per tank.")
-                .tr("Oksijen Depolama", "Yüksek basınçlı alüminyum tüpler ve dolum istasyonu: tüp başına beş dakika hava.");
+                .en("Oxygen Storage", "High-pressure aluminium tanks and a filling station: about five minutes of air per tank at a walk; sprinting and hard work use more.")
+                .tr("Oksijen Depolama", "Yüksek basınçlı alüminyum tüpler ve dolum istasyonu: yürürken tüp başına yaklaşık beş dakika hava; koşmak ve ağır iş daha çok harcar.");
         t("thermal_regulation", LIFE_SUPPORT, 1).req("pressure_suits").icon("spacebreaker:gold_foil_insulation")
                 .samples(EARTH)
                 .unlocks("gold_foil_insulation", "orange_foam_insulation")

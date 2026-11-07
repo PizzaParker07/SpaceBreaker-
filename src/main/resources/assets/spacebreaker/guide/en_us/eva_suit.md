@@ -38,6 +38,11 @@ The tanks sit in the backpack inside the {item spacebreaker:eva_chestplate}: **t
 ## Helmet
 The helmet display shows oxygen, suit state, body and outside temperature, radiation and gravity. If the Sun is blinding, lower the **gold sun visor**: {key key.sneak} + {key key.use} with the helmet in hand. You can switch off or fade the rounded visor frame round the screen in the client config (**visorFrame**, **visorFrameOpacity**).
 
+## Sound {#sound}
+Sound needs air. In thin air, as on Mars, the world sounds faint and dull and the high notes go first. In vacuum (the Moon, orbit, asteroids, comets) you hardly hear anything outside. What the suit touches still comes through, muffled: your own steps, the tool in your hand, the block you dig, the machine you stand on. Helmet sounds (radio, mission control, warning beeps) stay normal, and so does everything in breathable air and pressurised rooms.
+
+> This is the **realistic sound** client setting (realisticSound), on by default.
+
 ## When you die
 The tanks stay inside the body piece, which drops like any armour: pick it up and the tanks come back with it. Breath, body temperature and radiation dose reset.
 
