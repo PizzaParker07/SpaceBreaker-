@@ -125,7 +125,11 @@ public class StarMapScreen extends Screen {
             goButton.visible = star != null;
             goButton.active = false;
         } else {
-            orbitButton.visible = true;
+            // comets are on the map to look at, not to fly to (yet)
+            orbitButton.visible = !StarMapData.comet(body);
+            if (StarMapData.comet(body)) {
+                surfaceButton.visible = false;
+            }
         }
     }
 
@@ -188,7 +192,7 @@ public class StarMapScreen extends Screen {
             }
         } else {
             int cx = mapW / 2;
-            int pr = StarMapData.NEAR_EARTH_ASTEROIDS.equals(focus) ? 9 : Mth.clamp(Math.min(mapW, height) / 9, 14, 30);
+            int pr = StarMapData.NEAR_EARTH_ASTEROIDS.equals(focus) || StarMapData.COMETS.equals(focus) ? 9 : Mth.clamp(Math.min(mapW, height) / 9, 14, 30);
             nodes.put(focus, new Node(focus, cx, cy, pr));
             List<ResourceLocation> moons = StarMapData.moons(focus);
             int first = pr + 46;
@@ -294,7 +298,7 @@ public class StarMapScreen extends Screen {
             layoutMap();
         }
         // the asteroid group is not a place: pick its first member
-        select(StarMapData.NEAR_EARTH_ASTEROIDS.equals(n.body) ? StarMapData.moons(n.body).get(0) : n.body);
+        select(StarMapData.NEAR_EARTH_ASTEROIDS.equals(n.body) || StarMapData.COMETS.equals(n.body) ? StarMapData.moons(n.body).get(0) : n.body);
         return true;
     }
 
@@ -379,7 +383,7 @@ public class StarMapScreen extends Screen {
                 ellipse(g, p.x, p.y, (int) r, (int) (r * 0.8), 0x30A0B4C8);
             }
         }
-        g.drawCenteredString(font, StarMapData.NEAR_EARTH_ASTEROIDS.equals(focus) ? Location.bodyName(focus)
+        g.drawCenteredString(font, StarMapData.NEAR_EARTH_ASTEROIDS.equals(focus) || StarMapData.COMETS.equals(focus) ? Location.bodyName(focus)
                 : Component.translatable("gui.spacebreaker.star_map.system_of", Location.bodyName(focus)), mapW / 2, 34, INK);
     }
 
@@ -394,6 +398,10 @@ public class StarMapScreen extends Screen {
             // the asteroid group gets a short label so it never runs into its neighbours
             Component name = StarMapData.NEAR_EARTH_ASTEROIDS.equals(n.body)
                     ? Component.translatable("body.spacebreaker.near_earth_asteroids.short") : Location.bodyName(n.body);
+            if (StarMapData.comet(n.body)) {
+                name = com.pizzaparker07.spacebreaker.core.astro.smallbody.Comet.byId(n.body.getPath())
+                        .map(c -> (Component) Component.literal(c.designation())).orElse(name);
+            }
             int col = sel ? 0xFFFFE9A8 : 0xFFC8D0D8;
             g.drawCenteredString(font, name, n.x, n.y + n.r + 5, col);
             if (!com.pizzaparker07.spacebreaker.content.rocketry.station.Stations.around(n.body).isEmpty()) {
@@ -530,6 +538,10 @@ public class StarMapScreen extends Screen {
             hx += tw + 3;
         }
         y += 14;
+        if (StarMapData.comet(body)) {
+            drawComet(g, x, y, w);
+            return;
+        }
         if (!com.pizzaparker07.spacebreaker.content.rocketry.mission.Coverage.hasSignal(body)) {
             for (FormattedCharSequence line : font.split(Component.translatable("gui.spacebreaker.star_map.no_signal"), w)) {
                 g.drawString(font, line, x, y, 0xFFB0A070, false);
@@ -574,6 +586,22 @@ public class StarMapScreen extends Screen {
             return;
         }
         drawTrip(g, x, orbitButton.getY() + 26, w);
+    }
+
+    /** A comet's card: where it is, when it next swings past the Sun, how active it is. */
+    private void drawComet(GuiGraphics g, int x, int y, int w) {
+        var info = StarMapData.cometInfo(body, com.pizzaparker07.spacebreaker.core.astro.BodyAdapter.simTime(minecraft.level)).orElse(null);
+        if (info == null) {
+            return;
+        }
+        boolean tr = minecraft.getLanguageManager().getSelected().startsWith("tr");
+        String level = tr ? info.level().nameTr : info.level().nameEn;
+        y = fact(g, x, y, w, Component.translatable("gui.spacebreaker.star_map.comet.distance", decimal(info.sunAu())));
+        y = fact(g, x, y, w, Component.translatable("gui.spacebreaker.star_map.comet.perihelion",
+                info.nextPerihelion().format(java.time.format.DateTimeFormatter.ISO_LOCAL_DATE), decimal(info.perihelionAu())));
+        y = fact(g, x, y, w, Component.translatable("gui.spacebreaker.star_map.comet.period", decimal(info.periodYears())));
+        y = fact(g, x, y, w, Component.translatable("gui.spacebreaker.star_map.comet.activity", level));
+        g.drawWordWrap(font, Component.translatable("gui.spacebreaker.star_map.comet.no_trip"), x, y + 6, w, DIM);
     }
 
     private void drawTrip(GuiGraphics g, int x, int y, int w) {
@@ -904,6 +932,15 @@ public class StarMapScreen extends Screen {
     // ------------------------------------------------------------------ primitives
 
     private static void planet(GuiGraphics g, ResourceLocation body, int cx, int cy, int r) {
+        if (StarMapData.COMETS.equals(body) || StarMapData.comet(body)) {
+            // a bright little nucleus with its tail streaming away to the upper right
+            for (int i = r * 2; i > 0; i--) {
+                int a = 0x10 + 0xA0 * (r * 2 - i) / (r * 2);
+                disc(g, cx + i * 2 / 3, cy - i / 2, Math.max(1, r / 3 + i / 5), (a << 24) | 0xB8D8F0);
+            }
+            disc(g, cx, cy, Math.max(2, r / 3), 0xFFEEF4FA);
+            return;
+        }
         if (StarMapData.NEAR_EARTH_ASTEROIDS.equals(body)) {
             // a loose handful of grey rocks
             int[][] rocks = {{-4, -3, 3}, {3, -4, 2}, {5, 2, 3}, {-2, 4, 2}, {0, 0, 2}};
@@ -945,7 +982,7 @@ public class StarMapScreen extends Screen {
 
     /** Opened from the HUD hint or the key; also used by the showcase to preselect a destination. */
     public void preselect(ResourceLocation b, boolean orbit) {
-        if (Locations.parentPlanet(b).isPresent() || StarMapData.nearEarthAsteroid(b)) {
+        if (Locations.parentPlanet(b).isPresent() || StarMapData.nearEarthAsteroid(b) || StarMapData.comet(b)) {
             focus = StarMapData.system(b);
             layoutMap();
         }

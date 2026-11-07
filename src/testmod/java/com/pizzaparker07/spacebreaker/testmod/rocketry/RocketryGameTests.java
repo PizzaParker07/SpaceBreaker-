@@ -1093,6 +1093,34 @@ public final class RocketryGameTests {
     }
 
     @GameTest(template = EMPTY)
+    public static void cometsOnTheMap(GameTestHelper helper) {
+        var planets = StarMapData.planets();
+        helper.assertTrue(!planets.isEmpty() && planets.get(planets.size() - 1).equals(StarMapData.COMETS), "one comet node, last: " + planets);
+        var comets = StarMapData.moons(StarMapData.COMETS);
+        for (String n : List.of("halley", "encke", "churyumov_gerasimenko")) {
+            var id = Spacebreaker.id(n);
+            helper.assertTrue(comets.contains(id) && !planets.contains(id), n + " is in the comet group");
+            helper.assertTrue(StarMapData.system(id).equals(StarMapData.COMETS), n + " belongs to the group");
+            helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(id, true).isEmpty()
+                    && com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(id, false).isEmpty(), n + ": nowhere to fly (no orbit, no surface)");
+            helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.all().stream().noneMatch(l -> l.body().equals(id)), n + ": not a destination");
+        }
+        // the card at J2000
+        var halley = StarMapData.cometInfo(Spacebreaker.id("halley"), 0).orElseThrow();
+        helper.assertTrue(halley.nextPerihelion().getYear() == 2061, "Halley comes back in 2061: " + halley.nextPerihelion());
+        helper.assertTrue(halley.sunAu() > 10 && halley.level() == com.pizzaparker07.spacebreaker.core.astro.smallbody.CometActivity.Level.DORMANT,
+                "far out in 2000 and asleep: " + halley.sunAu() + " AU");
+        var encke = StarMapData.cometInfo(Spacebreaker.id("encke"), 0).orElseThrow();
+        helper.assertTrue(encke.periodYears() > 3 && encke.periodYears() < 3.6, "Encke: 3.3 years: " + encke.periodYears());
+        // 67P at its 2015 perihelion was active
+        double perihelion2015 = (java.time.LocalDate.of(2015, 8, 13).toEpochDay() - java.time.LocalDate.of(2000, 1, 1).toEpochDay()) * 86400.0;
+        var p67 = StarMapData.cometInfo(Spacebreaker.id("churyumov_gerasimenko"), perihelion2015).orElseThrow();
+        helper.assertTrue(p67.sunAu() < 1.4 && p67.level() != com.pizzaparker07.spacebreaker.core.astro.smallbody.CometActivity.Level.DORMANT,
+                "67P near the Sun in August 2015, active: " + p67.sunAu() + " AU, " + p67.level());
+        helper.succeed();
+    }
+
+    @GameTest(template = EMPTY)
     public static void nearEarthAsteroids(GameTestHelper helper) {
         var planets = StarMapData.planets();
         helper.assertTrue(planets.contains(StarMapData.NEAR_EARTH_ASTEROIDS), "one group for the near-Earth asteroids: " + planets);

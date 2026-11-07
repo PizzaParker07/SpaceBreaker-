@@ -278,6 +278,12 @@ final class RocketryLang {
         l.add("gui.spacebreaker.star_map.system_of", "The %s system", "%s sistemi");
         l.add("body.spacebreaker.near_earth_asteroids", "Near-Earth asteroids", "Dünya'ya yakın asteroitler");
         l.add("body.spacebreaker.near_earth_asteroids.short", "Asteroids", "Asteroitler");
+        l.add("body.spacebreaker.comets", "Comets", "Kuyruklu yıldızlar");
+        l.add("gui.spacebreaker.star_map.comet.distance", "From the Sun: %s AU", "Güneş'e uzaklık: %s AU");
+        l.add("gui.spacebreaker.star_map.comet.perihelion", "Next closest pass: %s (%s AU)", "Güneş'e en yakın geçiş: %s (%s AU)");
+        l.add("gui.spacebreaker.star_map.comet.period", "One orbit: %s years", "Bir tur: %s yıl");
+        l.add("gui.spacebreaker.star_map.comet.activity", "Activity: %s", "Etkinlik: %s");
+        l.add("gui.spacebreaker.star_map.comet.no_trip", "Too fast and too far to catch for now: watch it from afar.", "Şimdilik yakalanamayacak kadar hızlı ve uzak: uzaktan izle.");
         l.add("gui.spacebreaker.star_map.back", "◀ Solar System", "◀ Güneş Sistemi");
         l.add("gui.spacebreaker.star_map.to_orbit", "Go to orbit", "Yörüngeye git");
         l.add("gui.spacebreaker.star_map.land", "Land", "Yüzeye in");
@@ -319,7 +325,7 @@ final class RocketryLang {
         l.add("gui.spacebreaker.star_map.hazard.radiation", "Radiation", "Radyasyon");
         for (String[] k : new String[][]{
                 {"terrestrial", "Rocky planet", "Kayalık gezegen"}, {"dwarf", "Dwarf planet", "Cüce gezegen"}, {"moon", "Moon", "Uydu"},
-                {"gas_giant", "Gas giant", "Gaz devi"}, {"ice_giant", "Ice giant", "Buz devi"}, {"asteroid", "Asteroid", "Asteroit"},
+                {"gas_giant", "Gas giant", "Gaz devi"}, {"ice_giant", "Ice giant", "Buz devi"}, {"asteroid", "Asteroid", "Asteroit"}, {"comet", "Comet", "Kuyruklu yıldız"},
                 {"star", "Star", "Yıldız"}, {"station", "Space station", "Uzay istasyonu"}}) {
             l.add("gui.spacebreaker.star_map.kind." + k[0], k[1], k[2]);
         }
@@ -330,6 +336,8 @@ final class RocketryLang {
                 {"gas_giant", "A giant ball of gas with no ground to stand on.", "Üzerinde durulacak zemini olmayan dev bir gaz küresi."},
                 {"ice_giant", "A cold giant of gas and ice, with no ground to stand on.", "Gaz ve buzdan soğuk bir dev; üzerinde durulacak zemin yok."},
                 {"asteroid", "A lump of rock left over from the birth of the planets.", "Gezegenlerin doğumundan kalmış bir kaya parçası."},
+                {"comet", "A dirty snowball on a long, stretched orbit: near the Sun its ice boils off into a glowing tail.",
+                        "Uzun, basık bir yörüngede kirli bir kar topu: Güneş'e yaklaşınca buzu kaynayıp parlayan bir kuyruğa dönüşür."},
                 {"star", "", ""}, {"station", "A home built in space.", "Uzayda kurulmuş bir yuva."}}) {
             l.add("gui.spacebreaker.star_map.about_kind." + k[0], k[1], k[2]);
         }
@@ -366,6 +374,10 @@ final class RocketryLang {
         // (Neptune, Triton, Pluto and Charon are named by their own world modules)
         for (String[] b : new String[][]{{"uranus", "Uranus", "Uranüs"}, {"miranda", "Miranda", "Miranda"}}) {
             l.add("body.spacebreaker." + b[0], b[1], b[2]);
+        }
+        // comets have no world module: the map names them from the astro library's catalogue
+        for (var c : com.pizzaparker07.spacebreaker.core.astro.smallbody.Comet.CATALOGUE) {
+            l.add("body.spacebreaker." + c.id(), c.nameEn(), c.nameTr());
         }
     }
 }
