@@ -1,0 +1,13 @@
+{
+  "category": "exploration",
+  "tier": 4,
+  "requires": [
+    "spacebreaker:vertical_exploration",
+    "spacebreaker:icy_moons"
+  ],
+  "icon": "spacebreaker:graben_floor_ice",
+  "samples": [
+    "spacebreaker:ariel"
+  ],
+  "unlocks": []
+}

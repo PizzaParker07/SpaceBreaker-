@@ -59,6 +59,8 @@ public final class OuterWorlds implements SbModule {
             FEATURES.register("fault_cliff", com.pizzaparker07.spacebreaker.content.belt.world.RupesFeature::new);
     public static final DeferredHolder<Feature<?>, com.pizzaparker07.spacebreaker.content.belt.world.CoronaFeature> CORONAE =
             FEATURES.register("coronae", com.pizzaparker07.spacebreaker.content.belt.world.CoronaFeature::new);
+    public static final DeferredHolder<Feature<?>, com.pizzaparker07.spacebreaker.content.belt.world.GrabenFeature> GRABENS =
+            FEATURES.register("grabens", com.pizzaparker07.spacebreaker.content.belt.world.GrabenFeature::new);
     public static final DeferredRegister<net.minecraft.world.level.block.entity.BlockEntityType<?>> BLOCK_ENTITIES =
             DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, Spacebreaker.MOD_ID);
     /** Vent blocks of every outer world (added by the region modules before registration). */
@@ -172,7 +174,7 @@ public final class OuterWorlds implements SbModule {
             case "titan" -> com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_TITAN;
             case "io", "europa", "ganymede", "callisto" -> com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_JOVIAN;
             case "ceres", "vesta" -> com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_BELT;
-            case "miranda", "triton", "pluto", "charon" -> com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_ICE_GIANTS;
+            case "miranda", "ariel", "triton", "pluto", "charon" -> com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_ICE_GIANTS;
             default -> look.sky() == 0 && look.fog() == 0 ? com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_MOON : null;
         };
     }

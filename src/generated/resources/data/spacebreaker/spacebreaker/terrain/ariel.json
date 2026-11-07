@@ -1,0 +1,102 @@
+{
+  "base_height": 76,
+  "body": "spacebreaker:ariel",
+  "craters": {
+    "central_peak": 0.4,
+    "classes": [
+      {
+        "cell": 32,
+        "chance": 0.55,
+        "max_radius": 6.0,
+        "min_radius": 2.5,
+        "per_cell": 2
+      },
+      {
+        "cell": 96,
+        "chance": 0.55,
+        "max_radius": 16.0,
+        "min_radius": 6.0,
+        "per_cell": 2
+      },
+      {
+        "cell": 270,
+        "chance": 0.46,
+        "max_radius": 43.12500000000001,
+        "min_radius": 16.0
+      },
+      {
+        "cell": 670,
+        "chance": 0.37,
+        "max_radius": 95.83333333333334,
+        "min_radius": 43.12500000000001
+      }
+    ],
+    "complex_radius": 30.0,
+    "density": 0.408,
+    "fresh_chance": 0.06,
+    "lowland_density": 1.0,
+    "ray_length": 4.0
+  },
+  "lowlands": {
+    "depth": 6.0,
+    "edge": 0.1,
+    "ridge_height": 0.0,
+    "threshold": 0.95,
+    "volcanic_patch": 1.0
+  },
+  "materials": {
+    "breccia": {
+      "Name": "spacebreaker:ariel_ice"
+    },
+    "highland_rock": {
+      "Name": "spacebreaker:ariel_ice"
+    },
+    "highland_soil": {
+      "Name": "spacebreaker:ariel_regolith",
+      "Properties": {
+        "facing": "north",
+        "print": "none"
+      }
+    },
+    "ice": {
+      "Name": "spacebreaker:ariel_ice"
+    },
+    "lowland_rock": {
+      "Name": "spacebreaker:ariel_ice"
+    },
+    "lowland_soil": {
+      "Name": "spacebreaker:ariel_regolith",
+      "Properties": {
+        "facing": "north",
+        "print": "none"
+      }
+    },
+    "polar_soil": {
+      "Name": "spacebreaker:co2_frost",
+      "Properties": {
+        "facing": "north",
+        "print": "none"
+      }
+    },
+    "ray_soil": {
+      "Name": "spacebreaker:co2_frost",
+      "Properties": {
+        "facing": "north",
+        "print": "none"
+      }
+    },
+    "soil_depth": 3
+  },
+  "pole_distance": 3350.0,
+  "poles": {
+    "polar_craters": 1.3,
+    "polar_latitude": 74.0
+  },
+  "relief": {
+    "amplitude": 13.9,
+    "detail_amplitude": 0.96,
+    "detail_scale": 26.0,
+    "roughness": 0.33,
+    "scale": 416.33333333333337
+  }
+}

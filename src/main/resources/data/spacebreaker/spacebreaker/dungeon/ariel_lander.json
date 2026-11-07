@@ -1,0 +1,9 @@
+{
+  "structure": "spacebreaker:ariel_lander",
+  "world": "spacebreaker:ariel",
+  "guardians": [],
+  "loot_tables": [
+    "spacebreaker:dungeons/ariel/lander_cabin",
+    "spacebreaker:dungeons/ariel/lander_cargo"
+  ]
+}

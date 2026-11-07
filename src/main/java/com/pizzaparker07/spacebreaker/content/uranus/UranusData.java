@@ -42,6 +42,10 @@ public final class UranusData {
     public static final ResourceKey<Biome> MIRANDA_CRATER = OuterWorlds.biome("miranda_crater");
     public static final ResourceKey<Biome> MIRANDA_POLAR = OuterWorlds.biome("miranda_polar");
     public static final List<ResourceKey<Biome>> MIRANDA_BIOMES = List.of(MIRANDA_PLAINS, MIRANDA_CRATER, MIRANDA_POLAR);
+    public static final ResourceKey<Biome> ARIEL_PLAINS = OuterWorlds.biome("ariel_plains");
+    public static final ResourceKey<Biome> ARIEL_CRATER = OuterWorlds.biome("ariel_crater");
+    public static final ResourceKey<Biome> ARIEL_POLAR = OuterWorlds.biome("ariel_polar");
+    public static final List<ResourceKey<Biome>> ARIEL_BIOMES = List.of(ARIEL_PLAINS, ARIEL_CRATER, ARIEL_POLAR);
 
     private UranusData() {
     }
@@ -54,6 +58,13 @@ public final class UranusData {
         lang.add("biome.spacebreaker.miranda_plains", "Patchwork Plains", "Yamalı Ovalar");
         lang.add("biome.spacebreaker.miranda_crater", "Mirandan Crater", "Miranda Krateri");
         lang.add("biome.spacebreaker.miranda_polar", "Mirandan Pole", "Miranda Kutbu");
+        lang.add("biome.spacebreaker.ariel_plains", "Arielian Plains", "Ariel Ovaları");
+        lang.add("biome.spacebreaker.ariel_crater", "Bright-Rayed Crater", "Parlak Işınlı Krater");
+        lang.add("biome.spacebreaker.ariel_polar", "Arielian Pole", "Ariel Kutbu");
+        lang.add("tech.spacebreaker.ice_shell_tectonics", "Ice Shell Tectonics", "Buz Kabuğu Tektoniği");
+        lang.add("tech.spacebreaker.ice_shell_tectonics.desc",
+                "Ariel's crust was pulled apart until long strips dropped between parallel faults, then icy lava flooded their floors: read the faults and you know where the warm ice once rose.",
+                "Ariel'in kabuğu çekilip gerildi, paralel faylar arasında uzun şeritler çöktü, sonra tabanlarını buzlu lav doldurdu: fayları okuyan, sıcak buzun bir zamanlar nereden yükseldiğini bilir.");
         lang.add("tech.spacebreaker.vertical_exploration", "Vertical Exploration", "Dikey Keşif");
         lang.add("tech.spacebreaker.vertical_exploration.desc",
                 "Rope anchors in ice, slow controlled descents and the patience to fall for minutes: how to get down Miranda's great cliff and back up again.",
@@ -83,10 +94,31 @@ public final class UranusData {
                 16, 5, s(BRIGHT_RIDGE_ICE), s(DARK_BAND_ICE));
     }
 
+    public static TerrainProfile arielProfile() {
+        var m = new SmallBodyTerrain.Materials(s(ARIEL_REGOLITH), s(ARIEL_ICE.base()), s(ARIEL_ICE.base()), s(com.pizzaparker07.spacebreaker.content.mars.MarsModule.CO2_FROST),
+                Optional.of(s(com.pizzaparker07.spacebreaker.content.mars.MarsModule.CO2_FROST)), Optional.of(s(ARIEL_ICE.base())));
+        // young surface: few big craters, bright rays (CO2 frost), smooth plains
+        return SmallBodyTerrain.of(Spacebreaker.id("ariel"), 578.9).baseHeight(76).roughness(0.6).craters(0.6).age(0.3)
+                .iceLatitude(80).materials(m).build();
+    }
+
+    /** Ariel's chasmata: long flat-floored rift valleys, several crossing the plains near the landing site. */
+    public static com.pizzaparker07.spacebreaker.content.belt.world.GrabenFeature.Config chasmata() {
+        return new com.pizzaparker07.spacebreaker.content.belt.world.GrabenFeature.Config(List.of(
+                new com.pizzaparker07.spacebreaker.content.belt.world.GrabenFeature.Graben(300, -6, 2200, 48, 34, 12),
+                new com.pizzaparker07.spacebreaker.content.belt.world.GrabenFeature.Graben(-200, 10, 1800, 36, 28, -8),
+                new com.pizzaparker07.spacebreaker.content.belt.world.GrabenFeature.Graben(900, 22, 1400, 60, 40, 30),
+                new com.pizzaparker07.spacebreaker.content.belt.world.GrabenFeature.Graben(-900, -24, 1600, 40, 30, -20)),
+                9, 4, s(GRABEN_FLOOR_ICE), s(ARIEL_ICE.base()));
+    }
+
     // ------------------------------------------------------------------ datagen
 
     static void datapack(SbDatapack dp) {
-        dp.add(TerrainProfile.REGISTRY, ctx -> ctx.register(terrain("miranda"), mirandaProfile()));
+        dp.add(TerrainProfile.REGISTRY, ctx -> {
+            ctx.register(terrain("miranda"), mirandaProfile());
+            ctx.register(terrain("ariel"), arielProfile());
+        });
         dp.add(Registries.CONFIGURED_FEATURE, UranusData::configured);
         dp.add(Registries.PLACED_FEATURE, UranusData::placed);
         dp.add(Registries.BIOME, UranusData::biomes);
@@ -97,16 +129,24 @@ public final class UranusData {
         ctx.register(cf("miranda_cliff"), new ConfiguredFeature<>(OuterWorlds.RUPES.get(), cliff()));
         ctx.register(cf("miranda_carbon"), new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(new TagMatchTest(MIRANDA_STONE),
                 s(CARBON_ORE), 10)));
+        ctx.register(cf("ariel_chasmata"), new ConfiguredFeature<>(OuterWorlds.GRABENS.get(), chasmata()));
+        ctx.register(cf("ariel_ammonia"), new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(new TagMatchTest(ARIEL_STONE),
+                s(ARIEL_AMMONIA_ORE), 8)));
+        ctx.register(cf("ariel_block"), OuterWorlds.boulder(0.6F, 1.5F, 0.5F, s(ARIEL_ICE.base()), 3, s(com.pizzaparker07.spacebreaker.content.mars.MarsModule.CO2_FROST), 1));
         ctx.register(cf("miranda_block"), OuterWorlds.boulder(0.6F, 1.8F, 0.5F, s(MIRANDAN_ICE.base()), 3, s(DARK_BAND_ICE), 1));
     }
 
     private static void placed(BootstrapContext<PlacedFeature> ctx) {
         var cf = ctx.lookup(Registries.CONFIGURED_FEATURE);
-        for (String whole : new String[]{"miranda_coronae", "miranda_cliff"}) {
+        for (String whole : new String[]{"miranda_coronae", "miranda_cliff", "ariel_chasmata"}) {
             PlacementUtils.register(ctx, pf(whole), cf.getOrThrow(cf(whole)), BiomeFilter.biome());
         }
         PlacementUtils.register(ctx, pf("miranda_carbon"), cf.getOrThrow(cf("miranda_carbon")), CountPlacement.of(10), InSquarePlacement.spread(),
                 HeightRangePlacement.uniform(VerticalAnchor.absolute(-40), VerticalAnchor.absolute(100)), BiomeFilter.biome());
+        PlacementUtils.register(ctx, pf("ariel_ammonia"), cf.getOrThrow(cf("ariel_ammonia")), CountPlacement.of(8), InSquarePlacement.spread(),
+                HeightRangePlacement.uniform(VerticalAnchor.absolute(-40), VerticalAnchor.absolute(100)), BiomeFilter.biome());
+        PlacementUtils.register(ctx, pf("ariel_block"), cf.getOrThrow(cf("ariel_block")), RarityFilter.onAverageOnceEvery(6),
+                InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_TOP_SOLID, BiomeFilter.biome());
         PlacementUtils.register(ctx, pf("miranda_block"), cf.getOrThrow(cf("miranda_block")), RarityFilter.onAverageOnceEvery(4),
                 InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_TOP_SOLID, BiomeFilter.biome());
     }
@@ -120,6 +160,10 @@ public final class UranusData {
         for (ResourceKey<Biome> key : MIRANDA_BIOMES) {
             ctx.register(key, OuterWorlds.biome(pf, carvers, key, -2.0F, OuterWorlds.Look.airless(0x9A9A98),
                     raw, "miranda_coronae", raw, "miranda_cliff", ores, "miranda_carbon", local, "miranda_block"));
+        }
+        for (ResourceKey<Biome> key : ARIEL_BIOMES) {
+            ctx.register(key, OuterWorlds.biome(pf, carvers, key, -2.0F, OuterWorlds.Look.airless(0xB3AEA6),
+                    raw, "ariel_chasmata", ores, "ariel_ammonia", local, "ariel_block"));
         }
     }
 }

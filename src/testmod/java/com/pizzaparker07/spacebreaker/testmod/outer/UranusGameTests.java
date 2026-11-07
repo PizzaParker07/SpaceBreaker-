@@ -73,4 +73,32 @@ public final class UranusGameTests {
         helper.assertTrue(UranusModule.CARBON_ORE.get().defaultBlockState().is(net.minecraft.tags.BlockTags.COAL_ORES), "the carbon deposit counts as coal ore");
         helper.succeed();
     }
+
+    @GameTest(template = WorldTests.EMPTY, timeoutTicks = 200)
+    public static void arielHasFlatFlooredRiftValleys(GameTestHelper helper) {
+        helper.assertTrue(WorldTests.stem(helper, "ariel").generator() instanceof PlanetChunkGenerator, "Ariel uses the planet engine");
+        PlanetTerrain t = WorldTests.generator(helper, "ariel", 3L).terrain();
+        var cfg = UranusData.chasmata();
+        var g = cfg.grabens().getFirst();
+        double cz = -g.latitude() / 90.0 * t.profile().poleDistance();
+        double a = Math.toRadians(g.angleDeg());
+        double nx = -Math.sin(a);
+        double nz = Math.cos(a);
+        double[] floor = new double[1];
+        // across the valley: plains on both sides, a flat sunken floor between
+        double out1 = com.pizzaparker07.spacebreaker.content.belt.world.GrabenFeature.offset(t, cfg, g.x() - nx * 80, cz - nz * 80, floor);
+        double out2 = com.pizzaparker07.spacebreaker.content.belt.world.GrabenFeature.offset(t, cfg, g.x() + nx * 80, cz + nz * 80, floor);
+        double f1 = com.pizzaparker07.spacebreaker.content.belt.world.GrabenFeature.offset(t, cfg, g.x() + nx * g.width() * 0.3, cz + nz * g.width() * 0.3,
+                floor);
+        helper.assertTrue(floor[0] > 0, "that point is on the valley floor");
+        double f2 = com.pizzaparker07.spacebreaker.content.belt.world.GrabenFeature.offset(t, cfg, g.x() - nx * g.width() * 0.3, cz - nz * g.width() * 0.3,
+                floor);
+        helper.assertTrue(out1 == 0 && out2 == 0, "plains on both sides: " + out1 + " " + out2);
+        helper.assertTrue(f1 < -g.depth() * 0.8 && Math.abs(f1 - f2) < 3, "a deep, flat floor: " + f1 + " " + f2);
+        var moth = helper.spawn(UranusEntities.FROST_MOTH.get(), new BlockPos(2, 3, 2));
+        helper.assertTrue(moth.getType().getCategory() == net.minecraft.world.entity.MobCategory.AMBIENT, "the frost moth is an ambient flutterer");
+        var node = Tech.all(helper.getLevel().registryAccess()).get(Spacebreaker.id("ice_shell_tectonics"));
+        helper.assertTrue(node != null && node.tier() == 4, "ice shell tectonics is a tier-4 tech");
+        helper.succeed();
+    }
 }
