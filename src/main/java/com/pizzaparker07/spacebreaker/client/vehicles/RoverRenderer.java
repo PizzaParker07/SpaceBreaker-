@@ -38,6 +38,13 @@ public class RoverRenderer extends EntityRenderer<RoverEntity> {
         this.shadowRadius = 1.1F;
     }
 
+    private static final ResourceLocation PRESSURIZED_TEXTURE = Spacebreaker.id("textures/entity/pressurized_rover.png");
+
+    /** The pressurised rover: the standard chassis under a closed cabin. */
+    public static RoverRenderer pressurized(EntityRendererProvider.Context ctx) {
+        return new RoverRenderer(ctx, new RoverModel(ctx.bakeLayer(RoverModel.PRESSURIZED_LAYER), RoverModel.PRESSURIZED), PRESSURIZED_TEXTURE);
+    }
+
     /** The sprint rover: same parts and UV layout, its own proportions and paint. */
     public static RoverRenderer sprint(EntityRendererProvider.Context ctx) {
         return new RoverRenderer(ctx, new RoverModel(ctx.bakeLayer(RoverModel.SPRINT_LAYER), RoverModel.SPRINT), SPRINT_TEXTURE);
@@ -78,7 +85,7 @@ public class RoverRenderer extends EntityRenderer<RoverEntity> {
         float dust = rover.hasSolar() ? rover.dust() : 0F;
         if (dust > 0.05F) {
             roofDust(pose, buffers.getBuffer(RenderType.entityTranslucent(net.minecraft.client.renderer.texture.TextureAtlas.LOCATION_BLOCKS)),
-                    dust, model.bodyY(), light);
+                    dust, model.bodyY(), model.style(), light);
         }
         boolean on = lightsOn(rover);
         if (on) {
@@ -90,19 +97,19 @@ public class RoverRenderer extends EntityRenderer<RoverEntity> {
     }
 
     /** The same dust film as on a solar tracker, laid over the deck panel (model space, y down: its top is y = 5). */
-    private static void roofDust(PoseStack pose, VertexConsumer vc, float dust, float bodyY, int light) {
+    private static void roofDust(PoseStack pose, VertexConsumer vc, float dust, float bodyY, RoverModel.Style style, int light) {
         net.minecraft.client.renderer.texture.TextureAtlasSprite sprite = Minecraft.getInstance()
                 .getTextureAtlas(net.minecraft.client.renderer.texture.TextureAtlas.LOCATION_BLOCKS)
                 .apply(com.pizzaparker07.spacebreaker.Spacebreaker.id("block/solar_dust"));
         // the roof cells are small and dark: a thinner film keeps them readable at full cover
         int alpha = Math.round(com.pizzaparker07.spacebreaker.client.machines.SolarPanelRenderer.dustAlpha(dust) * 0.6F * 255);
         PoseStack.Pose last = pose.last();
-        float y = (bodyY + 4.95F) / 16F;
+        float y = (bodyY + style.panelTop() - 0.05F) / 16F;
         float x0 = -12F / 16F;
         float x1 = 12F / 16F;
         // the 24 x 16 panel takes the 16 px dust tile one and a half times across so the grain keeps its size
-        float zs = 15F / 16F;
-        float ze = 31F / 16F;
+        float zs = style.panelFront() / 16F;
+        float ze = (style.panelFront() + 16F) / 16F;
         for (int i = 0; i < 2; i++) {
             float a = i == 0 ? x0 : 0F;
             float b = i == 0 ? 0F : x1;

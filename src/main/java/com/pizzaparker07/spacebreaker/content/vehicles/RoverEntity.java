@@ -43,7 +43,7 @@ import org.jetbrains.annotations.Nullable;
  * (a battery bank, a cable end). The driver's client simulates the drive and the server checks it through vanilla's
  * vehicle packets; energy, upgrades and damage are server authoritative and synced to everyone nearby.
  */
-public class RoverEntity extends Entity {
+public class RoverEntity extends Entity implements com.pizzaparker07.spacebreaker.core.env.PressurizedVehicle {
     /** Battery of the standard rover; each {@link RoverType} has its own. */
     public static final int CAPACITY = 400_000;
     /** Roof panel: a small array, so a fraction of a solar tracker's peak. */
@@ -60,6 +60,14 @@ public class RoverEntity extends Entity {
     private static final EntityDataAccessor<Integer> HURT = SynchedEntityData.defineId(RoverEntity.class, EntityDataSerializers.INT);
     /** Dust on the roof panel, 0 = clean, 1 = fully covered (same loss as a solar tracker). */
     private static final EntityDataAccessor<Float> DUST = SynchedEntityData.defineId(RoverEntity.class, EntityDataSerializers.FLOAT);
+    /** Cabin oxygen in breathing ticks (pressurised rover only). */
+    private static final EntityDataAccessor<Integer> CABIN_O2 = SynchedEntityData.defineId(RoverEntity.class, EntityDataSerializers.INT);
+    /** Cabin oxygen tank, breathing ticks: 64,000 mB of oxygen gas (8,000 mB of LOX); about 1.8 hours for one rider. */
+    public static final int CABIN_O2_CAPACITY = 128_000;
+    /** Seat height above the rover's base, blocks. */
+    public static final double SEAT_HEIGHT = 1.3 * 0.66;
+    /** Life support draw while anyone is aboard, FE/t. */
+    public static final int CABIN_POWER = 4;
     private static final byte SOLAR = 1;
     private static final byte RTG = 2;
     private static final byte PELLET = 4;
@@ -108,7 +116,7 @@ public class RoverEntity extends Entity {
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        builder.define(ENERGY, 0).define(UPGRADES, (byte) 0).define(DAMAGE, 0F).define(HURT, 0).define(DUST, 0F);
+        builder.define(ENERGY, 0).define(UPGRADES, (byte) 0).define(DAMAGE, 0F).define(HURT, 0).define(DUST, 0F).define(CABIN_O2, 0);
     }
 
     private net.minecraft.world.inventory.MenuType<?> cargoMenu() {
@@ -118,6 +126,66 @@ public class RoverEntity extends Entity {
             case 4 -> net.minecraft.world.inventory.MenuType.GENERIC_9x4;
             default -> net.minecraft.world.inventory.MenuType.GENERIC_9x3;
         };
+    }
+
+    // ------------------------------------------------------------------ cabin (pressurised rover)
+
+    public int cabinOxygen() {
+        return entityData.get(CABIN_O2);
+    }
+
+    public void setCabinOxygen(int ticks) {
+        entityData.set(CABIN_O2, Mth.clamp(ticks, 0, CABIN_O2_CAPACITY));
+    }
+
+    private double breathed;
+
+    @Override
+    public boolean cabinPressurized() {
+        return roverType.cabin() && cabinOxygen() > 0 && energy() > 0;
+    }
+
+    @Override
+    public double radiationFactor() {
+        return roverType.cabin() ? 0.5 : 1.0;
+    }
+
+    @Override
+    public boolean breathe(LivingEntity rider, double breathingTicks) {
+        if (!cabinPressurized() || rider.getVehicle() != this) {
+            return false;
+        }
+        breathed += Math.max(0, breathingTicks);
+        int whole = (int) breathed;
+        if (whole > 0) {
+            breathed -= whole;
+            setCabinOxygen(cabinOxygen() - whole);
+        }
+        return true;
+    }
+
+    /** Fills the cabin tank from a fluid handler (oxygen gas or LOX); returns breathing ticks added. */
+    public int fillCabin(net.neoforged.neoforge.fluids.capability.IFluidHandler from, int maxMb) {
+        if (!roverType.cabin() || from == null) {
+            return 0;
+        }
+        int room = CABIN_O2_CAPACITY - cabinOxygen();
+        for (int t = 0; t < from.getTanks() && room > 0; t++) {
+            net.neoforged.neoforge.fluids.FluidStack in = from.getFluidInTank(t);
+            int per = com.pizzaparker07.spacebreaker.content.suit.block.GasMachineBlockEntity.ticksPerMb(in);
+            if (per <= 0) {
+                continue;
+            }
+            int mb = Math.min(maxMb, room / per);
+            if (mb <= 0) {
+                continue;
+            }
+            net.neoforged.neoforge.fluids.FluidStack got = from.drain(in.copyWithAmount(mb), net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE);
+            int added = got.getAmount() * per;
+            setCabinOxygen(cabinOxygen() + added);
+            return added;
+        }
+        return 0;
     }
 
     public RoverType roverType() {
@@ -203,7 +271,8 @@ public class RoverEntity extends Entity {
     protected Vec3 getPassengerAttachmentPoint(Entity passenger, EntityDimensions dimensions, float partialTick) {
         int i = getPassengers().indexOf(passenger);
         double z = i <= 0 ? 0.25 : -0.55;
-        return new Vec3(0, dimensions.height() * 0.66, z).yRot(-getYRot() * Mth.DEG_TO_RAD);
+        // the seats are the same height in every model, whatever the cabin above them
+        return new Vec3(0, SEAT_HEIGHT, z).yRot(-getYRot() * Mth.DEG_TO_RAD);
     }
 
     @Override
@@ -312,6 +381,30 @@ public class RoverEntity extends Entity {
                 player.displayClientMessage(Component.translatable("message.spacebreaker.panel_brushed"), true);
             }
             return InteractionResult.sidedSuccess(level().isClientSide);
+        }
+        if (roverType.cabin() && !held.isEmpty()) {
+            ItemStack one = held.copyWithCount(1);
+            var handler = net.neoforged.neoforge.fluids.FluidUtil.getFluidHandler(one);
+            if (handler.isPresent() && handler.get().getTanks() > 0
+                    && com.pizzaparker07.spacebreaker.content.suit.block.GasMachineBlockEntity.ticksPerMb(handler.get().getFluidInTank(0)) > 0) {
+                if (!level().isClientSide) {
+                    var h = handler.get();
+                    if (fillCabin(h, Integer.MAX_VALUE) > 0) {
+                        // hand back the emptied (or partly emptied) container in place of the full one
+                        ItemStack emptied = h.getContainer();
+                        held.shrink(1);
+                        if (held.isEmpty()) {
+                            player.setItemInHand(hand, emptied);
+                        } else if (!player.getInventory().add(emptied)) {
+                            player.drop(emptied, false);
+                        }
+                        playSound(SoundEvents.BUCKET_EMPTY, 0.6F, 1.4F);
+                    }
+                    player.displayClientMessage(Component.translatable("message.spacebreaker.rover.cabin_o2",
+                            Math.round(cabinOxygen() * 100F / CABIN_O2_CAPACITY)), true);
+                }
+                return InteractionResult.sidedSuccess(level().isClientSide);
+            }
         }
         if (held.is(MachinesModule.SOLAR_PANEL_ITEM.get()) && !hasSolar()) {
             if (!level().isClientSide) {
@@ -485,6 +578,15 @@ public class RoverEntity extends Entity {
         if (tickCount % 10 == 0 && lastMoved < 0.02 && fe < roverType.capacity()) {
             fe += chargeFromNeighbours(Math.min(CHARGE_RATE * 10, roverType.capacity() - fe));
         }
+        if (roverType.cabin()) {
+            if (isVehicle() && cabinOxygen() > 0) {
+                fe -= CABIN_POWER;   // fans, scrubbers and heaters
+            }
+            if (tickCount % 10 == 0 && lastMoved < 0.02 && cabinOxygen() < CABIN_O2_CAPACITY) {
+                topUpCabin();
+            }
+        }
+        fe = Math.max(0, fe);
         if (fe != energyServer) {
             setEnergy(fe);
         }
@@ -494,6 +596,20 @@ public class RoverEntity extends Entity {
     private double lastMoved;
     private double lastX = Double.NaN;
     private double lastZ = Double.NaN;
+
+    /** Parked beside a tank, a gas pipe or anything else holding oxygen: refill the cabin tank from it. */
+    private void topUpCabin() {
+        var box = getBoundingBox().inflate(0.6, 0.1, 0.6);
+        for (BlockPos p : BlockPos.betweenClosed(BlockPos.containing(box.minX, box.minY - 0.5, box.minZ), BlockPos.containing(box.maxX, box.minY + 1, box.maxZ))) {
+            for (int i = -1; i < 6; i++) {
+                var h = level().getCapability(net.neoforged.neoforge.capabilities.Capabilities.FluidHandler.BLOCK, p,
+                        i < 0 ? null : net.minecraft.core.Direction.from3DDataValue(i));
+                if (h != null && fillCabin(h, 1_000) > 0) {
+                    return;
+                }
+            }
+        }
+    }
 
     private int chargeFromNeighbours(int want) {
         var box = getBoundingBox().inflate(0.6, 0.1, 0.6);
@@ -699,6 +815,7 @@ public class RoverEntity extends Entity {
         pellet = ItemStack.parseOptional(registryAccess(), tag.getCompound("pellet"));
         setFlag(PELLET, !pellet.isEmpty());
         setDust(tag.getFloat("dust"));
+        setCabinOxygen(tag.getInt("cabin_o2"));
     }
 
     @Override
@@ -706,6 +823,9 @@ public class RoverEntity extends Entity {
         tag.putInt("energy", energyServer);
         tag.putByte("upgrades", entityData.get(UPGRADES));
         tag.putFloat("dust", dust());
+        if (roverType.cabin()) {
+            tag.putInt("cabin_o2", cabinOxygen());
+        }
         tag.put("cargo", net.minecraft.world.ContainerHelper.saveAllItems(new CompoundTag(), cargo.getItems(), registryAccess()));
         if (!pellet.isEmpty()) {
             tag.put("pellet", pellet.save(registryAccess()));

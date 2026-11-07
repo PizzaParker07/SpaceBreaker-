@@ -13,12 +13,22 @@ package com.pizzaparker07.spacebreaker.content.vehicles;
  * @param loudness   motor sound volume relative to the standard rover
  */
 public record RoverType(String id, double maxSpeed, double accel, int capacity, int fePerBlock, int cargoSlots, double grip,
-                        float loudness) {
+                        float loudness, boolean cabin) {
+    public RoverType(String id, double maxSpeed, double accel, int capacity, int fePerBlock, int cargoSlots, double grip, float loudness) {
+        this(id, maxSpeed, accel, capacity, fePerBlock, cargoSlots, grip, loudness, false);
+    }
+
     /** The open two-seat planetary rover. */
     public static final RoverType STANDARD = new RoverType("rover", RoverPhysics.MAX_SPEED, RoverPhysics.ACCEL, 400_000,
             RoverPhysics.FE_PER_BLOCK, 27, 1.0, 1.0F);
     /** Light, fast and quiet: an aluminium-lithium frame, bigger wheels, a smaller battery and cargo bay. */
     public static final RoverType SPRINT = new RoverType("sprint_rover", 0.65, 0.016, 300_000, 35, 9, 0.85, 0.45F);
+
+    /**
+     * Closed pressurised cabin: no helmet needed inside; slower and heavier, a big battery for long traverses, an
+     * oxygen tank for the crew and walls that stop half of the radiation.
+     */
+    public static final RoverType PRESSURIZED = new RoverType("pressurized_rover", 0.35, 0.010, 1_200_000, 80, 27, 1.0, 0.7F, true);
 
     /** Blocks the full battery drives on flat ground. */
     public int range() {

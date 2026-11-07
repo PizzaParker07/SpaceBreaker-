@@ -388,6 +388,46 @@ public final class RoverTests {
         h.succeed();
     }
 
+    /**
+     * The pressurised rover: it fills its cabin tank from an oxygen tank it is parked beside, riders breathe from it,
+     * and the cabin loses pressure when the oxygen or the power runs out. The cabin keeps out half the radiation.
+     */
+    @GameTest(template = "empty", timeoutTicks = 80)
+    public static void pressurizedRoverKeepsItsCrewBreathing(GameTestHelper h) {
+        floor(h, Blocks.STONE.defaultBlockState());
+        var type = com.pizzaparker07.spacebreaker.content.vehicles.RoverType.PRESSURIZED;
+        h.assertTrue(type.cabin() && type.range() >= 15_000, "a cabin and a long range: " + type.range());
+        h.setBlock(new BlockPos(0, 1, 2), MachinesModule.PRESSURIZED_TANK.get());
+        com.pizzaparker07.spacebreaker.content.machines.machine.TankBlockEntity tank = h.getBlockEntity(new BlockPos(0, 1, 2));
+        tank.tank().fill(com.pizzaparker07.spacebreaker.content.fluids.FluidsModule.OXYGEN.stack(8_000),
+                net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE);
+        RoverEntity rover = h.spawn(VehiclesModule.PRESSURIZED_ROVER.get(), Vec3.atBottomCenterOf(new BlockPos(2, 1, 2)));
+        rover.setYRot(0F);
+        rover.setEnergy(100_000);
+        h.assertTrue(!rover.cabinPressurized(), "no air before filling");
+        h.assertTrue(rover.radiationFactor() == 0.5, "the cabin walls stop half the radiation");
+        h.runAfterDelay(30, () -> {
+            h.assertTrue(rover.cabinOxygen() > 0 && rover.cabinPressurized(), "filled from the tank beside it: " + rover.cabinOxygen());
+            h.assertTrue(tank.tank().getFluidAmount() < 8_000, "the tank gave its oxygen");
+            var crew = h.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+            h.assertTrue(crew.startRiding(rover, true), "gets in");
+            int before = rover.cabinOxygen();
+            h.assertTrue(rover.breathe(crew, 100), "breathes cabin air");
+            h.assertTrue(rover.cabinOxygen() == before - 100, "used 100 breathing ticks");
+            h.assertTrue(!rover.breathe(h.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL), 10), "only riders breathe it");
+            CompoundTag tag = new CompoundTag();
+            rover.save(tag);
+            var copy = net.minecraft.world.entity.EntityType.create(tag, h.getLevel()).orElseThrow();
+            h.assertTrue(copy instanceof RoverEntity r && r.cabinOxygen() == rover.cabinOxygen(), "cabin oxygen is saved");
+            rover.setEnergy(0);
+            h.assertTrue(!rover.cabinPressurized(), "no power, no life support");
+            rover.setEnergy(1_000);
+            rover.setCabinOxygen(0);
+            h.assertTrue(!rover.cabinPressurized() && !rover.breathe(crew, 1), "an empty tank means no cabin air");
+            h.succeed();
+        });
+    }
+
     private static void floor(GameTestHelper h, BlockState state) {
         for (int z = 0; z < 5; z++) {
             for (int x = 0; x < 5; x++) {

@@ -33,6 +33,7 @@ final class RoverScenario implements ShowcaseScenario {
     private int gy;
     private RoverEntity parked;
     private RoverEntity driver;
+    private RoverEntity cabin;
 
     RoverScenario(ResourceKey<Level> dimension, boolean mars) {
         this.dimension = dimension;
@@ -78,6 +79,12 @@ final class RoverScenario implements ShowcaseScenario {
         sprint.moveTo(X0 + 2.5, gy, Z0 + 2.5, 35F, 0F);
         sprint.setEnergy(250_000);
         level.addFreshEntity(sprint);
+        cabin = com.pizzaparker07.spacebreaker.content.vehicles.VehiclesModule.PRESSURIZED_ROVER.get().create(level);
+        cabin.moveTo(X0 - 4.5, gy, Z0 + 20.5, 35F, 0F);
+        cabin.setEnergy(900_000);
+        cabin.setCabinOxygen(100_000);
+        cabin.installSolar();
+        level.addFreshEntity(cabin);
         RoverEntity tilted = rover(level, X0 - 5.5, Z0 + 10.3, 0F);
         tilted.installSolar();
     }
@@ -125,6 +132,9 @@ final class RoverScenario implements ShowcaseScenario {
         // in the driver's seat with the battery readout
         s.add(new ShowcaseDriver.Shot(w + "_05_driver_view", 0, px, gy + 2, pz, 35F, 12F, false, CameraType.THIRD_PERSON_BACK, 60,
                 at(0.3, p -> p.startRiding(parked, true)), null));
+        // the pressurised rover with its crew behind the windows
+        s.add(new ShowcaseDriver.Shot(w + "_09_pressurized", 0, X0 - 4.5 - 0.5, gy + 2.6, Z0 + 20.5 + 5.1, MoonScenario.yaw(0.5, -5.1), 18F, true, fp, 80,
+                at(0.3, p -> crewIn(p.serverLevel(), cabin)), null));
         // the sprint rover beside the standard one
         s.add(new ShowcaseDriver.Shot(w + "_08_sprint", 0, X0 + 5.6, gy + 1.9, Z0 + 6.4, MoonScenario.yaw(-3.6, -4.4), 16F, true, fp, 80,
                 at(0.3, p -> { }), null));
@@ -137,7 +147,11 @@ final class RoverScenario implements ShowcaseScenario {
     }
 
     private void crew(ServerLevel level) {
-        if (parked.getPassengers().size() >= 2) {
+        crewIn(level, parked);
+    }
+
+    private void crewIn(ServerLevel level, RoverEntity target) {
+        if (target.getPassengers().size() >= 2) {
             return;
         }
         // peaceful removes zombies; the stand-ins have no AI and wear helmets, so nothing happens to the scene
@@ -146,11 +160,11 @@ final class RoverScenario implements ShowcaseScenario {
             net.minecraft.world.entity.monster.Zombie stand = net.minecraft.world.entity.EntityType.ZOMBIE.create(level);
             stand.setNoAi(true);
             stand.setPersistenceRequired();
-            stand.moveTo(parked.getX(), parked.getY(), parked.getZ());
+            stand.moveTo(target.getX(), target.getY(), target.getZ());
             stand.setItemSlot(net.minecraft.world.entity.EquipmentSlot.HEAD, new ItemStack(Items.IRON_HELMET));
             stand.setItemSlot(net.minecraft.world.entity.EquipmentSlot.CHEST, new ItemStack(Items.IRON_CHESTPLATE));
             level.addFreshEntity(stand);
-            stand.startRiding(parked, true);
+            stand.startRiding(target, true);
         }
     }
 }

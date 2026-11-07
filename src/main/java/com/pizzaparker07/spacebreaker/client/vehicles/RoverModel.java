@@ -36,15 +36,36 @@ public class RoverModel extends EntityModel<RoverEntity> {
      * @param noseLength length of the sloping nose plate
      * @param noseAngle  its slope, radians
      */
-    public record Style(float halfWidth, float wheelX, float wheelScale, float fenderY, float noseLength, float noseAngle) {
+    public record Style(float halfWidth, float wheelX, float wheelScale, float fenderY, float noseLength, float noseAngle, boolean cabin) {
+        public Style(float halfWidth, float wheelX, float wheelScale, float fenderY, float noseLength, float noseAngle) {
+            this(halfWidth, wheelX, wheelScale, fenderY, noseLength, noseAngle, false);
+        }
+
         public float wheelY() {
             return 24F - 5F * wheelScale;
+        }
+
+        /** Top face of the solar panel (model y): on posts over the rear deck, or on the cabin roof. */
+        public float panelTop() {
+            return cabin ? -13F : 5F;
+        }
+
+        /** Front edge of the solar panel (model z); it is 16 deep. */
+        public float panelFront() {
+            return cabin ? -12F : 15F;
         }
     }
 
     public static final Style STANDARD = new Style(11F, 13F, 1F, 13F, 8F, 0.5F);
     /** Narrow and low with big wheels and a long shallow nose. */
     public static final Style SPRINT = new Style(9F, 12F, 1.25F, 10.5F, 10F, 0.38F);
+    /** The standard chassis under a closed cabin with windows; the solar panel goes on the cabin roof. */
+    public static final Style PRESSURIZED = new Style(11F, 13F, 1F, 13F, 8F, 0.5F, true);
+    public static final ModelLayerLocation PRESSURIZED_LAYER = new ModelLayerLocation(Spacebreaker.id("pressurized_rover"), "main");
+
+    public Style style() {
+        return style;
+    }
 
     private final Style style;
     private final ModelPart body;
@@ -80,6 +101,10 @@ public class RoverModel extends EntityModel<RoverEntity> {
 
     public static LayerDefinition createSprintLayer() {
         return createLayer(SPRINT);
+    }
+
+    public static LayerDefinition createPressurizedLayer() {
+        return createLayer(PRESSURIZED);
     }
 
     public static LayerDefinition createLayer(Style st) {
@@ -121,11 +146,23 @@ public class RoverModel extends EntityModel<RoverEntity> {
                         PartPose.offset((st.wheelX() + 3F * st.wheelScale() + 0.5F) * s, st.fenderY() + 1F, 12F * a));
             }
         }
-        // the solar panel rides flat on posts over the rear deck, behind the passenger's head
-        CubeListBuilder solar = CubeListBuilder.create().texOffs(0, 72).addBox(-12F, 5F, 15F, 24F, 1F, 16F);
-        for (float px : new float[]{-10F, 9F}) {
-            for (float pz : new float[]{19F, 28F}) {
-                solar.texOffs(62, 56).addBox(px, 6F, pz, 1F, 8F, 1F);
+        if (st.cabin()) {
+            // closed cabin over both seats: thin walls whose windows are cut out of the texture, so the crew shows
+            body.addOrReplaceChild("cabin", CubeListBuilder.create()
+                    .texOffs(0, 140).addBox(-hw, -11F, -16F, 2 * hw, 1F, 32F)              // roof
+                    .texOffs(110, 140).addBox(-hw, -10F, -16F, 1F, 23F, 32F)               // side walls
+                    .texOffs(110, 140).addBox(hw - 1, -10F, -16F, 1F, 23F, 32F)
+                    .texOffs(180, 140).addBox(-hw + 1, -10F, -16F, 2 * hw - 2, 23F, 1F)    // windscreen wall
+                    .texOffs(180, 170).addBox(-hw + 1, -10F, 15F, 2 * hw - 2, 23F, 1F),    // rear wall
+                    PartPose.ZERO);
+        }
+        // the solar panel: flat on posts over the rear deck, behind the passenger's head; on the roof of a cabin
+        CubeListBuilder solar = CubeListBuilder.create().texOffs(0, 72).addBox(-12F, st.panelTop(), st.panelFront(), 24F, 1F, 16F);
+        if (!st.cabin()) {
+            for (float px : new float[]{-10F, 9F}) {
+                for (float pz : new float[]{19F, 28F}) {
+                    solar.texOffs(62, 56).addBox(px, 6F, pz, 1F, 8F, 1F);
+                }
             }
         }
         body.addOrReplaceChild("solar", solar, PartPose.ZERO);

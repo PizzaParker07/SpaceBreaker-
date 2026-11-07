@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-07T19:25:38.318442802	Recipes
+// 1.21.1	2026-11-07T19:36:07.907845979	Recipes
 9adaaa5be5385cd4ce86f1592ecb1ea66c0c4dce data/spacebreaker/advancement/recipes/building_blocks/ariel_ice_slab.json
 c8a14effc004b99a09bfd245c11051a06fbb28f6 data/spacebreaker/advancement/recipes/building_blocks/ariel_ice_slab_from_ariel_ice_stonecutting.json
 6754d279fb144c57df42cb3960cf2152443405ff data/spacebreaker/advancement/recipes/building_blocks/ariel_ice_stairs.json
@@ -236,6 +236,7 @@ d7ae758d42de52ef0e090bf93c4051aad5c155a9 data/spacebreaker/advancement/recipes/m
 42c0f214afd5d93352bc52e5899184ed0ce93e32 data/spacebreaker/advancement/recipes/tools/plate_press_die.json
 36bd2ab7a5bd35eecce478d7b8253471966c3039 data/spacebreaker/advancement/recipes/tools/rod_press_die.json
 d8078f0970896097e52d93b9f1cb84e8f5abc31a data/spacebreaker/advancement/recipes/tools/wire_press_die.json
+855211d15cdb38673255dd84c69ed8af1190370d data/spacebreaker/advancement/recipes/transportation/pressurized_rover.json
 527a94335a672262a28aa47b2a7a42fa09a9f184 data/spacebreaker/advancement/recipes/transportation/rover.json
 405c9197cf29a5b07b09858db4f6575e13d7067e data/spacebreaker/advancement/recipes/transportation/sprint_rover.json
 c6f070ef2f69b386cd2e68486898e2fa36a6e603 data/spacebreaker/recipe/aluminum_block.json
@@ -491,6 +492,7 @@ fe0c6c62088a21cdf1eb84132c9c4301d2e16d39 data/spacebreaker/recipe/pressing/titan
 88d2eab6f83a4c538f529836f5916a295ff0c337 data/spacebreaker/recipe/pressing/tungsten_plate.json
 f067e304356fd4526a48f95713d0267633ef4318 data/spacebreaker/recipe/pressing/tungsten_rod.json
 046c11ae7fecf343bc92e6f210f47f8c2915fb30 data/spacebreaker/recipe/pressing/tungsten_wire.json
+c68940a4381ad40ce34157be5bb0a761a0255522 data/spacebreaker/recipe/pressurized_rover.json
 03327966a952e34eb915903a81e33fa82a3081fe data/spacebreaker/recipe/pressurized_tank.json
 78b8b8f7ca1debb269a0e9ada1534f714f3178b1 data/spacebreaker/recipe/pumpjack.json
 a65e07466445f717e363f2776a5b1b55e3858c41 data/spacebreaker/recipe/raw_bauxite_block.json

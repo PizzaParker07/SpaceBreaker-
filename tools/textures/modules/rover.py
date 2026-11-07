@@ -321,7 +321,54 @@ def wheel_hub(face, x, y, fw, fh):
     return AL[3]
 
 
-def sheet(glow=False, sprint=False):
+def cabin_roof(face, x, y, fw, fh):
+    if face == 'top':
+        if x in (0, fw - 1) or y in (0, fh - 1):
+            return WHITE[1]
+        return WHITE[3] if y % 8 else WHITE[2]
+    return WHITE[2]
+
+
+def cabin_side(face, x, y, fw, fh):
+    # long side wall: two windows (holes) with a frame, an orange stripe below them
+    if face in ('left', 'right'):
+        if 3 <= y <= 9 and (3 <= x <= 13 or 17 <= x <= 28):
+            if y in (3, 9) or x in (3, 13, 17, 28):
+                return DARK[1]
+            return None
+        if y == 12:
+            return ORANGE
+        if y >= fh - 2:
+            return WHITE[1]
+        return WHITE[3]
+    return WHITE[2]
+
+
+def cabin_front(face, x, y, fw, fh):
+    # wide windscreen in the upper half
+    if face in ('front', 'back'):
+        if 2 <= y <= 11 and 2 <= x <= fw - 3:
+            if y in (2, 11) or x in (2, fw - 3):
+                return DARK[1]
+            return None
+        return WHITE[3] if y < fh - 2 else WHITE[1]
+    return WHITE[2]
+
+
+def cabin_rear(face, x, y, fw, fh):
+    # rear wall: a small hatch window and the hatch outline
+    if face in ('front', 'back'):
+        if 3 <= y <= 8 and 6 <= x <= fw - 7:
+            if y in (3, 8) or x in (6, fw - 7):
+                return DARK[1]
+            return None
+        if (x in (4, fw - 5) and 2 <= y <= 20) or (y in (2, 20) and 4 <= x <= fw - 5):
+            return WHITE[1]
+        return WHITE[3]
+    return WHITE[2]
+
+
+def sheet(glow=False, sprint=False, cabin=False):
     global WHITE, FABRIC
     saved = (WHITE, FABRIC)
     if sprint:
@@ -329,7 +376,13 @@ def sheet(glow=False, sprint=False):
         WHITE = ramp('#2a2d33', '#3a3e46', '#4b5059', '#5d636d', '#727a85')
         FABRIC = ramp('#3a0e0e', '#5a1616', '#7a2020', '#962a26', '#b03a30', '#c64f40')
     try:
-        return _sheet(glow)
+        cv = _sheet(glow)
+        if cabin and not glow:
+            paint(cv, 0, 140, 22, 1, 32, cabin_roof)
+            paint(cv, 110, 140, 1, 23, 32, cabin_side)
+            paint(cv, 180, 140, 20, 23, 1, cabin_front)
+            paint(cv, 180, 170, 20, 23, 1, cabin_rear)
+        return cv
     finally:
         WHITE, FABRIC = saved
 
@@ -381,6 +434,7 @@ def beam():
 
 def export(save):
     save(sheet(sprint=True), 'entity', 'sprint_rover')
+    save(sheet(cabin=True), 'entity', 'pressurized_rover')
     save(sheet(), 'entity', 'rover')
     save(sheet(glow=True), 'entity', 'rover_lights')
     save(beam(), 'entity', 'rover_beam')
@@ -451,3 +505,23 @@ _export_rover_sprint = export
 def export(save):  # noqa: F811
     _export_rover_sprint(save)
     save(sprint_icon(), 'item', 'sprint_rover')
+
+
+def pressurized_icon():
+    """The pressurised rover: the standard chassis under a white cabin with a dark window band."""
+    cv = icon()
+    for x in range(2, 14):
+        for y in range(2, 9):
+            edge = y == 2 or x in (2, 13)
+            cv[x, y] = WHITE[1] if edge else (ST[1] if 4 <= y <= 5 and 3 <= x <= 12 else WHITE[3])
+    for x in range(3, 13):
+        cv[x, 7] = ORANGE
+    return cv
+
+
+_export_rover_cabin = export
+
+
+def export(save):  # noqa: F811
+    _export_rover_cabin(save)
+    save(pressurized_icon(), 'item', 'pressurized_rover')
