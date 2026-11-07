@@ -20,10 +20,13 @@ public final class CompatClient {
     static void stage(RenderLevelStageEvent event) {
         if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_SOLID_BLOCKS) {
             HazePass.captureFog();
+        } else if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) {
+            ShaderSkyPass.captureTranslucentBlocksDepth();
         } else if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_LEVEL) {
             float partialTick = event.getPartialTick().getGameTimeDeltaPartialTick(false);
             ShaderSkyPass.afterLevel(event.getModelViewMatrix(), event.getProjectionMatrix(), partialTick);
             HazePass.afterLevel(event.getModelViewMatrix(), event.getProjectionMatrix(), partialTick);
+            LateEffects.replay(event.getModelViewMatrix(), event.getProjectionMatrix());
         }
     }
 
@@ -47,6 +50,7 @@ public final class CompatClient {
     static void loggingOut(ClientPlayerNetworkEvent.LoggingOut event) {
         ShaderSkyPass.release();
         HazePass.release();
+        LateEffects.clear();
         SpaceSky.reset();
     }
 }

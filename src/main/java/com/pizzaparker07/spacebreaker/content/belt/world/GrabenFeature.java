@@ -50,7 +50,7 @@ public class GrabenFeature extends Feature<GrabenFeature.Config> {
     }
 
     /** Position across (0 = centre line, signed) and along a valley, with a gentle waver of the line. */
-    static double[] local(PlanetTerrain t, Graben g, double x, double z) {
+    public static double[] local(PlanetTerrain t, Graben g, double x, double z) {
         double a = Math.toRadians(g.angleDeg());
         double dx = x - g.x();
         double dz = z + g.latitude() / 90.0 * t.profile().poleDistance();
