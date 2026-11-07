@@ -61,7 +61,7 @@ final class SolarSystemData {
         Map<String, Object> atm = (Map<String, Object>) j.getOrDefault("atmosphere", Map.of());
         Map<String, Object> clim = (Map<String, Object>) j.get("climate");
         Map<String, Double> comp = (Map<String, Double>) (Map<?, ?>) atm.getOrDefault("composition", Map.of());
-        return AstroBody.fromDataUnits(id(p), (String) j.get("parent"), AstroBody.Kind.byName((String) j.get("type")),
+        AstroBody b = AstroBody.fromDataUnits(id(p), (String) j.get("parent"), AstroBody.Kind.byName((String) j.get("type")),
                 d(phys, "mass_kg", 0), d(phys, "radius_km", 0),
                 d(orbit, "semi_major_axis_km", 0), d(orbit, "eccentricity", 0), d(orbit, "inclination_deg", 0),
                 d(orbit, "longitude_ascending_node_deg", 0), d(orbit, "argument_periapsis_deg", 0),
@@ -69,6 +69,8 @@ final class SolarSystemData {
                 d(rot, "day_length_hours", 0), Boolean.TRUE.equals(rot.get("tidally_locked")),
                 d(atm, "pressure_kpa", 0), comp, d(clim, "day_temp_c", 0), d(clim, "night_temp_c", 0),
                 d(j, "albedo", 0.3), j.containsKey("dimension"), d(j, "geometric_albedo", -1));
+        double node = d(orbit, "node_rate_deg_per_year", 0), arg = d(orbit, "periapsis_rate_deg_per_year", 0);
+        return b.orbit() != null && (node != 0 || arg != 0) ? b.withOrbit(b.orbit().withSecularRates(node, arg)) : b;
     }
 
     private static double d(Map<String, Object> m, String k, double def) {

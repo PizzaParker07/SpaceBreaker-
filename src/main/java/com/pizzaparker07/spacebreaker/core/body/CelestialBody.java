@@ -129,7 +129,8 @@ public record CelestialBody(
      * the parent's equator/Laplace plane for moons) and default to 0 when unknown.
      */
     public record Orbit(double semiMajorAxisKm, double eccentricity, double inclinationDeg, double periodDays,
-                        double longitudeAscendingNodeDeg, double argumentPeriapsisDeg, double meanAnomalyDeg) {
+                        double longitudeAscendingNodeDeg, double argumentPeriapsisDeg, double meanAnomalyDeg,
+                        double nodeRateDegPerYear, double periapsisArgRateDegPerYear) {
         public static final Orbit NONE = new Orbit(0, 0, 0, 0);
         public static final Codec<Orbit> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.DOUBLE.fieldOf("semi_major_axis_km").forGetter(Orbit::semiMajorAxisKm),
@@ -138,8 +139,17 @@ public record CelestialBody(
                 Codec.DOUBLE.fieldOf("period_days").forGetter(Orbit::periodDays),
                 Codec.DOUBLE.optionalFieldOf("longitude_ascending_node_deg", 0.0).forGetter(Orbit::longitudeAscendingNodeDeg),
                 Codec.DOUBLE.optionalFieldOf("argument_periapsis_deg", 0.0).forGetter(Orbit::argumentPeriapsisDeg),
-                Codec.DOUBLE.optionalFieldOf("mean_anomaly_deg", 0.0).forGetter(Orbit::meanAnomalyDeg)
+                Codec.DOUBLE.optionalFieldOf("mean_anomaly_deg", 0.0).forGetter(Orbit::meanAnomalyDeg),
+                Codec.DOUBLE.optionalFieldOf("node_rate_deg_per_year", 0.0).forGetter(Orbit::nodeRateDegPerYear),
+                Codec.DOUBLE.optionalFieldOf("periapsis_rate_deg_per_year", 0.0).forGetter(Orbit::periapsisArgRateDegPerYear)
         ).apply(i, Orbit::new));
+
+        /** Orbit without secular precession (kept for code written before the rates existed). */
+        public Orbit(double semiMajorAxisKm, double eccentricity, double inclinationDeg, double periodDays,
+                     double longitudeAscendingNodeDeg, double argumentPeriapsisDeg, double meanAnomalyDeg) {
+            this(semiMajorAxisKm, eccentricity, inclinationDeg, periodDays, longitudeAscendingNodeDeg, argumentPeriapsisDeg,
+                    meanAnomalyDeg, 0, 0);
+        }
 
         /** Orbit without orientation angles (kept for code written before they existed). */
         public Orbit(double semiMajorAxisKm, double eccentricity, double inclinationDeg, double periodDays) {

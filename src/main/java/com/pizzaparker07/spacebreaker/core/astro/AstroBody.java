@@ -40,6 +40,12 @@ public record AstroBody(String id, String parent, Kind kind, double mass, double
         return geometricAlbedo >= 0 ? geometricAlbedo : albedo;
     }
 
+    /** The same body on another orbit. */
+    public AstroBody withOrbit(OrbitalElements o) {
+        return new AstroBody(id, parent, kind, mass, radius, o, rotationPeriod, tidallyLocked, surfacePressureKpa,
+                composition, dayTempK, nightTempK, albedo, landable, geometricAlbedo);
+    }
+
     public enum Kind {
         STAR, TERRESTRIAL, GAS_GIANT, ICE_GIANT, DWARF, MOON, ASTEROID, STATION, COMET;
 

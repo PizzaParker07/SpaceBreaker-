@@ -39,7 +39,7 @@ import java.util.Optional;
 @PrefixGameTestTemplate(false)
 public final class AstroGameTests {
     private static final List<String> BODIES = List.of("sun", "mercury", "venus", "earth", "moon", "mars", "phobos",
-            "deimos", "ceres", "vesta", "bennu", "ryugu", "eros", "itokawa", "churyumov_gerasimenko", "halley", "encke", "jupiter", "io", "europa", "ganymede", "callisto", "saturn", "titan",
+            "deimos", "ceres", "vesta", "bennu", "ryugu", "eros", "itokawa", "churyumov_gerasimenko", "halley", "encke", "hale_bopp", "tempel_1", "jupiter", "io", "europa", "ganymede", "callisto", "saturn", "titan",
             "enceladus", "uranus", "miranda", "ariel", "umbriel", "titania", "oberon", "neptune", "proteus", "triton", "nereid", "pluto", "charon", "nix", "hydra");
 
     @GameTest(template = "empty")
@@ -189,6 +189,28 @@ public final class AstroGameTests {
         helper.assertTrue(moon.iceStable() && Math.abs(moon.psrLatitudeDeg() - 80.5) < 1.5, "lunar cold traps near 80°: " + moon.psrLatitudeDeg());
         helper.assertTrue(!BodyAdapter.polarIllumination(access, "spacebreaker:mars").orElseThrow().iceStable(), "no cold traps on Mars");
         helper.assertTrue(BodyAdapter.polarIllumination(access, "spacebreaker:nowhere").isEmpty(), "unknown body");
+        helper.succeed();
+    }
+
+    /**
+     * Every comet in the astro catalogue is a celestial body, sits in the map's comet group with a card, and shows in
+     * Earth's sky near its perihelion, with no code outside the library naming it (Hale–Bopp and Tempel 1 included).
+     */
+    @GameTest(template = "empty")
+    public static void everyCatalogueCometIsInTheSkyAndOnTheMap(GameTestHelper helper) {
+        Registry<CelestialBody> reg = Bodies.registry(helper.getLevel().registryAccess()).orElseThrow();
+        BodySystem sys = BodyAdapter.system(helper.getLevel().registryAccess()).orElseThrow();
+        var group = com.pizzaparker07.spacebreaker.content.rocketry.nav.StarMapData.moons(com.pizzaparker07.spacebreaker.content.rocketry.nav.StarMapData.COMETS);
+        for (var c : com.pizzaparker07.spacebreaker.core.astro.smallbody.Comet.CATALOGUE) {
+            ResourceLocation id = Spacebreaker.id(c.id());
+            CelestialBody b = reg.getOptional(id).orElseThrow(() -> new AssertionError(c.id() + " has no celestial_body file"));
+            helper.assertTrue(b.type() == BodyType.COMET, c.id() + " is typed comet");
+            helper.assertTrue(group.contains(id), c.id() + " is in the map's comet group: " + group);
+            helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.StarMapData.cometInfo(id, 0).isPresent(), c.id() + " has a map card");
+            double peri = c.perihelionDays() * 86400.0;
+            helper.assertTrue(com.pizzaparker07.spacebreaker.content.worldgen.CometPoints.compute(sys, "spacebreaker:earth", peri).stream()
+                    .anyMatch(s -> s.id().equals(c.id())), c.id() + " is in Earth's sky at perihelion");
+        }
         helper.succeed();
     }
 

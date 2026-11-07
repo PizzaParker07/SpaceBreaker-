@@ -44,7 +44,14 @@ public record Comet(String id, String nameEn, String nameTr, String designation,
     public static final Comet ENCKE = new Comet("encke", "2P/Encke", "2P/Encke", "2P",
             2.2152, 0.8483, 11.78, 334.57, 186.54, 1458.48, 3.5e13, 2.4, 11.0, 0.05, 0.003, 3.0);
 
-    public static final List<Comet> CATALOGUE = List.of(CHURYUMOV_GERASIMENKO, HALLEY, ENCKE);
+    /** C/1995 O1 (Hale–Bopp), the great comet of 1997: a 60 km nucleus on a ≈ 2500-year orbit, perihelion 1997-04-01. */
+    public static final Comet HALE_BOPP = new Comet("hale_bopp", "C/1995 O1 (Hale–Bopp)", "C/1995 O1 (Hale–Bopp)", "C/1995 O1",
+            185.8, 0.99508, 89.43, 282.47, 130.59, -1005.36, 5.7e16, 30.0, 11.35, 0.04, 0.18, 5.0);
+    /** 9P/Tempel 1 (Deep Impact target), 2005 elements, perihelion 2005-07-05. */
+    public static final Comet TEMPEL_1 = new Comet("tempel_1", "9P/Tempel 1", "9P/Tempel 1", "9P",
+            3.122, 0.5175, 10.53, 68.94, 178.84, 2011.8, 4.5e13, 2.83, 40.7, 0.056, 0.055, 1.0);
+
+    public static final List<Comet> CATALOGUE = List.of(CHURYUMOV_GERASIMENKO, HALLEY, ENCKE, HALE_BOPP, TEMPEL_1);
 
     public static Optional<Comet> byId(String id) {
         return CATALOGUE.stream().filter(c -> c.id.equals(id) || c.designation.equalsIgnoreCase(id)).findFirst();
