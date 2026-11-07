@@ -204,4 +204,24 @@ public final class TetherGameTests {
         helper.assertFalse(com.pizzaparker07.spacebreaker.content.suit.ZeroG.needsMicroGravityHint(moon, false, false, false), "the Moon holds you down");
         helper.succeed();
     }
+
+    @GameTest(template = EMPTY)
+    public static void cometsAreMicroGravityAtEveryRealism(GameTestHelper helper) {
+        var access = helper.getLevel().registryAccess();
+        for (String name : new String[]{"churyumov_gerasimenko", "encke", "halley", "bennu", "ryugu", "itokawa"}) {
+            var body = com.pizzaparker07.spacebreaker.core.body.Bodies.get(access, com.pizzaparker07.spacebreaker.core.body.Bodies.key(name));
+            helper.assertTrue(body.isPresent(), "body " + name + " is registered");
+            double real = body.get().physical().surfaceGravity() / com.pizzaparker07.spacebreaker.core.body.CelestialBody.EARTH_GRAVITY;
+            for (var realism : com.pizzaparker07.spacebreaker.core.config.SbConfig.Realism.values()) {
+                double g = realism.scaleGravity(real);
+                helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.ZeroG.needsMicroGravityHint(g, false, false, false),
+                        name + " at " + realism + " (" + g + " g) must warn about drifting off");
+            }
+        }
+        var moon = com.pizzaparker07.spacebreaker.core.body.Bodies.get(access, com.pizzaparker07.spacebreaker.core.body.Bodies.MOON).get();
+        helper.assertFalse(com.pizzaparker07.spacebreaker.content.suit.ZeroG.microGravity(
+                com.pizzaparker07.spacebreaker.core.config.SbConfig.Realism.EASY.scaleGravity(moon.physical().surfaceGravity()
+                        / com.pizzaparker07.spacebreaker.core.body.CelestialBody.EARTH_GRAVITY)), "the Moon is never microgravity");
+        helper.succeed();
+    }
 }
