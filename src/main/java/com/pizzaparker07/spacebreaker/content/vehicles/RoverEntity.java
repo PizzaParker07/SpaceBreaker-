@@ -503,7 +503,43 @@ public class RoverEntity extends Entity implements com.pizzaparker07.spacebreake
         }
     }
 
+    /** Top of the liquid this rover sits in (world y), or NaN when it is not in any. */
+    private double liquidSurface() {
+        BlockPos.MutableBlockPos p = new BlockPos.MutableBlockPos();
+        int y0 = Mth.floor(getY() + 0.2);
+        if (level().getFluidState(p.set(Mth.floor(getX()), y0, Mth.floor(getZ()))).isEmpty()
+                && level().getFluidState(p.set(Mth.floor(getX()), y0 - 1, Mth.floor(getZ()))).isEmpty()) {
+            return Double.NaN;
+        }
+        int y = level().getFluidState(p.set(Mth.floor(getX()), y0, Mth.floor(getZ()))).isEmpty() ? y0 - 1 : y0;
+        while (y < y0 + 4 && !level().getFluidState(p.set(Mth.floor(getX()), y + 1, Mth.floor(getZ()))).isEmpty()) {
+            y++;
+        }
+        var fluid = level().getFluidState(p.set(Mth.floor(getX()), y, Mth.floor(getZ())));
+        return y + fluid.getHeight(level(), p);
+    }
+
+    /** Whether this rover is afloat right now (amphibious types on a liquid). */
+    public boolean afloat() {
+        return afloat;
+    }
+
+    private boolean afloat;
+
+    @Override
+    public boolean isPushedByFluid() {
+        return !roverType.amphibious();
+    }
+
     private void drive() {
+        if (roverType.amphibious()) {
+            double surface = liquidSurface();
+            afloat = !Double.isNaN(surface) && surface > getY() + 0.1;
+            if (afloat) {
+                swim(surface);
+                return;
+            }
+        }
         double g = Environment.gravityFactor(level());
         LivingEntity driver = getControllingPassenger();
         double throttle = 0;
@@ -539,11 +575,45 @@ public class RoverEntity extends Entity implements com.pizzaparker07.spacebreake
         }
     }
 
+    /** Draft of the floating hull below the liquid surface, blocks. */
+    public static final double DRAFT = 0.45;
+
+    /** Afloat: buoyancy holds the hull at its waterline, the propeller pushes, the rudder turns; no tyre grip. */
+    private void swim(double surface) {
+        LivingEntity driver = getControllingPassenger();
+        double throttle = 0;
+        float steer = 0;
+        if (driver != null && energy() > 0) {
+            throttle = Mth.clamp(driver.zza, -1F, 1F);
+            steer = Mth.clamp(driver.xxa, -1F, 1F);
+        }
+        speed = RoverPhysics.swimSpeed(speed, throttle, roverType.swimSpeed());
+        deltaYaw = RoverPhysics.yawChange(speed, steer, 0.6);
+        setYRot(getYRot() + deltaYaw);
+        float yaw = getYRot() * Mth.DEG_TO_RAD;
+        Vec3 v = getDeltaMovement();
+        double vy = RoverPhysics.buoyancy(v.y, surface - DRAFT - getY());
+        // water carries the hull on: it drifts towards the heading rather than turning on the spot
+        double[] h = RoverPhysics.slide(v.x, v.z, -Mth.sin(yaw) * speed, Mth.cos(yaw) * speed, 0.15);
+        setDeltaMovement(h[0], vy, h[1]);
+        move(MoverType.SELF, getDeltaMovement());
+        if (horizontalCollision) {
+            if (speed > 0.02) {
+                // nosing into a bank: the wheels catch the shore and haul the hull up out of the water
+                setDeltaMovement(getDeltaMovement().x, 0.42, getDeltaMovement().z);
+            } else {
+                speed *= 0.5;
+            }
+        }
+    }
+
     private void serverPower(double moved) {
         int fe = energyServer;
         travelled += moved;
         if (travelled >= 0.25) {
-            fe -= RoverPhysics.driveCost(travelled, roverType.fePerBlock());
+            // the driver's client steers the rover, so the server checks for itself whether it is afloat
+            boolean swimming = roverType.amphibious() && !Double.isNaN(liquidSurface()) && liquidSurface() > getY() + 0.1;
+            fe -= RoverPhysics.driveCost(travelled, swimming ? roverType.fePerBlockSwimming() : roverType.fePerBlock());
             travelled = 0;
         }
         if (hasSolar() && level().canSeeSky(blockPosition().above())) {

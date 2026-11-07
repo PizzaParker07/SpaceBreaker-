@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-07T19:36:07.907845979	Recipes
+// 1.21.1	2026-11-07T19:46:20.60106025	Recipes
 9adaaa5be5385cd4ce86f1592ecb1ea66c0c4dce data/spacebreaker/advancement/recipes/building_blocks/ariel_ice_slab.json
 c8a14effc004b99a09bfd245c11051a06fbb28f6 data/spacebreaker/advancement/recipes/building_blocks/ariel_ice_slab_from_ariel_ice_stonecutting.json
 6754d279fb144c57df42cb3960cf2152443405ff data/spacebreaker/advancement/recipes/building_blocks/ariel_ice_stairs.json
@@ -236,6 +236,7 @@ d7ae758d42de52ef0e090bf93c4051aad5c155a9 data/spacebreaker/advancement/recipes/m
 42c0f214afd5d93352bc52e5899184ed0ce93e32 data/spacebreaker/advancement/recipes/tools/plate_press_die.json
 36bd2ab7a5bd35eecce478d7b8253471966c3039 data/spacebreaker/advancement/recipes/tools/rod_press_die.json
 d8078f0970896097e52d93b9f1cb84e8f5abc31a data/spacebreaker/advancement/recipes/tools/wire_press_die.json
+e4880085d7d8998e36e00d31fe2859561eb580a6 data/spacebreaker/advancement/recipes/transportation/amphibious_rover.json
 855211d15cdb38673255dd84c69ed8af1190370d data/spacebreaker/advancement/recipes/transportation/pressurized_rover.json
 527a94335a672262a28aa47b2a7a42fa09a9f184 data/spacebreaker/advancement/recipes/transportation/rover.json
 405c9197cf29a5b07b09858db4f6575e13d7067e data/spacebreaker/advancement/recipes/transportation/sprint_rover.json
@@ -256,6 +257,7 @@ e1b48c82ac402417e24b269994325e77c484228c data/spacebreaker/recipe/aluminum_lithi
 80e86b217e65af88897fcf8b98c9f3bf9d23cb1f data/spacebreaker/recipe/aluminum_nuggets.json
 f03ccaa56d9650b4584445024732de214d2995c4 data/spacebreaker/recipe/aluminum_plate_by_hand.json
 5ee14573c930299d405c362d79e8e026b178774f data/spacebreaker/recipe/ammonia_crystal_from_smelting_ammonia_hydrate_ore.json
+11ffa848d3288330e2992832ee11a96b442af46c data/spacebreaker/recipe/amphibious_rover.json
 7d9e4866e2947c8841978540c20f8b823280fd86 data/spacebreaker/recipe/arc_furnace.json
 e13e365ddc822841a37c31a27d27dec17c91eeae data/spacebreaker/recipe/arc_smelting/aluminum_from_dust.json
 e49e705bca6f20f76727255316af71c9fe5991c9 data/spacebreaker/recipe/arc_smelting/aluminum_lithium.json

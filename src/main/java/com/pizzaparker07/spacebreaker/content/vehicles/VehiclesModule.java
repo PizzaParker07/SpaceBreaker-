@@ -41,10 +41,20 @@ public final class VehiclesModule implements SbModule {
     public static final DeferredItem<RoverItem> PRESSURIZED_ROVER_ITEM = ITEMS.registerItem("pressurized_rover",
             p -> new RoverItem(p, PRESSURIZED_ROVER), new Item.Properties().stacksTo(1));
 
+    /** Pressurised cabin on a floating hull: water and Titan's methane lakes. */
+    public static final DeferredHolder<EntityType<?>, EntityType<RoverEntity>> AMPHIBIOUS_ROVER = ENTITIES.register("amphibious_rover",
+            () -> EntityType.Builder.<RoverEntity>of(RoverEntity::new, MobCategory.MISC).sized(2.3F, 1.9F).clientTrackingRange(10)
+                    .build("amphibious_rover"));
+    public static final DeferredItem<RoverItem> AMPHIBIOUS_ROVER_ITEM = ITEMS.registerItem("amphibious_rover",
+            p -> new RoverItem(p, AMPHIBIOUS_ROVER), new Item.Properties().stacksTo(1));
+
     /** The stats behind an entity type (the standard rover for anything unknown). */
     public static RoverType typeOf(EntityType<?> type) {
         if (type == SPRINT_ROVER.get()) {
             return RoverType.SPRINT;
+        }
+        if (type == AMPHIBIOUS_ROVER.get()) {
+            return RoverType.AMPHIBIOUS;
         }
         return type == PRESSURIZED_ROVER.get() ? RoverType.PRESSURIZED : RoverType.STANDARD;
     }
@@ -52,6 +62,9 @@ public final class VehiclesModule implements SbModule {
     public static Item itemOf(RoverType type) {
         if (type == RoverType.SPRINT) {
             return SPRINT_ROVER_ITEM.get();
+        }
+        if (type == RoverType.AMPHIBIOUS) {
+            return AMPHIBIOUS_ROVER_ITEM.get();
         }
         return type == RoverType.PRESSURIZED ? PRESSURIZED_ROVER_ITEM.get() : ROVER_ITEM.get();
     }
@@ -68,6 +81,7 @@ public final class VehiclesModule implements SbModule {
         com.pizzaparker07.spacebreaker.core.SbTabs.SPACEFLIGHT.add(ROVER_ITEM);
         com.pizzaparker07.spacebreaker.core.SbTabs.SPACEFLIGHT.add(SPRINT_ROVER_ITEM);
         com.pizzaparker07.spacebreaker.core.SbTabs.SPACEFLIGHT.add(PRESSURIZED_ROVER_ITEM);
+        com.pizzaparker07.spacebreaker.core.SbTabs.SPACEFLIGHT.add(AMPHIBIOUS_ROVER_ITEM);
     }
 
     @Override
@@ -81,6 +95,10 @@ public final class VehiclesModule implements SbModule {
         lang.add("entity.spacebreaker.pressurized_rover", "Pressurized Rover", "Basınçlı Gezici");
         lang.add("tooltip.spacebreaker.pressurized_rover", "Closed cabin: no helmet needed aboard. %s m/s, long range, half the radiation. Fill its oxygen from a tank, a pipe or a canister",
                 "Kapalı kabin: içeride kask gerekmez. %s m/s, uzun menzil, radyasyonun yarısı. Oksijenini tanktan, borudan ya da tüple doldur");
+        lang.item(AMPHIBIOUS_ROVER_ITEM, "Amphibious Rover", "Amfibi Gezici");
+        lang.add("entity.spacebreaker.amphibious_rover", "Amphibious Rover", "Amfibi Gezici");
+        lang.add("tooltip.spacebreaker.amphibious_rover", "Pressurized cabin on a floating hull: drives into water or liquid methane and sails on at %s m/s",
+                "Yüzen gövde üstünde basınçlı kabin: suya ya da sıvı metana girer, %s m/s ile yüzerek devam eder");
         lang.add("message.spacebreaker.rover.cabin_o2", "Cabin oxygen: %s%%", "Kabin oksijeni: %%%s");
         lang.add("hud.spacebreaker.rover.cabin", "Cabin O₂ %s%%", "Kabin O₂ %%%s");
         lang.add("hud.spacebreaker.rover.cabin_empty", "Cabin unpressurized", "Kabin basınçsız");
@@ -93,7 +111,7 @@ public final class VehiclesModule implements SbModule {
         lang.add("hud.spacebreaker.rover.battery", "Battery %s%%", "Akü %%%s");
         lang.add("hud.spacebreaker.rover.speed", "%s m/s", "%s m/s");
         lang.add("hud.spacebreaker.rover.solar", "Solar", "Güneş");
-        lang.add("message.spacebreaker.rover.whirl_cleaned", "A dust whirl swept the roof panel clean", "Bir toz hortumu tavan panelini temizledi");
+        lang.add("message.spacebreaker.rover.whirl_cleaned", "A dust whirl swept the solar panel clean", "Bir toz hortumu güneş panelini temizledi");
         lang.add("hud.spacebreaker.rover.solar_dusty", "Solar (dust %s%%)", "Güneş (toz %%%s)");
         lang.add("hud.spacebreaker.rover.rtg", "RTG", "RTG");
         lang.add("hud.spacebreaker.rover.empty", "Battery empty", "Akü boş");
@@ -123,5 +141,13 @@ public final class VehiclesModule implements SbModule {
                 .define('R', ROVER_ITEM.get()).define('O', com.pizzaparker07.spacebreaker.content.suit.SuitModule.OXYGEN_DISTRIBUTOR_ITEM.get())
                 .unlockedBy("has_rover", net.minecraft.advancements.critereon.InventoryChangeTrigger.TriggerInstance.hasItems(ROVER_ITEM.get()))
                 .save(out, com.pizzaparker07.spacebreaker.Spacebreaker.id("pressurized_rover"));
+        // the amphibious rover: the pressurised one on sealed aluminium floats with a stern propeller
+        ShapedRecipeBuilder.shaped(RecipeCategory.TRANSPORTATION, AMPHIBIOUS_ROVER_ITEM.get())
+                .pattern("AMA").pattern("ARA").pattern("AAA")
+                .define('A', EarthModule.ALUMINUM.plateTag).define('M', EarthModule.ELECTRIC_MOTOR.get())
+                .define('R', PRESSURIZED_ROVER_ITEM.get())
+                .unlockedBy("has_pressurized_rover", net.minecraft.advancements.critereon.InventoryChangeTrigger.TriggerInstance.hasItems(
+                        PRESSURIZED_ROVER_ITEM.get()))
+                .save(out, com.pizzaparker07.spacebreaker.Spacebreaker.id("amphibious_rover"));
     }
 }
