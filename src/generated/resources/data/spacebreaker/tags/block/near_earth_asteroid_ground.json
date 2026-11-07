@@ -7,6 +7,8 @@
     "spacebreaker:eros_regolith",
     "spacebreaker:eros_chondrite",
     "spacebreaker:itokawa_gravel",
-    "spacebreaker:itokawa_rock"
+    "spacebreaker:itokawa_rock",
+    "spacebreaker:comet_dust",
+    "spacebreaker:comet_ice"
   ]
 }

@@ -33,3 +33,6 @@ def generate():
     simple_block('eros_chondrite')
     soil('itokawa_gravel')
     simple_block('itokawa_rock')
+    soil('comet_dust')
+    simple_block('comet_ice')
+    simple_block('comet_jet')

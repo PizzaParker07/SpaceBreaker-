@@ -230,6 +230,13 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Zindanlar | Düşmüş İkmal İniş Aracı (Bennu, Ryugu, Eros, Itokawa) → Mikro Yerçekiminde Madencilik / Spektroskopi |
 | 🎨 | Ortak yüzey özelliği | enlem sırtı (`latitude_ridge`): bir enlem çizgisi boyunca gövdeyi saran yükselti (Ryugu, Bennu) |
 
+### Kuyruklu yıldızlar (ortak `TinyWorld` paketi)
+| Durum | İçerik | Not |
+|---|---|---|
+| 🎨 | 67P/Çuryumov-Gerasimenko `spacebreaker:churyumov_gerasimenko` | ~4 km'lik iki loblu çekirdek; kömürden koyu toz kabuğunun altında buz; güneş tepedeyken açık gökyüzündeki jet ağızlarından ince gaz/toz sütunları yükselir (yalnız görsel, istemci tarafı: hasar ya da itme yok, FPS'e yük bindirmez); buzu yakıt için suya eritilebilir |
+| 🎨 | Bloklar | Kuyruklu Yıldız Tozu (kalıcı ayak izi), Kuyruklu Yıldız Buzu, Kuyruklu Yıldız Jeti |
+| 🎨 | Zindan | Düşmüş İkmal İniş Aracı (67P) → Mikro Yerçekiminde Madencilik / Spektroskopi |
+
 ### Jüpiter uyduları
 | Durum | İçerik | Not |
 |---|---|---|

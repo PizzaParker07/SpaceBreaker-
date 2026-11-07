@@ -369,7 +369,44 @@ def itokawa_rock():
     return cv
 
 
+
+# --------------------------------------------------------------------------- comets
+
+def comet_dust(v=0):
+    return dust(P.COMET_DUST, 20101 + v * 29)
+
+
+def comet_ice():
+    """Dirty comet ice: dark, with pale specks of clean ice showing through."""
+    r = P.COMET_ICE
+    f = blend((clustered(16, 16, 20201, passes=1), 0.55), (white(20202), 0.3), (fbm(16, 16, 20203, [(8, 1.0)]), 0.15))
+    cv, _ = quant(f, [r[0], r[1], r[2], r[3], r[4], r[5]], [14, 30, 30, 14, 8, 4])
+    return cv
+
+
+def comet_jet():
+    """A jet vent: dark dirty ice round a pale, frosty mouth of fresh ice."""
+    r = P.COMET_ICE
+    cv = comet_ice()
+    for y in range(16):
+        for x in range(16):
+            d = ((x - 7.5) ** 2 + (y - 7.5) ** 2) ** 0.5
+            if d < 2.2:
+                cv[x, y] = r[5]
+            elif d < 3.6:
+                cv[x, y] = r[3] if (x + y) % 2 else r[4]
+    return cv
+
+
 def export(save):
+    for name, fn, r in (('comet_dust', comet_dust, P.COMET_DUST),):
+        base = fn(0)
+        save(base, 'block', name, (18, 8, 64, None))
+        save(fn(1), 'block', name + '_1', (18, 8, 64, None))
+        for side in ('left', 'right'):
+            save(footprint(base, prints(r), side), 'block', f'{name}_footprint_{side}', (22, 8, 64, None))
+    save(comet_ice(), 'block', 'comet_ice', (60, 14, 10, None))
+    save(comet_jet(), 'block', 'comet_jet', (30, 10, 30, None))
     for name, fn, r in (('bennu_regolith', bennu_regolith, P.BENNU_SOIL),):
         base = fn(0)
         save(base, 'block', name, (18, 8, 64, None))

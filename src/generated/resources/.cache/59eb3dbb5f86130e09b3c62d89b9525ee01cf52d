@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-07T10:59:58.615244189	Loot Tables
+// 1.21.1	2026-11-07T12:09:37.522085609	Loot Tables
 c48f71ca60600cd6230f77a2e146a3df572494ae data/spacebreaker/loot_table/blocks/aerogel.json
 e37973997ec83c5b040a31bf9fcda1757b53fc00 data/spacebreaker/loot_table/blocks/airlock_door.json
 c511e60fe01f6dddc2d2b0e516ca81c11bf4ca91 data/spacebreaker/loot_table/blocks/aluminum_block.json
@@ -47,6 +47,9 @@ dd8aa76dcba32269bcecf36418d03ae0fe813ddb data/spacebreaker/loot_table/blocks/che
 7726df794fe42d62f0e86690636a8c8b5593b9c0 data/spacebreaker/loot_table/blocks/chromite_ore.json
 78a0939fbda4cfe319b84213be0dec91d325562a data/spacebreaker/loot_table/blocks/co2_frost.json
 b19907a06263c8a72cb470b659f0bd73bd6a3eee data/spacebreaker/loot_table/blocks/combustion_generator.json
+0779491482e10d418e99536fdd14cf2e22c8a401 data/spacebreaker/loot_table/blocks/comet_dust.json
+8dedc00840634d9f47e57c7586d29e7a33b6328a data/spacebreaker/loot_table/blocks/comet_ice.json
+f793a0a5c23d6fdf98d3d5940590c109b3186821 data/spacebreaker/loot_table/blocks/comet_jet.json
 129cf68c727319f0de4d91a2b6d39d3bbf1227c0 data/spacebreaker/loot_table/blocks/composite_panel.json
 7a3847154b5a8aa5cac2e4a9419788189d7d2b18 data/spacebreaker/loot_table/blocks/copper_cable.json
 8112caec37f1845712fe976de80aa6f19d0a5ff2 data/spacebreaker/loot_table/blocks/crew_access_arm.json

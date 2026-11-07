@@ -20,6 +20,7 @@
     "spacebreaker:oberon",
     "spacebreaker:nix",
     "spacebreaker:hydra",
-    "spacebreaker:nereid"
+    "spacebreaker:nereid",
+    "spacebreaker:churyumov_gerasimenko"
   ]
 }

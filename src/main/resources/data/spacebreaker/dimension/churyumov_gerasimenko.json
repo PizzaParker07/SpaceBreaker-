@@ -1,0 +1,13 @@
+{
+  "type": "spacebreaker:churyumov_gerasimenko",
+  "generator": {
+    "type": "spacebreaker:planet",
+    "terrain": "spacebreaker:churyumov_gerasimenko",
+    "biome_source": {
+      "type": "spacebreaker:planet",
+      "highlands": "spacebreaker:churyumov_gerasimenko_plains",
+      "crater": "spacebreaker:churyumov_gerasimenko_crater",
+      "polar": "spacebreaker:churyumov_gerasimenko_polar"
+    }
+  }
+}

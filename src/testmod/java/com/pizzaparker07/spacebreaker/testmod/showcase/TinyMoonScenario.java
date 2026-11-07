@@ -37,6 +37,18 @@ final class TinyMoonScenario extends OuterShowcase {
             double z = -extraLatitude / 90.0 * t.profile().poleDistance();
             look(level, "03_" + extra, extraX + 200, z + 60, 20, extraX, z, at(0.12), 240, MoonScenario::farView);
         }
+        if (world == com.pizzaparker07.spacebreaker.content.belt.Comets.CHURYUMOV) {
+            // a cluster of jets in noon sunlight, seen from a few blocks away
+            int gx = 60;
+            int gz = -40;
+            for (int[] o : new int[][]{{0, 0}, {3, 1}, {-2, 3}}) {
+                int y = (int) ground(level, gx + o[0], gz + o[1]);
+                level.setBlock(new net.minecraft.core.BlockPos(gx + o[0], y, gz + o[1]),
+                        com.pizzaparker07.spacebreaker.content.belt.Comets.JET.get().defaultBlockState(), 3);
+            }
+            double y = ground(level, gx + 7, gz - 7) + 2.6;
+            shot("03_comet_jets", gx + 7.5, y, gz - 6.5, MoonScenario.yaw(-7, 7), 10F, 160, at(0.25), null);
+        }
         lander(level, LanderPiece.Variant.valueOf(world.name.toUpperCase(Locale.ROOT)), "04_crashed_lander", 0.12);
     }
 }

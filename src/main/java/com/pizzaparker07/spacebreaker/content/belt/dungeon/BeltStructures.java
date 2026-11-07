@@ -91,6 +91,7 @@ public final class BeltStructures {
             case RYUGU -> java.util.List.of(com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.RYUGU.plains);
             case EROS -> java.util.List.of(com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.EROS.plains);
             case ITOKAWA -> java.util.List.of(com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.ITOKAWA.plains);
+            case CHURYUMOV_GERASIMENKO -> java.util.List.of(com.pizzaparker07.spacebreaker.content.belt.Comets.CHURYUMOV.plains);
             case TRITON -> java.util.List.of(com.pizzaparker07.spacebreaker.content.neptune.NeptuneData.TRITON_CANTALOUPE,
                     com.pizzaparker07.spacebreaker.content.neptune.NeptuneData.TRITON_POLAR);
             case PLUTO -> java.util.List.of(com.pizzaparker07.spacebreaker.content.pluto.PlutoData.PLUTO_PLAINS);
