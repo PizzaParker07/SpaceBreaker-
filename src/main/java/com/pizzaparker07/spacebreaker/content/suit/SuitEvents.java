@@ -82,10 +82,12 @@ public final class SuitEvents {
         PRESSURE_SOURCES.add(source);
     }
 
-    /** Is the player inside a pressurised room (oxygen distributor: station module, base) or a registered cabin? */
+    /**
+     * Is the player inside a pressurised space: any registered Environment oxygen source at the head (oxygen
+     * distributor rooms, a crew capsule, ...) or a registered pressure source?
+     */
     public static boolean pressurisedAt(Player player) {
-        if (com.pizzaparker07.spacebreaker.content.suit.block.SealedRooms.providesOxygen(player.level(),
-                BlockPos.containing(player.getEyePosition()))) {
+        if (Environment.suppliedOxygen(player.level(), BlockPos.containing(player.getEyePosition()))) {
             return true;
         }
         for (var source : PRESSURE_SOURCES) {

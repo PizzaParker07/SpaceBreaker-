@@ -127,4 +127,17 @@ public final class StationAirGameTests {
         helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.SuitEvents.pressurisedAt(p), "a registered cabin is pressurised");
         helper.succeed();
     }
+
+    @GameTest(template = "empty")
+    public static void environmentOxygenSourceCountsAsPressurised(GameTestHelper helper) {
+        Player p = helper.makeMockPlayer(GameType.SURVIVAL);
+        BlockPos marker = helper.absolutePos(new BlockPos(1, 1, 1));
+        p.setPos(marker.getX() + 0.5, marker.getY() - 1, marker.getZ() + 0.5);
+        helper.assertFalse(com.pizzaparker07.spacebreaker.content.suit.SuitEvents.pressurisedAt(p), "open air is not a pressurised cabin");
+        // a cabin-like source: air wherever a beacon block marks it (stands in for rocketry's crew capsule)
+        com.pizzaparker07.spacebreaker.core.env.Environment.addOxygenSource((level, pos) -> level.getBlockState(pos).is(Blocks.BEACON));
+        helper.setBlock(new BlockPos(1, 1, 1), Blocks.BEACON);
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.SuitEvents.pressurisedAt(p), "an Environment oxygen source counts");
+        helper.succeed();
+    }
 }
