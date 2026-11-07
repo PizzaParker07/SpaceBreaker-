@@ -1110,12 +1110,12 @@ public final class RocketryGameTests {
         helper.assertTrue(level.getBlockState(west).is(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.BATTERY_BANK.block().get())
                 && level.getBlockState(west.above()).is(RocketryModule.STATION_HATCH.get()), "battery in the mouth, hatches around it");
         int arrays = 0;
-        for (int k = 1; k <= 6; k++) {
-            if (level.getBlockState(west.relative(Direction.EAST, k).above()).is(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.SOLAR_ARRAY.get())) {
+        for (BlockPos q : BlockPos.betweenClosed(west.offset(1, -1, -1), west.offset(7, 2, 1))) {
+            if (level.getBlockState(q).is(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.SOLAR_ARRAY.get())) {
                 arrays++;
             }
         }
-        helper.assertTrue(arrays == 3, "three solar arrays: " + arrays);
+        helper.assertTrue(arrays == 4, "two solar arrays on each side of the boom: " + arrays);
         // one sealed room: core + quarters (+ the passage up to the airlock's inner door)
         BlockPos dist = centre.relative(forward.getOpposite(), 2).relative(forward.getClockWise(), -2).above();
         helper.succeedWhen(() -> {

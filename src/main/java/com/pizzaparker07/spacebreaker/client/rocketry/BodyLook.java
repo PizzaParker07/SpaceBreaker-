@@ -66,7 +66,8 @@ final class BodyLook {
         }
         // pole along the horizon, longitude 0 facing up at the viewer: we look down on the tropics
         var pose = new BlockyBodyRenderer.Pose(center, radius, new Vector3f(0, 0, 1), new Vector3f(0, 1, 0), spin * (float) (Math.PI * 2));
-        BlockyBodyRenderer.draw(modelView, st, 0, map(body), pose, sun, 0.05F, 1F, alpha, null);
+        // close below an orbit: up to the finest level, or the steps show as big bands
+        BlockyBodyRenderer.draw(modelView, st, BlockyBodyRenderer.APPROACH, map(body), pose, sun, 0.05F, 1F, alpha, null);
         // no air shell: seen face-on it washes the whole planet out; the colours carry the atmosphere
         return true;
     }

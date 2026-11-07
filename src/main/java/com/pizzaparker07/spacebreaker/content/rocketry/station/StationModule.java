@@ -220,14 +220,20 @@ public enum StationModule {
                         .setValue(net.minecraft.world.level.block.BarrelBlock.FACING, forward.getOpposite()), 3);
             }
         } else if (this == HABITATION) {
+            // three sleeping pods along the left wall: a bunk in an alcove between grey partitions, a light above
             for (int f : new int[]{2, 4, 6}) {
                 level.setBlock(at(wall, forward, -2, -down + 1, f), RocketryModule.STATION_BUNK.get().defaultBlockState()
                         .setValue(HorizontalDirectionalBlock.FACING, forward), 3);
-                // a locker set into the wall beside each bunk
-                level.setBlock(at(wall, forward, -halfWidth, -down + 1, f + 1), Blocks.BARREL.defaultBlockState()
-                        .setValue(net.minecraft.world.level.block.BarrelBlock.FACING, right), 3);
+                for (int side : new int[]{-1, 1}) {
+                    for (int u = -down + 1; u <= 0; u++) {
+                        level.setBlock(at(wall, forward, -2, u, f + side), trim(), 3);
+                    }
+                }
+                level.setBlock(at(wall, forward, -halfWidth, 0, f), light(), 3);
             }
             level.setBlock(at(wall, forward, 2, -down + 1, length - 2), Blocks.BARREL.defaultBlockState()
+                    .setValue(net.minecraft.world.level.block.BarrelBlock.FACING, right.getOpposite()), 3);
+            level.setBlock(at(wall, forward, 2, -down + 1, length - 3), Blocks.BARREL.defaultBlockState()
                     .setValue(net.minecraft.world.level.block.BarrelBlock.FACING, right.getOpposite()), 3);
             level.setBlock(at(wall, forward, 2, -down + 1, 2), com.pizzaparker07.spacebreaker.content.machines.MachinesModule.POWER_MONITOR.get()
                     .defaultBlockState(), 3);
@@ -402,19 +408,35 @@ public enum StationModule {
         }
     }
 
-    /** Solar wings at a mouth: battery in the mouth's middle (output inwards), a cable truss and three arrays. */
+    /**
+     * Solar wings at a mouth: a battery bank in the mouth's middle (output inwards), a grey rotary joint collar, then a
+     * lattice boom (grate above and below a copper cable) with two solar arrays on each side.
+     */
     private static void buildWings(ServerLevel level, BlockPos mouth, Direction facing) {
         level.setBlock(mouth, com.pizzaparker07.spacebreaker.content.machines.MachinesModule.BATTERY_BANK.block().get().defaultBlockState()
                 .setValue(com.pizzaparker07.spacebreaker.content.machines.base.MachineBlock.FACING, facing.getOpposite()), 3);
         BlockState cable = com.pizzaparker07.spacebreaker.content.machines.MachinesModule.COPPER_CABLE.get().defaultBlockState();
         BlockState array = com.pizzaparker07.spacebreaker.content.machines.MachinesModule.SOLAR_ARRAY.get().defaultBlockState();
+        BlockState lattice = com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.GRATE.get().defaultBlockState();
+        Direction across = facing.getClockWise();
         for (int k = 1; k <= SOLAR_WINGS.length; k++) {
             BlockPos p = mouth.relative(facing, k);
-            level.setBlock(p, Block.updateFromNeighbourShapes(cable, level, p), 3);
-            if (k % 2 == 0) {
-                level.setBlock(p.above(), array, 3);
+            level.setBlock(p, cable, 3);
+            if (k == 1) {
+                // the rotary joint: a grey collar round the cable
+                for (BlockPos q : new BlockPos[]{p.above(), p.below(), p.relative(across), p.relative(across.getOpposite())}) {
+                    level.setBlock(q, trim(), 3);
+                }
+                continue;
+            }
+            level.setBlock(p.above(), lattice, 3);
+            level.setBlock(p.below(), lattice, 3);
+            if (k == 3 || k == 5) {
+                level.setBlock(p.relative(across), array, 3);
+                level.setBlock(p.relative(across.getOpposite()), array, 3);
             }
         }
+        level.setBlock(mouth.relative(facing, SOLAR_WINGS.length + 0).above(2), Blocks.END_ROD.defaultBlockState(), 3);
         for (int k = 1; k <= SOLAR_WINGS.length; k++) {
             BlockPos p = mouth.relative(facing, k);
             level.setBlock(p, Block.updateFromNeighbourShapes(level.getBlockState(p), level, p), 3);
