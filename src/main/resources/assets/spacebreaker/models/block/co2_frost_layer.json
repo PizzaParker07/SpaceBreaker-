@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/carpet",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "wool": "spacebreaker:block/co2_frost_layer",
+    "particle": "spacebreaker:block/co2_frost_layer"
+  }
+}

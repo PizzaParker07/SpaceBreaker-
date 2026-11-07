@@ -55,6 +55,10 @@ public final class MarsModule implements SbModule {
     public static final DeferredBlock<MarsSoilBlock> PERCHLORATE_SOIL = soil("perchlorate_soil", MapColor.TERRACOTTA_ORANGE, SoundType.SAND, 0.6F);
     public static final DeferredBlock<MarsSoilBlock> MARTIAN_CLAY = soil("martian_clay", MapColor.TERRACOTTA_WHITE, SoundType.MUD, 0.8F);
     public static final DeferredBlock<MarsSoilBlock> CO2_FROST = soil("co2_frost", MapColor.SNOW, SoundType.SNOW, 0.5F);
+    /** Thin seasonal CO₂ frost on the ground (see MarsSeasons). */
+    public static final DeferredBlock<CO2FrostLayerBlock> CO2_FROST_LAYER = KIT.block("co2_frost_layer", CO2FrostLayerBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.SNOW).instabreak().sound(SoundType.SNOW).noCollission()
+                    .pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY));
 
     // ------------------------------------------------------------------ sands (fall like vanilla sand)
 
@@ -160,6 +164,7 @@ public final class MarsModule implements SbModule {
         NeoForge.EVENT_BUS.addListener(LevelTickEvent.Post.class, e -> {
             if (e.getLevel() instanceof ServerLevel level) {
                 MarsWeather.tick(level);
+                MarsSeasons.tick(level);
             }
         });
         NeoForge.EVENT_BUS.addListener(PlayerEvent.PlayerLoggedInEvent.class, e -> {
@@ -190,6 +195,19 @@ public final class MarsModule implements SbModule {
                     return 1;
                 }))
                 .then(Commands.literal("stop").executes(ctx -> storm(ctx.getSource(), 0F)))));
+        event.getDispatcher().register(Commands.literal("spacebreaker").then(Commands.literal("season")
+                .requires(s -> s.hasPermission(2))
+                .then(Commands.argument("ls", com.mojang.brigadier.arguments.DoubleArgumentType.doubleArg(0, 360)).executes(ctx -> {
+                    if (ctx.getSource().getLevel().dimension() != MARS) {
+                        ctx.getSource().sendFailure(Component.translatable("commands.spacebreaker.season.none"));
+                        return 0;
+                    }
+                    double ls = com.mojang.brigadier.arguments.DoubleArgumentType.getDouble(ctx, "ls");
+                    MarsSeasons.setLs(ctx.getSource().getLevel(), ls);
+                    ctx.getSource().sendSuccess(() -> Component.translatable("commands.spacebreaker.season.set", Math.round(ls),
+                            Component.translatable("message.spacebreaker.mars_season." + MarsSeasons.season(ls))), true);
+                    return 1;
+                }))));
     }
 
     private static int storm(net.minecraft.commands.CommandSourceStack src, float strength) {
@@ -243,6 +261,17 @@ public final class MarsModule implements SbModule {
                 "Toz fırtınası geldi: Güneş karardı, izler siliniyor.");
         lang.add("message.spacebreaker.duststorm.clear", "The storm is dying down; the sky will clear.", "Fırtına diniyor; gökyüzü açılacak.");
         lang.add("message.spacebreaker.panel_brushed", "You brush the dust off the panel", "Paneldeki tozu fırçayla temizledin");
+        lang.block(CO2_FROST_LAYER, "Seasonal CO₂ Frost", "Mevsimsel CO₂ Kırağısı");
+        lang.add("message.spacebreaker.mars_season.0", "Spring in the north: the northern frost turns back to gas, the southern cap begins to grow",
+                "Kuzeyde ilkbahar: kuzeydeki kırağı yeniden gaza dönüşüyor, güney başlığı büyümeye başlıyor");
+        lang.add("message.spacebreaker.mars_season.1", "Summer in the north, winter in the south: the southern polar cap spreads toward the equator",
+                "Kuzeyde yaz, güneyde kış: güney kutup başlığı ekvatora doğru yayılıyor");
+        lang.add("message.spacebreaker.mars_season.2", "Autumn in the north: frost returns to the northern nights",
+                "Kuzeyde sonbahar: kırağı kuzeyin gecelerine geri dönüyor");
+        lang.add("message.spacebreaker.mars_season.3", "Winter in the north: the air freezes onto the ground, the northern polar cap spreads south",
+                "Kuzeyde kış: hava donup yere yağıyor, kuzey kutup başlığı güneye yayılıyor");
+        lang.add("commands.spacebreaker.season.set", "Mars season set to Ls %s° (%s)", "Mars mevsimi Ls %s° olarak ayarlandı (%s)");
+        lang.add("commands.spacebreaker.season.none", "Seasons are only modelled on Mars", "Mevsimler yalnızca Mars'ta modellenir");
         lang.add("commands.spacebreaker.duststorm.none", "This world has no dust storms", "Bu dünyada toz fırtınası olmaz");
         MarsData.translations(lang);
         com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.translations(lang);
@@ -261,6 +290,7 @@ public final class MarsModule implements SbModule {
         loot.self(GYPSUM_BLOCK.get());
         loot.self(MARTIAN_ICE.get());
         loot.self(DUSTY_ICE.get());
+        loot.custom(CO2_FROST_LAYER.get(), b -> net.minecraft.world.level.storage.loot.LootTable.lootTable()); // sublimates
         loot.custom(DRY_ICE.get(), b -> net.minecraft.world.level.storage.loot.LootTable.lootTable()); // sublimates: needs silk touch
         loot.ore(HEMATITE_ORE.get(), RAW_HEMATITE.get());
         loot.ore(GYPSUM_ORE.get(), GYPSUM_CRYSTAL.get());

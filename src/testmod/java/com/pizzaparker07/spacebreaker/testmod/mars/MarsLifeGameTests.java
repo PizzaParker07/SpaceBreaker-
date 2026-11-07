@@ -384,6 +384,85 @@ public final class MarsLifeGameTests {
         });
     }
 
+    /** A passing dust whirl sweeps a dusty solar panel clean; a brush wipes another by hand. */
+    @GameTest(template = EMPTY, timeoutTicks = 100)
+    public static void whirlAndBrushCleanRealPanels(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos near = new BlockPos(1, 2, 1);
+        BlockPos far = new BlockPos(1, 2, 6);
+        BlockPos brushed = new BlockPos(4, 2, 6);
+        for (BlockPos p : new BlockPos[]{near, far, brushed}) {
+            helper.setBlock(p, com.pizzaparker07.spacebreaker.content.machines.MachinesModule.SOLAR_PANEL.get());
+            panel(helper, p).setDust(1F);
+        }
+        var whirl = com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.spawnWhirl(level, helper.absolutePos(new BlockPos(2, 1, 1)));
+        helper.assertTrue(whirl != null, "a whirl forms");
+        whirl.setHeading((float) Math.PI); // drifting slowly away from the far panel
+        com.pizzaparker07.spacebreaker.content.mars.PanelDust.brush(level, helper.absolutePos(brushed), panel(helper, brushed));
+        helper.assertTrue(panel(helper, brushed).dust() == 0F, "the brush wipes the panel");
+        helper.runAfterDelay(15, () -> {
+            helper.assertTrue(panel(helper, near).dust() == 0F, "the whirl swept the panel it passed, dust " + panel(helper, near).dust());
+            helper.assertTrue(panel(helper, far).dust() == 1F, "a panel out of its reach stays dusty");
+            float covered = com.pizzaparker07.spacebreaker.content.machines.SolarPanelBlockEntity.dustFactor(1F);
+            helper.assertTrue(Math.abs(covered - 0.6F) < 1e-6, "a fully dusty panel gives 60 %, got " + covered);
+            whirl.discard();
+            helper.succeed();
+        });
+    }
+
+    private static com.pizzaparker07.spacebreaker.content.machines.SolarPanelBlockEntity panel(GameTestHelper helper, BlockPos rel) {
+        if (helper.getBlockEntity(rel) instanceof com.pizzaparker07.spacebreaker.content.machines.SolarPanelBlockEntity be) {
+            return be;
+        }
+        throw new net.minecraft.gametest.framework.GameTestAssertException("no solar panel at " + rel);
+    }
+
+    /**
+     * Seasons: in northern winter (Ls 270) the northern cap spreads to about 52°, while the south is at its summer edge;
+     * night frost reaches farther. Frost settles on open ground, never under a roof, and sublimates in spring.
+     */
+    @GameTest(template = EMPTY)
+    public static void seasonalFrostGrowsInWinterAndSublimates(GameTestHelper helper) {
+        double winterEdge = com.pizzaparker07.spacebreaker.content.mars.MarsSeasons.capEdge(270, true);
+        helper.assertTrue(Math.abs(winterEdge - 52) < 1e-6, "northern winter cap reaches 52°, got " + winterEdge);
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.mars.MarsSeasons.capEdge(270, false) == 82, "southern summer: residual cap only");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.mars.MarsSeasons.capEdge(90, false) < 53, "southern winter cap spreads too");
+        var S = new Object() {
+            double cov(double lat, double ls, boolean night) {
+                return com.pizzaparker07.spacebreaker.content.mars.MarsSeasons.coverage(lat, ls, night);
+            }
+        };
+        helper.assertTrue(S.cov(75, 270, false) == 1, "deep in the winter cap the ground is fully frosted");
+        double edge = S.cov(53, 270, false);
+        helper.assertTrue(edge > 0.25 && edge < 0.5, "at the cap edge only patches, got " + edge);
+        helper.assertTrue(S.cov(45, 270, false) == 0, "no daytime frost beyond the cap");
+        double night = S.cov(45, 270, true);
+        helper.assertTrue(night > 0 && night < edge, "a thin night scatter beyond the cap, got " + night);
+        helper.assertTrue(S.cov(60, 90, true) == 0, "none in northern summer");
+        helper.assertTrue(S.cov(-70, 90, false) > 0.9, "but on the southern winter cap");
+        int frosted = 0;
+        for (int i = 0; i < 4000; i++) {
+            frosted += com.pizzaparker07.spacebreaker.content.mars.MarsSeasons.wantsFrost(i * 7, i * 13 % 997, 53, 270, false) ? 1 : 0;
+        }
+        helper.assertTrue(Math.abs(frosted / 4000.0 - edge) < 0.08, "patches cover about that share of the ground, got " + frosted / 4000.0);
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.mars.MarsSeasons.season(275) == 3, "Ls 275 is northern winter");
+
+        ServerLevel level = helper.getLevel();
+        // a column far from the test frame, open to the sky
+        BlockPos base = helper.absolutePos(BlockPos.ZERO).offset(-4000, 0, -4100);
+        level.getChunk(base);
+        int top = level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.WORLD_SURFACE, base.getX(), base.getZ());
+        BlockPos open = new BlockPos(base.getX(), top - 1, base.getZ());
+        level.setBlockAndUpdate(open, Blocks.STONE.defaultBlockState());
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.mars.MarsSeasons.updateColumn(level, open.getX(), open.getZ(), true) == 1, "frost forms");
+        helper.assertTrue(level.getBlockState(open.above()).is(MarsModule.CO2_FROST_LAYER.get()), "a thin frost layer on the ground");
+        helper.assertTrue(level.getBlockState(open).is(Blocks.STONE), "the ground below is untouched");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.mars.MarsSeasons.updateColumn(level, open.getX(), open.getZ(), true) == 0, "no double layers");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.mars.MarsSeasons.updateColumn(level, open.getX(), open.getZ(), false) == -1, "it sublimates");
+        helper.assertTrue(level.getBlockState(open.above()).isAir(), "gone without a trace");
+        helper.succeed();
+    }
+
     private MarsLifeGameTests() {
     }
 }

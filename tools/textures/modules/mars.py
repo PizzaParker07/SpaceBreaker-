@@ -122,6 +122,27 @@ def co2_frost(v=0):
     return cv
 
 
+# Seasonal frost layer: a thin, dusty, faintly pink coat of CO2 crystals, ground showing through between them.
+FROST_LAYER = ramp('#c7aea4', '#d8c6be', '#e6dad4', '#f1ebe7')
+
+
+def co2_frost_layer():
+    """Thin seasonal frost (cutout): clumped pale-pink crystals with about a quarter of the ground showing through."""
+    f = blend((white(1911), 0.45), (clustered(16, 16, 1912, passes=1), 0.55))
+    cv = Canvas(16, 16)
+    vals = sorted(f[y][x] for y in range(16) for x in range(16))
+    gap = vals[int(len(vals) * 0.26)]
+    steps = [vals[int(len(vals) * q)] for q in (0.5, 0.75, 0.92)]
+    for y in range(16):
+        for x in range(16):
+            v = f[y][x]
+            if v < gap:
+                continue  # bare ground shows through
+            tone = sum(1 for t in steps if v >= t)
+            cv[x, y] = FROST_LAYER[tone] + (255,)
+    return cv
+
+
 def prints(r):
     """Footprint tones (pit shadow, tread dark, tread light, lit wall, rim lit, rim shade) from a 6-tone ramp."""
     return r[0], r[1], r[2], r[4], r[5], r[2]
@@ -386,6 +407,7 @@ def export(save):
         save(fn(1), 'block', name + '_1', dust_spec)
         for side in ('left', 'right'):
             save(footprint(base, prints(r), side), 'block', f'{name}_footprint_{side}', (22, 10, 64, None))
+    save(co2_frost_layer(), 'block', 'co2_frost_layer', (60, 12, 40, None))
     save(martian_sand(), 'block', 'martian_sand', dust_spec)
     save(olivine_sand(), 'block', 'olivine_sand', (30, 14, 50, None))
     save(martian_basalt(), 'block', 'martian_basalt', rock)
