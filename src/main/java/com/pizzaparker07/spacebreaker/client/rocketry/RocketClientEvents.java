@@ -190,20 +190,6 @@ public final class RocketClientEvents {
         if (!rocket.burning()) {
             return;
         }
-        // engines lit on the pad: the water deluge flashes to steam, billowing out and up around the pad
-        if (state == FlightState.COUNTDOWN && !airless) {
-            float spool = Mth.clamp((RocketEntity.IGNITION_TICKS - rocket.timer()) / (float) RocketEntity.IGNITION_TICKS, 0, 1);
-            for (int i = 0; i < quality * (2 + (int) (6 * spool)); i++) {
-                double a = rng.nextDouble() * Math.PI * 2;
-                double r = 1.2 + rng.nextDouble() * 2.0;
-                double v = 0.12 + rng.nextDouble() * 0.25 * (0.4 + spool);
-                // big, slow billows (campfire smoke lives long and grows) and quick white puffs of steam
-                level.addAlwaysVisibleParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, true, x + Math.cos(a) * r, y + 0.3 + rng.nextDouble(),
-                        z + Math.sin(a) * r, Math.cos(a) * v, 0.02 + rng.nextDouble() * 0.06, Math.sin(a) * v);
-                level.addParticle(ParticleTypes.CLOUD, x + Math.cos(a) * r, y + rng.nextDouble() * 1.5, z + Math.sin(a) * r,
-                        Math.cos(a) * v * 1.5, 0.05 + rng.nextDouble() * 0.1, Math.sin(a) * v * 1.5);
-            }
-        }
         double tilt = Math.toRadians(rocket.tilt());
         double bx = x - Math.sin(tilt) * 0.2, by = y - 0.2;
         double ground = level.getHeight(Heightmap.Types.MOTION_BLOCKING, rocket.getBlockX(), rocket.getBlockZ());
@@ -212,12 +198,12 @@ public final class RocketClientEvents {
         if (com.pizzaparker07.spacebreaker.content.rocketry.entity.NuclearExhaust.reactorHot(rocket)) {
             return;
         }
-        int n = quality * (airless ? 1 : 3);
-        for (int i = 0; i < n; i++) {
-            level.addParticle(ParticleTypes.FLAME, bx + rng.nextGaussian() * 0.25, by - rng.nextDouble() * 1.5, z + rng.nextGaussian() * 0.25,
-                    rng.nextGaussian() * 0.02, -0.4 - rng.nextDouble() * 0.3, rng.nextGaussian() * 0.02);
-        }
         if (airless) {
+            int n = quality;
+            for (int i = 0; i < n; i++) {
+                level.addParticle(ParticleTypes.FLAME, bx + rng.nextGaussian() * 0.25, by - rng.nextDouble() * 1.5, z + rng.nextGaussian() * 0.25,
+                        rng.nextGaussian() * 0.02, -0.4 - rng.nextDouble() * 0.3, rng.nextGaussian() * 0.02);
+            }
             if (state == FlightState.DESCENT && h < 12) {
                 for (int i = 0; i < quality * 2; i++) {
                     double a = rng.nextDouble() * Math.PI * 2;
@@ -227,31 +213,26 @@ public final class RocketClientEvents {
             }
             return;
         }
-        // exhaust trail
-        for (int i = 0; i < quality * 2; i++) {
-            level.addParticle(ParticleTypes.LARGE_SMOKE, bx + rng.nextGaussian() * 0.4, by - 2 - rng.nextDouble() * 3, z + rng.nextGaussian() * 0.4,
-                    rng.nextGaussian() * 0.05, -0.2, rng.nextGaussian() * 0.05);
+        // In air the flame cone, the glow on the pad and the smoke column are drawn by the renderer. Here: the ground
+        // cloud, a few big billows of steam and exhaust thrown sideways out of the flame trench, low over the pad.
+        float power;
+        if (state == FlightState.COUNTDOWN) {
+            power = 0.35F + 0.65F * Mth.clamp((RocketEntity.IGNITION_TICKS - rocket.timer()) / 30F, 0, 1);
+        } else if (h < 40) {
+            power = (float) (1 - h / 40.0);
+        } else {
+            return;
         }
-        // a lingering column left behind the climbing rocket (slow smoke, so it cannot overtake the nose)
-        if (h > 6 && rng.nextInt(2) == 0) {
-            level.addAlwaysVisibleParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, true, bx + rng.nextGaussian() * 0.5, by - 4,
-                    z + rng.nextGaussian() * 0.5, rng.nextGaussian() * 0.03, -0.05, rng.nextGaussian() * 0.03);
-        }
-        // the launch cloud: exhaust deflected sideways along the flame trench
-        if (h < 30) {
-            float power = (float) (1 - h / 30.0);
-            int clouds = (int) (quality * 4 * power) + 1;
-            for (int i = 0; i < clouds; i++) {
-                int side = rng.nextBoolean() ? 1 : -1;
-                double speed = 0.35 + rng.nextDouble() * 0.45;
-                level.addAlwaysVisibleParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, true, x + side * (1.5 + rng.nextDouble()),
-                        ground + 0.3 + rng.nextDouble() * 0.8, z + rng.nextGaussian() * 0.8,
-                        side * speed, 0.02 + rng.nextDouble() * 0.05, rng.nextGaussian() * 0.08);
-                if (rng.nextInt(3) == 0) {
-                    level.addParticle(ParticleTypes.CLOUD, x + side * 2.5, ground + 0.5, z + rng.nextGaussian(),
-                            side * speed * 1.4, 0.05, rng.nextGaussian() * 0.1);
-                }
-            }
+        float count = quality * 0.55F * power;
+        int n = (int) count + (rng.nextFloat() < count - (int) count ? 1 : 0);
+        for (int i = 0; i < n; i++) {
+            int side = rng.nextBoolean() ? 1 : -1;
+            double speed = 0.3 + rng.nextDouble() * 0.45 * power;
+            boolean along = rng.nextInt(4) == 0; // some roll out across the trench too, so it reads as one cloud
+            double vx = along ? rng.nextGaussian() * 0.06 : side * speed;
+            double vz = along ? side * speed * 0.55 : rng.nextGaussian() * 0.07;
+            level.addAlwaysVisibleParticle(com.pizzaparker07.spacebreaker.content.rocketry.RocketryParticles.STEAM.get(), true,
+                    x + vx * 4, ground + 1.0 + rng.nextDouble() * 0.8, z + vz * 4, vx, 0.004 + rng.nextDouble() * 0.01, vz);
         }
     }
 

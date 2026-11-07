@@ -62,6 +62,11 @@ public final class RocketryClient {
     }
 
     @SubscribeEvent
+    static void particles(net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent event) {
+        event.registerSpriteSet(com.pizzaparker07.spacebreaker.content.rocketry.RocketryParticles.STEAM.get(), SteamParticle.Provider::new);
+    }
+
+    @SubscribeEvent
     static void keys(RegisterKeyMappingsEvent event) {
         event.register(LAUNCH);
         event.register(STAR_MAP);

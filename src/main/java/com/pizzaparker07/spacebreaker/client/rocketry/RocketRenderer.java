@@ -66,6 +66,7 @@ public class RocketRenderer extends EntityRenderer<RocketEntity> {
             renderCanopy(pose, buffers, geo, open, time, light);
         }
         pose.popPose();
+        LaunchEffects.render(rocket, partialTick, pose, buffers, light, entityRenderDispatcher.camera.getPosition());
         super.render(rocket, yaw, partialTick, pose, buffers, light);
     }
 
