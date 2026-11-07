@@ -85,6 +85,7 @@ public final class ShowcaseScenarios {
         ALL.put("proteus", new TinyMoonScenario(com.pizzaparker07.spacebreaker.content.neptune.Proteus.PROTEUS, "pharos_basin",
                 com.pizzaparker07.spacebreaker.content.neptune.Proteus.pharos().x(), com.pizzaparker07.spacebreaker.content.neptune.Proteus.pharos().latitude()));
         ALL.put("perf_outer", new OuterPerfScenario());
+        ALL.put("scan_outer", new OuterScanScenario());
         ALL.put("triton", new TritonScenario());
         ALL.put("pluto", new PlutoScenario(false));
         ALL.put("charon", new PlutoScenario(true));
