@@ -350,7 +350,7 @@ already synced to the client by the block entities):
 
 New lines go into `BlockInfoLines.lines` and show in both overlays. GameTests: `dustySolarPanelShowsDustAndOutput`,
 `gasMachineShowsTankAndPipedOxygen`.
-Showcase: `-Pscenario=info -PwithJade=true` or `-PwithWthit=true` (a dusty panel under the crosshair).
+Showcase: `-Pscenario=info -PwithJade=true` or `-PwithWthit=true` (01: a dusty panel, 02: an Oxygen Filler with a half-full tank and piped oxygen, under the crosshair).
 **Not yet run in the game here:** starting the client with the Jade or WTHIT jar was not permitted in this test
 environment; the plugins compile against both APIs and the line itself is covered by the GameTest.
 
