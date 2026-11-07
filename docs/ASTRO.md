@@ -1044,6 +1044,9 @@ built on them.
 - `FlightState(position, velocity, mass)` steps with velocity Verlet (symplectic, so orbits do not drift),
   with constant thrust and mass flow; `advance` adds substeps for long ticks. `assist(v, reference, maxDv)`
   is the optional flight assist that damps the relative velocity.
+- `FlightReadout` holds what a cockpit display shows as plain, server-safe data: target id, relative speed (+ when
+  receding), distance or altitude, Δv left and full, assist, predicted path and next manoeuvre (NaN when none).
+  The HUD (client/hud, suit) turns it into text.
 - `OrbitPredictor.predict(sys, body, state, t, horizon, step, maxSegments)` predicts patched conics for the
   HUD. Each segment ends in an impact, an exit from the current sphere of influence or an entry into a
   moon's, and the next conic continues in the new body's frame. `soi(sys, body)` gives a sphere of influence.

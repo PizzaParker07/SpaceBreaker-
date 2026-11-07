@@ -119,4 +119,16 @@ class FlightCoreTest {
         assertEquals(Double.POSITIVE_INFINITY, OrbitPredictor.soi(SYS, SUN));
         assertEquals(66_100e3, OrbitPredictor.soi(SYS, MOON), 2_000e3);
     }
+
+    @Test
+    void readout() {
+        var r = new com.pizzaparker07.spacebreaker.core.astro.flight.FlightReadout("spacebreaker:moon", -12, 5e5, true, 1500, 3000,
+                true, null, Double.NaN, Double.NaN);
+        assertTrue(r.path().isEmpty());
+        assertFalse(r.hasNode());
+        assertEquals(0.5, r.dvFraction(), 1e-12);
+        var n = new com.pizzaparker07.spacebreaker.core.astro.flight.FlightReadout("x", 0, 0, false, 5000, 3000, false, List.of(), 120, 60);
+        assertTrue(n.hasNode());
+        assertEquals(1, n.dvFraction());
+    }
 }
