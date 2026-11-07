@@ -262,7 +262,9 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 |---|---|---|
 | 🎨 | Triton `spacebreaker:triton` | ters yönde dönen, yakalanmış cüce gezegen; -235 °C (ölçülen en soğuk yüzey); yuvarlak çukurlar ve keskin sırtlardan "kavun kabuğu" arazisi, pembe azot kırağısından kutup başlıkları, az krater; güney başlığında koyu azot-toz sütunları fışkırtıp rüzgârla yatık çizgiler bırakan azot gayzerleri (yakmaz, fırlatır; püskürürken çevreye toplanabilir Gayzer Tozu yağdırır); gökte 8° genişliğinde mavi Neptün |
 | 🎨 | Triton blokları | Triton Kırağısı, Pembe Azot Kırağısı, Gayzer Tozu (kalıcı ayak izi), Triton Ana Kaya Buzu (+ merdiven, basamak, duvar), Azot Gayzeri, Metan Klatrat Yatağı (→ Metan Klatrat, kömür kadar yanan yakıt) |
-| 🎨 | Zindanlar | Düşmüş İkmal İniş Aracı (Triton); Gayzer Gözlem İstasyonu (güney kutup başlığında bir azot gayzerinin üstüne kurulmuş cam kubbeli istasyon: ortada çubuk halkalı canlı gayzer, kubbe tepesinden yükselen alet direği, numune laboratuvarı ve depo sandıkları, kapıdan içeri savrulmuş pembe kırağı; 2 Gayzer Böceği bekçi) → Kriyovolkanizma |
+| 🎨 | Proteus `spacebreaker:proteus` | Neptün'ün ikinci büyük uydusu (~210 km), küresel olamayacak kadar küçük, isli koyu kabuklu engebeli cisim; batısında uyduyu neredeyse parçalayan dev Pharos havzası; gökte göğün çeyreğini dolduran Neptün; temiz su buzu yok (yakıt ikmali yok) |
+| 🎨 | Proteus blokları | Proteus Regoliti (kalıcı ayak izi), Proteus Kabuğu |
+| 🎨 | Zindanlar | Düşmüş İkmal İniş Aracı (Proteus) → Kriyovolkanizma; Düşmüş İkmal İniş Aracı (Triton); Gayzer Gözlem İstasyonu (güney kutup başlığında bir azot gayzerinin üstüne kurulmuş cam kubbeli istasyon: ortada çubuk halkalı canlı gayzer, kubbe tepesinden yükselen alet direği, numune laboratuvarı ve depo sandıkları, kapıdan içeri savrulmuş pembe kırağı; 2 Gayzer Böceği bekçi) → Kriyovolkanizma |
 | 🎨 | Teknoloji | Kriyovolkanizma (5) |
 
 ### Plüton ve Charon
@@ -273,6 +275,10 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Charon `spacebreaker:charon` | gri su buzu ovaları, ekvator boyunca kanyon kuşağı, kuzey kutbunda koyu kızıl kutup başlığı; gökte 7° genişliğinde, hiç kıpırdamayan Plüton |
 | 🎨 | Charon blokları | Charon Regoliti, Charon Buzu, Kızıl Kutup Kırağısı, Amonyak Hidrat Yatağı (→ Amonyak Kristali → kemik tozu) |
 | 🎨 | Zindanlar | Düşmüş İkmal İniş Aracı (Plüton, Charon) |
+| 🎨 | Nix `spacebreaker:nix` | Plüton'un ~19 km'lik küçük, düzensiz uydusu (ortak `TinyWorld` paketi): kraterlerle dolu, çok engebeli gri su buzu, bir yanında büyük kızıl tolin lekesi; neredeyse sıfır yerçekimi; gökte Plüton ve Charon; buzu suya eritilebilir (yakıt) |
+| 🎨 | Hydra `spacebreaker:hydra` | Plüton sisteminin en parlak yüzeyi: neredeyse saf su buzundan ~19 km'lik engebeli uydu; neredeyse sıfır yerçekimi; yakıt için buz |
+| 🎨 | Nix ve Hydra blokları | Nix Kırağısı, Nix Buzu, Hydra Kırağısı, Hydra Buzu (kırağılar kalıcı ayak izi tutar) |
+| 🎨 | Zindanlar | Düşmüş İkmal İniş Aracı (Nix, Hydra) → Kuiper Kuşağı Navigasyonu |
 | 🎨 | Teknolojiler | Azot Buzulbilimi (5), Kuiper Kuşağı Seyrüseferi (5) |
 | 🎨 | Ortak yüzey özelliği | çokgen hücreler (`polygon_cells`): yastık hücreler + kenar çukurları (Plüton) veya çukurcuklu "kavun kabuğu" (Triton için) |
 
