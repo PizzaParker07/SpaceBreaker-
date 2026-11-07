@@ -169,6 +169,8 @@ final class MarsScenario implements ShowcaseScenario {
                 CameraType.FIRST_PERSON, 100, at(0.2).andThen(MarsScenario::clearDrones), null));
         s.add(new ShowcaseDriver.Shot("16b_station_lab", 0, STATION_X + 28.5, sy + 1.9, STATION_Z + 21.3, -100F, -4F, true,
                 CameraType.FIRST_PERSON, 100, at(0.2).andThen(MarsScenario::clearDrones), null));
+        s.add(new ShowcaseDriver.Shot("16d_supply_locker", 0, STATION_X + 33.5, sy + 1.9, STATION_Z + 19.2, 180F, 28F, true,
+                CameraType.FIRST_PERSON, 100, at(0.2).andThen(MarsScenario::clearDrones), null));
         s.add(new ShowcaseDriver.Shot("16c_station_garage", 0, STATION_X + 11.5, sy + 1.6, STATION_Z + 20.5, 90F, 4F, true,
                 CameraType.FIRST_PERSON, 100, at(0.2).andThen(MarsScenario::clearDrones), null));
         {

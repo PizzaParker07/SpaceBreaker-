@@ -46,8 +46,9 @@ public final class SurfaceGrainTests {
                 worst = Math.max(worst, loneColumns(t, -3000 + k * 1100, 700 - k * 900, 64));
             }
             report.append(w).append(' ').append(String.format("%.3f", worst)).append("; ");
-            ok &= worst < 0.01;
+            ok &= worst < 0.007; // craters and wrinkle ridges alone leave about 0.3%
         }
+        Spacebreaker.LOGGER.info("Lone one-block pits/pillars, worst patch: {}", report);
         helper.assertTrue(ok, "too many lone one-block pits or pillars: " + report);
         helper.succeed();
     }

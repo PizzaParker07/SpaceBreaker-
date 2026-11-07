@@ -26,10 +26,11 @@ import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSeriali
 import net.minecraft.world.level.storage.loot.LootTable;
 
 /**
- * A research probe that landed on Europa long ago and sent a cryobot melting down through the ice. On the surface: the
- * lander's bent legs, a toppled antenna and the mouth of the melt shaft, its walls refrozen into stained ice. At the
- * bottom of the shaft the cryobot broke into a cave in the ice where a pocket of salty water never froze - and something
- * in that water glows.
+ * An ice-drilling camp on Europa whose cryobot melted down through the shell. On the surface: a four-legged drill
+ * derrick over the bore, its winch and floodlight on the crown and a railed grate platform round the collar; beside it
+ * the crew's habitat, a hull cylinder with portholes and an airlock door, holding the sample lab and the last log; a
+ * power mast with solar panels feeding the derrick. At the bottom of the shaft (a steel ladder bolted to its wall) the
+ * cryobot broke into a cave in the ice where a pocket of salty water never froze - and something in that water glows.
  */
 public class ProbePiece extends StructurePiece {
     public static final int SIZE = 21;
@@ -140,7 +141,9 @@ public class ProbePiece extends StructurePiece {
         }
         for (int y = CAVE + 1; y <= F; y++) {
             placeBlock(level, s(Blocks.AIR), SHAFT_X, y, SHAFT_Z + 1, box);
-            com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, Blocks.LADDER.defaultBlockState().setValue(LadderBlock.FACING, Direction.NORTH), SHAFT_X, y, SHAFT_Z + 1, box);
+            com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this,
+                    com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.STEEL_LADDER.get().defaultBlockState().setValue(LadderBlock.FACING, Direction.NORTH),
+                    SHAFT_X, y, SHAFT_Z + 1, box);
             placeBlock(level, stained, SHAFT_X, y, SHAFT_Z + 2, box);
         }
         // instrument racks by the cave wall
@@ -166,44 +169,142 @@ public class ProbePiece extends StructurePiece {
         }
     }
 
-    /** The lander on the surface: four bent legs, the body tipped on its side, a toppled antenna, the shaft collar. */
+    /** Habitat cylinder on the surface: its axis along x at (y, z) = (HAB_Y, HAB_Z), from HAB_X0 to HAB_X1 (door end). */
+    static final int HAB_X0 = 2;
+    public static final int HAB_X1 = 7;
+    static final int HAB_Y = F + 2;
+    public static final int HAB_Z = 16;
+
+    /** World position of a local position on the surface (for showcases and tests). */
+    public BlockPos surfacePos(int x, int dy, int z) {
+        return getWorldPos(x, F + dy, z);
+    }
+
+    private static boolean round(int a, int b) {
+        return Math.abs(a) <= 2 && Math.abs(b) <= 2 && !(Math.abs(a) == 2 && Math.abs(b) == 2);
+    }
+
+    /** The drilling camp on the surface: derrick, collar platform, habitat with the lab, power mast. */
     private void surface(WorldGenLevel level, BoundingBox box, RandomSource r) {
         BlockState frost = s(JupiterModule.EUROPAN_FROST.get());
-        for (int x = 4; x <= 16; x++) {
-            for (int z = 4; z <= 16; z++) {
-                for (int y = F + 1; y <= F + 6; y++) {
-                    placeBlock(level, s(Blocks.AIR), x, y, z, box);
+        BlockState air = s(Blocks.AIR);
+        BlockState strut = s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.ALUMINUM_PANEL.wall().get());
+        BlockState deck = s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.TITANIUM_DECK.base().get());
+        BlockState hazard = s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.HAZARD_STRIPE.base().get());
+        BlockState grate = s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.GRATE_PLATFORM.get());
+        BlockState rail = s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.RAILING.get());
+        BlockState hull = s(com.pizzaparker07.spacebreaker.content.rocketry.RocketryModule.STATION_HULL.get());
+        BlockState window = s(com.pizzaparker07.spacebreaker.content.rocketry.RocketryModule.STATION_WINDOW.get());
+        BlockState cable = s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.CABLE_DUCT.get());
+        BlockState solar = s(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.SOLAR_PANEL.get());
+        BlockState led = s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.LED_PANEL.get());
+        // a cleared, frosted pad with open sky above it
+        for (int x = 1; x <= 19; x++) {
+            for (int z = 1; z <= 19; z++) {
+                for (int y = F + 1; y <= F + 9; y++) {
+                    placeBlock(level, air, x, y, z, box);
                 }
                 if (Math.hypot(x - SHAFT_X, z - SHAFT_Z) > 1.6) {
                     placeBlock(level, frost, x, F, z, box);
                 }
             }
         }
-        for (int[] l : new int[][]{{6, 6}, {14, 6}, {6, 14}, {14, 14}}) {
-            placeBlock(level, s(Blocks.IRON_BARS), l[0], F + 1, l[1], box);
-            placeBlock(level, s(Blocks.IRON_BARS), l[0] + Integer.signum(SHAFT_X - l[0]), F + 2, l[1] + Integer.signum(SHAFT_Z - l[1]), box);
-        }
-        for (int x = 7; x <= 9; x++) {
-            for (int z = 6; z <= 7; z++) {
-                placeBlock(level, s(Blocks.WHITE_CONCRETE), x, F + 1, z, box);
-            }
-            placeBlock(level, s(Blocks.WAXED_CUT_COPPER), x, F + 2, 6, box);
-        }
-        placeBlock(level, s(Blocks.GOLD_BLOCK), 9, F + 2, 7, box);
-        // the high-gain antenna lies where it fell
-        for (int x = 11; x <= 15; x++) {
-            placeBlock(level, s(Blocks.IRON_BARS), x, F + 1, 15, box);
-        }
-        placeBlock(level, s(Blocks.DAYLIGHT_DETECTOR), 16, F + 1, 15, box);
-        placeBlock(level, s(Blocks.DAYLIGHT_DETECTOR), 16, F + 1, 16, box);
-        // shaft collar of refrozen, stained ice
+        // shaft collar of refrozen, stained ice, and a railed grate platform round the bore
         for (int dx = -2; dx <= 2; dx++) {
             for (int dz = -2; dz <= 2; dz++) {
                 double d = Math.hypot(dx, dz);
                 if (d > 1.6 && d < 2.9) {
                     placeBlock(level, s(JupiterModule.STAINED_ICE.get()), SHAFT_X + dx, F, SHAFT_Z + dz, box);
+                    placeBlock(level, grate, SHAFT_X + dx, F + 1, SHAFT_Z + dz, box);
                 }
             }
+        }
+        for (int dx = -2; dx <= 2; dx++) {
+            for (int dz = -2; dz <= 2; dz++) {
+                if ((Math.abs(dx) == 2 || Math.abs(dz) == 2) && !(dz == 2 && dx == 0)) {
+                    placeBlock(level, rail, SHAFT_X + dx, F + 2, SHAFT_Z + dz, box);
+                }
+            }
+        }
+        // the derrick: four straight legs at the platform corners up to a deck crown with the winch at its centre
+        for (int[] c : new int[][]{{-2, -2}, {2, -2}, {-2, 2}, {2, 2}}) {
+            for (int h = 0; h <= 6; h++) {
+                placeBlock(level, strut, SHAFT_X + c[0], F + 1 + h, SHAFT_Z + c[1], box);
+            }
+            placeBlock(level, deck, SHAFT_X + c[0], F, SHAFT_Z + c[1], box);
+        }
+        for (int dx = -2; dx <= 2; dx++) {
+            for (int dz = -2; dz <= 2; dz++) {
+                boolean edge = Math.abs(dx) == 2 || Math.abs(dz) == 2;
+                BlockState b = dx == 0 && dz == 0 ? s(Blocks.GRINDSTONE) : edge ? deck : (dx == 0 || dz == 0 ? hazard : air);
+                placeBlock(level, b, SHAFT_X + dx, F + 8, SHAFT_Z + dz, box);
+            }
+        }
+        placeBlock(level, s(Blocks.CHAIN), SHAFT_X, F + 7, SHAFT_Z, box);
+        placeBlock(level, s(Blocks.CHAIN), SHAFT_X, F + 6, SHAFT_Z, box);
+        placeBlock(level, s(Blocks.CHAIN), SHAFT_X, F + 5, SHAFT_Z, box);
+        placeBlock(level, s(Blocks.CHAIN), SHAFT_X, F + 4, SHAFT_Z, box);
+        placeBlock(level, s(Blocks.CHAIN), SHAFT_X, F + 3, SHAFT_Z, box);
+        placeBlock(level, s(Blocks.CHAIN), SHAFT_X, F + 2, SHAFT_Z, box);
+        placeBlock(level, s(Blocks.CHAIN), SHAFT_X, F + 1, SHAFT_Z, box);
+        placeBlock(level, led, SHAFT_X, F + 9, SHAFT_Z, box);
+        // the power mast: a pole of railing with solar panels either side and a cable run to the derrick
+        for (int y = F + 1; y <= F + 5; y++) {
+            placeBlock(level, rail, 16, y, 4, box);
+        }
+        for (int x = 14; x <= 18; x++) {
+            if (x != 16) {
+                placeBlock(level, solar, x, F + 5, 4, box);
+                placeBlock(level, solar, x, F + 5, 5, box);
+            }
+        }
+        placeBlock(level, deck, 16, F + 5, 4, box);
+        for (int x = 12; x <= 16; x++) {
+            placeBlock(level, cable, x, F, 5, box);
+        }
+        // the habitat: a hull cylinder lying along x with portholes, its airlock door facing the derrick
+        for (int x = HAB_X0; x <= HAB_X1; x++) {
+            for (int dy = -2; dy <= 2; dy++) {
+                for (int dz = -2; dz <= 2; dz++) {
+                    if (!round(dy, dz)) {
+                        continue;
+                    }
+                    boolean shell = !round(dy - 1, dz) || !round(dy + 1, dz) || !round(dy, dz - 1) || !round(dy, dz + 1) || x == HAB_X0 || x == HAB_X1;
+                    BlockState b = shell ? hull : air;
+                    if (shell && dy == 0 && Math.abs(dz) == 2 && (x == 4 || x == 5)) {
+                        b = window;
+                    }
+                    if (shell && dy == 2 && dz == 0 && x == 5) {
+                        b = led;
+                    }
+                    placeBlock(level, b, x, HAB_Y + dy, HAB_Z + dz, box);
+                }
+            }
+            // feet under the hull
+            if (x == HAB_X0 + 1 || x == HAB_X1 - 1) {
+                placeBlock(level, deck, x, F, HAB_Z - 2, box);
+                placeBlock(level, deck, x, F, HAB_Z + 2, box);
+            }
+        }
+        BlockState lower = com.pizzaparker07.spacebreaker.content.suit.SuitModule.AIRLOCK_DOOR.get().defaultBlockState()
+                .setValue(com.pizzaparker07.spacebreaker.content.suit.block.AirlockDoorBlock.FACING, Direction.EAST)
+                .setValue(com.pizzaparker07.spacebreaker.content.suit.block.AirlockDoorBlock.HALF,
+                        net.minecraft.world.level.block.state.properties.DoubleBlockHalf.LOWER);
+        com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, lower, HAB_X1, HAB_Y - 1, HAB_Z, box);
+        com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this,
+                lower.setValue(com.pizzaparker07.spacebreaker.content.suit.block.AirlockDoorBlock.HALF,
+                        net.minecraft.world.level.block.state.properties.DoubleBlockHalf.UPPER), HAB_X1, HAB_Y, HAB_Z, box);
+        // inside: the sample lab against the back wall, cable runs, the crew's last log
+        com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this,
+                s(com.pizzaparker07.spacebreaker.content.research.ResearchModule.RESEARCH_LAB.get())
+                        .setValue(net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING, Direction.EAST), HAB_X0 + 1, HAB_Y - 1, HAB_Z, box);
+        placeBlock(level, cable, HAB_X0 + 1, HAB_Y, HAB_Z - 1, box);
+        placeBlock(level, cable, HAB_X0 + 1, HAB_Y, HAB_Z + 1, box);
+        placeBlock(level, s(Blocks.BREWING_STAND), HAB_X0 + 1, HAB_Y - 1, HAB_Z - 1, box);
+        BlockPos sign = com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this,
+                s(Blocks.BIRCH_SIGN).setValue(net.minecraft.world.level.block.StandingSignBlock.ROTATION, 12), HAB_X0 + 1, HAB_Y - 1, HAB_Z + 1, box);
+        if (sign != null && box.isInside(sign)) {
+            com.pizzaparker07.spacebreaker.content.mars.dungeon.DungeonBits.signText(level, sign, "europa_probe_log");
         }
     }
 }

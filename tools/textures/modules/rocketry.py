@@ -527,6 +527,67 @@ def docking_module_part():
     return cv
 
 
+def habitation_part():
+    """Folded habitation module: white can, two window bands, a gold radiator band."""
+    cv = new_sheet()
+    for y in range(0, 30):
+        for c in range(32):
+            col = STEEL[2 + (c % 3 == 0)] if y < 2 else WHITE[5] if (c + y) % 9 else WHITE[4]
+            if y >= 27:
+                col = STEEL[4]
+            put_side(cv, SIDE, c, y, col)
+    for c in range(32):
+        for y in (10, 18):
+            if c % 6 in (1, 2, 3, 4):
+                put_side(cv, SIDE, c, y, GLASS[3])
+                put_side(cv, SIDE, c, y + 1, GLASS[2])
+        put_side(cv, SIDE, c, 23, GOLD[3] if c % 2 else GOLD[2])
+        put_side(cv, SIDE, c, 4, HAZARD[3] if c % 4 < 2 else CARBON[2])
+    top_view(cv, TOP, lambda dx, dz, d: None if d > 16 else (CARBON[3] if d < 2 else STEEL[4] if d < 4 else STEEL[3] if d < 8.5 else WHITE[5]))
+    top_view(cv, BOTTOM, lambda dx, dz, d: None if d > 16 else (CARBON[2] if d < 6 else STEEL[3] if d < 10.5 else WHITE[4]))
+    return cv
+
+
+def airlock_part():
+    """Folded airlock: white can with the outline of the outer door and a red warning band."""
+    cv = new_sheet()
+    for y in range(0, 20):
+        for c in range(32):
+            col = STEEL[2 + (c % 3 == 0)] if y < 2 else WHITE[5] if (c + y) % 7 else WHITE[4]
+            if y >= 17:
+                col = STEEL[4]
+            put_side(cv, SIDE, c, y, col)
+    for c in range(32):
+        put_side(cv, SIDE, c, 15, RED[3] if c % 4 < 2 else WHITE[6])
+    for door in (6, 22):
+        for y in range(4, 13):
+            for c in range(door - 2, door + 2):
+                edge = y in (4, 12) or c in (door - 2, door + 1)
+                put_side(cv, SIDE, c, y, CARBON[2] if edge else STEEL[4])
+    top_view(cv, TOP, lambda dx, dz, d: None if d > 16 else (CARBON[3] if d < 2 else STEEL[5] if d < 4 else STEEL[3] if d < 6.5 else WHITE[5]))
+    top_view(cv, BOTTOM, lambda dx, dz, d: None if d > 16 else (CARBON[2] if d < 6 else STEEL[3] if d < 10.5 else WHITE[4]))
+    return cv
+
+
+def solar_wings_part():
+    """Folded solar wings: a stack of dark blue cells in gold frames on a steel boom."""
+    cv = new_sheet()
+    for y in range(0, 18):
+        for c in range(32):
+            if y < 2:
+                col = STEEL[2 + (c % 3 == 0)]
+            elif y >= 16:
+                col = STEEL[4]
+            elif y % 3 == 1:
+                col = GOLD[3]
+            else:
+                col = (28, 44, 92) if (c // 2 + y) % 2 else (36, 58, 120)
+            put_side(cv, SIDE, c, y, col)
+    top_view(cv, TOP, lambda dx, dz, d: None if d > 16 else (STEEL[5] if d < 3 else GOLD[3] if d < 7 else (30, 48, 100)))
+    top_view(cv, BOTTOM, lambda dx, dz, d: None if d > 16 else (CARBON[2] if d < 6 else STEEL[3]))
+    return cv
+
+
 def observation_satellite():
     cv = new_sheet()
     for y in range(0, 10):
@@ -1095,6 +1156,60 @@ def icons():
         "................",
         "................",
     ], {'o': CARBON[0], 'K': STEEL[5], 'k': STEEL[3], 'W': WHITE[6], 'w': WHITE[4], 'Y': HAZARD[3], 'B': GLASS[3]})
+    out['habitation_module'] = grid_icon([
+        "................",
+        "......oooo......",
+        ".....oKkkKo.....",
+        "..oooooooooooo..",
+        "..oWWWWWWWWWWo..",
+        "..oWBBWBBWBBWo..",
+        "..oWWWWWWWWWWo..",
+        "..owwwwwwwwwwo..",
+        "..oWWWWWWWWWWo..",
+        "..oWBBWBBWBBWo..",
+        "..oWWWWWWWWWWo..",
+        "..oGgGgGgGgGgo..",
+        "..owwwwwwwwwwo..",
+        "..oooooooooooo..",
+        ".....oKKKKo.....",
+        "................",
+    ], {'o': CARBON[0], 'K': STEEL[5], 'k': STEEL[3], 'W': WHITE[6], 'w': WHITE[4], 'B': GLASS[3], 'G': GOLD[4], 'g': GOLD[2]})
+    out['airlock_module'] = grid_icon([
+        "................",
+        "................",
+        "......oooo......",
+        ".....oKkkKo.....",
+        "....oooooooo....",
+        "...oWWWWWWWWo...",
+        "...oWWkkkkWWo...",
+        "...oWWkSSkWWo...",
+        "...oWWkSSkWWo...",
+        "...oWWkSSkWWo...",
+        "...oRWRWRWRWo...",
+        "...owwwwwwwwo...",
+        "....oooooooo....",
+        ".....oKKKKo.....",
+        "................",
+        "................",
+    ], {'o': CARBON[0], 'K': STEEL[5], 'k': CARBON[2], 'S': STEEL[4], 'W': WHITE[6], 'w': WHITE[4], 'R': RED[3]})
+    out['solar_wings'] = grid_icon([
+        "................",
+        "................",
+        "................",
+        "oooooo....oooooo",
+        "oBbBbo....oBbBbo",
+        "obBbBoooooobBbBo",
+        "oBbBbGSSSSGBbBbo",
+        "obBbBoooooobBbBo",
+        "oBbBbo....oBbBbo",
+        "oooooo....oooooo",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+    ], {'o': CARBON[0], 'B': (36, 58, 120), 'b': (28, 44, 92), 'G': GOLD[4], 'S': STEEL[4]})
     g_, s_, k_, w_ = GOLD, STEEL, CARBON, WHITE
     out['cargo_module'] = grid_icon([
         "................",
@@ -1389,6 +1504,9 @@ SHEETS = {
     'cargo_module': cargo_module,
     'station_core_module': station_core_part,
     'docking_module': docking_module_part,
+    'habitation_module': habitation_part,
+    'airlock_module': airlock_part,
+    'solar_wings': solar_wings_part,
     'decoupler': decoupler,
     'interstage': interstage,
     'heat_shield': heat_shield,

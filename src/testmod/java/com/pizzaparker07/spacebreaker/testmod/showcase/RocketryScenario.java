@@ -784,7 +784,7 @@ final class RocketryScenario implements ShowcaseScenario {
             toDimension(p, Location.EARTH_ORBIT, 5.6, RocketEntity.ORBIT_Y + 3.2, 2.4, 110F, 6F);
         }, null));
         // modular station, stage 1: a core unfolded in orbit with a rocket coming in to its roof port
-        s.add(new Shot("55_station_core", 6000, 0, 0, 0, 0F, 0F, true, fp, 160, p -> {
+        s.add(new Shot("55_station_core", 6000, 0, 0, 0, 0F, 0F, true, fp, 300, p -> {
             clearScene(p);
             ServerLevel orbit = p.server.getLevel(Location.EARTH_ORBIT.dimension());
             BlockPos c = BlockPos.containing(400, RocketEntity.ORBIT_Y - 6, 0);
@@ -794,7 +794,7 @@ final class RocketryScenario implements ShowcaseScenario {
             toDimension(p, Location.EARTH_ORBIT, 416.5, RocketEntity.ORBIT_Y + 4.5, 15.5, 135F, 18F);
         }, null));
         // holding a docking module at a mouth: the outline shows where it will go (green: there is room)
-        s.add(new Shot("56_station_preview", 6000, 0, 0, 0, 0F, 0F, false, fp, 200, p -> {
+        s.add(new Shot("56_station_preview", 6000, 0, 0, 0, 0F, 0F, false, fp, 300, p -> {
             clearScene(p);
             ServerLevel orbit = p.server.getLevel(Location.EARTH_ORBIT.dimension());
             BlockPos c = BlockPos.containing(500, RocketEntity.ORBIT_Y - 6, 0);
@@ -810,7 +810,7 @@ final class RocketryScenario implements ShowcaseScenario {
             toDimension(p, Location.EARTH_ORBIT, mouth.getX() + 7.5, mouth.getY() + 6.5, mouth.getZ() + 0.5, 90F, 39F);
         }, null));
         // the docking module attached to the core's front mouth, a rocket coming in to its port
-        s.add(new Shot("57_station_docking_module", 6000, 0, 0, 0, 0F, 0F, true, fp, 160, p -> {
+        s.add(new Shot("57_station_docking_module", 6000, 0, 0, 0, 0F, 0F, true, fp, 300, p -> {
             clearScene(p);
             ServerLevel orbit = p.server.getLevel(Location.EARTH_ORBIT.dimension());
             BlockPos c = BlockPos.containing(600, RocketEntity.ORBIT_Y - 6, 0);
@@ -831,6 +831,31 @@ final class RocketryScenario implements ShowcaseScenario {
             com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.buildCore(orbit, c, east, "PizzaParker07");
             com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.DOCKING.attach(orbit, c.east(3).above(2), "PizzaParker07");
             toDimension(p, Location.EARTH_ORBIT, c.getX() - 1.5, c.getY() + 2.6, c.getZ() + 0.5, -90F, 8F);
+        }, null));
+        // modular station, stage 2: core + docking tunnel + living quarters + airlock + solar wings
+        s.add(new Shot("59_station_stage2", 6000, 0, 0, 0, 0F, 0F, true, fp, 300, p -> {
+            clearScene(p);
+            ServerLevel orbit = p.server.getLevel(Location.EARTH_ORBIT.dimension());
+            BlockPos c = BlockPos.containing(800, RocketEntity.ORBIT_Y - 6, 0);
+            net.minecraft.core.Direction east = net.minecraft.core.Direction.EAST;
+            com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.buildCore(orbit, c, east, "PizzaParker07");
+            com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.DOCKING.attach(orbit, c.east(3).above(2), "PizzaParker07");
+            com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.HABITATION.attach(orbit, c.west(3).above(2), "PizzaParker07");
+            com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.AIRLOCK.attach(orbit, c.north(3).above(2), "PizzaParker07");
+            com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.SOLAR_WINGS.attach(orbit, c.south(3).above(2), "PizzaParker07");
+            RocketEntity r = spawn(orbit, Vec3.atBottomCenterOf(c.east(10).above(2)), 0F, FlightState.ORBIT, 0, 2, false);
+            r.approachPort(c.east(10).above(2), east, 0.5);
+            toDimension(p, Location.EARTH_ORBIT, c.getX() + 14.5, c.getY() + 14.5, c.getZ() + 22.5, 150F, 30F);
+        }, null));
+        // inside the living quarters
+        s.add(new Shot("60_station_quarters", 6000, 0, 0, 0, 0F, 0F, true, fp, 320, p -> {
+            clearScene(p);
+            ServerLevel orbit = p.server.getLevel(Location.EARTH_ORBIT.dimension());
+            BlockPos c = BlockPos.containing(900, RocketEntity.ORBIT_Y - 6, 0);
+            net.minecraft.core.Direction east = net.minecraft.core.Direction.EAST;
+            com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.buildCore(orbit, c, east, "PizzaParker07");
+            com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.HABITATION.attach(orbit, c.east(3).above(2), "PizzaParker07");
+            toDimension(p, Location.EARTH_ORBIT, c.getX() + 2.5, c.getY() + 2.6, c.getZ() + 0.5, -90F, 10F);
         }, null));
         s.add(new Shot("31_nearby_stars", 6000, 0, 0, 0, 0F, 0F, false, fp, 120,
                 p -> {

@@ -1,0 +1,12 @@
+{
+  "loader": "neoforge:separate_transforms",
+  "gui_light": "front",
+  "base": {
+    "parent": "spacebreaker:item/airlock_module_3d"
+  },
+  "perspectives": {
+    "gui": {
+      "parent": "spacebreaker:item/airlock_module_icon"
+    }
+  }
+}

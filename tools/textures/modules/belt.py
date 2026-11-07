@@ -432,6 +432,19 @@ def tempel_ice():
 
 
 
+
+def gold_foil_cladding():
+    """Crinkled gold thermal blanket over a hull panel: soft diagonal creases, bright glints, a darker seam every 8 px."""
+    r = P.GOLD_FOIL
+    creases = blur_dir(clustered(16, 16, 21101, passes=1), 1, 1, 1)
+    f = blend((creases, 0.55), (fbm(16, 16, 21102, [(4, 1.0), (2, 0.5)]), 0.3), (white(21103), 0.15))
+    cv, _ = quant(f, [r[0], r[1], r[2], r[3], r[4], r[5]], [6, 22, 34, 22, 12, 4])
+    for i in range(16):
+        cv[i, 7] = r[1] if cv[i, 7] in (r[4], r[5]) else r[0] if i % 5 == 0 else r[1]
+        cv[7, i] = r[1] if i % 3 else r[0]
+    return cv
+
+
 def export(save):
     for name, fn, r in (('encke_dust', encke_dust, P.ENCKE_DUST),):
         base = fn(0)
@@ -447,6 +460,7 @@ def export(save):
         for side in ('left', 'right'):
             save(footprint(base, prints(r), side), 'block', f'{name}_footprint_{side}', (22, 8, 64, None))
     save(halley_ice(), 'block', 'halley_ice', (60, 14, 10, None))
+    save(gold_foil_cladding(), 'block', 'gold_foil_cladding', (70, 30, 4, None))
     for name, fn, r, ice in (('tempel_dust', tempel_dust, P.TEMPEL_DUST, tempel_ice),):
         base = fn(0)
         save(base, 'block', name, (18, 8, 64, None))

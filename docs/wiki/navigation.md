@@ -12,22 +12,18 @@ Yörüngeye çıkarken, gezegenler arasında ve inişte yükleme ekranı yoktur;
 
 ### Yıldız haritası
 Roket **yörüngedeyken** `M` haritayı açar. Yüzeyden önce rampadan fırlatman gerekir.
-1. Güneş soldadır; **Buradasın** iğnesi nerede olduğunu gösterir. Bir gezegene tıkla: sistemine yakınlaşır. Geri dönmek için **◀ Güneş Sistemi** ya da sağ tık.
-2. Sağdaki panel seçtiğin dünyanın resmini, kısa açıklamasını ve tehlikelerini gösterir: **Hava yok**, **Solunamaz hava**, **Ezici basınç**, **Sıcak**, **Soğuk**, **Radyasyon**.
-3. **Yörüngeye git** ya da **Yüzeye in**'i seç. (Henüz kurulmamış bir dünyada **Yakında**, yüzeyi olmayan bir cisimde **İnilecek yüzey yok** yazar.)
-4. Panel şunları yazar:
-   - **Gereken yakıt X · roketinde Y** → **Yeter ✔** ya da **X eksik ✘**
-   - **Geri dönüş yakıtı:** yeter ✔ / yetmez ✘
-   - **Yolculuk süresi:** X gün
-   - **Fırlatma penceresi:** şu an uygun, ya da en iyisi biraz sonra (şimdi gitmek daha çok yakıt ister)
-5. Rota haritada numaralı adımlarla çizilir. Büyük **Git** düğmesine bas. Düğme pasifse nedenini yazar.
+1. Bütün Güneş Sistemi tek bir haritadır: her dünya yörüngesinde gerçekte bulunduğu yerde, kendi renklerinde küçük bir disk olarak durur. Kuyruklu yıldızlar ve Dünya'ya yakın asteroitler yörüngelerinde küçük noktalardır. Küçük bir işaret roketinin nerede olduğunu gösterir.
+2. **Tekerlekle** yakınlaş, **sürükleyerek** kaydır, **sağ tıkla** her şeyi yeniden gör. Bir dünyaya tıkla: görünüm ona doğru kayar ve uydularını görecek kadar yaklaşır.
+3. Kısa panelde dünyanın adı ve türü, **Yörünge** ya da **Yüzeye in** seçimi ve tehlikeleri renkli kelimelerle yazar: **Hava yok**, **Solunamaz hava**, **Ezici basınç**, **Sıcak**, **Soğuk**, **Radyasyon**.
+4. Yolculuk için **Δv** ve **Süre** büyük rakamlarla, tek bir yakıt çubuğu (gereken yakıt ve roketteki yakıt), bir dönüş satırı (**Dönüş: yakıt yeter**, **Dönüş: orada yakıt üret** ya da **Dönüş: yakıt yetmez**), fırlatma penceresi ve yalnız en önemli uyarı görünür.
+5. Rota haritada ince, kesik çizgili bir yaydır. **Git**'e bas. Düğme gri ise panel nedenini söyler.
 
-Bir gezegenin yanındaki küçük **istasyon simgesi**, yörüngesinde bir uzay istasyonu olduğunu gösterir; yan panel onu kimin kurduğunu ve kaç yanaşma portu olduğunu yazar. → [Uzay İstasyonu](space_station)
+Bir dünyanın yanındaki küçük **istasyon** işareti, yörüngesinde bir uzay istasyonu olduğu anlamına gelir. → [Uzay İstasyonu](space_station)
 
-Uçarken göstergede **Kalan yakıt (Δv)** satırını izle.
+Uçarken göstergedeki **Kalan yakıt (Δv)** satırını izle.
 
 > [!TIP]
-> **Δv**, roketinin hızını ne kadar değiştirebileceğidir; kısaca: yakıtın.
+> **Δv**, roketinin hızını ne kadar değiştirebileceğidir; kısacası yakıtın.
 
 ### Ay'a iniş
 - Ay yörüngesinden yüzeye yaklaşık **1870 m/s** gerekir. Dönüş için de bir o kadar.
@@ -60,17 +56,13 @@ There are no loading screens on the way to orbit, between worlds or when landing
 
 ### The star map
 With the rocket **in orbit**, `M` opens the map. Launch from a pad first.
-1. The Sun is on the left; the **You are here** pin shows where you are. Click a planet to zoom into its system. Go back with **◀ Solar System** or a right-click.
-2. The panel on the right shows the chosen world's picture, a short description and its hazards: **No air**, **Unbreathable air**, **Crushing pressure**, **Hot**, **Cold**, **Radiation**.
-3. Pick **Go to orbit** or **Land**. (A world that is not built yet says **Coming soon**; a body without ground says **No ground to land on**.)
-4. The panel tells you:
-   - **Fuel needed X · on board Y** → **Enough ✔** or **X short ✘**
-   - **Fuel to come home:** enough ✔ / not enough ✘
-   - **Trip time:** X days
-   - **Launch window:** now is fine, or the best one is a little later (going now costs more fuel)
-5. The route is drawn on the map in numbered steps. Press the big **Go** button. If it is greyed out, it tells you why.
+1. It is one map of the whole Solar System: every world sits where it really is on its orbit, as a small disc in its own colours. Comets and near-Earth asteroids are small dots on their orbits. A small marker shows where your rocket is.
+2. **Scroll** to zoom, **drag** to move, **right-click** to see everything again. Click a world: the view glides to it, close enough to see its moons.
+3. The short panel shows the world's name and kind, **Orbit** or **Land**, and its dangers as coloured words: **No air**, **Unbreathable air**, **Crushing air**, **Hot**, **Cold**, **Radiation**.
+4. For the trip it shows the **Δv** and the **Time** in large figures, one fuel bar (fuel needed against fuel on board), a line on getting home (**Home: enough fuel**, **Home: make fuel there** or **Home: not enough fuel**), the launch window and only the most important warning.
+5. The route is a thin dashed arc on the map. Press **Go**. If it is greyed out, the panel says why.
 
-A small **station icon** beside a planet means there is a space station in its orbit; the side panel shows who built it and how many docking ports it has. → [Space Station](space_station)
+A small **station** mark beside a world means there is a space station in its orbit. → [Space Station](space_station)
 
 While flying, watch the **Fuel left (Δv)** line on the display.
 

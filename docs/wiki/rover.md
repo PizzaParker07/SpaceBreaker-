@@ -65,6 +65,18 @@
 
 → **Basınçlı Gezici** (Çalışma Masası)
 
+**Amfibi Gezici**
+
+**Amfibi Gezici** basınçlı kabini yan şamandıraları ve kıçta pervanesi olan sızdırmaz bir gövdeye oturtur. Karada biraz daha yavaştır (6 m/s), ama doğrudan suya ya da Titan'ın göllerindeki gibi sıvı metana girer ve **5 m/s** ile yüzerek devam eder; suda blok başına iki kat enerji harcar. Yüzerken fren yoktur: yavaşlamak için pervaneyi geri çalıştır. Kıyıya burnunu dayayınca karaya çıkar.
+
+|   |   |   |
+|---|---|---|
+| Alüminyum Levha | Elektrik Motoru | Alüminyum Levha |
+| Alüminyum Levha | Basınçlı Gezici | Alüminyum Levha |
+| Alüminyum Levha | Alüminyum Levha | Alüminyum Levha |
+
+→ **Amfibi Gezici** (Çalışma Masası)
+
 <details>
 <summary>English: Rover</summary>
 
@@ -132,5 +144,17 @@ The **Pressurized Rover** has a closed cabin: aboard you need no helmet, and its
 | Titanium Plate | Oxygen Distributor | Titanium Plate |
 
 → **Pressurized Rover** (Crafting Table)
+
+**Amphibious Rover**
+
+The **Amphibious Rover** puts the pressurized cabin on a sealed hull with side floats and a stern propeller. It is a little slower on land (6 m/s), but it drives straight into water or liquid methane, as on Titan's lakes, and sails on at **5 m/s**, using twice the energy per block afloat. Afloat there are no brakes: reverse the propeller to slow down. Nose into a bank to climb back out onto the shore.
+
+|   |   |   |
+|---|---|---|
+| Aluminum Plate | Electric Motor | Aluminum Plate |
+| Aluminum Plate | Pressurized Rover | Aluminum Plate |
+| Aluminum Plate | Aluminum Plate | Aluminum Plate |
+
+→ **Amphibious Rover** (Crafting Table)
 
 </details>

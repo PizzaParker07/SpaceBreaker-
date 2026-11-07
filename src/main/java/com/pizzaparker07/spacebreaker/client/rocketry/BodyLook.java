@@ -22,8 +22,6 @@ import java.util.concurrent.ConcurrentHashMap;
 final class BodyLook {
     private static final Map<ResourceLocation, BlockyBodyRenderer.ColorMap> MAPS = new ConcurrentHashMap<>();
     private static final Map<ResourceLocation, java.util.Optional<BlockyBodyRenderer.Ring>> RINGS = new ConcurrentHashMap<>();
-    /** The thin shell of air around a world with an atmosphere: one block thick, faintly blue. */
-    private static final BlockyBodyRenderer.ColorMap AIR = BlockyBodyRenderer.flat(0x7FB2F0);
 
     private BodyLook() {
     }
@@ -68,11 +66,9 @@ final class BodyLook {
         }
         // pole along the horizon, longitude 0 facing up at the viewer: we look down on the tropics
         var pose = new BlockyBodyRenderer.Pose(center, radius, new Vector3f(0, 0, 1), new Vector3f(0, 1, 0), spin * (float) (Math.PI * 2));
-        BlockyBodyRenderer.draw(modelView, st, 0, map(body), pose, sun, 0.05F, 1F, alpha, null);
-        if (air) {
-            var shell = new BlockyBodyRenderer.Pose(center, radius * 1.035F, new Vector3f(0, 0, 1), new Vector3f(0, 1, 0), 0F);
-            BlockyBodyRenderer.draw(modelView, st, 32, AIR, shell, sun, 0.3F, 1F, 0.28F * alpha, null);
-        }
+        // close below an orbit: up to the finest level, or the steps show as big bands
+        BlockyBodyRenderer.draw(modelView, st, BlockyBodyRenderer.APPROACH, map(body), pose, sun, 0.05F, 1F, alpha, null);
+        // no air shell: seen face-on it washes the whole planet out; the colours carry the atmosphere
         return true;
     }
 
