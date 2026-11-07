@@ -93,6 +93,7 @@ public final class RocketryModule implements SbModule {
     public static final DeferredItem<RocketPartItem> COMM_SATELLITE = part("comm_satellite");
     public static final DeferredItem<RocketPartItem> OBSERVATION_SATELLITE = part("observation_satellite");
     public static final DeferredItem<RocketPartItem> SPACE_PROBE = part("space_probe");
+    public static final DeferredItem<RocketPartItem> CARGO_MODULE = part("cargo_module");
     public static final DeferredItem<RocketPartItem> DECOUPLER = part("decoupler");
     public static final DeferredItem<RocketPartItem> INTERSTAGE = part("interstage");
     public static final DeferredItem<RocketPartItem> FINS = part("fins");

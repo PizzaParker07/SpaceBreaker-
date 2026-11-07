@@ -47,6 +47,12 @@ final class RocketryLang {
         l.add("message.spacebreaker.docking.approach", "Station in sight: approaching the docking port…", "İstasyon göründü: yanaşma portuna yaklaşılıyor…");
         l.add("message.spacebreaker.docked", "Docked: you can step out into the station", "Yanaşıldı: istasyona çıkabilirsin");
         l.item(RocketryModule.COMM_SATELLITE, "Communications Relay Satellite", "İletişim Rölesi Uydusu");
+        l.item(RocketryModule.CARGO_MODULE, "Cargo Module", "Kargo Modülü");
+        l.add("container.spacebreaker.cargo_hold", "Cargo Hold", "Kargo Ambarı");
+        l.add("message.spacebreaker.cargo.delivered", "Cargo delivered at %s: %s items unloaded", "Kargo %s konumuna teslim edildi: %s eşya boşaltıldı");
+        l.add("message.spacebreaker.cargo.waiting", "Cargo rocket at %s: %s items wait in its hold (no chests by the port or beacon)",
+                "Kargo roketi %s konumunda: %s eşya ambarda bekliyor (port ya da işaretin yanında sandık yok)");
+        l.add("message.spacebreaker.cargo.no_station", "Cargo rocket in %s: no station to dock at, waiting in orbit", "Kargo roketi %s içinde: yanaşacak istasyon yok, yörüngede bekliyor");
         l.item(RocketryModule.OBSERVATION_SATELLITE, "Observation Satellite", "Gözlem Uydusu");
         l.item(RocketryModule.SPACE_PROBE, "Lander Probe", "İniş Sondası");
         l.add("tooltip.spacebreaker.part.satellite", "Uncrewed satellite: goes in the capsule slot; launch it from the console", "İnsansız uydu: kapsül yuvasına takılır; konsoldan fırlatılır");

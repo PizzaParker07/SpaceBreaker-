@@ -264,6 +264,15 @@ def space_probe():
     return els
 
 
+def cargo_module():
+    """Cargo module: a pressurised can with a launch adapter below and a docking hatch on top."""
+    els = []
+    els += prism(0, 2, 10)                                 # launch adapter
+    els += prism(2, 20, 16)                                # cargo can
+    els += prism(20, 22, 8)                                # docking hatch
+    return els
+
+
 def decoupler():
     return prism(0, 3, 16)
 
@@ -372,6 +381,7 @@ PARTS = {
     'comm_satellite': (comm_satellite, False),
     'observation_satellite': (observation_satellite, False),
     'space_probe': (space_probe, False),
+    'cargo_module': (cargo_module, False),
     'decoupler': (decoupler, False),
     'interstage': (interstage, False),
     'heat_shield': (heat_shield, False),

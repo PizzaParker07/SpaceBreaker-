@@ -84,14 +84,17 @@ public final class UncrewedMissions {
             case CONTINUE -> rocket.scheduleTravel(COAST_TICKS);
             case DEPLOY -> deploy(rocket, at);
             default -> {
+                if (p.get().type() == PartType.CARGO && at.orbit() && !rocket.docking() && rocket.level() instanceof ServerLevel level) {
+                    tell(level.getServer(), rocket.owner(), Component.translatable("message.spacebreaker.cargo.no_station", at.name()).withStyle(ChatFormatting.GOLD));
+                }
             }
         }
     }
 
     /** Releases the rocket's satellite (or an orbiting probe) where it is and removes the rocket. */
     public static void deploy(RocketEntity rocket, Location at) {
-        if (!(rocket.level() instanceof ServerLevel level)) {
-            return;
+        if (!(rocket.level() instanceof ServerLevel level) || payload(rocket).map(p -> p.type() == PartType.CARGO).orElse(false)) {
+            return; // cargo is not released: it docks or lands and unloads
         }
         ResourceLocation part = payloadId(rocket).orElse(null);
         if (part == null) {
@@ -115,6 +118,13 @@ public final class UncrewedMissions {
 
     /** Called when an uncrewed rocket touches down: a probe starts its work and sends samples home. */
     public static void landed(RocketEntity rocket, Location at) {
+        if (rocket.level() instanceof ServerLevel here && rocket.hasCargoHold()) {
+            // unload next to the landing beacon it came down on (or where it stands)
+            net.minecraft.core.BlockPos anchor = com.pizzaparker07.spacebreaker.content.rocketry.station.LandingBeacons.get(here)
+                    .nearest(rocket.position()).filter(b -> b.closerToCenterThan(rocket.position(), UNLOAD_REACH + 4)).orElse(rocket.blockPosition());
+            unloadCargo(rocket, anchor, at);
+            return;
+        }
         if (!(rocket.level() instanceof ServerLevel level) || payload(rocket).map(p -> p.type() != PartType.PROBE).orElse(true)) {
             return;
         }
@@ -128,6 +138,53 @@ public final class UncrewedMissions {
         data.deliver(server, owner, Research.experimentData(PROBE_LANDING));
         tell(server, owner, Component.translatable("message.spacebreaker.probe.landed", at.name()).withStyle(ChatFormatting.GREEN));
         CoveragePayload.sendToAll(server);
+    }
+
+    /** How far from the port or beacon the cargo looks for chests (and other item storage), blocks. */
+    public static final int UNLOAD_REACH = 4;
+
+    /**
+     * Unloads a cargo rocket's hold into the chests, barrels and other item storage within {@link #UNLOAD_REACH}
+     * blocks of {@code anchor} (its docking port or landing beacon). What does not fit stays in the hold. Returns
+     * how many items moved.
+     */
+    public static int unloadCargo(RocketEntity rocket, net.minecraft.core.BlockPos anchor, Location at) {
+        if (!(rocket.level() instanceof ServerLevel level)) {
+            return 0;
+        }
+        var hold = rocket.cargo();
+        int moved = 0;
+        for (net.minecraft.core.BlockPos pos : net.minecraft.core.BlockPos.betweenClosed(anchor.offset(-UNLOAD_REACH, -UNLOAD_REACH, -UNLOAD_REACH),
+                anchor.offset(UNLOAD_REACH, UNLOAD_REACH, UNLOAD_REACH))) {
+            if (hold.isEmpty()) {
+                break;
+            }
+            var target = level.getCapability(net.neoforged.neoforge.capabilities.Capabilities.ItemHandler.BLOCK, pos.immutable(), null);
+            if (target == null) {
+                continue;
+            }
+            for (int i = 0; i < hold.getContainerSize(); i++) {
+                var stack = hold.getItem(i);
+                if (stack.isEmpty()) {
+                    continue;
+                }
+                var rest = net.neoforged.neoforge.items.ItemHandlerHelper.insertItemStacked(target, stack.copy(), false);
+                moved += stack.getCount() - rest.getCount();
+                hold.setItem(i, rest);
+            }
+        }
+        int left = 0;
+        for (int i = 0; i < hold.getContainerSize(); i++) {
+            left += hold.getItem(i).getCount();
+        }
+        MinecraftServer server = level.getServer();
+        if (moved > 0) {
+            tell(server, rocket.owner(), Component.translatable("message.spacebreaker.cargo.delivered", at.name(), moved).withStyle(ChatFormatting.GREEN));
+        }
+        if (left > 0) {
+            tell(server, rocket.owner(), Component.translatable("message.spacebreaker.cargo.waiting", at.name(), left).withStyle(ChatFormatting.GOLD));
+        }
+        return moved;
     }
 
     static void tell(MinecraftServer server, @Nullable UUID owner, Component message) {

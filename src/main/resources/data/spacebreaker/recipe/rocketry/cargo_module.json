@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " H ",
+    "ACA",
+    " A "
+  ],
+  "key": {
+    "H": {"item": "spacebreaker:docking_port"},
+    "C": {"item": "minecraft:chest"},
+    "A": {"item": "spacebreaker:aluminum_plate"}
+  },
+  "result": {"id": "spacebreaker:cargo_module", "count": 1}
+}

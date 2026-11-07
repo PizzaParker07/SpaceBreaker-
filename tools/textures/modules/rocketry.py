@@ -396,6 +396,30 @@ def comm_satellite():
     return cv
 
 
+def cargo_module():
+    """White cargo can: dark adapter ring, two orange cargo doors with hinges, a black-and-yellow stencil band."""
+    cv = new_sheet()
+    for y in range(0, 22):
+        for c in range(32):
+            col = STEEL[2 + (c % 3 == 0)] if y < 2 else WHITE[5] if (c + y) % 7 else WHITE[4]
+            if y >= 20:
+                col = STEEL[4]
+            put_side(cv, SIDE, c, y, col)
+    for c in range(32):
+        put_side(cv, SIDE, c, 3, HAZARD[3] if c % 4 < 2 else CARBON[2])     # stencil band
+    for door in (2, 18):
+        for y in range(6, 17):
+            for c in range(door, door + 12):
+                edge = y in (6, 16) or c in (door, door + 11)
+                put_side(cv, SIDE, c, y, CARBON[2] if edge else ORANGE[4] if (y + c) % 5 else ORANGE[3])
+        for y in (8, 14):
+            put_side(cv, SIDE, door + 1, y, STEEL[5])                        # hinges
+        put_side(cv, SIDE, door + 9, 11, STEEL[5])                           # latch
+    top_view(cv, TOP, lambda dx, dz, d: None if d > 16 else (CARBON[3] if d < 4 else STEEL[3] if d < 8.5 else WHITE[5]))
+    top_view(cv, BOTTOM, lambda dx, dz, d: None if d > 16 else (CARBON[2] if d < 6 else STEEL[3] if d < 10.5 else WHITE[4]))
+    return cv
+
+
 def observation_satellite():
     cv = new_sheet()
     for y in range(0, 10):
@@ -911,6 +935,24 @@ def icons():
     ], {'o': k[0], 'K': k[5], 'k': k[3], 'S': s[6], 's': s[4], 'p': s[4], 'P': s[6],
         'C': c[6], 'c': c[4], 'G': GOLD[5], 'g': GOLD[3], 'D': k[0]})
     g_, s_, k_, w_ = GOLD, STEEL, CARBON, WHITE
+    out['cargo_module'] = grid_icon([
+        "................",
+        "......oooo......",
+        ".....oKKKKo.....",
+        "...oooooooooo...",
+        "..oWWWWWWWWWWo..",
+        "..oYkYkYkYkYko..",
+        "..oWOOOWWOOOWo..",
+        "..oWOooWWOooWo..",
+        "..oWOOOWWOOOWo..",
+        "..oWOOOWWOOOWo..",
+        "..oWWWWWWWWWWo..",
+        "..oooooooooooo..",
+        ".....oSSSSo.....",
+        "....oSSSSSSo....",
+        "................",
+        "................",
+    ], {'o': k_[0], 'K': k_[4], 'k': k_[2], 'W': w_[6], 'Y': HAZARD[3], 'O': ORANGE[4], 'S': s_[4]})
     out['comm_satellite'] = grid_icon([
         "................",
         ".......o........",
@@ -1160,6 +1202,7 @@ SHEETS = {
     'comm_satellite': comm_satellite,
     'observation_satellite': observation_satellite,
     'space_probe': space_probe,
+    'cargo_module': cargo_module,
     'decoupler': decoupler,
     'interstage': interstage,
     'heat_shield': heat_shield,
