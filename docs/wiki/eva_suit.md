@@ -58,12 +58,26 @@ Tüpler **EVA Gövdesi** içindeki sırt çantasında durur: **iki tüp**, Ek Ok
 - **%10**'un altında: 3 saniyede bir bip.
 - Oksijen bitince ya da havasız yerde giysi açıkken: hızlı alarm. Göstergedeki uyarı yazısı yanıp söner.
 
+<a id="hud"></a>
 ### Kask
-Kask göstergesi oksijeni, giysinin durumunu, vücut ve dış sıcaklığı, radyasyonu ve yerçekimini gösterir. Güneş göz kamaştırıyorsa **altın güneş vizörünü** indir: kask elindeyken `Shift` + `Sağ Tık`. Ekranın kenarındaki yuvarlak vizör çerçevesini istemcinin ayarlarından (**visorFrame**, **visorFrameOpacity**) kapatabilir ya da saydamlaştırabilirsin.
+Kask göstergesi küçük kalır. Hotbar'ın yanında, ana elinin karşı tarafında tek bir oksijen satırı vardır: tüp simgesi, bir çubuk ve kalan süre (dd:ss). Çubuk mavidir; **%30**'un altında turuncu, **%15**'in altında kırmızı olur ve yanıp söner.
+- **Tehlike simgeleri** oksijen süresinin yanında yalnız bir sorun varken çıkar: giysi (havasız yerde açık ya da %20'nin altında), sıcaklık (giysinin dayanımının ötesi ya da vücudun 35–38,5 °C dışında; 32–41 °C dışında kırmızı), radyasyon (günde 50 mSv'nin üstü ya da toplam 250 mSv; 1000'den sonra kırmızı), basınç (giysi zorlanıyor) ve manevra gazı (%10'un altı).
+- **Eve dönüş** (ok, hedef ve uzaklık) yalnız oksijenin, çevre sensörüyle seçtiğin hedefe yürüyerek dönmeye yetmeyecekse görünür. → [Çevre sensörü](tools)
+- Hotbar'ın üstünde **tek bir uyarı** yanıp söner: sarı **DÖN: DÖNÜŞ İÇİN O2 AZALIYOR** ya da kırmızı **GERİ DÖNMEYE O2 YETMİYOR**, **GİYSİ SIZDIRMAZ DEĞİL**, **GİYSİ DAYANIMI AŞILDI** gibi.
+- Telsiz altyazıları sol üstte çıkar; o sırada sensör kartı onların altına iner. Ekranın üst ortası boş bırakılır.
+
+Güneş göz kamaştırıyorsa **altın güneş vizörünü** indir: kask elindeyken `Shift` + `Sağ Tık`.
+
+> [!TIP]
+> Bütün göstergeleri mi istiyorsun? İstemci ayarlarında **detailedHud**'u aç: vücut sıcaklığı, radyasyon, basınç, yerçekimi ve dış sıcaklık, MAG / HALAT / SOĞUK TUZAK / µG etiketleri, manevra gazı ve her zaman görünen eve dönüş. **visorRim** ekranın çevresine soğukta buzlanan ince bir vizör kenarı ekler (varsayılan kapalı; **visorRimOpacity**). **opacity** bütün göstergeyi saydamlaştırır, **enabled** kapatır.
+
+<a id="lamps"></a>
+### Kask lambaları
+Kask lambaları karanlıkta kendiliğinden yanar ve baktığın yeri aydınlatır. `key.spacebreaker.helmet_lamp` ile yakındaki işler için **geniş** ışık (yaklaşık 20 blok) ve lav tünelleriyle gölgeli kraterler için **uzun** ışık (yaklaşık 40 blok) arasında geçiş yaparsın. Yalnız ışık değişir: fazladan enerji ya da oksijen harcamaz. Herkes aynı ışığı görür.
 
 <a id="sound"></a>
 ### Ses
-İstemcideki **gerçekçi ses** ayarı (realisticSound, varsayılan olarak **kapalı**) açıksa, havanın ince olduğu yerlerde dünya biraz daha kısık ve yumuşak duyulur: Mars'ta ses en az %80, vakumda (Ay, yörünge, asteroitler, kuyruklu yıldızlar) yaklaşık yarı yarıya, önce de tizler kaybolur. Kendi adımların ve aletin, kask içi sesler (telsiz, görev kontrol, uyarı bipleri), solunabilir hava ve basınçlı odalar normaldir. Ayar kapalıyken her şey her zamanki gibi duyulur.
+İstemcideki **gerçekçi ses** ayarı (atmosphereSound, varsayılan olarak **kapalı**) açıksa, havanın ince olduğu yerlerde dünya biraz daha kısık ve yumuşak duyulur: Mars'ta ses en az %80, vakumda (Ay, yörünge, asteroitler, kuyruklu yıldızlar) yaklaşık yarı yarıya, önce de tizler kaybolur. Kendi adımların ve aletin, kask içi sesler (telsiz, görev kontrol, uyarı bipleri), solunabilir hava ve basınçlı odalar normaldir. Ayar kapalıyken her şey her zamanki gibi duyulur.
 
 ### Ölünce
 Tüpler gövdenin içinde kalır ve gövde sıradan bir zırh gibi düşer: geri aldığında tüpler de geri gelir. Nefes, vücut ısısı ve radyasyon dozu sıfırlanır.
@@ -158,12 +172,26 @@ The tanks sit in the backpack inside the **EVA Torso**: **two tanks**, three wit
 - Below **10%**: a beep every 3 seconds.
 - Out of oxygen, or the suit open in an airless place: a fast alarm. The warning on the display blinks.
 
+<a id="hud"></a>
 ### Helmet
-The helmet display shows oxygen, suit state, body and outside temperature, radiation and gravity. If the Sun is blinding, lower the **gold sun visor**: `Shift` + `Right Click` with the helmet in hand. You can switch off or fade the rounded visor frame round the screen in the client config (**visorFrame**, **visorFrameOpacity**).
+The helmet display stays small. Beside the hotbar, on the side away from your main hand, is one oxygen line: a tank icon, a bar and the time left (mm:ss). The bar is blue, orange below **30 %**, and red and blinking below **15 %**.
+- **Hazard icons** appear after the oxygen time only while something is wrong: suit (open or below 20 % in an airless place), temperature (beyond your suit's rating, or your body outside 35–38.5 °C; red outside 32–41 °C), radiation (over 50 mSv/day, or 250 mSv in total; red from 1,000), pressure (suit under strain) and maneuvering gas (below 10 %).
+- **The way home** (arrow, target and distance) only shows when your oxygen will not last the walk back to the target you picked with the environment sensor. → [Environment sensor](tools)
+- **One warning** blinks above the hotbar, such as **TURN BACK: O2 RUNNING LOW FOR THE WAY HOME** in yellow, or **NOT ENOUGH O2 TO GET BACK**, **SUIT NOT SEALED** and **BEYOND SUIT RATING** in red.
+- Radio captions appear at the top left; the sensor card moves down below them while they are shown. The top centre of the screen is kept clear.
+
+If the Sun is blinding, lower the **gold sun visor**: `Shift` + `Right Click` with the helmet in hand.
+
+> [!TIP]
+> Want every gauge? Turn on **detailedHud** in the client config: body temperature, radiation, pressure, gravity and outside temperature, the MAG / TETHER / COLD TRAP / µG labels, maneuvering gas, and the way home all the time. **visorRim** adds a thin visor rim round the screen that frosts over in the cold (off by default; **visorRimOpacity**). **opacity** fades the whole display and **enabled** turns it off.
+
+<a id="lamps"></a>
+### Helmet lamps
+The helmet lamps switch on by themselves in the dark and light where you look. `key.spacebreaker.helmet_lamp` switches between a **wide** beam (about 20 blocks) for working nearby and a **long** beam (about 40 blocks) for lava tubes and shadowed craters. Only the light changes: no extra power or oxygen. Everyone sees the same beam.
 
 <a id="sound"></a>
 ### Sound
-With the **realistic sound** client setting (realisticSound, **off** by default) the world sounds a little quieter and softer where the air is thin: on Mars at least 80 % of the volume, in vacuum (the Moon, orbit, asteroids, comets) about half, and the high notes fade first. Your own steps and tools, helmet sounds (radio, mission control, warning beeps), breathable air and pressurised rooms stay normal. With the setting off everything sounds as usual.
+With the **realistic sound** client setting (atmosphereSound, **off** by default) the world sounds a little quieter and softer where the air is thin: on Mars at least 80 % of the volume, in vacuum (the Moon, orbit, asteroids, comets) about half, and the high notes fade first. Your own steps and tools, helmet sounds (radio, mission control, warning beeps), breathable air and pressurised rooms stay normal. With the setting off everything sounds as usual.
 
 ### When you die
 The tanks stay inside the body piece, which drops like any armour: pick it up and the tanks come back with it. Breath, body temperature and radiation dose reset.
