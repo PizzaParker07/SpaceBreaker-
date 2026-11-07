@@ -47,6 +47,7 @@ public final class ShowcaseScenarios {
         ALL.put("saturnian", new SaturnianScenario(false));
         ALL.put("enceladus", new SaturnianScenario(true));
         ALL.put("miranda", new MirandaScenario());
+        ALL.put("ariel", new ArielScenario());
         ALL.put("triton", new TritonScenario());
         ALL.put("pluto", new PlutoScenario(false));
         ALL.put("charon", new PlutoScenario(true));
