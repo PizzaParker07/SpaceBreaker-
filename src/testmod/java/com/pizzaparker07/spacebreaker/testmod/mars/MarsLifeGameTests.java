@@ -331,6 +331,25 @@ public final class MarsLifeGameTests {
         helper.succeed();
     }
 
+    /** The Tether Spinner: flung away from its silk anchor, the taut line stops it and reels it back. Fed chondrite. */
+    @GameTest(template = EMPTY, timeoutTicks = 100)
+    public static void tetherSpinnerReelsBackOnItsLine(GameTestHelper helper) {
+        var spinner = helper.spawn(com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.TETHER_SPINNER.get(), new BlockPos(1, 12, 1));
+        spinner.setNoAi(true);
+        spinner.setNoGravity(true);
+        net.minecraft.world.phys.Vec3 start = spinner.position();
+        double tether = com.pizzaparker07.spacebreaker.content.mars.entity.TetherSpinner.TETHER;
+        spinner.anchorAt(start.add(-tether - 2, 0, 0));
+        spinner.setDeltaMovement(0.8, 0, 0);
+        helper.assertTrue(spinner.isFood(new net.minecraft.world.item.ItemStack(MarsModule.CARBONACEOUS_CHONDRITE.get())), "it eats chondrite");
+        helper.runAfterDelay(20, () -> {
+            double reach = spinner.position().distanceTo(spinner.anchor());
+            helper.assertTrue(reach < tether + 2.5, "the line holds it near its anchor, at " + reach);
+            helper.assertTrue(spinner.getDeltaMovement().x < 0, "the line reels it back, vx " + spinner.getDeltaMovement().x);
+            helper.succeed();
+        });
+    }
+
     private MarsLifeGameTests() {
     }
 }

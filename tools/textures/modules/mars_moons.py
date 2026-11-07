@@ -172,6 +172,50 @@ def mars_disc(size=256):
     return img
 
 
+# Tether Spinner: soot-grey like the moons' dust, a pale silk-white back plate and spinneret.
+SPINNER = ramp('#1d1a19', '#2f2b29', '#433d39', '#5a524b', '#a59c8e', '#d8d2c4')
+
+
+def spinner():
+    """Tether Spinner (64x32): low grey body, pale back plate, small head with two dark eyes, pale spinneret, thin
+    banded legs. UVs: TetherSpinnerModel."""
+    from modules.moon_creatures import paint, noise_pick
+    cv = Canvas(64, 32)
+    n = clustered(64, 32, 4401, passes=1)
+    h = SPINNER
+
+    def body(face, x, y, fw, fh):
+        if face == 'bottom':
+            return h[3]
+        if face == 'top':
+            return noise_pick(h, 2, n, x, y)
+        return h[1] if y == fh - 1 else noise_pick(h, 2, n, x + 20, y)
+
+    paint(cv, 0, 0, 6, 3, 6, body)
+
+    def plate(face, x, y, fw, fh):
+        if face == 'top':
+            return h[5] if 0 < x < fw - 1 and 0 < y < fh - 1 else h[4]
+        return h[3]
+
+    paint(cv, 0, 16, 4, 1, 4, plate)
+
+    def head(face, x, y, fw, fh):
+        if face == 'front':
+            if y == 0 and x in (0, 3):
+                return h[0]  # eyes
+            if y == 1 and x in (1, 2):
+                return h[1]  # mouthparts
+        return noise_pick(h, 2 if face == 'top' else 1, n, x + 40, y + 6)
+
+    paint(cv, 26, 0, 4, 2, 3, head)
+    paint(cv, 40, 0, 2, 2, 2, lambda f, x, y, fw, fh: h[5] if f == 'back' else h[4])
+    leg = lambda f, x, y, fw, fh: h[3] if (x // 2) % 2 == 0 and f in ('top', 'bottom', 'front', 'back') else h[1]
+    paint(cv, 0, 12, 5, 1, 1, leg)
+    paint(cv, 0, 26, 7, 1, 1, leg)
+    return cv
+
+
 def export(save):
     dust_spec = (18, 8, 64, None)
     for name, fn, r in (('phobos_regolith', phobos_regolith, PHOBOS_SOIL), ('deimos_regolith', deimos_regolith, DEIMOS_SOIL)):
@@ -181,6 +225,7 @@ def export(save):
         for side in ('left', 'right'):
             save(footprint(base, prints(r), side), 'block', f'{name}_footprint_{side}', (22, 8, 64, None))
     save(chondrite(), 'block', 'carbonaceous_chondrite', (30, 10, 30, None))
+    save(spinner(), 'entity', 'mars/tether_spinner')
     import os
     out = os.path.join(os.path.dirname(__file__), '..', '..', '..', 'src', 'main', 'resources', 'assets', 'spacebreaker', 'textures', 'environment')
     mars_disc().save(os.path.join(out, 'mars_disc.png'))

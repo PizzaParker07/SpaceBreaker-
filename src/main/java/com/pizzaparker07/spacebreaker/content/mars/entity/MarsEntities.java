@@ -49,6 +49,9 @@ public final class MarsEntities {
     public static final DeferredHolder<EntityType<?>, EntityType<PolarWorm>> POLAR_WORM = ENTITIES.register("polar_worm",
             () -> EntityType.Builder.of(PolarWorm::new, MobCategory.CREATURE).sized(0.7F, 0.5F).eyeHeight(0.35F).clientTrackingRange(8)
                     .build("polar_worm"));
+    public static final DeferredHolder<EntityType<?>, EntityType<TetherSpinner>> TETHER_SPINNER = ENTITIES.register("tether_spinner",
+            () -> EntityType.Builder.of(TetherSpinner::new, MobCategory.CREATURE).sized(0.8F, 0.5F).eyeHeight(0.35F).clientTrackingRange(8)
+                    .build("tether_spinner"));
 
     private MarsEntities() {
     }
@@ -59,6 +62,7 @@ public final class MarsEntities {
         egg(items, "canyon_lurker_spawn_egg", CANYON_LURKER, 0x7E4B33, 0xF5C040);
         egg(items, "stonegrazer_spawn_egg", STONEGRAZER, 0x716157, 0x80533C);
         egg(items, "polar_worm_spawn_egg", POLAR_WORM, 0xB4BDC6, 0x45303A);
+        egg(items, "tether_spinner_spawn_egg", TETHER_SPINNER, 0x2F2B29, 0xD8D2C4);
         ENTITIES.register(modBus);
         modBus.addListener(EntityAttributeCreationEvent.class, e -> {
             e.put(RUST_BEETLE.get(), RustBeetle.attributes().build());
@@ -66,6 +70,7 @@ public final class MarsEntities {
             e.put(CANYON_LURKER.get(), CanyonLurker.attributes().build());
             e.put(STONEGRAZER.get(), Stonegrazer.attributes().build());
             e.put(POLAR_WORM.get(), PolarWorm.attributes().build());
+            e.put(TETHER_SPINNER.get(), TetherSpinner.attributes().build());
         });
         modBus.addListener(RegisterSpawnPlacementsEvent.class, e -> {
             var op = RegisterSpawnPlacementsEvent.Operation.REPLACE;
@@ -74,6 +79,7 @@ public final class MarsEntities {
             e.register(CANYON_LURKER.get(), SpawnPlacementTypes.ON_GROUND, hm, CanyonLurker::checkSpawn, op);
             e.register(STONEGRAZER.get(), SpawnPlacementTypes.ON_GROUND, hm, Stonegrazer::checkSpawn, op);
             e.register(POLAR_WORM.get(), SpawnPlacementTypes.ON_GROUND, hm, PolarWorm::checkSpawn, op);
+            e.register(TETHER_SPINNER.get(), SpawnPlacementTypes.ON_GROUND, hm, TetherSpinner::checkSpawn, op);
             e.register(DUST_DEVIL.get(), SpawnPlacementTypes.ON_GROUND, hm, (t, l, r, p, rnd) -> r != MobSpawnType.NATURAL, op);
         });
         NeoForge.EVENT_BUS.addListener(LevelTickEvent.Post.class, e -> {
@@ -112,6 +118,10 @@ public final class MarsEntities {
                 b.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(RUST_BEETLE.get(), 6, 1, 3))));
         s.add(new MarsData.BiomeSpawns(MarsData.POLAR, b ->
                 b.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(POLAR_WORM.get(), 6, 1, 2))));
+        for (var moon : List.of(MarsData.PHOBOS_SURFACE, MarsData.PHOBOS_CRATER, MarsData.DEIMOS_SURFACE)) {
+            s.add(new MarsData.BiomeSpawns(moon, b ->
+                    b.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(TETHER_SPINNER.get(), 8, 2, 4))));
+        }
         s.add(new MarsData.BiomeSpawns(MarsData.ICE_CAP, b ->
                 b.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(POLAR_WORM.get(), 14, 1, 3))));
     }
@@ -162,8 +172,9 @@ public final class MarsEntities {
         lang.add(CANYON_LURKER.get().getDescriptionId(), "Canyon Lurker", "Kanyon Pusucusu");
         lang.add(STONEGRAZER.get().getDescriptionId(), "Stonegrazer", "Taş Otlayan");
         lang.add(POLAR_WORM.get().getDescriptionId(), "Polar Worm", "Kutup Kurtçuğu");
+        lang.add(TETHER_SPINNER.get().getDescriptionId(), "Tether Spinner", "Çapa Örücüsü");
         String[][] eggs = {{"Rust Beetle", "Pas Böceği"}, {"Dust Devil", "Toz Şeytanı"}, {"Canyon Lurker", "Kanyon Pusucusu"},
-                {"Stonegrazer", "Taş Otlayan"}, {"Polar Worm", "Kutup Kurtçuğu"}};
+                {"Stonegrazer", "Taş Otlayan"}, {"Polar Worm", "Kutup Kurtçuğu"}, {"Tether Spinner", "Çapa Örücüsü"}};
         for (int i = 0; i < eggs.length; i++) {
             lang.item(EGGS.get(i), eggs[i][0] + " Spawn Egg", eggs[i][1] + " Çağırma Yumurtası");
         }
