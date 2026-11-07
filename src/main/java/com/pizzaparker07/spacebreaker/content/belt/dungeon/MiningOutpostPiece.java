@@ -70,6 +70,11 @@ public class MiningOutpostPiece extends StructurePiece {
     /** Local y of the surface (floor of the buildings). */
     static final int F = DEPTH + 1;
 
+    /** World position of a local position (for showcases and tests). */
+    public BlockPos world(int x, int y, int z) {
+        return getWorldPos(x, y, z);
+    }
+
     @Override
     public void postProcess(WorldGenLevel level, StructureManager structures, ChunkGenerator generator, RandomSource random,
                             BoundingBox box, ChunkPos chunkPos, BlockPos pivot) {
@@ -103,10 +108,10 @@ public class MiningOutpostPiece extends StructurePiece {
     }
 
     private void module(WorldGenLevel level, BoundingBox box, int x0, int z0, int x1, int z1, int h) {
-        BlockState wall = s(Blocks.LIGHT_GRAY_CONCRETE);
-        BlockState frame = s(Blocks.IRON_BLOCK);
-        BlockState roof = s(Blocks.WHITE_CONCRETE);
-        BlockState floor = s(Blocks.SMOOTH_STONE);
+        BlockState wall = s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.ALUMINUM_PANEL.base().get());
+        BlockState frame = s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.TITANIUM_DECK.base().get());
+        BlockState roof = s(com.pizzaparker07.spacebreaker.content.rocketry.RocketryModule.STATION_HULL.get());
+        BlockState floor = s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.TITANIUM_DECK.base().get());
         for (int x = x0; x <= x1; x++) {
             for (int z = z0; z <= z1; z++) {
                 boolean edgeX = x == x0 || x == x1;
@@ -143,16 +148,19 @@ public class MiningOutpostPiece extends StructurePiece {
         // windows: a band of glass panes in the long walls
         for (int x = x0 + 1; x < x1; x++) {
             if ((x - x0) % 3 != 2) {
-                placeBlock(level, s(Blocks.GLASS_PANE), x, F + 2, z0, box);
-                placeBlock(level, s(Blocks.GLASS_PANE), x, F + 2, z1, box);
+                placeBlock(level, s(com.pizzaparker07.spacebreaker.content.rocketry.RocketryModule.STATION_WINDOW.get()), x, F + 2, z0, box);
+                placeBlock(level, s(com.pizzaparker07.spacebreaker.content.rocketry.RocketryModule.STATION_WINDOW.get()), x, F + 2, z1, box);
             }
         }
     }
 
     private void door(WorldGenLevel level, BoundingBox box, int x, int z, Direction facing) {
-        BlockState d = Blocks.IRON_DOOR.defaultBlockState().setValue(DoorBlock.FACING, facing);
-        com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, d.setValue(DoorBlock.HALF, DoubleBlockHalf.LOWER), x, F, z, box);
-        com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, d.setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER), x, F + 1, z, box);
+        BlockState d = com.pizzaparker07.spacebreaker.content.suit.SuitModule.AIRLOCK_DOOR.get().defaultBlockState()
+                .setValue(com.pizzaparker07.spacebreaker.content.suit.block.AirlockDoorBlock.FACING, facing);
+        com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this,
+                d.setValue(com.pizzaparker07.spacebreaker.content.suit.block.AirlockDoorBlock.HALF, DoubleBlockHalf.LOWER), x, F, z, box);
+        com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this,
+                d.setValue(com.pizzaparker07.spacebreaker.content.suit.block.AirlockDoorBlock.HALF, DoubleBlockHalf.UPPER), x, F + 1, z, box);
     }
 
     private void habitat(WorldGenLevel level, BoundingBox box, RandomSource r) {
@@ -162,14 +170,14 @@ public class MiningOutpostPiece extends StructurePiece {
             for (int y = F; y <= F + 3; y++) {
                 for (int z = 5; z <= 8; z++) {
                     boolean shell = y == F + 3 || z == 5 || z == 8;
-                    placeBlock(level, shell ? s(Blocks.LIGHT_GRAY_CONCRETE) : s(Blocks.AIR), x, y, z, box);
+                    placeBlock(level, shell ? s(com.pizzaparker07.spacebreaker.content.rocketry.RocketryModule.STATION_HULL.get()) : s(Blocks.AIR), x, y, z, box);
                 }
-                placeBlock(level, s(Blocks.SMOOTH_STONE), x, F - 1, 6, box);
-                placeBlock(level, s(Blocks.SMOOTH_STONE), x, F - 1, 7, box);
+                placeBlock(level, s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.GRATE.get()), x, F - 1, 6, box);
+                placeBlock(level, s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.GRATE.get()), x, F - 1, 7, box);
             }
         }
-        placeBlock(level, s(Blocks.IRON_BLOCK), 13, F + 3, 6, box);
-        placeBlock(level, s(Blocks.IRON_BLOCK), 13, F + 3, 7, box);
+        placeBlock(level, s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.LED_PANEL.get()), 13, F + 3, 6, box);
+        placeBlock(level, s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.LED_PANEL.get()), 13, F + 3, 7, box);
         for (int z = 6; z <= 7; z++) {
             for (int y = F; y <= F + 1; y++) {
                 placeBlock(level, s(Blocks.AIR), 11, y, z, box);
@@ -194,8 +202,16 @@ public class MiningOutpostPiece extends StructurePiece {
                 .setValue(com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlock.FACING, Direction.EAST), 3, F, 9, box);
         com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.BLOCK.get().defaultBlockState()
                 .setValue(com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlock.FACING, Direction.EAST), 3, F, 8, box);
-        placeBlock(level, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), 6, F + 4, 6, box);
-        placeBlock(level, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), 6, F + 4, 7, box);
+        placeBlock(level, s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.LED_PANEL.get()), 5, F + 5, 6, box);
+        placeBlock(level, s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.LED_PANEL.get()), 8, F + 5, 7, box);
+        for (int x = 3; x <= 10; x++) {
+            placeBlock(level, s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.CABLE_DUCT.get()), x, F + 4, 9, box);
+        }
+        BlockPos sign = com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this,
+                s(Blocks.BIRCH_WALL_SIGN).setValue(net.minecraft.world.level.block.WallSignBlock.FACING, Direction.WEST), 10, F + 1, 8, box);
+        if (sign != null && box.isInside(sign)) {
+            com.pizzaparker07.spacebreaker.content.mars.dungeon.DungeonBits.signText(level, sign, "ceres_outpost_log");
+        }
         // a cracked window: the reason the crew left
         placeBlock(level, s(Blocks.AIR), 7, F + 2, 3, box);
         placeBlock(level, s(BeltModule.CERES_REGOLITH.get()), 7, F, 4, box);
@@ -226,10 +242,13 @@ public class MiningOutpostPiece extends StructurePiece {
                 .setValue(com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlock.FACING, Direction.WEST), 25, F + 1, 10, box);
         placeBlock(level, s(Blocks.SMITHING_TABLE), 17, F, 10, box);
         placeBlock(level, s(Blocks.STONECUTTER), 18, F, 10, box);
-        placeBlock(level, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), 21, F + 5, 6, box);
+        placeBlock(level, s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.LED_PANEL.get()), 21, F + 6, 6, box);
+        for (int z = 3; z <= 10; z++) {
+            placeBlock(level, s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.PIPE_DUCT.get()), 24, F + 5, z, box);
+        }
         // trapdoor and ladder down the inner shaft to the drift
         for (int y = 2; y < F; y++) {
-            com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, Blocks.LADDER.defaultBlockState().setValue(LadderBlock.FACING, Direction.SOUTH), 21, y, 10, box);
+            com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.STEEL_LADDER.get().defaultBlockState().setValue(LadderBlock.FACING, Direction.SOUTH), 21, y, 10, box);
             placeBlock(level, s(BeltModule.CEREAN_ROCK.base().get()), 21, y, 9, box);
         }
         com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, Blocks.IRON_TRAPDOOR.defaultBlockState(), 21, F - 1, 10, box);
@@ -244,7 +263,7 @@ public class MiningOutpostPiece extends StructurePiece {
                 double d = Math.hypot(x - cx, z - cz);
                 if (d <= 5.3) {
                     boolean mark = d > 4.3 || (x == cx && Math.abs(z - cz) <= 2) || (z == cz && Math.abs(x - cx) <= 2);
-                    placeBlock(level, mark ? s(Blocks.YELLOW_TERRACOTTA) : s(Blocks.SMOOTH_STONE), x, F - 1, z, box);
+                    placeBlock(level, mark ? s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.HAZARD_STRIPE.base().get()) : s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.TITANIUM_DECK.base().get()), x, F - 1, z, box);
                 }
             }
         }
@@ -259,7 +278,11 @@ public class MiningOutpostPiece extends StructurePiece {
             }
         }
         placeBlock(level, s(Blocks.DAYLIGHT_DETECTOR), cx, F + 3, cz, box);
-        placeBlock(level, s(Blocks.GOLD_BLOCK), cx + 1, F + 1, cz - 1, box);
+        placeBlock(level, s(com.pizzaparker07.spacebreaker.content.belt.LanderBlocks.GOLD_FOIL_CLADDING.get()), cx + 1, F + 1, cz - 1, box);
+        // pad lights at the four compass points of the ring
+        for (int[] l : new int[][]{{0, -5}, {5, 0}, {0, 5}, {-5, 0}}) {
+            placeBlock(level, s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.LED_PANEL.get()), cx + l[0], F - 1, cz + l[1], box);
+        }
     }
 
     private void mast(WorldGenLevel level, BoundingBox box) {
@@ -269,6 +292,8 @@ public class MiningOutpostPiece extends StructurePiece {
         placeBlock(level, s(Blocks.LIGHTNING_ROD), 14, F + 9, 14, box);
         placeBlock(level, s(Blocks.DAYLIGHT_DETECTOR), 13, F + 6, 14, box);
         placeBlock(level, s(Blocks.REDSTONE_LAMP), 14, F, 13, box);
+        placeBlock(level, s(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.SOLAR_PANEL.get()), 15, F + 4, 14, box);
+        placeBlock(level, s(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.SOLAR_PANEL.get()), 13, F + 4, 14, box);
     }
 
     private void headFrame(WorldGenLevel level, BoundingBox box) {
@@ -294,17 +319,17 @@ public class MiningOutpostPiece extends StructurePiece {
         }
         // collar and frame
         for (int dx = -2; dx <= 2; dx++) {
-            placeBlock(level, s(Blocks.IRON_BLOCK), cx + dx, F - 1, cz - 2, box);
-            placeBlock(level, s(Blocks.IRON_BLOCK), cx + dx, F - 1, cz + 2, box);
+            placeBlock(level, s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.HAZARD_STRIPE.base().get()), cx + dx, F - 1, cz - 2, box);
+            placeBlock(level, s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.HAZARD_STRIPE.base().get()), cx + dx, F - 1, cz + 2, box);
         }
         for (int y = F; y <= F + 6; y++) {
             for (int[] c : new int[][]{{-2, -2}, {2, -2}, {-2, 2}, {2, 2}}) {
-                placeBlock(level, s(Blocks.IRON_BARS), cx + c[0], y, cz + c[1], box);
+                placeBlock(level, s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.ALUMINUM_PANEL.wall().get()), cx + c[0], y, cz + c[1], box);
             }
         }
         for (int d = -2; d <= 2; d++) {
-            placeBlock(level, s(Blocks.IRON_BLOCK), cx + d, F + 7, cz, box);
-            placeBlock(level, s(Blocks.IRON_BLOCK), cx, F + 7, cz + d, box);
+            placeBlock(level, s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.TITANIUM_DECK.base().get()), cx + d, F + 7, cz, box);
+            placeBlock(level, s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.TITANIUM_DECK.base().get()), cx, F + 7, cz + d, box);
         }
         for (int y = F + 2; y <= F + 6; y++) {
             placeBlock(level, s(Blocks.CHAIN), cx, y, cz, box);
@@ -382,7 +407,7 @@ public class MiningOutpostPiece extends StructurePiece {
         // ladder down the head-frame shaft, against its south wall
         for (int y = fy + 1; y < F; y++) {
             placeBlock(level, rock, 21, y, 23, box);
-            com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, Blocks.LADDER.defaultBlockState().setValue(LadderBlock.FACING, Direction.NORTH), 21, y, 22, box);
+            com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.STEEL_LADDER.get().defaultBlockState().setValue(LadderBlock.FACING, Direction.NORTH), 21, y, 22, box);
         }
         guard(level, box, BeltEntities.ROCK_MITE.get(), 9, fy + 1, 16);
         guard(level, box, BeltEntities.ROCK_MITE.get(), 6, fy + 1, 15);

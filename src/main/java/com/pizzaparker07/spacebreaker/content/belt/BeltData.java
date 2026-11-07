@@ -68,6 +68,10 @@ public final class BeltData {
     }
 
     static void translations(Lang lang) {
+        lang.add("sign.spacebreaker.ceres_outpost_log.0", "SHIFT LOG", "VARDİYA KAYDI");
+        lang.add("sign.spacebreaker.ceres_outpost_log.1", "Drill hit salts.", "Matkap tuza");
+        lang.add("sign.spacebreaker.ceres_outpost_log.2", "Mites in the", "vurdu. Akarlar");
+        lang.add("sign.spacebreaker.ceres_outpost_log.3", "drift. Sealed.", "geldi. Kapattık.");
         lang.add("biome.spacebreaker.ceres_plains", "Cratered Plains of Ceres", "Ceres'in Kraterli Ovaları");
         lang.add("biome.spacebreaker.ceres_crater", "Cerean Crater", "Ceres Krateri");
         lang.add("biome.spacebreaker.ceres_dome", "Cryovolcanic Dome", "Kriyovolkanik Kubbe");

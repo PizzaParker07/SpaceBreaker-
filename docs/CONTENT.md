@@ -242,7 +242,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Arazi | koyu, kraterli ovalar; Occator benzeri kraterlerde parlak sodyum karbonat lekeleri (merkez + loblu tuz lekeleri), kırık iç duvar ve duvardan düşmüş kayalar, Ahuna benzeri kriyovolkanik kubbeler, kutuplarda ve birkaç blok altta su buzu; 0,03 g |
 | 🎨 | Bloklar | Ceres Regoliti, Amonyaklı Kil, Karbonat Tuz Kabuğu (kalıcı ayak izi), Ceres Kayası (+ merdiven, basamak, duvar), Ceres Buzu, Manyetit Cevheri (→ Ham Manyetit → demir) |
 | 🎨 | Yaratık | Kaya Akarı: yassı, üst üste binen karbonat kabuklu plakalardan bir gövde, 6 kısa bacak; çakılın içinde gizlenir; birine vurulunca bütün küme uyanır ve düşük yerçekiminde uzağa sıçrar |
-| 🎨 | Zindan | Terk Edilmiş Buz Madenciliği Karakolu: mürettebat modülü, buz işleme salonu, iniş pisti, anten, kuyu kulesi; aşağıda buz merceğine açılmış galeri ve akar yuvası |
+| 🎨 | Zindan | Terk Edilmiş Buz Madenciliği Karakolu: mürettebat modülü, buz işleme salonu, iniş pisti, anten, kuyu kulesi; aşağıda buz merceğine açılmış galeri ve akar yuvası (cila: alüminyum panel duvarlar, istasyon gövdesi çatı ve tüp, istasyon pencereleri, titanyum güverte zemin, hava kilidi kapıları, LED tavan ışıkları, kablo ve boru kanalları, 'Vardiya Kaydı' tabelası; tehlike şeritli ve ışıklı iniş pisti, antende güneş panelleri, alüminyum dikmeli kuyu kulesi ve çelik merdivenler) |
 | 🎨 | Teknolojiler | Mikro Yerçekiminde Madencilik (4), Tuzlu Su Kimyası (3) |
 
 ### Vesta `spacebreaker:vesta`
