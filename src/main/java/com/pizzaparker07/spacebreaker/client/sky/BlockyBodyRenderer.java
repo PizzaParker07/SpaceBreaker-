@@ -107,7 +107,11 @@ public final class BlockyBodyRenderer {
         return style == BlockyBodyMesh.Style.VOXEL ? (small ? 10 : 16) : (small ? 6 : 10);
     }
 
-    /** A colour map from an equirectangular surface texture (longitude -180..180 left to right, north at the top). */
+    /**
+     * A colour map from an equirectangular surface texture (longitude -180..180 left to right, north at the top). The
+     * texture's alpha is passed on in the top byte, but bodies ignore it (their faces are always opaque; only ring bands
+     * use alpha), so a transparent pixel shows its stored colour, often black: fill or pull in soft edges first.
+     */
     public static ColorMap texture(ResourceLocation id) {
         return MAPS.computeIfAbsent(id, BlockyBodyRenderer::textureMap);
     }
@@ -472,6 +476,16 @@ public final class BlockyBodyRenderer {
      */
     static final float DEPTH_KEPT = 0.04F;
 
+    /**
+     * Depth kept for a body: flattened while it looks small (up to about 17° in radius), fully round once it fills much
+     * of the view (a planet seen from orbit, or while landing), with a smooth change in between.
+     */
+    static float depthKept(Pose body) {
+        float ang = (float) Math.asin(Math.min(1F, body.radius() / Math.max(1e-3F, body.center().length())));
+        float t = Mth.clamp((ang - 0.3F) / 0.25F, 0F, 1F);
+        return Mth.lerp(t * t * (3 - 2 * t), DEPTH_KEPT, 1F);
+    }
+
     private static Quad quad(BlockyBodyMesh.Face f, Matrix3f rot, Pose body, int rgb, float light, float alpha, Vector3f viewDir,
                              Vector3f look) {
         Vector3f c = rot.transform(new Vector3f(f.center())).mul(body.radius()).add(body.center());
@@ -481,11 +495,12 @@ public final class BlockyBodyRenderer {
         int k = 0;
         for (float[] s : new float[][]{{-1, -1}, {1, -1}, {1, 1}, {-1, 1}}) {
             Vector3f p = new Vector3f(c).add(new Vector3f(u).mul(s[0])).add(new Vector3f(v).mul(s[1]));
-            if (viewDir == null) {
+            float kept = viewDir == null ? depthKept(body) : 1F;
+            if (kept < 1F) {
                 // offset from the body centre: keep its sideways part, squeeze its depth
                 Vector3f d = p.sub(body.center());
                 float along = d.dot(look);
-                d.sub(new Vector3f(look).mul(along * (1 - DEPTH_KEPT)));
+                d.sub(new Vector3f(look).mul(along * (1 - kept)));
                 p = d.add(body.center());
             }
             xyz[k++] = p.x;
