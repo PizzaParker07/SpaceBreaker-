@@ -162,6 +162,19 @@ def proteus_crust():
     return cv
 
 
+# --------------------------------------------------------------------------- Nereid
+
+def nereid_frost(v=0):
+    return dust(P.NEREID_FROST, 15001 + v * 29)
+
+
+def nereid_ice():
+    r = P.NEREID_ICE
+    f = blend((clustered(16, 16, 15101, passes=1), 0.55), (white(15102), 0.3), (fbm(16, 16, 15103, [(8, 1.0)]), 0.15))
+    cv, _ = quant(f, [r[0], r[1], r[2], r[3], r[4], r[5]], [3, 12, 32, 32, 15, 6])
+    return cv
+
+
 def export(save):
     dust_spec = (18, 8, 64, None)
     for name, fn, r in (('triton_frost', triton_frost, P.TRITON_FROST), ('pink_nitrogen_frost', pink_nitrogen_frost, P.PINK_FROST),
@@ -184,6 +197,13 @@ def export(save):
         for side in ('left', 'right'):
             save(footprint(base, prints(r), side), 'block', f'{name}_footprint_{side}', (22, 8, 64, None))
     save(proteus_crust(), 'block', 'proteus_crust', (40, 12, 20, None))
+    for name, fn, r in (('nereid_frost', nereid_frost, P.NEREID_FROST),):
+        base = fn(0)
+        save(base, 'block', name, dust_spec)
+        save(fn(1), 'block', name + '_1', dust_spec)
+        for side in ('left', 'right'):
+            save(footprint(base, prints(r), side), 'block', f'{name}_footprint_{side}', (22, 8, 64, None))
+    save(nereid_ice(), 'block', 'nereid_ice', (40, 12, 20, None))
     import os
     out = os.path.join(os.path.dirname(__file__), '..', '..', '..', 'src', 'main', 'resources', 'assets', 'spacebreaker', 'textures',
                        'environment')

@@ -1,0 +1,13 @@
+{
+  "type": "spacebreaker:nereid",
+  "generator": {
+    "type": "spacebreaker:planet",
+    "terrain": "spacebreaker:nereid",
+    "biome_source": {
+      "type": "spacebreaker:planet",
+      "highlands": "spacebreaker:nereid_plains",
+      "crater": "spacebreaker:nereid_crater",
+      "polar": "spacebreaker:nereid_polar"
+    }
+  }
+}

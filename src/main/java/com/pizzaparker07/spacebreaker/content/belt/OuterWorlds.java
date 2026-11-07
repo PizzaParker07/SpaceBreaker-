@@ -210,7 +210,7 @@ public final class OuterWorlds implements SbModule {
             case "titan" -> com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_TITAN;
             case "io", "europa", "ganymede", "callisto" -> com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_JOVIAN;
             case "ceres", "vesta" -> com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_BELT;
-            case "miranda", "ariel", "titania", "umbriel", "oberon", "triton", "proteus", "pluto", "charon", "nix", "hydra" -> com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_ICE_GIANTS;
+            case "miranda", "ariel", "titania", "umbriel", "oberon", "triton", "proteus", "nereid", "pluto", "charon", "nix", "hydra" -> com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_ICE_GIANTS;
             default -> look.sky() == 0 && look.fog() == 0 ? com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_MOON : null;
         };
     }

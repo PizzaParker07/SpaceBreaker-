@@ -264,7 +264,9 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Triton blokları | Triton Kırağısı, Pembe Azot Kırağısı, Gayzer Tozu (kalıcı ayak izi), Triton Ana Kaya Buzu (+ merdiven, basamak, duvar), Azot Gayzeri, Metan Klatrat Yatağı (→ Metan Klatrat, kömür kadar yanan yakıt) |
 | 🎨 | Proteus `spacebreaker:proteus` | Neptün'ün ikinci büyük uydusu (~210 km), küresel olamayacak kadar küçük, isli koyu kabuklu engebeli cisim; batısında uyduyu neredeyse parçalayan dev Pharos havzası; gökte göğün çeyreğini dolduran Neptün; temiz su buzu yok (yakıt ikmali yok) |
 | 🎨 | Proteus blokları | Proteus Regoliti (kalıcı ayak izi), Proteus Kabuğu |
-| 🎨 | Zindanlar | Düşmüş İkmal İniş Aracı (Proteus) → Kriyovolkanizma; Düşmüş İkmal İniş Aracı (Triton); Gayzer Gözlem İstasyonu (güney kutup başlığında bir azot gayzerinin üstüne kurulmuş cam kubbeli istasyon: ortada çubuk halkalı canlı gayzer, kubbe tepesinden yükselen alet direği, numune laboratuvarı ve depo sandıkları, kapıdan içeri savrulmuş pembe kırağı; 2 Gayzer Böceği bekçi) → Kriyovolkanizma |
+| 🎨 | Nereid `spacebreaker:nereid` | Neptün'ün en dıştaki büyük uydusu (~170 km), muhtemelen yakalanmış cisim: açık gri, engebeli, kraterli su buzu; uyduların en basık yörüngesi (1,4–9,7 milyon km), gökte yalnız küçük mavi bir Neptün; yakıt için buz |
+| 🎨 | Nereid blokları | Nereid Kırağısı (kalıcı ayak izi), Nereid Buzu |
+| 🎨 | Zindanlar | Düşmüş İkmal İniş Aracı (Proteus, Nereid) → Kriyovolkanizma; Düşmüş İkmal İniş Aracı (Triton); Gayzer Gözlem İstasyonu (güney kutup başlığında bir azot gayzerinin üstüne kurulmuş cam kubbeli istasyon: ortada çubuk halkalı canlı gayzer, kubbe tepesinden yükselen alet direği, numune laboratuvarı ve depo sandıkları, kapıdan içeri savrulmuş pembe kırağı; 2 Gayzer Böceği bekçi) → Kriyovolkanizma |
 | 🎨 | Teknoloji | Kriyovolkanizma (5) |
 
 ### Plüton ve Charon

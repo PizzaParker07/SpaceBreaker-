@@ -17,3 +17,5 @@ def generate():
     write('models/item/plume_beetle_spawn_egg.json', {'parent': 'minecraft:item/template_spawn_egg'})
     soil('proteus_regolith')
     simple_block('proteus_crust')
+    soil('nereid_frost')
+    simple_block('nereid_ice')

@@ -23,14 +23,15 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import java.util.List;
 
 /**
- * The tiny irregular moons (Nix, Hydra, Proteus): each body with a dimension has a world, a planet-engine terrain much
+ * The tiny irregular moons (Nix, Hydra, Proteus, Nereid): each body with a dimension has a world, a planet-engine terrain much
  * smaller and lumpier than a round moon's, very weak gravity, its own ground at the surface, a lander, and refuelling
  * only where the ice is clean water ice.
  */
 @GameTestHolder(Spacebreaker.MOD_ID)
 @PrefixGameTestTemplate(false)
 public final class TinyMoonTests {
-    private static final List<TinyWorld> WORLDS = List.of(PlutoMoonlets.NIX, PlutoMoonlets.HYDRA, Proteus.PROTEUS);
+    private static final List<TinyWorld> WORLDS = List.of(PlutoMoonlets.NIX, PlutoMoonlets.HYDRA, Proteus.PROTEUS,
+            com.pizzaparker07.spacebreaker.content.neptune.Nereid.NEREID);
 
     @GameTest(template = WorldTests.EMPTY, timeoutTicks = 200)
     public static void tinyMoonsAreWorlds(GameTestHelper helper) {

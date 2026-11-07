@@ -44,7 +44,8 @@ public final class OuterFuelTests {
                 Map.entry("umbriel", com.pizzaparker07.spacebreaker.content.uranus.Umbriel.ICE.base().get()),
                 Map.entry("oberon", com.pizzaparker07.spacebreaker.content.uranus.Oberon.ICE.base().get()),
                 Map.entry("nix", com.pizzaparker07.spacebreaker.content.pluto.PlutoMoonlets.NIX.rock.get()),
-                Map.entry("hydra", com.pizzaparker07.spacebreaker.content.pluto.PlutoMoonlets.HYDRA.rock.get()), Map.entry("triton", NeptuneModule.TRITON_ICE.base().get()),
+                Map.entry("hydra", com.pizzaparker07.spacebreaker.content.pluto.PlutoMoonlets.HYDRA.rock.get()),
+                Map.entry("nereid", com.pizzaparker07.spacebreaker.content.neptune.Nereid.NEREID.rock.get()), Map.entry("triton", NeptuneModule.TRITON_ICE.base().get()),
                 Map.entry("pluto", PlutoModule.PLUTONIAN_ICE.base().get()), Map.entry("charon", PlutoModule.CHARON_ICE.get()));
         var bodies = helper.getLevel().registryAccess().registryOrThrow(com.pizzaparker07.spacebreaker.core.body.Bodies.REGISTRY);
         ices.forEach((world, ice) -> {

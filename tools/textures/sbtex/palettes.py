@@ -243,4 +243,6 @@ HYDRA_FROST = ramp('#b5bcc4', '#c4cbd2', '#d2d8de', '#dee3e8', '#e9edf1', '#f4f6
 HYDRA_ICE = ramp('#a3acb6', '#b3bbc4', '#c2c9d1', '#d0d6dd', '#dde2e7', '#e9edf1')
 PROTEUS_SOIL = ramp('#1a1918', '#211f1e', '#282624', '#302d2b', '#383532', '#413d3a')
 PROTEUS_CRUST = ramp('#1e1d1c', '#262423', '#2e2c2a', '#373432', '#403d3a', '#4a4643')
+NEREID_FROST = ramp('#7e7c79', '#8f8d8a', '#9f9d99', '#afada9', '#bebcb8', '#cdcbc7')
+NEREID_ICE = ramp('#74726f', '#84827f', '#94928e', '#a4a29e', '#b3b1ad', '#c2c0bc')
 ROLLER = ramp('#2f2c29', '#3f3b37', '#514c47', '#655f58', '#7b746c', '#928a81')

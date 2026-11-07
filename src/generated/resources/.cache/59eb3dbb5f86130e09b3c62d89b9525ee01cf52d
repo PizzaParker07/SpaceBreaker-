@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-07T10:06:46.025800078	Loot Tables
+// 1.21.1	2026-11-07T10:13:26.009233432	Loot Tables
 c48f71ca60600cd6230f77a2e146a3df572494ae data/spacebreaker/loot_table/blocks/aerogel.json
 e37973997ec83c5b040a31bf9fcda1757b53fc00 data/spacebreaker/loot_table/blocks/airlock_door.json
 c511e60fe01f6dddc2d2b0e516ca81c11bf4ca91 data/spacebreaker/loot_table/blocks/aluminum_block.json
@@ -156,6 +156,8 @@ ed94210fc0cc9603736ef11ba2c1c29f84883b55 data/spacebreaker/loot_table/blocks/mir
 b8fe448e460a856c91ca266d144604b5af5d305a data/spacebreaker/loot_table/blocks/mirandan_ice_stairs.json
 7d3a32874535257487adffc93e4c8ea6c7f980ed data/spacebreaker/loot_table/blocks/mirandan_ice_wall.json
 4fe0ceba941d7fd5bca1aad105c23a7d690147a4 data/spacebreaker/loot_table/blocks/mirandan_regolith.json
+8c8fedc5333ba394d0b804b63bd7669caf868dd6 data/spacebreaker/loot_table/blocks/nereid_frost.json
+cb3af2374398d27204eda7ac4f8b102e728ec2ae data/spacebreaker/loot_table/blocks/nereid_ice.json
 1a962256ce38cb858d9784e71d3a7a67d71210b6 data/spacebreaker/loot_table/blocks/nickel_block.json
 d304bbe2262da1607312d6a822a8ac6111a49e28 data/spacebreaker/loot_table/blocks/nickel_superalloy_block.json
 1c0103da9c1647e82ff41b508454f7446f2ebb71 data/spacebreaker/loot_table/blocks/nitrogen_geyser.json

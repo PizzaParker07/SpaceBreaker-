@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "spacebreaker:block/nereid_frost",
+    "up": "spacebreaker:block/nereid_frost_footprint_track",
+    "down": "spacebreaker:block/nereid_frost",
+    "north": "spacebreaker:block/nereid_frost",
+    "south": "spacebreaker:block/nereid_frost",
+    "east": "spacebreaker:block/nereid_frost",
+    "west": "spacebreaker:block/nereid_frost"
+  }
+}
