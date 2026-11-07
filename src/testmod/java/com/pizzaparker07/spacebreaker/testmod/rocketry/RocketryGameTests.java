@@ -489,6 +489,16 @@ public final class RocketryGameTests {
             helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.CometRoutes.route(c).isPresent()
                     && !com.pizzaparker07.spacebreaker.content.rocketry.nav.CometRoutes.needsNuclear(c), id + " stays within chemical reach");
         }
+        // home: straight into Earth's air, with a braking burn where it would come in too fast (Halley)
+        var home = com.pizzaparker07.spacebreaker.content.rocketry.nav.CometRoutes.of(halley).orElseThrow().home().orElseThrow();
+        helper.assertTrue(home.brakeDv() > 0 && home.entrySpeed() <= com.pizzaparker07.spacebreaker.content.rocketry.nav.CometRoutes.MAX_ENTRY_SPEED + 1,
+                "Halley's return brakes to a safe entry: " + (int) home.burnDv() + " + " + (int) home.brakeDv() + " m/s");
+        helper.assertTrue(within(com.pizzaparker07.spacebreaker.content.rocketry.nav.Transfers.real(halleyOrbit, Location.EARTH_SURFACE).orElse(0),
+                home.totalDv(), 1), "the flight home uses the return search");
+        for (String id : List.of("churyumov_gerasimenko", "encke", "tempel_1")) {
+            helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.CometRoutes.of(Spacebreaker.id(id)).orElseThrow().home().isPresent(),
+                    id + " has a flight home");
+        }
         var haleBopp = Spacebreaker.id("hale_bopp");
         helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.CometRoutes.observationOnly(haleBopp), "Hale-Bopp is for watching");
         com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(haleBopp, true).ifPresent(o ->
