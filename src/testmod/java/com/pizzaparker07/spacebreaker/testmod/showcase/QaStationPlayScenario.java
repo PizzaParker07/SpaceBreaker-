@@ -12,7 +12,6 @@ import com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule;
 import com.pizzaparker07.spacebreaker.content.suit.OxygenTankItem;
 import com.pizzaparker07.spacebreaker.content.suit.SuitModule;
 import com.pizzaparker07.spacebreaker.content.suit.SuitTanks;
-import com.pizzaparker07.spacebreaker.content.suit.block.AirlockDoorBlock;
 import com.pizzaparker07.spacebreaker.content.suit.block.OxygenDistributorBlockEntity;
 import com.pizzaparker07.spacebreaker.testmod.showcase.ShowcaseDriver.Shot;
 import net.minecraft.client.CameraType;
@@ -180,7 +179,9 @@ final class QaStationPlayScenario implements ShowcaseScenario {
         }, null));
         s.add(new Shot("07_outside_eva", 6000, 0, 0, 0, 270F, 10F, false, fp, 160, p -> {
             BlockPos west = centre.relative(Direction.WEST, 3).above(2);
-            BlockPos outer = west.relative(Direction.WEST, 5).below();
+            BlockPos inner = west.relative(Direction.WEST, 1).below(), outer = west.relative(Direction.WEST, 5).below();
+            // a careless crew: the inner door asked open again, then the outer one; the interlock must keep one shut
+            click(p, inner);
             click(p, outer);
             at(p, west.getX() - 7.5, outer.getY(), west.getZ() + 0.5, 90F, 10F);
             p.getAbilities().flying = true;
@@ -190,6 +191,8 @@ final class QaStationPlayScenario implements ShowcaseScenario {
         s.add(new Shot("08_back_inside", 6000, 0, 0, 0, 90F, 0F, false, fp, 160, p -> {
             BlockPos west = centre.relative(Direction.WEST, 3).above(2);
             BlockPos inner = west.relative(Direction.WEST, 1).below(), outer = west.relative(Direction.WEST, 5).below();
+            log("tick " + p.server.getTickCount() + ", after the careless clicks: outer " + doorState(p, outer) + ", inner "
+                    + doorState(p, inner) + ", room " + room(p));
             at(p, west.getX() - 2.5, outer.getY(), west.getZ() + 0.5, 90F, 0F);
             click(p, outer);
             click(p, inner);
@@ -249,28 +252,28 @@ final class QaStationPlayScenario implements ShowcaseScenario {
             RocketryShowcaseClient.openMapWhenRiding = true;
         }, null));
         // 13: the docking approach from the seat (flight HUD)
-        s.add(new Shot("13_docking_hud", 6000, 0, 0, 0, 0F, 0F, false, fp, 80, p -> {
+        s.add(Shot.stay("13_docking_hud", 6000, false, fp, 20, p -> {
             RocketryShowcaseClient.openMapWhenRiding = false;
             p.closeContainer();
             reseat(p);
             var free = DockingPorts.get(orbit(p)).nearest(centre.getCenter(), q -> !q.pos().equals(port)).orElse(null);
             if (free != null && crewed != null) {
-                crewed.approachPort(free.pos(), free.facing(), 16);
-                log("crewed rocket approaching port " + free.pos() + " facing " + free.facing() + ", docking " + crewed.docking());
+                crewed.approachPort(free.pos(), free.facing(), 32); // a long approach, so the frame catches the docking line
+                log("tick " + p.server.getTickCount() + ": crewed rocket approaching port " + free.pos() + " facing " + free.facing() + ", docking " + crewed.docking());
             } else {
                 log("no free port for the crewed rocket");
             }
         }, null));
-        s.add(new Shot("14_docked", 6000, 0, 0, 0, 0F, 0F, false, fp, 400, QaStationPlayScenario::reseat, null));
-        s.add(new Shot("15_end", 6000, 0, 0, 0, 0F, 0F, false, fp, 20, p -> {
-            reseat(p);
+        s.add(Shot.stay("14_docked", 6000, false, fp, 400, p -> log("tick " + p.server.getTickCount() + ": crewed rocket docking "
+                + (crewed != null && crewed.docking()) + ", docked " + (crewed != null && crewed.docked())), null));
+        s.add(Shot.stay("15_end", 6000, false, fp, 20, p -> {
             var free = DockingPorts.get(orbit(p)).nearest(centre.getCenter(), q -> !q.pos().equals(port)).orElse(null);
             String where = crewed == null || free == null ? "" : String.format(java.util.Locale.ROOT,
                     " at %.1f %.1f %.1f, %.2f blocks from the dock point, still docking %s, player riding %s",
                     crewed.getX(), crewed.getY(), crewed.getZ(),
                     crewed.position().distanceTo(RocketEntity.dockPoint(free.pos(), free.facing(), crewed.getBbHeight(), crewed.getBbWidth())),
                     crewed.docking(), p.getVehicle() == crewed);
-            log("crewed rocket docked " + (crewed != null && crewed.docked()) + where);
+            log("tick " + p.server.getTickCount() + ": crewed rocket docked " + (crewed != null && crewed.docked()) + where);
             p.stopRiding();
         }, null));
         return s;
@@ -291,6 +294,7 @@ final class QaStationPlayScenario implements ShowcaseScenario {
 
     private static String doorState(ServerPlayer p, BlockPos pos) {
         var st = orbit(p).getBlockState(pos);
-        return st.getBlock() instanceof AirlockDoorBlock ? (st.getValue(AirlockDoorBlock.OPEN) ? "open" : "shut") : "no door";
+        return st.hasProperty(net.minecraft.world.level.block.state.properties.BlockStateProperties.OPEN)
+                ? (st.getValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.OPEN) ? "open" : "shut") : "no door";
     }
 }

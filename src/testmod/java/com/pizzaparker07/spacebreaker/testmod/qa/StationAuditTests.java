@@ -132,8 +132,9 @@ public final class StationAuditTests {
         BlockPos east = centre.relative(Direction.WEST, 3).above(2);
         h.assertTrue(StationModule.AIRLOCK.attach(level, east, "qa"), "the airlock attaches at a side");
         BlockPos inner = east.relative(Direction.WEST, 1).below(), outer = east.relative(Direction.WEST, 5).below();
-        h.assertTrue(level.getBlockState(inner).getBlock() instanceof com.pizzaparker07.spacebreaker.content.suit.block.AirlockDoorBlock
-                && level.getBlockState(outer).getBlock() instanceof com.pizzaparker07.spacebreaker.content.suit.block.AirlockDoorBlock, "two airlock doors");
+        var open = net.minecraft.world.level.block.state.properties.BlockStateProperties.OPEN;
+        h.assertTrue(level.getBlockState(inner).hasProperty(open) && level.getBlockState(outer).hasProperty(open),
+                "two airlock doors: " + level.getBlockState(inner) + ", " + level.getBlockState(outer));
         var player = h.makeMockServerPlayerInLevel();
         BlockPos dist = centre.relative(forward.getOpposite(), 2).relative(forward.getClockWise(), -2).above();
         List<String> out = new ArrayList<>();
