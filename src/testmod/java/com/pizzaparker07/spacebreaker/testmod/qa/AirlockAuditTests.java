@@ -21,8 +21,8 @@ import java.util.List;
 /**
  * Airlock audit with the real room flood fill: a base room behind an inner sliding door, a small chamber, and an outer
  * sliding door to the vacuum. Through a full door cycle (by hand and by redstone) the base room must never be open to the
- * outside. A second build with a two-door-wide airlock, and a cycle cancelled half way, are measured and written to
- * {@code run-gametest/qa/airlock.md}; only the single-door rule is asserted.
+ * outside. A two-door-wide airlock and a cycle cancelled half way are
+ * checked too; results are written to {@code run-gametest/qa/airlock.md}.
  */
 @GameTestHolder(Spacebreaker.MOD_ID)
 @PrefixGameTestTemplate(false)
@@ -99,9 +99,9 @@ public final class AirlockAuditTests {
         });
     }
 
-    /** Two doors side by side in each wall: each pair only sees the door in its own line. Measured, not asserted. */
+    /** Two doors side by side in each wall: the whole doorway cycles together. */
     @GameTest(template = "empty", timeoutTicks = 2 * CYCLE + 60)
-    public static void wideAirlockIsMeasured(GameTestHelper h) {
+    public static void wideAirlockKeepsTheBaseSealed(GameTestHelper h) {
         build(h, 2, 3);
         ServerPlayer p = h.makeMockServerPlayerInLevel();
         click(h, p, 2, 5);
@@ -114,14 +114,15 @@ public final class AirlockAuditTests {
                     : "base stays sealed ✅")
                     + " (inner " + open(h, 2, 5) + "/" + open(h, 3, 5) + ", outer " + open(h, 2, 9) + "/" + open(h, 3, 9) + ")");
             ProgressionReport.write("airlock.md", "## Airlock audit\n\n" + String.join("\n", REPORT) + "\n");
-            Spacebreaker.LOGGER.info("QA airlock: wide airlock leaks = {}", leaks);
+            // QA-18, fixed by rocketry (cfbd97bd): side-by-side doors in one wall act as one doorway
+            h.assertFalse(leaks, "a two-door-wide airlock keeps the base sealed");
             h.succeed();
         });
     }
 
-    /** Asking the outer door to shut again during its cycle: does it still open at the end? Measured, not asserted. */
+    /** Asking the outer door to shut again during its cycle cancels the opening. */
     @GameTest(template = "empty", timeoutTicks = 2 * CYCLE + 60)
-    public static void cancelledCycleIsMeasured(GameTestHelper h) {
+    public static void secondClickCancelsTheCycle(GameTestHelper h) {
         build(h, 3);
         ServerPlayer p = h.makeMockServerPlayerInLevel();
         click(h, p, 3, 5);
@@ -133,6 +134,8 @@ public final class AirlockAuditTests {
                     + (opened ? "it opens anyway at the end of the cycle (the second click is lost) ⚠️" : "it stays shut ✅")
                     + "; base " + room(h));
             ProgressionReport.write("airlock.md", "## Airlock audit\n\n" + String.join("\n", REPORT) + "\n");
+            // QA-19, fixed by rocketry (cfbd97bd): a second click cancels the pending opening
+            h.assertFalse(opened, "clicking the outer door again during its cycle cancels the opening");
             h.succeed();
         });
     }
