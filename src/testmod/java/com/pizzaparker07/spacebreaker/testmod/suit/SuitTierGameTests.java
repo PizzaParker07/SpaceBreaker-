@@ -184,4 +184,26 @@ public final class SuitTierGameTests {
                 "Titan's dense cold air still calls for the heated suit");
         helper.succeed();
     }
+
+    private static com.pizzaparker07.spacebreaker.content.suit.net.SuitStatusPayload status(float ambientC, int flags, int minC) {
+        return new com.pizzaparker07.spacebreaker.content.suit.net.SuitStatusPayload(1000, 2000, 300, 37F, ambientC, 0F, 0F, 0F, 0.165F,
+                0, 100, flags, minC, 130, 30);
+    }
+
+    @GameTest(template = EMPTY)
+    public static void visorFrostsBeyondTheColdRating(GameTestHelper helper) {
+        int sealed = com.pizzaparker07.spacebreaker.content.suit.net.SuitStatusPayload.SEALED;
+        int trap = com.pizzaparker07.spacebreaker.content.suit.net.SuitStatusPayload.COLD_TRAP;
+        int pressurised = com.pizzaparker07.spacebreaker.content.suit.net.SuitStatusPayload.PRESSURISED;
+        helper.assertTrue(status(-120, sealed, -190).visorFrost() == 0F, "no frost within the rating");
+        helper.assertTrue(status(-233, sealed | trap, -190).visorFrost() == 1F, "a Mk1 suit in a lunar cold trap frosts over");
+        helper.assertTrue(status(-233, sealed | trap, -250).visorFrost() == 0.3F, "a heated suit in a cold trap shows only a light rime");
+        helper.assertTrue(status(-233, trap, -190).visorFrost() == 0F, "an open suit has no sealed visor to frost");
+        helper.assertTrue(status(-233, sealed | trap | pressurised, -190).visorFrost() == 0F, "never inside a pressurised module");
+        // the cold trap really is beyond a Mk1 suit and within a heated one (Moon: -173 night, cold trap 60 °C below)
+        double trapC = MOON_NIGHT_C - com.pizzaparker07.spacebreaker.content.worldgen.ColdTraps.BELOW_NIGHT_C;
+        helper.assertTrue(trapC < SuitTier.MK1.minTempC() && trapC > SuitTier.HEATED.minTempC(),
+                "a lunar cold trap (" + trapC + " °C) needs more than Mk1 and is within the heated suit");
+        helper.succeed();
+    }
 }

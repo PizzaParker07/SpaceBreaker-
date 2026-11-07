@@ -119,6 +119,9 @@ public final class SuitEvents {
         if (data.wasPressurised) {
             flags |= SuitStatusPayload.PRESSURISED;
         }
+        if (com.pizzaparker07.spacebreaker.content.worldgen.ColdTraps.inColdTrap(player.level(), player.blockPosition())) {
+            flags |= SuitStatusPayload.COLD_TRAP;
+        }
         if (Tether.anchor(player).isPresent()) {
             flags |= SuitStatusPayload.TETHERED;
         }

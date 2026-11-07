@@ -161,6 +161,8 @@ final class SuitEvaScenario implements ShowcaseScenario {
         s.add(new Shot(prefix + "_10_hud", 0, 1.5, g + 1.62, 9.5, 220F, 12F, false, fp, 40, at(false, this::tethered), null));
         // lamp glow cones from the side (they point the way the helmets face, +z), close to the Mk1 stand
         s.add(new Shot(prefix + "_11_lamp_cones", 0, -6.8, g + 1.85, 1.6, -100F, 6F, true, fp, 60, at(true, null), null));
+        // first person in the cold beyond the suit's rating (Titan's dense air with a Mk1 suit): rime on the visor
+        s.add(new Shot(prefix + "_12_visor_frost", 0, 0.5, g + 1.62, 8.0, 180F, 8F, false, fp, 260, at(false, SuitEvaScenario::astronaut), null));
         return s;
     }
 }

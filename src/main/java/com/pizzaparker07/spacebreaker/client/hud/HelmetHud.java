@@ -81,6 +81,29 @@ public final class HelmetHud {
                 || (helmet.getItem() instanceof SpaceSuitItem s && s.tier() == com.pizzaparker07.spacebreaker.content.suit.SuitTier.THERMAL)) {
             g.fill(0, 0, w, h, 0x38C08616); // warm gold filter
         }
+        // rime on the visor rim when the cold is beyond the suit's rating (a light touch in any cold trap)
+        float frost = frost(delta.getGameTimeDeltaPartialTick(false));
+        if (frost > 0.01F) {
+            RenderSystem.enableBlend();
+            g.setColor(1F, 1F, 1F, frost);
+            g.blit(FROST, 0, 0, 0, 0, w, h, w, h);
+            g.setColor(1F, 1F, 1F, 1F);
+            RenderSystem.disableBlend();
+        }
+    }
+
+    private static final ResourceLocation FROST = Spacebreaker.id("textures/gui/visor_frost.png");
+    private static float frostLevel, frostPrev;
+
+    /** Client tick: moves the frost towards its target. */
+    static void tickFrost(SuitStatusPayload s) {
+        frostPrev = frostLevel;
+        float target = s == null ? 0F : s.visorFrost();
+        frostLevel += target > frostLevel ? Math.min(0.005F, target - frostLevel) : Math.max(-0.008F, target - frostLevel);
+    }
+
+    private static float frost(float partialTick) {
+        return Mth.lerp(partialTick, frostPrev, frostLevel);
     }
 
     // ------------------------------------------------------------------ gauges
@@ -156,6 +179,9 @@ public final class HelmetHud {
             if (tethered) {
                 env += " " + Component.translatable("hud.spacebreaker.tether").getString();
             }
+            if (s.has(SuitStatusPayload.COLD_TRAP)) {
+                env += " " + Component.translatable("hud.spacebreaker.cold_trap").getString();
+            }
             rows.add(new Row(ICON_PRESSURE, -1F, 0, env, TEXT, false));
         }
         if (s.has(SuitStatusPayload.MMU)) {
@@ -213,7 +239,8 @@ public final class HelmetHud {
         } else if (!breathable && o2 < 0.15F) {
             warning = Component.translatable("hud.spacebreaker.warn.low_oxygen");
         } else if (beyond) {
-            warning = Component.translatable("hud.spacebreaker.warn.rating");
+            warning = Component.translatable(s.has(SuitStatusPayload.COLD_TRAP) && s.ambientC() < s.ratingMinC()
+                    ? "hud.spacebreaker.warn.cold_trap" : "hud.spacebreaker.warn.rating");
         } else if (body < 35) {
             warning = Component.translatable("hud.spacebreaker.warn.cold");
         } else if (body > 38.5F) {
