@@ -170,6 +170,12 @@ Complementary the tint is weaker (the pack re-lights translucent entities) but t
   `translucent`), as the station window does. `habitat_window_steps.jpg`: vanilla, pack before, after, and with the
   split model; `station_jolt_coldtrap_aerostat_vanilla_vs_iris.jpg`: habitat inside, docked capsule, docking jolt,
   polar cold-trap crater, Venus aerostat.
+- **Day and night in orbit:** orbits have their own day and night (the planet's shadow, `OrbitDaylight`), shown
+  through our sky and the world's light map, which packs ignore: the pack lit the station from vanilla's sun angle,
+  so it stayed in full sun on the night side. While a pack is active in an orbit world, Iris's sun angle and
+  worldTime follow the orbit instead (`compat/client/PackTime`, mixins `iris.PackSunMixin` and
+  `iris.PackWorldTimeMixin`): orbital noon in sunlight, midnight in the shadow, dusk across the penumbra
+  (`orbit_day_night_vanilla_vs_iris.jpg`). Without a pack nothing changes.
 - **Docking jolt:** a camera roll/pitch from `ViewportEvent.ComputeCameraAngles`; Iris builds its matrices from the
   same camera, so the shake is the same with a pack (at most about 2°, too small to tell apart in a still frame).
 - **Inside a closed module the pack's ambient fill is blue:** the airless sky colour handed to the pack
