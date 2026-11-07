@@ -319,6 +319,21 @@ flight between dimensions, rovers being driven, and client-side frame time.
   area; a freshly added entity can be missing from the area query for a tick). The failure message names the kind that
   changed. Two full runs green.
 
+## Boil-off and insulated tanks (2026-11-07, rocketry 84643490 / 2e79ad08, checked on a local merge)
+
+- Boil-off at the balanced scale 0.2 (84643490): every round-trip step unchanged; only the early one-way kerosene landings
+  on Enceladus and Pluto move from step 10 to 16 (their round trips were already at 16). The Hale–Bopp orbit round trip
+  no longer works without insulation (long coast); the observation satellite still reaches it.
+- Insulated tanks (2e79ad08), offered to the top stage of every design: on the balanced setting no step changes; the
+  designs get smaller (Titan 10924 → 8244 m/s, Pluto 3 → 2 stages) and the Hale–Bopp orbit round trip comes back.
+- **QA-20 (rocketry, high): the realistic setting stalls at the first goal.** Earth surface → orbit needs 9022 m/s there,
+  but the best rocket buildable at that point gives 8079 m/s vacuum Δv (kerosene, up to 3 stages of up to 3 large tanks
+  each, the search's limits). With no orbit there is no Moon, no samples, no further research: 0/4 goals, 26/87
+  technologies, insulated or not. If the assembler allows more tanks or stages than the search tries, this may be a
+  limit of the model; otherwise the realistic ascent cost or the early engines need a look.
+- The rocket search now keeps candidates without their layout (rebuilt on demand): 2.6 million designs with insulated
+  tops ran out of heap otherwise.
+
 ## Propellant density what-if (2026-11-07, 1.21.1 @ 66b77afa)
 
 Rocketry asked whether scaling the propellant a tank holds by the fuel's density is safe for progression. New

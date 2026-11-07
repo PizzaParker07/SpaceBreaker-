@@ -1152,8 +1152,9 @@ final class ProgressionModel {
             List<Location> out = RocketSearch.route(Location.EARTH_SURFACE, target, realism);
             if (!out.isEmpty() && !has(landed(dim))) {
                 for (RocketSearch.Candidate c : designs) {
-                    if (com.pizzaparker07.spacebreaker.content.rocketry.design.RocketMath.twr(c.layout(), 0, c.layout().fullFuel(), gEarth) >= 1.05
-                            && com.pizzaparker07.spacebreaker.content.rocketry.nav.MissionPlanner.fly(c.layout(), 0, c.layout().fullFuel(), out, realism).possible()) {
+                    var cl = c.layout();
+                    if (com.pizzaparker07.spacebreaker.content.rocketry.design.RocketMath.twr(cl, 0, cl.fullFuel(), gEarth) >= 1.05
+                            && com.pizzaparker07.spacebreaker.content.rocketry.nav.MissionPlanner.fly(cl, 0, cl.fullFuel(), out, realism).possible()) {
                         changed |= add(landed(dim), "one-way flight to " + target.id() + " with " + describe(c), deps);
                         break;
                     }
@@ -1203,10 +1204,11 @@ final class ProgressionModel {
                     if (reason != null) {
                         break;
                     }
-                    if (com.pizzaparker07.spacebreaker.content.rocketry.design.RocketMath.twr(c.layout(), 0, c.layout().fullFuel(), gEarth) < 1.05) {
+                    var cl = c.layout();
+                    if (com.pizzaparker07.spacebreaker.content.rocketry.design.RocketMath.twr(cl, 0, cl.fullFuel(), gEarth) < 1.05) {
                         continue;
                     }
-                    var plan = com.pizzaparker07.spacebreaker.content.rocketry.nav.MissionPlanner.fly(c.layout(), 0, c.layout().fullFuel(), out, realism);
+                    var plan = com.pizzaparker07.spacebreaker.content.rocketry.nav.MissionPlanner.fly(cl, 0, cl.fullFuel(), out, realism);
                     if (plan.possible()) {
                         flown = c;
                         break;

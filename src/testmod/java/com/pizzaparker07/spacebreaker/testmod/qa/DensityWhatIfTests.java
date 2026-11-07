@@ -79,6 +79,62 @@ public final class DensityWhatIfTests {
         h.succeed();
     }
 
+    /**
+     * Insulated tanks against boil-off: the whole model on the balanced and the realistic setting, with and without
+     * insulated tanks in the rocket search. Runs only with {@code -Dspacebreaker.qa.insulationWhatIf=true}; writes
+     * {@code run-gametest/qa/insulation_whatif.md}.
+     */
+    @GameTest(template = "empty", timeoutTicks = 2000)
+    public static void insulationWhatIf(GameTestHelper h) {
+        if (!Boolean.getBoolean("spacebreaker.qa.insulationWhatIf")) {
+            h.succeed();
+            return;
+        }
+        StringBuilder md = new StringBuilder("## Insulated tanks what-if (`qa/DensityWhatIfTests.insulationWhatIf`)\n\n");
+        md.append("| setting | insulated tanks | goals | techs | grand_tour gaps | round-trip worlds | ")
+                .append(String.join(" | ", WORLDS)).append(" |\n|---|---|---|---|---|---|")
+                .append("---|".repeat(WORLDS.size())).append('\n');
+        StringBuilder detail = new StringBuilder();
+        var probe = h.makeMockPlayer(GameType.SURVIVAL);
+        try {
+            for (SbConfig.Realism realism : List.of(SbConfig.Realism.BALANCED, SbConfig.Realism.REALISTIC)) {
+                for (boolean insulated : List.of(false, true)) {
+                    RocketSearch.INSULATED = insulated;
+                    ProgressionModel m = new ProgressionModel(h.getLevel().getServer(), probe, realism);
+                    m.scan();
+                    m.run();
+                    long goals = ProgressionReport.goals().stream().filter(g -> m.has(g.fact())).count();
+                    long techs = m.techTree.keySet().stream().filter(id -> m.has(ProgressionModel.tech(id))).count();
+                    List<String> gaps = ProgressionAuditTests.grandTourGaps(h.getLevel().getServer(), m);
+                    long round = m.facts.keySet().stream().filter(k -> k.startsWith("world:spacebreaker:")).count();
+                    List<String> steps = new ArrayList<>();
+                    for (String w : WORLDS) {
+                        var f = m.facts.get("world:spacebreaker:" + w);
+                        steps.add(f == null ? "—" : String.valueOf(f.step()));
+                    }
+                    md.append(String.format(Locale.ROOT, "| %s | %s | %d/%d | %d/%d | %s | %d | %s |%n", realism, insulated ? "yes" : "no",
+                            goals, ProgressionReport.goals().size(), techs, m.techTree.size(),
+                            gaps.isEmpty() ? "none" : gaps.size() + " " + gaps, round, String.join(" | ", steps)));
+                    var toOrbit = RocketSearch.route(com.pizzaparker07.spacebreaker.content.rocketry.nav.Location.EARTH_SURFACE,
+                            com.pizzaparker07.spacebreaker.content.rocketry.nav.Location.EARTH_ORBIT, realism);
+                    double bestDv = m.best.stream().mapToDouble(RocketSearch.Candidate::totalDv).max().orElse(0);
+                    detail.append(String.format(Locale.ROOT, "- %s%s: Earth surface → orbit needs %.0f m/s; best buildable rocket %.0f m/s vacuum Δv (%d designs)%n",
+                            realism, insulated ? " insulated" : " plain", RocketSearch.need(toOrbit, realism), bestDv, m.best.size()));
+                    for (String w : List.of("mars/surface", "jupiter/orbit", "titan/surface", "pluto/surface", "hale_bopp/orbit")) {
+                        var r = m.missions.get("spacebreaker:" + w);
+                        detail.append("- ").append(realism).append(insulated ? " insulated " : " plain ").append(w).append(": ")
+                                .append(r == null ? "no round trip" : r.mode() + ", " + ProgressionModel.describe(r.rocket())).append('\n');
+                    }
+                }
+            }
+        } finally {
+            RocketSearch.INSULATED = true;
+        }
+        md.append("\nStep at which a crewed round trip to each world becomes possible (— = never).\n\nRockets used:\n\n").append(detail);
+        ProgressionReport.write("insulation_whatif.md", md.toString());
+        h.succeed();
+    }
+
     private DensityWhatIfTests() {
     }
 }
