@@ -98,12 +98,12 @@ final class RocketryLang {
         l.item(RocketryModule.HABITATION_MODULE, "Habitation Module", "Yaşam Modülü");
         l.item(RocketryModule.AIRLOCK_MODULE, "Airlock Module", "Hava Kilidi Modülü");
         l.item(RocketryModule.SOLAR_WINGS, "Solar Wings", "Güneş Kanatları");
-        l.add("tooltip.spacebreaker.station_module.habitation", "Living quarters: three bunks, a locker, a window band and a mouth at the far end",
-                "Yaşam alanı: üç ranza, bir dolap, pencere bandı ve uçta bir ağız");
+        l.add("tooltip.spacebreaker.station_module.habitation", "Living quarters: three sleeping pods, two supply lockers, a window band and a mouth at the far end",
+                "Yaşam alanı: üç uyku kabini, iki malzeme dolabı, pencere bandı ve uçta bir ağız");
         l.add("tooltip.spacebreaker.station_module.airlock", "A small chamber with a door into the station and a door to space: step out without losing the station's air",
                 "İstasyona ve uzaya açılan birer kapılı küçük oda: istasyonun havasını kaybetmeden dışarı çık");
-        l.add("tooltip.spacebreaker.station_module.solar_wings", "Outside the hull: three solar arrays on a cable truss and a battery bank in the mouth, powering the station (FE)",
-                "Gövdenin dışında: kablo kafes üstünde üç güneş paneli dizisi ve ağızda batarya bankası; istasyona enerji (FE) verir");
+        l.add("tooltip.spacebreaker.station_module.solar_wings", "Outside the hull: a rotary joint and a lattice boom carrying four solar arrays, a battery bank in the mouth powering the station (FE)",
+                "Gövdenin dışında: döner eklem ve kafes kol üstünde dört güneş paneli dizisi, ağızda istasyona enerji (FE) veren batarya bankası");
         l.item(RocketryModule.SHIPYARD_MODULE, "Shipyard Module", "Tersane Modülü");
         l.add("tooltip.spacebreaker.station_module.shipyard", "An open 15 x 15 x 31 frame outside the hull: a berth for one spacecraft (up to 13 x 13 x 29), its docking port in the mouth, a fuel depot and floodlights",
                 "Gövdenin dışında açık 15 x 15 x 31 çerçeve: bir uzay aracı için yuva (en fazla 13 x 13 x 29), ağızda kenetlenme portu, yakıt deposu ve projektörler");
