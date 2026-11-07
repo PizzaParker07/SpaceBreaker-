@@ -163,6 +163,12 @@ final class SuitEvaScenario implements ShowcaseScenario {
         s.add(new Shot(prefix + "_11_lamp_cones", 0, -6.8, g + 1.85, 1.6, -100F, 6F, true, fp, 60, at(true, null), null));
         // first person in the cold beyond the suit's rating (Titan's dense air with a Mk1 suit): rime on the visor
         s.add(new Shot(prefix + "_12_visor_frost", 0, 0.5, g + 1.62, 8.0, 180F, 8F, false, fp, 260, at(false, SuitEvaScenario::astronaut), null));
+        // the same view as shot 06 with the lamps on long beam: a narrow pool far ahead
+        s.add(new Shot(prefix + "_13_long_beam", 0, 0.5, g + 1.62, 9.5, 180F, 12F, true, fp, 60, at(true, p -> {
+            astronaut(p);
+            p.getItemBySlot(EquipmentSlot.HEAD).set(SuitModule.LONG_BEAM.get(), true);
+        }), null));
+        s.add(new Shot(prefix + "_14_wide_beam", 0, 0.5, g + 1.62, 9.5, 180F, 12F, true, fp, 60, at(true, SuitEvaScenario::astronaut), null));
         return s;
     }
 }

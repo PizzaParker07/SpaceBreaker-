@@ -81,6 +81,9 @@ public final class SuitModule implements SbModule {
     /** Whether the gold sun visor of a helmet is lowered. */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> SUN_VISOR =
             COMPONENTS.registerComponentType("sun_visor", b -> b.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
+    /** Helmet lamps in long-beam mode: a narrower, longer cone for lava tubes and cold traps. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> LONG_BEAM =
+            COMPONENTS.registerComponentType("long_beam", b -> b.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
     /** Oxygen tanks slotted into an EVA torso's backpack. */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<ItemContainerContents>> SUIT_TANKS =
             COMPONENTS.registerComponentType("suit_tanks", b -> b.persistent(ItemContainerContents.CODEC).networkSynchronized(ItemContainerContents.STREAM_CODEC).cacheEncoding());
@@ -282,6 +285,10 @@ public final class SuitModule implements SbModule {
         lang.add("tooltip.spacebreaker.safety_tether.hint", "Use on a block to clip on, use again to unclip",
                 "Takmak için bir bloğa kullan, çözmek için yeniden kullan");
         lang.add("hud.spacebreaker.mag", "MAG", "MANYETİK");
+        lang.add("key.spacebreaker.helmet_lamp", "Helmet lamps: wide / long beam", "Kask lambaları: geniş / uzun huzme");
+        lang.add("message.spacebreaker.lamp.long", "Helmet lamps: long beam", "Kask lambaları: uzun huzme");
+        lang.add("message.spacebreaker.lamp.wide", "Helmet lamps: wide beam", "Kask lambaları: geniş huzme");
+        lang.add("tooltip.spacebreaker.suit.long_beam", "Lamps set to long beam", "Lambalar uzun huzmede");
         lang.add("hud.spacebreaker.cold_trap", "COLD TRAP", "SOĞUK TUZAK");
         lang.add("hud.spacebreaker.warn.cold_trap", "COLD TRAP: BEYOND SUIT RATING", "SOĞUK TUZAK: GİYSİ DAYANIMI AŞILDI");
         lang.add("hud.spacebreaker.warn.mmu_low", "MANEUVERING GAS LOW", "MANEVRA GAZI AZALDI");

@@ -50,8 +50,6 @@ public final class HelmetLamps {
      * with their emissive program, so it stays neutral white instead of being tinted like torch light.
      */
     private static final RenderType POOL = RenderType.eyes(TextureAtlas.LOCATION_BLOCKS);
-    /** How far the lamps reach. */
-    public static final double RANGE = 20.0;
 
     private HelmetLamps() {
     }
@@ -88,13 +86,15 @@ public final class HelmetLamps {
                 continue;
             }
             Vec3 eye = player.getEyePosition(pt);
-            Vec3 end = eye.add(player.getViewVector(pt).scale(RANGE));
+            boolean longBeam = com.pizzaparker07.spacebreaker.content.suit.HelmetLamp.longBeam(player);
+            Vec3 end = eye.add(player.getViewVector(pt).scale(com.pizzaparker07.spacebreaker.content.suit.HelmetLamp.range(longBeam)));
             BlockHitResult hit = mc.level.clip(new ClipContext(eye, end, ClipContext.Block.VISUAL, ClipContext.Fluid.NONE, player));
             if (hit.getType() != HitResult.Type.BLOCK) {
                 continue;
             }
             double d = hit.getLocation().distanceTo(eye);
-            pool(event.getPoseStack(), buffers, mc, hit, cam, 2.2 + d * 0.3, Math.max(0, 1 - d / RANGE));
+            pool(event.getPoseStack(), buffers, mc, hit, cam, com.pizzaparker07.spacebreaker.content.suit.HelmetLamp.poolRadius(d, longBeam),
+                    com.pizzaparker07.spacebreaker.content.suit.HelmetLamp.strength(d, longBeam));
             any = true;
         }
         if (any) {
@@ -153,9 +153,10 @@ public final class HelmetLamps {
      * The short glow cone of one lamp, in head model space (pixels / 16): two crossed quads from the lamp face
      * forward along -z, widening as they go.
      */
-    static void beam(PoseStack pose, VertexConsumer vc, float lampX, float lampY, float lampZ) {
+    static void beam(PoseStack pose, VertexConsumer vc, float lampX, float lampY, float lampZ, boolean longBeam) {
         PoseStack.Pose p = pose.last();
-        float len = 14F / 16F, r0 = 0.5F / 16F, r1 = 2.5F / 16F;
+        // long beam: a narrow cone twice as long
+        float len = (longBeam ? 28F : 14F) / 16F, r0 = 0.5F / 16F, r1 = (longBeam ? 1.2F : 2.5F) / 16F;
         float x = lampX / 16F, y = lampY / 16F, z = lampZ / 16F;
         for (int plane = 0; plane < 2; plane++) {
             float ax = plane == 0 ? 1 : 0, ay = plane == 0 ? 0 : 1;

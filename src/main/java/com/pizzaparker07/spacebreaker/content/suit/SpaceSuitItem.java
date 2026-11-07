@@ -114,6 +114,9 @@ public class SpaceSuitItem extends ArmorItem {
             tooltip.add(Component.translatable(isSunVisorDown(stack) ? "tooltip.spacebreaker.sun_visor.down" : "tooltip.spacebreaker.sun_visor.up")
                     .withStyle(ChatFormatting.GOLD));
             tooltip.add(Component.translatable("tooltip.spacebreaker.sun_visor.hint").withStyle(ChatFormatting.DARK_GRAY));
+            if (HelmetLamp.longBeam(stack)) {
+                tooltip.add(Component.translatable("tooltip.spacebreaker.suit.long_beam").withStyle(ChatFormatting.YELLOW));
+            }
         }
         if (getType() == Type.CHESTPLATE) {
             SuitTanks.appendTooltip(stack, tooltip);

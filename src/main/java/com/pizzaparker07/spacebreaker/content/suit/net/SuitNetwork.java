@@ -23,6 +23,8 @@ public final class SuitNetwork {
                         data.thrustDir = data.thrustDir.normalize(); // never trust a client vector
                     }
                 });
+        registrar.playToServer(LampModePayload.TYPE, LampModePayload.CODEC,
+                (payload, ctx) -> com.pizzaparker07.spacebreaker.content.suit.HelmetLamp.toggle(ctx.player()));
         registrar.playToClient(TetherPayload.TYPE, TetherPayload.CODEC,
                 (payload, ctx) -> com.pizzaparker07.spacebreaker.client.suit.TetherClient.accept(payload));
     }
