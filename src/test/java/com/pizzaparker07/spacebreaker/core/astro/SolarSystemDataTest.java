@@ -76,7 +76,9 @@ class SolarSystemDataTest {
             if (b.kind().isGiant()) {
                 assertFalse(b.landable(), id + ": gas and ice giants are not landable");
             } else if (b.kind() == AstroBody.Kind.COMET) {
-                assertNull(j.get("dimension"), id + ": comets are sky and map objects only");
+                // comets get a surface dimension only once their world exists; until then sky and map only
+                Object dim = j.get("dimension");
+                assertTrue(dim == null || dim.equals("spacebreaker:" + name), id + ": dimension id");
             } else if (!name.equals("earth")) {
                 assertEquals("spacebreaker:" + name, j.get("dimension"), id + ": dimension id");
             }
