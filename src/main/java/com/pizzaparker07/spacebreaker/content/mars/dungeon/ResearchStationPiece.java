@@ -492,16 +492,14 @@ public class ResearchStationPiece extends StructurePiece {
         put(level, box, a + 2, F + 2, C - 2, s(Blocks.AIR));
         put(level, box, a + 4, F + 2, C - 3, s(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.POWER_MONITOR.get())
                 .setValue(net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING, Direction.SOUTH));
-        // core racks: drilled cores of the ground below, layer by layer
-        BlockState[] cores = {s(MarsModule.MARTIAN_BASALT.base().get()), s(MarsModule.MARTIAN_SANDSTONE.base().get()), s(MarsModule.MARTIAN_CLAY.get())};
-        for (int i = 0; i < 3; i++) {
-            put(level, box, a + 1 + i, F + 1, C + 2, cores[i]);
-            put(level, box, a + 1 + i, F + 2, C + 2, cores[2 - i]);
-            put(level, box, a + 1 + i, F + 3, C + 2, Blocks.IRON_TRAPDOOR.defaultBlockState().setValue(TrapDoorBlock.HALF, Half.TOP));
+        // the sample shelf: a long shelf along the south wall with sample jars and a cored rock on it
+        for (int i = 1; i <= 3; i++) {
+            put(level, box, a + i, F + 1, C + 2, s(Blocks.POLISHED_ANDESITE_SLAB).setValue(SlabBlock.TYPE, SlabType.TOP));
         }
+        put(level, box, a + 1, F + 2, C + 2, s(Blocks.DECORATED_POT));
+        put(level, box, a + 2, F + 2, C + 2, s(Blocks.FLOWER_POT));
+        put(level, box, a + 3, F + 2, C + 2, s(Blocks.DECORATED_POT));
         container(level, box, a + 4, F + 1, C + 3, MarsLoot.STATION_LAB, true);
-        put(level, box, a + 5, F + 1, C + 2, s(MarsModule.MARTIAN_ICE.get()));
-        put(level, box, a + 5, F + 2, C + 2, s(MarsModule.DRY_ICE.get()));
         // ISRU control: the Sabatier reactor, electrolysis cell, the propellant log and stores
         int e = LAB.a1() - 1;
         put(level, box, e, F + 1, C - 2, s(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.SABATIER_REACTOR.block().get())
