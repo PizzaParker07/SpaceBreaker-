@@ -120,6 +120,61 @@ public final class BlockyBodyMesh {
         return List.copyOf(out);
     }
 
+    /**
+     * Only the part of a fine voxel ball around one direction: the surface cap a camera close to the body can see. The grid
+     * is the same as {@link #body}'s for this {@code n} (so the blocks line up), but only cells within {@code halfAngle}
+     * (radians) of {@code toward} and near the surface are made, so very fine balls (hundreds of blocks across) stay cheap.
+     * Not cached here; callers keep what they build.
+     */
+    public static List<Face> patch(int n, Vector3f toward, float halfAngle) {
+        Vector3f dir = new Vector3f(toward).normalize();
+        float cell = 2F / n;
+        float h = cell / 2;
+        float cosMax = (float) Math.cos(Math.min(Math.PI, halfAngle));
+        float limit = 1.0F + 0.5F / n;
+        // a box around the cap: from the cap's centre out to its rim, and from the surface down a few cells
+        float chord = (float) Math.sin(Math.min(Math.PI / 2, halfAngle)) + 3 * cell;
+        float depth = (float) (1 - Math.cos(Math.min(Math.PI / 2, halfAngle))) + 3 * cell;
+        Vector3f centre = new Vector3f(dir).mul(1 - depth / 2);
+        float reach = (float) Math.sqrt(chord * chord + depth * depth / 4) + cell;
+        int lo0 = Math.max(0, (int) Math.floor((centre.x - reach + 1) / cell));
+        int hi0 = Math.min(n - 1, (int) Math.ceil((centre.x + reach + 1) / cell));
+        int lo1 = Math.max(0, (int) Math.floor((centre.y - reach + 1) / cell));
+        int hi1 = Math.min(n - 1, (int) Math.ceil((centre.y + reach + 1) / cell));
+        int lo2 = Math.max(0, (int) Math.floor((centre.z - reach + 1) / cell));
+        int hi2 = Math.min(n - 1, (int) Math.ceil((centre.z + reach + 1) / cell));
+        int[][] dirs = {{1, 0, 0}, {-1, 0, 0}, {0, 1, 0}, {0, -1, 0}, {0, 0, 1}, {0, 0, -1}};
+        List<Face> out = new ArrayList<>();
+        for (int i = lo0; i <= hi0; i++) {
+            float x = coord(i, n);
+            for (int j = lo1; j <= hi1; j++) {
+                float y = coord(j, n);
+                for (int k = lo2; k <= hi2; k++) {
+                    float z = coord(k, n);
+                    float r2 = x * x + y * y + z * z;
+                    if (r2 > limit || r2 < sq(1 - 2.5F * cell)) {
+                        continue; // outside the ball, or deep inside where no face can show
+                    }
+                    float r = (float) Math.sqrt(r2);
+                    if ((x * dir.x + y * dir.y + z * dir.z) / r < cosMax) {
+                        continue;
+                    }
+                    Vector3f c = new Vector3f(x, y, z);
+                    Vector3f surface = new Vector3f(c).div(r);
+                    for (int[] d : dirs) {
+                        float nx = x + d[0] * cell, ny = y + d[1] * cell, nz = z + d[2] * cell;
+                        if (nx * nx + ny * ny + nz * nz <= limit) {
+                            continue;
+                        }
+                        Vector3f normal = new Vector3f(d[0], d[1], d[2]);
+                        out.add(new Face(new Vector3f(normal).mul(h).add(c), side(normal, h, true), side(normal, h, false), normal, surface));
+                    }
+                }
+            }
+        }
+        return out;
+    }
+
     /** Six faces of {@code n}×{@code n} pixels each; each pixel shows the map colour in its own direction. */
     static List<Face> cube(int n) {
         float h = CUBE_HALF / n;

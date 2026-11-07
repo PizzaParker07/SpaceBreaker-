@@ -1,0 +1,6 @@
+{
+  "type": "station_module",
+  "mass_kg": 3200,
+  "height": 30,
+  "model": "spacebreaker:habitation_module"
+}

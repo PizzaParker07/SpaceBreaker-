@@ -1075,7 +1075,54 @@ public final class RocketryGameTests {
             var be = (com.pizzaparker07.spacebreaker.content.suit.block.OxygenDistributorBlockEntity) level.getBlockEntity(dist);
             helper.assertTrue(be != null && be.room().sealed(), "core and tunnel are sealed");
             int v = be.room().volume();
-            helper.assertTrue(v >= 170 && v <= 190, "core (5x5x5) + passage (3x3x2) + tunnel (3x3x5), less the console: " + v);
+            helper.assertTrue(v >= 155 && v <= 172, "core (5x5x5) + passage (3x3x2) + tunnel (3x3x5), less ducts and fittings: " + v);
+        });
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 600, batch = "rocketry_station_stage2")
+    public static void stationLivingAirlockAndWings(GameTestHelper helper) {
+        var level = helper.getLevel();
+        BlockPos centre = helper.absolutePos(new BlockPos(4, 24, 4));
+        Direction forward = Direction.SOUTH;
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.buildCore(level, centre, forward, "tester"), "the core unfolds");
+        BlockPos front = centre.relative(forward, 3).above(2);
+        BlockPos east = centre.relative(Direction.WEST, 3).above(2);  // the core's right side, looking south, is west
+        BlockPos west = centre.relative(Direction.EAST, 3).above(2);
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.HABITATION.attach(level, front, "tester"), "living quarters attach at the front");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.AIRLOCK.attach(level, east, "tester"), "the airlock attaches at a side");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.SOLAR_WINGS.attach(level, west, "tester"), "the wings attach at the other side");
+        // living quarters: bunks inside, a sealed mouth at the far end to carry on
+        BlockPos farMouth = front.relative(forward, 9);
+        helper.assertTrue(level.getBlockState(farMouth).is(RocketryModule.STATION_HATCH.get())
+                && level.getBlockState(farMouth).getValue(com.pizzaparker07.spacebreaker.content.rocketry.station.StationHatchBlock.CENTER), "a mouth at the far end");
+        int bunks = 0;
+        for (BlockPos q : BlockPos.betweenClosed(front.offset(-3, -2, 1), front.offset(3, 2, 9))) {
+            if (level.getBlockState(q).is(RocketryModule.STATION_BUNK.get())) {
+                bunks++;
+            }
+        }
+        helper.assertTrue(bunks == 3, "three bunks: " + bunks);
+        // airlock: a door into the station, a door to space
+        helper.assertTrue(level.getBlockState(east.relative(Direction.WEST, 1).below()).getBlock() instanceof com.pizzaparker07.spacebreaker.content.suit.block.AirlockDoorBlock
+                && level.getBlockState(east.relative(Direction.WEST, 5).below()).getBlock() instanceof com.pizzaparker07.spacebreaker.content.suit.block.AirlockDoorBlock,
+                "inner and outer airlock doors");
+        // wings: the mouth stays sealed, its middle is the battery bank, three arrays outside
+        helper.assertTrue(level.getBlockState(west).is(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.BATTERY_BANK.block().get())
+                && level.getBlockState(west.above()).is(RocketryModule.STATION_HATCH.get()), "battery in the mouth, hatches around it");
+        int arrays = 0;
+        for (BlockPos q : BlockPos.betweenClosed(west.offset(1, -1, -1), west.offset(7, 2, 1))) {
+            if (level.getBlockState(q).is(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.SOLAR_ARRAY.get())) {
+                arrays++;
+            }
+        }
+        helper.assertTrue(arrays == 4, "two solar arrays on each side of the boom: " + arrays);
+        // one sealed room: core + quarters (+ the passage up to the airlock's inner door)
+        BlockPos dist = centre.relative(forward.getOpposite(), 2).relative(forward.getClockWise(), -2).above();
+        helper.succeedWhen(() -> {
+            var be = (com.pizzaparker07.spacebreaker.content.suit.block.OxygenDistributorBlockEntity) level.getBlockEntity(dist);
+            helper.assertTrue(be != null && be.room().sealed(), "the station is sealed with the airlock shut");
+            int v = be.room().volume();
+            helper.assertTrue(v >= 215 && v <= 240, "core + passages + quarters, less ducts and fittings: " + v);
         });
     }
 

@@ -40,3 +40,8 @@ Aşağıdaki tuşlar **senin** ayarlarındaki tuşlardır; değiştirdiğinde bu
 | Geri | Geri tuşu (Backspace) |
 | İçindekiler | Home |
 | Ara | Ctrl+F |
+
+## Ayarlar {#settings}
+İstemci ayarları oyunun config klasöründedir:
+- **spacebreaker-worlds-client.toml:** **planetStyle** gezegenlerin ve uyduların dışarıdan nasıl göründüğünü seçer: **VOXEL** (bloklardan bir top, varsayılan), **CUBE** (yavaşça dönen pikselli bir küp) ya da **ROUND** (eski düz disk). **bodyScale** Güneş'in ve gezegenlerin ne kadar büyük göründüğünü ayarlar (1 = gerçek boyut; varsayılan 8). Bu görünüm gökyüzünde, yörüngede altındaki dünyada ve yıldız haritasında kullanılır.
+- **spacebreaker-hud.toml:** kask göstergesi, vizör kenarı ve ses. → [Kask](eva_suit#hud)

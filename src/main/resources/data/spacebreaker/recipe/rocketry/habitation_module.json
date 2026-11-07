@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "HWH",
+    "BLB",
+    "HHH"
+  ],
+  "key": {
+    "H": {
+      "item": "spacebreaker:station_hull"
+    },
+    "W": {
+      "item": "spacebreaker:station_window"
+    },
+    "B": {
+      "item": "spacebreaker:station_bunk"
+    },
+    "L": {
+      "item": "minecraft:barrel"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:habitation_module",
+    "count": 1
+  }
+}

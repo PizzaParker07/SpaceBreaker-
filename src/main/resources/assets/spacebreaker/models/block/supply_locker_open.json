@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "spacebreaker:block/supply_locker_front_open",
+    "side": "spacebreaker:block/supply_locker_side",
+    "top": "spacebreaker:block/supply_locker_top",
+    "particle": "spacebreaker:block/supply_locker_side"
+  }
+}

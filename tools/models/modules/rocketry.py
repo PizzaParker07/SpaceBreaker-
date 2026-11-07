@@ -316,6 +316,16 @@ def docking_module_part():
     return els
 
 
+def station_can_part(height, width, ring=8):
+    """A folded station module: launch adapter, a pressurised can, a docking ring on top."""
+    return prism(0, 2, 10) + prism(2, height - 3, width) + prism(height - 3, height, ring)
+
+
+def solar_wings_part():
+    """Folded solar wings: adapter, the folded panel stack, a short boom cap."""
+    return prism(0, 2, 10) + prism(2, 16, 12) + prism(16, 18, 6)
+
+
 def decoupler():
     return prism(0, 3, 16)
 
@@ -431,6 +441,9 @@ PARTS = {
     'cargo_module': (cargo_module, False),
     'station_core_module': (station_core_part, False),
     'docking_module': (docking_module_part, False),
+    'habitation_module': (lambda: station_can_part(30, 16), False),
+    'airlock_module': (lambda: station_can_part(20, 12), False),
+    'solar_wings': (solar_wings_part, False),
     'decoupler': (decoupler, False),
     'interstage': (interstage, False),
     'heat_shield': (heat_shield, False),

@@ -1,0 +1,6 @@
+{
+  "type": "station_module",
+  "mass_kg": 1400,
+  "height": 20,
+  "model": "spacebreaker:airlock_module"
+}
