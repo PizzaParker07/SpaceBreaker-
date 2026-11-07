@@ -784,7 +784,7 @@ final class RocketryScenario implements ShowcaseScenario {
             toDimension(p, Location.EARTH_ORBIT, 5.6, RocketEntity.ORBIT_Y + 3.2, 2.4, 110F, 6F);
         }, null));
         // modular station, stage 1: a core unfolded in orbit with a rocket coming in to its roof port
-        s.add(new Shot("55_station_core", 6000, 0, 0, 0, 0F, 0F, true, fp, 160, p -> {
+        s.add(new Shot("55_station_core", 6000, 0, 0, 0, 0F, 0F, true, fp, 300, p -> {
             clearScene(p);
             ServerLevel orbit = p.server.getLevel(Location.EARTH_ORBIT.dimension());
             BlockPos c = BlockPos.containing(400, RocketEntity.ORBIT_Y - 6, 0);
@@ -794,7 +794,7 @@ final class RocketryScenario implements ShowcaseScenario {
             toDimension(p, Location.EARTH_ORBIT, 416.5, RocketEntity.ORBIT_Y + 4.5, 15.5, 135F, 18F);
         }, null));
         // holding a docking module at a mouth: the outline shows where it will go (green: there is room)
-        s.add(new Shot("56_station_preview", 6000, 0, 0, 0, 0F, 0F, false, fp, 200, p -> {
+        s.add(new Shot("56_station_preview", 6000, 0, 0, 0, 0F, 0F, false, fp, 300, p -> {
             clearScene(p);
             ServerLevel orbit = p.server.getLevel(Location.EARTH_ORBIT.dimension());
             BlockPos c = BlockPos.containing(500, RocketEntity.ORBIT_Y - 6, 0);
@@ -810,7 +810,7 @@ final class RocketryScenario implements ShowcaseScenario {
             toDimension(p, Location.EARTH_ORBIT, mouth.getX() + 7.5, mouth.getY() + 6.5, mouth.getZ() + 0.5, 90F, 39F);
         }, null));
         // the docking module attached to the core's front mouth, a rocket coming in to its port
-        s.add(new Shot("57_station_docking_module", 6000, 0, 0, 0, 0F, 0F, true, fp, 160, p -> {
+        s.add(new Shot("57_station_docking_module", 6000, 0, 0, 0, 0F, 0F, true, fp, 300, p -> {
             clearScene(p);
             ServerLevel orbit = p.server.getLevel(Location.EARTH_ORBIT.dimension());
             BlockPos c = BlockPos.containing(600, RocketEntity.ORBIT_Y - 6, 0);
@@ -833,7 +833,7 @@ final class RocketryScenario implements ShowcaseScenario {
             toDimension(p, Location.EARTH_ORBIT, c.getX() - 1.5, c.getY() + 2.6, c.getZ() + 0.5, -90F, 8F);
         }, null));
         // modular station, stage 2: core + docking tunnel + living quarters + airlock + solar wings
-        s.add(new Shot("59_station_stage2", 6000, 0, 0, 0, 0F, 0F, true, fp, 200, p -> {
+        s.add(new Shot("59_station_stage2", 6000, 0, 0, 0, 0F, 0F, true, fp, 300, p -> {
             clearScene(p);
             ServerLevel orbit = p.server.getLevel(Location.EARTH_ORBIT.dimension());
             BlockPos c = BlockPos.containing(800, RocketEntity.ORBIT_Y - 6, 0);

@@ -1075,7 +1075,7 @@ public final class RocketryGameTests {
             var be = (com.pizzaparker07.spacebreaker.content.suit.block.OxygenDistributorBlockEntity) level.getBlockEntity(dist);
             helper.assertTrue(be != null && be.room().sealed(), "core and tunnel are sealed");
             int v = be.room().volume();
-            helper.assertTrue(v >= 170 && v <= 190, "core (5x5x5) + passage (3x3x2) + tunnel (3x3x5), less the console: " + v);
+            helper.assertTrue(v >= 155 && v <= 172, "core (5x5x5) + passage (3x3x2) + tunnel (3x3x5), less ducts and fittings: " + v);
         });
     }
 
@@ -1122,7 +1122,7 @@ public final class RocketryGameTests {
             var be = (com.pizzaparker07.spacebreaker.content.suit.block.OxygenDistributorBlockEntity) level.getBlockEntity(dist);
             helper.assertTrue(be != null && be.room().sealed(), "the station is sealed with the airlock shut");
             int v = be.room().volume();
-            helper.assertTrue(v >= 250 && v <= 320, "core + passages + quarters: " + v);
+            helper.assertTrue(v >= 215 && v <= 240, "core + passages + quarters, less ducts and fittings: " + v);
         });
     }
 
