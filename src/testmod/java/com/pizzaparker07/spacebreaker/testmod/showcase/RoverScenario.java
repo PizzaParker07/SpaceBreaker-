@@ -68,6 +68,14 @@ final class RoverScenario implements ShowcaseScenario {
         parked.installRtg(new ItemStack(MachinesModule.RTG_FUEL_PELLET.get()));
         parked.cargo().setItem(0, new ItemStack(Items.CHEST));
         driver = rover(level, X0 + 3.5, Z0 + 30.5, 180F);
+        // a rover nosing up onto a ledge: slabs under the front wheels, a full block under the left front one
+        for (int x = X0 - 7; x <= X0 - 4; x++) {
+            for (int z = Z0 + 11; z <= Z0 + 13; z++) {
+                level.setBlock(new BlockPos(x, gy, z), Blocks.SMOOTH_STONE_SLAB.defaultBlockState(), 2);
+            }
+        }
+        RoverEntity tilted = rover(level, X0 - 5.5, Z0 + 10.3, 0F);
+        tilted.installSolar();
     }
 
     private RoverEntity rover(ServerLevel level, double x, double z, float yaw) {
@@ -113,6 +121,8 @@ final class RoverScenario implements ShowcaseScenario {
         // in the driver's seat with the battery readout
         s.add(new ShowcaseDriver.Shot(w + "_05_driver_view", 0, px, gy + 2, pz, 35F, 12F, false, CameraType.THIRD_PERSON_BACK, 60,
                 at(0.3, p -> p.startRiding(parked, true)), null));
+        // the rover leans with the ground under its wheels
+        s.add(new ShowcaseDriver.Shot(w + "_07_slope", 0, X0 - 1.5, gy + 1.4, Z0 + 10.3, 90F, 8F, true, fp, 60, at(0.3, p -> { }), null));
         // two seats taken (helmeted stand-ins for the crew, sitting like players do), side view: the roof panel must clear their heads
         s.add(new ShowcaseDriver.Shot(w + "_06_two_seats", 0, px + 3.7, gy + 1.6, pz + 2.6, MoonScenario.yaw(-3.7, -2.6), 8F, true, fp, 60,
                 at(0.3, p -> crew(p.serverLevel())), null));

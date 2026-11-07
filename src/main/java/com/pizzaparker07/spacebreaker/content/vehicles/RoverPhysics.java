@@ -98,4 +98,15 @@ public final class RoverPhysics {
     public static int driveCost(double blocks) {
         return (int) Math.ceil(blocks * FE_PER_BLOCK);
     }
+
+    /** Largest body tilt the chassis shows, radians (beyond this the wheels are in the air anyway). */
+    public static final float MAX_TILT = (float) Math.toRadians(28);
+
+    /**
+     * Body tilt from the ground under two opposite wheels: positive when the first side stands higher, radians,
+     * clamped to {@link #MAX_TILT}. Purely visual: the hitbox stays level.
+     */
+    public static float tilt(double groundA, double groundB, double span) {
+        return (float) Math.max(-MAX_TILT, Math.min(MAX_TILT, Math.atan2(groundA - groundB, span)));
+    }
 }

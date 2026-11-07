@@ -348,6 +348,17 @@ public final class RoverTests {
         });
     }
 
+    /** The body leans with the ground under the wheels: level on flat ground, nose up onto a half step, never past the limit. */
+    @GameTest(template = "empty")
+    public static void bodyLeansWithTheGround(GameTestHelper h) {
+        h.assertTrue(com.pizzaparker07.spacebreaker.content.vehicles.RoverPhysics.tilt(0, 0, 1.5) == 0, "flat ground: level");
+        float halfStep = com.pizzaparker07.spacebreaker.content.vehicles.RoverPhysics.tilt(0.5, 0, 1.5);
+        h.assertTrue(Math.abs(Math.toDegrees(halfStep) - 18.43) < 0.1, "half a block over the wheelbase: ~18 degrees, got " + Math.toDegrees(halfStep));
+        h.assertTrue(com.pizzaparker07.spacebreaker.content.vehicles.RoverPhysics.tilt(3, 0, 1.5)
+                == com.pizzaparker07.spacebreaker.content.vehicles.RoverPhysics.MAX_TILT, "a wall does not stand it on end");
+        h.succeed();
+    }
+
     private static void floor(GameTestHelper h, BlockState state) {
         for (int z = 0; z < 5; z++) {
             for (int x = 0; x < 5; x++) {

@@ -79,6 +79,14 @@ public class RoverEntity extends Entity {
     public float wheelSpinO;
     public float suspension;
     public float suspensionO;
+    /** Client: body tilt following the ground under the wheels (radians): front up, and the model's +X side up. */
+    public float bodyPitch;
+    public float bodyPitchO;
+    public float bodyRoll;
+    public float bodyRollO;
+    /** Client: how far the leaning body sits above the rover's feet (the mean of the ground under the wheels). */
+    public float bodyLift;
+    public float bodyLiftO;
     private float suspensionVel;
     private boolean wasOnGround = true;
     private double lastVy;
@@ -545,7 +553,49 @@ public class RoverEntity extends Entity {
         return state;
     }
 
+    /** Top of the ground under a point, searched a little above and below the rover's feet. */
+    private double groundAt(double x, double z) {
+        BlockPos.MutableBlockPos p = new BlockPos.MutableBlockPos();
+        int top = Mth.floor(getY() + 1.2);
+        for (int y = top; y >= Mth.floor(getY() - 1.6); y--) {
+            p.set(Mth.floor(x), y, Mth.floor(z));
+            var shape = level().getBlockState(p).getCollisionShape(level(), p);
+            if (!shape.isEmpty()) {
+                return y + shape.max(net.minecraft.core.Direction.Axis.Y);
+            }
+        }
+        return getY() - 1.6;
+    }
+
+    /** Leans the body with the ground under the wheels (client only, smoothed). */
+    private void updateTilt() {
+        bodyPitchO = bodyPitch;
+        bodyRollO = bodyRoll;
+        bodyLiftO = bodyLift;
+        float a = (180F - getYRot()) * Mth.DEG_TO_RAD;
+        // the renderer's model space after its yaw turn: +X = (cos a, -sin a), front (-Z) = (-sin a, -cos a)
+        double fx = -Mth.sin(a), fz = -Mth.cos(a);
+        double sx = Mth.cos(a), sz = -Mth.sin(a);
+        float pitch = 0;
+        float roll = 0;
+        float lift = 0;
+        if (onGround()) {
+            double front = groundAt(getX() + fx * 0.75, getZ() + fz * 0.75);
+            double rear = groundAt(getX() - fx * 0.75, getZ() - fz * 0.75);
+            double plus = groundAt(getX() + sx * 0.8, getZ() + sz * 0.8);
+            double minus = groundAt(getX() - sx * 0.8, getZ() - sz * 0.8);
+            pitch = RoverPhysics.tilt(front, rear, 1.5);
+            roll = RoverPhysics.tilt(plus, minus, 1.6);
+            // the body pivots about its middle, so lift it to the mean ground: the low wheels stay on the ground
+            lift = (float) Mth.clamp((front + rear + plus + minus) / 4 - getY(), 0, 0.75);
+        }
+        bodyPitch += (pitch - bodyPitch) * 0.3F;
+        bodyRoll += (roll - bodyRoll) * 0.3F;
+        bodyLift += (lift - bodyLift) * 0.3F;
+    }
+
     private void clientEffects() {
+        updateTilt();
         wheelSpinO = wheelSpin;
         double moved = Math.hypot(getX() - xo, getZ() - zo);
         double forward = -Mth.sin(getYRot() * Mth.DEG_TO_RAD) * (getX() - xo) + Mth.cos(getYRot() * Mth.DEG_TO_RAD) * (getZ() - zo);

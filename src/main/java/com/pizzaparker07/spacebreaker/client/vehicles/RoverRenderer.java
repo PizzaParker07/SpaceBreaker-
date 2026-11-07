@@ -50,8 +50,12 @@ public class RoverRenderer extends EntityRenderer<RoverEntity> {
     @Override
     public void render(RoverEntity rover, float yaw, float partialTick, PoseStack pose, MultiBufferSource buffers, int light) {
         pose.pushPose();
-        pose.translate(0F, 1.5F, 0F);
+        pose.translate(0F, Mth.lerp(partialTick, rover.bodyLiftO, rover.bodyLift), 0F);
         pose.mulPose(Axis.YP.rotationDegrees(180F - yaw));
+        // lean with the ground under the wheels, pivoting where the wheels touch it
+        pose.mulPose(Axis.XP.rotation(Mth.lerp(partialTick, rover.bodyPitchO, rover.bodyPitch)));
+        pose.mulPose(Axis.ZP.rotation(Mth.lerp(partialTick, rover.bodyRollO, rover.bodyRoll)));
+        pose.translate(0F, 1.5F, 0F);
         float hurt = rover.hurtTime() - partialTick;
         if (hurt > 0) {
             pose.mulPose(Axis.ZP.rotationDegrees(Mth.sin(hurt) * hurt * 0.4F));
