@@ -879,18 +879,54 @@ final class ProgressionModel {
         return deps;
     }
 
-    /** A power source in {@code w}: combustion where the air burns, solar panels anywhere with sunlight. */
+    /**
+     * Sunlight below which solar panels do not count as a power source: 0.1 of Earth's is about 2 FE/t per panel, so ten
+     * panels run one machine. Ceres just passes; the Jovian system and beyond need an RTG (or combustion where air burns).
+     */
+    static final double MIN_SOLAR_FACTOR = 0.1;
+
+    /** Sunlight relative to Earth on this world (1 for worlds that are not a body, like the Nether). */
+    double solarFactor(ResourceKey<Level> w) {
+        return bodyOf(w).map(b -> b.solarIrradiance() / CelestialBody.EARTH_IRRADIANCE).orElse(1.0);
+    }
+
+    /**
+     * A power source in {@code w}: combustion where the air burns, solar panels where the sun is strong enough, an RTG
+     * with a fuel pellet anywhere (it needs neither air nor sky).
+     */
     String power(ResourceKey<Level> w) {
+        String fact = "power:" + w.location();
         WorldInfo info = worlds.get(w);
         Item gen = BuiltInRegistries.ITEM.get(Spacebreaker.id("combustion_generator"));
         if (info != null && info.breathable() && hasItem(gen)) {
-            add("power:" + w.location(), "combustion generator (breathable air)", List.of(item(gen), landed(w)));
-            return "power:" + w.location();
+            add(fact, "combustion generator (breathable air)", List.of(item(gen), landed(w)));
+            return fact;
         }
         Item solar = BuiltInRegistries.ITEM.get(Spacebreaker.id("solar_panel"));
-        if (hasItem(solar)) {
-            add("power:" + w.location(), "solar panels", List.of(item(solar), landed(w)));
-            return "power:" + w.location();
+        if (hasItem(solar) && solarFactor(w) >= MIN_SOLAR_FACTOR) {
+            add(fact, "solar panels", List.of(item(solar), landed(w)));
+            return fact;
+        }
+        Item rtg = BuiltInRegistries.ITEM.get(Spacebreaker.id("rtg"));
+        Item pellet = BuiltInRegistries.ITEM.get(Spacebreaker.id("rtg_fuel_pellet"));
+        if (rtg != net.minecraft.world.item.Items.AIR && hasItem(rtg) && hasItem(pellet)) {
+            List<String> deps = new ArrayList<>(List.of(item(rtg), item(pellet), landed(w)));
+            ResourceLocation id = BuiltInRegistries.ITEM.getKey(rtg);
+            if (machinesThatEnforce.contains(id)) {
+                String known = null;
+                for (ResourceLocation t : TechRequirement.forUnlock(server.registryAccess(), id).techs()) {
+                    if (has(tech(t))) {
+                        known = tech(t);
+                        break;
+                    }
+                }
+                if (known == null) {
+                    return null;
+                }
+                deps.add(known);
+            }
+            add(fact, "RTG + fuel pellet", deps);
+            return fact;
         }
         return null;
     }
