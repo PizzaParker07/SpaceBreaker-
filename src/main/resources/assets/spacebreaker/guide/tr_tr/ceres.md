@@ -9,6 +9,8 @@ Asteroit kuşağının en büyük cismi: koyu, killi zemin, birkaç blok altta b
 
 **Yerçekimi:** 0,03 g, neredeyse yok. Bir zıplama seni çok uzağa taşıyabilir.
 
+> Kutup kraterlerinin tabanı Ay ve Merkür'deki gibi **soğuk tuzaktır**: buz saklar, giysini zorlar. → [Tehlikeler](hazards)
+
 {entity spacebreaker:rock_mite}
 **Kaya Akarları** çakılın içinde saklanır.
 

@@ -13,7 +13,7 @@ Vücut ısın **yavaş** değişir; birkaç saniyelik güneş ya da gölge seni 
 Giysin belli bir aralığı dengeler (Mk1: −190 °C ile 130 °C). Bu aralığın dışında bile önce yavaş yavaş ısınır ya da soğursun.
 
 > [!TIP]
-> Soğuk giysinin sınırını aşınca **vizörün kenarından kırağı** yayılır ve göstergede bir uyarı çıkar. Kırağı, giysinin aralığına ya da basınçlı bir modüle dönünce çözülür. Kutup kraterlerindeki **soğuk tuzaklar** (Ay ≈ −233 °C, Merkür ≈ −240 °C) için ısıtmalı giysi giy.
+> Soğuk giysinin sınırını aşınca **vizörün kenarından kırağı** yayılır ve göstergede bir uyarı çıkar. Kırağı, giysinin aralığına ya da basınçlı bir modüle dönünce çözülür. Kutup kraterlerindeki **soğuk tuzaklar** yalnızca buzun kalıcı olduğu havasız dünyalarda vardır: Ay (≈ −233 °C), Merkür (≈ −213 °C) ve Ceres. Mars ve Plüton'da yoktur. Oraya ısıtmalı giysiyle ya da yeterince termal modülle in.
 
 ### Radyasyon
 Atmosferin ve manyetik alanın dışında radyasyon dozu birikir. Kask göstergesinde izle. Doz zamanla yavaşça düşer; uzun Ay görevlerinde dinlenme molaları ver.
@@ -40,7 +40,7 @@ Your body temperature changes **slowly**; a few seconds of sun or shade will not
 Your suit balances a range (Mk1: −190 °C to 130 °C). Even outside that range you warm up or cool down gradually at first.
 
 > [!TIP]
-> When the cold is beyond your suit's rating, **rime creeps in from the visor rim** and the HUD warns you. It thaws once you are back in range or inside a pressurised module. Wear the heated suit for the **cold traps** in polar craters (Moon ≈ −233 °C, Mercury ≈ −240 °C).
+> When the cold is beyond your suit's rating, **rime creeps in from the visor rim** and the HUD warns you. It thaws once you are back in range or inside a pressurised module. The **cold traps** in polar craters exist only on airless worlds where ice stays stable: the Moon (≈ −233 °C), Mercury (≈ −213 °C) and Ceres. Mars and Pluto have none. Go down in a heated suit or with enough thermal modules.
 
 ### Radiation
 Outside an atmosphere and a magnetic field, radiation dose builds up. Watch it on the helmet display. The dose slowly goes down over time; take breaks on long Moon missions.

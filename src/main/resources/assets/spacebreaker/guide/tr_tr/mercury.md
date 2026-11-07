@@ -9,9 +9,9 @@ Hava yok ve güneş evdekinden neredeyse **üç kat** büyük.
 |---|---|
 | Gündüz | 430 °C'ye kadar |
 | Gece | −180 °C |
-| Kutup kraterlerinin tabanı | yaklaşık −240 °C |
+| Kutup kraterlerinin tabanı | yaklaşık −213 °C |
 
->! Gündüzle geceye **termal giysi** (−190 / 500 °C) dayanır, ama kutup kraterlerindeki soğuk tuzaklara dayanmaz; oraya **ısıtmalı giysi** (−250 / 80 °C) gerekir. → [EVA Giysisi](eva_suit)
+>! Gündüzle geceye **termal giysi** (−190 / 500 °C) dayanır, ama kutup kraterlerindeki soğuk tuzaklara dayanmaz. Oraya **3 termal regülatör modülü** takılı bir giysiyle ya da daha rahatı, **ısıtmalı giysiyle** (−250 / 80 °C) in. → [EVA Giysisi](eva_suit)
 
 ## Gölge {#shade}
 Hava olmadığı için güneşin göremediği yer öğlen bile soğuktur. Güneşle arana katı bir blok girerse (sarplık, krater kenarı ya da kurduğun bir çatı; cam ve saydam bloklar sayılmaz) sıcaklık 430 °C yerine **−60 °C** olur: temel giysiyle dayanırsın. Gölgeye girip çıkarken aksiyon çubuğu yazar: **Gölgedesin / Güneştesin: X °C**.
@@ -19,7 +19,7 @@ Hava olmadığı için güneşin göremediği yer öğlen bile soğuktur. Güne�
 - Öğlen gölge azdır: bir çatı kur.
 - Kutup kraterlerinin soğuk tuzakları ayrıdır ve çok daha soğuktur.
 
-> Buz için kraterlere ısıtmalı giysiyle in, gündüz ovalarına termal giysiyle çık; ikisinin arasında gündüzle geceyi ayıran **terminatör** kuşağında dolaş.
+> Buz için kraterlere ısıtmalı giysiyle (ya da 3 termal modülle) in, gündüz ovalarına termal giysiyle çık; ikisinin arasında gündüzle geceyi ayıran **terminatör** kuşağında dolaş.
 
 {items spacebreaker:mercury_regolith spacebreaker:mercurian_crust spacebreaker:low_reflectance_rock spacebreaker:hollow_deposit}
 - **Lobat sarplıklar**: gezegen soğuyup büzülürken oluşan uzun yarlar.
@@ -30,7 +30,7 @@ Hava olmadığı için güneşin göremediği yer öğlen bile soğuktur. Güne�
 
 {page}
 {items spacebreaker:graphite_ore spacebreaker:graphite}
-Kutup kraterlerinin tabanı hiç güneş görmez: yaklaşık −240 °C'lik bir **soğuk tuzak** olup {item spacebreaker:mercury_ice} saklar. Termal giysi yalnızca −190 °C'ye dayanır (her termal regülatör modülü bunu 15 °C genişletir); orada ısıtmalı giysi giy. Eritince su, sudan hidrojen ve oksijen elde edersin.
+Kutup kraterlerinin tabanı hiç güneş görmez: yaklaşık −213 °C'lik bir **soğuk tuzak** olup {item spacebreaker:mercury_ice} saklar. Mk1 ve termal giysi yalnızca −190 °C'ye dayanır; her termal regülatör modülü bunu 15 °C genişletir, yani **3 modül** (−235 °C) yeter. Isıtmalı giysi daha rahattır. Eritince su, sudan hidrojen ve oksijen elde edersin.
 
 > **Merkür'de yakıt:** grafit + oksijen → CO₂ (kimyasal reaktör); CO₂ + hidrojen → metan (Sabatier reaktörü). Böylece metaloks yakıtını yerinde tamamlarsın. → [Yerinde Üretim](isru)
 

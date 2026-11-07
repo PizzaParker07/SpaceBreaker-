@@ -8,6 +8,9 @@ Asteroit kuşağının en büyük cismi: koyu, killi zemin, birkaç blok altta b
 
 **Yerçekimi:** 0,03 g, neredeyse yok. Bir zıplama seni çok uzağa taşıyabilir.
 
+> [!TIP]
+> Kutup kraterlerinin tabanı Ay ve Merkür'deki gibi **soğuk tuzaktır**: buz saklar, giysini zorlar. → [Tehlikeler](hazards)
+
 **Canlı:** Kaya Akarı
 
 **Kaya Akarları** çakılın içinde saklanır.
@@ -25,6 +28,9 @@ Terk edilmiş buz madenciliği karakolu şunu öğretir: *Mikro Yerçekiminde Ma
 The largest body in the asteroid belt: dark, clay-rich ground, ice a few blocks down and bright salt spots on the floors of some big craters, where brine once welled up.
 
 **Gravity:** 0.03 g, almost nothing. A jump can carry you very far.
+
+> [!TIP]
+> The polar crater floors are **cold traps**, as on the Moon and Mercury: they keep ice and push your suit hard. → [Hazards](hazards)
 
 **Creature:** Rock Mite
 

@@ -14,7 +14,7 @@ Vücut ısın **yavaş** değişir; birkaç saniyelik güneş ya da gölge seni 
 
 Giysin belli bir aralığı dengeler (Mk1: −190 °C ile 130 °C). Bu aralığın dışında bile önce yavaş yavaş ısınır ya da soğursun.
 
-> Soğuk giysinin sınırını aşınca **vizörün kenarından kırağı** yayılır ve göstergede bir uyarı çıkar. Kırağı, giysinin aralığına ya da basınçlı bir modüle dönünce çözülür. Kutup kraterlerindeki **soğuk tuzaklar** (Ay ≈ −233 °C, Merkür ≈ −240 °C) için ısıtmalı giysi giy.
+> Soğuk giysinin sınırını aşınca **vizörün kenarından kırağı** yayılır ve göstergede bir uyarı çıkar. Kırağı, giysinin aralığına ya da basınçlı bir modüle dönünce çözülür. Kutup kraterlerindeki **soğuk tuzaklar** yalnızca buzun kalıcı olduğu havasız dünyalarda vardır: Ay (≈ −233 °C), Merkür (≈ −213 °C) ve Ceres. Mars ve Plüton'da yoktur. Oraya ısıtmalı giysiyle ya da yeterince termal modülle in.
 
 ## Radyasyon
 Atmosferin ve manyetik alanın dışında radyasyon dozu birikir. Kask göstergesinde izle. Doz zamanla yavaşça düşer; uzun Ay görevlerinde dinlenme molaları ver.

@@ -11,7 +11,7 @@ Bütün makineler **FE** (enerji) ile çalışır. Üretim ve tüketim "FE/t" il
 |---|---|
 | {item spacebreaker:combustion_generator} | Yakıt yakar, **40 FE/t** verir. Yalnızca solunabilir havada çalışır. |
 | {item spacebreaker:solar_panel} | Güneşi takip eder; açık öğlede **20 FE/t**. Yağmurda ve gece azalır. |
-| {item spacebreaker:battery_bank} | **1 000 000 FE** saklar, önünden 2048 FE/t verir. |
+| {item spacebreaker:battery_bank} | **1 000 000 FE** saklar, önünden 2048 FE/t verir. Bir bloğun altına (tavana) takılırsa aşağı doğru verir. |
 | {item spacebreaker:copper_cable} | Enerjiyi taşır; az güç için. |
 | {item spacebreaker:hv_cable} | Çok güç taşır. |
 

@@ -44,6 +44,9 @@ final class ResearchLang {
         l.add("sample.spacebreaker.enceladus", "Enceladus", "Enceladus");
         l.add("sample.spacebreaker.miranda", "Miranda", "Miranda");
         l.add("sample.spacebreaker.ariel", "Ariel", "Ariel");
+        l.add("sample.spacebreaker.titania", "Titania", "Titania");
+        l.add("sample.spacebreaker.umbriel", "Umbriel", "Umbriel");
+        l.add("sample.spacebreaker.oberon", "Oberon", "Oberon");
         l.add("sample.spacebreaker.triton", "Triton", "Triton");
         l.add("sample.spacebreaker.pluto", "Pluto", "Plüton");
         l.add("sample.spacebreaker.charon", "Charon", "Charon");

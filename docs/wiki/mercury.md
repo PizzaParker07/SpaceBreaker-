@@ -7,10 +7,10 @@ Hava yok ve güneş evdekinden neredeyse **üç kat** büyük.
 |---|---|
 | Gündüz | 430 °C'ye kadar |
 | Gece | −180 °C |
-| Kutup kraterlerinin tabanı | yaklaşık −240 °C |
+| Kutup kraterlerinin tabanı | yaklaşık −213 °C |
 
 > [!WARNING]
-> Gündüzle geceye **termal giysi** (−190 / 500 °C) dayanır, ama kutup kraterlerindeki soğuk tuzaklara dayanmaz; oraya **ısıtmalı giysi** (−250 / 80 °C) gerekir. → [EVA Giysisi](eva_suit)
+> Gündüzle geceye **termal giysi** (−190 / 500 °C) dayanır, ama kutup kraterlerindeki soğuk tuzaklara dayanmaz. Oraya **3 termal regülatör modülü** takılı bir giysiyle ya da daha rahatı, **ısıtmalı giysiyle** (−250 / 80 °C) in. → [EVA Giysisi](eva_suit)
 
 <a id="shade"></a>
 ### Gölge
@@ -20,7 +20,7 @@ Hava olmadığı için güneşin göremediği yer öğlen bile soğuktur. Güne�
 - Kutup kraterlerinin soğuk tuzakları ayrıdır ve çok daha soğuktur.
 
 > [!TIP]
-> Buz için kraterlere ısıtmalı giysiyle in, gündüz ovalarına termal giysiyle çık; ikisinin arasında gündüzle geceyi ayıran **terminatör** kuşağında dolaş.
+> Buz için kraterlere ısıtmalı giysiyle (ya da 3 termal modülle) in, gündüz ovalarına termal giysiyle çık; ikisinin arasında gündüzle geceyi ayıran **terminatör** kuşağında dolaş.
 
 **Merkür Regoliti** · **Merkür Kabuğu** · **Düşük Yansıtmalı Kaya** · **Oyuk Tortusu**
 
@@ -33,7 +33,7 @@ Hava olmadığı için güneşin göremediği yer öğlen bile soğuktur. Güne�
 
 **Grafit Cevheri** · **Grafit**
 
-Kutup kraterlerinin tabanı hiç güneş görmez: yaklaşık −240 °C'lik bir **soğuk tuzak** olup **Merkür Kutup Buzu** saklar. Termal giysi yalnızca −190 °C'ye dayanır (her termal regülatör modülü bunu 15 °C genişletir); orada ısıtmalı giysi giy. Eritince su, sudan hidrojen ve oksijen elde edersin.
+Kutup kraterlerinin tabanı hiç güneş görmez: yaklaşık −213 °C'lik bir **soğuk tuzak** olup **Merkür Kutup Buzu** saklar. Mk1 ve termal giysi yalnızca −190 °C'ye dayanır; her termal regülatör modülü bunu 15 °C genişletir, yani **3 modül** (−235 °C) yeter. Isıtmalı giysi daha rahattır. Eritince su, sudan hidrojen ve oksijen elde edersin.
 
 > [!TIP]
 > **Merkür'de yakıt:** grafit + oksijen → CO₂ (kimyasal reaktör); CO₂ + hidrojen → metan (Sabatier reaktörü). Böylece metaloks yakıtını yerinde tamamlarsın. → [Yerinde Üretim](isru)
@@ -56,10 +56,10 @@ No air, and a sun almost **three times** as wide as at home.
 |---|---|
 | Day | up to 430 °C |
 | Night | −180 °C |
-| Polar crater floors | about −240 °C |
+| Polar crater floors | about −213 °C |
 
 > [!WARNING]
-> The **thermal suit** (−190 / 500 °C) handles both day and night, but not the cold traps in the polar craters; those need the **heated suit** (−250 / 80 °C). → [EVA Suit](eva_suit)
+> The **thermal suit** (−190 / 500 °C) handles both day and night, but not the cold traps in the polar craters. Go down there with **3 thermal regulator modules** fitted or, more comfortably, in the **heated suit** (−250 / 80 °C). → [EVA Suit](eva_suit)
 
 <a id="shade"></a>
 ### Shade
@@ -69,7 +69,7 @@ With no air to carry heat, ground the sun cannot see is cold even at noon. Put a
 - The cold traps in the polar craters are separate, and far colder.
 
 > [!TIP]
-> Go down into the craters for ice in a heated suit, out onto the daylit plains in a thermal suit, and travel between them along the **terminator**, the band between day and night.
+> Go down into the craters for ice in a heated suit (or with 3 thermal modules), out onto the daylit plains in a thermal suit, and travel between them along the **terminator**, the band between day and night.
 
 **Mercurian Regolith** · **Mercurian Crust** · **Low-Reflectance Rock** · **Hollow Deposit**
 
@@ -82,7 +82,7 @@ With no air to carry heat, ground the sun cannot see is cold even at noon. Put a
 
 **Graphite Ore** · **Graphite**
 
-The floors of the polar craters lie in permanent shadow: a **cold trap** at about −240 °C that keeps **Mercurian Polar Ice**. The thermal suit is rated only to −190 °C (each thermal regulator module widens that by 15 °C), so wear the heated suit down there. Melt it for water, then split the water into hydrogen and oxygen.
+The floors of the polar craters lie in permanent shadow: a **cold trap** at about −213 °C that keeps **Mercurian Polar Ice**. The Mk1 and thermal suits are rated only to −190 °C; each thermal regulator module widens that by 15 °C, so **3 modules** (−235 °C) are enough. The heated suit is more comfortable. Melt it for water, then split the water into hydrogen and oxygen.
 
 > [!TIP]
 > **Fuel on Mercury:** graphite + oxygen → CO₂ (chemical reactor); CO₂ + hydrogen → methane (Sabatier reactor). That tops up methalox fuel on the spot. → [In-Situ Resources](isru)

@@ -20,7 +20,7 @@ Elle duvar örmekle uğraşmak istemiyorsan yörüngede bir **Yaşam Modülü Ki
 - pencere şeridi olan gövde duvarları ve sana bakan bir hava kilidi kapısı,
 - karşı duvarda bir **Yanaşma Portu**,
 - ortada bir [Oksijen Dağıtıcı](base_air) ve bir köşede bir **İstasyon Ranzası**,
-- çatıda bir sıra güneş paneli.
+- çatıda bir güneş paneli dizisi, altında tavana gömülü bir [Batarya Bankası](power) ve tavandan odaya sarkan bir kablo ucu: odadaki makineleri buraya bağla.
 
 > [!TIP]
 > Dağıtıcıya bir oksijen tüpü tak ya da oksijen borula: oda havayla dolar. Önündeki alan boş değilse kit açılmaz.
@@ -44,7 +44,7 @@ Dünya dışında yatak çalışmaz. **İstasyon Ranzası** kullanınca **yenide
 
 **Güneş Paneli Dizisi**
 
-**Güneş Paneli Dizisi** tek blokluk tabanda üç panel taşır ve en fazla **60 FE/t** üretir. Yörüngede de gece olur: her tur yaklaşık **12000 tick** sürer ve bunun üçte birine yakını gezegenin gölgesinde geçer. Gece için bir [Batarya Bankası](power) kur. → [Gece ve enerji](power#night)
+**Güneş Paneli Dizisi** tek blokluk tabanda üç panel taşır ve en fazla **60 FE/t** üretir. Yörüngede de gece olur: her tur yaklaşık **12000 tick** sürer ve bunun üçte birine yakını gezegenin gölgesinde geçer. Gölgede paneller ve dizi **hiç üretmez**: gece için bir [Batarya Bankası](power) kur. → [Gece ve enerji](power#night)
 
 ### Yanaşma
 - İstasyonu olan bir yörüngeye varan mürettebatlı roket en yakın yanaşma portunun **36 blok** uzağında belirir. Hızla yaklaşır, son metreleri manevra iticileriyle ağır ağır alır ve bir tık sesiyle kilitlenir: **"Yanaşıldı"**. Yaklaşma sırasında kimse inemez.
@@ -80,7 +80,7 @@ If you would rather not build the walls by hand, use a **Habitat Module Kit** in
 - hull walls with a band of windows and an airlock door facing you,
 - a **Docking Port** on the far wall,
 - an [Oxygen Distributor](base_air) in the middle and a **Station Bunk** in a corner,
-- a row of solar panels on the roof.
+- a solar array on the roof, a [Battery Bank](power) set into the ceiling under it and a cable end hanging from the ceiling into the room: plug the room's machines in there.
 
 > [!TIP]
 > Slot an oxygen tank into the distributor or pipe oxygen in, and the room fills with air. The kit does not unfold if anything is in the way.
@@ -104,7 +104,7 @@ The **Fuel Depot** stores fuel and liquid oxygen and pumps them into rockets doc
 
 **Solar Array**
 
-The **Solar Array** carries three panels on a one-block footprint and makes up to **60 FE/t**. Orbit has nights too: each orbit lasts about **12000 ticks** and close to a third of it is spent in the planet's shadow. Add a [Battery Bank](power) for the night. → [Night and power](power#night)
+The **Solar Array** carries three panels on a one-block footprint and makes up to **60 FE/t**. Orbit has nights too: each orbit lasts about **12000 ticks** and close to a third of it is spent in the planet's shadow. In shadow, panels and arrays make **nothing**: add a [Battery Bank](power) for the night. → [Night and power](power#night)
 
 ### Docking
 - A crewed rocket arriving in an orbit with a station starts **36 blocks** out from the nearest docking port. It closes in quickly, then creeps the last stretch on thruster puffs and locks on with a clunk: **"Docked"**. Nobody can step off on the way in.

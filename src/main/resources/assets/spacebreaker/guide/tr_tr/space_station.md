@@ -20,7 +20,7 @@ Elle duvar örmekle uğraşmak istemiyorsan yörüngede bir {item spacebreaker:h
 - pencere şeridi olan gövde duvarları ve sana bakan bir hava kilidi kapısı,
 - karşı duvarda bir {item spacebreaker:docking_port},
 - ortada bir {item spacebreaker:oxygen_distributor} ve bir köşede bir {item spacebreaker:station_bunk},
-- çatıda bir sıra güneş paneli.
+- çatıda bir güneş paneli dizisi, altında tavana gömülü bir {item spacebreaker:battery_bank} ve tavandan odaya sarkan bir kablo ucu: odadaki makineleri buraya bağla.
 
 > Dağıtıcıya bir oksijen tüpü tak ya da oksijen borula: oda havayla dolar. Önündeki alan boş değilse kit açılmaz.
 
@@ -37,7 +37,7 @@ Dünya dışında yatak çalışmaz. {item spacebreaker:station_bunk} kullanınc
 
 ## Güneş paneli dizisi
 {items spacebreaker:solar_array}
-{item spacebreaker:solar_array} tek blokluk tabanda üç panel taşır ve en fazla **60 FE/t** üretir. Yörüngede de gece olur: her tur yaklaşık **12000 tick** sürer ve bunun üçte birine yakını gezegenin gölgesinde geçer. Gece için bir {item spacebreaker:battery_bank} kur. → [Gece ve enerji](power#night)
+{item spacebreaker:solar_array} tek blokluk tabanda üç panel taşır ve en fazla **60 FE/t** üretir. Yörüngede de gece olur: her tur yaklaşık **12000 tick** sürer ve bunun üçte birine yakını gezegenin gölgesinde geçer. Gölgede paneller ve dizi **hiç üretmez**: gece için bir {item spacebreaker:battery_bank} kur. → [Gece ve enerji](power#night)
 
 ## Yanaşma
 - İstasyonu olan bir yörüngeye varan mürettebatlı roket en yakın yanaşma portunun **36 blok** uzağında belirir. Hızla yaklaşır, son metreleri manevra iticileriyle ağır ağır alır ve bir tık sesiyle kilitlenir: **"Yanaşıldı"**. Yaklaşma sırasında kimse inemez.

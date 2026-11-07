@@ -9,6 +9,8 @@ The largest body in the asteroid belt: dark, clay-rich ground, ice a few blocks 
 
 **Gravity:** 0.03 g, almost nothing. A jump can carry you very far.
 
+> The polar crater floors are **cold traps**, as on the Moon and Mercury: they keep ice and push your suit hard. → [Hazards](hazards)
+
 {entity spacebreaker:rock_mite}
 **Rock mites** hide in the gravel.
 

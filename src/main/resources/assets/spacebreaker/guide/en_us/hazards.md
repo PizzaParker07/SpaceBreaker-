@@ -14,7 +14,7 @@ Your body temperature changes **slowly**; a few seconds of sun or shade will not
 
 Your suit balances a range (Mk1: −190 °C to 130 °C). Even outside that range you warm up or cool down gradually at first.
 
-> When the cold is beyond your suit's rating, **rime creeps in from the visor rim** and the HUD warns you. It thaws once you are back in range or inside a pressurised module. Wear the heated suit for the **cold traps** in polar craters (Moon ≈ −233 °C, Mercury ≈ −240 °C).
+> When the cold is beyond your suit's rating, **rime creeps in from the visor rim** and the HUD warns you. It thaws once you are back in range or inside a pressurised module. The **cold traps** in polar craters exist only on airless worlds where ice stays stable: the Moon (≈ −233 °C), Mercury (≈ −213 °C) and Ceres. Mars and Pluto have none. Go down in a heated suit or with enough thermal modules.
 
 ## Radiation
 Outside an atmosphere and a magnetic field, radiation dose builds up. Watch it on the helmet display. The dose slowly goes down over time; take breaks on long Moon missions.

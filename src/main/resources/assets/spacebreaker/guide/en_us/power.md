@@ -11,7 +11,7 @@ Every machine runs on **FE** (energy). Production and use are measured in "FE/t"
 |---|---|
 | {item spacebreaker:combustion_generator} | Burns fuel for **40 FE/t**. Only works in breathable air. |
 | {item spacebreaker:solar_panel} | Follows the sun; **20 FE/t** at a clear noon. Less in rain, none at night. |
-| {item spacebreaker:battery_bank} | Stores **1,000,000 FE**, gives 2,048 FE/t out of its front. |
+| {item spacebreaker:battery_bank} | Stores **1,000,000 FE**, gives 2,048 FE/t out of its front. Placed against the underside of a block (a ceiling), it gives downwards. |
 | {item spacebreaker:copper_cable} | Carries power; for small loads. |
 | {item spacebreaker:hv_cable} | Carries a lot of power. |
 
