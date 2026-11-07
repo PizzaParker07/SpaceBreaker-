@@ -30,6 +30,16 @@ Kuyruklu yıldız, kirli bir kartopudur: kömürden koyu bir toz kabuğunun alt�
 > [!TIP]
 > **Hale–Bopp** da katalogdadır, ama inilebilecek bir dünyası yoktur: yalnızca gökyüzünde ve yıldız haritasında görünür. Günberisinde dev bir kuyruklu yıldızdır.
 
+<a id="route"></a>
+### Oraya gitmek
+Yıldız haritasında bütün kuyruklu yıldızlar gezegenlerin yanında tek bir düğümde durur: **Kuyruklu yıldızlar**. Onu aç: ortada Güneş, her kuyruklu yıldızın da kendi uzun, basık yörüngesi var. Kuyruk her zaman Güneş'in tersini gösterir ve yalnız kuyruklu yıldız uyanıkken uzundur. Bir kuyruklu yıldızı seçince kartını görürsün: Güneş'e uzaklık, Güneş'e en yakın geçiş (tarih ve AU), bir turun kaç yıl sürdüğü ve etkinlik.
+
+> [!TIP]
+> **Halley** ters yönde dolanır: yıldız haritası ona ancak nükleer termal motorla ulaşılacağını, yoldaki yıllar için yalıtımlı tank da gerektiğini söyler. **Hale–Bopp** yalnız gözlem içindir. → [Buharlaşma](rocket_parts#boil_off)
+
+> [!TIP]
+> **Halley** bir turunu yaklaşık 75 yılda tamamlar ve Neptün'ün ötesine, Güneş'ten yaklaşık 35 AU uzağa kadar savrulur. Dönüş yolundan önce buzunu erit ve yakıtını orada üret.
+
 ### Yakıt
 Kuyruklu yıldız tozu da işe yarar: regolit ısıtıcıda bir blok **300 mB su** ve **100 mB CO₂** verir, %15 şansla da bir topak [Tolin](titan). → [Asteroit madenciliği](near_earth_asteroids#mining)
 
@@ -80,6 +90,16 @@ A comet is a dirty snowball: water ice under a crust of dust darker than charcoa
 
 > [!TIP]
 > **Hale–Bopp** is in the catalogue too, but has no world to land on: it shows only in the sky and on the star map. At perihelion it is a great comet.
+
+<a id="route"></a>
+### Getting there
+On the star map all comets share one node, **Comets**, beside the planets. Open it: the Sun sits in the middle and each comet has its own stretched orbit. The tail always points away from the Sun and is long only while the comet is awake. Pick a comet to see its card: distance from the Sun, next closest pass (date and AU), one orbit in years, and activity.
+
+> [!TIP]
+> **Halley** orbits backwards: the star map says it is only reached with a nuclear thermal engine, and insulated tanks for the years on the way. **Hale–Bopp** is for watching only. → [Boil-off](rocket_parts#boil_off)
+
+> [!TIP]
+> **Halley** takes about 75 years per orbit and swings out past Neptune, to about 35 AU from the Sun. Melt its ice and make fuel there before you head home.
 
 ### Fuel
 Comet dust is useful too: in the regolith heater one block gives **300 mB of water** and **100 mB of CO₂**, plus a lump of [Tholin](titan) 15% of the time. → [Asteroid mining](near_earth_asteroids#mining)

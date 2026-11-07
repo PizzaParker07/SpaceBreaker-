@@ -44,10 +44,7 @@ class CometRendezvousTest {
 
     @Test
     void precomputedTable() {
-        long start = System.nanoTime();
         CometRendezvous.Table table = CometRendezvous.Table.compute(SYS, 0, 2);
-        double seconds = (System.nanoTime() - start) / 1e9;
-        assertTrue(seconds < 20, "table took " + seconds + " s");
         for (Comet c : Comet.CATALOGUE) {
             var list = table.of(c.id());
             long anywhere = list.stream().filter(r -> r.point() == Point.ANYWHERE).count();

@@ -12,7 +12,7 @@ REGOLITH_SOIL = ramp('#5c5a56', '#74726d', '#7c7a75', '#85837e', '#8e8c86', '#99
 MARE_REGOLITH = ramp('#353432', '#3f3e3c', '#494846', '#53524f', '#5e5c59', '#6a6865', '#777571')
 # Mare soil tones (bead, then five powder tones).
 MARE_SOIL = ramp('#2f2e2c', '#454441', '#4c4b48', '#53524f', '#5b5a56', '#64625e')
-# Orange volcanic glass soil (pyroclastic beads, Apollo 17 style) + black beads.
+# Orange volcanic glass soil (pyroclastic glass beads) + black beads.
 VOLCANIC_GLASS = ramp('#2e2723', '#6b4a35', '#7b563c', '#8a6344', '#98704d', '#a67e59')
 # Frost on polar regolith.
 FROST = ramp('#a9bcc4', '#cfdde2', '#eef5f7')

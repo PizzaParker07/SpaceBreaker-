@@ -165,8 +165,8 @@ public final class WorldgenModule implements SbModule {
     public void addTranslations(Lang lang) {
         lang.add("commands.spacebreaker.localtime.query", "Local day fraction %s (solar time %s)", "Yerel gün kesri %s (güneş saati %s)");
         lang.add("commands.spacebreaker.localtime.set", "Local solar time set to %s", "Yerel güneş saati %s olarak ayarlandı");
-        lang.add("message.spacebreaker.cold_trap.enter", "Permanently shadowed crater: %s °C, the sun never reaches here",
-                "Kalıcı gölgeli krater: %s °C, buraya hiç güneş ulaşmaz");
+        lang.add("message.spacebreaker.cold_trap.enter", "Permanently shadowed crater: %s °C, the sun never reaches here. Ice lies on the floor; the heated suit keeps you warm",
+                "Kalıcı gölgeli krater: %s °C, buraya hiç güneş ulaşmaz. Zeminde buz var; ısıtmalı giysi seni sıcak tutar");
         lang.add("message.spacebreaker.cold_trap.leave", "Out of the cold trap", "Soğuk tuzaktan çıktın");
         lang.add("message.spacebreaker.meteor_shower.warning", "Micrometeorite shower in one minute: get under a roof",
                 "Bir dakika içinde mikrometeorit yağmuru: bir çatının altına gir");

@@ -52,7 +52,10 @@ Bir **Güç Göstergesi**'ü batarya bankasına (ya da enerji depolayan herhangi
 | Plüton | 22 dk | %0,06 | ~1000 | 0,3 |
 
 > [!WARNING]
-> Europa ve ötesinde güneş paneli pratik değildir: Güneş çok uzaktır. Oralarda bir **Radyoizotop Jeneratör (RTG)** kullan (*Radyoizotop Enerjisi*); tek bir RTG dört tane 10 FE/t'lik yükü taşır ve **RTG Yakıt Peleti** ile çalışır.
+> Europa ve ötesinde güneş paneli pratik değildir: Güneş çok uzaktır. Oralarda bir **Radyoizotop Jeneratör (RTG)** kullan (*Radyoizotop Enerjisi*); tek bir RTG dört tane 10 FE/t'lik yükü taşır ve **RTG Yakıt Peleti** ile çalışır. Pelet, sinterleme fırınında sarı pastadan yapılır. → [Nükleer Yakıt](nuclear_fuel)
+
+> [!TIP]
+> Büyük bir üs için **Fisyon Yüzey Güç Ünitesi** tek yakıt elemanıyla 10 gün boyunca 320 FE/t verir, ama gömülmeli ya da kalkanlanmalıdır. → [Fisyon güç ünitesi](nuclear_fuel#fission)
 
 |   |   |   |
 |---|---|---|
@@ -118,6 +121,9 @@ For a steady 10 FE/t load (a panel gives at most 20 FE/t at noon, a battery bank
 
 > [!WARNING]
 > From Europa outwards solar panels are not practical: the Sun is too far. Use an **Radioisotope Generator (RTG)** there (*Radioisotope Power*); one RTG carries four 10 FE/t loads and runs on **RTG Fuel Pellet**. The pellet is made from yellowcake in the sintering furnace. → [Nuclear Fuel](nuclear_fuel)
+
+> [!TIP]
+> For a big base, the **Fission Surface Power Unit** gives 320 FE/t from one fuel element for 10 days, but it must be buried or shielded. → [Fission power unit](nuclear_fuel#fission)
 
 |   |   |   |
 |---|---|---|

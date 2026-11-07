@@ -38,6 +38,11 @@ Tüpler {item spacebreaker:eva_chestplate} içindeki sırt çantasında durur: *
 ## Kask
 Kask göstergesi oksijeni, giysinin durumunu, vücut ve dış sıcaklığı, radyasyonu ve yerçekimini gösterir. Güneş göz kamaştırıyorsa **altın güneş vizörünü** indir: kask elindeyken {key key.sneak} + {key key.use}. Ekranın kenarındaki yuvarlak vizör çerçevesini istemcinin ayarlarından (**visorFrame**, **visorFrameOpacity**) kapatabilir ya da saydamlaştırabilirsin.
 
+## Ses {#sound}
+Ses için hava gerekir. Mars'taki gibi ince havada dünya kısık ve boğuk duyulur, önce tiz sesler kaybolur. Vakumda (Ay, yörünge, asteroitler, kuyruklu yıldızlar) dışarıdaki sesleri neredeyse duymazsın. Giysinin dokunduğu şeyler yine de boğuk gelir: kendi adımların, elindeki alet, kazdığın blok, üstünde durduğun makine. Kask içi sesler (telsiz, görev kontrol, uyarı bipleri) normaldir; solunabilir havada ve basınçlı odalarda da her şey normal duyulur.
+
+> Bu, istemcideki **gerçekçi ses** ayarıdır (realisticSound); varsayılan olarak açıktır.
+
 ## Ölünce
 Tüpler gövdenin içinde kalır ve gövde sıradan bir zırh gibi düşer: geri aldığında tüpler de geri gelir. Nefes, vücut ısısı ve radyasyon dozu sıfırlanır.
 

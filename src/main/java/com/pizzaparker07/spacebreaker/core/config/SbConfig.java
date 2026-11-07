@@ -42,7 +42,9 @@ public final class SbConfig {
     static {
         ModConfigSpec.Builder server = new ModConfigSpec.Builder();
         server.push("gameplay");
-        REALISM = server.comment("How strongly real physics applies: REALISTIC, BALANCED (default) or EASY.")
+        REALISM = server.comment("How strongly real physics applies: REALISTIC, BALANCED (default) or EASY.",
+                        "REALISTIC uses real distances and costs: a rocket reaches orbit, but the Moon and Mars need a heavier rocket",
+                        "than the rocket assembler can build today. BALANCED shrinks the solar system so every world is in reach.")
                 .defineEnum("realism", Realism.BALANCED);
         TIME_SCALE = server.comment("How many real seconds one in-game hour of orbital/planetary time takes.")
                 .defineInRange("orbitalTimeScale", 1.0, 0.01, 100.0);

@@ -20,6 +20,9 @@ Parçaları tezgâhın yuvalarına yerleştir, tezgâh roketi senin için hesapl
 
 Elinde bir **Roket** olur. İpucu satırı yüksekliğini, kütlesini, kademe sayısını ve toplam Δv'sini gösterir.
 
+> [!TIP]
+> Nükleer termal motorlu kademe **☢ Nükleer** diye işaretlenir. İlk kademedeyse işaret kırmızı olur: kalkmaya gücü yetmez ve rampayı ışınlar, o yüzden onu üst kademeye koy. → [Nükleer termal motor](rocket_parts#ntr)
+
 ### Ne kadar Δv lazım?
 | Yol | Δv (m/s) |
 |---|---|
@@ -57,6 +60,9 @@ Put the parts into the assembler's slots and it works out the rocket for you.
 5. Check each stage's **Δv** and **thrust-to-weight** on screen, then press **Assemble**.
 
 You get a **Rocket**. Its tooltip shows the height, mass, number of stages and total Δv.
+
+> [!TIP]
+> A stage with a nuclear thermal engine is marked **☢ Nuclear**. On the first stage the mark turns red: it is too weak to lift off and would irradiate the pad, so put it on an upper stage. → [Nuclear thermal engine](rocket_parts#ntr)
 
 ### How much Δv?
 | Trip | Δv (m/s) |

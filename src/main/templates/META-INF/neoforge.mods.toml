@@ -9,7 +9,7 @@ version = "${mod_version}"
 displayName = "${mod_name}"
 displayURL = "https://github.com/PizzaParker07/SpaceBreaker-"
 logoFile = "spacebreaker_logo.png"
-credits = "PizzaParker07 / Pizzaci Cocuk"
+credits = "PizzaParker07 / Pizzacı Çocuk"
 authors = "${mod_authors}"
 description = '''${mod_description}'''
 
@@ -79,3 +79,7 @@ type = "optional"
 versionRange = "[12.0,)"
 ordering = "NONE"
 side = "CLIENT"
+
+# Access transformer (see the file for what it opens and why)
+[[accessTransformers]]
+file="META-INF/accesstransformer.cfg"
