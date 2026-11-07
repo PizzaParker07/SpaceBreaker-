@@ -271,6 +271,7 @@ final class RocketryLang {
         l.add("message.spacebreaker.refuel_here", "Not enough fuel to get home, but propellant can be made on this world: refuel here.", "Eve dönecek yakıt yok ama bu dünyada yakıt üretilebilir: burada yakıt al.");
         l.add("gui.spacebreaker.star_map.return_no", "Fuel to come home: not enough ✘", "Geri dönüş yakıtı: yetmez ✘");
         l.add("gui.spacebreaker.star_map.travel_time", "Trip time: %s days", "Yolculuk süresi: %s gün");
+        l.add("gui.spacebreaker.star_map.travel_time_short", "Trip time: %s", "Yolculuk süresi: %s");
         l.add("gui.spacebreaker.star_map.need_shield", "Needs a stronger heat shield to come down through the air", "Havadan geçerek inmek için daha güçlü bir ısı kalkanı gerekli");
         l.add("gui.spacebreaker.star_map.need_legs", "No landing legs: the landing will be rough", "İniş bacağı yok: iniş sert olacak");
         l.add("gui.spacebreaker.star_map.need_chute", "No parachute: add one for a soft landing", "Paraşüt yok: yumuşak iniş için bir paraşüt ekle");

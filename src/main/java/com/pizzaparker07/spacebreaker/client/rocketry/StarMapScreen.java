@@ -601,9 +601,13 @@ public class StarMapScreen extends Screen {
             }
             y += 2;
         }
-        OptionalDouble days = travelDays(t);
-        if (days.isPresent()) {
-            g.drawString(font, Component.translatable("gui.spacebreaker.star_map.travel_time", decimal(days.getAsDouble())), x, y, INK, false);
+        OptionalDouble secs = travelSeconds(t);
+        if (secs.isPresent()) {
+            double sec = secs.getAsDouble();
+            Component time = sec >= 86400 ? Component.translatable("gui.spacebreaker.star_map.travel_time", decimal(sec / 86400.0))
+                    : Component.translatable("gui.spacebreaker.star_map.travel_time_short",
+                    Component.translatable("gui.spacebreaker.star_map.wait_hours", (int) (sec / 3600), (int) (sec % 3600 / 60)));
+            g.drawString(font, time, x, y, INK, false);
             y += 11;
         }
         Component window = LaunchWindows.describe(minecraft.level, here(), t.to());
@@ -637,7 +641,8 @@ public class StarMapScreen extends Screen {
         }
     }
 
-    private OptionalDouble travelDays(StarMapData.Trip t) {
+    /** Real flight time of the whole route in seconds: transfers, plus landings and launches (astro surface legs). */
+    private OptionalDouble travelSeconds(StarMapData.Trip t) {
         if (!(Transfers.model() instanceof AstroTransferModel astro)) {
             return OptionalDouble.empty();
         }
@@ -646,7 +651,7 @@ public class StarMapScreen extends Screen {
         for (int i = 0; i + 1 < path.size(); i++) {
             secs += astro.transferSeconds(path.get(i), path.get(i + 1)).orElse(0);
         }
-        return secs > 3600 ? OptionalDouble.of(secs / 86400.0) : OptionalDouble.empty();
+        return secs >= 60 ? OptionalDouble.of(secs) : OptionalDouble.empty();
     }
 
     private int warn(GuiGraphics g, Component text, int x, int y, int w) {

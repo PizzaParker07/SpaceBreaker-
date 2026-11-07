@@ -763,6 +763,7 @@
   "gui.spacebreaker.star_map.system_of": "%s sistemi",
   "gui.spacebreaker.star_map.to_orbit": "Yörüngeye git",
   "gui.spacebreaker.star_map.travel_time": "Yolculuk süresi: %s gün",
+  "gui.spacebreaker.star_map.travel_time_short": "Yolculuk süresi: %s",
   "gui.spacebreaker.star_map.trip_to": "%s yolculuğu",
   "gui.spacebreaker.star_map.wait_hours": "%s sa %s dk",
   "gui.spacebreaker.star_map.wait_minutes": "%s dk",

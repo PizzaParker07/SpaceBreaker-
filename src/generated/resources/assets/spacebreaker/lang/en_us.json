@@ -763,6 +763,7 @@
   "gui.spacebreaker.star_map.system_of": "The %s system",
   "gui.spacebreaker.star_map.to_orbit": "Go to orbit",
   "gui.spacebreaker.star_map.travel_time": "Trip time: %s days",
+  "gui.spacebreaker.star_map.travel_time_short": "Trip time: %s",
   "gui.spacebreaker.star_map.trip_to": "Trip to %s",
   "gui.spacebreaker.star_map.wait_hours": "%s h %s min",
   "gui.spacebreaker.star_map.wait_minutes": "%s min",

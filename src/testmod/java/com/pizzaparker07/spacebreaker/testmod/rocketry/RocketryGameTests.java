@@ -1046,6 +1046,13 @@ public final class RocketryGameTests {
         List<Location> roundTrip = List.of(moonOrbit, Location.MOON_SURFACE, moonOrbit);
         helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.MissionPlanner.fly(shuttle, 0, shuttle.fullFuel(), roundTrip,
                 SbConfig.Realism.BALANCED).possible(), "Moon orbit -> surface -> orbit on one tank");
+        // the map times landings and launches with the astro library's surface legs (Apollo-like)
+        if (Transfers.model() instanceof com.pizzaparker07.spacebreaker.content.rocketry.nav.AstroTransferModel astro) {
+            double down = astro.transferSeconds(moonOrbit, Location.MOON_SURFACE).orElse(0);
+            double up = astro.transferSeconds(Location.MOON_SURFACE, moonOrbit).orElse(0);
+            helper.assertTrue(down > 40 * 60 && down < 90 * 60, "a Moon landing takes about an hour: " + (int) (down / 60) + " min");
+            helper.assertTrue(up > 3 * 60 && up < 15 * 60, "a Moon launch takes minutes: " + (int) (up / 60) + " min");
+        }
         // a descent comes down on the nearest landing beacon instead of wherever the orbit happens to be
         BlockPos beacon = helper.absolutePos(new BlockPos(2, 1, 2));
         level.setBlock(beacon, RocketryModule.LANDING_BEACON.get().defaultBlockState(), 3);

@@ -21,6 +21,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * Results are cached; anything the library cannot answer falls back to {@link SimpleTransfers}.
  */
 public final class AstroTransferModel implements TransferModel {
+    /** Thrust-to-weight assumed for the timing of landings and launches (a typical lander, Apollo-like). */
+    static final double SURFACE_TWR = 2.0;
+
     private final BodySystem sys;
     private final TransferModel fallback = new SimpleTransfers();
     private final Map<String, OptionalDouble> dv = new ConcurrentHashMap<>();
@@ -52,10 +55,13 @@ public final class AstroTransferModel implements TransferModel {
             }
             AstroBody fromBody = sys.require(a);
             if (from.body().equals(to.body())) {
+                // timed surface legs (astro): ascent ≈ 7.5 min on the Moon, descent ≈ 1 h with the half-orbit coast
                 if (!from.orbit() && to.orbit()) {
+                    times.put(key(from, to), finite(TransferPlanner.ascentLeg(fromBody, SURFACE_TWR).totalSeconds()));
                     return finite(TransferPlanner.ascent(fromBody));
                 }
                 if (from.orbit() && !to.orbit()) {
+                    times.put(key(from, to), finite(TransferPlanner.descentLeg(fromBody, to.atmosphere(), SURFACE_TWR).totalSeconds()));
                     return finite(TransferPlanner.descent(fromBody, to.atmosphere()));
                 }
                 return OptionalDouble.empty();
