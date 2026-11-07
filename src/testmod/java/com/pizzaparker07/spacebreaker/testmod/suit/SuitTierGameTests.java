@@ -356,6 +356,14 @@ public final class SuitTierGameTests {
         var r = new com.pizzaparker07.spacebreaker.client.hud.CockpitReadout(net.minecraft.network.chat.Component.literal("Moon"), -1240, 3.3e8, false,
                 975, 3900, false, Double.NaN, Double.NaN, null, Double.NaN, Double.NaN, Double.NaN);
         helper.assertTrue(Math.abs(r.dvFraction() - 0.25F) < 1e-6 && !r.hasNode(), "Δv share and no node");
+        // what a craft syncs, turned into the HUD's readout
+        var sync = new com.pizzaparker07.spacebreaker.core.astro.flight.FlightReadout("spacebreaker:moon", -1240, 3.3e8, false,
+                2650, 3900, true, java.util.List.of(), 815, 60);
+        var hud = com.pizzaparker07.spacebreaker.client.hud.CockpitReadout.of(sync);
+        helper.assertTrue(hud.target().getString().equals("Moon"), "the target body by its name, got " + hud.target().getString());
+        helper.assertTrue(hud.assist() && hud.hasNode() && hud.nodeDv() == 815 && hud.nodeIn() == 60, "assist and the node carried over");
+        helper.assertTrue(Double.isNaN(hud.periapsis()) && hud.event() == null, "no path: no orbit or event shown");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.client.hud.CockpitReadout.name("ship-7").getString().equals("ship-7"), "other names as written");
         helper.succeed();
     }
 }
