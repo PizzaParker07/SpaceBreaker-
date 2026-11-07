@@ -86,9 +86,9 @@ public final class TinyWorld {
         lang.add("dimension.spacebreaker." + name, en, tr);
         lang.block(soil, soilEn, soilTr);
         lang.block(rock, rockEn, rockTr);
-        lang.add("biome.spacebreaker." + name + "_plains", en + " Surface", en + " Yüzeyi");
-        lang.add("biome.spacebreaker." + name + "_crater", en + " Crater", en + " Krateri");
-        lang.add("biome.spacebreaker." + name + "_polar", en + " Pole", en + " Kutbu");
+        lang.add("biome.spacebreaker." + name + "_plains", en + " Surface", tr + " Yüzeyi");
+        lang.add("biome.spacebreaker." + name + "_crater", en + " Crater", tr + " Krateri");
+        lang.add("biome.spacebreaker." + name + "_polar", en + " Pole", tr + " Kutbu");
     }
 
     public void loot(SbBlockLoot loot) {

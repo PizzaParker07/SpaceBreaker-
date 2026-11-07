@@ -46,7 +46,7 @@ Demirle elmas arasında: **1100 kullanım**, hız 7, demir düzeyinde kazar ve d
 **Çevre Sensörü**'nü kullan: on saniyelik bir kartta basınç, havanın bileşimi, sıcaklık (güneşte ya da gölgede), radyasyon doz hızı, yerçekimi ve ayağının altındaki zemin görünür. Yeni bir dünyaya indiğinde ilk iş bunu kullan.
 
 #### Eve dönüş
-Sensöre `Shift` basılıyken `Sağ Tık` yap ve bir hedef seç: kendi roketin, kendi iniş işaretin ya da basınçlı bir üs. Kask göstergesinde ona doğru bir ok ve uzaklık görünür. Gösterge, yürüyerek dönüşü kalan oksijenle karşılaştırır: oksijen azalırken sarı **DÖN**, yetmeyecekse kırmızı **GERİ DÖNMEYE O2 YETMİYOR** yazar. Çok oyunculuda yalnızca kendi roketin ve işaretlerin seçilebilir.
+Sensöre `Shift` basılıyken `Sağ Tık` yap ve bir hedef seç: kendi roketin, kendi iniş işaretin ya da basınçlı bir üs. Kask göstergesinde ona doğru bir ok ve uzaklık görünür. Gösterge, yürüyerek dönüşü kalan oksijenle karşılaştırır: oksijen azalırken sarı **DÖN: DÖNÜŞ İÇİN O2 AZALIYOR**, yetmeyecekse kırmızı **GERİ DÖNMEYE O2 YETMİYOR** yazar. Çok oyunculuda yalnızca kendi roketin ve işaretlerin seçilebilir.
 
 |   |   |   |
 |---|---|---|
@@ -105,7 +105,7 @@ While charged, the **Electric Drill** digs stone and soil faster than a diamond 
 Use the **Environment Sensor**: a ten-second card shows pressure, air composition, temperature (in sun or shade), radiation dose rate, gravity and the ground underfoot. Use it first whenever you land on a new world.
 
 #### Way home
-`Right Click` the sensor while holding `Shift` to pick a target: your own rocket, your own landing beacon or a pressurised base. The helmet display shows an arrow and the distance to it. It compares the walk back with the oxygen you have left: yellow **TURN BACK** when it is getting tight, red when you cannot make it. In multiplayer only your own rocket and beacons count.
+`Right Click` the sensor while holding `Shift` to pick a target: your own rocket, your own landing beacon or a pressurised base. The helmet display shows an arrow and the distance to it. It compares the walk back with the oxygen you have left: yellow **TURN BACK: O2 RUNNING LOW FOR THE WAY HOME** when it is getting tight, red **NOT ENOUGH O2 TO GET BACK** when you cannot make it. In multiplayer only your own rocket and beacons count.
 
 |   |   |   |
 |---|---|---|

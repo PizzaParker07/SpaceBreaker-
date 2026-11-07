@@ -41,14 +41,17 @@ public class WarningLightRenderer implements BlockEntityRenderer<WarningLightBlo
         pose.mulPose(state.getValue(WarningLightBlock.FACING).getRotation());
         pose.translate(0, LENS_Y - 0.5, 0);
         pose.mulPose(Axis.YP.rotationDegrees(turn));
-        VertexConsumer vc = buffers.getBuffer(RenderType.beaconBeam(BEAM, true));
-        Matrix4f m = pose.last().pose();
-        for (int side = 0; side < 2; side++) {
-            float dir = side == 0 ? 1F : -1F;
-            // a flat fan and a standing fan, so the beam reads from every angle
-            fan(vc, m, dir, true);
-            fan(vc, m, dir, false);
-        }
+        // the translucent beam writes no depth: against the space sky under a shader pack it is drawn late (LateEffects)
+        com.pizzaparker07.spacebreaker.compat.client.LateEffects.drawOrDefer(pose, buffers, (p, b) -> {
+            VertexConsumer vc = b.getBuffer(RenderType.beaconBeam(BEAM, true));
+            Matrix4f m = p.last().pose();
+            for (int side = 0; side < 2; side++) {
+                float dir = side == 0 ? 1F : -1F;
+                // a flat fan and a standing fan, so the beam reads from every angle
+                fan(vc, m, dir, true);
+                fan(vc, m, dir, false);
+            }
+        });
         pose.popPose();
     }
 

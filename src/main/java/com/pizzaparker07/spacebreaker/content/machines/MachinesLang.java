@@ -24,8 +24,8 @@ final class MachinesLang {
         name(lang, MachinesModule.ICE_MELTER, "Ice Melter", "Buz Eritici");
         name(lang, MachinesModule.CHEMICAL_REACTOR, "Chemical Reactor", "Kimyasal Reaktör");
         name(lang, MachinesModule.SINTERING_FURNACE, "Sintering Furnace", "Sinterleme Fırını");
-        lang.add("tooltip.spacebreaker.sintering_furnace", "Fuses regolith into building blocks with electric heat, no air needed",
-                "Regoliti elektrikle ısıtıp yapı bloğuna kaynaştırır, hava gerekmez");
+        lang.add("tooltip.spacebreaker.sintering_furnace", "Fuses regolith into building blocks and yellowcake into RTG pellets with electric heat, no air needed",
+                "Regoliti yapı bloğuna, sarı pastayı RTG peletine elektrikle kaynaştırır, hava gerekmez");
         name(lang, MachinesModule.REGOLITH_EXCAVATOR, "Regolith Excavator", "Regolit Kazıcı");
         lang.add("tooltip.spacebreaker.regolith_excavator", "Digs a 5x5 patch below, 16 deep, and feeds the machines beside it",
                 "Altındaki 5x5 alanı 16 blok derine kazar, yanındaki makinelere verir");
@@ -76,7 +76,7 @@ final class MachinesLang {
         lang.add("gui.spacebreaker.redstone.1", "Redstone: runs with a signal", "Kızıltaş: sinyal varken çalışır");
         lang.add("gui.spacebreaker.redstone.2", "Redstone: runs without a signal", "Kızıltaş: sinyal yokken çalışır");
         lang.add("gui.spacebreaker.requires", "Requires: %s", "Gerekli: %s");
-        lang.add("gui.spacebreaker.status.incomplete", "Structure blocked", "Yapı engellenmiş");
+        lang.add("gui.spacebreaker.status.incomplete", "Structure blocked: clear the space around it", "Yapı engellenmiş: çevresindeki alanı boşalt");
         lang.add("message.spacebreaker.pipe_extract_on", "Pipe now pulls from this side", "Boru artık bu taraftan çekiyor");
         lang.add("message.spacebreaker.pipe_filter_on", "This end now only passes %s", "Bu uç artık yalnız %s geçirir");
         lang.add("message.spacebreaker.pipe_filter_off", "Filter cleared", "Filtre kaldırıldı");

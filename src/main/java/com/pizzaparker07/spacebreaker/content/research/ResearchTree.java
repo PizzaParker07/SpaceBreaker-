@@ -185,8 +185,8 @@ public final class ResearchTree {
         t("oxygen_storage", LIFE_SUPPORT, 1).req("pressure_suits", "aluminium_smelting").icon("spacebreaker:oxygen_tank")
                 .samples(EARTH)
                 .unlocks("oxygen_tank", "large_oxygen_tank", "oxygen_filler")
-                .en("Oxygen Storage", "High-pressure aluminium tanks and a filling station: five minutes of air per tank.")
-                .tr("Oksijen Depolama", "Yüksek basınçlı alüminyum tüpler ve dolum istasyonu: tüp başına beş dakika hava.");
+                .en("Oxygen Storage", "High-pressure aluminium tanks and a filling station: about five minutes of air per tank at a walk; sprinting and hard work use more.")
+                .tr("Oksijen Depolama", "Yüksek basınçlı alüminyum tüpler ve dolum istasyonu: yürürken tüp başına yaklaşık beş dakika hava; koşmak ve ağır iş daha çok harcar.");
         t("thermal_regulation", LIFE_SUPPORT, 1).req("pressure_suits").icon("spacebreaker:gold_foil_insulation")
                 .samples(EARTH)
                 .unlocks("gold_foil_insulation", "orange_foam_insulation")
@@ -278,7 +278,7 @@ public final class ResearchTree {
                 .en("Advanced Electronics", "Radiation-hardened processors and silicon wafers grown in clean rooms.")
                 .tr("İleri Elektronik", "Radyasyona dayanıklı işlemciler ve temiz odalarda büyütülmüş silisyum plakalar.");
         t("nuclear_fission", INDUSTRY, 3).req("advanced_electronics", "cryogenics").icon("minecraft:glowstone")
-                .unlocks("gas_centrifuge", "yellowcake", "enriched_uranium", "nuclear_fuel_element")
+                .unlocks("gas_centrifuge", "yellowcake", "enriched_uranium", "nuclear_fuel_element", "fission_reactor")
                 .samples(MOON)
                 .en("Nuclear Fission", "Radioisotope generators and compact reactors where sunlight is too weak.")
                 .tr("Nükleer Fisyon", "Güneş ışığının yetersiz kaldığı yerler için radyoizotop jeneratörleri ve küçük reaktörler.");
