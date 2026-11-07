@@ -240,7 +240,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 ### Kuyruklu yıldızlar (ortak `TinyWorld` paketi)
 | Durum | İçerik | Not |
 |---|---|---|
-| 🎨 | 67P/Çuryumov-Gerasimenko `spacebreaker:churyumov_gerasimenko` | ~4 km'lik iki loblu çekirdek; kömürden koyu toz kabuğunun altında buz; güneş tepedeyken açık gökyüzündeki jet ağızlarından ince gaz/toz sütunları yükselir (yalnız görsel, istemci tarafı: hasar ya da itme yok, FPS'e yük bindirmez); buzu yakıt için suya eritilebilir |
+| 🎨 | 67P/Çuryumov-Gerasimenko `spacebreaker:churyumov_gerasimenko` | ~4 km'lik iki loblu çekirdek; kömürden koyu toz kabuğunun altında buz; güneş ufkun üstündeyken açık gökyüzündeki jet ağızlarından ince gaz/toz sütunları yükselir; yoğunluk kuyruklu yıldızın gerçek etkinliğini izler (astro modeli: Güneş'ten uzakta uykuda → jet yok, zayıf → seyrek, etkin → tam, büyük kuyruklu yıldız → en yoğun; yalnız görsel, istemci tarafı: hasar ya da itme yok, FPS'e yük bindirmez); buzu yakıt için suya eritilebilir |
 | 🎨 | Encke `spacebreaker:encke` | ~5 km'lik küçük, yaşlı, neredeyse tükenmiş çekirdek; 3,3 yılda bir Güneş'e yaklaşan kısa yörünge; tozlu, tümsekli yüzey, seyrek jetler; buzu yakıt için suya eritilebilir |
 | 🎨 | Halley `spacebreaker:halley` | en ünlü kuyruklu yıldız: ~15 km'lik uzun, kömürden kara çekirdek, güçlü jetler; buzu yakıt için suya eritilebilir |
 | 🎨 | Bloklar | Kuyruklu Yıldız Tozu (kalıcı ayak izi), Kuyruklu Yıldız Buzu, Kuyruklu Yıldız Jeti (tüm kuyruklu yıldızlarda ortak), Encke Tozu, Encke Buzu, Halley Tozu, Halley Buzu |

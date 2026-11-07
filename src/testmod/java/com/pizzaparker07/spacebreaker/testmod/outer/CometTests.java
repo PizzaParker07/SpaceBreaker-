@@ -68,4 +68,23 @@ public final class CometTests {
         }
         helper.succeed();
     }
+
+    @GameTest(template = WorldTests.EMPTY)
+    public static void cometJetsFollowTheCometsActivity(GameTestHelper helper) {
+        helper.assertTrue(CometJetBlock.strength(com.pizzaparker07.spacebreaker.core.astro.smallbody.CometActivity.Level.DORMANT) == 0, "asleep far from the Sun");
+        helper.assertTrue(CometJetBlock.strength(com.pizzaparker07.spacebreaker.core.astro.smallbody.CometActivity.Level.WEAK) > 0
+                && CometJetBlock.strength(com.pizzaparker07.spacebreaker.core.astro.smallbody.CometActivity.Level.WEAK)
+                < CometJetBlock.strength(com.pizzaparker07.spacebreaker.core.astro.smallbody.CometActivity.Level.ACTIVE), "weak, then active");
+        helper.assertTrue(CometJetBlock.strength(com.pizzaparker07.spacebreaker.core.astro.smallbody.CometActivity.Level.GREAT)
+                > CometJetBlock.strength(com.pizzaparker07.spacebreaker.core.astro.smallbody.CometActivity.Level.ACTIVE), "a great comet blows hardest");
+        // along a real orbit: at perihelion 67P is awake, at aphelion asleep
+        var c = com.pizzaparker07.spacebreaker.core.astro.smallbody.Comet.CHURYUMOV_GERASIMENKO;
+        double peri = c.nextPerihelion(0);
+        var near = com.pizzaparker07.spacebreaker.core.astro.smallbody.CometActivity.at(c, peri).level();
+        var far = com.pizzaparker07.spacebreaker.core.astro.smallbody.CometActivity.at(c, peri + c.periodSeconds() / 2).level();
+        helper.assertTrue(CometJetBlock.strength(near) >= 1 && CometJetBlock.strength(far) == 0, "jets at perihelion (" + near + "), none at aphelion (" + far + ")");
+        // and in the world right now (sky time): logged so a showcase can be read against it
+        helper.assertTrue(CometJetBlock.strength(helper.getLevel()) == 1F, "a world that is not a comet keeps full jets");
+        helper.succeed();
+    }
 }
