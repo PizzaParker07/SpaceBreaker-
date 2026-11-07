@@ -349,6 +349,16 @@ public final class SuitModule implements SbModule {
         lang.add("hud.spacebreaker.nav.rocket", "ROCKET", "ROKET");
         lang.add("hud.spacebreaker.nav.beacon", "BEACON", "İŞARET");
         lang.add("hud.spacebreaker.nav.base", "BASE", "ÜS");
+        lang.add("hud.spacebreaker.cockpit.speed", "SPD", "HIZ");
+        lang.add("hud.spacebreaker.cockpit.altitude", "ALT", "İRT");
+        lang.add("hud.spacebreaker.cockpit.distance", "DST", "UZK");
+        lang.add("hud.spacebreaker.cockpit.assist", "ASSIST", "DESTEK");
+        lang.add("hud.spacebreaker.cockpit.periapsis", "Pe", "Pe");
+        lang.add("hud.spacebreaker.cockpit.apoapsis", "Ap", "Ap");
+        lang.add("hud.spacebreaker.cockpit.node", "NODE", "DÜĞÜM");
+        lang.add("hud.spacebreaker.cockpit.event.soi_enter", "SOI %s", "%s ETKİ ALANI");
+        lang.add("hud.spacebreaker.cockpit.event.soi_exit", "ESCAPE", "KAÇIŞ");
+        lang.add("hud.spacebreaker.cockpit.event.impact", "IMPACT", "ÇARPMA");
         lang.add("hud.spacebreaker.warn.turn_back", "TURN BACK: O2 RUNNING LOW FOR THE WAY HOME", "DÖN: DÖNÜŞ İÇİN O2 AZALIYOR");
         lang.add("hud.spacebreaker.warn.cant_make_it", "NOT ENOUGH O2 TO GET BACK", "GERİ DÖNMEYE O2 YETMİYOR");
         lang.add("sensor.spacebreaker.title", "Environment reading", "Çevre ölçümü");

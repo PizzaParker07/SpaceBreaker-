@@ -12,6 +12,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
+import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +37,7 @@ public final class SensorCard {
 
     @SubscribeEvent
     static void register(RegisterGuiLayersEvent event) {
-        event.registerBelowAll(Spacebreaker.id("sensor_card"), SensorCard::render);
+        event.registerAbove(VanillaGuiLayers.HOTBAR, Spacebreaker.id("sensor_card"), SensorCard::render);
     }
 
     static List<Component> lines(SensorReadingPayload r) {

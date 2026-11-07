@@ -22,11 +22,13 @@ public final class SurvivalData {
             Codec.DOUBLE.optionalFieldOf("body_temp_c", NORMAL_BODY_C).forGetter(d -> d.bodyTempC),
             Codec.DOUBLE.optionalFieldOf("dose_msv", 0.0).forGetter(d -> d.doseMsv),
             BlockPos.CODEC.optionalFieldOf("tether").forGetter(d -> Optional.ofNullable(d.tether)),
-            ResourceLocation.CODEC.optionalFieldOf("tether_dim").forGetter(d -> Optional.ofNullable(d.tetherDim))
-    ).apply(i, (breath, body, dose, tether, dim) -> {
+            ResourceLocation.CODEC.optionalFieldOf("tether_dim").forGetter(d -> Optional.ofNullable(d.tetherDim)),
+            net.minecraft.core.UUIDUtil.CODEC.optionalFieldOf("tether_entity").forGetter(d -> Optional.ofNullable(d.tetherEntity))
+    ).apply(i, (breath, body, dose, tether, dim, entity) -> {
         SurvivalData d = new SurvivalData(breath, body, dose);
-        if (tether.isPresent() && dim.isPresent()) {
-            d.tether = tether.get();
+        if (dim.isPresent() && (tether.isPresent() || entity.isPresent())) {
+            d.tether = tether.orElse(null);
+            d.tetherEntity = entity.orElse(null);
             d.tetherDim = dim.get();
         }
         return d;
@@ -38,6 +40,8 @@ public final class SurvivalData {
     /** Anchor block of the safety tether, null when not clipped. */
     public BlockPos tether;
     public ResourceLocation tetherDim;
+    /** Anchor entity of the safety tether (a {@link com.pizzaparker07.spacebreaker.core.env.TetherAnchor}), null if none. */
+    public java.util.UUID tetherEntity;
 
     // transient, recomputed on the server
     public double doseRateMsvDay;

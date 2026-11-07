@@ -13,6 +13,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
+import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.client.event.sound.PlaySoundEvent;
 
 /**
@@ -48,7 +49,7 @@ public final class HelmetRadio {
 
     @SubscribeEvent
     static void register(RegisterGuiLayersEvent event) {
-        event.registerBelowAll(Spacebreaker.id("helmet_radio"), HelmetRadio::render);
+        event.registerAbove(VanillaGuiLayers.HOTBAR, Spacebreaker.id("helmet_radio"), HelmetRadio::render);
     }
 
     /** Whether the radio caption is on screen (the sensor card then moves down below it). */

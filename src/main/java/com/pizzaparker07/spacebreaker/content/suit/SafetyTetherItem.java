@@ -44,7 +44,7 @@ public class SafetyTetherItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        if (Tether.anchor(player).isEmpty()) {
+        if (!Tether.isTethered(player)) {
             return InteractionResultHolder.pass(stack);
         }
         if (!level.isClientSide) {
