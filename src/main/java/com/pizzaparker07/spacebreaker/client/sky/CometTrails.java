@@ -51,9 +51,9 @@ public final class CometTrails {
         for (CometPoints.Sighting s : sightings) {
             float a = s.alpha() * visibility;
             // dust tail: broad, fanning out, curved back along the orbit, yellow-white
-            strip(bb, m, s.head(), s.dustMid(), s.dustTip(), s.headSize() * 0.9F, s.headSize() * 8F, a * 0.6F, 1F, 0.9F, 0.68F, 14);
+            strip(bb, m, s.head(), s.dustMid(), s.dustTip(), s.headSize() * 0.9F, s.headSize() * 8F, a * 0.85F, 1F, 0.9F, 0.68F, 14);
             // ion tail: narrow, straight, bluish, exactly away from the sun
-            strip(bb, m, s.head(), null, s.tip(), s.headSize() * 0.3F, s.headSize() * 0.7F, a * 0.5F, 0.5F, 0.72F, 1F, 10);
+            strip(bb, m, s.head(), null, s.tip(), s.headSize() * 0.3F, s.headSize() * 0.7F, a * 0.7F, 0.5F, 0.72F, 1F, 10);
             coma(bb, m, s.head(), s.headSize(), a);
         }
         var mesh = bb.build();
@@ -97,17 +97,29 @@ public final class CometTrails {
 
     /**
      * A tail strip from the head along a quadratic curve (or a straight line when {@code mid} is null) to the tip,
-     * widening from {@code w0} to {@code w1} and fading to nothing.
+     * widening from {@code w0} to {@code w1}. Bright along its middle and fading to nothing at both edges and at the
+     * tip. The bend is limited relative to the tail's apparent length, so a foreshortened tail stays nearly straight.
      */
     private static void strip(BufferBuilder bb, Matrix4f m, Vector3f headDir, Vector3f midDir, Vector3f tipDir, float w0, float w1,
                               float a, float red, float green, float blue, int steps) {
         Vector3f head = new Vector3f(headDir).mul(100F);
         Vector3f tip = new Vector3f(tipDir).mul(100F);
-        if (head.distance(tip) < 0.5F) {
+        float length = head.distance(tip);
+        if (length < 0.5F) {
             return;
         }
-        Vector3f mid = midDir == null ? new Vector3f(head).add(tip).mul(0.5F) : new Vector3f(midDir).mul(100F);
+        Vector3f straight = new Vector3f(head).add(tip).mul(0.5F);
+        Vector3f mid = straight;
+        if (midDir != null) {
+            Vector3f bend = new Vector3f(midDir).mul(100F).sub(straight);
+            float max = 0.12F * length;
+            if (bend.length() > max) {
+                bend.normalize().mul(max);
+            }
+            mid = new Vector3f(straight).add(bend);
+        }
         Vector3f prevL = null;
+        Vector3f prevC = null;
         Vector3f prevR = null;
         float prevK = 0;
         Vector3f prevP = head;
@@ -119,14 +131,21 @@ public final class CometTrails {
             Vector3f side = new Vector3f(along).cross(p).normalize().mul(w0 + (w1 - w0) * f);
             Vector3f l = new Vector3f(p).add(side);
             Vector3f r = new Vector3f(p).sub(side);
+            // fades toward the tip so it never ends in a hard line
             float k = a * u * (float) Math.sqrt(u);
             if (prevL != null) {
-                bb.addVertex(m, prevL.x, prevL.y, prevL.z).setColor(red * prevK, green * prevK, blue * prevK, 1F);
-                bb.addVertex(m, prevR.x, prevR.y, prevR.z).setColor(red * prevK, green * prevK, blue * prevK, 1F);
-                bb.addVertex(m, r.x, r.y, r.z).setColor(red * k, green * k, blue * k, 1F);
-                bb.addVertex(m, l.x, l.y, l.z).setColor(red * k, green * k, blue * k, 1F);
+                // left half: edge (dark) to centre (bright); right half: centre to edge
+                bb.addVertex(m, prevL.x, prevL.y, prevL.z).setColor(0F, 0F, 0F, 1F);
+                bb.addVertex(m, prevC.x, prevC.y, prevC.z).setColor(red * prevK, green * prevK, blue * prevK, 1F);
+                bb.addVertex(m, p.x, p.y, p.z).setColor(red * k, green * k, blue * k, 1F);
+                bb.addVertex(m, l.x, l.y, l.z).setColor(0F, 0F, 0F, 1F);
+                bb.addVertex(m, prevC.x, prevC.y, prevC.z).setColor(red * prevK, green * prevK, blue * prevK, 1F);
+                bb.addVertex(m, prevR.x, prevR.y, prevR.z).setColor(0F, 0F, 0F, 1F);
+                bb.addVertex(m, r.x, r.y, r.z).setColor(0F, 0F, 0F, 1F);
+                bb.addVertex(m, p.x, p.y, p.z).setColor(red * k, green * k, blue * k, 1F);
             }
             prevL = l;
+            prevC = p;
             prevR = r;
             prevK = k;
             prevP = p;
