@@ -1065,3 +1065,37 @@ built on them.
 - 100 low-Earth orbits at 10 s steps staying within 2 km;
 - the Δv of a burn matching the rocket equation to 1e-6;
 - a 3.13 km/s translunar injection entering the Moon's sphere of influence (66,000 km) within 1.5–6 days.
+
+## Spaceflight layout (agreed with rocketry)
+
+There are two layers, so the station never has to move:
+
+| Layer | Dimension | Scale | What lives there |
+|---|---|---|---|
+| Orbit pocket | `earth_orbit` (later `moon_orbit`, …) | 1 block = 1 m | stations, shipyard, docking, EVA |
+| Travel scene | `space_earth_moon` (later `space_<system>`) | `SceneScale.EARTH_MOON` (Earth 128 blocks, low orbit ≈ 15 blocks up, Moon ≈ 2,200 blocks out) | free flight between bodies; bodies drawn by the voxel body renderer at their real positions |
+
+**Moving between pocket and scene** happens through `EntryGate`'s orbit shell, with no screen. Rocketry's
+`Transit.handOff(Runnable)` holds the last frame, switches dimension and cross-fades back (0.3 s).
+- **Out:** undock, then go more than 256 blocks from the nearest station core. The ship enters the scene at
+  its real orbital state (`FlightState`, `OrbitPredictor`).
+- **Back:** inside Earth's orbit shell, below about 50 m/s relative to a station's orbit, the ship returns to
+  the pocket next to that station. `Stations.orbit(stationId)` gives each station a fixed circular low orbit
+  (400 km, inclination 0, phase from the core's position). The scene draws a marker there.
+
+**Ship size:**
+- The hull is at most 13×13×29 blocks, so it fits the 15×15×31 shipyard with 1 block of clearance.
+- The first ship is 7 wide × 5 high × 11 long, with one docking port at the nose.
+
+**Docking (rocketry's API, server side):**
+- `Berths.find(Level, BlockPos)` → `Berth(bounds, portPos, portFacing, stationId)`.
+- `Berths.dock(ship, berth)` snaps the nose port to the berth's `portFacing` and marks the ship docked. A
+  docked ship gets fuel and power from the station.
+- `Berths.undock(ship)` releases it.
+
+**EVA and cabin (suit's interfaces):**
+- The ship implements `TetherAnchor` (`tetherPoint`, `frameVelocity` in blocks per tick, also on the client).
+  Tethered and nearby suited players move with it.
+- It also implements `PressurizedVehicle`, with a radiation factor of 0.4 in deep space and 0.3 inside the
+  Earth–Moon magnetosphere.
+- The cockpit HUD (client/hud) reads a `FlightReadout`.
