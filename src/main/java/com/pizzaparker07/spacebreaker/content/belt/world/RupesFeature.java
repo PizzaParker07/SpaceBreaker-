@@ -91,6 +91,7 @@ public class RupesFeature extends Feature<RupesFeature.Config> {
         if (Math.abs(local(t, cfg, x0 + 8, z0 + 8)[0]) > reach + 24) {
             return false;
         }
+        net.minecraft.world.level.levelgen.synth.SimplexNoise n = Columns.noise(t.seed(), 91);
         boolean any = false;
         for (int dx = 0; dx < 16; dx++) {
             for (int dz = 0; dz < 16; dz++) {
@@ -110,7 +111,7 @@ public class RupesFeature extends Feature<RupesFeature.Config> {
                     for (int y = top; y > top - depth; y--) {
                         BlockPos p = new BlockPos(x, y, z);
                         if (!level.getBlockState(p).isAir()) {
-                            boolean layer = cfg.band().isPresent() && Math.floorMod(y + (int) (uv[0] / 40), 9) < 3;
+                            boolean layer = cfg.band().isPresent() && layer(n, uv[0], y);
                             level.setBlock(p, layer ? cfg.band().get() : cfg.rock(), 2);
                         }
                     }
@@ -119,5 +120,22 @@ public class RupesFeature extends Feature<RupesFeature.Config> {
             }
         }
         return any;
+    }
+
+    /**
+     * Whether a block of the face (u along the cliff, y up) lies in a dark band: layers that swell, thin and drift up and
+     * down along the cliff, broken by faults, with patches of slanting cross-bedded layers.
+     */
+    static boolean layer(net.minecraft.world.level.levelgen.synth.SimplexNoise n, double u, int y) {
+        double drift = 7 * n.getValue(u / 70.0, 3.1) + 2.5 * n.getValue(u / 19.0, y / 13.0);
+        double fault = Math.floor(u / 23.0 + 0.5 * n.getValue(u / 41.0, 7.7));
+        double phase = y + drift + 4 * n.getValue(fault * 1.37, 11.3);
+        if (n.getValue(u / 34.0 + 50, y / 26.0) > 0.45) {
+            phase = y + u * 0.6 + drift;
+        }
+        double period = 9 + 3 * n.getValue(y / 40.0, 21.0);
+        double thick = 0.3 + 0.15 * n.getValue(u / 27.0 + 9, y / 9.0);
+        double f = phase / period;
+        return f - Math.floor(f) < thick;
     }
 }
