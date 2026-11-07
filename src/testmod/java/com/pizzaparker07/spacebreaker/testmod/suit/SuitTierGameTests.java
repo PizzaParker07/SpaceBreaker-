@@ -323,4 +323,24 @@ public final class SuitTierGameTests {
                 "the same oxygen is enough walking but means turn back after a sprint");
         helper.succeed();
     }
+
+    /** Realistic sound: the air around decides how loud and how dull the world sounds. */
+    @GameTest(template = "empty")
+    public static void soundCarriesByTheAir(GameTestHelper helper) {
+        var earth = com.pizzaparker07.spacebreaker.content.suit.SoundMuffling.outside(101.325, true);
+        helper.assertTrue(earth.none(), "Earth: normal");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.SoundMuffling.outside(147, false).none(), "Titan's thick air: normal");
+        var mars = com.pizzaparker07.spacebreaker.content.suit.SoundMuffling.outside(0.6, false);
+        helper.assertTrue(mars.gain() > 0.3F && mars.gain() < 0.45F, "Mars: faint, got " + mars.gain());
+        helper.assertTrue(mars.highGain() < 0.15F, "Mars: dull, the highs cut, got " + mars.highGain());
+        var moon = com.pizzaparker07.spacebreaker.content.suit.SoundMuffling.outside(0.0, false);
+        helper.assertTrue(moon.gain() <= 0.05F, "vacuum: outside sounds all but gone");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.SoundMuffling.outside(0.0, true).none(), "a pressurised room: normal");
+        var steps = com.pizzaparker07.spacebreaker.content.suit.SoundMuffling.contact(0.0, false);
+        helper.assertTrue(steps.gain() > 0.3F && steps.gain() < 0.6F && steps.highGain() < 0.3F, "vacuum: own steps and tools dull through the suit");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.SoundMuffling.contact(0.6, false).gain() >= mars.gain(),
+                "on Mars what the suit touches is at least as loud as the air");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.SoundMuffling.contact(101.325, true).none(), "in air: normal");
+        helper.succeed();
+    }
 }
