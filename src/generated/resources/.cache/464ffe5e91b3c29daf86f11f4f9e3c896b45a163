@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-07T11:05:28.226751116	spacebreaker tech tree
+// 1.21.1	2026-11-07T16:09:01.694377555	spacebreaker tech tree
 eb99e6fc2778efcc16dc23f020327813f7f85164 data/spacebreaker/spacebreaker/tech/advanced_electronics.json
 37b86031d2662acffe53c51b4ca65ba988094711 data/spacebreaker/spacebreaker/tech/airlocks.json
 537f359ae0acefa3a0666d917ea3d66c22a9f910 data/spacebreaker/spacebreaker/tech/aluminium_smelting.json
@@ -22,7 +22,7 @@ d0810865290bc4c23b5936a36e2a2105ddfd0287 data/spacebreaker/spacebreaker/tech/gui
 b33b62230c0431b44985df00686abe7779fa1f42 data/spacebreaker/spacebreaker/tech/icy_moons.json
 d3199b1a36d9e07146a86a74db131265442176c1 data/spacebreaker/spacebreaker/tech/interplanetary_transfers.json
 88444992e2dcc055cb5918fa69b1f25fc5b88880 data/spacebreaker/spacebreaker/tech/ion_propulsion.json
-c2d70d66a15f77f948eb94e5c79061636c04aae6 data/spacebreaker/spacebreaker/tech/isru.json
+c0ebb5c5ba1e535996744648d35f0b0058698f32 data/spacebreaker/spacebreaker/tech/isru.json
 7b978ace522a5dd7fa2e9674ec0896cf85ebdc7f data/spacebreaker/spacebreaker/tech/landing_systems.json
 fca83b755e3856331d654ca6e6e241c3a950941b data/spacebreaker/spacebreaker/tech/launch_infrastructure.json
 700c925b0066829fff301bec2358bbdfee678217 data/spacebreaker/spacebreaker/tech/liquid_fuel_engines.json
@@ -31,7 +31,7 @@ a6181e1b533dd7c206a2dec5a26d38ea6891fbb0 data/spacebreaker/spacebreaker/tech/lun
 38f5c70b499c9bd280bb29c9ada7c3feeeea324e data/spacebreaker/spacebreaker/tech/metal_pressing.json
 1fc427224c6d8757b99b0dde2ff41290d1ea8738 data/spacebreaker/spacebreaker/tech/metallurgy.json
 6673d50fbebef0dad1091a446c1d743ef3933615 data/spacebreaker/spacebreaker/tech/methane_engines.json
-e150e9ff63c1e962869bbba1d2990ad1f04da84e data/spacebreaker/spacebreaker/tech/nuclear_fission.json
+68310acdd9f9b186a2a857d267cae8f53d4eef0f data/spacebreaker/spacebreaker/tech/nuclear_fission.json
 ac5c928b4d17a04955f66046c81b351bd19746ce data/spacebreaker/spacebreaker/tech/nuclear_thermal_propulsion.json
 7496d3b9adc2ffbe9f9ae2aab87e00093d98ffed data/spacebreaker/spacebreaker/tech/observational_astronomy.json
 4df9e42165c02047c0e7685f1a71b6385d69a425 data/spacebreaker/spacebreaker/tech/orbital_mechanics.json

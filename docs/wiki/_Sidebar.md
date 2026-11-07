@@ -24,6 +24,7 @@
 **Enerji ve Makineler**
 
 - [Enerji](power)
+- [Nükleer Yakıt](nuclear_fuel)
 - [İşleme](processing)
 - [Parça Üretim Tezgâhı](fabricator)
 - [Petrol Rafinasyonu](oil_refining)

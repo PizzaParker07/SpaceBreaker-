@@ -37,7 +37,7 @@ Yaklaşık 17 km'lik uzun, taşlı, yoğun kraterli bir asteroit; bir yanında b
 
 | Girdi | Makine | Çıktı |
 |---|---|---|
-| Bennu Regoliti | Çalışma Masası<br>100 FE/t · 8 sn | Kömür Tozu (%30 şansla)<br>Su (200 mB)<br>Karbondioksit (50 mB) |
+| Bennu Regoliti | Regolit Isıtıcı<br>100 FE/t · 8 sn | Kömür Tozu (%30 şansla)<br>Su (200 mB)<br>Karbondioksit (50 mB) |
 
 - **Taşlı asteroitler (Eros, Itokawa):** kırıcıda **demir tozu** ve %25 şansla **nikel tozu** verir. Regolit ısıtıcıda oksijen verir ve sinterleme fırınında yapı bloğuna döner. → [Yerinde Üretim](isru)
 
@@ -88,7 +88,7 @@ A rough, bouldery peanut of two lumps; its neck holds the smooth gravel plain of
 
 | Input | Machine | Output |
 |---|---|---|
-| Bennu Regolith | Crafting Table<br>100 FE/t · 8 s | Coal Dust (30% chance)<br>Water (200 mB)<br>Carbon Dioxide (50 mB) |
+| Bennu Regolith | Regolith Heater<br>100 FE/t · 8 s | Coal Dust (30% chance)<br>Water (200 mB)<br>Carbon Dioxide (50 mB) |
 
 - **Stony asteroids (Eros, Itokawa):** the crusher gives **iron dust** and, 25% of the time, **nickel dust**. They give oxygen in the regolith heater and sinter into building blocks in the sintering furnace. → [In-Situ Resources](isru)
 

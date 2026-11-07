@@ -8,5 +8,11 @@
   "samples": [
     "spacebreaker:moon"
   ],
-  "tier": 3
+  "tier": 3,
+  "unlocks": [
+    "spacebreaker:gas_centrifuge",
+    "spacebreaker:yellowcake",
+    "spacebreaker:enriched_uranium",
+    "spacebreaker:nuclear_fuel_element"
+  ]
 }

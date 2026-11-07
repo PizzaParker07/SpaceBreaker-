@@ -26,6 +26,7 @@ Bu wiki, oyun içindeki **Saha Rehberi**nin metinlerinden otomatik üretilir.
 ## Enerji ve Makineler <sub>(Energy & Machines)</sub>
 
 - [Enerji](power) · *Power*
+- [Nükleer Yakıt](nuclear_fuel) · *Nuclear Fuel*
 - [İşleme](processing) · *Processing*
 - [Parça Üretim Tezgâhı](fabricator) · *Fabricator*
 - [Petrol Rafinasyonu](oil_refining) · *Oil Refining*

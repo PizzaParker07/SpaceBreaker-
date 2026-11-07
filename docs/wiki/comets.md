@@ -33,7 +33,7 @@ Kuyruklu yıldız tozu da işe yarar: regolit ısıtıcıda bir blok **300 mB su
 
 | Girdi | Makine | Çıktı |
 |---|---|---|
-| Kuyruklu Yıldız Tozu | Çalışma Masası<br>100 FE/t · 8 sn | Tolin (%15 şansla)<br>Su (300 mB)<br>Karbondioksit (100 mB) |
+| Kuyruklu Yıldız Tozu | Regolit Isıtıcı<br>100 FE/t · 8 sn | Tolin (%15 şansla)<br>Su (300 mB)<br>Karbondioksit (100 mB) |
 
 Üçünün de buzu su buzudur: **Kuyruklu Yıldız Buzu**, **Encke Buzu** ve **Halley Buzu** buz eriticide suya döner. Elektrolizle yakıt yap: kuyruklu yıldızlar birer **yakıt durağıdır**. → [Yerinde Üretim](isru)
 
@@ -82,7 +82,7 @@ Comet dust is useful too: in the regolith heater one block gives **300 mB of wat
 
 | Input | Machine | Output |
 |---|---|---|
-| Comet Dust | Crafting Table<br>100 FE/t · 8 s | Tholin (15% chance)<br>Water (300 mB)<br>Carbon Dioxide (100 mB) |
+| Comet Dust | Regolith Heater<br>100 FE/t · 8 s | Tholin (15% chance)<br>Water (300 mB)<br>Carbon Dioxide (100 mB) |
 
 All three have water ice: **Comet Ice**, **Encke Ice** and **Halley Ice** melt to water in an ice melter. Split it into fuel by electrolysis: comets are **refuelling stops**. → [In-Situ Resources](isru)
 

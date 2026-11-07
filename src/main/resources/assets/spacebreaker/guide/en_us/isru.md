@@ -1,7 +1,7 @@
 ---
 title: In-Situ Resources (ISRU)
 icon: spacebreaker:sabatier_reactor
-items: [spacebreaker:atmosphere_processor, spacebreaker:sabatier_reactor, spacebreaker:regolith_heater, spacebreaker:ice_melter, spacebreaker:chemical_reactor, spacebreaker:regolith_excavator, spacebreaker:sintering_furnace, spacebreaker:sintered_regolith, spacebreaker:sintered_regolith_bricks]
+items: [spacebreaker:atmosphere_processor, spacebreaker:sabatier_reactor, spacebreaker:regolith_heater, spacebreaker:ice_melter, spacebreaker:chemical_reactor, spacebreaker:regolith_excavator, spacebreaker:sintering_furnace, spacebreaker:sintered_regolith, spacebreaker:sintered_regolith_bricks, spacebreaker:item_duct]
 research: spacebreaker:isru
 ---
 Every kilogram launched from Earth is expensive. So make what you can **where you land**. This is called in-situ resource utilisation (ISRU).
@@ -59,3 +59,13 @@ The {item spacebreaker:sintering_furnace} heats any planet's regolith with elect
 > Asteroids can be mined too: carbonaceous ones for water, stony ones for metal. → [Near-Earth Asteroids](near_earth_asteroids#mining)
 
 > Put the excavator next to the furnace: the regolith it digs goes straight in and building blocks pile up on their own.
+
+## Item duct
+{items spacebreaker:item_duct}
+The {item spacebreaker:item_duct} moves items between inventories: machines, chests, hoppers.
+- {key key.use} one end with an **empty hand** while holding {key key.sneak}: that end **pulls** from the inventory it touches. Each pulling end moves **16 items** a second.
+- {key key.sneak} + {key key.use} with an item in hand: that end passes **only that item**.
+- A hopper or a machine's output can feed the duct directly; the items go on to the inventories at its ends. Nothing is sent back into a hopper feeding the duct, so items never go round in a loop.
+{recipe spacebreaker:item_duct}
+
+> Excavator to furnace, furnace to chest: with ducts you build a fully automatic production line.

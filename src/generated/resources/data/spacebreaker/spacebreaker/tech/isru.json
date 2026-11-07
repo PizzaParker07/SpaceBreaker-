@@ -12,6 +12,7 @@
   "unlocks": [
     "spacebreaker:regolith_heater",
     "spacebreaker:ice_melter",
-    "spacebreaker:regolith_excavator"
+    "spacebreaker:regolith_excavator",
+    "spacebreaker:item_duct"
   ]
 }

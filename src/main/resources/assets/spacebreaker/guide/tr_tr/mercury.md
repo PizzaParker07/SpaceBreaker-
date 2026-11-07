@@ -40,3 +40,12 @@ Bu kraterlerden birinde terk edilmiş bir buz madeni yatar. Deposu **buzla müh�
 {entity spacebreaker:terminator_crawler}
 ## Alacakaranlık Sürüngeni
 Güneş alçakken dolaşır, yükselince toprağa gömülür. Öldüğünde **grafit** bırakır.
+
+{page}
+## Çift gün doğumu
+Merkür kendi ekseni etrafında **3 kez** dönerken Güneş'in etrafında **2 kez** dolanır (3:2 dönme–yörünge rezonansı). Bu yüzden bir güneş günü iki Merkür yılı, yaklaşık **176 Dünya günü** sürer; oyunda gün sıkıştırılmıştır.
+- Yörüngesi çok basıktır (e = 0,206). Güneş'e en yakın noktada (günberi) Merkür, Güneş'in etrafında kendi dönüşünden hızlı ilerler: Güneş gökte durur ve bir süre **geri gider**.
+- Bu dünya, günberinin gün doğumuna denk geldiği bir "ılık kutup" boylamındadır. Güneş ufkun üstüne yarıya kadar çıkar, **geri batar**, sonra **yeniden doğar**. Geri hareket küçüktür, yaklaşık yarım derece: ufuk hizasındaki bir krater kenarına bakarak görebilirsin.
+- Günberide Güneş belirgin biçimde büyük ve parlaktır: günöteye göre yaklaşık 1,5 kat geniş, 2,3 kat ışık. Işık, sıcaklık ve gölgeler aynı Güneş'i izler.
+
+> Oyunda gündüz geceden uzun olduğu için akşam çift batış olmaz: Güneş batıda alçakta bir süre duraklar.

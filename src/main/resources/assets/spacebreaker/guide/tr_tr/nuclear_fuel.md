@@ -1,0 +1,31 @@
+---
+title: Nükleer Yakıt
+icon: spacebreaker:nuclear_fuel_element
+items: [spacebreaker:uraninite_ore, spacebreaker:raw_uraninite, spacebreaker:uranium_dust, spacebreaker:yellowcake, spacebreaker:gas_centrifuge, spacebreaker:enriched_uranium, spacebreaker:depleted_uranium, spacebreaker:nuclear_fuel_element, spacebreaker:rtg_fuel_pellet]
+research: spacebreaker:nuclear_fission
+---
+Uraninit cevherinden nükleer termal roketin yakıtına giden yol.
+
+## Zincir
+1. {item spacebreaker:raw_uraninite}'i kırıcıda **uranyum tozuna** öğüt.
+2. Kimyasal reaktörde toz + **125 mB sülfürik asit** → {item spacebreaker:yellowcake}.
+3. {item spacebreaker:gas_centrifuge}'nde 4 sarı pasta → **1** {item spacebreaker:enriched_uranium} + **3** {item spacebreaker:depleted_uranium}.
+4. Elektrik ark fırınında 2 zenginleştirilmiş uranyum + 2 kömür tozu + 2 tungsten çubuk → {item spacebreaker:nuclear_fuel_element}.
+{recipe spacebreaker:chemical_reaction/yellowcake}
+{recipe spacebreaker:centrifuging/enriched_uranium}
+
+{page}
+## Santrifüj dizisi
+Tek bir santrifüj yavaştır. Gerçek tesislerde binlercesi art arda çalışır. Burada aynı seviyede yanına konan ve **çalışan her santrifüj yarım kademe hız** ekler; en çok dört komşu, yani en fazla **3 kat**. Santrifüjleri bir sıra ya da artı biçiminde diz.
+
+> Her zenginleştirmede büyük bir yığın {item spacebreaker:depleted_uranium} çıkar: zenginleştirmenin doğal yan ürünüdür.
+
+{recipe spacebreaker:arc_smelting/nuclear_fuel_element}
+
+## RTG peleti
+{item spacebreaker:rtg_fuel_pellet} artık **sinterleme fırınında 4 sarı pastadan** yapılır. → [Enerji](power)
+{recipe spacebreaker:sintering/rtg_fuel_pellet}
+
+>! Peletin kendisi ise ışınım yayar: üstünde taşırken doz alırsın. RTG'ye tak ve uzak dur.
+
+> **Taze uranyum yakıtı tehlikeli değildir:** uranyumun etkinliği düşüktür, eline alıp taşıyabilirsin. Asıl radyasyon, yakıt elemanı **nükleer termal roket motorunda yanarken** çıkar. → [Roket Parçaları](rocket_parts)

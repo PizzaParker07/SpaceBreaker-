@@ -21,7 +21,7 @@ Buzu temiz suya, kuru buzu karbondioksite çevirir.
 
 | Girdi | Makine | Çıktı |
 |---|---|---|
-| Ay Buzu | Çalışma Masası<br>30 FE/t · 3 sn | Su (1000 mB) |
+| Ay Buzu | Buz Eritici<br>30 FE/t · 3 sn | Su (1000 mB) |
 
 ### Atmosfer işlemcisi
 Bulunduğun yerin havasından en yararlı gazı ayırır: Mars'ta **karbondioksit**. Üstünde **açık hava** olmalı; kapalı bir odada çalışmaz.
@@ -31,11 +31,11 @@ Kayayı eritip elektrikle ayrıştırır: **kayadan oksijen**. Bir regolit **250
 
 | Girdi | Makine | Çıktı |
 |---|---|---|
-| Ay Regoliti | Çalışma Masası<br>120 FE/t · 8 sn | Demir Tozu (%20 şansla)<br>Oksijen (250 mB) |
+| Ay Regoliti | Regolit Isıtıcı<br>120 FE/t · 8 sn | Demir Tozu (%20 şansla)<br>Oksijen (250 mB) |
 
 | Girdi | Makine | Çıktı |
 |---|---|---|
-| Merkür Regoliti | Çalışma Masası<br>120 FE/t · 8 sn | Oksijen (250 mB)<br>Helyum-3 (20 mB) |
+| Merkür Regoliti | Regolit Isıtıcı<br>120 FE/t · 8 sn | Oksijen (250 mB)<br>Helyum-3 (20 mB) |
 
 ### Regolit Kazıcı
 
@@ -59,7 +59,7 @@ Karbondioksit ile hidrojeni **metan ve suya** çevirir. Su, elektroliz ünitesin
 
 | Girdi | Makine | Çıktı |
 |---|---|---|
-| carbon dioxide (500 mB)<br>hydrogen (2000 mB) | Sabatier Reaktörü<br>60 FE/t · 4 sn | Metan (500 mB)<br>Su (250 mB) |
+| Karbondioksit (500 mB)<br>Hidrojen (2000 mB) | Sabatier Reaktörü<br>60 FE/t · 4 sn | Metan (500 mB)<br>Su (250 mB) |
 
 > [!TIP]
 > **Mars'ta oksijen ve metan:** buz eritici → su → elektroliz ünitesi → oksijen + hidrojen; oksijen → kriyojenik sıvılaştırıcı → sıvı oksijen. Hidrojen ve atmosfer işlemcisinden gelen CO₂ Sabatier reaktörüne gider. Çıkan su yine elektroliz ünitesine gider.
@@ -69,7 +69,7 @@ Bir katı ve iki sıvıyı birleştirir; örneğin kükürt, su ve oksijenden **
 
 | Girdi | Makine | Çıktı |
 |---|---|---|
-| Kükürt<br>water (250 mB)<br>oxygen (750 mB) | Çalışma Masası<br>60 FE/t · 5 sn | Sülfürik Asit (250 mB) |
+| Kükürt<br>water (250 mB)<br>Oksijen (750 mB) | Kimyasal Reaktör<br>60 FE/t · 5 sn | Sülfürik Asit (250 mB) |
 
 ### Sinterleme Fırını
 
@@ -79,7 +79,7 @@ Bir katı ve iki sıvıyı birleştirir; örneğin kükürt, su ve oksijenden **
 
 | Girdi | Makine | Çıktı |
 |---|---|---|
-| Ay Regoliti | Çalışma Masası<br>60 FE/t · 5 sn | Sinterlenmiş Regolit |
+| Ay Regoliti | Sinterleme Fırını<br>60 FE/t · 5 sn | Sinterlenmiş Regolit |
 
 > [!TIP]
 > Üssünü yerinde üretilen tuğlayla kur: Dünya'dan blok taşıman gerekmez. **Tam bloklar sızdırmaz**; merdiven, basamak ve duvar gibi tam olmayan bloklardan hava kaçar. → [Üssün Havası](base_air)
@@ -89,6 +89,26 @@ Bir katı ve iki sıvıyı birleştirir; örneğin kükürt, su ve oksijenden **
 
 > [!TIP]
 > Kazıcıyı fırının yanına koy: kazdığı regolit doğrudan fırına girer ve yapı bloğu kendiliğinden birikir.
+
+### Eşya kanalı
+
+**Eşya Kanalı**
+
+**Eşya Kanalı** eşyaları envanterler arasında taşır: makineler, sandıklar, huniler.
+- Bir ucuna `Shift` basılıyken **boş elle** `Sağ Tık` yap: o uç bağlı envanterden **çeker**. Çeken her uç saniyede **16 eşya** taşır.
+- Elinde bir eşyayla `Shift` + `Sağ Tık`: o uç **yalnızca o eşyayı** geçirir.
+- Bir huni ya da makinenin çıktısı kanala doğrudan besleyebilir; eşyalar uçlardaki envanterlere gider. Kanalı besleyen huniye geri bir şey gönderilmez, böylece eşyalar döngüye girmez.
+
+|   |   |   |
+|---|---|---|
+| Demir Levha | Demir Levha | Demir Levha |
+|   | Huni |   |
+| Demir Levha | Demir Levha | Demir Levha |
+
+→ **Eşya Kanalı ×8** (Çalışma Masası)
+
+> [!TIP]
+> Kazıcıdan fırına, fırından sandığa: kanalla tam otomatik bir üretim hattı kurarsın.
 
 <details>
 <summary>English: In-Situ Resources (ISRU)</summary>
@@ -112,7 +132,7 @@ Turns ice into clean water and dry ice into carbon dioxide.
 
 | Input | Machine | Output |
 |---|---|---|
-| Lunar Ice | Crafting Table<br>30 FE/t · 3 s | Water (1000 mB) |
+| Lunar Ice | Ice Melter<br>30 FE/t · 3 s | Water (1000 mB) |
 
 ### Atmosphere processor
 Separates the most useful gas from the local air: **carbon dioxide** on Mars. It needs **open air** above it; it does not work in a closed room.
@@ -122,11 +142,11 @@ Melts rock and splits it with electricity: **oxygen from rock**. One regolith gi
 
 | Input | Machine | Output |
 |---|---|---|
-| Lunar Regolith | Crafting Table<br>120 FE/t · 8 s | Iron Dust (20% chance)<br>Oxygen (250 mB) |
+| Lunar Regolith | Regolith Heater<br>120 FE/t · 8 s | Iron Dust (20% chance)<br>Oxygen (250 mB) |
 
 | Input | Machine | Output |
 |---|---|---|
-| Mercurian Regolith | Crafting Table<br>120 FE/t · 8 s | Oxygen (250 mB)<br>Helium-3 (20 mB) |
+| Mercurian Regolith | Regolith Heater<br>120 FE/t · 8 s | Oxygen (250 mB)<br>Helium-3 (20 mB) |
 
 ### Regolith excavator
 
@@ -150,7 +170,7 @@ Turns carbon dioxide and hydrogen into **methane and water**. The water goes bac
 
 | Input | Machine | Output |
 |---|---|---|
-| carbon dioxide (500 mB)<br>hydrogen (2000 mB) | Sabatier Reactor<br>60 FE/t · 4 s | Methane (500 mB)<br>Water (250 mB) |
+| Carbon Dioxide (500 mB)<br>Hydrogen (2000 mB) | Sabatier Reactor<br>60 FE/t · 4 s | Methane (500 mB)<br>Water (250 mB) |
 
 > [!TIP]
 > **Oxygen and methane on Mars:** ice melter → water → electrolyser → oxygen + hydrogen; oxygen → cryogenic liquefier → liquid oxygen. Hydrogen and CO₂ from the atmosphere processor go into the Sabatier reactor. The water it gives goes back to the electrolyser.
@@ -160,7 +180,7 @@ Combines one solid and two fluids; for example sulfur, water and oxygen make **s
 
 | Input | Machine | Output |
 |---|---|---|
-| Sulfur<br>water (250 mB)<br>oxygen (750 mB) | Crafting Table<br>60 FE/t · 5 s | Sulfuric Acid (250 mB) |
+| Sulfur<br>water (250 mB)<br>Oxygen (750 mB) | Chemical Reactor<br>60 FE/t · 5 s | Sulfuric Acid (250 mB) |
 
 ### Sintering furnace
 
@@ -170,7 +190,7 @@ The **Sintering Furnace** heats any planet's regolith with electricity and fuses
 
 | Input | Machine | Output |
 |---|---|---|
-| Lunar Regolith | Crafting Table<br>60 FE/t · 5 s | Sintered Regolith |
+| Lunar Regolith | Sintering Furnace<br>60 FE/t · 5 s | Sintered Regolith |
 
 > [!TIP]
 > Build your base from bricks made on site: no need to ship blocks from Earth. **Full blocks are airtight**; stairs, slabs, walls and other partial blocks leak air. → [Air for the Base](base_air)
@@ -180,5 +200,25 @@ The **Sintering Furnace** heats any planet's regolith with electricity and fuses
 
 > [!TIP]
 > Put the excavator next to the furnace: the regolith it digs goes straight in and building blocks pile up on their own.
+
+### Item duct
+
+**Item Duct**
+
+The **Item Duct** moves items between inventories: machines, chests, hoppers.
+- `Right Click` one end with an **empty hand** while holding `Shift`: that end **pulls** from the inventory it touches. Each pulling end moves **16 items** a second.
+- `Shift` + `Right Click` with an item in hand: that end passes **only that item**.
+- A hopper or a machine's output can feed the duct directly; the items go on to the inventories at its ends. Nothing is sent back into a hopper feeding the duct, so items never go round in a loop.
+
+|   |   |   |
+|---|---|---|
+| Iron Plate | Iron Plate | Iron Plate |
+|   | Hopper |   |
+| Iron Plate | Iron Plate | Iron Plate |
+
+→ **Item Duct ×8** (Crafting Table)
+
+> [!TIP]
+> Excavator to furnace, furnace to chest: with ducts you build a fully automatic production line.
 
 </details>

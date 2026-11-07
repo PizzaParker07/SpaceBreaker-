@@ -1,6 +1,6 @@
 # Enerji
 
-Bütün makineler **FE** (enerji) ile çalışır. Üretim ve tüketim "FE/t" ile, yani her oyun tikinde (saniyede 20 tik) ölçülür.
+Bütün makineler **FE** (enerji) ile çalışır. Pelet sinterleme fırınında sarı pastadan yapılır. → [Nükleer Yakıt](nuclear_fuel) Üretim ve tüketim "FE/t" ile, yani her oyun tikinde (saniyede 20 tik) ölçülür.
 
 **Yanmalı Jeneratör** · **Güneş Takipli Panel** · **Batarya Bankası** · **Bakır Kablo** · **Yüksek Gerilim Kablosu**
 
@@ -117,7 +117,7 @@ For a steady 10 FE/t load (a panel gives at most 20 FE/t at noon, a battery bank
 | Pluto | 22 min | 0.06% | ~1000 | 0.3 |
 
 > [!WARNING]
-> From Europa outwards solar panels are not practical: the Sun is too far. Use an **Radioisotope Generator (RTG)** there (*Radioisotope Power*); one RTG carries four 10 FE/t loads and runs on **RTG Fuel Pellet**.
+> From Europa outwards solar panels are not practical: the Sun is too far. Use an **Radioisotope Generator (RTG)** there (*Radioisotope Power*); one RTG carries four 10 FE/t loads and runs on **RTG Fuel Pellet**. The pellet is made from yellowcake in the sintering furnace. → [Nuclear Fuel](nuclear_fuel)
 
 |   |   |   |
 |---|---|---|

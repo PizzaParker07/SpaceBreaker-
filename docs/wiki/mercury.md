@@ -46,6 +46,15 @@ Bu kraterlerden birinde terk edilmiş bir buz madeni yatar. Deposu **buzla müh�
 ### Alacakaranlık Sürüngeni
 Güneş alçakken dolaşır, yükselince toprağa gömülür. Öldüğünde **grafit** bırakır.
 
+### Çift gün doğumu
+Merkür kendi ekseni etrafında **3 kez** dönerken Güneş'in etrafında **2 kez** dolanır (3:2 dönme–yörünge rezonansı). Bu yüzden bir güneş günü iki Merkür yılı, yaklaşık **176 Dünya günü** sürer; oyunda gün sıkıştırılmıştır.
+- Yörüngesi çok basıktır (e = 0,206). Güneş'e en yakın noktada (günberi) Merkür, Güneş'in etrafında kendi dönüşünden hızlı ilerler: Güneş gökte durur ve bir süre **geri gider**.
+- Bu dünya, günberinin gün doğumuna denk geldiği bir "ılık kutup" boylamındadır. Güneş ufkun üstüne yarıya kadar çıkar, **geri batar**, sonra **yeniden doğar**. Geri hareket küçüktür, yaklaşık yarım derece: ufuk hizasındaki bir krater kenarına bakarak görebilirsin.
+- Günberide Güneş belirgin biçimde büyük ve parlaktır: günöteye göre yaklaşık 1,5 kat geniş, 2,3 kat ışık. Işık, sıcaklık ve gölgeler aynı Güneş'i izler.
+
+> [!TIP]
+> Oyunda gündüz geceden uzun olduğu için akşam çift batış olmaz: Güneş batıda alçakta bir süre duraklar.
+
 <details>
 <summary>English: Mercury</summary>
 
@@ -94,5 +103,14 @@ An abandoned ice mine lies in one of these craters. Its store is **sealed with i
 
 ### Terminator Crawler
 Roams while the sun is low and digs in when it climbs. Drops **graphite**.
+
+### The double sunrise
+Mercury spins **three times** for every **two** orbits (a 3:2 spin–orbit resonance), so one solar day lasts two Mercurian years, about **176 Earth days**; the game compresses the day.
+- Its orbit is very eccentric (e = 0.206). Near perihelion Mercury races round the Sun faster than it spins: the Sun stops in the sky and **moves backwards** for a while.
+- This world sits at a "warm pole" longitude, where perihelion falls at sunrise. The Sun peeks halfway over the horizon, **sinks back** and **rises a second time**. The backward step is small, about half a degree: watch it against a crater rim on the horizon.
+- Near perihelion the Sun is clearly bigger and brighter: about 1.5 times as wide and 2.3 times as much light as at aphelion. Light, temperature and shadows all follow the same Sun.
+
+> [!TIP]
+> Because the game's day is longer than its night, there is no double sunset in the evening: the Sun only stalls low in the west for a while.
 
 </details>

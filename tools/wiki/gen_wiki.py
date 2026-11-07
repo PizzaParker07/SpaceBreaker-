@@ -158,7 +158,9 @@ def fluid(lang, f):
     amount = f.get('amount', 0)
     name = f.get('id') or f.get('fluid') or ('#' + f['tag'] if 'tag' in f else '?')
     if name.startswith('#'):
-        label = name[1:].split(':')[-1].replace('_', ' ')
+        tns, tpath = name[1:].split(':', 1)
+        label = (tr(lang, f'tag.fluid.{tns}.{tpath.replace("/", ".")}') or tr(lang, f'fluid_type.spacebreaker.{tpath}')
+                 or tpath.replace('_', ' '))
     else:
         ns, path = name.split(':', 1)
         label = tr(lang, f'fluid_type.{ns}.{path}') or tr(lang, f'block.{ns}.{path}') or path.replace('_', ' ')
@@ -222,7 +224,7 @@ def recipe_md(lang, rid, machines):
     if 'bonus' in r:
         outs.append(f'{stack(lang, r["bonus"])} ({t["chance"].format(p=int(round(r.get("bonus_chance", 0) * 100)))})')
     outs += [fluid(lang, f) for f in r.get('fluid_results', [])]
-    info = t['energy'].format(e=r.get('energy', 20), t=round(r.get('time', 100) / 20, 1)).replace('.0 ', ' ')
+    info = t['energy'].format(e=r.get('energy', 20), t=round(r.get('time', 200) / 20, 1)).replace('.0 ', ' ')
     return (f'| {t["in"]} | {t["machine"]} | {t["out"]} |\n|---|---|---|\n'
             f'| {"<br>".join(ins)} | {machine}<br>{info} | {"<br>".join(outs)} |')
 

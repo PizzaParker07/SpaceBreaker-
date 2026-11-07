@@ -75,7 +75,9 @@ public final class GuideGameTests {
                         errors.add(lang + "/" + chapter + ".md is missing");
                         continue;
                     }
-                    check(helper, lang + "/" + chapter, GuideMarkdown.parse(Spacebreaker.id(chapter), read(p)), chapters, errors);
+                    GuideMarkdown.Chapter parsed = GuideMarkdown.parse(Spacebreaker.id(chapter), read(p));
+                    check(helper, lang + "/" + chapter, parsed, chapters, errors);
+                    machineFor(helper, lang + "/" + chapter, parsed, book, errors);
                 }
             }
         } catch (IOException | RuntimeException e) {
@@ -85,6 +87,24 @@ public final class GuideGameTests {
             helper.fail(errors.size() + " guide problems: " + String.join("; ", errors.subList(0, Math.min(12, errors.size()))));
         }
         helper.succeed();
+    }
+
+    /** Recipe types made by a crafting grid or the smithing table rather than a machine. */
+    private static final Set<String> NO_MACHINE = Set.of("spacebreaker:acid_coating", "spacebreaker:suit_upgrade", "spacebreaker:tool_shapeless");
+
+    /** Every machine recipe the guide shows names its machine in book.json, or the page would label it a crafting table. */
+    private static void machineFor(GameTestHelper helper, String where, GuideMarkdown.Chapter chapter, JsonObject book, List<String> errors) {
+        JsonObject machines = book.has("machines") ? book.getAsJsonObject("machines") : new JsonObject();
+        var recipes = helper.getLevel().getServer().getRecipeManager();
+        for (ResourceLocation id : chapter.refs().recipes()) {
+            recipes.byKey(id).ifPresent(holder -> {
+                ResourceLocation type = BuiltInRegistries.RECIPE_TYPE.getKey(holder.value().getType());
+                if (type != null && type.getNamespace().equals(Spacebreaker.MOD_ID) && !NO_MACHINE.contains(type.toString())
+                        && !machines.has(type.toString())) {
+                    errors.add(where + ": no machine in book.json for recipe type " + type + " (" + id + ")");
+                }
+            });
+        }
     }
 
     private static void check(GameTestHelper helper, String where, GuideMarkdown.Chapter chapter, Set<String> chapters,

@@ -1,7 +1,7 @@
 ---
 title: Yerinde Üretim (ISRU)
 icon: spacebreaker:sabatier_reactor
-items: [spacebreaker:atmosphere_processor, spacebreaker:sabatier_reactor, spacebreaker:regolith_heater, spacebreaker:ice_melter, spacebreaker:chemical_reactor, spacebreaker:regolith_excavator, spacebreaker:sintering_furnace, spacebreaker:sintered_regolith, spacebreaker:sintered_regolith_bricks]
+items: [spacebreaker:atmosphere_processor, spacebreaker:sabatier_reactor, spacebreaker:regolith_heater, spacebreaker:ice_melter, spacebreaker:chemical_reactor, spacebreaker:regolith_excavator, spacebreaker:sintering_furnace, spacebreaker:sintered_regolith, spacebreaker:sintered_regolith_bricks, spacebreaker:item_duct]
 research: spacebreaker:isru
 ---
 Dünya'dan fırlatılan her kilogram pahalıdır. Bu yüzden indiğin yerde yapabildiğini **orada** yap. Buna yerinde kaynak kullanımı (ISRU) denir.
@@ -59,3 +59,13 @@ Bir katı ve iki sıvıyı birleştirir; örneğin kükürt, su ve oksijenden **
 > Asteroitlerde de üretim var: karbonlu asteroitler sudan, taşlı asteroitler metalden zengindir. → [Dünya'ya Yakın Asteroitler](near_earth_asteroids#mining)
 
 > Kazıcıyı fırının yanına koy: kazdığı regolit doğrudan fırına girer ve yapı bloğu kendiliğinden birikir.
+
+## Eşya kanalı
+{items spacebreaker:item_duct}
+{item spacebreaker:item_duct} eşyaları envanterler arasında taşır: makineler, sandıklar, huniler.
+- Bir ucuna {key key.sneak} basılıyken **boş elle** {key key.use} yap: o uç bağlı envanterden **çeker**. Çeken her uç saniyede **16 eşya** taşır.
+- Elinde bir eşyayla {key key.sneak} + {key key.use}: o uç **yalnızca o eşyayı** geçirir.
+- Bir huni ya da makinenin çıktısı kanala doğrudan besleyebilir; eşyalar uçlardaki envanterlere gider. Kanalı besleyen huniye geri bir şey gönderilmez, böylece eşyalar döngüye girmez.
+{recipe spacebreaker:item_duct}
+
+> Kazıcıdan fırına, fırından sandığa: kanalla tam otomatik bir üretim hattı kurarsın.
