@@ -70,6 +70,7 @@ public final class MercuryModule implements SbModule {
         KIT.tab.forEach(SbTabs.PLANETS::add);
         MercuryEntities.eggs().forEach(SbTabs.PLANETS::add);
         MercuryData.register();
+        MercuryClimate.register();
     }
 
     @Override
@@ -80,6 +81,8 @@ public final class MercuryModule implements SbModule {
         lang.block(MERCURY_REGOLITH, "Mercurian Regolith", "Merkür Regoliti");
         lang.block(HOLLOW_DEPOSIT, "Hollow Deposit", "Oyuk Tortusu");
         lang.block(MERCURY_ICE, "Mercurian Polar Ice", "Merkür Kutup Buzu");
+        lang.add("message.spacebreaker.mercury_shade.enter", "In shadow: %s °C", "Gölgedesin: %s °C");
+        lang.add("message.spacebreaker.mercury_shade.leave", "In the sun: %s °C", "Güneştesin: %s °C");
         String[][] store = {{"STORE", "DEPO"}, {"power lost:", "güç kesildi:"}, {"sealed with ice", "buzla mühürlü"}, {"cut through", "kazıyarak geç"}};
         for (int i = 0; i < 4; i++) {
             lang.add("sign.spacebreaker.ice_mine_store." + i, store[i][0], store[i][1]);

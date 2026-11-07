@@ -142,6 +142,26 @@ public final class MercuryGameTests {
         helper.succeedWhen(() -> helper.assertItemEntityPresent(com.pizzaparker07.spacebreaker.content.venus.VenusModule.SULFUR.get(), floor.above(), 2.0));
     }
 
+    /** On Mercury anything between you and the sun makes shade, and shade is survivable even at noon. */
+    @GameTest(template = WorldTests.EMPTY)
+    public static void shadeMakesASafeCorridor(GameTestHelper helper) {
+        var level = helper.getLevel();
+        BlockPos at = helper.absolutePos(new BlockPos(1, 2, 1));
+        org.joml.Vector3d sun = new org.joml.Vector3d(0.6, 0.5, 0.0).normalize();
+        helper.assertFalse(com.pizzaparker07.spacebreaker.content.mercury.MercuryClimate.shadowed(level, at, sun), "open sky: sunlit");
+        // a wall toward the sun, like a scarp face
+        BlockPos wall = BlockPos.containing(at.getX() + 0.5 + sun.x * 3, at.getY() + 0.5 + sun.y * 3, at.getZ() + 0.5 + sun.z * 3);
+        level.setBlock(wall, Blocks.STONE.defaultBlockState(), 3);
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.mercury.MercuryClimate.shadowed(level, at, sun), "behind the wall: shadow");
+        level.setBlock(wall, Blocks.GLASS.defaultBlockState(), 3);
+        helper.assertFalse(com.pizzaparker07.spacebreaker.content.mercury.MercuryClimate.shadowed(level, at, sun), "glass casts no shadow");
+        level.setBlock(wall, Blocks.AIR.defaultBlockState(), 3);
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.mercury.MercuryClimate.shaded(430) == com.pizzaparker07.spacebreaker.content.mercury.MercuryClimate.SHADE_C,
+                "noon shade is survivable");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.mercury.MercuryClimate.shaded(-150) == -150, "shade never warms the night");
+        helper.succeed();
+    }
+
     private MercuryGameTests() {
     }
 }

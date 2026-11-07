@@ -1001,6 +1001,8 @@
   "message.spacebreaker.launch.nowhere": "Yüzeyden fırlat; yörüngede yıldız haritasını kullan",
   "message.spacebreaker.launch.twr": "Fırlatma iptal: itki/ağırlık oranı %s, 1'in altında",
   "message.spacebreaker.machine.empty": "Tüp takılı değil · %s / %s FE · borudan gelen oksijen %s",
+  "message.spacebreaker.mercury_shade.enter": "Gölgedesin: %s °C",
+  "message.spacebreaker.mercury_shade.leave": "Güneştesin: %s °C",
   "message.spacebreaker.orbit.arrived": "%s içindesin. Nereye gideceğini seçmek için yıldız haritasını aç",
   "message.spacebreaker.orbit_data": "Yörüngeye ulaştın! Uçuş kayıtların Yörünge Uçuşu verisine dönüştü: onları bir Araştırma Laboratuvarında incele.",
   "message.spacebreaker.pad.arm": "Kulede mürettebat erişim kolu",

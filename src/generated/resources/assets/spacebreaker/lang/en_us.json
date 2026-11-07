@@ -1001,6 +1001,8 @@
   "message.spacebreaker.launch.nowhere": "Launch from a surface; use the star map in orbit",
   "message.spacebreaker.launch.twr": "Launch scrubbed: thrust-to-weight %s is below 1",
   "message.spacebreaker.machine.empty": "No tank inserted · %s / %s FE · piped oxygen %s",
+  "message.spacebreaker.mercury_shade.enter": "In shadow: %s °C",
+  "message.spacebreaker.mercury_shade.leave": "In the sun: %s °C",
   "message.spacebreaker.orbit.arrived": "In %s. Open the star map to choose where to go",
   "message.spacebreaker.orbit_data": "You reached orbit! Your flight records became Orbital Flight data: analyse them in a Research Lab.",
   "message.spacebreaker.pad.arm": "Crew access arm on the tower",
