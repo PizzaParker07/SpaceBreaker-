@@ -350,6 +350,7 @@ public final class BlockyBodyRenderer {
     }
 
     private static final class Cached {
+        long builtAt;
         com.mojang.blaze3d.vertex.VertexBuffer buffer;
         List<BlockyBodyMesh.Face> faces;
         float[] signature;
@@ -680,7 +681,15 @@ public final class BlockyBodyRenderer {
         sig[6] = upB.x; sig[7] = upB.y; sig[8] = upB.z;
         sig[9] = camB.x; sig[10] = camB.y; sig[11] = camB.z;
         sig[12] = night; sig[13] = tint; sig[14] = alpha; sig[15] = flat ? 1 : 0;
-        if (c.buffer == null || c.faces != faces || !same(sig, c.signature)) {
+        boolean stale = c.buffer == null || c.faces != faces || !same(sig, c.signature);
+        // light and view drift are rebuilt at most three times a second (the steps are too small to see); a change of
+        // brightness (fades) or of the faces themselves is applied at once
+        if (stale && c.buffer != null && c.faces == faces && sameBrightness(sig, c.signature)
+                && net.minecraft.Util.getMillis() - c.builtAt < MIN_REBUILD_MS) {
+            stale = false;
+        }
+        if (stale) {
+            c.builtAt = net.minecraft.Util.getMillis();
             long t0 = System.nanoTime();
             BufferBuilder bb = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
             int count = ring ? emitRing(bb, faces, colours, sunB, lookB, night, tint, alpha)
@@ -726,6 +735,18 @@ public final class BlockyBodyRenderer {
      * Whether a cached build still shows the body closely enough: sun and viewer may move about a degree (as seen from
      * the body), the near camera a little, brightness by a hundredth.
      */
+    /** Shortest time between two rebuilds of one body for light or view drift, ms. */
+    static final long MIN_REBUILD_MS = 330;
+
+    private static boolean sameBrightness(float[] a, float[] b) {
+        for (int i = 12; i < a.length; i++) {
+            if (Math.abs(a[i] - b[i]) > 0.01F) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private static boolean same(float[] a, float[] b) {
         if (b == null || a.length != b.length) {
             return false;
