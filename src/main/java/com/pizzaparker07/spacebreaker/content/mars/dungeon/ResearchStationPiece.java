@@ -18,7 +18,6 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ChainBlock;
-import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.IronBarsBlock;
 import net.minecraft.world.level.block.LightningRodBlock;
 import net.minecraft.world.level.block.SlabBlock;
@@ -241,6 +240,22 @@ public class ResearchStationPiece extends StructurePiece {
     private static final BlockState RIB = s(Blocks.POLISHED_ANDESITE);
     private static final BlockState RIB_STAIR = s(Blocks.POLISHED_ANDESITE_STAIRS);
     private static final BlockState FLOOR = s(Blocks.SMOOTH_STONE);
+    /** Inside: brushed aluminium wall panels, ducts along the ceiling, LED panels (and dead lamps). */
+    private static BlockState panel() {
+        return s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.ALUMINUM_PANEL.base().get());
+    }
+
+    private static BlockState led() {
+        return s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.LED_PANEL.get());
+    }
+
+    private static BlockState cableDuct() {
+        return s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.CABLE_DUCT.get());
+    }
+
+    private static BlockState pipeDuct() {
+        return s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.PIPE_DUCT.get());
+    }
 
     private static BlockState pane(boolean alongZ) {
         BlockState p = s(Blocks.LIGHT_GRAY_STAINED_GLASS_PANE);
@@ -278,7 +293,7 @@ public class ResearchStationPiece extends StructurePiece {
                         st = cap ? hull : s(Blocks.AIR);
                     } else if (au == hw + 1 && v >= 1 && v <= wh) {
                         boolean window = !rib && v == 2 && (a - t.a0()) % 2 == 0;
-                        st = window ? pane(t.alongZ()) : (!rib && v == 1 && hw > 1 ? s(Blocks.ORANGE_TERRACOTTA) : hull);
+                        st = window ? pane(t.alongZ()) : (!rib && v == 1 && hw > 1 ? s(Blocks.ORANGE_TERRACOTTA) : rib ? hull : panel());
                     } else if (au == hw + 1 && v == wh + 1) {
                         st = greenhouse && !rib ? s(Blocks.GLASS) : stair.setValue(StairBlock.FACING, in);
                     } else if (au == hw && v == wh + 1) {
@@ -288,10 +303,13 @@ public class ResearchStationPiece extends StructurePiece {
                     } else if (au <= hw - 1 && v == wh + 2) {
                         boolean light = !cap && u == 0 && (a - t.a0()) % 4 == 2 && hw > 1;
                         if (light) {
-                            st = lit ? s(Blocks.SEA_LANTERN) : s(Blocks.REDSTONE_LAMP);
+                            st = lit || hash(a, t.c(), seed) < 0.25 ? led() : s(Blocks.REDSTONE_LAMP);
                         } else {
                             st = greenhouse && !rib ? s(Blocks.GLASS) : hull;
                         }
+                    }
+                    if (st == null && !cap && !greenhouse && hw > 1 && v == wh + 1 && au == 1) {
+                        st = u < 0 ? cableDuct() : pipeDuct(); // the duct runs along the ceiling, cables left, pipes right
                     }
                     if (st != null) {
                         put(level, box, x, y, z, st);
@@ -341,9 +359,9 @@ public class ResearchStationPiece extends StructurePiece {
         }
         // lights under the crown: two of the four still burn
         int top = F + HUB_WALL + (int) HUB_RISE - 1;
-        put(level, box, C + 2, top, C, s(Blocks.SEA_LANTERN));
+        put(level, box, C + 2, top, C, led());
         put(level, box, C - 2, top, C, s(Blocks.REDSTONE_LAMP));
-        put(level, box, C, top, C + 2, s(Blocks.SEA_LANTERN));
+        put(level, box, C, top, C + 2, led());
         put(level, box, C, top, C - 2, s(Blocks.REDSTONE_LAMP));
         // the antenna mast on the crown, its dish turned to the sky
         int crown = F + HUB_WALL + (int) Math.round(HUB_RISE) + 1;
@@ -409,9 +427,11 @@ public class ResearchStationPiece extends StructurePiece {
     }
 
     private void door(WorldGenLevel level, BoundingBox box, int x, int z) {
-        BlockState lower = Blocks.IRON_DOOR.defaultBlockState().setValue(DoorBlock.FACING, Direction.SOUTH).setValue(DoorBlock.HALF, DoubleBlockHalf.LOWER);
+        BlockState lower = com.pizzaparker07.spacebreaker.content.suit.SuitModule.AIRLOCK_DOOR.get().defaultBlockState()
+                .setValue(com.pizzaparker07.spacebreaker.content.suit.block.AirlockDoorBlock.FACING, Direction.SOUTH)
+                .setValue(com.pizzaparker07.spacebreaker.content.suit.block.AirlockDoorBlock.HALF, DoubleBlockHalf.LOWER);
         PieceOrientation.place(level, this, lower, x, F + 1, z, box);
-        PieceOrientation.place(level, this, lower.setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER), x, F + 2, z, box);
+        PieceOrientation.place(level, this, lower.setValue(com.pizzaparker07.spacebreaker.content.suit.block.AirlockDoorBlock.HALF, DoubleBlockHalf.UPPER), x, F + 2, z, box);
     }
 
     /** Hub floor: the survey table at the centre, consoles on the north-east, bunks on the south-west, the last log. */
@@ -429,9 +449,9 @@ public class ResearchStationPiece extends StructurePiece {
             put(level, box, p[0], F + 2, p[1], s(Blocks.SMOOTH_QUARTZ_SLAB));
             put(level, box, p[0], F + 3, p[1], s(Blocks.LIGHT_GRAY_WOOL));
         }
-        container(level, box, C + 3, F + 1, C + 3, MarsLoot.STATION_COMMAND, true);
+        container(level, box, C + 4, F + 1, C + 4, MarsLoot.STATION_COMMAND, true); // a locker set into the drum wall
         put(level, box, C - 3, F + 1, C - 3, s(Blocks.WATER_CAULDRON));
-        put(level, box, C - 4, F + 1, C - 2, s(Blocks.SMOKER));
+        put(level, box, C - 4, F + 1, C - 2, s(com.pizzaparker07.spacebreaker.content.suit.SuitModule.OXYGEN_DISTRIBUTOR.get()));
         // the last log, on a stand by the table
         BlockPos sign = PieceOrientation.place(level, this, s(Blocks.BIRCH_SIGN).setValue(StandingSignBlock.ROTATION, 0), C, F + 1, C + 2, box);
         if (sign != null) {
@@ -452,7 +472,7 @@ public class ResearchStationPiece extends StructurePiece {
                 put(level, box, C + u, F + 3, z, Blocks.IRON_TRAPDOOR.defaultBlockState().setValue(TrapDoorBlock.HALF, Half.TOP));
             }
         }
-        container(level, box, C + 2, F + 1, GREENHOUSE.a0() + 1, MarsLoot.STATION_LAB, true);
+        container(level, box, C + 3, F + 1, GREENHOUSE.a0() + 2, MarsLoot.STATION_LAB, true);
         put(level, box, C - 2, F + 1, GREENHOUSE.a0() + 1, s(Blocks.COMPOSTER));
         put(level, box, C, F + 1, GREENHOUSE.a0() + 1, s(Blocks.CAULDRON));
     }
@@ -466,6 +486,12 @@ public class ResearchStationPiece extends StructurePiece {
         put(level, box, a + 1, F + 2, C - 2, s(Blocks.BREWING_STAND));
         put(level, box, a + 3, F + 2, C - 2, s(Blocks.DECORATED_POT));
         put(level, box, a + 5, F + 2, C - 2, s(Blocks.FLOWER_POT));
+        // the research lab bench and the power monitor still showing the reserve draining
+        put(level, box, a + 2, F + 1, C - 2, s(com.pizzaparker07.spacebreaker.content.research.ResearchModule.RESEARCH_LAB.get())
+                .setValue(net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING, Direction.SOUTH));
+        put(level, box, a + 2, F + 2, C - 2, s(Blocks.AIR));
+        put(level, box, a + 4, F + 2, C - 3, s(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.POWER_MONITOR.get())
+                .setValue(net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING, Direction.SOUTH));
         // core racks: drilled cores of the ground below, layer by layer
         BlockState[] cores = {s(MarsModule.MARTIAN_BASALT.base().get()), s(MarsModule.MARTIAN_SANDSTONE.base().get()), s(MarsModule.MARTIAN_CLAY.get())};
         for (int i = 0; i < 3; i++) {
@@ -473,16 +499,19 @@ public class ResearchStationPiece extends StructurePiece {
             put(level, box, a + 1 + i, F + 2, C + 2, cores[2 - i]);
             put(level, box, a + 1 + i, F + 3, C + 2, Blocks.IRON_TRAPDOOR.defaultBlockState().setValue(TrapDoorBlock.HALF, Half.TOP));
         }
-        container(level, box, a + 4, F + 1, C + 2, MarsLoot.STATION_LAB, true);
+        container(level, box, a + 4, F + 1, C + 3, MarsLoot.STATION_LAB, true);
         put(level, box, a + 5, F + 1, C + 2, s(MarsModule.MARTIAN_ICE.get()));
         put(level, box, a + 5, F + 2, C + 2, s(MarsModule.DRY_ICE.get()));
         // ISRU control: the Sabatier reactor, electrolysis cell, the propellant log and stores
         int e = LAB.a1() - 1;
-        put(level, box, e, F + 1, C - 2, s(Blocks.BLAST_FURNACE));
+        put(level, box, e, F + 1, C - 2, s(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.SABATIER_REACTOR.block().get())
+                .setValue(net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING, Direction.SOUTH));
+        put(level, box, e - 2, F + 1, C - 2, s(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.ATMOSPHERE_PROCESSOR.block().get())
+                .setValue(net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING, Direction.SOUTH));
         put(level, box, e - 1, F + 1, C - 2, s(Blocks.CAULDRON));
-        container(level, box, e, F + 1, C, MarsLoot.STATION_ISRU, true);
-        container(level, box, e, F + 1, C + 2, MarsLoot.STATION_STORAGE, false);
-        container(level, box, e, F + 2, C + 2, MarsLoot.STATION_STORAGE, false);
+        container(level, box, e, F + 1, C + 3, MarsLoot.STATION_ISRU, true);
+        container(level, box, e - 1, F + 1, C + 3, MarsLoot.STATION_STORAGE, true);
+        container(level, box, e - 3, F + 1, C + 3, MarsLoot.STATION_STORAGE, true);
     }
 
     /** The garage: the storm broke in through the far end; dust half fills it, rust beetles nest in the rover wreck. */
@@ -527,7 +556,7 @@ public class ResearchStationPiece extends StructurePiece {
         if (box.isInside(sp) && level.getBlockEntity(sp) instanceof SpawnerBlockEntity spawner) {
             spawner.setEntityId(MarsEntities.RUST_BEETLE.get(), RandomSource.create(seed + 7));
         }
-        container(level, box, GARAGE.a1() - 1, F + 1, C + 2, MarsLoot.STATION_STORAGE, false);
+        container(level, box, GARAGE.a1() - 1, F + 1, C + 3, MarsLoot.STATION_STORAGE, true);
         // trap: the perimeter defence still has power; a plate in the garage link fires a dispenser in the link wall
         int link = GARAGE.a1() + 2;
         put(level, box, link, F + 1, C, s(Blocks.POLISHED_BLACKSTONE_PRESSURE_PLATE));
