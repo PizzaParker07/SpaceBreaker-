@@ -68,8 +68,6 @@ final class MarsFrostScenario implements ShowcaseScenario {
         int z0 = z0();
         double y = Math.floor(terrain().height(0, z0 + 30)) + 9;
         CameraType fp = CameraType.FIRST_PERSON;
-        // the first shot of a run lands the camera on the ground; take a throwaway one first (not used in docs)
-        s.add(new ShowcaseDriver.Shot("00_frost_warmup", 0, 0.5, y, z0 + 30.5, 180F, 14F, true, fp, 60, season(95, 0.22), null));
         s.add(new ShowcaseDriver.Shot("26_summer_bare", 0, 0.5, y, z0 + 30.5, 180F, 14F, true, fp, 260, season(95, 0.22), MoonScenario::farView));
         s.add(new ShowcaseDriver.Shot("25_winter_frost", 0, 0.5, y, z0 + 30.5, 180F, 14F, true, fp, 200, season(275, 0.22), MoonScenario::farView));
         return s;

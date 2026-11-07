@@ -25,10 +25,23 @@ import java.util.concurrent.ConcurrentHashMap;
  * Day fraction convention matches vanilla: 0 = sunrise, 0.25 = noon, 0.5 = sunset, 0.75 = midnight.
  */
 public final class PlanetTime {
-    /** A body's clock: day length in game ticks and an offset added to the shared day time. */
-    public record Clock(long dayTicks, long offset) {
-        public double fraction(long dayTime) {
+    /**
+     * A body's clock: day length in game ticks, an offset added to the shared day time, and an optional warp that
+     * bends the evenly running (mean) day into the true position of the sun (e.g. Mercury's 3:2 resonance).
+     */
+    public record Clock(long dayTicks, long offset, java.util.function.DoubleUnaryOperator warp) {
+        public Clock(long dayTicks, long offset) {
+            this(dayTicks, offset, null);
+        }
+
+        /** The evenly running day fraction, before any warp. */
+        public double meanFraction(long dayTime) {
             return Mth.positiveModulo((double) (dayTime + offset), (double) dayTicks) / dayTicks;
+        }
+
+        public double fraction(long dayTime) {
+            double mean = meanFraction(dayTime);
+            return warp == null ? mean : Mth.positiveModulo(warp.applyAsDouble(mean), 1.0);
         }
 
         /** Vanilla's celestial angle curve (0 = noon) for this clock. */
@@ -40,6 +53,15 @@ public final class PlanetTime {
     }
 
     private static final Map<ResourceKey<Level>, Clock> SERVER = new ConcurrentHashMap<>();
+    private static final Map<ResourceKey<Level>, java.util.function.DoubleUnaryOperator> WARPS = new ConcurrentHashMap<>();
+
+    /**
+     * Bends one world's day: the warp maps the evenly running day fraction (0..1) to the fraction the sun is really
+     * at. Only for worlds whose sun does not move evenly (Mercury); every other world is untouched.
+     */
+    public static void addWarp(ResourceKey<Level> dimension, java.util.function.DoubleUnaryOperator warp) {
+        WARPS.put(dimension, warp);
+    }
     private static final Map<ResourceKey<Level>, Clock> CLIENT = new ConcurrentHashMap<>();
 
     /** The clock of a level, if it has its own. */
@@ -67,7 +89,7 @@ public final class PlanetTime {
         return Math.max(1200L, Math.round(minutes * 60 * 20));
     }
 
-    /** Sets the local time of a planet level, e.g. 0.25 for noon. Synced to every player. */
+    /** Sets the local (mean) time of a planet level, e.g. 0.25 for noon. Synced to every player. */
     public static void setDayFraction(ServerLevel level, double fraction) {
         Clock c = SERVER.get(level.dimension());
         if (c == null) {
@@ -75,7 +97,7 @@ public final class PlanetTime {
         }
         long target = Math.round(Mth.frac(fraction) * c.dayTicks());
         long offset = Math.floorMod(target - level.getDayTime(), c.dayTicks());
-        Clock updated = new Clock(c.dayTicks(), offset);
+        Clock updated = new Clock(c.dayTicks(), offset, c.warp());
         SERVER.put(level.dimension(), updated);
         Data data = data(level);
         data.offset = offset;
@@ -94,7 +116,7 @@ public final class PlanetTime {
             return;
         }
         long ticks = dayTicks(body.get().rotation().dayLengthHours());
-        SERVER.put(level.dimension(), new Clock(ticks, data(level).offset));
+        SERVER.put(level.dimension(), new Clock(ticks, data(level).offset, WARPS.get(level.dimension())));
     }
 
     static void onLevelUnload(ServerLevel level) {
@@ -106,7 +128,7 @@ public final class PlanetTime {
     }
 
     static void receive(PlanetTimePayload payload) {
-        CLIENT.put(payload.dimension(), new Clock(payload.dayTicks(), payload.offset()));
+        CLIENT.put(payload.dimension(), new Clock(payload.dayTicks(), payload.offset(), WARPS.get(payload.dimension())));
     }
 
     /** Forget client clocks (on disconnect). */
