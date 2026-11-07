@@ -1101,9 +1101,9 @@ public final class RocketryGameTests {
             var id = Spacebreaker.id(n);
             helper.assertTrue(comets.contains(id) && !planets.contains(id), n + " is in the comet group");
             helper.assertTrue(StarMapData.system(id).equals(StarMapData.COMETS), n + " belongs to the group");
-            helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(id, true).isEmpty()
-                    && com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(id, false).isEmpty(), n + ": nowhere to fly (no orbit, no surface)");
-            helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.all().stream().noneMatch(l -> l.body().equals(id)), n + ": not a destination");
+            // still a destination: a rocket can park in a comet's orbit, as Rosetta did at 67P
+            var orbit = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(id, true);
+            helper.assertTrue(orbit.isPresent() && Transfers.real(Location.EARTH_ORBIT, orbit.get()).isPresent(), n + ": its orbit can be reached");
         }
         // the card at J2000
         var halley = StarMapData.cometInfo(Spacebreaker.id("halley"), 0).orElseThrow();

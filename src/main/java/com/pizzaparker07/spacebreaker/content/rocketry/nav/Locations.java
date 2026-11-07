@@ -56,9 +56,7 @@ public final class Locations {
                     }
                     b.put(id, body);
                     if (body.type() == BodyType.COMET) {
-                        // known for the map's information card, but nowhere to fly: no orbit, no surface
-                        cometIds.add(id);
-                        return;
+                        cometIds.add(id); // grouped on the map; still places to fly to (orbit, and a surface once built)
                     }
                     Location surface = Location.of(id, body, false);
                     if (surface != null) {
@@ -87,7 +85,7 @@ public final class Locations {
 
     private static volatile List<ResourceLocation> comets = List.of();
 
-    /** Comets of the body data, in order from the Sun: shown on the star map, not places to fly to. */
+    /** Comets of the body data, in order from the Sun (the map groups them). */
     public static List<ResourceLocation> comets() {
         return comets;
     }

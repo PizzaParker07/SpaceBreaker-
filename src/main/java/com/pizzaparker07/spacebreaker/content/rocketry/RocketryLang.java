@@ -283,7 +283,6 @@ final class RocketryLang {
         l.add("gui.spacebreaker.star_map.comet.perihelion", "Next closest pass: %s (%s AU)", "Güneş'e en yakın geçiş: %s (%s AU)");
         l.add("gui.spacebreaker.star_map.comet.period", "One orbit: %s years", "Bir tur: %s yıl");
         l.add("gui.spacebreaker.star_map.comet.activity", "Activity: %s", "Etkinlik: %s");
-        l.add("gui.spacebreaker.star_map.comet.no_trip", "Too fast and too far to catch for now: watch it from afar.", "Şimdilik yakalanamayacak kadar hızlı ve uzak: uzaktan izle.");
         l.add("gui.spacebreaker.star_map.back", "◀ Solar System", "◀ Güneş Sistemi");
         l.add("gui.spacebreaker.star_map.to_orbit", "Go to orbit", "Yörüngeye git");
         l.add("gui.spacebreaker.star_map.land", "Land", "Yüzeye in");

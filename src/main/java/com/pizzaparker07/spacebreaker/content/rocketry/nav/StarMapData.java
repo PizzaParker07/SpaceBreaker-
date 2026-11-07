@@ -184,7 +184,7 @@ public final class StarMapData {
 
     /** The map's group of near-Earth asteroids (not a real body): one node on the solar system view. */
     public static final ResourceLocation NEAR_EARTH_ASTEROIDS = ResourceLocation.fromNamespaceAndPath("spacebreaker", "near_earth_asteroids");
-    /** The map's group of comets: information only (comets are not places to fly to yet). */
+    /** The map's group of comets (one node on the solar system view; the comets themselves are destinations). */
     public static final ResourceLocation COMETS = ResourceLocation.fromNamespaceAndPath("spacebreaker", "comets");
 
     public static boolean comet(ResourceLocation body) {
@@ -233,7 +233,7 @@ public final class StarMapData {
         List<ResourceLocation> out = new ArrayList<>();
         for (Location l : Locations.all()) {
             ResourceLocation b = nearEarthAsteroid(l.body()) ? NEAR_EARTH_ASTEROIDS : l.body();
-            if (Locations.parentPlanet(l.body()).isEmpty() && !out.contains(b)) {
+            if (Locations.parentPlanet(l.body()).isEmpty() && !comet(l.body()) && !out.contains(b)) {
                 out.add(b);
             }
         }

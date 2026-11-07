@@ -824,7 +824,6 @@
   "gui.spacebreaker.star_map.block.not_in_orbit": "Önce yörüngeye çık: rampada fırlatma tuşuna bas.",
   "gui.spacebreaker.star_map.comet.activity": "Etkinlik: %s",
   "gui.spacebreaker.star_map.comet.distance": "Güneş'e uzaklık: %s AU",
-  "gui.spacebreaker.star_map.comet.no_trip": "Şimdilik yakalanamayacak kadar hızlı ve uzak: uzaktan izle.",
   "gui.spacebreaker.star_map.comet.perihelion": "Güneş'e en yakın geçiş: %s (%s AU)",
   "gui.spacebreaker.star_map.comet.period": "Bir tur: %s yıl",
   "gui.spacebreaker.star_map.delta_v_help": "Buradaki yakıt Δv (delta-v) demek: roketinin hızını daha ne kadar değiştirebileceği. Her yolculuk bir kısmını harcar; sayılar saniyede metre cinsindendir.",

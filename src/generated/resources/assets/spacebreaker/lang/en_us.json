@@ -824,7 +824,6 @@
   "gui.spacebreaker.star_map.block.not_in_orbit": "Reach orbit first: press the launch key on the pad.",
   "gui.spacebreaker.star_map.comet.activity": "Activity: %s",
   "gui.spacebreaker.star_map.comet.distance": "From the Sun: %s AU",
-  "gui.spacebreaker.star_map.comet.no_trip": "Too fast and too far to catch for now: watch it from afar.",
   "gui.spacebreaker.star_map.comet.perihelion": "Next closest pass: %s (%s AU)",
   "gui.spacebreaker.star_map.comet.period": "One orbit: %s years",
   "gui.spacebreaker.star_map.delta_v_help": "Fuel here means Δv (delta-v): how much your rocket can still change its speed. Every trip uses some; the numbers are in metres per second.",

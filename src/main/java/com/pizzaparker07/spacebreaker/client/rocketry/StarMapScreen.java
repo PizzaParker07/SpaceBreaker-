@@ -125,11 +125,7 @@ public class StarMapScreen extends Screen {
             goButton.visible = star != null;
             goButton.active = false;
         } else {
-            // comets are on the map to look at, not to fly to (yet)
-            orbitButton.visible = !StarMapData.comet(body);
-            if (StarMapData.comet(body)) {
-                surfaceButton.visible = false;
-            }
+            orbitButton.visible = true;
         }
     }
 
@@ -539,8 +535,7 @@ public class StarMapScreen extends Screen {
         }
         y += 14;
         if (StarMapData.comet(body)) {
-            drawComet(g, x, y, w);
-            return;
+            y = drawComet(g, x, y, w);
         }
         if (!com.pizzaparker07.spacebreaker.content.rocketry.mission.Coverage.hasSignal(body)) {
             for (FormattedCharSequence line : font.split(Component.translatable("gui.spacebreaker.star_map.no_signal"), w)) {
@@ -589,10 +584,10 @@ public class StarMapScreen extends Screen {
     }
 
     /** A comet's card: where it is, when it next swings past the Sun, how active it is. */
-    private void drawComet(GuiGraphics g, int x, int y, int w) {
+    private int drawComet(GuiGraphics g, int x, int y, int w) {
         var info = StarMapData.cometInfo(body, com.pizzaparker07.spacebreaker.core.astro.BodyAdapter.simTime(minecraft.level)).orElse(null);
         if (info == null) {
-            return;
+            return y;
         }
         boolean tr = minecraft.getLanguageManager().getSelected().startsWith("tr");
         String level = tr ? info.level().nameTr : info.level().nameEn;
@@ -600,8 +595,7 @@ public class StarMapScreen extends Screen {
         y = fact(g, x, y, w, Component.translatable("gui.spacebreaker.star_map.comet.perihelion",
                 info.nextPerihelion().format(java.time.format.DateTimeFormatter.ISO_LOCAL_DATE), decimal(info.perihelionAu())));
         y = fact(g, x, y, w, Component.translatable("gui.spacebreaker.star_map.comet.period", decimal(info.periodYears())));
-        y = fact(g, x, y, w, Component.translatable("gui.spacebreaker.star_map.comet.activity", level));
-        g.drawWordWrap(font, Component.translatable("gui.spacebreaker.star_map.comet.no_trip"), x, y + 6, w, DIM);
+        return fact(g, x, y, w, Component.translatable("gui.spacebreaker.star_map.comet.activity", level));
     }
 
     private void drawTrip(GuiGraphics g, int x, int y, int w) {
