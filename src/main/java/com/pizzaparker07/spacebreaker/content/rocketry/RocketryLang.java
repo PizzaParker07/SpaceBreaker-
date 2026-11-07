@@ -30,6 +30,16 @@ final class RocketryLang {
         l.block(RocketryModule.STATION_WINDOW, "Station Window", "İstasyon Penceresi");
         l.block(RocketryModule.DOCKING_PORT, "Docking Port", "Yanaşma Portu");
         l.item(RocketryModule.STATION_KIT, "Station Construction Kit", "İstasyon Kurulum Kiti");
+        l.item(RocketryModule.HABITAT_KIT, "Habitat Module Kit", "Yaşam Modülü Kiti");
+        l.block(RocketryModule.STATION_BUNK, "Station Bunk", "İstasyon Ranzası");
+        l.block(RocketryModule.FUEL_DEPOT, "Fuel Depot", "Yakıt Deposu");
+        l.add("tooltip.spacebreaker.habitat_kit", "Use in empty space: unfolds a sealed 7×5×7 room with an airlock, windows, docking port, bunk and solar panels",
+                "Boşlukta kullan: hava kilidi, pencereler, yanaşma portu, ranza ve güneş panelleriyle kapalı 7×5×7 bir oda açar");
+        l.add("tooltip.spacebreaker.habitat_kit.air", "Put an oxygen tank in the distributor to fill it with air",
+                "Havayla doldurmak için dağıtıcıya bir oksijen tüpü tak");
+        l.add("message.spacebreaker.station_bunk.set", "Respawn point set", "Yeniden doğma noktası ayarlandı");
+        l.add("message.spacebreaker.fuel_depot.status", "Fuel depot: RP-1 %s mB, LOX %s mB, methane %s mB, hydrogen %s mB · %s FE · %s docking ports",
+                "Yakıt deposu: RP-1 %s mB, LOX %s mB, metan %s mB, hidrojen %s mB · %s FE · %s yanaşma portu");
         l.add("tooltip.spacebreaker.station_kit", "Use in empty space: unfolds a 5×5 hull floor in front of you", "Boşlukta kullan: önüne 5×5 gövde zemini açar");
         l.add("message.spacebreaker.station_kit.blocked", "Something is in the way", "Önünde bir şey var");
         l.add("message.spacebreaker.docked", "Docked: you can step out into the station", "Yanaşıldı: istasyona çıkabilirsin");
@@ -228,6 +238,7 @@ final class RocketryLang {
         l.add("gui.spacebreaker.star_map.star_kind.black_hole", "A black hole: not even light escapes it", "Kara delik: ışık bile kaçamaz");
         l.add("gui.spacebreaker.star_map.star_distance", "Distance: %s light years", "Uzaklık: %s ışık yılı");
         l.add("gui.spacebreaker.star_map.star_planets", "Planets: %s", "Gezegen sayısı: %s");
+        l.add("gui.spacebreaker.star_map.star_planets_mixed", "Planets: %s known, %s not yet discovered", "Gezegenler: %s bilinen, %s henüz keşfedilmedi");
         l.add("gui.spacebreaker.star_map.star_mass", "Mass: %s × the Sun", "Kütle: Güneş'in %s katı");
         l.add("gui.spacebreaker.star_map.star_light", "Brightness: %s × the Sun", "Parlaklık: Güneş'in %s katı");
         l.add("gui.spacebreaker.star_map.star_naked_eye", "Visible to the naked eye from Earth", "Dünya'dan çıplak gözle görülür");
@@ -263,6 +274,8 @@ final class RocketryLang {
         l.add("gui.spacebreaker.star_map.block.not_in_orbit", "Reach orbit first: press the launch key on the pad.", "Önce yörüngeye çık: rampada fırlatma tuşuna bas.");
         l.add("gui.spacebreaker.star_map.block.not_built", "This world is not in the game yet.", "Bu dünya henüz oyunda yok.");
         l.add("gui.spacebreaker.star_map.block.no_route", "There is no way to fly there from here.", "Buradan oraya uçmanın yolu yok.");
+        l.add("gui.spacebreaker.star_map.block.needs_heat_shield", "Needs a heat shield: the air there would burn the rocket up. Put one under the capsule, satellite or probe.",
+                "Isı kalkanı gerekiyor: oradaki hava roketi yakar. Kapsülün, uydunun ya da sondanın altına bir kalkan tak.");
         l.add("gui.spacebreaker.star_map.block.not_enough_fuel", "Not enough fuel: refuel or build a bigger rocket.", "Yakıt yetmiyor: yakıt al ya da daha büyük bir roket yap.");
         l.add("gui.spacebreaker.star_map.block.busy", "The rocket is busy.", "Roket şu an meşgul.");
         l.add("gui.spacebreaker.star_map.hazard.no_air", "No air", "Hava yok");

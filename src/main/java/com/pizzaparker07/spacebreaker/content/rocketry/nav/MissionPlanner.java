@@ -23,6 +23,14 @@ public final class MissionPlanner {
 
     /** Fly legs one after another from {@code start}; stops at the first leg that cannot be completed. */
     public static Plan fly(RocketLayout layout, int active, double[] fuel, List<Location> route, SbConfig.Realism realism) {
+        return fly(layout, active, fuel, route, realism, true);
+    }
+
+    /**
+     * As {@link #fly(RocketLayout, int, double[], List, SbConfig.Realism)}; with {@code checkShield} false only the
+     * fuel is checked (so the map can tell "not enough fuel" from "needs a heat shield").
+     */
+    public static Plan fly(RocketLayout layout, int active, double[] fuel, List<Location> route, SbConfig.Realism realism, boolean checkShield) {
         double[] f = fuel.clone();
         int stage = active;
         for (int i = 0; i + 1 < route.size(); i++) {
@@ -33,7 +41,7 @@ public final class MissionPlanner {
                 return new Plan(false, i, f, stage, "no_route");
             }
             int rating = Transfers.reentryRating(from, to);
-            if (rating > 0 && layout.payload().heatShield() < rating) {
+            if (checkShield && rating > 0 && layout.payload().heatShield() < rating) {
                 return new Plan(false, i, f, stage, "heat_shield");
             }
             boolean reentry = to.isEarth() && !to.orbit();

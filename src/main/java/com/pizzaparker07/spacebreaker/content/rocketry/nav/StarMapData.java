@@ -28,7 +28,7 @@ public final class StarMapData {
 
     /** Why the Go button is off (empty when it is on). */
     public enum Block {
-        NONE, HERE, NOT_IN_ORBIT, NOT_BUILT, NO_ROUTE, NOT_ENOUGH_FUEL, BUSY;
+        NONE, HERE, NOT_IN_ORBIT, NOT_BUILT, NO_ROUTE, NEEDS_HEAT_SHIELD, NOT_ENOUGH_FUEL, BUSY;
 
         public String key() {
             return "gui.spacebreaker.star_map.block." + name().toLowerCase(java.util.Locale.ROOT);
@@ -157,9 +157,10 @@ public final class StarMapData {
             needed += c.getAsDouble();
             shield = Math.max(shield, Transfers.reentryRating(path.get(i), path.get(i + 1)));
         }
-        boolean enough = routed && MissionPlanner.fly(layout, active, fuel, path, realism).possible();
-        boolean home = enough && MissionPlanner.canReturnAfter(layout, active, fuel, here, to, realism);
+        // fuel alone; the heat shield is its own reason below
+        boolean enough = routed && MissionPlanner.fly(layout, active, fuel, path, realism, false).possible();
         boolean shieldOk = layout.payload().heatShield() >= shield;
+        boolean home = enough && shieldOk && MissionPlanner.canReturnAfter(layout, active, fuel, here, to, realism);
         boolean legs = !to.orbit() && !to.isEarth() && !to.atmosphere() && !layout.hasLegsFrom(active);
         Block block;
         if (here.equals(to)) {
@@ -170,6 +171,8 @@ public final class StarMapData {
             block = Block.NO_ROUTE;
         } else if (!inOrbit) {
             block = Block.NOT_IN_ORBIT;
+        } else if (!shieldOk) {
+            block = Block.NEEDS_HEAT_SHIELD;
         } else if (!enough) {
             block = Block.NOT_ENOUGH_FUEL;
         } else {

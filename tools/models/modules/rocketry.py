@@ -567,7 +567,7 @@ def station_blocks():
     write('models/block/station_hull.json', {'parent': 'minecraft:block/cube_all', 'textures': {'all': b('station_hull')}})
     write('models/item/station_hull.json', {'parent': b('station_hull')})
     write('blockstates/station_window.json', {'variants': {'': {'model': b('station_window')}}})
-    write('models/block/station_window.json', {'parent': 'minecraft:block/cube_all', 'render_type': 'minecraft:cutout',
+    write('models/block/station_window.json', {'parent': 'minecraft:block/cube_all', 'render_type': 'minecraft:translucent',
                                                  'textures': {'all': b('station_window')}})
     write('models/item/station_window.json', {'parent': b('station_window')})
     write('models/block/docking_port.json', {'parent': 'minecraft:block/cube_bottom_top', 'textures': {
@@ -577,6 +577,25 @@ def station_blocks():
     write('blockstates/docking_port.json', {'variants': {f'facing={f}': dict({'model': b('docking_port')}, **r) for f, r in rot.items()}})
     write('models/item/docking_port.json', {'parent': b('docking_port')})
     generated_item('station_kit')
+    generated_item('habitat_kit')
+    write('models/block/fuel_depot.json', {'parent': 'minecraft:block/cube_bottom_top', 'textures': {
+        'top': b('fuel_depot_top'), 'side': b('fuel_depot_side'), 'bottom': b('fuel_depot_top')}})
+    write('blockstates/fuel_depot.json', {'variants': {'': {'model': b('fuel_depot')}}})
+    write('models/item/fuel_depot.json', {'parent': b('fuel_depot')})
+    # bunk: a 7-px sleeping bag strapped to a frame, the head end towards FACING
+    write('models/block/station_bunk.json', {
+        'parent': 'minecraft:block/block', 'textures': {'top': b('station_bunk_top'), 'side': b('station_bunk_side'),
+                                                         'bottom': b('station_hull'), 'particle': b('station_bunk_top')},
+        'elements': [{'from': [0, 0, 0], 'to': [16, 7, 16], 'faces': {
+            'up': {'uv': [0, 0, 16, 16], 'texture': '#top'},
+            'down': {'uv': [0, 0, 16, 16], 'texture': '#bottom', 'cullface': 'down'},
+            'north': {'uv': [0, 9, 16, 16], 'texture': '#side', 'cullface': 'north'},
+            'south': {'uv': [0, 9, 16, 16], 'texture': '#side', 'cullface': 'south'},
+            'west': {'uv': [0, 9, 16, 16], 'texture': '#side', 'cullface': 'west'},
+            'east': {'uv': [0, 9, 16, 16], 'texture': '#side', 'cullface': 'east'}}}]})
+    hrot = {'north': {}, 'east': {'y': 90}, 'south': {'y': 180}, 'west': {'y': 270}}
+    write('blockstates/station_bunk.json', {'variants': {f'facing={f}': dict({'model': b('station_bunk')}, **r) for f, r in hrot.items()}})
+    write('models/item/station_bunk.json', {'parent': b('station_bunk')})
 
 
 def generate():  # noqa: F811

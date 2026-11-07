@@ -889,8 +889,8 @@ def icons():
         "...CcCcCcCcCdo..",
         "...DDDDDDDDDDD..",
         "................",
-    ], {'o': k[0], 'K': k[5], 'k': k[3], 'W': w[5], 'w': w[3], 'd': c[1], 'S': s[6], 's': s[4], 'p': s[4], 'P': s[6],
-        'C': c[6], 'c': c[4], 'D': k[1]})
+    ], {'o': k[0], 'K': k[5], 'k': k[3], 'W': w[5], 'w': w[3], 'd': k[3], 'S': s[6], 's': s[4], 'p': s[4], 'P': s[6],
+        'C': c[6], 'c': c[4], 'D': k[0]})
     out['hydrolox_vacuum_engine'] = grid_icon([
         "..oooooooooooo..",
         ".oKKKKKKKKKKkko.",
@@ -1982,6 +1982,106 @@ def station_kit_icon():
     return cv
 
 
+BAG = ramp('#7a3210', '#a8461a', '#cc5e22', '#e07a34', '#f0a050', '#f8c890')
+
+
+def station_bunk_top():
+    """Orange sleeping bag seen from above: pillow at the head (north), two grey straps holding it down."""
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            edge = x in (0, 15) or y in (0, 15)
+            if edge:
+                c = STEEL[2]
+            elif y < 5:
+                c = HULL[4] if 2 <= x <= 13 and 1 <= y <= 3 else BAG[1]       # pillow
+            else:
+                c = BAG[3] if (x + y) % 5 else BAG[2]
+                if x in (1, 14):
+                    c = BAG[1]
+            cv[x, y] = c
+    for y in (7, 12):
+        for x in range(1, 15):
+            cv[x, y] = STEEL[4] if x % 6 else STEEL[2]                         # straps with buckles
+    for y in range(6, 15):
+        cv[8, y] = BAG[5] if y % 2 else cv[8, y]                               # zip
+    return cv
+
+
+def station_bunk_side():
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            if y < 9:
+                cv[x, y] = (0, 0, 0, 0)
+            elif y >= 14:
+                cv[x, y] = STEEL[2] if y == 15 else STEEL[4]                   # frame
+            else:
+                cv[x, y] = BAG[3] if y > 10 else BAG[4]
+    for y in range(9, 14):
+        cv[4, y] = STEEL[4]
+        cv[11, y] = STEEL[4]
+    return cv
+
+
+def fuel_depot_side():
+    """Hull panel with four sight gauges, one per liquid: RP-1, oxygen, methane, hydrogen."""
+    cv = station_hull()
+    gauges = ((2, (196, 150, 70)), (5, (120, 190, 240)), (9, (150, 200, 120)), (12, (220, 230, 250)))
+    for x0, colour in gauges:
+        for y in range(3, 13):
+            for x in (x0, x0 + 1):
+                cv[x, y] = colour if y >= 6 else CARBON[3]
+        cv[x0, 2] = STEEL[2]
+        cv[x0 + 1, 2] = STEEL[2]
+        cv[x0, 13] = STEEL[2]
+        cv[x0 + 1, 13] = STEEL[2]
+    for x in range(16):
+        cv[x, 15] = HAZARD[3] if x % 4 < 2 else CARBON[2]
+    return cv
+
+
+def fuel_depot_top():
+    """Filler caps on a hull plate."""
+    cv = station_hull()
+    for cx, cy in ((4, 4), (11, 4), (4, 11), (11, 11)):
+        for y in range(16):
+            for x in range(16):
+                d = math.hypot(x - cx, y - cy)
+                if d < 2.6:
+                    cv[x, y] = STEEL[4] if d > 1.4 else STEEL[2]
+    return cv
+
+
+def habitat_kit_icon():
+    cv = Canvas()
+    rows = [
+        "......ssss......",
+        "......SSSS......",
+        "..oooooooooooo..",
+        ".oWWWWWWWWWWWWo.",
+        ".oWbbWWWWWWbbWo.",
+        ".oWbbWWWWWWbbWo.",
+        ".oWWWWkkkkWWWWo.",
+        ".oWWWWkYYkWWWWo.",
+        ".oWwwwkYYkwwwWo.",
+        ".oWwwwkkkkwwwWo.",
+        ".oWWWWWWWWWWWWo.",
+        "..oooooooooooo..",
+        "....ss....ss....",
+        "...ssss..ssss...",
+        "................",
+        "................",
+    ]
+    pal = {'o': CARBON[0], 'W': HULL[5], 'w': HULL[2], 'Y': HAZARD[3], 'k': CARBON[3], 's': STEEL[3],
+           'S': PANEL[3], 'b': PANEL[4]}
+    for y, row in enumerate(rows):
+        for x, ch in enumerate(row):
+            if ch in pal:
+                cv[x, y] = pal[ch]
+    return cv
+
+
 def export_facility(save):
     blk = (100, 30, 0, None)
     save(limit_colours(launch_pad_top()), 'block', 'launch_pad_top', blk)
@@ -1990,6 +2090,11 @@ def export_facility(save):
     save(limit_colours(docking_port_top()), 'block', 'docking_port_top', (180, 30, 0, None))
     save(limit_colours(docking_port_side()), 'block', 'docking_port_side', (180, 30, 0, None))
     save(station_kit_icon(), 'item', 'station_kit')
+    save(habitat_kit_icon(), 'item', 'habitat_kit')
+    save(limit_colours(station_bunk_top()), 'block', 'station_bunk_top', (180, 30, 0, None))
+    save(station_bunk_side(), 'block', 'station_bunk_side', (180, 30, 0, None))
+    save(limit_colours(fuel_depot_side()), 'block', 'fuel_depot_side', (180, 30, 0, None))
+    save(limit_colours(fuel_depot_top()), 'block', 'fuel_depot_top', (180, 30, 0, None))
     save(limit_colours(launch_pad_side()), 'block', 'launch_pad_side', blk)
     save(flame_trench_top(), 'block', 'flame_trench_top', (140, 230, 0, None))
     save(flame_trench_side(), 'block', 'flame_trench_side', (140, 230, 0, None))

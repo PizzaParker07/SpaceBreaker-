@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": ["HTH", "TCT", "HTH"],
+  "key": {"H": {"item": "spacebreaker:station_hull"}, "T": {"item": "minecraft:bucket"}, "C": {"item": "minecraft:comparator"}},
+  "result": {"id": "spacebreaker:fuel_depot", "count": 1}
+}

@@ -817,7 +817,10 @@ public class StarMapScreen extends Screen {
         }
         y += 4;
         y = fact(g, x, y, w, Component.translatable("gui.spacebreaker.star_map.star_distance", decimal(s.distanceLy())));
-        y = fact(g, x, y, w, Component.translatable("gui.spacebreaker.star_map.star_planets", s.planets()));
+        int unknown = Math.max(0, s.planets() - s.knownPlanets());
+        y = fact(g, x, y, w, unknown > 0
+                ? Component.translatable("gui.spacebreaker.star_map.star_planets_mixed", s.knownPlanets(), unknown)
+                : Component.translatable("gui.spacebreaker.star_map.star_planets", s.planets()));
         y = fact(g, x, y, w, Component.translatable("gui.spacebreaker.star_map.star_mass", decimal(s.mass())));
         y = fact(g, x, y, w, Component.translatable("gui.spacebreaker.star_map.star_light", s.luminosity() >= 0.1F ? decimal(s.luminosity())
                 : String.format(Locale.ROOT, "%.4f", s.luminosity()).replace('.', turkish() ? ',' : '.')));

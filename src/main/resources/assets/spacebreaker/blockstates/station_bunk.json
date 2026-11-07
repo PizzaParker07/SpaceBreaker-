@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "spacebreaker:block/station_bunk"
+    },
+    "facing=east": {
+      "model": "spacebreaker:block/station_bunk",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "spacebreaker:block/station_bunk",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "spacebreaker:block/station_bunk",
+      "y": 270
+    }
+  }
+}

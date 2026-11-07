@@ -1,6 +1,7 @@
 {
   "type": "probe",
   "mass_kg": 700,
+  "heat_shield": 2,
   "height": 20,
   "model": "spacebreaker:space_probe"
 }

@@ -23,7 +23,7 @@ public final class NearbyStars {
     /** One star as the map shows it. */
     public record Star(String nameEn, String nameTr, String designation, float x, float y, float z, float distanceLy,
                        int colorRgb, String kind, String spectralClass, float mass, float luminosity, int planets,
-                       float magnitude) {
+                       float magnitude, int knownPlanets) {
         public static final StreamCodec<ByteBuf, Star> STREAM_CODEC = StreamCodec.of((buf, s) -> {
             ByteBufCodecs.STRING_UTF8.encode(buf, s.nameEn);
             ByteBufCodecs.STRING_UTF8.encode(buf, s.nameTr);
@@ -35,10 +35,11 @@ public final class NearbyStars {
             buf.writeFloat(s.mass).writeFloat(s.luminosity);
             ByteBufCodecs.VAR_INT.encode(buf, s.planets);
             buf.writeFloat(s.magnitude);
+            ByteBufCodecs.VAR_INT.encode(buf, s.knownPlanets);
         }, buf -> new Star(ByteBufCodecs.STRING_UTF8.decode(buf), ByteBufCodecs.STRING_UTF8.decode(buf), ByteBufCodecs.STRING_UTF8.decode(buf),
                 buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readInt(),
                 ByteBufCodecs.STRING_UTF8.decode(buf), ByteBufCodecs.STRING_UTF8.decode(buf), buf.readFloat(), buf.readFloat(),
-                ByteBufCodecs.VAR_INT.decode(buf), buf.readFloat()));
+                ByteBufCodecs.VAR_INT.decode(buf), buf.readFloat(), ByteBufCodecs.VAR_INT.decode(buf)));
     }
 
     private static volatile List<Star> server;
@@ -53,10 +54,13 @@ public final class NearbyStars {
     public static List<Star> compute(Galaxy galaxy) {
         List<Star> out = new ArrayList<>();
         for (GalaxyMap.Marker m : GalaxyMap.local(galaxy, galaxy.sun(), RADIUS_LY, MAX_STARS)) {
-            int planets = m.summary().kind().hasPlanets() ? galaxy.system(m.seed()).map(StarSystem::planets).map(List::size).orElse(0) : 0;
+            var system = m.summary().kind().hasPlanets() ? galaxy.system(m.seed()) : java.util.Optional.<StarSystem>empty();
+            int planets = system.map(StarSystem::planets).map(List::size).orElse(0);
+            // real, confirmed planets; the rest were filled in by the generator and are "not yet discovered"
+            int known = system.map(sys -> (int) sys.planets().stream().filter(p -> sys.details(p.id()).discovered()).count()).orElse(0);
             out.add(new Star(m.nameEn(), m.nameTr(), m.designation(), (float) m.offsetLy().x(), (float) m.offsetLy().y(), (float) m.offsetLy().z(),
                     (float) m.distanceLy(), m.colorRgb(), m.summary().kind().name(), m.summary().spectralClass().name(),
-                    (float) m.summary().mass(), (float) m.summary().luminosity(), planets, (float) m.apparentMagnitude()));
+                    (float) m.summary().mass(), (float) m.summary().luminosity(), planets, (float) m.apparentMagnitude(), known));
         }
         return List.copyOf(out);
     }

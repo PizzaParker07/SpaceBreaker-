@@ -64,12 +64,13 @@ public final class AstroTransferModel implements TransferModel {
                 return OptionalDouble.empty(); // reach orbit first
             }
             if (to.orbit()) {
-                TransferPlanner.Plan p = TransferPlanner.plan(sys, a, b, to.atmosphere());
+                // the cheaper of a direct transfer and a tour of gravity assists (inner system: Mercury via Venus)
+                TransferPlanner.Plan p = TransferPlanner.planWithAssists(sys, a, b, to.atmosphere());
                 times.put(key(from, to), finite(p.transferTime()));
                 return finite(p.total());
             }
             if (to.atmosphere()) {
-                TransferPlanner.Plan p = TransferPlanner.plan(sys, a, b, true);
+                TransferPlanner.Plan p = TransferPlanner.planWithAssists(sys, a, b, true);
                 times.put(key(from, to), finite(p.transferTime()));
                 double departure = p.deltaV("departure");
                 return finite(departure > 0 ? departure : p.total());

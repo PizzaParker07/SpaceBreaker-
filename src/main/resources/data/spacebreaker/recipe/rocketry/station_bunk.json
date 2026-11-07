@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": ["WWW", "SIS"],
+  "key": {"W": {"tag": "minecraft:wool"}, "S": {"item": "minecraft:string"}, "I": {"item": "minecraft:iron_ingot"}},
+  "result": {"id": "spacebreaker:station_bunk", "count": 1}
+}

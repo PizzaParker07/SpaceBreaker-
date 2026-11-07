@@ -142,6 +142,20 @@ public final class RocketryModule implements SbModule {
     public static final DeferredItem<BlockItem> DOCKING_PORT_ITEM = ITEMS.registerSimpleBlockItem(DOCKING_PORT);
     public static final DeferredItem<com.pizzaparker07.spacebreaker.content.rocketry.station.StationKitItem> STATION_KIT = ITEMS.registerItem(
             "station_kit", com.pizzaparker07.spacebreaker.content.rocketry.station.StationKitItem::new, new Item.Properties().stacksTo(16));
+    /** Strapped-down sleeping bag: sets the respawn point anywhere, beds do not work off Earth. */
+    public static final DeferredBlock<com.pizzaparker07.spacebreaker.content.rocketry.station.StationBunkBlock> STATION_BUNK = BLOCKS.registerBlock(
+            "station_bunk", com.pizzaparker07.spacebreaker.content.rocketry.station.StationBunkBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).strength(0.8F).sound(SoundType.WOOL).noOcclusion());
+    public static final DeferredBlock<com.pizzaparker07.spacebreaker.content.rocketry.station.FuelDepotBlock> FUEL_DEPOT = BLOCKS.registerBlock(
+            "fuel_depot", com.pizzaparker07.spacebreaker.content.rocketry.station.FuelDepotBlock::new, hull());
+    public static final DeferredItem<BlockItem> STATION_BUNK_ITEM = ITEMS.registerSimpleBlockItem(STATION_BUNK);
+    public static final DeferredItem<BlockItem> FUEL_DEPOT_ITEM = ITEMS.registerSimpleBlockItem(FUEL_DEPOT);
+    public static final DeferredItem<com.pizzaparker07.spacebreaker.content.rocketry.station.HabitatKitItem> HABITAT_KIT = ITEMS.registerItem(
+            "habitat_kit", com.pizzaparker07.spacebreaker.content.rocketry.station.HabitatKitItem::new, new Item.Properties().stacksTo(4));
+    @SuppressWarnings("DataFlowIssue")
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.pizzaparker07.spacebreaker.content.rocketry.station.FuelDepotBlockEntity>> FUEL_DEPOT_BE =
+            BLOCK_ENTITIES.register("fuel_depot", () -> BlockEntityType.Builder.of(
+                    com.pizzaparker07.spacebreaker.content.rocketry.station.FuelDepotBlockEntity::new, FUEL_DEPOT.get()).build(null));
     @SuppressWarnings("DataFlowIssue")
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.pizzaparker07.spacebreaker.content.rocketry.station.DockingPortBlockEntity>> DOCKING_PORT_BE =
             BLOCK_ENTITIES.register("docking_port", () -> BlockEntityType.Builder.of(
@@ -223,7 +237,8 @@ public final class RocketryModule implements SbModule {
         SbTabs.SPACEFLIGHT.add(ROCKET_ASSEMBLER_ITEM).add(LAUNCH_PAD_ITEM).add(FLAME_TRENCH_ITEM).add(SERVICE_TOWER_ITEM)
                 .add(CREW_ARM_ITEM).add(FUEL_UMBILICAL_ITEM).add(LAUNCH_CONSOLE_ITEM);
         PARTS.forEach(SbTabs.SPACEFLIGHT::add);
-        SbTabs.SPACEFLIGHT.add(STATION_KIT).add(STATION_HULL_ITEM).add(STATION_WINDOW_ITEM).add(DOCKING_PORT_ITEM);
+        SbTabs.SPACEFLIGHT.add(STATION_KIT).add(HABITAT_KIT).add(STATION_HULL_ITEM).add(STATION_WINDOW_ITEM).add(DOCKING_PORT_ITEM)
+                .add(STATION_BUNK_ITEM).add(FUEL_DEPOT_ITEM);
         SbTabs.SPACEFLIGHT.addStack(RocketryModule::exampleRocket);
         SbTabs.SPACEFLIGHT.add(PROPELLANT_CARTRIDGE).add(EMERGENCY_BEACON);
     }
@@ -244,6 +259,8 @@ public final class RocketryModule implements SbModule {
     private static void capabilities(RegisterCapabilitiesEvent event) {
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, FUEL_UMBILICAL_BE.get(), (be, side) -> be.handler());
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, DOCKING_PORT_BE.get(), (be, side) -> be.handler());
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, FUEL_DEPOT_BE.get(), (be, side) -> be.fluids());
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, FUEL_DEPOT_BE.get(), (be, side) -> be.energy());
         event.registerEntity(Capabilities.FluidHandler.ENTITY, ROCKET_ENTITY.get(), (rocket, ctx) -> new com.pizzaparker07.spacebreaker.content.rocketry.entity.RocketFluidHandler(rocket));
     }
 
@@ -283,12 +300,14 @@ public final class RocketryModule implements SbModule {
         loot.self(STATION_HULL.get());
         loot.self(STATION_WINDOW.get());
         loot.self(DOCKING_PORT.get());
+        loot.self(STATION_BUNK.get());
+        loot.self(FUEL_DEPOT.get());
     }
 
     @Override
     public void addTags(SbTags tags) {
         tags.block(BlockTags.MINEABLE_WITH_PICKAXE, ROCKET_ASSEMBLER.get(), LAUNCH_PAD.get(), FLAME_TRENCH.get(), SERVICE_TOWER.get(),
-                CREW_ARM.get(), FUEL_UMBILICAL.get(), LAUNCH_CONSOLE.get(), STATION_HULL.get(), STATION_WINDOW.get(), DOCKING_PORT.get());
+                CREW_ARM.get(), FUEL_UMBILICAL.get(), LAUNCH_CONSOLE.get(), STATION_HULL.get(), STATION_WINDOW.get(), DOCKING_PORT.get(), FUEL_DEPOT.get());
         tags.block(BlockTags.NEEDS_STONE_TOOL, LAUNCH_PAD.get(), FLAME_TRENCH.get(), SERVICE_TOWER.get());
     }
 
