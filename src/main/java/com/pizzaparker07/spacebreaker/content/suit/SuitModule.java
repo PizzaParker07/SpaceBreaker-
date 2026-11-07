@@ -282,6 +282,7 @@ public final class SuitModule implements SbModule {
         lang.add("tooltip.spacebreaker.safety_tether.hint", "Use on a block to clip on, use again to unclip",
                 "Takmak için bir bloğa kullan, çözmek için yeniden kullan");
         lang.add("hud.spacebreaker.mag", "MAG", "MANYETİK");
+        lang.add("hud.spacebreaker.warn.mmu_low", "MANEUVERING GAS LOW", "MANEVRA GAZI AZALDI");
         lang.add("hud.spacebreaker.pressurised", "Pressurised · helmet may come off", "Basınçlı ortam · kask çıkarılabilir");
         lang.add("message.spacebreaker.suit.pressurised", "Pressurised module: breathable air", "Basınçlı modül: solunabilir hava");
         lang.add("hud.spacebreaker.tether", "TETHER", "HALAT");

@@ -747,6 +747,7 @@
   "hud.spacebreaker.warn.damaged": "SUIT DAMAGED",
   "hud.spacebreaker.warn.hot": "OVERHEATING",
   "hud.spacebreaker.warn.low_oxygen": "LOW OXYGEN",
+  "hud.spacebreaker.warn.mmu_low": "MANEUVERING GAS LOW",
   "hud.spacebreaker.warn.no_oxygen": "OXYGEN DEPLETED",
   "hud.spacebreaker.warn.radiation": "HIGH RADIATION",
   "hud.spacebreaker.warn.rating": "BEYOND SUIT RATING",

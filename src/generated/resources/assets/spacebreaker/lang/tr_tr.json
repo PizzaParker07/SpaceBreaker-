@@ -747,6 +747,7 @@
   "hud.spacebreaker.warn.damaged": "GİYSİ HASARLI",
   "hud.spacebreaker.warn.hot": "AŞIRI ISINMA",
   "hud.spacebreaker.warn.low_oxygen": "OKSİJEN AZ",
+  "hud.spacebreaker.warn.mmu_low": "MANEVRA GAZI AZALDI",
   "hud.spacebreaker.warn.no_oxygen": "OKSİJEN BİTTİ",
   "hud.spacebreaker.warn.radiation": "YÜKSEK RADYASYON",
   "hud.spacebreaker.warn.rating": "GİYSİ DAYANIMI AŞILDI",

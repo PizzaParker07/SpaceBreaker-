@@ -134,4 +134,30 @@ public final class TetherGameTests {
         return com.pizzaparker07.spacebreaker.content.suit.ManeuveringUnitItem.fuel(
                 com.pizzaparker07.spacebreaker.content.suit.SuitTanks.maneuveringUnit(torso));
     }
+
+    @GameTest(template = EMPTY)
+    public static void jetpackHoversOnTheMoonButOnlySoftensAFallOnEarth(GameTestHelper helper) {
+        // vanilla gravity is 0.08 blocks/tick² at 1 g, then 2 % drag
+        for (double g : new double[]{0.165, 1.0}) {
+            double vy = 0;
+            for (int t = 0; t < 200; t++) {
+                vy = com.pizzaparker07.spacebreaker.content.suit.ZeroG.lift(vy, true, false, 1.0);
+                vy = (vy - 0.08 * g) * 0.98;
+            }
+            if (g < 1) {
+                helper.assertTrue(vy > 0.1, "holding jump on the Moon climbs steadily, vy " + vy);
+            } else {
+                helper.assertTrue(vy < 0 && vy > -1.2, "on Earth the unit only slows the fall, vy " + vy);
+            }
+        }
+        double fall = -0.6;
+        for (int t = 0; t < 40; t++) {
+            fall = com.pizzaparker07.spacebreaker.content.suit.ZeroG.lift(fall, false, true, 1.0);
+            fall = (fall - 0.08 * 0.165) * 0.98;
+        }
+        helper.assertTrue(fall > -0.15 && fall < 0, "sneaking on the Moon brakes a fall to a gentle glide, vy " + fall);
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.ZeroG.lift(-0.05, false, true, 1.0) == -0.05,
+                "no gas is spent while already gliding slowly");
+        helper.succeed();
+    }
 }
