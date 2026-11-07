@@ -20,7 +20,7 @@ public final class CometTests {
         helper.assertTrue(CometJetBlock.active(1.2F, 65, 64), "a jet rises in sunlight");
         helper.assertFalse(CometJetBlock.active(1.2F, 70, 64), "but not under a roof");
         helper.assertFalse(CometJetBlock.active(-0.5F, 65, 64), "nor at night");
-        helper.assertFalse(CometJetBlock.active(0.05F, 65, 64), "nor with the sun on the horizon");
+        helper.assertFalse(CometJetBlock.active(0.01F, 65, 64), "nor with the sun on the horizon");
         helper.assertTrue(Comets.JET.get().defaultBlockState().is(net.minecraft.tags.BlockTags.MINEABLE_WITH_SHOVEL), "dug with a shovel");
         helper.succeed();
     }

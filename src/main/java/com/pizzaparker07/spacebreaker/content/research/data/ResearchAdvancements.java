@@ -164,6 +164,7 @@ public final class ResearchAdvancements implements AdvancementSubProvider {
             {"neptune_system", "nitrogen_geyser", "triton", "proteus", "nereid"},
             {"kuiper_gate", "tholin_sand", "pluto", "charon", "nix", "hydra"},
             {"near_earth", "bennu_boulder", "bennu", "ryugu", "eros", "itokawa"},
+            {"comets", "comet_ice", "churyumov_gerasimenko", "encke", "halley"},
     };
 
     private static net.minecraft.world.item.Item item(String path) {
@@ -250,6 +251,7 @@ public final class ResearchAdvancements implements AdvancementSubProvider {
         a(l, "neptune_system", "Edge of the Blue Giant", "Land on Triton, Proteus or Nereid", "Mavi Devin Kıyısı", "Triton'a, Proteus'a ya da Nereid'e in");
         a(l, "kuiper_gate", "Gateway to the Kuiper Belt", "Land on Pluto or one of its moons", "Kuiper'in Kapısı", "Plüton'a ya da uydularından birine in");
         a(l, "near_earth", "Close Visitors", "Land on a near-Earth asteroid", "Yakın Ziyaretçiler", "Dünya'ya yakın bir asteroite in");
+        a(l, "comets", "Ice Wanderers", "Land on a comet", "Buz Gezginleri", "Bir kuyruklu yıldıza in");
         a(l, "grand_tour", "Solar System Wanderer", "Land on a world in every one of these systems", "Güneş Sistemi Gezgini", "Bu sistemlerin her birinde bir dünyaya in");
         a(l, "deep_breath", "Deep Breath", "Get an oxygen tank", "Derin Nefes", "Bir oksijen tüpü edin");
     }

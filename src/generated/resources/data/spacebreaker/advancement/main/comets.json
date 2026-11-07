@@ -1,0 +1,44 @@
+{
+  "parent": "spacebreaker:main/orbit",
+  "criteria": {
+    "churyumov_gerasimenko": {
+      "conditions": {
+        "to": "spacebreaker:churyumov_gerasimenko"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "encke": {
+      "conditions": {
+        "to": "spacebreaker:encke"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "halley": {
+      "conditions": {
+        "to": "spacebreaker:halley"
+      },
+      "trigger": "minecraft:changed_dimension"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.spacebreaker.comets.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "spacebreaker:comet_ice"
+    },
+    "title": {
+      "translate": "advancements.spacebreaker.comets.title"
+    }
+  },
+  "requirements": [
+    [
+      "churyumov_gerasimenko",
+      "encke",
+      "halley"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
