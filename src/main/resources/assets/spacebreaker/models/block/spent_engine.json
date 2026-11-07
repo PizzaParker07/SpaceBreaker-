@@ -1,0 +1,4 @@
+{
+  "parent": "spacebreaker:item/kerosene_engine_3d",
+  "render_type": "minecraft:cutout"
+}

@@ -48,8 +48,18 @@ public final class OuterDungeonOrientationTests {
                 for (BlockPos p : BlockPos.betweenClosed(bb.minX(), bb.minY(), bb.maxZ() >= bb.minZ() ? bb.minZ() : bb.maxZ(), bb.maxX(), bb.maxY(),
                         bb.maxZ())) {
                     var st = level.getBlockState(p);
-                    if (st.is(Blocks.LADDER)) {
+                    if (st.getBlock() instanceof net.minecraft.world.level.block.LadderBlock) {
                         helper.assertTrue(st.canSurvive(level, p), piece.getClass().getSimpleName() + " " + d + ": ladder hangs on nothing at " + p);
+                        checked++;
+                    }
+                    if (st.getBlock() instanceof com.pizzaparker07.spacebreaker.content.suit.block.AirlockDoorBlock
+                            && st.getValue(com.pizzaparker07.spacebreaker.content.suit.block.AirlockDoorBlock.HALF)
+                            == net.minecraft.world.level.block.state.properties.DoubleBlockHalf.LOWER) {
+                        var up = level.getBlockState(p.above());
+                        helper.assertTrue(up.getBlock() instanceof com.pizzaparker07.spacebreaker.content.suit.block.AirlockDoorBlock
+                                        && up.getValue(com.pizzaparker07.spacebreaker.content.suit.block.AirlockDoorBlock.FACING)
+                                        == st.getValue(com.pizzaparker07.spacebreaker.content.suit.block.AirlockDoorBlock.FACING),
+                                piece.getClass().getSimpleName() + " " + d + ": airlock door halves disagree at " + p);
                         checked++;
                     }
                     if (st.getBlock() instanceof DoorBlock && st.getValue(DoorBlock.HALF) == net.minecraft.world.level.block.state.properties.DoubleBlockHalf.LOWER) {
@@ -60,7 +70,7 @@ public final class OuterDungeonOrientationTests {
                 }
             }
         }
-        helper.assertTrue(checked > 20, "ladders were found and checked: " + checked);
+        helper.assertTrue(checked > 20, "ladders and doors were found and checked: " + checked);
         helper.succeed();
     }
 }

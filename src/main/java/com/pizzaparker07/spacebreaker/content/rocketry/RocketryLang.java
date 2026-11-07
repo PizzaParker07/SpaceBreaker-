@@ -95,6 +95,15 @@ final class RocketryLang {
                 "Kargo roketi %s konumunda: %s eşya ambarda bekliyor (port ya da işaretin yanında sandık yok)");
         l.item(RocketryModule.STATION_CORE_MODULE, "Station Core Module", "İstasyon Çekirdek Modülü");
         l.item(RocketryModule.DOCKING_MODULE, "Docking Module", "Kenetlenme Modülü");
+        l.item(RocketryModule.HABITATION_MODULE, "Habitation Module", "Yaşam Modülü");
+        l.item(RocketryModule.AIRLOCK_MODULE, "Airlock Module", "Hava Kilidi Modülü");
+        l.item(RocketryModule.SOLAR_WINGS, "Solar Wings", "Güneş Kanatları");
+        l.add("tooltip.spacebreaker.station_module.habitation", "Living quarters: three bunks, a locker, a window band and a mouth at the far end",
+                "Yaşam alanı: üç ranza, bir dolap, pencere bandı ve uçta bir ağız");
+        l.add("tooltip.spacebreaker.station_module.airlock", "A small chamber with a door into the station and a door to space: step out without losing the station's air",
+                "İstasyona ve uzaya açılan birer kapılı küçük oda: istasyonun havasını kaybetmeden dışarı çık");
+        l.add("tooltip.spacebreaker.station_module.solar_wings", "Outside the hull: three solar arrays on a cable truss and a battery bank in the mouth, powering the station (FE)",
+                "Gövdenin dışında: kablo kafes üstünde üç güneş paneli dizisi ve ağızda batarya bankası; istasyona enerji (FE) verir");
         l.block(RocketryModule.STATION_HATCH, "Station Hatch", "İstasyon Kapağı");
         l.block(RocketryModule.STATION_CORE, "Station Core Console", "İstasyon Çekirdek Konsolu");
         l.add("container.spacebreaker.station_core", "Station core: modules waiting", "İstasyon çekirdeği: bekleyen modüller");

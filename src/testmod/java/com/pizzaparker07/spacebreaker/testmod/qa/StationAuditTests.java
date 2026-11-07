@@ -1,0 +1,114 @@
+package com.pizzaparker07.spacebreaker.testmod.qa;
+
+import com.pizzaparker07.spacebreaker.Spacebreaker;
+import com.pizzaparker07.spacebreaker.content.rocketry.RocketryModule;
+import com.pizzaparker07.spacebreaker.content.rocketry.station.StationHatchBlock;
+import com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule;
+import com.pizzaparker07.spacebreaker.content.suit.block.OxygenDistributorBlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.gametest.framework.GameTest;
+import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.world.level.block.Blocks;
+import net.neoforged.neoforge.gametest.GameTestHolder;
+import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Station stage 1 (QA): a core with a docking module on every side mouth, all one sealed room; a breach in a tunnel
+ * vents the whole station and mending it seals it again; a module that does not fit is refused without leaving any
+ * blocks behind. Writes {@code run-gametest/qa/station.md}.
+ */
+@GameTestHolder(Spacebreaker.MOD_ID)
+@PrefixGameTestTemplate(false)
+public final class StationAuditTests {
+    @GameTest(template = "empty", timeoutTicks = 600, batch = "qa_station")
+    public static void fourDockingModulesShareTheCoreAir(GameTestHelper h) {
+        var level = h.getLevel();
+        BlockPos centre = h.absolutePos(new BlockPos(4, 40, 4));
+        Direction forward = Direction.SOUTH;
+        h.assertTrue(StationModule.buildCore(level, centre, forward, "qa"), "the core unfolds");
+        List<String> out = new ArrayList<>();
+        List<BlockPos> tunnelWalls = new ArrayList<>();
+        int attached = 0;
+        for (Direction side : Direction.Plane.HORIZONTAL) {
+            BlockPos mouth = centre.relative(side, 3).above(2);
+            var s = level.getBlockState(mouth);
+            boolean isMouth = s.getBlock() instanceof StationHatchBlock && s.getValue(StationHatchBlock.CENTER);
+            boolean ok = isMouth && StationModule.DOCKING.attach(level, mouth, "qa");
+            out.add("- docking module on the " + side.getName() + " mouth: " + (ok ? "attached" : isMouth ? "**refused**" : "no mouth there"));
+            if (ok) {
+                attached++;
+                // a hull block in the tunnel's side wall, half way along
+                tunnelWalls.add(mouth.relative(side, 4).relative(side.getClockWise(), 2));
+            }
+        }
+        h.assertTrue(attached == 4, "a docking module on each of the four side mouths: " + out);
+        BlockPos dist = centre.relative(forward.getOpposite(), 2).relative(forward.getClockWise(), -2).above();
+        BlockPos breach = tunnelWalls.get(0);
+        int[] phase = {0};
+        int[] sealedVolume = {0};
+        String[] last = {""};
+        h.onEachTick(() -> {
+            if (!(level.getBlockEntity(dist) instanceof OxygenDistributorBlockEntity be)) {
+                return;
+            }
+            var room = be.room();
+            last[0] = (room.sealed() ? "sealed " : "not sealed ") + room.volume();
+            switch (phase[0]) {
+                case 0 -> {
+                    if (room.sealed() && room.volume() > 300) {
+                        sealedVolume[0] = room.volume();
+                        out.add("- core + four tunnels sealed as one room: " + room.volume() + " blocks of air");
+                        level.setBlock(breach, Blocks.AIR.defaultBlockState(), 3); // a hole in the far tunnel's wall
+                        phase[0] = 1;
+                    }
+                }
+                case 1 -> {
+                    if (!room.sealed()) {
+                        out.add("- a hole in one tunnel's wall vents the whole station (core included)");
+                        level.setBlock(breach, RocketryModule.STATION_HULL.get().defaultBlockState(), 3);
+                        phase[0] = 2;
+                    }
+                }
+                case 2 -> {
+                    if (room.sealed() && room.volume() == sealedVolume[0]) {
+                        out.add("- mended with station hull: sealed again, same volume");
+                        phase[0] = 3;
+                    }
+                }
+                default -> {
+                }
+            }
+        });
+        h.succeedWhen(() -> {
+            h.assertTrue(phase[0] == 3, "phase " + phase[0] + ", room " + last[0] + ": " + out);
+            ProgressionReport.write("station.md", "## Station stage 1 (`qa/StationAuditTests`)\n\n" + String.join("\n", out) + "\n");
+        });
+    }
+
+    @GameTest(template = "empty", timeoutTicks = 100, batch = "qa_station")
+    public static void aModuleThatDoesNotFitLeavesNothingBehind(GameTestHelper h) {
+        var level = h.getLevel();
+        BlockPos centre = h.absolutePos(new BlockPos(4, 60, 4));
+        Direction forward = Direction.SOUTH;
+        h.assertTrue(StationModule.buildCore(level, centre, forward, "qa"), "the core unfolds");
+        BlockPos mouth = centre.relative(forward, 3).above(2);
+        // a stone pillar four blocks out, where the docking tunnel would run
+        BlockPos rock = mouth.relative(forward, 4);
+        level.setBlock(rock, Blocks.STONE.defaultBlockState(), 3);
+        BlockPos probe = mouth.relative(forward, 2).relative(forward.getClockWise(), 2);
+        var before = level.getBlockState(probe);
+        h.assertFalse(StationModule.DOCKING.attach(level, mouth, "qa"), "a module is refused where rock is in the way");
+        h.assertTrue(level.getBlockState(mouth).getBlock() instanceof StationHatchBlock, "the mouth stays closed");
+        h.assertTrue(level.getBlockState(probe) == before, "no hull left half-built");
+        level.setBlock(rock, Blocks.AIR.defaultBlockState(), 3);
+        h.assertTrue(StationModule.DOCKING.attach(level, mouth, "qa"), "with the rock gone it attaches");
+        h.succeed();
+    }
+
+    private StationAuditTests() {
+    }
+}

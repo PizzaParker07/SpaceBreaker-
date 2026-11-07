@@ -1,0 +1,6 @@
+{
+  "type": "station_module",
+  "mass_kg": 900,
+  "height": 18,
+  "model": "spacebreaker:solar_wings"
+}

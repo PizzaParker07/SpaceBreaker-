@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "HDH",
+    "W W",
+    "HDH"
+  ],
+  "key": {
+    "H": {
+      "item": "spacebreaker:station_hull"
+    },
+    "W": {
+      "item": "spacebreaker:station_window"
+    },
+    "D": {
+      "item": "spacebreaker:airlock_door"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:airlock_module",
+    "count": 1
+  }
+}
