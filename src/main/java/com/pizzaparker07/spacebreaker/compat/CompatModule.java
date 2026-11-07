@@ -41,6 +41,7 @@ public final class CompatModule implements SbModule {
             lang.add("emi.category.spacebreaker." + c.id(), names[0], names[1]);
         }
         lang.add("emi.category.spacebreaker." + RecipeViewerData.SUIT_MODULES, "Suit Modules", "Giysi Modülleri");
+        tagNames(lang);
         lang.add(RecipeViewerData.KEY_ENERGY, "%s FE/t · %s FE", "%s FE/t · %s FE");
         lang.add(RecipeViewerData.KEY_TIME, "%s s", "%s sn");
         lang.add(RecipeViewerData.KEY_CHANCE, "%s%% chance", "%%%s olasılık");
@@ -59,5 +60,42 @@ public final class CompatModule implements SbModule {
                         + "in vacuum. Needs power.",
                 "Yerel atmosferi sıkıştırır ve en yararlı gazını ayırır: Mars ve Venüs'te karbondioksit, Dünya havasından oksijen, "
                         + "Titan'da metan. Üretim gazın oranı ve hava basıncıyla artar; boşlukta çalışmaz. Enerji ister.");
+    }
+
+    /**
+     * Names of item tags other areas use in recipes but did not name; recipe viewers show them on tag slots (EMI
+     * warns about every unnamed one). Only keys nobody added: this module comes last in {@code Modules.ALL}.
+     */
+    private static final String[][] TAG_NAMES = {
+            {"c:dusts/perchlorate", "Perchlorate Dusts", "Perklorat Tozları"},
+            {"c:dusts/sulfur", "Sulfur Dusts", "Kükürt Tozları"},
+            {"c:gems/gypsum", "Gypsum", "Alçıtaşı"},
+            {"c:ices/water", "Water Ices", "Su Buzları"},
+            {"c:ores/ammonia", "Ammonia Hydrate Ores", "Amonyak Hidrat Cevherleri"},
+            {"c:ores/chromite", "Chromite Ores", "Kromit Cevherleri"},
+            {"c:ores/graphite", "Graphite Ores", "Grafit Cevherleri"},
+            {"c:ores/gypsum", "Gypsum Ores", "Alçıtaşı Cevherleri"},
+            {"c:ores/hematite", "Hematite Ores", "Hematit Cevherleri"},
+            {"c:ores/ilmenite", "Ilmenite Ores", "İlmenit Cevherleri"},
+            {"c:ores/kreep", "KREEP Ores", "KREEP Cevherleri"},
+            {"c:ores/magnetite", "Magnetite Ores", "Manyetit Cevherleri"},
+            {"c:ores/methane_clathrate", "Methane Clathrate Ores", "Metan Klatrat Cevherleri"},
+            {"c:ores/salt", "Salt Ores", "Tuz Cevherleri"},
+            {"c:ores/sulfur", "Sulfur Ores", "Kükürt Cevherleri"},
+            {"c:ores/tholin", "Tholin Ores", "Tolin Cevherleri"},
+            {"c:raw_materials/hematite", "Raw Hematite", "Ham Hematit"},
+            {"c:raw_materials/ilmenite", "Raw Ilmenite", "Ham İlmenit"},
+            {"c:raw_materials/magnetite", "Raw Magnetite", "Ham Manyetit"},
+            {"c:regoliths/solar_wind", "Solar-Wind Regoliths", "Güneş Rüzgârı Regolitleri"},
+            {"spacebreaker:researchable", "Researchable Items", "Araştırılabilir Eşyalar"},
+    };
+
+    private static void tagNames(Lang lang) {
+        for (String[] t : TAG_NAMES) {
+            String key = "tag.item." + t[0].replace(':', '.').replace('/', '.');
+            if (!lang.entries().containsKey(key)) {
+                lang.add(key, t[1], t[2]);
+            }
+        }
     }
 }

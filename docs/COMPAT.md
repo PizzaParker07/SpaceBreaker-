@@ -152,6 +152,13 @@ Complementary the tint is weaker (the pack re-lights translucent entities) but t
   white under Complementary and looks the same in vanilla (`iris_eva_lamp_pool_eyes`): recommended for light effects.
   The safety tether (`RenderType.leash()`) and the MMU gas puffs (particles) are visible under the pack
   (`iris_eva_tether`, `iris_eva_mmu`).
+- **Rovers, satellites, station (checked with Complementary):** rover headlights and light cones show on the Moon and
+  on Mars at night, wheel tracks stay visible, the HUD is unchanged (`rover_moon_vanilla_vs_iris`,
+  `rover_mars_vanilla_vs_iris`). Satellites in orbit, the station and the capsule render as without shaders
+  (`rocketry_satellites_station_vanilla_vs_iris`). The rover's blob shadow is replaced by the pack's real shadow.
+  Station window: its texture is semi-transparent but the model is `cutout`, so vanilla draws an opaque blue pane while
+  the pack shows it dark (`rocketry_station_window`); a `translucent` render type would make both agree (reported to
+  the rocketry area).
 - **Silhouette halo at night on thin-air worlds:** where the pack's own sky is much brighter than ours (Mars at night),
   its anti-aliasing leaves a one-pixel pack-coloured rim along terrain edges.
 
@@ -231,9 +238,14 @@ tool (not consumed), bonus outputs with their chance, energy (FE/t and total), t
 New recipe kinds only need a line in `RecipeViewerData.CATEGORIES` and a title in `CompatModule` (a GameTest fails
 when a `ProcessingRecipe.Kind` in `MachinesModule` has no category).
 
+Vehicles and spacecraft made at a crafting table (rover, RTG, space probe, communication and observation
+satellites, 3-crew capsule) are plain `minecraft:crafting_shaped` recipes: both viewers list them in their own
+Crafting category with no help from us (`jei_crafted_vehicles.jpg`, `emi_crafted_vehicles.jpg`; showcase shots
+`*_recipe_<item>`).
+
 Screenshots: `jei_*` and `emi_*`. Test: `./gradlew runShowcase -Pscenario=jei -PwithJei=true` or
 `-Pscenario=emi -PwithEmi=true` (JEI/EMI come from maven.blamejared.com / maven.terraformersmc.com).
 
-Known: EMI's dev mode lists ~98 untranslated item/fluid tags (`#c:ingots/titanium`, `#spacebreaker:press_dies`...);
-players see the raw tag id in tag tooltips. The areas that own those tags can add `tag.item.<ns>.<path>` /
-`tag.fluid.<ns>.<path>` translations. REI is not covered yet.
+Tag names: viewers show `tag.item.<ns>.<path>` on tag slots. Every item tag of ours used in a recipe has one now
+(metals in `EarthModule`, the rest as fallbacks in `CompatModule.TAG_NAMES`, added only when the owning area has not
+named it); the GameTest `everyRecipeTagOfOursHasAName` fails for a new unnamed one. REI is not covered yet.
