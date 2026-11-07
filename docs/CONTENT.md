@@ -330,6 +330,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Proteus blokları | Proteus Regoliti (kalıcı ayak izi), Proteus Kabuğu |
 | 🎨 | Nereid `spacebreaker:nereid` | Neptün'ün en dıştaki büyük uydusu (~170 km), muhtemelen yakalanmış cisim: açık gri, engebeli, kraterli su buzu; uyduların en basık yörüngesi (1,4–9,7 milyon km), gökte yalnız küçük mavi bir Neptün; yakıt için buz |
 | 🎨 | Nereid blokları | Nereid Kırağısı (kalıcı ayak izi), Nereid Buzu |
+| 🎨 | Dış zindanlarda Malzeme Dolabı | iniş araçları, Ceres madencilik karakolu, Europa sondası, Io gözlemevi, Titan hangarı, Titania karakolu ve Triton istasyonunda ganimet artık vanilla sandık yerine Malzeme Dolabı'nda (kapakları odaya bakar); eski varillerin yerinde boş dolaplar (mürettebat boşaltmış) |
 | 🎨 | Zindanlar | Düşmüş İkmal İniş Aracı (Proteus, Nereid) → Kriyovolkanizma; Düşmüş İkmal İniş Aracı (Triton); Gayzer Gözlem İstasyonu (güney kutup başlığında bir azot gayzerinin üstüne kurulmuş cam kubbeli istasyon: ortada çubuk halkalı canlı gayzer, kubbe tepesinden yükselen alet direği, numune laboratuvarı ve depo sandıkları, kapıdan içeri savrulmuş pembe kırağı; zemin: titanyum güverte, gayzerin çevresinde ızgara ve tehlike şeridi halkası, kapıdan ızgara yürüme yolu, tezgâh ve depoya giden gömülü borular, köşegenlerde gömme LED'ler, kenarda alüminyum panel bordür; 2 Gayzer Böceği bekçi) → Kriyovolkanizma |
 | 🎨 | Teknoloji | Kriyovolkanizma (5) |
 

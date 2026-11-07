@@ -133,10 +133,10 @@ public class HangarPiece extends StructurePiece {
         // workshop (west wall) and lab (east wall)
         placeBlock(level, s(Blocks.SMITHING_TABLE), 3, F, 17, box);
         placeBlock(level, s(Blocks.ANVIL), 3, F, 16, box);
-        createChest(level, box, RandomSource.create(seed + 1), 3, F, 18, WORKSHOP);
+        com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.place(level, this, 3, F, 18, Direction.EAST, WORKSHOP, seed + 1, box);
         placeBlock(level, s(Blocks.BREWING_STAND), 13, F, 17, box);
         placeBlock(level, s(Blocks.CARTOGRAPHY_TABLE), 13, F, 16, box);
-        createChest(level, box, RandomSource.create(seed + 2), 13, F, 18, LAB);
+        com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.place(level, this, 13, F, 18, Direction.WEST, LAB, seed + 2, box);
         // methane fuel store: cryogenic tanks against the back wall
         for (int x = 6; x <= 10; x += 2) {
             placeBlock(level, s(Blocks.WHITE_CONCRETE), x, F, 19, box);

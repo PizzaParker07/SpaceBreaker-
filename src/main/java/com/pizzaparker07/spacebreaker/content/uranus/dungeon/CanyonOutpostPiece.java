@@ -140,7 +140,7 @@ public class CanyonOutpostPiece extends StructurePiece {
         placeBlock(level, s(Blocks.BREWING_STAND), 2, y0, 5, box);
         com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, s(Blocks.CHISELED_BOOKSHELF)
                 .setValue(net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING, Direction.EAST), 2, y0 + 1, 4, box);
-        createChest(level, box, RandomSource.create(seed + 1), 2, y0, 3, LAB);
+        com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.place(level, this, 2, y0, 3, Direction.EAST, LAB, seed + 1, box);
         BlockPos sign = com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this,
                 s(Blocks.BIRCH_WALL_SIGN).setValue(net.minecraft.world.level.block.WallSignBlock.FACING, Direction.EAST), 2, y0 + 1, 6, box);
         if (sign != null && box.isInside(sign)) {
@@ -163,10 +163,13 @@ public class CanyonOutpostPiece extends StructurePiece {
                     .setValue(net.minecraft.world.level.block.SlabBlock.TYPE, net.minecraft.world.level.block.state.properties.SlabType.TOP), x, y0, 8, box);
         }
         // the store (east): crates, the chest, the bench, a bunk against the wall
-        placeBlock(level, s(Blocks.BARREL), 10, y0, 4, box);
-        placeBlock(level, s(Blocks.BARREL), 10, y0, 5, box);
-        placeBlock(level, s(Blocks.BARREL), 10, y0 + 1, 4, box);
-        createChest(level, box, RandomSource.create(seed + 2), 10, y0, 3, STORE);
+        com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.BLOCK.get().defaultBlockState()
+                .setValue(com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlock.FACING, Direction.WEST), 10, y0, 4, box);
+        com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.BLOCK.get().defaultBlockState()
+                .setValue(com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlock.FACING, Direction.WEST), 10, y0, 5, box);
+        com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.BLOCK.get().defaultBlockState()
+                .setValue(com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlock.FACING, Direction.WEST), 10, y0 + 1, 4, box);
+        com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.place(level, this, 10, y0, 3, Direction.WEST, STORE, seed + 2, box);
         placeBlock(level, s(Blocks.CRAFTING_TABLE), 10, y0, 7, box);
         placeBlock(level, s(Blocks.LIGHT_GRAY_WOOL), 9, y0, 2, box);
         placeBlock(level, s(Blocks.LIGHT_GRAY_WOOL), 10, y0, 2, box);

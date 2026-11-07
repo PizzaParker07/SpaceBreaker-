@@ -189,9 +189,11 @@ public class MiningOutpostPiece extends StructurePiece {
         placeBlock(level, s(Blocks.LECTERN), 9, F, 4, box);
         placeBlock(level, s(Blocks.CRAFTING_TABLE), 10, F, 4, box);
         placeBlock(level, s(Blocks.CARTOGRAPHY_TABLE), 10, F, 5, box);
-        createChest(level, box, RandomSource.create(seed + 1), 10, F, 9, OFFICE);
-        placeBlock(level, s(Blocks.BARREL), 3, F, 9, box);
-        placeBlock(level, s(Blocks.BARREL), 3, F, 8, box);
+        com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.place(level, this, 10, F, 9, Direction.WEST, OFFICE, seed + 1, box);
+        com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.BLOCK.get().defaultBlockState()
+                .setValue(com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlock.FACING, Direction.EAST), 3, F, 9, box);
+        com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.BLOCK.get().defaultBlockState()
+                .setValue(com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlock.FACING, Direction.EAST), 3, F, 8, box);
         placeBlock(level, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), 6, F + 4, 6, box);
         placeBlock(level, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), 6, F + 4, 7, box);
         // a cracked window: the reason the crew left
@@ -217,9 +219,11 @@ public class MiningOutpostPiece extends StructurePiece {
             placeBlock(level, s(Blocks.IRON_BARS), x, F, 4, box);
         }
         placeBlock(level, s(BeltModule.CEREAN_ICE.get()), 17, F, 4, box);
-        createChest(level, box, RandomSource.create(seed + 2), 25, F, 10, STORES);
-        placeBlock(level, s(Blocks.BARREL), 24, F, 10, box);
-        placeBlock(level, s(Blocks.BARREL), 25, F + 1, 10, box);
+        com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.place(level, this, 25, F, 10, Direction.WEST, STORES, seed + 2, box);
+        com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.BLOCK.get().defaultBlockState()
+                .setValue(com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlock.FACING, Direction.NORTH), 24, F, 10, box);
+        com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.BLOCK.get().defaultBlockState()
+                .setValue(com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlock.FACING, Direction.WEST), 25, F + 1, 10, box);
         placeBlock(level, s(Blocks.SMITHING_TABLE), 17, F, 10, box);
         placeBlock(level, s(Blocks.STONECUTTER), 18, F, 10, box);
         placeBlock(level, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), 21, F + 5, 6, box);
@@ -344,8 +348,9 @@ public class MiningOutpostPiece extends StructurePiece {
         }
         // core sample store off the drift
         tunnel(level, box, 12, fy, 23, 16, fy + 3, 26, rock);
-        createChest(level, box, RandomSource.create(seed + 3), 15, fy + 1, 25, CORE_STORE);
-        placeBlock(level, s(Blocks.BARREL), 13, fy + 1, 25, box);
+        com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.place(level, this, 15, fy + 1, 25, Direction.NORTH, CORE_STORE, seed + 3, box);
+        com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.BLOCK.get().defaultBlockState()
+                .setValue(com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlock.FACING, Direction.NORTH), 13, fy + 1, 25, box);
         placeBlock(level, s(Blocks.CHISELED_TUFF), 12, fy + 1, 26, box);
         placeBlock(level, s(Blocks.CHISELED_TUFF), 16, fy + 1, 26, box);
         // the mites' den: a burrowed pocket of salty clay with their nest

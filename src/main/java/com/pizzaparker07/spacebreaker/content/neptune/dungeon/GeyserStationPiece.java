@@ -149,9 +149,10 @@ public class GeyserStationPiece extends StructurePiece {
         // plume sampling bench (west) and the store (east)
         placeBlock(level, s(Blocks.BREWING_STAND), C - 4, F, C + 1, box);
         placeBlock(level, s(Blocks.CARTOGRAPHY_TABLE), C - 4, F, C + 2, box);
-        createChest(level, box, RandomSource.create(seed + 1), C - 4, F, C, LAB);
-        placeBlock(level, s(Blocks.BARREL), C + 4, F, C + 2, box);
-        createChest(level, box, RandomSource.create(seed + 2), C + 4, F, C, STORE);
+        com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.place(level, this, C - 4, F, C, Direction.EAST, LAB, seed + 1, box);
+        com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.BLOCK.get().defaultBlockState()
+                .setValue(com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlock.FACING, Direction.WEST), C + 4, F, C + 2, box);
+        com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.place(level, this, C + 4, F, C, Direction.WEST, STORE, seed + 2, box);
         placeBlock(level, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), C, F + R - 2, C - 2, box);
         // pink frost drifted in through the open door
         for (int x = C - 3; x <= C + 3; x++) {
