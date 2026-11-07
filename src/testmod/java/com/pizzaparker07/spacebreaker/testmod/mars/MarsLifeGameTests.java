@@ -278,7 +278,13 @@ public final class MarsLifeGameTests {
             chains += st.is(Blocks.CHAIN) ? 1 : 0;
             signs += st.is(Blocks.OAK_SIGN) ? 1 : 0;
         }
-        helper.assertTrue(lootChests(level, bb) == 1, "one survey recorder, found " + lootChests(level, bb));
+        int recorders = 0;
+        for (BlockPos p : BlockPos.betweenClosed(bb.minX(), bb.minY(), bb.minZ(), bb.maxX(), bb.maxY(), bb.maxZ())) {
+            if (level.getBlockEntity(p) instanceof com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlockEntity l && l.getLootTable() != null) {
+                recorders++;
+            }
+        }
+        helper.assertTrue(recorders == 1, "one survey recorder, found " + recorders);
         helper.assertTrue(chains >= 12, "three harpoon tethers, found " + chains + " chain blocks");
         helper.assertTrue(signs == 1, "the plate that explains the anchoring");
         helper.succeed();
