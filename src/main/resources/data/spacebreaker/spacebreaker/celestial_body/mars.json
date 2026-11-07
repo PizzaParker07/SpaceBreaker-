@@ -5,7 +5,7 @@
   "orbit_dimension": "spacebreaker:mars_orbit",
   "physical": { "mass_kg": 6.4171e23, "radius_km": 3389.5, "surface_gravity": 3.71 },
   "orbit": { "semi_major_axis_km": 227943822, "eccentricity": 0.0933941, "inclination_deg": 1.84969142, "period_days": 686.98, "longitude_ascending_node_deg": 49.56, "argument_periapsis_deg": 286.5, "mean_anomaly_deg": 19.39 },
-  "rotation": { "day_length_hours": 24.6597, "axial_tilt_deg": 25.19 },
+  "rotation": { "day_length_hours": 24.6597, "axial_tilt_deg": 25.19, "pole_ra_deg": 317.681, "pole_dec_deg": 52.887 },
   "atmosphere": {
     "pressure_kpa": 0.636,
     "composition": { "CO2": 0.951, "N2": 0.0259, "Ar": 0.0194, "O2": 0.0016, "CO": 0.0006 }

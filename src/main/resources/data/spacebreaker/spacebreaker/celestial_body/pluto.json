@@ -4,7 +4,7 @@
   "dimension": "spacebreaker:pluto",
   "physical": { "mass_kg": 1.303e22, "radius_km": 1188.3, "surface_gravity": 0.62 },
   "orbit": { "semi_major_axis_km": 5906440597, "eccentricity": 0.2488273, "inclination_deg": 17.14001206, "period_days": 90560.0, "longitude_ascending_node_deg": 110.3, "argument_periapsis_deg": 113.76, "mean_anomaly_deg": 14.86 },
-  "rotation": { "day_length_hours": 153.2928, "axial_tilt_deg": 119.51 },
+  "rotation": { "day_length_hours": 153.2928, "axial_tilt_deg": 119.51, "pole_ra_deg": 132.993, "pole_dec_deg": -6.163 },
   "atmosphere": {
     "pressure_kpa": 0.001,
     "composition": { "N2": 0.99, "CH4": 0.0095, "CO": 0.0005 },

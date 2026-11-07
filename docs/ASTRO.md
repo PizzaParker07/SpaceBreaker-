@@ -80,7 +80,24 @@ Real NASA/JPL values (planetary fact sheets; J2000 mean elements for the planets
 fields, all with defaults: `albedo` (Bond, default 0.3), `rings` (`inner_radius_km`,
 `outer_radius_km`), and orbit angles `longitude_ascending_node_deg`, `argument_periapsis_deg`,
 `mean_anomaly_deg` (J2000, default 0), and secular rates `node_rate_deg_per_year`,
-`periapsis_rate_deg_per_year` (default 0, a fixed orbit).
+`periapsis_rate_deg_per_year` (default 0, a fixed orbit), and the spin axis `rotation.pole_ra_deg`,
+`rotation.pole_dec_deg` (ICRF J2000, right-hand rule; default none).
+
+**Moon orbits in the planet's equator.** If a planet has a pole, its moons' `inclination_deg`,
+`longitude_ascending_node_deg` and `argument_periapsis_deg` are measured in its equator, with Ω
+counted from the equator's ascending node on the ecliptic (`OrbitalElements.referencePole`,
+`Frames.equatorialMoonOrbits`). Poles come from IAU WGCCRE 2015: Mars 317.681° / 52.887°, Jupiter
+268.057° / 64.495°, Saturn 40.589° / 83.537°, Uranus 77.311° / 15.175° (the antipode of the IAU
+north pole, because Uranus spins retrograde), Neptune 299.36° / 43.46°, Pluto 132.993° / −6.163°.
+Earth has none, so the Moon stays referred to the ecliptic. Before this change every moon orbited
+in the ecliptic, and Uranus's moons were eclipsed every few days in every year.
+`MoonFramesTest` checks:
+- Each pole reproduces its planet's axial tilt within 3°.
+- Saturn's modelled equinox falls in 2009.6 and Uranus's in 2007.9.
+- Uranus's moons are eclipsed around the 2007 equinox and not at the 2028 solstice.
+- Titan is eclipsed around 2009 but not in 2017.
+- Phobos misses Mars's shadow near the solstice of January 2000 and is eclipsed every orbit half a
+  season later.
 
 **Secular precession.** With rates, Ω(t) = Ω₀ + Ω̇t and ω(t) = ω₀ + ω̇t, and the mean anomaly
 advances at n − Ω̇ − ω̇, so the mean longitude keeps the sidereal rate set by `period_days`. Only the
