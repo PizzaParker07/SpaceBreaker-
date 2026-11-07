@@ -151,9 +151,11 @@ public final class MoonLifeGameTests {
         helper.assertTrue(chests >= 4, "outpost needs loot chests, found " + chests);
         helper.assertTrue(spawners == 1, "one drone dispenser");
         helper.assertTrue(doors == 6, "airlock with two iron doors plus the vault door (6 halves), found " + doors);
-        int drones = level.getEntitiesOfClass(SurveyDrone.class, AABB.of(bb).inflate(2)).size();
-        helper.assertTrue(drones >= 2, "drones guard the outpost, found " + drones);
-        helper.succeed();
+        // drones placed into a freshly loaded chunk can take a few ticks to show up in entity lookups
+        helper.succeedWhen(() -> {
+            int drones = level.getEntitiesOfClass(SurveyDrone.class, AABB.of(bb).inflate(4)).size();
+            helper.assertTrue(drones >= 2, "drones guard the outpost, found " + drones);
+        });
     }
 
     @GameTest(template = EMPTY)

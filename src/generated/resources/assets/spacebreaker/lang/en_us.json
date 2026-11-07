@@ -966,6 +966,8 @@
   "message.spacebreaker.assembler.wrong_part": "A part is in the wrong slot",
   "message.spacebreaker.beacon.activated": "Emergency return: hold on, you are coming home",
   "message.spacebreaker.beacon.not_needed": "The beacon only works away from Earth",
+  "message.spacebreaker.cold_trap.enter": "Permanently shadowed crater: %s °C, the sun never reaches here",
+  "message.spacebreaker.cold_trap.leave": "Out of the cold trap",
   "message.spacebreaker.console.no_rocket": "No rocket on the pad",
   "message.spacebreaker.distributor.leak": "Room is not sealed",
   "message.spacebreaker.distributor.leak_at": "Leak near %s %s %s (or the room is too large)",

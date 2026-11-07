@@ -966,6 +966,8 @@
   "message.spacebreaker.assembler.wrong_part": "Bir parça yanlış yuvada",
   "message.spacebreaker.beacon.activated": "Acil dönüş: sıkı tutun, eve dönüyorsun",
   "message.spacebreaker.beacon.not_needed": "İşaret yalnızca Dünya dışında çalışır",
+  "message.spacebreaker.cold_trap.enter": "Kalıcı gölgeli krater: %s °C, buraya hiç güneş ulaşmaz",
+  "message.spacebreaker.cold_trap.leave": "Soğuk tuzaktan çıktın",
   "message.spacebreaker.console.no_rocket": "Rampada roket yok",
   "message.spacebreaker.distributor.leak": "Oda sızdırmaz değil",
   "message.spacebreaker.distributor.leak_at": "Sızıntı: %s %s %s yakınında (ya da oda çok büyük)",

@@ -171,14 +171,24 @@ public record TerrainProfile(ResourceLocation body, int baseHeight, double poleD
      * @param iceDepth       thickness of the ice layer under icy soil
      * @param polarCraters   crater density multiplier in the polar region
      */
-    public record Poles(double polarLatitude, double iceLatitude, int iceDepth, double polarCraters) {
-        public static final Poles DEFAULT = new Poles(72, 80, 4, 1.5);
+    /**
+     * Polar settings. {@code coldTraps}: shadowed polar crater floors are cold traps (see {@link ColdTraps});
+     * a world can switch this off and keep the icy floors as scenery.
+     */
+    public record Poles(double polarLatitude, double iceLatitude, int iceDepth, double polarCraters, boolean coldTraps) {
+        public static final Poles DEFAULT = new Poles(72, 80, 4, 1.5, true);
         public static final Codec<Poles> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.DOUBLE.optionalFieldOf("polar_latitude", DEFAULT.polarLatitude).forGetter(Poles::polarLatitude),
                 Codec.DOUBLE.optionalFieldOf("ice_latitude", DEFAULT.iceLatitude).forGetter(Poles::iceLatitude),
                 Codec.INT.optionalFieldOf("ice_depth", DEFAULT.iceDepth).forGetter(Poles::iceDepth),
-                Codec.DOUBLE.optionalFieldOf("polar_craters", DEFAULT.polarCraters).forGetter(Poles::polarCraters)
+                Codec.DOUBLE.optionalFieldOf("polar_craters", DEFAULT.polarCraters).forGetter(Poles::polarCraters),
+                Codec.BOOL.optionalFieldOf("cold_traps", DEFAULT.coldTraps).forGetter(Poles::coldTraps)
         ).apply(i, Poles::new));
+
+        /** Earlier four-value form: cold traps on. */
+        public Poles(double polarLatitude, double iceLatitude, int iceDepth, double polarCraters) {
+            this(polarLatitude, iceLatitude, iceDepth, polarCraters, true);
+        }
     }
 
     /**

@@ -68,20 +68,13 @@ public class OutpostPiece extends StructurePiece {
     }
 
     /**
-     * Places a block written in piece space, turned with the shared dungeon transform (vanilla's own mirror/rotation
-     * would leave signs, dispensers, buttons and doors facing the wrong way). Like world generation, it does not
-     * update neighbour shapes, so building in a live level (tests, commands) never pops a sign or button whose wall
-     * is still being laid in a neighbouring chunk.
+     * Places a block written in piece space through the shared dungeon helper: turned to match the piece's coordinate
+     * mapping and, like world generation, without neighbour shape updates.
      */
     @Override
     protected void placeBlock(WorldGenLevel level, BlockState state, int x, int y, int z, BoundingBox box) {
-        BlockPos pos = PieceOrientation.worldPos(this, x, y, z);
-        if (!box.isInside(pos)) {
-            return;
-        }
-        level.setBlock(pos, PieceOrientation.transform(this, state), net.minecraft.world.level.block.Block.UPDATE_CLIENTS
-                | net.minecraft.world.level.block.Block.UPDATE_KNOWN_SHAPE);
-        if (state.is(Blocks.IRON_BARS) || state.getBlock() instanceof net.minecraft.world.level.block.WallBlock) {
+        BlockPos pos = PieceOrientation.place(level, this, state, x, y, z, box);
+        if (pos != null && (state.is(Blocks.IRON_BARS) || state.getBlock() instanceof net.minecraft.world.level.block.WallBlock)) {
             level.getChunk(pos).markPosForPostprocessing(pos);
         }
     }

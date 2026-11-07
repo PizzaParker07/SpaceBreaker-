@@ -55,6 +55,7 @@ public final class WorldgenModule implements SbModule {
     @Override
     public void register(IEventBus modBus) {
         CHUNK_GENERATORS.register(modBus);
+        ColdTraps.register();
         BIOME_SOURCES.register(modBus);
         FEATURES.register(modBus);
         ModLoadingContext.get().getActiveContainer().registerConfig(ModConfig.Type.SERVER, WorldgenConfig.SPEC, "spacebreaker-worlds-server.toml");
@@ -130,6 +131,9 @@ public final class WorldgenModule implements SbModule {
     public void addTranslations(Lang lang) {
         lang.add("commands.spacebreaker.localtime.query", "Local day fraction %s (solar time %s)", "Yerel gün kesri %s (güneş saati %s)");
         lang.add("commands.spacebreaker.localtime.set", "Local solar time set to %s", "Yerel güneş saati %s olarak ayarlandı");
+        lang.add("message.spacebreaker.cold_trap.enter", "Permanently shadowed crater: %s °C, the sun never reaches here",
+                "Kalıcı gölgeli krater: %s °C, buraya hiç güneş ulaşmaz");
+        lang.add("message.spacebreaker.cold_trap.leave", "Out of the cold trap", "Soğuk tuzaktan çıktın");
         lang.add("commands.spacebreaker.localtime.none", "This world follows Earth's clock", "Bu dünya Dünya'nın saatini kullanıyor");
     }
 }

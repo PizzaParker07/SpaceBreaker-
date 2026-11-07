@@ -183,6 +183,40 @@ public final class MoonGameTests {
         helper.succeed();
     }
 
+    /**
+     * Cold traps: shadowed polar crater floors are found by the generator, stay about 60 °C below the lunar night
+     * even at noon, and are beyond a first-tier suit but within a heated suit.
+     */
+    @GameTest(template = EMPTY)
+    public static void polarColdTrapsNeedAHeatedSuit(GameTestHelper helper) {
+        PlanetChunkGenerator gen = moonGenerator(helper, 5L);
+        PlanetTerrain t = gen.terrain();
+        double p = t.profile().poleDistance();
+        int traps = 0;
+        for (Crater c : t.cratersNear(-1500, p * 0.9, 1500, p)) {
+            if (c.radius() >= 8 && Math.abs(t.latitude(c.z())) > 85 && gen.coldTrapFloor((int) c.x(), (int) c.z()) != Integer.MIN_VALUE) {
+                traps++;
+            }
+        }
+        helper.assertTrue(traps > 0, "polar craters hold cold traps");
+        helper.assertTrue(gen.coldTrapFloor(0, 0) == Integer.MIN_VALUE, "no cold trap at the equator");
+        double day = 120;
+        double night = -173;
+        double noon = day + com.pizzaparker07.spacebreaker.content.worldgen.ColdTraps.offsetC(day, night, (float) (Math.PI / 2));
+        double midnight = night + com.pizzaparker07.spacebreaker.content.worldgen.ColdTraps.offsetC(day, night, (float) (-Math.PI / 2));
+        helper.assertTrue(Math.abs(noon - (night - 60)) < 1e-6 && Math.abs(midnight - (night - 60)) < 1e-6,
+                "a cold trap stays at the same deep cold day and night: " + noon + " / " + midnight);
+        helper.assertTrue(noon < com.pizzaparker07.spacebreaker.content.suit.SuitTier.MK1.minTempC(), "too cold for a first-tier suit");
+        helper.assertTrue(noon >= com.pizzaparker07.spacebreaker.content.suit.SuitTier.HEATED.minTempC(), "a heated suit copes");
+        // a profile can switch cold traps off (and older profiles keep them on)
+        var codec = TerrainProfile.Poles.CODEC;
+        var off = codec.parse(com.mojang.serialization.JsonOps.INSTANCE, com.google.gson.JsonParser.parseString("{\"cold_traps\": false}")).getOrThrow();
+        var dflt = codec.parse(com.mojang.serialization.JsonOps.INSTANCE, com.google.gson.JsonParser.parseString("{}")).getOrThrow();
+        helper.assertFalse(off.coldTraps(), "cold_traps: false switches them off");
+        helper.assertTrue(dflt.coldTraps(), "cold traps are on by default");
+        helper.succeed();
+    }
+
     @GameTest(template = EMPTY)
     public static void moonColumnsAreLayeredLunarCrust(GameTestHelper helper) {
         PlanetChunkGenerator gen = moonGenerator(helper, 20261106L);

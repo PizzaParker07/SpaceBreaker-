@@ -73,6 +73,20 @@ public class PlanetChunkGenerator extends ChunkGenerator {
         return t;
     }
 
+    /**
+     * Surface height of a permanently shadowed polar crater floor at this column (where ice forms), or
+     * {@code Integer.MIN_VALUE} if the column is not in such a crater, the profile has no polar soil or its
+     * {@code poles.cold_traps} flag is off.
+     */
+    public int coldTrapFloor(int x, int z) {
+        PlanetTerrain t = terrain();
+        if (t.profile().materials().polarSoil().isEmpty() || !t.profile().poles().coldTraps()) {
+            return Integer.MIN_VALUE;
+        }
+        PlanetTerrain.Column c = t.column(x, z);
+        return c.shadowed(t.profile()) ? net.minecraft.util.Mth.floor(c.height) : Integer.MIN_VALUE;
+    }
+
     /** Binds the world seed; called once by the chunk map before anything generates. */
     public void bindSeed(long worldSeed) {
         TerrainProfile p = profile.value();
