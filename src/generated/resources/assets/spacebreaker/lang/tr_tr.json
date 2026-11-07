@@ -595,6 +595,7 @@
   "commands.spacebreaker.season.none": "Mevsimler yalnızca Mars'ta modellenir",
   "commands.spacebreaker.season.set": "Mars mevsimi Ls %s° olarak ayarlandı (%s)",
   "compat.spacebreaker.info.solar_dust": "Toz: %%%s, verim: %%%s",
+  "config.jade.plugin_spacebreaker.info_lines": "Spacebreaker ayrıntıları",
   "container.spacebreaker.cargo_hold": "Kargo Ambarı",
   "container.spacebreaker.launch_console": "Fırlatma Kontrolü",
   "container.spacebreaker.research_lab": "Araştırma Laboratuvarı",
