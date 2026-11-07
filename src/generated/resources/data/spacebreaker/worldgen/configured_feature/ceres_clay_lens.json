@@ -16,6 +16,19 @@
           "predicate_type": "minecraft:tag_match",
           "tag": "spacebreaker:belt_stone"
         }
+      },
+      {
+        "state": {
+          "Name": "spacebreaker:ammoniated_clay",
+          "Properties": {
+            "facing": "north",
+            "print": "none"
+          }
+        },
+        "target": {
+          "block": "spacebreaker:cerean_ice",
+          "predicate_type": "minecraft:block_match"
+        }
       }
     ]
   }

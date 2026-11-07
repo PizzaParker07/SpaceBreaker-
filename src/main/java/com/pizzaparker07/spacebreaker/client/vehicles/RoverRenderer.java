@@ -45,6 +45,13 @@ public class RoverRenderer extends EntityRenderer<RoverEntity> {
         return new RoverRenderer(ctx, new RoverModel(ctx.bakeLayer(RoverModel.PRESSURIZED_LAYER), RoverModel.PRESSURIZED), PRESSURIZED_TEXTURE);
     }
 
+    private static final ResourceLocation AMPHIBIOUS_TEXTURE = Spacebreaker.id("textures/entity/amphibious_rover.png");
+
+    /** The amphibious rover: the cabin rover on floats with a propeller. */
+    public static RoverRenderer amphibious(EntityRendererProvider.Context ctx) {
+        return new RoverRenderer(ctx, new RoverModel(ctx.bakeLayer(RoverModel.AMPHIBIOUS_LAYER), RoverModel.AMPHIBIOUS), AMPHIBIOUS_TEXTURE);
+    }
+
     /** The sprint rover: same parts and UV layout, its own proportions and paint. */
     public static RoverRenderer sprint(EntityRendererProvider.Context ctx) {
         return new RoverRenderer(ctx, new RoverModel(ctx.bakeLayer(RoverModel.SPRINT_LAYER), RoverModel.SPRINT), SPRINT_TEXTURE);

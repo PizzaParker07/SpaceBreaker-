@@ -11,11 +11,24 @@ package com.pizzaparker07.spacebreaker.content.vehicles;
  * @param cargoSlots cargo bay size (multiples of 9 for the chest screen)
  * @param grip       tyre grip relative to the standard rover (a light rover skids sooner)
  * @param loudness   motor sound volume relative to the standard rover
+ * @param cabin      closed pressurised cabin
+ * @param swimSpeed  top speed afloat, blocks per tick (0 = it does not float)
+ * @param fePerBlockSwimming energy for one block afloat
  */
 public record RoverType(String id, double maxSpeed, double accel, int capacity, int fePerBlock, int cargoSlots, double grip,
-                        float loudness, boolean cabin) {
+                        float loudness, boolean cabin, double swimSpeed, int fePerBlockSwimming) {
     public RoverType(String id, double maxSpeed, double accel, int capacity, int fePerBlock, int cargoSlots, double grip, float loudness) {
-        this(id, maxSpeed, accel, capacity, fePerBlock, cargoSlots, grip, loudness, false);
+        this(id, maxSpeed, accel, capacity, fePerBlock, cargoSlots, grip, loudness, false, 0, 0);
+    }
+
+    public RoverType(String id, double maxSpeed, double accel, int capacity, int fePerBlock, int cargoSlots, double grip,
+                     float loudness, boolean cabin) {
+        this(id, maxSpeed, accel, capacity, fePerBlock, cargoSlots, grip, loudness, cabin, 0, 0);
+    }
+
+    /** Floats and drives on water and other liquids (Titan's methane lakes). */
+    public boolean amphibious() {
+        return swimSpeed > 0;
     }
 
     /** The open two-seat planetary rover. */
@@ -29,6 +42,12 @@ public record RoverType(String id, double maxSpeed, double accel, int capacity, 
      * oxygen tank for the crew and walls that stop half of the radiation.
      */
     public static final RoverType PRESSURIZED = new RoverType("pressurized_rover", 0.35, 0.010, 1_200_000, 80, 27, 1.0, 0.7F, true);
+
+    /**
+     * Amphibious: the pressurised cabin on a sealed hull with side floats and a stern propeller. A little slower on
+     * land; on water or liquid methane it floats and the propeller drives it at 5 m/s, at twice the energy per block.
+     */
+    public static final RoverType AMPHIBIOUS = new RoverType("amphibious_rover", 0.30, 0.009, 1_200_000, 85, 27, 1.0, 0.7F, true, 0.25, 170);
 
     /** Blocks the full battery drives on flat ground. */
     public int range() {

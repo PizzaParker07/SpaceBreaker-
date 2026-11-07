@@ -16,6 +16,9 @@
     "spacebreaker:station_bunk",
     "spacebreaker:fuel_depot",
     "spacebreaker:solar_array",
-    "spacebreaker:cargo_module"
+    "spacebreaker:cargo_module",
+    "spacebreaker:station_core_module",
+    "spacebreaker:docking_module",
+    "spacebreaker:station_hatch"
   ]
 }

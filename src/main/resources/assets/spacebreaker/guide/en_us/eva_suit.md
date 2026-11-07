@@ -35,11 +35,23 @@ The tanks sit in the backpack inside the {item spacebreaker:eva_chestplate}: **t
 - Out of oxygen, or the suit open in an airless place: a fast alarm. The warning on the display blinks.
 
 {page}
-## Helmet
-The helmet display shows oxygen, suit state, body and outside temperature, radiation and gravity. If the Sun is blinding, lower the **gold sun visor**: {key key.sneak} + {key key.use} with the helmet in hand. You can switch off or fade the rounded visor frame round the screen in the client config (**visorFrame**, **visorFrameOpacity**).
+## Helmet {#hud}
+The helmet display stays small. Beside the hotbar, on the side away from your main hand, is one oxygen line: a tank icon, a bar and the time left (mm:ss). The bar is blue, orange below **30 %**, and red and blinking below **15 %**.
+- **Hazard icons** appear after the oxygen time only while something is wrong: suit (open or below 20 % in an airless place), temperature (beyond your suit's rating, or your body outside 35–38.5 °C; red outside 32–41 °C), radiation (over 50 mSv/day, or 250 mSv in total; red from 1,000), pressure (suit under strain) and maneuvering gas (below 10 %).
+- **The way home** (arrow, target and distance) only shows when your oxygen will not last the walk back to the target you picked with the environment sensor. → [Environment sensor](tools)
+- **One warning** blinks above the hotbar, such as **TURN BACK: O2 RUNNING LOW FOR THE WAY HOME** in yellow, or **NOT ENOUGH O2 TO GET BACK**, **SUIT NOT SEALED** and **BEYOND SUIT RATING** in red.
+- Radio captions appear at the top left; the sensor card moves down below them while they are shown. The top centre of the screen is kept clear.
+
+If the Sun is blinding, lower the **gold sun visor**: {key key.sneak} + {key key.use} with the helmet in hand.
+
+> Want every gauge? Turn on **detailedHud** in the client config: body temperature, radiation, pressure, gravity and outside temperature, the MAG / TETHER / COLD TRAP / µG labels, maneuvering gas, and the way home all the time. **visorRim** adds a thin visor rim round the screen that frosts over in the cold (off by default; **visorRimOpacity**). **opacity** fades the whole display and **enabled** turns it off.
+
+{page}
+## Helmet lamps {#lamps}
+The helmet lamps switch on by themselves in the dark and light where you look. {key key.spacebreaker.helmet_lamp} switches between a **wide** beam (about 20 blocks) for working nearby and a **long** beam (about 40 blocks) for lava tubes and shadowed craters. Only the light changes: no extra power or oxygen. Everyone sees the same beam.
 
 ## Sound {#sound}
-With the **realistic sound** client setting (realisticSound, **off** by default) the world sounds a little quieter and softer where the air is thin: on Mars at least 80 % of the volume, in vacuum (the Moon, orbit, asteroids, comets) about half, and the high notes fade first. Your own steps and tools, helmet sounds (radio, mission control, warning beeps), breathable air and pressurised rooms stay normal. With the setting off everything sounds as usual.
+With the **realistic sound** client setting (atmosphereSound, **off** by default) the world sounds a little quieter and softer where the air is thin: on Mars at least 80 % of the volume, in vacuum (the Moon, orbit, asteroids, comets) about half, and the high notes fade first. Your own steps and tools, helmet sounds (radio, mission control, warning beeps), breathable air and pressurised rooms stay normal. With the setting off everything sounds as usual.
 
 ## When you die
 The tanks stay inside the body piece, which drops like any armour: pick it up and the tanks come back with it. Breath, body temperature and radiation dose reset.

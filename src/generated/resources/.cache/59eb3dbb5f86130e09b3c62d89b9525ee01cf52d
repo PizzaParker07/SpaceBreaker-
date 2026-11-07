@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-07T21:04:19.399402857	Loot Tables
+// 1.21.1	2026-11-07T21:19:22.424424721	Loot Tables
 c48f71ca60600cd6230f77a2e146a3df572494ae data/spacebreaker/loot_table/blocks/aerogel.json
 e37973997ec83c5b040a31bf9fcda1757b53fc00 data/spacebreaker/loot_table/blocks/airlock_door.json
 c511e60fe01f6dddc2d2b0e516ca81c11bf4ca91 data/spacebreaker/loot_table/blocks/aluminum_block.json
@@ -265,6 +265,8 @@ c09ba019815f2fcf7845fff827fdd1cde3490e07 data/spacebreaker/loot_table/blocks/sol
 ffa9b85dea0733d27c3cfcb05899011c14689c3a data/spacebreaker/loot_table/blocks/stained_ice.json
 6e7d9631614bb89ebd2de6734606d66aabe30d17 data/spacebreaker/loot_table/blocks/stained_nitrogen_ice.json
 8f30c28825a59f378cf17d37b41e904a71c62611 data/spacebreaker/loot_table/blocks/station_bunk.json
+3b7c0de9af84df08fa97f791041470021593af75 data/spacebreaker/loot_table/blocks/station_core.json
+f58854a7f09ce8ec295c1ab366511b9fa7494cd7 data/spacebreaker/loot_table/blocks/station_hatch.json
 a4499145abfbc8994b6600e9a4e8c584e85d86b6 data/spacebreaker/loot_table/blocks/station_hull.json
 baf725b5577471f08a2c9d672de8262eb9977b82 data/spacebreaker/loot_table/blocks/station_window.json
 9668587894b6dd2ba67f82f6fbd2b651f5fa6a01 data/spacebreaker/loot_table/blocks/steel_block.json

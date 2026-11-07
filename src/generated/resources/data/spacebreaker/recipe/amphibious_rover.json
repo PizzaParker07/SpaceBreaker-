@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "c:plates/aluminum"
+    },
+    "M": {
+      "item": "spacebreaker:electric_motor"
+    },
+    "R": {
+      "item": "spacebreaker:pressurized_rover"
+    }
+  },
+  "pattern": [
+    "AMA",
+    "ARA",
+    "AAA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "spacebreaker:amphibious_rover"
+  }
+}

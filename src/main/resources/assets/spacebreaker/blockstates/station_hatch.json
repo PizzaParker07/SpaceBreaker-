@@ -1,0 +1,56 @@
+{
+  "variants": {
+    "center=false,facing=up": {
+      "model": "spacebreaker:block/station_hatch"
+    },
+    "center=true,facing=up": {
+      "model": "spacebreaker:block/station_hatch_center"
+    },
+    "center=false,facing=down": {
+      "model": "spacebreaker:block/station_hatch",
+      "x": 180
+    },
+    "center=true,facing=down": {
+      "model": "spacebreaker:block/station_hatch_center",
+      "x": 180
+    },
+    "center=false,facing=north": {
+      "model": "spacebreaker:block/station_hatch",
+      "x": 90
+    },
+    "center=true,facing=north": {
+      "model": "spacebreaker:block/station_hatch_center",
+      "x": 90
+    },
+    "center=false,facing=south": {
+      "model": "spacebreaker:block/station_hatch",
+      "x": 90,
+      "y": 180
+    },
+    "center=true,facing=south": {
+      "model": "spacebreaker:block/station_hatch_center",
+      "x": 90,
+      "y": 180
+    },
+    "center=false,facing=west": {
+      "model": "spacebreaker:block/station_hatch",
+      "x": 90,
+      "y": 270
+    },
+    "center=true,facing=west": {
+      "model": "spacebreaker:block/station_hatch_center",
+      "x": 90,
+      "y": 270
+    },
+    "center=false,facing=east": {
+      "model": "spacebreaker:block/station_hatch",
+      "x": 90,
+      "y": 90
+    },
+    "center=true,facing=east": {
+      "model": "spacebreaker:block/station_hatch_center",
+      "x": 90,
+      "y": 90
+    }
+  }
+}

@@ -378,15 +378,9 @@ public class PlanetSkyEffects extends DimensionSpecialEffects {
         }
     }
 
-    private static BlockyBodyRenderer.ColorMap earthMap;
-
-    /** Earth's surface with its clouds, for the blocky planet. */
+    /** Earth's detailed surface with its clouds, for the blocky planet (fine enough for 128 blocks across). */
     private static BlockyBodyRenderer.ColorMap earthMap() {
-        if (earthMap == null) {
-            earthMap = BlockyBodyRenderer.withClouds(BlockyBodyRenderer.texture(Spacebreaker.id("textures/environment/earth_map.png")),
-                    BlockyBodyRenderer.texture(Spacebreaker.id("textures/environment/earth_clouds.png")));
-        }
-        return earthMap;
+        return BlockyBodyRenderer.surface("earth");
     }
 
     /**

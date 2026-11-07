@@ -12,6 +12,24 @@
           "predicate_type": "minecraft:tag_match",
           "tag": "spacebreaker:belt_stone"
         }
+      },
+      {
+        "state": {
+          "Name": "spacebreaker:magnetite_ore"
+        },
+        "target": {
+          "block": "spacebreaker:cerean_ice",
+          "predicate_type": "minecraft:block_match"
+        }
+      },
+      {
+        "state": {
+          "Name": "spacebreaker:magnetite_ore"
+        },
+        "target": {
+          "block": "spacebreaker:ammoniated_clay",
+          "predicate_type": "minecraft:block_match"
+        }
       }
     ]
   }

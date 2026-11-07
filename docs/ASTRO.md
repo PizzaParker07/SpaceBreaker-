@@ -1044,9 +1044,20 @@ built on them.
 - `FlightState(position, velocity, mass)` steps with velocity Verlet (symplectic, so orbits do not drift),
   with constant thrust and mass flow; `advance` adds substeps for long ticks. `assist(v, reference, maxDv)`
   is the optional flight assist that damps the relative velocity.
+- `FlightReadout` holds what a cockpit display shows as plain, server-safe data: target id, relative speed (+ when
+  receding), distance or altitude, Δv left and full, assist, predicted path and next manoeuvre (NaN when none).
+  The HUD (client/hud, suit) turns it into text.
 - `OrbitPredictor.predict(sys, body, state, t, horizon, step, maxSegments)` predicts patched conics for the
   HUD. Each segment ends in an impact, an exit from the current sphere of influence or an entry into a
   moon's, and the next conic continues in the new body's frame. `soi(sys, body)` gives a sphere of influence.
+
+- `ManeuverNode(time, prograde, normal, radial)` is a planned burn in the local orbital frame: `deltaV(state)`,
+  `apply`, `burnSeconds(mass, thrust, isp)` and `startTime` (the burn centred on the node).
+- `EntryGate` gives a body's layers: `zone(body, altitude)` returns SPACE, ORBIT_SHELL (below twice the
+  low-orbit altitude), ENTRY (below the top of the air, or half the low-orbit altitude on airless worlds) or
+  SURFACE. `descendsThroughEntry(body, state)` is the hand-over test to the surface world.
+- `SurfacePoint(lat, lon, altitude)` converts to and from a position over a turning body through `BodyLook`.
+  `mapXZ(blocksPerDegree)` maps it onto a surface world (x east, z south).
 
 `FlightCoreTest` checks:
 - scale round trips and the Earth–Moon distances in blocks;
@@ -1054,3 +1065,37 @@ built on them.
 - 100 low-Earth orbits at 10 s steps staying within 2 km;
 - the Δv of a burn matching the rocket equation to 1e-6;
 - a 3.13 km/s translunar injection entering the Moon's sphere of influence (66,000 km) within 1.5–6 days.
+
+## Spaceflight layout (agreed with rocketry)
+
+There are two layers, so the station never has to move:
+
+| Layer | Dimension | Scale | What lives there |
+|---|---|---|---|
+| Orbit pocket | `earth_orbit` (later `moon_orbit`, …) | 1 block = 1 m | stations, shipyard, docking, EVA |
+| Travel scene | `space_earth_moon` (later `space_<system>`) | `SceneScale.EARTH_MOON` (Earth 128 blocks, low orbit ≈ 15 blocks up, Moon ≈ 2,200 blocks out) | free flight between bodies; bodies drawn by the voxel body renderer at their real positions |
+
+**Moving between pocket and scene** happens through `EntryGate`'s orbit shell, with no screen. Rocketry's
+`Transit.handOff(Runnable)` holds the last frame, switches dimension and cross-fades back (0.3 s).
+- **Out:** undock, then go more than 256 blocks from the nearest station core. The ship enters the scene at
+  its real orbital state (`FlightState`, `OrbitPredictor`).
+- **Back:** inside Earth's orbit shell, below about 50 m/s relative to a station's orbit, the ship returns to
+  the pocket next to that station. `Stations.orbit(stationId)` gives each station a fixed circular low orbit
+  (400 km, inclination 0, phase from the core's position). The scene draws a marker there.
+
+**Ship size:**
+- The hull is at most 13×13×29 blocks, so it fits the 15×15×31 shipyard with 1 block of clearance.
+- The first ship is 7 wide × 5 high × 11 long, with one docking port at the nose.
+
+**Docking (rocketry's API, server side):**
+- `Berths.find(Level, BlockPos)` → `Berth(bounds, portPos, portFacing, stationId)`.
+- `Berths.dock(ship, berth)` snaps the nose port to the berth's `portFacing` and marks the ship docked. A
+  docked ship gets fuel and power from the station.
+- `Berths.undock(ship)` releases it.
+
+**EVA and cabin (suit's interfaces):**
+- The ship implements `TetherAnchor` (`tetherPoint`, `frameVelocity` in blocks per tick, also on the client).
+  Tethered and nearby suited players move with it.
+- It also implements `PressurizedVehicle`, with a radiation factor of 0.4 in deep space and 0.3 inside the
+  Earth–Moon magnetosphere.
+- The cockpit HUD (client/hud) reads a `FlightReadout`.

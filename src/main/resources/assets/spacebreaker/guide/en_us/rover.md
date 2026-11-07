@@ -1,7 +1,7 @@
 ---
 title: Rover
 icon: spacebreaker:rover
-items: [spacebreaker:rover]
+items: [spacebreaker:rover, spacebreaker:sprint_rover, spacebreaker:pressurized_rover]
 research: spacebreaker:rovers
 ---
 An electric vehicle for reaching distant craters, ice fields and ruins from your base.
@@ -25,3 +25,21 @@ An electric vehicle for reaching distant craters, ice fields and ruins from your
 ## Charging
 - Next to a {item spacebreaker:battery_bank} or a cable it charges at **200 FE/t**.
 - {key key.use} the rover with a {item spacebreaker:solar_panel} or {item spacebreaker:rtg} in hand: it is mounted on the rear deck behind the seats and charges on the move.
+
+## Other rovers {#models}
+Both are built from a finished rover, so the upgrades and charging work the same.
+
+| | Rover | Sprint | Pressurized |
+|---|---|---|---|
+| Top speed | 9 m/s | 13 m/s | 7 m/s |
+| Battery | 400,000 FE | 300,000 FE | 1,200,000 FE |
+| Range | ≈ 8,000 blocks | ≈ 8,500 blocks | ≈ 15,000 blocks |
+| Cargo | 27 slots | 9 slots | 27 slots |
+
+{items spacebreaker:sprint_rover}
+The {item spacebreaker:sprint_rover} is light and quiet on an aluminium-lithium frame, but its tyres grip less: it skids sooner on loose ground.
+{recipe spacebreaker:sprint_rover}
+
+{items spacebreaker:pressurized_rover}
+The {item spacebreaker:pressurized_rover} has a closed cabin: aboard you need no helmet, and its walls stop **half the radiation**. To fill its oxygen tank, {key key.use} it holding a container of oxygen gas or LOX (such as a {item spacebreaker:cryogenic_canister}), or park it beside a tank or gas pipe that holds oxygen: it tops itself up. The tank holds air for about **1.8 hours** for one rider, and life support draws **4 FE/t** from the battery while anyone is aboard. With an empty tank or a flat battery the cabin loses pressure ("Cabin unpressurized"), so keep your suit on.
+{recipe spacebreaker:pressurized_rover}

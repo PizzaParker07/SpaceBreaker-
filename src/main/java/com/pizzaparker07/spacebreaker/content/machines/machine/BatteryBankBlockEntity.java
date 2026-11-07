@@ -22,6 +22,8 @@ public class BatteryBankBlockEntity extends MachineBlockEntity {
 
     private final IEnergyStorage input = new View(true);
     private final IEnergyStorage output = new View(false);
+    /** Stored energy at the end of the previous tick; any change means power is flowing (drives LIT). */
+    private int lastStored = -1;
 
     public BatteryBankBlockEntity(BlockPos pos, BlockState state) {
         super(MachinesModule.BATTERY_BANK_BE.get(), pos, state, LAYOUT, CAPACITY, RATE, RATE, List.of());
@@ -43,7 +45,10 @@ public class BatteryBankBlockEntity extends MachineBlockEntity {
         if (state.getValue(BatteryBankBlock.CHARGE) != charge) {
             level.setBlock(pos, state.setValue(BatteryBankBlock.CHARGE, charge), Block.UPDATE_CLIENTS);
         }
-        return false;
+        int stored = energy.getEnergyStored();
+        boolean flowing = lastStored >= 0 && stored != lastStored;
+        lastStored = stored;
+        return flowing;
     }
 
     private final class View implements IEnergyStorage {
