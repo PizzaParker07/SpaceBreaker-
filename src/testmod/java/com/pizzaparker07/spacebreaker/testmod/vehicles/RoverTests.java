@@ -2,6 +2,7 @@ package com.pizzaparker07.spacebreaker.testmod.vehicles;
 
 import com.pizzaparker07.spacebreaker.Spacebreaker;
 import com.pizzaparker07.spacebreaker.content.machines.MachinesModule;
+import com.pizzaparker07.spacebreaker.content.machines.SolarPanelBlockEntity;
 import com.pizzaparker07.spacebreaker.content.machines.base.MachineBlock;
 import com.pizzaparker07.spacebreaker.content.machines.base.MachineBlockEntity;
 import com.pizzaparker07.spacebreaker.content.vehicles.RoverEntity;
@@ -140,6 +141,31 @@ public final class RoverTests {
         rover.installRtg(new ItemStack(MachinesModule.RTG_FUEL_PELLET.get()));
         h.assertTrue(rover.hasSolar() && rover.hasRtg() && rover.hasPellet(), "upgrades fitted");
         h.succeedWhen(() -> h.assertTrue(rover.energy() >= RoverEntity.RTG_OUTPUT * 50, "energy " + rover.energy()));
+    }
+
+    /** Dust on the roof panel costs output like a tracker's; a dust whirl passing by scours it clean; dust is saved. */
+    @GameTest(template = "empty", timeoutTicks = 200)
+    public static void dustyRoofPanelChargesSlowerUntilAWhirlPasses(GameTestHelper h) {
+        h.getLevel().setDayTime(6000);
+        floor(h, Blocks.STONE.defaultBlockState());
+        RoverEntity clean = spawn(h, new BlockPos(1, 1, 1));
+        RoverEntity dusty = spawn(h, new BlockPos(1, 1, 4));
+        clean.installSolar();
+        dusty.installSolar();
+        dusty.setDust(1F);
+        CompoundTag tag = dusty.saveWithoutId(new CompoundTag());
+        h.assertTrue(Math.abs(tag.getFloat("dust") - 1F) < 1e-6, "dust is saved");
+        h.runAfterDelay(100, () -> {
+            double ratio = dusty.energy() / (double) clean.energy();
+            h.assertTrue(clean.energy() > 0, "the clean panel charges");
+            h.assertTrue(Math.abs(ratio - SolarPanelBlockEntity.dustFactor(1F)) < 0.05, "dusty / clean = " + ratio);
+            // with no player near, a whirl dies away after a second; keep one passing until the rover's next check
+            for (int k = 0; k < 4; k++) {
+                h.runAfterDelay(k * 15L, () -> h.spawn(com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.DUST_WHIRL.get(),
+                        Vec3.atBottomCenterOf(new BlockPos(2, 1, 4))).setLife(100));
+            }
+            h.succeedWhen(() -> h.assertTrue(dusty.dust() == 0F, "the whirl swept the roof panel, dust " + dusty.dust()));
+        });
     }
 
     @GameTest(template = "empty")

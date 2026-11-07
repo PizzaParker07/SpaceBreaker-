@@ -327,7 +327,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 ### Araçlar (Endüstri)
 | Durum | İçerik | Not |
 |---|---|---|
-| 🎨 | Gezegen Gezicisi (`spacebreaker:rover`) | iki kişilik, akülü (400 kFE, blok başına 50 FE → ~8000 blok); düşük yerçekiminde az tutuş ve uzun sıçrayışlar, buzda (blok sürtünmesi) zor fren, zayıf direksiyon ve kayma — Plüton azot buzunda en kaygan, sert inişte yaylanır; toz parçacıkları, gevşek zeminde (Ay regoliti, Mars toprağı) tekerlek izi; karanlıkta kendiliğinden yanan farlar; 27 yuvalı kargo (eğilip tıkla); güneş paneli ve RTG (+ pelet) yükseltmesi; batarya bankası ya da kablonun yanına park edince şarj; sürücüye akü/hız göstergesi |
+| 🎨 | Gezegen Gezicisi (`spacebreaker:rover`) | iki kişilik, akülü (400 kFE, blok başına 50 FE → ~8000 blok); düşük yerçekiminde az tutuş ve uzun sıçrayışlar, buzda (blok sürtünmesi) zor fren, zayıf direksiyon ve kayma — Plüton azot buzunda en kaygan, sert inişte yaylanır; toz parçacıkları, gevşek zeminde (Ay regoliti, Mars toprağı) tekerlek izi; karanlıkta kendiliğinden yanan farlar; 27 yuvalı kargo (eğilip tıkla); güneş paneli ve RTG (+ pelet) yükseltmesi; Mars'ta tavan paneli tozlanır (tam tozda %60, göstergede toz %), fırçayla ya da yanından geçen toz hortumuyla temizlenir; batarya bankası ya da kablonun yanına park edince şarj; sürücüye akü/hız göstergesi |
 
 ## Ses
 | Durum | İçerik | Not |
