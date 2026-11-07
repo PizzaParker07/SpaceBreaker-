@@ -245,6 +245,14 @@ public class MarsSkyEffects extends DimensionSpecialEffects {
             }
         }
 
+        // ---- the aphelion cloud belt: a thin veil of water-ice cloud drifting overhead
+        double cover = com.pizzaparker07.spacebreaker.content.mars.MarsClouds.cloudBelt(
+                com.pizzaparker07.spacebreaker.content.mars.MarsSeasons.ls(level), lat) * (1 - storm);
+        if (cover > 0.01) {
+            RenderSystem.defaultBlendFunc();
+            iceClouds(m, (float) cover, day, level.getGameTime() + partialTick);
+        }
+
         // ---- the moons: their own hour angles (equatorial orbits), lit by the sun
         double sols = PlanetTime.clock(level).map(c -> (level.getDayTime() + partialTick + c.offset()) / (double) c.dayTicks())
                 .orElse(level.getDayTime() / 24000.0);
@@ -270,6 +278,11 @@ public class MarsSkyEffects extends DimensionSpecialEffects {
         double ce = Math.cos(elev);
         Vector3d d = new Vector3d(ce * Math.cos(az), Math.sin(elev), ce * Math.sin(az));
         float[] c = skyColour(d, sun, storm);
+        // morning canyon fog: the low sky fills with the same pale haze as the canyon walls
+        float fog = MarsClient.canyonFog() * (float) Mth.clamp(1 - elev / 0.45, 0, 1);
+        if (fog > 0.01F) {
+            c = new float[]{Mth.lerp(fog * 0.8F, c[0], 0.86F), Mth.lerp(fog * 0.8F, c[1], 0.85F), Mth.lerp(fog * 0.8F, c[2], 0.87F)};
+        }
         bb.addVertex(m, (float) d.x * 100, (float) d.y * 100, (float) d.z * 100).setColor(c[0], c[1], c[2], 1F);
     }
 
@@ -322,6 +335,44 @@ public class MarsSkyEffects extends DimensionSpecialEffects {
         }
         BufferUploader.drawWithShader(bb.buildOrThrow());
         RenderSystem.defaultBlendFunc();
+    }
+
+    private static final ResourceLocation ICE_CLOUDS = Spacebreaker.id("textures/environment/mars_ice_clouds.png");
+    /** Height and half extent of the cloud veil in sky units (the dome has radius 100). */
+    private static final float CLOUD_H = 18F;
+    private static final float CLOUD_R = 170F;
+    private static final int CLOUD_GRID = 8;
+
+    /** A flat, slowly drifting veil of streaky ice cloud, fading out toward the horizon. */
+    private static void iceClouds(Matrix4f m, float cover, float day, float time) {
+        float lit = 0.3F + 0.7F * day;
+        float r = 0.93F * lit;
+        float g = 0.95F * lit;
+        float b = 1.0F * lit;
+        float drift = time * 0.0006F;
+        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+        RenderSystem.setShaderTexture(0, ICE_CLOUDS);
+        // soft, not pixelated: thin cloud has no hard edges
+        net.minecraft.client.Minecraft.getInstance().getTextureManager().getTexture(ICE_CLOUDS).setFilter(true, false);
+        BufferBuilder bb = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+        float step = 2 * CLOUD_R / CLOUD_GRID;
+        for (int i = 0; i < CLOUD_GRID; i++) {
+            for (int j = 0; j < CLOUD_GRID; j++) {
+                float x0 = -CLOUD_R + i * step;
+                float z0 = -CLOUD_R + j * step;
+                cloudVertex(bb, m, x0, z0, cover, drift, r, g, b);
+                cloudVertex(bb, m, x0 + step, z0, cover, drift, r, g, b);
+                cloudVertex(bb, m, x0 + step, z0 + step, cover, drift, r, g, b);
+                cloudVertex(bb, m, x0, z0 + step, cover, drift, r, g, b);
+            }
+        }
+        BufferUploader.drawWithShader(bb.buildOrThrow());
+    }
+
+    private static void cloudVertex(BufferBuilder bb, Matrix4f m, float x, float z, float cover, float drift, float r, float g, float b) {
+        float d = Mth.sqrt(x * x + z * z) / CLOUD_R;
+        float fade = Mth.clamp(1F - d * d, 0F, 1F);
+        bb.addVertex(m, x, CLOUD_H, z).setUv(x / 90F + drift, z / 90F).setColor(r, g, b, 0.75F * cover * fade);
     }
 
     private void moon(PoseStack ps, ResourceLocation tex, double sols, double period, double phase0, double size, double lat,

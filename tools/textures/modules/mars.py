@@ -543,7 +543,23 @@ def whirl_puff(i):
     return cv
 
 
+def ice_clouds():
+    """Thin water-ice cloud veil (128x128, tiling): long wind-drawn streaks of bluish white, mostly clear sky."""
+    base = fbm(32, 128, 6201, [(16, 1.0), (8, 0.55), (4, 0.25)], grain=0.04)
+    cv = Canvas(128, 128)
+    for y in range(128):
+        for x in range(128):
+            v = base[y][x // 4]
+            a = max(0.0, min(1.0, (v - 0.48) / 0.32)) ** 1.4
+            if a <= 0:
+                continue
+            tone = (226, 234, 250) if a < 0.6 else (240, 245, 255)
+            cv[x, y] = tone + (int(30 + 190 * a),)
+    return cv
+
+
 def export_sky(save):
+    save(ice_clouds(), 'environment', 'mars_ice_clouds')
     save(phobos(), 'environment', 'phobos')
     save(deimos(), 'environment', 'deimos')
     for i in range(3):

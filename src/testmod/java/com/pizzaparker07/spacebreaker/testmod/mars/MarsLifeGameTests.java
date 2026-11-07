@@ -489,6 +489,33 @@ public final class MarsLifeGameTests {
         helper.succeed();
     }
 
+    /**
+     * Water-ice clouds: canyon fog thickest just after sunrise and gone by noon and at night, filling the floor and
+     * thinning upward; the aphelion cloud belt over the equator around Ls 95, absent in southern summer.
+     */
+    @GameTest(template = EMPTY)
+    public static void marsIceCloudsFollowTimeAndSeason(GameTestHelper helper) {
+        var C = new Object() {
+            double fog(double f) {
+                return com.pizzaparker07.spacebreaker.content.mars.MarsClouds.canyonFog(f);
+            }
+
+            double belt(double ls, double lat) {
+                return com.pizzaparker07.spacebreaker.content.mars.MarsClouds.cloudBelt(ls, lat);
+            }
+        };
+        helper.assertTrue(C.fog(0.02) > 0.9, "thick fog just after sunrise, got " + C.fog(0.02));
+        helper.assertTrue(C.fog(0.10) < C.fog(0.04), "it burns off through the morning");
+        helper.assertTrue(C.fog(0.25) == 0 && C.fog(0.5) == 0 && C.fog(0.75) == 0, "none at noon, sunset or midnight");
+        helper.assertTrue(C.fog(0.94) == 0 && C.fog(0.98) > 0, "it gathers in the last hour before sunrise");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.mars.MarsClouds.fogAtHeight(2) == 1, "the canyon floor is in the fog");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.mars.MarsClouds.fogAtHeight(40) == 0, "the rims stand above it");
+        helper.assertTrue(C.belt(95, 0) > 0.99, "the aphelion belt over the equator");
+        helper.assertTrue(C.belt(95, 60) < 0.5 * C.belt(95, 0), "thinner far from the equator");
+        helper.assertTrue(C.belt(270, 0) == 0 && C.belt(200, 0) == 0, "no belt in southern summer");
+        helper.succeed();
+    }
+
     private MarsLifeGameTests() {
     }
 }

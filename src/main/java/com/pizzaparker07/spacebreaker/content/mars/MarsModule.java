@@ -159,8 +159,9 @@ public final class MarsModule implements SbModule {
         com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.eggs().forEach(SbTabs.PLANETS::add);
         MarsData.register(modBus);
         MarsClimate.register();
-        modBus.addListener(RegisterPayloadHandlersEvent.class, e -> e.registrar("1").playToClient(MarsWeather.Payload.TYPE,
-                MarsWeather.Payload.STREAM_CODEC, (payload, ctx) -> MarsWeather.receive(payload)));
+        modBus.addListener(RegisterPayloadHandlersEvent.class, e -> e.registrar("1")
+                .playToClient(MarsWeather.Payload.TYPE, MarsWeather.Payload.STREAM_CODEC, (payload, ctx) -> MarsWeather.receive(payload))
+                .playToClient(MarsSeasons.Payload.TYPE, MarsSeasons.Payload.STREAM_CODEC, (payload, ctx) -> MarsSeasons.receive(payload)));
         NeoForge.EVENT_BUS.addListener(LevelTickEvent.Post.class, e -> {
             if (e.getLevel() instanceof ServerLevel level) {
                 MarsWeather.tick(level);
@@ -170,11 +171,13 @@ public final class MarsModule implements SbModule {
         NeoForge.EVENT_BUS.addListener(PlayerEvent.PlayerLoggedInEvent.class, e -> {
             if (e.getEntity() instanceof ServerPlayer p) {
                 MarsWeather.syncTo(p);
+                MarsSeasons.syncTo(p);
             }
         });
         NeoForge.EVENT_BUS.addListener(PlayerEvent.PlayerChangedDimensionEvent.class, e -> {
             if (e.getEntity() instanceof ServerPlayer p) {
                 MarsWeather.syncTo(p);
+                MarsSeasons.syncTo(p);
             }
         });
         NeoForge.EVENT_BUS.addListener(RegisterCommandsEvent.class, MarsModule::commands);

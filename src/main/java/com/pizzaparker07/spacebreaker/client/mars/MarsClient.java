@@ -117,7 +117,32 @@ public final class MarsClient {
         return level != null && MarsWeather.dusty(level);
     }
 
-    /** A thin, permanent dust haze; storms close the view in to a few dozen blocks. */
+    /** Morning canyon fog around the camera, eased so it never pops in or out (0..1). */
+    private static float canyonFog;
+
+    /** Current canyon fog at the camera (0..1), for the sky's low haze. */
+    public static float canyonFog() {
+        return canyonFog;
+    }
+
+    /** Target canyon fog at the camera: in the great canyon, just after sunrise, thinning with height above the floor. */
+    private static float canyonFogTarget(net.minecraft.client.multiplayer.ClientLevel level, Vec3 cam) {
+        var pos = net.minecraft.core.BlockPos.containing(cam);
+        if (!level.getBiome(pos).is(com.pizzaparker07.spacebreaker.content.mars.MarsData.CANYON)) {
+            return 0F;
+        }
+        double fog = com.pizzaparker07.spacebreaker.content.mars.MarsClouds.canyonFog(
+                com.pizzaparker07.spacebreaker.content.worldgen.PlanetTime.dayFraction(level));
+        if (fog <= 0) {
+            return 0F;
+        }
+        int floor = level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, pos.getX(), pos.getZ());
+        double above = Math.max(0, cam.y - floor);
+        return (float) (fog * com.pizzaparker07.spacebreaker.content.mars.MarsClouds.fogAtHeight(above)
+                * (1 - MarsWeather.stormStrength(level)));
+    }
+
+    /** A thin, permanent dust haze; storms close the view in to a few dozen blocks; morning fog fills the canyon. */
     @SubscribeEvent
     static void fog(ViewportEvent.RenderFog event) {
         if (!mars() || event.getMode() != FogRenderer.FogMode.FOG_TERRAIN) {
@@ -127,6 +152,10 @@ public final class MarsClient {
         float far = event.getFarPlaneDistance();
         float end = Mth.lerp(storm, far, Math.min(far, 22F));
         float start = Mth.lerp(storm, far * 0.35F, 0F);
+        if (canyonFog > 0.01F) {
+            end = Mth.lerp(canyonFog * 0.85F, end, Math.min(end, 26F));
+            start = Mth.lerp(canyonFog, start, 0F);
+        }
         event.setFarPlaneDistance(end);
         event.setNearPlaneDistance(start);
         event.setCanceled(true);
@@ -142,9 +171,11 @@ public final class MarsClient {
             return;
         }
         float[] c = MarsSkyEffects.horizonFog(mc.level, event.getCamera(), (float) event.getPartialTick());
-        event.setRed(c[0]);
-        event.setGreen(c[1]);
-        event.setBlue(c[2]);
+        // canyon fog: a pale, faintly blue-white ice haze lit by the low morning sun
+        float k = canyonFog * 0.8F;
+        event.setRed(Mth.lerp(k, c[0], 0.86F));
+        event.setGreen(Mth.lerp(k, c[1], 0.85F));
+        event.setBlue(Mth.lerp(k, c[2], 0.87F));
     }
 
     @SubscribeEvent
@@ -154,6 +185,8 @@ public final class MarsClient {
             return;
         }
         MarsWeather.clientTick(mc.level);
+        float target = canyonFogTarget(mc.level, mc.gameRenderer.getMainCamera().getPosition());
+        canyonFog += Mth.clamp(target - canyonFog, -0.02F, 0.02F);
         float storm = MarsWeather.stormStrength(mc.level);
         if (storm <= 0.02F) {
             return;
