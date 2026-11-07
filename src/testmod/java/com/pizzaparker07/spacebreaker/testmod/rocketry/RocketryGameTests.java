@@ -1218,6 +1218,137 @@ public final class RocketryGameTests {
         helper.succeed();
     }
 
+    @GameTest(template = EMPTY, timeoutTicks = 200)
+    public static void warningLight(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var LIT = com.pizzaparker07.spacebreaker.content.rocketry.pad.WarningLightBlock.LIT;
+        BlockPos light = helper.absolutePos(new BlockPos(1, 2, 1));
+        level.setBlock(light, RocketryModule.WARNING_LIGHT.get().defaultBlockState(), 3);
+        helper.assertFalse(level.getBlockState(light).getValue(LIT), "dark at first");
+        // redstone turns it on and gives real light
+        level.setBlock(light.east(), net.minecraft.world.level.block.Blocks.REDSTONE_BLOCK.defaultBlockState(), 3);
+        helper.assertTrue(level.getBlockState(light).getValue(LIT) && level.getBlockState(light).getLightEmission() >= 12, "redstone lights it");
+        level.removeBlock(light.east(), false);
+        helper.assertFalse(level.getBlockState(light).getValue(LIT), "and turns it off");
+        // a rocket being fuelled nearby turns it on by itself
+        RocketEntity rocket = RocketEntity.create(level, RocketryModule.MOON_ROCKET, helper.absoluteVec(new net.minecraft.world.phys.Vec3(4.5, 2, 4.5)), 0F);
+        level.addFreshEntity(rocket);
+        helper.runAfterDelay(15, () -> {
+            helper.assertFalse(level.getBlockState(light).getValue(LIT), "an idle rocket does not");
+            rocket.fill(com.pizzaparker07.spacebreaker.content.fluids.FluidsModule.LIQUID_OXYGEN.stack(1000), false);
+            helper.runAfterDelay(15, () -> {
+                helper.assertTrue(level.getBlockState(light).getValue(LIT), "fuelling nearby: it spins");
+                helper.runAfterDelay(60, () -> {
+                    helper.assertFalse(level.getBlockState(light).getValue(LIT), "and stops once the fuelling is over");
+                    rocket.discard();
+                    helper.succeed();
+                });
+            });
+        });
+    }
+
+    @GameTest(template = EMPTY)
+    public static void baseBlocksHoldAir(GameTestHelper helper) {
+        var level = helper.getLevel();
+        java.util.function.Function<net.minecraft.world.level.block.Block, Boolean> airtight = block -> {
+            BlockPos p = helper.absolutePos(new BlockPos(1, 2, 1));
+            level.setBlock(p, block.defaultBlockState(), 3);
+            return com.pizzaparker07.spacebreaker.content.suit.block.SealedRoom.airtight(level, p, level.getBlockState(p));
+        };
+        for (var block : List.of(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.ALUMINUM_PANEL.base().get(),
+                com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.TITANIUM_DECK.base().get(),
+                com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.PRESSURE_GLASS.get(),
+                com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.PORTHOLE.get())) {
+            helper.assertTrue(airtight.apply(block), block + " holds air");
+        }
+        helper.assertFalse(airtight.apply(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.GRATE.get()), "the grate lets air through");
+        helper.assertFalse(airtight.apply(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.ALUMINUM_PANEL.slab().get()), "a slab leaves a gap");
+        helper.succeed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 200)
+    public static void slidingDoorAirlock(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var block = com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.SLIDING_DOOR.get();
+        var OPEN = com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock.OPEN;
+        // an inner and an outer door three blocks apart along z: a small airlock
+        BlockPos inner = helper.absolutePos(new BlockPos(2, 2, 1)), outer = inner.south(3);
+        com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock.place(level, inner, block.defaultBlockState());
+        com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock.place(level, outer, block.defaultBlockState());
+        helper.assertTrue(block.partners(level, inner, level.getBlockState(inner)).contains(outer), "the two doors pair up");
+        block.request(level, inner, level.getBlockState(inner), true);
+        helper.assertTrue(level.getBlockState(inner).getValue(OPEN), "with the outer door shut, the inner one opens at once");
+        // asking the outer door to open shuts the inner one first and holds the outer one for the cycle
+        block.request(level, outer, level.getBlockState(outer), true);
+        helper.assertFalse(level.getBlockState(inner).getValue(OPEN), "the inner door shuts");
+        helper.assertFalse(level.getBlockState(outer).getValue(OPEN), "the outer door waits for the cycle");
+        helper.runAtTickTime(com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock.CYCLE_TICKS / 2, () ->
+                helper.assertFalse(level.getBlockState(outer).getValue(OPEN), "still cycling"));
+        helper.succeedWhen(() -> {
+            helper.assertTrue(level.getBlockState(outer).getValue(OPEN), "after the cycle the outer door opens");
+            helper.assertFalse(level.getBlockState(inner).getValue(OPEN), "and never both at once");
+        });
+    }
+
+    @GameTest(template = EMPTY)
+    public static void baseFittings(GameTestHelper helper) {
+        var level = helper.getLevel();
+        BlockPos p = helper.absolutePos(new BlockPos(1, 2, 1));
+        java.util.function.Function<net.minecraft.world.level.block.state.BlockState, Boolean> airtight = state -> {
+            level.setBlock(p, state, 3);
+            return com.pizzaparker07.spacebreaker.content.suit.block.SealedRoom.airtight(level, p, level.getBlockState(p));
+        };
+        // stripes and duct covers are full walls; grate platform, railing and ladder let air through
+        for (var block : List.of(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.HAZARD_STRIPE.base().get(),
+                com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.CABLE_DUCT.get(),
+                com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.PIPE_DUCT.get(),
+                com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.LED_PANEL.get())) {
+            helper.assertTrue(airtight.apply(block.defaultBlockState()), block + " holds air");
+        }
+        for (var block : List.of(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.GRATE_PLATFORM.get(),
+                com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.RAILING.get(),
+                com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.STEEL_LADDER.get(),
+                com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.FLOODLIGHT.get())) {
+            helper.assertFalse(airtight.apply(block.defaultBlockState()), block + " lets air through");
+        }
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.STEEL_LADDER.get().defaultBlockState()
+                .is(net.minecraft.tags.BlockTags.CLIMBABLE), "the ladder is climbable");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.LED_PANEL.get().defaultBlockState().getLightEmission() == 15
+                && com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.FLOODLIGHT.get().defaultBlockState().getLightEmission() == 15,
+                "the lamps light the base");
+        helper.succeed();
+    }
+
+    @GameTest(template = EMPTY)
+    public static void slidingDoor(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var door = com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.SLIDING_DOOR.get();
+        var OPEN = com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock.OPEN;
+        BlockPos lower = helper.absolutePos(new BlockPos(2, 2, 2));
+        com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock.place(level, lower, door.defaultBlockState());
+        java.util.function.Predicate<BlockPos> airtight = p -> com.pizzaparker07.spacebreaker.content.suit.block.SealedRoom.airtight(level, p, level.getBlockState(p));
+        helper.assertTrue(level.getBlockState(lower.above()).is(door), "two blocks tall");
+        helper.assertTrue(airtight.test(lower) && airtight.test(lower.above()), "shut, it holds air");
+        // a hand opens it, both halves together
+        ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        level.getBlockState(lower.above()).useWithoutItem(level, player, new net.minecraft.world.phys.BlockHitResult(lower.above().getCenter(), Direction.NORTH, lower.above(), false));
+        helper.assertTrue(level.getBlockState(lower).getValue(OPEN) && level.getBlockState(lower.above()).getValue(OPEN), "opens as one");
+        helper.assertFalse(airtight.test(lower) || airtight.test(lower.above()), "open, air flows through");
+        helper.assertTrue(level.getBlockState(lower).getCollisionShape(level, lower).toAabbs().stream().noneMatch(a -> a.contains(0.5, 0.5, 0.5)),
+                "and you can walk through the middle");
+        // redstone opens and shuts it
+        level.getBlockState(lower).useWithoutItem(level, player, new net.minecraft.world.phys.BlockHitResult(lower.getCenter(), Direction.NORTH, lower, false));
+        helper.assertFalse(level.getBlockState(lower).getValue(OPEN), "shut again");
+        level.setBlock(lower.west(), net.minecraft.world.level.block.Blocks.REDSTONE_BLOCK.defaultBlockState(), 3);
+        helper.assertTrue(level.getBlockState(lower.above()).getValue(OPEN), "redstone opens it");
+        level.removeBlock(lower.west(), false);
+        helper.assertFalse(level.getBlockState(lower).getValue(OPEN), "and closes it when the signal goes");
+        // breaking one half takes the other
+        level.destroyBlock(lower.above(), false);
+        helper.assertFalse(level.getBlockState(lower).is(door), "no half door left behind");
+        helper.succeed();
+    }
+
     @GameTest(template = EMPTY)
     public static void fuelFromFluidContainers(GameTestHelper helper) {
         RocketEntity rocket = RocketEntity.create(helper.getLevel(), RocketryModule.MOON_ROCKET, helper.absoluteVec(new net.minecraft.world.phys.Vec3(1.5, 2, 1.5)), 0F);

@@ -34,6 +34,26 @@ final class RocketryLang {
         l.block(RocketryModule.STATION_BUNK, "Station Bunk", "İstasyon Ranzası");
         l.block(RocketryModule.FUEL_DEPOT, "Fuel Depot", "Yakıt Deposu");
         l.block(RocketryModule.LANDING_BEACON, "Landing Beacon", "İniş İşareti");
+        l.block(RocketryModule.WARNING_LIGHT, "Warning Light", "Uyarı Işığı");
+        com.pizzaparker07.spacebreaker.content.mars.BlockKit.familyNames(l, com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.ALUMINUM_PANEL,
+                "Aluminium Panel", "Alüminyum Panel");
+        com.pizzaparker07.spacebreaker.content.mars.BlockKit.familyNames(l, com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.TITANIUM_DECK,
+                "Titanium Deck Plate", "Titanyum Levha");
+        l.block(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.PRESSURE_GLASS, "Pressure Glass", "Basınçlı Cam");
+        l.block(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.PORTHOLE, "Porthole", "Lombar");
+        l.block(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.GRATE, "Grate Floor", "Izgara Zemin");
+        l.block(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.SLIDING_DOOR, "Sliding Door", "Kayar Kapı");
+        l.add("tooltip.spacebreaker.sliding_door", "Two facing each other up to 4 blocks apart make an airlock: one opens only once the other has shut",
+                "Karşılıklı en fazla 4 blok arayla iki kapı hava kilidi olur: biri ancak diğeri kapandıktan sonra açılır");
+        com.pizzaparker07.spacebreaker.content.mars.BlockKit.familyNames(l, com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.HAZARD_STRIPE,
+                "Hazard Stripe", "Uyarı Şeridi");
+        l.block(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.LED_PANEL, "LED Panel Light", "LED Panel Lamba");
+        l.block(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.FLOODLIGHT, "Floodlight", "Projektör");
+        l.block(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.CABLE_DUCT, "Cable Duct Cover", "Kablo Kanalı Kapağı");
+        l.block(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.PIPE_DUCT, "Pipe Duct Cover", "Boru Kanalı Kapağı");
+        l.block(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.STEEL_LADDER, "Steel Ladder", "Çelik Merdiven");
+        l.block(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.RAILING, "Safety Railing", "Korkuluk");
+        l.block(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.GRATE_PLATFORM, "Grate Platform", "Izgara Platform");
         l.add("message.spacebreaker.warn.dust_storm_launch", "Dust storm over the pad: poor visibility and gusts. Launch at your own risk, or wait it out",
                 "Rampanın üstünde toz fırtınası: görüş kötü, rüzgâr sert. Kalkış senin sorumluluğunda; istersen fırtınanın geçmesini bekle");
         l.add("message.spacebreaker.landing_beacon.guided", "Landing beacon in range: coming down on the base", "İniş işareti alındı: üsse iniliyor");

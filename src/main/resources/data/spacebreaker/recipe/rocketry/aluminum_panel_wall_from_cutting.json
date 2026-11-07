@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "spacebreaker:aluminum_panel"
+  },
+  "result": {
+    "id": "spacebreaker:aluminum_panel_wall",
+    "count": 1
+  }
+}

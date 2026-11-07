@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "spacebreaker:block/steel_ladder"
+    },
+    "facing=east": {
+      "model": "spacebreaker:block/steel_ladder",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "spacebreaker:block/steel_ladder",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "spacebreaker:block/steel_ladder",
+      "y": 270
+    }
+  }
+}

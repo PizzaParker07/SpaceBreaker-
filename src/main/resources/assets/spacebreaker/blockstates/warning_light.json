@@ -1,0 +1,108 @@
+{
+  "variants": {
+    "facing=up,lit=false,powered=false": {
+      "model": "spacebreaker:block/warning_light"
+    },
+    "facing=up,lit=false,powered=true": {
+      "model": "spacebreaker:block/warning_light"
+    },
+    "facing=up,lit=true,powered=false": {
+      "model": "spacebreaker:block/warning_light_on"
+    },
+    "facing=up,lit=true,powered=true": {
+      "model": "spacebreaker:block/warning_light_on"
+    },
+    "facing=down,lit=false,powered=false": {
+      "model": "spacebreaker:block/warning_light",
+      "x": 180
+    },
+    "facing=down,lit=false,powered=true": {
+      "model": "spacebreaker:block/warning_light",
+      "x": 180
+    },
+    "facing=down,lit=true,powered=false": {
+      "model": "spacebreaker:block/warning_light_on",
+      "x": 180
+    },
+    "facing=down,lit=true,powered=true": {
+      "model": "spacebreaker:block/warning_light_on",
+      "x": 180
+    },
+    "facing=north,lit=false,powered=false": {
+      "model": "spacebreaker:block/warning_light",
+      "x": 90
+    },
+    "facing=north,lit=false,powered=true": {
+      "model": "spacebreaker:block/warning_light",
+      "x": 90
+    },
+    "facing=north,lit=true,powered=false": {
+      "model": "spacebreaker:block/warning_light_on",
+      "x": 90
+    },
+    "facing=north,lit=true,powered=true": {
+      "model": "spacebreaker:block/warning_light_on",
+      "x": 90
+    },
+    "facing=south,lit=false,powered=false": {
+      "model": "spacebreaker:block/warning_light",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,lit=false,powered=true": {
+      "model": "spacebreaker:block/warning_light",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,lit=true,powered=false": {
+      "model": "spacebreaker:block/warning_light_on",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,lit=true,powered=true": {
+      "model": "spacebreaker:block/warning_light_on",
+      "x": 90,
+      "y": 180
+    },
+    "facing=west,lit=false,powered=false": {
+      "model": "spacebreaker:block/warning_light",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,lit=false,powered=true": {
+      "model": "spacebreaker:block/warning_light",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,lit=true,powered=false": {
+      "model": "spacebreaker:block/warning_light_on",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,lit=true,powered=true": {
+      "model": "spacebreaker:block/warning_light_on",
+      "x": 90,
+      "y": 270
+    },
+    "facing=east,lit=false,powered=false": {
+      "model": "spacebreaker:block/warning_light",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,lit=false,powered=true": {
+      "model": "spacebreaker:block/warning_light",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,lit=true,powered=false": {
+      "model": "spacebreaker:block/warning_light_on",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,lit=true,powered=true": {
+      "model": "spacebreaker:block/warning_light_on",
+      "x": 90,
+      "y": 90
+    }
+  }
+}

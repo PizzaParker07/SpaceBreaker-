@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "PCP"
+  ],
+  "key": {
+    "P": {
+      "item": "spacebreaker:aluminum_panel"
+    },
+    "C": {
+      "tag": "c:ingots/copper"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:cable_duct",
+    "count": 2
+  }
+}

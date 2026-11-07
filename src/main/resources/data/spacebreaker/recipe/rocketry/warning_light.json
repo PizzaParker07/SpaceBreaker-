@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [" O ", "GRG", "III"],
+  "key": {"O": {"item": "minecraft:orange_stained_glass"}, "G": {"item": "minecraft:glowstone_dust"},
+          "R": {"item": "minecraft:redstone"}, "I": {"item": "minecraft:iron_ingot"}},
+  "result": {"id": "spacebreaker:warning_light", "count": 2}
+}

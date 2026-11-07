@@ -572,6 +572,63 @@ def extra_items():
 _old_generate = generate
 
 
+def _stairs(name, tex):
+    t = {'bottom': b(tex), 'side': b(tex), 'top': b(tex)}
+    write(f'models/block/{name}.json', {'parent': 'minecraft:block/stairs', 'textures': t})
+    write(f'models/block/{name}_inner.json', {'parent': 'minecraft:block/inner_stairs', 'textures': t})
+    write(f'models/block/{name}_outer.json', {'parent': 'minecraft:block/outer_stairs', 'textures': t})
+    yrot = {'east': 0, 'south': 90, 'west': 180, 'north': 270}
+    variants = {}
+    for facing, fy in yrot.items():
+        for half in ('bottom', 'top'):
+            for shape in ('straight', 'inner_left', 'inner_right', 'outer_left', 'outer_right'):
+                model = b(name) if shape == 'straight' else b(f"{name}_{shape.split('_')[0]}")
+                y = fy
+                if shape in ('inner_left', 'outer_left'):
+                    y = (fy + 270) % 360
+                x = 0
+                if half == 'top':
+                    x = 180
+                    if shape in ('inner_left', 'outer_left'):
+                        y = fy
+                    elif shape in ('inner_right', 'outer_right'):
+                        y = (fy + 90) % 360
+                v = {'model': model}
+                if x:
+                    v['x'] = x
+                if y:
+                    v['y'] = y
+                if x or y:
+                    v['uvlock'] = True
+                variants[f'facing={facing},half={half},shape={shape}'] = v
+    write(f'blockstates/{name}.json', {'variants': variants})
+    write(f'models/item/{name}.json', {'parent': b(name)})
+
+
+def _slab(name, tex, full):
+    t = {'bottom': b(tex), 'side': b(tex), 'top': b(tex)}
+    write(f'models/block/{name}.json', {'parent': 'minecraft:block/slab', 'textures': t})
+    write(f'models/block/{name}_top.json', {'parent': 'minecraft:block/slab_top', 'textures': t})
+    write(f'blockstates/{name}.json', {'variants': {
+        'type=bottom': {'model': b(name)}, 'type=top': {'model': b(f'{name}_top')}, 'type=double': {'model': b(full)}}})
+    write(f'models/item/{name}.json', {'parent': b(name)})
+
+
+def _wall(name, tex):
+    write(f'models/block/{name}_post.json', {'parent': 'minecraft:block/template_wall_post', 'textures': {'wall': b(tex)}})
+    write(f'models/block/{name}_side.json', {'parent': 'minecraft:block/template_wall_side', 'textures': {'wall': b(tex)}})
+    write(f'models/block/{name}_side_tall.json', {'parent': 'minecraft:block/template_wall_side_tall', 'textures': {'wall': b(tex)}})
+    write(f'models/item/{name}.json', {'parent': 'minecraft:block/wall_inventory', 'textures': {'wall': b(tex)}})
+    parts = [{'when': {'up': 'true'}, 'apply': {'model': b(f'{name}_post')}}]
+    for d, y in (('north', 0), ('east', 90), ('south', 180), ('west', 270)):
+        for height, suffix in (('low', '_side'), ('tall', '_side_tall')):
+            apply = {'model': b(name + suffix), 'uvlock': True}
+            if y:
+                apply['y'] = y
+            parts.append({'when': {d: height}, 'apply': apply})
+    write(f'blockstates/{name}.json', {'multipart': parts})
+
+
 def station_blocks():
     write('blockstates/station_hull.json', {'variants': {'': {'model': b('station_hull')}}})
     write('models/block/station_hull.json', {'parent': 'minecraft:block/cube_all', 'textures': {'all': b('station_hull')}})
@@ -593,6 +650,115 @@ def station_blocks():
     write('models/item/docking_port.json', {'parent': b('docking_port')})
     generated_item('station_kit')
     generated_item('habitat_kit')
+    # base blocks: panel and plate families, glass and porthole (opaque frame + translucent pane), open grate
+    for base, has_wall in (('aluminum_panel', True), ('titanium_deck', False)):
+        simple_block(base, b(base))
+        _stairs(f'{base}_stairs', base)
+        _slab(f'{base}_slab', base, base)
+        if has_wall:
+            _wall(f'{base}_wall', base)
+    for name in ('pressure_glass', 'porthole'):
+        write(f'models/block/{name}.json', {
+            'loader': 'neoforge:composite', 'parent': 'minecraft:block/block',
+            'children': {
+                'frame': {'parent': 'minecraft:block/cube_all', 'render_type': 'minecraft:cutout', 'textures': {'all': b(name + '_frame')}},
+                'pane': {'parent': 'minecraft:block/cube_all', 'render_type': 'minecraft:translucent', 'textures': {'all': b(name + '_pane')}}},
+            'textures': {'particle': b(name)}})
+        write(f'blockstates/{name}.json', {'variants': {'': {'model': b(name)}}})
+        write(f'models/item/{name}.json', {'parent': b(name)})
+    # sliding door: two leaves meeting in the middle; open, they hide in the frame at the sides
+    def leaf(x0, x1, u0, u1):
+        f = {'north': {'uv': [u0, 0, u1, 16], 'texture': '#face'}, 'south': {'uv': [16 - u1, 0, 16 - u0, 16], 'texture': '#face'}}
+        for d in ('east', 'west', 'up', 'down'):
+            f[d] = {'uv': [0, 0, 4, 16] if d in ('east', 'west') else [x0, 6, x1, 10], 'texture': '#frame'}
+        return {'from': [x0, 0, 6], 'to': [x1, 16, 10], 'faces': f}
+    for half in ('lower', 'upper'):
+        tex = {'face': b(f'sliding_door_{half}'), 'frame': b('sliding_door_frame'), 'particle': b('sliding_door_frame')}
+        write(f'models/block/sliding_door_{half}.json', {'parent': 'minecraft:block/block', 'textures': tex,
+                                                        'elements': [leaf(0, 8, 0, 8), leaf(8, 16, 8, 16)]})
+        write(f'models/block/sliding_door_{half}_open.json', {'parent': 'minecraft:block/block', 'textures': tex,
+                                                             'elements': [leaf(0, 2, 6, 8), leaf(14, 16, 8, 10)]})
+    door_rot = {'north': 0, 'east': 90, 'south': 180, 'west': 270}
+    dv = {}
+    for facing, y in door_rot.items():
+        for half in ('lower', 'upper'):
+            for opened in ('false', 'true'):
+                for powered in ('false', 'true'):
+                    v = {'model': b(f'sliding_door_{half}' + ('_open' if opened == 'true' else ''))}
+                    if y:
+                        v['y'] = y
+                    dv[f'facing={facing},half={half},open={opened},powered={powered}'] = v
+    write('blockstates/sliding_door.json', {'variants': dv})
+    generated_item('sliding_door')
+    # hazard stripes (block, stairs, slab); LED panel and duct covers; floodlight; ladder; railing; grate platform
+    simple_block('hazard_stripe', b('hazard_stripe'))
+    _stairs('hazard_stripe_stairs', 'hazard_stripe')
+    _slab('hazard_stripe_slab', 'hazard_stripe', 'hazard_stripe')
+    for name in ('led_panel', 'cable_duct', 'pipe_duct'):
+        simple_block(name, b(name))
+    write('models/block/floodlight.json', {'parent': 'minecraft:block/block',
+        'textures': {'face': b('floodlight_face'), 'side': b('floodlight_side'), 'particle': b('floodlight_side')},
+        'elements': [{'from': [2, 0, 2], 'to': [14, 6, 14], 'faces': {
+            'up': {'texture': '#face', 'neoforge_data': {'block_light': 15, 'sky_light': 15}},
+            'down': {'texture': '#side', 'cullface': 'down'},
+            'north': {'uv': [2, 10, 14, 16], 'texture': '#side'}, 'south': {'uv': [2, 10, 14, 16], 'texture': '#side'},
+            'east': {'uv': [2, 10, 14, 16], 'texture': '#side'}, 'west': {'uv': [2, 10, 14, 16], 'texture': '#side'}}}]})
+    frot = {'up': {}, 'down': {'x': 180}, 'north': {'x': 90}, 'south': {'x': 90, 'y': 180}, 'west': {'x': 90, 'y': 270}, 'east': {'x': 90, 'y': 90}}
+    write('blockstates/floodlight.json', {'variants': {f'facing={f}': dict({'model': b('floodlight')}, **r) for f, r in frot.items()}})
+    write('models/item/floodlight.json', {'parent': b('floodlight')})
+    write('models/block/steel_ladder.json', {'parent': 'minecraft:block/ladder', 'render_type': 'minecraft:cutout',
+                                              'textures': {'texture': b('steel_ladder'), 'particle': b('steel_ladder')}})
+    lrot = {'north': 0, 'east': 90, 'south': 180, 'west': 270}
+    write('blockstates/steel_ladder.json', {'variants': {f'facing={f}': dict({'model': b('steel_ladder')}, **({'y': y} if y else {}))
+                                                         for f, y in lrot.items()}})
+    generated_item('steel_ladder', b('steel_ladder'))
+    for part in ('post', 'post_ends', 'side', 'side_alt', 'cap', 'cap_alt'):
+        write(f'models/block/railing_{part}.json', {'parent': f'minecraft:block/iron_bars_{part}', 'render_type': 'minecraft:cutout',
+                                                     'textures': {'bars': b('railing'), 'edge': b('railing'), 'particle': b('railing')}})
+    rail = [{'apply': {'model': b('railing_post_ends')}},
+            {'when': {'north': 'false', 'west': 'false', 'south': 'false', 'east': 'false'}, 'apply': {'model': b('railing_post')}},
+            {'when': {'north': 'true', 'west': 'false', 'south': 'false', 'east': 'false'}, 'apply': {'model': b('railing_cap')}},
+            {'when': {'north': 'false', 'west': 'false', 'south': 'false', 'east': 'true'}, 'apply': {'model': b('railing_cap'), 'y': 90}},
+            {'when': {'north': 'false', 'west': 'false', 'south': 'true', 'east': 'false'}, 'apply': {'model': b('railing_cap_alt')}},
+            {'when': {'north': 'false', 'west': 'true', 'south': 'false', 'east': 'false'}, 'apply': {'model': b('railing_cap_alt'), 'y': 90}},
+            {'when': {'north': 'true'}, 'apply': {'model': b('railing_side')}},
+            {'when': {'east': 'true'}, 'apply': {'model': b('railing_side'), 'y': 90}},
+            {'when': {'south': 'true'}, 'apply': {'model': b('railing_side_alt')}},
+            {'when': {'west': 'true'}, 'apply': {'model': b('railing_side_alt'), 'y': 90}}]
+    write('blockstates/railing.json', {'multipart': rail})
+    generated_item('railing', b('railing'))
+    gt = {'bottom': b('grate'), 'side': b('grate'), 'top': b('grate')}
+    write('models/block/grate_platform.json', {'parent': 'minecraft:block/slab', 'render_type': 'minecraft:cutout', 'textures': gt})
+    write('models/block/grate_platform_top.json', {'parent': 'minecraft:block/slab_top', 'render_type': 'minecraft:cutout', 'textures': gt})
+    write('blockstates/grate_platform.json', {'variants': {'type=bottom': {'model': b('grate_platform')},
+                                                           'type=top': {'model': b('grate_platform_top')}, 'type=double': {'model': b('grate')}}})
+    write('models/item/grate_platform.json', {'parent': b('grate_platform')})
+    write('models/block/grate.json', {'parent': 'minecraft:block/cube_all', 'render_type': 'minecraft:cutout', 'textures': {'all': b('grate')}})
+    write('blockstates/grate.json', {'variants': {'': {'model': b('grate')}}})
+    write('models/item/grate.json', {'parent': b('grate')})
+    # warning light: steel base, ribbed amber dome, little cap; the lit dome glows at full brightness
+    def light_model(lens, glow):
+        bright = {'neoforge_data': {'block_light': 15, 'sky_light': 15, 'ambient_occlusion': False}} if glow else {}
+        def faces(tex, cull_down=False):
+            f = {d: dict({'texture': tex}, **(bright if tex == '#lens' else {})) for d in ('north', 'south', 'east', 'west', 'up', 'down')}
+            if cull_down:
+                f['down']['cullface'] = 'down'
+            return f
+        return {'parent': 'minecraft:block/block', 'textures': {'base': b('warning_light_base'), 'lens': b(lens), 'particle': b('warning_light_base')},
+                'elements': [
+                    {'from': [3, 0, 3], 'to': [13, 2, 13], 'faces': faces('#base', True)},
+                    {'from': [4, 2, 4], 'to': [12, 9, 12], 'faces': faces('#lens')},
+                    {'from': [5, 9, 5], 'to': [11, 10, 11], 'faces': faces('#base')}]}
+    write('models/block/warning_light.json', light_model('warning_light_lens', False))
+    write('models/block/warning_light_on.json', light_model('warning_light_lens_on', True))
+    frot = {'up': {}, 'down': {'x': 180}, 'north': {'x': 90}, 'south': {'x': 90, 'y': 180}, 'west': {'x': 90, 'y': 270}, 'east': {'x': 90, 'y': 90}}
+    variants = {}
+    for f, r in frot.items():
+        for lit in ('false', 'true'):
+            for powered in ('false', 'true'):
+                variants[f'facing={f},lit={lit},powered={powered}'] = dict({'model': b('warning_light_on' if lit == 'true' else 'warning_light')}, **r)
+    write('blockstates/warning_light.json', {'variants': variants})
+    write('models/item/warning_light.json', {'parent': b('warning_light_on')})
     write('models/block/landing_beacon.json', {'parent': 'minecraft:block/cube_bottom_top', 'textures': {
         'top': b('landing_beacon_top'), 'side': b('landing_beacon_side'), 'bottom': b('station_hull')}})
     write('blockstates/landing_beacon.json', {'variants': {'': {'model': b('landing_beacon')}}})

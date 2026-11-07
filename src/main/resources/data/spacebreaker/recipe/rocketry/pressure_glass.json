@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "GAG",
+    "AGA",
+    "GAG"
+  ],
+  "key": {
+    "G": {
+      "tag": "c:glass_blocks"
+    },
+    "A": {
+      "tag": "c:plates/aluminum"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:pressure_glass",
+    "count": 4
+  }
+}

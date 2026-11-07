@@ -2140,6 +2140,272 @@ def landing_beacon_side():
     return cv
 
 
+AMBER = ramp('#5a2a04', '#8a4508', '#c06a0e', '#e8901a', '#ffb830', '#ffd870', '#fff2c0')
+
+
+def warning_light_base():
+    """Dark steel housing with four screws."""
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            cv[x, y] = STEEL[2] if (x + y) % 5 else STEEL[1]
+    for x in range(16):
+        cv[x, 0] = STEEL[4]
+        cv[0, x] = STEEL[4]
+        cv[x, 15] = STEEL[0]
+        cv[15, x] = STEEL[0]
+    for x, y in ((3, 3), (12, 3), (3, 12), (12, 12)):
+        cv[x, y] = STEEL[5]
+    return cv
+
+
+def warning_light_lens(phase=None):
+    """Ribbed amber dome. With a phase (0..7) a bright beam sweeps round it, frame by frame."""
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            rib = x % 3 == 0
+            if phase is None:
+                c = AMBER[1] if rib else AMBER[2]
+            else:
+                # the mirror's beam: brightest at its centre column, wrapping round the dome
+                d = min((x - phase * 2) % 16, (phase * 2 - x) % 16)
+                c = AMBER[6] if d == 0 else AMBER[5] if d <= 2 else AMBER[4]
+                if rib and d > 2:
+                    c = AMBER[3]
+            cv[x, y] = c
+    return cv
+
+
+ALPANEL = ramp('#7e848c', '#9aa0a8', '#b2b8bf', '#c6cbd1', '#d8dce0', '#e8ebee')
+AL_BRUSH = ramp('#7f8994', '#9ea7b1', '#b4bcc5', '#bec6ce', '#d2d8de')
+TITAN = ramp('#3e444c', '#4f565f', '#5f6772', '#717a86', '#86909c')
+
+
+def aluminum_panel():
+    """Brushed aluminium panel: soft horizontal brush streaks, a seam frame and corner rivets, low contrast."""
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            cv[x, y] = AL_BRUSH[2]
+        # one long thin streak per row, lighter on darker rows and darker on lighter rows
+        x0 = (2, 9, 5, 12, 1, 7, 14, 4, 10, 3, 13, 6, 0, 11, 8, 15)[y]
+        length = (6, 4, 8, 5, 7, 3, 6, 9, 4, 7, 5, 8, 3, 6, 9, 5)[y]
+        for k in range(length):
+            x = (x0 + k) % 16
+            cv[x, y] = AL_BRUSH[3]
+    # panel seam: light top-left edge, darker bottom-right edge
+    for i in range(16):
+        cv[i, 0] = AL_BRUSH[4]
+        cv[0, i] = AL_BRUSH[4]
+        cv[i, 15] = AL_BRUSH[1]
+        cv[15, i] = AL_BRUSH[1]
+    for x, y in ((2, 2), (13, 2), (2, 13), (13, 13)):
+        cv[x, y] = AL_BRUSH[0]
+        cv[x - 1, y - 1] = AL_BRUSH[4]
+    return cv
+
+
+def titanium_plate():
+    """Heavy dark titanium deck plate with raised diamond tread and hex bolts."""
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            tread = (x + y) % 4 == 0 and (x - y) % 8 == 0
+            cv[x, y] = TITAN[4] if tread else TITAN[2] if (x * 5 + y * 3) % 7 else TITAN[1]
+    for i in range(16):
+        cv[i, 0] = TITAN[3]
+        cv[0, i] = TITAN[3]
+        cv[i, 15] = TITAN[0]
+        cv[15, i] = TITAN[0]
+    for x, y in ((3, 3), (12, 3), (3, 12), (12, 12)):
+        cv[x, y] = TITAN[4]
+        cv[x + 1, y] = TITAN[3]
+    return cv
+
+
+def pressure_glass():
+    """Thick laminated glass in a narrow steel frame (frame and pane split for the composite model)."""
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            if x == 0 or y == 0 or x == 15 or y == 15:
+                cv[x, y] = ALPANEL[4] if (x == 0 or y == 0) else ALPANEL[1]
+            else:
+                glint = (x - y) in (3, 4) and 4 < x < 11
+                layer = x in (1, 14) or y in (1, 14)
+                cv[x, y] = (235, 245, 255, 160) if glint else (150, 190, 215, 110) if layer else (130, 175, 205, 80)
+    return cv
+
+
+def porthole():
+    """A round window set in a riveted hull plate."""
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            d = math.hypot(x - 7.5, y - 7.5)
+            if d < 4.6:
+                glint = (x - y) in (0, 1) and x < 8
+                cv[x, y] = (235, 245, 255, 160) if glint else (130, 175, 205, 90)
+            elif d < 6.2:
+                cv[x, y] = STEEL[4] if d < 5.4 else STEEL[2]
+            else:
+                cv[x, y] = HULL[3] if (x + y) % 6 else HULL[2]
+    for a in range(8):
+        ang = a * math.pi / 4
+        cv[int(round(7.5 + 5.4 * math.cos(ang))), int(round(7.5 + 5.4 * math.sin(ang)))] = STEEL[2]   # bolts round the ring
+    return cv
+
+
+def grate():
+    """Open steel grating: bars with square holes you can see through."""
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            bar = x % 4 == 0 or y % 4 == 0 or x == 15 or y == 15
+            if bar:
+                cv[x, y] = STEEL[4] if (x % 4 == 0 and y % 4 == 0) else STEEL[3] if y % 4 == 0 else STEEL[2]
+    return cv
+
+
+def sliding_door(upper):
+    """One half of a two-leaf sliding door: aluminium leaves meeting in the middle, a hazard band at the foot,
+    a small window in the upper half."""
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            c = ALPANEL[3] if (x * 3 + y * 7) % 9 else ALPANEL[2]
+            if x in (7, 8):
+                c = STEEL[1] if x == 7 else STEEL[3]          # where the leaves meet
+            if x in (0, 15):
+                c = STEEL[2]
+            cv[x, y] = c
+    if upper:
+        for y in range(3, 9):
+            for x in range(3, 13):
+                if x in (7, 8):
+                    continue
+                edge = y in (3, 8) or x in (3, 12)
+                cv[x, y] = STEEL[2] if edge else (120, 165, 195) if (x - y) % 5 else (190, 220, 240)
+        for x in range(1, 15):
+            cv[x, 0] = STEEL[1]
+    else:
+        for y in range(11, 15):
+            for x in range(1, 15):
+                if x not in (7, 8):
+                    cv[x, y] = HAZARD[3] if ((x + y) // 2) % 2 else CARBON[2]   # yellow-black chevrons at the foot
+        for x in range(1, 15):
+            cv[x, 15] = STEEL[1]
+    return cv
+
+
+def door_frame():
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            cv[x, y] = STEEL[3] if (x + y) % 4 else STEEL[2]
+    return cv
+
+
+def hazard_stripe():
+    """Diagonal yellow and black stripes."""
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            band = ((x + y) // 4) % 2 == 0
+            cv[x, y] = (HAZARD[3] if (x * 3 + y) % 7 else HAZARD[2]) if band else (CARBON[1] if (x + y * 3) % 5 else CARBON[2])
+    return cv
+
+
+def led_panel():
+    """A flush LED light panel: bright diffuser in a thin frame."""
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            edge = x in (0, 15) or y in (0, 15)
+            inner = x in (1, 14) or y in (1, 14)
+            cv[x, y] = ALPANEL[1] if edge else ALPANEL[4] if inner else (250, 252, 255) if (x + y) % 6 else (236, 242, 250)
+    return cv
+
+
+def floodlight_face():
+    """The lamp face: a bright lens behind a grille."""
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            d = math.hypot(x - 7.5, y - 7.5)
+            if d > 7.2:
+                c = STEEL[1]
+            elif y % 3 == 0:
+                c = STEEL[3]
+            else:
+                c = (255, 252, 230) if d < 4 else (240, 232, 190)
+            cv[x, y] = c
+    return cv
+
+
+def floodlight_side():
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            cv[x, y] = STEEL[2] if y % 2 else STEEL[1]      # cooling fins
+    return cv
+
+
+def cable_duct():
+    """A grey wall cover; through its slots, coloured cable runs."""
+    cv = Canvas()
+    colours = ((200, 60, 50), (60, 120, 200), (230, 190, 60), (60, 160, 90))
+    for y in range(16):
+        for x in range(16):
+            cv[x, y] = ALPANEL[2] if (x + y) % 5 else ALPANEL[1]
+    for i, y0 in enumerate((3, 7, 11)):
+        for x in range(2, 14):
+            cv[x, y0] = CARBON[1]
+            cv[x, y0 + 1] = colours[(x // 3 + i) % 4] if x % 3 else CARBON[2]
+    for x, y in ((1, 1), (14, 1), (1, 14), (14, 14)):
+        cv[x, y] = ALPANEL[4]
+    return cv
+
+
+def pipe_duct():
+    """A cover with two pipes showing through: a cold blue one and a warm red one, with flanges."""
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            cv[x, y] = ALPANEL[2] if (x + y) % 5 else ALPANEL[1]
+    for x0, col in ((3, ((90, 140, 200), (60, 100, 160))), (10, ((200, 90, 70), (150, 60, 50)))):
+        for y in range(16):
+            for x in range(x0, x0 + 3):
+                cv[x, y] = col[0] if x == x0 + 1 else col[1]
+            if y in (4, 12):
+                for x in range(x0 - 1, x0 + 4):
+                    cv[x, y] = STEEL[3]
+    return cv
+
+
+def steel_ladder():
+    cv = Canvas()
+    for y in range(16):
+        for x in (2, 3, 12, 13):
+            cv[x, y] = STEEL[3] if x in (2, 12) else STEEL[1]
+        if y % 4 == 1:
+            for x in range(4, 12):
+                cv[x, y] = STEEL[4]
+                cv[x, y + 1] = STEEL[1]
+    return cv
+
+
+def railing():
+    """Yellow safety railing: two rails and posts."""
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            if y in (1, 2, 8, 9) or x in (7, 8):
+                cv[x, y] = HAZARD[3] if y in (1, 8) or x == 7 else HAZARD[1]
+    return cv
+
+
 def habitat_kit_icon():
     cv = Canvas()
     rows = [
@@ -2181,6 +2447,43 @@ def export_facility(save):
     save(limit_colours(docking_port_side()), 'block', 'docking_port_side', (180, 30, 0, None))
     save(station_kit_icon(), 'item', 'station_kit')
     save(habitat_kit_icon(), 'item', 'habitat_kit')
+    save(limit_colours(warning_light_base()), 'block', 'warning_light_base', (140, 230, 0, None))
+    save(limit_colours(aluminum_panel()), 'block', 'aluminum_panel', (170, 230, 0, None))
+    save(limit_colours(titanium_plate()), 'block', 'titanium_deck', (150, 230, 0, None))
+    for name, fn in (('pressure_glass', pressure_glass), ('porthole', porthole)):
+        save(fn(), 'block', name, (200, 20, 0, None))
+        save(window_part(fn(), True), 'block', name + '_frame', (200, 20, 0, None))
+        save(window_part(fn(), False), 'block', name + '_pane', (200, 20, 0, None))
+    save(grate(), 'block', 'grate', (140, 230, 0, None))
+    save(limit_colours(sliding_door(False)), 'block', 'sliding_door_lower', (170, 230, 0, None))
+    save(limit_colours(sliding_door(True)), 'block', 'sliding_door_upper', (170, 230, 0, None))
+    save(limit_colours(door_frame()), 'block', 'sliding_door_frame', (140, 230, 0, None))
+    save(limit_colours(hazard_stripe()), 'block', 'hazard_stripe', (120, 230, 0, None))
+    save(limit_colours(led_panel()), 'block', 'led_panel', (220, 20, 0, None))
+    save(limit_colours(floodlight_face()), 'block', 'floodlight_face', (220, 20, 0, None))
+    save(limit_colours(floodlight_side()), 'block', 'floodlight_side', (140, 230, 0, None))
+    save(limit_colours(cable_duct()), 'block', 'cable_duct', (150, 230, 0, None))
+    save(limit_colours(pipe_duct()), 'block', 'pipe_duct', (150, 230, 0, None))
+    save(steel_ladder(), 'block', 'steel_ladder')
+    save(railing(), 'block', 'railing')
+    icon = Canvas()
+    lower, upper = sliding_door(False), sliding_door(True)
+    for y in range(16):
+        for x in range(4, 12):
+            src = upper if y < 8 else lower
+            icon[x, y] = src[(x - 4) * 2, (y % 8) * 2]
+    save(icon, 'item', 'sliding_door')
+    save(limit_colours(warning_light_lens()), 'block', 'warning_light_lens', (200, 20, 0, None))
+    # lit lens: 8 frames of a beam sweeping round the dome
+    frames = Canvas(16, 128)
+    for f in range(8):
+        frame = warning_light_lens(f)
+        for y in range(16):
+            for x in range(16):
+                frames[x, f * 16 + y] = frame[x, y]
+    path = save(frames, 'block', 'warning_light_lens_on')
+    with open(path + '.mcmeta', 'w') as fh:
+        fh.write('{\n  "animation": {\n    "frametime": 2\n  }\n}\n')
     save(limit_colours(landing_beacon_top()), 'block', 'landing_beacon_top', (180, 30, 0, None))
     save(limit_colours(landing_beacon_side()), 'block', 'landing_beacon_side', (180, 30, 0, None))
     save(limit_colours(station_bunk_top()), 'block', 'station_bunk_top', (180, 30, 0, None))

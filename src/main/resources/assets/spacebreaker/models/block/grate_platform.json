@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/slab",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "bottom": "spacebreaker:block/grate",
+    "side": "spacebreaker:block/grate",
+    "top": "spacebreaker:block/grate"
+  }
+}

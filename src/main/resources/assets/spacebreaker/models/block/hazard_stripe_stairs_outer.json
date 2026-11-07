@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/outer_stairs",
+  "textures": {
+    "bottom": "spacebreaker:block/hazard_stripe",
+    "side": "spacebreaker:block/hazard_stripe",
+    "top": "spacebreaker:block/hazard_stripe"
+  }
+}

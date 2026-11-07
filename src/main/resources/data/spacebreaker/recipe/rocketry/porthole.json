@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    " P ",
+    "PGP",
+    " P "
+  ],
+  "key": {
+    "P": {
+      "item": "spacebreaker:aluminum_panel"
+    },
+    "G": {
+      "item": "spacebreaker:pressure_glass"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:porthole",
+    "count": 4
+  }
+}

@@ -123,6 +123,12 @@ public final class RocketryModule implements SbModule {
             steel().noOcclusion());
     public static final DeferredBlock<CrewArmBlock> CREW_ARM = BLOCKS.registerBlock("crew_access_arm", CrewArmBlock::new, steel().noOcclusion());
     public static final DeferredBlock<FuelUmbilicalBlock> FUEL_UMBILICAL = BLOCKS.registerBlock("fuel_umbilical", FuelUmbilicalBlock::new, steel().noOcclusion());
+    /** Rotating amber beacon for pads and stations (redstone, or by itself while a rocket nearby is busy). */
+    public static final DeferredBlock<com.pizzaparker07.spacebreaker.content.rocketry.pad.WarningLightBlock> WARNING_LIGHT = BLOCKS.registerBlock(
+            "warning_light", com.pizzaparker07.spacebreaker.content.rocketry.pad.WarningLightBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).strength(1.5F, 6.0F).sound(SoundType.METAL).noOcclusion()
+                    .requiresCorrectToolForDrops());
+    public static final DeferredItem<BlockItem> WARNING_LIGHT_ITEM = ITEMS.registerSimpleBlockItem(WARNING_LIGHT);
     public static final DeferredBlock<LaunchConsoleBlock> LAUNCH_CONSOLE = BLOCKS.registerBlock("launch_control_console", LaunchConsoleBlock::new,
             steel().noOcclusion().lightLevel(s -> 5));
 
@@ -178,6 +184,9 @@ public final class RocketryModule implements SbModule {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<RocketAssemblerBlockEntity>> ASSEMBLER_BE = BLOCK_ENTITIES.register("rocket_assembler",
             () -> BlockEntityType.Builder.of(RocketAssemblerBlockEntity::new, ROCKET_ASSEMBLER.get()).build(null));
     @SuppressWarnings("DataFlowIssue")
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.pizzaparker07.spacebreaker.content.rocketry.pad.WarningLightBlockEntity>> WARNING_LIGHT_BE =
+            BLOCK_ENTITIES.register("warning_light", () -> BlockEntityType.Builder.of(
+                    com.pizzaparker07.spacebreaker.content.rocketry.pad.WarningLightBlockEntity::new, WARNING_LIGHT.get()).build(null));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CrewArmBlockEntity>> CREW_ARM_BE = BLOCK_ENTITIES.register("crew_access_arm",
             () -> BlockEntityType.Builder.of(CrewArmBlockEntity::new, CREW_ARM.get()).build(null));
     @SuppressWarnings("DataFlowIssue")
@@ -222,6 +231,9 @@ public final class RocketryModule implements SbModule {
         BLOCKS.register(modBus);
         ITEMS.register(modBus);
         BLOCK_ENTITIES.register(modBus);
+        com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.init();
+        com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.KIT.blocks.register(modBus);
+        com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.KIT.items.register(modBus);
         ENTITIES.register(modBus);
         MENUS.register(modBus);
         modBus.addListener(RocketParts::registerRegistry);
@@ -252,6 +264,8 @@ public final class RocketryModule implements SbModule {
         NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.server.ServerStartedEvent e) ->
                 com.pizzaparker07.spacebreaker.content.rocketry.nav.AstroTransferModel.install(e.getServer().registryAccess()));
         SbTabs.SPACEFLIGHT.icon(CREW_CAPSULE);
+        SbTabs.SPACEFLIGHT.add(WARNING_LIGHT_ITEM);
+        com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.KIT.tab.forEach(SbTabs.SPACEFLIGHT::add);
         SbTabs.SPACEFLIGHT.add(ROCKET_ASSEMBLER_ITEM).add(LAUNCH_PAD_ITEM).add(FLAME_TRENCH_ITEM).add(SERVICE_TOWER_ITEM)
                 .add(CREW_ARM_ITEM).add(FUEL_UMBILICAL_ITEM).add(LAUNCH_CONSOLE_ITEM);
         PARTS.forEach(SbTabs.SPACEFLIGHT::add);
@@ -345,13 +359,45 @@ public final class RocketryModule implements SbModule {
         loot.self(STATION_BUNK.get());
         loot.self(FUEL_DEPOT.get());
         loot.self(LANDING_BEACON.get());
+        loot.self(WARNING_LIGHT.get());
+        com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.KIT.familyLoot(loot);
+        loot.self(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.PRESSURE_GLASS.get());
+        loot.self(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.PORTHOLE.get());
+        loot.self(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.GRATE.get());
+        for (var b : java.util.List.of(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.LED_PANEL,
+                com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.FLOODLIGHT, com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.CABLE_DUCT,
+                com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.PIPE_DUCT, com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.STEEL_LADDER,
+                com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.RAILING)) {
+            loot.self(b.get());
+        }
+        loot.slab(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.GRATE_PLATFORM.get());
+        loot.custom(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.SLIDING_DOOR.get(), b -> net.minecraft.world.level.storage.loot.LootTable.lootTable()
+                .withPool(net.minecraft.world.level.storage.loot.LootPool.lootPool().add(net.minecraft.world.level.storage.loot.entries.LootItem.lootTableItem(b)
+                        .when(net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition.hasBlockStateProperties(b)
+                                .setProperties(net.minecraft.advancements.critereon.StatePropertiesPredicate.Builder.properties()
+                                        .hasProperty(com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock.HALF,
+                                                net.minecraft.world.level.block.state.properties.DoubleBlockHalf.LOWER))))));
     }
 
     @Override
     public void addTags(SbTags tags) {
         tags.block(BlockTags.MINEABLE_WITH_PICKAXE, ROCKET_ASSEMBLER.get(), LAUNCH_PAD.get(), FLAME_TRENCH.get(), SERVICE_TOWER.get(),
-                CREW_ARM.get(), FUEL_UMBILICAL.get(), LAUNCH_CONSOLE.get(), STATION_HULL.get(), STATION_WINDOW.get(), DOCKING_PORT.get(), FUEL_DEPOT.get(), LANDING_BEACON.get());
+                CREW_ARM.get(), FUEL_UMBILICAL.get(), LAUNCH_CONSOLE.get(), STATION_HULL.get(), STATION_WINDOW.get(), DOCKING_PORT.get(), FUEL_DEPOT.get(), LANDING_BEACON.get(), WARNING_LIGHT.get());
         tags.block(BlockTags.NEEDS_STONE_TOOL, LAUNCH_PAD.get(), FLAME_TRENCH.get(), SERVICE_TOWER.get());
+        // base blocks: mined with a pickaxe; stairs, slabs and walls tagged as such; the grate lets air through
+        tags.block(BlockTags.MINEABLE_WITH_PICKAXE, com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.all());
+        for (var f : com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.KIT.families()) {
+            tags.block(BlockTags.STAIRS, f.stairs().get());
+            tags.block(BlockTags.SLABS, f.slab().get());
+            if (f.wall() != null) {
+                tags.block(BlockTags.WALLS, f.wall().get());
+            }
+        }
+        tags.block(com.pizzaparker07.spacebreaker.content.suit.SuitModule.LEAKY, com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.GRATE.get());
+        tags.block(BlockTags.CLIMBABLE, com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.STEEL_LADDER.get());
+        tags.block(BlockTags.SLABS, com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.GRATE_PLATFORM.get());
+        // the sliding door holds air while shut (the airtight tag honours its OPEN property)
+        tags.block(com.pizzaparker07.spacebreaker.content.suit.SuitModule.AIRTIGHT, com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.SLIDING_DOOR.get());
     }
 
     @Override

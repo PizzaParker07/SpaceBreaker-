@@ -564,6 +564,136 @@ final class RocketryScenario implements ShowcaseScenario {
         s.add(new Shot("44_map_system_asteroids", 6000, 0, 0, 0, 0F, 0F, false, fp, 120, p -> mapShot(p, Spacebreaker.id("mars"), true), null));
         s.add(new Shot("45_map_comets", 6000, 0, 0, 0, 0F, 0F, false, fp, 120, p -> mapShot(p, Spacebreaker.id("churyumov_gerasimenko"), false), null));
         s.add(new Shot("46_map_comet_landing", 6000, 0, 0, 0, 0F, 0F, false, fp, 120, p -> mapShot(p, Spacebreaker.id("churyumov_gerasimenko"), false), null));
+        s.add(new Shot("47_comet_landing", 6000, 0, 0, 0, 0F, 0F, true, fp, 900, p -> {
+            clearScene(p);
+            var cometSurface = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(Spacebreaker.id("churyumov_gerasimenko"), false).orElse(null);
+            ServerLevel level = cometSurface == null ? null : p.server.getLevel(cometSurface.dimension());
+            if (level == null) {
+                Spacebreaker.LOGGER.info("[showcase] comet: no 67P world");
+                return;
+            }
+            // a shuttle coming down from 67P orbit, as the arrival does; then a launch back to orbit
+            int gx = 8, gz = 8;
+            level.getChunk(gx >> 4, gz >> 4);
+            int ground = level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, gx, gz);
+            RocketEntity r = RocketEntity.create(level, RocketryModule.LUNAR_SHUTTLE, new Vec3(gx + 0.5, ground + 60, gz + 0.5), 0F);
+            r.fillCompletely();
+            level.addFreshEntity(r);
+            scene.add(r);
+            r.stageScene(FlightState.DESCENT, 0, 0, true);
+            toDimension(p, cometSurface, gx + 12.5, ground + 6, gz + 12.5, 135F, 10F);
+            Spacebreaker.LOGGER.info("[showcase] comet: gravity {} m/s2, ground y {}", String.format(java.util.Locale.ROOT, "%.5f",
+                    com.pizzaparker07.spacebreaker.core.env.Environment.gravity(level)), ground);
+            later(p.server, 300, () -> {
+                Spacebreaker.LOGGER.info("[showcase] comet: after descent state {} y {} (ground {}) vy {}", r.state(),
+                        String.format(java.util.Locale.ROOT, "%.2f", r.getY()), ground, String.format(java.util.Locale.ROOT, "%.3f", r.getDeltaMovement().y));
+                boolean go = r.tryStartCountdown(null);
+                Spacebreaker.LOGGER.info("[showcase] comet: countdown started {} problem {}", go, r.launchProblem());
+            });
+            later(p.server, 560, () -> Spacebreaker.LOGGER.info("[showcase] comet: during ascent state {} y {} ascent {}", r.state(),
+                    String.format(java.util.Locale.ROOT, "%.1f", r.getY()), String.format(java.util.Locale.ROOT, "%.2f", r.ascentProgress())));
+            later(p.server, 880, () -> {
+                RocketEntity now = scene.stream().filter(e -> !e.isRemoved()).findFirst().orElse(r);
+                Spacebreaker.LOGGER.info("[showcase] comet: end state {} dim {} removed {}", now.state(), now.level().dimension().location(), r.isRemoved());
+            });
+        }, null));
+        // warning lights at night, away from the console: lit (beams turning, light on the deck) and dark
+        for (boolean on : new boolean[]{true, false}) {
+            s.add(new Shot(on ? "48_warning_lights" : "48b_warning_lights_off", 18000, -1.5, G + 1.5, 12.5, 153F, 15F, true, fp, 60, p -> {
+                clearScene(p);
+                ServerLevel level = p.serverLevel();
+                for (BlockPos a : new BlockPos[]{PAD.offset(-3, 1, 8), PAD.offset(-5, 1, 6)}) {
+                    level.setBlock(a.below(), on ? net.minecraft.world.level.block.Blocks.REDSTONE_BLOCK.defaultBlockState()
+                            : RocketryModule.LAUNCH_PAD.get().defaultBlockState(), 3);
+                    level.setBlock(a, RocketryModule.WARNING_LIGHT.get().defaultBlockState(), 3);
+                }
+            }, null));
+        }
+        s.add(new Shot("49_base_blocks", 6000, 0, 0, 0, 0F, 0F, true, fp, 80, p -> {
+            clearScene(p);
+            ServerLevel moon = p.server.getLevel(Location.MOON_SURFACE.dimension());
+            int gx = 120, gz = 40;
+            moon.getChunk(gx >> 4, gz >> 4);
+            int gy = moon.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, gx, gz);
+            var panel = com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.ALUMINUM_PANEL;
+            var deck = com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.TITANIUM_DECK;
+            // a short open corridor: titanium deck with a grate strip, a wall of panels with a porthole and pressure glass
+            for (int dx = -1; dx <= 7; dx++) {
+                for (int dz = -2; dz <= 2; dz++) {
+                    var floor = dz == 0 ? com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.GRATE.get() : deck.base().get();
+                    moon.setBlock(new BlockPos(gx + dx, gy - 1, gz + dz), floor.defaultBlockState(), 3);
+                    for (int up = 0; up < 4; up++) {
+                        moon.setBlock(new BlockPos(gx + dx, gy + up, gz + dz), net.minecraft.world.level.block.Blocks.AIR.defaultBlockState(), 3);
+                    }
+                }
+                for (int up = 0; up < 3; up++) {
+                    net.minecraft.world.level.block.Block w = panel.base().get();
+                    if (up == 1 && dx == 2) w = com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.PORTHOLE.get();
+                    if (up == 1 && (dx == 4 || dx == 5)) w = com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.PRESSURE_GLASS.get();
+                    moon.setBlock(new BlockPos(gx + dx, gy + up, gz - 2), w.defaultBlockState(), 3);
+                }
+                moon.setBlock(new BlockPos(gx + dx, gy + 3, gz - 2), panel.slab().get().defaultBlockState(), 3);
+            }
+            // two sliding doors in the wall: one shut, one open
+            var door = com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.SLIDING_DOOR.get().defaultBlockState()
+                    .setValue(com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock.FACING, net.minecraft.core.Direction.SOUTH);
+            com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock.place(moon, new BlockPos(gx, gy, gz - 2), door);
+            com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock.place(moon, new BlockPos(gx + 6, gy, gz - 2),
+                    door.setValue(com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock.OPEN, true));
+            moon.setBlock(new BlockPos(gx + 6, gy, gz + 2), panel.wall().get().defaultBlockState(), 3);
+            moon.setBlock(new BlockPos(gx + 7, gy, gz + 2), deck.stairs().get().defaultBlockState(), 3);
+            moon.setBlock(new BlockPos(gx + 1, gy, gz - 1), RocketryModule.WARNING_LIGHT.get().defaultBlockState(), 3);
+            toDimension(p, Location.MOON_SURFACE, gx + 7.5, gy + 2.6, gz + 2.5, 135F, 28F);
+        }, null));
+        s.add(new Shot("50_base_fittings", 18000, 0, 0, 0, 0F, 0F, true, fp, 80, p -> {
+            clearScene(p);
+            ServerLevel moon = p.server.getLevel(Location.MOON_SURFACE.dimension());
+            int gx = 160, gz = 40;
+            moon.getChunk(gx >> 4, gz >> 4);
+            int gy = moon.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, gx, gz);
+            var B = new Object() {
+                net.minecraft.world.level.block.state.BlockState of(net.minecraft.world.level.block.Block b) { return b.defaultBlockState(); }
+            };
+            var panel = com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.ALUMINUM_PANEL.base().get();
+            var deck = com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.TITANIUM_DECK.base().get();
+            var stripe = com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.HAZARD_STRIPE.base().get();
+            var led = com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.LED_PANEL.get();
+            // a roofed corridor at night: LED panels in the ceiling, duct covers along one wall, hazard stripes at the edge
+            for (int dx = -1; dx <= 9; dx++) {
+                for (int dz = -3; dz <= 3; dz++) {
+                    for (int up = -1; up <= 4; up++) {
+                        BlockPos q = new BlockPos(gx + dx, gy + up, gz + dz);
+                        net.minecraft.world.level.block.Block b = net.minecraft.world.level.block.Blocks.AIR;
+                        if (up == -1) b = Math.abs(dz) == 2 ? stripe : Math.abs(dz) == 3 ? panel : deck;
+                        else if (up == 4) b = dz == 0 && dx % 3 == 0 ? led : panel;
+                        else if (dz == -3) b = up == 1 ? (dx % 2 == 0 ? com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.CABLE_DUCT.get()
+                                : com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.PIPE_DUCT.get()) : panel;
+                        else if (dz == 3 && dx < 6) b = panel;
+                        if ((dx == -1 || dx == 9) && up >= 0 && up < 4) b = panel;
+                        moon.setBlock(q, B.of(b), 3);
+                    }
+                }
+            }
+            // a raised grate platform with a railing, a ladder up to it and a floodlight on the deck
+            for (int dx = 6; dx <= 8; dx++) {
+                for (int dz = 1; dz <= 3; dz++) {
+                    moon.setBlock(new BlockPos(gx + dx, gy + 1, gz + dz), com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.GRATE_PLATFORM.get()
+                            .defaultBlockState().setValue(net.minecraft.world.level.block.SlabBlock.TYPE, net.minecraft.world.level.block.state.properties.SlabType.TOP), 3);
+                }
+                moon.setBlock(new BlockPos(gx + dx, gy + 2, gz), com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.RAILING.get().defaultBlockState()
+                        .setValue(net.minecraft.world.level.block.IronBarsBlock.EAST, dx < 8).setValue(net.minecraft.world.level.block.IronBarsBlock.WEST, dx > 6), 3);
+            }
+            // the ladder climbs a panel pillar under the platform's edge
+            moon.setBlock(new BlockPos(gx + 6, gy, gz + 2), panel.defaultBlockState(), 3);
+            moon.setBlock(new BlockPos(gx + 6, gy + 1, gz + 2), panel.defaultBlockState(), 3);
+            for (int up = 0; up < 2; up++) {
+                moon.setBlock(new BlockPos(gx + 5, gy + up, gz + 2), com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.STEEL_LADDER.get().defaultBlockState()
+                        .setValue(net.minecraft.world.level.block.LadderBlock.FACING, net.minecraft.core.Direction.WEST), 3);
+            }
+            moon.setBlock(new BlockPos(gx + 3, gy, gz + 2), com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.FLOODLIGHT.get().defaultBlockState(), 3);
+            moon.setBlock(new BlockPos(gx + 1, gy, gz - 2), RocketryModule.WARNING_LIGHT.get().defaultBlockState(), 3);
+            toDimension(p, Location.MOON_SURFACE, gx + 0.5, gy + 1.8, gz + 1.5, -115F, 12F);
+        }, null));
         s.add(new Shot("31_nearby_stars", 6000, 0, 0, 0, 0F, 0F, false, fp, 120,
                 p -> {
                     RocketryShowcaseClient.star = "Alpha Centauri";

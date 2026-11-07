@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "XXX"
+  ],
+  "key": {
+    "X": {
+      "item": "spacebreaker:grate"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:grate_platform",
+    "count": 6
+  }
+}

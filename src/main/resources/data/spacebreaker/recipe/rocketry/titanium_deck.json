@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "TT",
+    "TT"
+  ],
+  "key": {
+    "T": {
+      "tag": "c:plates/titanium"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:titanium_deck",
+    "count": 4
+  }
+}

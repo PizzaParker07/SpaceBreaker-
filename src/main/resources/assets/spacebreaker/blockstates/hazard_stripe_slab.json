@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "spacebreaker:block/hazard_stripe_slab"
+    },
+    "type=top": {
+      "model": "spacebreaker:block/hazard_stripe_slab_top"
+    },
+    "type=double": {
+      "model": "spacebreaker:block/hazard_stripe"
+    }
+  }
+}
