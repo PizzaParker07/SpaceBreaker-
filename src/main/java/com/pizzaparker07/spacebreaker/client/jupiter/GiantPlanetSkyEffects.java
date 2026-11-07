@@ -210,33 +210,36 @@ public class GiantPlanetSkyEffects extends PlanetSkyEffects {
      */
     private void blocky(Matrix4f m, com.pizzaparker07.spacebreaker.content.worldgen.BlockyBodyMesh.Style style, Vector3d c, Vector3d right,
                         Vector3d up, Vector3d toViewer, float half, Vector3d sunWorld) {
+        if (style == com.pizzaparker07.spacebreaker.content.worldgen.BlockyBodyMesh.Style.CUBE) {
+            // a cube's corners reach out to sqrt(3) radii: keep the whole cube in front of the camera (sky distance 100)
+            half = Math.min(half, 50F);
+        }
         double tilt = Math.toRadians(look.ringTilt());
         Vector3d pole = new Vector3d(up).mul(Math.cos(tilt)).add(new Vector3d(toViewer).mul(Math.sin(tilt)));
         var pose = new com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.Pose(new Vector3f((float) c.x, (float) c.y, (float) c.z), half,
                 new Vector3f((float) pole.x, (float) pole.y, (float) pole.z), new Vector3f((float) toViewer.x, (float) toViewer.y, (float) toViewer.z), 0F);
         com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.Ring ring = null;
         if (look.rings() != null) {
-            var strip = com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.texture(look.rings());
-            // the ring texture is a radial strip, inner edge on the left: sample it along its middle row
             ring = new com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.Ring((float) look.ringInner(), (float) look.ringOuter(),
-                    (f, z) -> strip.argb((f - 0.5) * Math.PI * 2, 0));
+                    ringMap(look.rings()));
         }
-        com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.draw(m, style, resolution(style, half), faceMap(look.disc()), pose,
+        com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.draw(m, style, 0, faceMap(look.disc()), pose,
                 new Vector3f((float) sunWorld.x, (float) sunWorld.y, (float) sunWorld.z), 0.04F, look.haze(), 1F, ring);
-    }
-
-    /**
-     * Blocks across the body: the usual count for a body of a few degrees, more for a giant that fills a third of the sky
-     * (Saturn from Enceladus), so each block stays about two degrees wide; capped to keep the quad count modest.
-     */
-    static int resolution(com.pizzaparker07.spacebreaker.content.worldgen.BlockyBodyMesh.Style style, float half) {
-        int base = com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.resolution(style, false);
-        double degrees = Math.toDegrees(2 * Math.atan(half / 100.0));
-        return Math.max(base, Math.min(40, (int) Math.round(degrees / 2)));
     }
 
     private static final java.util.Map<ResourceLocation, com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.ColorMap> FACE_MAPS =
             new java.util.concurrent.ConcurrentHashMap<>();
+
+    private static final java.util.Map<ResourceLocation, com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.ColorMap> RING_MAPS =
+            new java.util.concurrent.ConcurrentHashMap<>();
+
+    /** Ring colours by radius from a ring texture (a radial strip, inner edge on the left), read along its middle row; one per texture. */
+    static com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.ColorMap ringMap(ResourceLocation rings) {
+        return RING_MAPS.computeIfAbsent(rings, id -> {
+            var strip = com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.texture(id);
+            return (f, z) -> strip.argb((f - 0.5) * Math.PI * 2, 0);
+        });
+    }
 
     /**
      * A surface map from a disc texture (the planet's face as seen from the moon, north up): the near hemisphere is read
