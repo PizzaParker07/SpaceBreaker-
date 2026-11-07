@@ -26,6 +26,9 @@ A comet is a dirty snowball: water ice under a crust of dust darker than charcoa
 
 {page}
 ## Fuel
+Comet dust is useful too: in the regolith heater one block gives **300 mB of water** and **100 mB of CO₂**, plus a lump of {item spacebreaker:tholin} 15% of the time. → [Asteroid mining](near_earth_asteroids#mining)
+{recipe spacebreaker:regolith_processing/comet_dust}
+
 All three have water ice: {item spacebreaker:comet_ice}, {item spacebreaker:encke_ice} and {item spacebreaker:halley_ice} melt to water in an ice melter. Split it into fuel by electrolysis: comets are **refuelling stops**. → [In-Situ Resources](isru)
 
 >! There is almost no gravity. Come in slowly when you land; a jump can fling you all the way to orbit. Clip on a {item spacebreaker:safety_tether} if you need to.

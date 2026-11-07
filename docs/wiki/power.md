@@ -26,6 +26,9 @@ Bütün makineler **FE** (enerji) ile çalışır. Üretim ve tüketim "FE/t" il
 > [!TIP]
 > Güneş paneli enerjiyi üst yüzü hariç her yöne verir. Laboratuvarın hemen yanına koymak yeter.
 
+> [!TIP]
+> Mars'ta paneller tozlanır ve gücünün %60'ına kadar düşer; eğilip kullanarak sil. → [Mars](mars)
+
 ### Güç göstergesi
 
 **Güç Göstergesi**
@@ -87,6 +90,9 @@ Every machine runs on **FE** (energy). Production and use are measured in "FE/t"
 
 > [!TIP]
 > The solar panel gives power out of every side except the top. Placing it right next to the lab is enough.
+
+> [!TIP]
+> On Mars, panels gather dust and drop to as little as 60% power; sneak-use to wipe them. → [Mars](mars)
 
 ### Power monitor
 

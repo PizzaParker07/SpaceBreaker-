@@ -38,6 +38,7 @@ Bu wiki, oyun içindeki **Saha Rehberi**nin metinlerinden otomatik üretilir.
 - [Oksijen](oxygen) · *Oxygen*
 - [Üssün Havası](base_air) · *Air for the Base*
 - [Düşük Yerçekiminde Hareket](eva_mobility) · *Moving in Low Gravity*
+- [Aletler](tools) · *Tools*
 - [Tehlikeler](hazards) · *Hazards*
 - [Gezici](rover) · *Rover*
 

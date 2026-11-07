@@ -43,7 +43,7 @@ Tüpler gövdenin içinde kalır ve gövde sıradan bir zırh gibi düşer: geri
 
 ## Giysi Bakım İstasyonu
 {items spacebreaker:suit_station}
-Giysiyle bir {item spacebreaker:suit_station}'nun üstünde ya da yanında dur: tüplerini ve Manevra Ünitesini doldurur, giysi parçalarındaki aşınmayı yavaşça onarır. Yuvasına konan bir parçayı da onarır. Havası solunabilir bir dünyada havayı, değilse borulanan oksijeni kullanır; enerjiyle (FE) çalışır.
+Giysiyle bir {item spacebreaker:suit_station}'nun üstünde ya da yanında dur: tüplerini ve Manevra Ünitesini doldurur, giysi parçalarındaki aşınmayı yavaşça onarır. Yuvasına konan bir parçayı da onarır; {item spacebreaker:electric_drill}'ı da şarj eder. → [Aletler](tools) Havası solunabilir bir dünyada havayı, değilse borulanan oksijeni kullanır; enerjiyle (FE) çalışır.
 {recipe spacebreaker:suit_station}
 
 ## Giysi kademeleri

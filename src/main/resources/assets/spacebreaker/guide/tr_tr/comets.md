@@ -26,6 +26,9 @@ Kuyruklu yıldız, kirli bir kartopudur: kömürden koyu bir toz kabuğunun alt�
 
 {page}
 ## Yakıt
+Kuyruklu yıldız tozu da işe yarar: regolit ısıtıcıda bir blok **300 mB su** ve **100 mB CO₂** verir, %15 şansla da bir topak {item spacebreaker:tholin}. → [Asteroit madenciliği](near_earth_asteroids#mining)
+{recipe spacebreaker:regolith_processing/comet_dust}
+
 Üçünün de buzu su buzudur: {item spacebreaker:comet_ice}, {item spacebreaker:encke_ice} ve {item spacebreaker:halley_ice} buz eriticide suya döner. Elektrolizle yakıt yap: kuyruklu yıldızlar birer **yakıt durağıdır**. → [Yerinde Üretim](isru)
 
 >! Yerçekimi neredeyse yok. İnerken yavaş yaklaş; bir zıplayış seni yörüngeye kadar savurabilir. Gerekirse bir {item spacebreaker:safety_tether} tak.

@@ -24,6 +24,8 @@ Every machine runs on **FE** (energy). Production and use are measured in "FE/t"
 > The solar panel gives power out of every side except the top. Placing it right next to the lab is enough.
 
 {page}
+> On Mars, panels gather dust and drop to as little as 60% power; sneak-use to wipe them. → [Mars](mars)
+
 ## Power monitor
 {items spacebreaker:power_monitor}
 Place a {item spacebreaker:power_monitor} against a battery bank (or any block that stores energy): its screen shows the charge, the net flow and the time until full or empty. Its comparator output follows the charge, so redstone can start a generator when the charge runs low.
