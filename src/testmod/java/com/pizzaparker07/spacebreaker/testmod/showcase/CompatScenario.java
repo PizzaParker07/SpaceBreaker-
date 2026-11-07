@@ -218,6 +218,13 @@ final class CompatScenario implements ShowcaseScenario {
                 go(moonDim, 40.5, hy + 1 + 1.62, 0.5, -90F, 4F, 0.15, p -> habitat(p, hy)), null));
         s.add(new ShowcaseDriver.Shot("16_habitat_outside", 0, 0, 0, 0, 0F, 0F, true, fp, 80,
                 go(moonDim, 51.5, hy + 5.5, 8.5, 125F, 18F, 0.15, null), null));
+        // the habitat module at night: lamp light inside, the Moon's night through the windows
+        s.add(new ShowcaseDriver.Shot("19_habitat_night", 0, 0, 0, 0, 0F, 0F, true, fp, 120,
+                go(moonDim, 40.5, hy + 1 + 1.62, 0.5, -90F, 4F, 0.75, p -> {
+                    habitat(p, hy);
+                    ((ServerLevel) p.level()).setBlock(BlockPos.containing(40.5, hy, 0.5).offset(-2, 1, 2),
+                            Blocks.SEA_LANTERN.defaultBlockState(), 3);
+                }), null));
         // docking jolt (ViewportEvent.ComputeCameraAngles roll/pitch) seen through the pack: horizon tilts in both
         s.add(new ShowcaseDriver.Shot("17_docking_jolt", 0, 0, 0, 0, 0F, 0F, false, fp, 80,
                 go(moonDim, 60.5, ground(t, 60.5, 0.5) + 2, 0.5, 0F, 0F, 0.15, p -> board(p, ground(t, 60.5, 0.5))),

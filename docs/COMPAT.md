@@ -178,6 +178,12 @@ Complementary the tint is weaker (the pack re-lights translucent entities) but t
   worldTime follow the orbit instead (`compat/client/PackTime`, mixins `iris.PackSunMixin` and
   `iris.PackWorldTimeMixin`): orbital noon in sunlight, midnight in the shadow, dusk across the penumbra
   (`orbit_day_night_vanilla_vs_iris.jpg`). Without a pack nothing changes.
+- **Very dark and very bright surfaces (Uranus' moons):** checked with Complementary on Umbriel (dark plains, the
+  bright Wunda floor) and Oberon (dark-floored crater, mountain, chasma): the pack's exposure keeps both ends: Wunda
+  stays white without blowing out, the dark crater floor stays clearly darker than its rim, nothing turns black.
+  As on the Moon, the pack's ground is brighter and a little warmer than vanilla (`umbriel_habitat_night_vanilla_vs_iris`,
+  `oberon_vanilla_vs_iris`). The habitat module at night (lamp inside) looks as without shaders, with the night
+  sky in the windows (last row of the Umbriel sheet).
 - **Docking jolt:** a camera roll/pitch from `ViewportEvent.ComputeCameraAngles`; Iris builds its matrices from the
   same camera, so the shake is the same with a pack (at most about 2°, too small to tell apart in a still frame).
 - **Inside a closed module the pack's ambient fill is blue:** the airless sky colour handed to the pack
