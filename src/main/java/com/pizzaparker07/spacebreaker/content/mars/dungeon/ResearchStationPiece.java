@@ -183,8 +183,10 @@ public class ResearchStationPiece extends StructurePiece {
         door(level, box, 16, 27, Direction.SOUTH);
         door(level, box, 16, 23, Direction.SOUTH);
         // buttons hang on the airlock walls; aimed from world positions so they attach in every orientation
-        DungeonBits.placeFacing(level, box, getWorldPos(17, F + 2, 28), getWorldPos(17, F + 2, 27), s(Blocks.STONE_BUTTON), true);
-        DungeonBits.placeFacing(level, box, getWorldPos(15, F + 2, 26), getWorldPos(15, F + 2, 27), s(Blocks.STONE_BUTTON), true);
+        com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.placeToward(level, this, s(Blocks.STONE_BUTTON),
+                new BlockPos(17, F + 2, 28), new BlockPos(17, F + 2, 27), true, box);
+        com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.placeToward(level, this, s(Blocks.STONE_BUTTON),
+                new BlockPos(15, F + 2, 26), new BlockPos(15, F + 2, 27), true, box);
         placeBlock(level, s(Blocks.POLISHED_BLACKSTONE_PRESSURE_PLATE), 16, F + 1, 22, box);
         placeBlock(level, s(Blocks.POLISHED_BLACKSTONE_PRESSURE_PLATE), 16, F + 1, 24, box);
         for (int x = 15; x <= 17; x++) {
@@ -196,8 +198,8 @@ public class ResearchStationPiece extends StructurePiece {
 
     private void door(WorldGenLevel level, BoundingBox box, int x, int z, Direction facing) {
         BlockState lower = Blocks.IRON_DOOR.defaultBlockState().setValue(DoorBlock.FACING, facing).setValue(DoorBlock.HALF, DoubleBlockHalf.LOWER);
-        placeBlock(level, lower, x, F + 1, z, box);
-        placeBlock(level, lower.setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER), x, F + 2, z, box);
+        com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, lower, x, F + 1, z, box);
+        com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, lower.setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER), x, F + 2, z, box);
     }
 
     private void hab(WorldGenLevel level, BoundingBox box, RandomSource r) {
@@ -277,7 +279,8 @@ public class ResearchStationPiece extends StructurePiece {
         // the tunnel wall.
         placeBlock(level, s(Blocks.POLISHED_BLACKSTONE_PRESSURE_PLATE), 10, F + 1, 16, box);
         BlockPos disp = getWorldPos(10, F + 1, 15);
-        DungeonBits.placeFacing(level, box, disp, getWorldPos(10, F + 1, 16), s(Blocks.DISPENSER), false);
+        com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.placeToward(level, this, s(Blocks.DISPENSER),
+                new BlockPos(10, F + 1, 15), new BlockPos(10, F + 1, 16), false, box);
         if (box.isInside(disp)) {
             DungeonBits.load(level, disp, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.ARROW, 12));
         }

@@ -24,31 +24,6 @@ public final class DungeonBits {
         }
     }
 
-    /**
-     * Places a directional block so it points from {@code at} toward {@code toward} (both world positions), whatever
-     * the piece's rotation and mirror: a dispenser aimed at a target cell, or (with the wall as {@code toward} and
-     * {@code away} true) a lever or wall sign facing out of its wall.
-     */
-    public static void placeFacing(WorldGenLevel level, net.minecraft.world.level.levelgen.structure.BoundingBox box, BlockPos at, BlockPos toward,
-                                   net.minecraft.world.level.block.state.BlockState state, boolean away) {
-        if (!box.isInside(at)) {
-            return;
-        }
-        net.minecraft.core.Direction d = net.minecraft.core.Direction.fromDelta(toward.getX() - at.getX(), toward.getY() - at.getY(), toward.getZ() - at.getZ());
-        if (d == null) {
-            return;
-        }
-        if (away) {
-            d = d.getOpposite();
-        }
-        if (state.hasProperty(net.minecraft.world.level.block.state.properties.BlockStateProperties.FACING)) {
-            state = state.setValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.FACING, d);
-        } else if (state.hasProperty(net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING) && d.getAxis().isHorizontal()) {
-            state = state.setValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING, d);
-        }
-        level.setBlock(at, state, net.minecraft.world.level.block.Block.UPDATE_CLIENTS);
-    }
-
     /** Loads a dispenser at a world position. */
     public static void load(WorldGenLevel level, BlockPos pos, ItemStack stack) {
         if (level.getBlockEntity(pos) instanceof DispenserBlockEntity d) {

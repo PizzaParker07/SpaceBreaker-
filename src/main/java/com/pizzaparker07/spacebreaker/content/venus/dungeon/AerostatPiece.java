@@ -109,10 +109,10 @@ public class AerostatPiece extends StructurePiece {
         }
         // door to the docking walkway on the south side: a sealed iron door (see valvePuzzle)
         BlockState door = Blocks.IRON_DOOR.defaultBlockState().setValue(net.minecraft.world.level.block.DoorBlock.FACING, Direction.SOUTH);
-        placeBlock(level, door.setValue(net.minecraft.world.level.block.DoorBlock.HALF, net.minecraft.world.level.block.state.properties.DoubleBlockHalf.LOWER),
-                13, y0 + 1, z1, box);
-        placeBlock(level, door.setValue(net.minecraft.world.level.block.DoorBlock.HALF, net.minecraft.world.level.block.state.properties.DoubleBlockHalf.UPPER),
-                13, y0 + 2, z1, box);
+        com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, door.setValue(net.minecraft.world.level.block.DoorBlock.HALF,
+                net.minecraft.world.level.block.state.properties.DoubleBlockHalf.LOWER), 13, y0 + 1, z1, box);
+        com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, door.setValue(net.minecraft.world.level.block.DoorBlock.HALF,
+                net.minecraft.world.level.block.state.properties.DoubleBlockHalf.UPPER), 13, y0 + 2, z1, box);
         for (int z = z1 + 1; z <= z1 + 4; z++) {
             for (int x = 12; x <= 14; x++) {
                 placeBlock(level, x == 13 ? panel : s(Blocks.IRON_BARS), x, x == 13 ? y0 : y0 + 1, z, box);
@@ -160,13 +160,13 @@ public class AerostatPiece extends StructurePiece {
                 net.minecraft.world.level.block.state.properties.AttachFace.WALL).setValue(net.minecraft.world.level.block.LeverBlock.FACING, Direction.SOUTH);
         int[][] marks = {{11, 0}, {13, 1}, {15, 2}};
         for (int[] m : marks) {
-            com.pizzaparker07.spacebreaker.content.mars.dungeon.DungeonBits.placeFacing(level, box, getWorldPos(m[0], y0 + 3, z1 + 1),
-                    getWorldPos(m[0], y0 + 3, z1), lever, true);
+            com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.placeToward(level, this, lever,
+                new BlockPos(m[0], y0 + 3, z1 + 1), new BlockPos(m[0], y0 + 3, z1), true, box);
             placeBlock(level, m[1] == 1 ? s(VenusModule.SULFUR_CRUST.get()) : m[1] == 0 ? s(Blocks.CYAN_TERRACOTTA) : s(Blocks.RED_TERRACOTTA),
                     m[0], y0 + 4, z1, box);
         }
-        com.pizzaparker07.spacebreaker.content.mars.dungeon.DungeonBits.placeFacing(level, box, getWorldPos(12, y0 + 2, z1 + 1),
-                getWorldPos(12, y0 + 2, z1), Blocks.OAK_WALL_SIGN.defaultBlockState(), true);
+        com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.placeToward(level, this, Blocks.OAK_WALL_SIGN.defaultBlockState(),
+                new BlockPos(12, y0 + 2, z1 + 1), new BlockPos(12, y0 + 2, z1), true, box);
         BlockPos sign = getWorldPos(12, y0 + 2, z1 + 1);
         if (box.isInside(sign)) {
             com.pizzaparker07.spacebreaker.content.mars.dungeon.DungeonBits.signText(level, sign, "aerostat_valve");

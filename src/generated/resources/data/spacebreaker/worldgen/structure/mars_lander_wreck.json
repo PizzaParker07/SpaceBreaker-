@@ -1,0 +1,11 @@
+{
+  "type": "spacebreaker:mars_lander_wreck",
+  "biomes": [
+    "spacebreaker:mars_plains",
+    "spacebreaker:mars_highlands",
+    "spacebreaker:mars_dunes",
+    "spacebreaker:mars_crater"
+  ],
+  "spawn_overrides": {},
+  "step": "surface_structures"
+}

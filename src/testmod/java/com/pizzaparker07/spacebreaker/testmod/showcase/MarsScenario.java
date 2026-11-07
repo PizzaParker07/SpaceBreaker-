@@ -64,6 +64,15 @@ final class MarsScenario implements ShowcaseScenario {
         cave = new com.pizzaparker07.spacebreaker.content.mars.dungeon.RiverbedCavePiece(5150L, CAVE_X, top, CAVE_Z);
         place(level, cave);
         place(level, tube(t));
+        place(level, lander(t));
+    }
+
+    static final int LANDER_X = 60;
+    static final int LANDER_Z = -60;
+
+    static com.pizzaparker07.spacebreaker.content.mars.dungeon.LanderWreckPiece lander(PlanetTerrain t) {
+        int y = (int) Math.floor(t.height(LANDER_X + 7, LANDER_Z + 7)) + 1;
+        return new com.pizzaparker07.spacebreaker.content.mars.dungeon.LanderWreckPiece(1976L, LANDER_X, y, LANDER_Z);
     }
 
     static final int TUBE_X = -40;
@@ -126,6 +135,11 @@ final class MarsScenario implements ShowcaseScenario {
             double d = i == 1 ? 4.5 : i == 5 ? 5.5 : 2.6;
             s.add(new ShowcaseDriver.Shot("14_" + names[i], 0, STAGE_X + xs[i] + 0.5 + (i % 2 == 0 ? -0.4 : 0.4) * d, y0 + 1 + (i == 5 ? 2.2 : 1.4), STAGE_Z + 6.5 + d,
                     180F + (i % 2 == 0 ? 8F : -8F), i == 5 ? 5F : 22F, true, CameraType.FIRST_PERSON, 60, at(0.18), null));
+        }
+        {
+            var body = lander(t).body();
+            s.add(new ShowcaseDriver.Shot("21_lost_lander", 0, body.getX() + 0.5 - 9, body.getY() + 5, body.getZ() + 0.5 + 11, -140F, 18F, true,
+                    CameraType.FIRST_PERSON, 160, at(0.2), null));
         }
         {
             var tube = tube(t);

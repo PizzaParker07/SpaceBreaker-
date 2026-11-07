@@ -59,7 +59,7 @@ public final class InnerDungeonTechGameTests {
 
     @GameTest(template = WorldTests.EMPTY, timeoutTicks = 200)
     public static void marsDungeonsTeachMartianTech(GameTestHelper helper) {
-        teaches(helper, "mars", List.of(MarsLoot.STATION_LAB, MarsLoot.STATION_ISRU, MarsLoot.STATION_COMMAND, MarsLoot.RIVERBED_PROBE));
+        teaches(helper, "mars", List.of(MarsLoot.STATION_LAB, MarsLoot.STATION_ISRU, MarsLoot.STATION_COMMAND, MarsLoot.RIVERBED_PROBE, MarsLoot.LANDER_DATA));
         helper.succeed();
     }
 
