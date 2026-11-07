@@ -28,7 +28,7 @@ final class JeiScenario implements ShowcaseScenario {
         List<ShowcaseDriver.Shot> s = new ArrayList<>();
         CameraType fp = CameraType.FIRST_PERSON;
         String[] categories = {"crushing", "arc_smelting", "fabricating", "refining", "electrolysis", "sabatier", "regolith_processing",
-                "chemical_reaction", "suit_modules"};
+                "chemical_reaction", "sintering", "suit_modules"};
         int n = 1;
         for (String c : categories) {
             String name = String.format("%02d_%s", n++, c);
