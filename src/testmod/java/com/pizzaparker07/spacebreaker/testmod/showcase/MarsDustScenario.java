@@ -84,6 +84,25 @@ final class MarsDustScenario implements ShowcaseScenario {
                 whirl.setLife(6000);
             }
         }), MoonScenario::farView));
+        // the farm after a few dusty sols: the back row still covered, the front row swept clean by a whirl
+        s.add(new ShowcaseDriver.Shot("24_whirl_swept_panels", 0, FX - 6.5, y + 4.5, FZ + 1.5, -90F, 30F, true, fp, 140, afternoon(level -> {
+            level.getEntities(MarsEntities.DUST_WHIRL.get(), e -> true).forEach(e -> e.discard());
+            for (int i = 0; i < 4; i++) {
+                setDust(level, new BlockPos(FX + i * 2, y, FZ), 0F);
+                setDust(level, new BlockPos(FX + i * 2, y, FZ + 3), 1F);
+            }
+            DustWhirl whirl = MarsEntities.spawnWhirl(level, new BlockPos(FX + 5, y, FZ - 1));
+            if (whirl != null) {
+                whirl.setHeading((float) Math.toRadians(-90));
+                whirl.setLife(6000);
+            }
+        }), MoonScenario::farView));
         return s;
+    }
+
+    private static void setDust(ServerLevel level, BlockPos pos, float dust) {
+        if (level.getBlockEntity(pos) instanceof com.pizzaparker07.spacebreaker.core.env.DustLoad.Dusty d) {
+            d.setDust(dust);
+        }
     }
 }

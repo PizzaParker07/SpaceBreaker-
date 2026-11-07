@@ -24,6 +24,10 @@ public final class MarsClimate {
     static void register() {
         Environment.addTemperatureModifier(MarsClimate::temperatureOffset);
         Environment.addSunlightModifier((level, pos) -> 1 - 0.85 * MarsWeather.stormStrength(level));
+        // Martian dust settling on solar cells: about three sols to full cover, six times faster in a storm
+        Environment.addDustSource((level, pos) -> MarsWeather.dusty(level)
+                ? com.pizzaparker07.spacebreaker.core.env.DustLoad.rate(MarsWeather.stormStrength(level)) : 0);
+        com.pizzaparker07.spacebreaker.content.suit.EnvironmentSensorItem.dustRate = Environment::dustRate;
         PanelDust.register();
     }
 

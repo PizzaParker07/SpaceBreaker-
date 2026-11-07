@@ -13,7 +13,7 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.EnergyStorage;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
-public class SolarPanelBlockEntity extends BlockEntity {
+public class SolarPanelBlockEntity extends BlockEntity implements com.pizzaparker07.spacebreaker.core.env.DustLoad.Dusty {
     /** Peak output in FE/t with the sun square on the cells (tier 1 silicon). */
     public static final int PEAK_OUTPUT = 20;
     /** Mechanical limit of the tracker, radians either side of horizontal. */

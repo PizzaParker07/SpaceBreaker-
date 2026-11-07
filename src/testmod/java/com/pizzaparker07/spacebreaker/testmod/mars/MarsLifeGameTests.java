@@ -384,6 +384,39 @@ public final class MarsLifeGameTests {
         });
     }
 
+    /** A passing dust whirl sweeps a dusty solar panel clean; a brush wipes another by hand. */
+    @GameTest(template = EMPTY, timeoutTicks = 100)
+    public static void whirlAndBrushCleanRealPanels(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos near = new BlockPos(1, 2, 1);
+        BlockPos far = new BlockPos(1, 2, 6);
+        BlockPos brushed = new BlockPos(4, 2, 6);
+        for (BlockPos p : new BlockPos[]{near, far, brushed}) {
+            helper.setBlock(p, com.pizzaparker07.spacebreaker.content.machines.MachinesModule.SOLAR_PANEL.get());
+            panel(helper, p).setDust(1F);
+        }
+        var whirl = com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.spawnWhirl(level, helper.absolutePos(new BlockPos(2, 1, 1)));
+        helper.assertTrue(whirl != null, "a whirl forms");
+        whirl.setHeading((float) Math.PI); // drifting slowly away from the far panel
+        com.pizzaparker07.spacebreaker.content.mars.PanelDust.brush(level, helper.absolutePos(brushed), panel(helper, brushed));
+        helper.assertTrue(panel(helper, brushed).dust() == 0F, "the brush wipes the panel");
+        helper.runAfterDelay(15, () -> {
+            helper.assertTrue(panel(helper, near).dust() == 0F, "the whirl swept the panel it passed, dust " + panel(helper, near).dust());
+            helper.assertTrue(panel(helper, far).dust() == 1F, "a panel out of its reach stays dusty");
+            float covered = com.pizzaparker07.spacebreaker.content.machines.SolarPanelBlockEntity.dustFactor(1F);
+            helper.assertTrue(Math.abs(covered - 0.6F) < 1e-6, "a fully dusty panel gives 60 %, got " + covered);
+            whirl.discard();
+            helper.succeed();
+        });
+    }
+
+    private static com.pizzaparker07.spacebreaker.content.machines.SolarPanelBlockEntity panel(GameTestHelper helper, BlockPos rel) {
+        if (helper.getBlockEntity(rel) instanceof com.pizzaparker07.spacebreaker.content.machines.SolarPanelBlockEntity be) {
+            return be;
+        }
+        throw new net.minecraft.gametest.framework.GameTestAssertException("no solar panel at " + rel);
+    }
+
     private MarsLifeGameTests() {
     }
 }
