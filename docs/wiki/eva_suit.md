@@ -139,7 +139,7 @@ In space, your suit is your personal spacecraft. You make the first one before l
 → **EVA Boots** (Crafting Table)
 
 ### Sealing
-Put on all four pieces and you hear a hiss and see **"Suit sealed · life support running"**. Take one off and it says **"Suit open"**; in an airless place the warning is red.
+Put on all four pieces and you hear a hiss and see **"Suit sealed · life support online"**. Take one off and it says **"Suit unsealed"**; in an airless place the warning is red.
 
 > [!WARNING]
 > With even one piece missing you cannot breathe in a vacuum.
