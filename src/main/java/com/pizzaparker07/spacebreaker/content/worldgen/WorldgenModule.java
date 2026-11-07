@@ -56,6 +56,7 @@ public final class WorldgenModule implements SbModule {
     public void register(IEventBus modBus) {
         CHUNK_GENERATORS.register(modBus);
         ColdTraps.register();
+        Subsurface.register();
         BIOME_SOURCES.register(modBus);
         FEATURES.register(modBus);
         ModLoadingContext.get().getActiveContainer().registerConfig(ModConfig.Type.SERVER, WorldgenConfig.SPEC, "spacebreaker-worlds-server.toml");

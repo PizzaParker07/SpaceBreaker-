@@ -317,6 +317,26 @@ public final class MoonGameTests {
         helper.succeed();
     }
 
+    /**
+     * Underground shelter: on the Moon the steady temperature under the surface is the day-night mean, the same at
+     * noon and at midnight, and lava tubes run deep enough to be sheltered all along.
+     */
+    @GameTest(template = EMPTY)
+    public static void lavaTubesAreSteadyShelters(GameTestHelper helper) {
+        double day = 120;
+        double night = -173;
+        double steady = com.pizzaparker07.spacebreaker.content.worldgen.Subsurface.steadyC(day, night);
+        double noon = day + com.pizzaparker07.spacebreaker.content.worldgen.Subsurface.offsetC(day, night, (float) (Math.PI / 2));
+        double midnight = night + com.pizzaparker07.spacebreaker.content.worldgen.Subsurface.offsetC(day, night, (float) (-Math.PI / 2));
+        helper.assertTrue(Math.abs(noon - steady) < 1e-6 && Math.abs(midnight - steady) < 1e-6, "steady underground: " + noon + " / " + midnight);
+        helper.assertTrue(steady > -40 && steady < -10, "about -25 C under the Moon's surface: " + steady);
+        var path = com.pizzaparker07.spacebreaker.content.moon.dungeon.LavaTubePiece.walk(net.minecraft.util.RandomSource.create(9L), 0, 0, (x, z) -> 80);
+        for (int[] node : path) {
+            helper.assertTrue(80 - node[1] >= com.pizzaparker07.spacebreaker.content.worldgen.Subsurface.DEPTH, "the tube runs sheltered under the surface");
+        }
+        helper.succeed();
+    }
+
     /** Ice-drilling stations find places on shadowed polar crater floors (and only there). */
     @GameTest(template = EMPTY, timeoutTicks = 600)
     public static void iceDrillStationsGenerateInColdTraps(GameTestHelper helper) {
