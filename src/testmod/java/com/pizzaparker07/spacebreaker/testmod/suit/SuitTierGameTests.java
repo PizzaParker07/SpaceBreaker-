@@ -206,4 +206,23 @@ public final class SuitTierGameTests {
                 "a lunar cold trap (" + trapC + " °C) needs more than Mk1 and is within the heated suit");
         helper.succeed();
     }
+
+    @GameTest(template = EMPTY)
+    public static void venusPressureWearsTheSuitButNeverRuinsIt(GameTestHelper helper) {
+        Player p = wearing(helper, GameType.SURVIVAL, set(SuitTier.THERMAL));
+        Tech.learn(p, SuitTier.THERMAL.tech());
+        ItemStack chest = p.getItemBySlot(EquipmentSlot.CHEST);
+        p.tickCount = 0;
+        LifeSupport.tickPressureWear(p, 50.0, true);
+        helper.assertTrue(chest.getDamageValue() == 0, "ordinary pressure does not wear the suit");
+        for (int i = 0; i < 5000; i++) {
+            p.tickCount = i * LifeSupport.STRAIN_WEAR_TICKS;
+            LifeSupport.tickPressureWear(p, VENUS_KPA, true);
+        }
+        helper.assertTrue(chest.getDamageValue() > 0, "Venus' pressure wears the suit");
+        helper.assertTrue(chest.getDamageValue() <= chest.getMaxDamage() * LifeSupport.STRAIN_WEAR_LIMIT, "but never past the limit");
+        helper.assertTrue(SpaceSuitItem.isSealed(p), "so the thermal suit stays sealed: Venus stays playable");
+        helper.assertTrue(bodyTarget(p, VENUS_C, VENUS_KPA) == SurvivalData.NORMAL_BODY_C, "and still keeps the body at 37 °C");
+        helper.succeed();
+    }
 }

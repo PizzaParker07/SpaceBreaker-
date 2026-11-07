@@ -58,8 +58,9 @@ public class SuitOverlayLayer<T extends LivingEntity, M extends HumanoidModel<T>
             if (HelmetLamps.lampsOn(entity)) {
                 // short faint beams from both lamps (the light pool itself is drawn by HelmetLamps)
                 var beam = buffers.getBuffer(RenderType.entityTranslucentEmissive(HelmetLamps.BEAM));
-                HelmetLamps.beam(pose, beam, -5.5F, -7F, -3.05F);
-                HelmetLamps.beam(pose, beam, 5.5F, -7F, -3.05F);
+                boolean longBeam = com.pizzaparker07.spacebreaker.content.suit.HelmetLamp.longBeam(helmet);
+                HelmetLamps.beam(pose, beam, -5.5F, -7F, -3.05F, longBeam);
+                HelmetLamps.beam(pose, beam, 5.5F, -7F, -3.05F, longBeam);
             }
             pose.popPose();
         }

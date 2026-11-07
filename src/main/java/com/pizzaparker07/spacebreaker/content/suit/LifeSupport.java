@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -58,6 +59,29 @@ public final class LifeSupport {
         tickBreathing(player, data, env.breathable(), immune, hazards);
         tickTemperature(player, data, env.ambientC(), env.pressureKpa(), hazards);
         tickRadiation(player, data, hazards);
+        tickPressureWear(player, env.pressureKpa(), hazards);
+    }
+
+    // ------------------------------------------------------------------ crushing pressure
+
+    /** Above this ambient pressure (10 bar) a sealed suit is under strain: Venus' surface is ~92 bar. */
+    public static final double STRAIN_KPA = 1000.0;
+    /** One point of wear on every suit piece this often while under strain. */
+    public static final int STRAIN_WEAR_TICKS = 200;
+    /** Pressure alone never wears a piece past this fraction, so a strained suit never leaks: Venus stays playable. */
+    public static final double STRAIN_WEAR_LIMIT = 0.75;
+
+    /** Crushing pressure slowly wears the suit (repair it between trips); it never ruins it on its own. */
+    public static void tickPressureWear(Player player, double pressureKpa, boolean hazards) {
+        if (!hazards || pressureKpa < STRAIN_KPA || player.tickCount % STRAIN_WEAR_TICKS != 0 || !SpaceSuitItem.isSealed(player)) {
+            return;
+        }
+        for (EquipmentSlot slot : SuitProtection.SLOTS) {
+            ItemStack stack = player.getItemBySlot(slot);
+            if (stack.isDamageableItem() && stack.getDamageValue() + 1 <= stack.getMaxDamage() * STRAIN_WEAR_LIMIT) {
+                stack.setDamageValue(stack.getDamageValue() + 1);
+            }
+        }
     }
 
     // ------------------------------------------------------------------ oxygen

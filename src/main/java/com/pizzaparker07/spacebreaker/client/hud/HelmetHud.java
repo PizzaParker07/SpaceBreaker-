@@ -249,6 +249,8 @@ public final class HelmetHud {
             warning = Component.translatable("hud.spacebreaker.warn.radiation");
         } else if (s.integrity() < 20) {
             warning = Component.translatable("hud.spacebreaker.warn.damaged");
+        } else if (sealed && s.pressureKpa() >= com.pizzaparker07.spacebreaker.content.suit.LifeSupport.STRAIN_KPA) {
+            warning = Component.translatable("hud.spacebreaker.warn.strain", Math.round(s.pressureKpa() / 100F));
         } else if (s.has(SuitStatusPayload.MMU) && s.mmuFuel() * 10 < com.pizzaparker07.spacebreaker.content.suit.ManeuveringUnitItem.CAPACITY) {
             warning = Component.translatable("hud.spacebreaker.warn.mmu_low");
         }

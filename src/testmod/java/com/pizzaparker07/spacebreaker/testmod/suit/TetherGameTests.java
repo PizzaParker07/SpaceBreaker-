@@ -173,4 +173,23 @@ public final class TetherGameTests {
                 com.pizzaparker07.spacebreaker.content.audio.SbSounds.RADIO_IN.get().getLocation()) == null, "radio tones are not lines");
         helper.succeed();
     }
+
+    @GameTest(template = EMPTY)
+    public static void helmetLampLongBeamReachesFurtherAndNarrower(GameTestHelper helper) {
+        Player p = helper.makeMockPlayer(GameType.SURVIVAL);
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.HelmetLamp.toggle(p) == null, "no helmet, nothing to switch");
+        p.setItemSlot(net.minecraft.world.entity.EquipmentSlot.HEAD, new ItemStack(SuitModule.EVA_HELMET.get()));
+        helper.assertFalse(com.pizzaparker07.spacebreaker.content.suit.HelmetLamp.longBeam(p), "lamps start wide");
+        helper.assertTrue(Boolean.TRUE.equals(com.pizzaparker07.spacebreaker.content.suit.HelmetLamp.toggle(p)), "switches to long beam");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.HelmetLamp.longBeam(p), "the helmet remembers the long beam");
+        double d = 15;
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.HelmetLamp.range(true) > com.pizzaparker07.spacebreaker.content.suit.HelmetLamp.range(false),
+                "the long beam reaches further");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.HelmetLamp.poolRadius(d, true)
+                < com.pizzaparker07.spacebreaker.content.suit.HelmetLamp.poolRadius(d, false), "and lights a narrower spot");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.HelmetLamp.strength(30, true) > 0
+                && com.pizzaparker07.spacebreaker.content.suit.HelmetLamp.strength(30, false) == 0, "30 blocks: only the long beam gets there");
+        helper.assertTrue(Boolean.FALSE.equals(com.pizzaparker07.spacebreaker.content.suit.HelmetLamp.toggle(p)), "and back to wide");
+        helper.succeed();
+    }
 }
