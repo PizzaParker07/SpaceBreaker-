@@ -73,18 +73,17 @@ public final class RocketClientEvents {
                 continue;
             }
             effects(level, rocket, quality);
+            staging(level, rocket, rocket == ridden, quality);
             loop(mc, rocket, SOUNDS, EngineSound.Kind.ENGINE);
             loop(mc, rocket, ENTRY_SOUNDS, EngineSound.Kind.REENTRY);
             if (rocket.burning()) {
                 boolean riding = rocket == ridden;
                 double ground = level.getHeight(Heightmap.Types.MOTION_BLOCKING, rocket.getBlockX(), rocket.getBlockZ());
-                boolean nearGround = rocket.getY() - ground < 60 && rocket.location() == Location.EARTH_SURFACE;
-                float s = riding ? (rocket.state() == FlightState.ASCENT && rocket.timer() < 300 ? 1.2F : 0.5F) : 0;
-                if (nearGround) {
-                    s = Math.max(s, (float) Mth.clamp(1.4 - dist / 60.0, 0, 1.4));
-                }
-                if (rocket.state() == FlightState.COUNTDOWN) {
-                    s *= 0.6F;
+                boolean nearGround = rocket.getY() - ground < 60 && Location.EARTH_SURFACE.equals(rocket.location());
+                float s = riding ? rideShake(rocket) : 0;
+                if (nearGround && !riding) {
+                    // the ground shakes for everyone near the pad
+                    s = Math.max(s, (float) Mth.clamp(1.4 - dist / 60.0, 0, 1.4) * (rocket.state() == FlightState.COUNTDOWN ? 0.6F : 1F));
                 }
                 if (!rocket.location().equals(Location.EARTH_SURFACE) && !riding) {
                     s = 0;
@@ -95,10 +94,61 @@ public final class RocketClientEvents {
                 targetShake = Math.max(targetShake, 1.0F);
             }
         }
-        shake = Mth.lerp(0.2F, shake, targetShake);
+        if (jolt > 0) {
+            targetShake = Math.max(targetShake, 1.3F * jolt / JOLT_TICKS);
+            jolt--;
+        }
+        shake = Mth.lerp(0.25F, shake, targetShake);
         SOUNDS.values().removeIf(EngineSound::isStopped);
         ENTRY_SOUNDS.values().removeIf(EngineSound::isStopped);
         MissionVoice.tick(ridden);
+    }
+
+    /** Ticks a staging jolt lasts. */
+    private static final int JOLT_TICKS = 10;
+    private static int jolt;
+    private static final java.util.Map<Integer, Integer> STAGES = new java.util.HashMap<>();
+
+    /**
+     * How hard the ride shakes the crew: the engines spooling up on the pad, a hard kick at liftoff, a rumble that
+     * follows the thrust and fades as the air thins, and a short buffet through maximum dynamic pressure.
+     */
+    static float rideShake(RocketEntity rocket) {
+        FlightState st = rocket.state();
+        float air = Location.EARTH_SURFACE.equals(rocket.location()) || rocket.location().atmosphere() && !rocket.location().orbit()
+                ? 1F - spaceFactor() : 0F;
+        if (st == FlightState.COUNTDOWN) {
+            float spool = Mth.clamp((RocketEntity.IGNITION_TICKS - rocket.timer()) / (float) RocketEntity.IGNITION_TICKS, 0, 1);
+            return 0.15F + 0.55F * spool;
+        }
+        if (st == FlightState.ASCENT) {
+            float t = rocket.timer();
+            float liftoff = 1.5F * (float) Math.exp(-t / 40.0);
+            float rumble = 0.15F + 0.45F * air;
+            float p = rocket.ascentProgress();
+            float maxQ = air > 0 ? 0.9F * (float) Math.exp(-Math.pow((p - 0.3) / 0.05, 2)) : 0F;
+            return Math.max(liftoff, rumble + maxQ);
+        }
+        return 0.3F; // other burns: a steady push
+    }
+
+    /** A spent stage falls away: a ring of smoke where it separated, and a jolt for the crew. */
+    private static void staging(ClientLevel level, RocketEntity rocket, boolean ridden, int quality) {
+        int stage = rocket.activeStage();
+        Integer before = STAGES.put(rocket.getId(), stage);
+        if (before == null || stage <= before || rocket.state() != FlightState.ASCENT && rocket.state() != FlightState.ORBIT) {
+            return;
+        }
+        if (ridden) {
+            jolt = JOLT_TICKS;
+        }
+        RandomSource rng = level.random;
+        for (int i = 0; i < 18 * quality; i++) {
+            double a = rng.nextDouble() * Math.PI * 2;
+            double v = 0.15 + rng.nextDouble() * 0.2;
+            level.addParticle(ParticleTypes.CLOUD, rocket.getX() + Math.cos(a) * 1.1, rocket.getY() - 0.3, rocket.getZ() + Math.sin(a) * 1.1,
+                    Math.cos(a) * v, -0.05, Math.sin(a) * v);
+        }
     }
 
     private static void loop(Minecraft mc, RocketEntity rocket, java.util.Map<Integer, EngineSound> playing, EngineSound.Kind kind) {
@@ -118,7 +168,7 @@ public final class RocketClientEvents {
         FlightState state = rocket.state();
         RocketGeometry geo = rocket.geometry();
         double x = rocket.getX(), y = rocket.getY(), z = rocket.getZ();
-        boolean airless = rocket.location() != Location.EARTH_SURFACE;
+        boolean airless = !Location.EARTH_SURFACE.equals(rocket.location());
         // LOX boil-off from a fuelled rocket waiting on Earth
         if ((state == FlightState.IDLE || state == FlightState.COUNTDOWN) && !airless && rocket.fuelFraction() > 0.05 && rng.nextInt(4) == 0) {
             double h = rng.nextDouble() * geo.payloadBottom() / 16.0;
@@ -128,6 +178,20 @@ public final class RocketClientEvents {
         }
         if (!rocket.burning()) {
             return;
+        }
+        // engines lit on the pad: the water deluge flashes to steam, billowing out and up around the pad
+        if (state == FlightState.COUNTDOWN && !airless) {
+            float spool = Mth.clamp((RocketEntity.IGNITION_TICKS - rocket.timer()) / (float) RocketEntity.IGNITION_TICKS, 0, 1);
+            for (int i = 0; i < quality * (2 + (int) (6 * spool)); i++) {
+                double a = rng.nextDouble() * Math.PI * 2;
+                double r = 1.2 + rng.nextDouble() * 2.0;
+                double v = 0.12 + rng.nextDouble() * 0.25 * (0.4 + spool);
+                // big, slow billows (campfire smoke lives long and grows) and quick white puffs of steam
+                level.addAlwaysVisibleParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, true, x + Math.cos(a) * r, y + 0.3 + rng.nextDouble(),
+                        z + Math.sin(a) * r, Math.cos(a) * v, 0.02 + rng.nextDouble() * 0.06, Math.sin(a) * v);
+                level.addParticle(ParticleTypes.CLOUD, x + Math.cos(a) * r, y + rng.nextDouble() * 1.5, z + Math.sin(a) * r,
+                        Math.cos(a) * v * 1.5, 0.05 + rng.nextDouble() * 0.1, Math.sin(a) * v * 1.5);
+            }
         }
         double tilt = Math.toRadians(rocket.tilt());
         double bx = x - Math.sin(tilt) * 0.2, by = y - 0.2;
@@ -157,9 +221,10 @@ public final class RocketClientEvents {
             level.addParticle(ParticleTypes.LARGE_SMOKE, bx + rng.nextGaussian() * 0.4, by - 2 - rng.nextDouble() * 3, z + rng.nextGaussian() * 0.4,
                     rng.nextGaussian() * 0.05, -0.2, rng.nextGaussian() * 0.05);
         }
-        if (rng.nextInt(2) == 0) {
-            level.addAlwaysVisibleParticle(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE, true, bx + rng.nextGaussian() * 0.5, by - 3,
-                    z + rng.nextGaussian() * 0.5, rng.nextGaussian() * 0.02, 0.02, rng.nextGaussian() * 0.02);
+        // a lingering column left behind the climbing rocket (slow smoke, so it cannot overtake the nose)
+        if (h > 6 && rng.nextInt(2) == 0) {
+            level.addAlwaysVisibleParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, true, bx + rng.nextGaussian() * 0.5, by - 4,
+                    z + rng.nextGaussian() * 0.5, rng.nextGaussian() * 0.03, -0.05, rng.nextGaussian() * 0.03);
         }
         // the launch cloud: exhaust deflected sideways along the flame trench
         if (h < 30) {

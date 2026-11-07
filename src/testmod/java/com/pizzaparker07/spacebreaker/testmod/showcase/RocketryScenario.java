@@ -258,14 +258,14 @@ final class RocketryScenario implements ShowcaseScenario {
                         p.openMenu(be, CONSOLE);
                     }
                 }, null));
-        s.add(new Shot("07_ignition", 6000, 14.5, G + 3, -12.5, 50F, -24F, true, fp, 180,
+        s.add(new Shot("07_ignition", 6000, 14.5, G + 3, -12.5, 50F, -24F, true, fp, 190,
                 p -> {
                     p.closeContainer();
                     padRocket.fillCompletely();
                     padRocket.tryStartCountdown(null);
                 }, null));
         s.add(new Shot("08_liftoff", 6000, 14.5, G + 3, -12.5, 50F, -30F, true, fp, 60, null, null));
-        s.add(new Shot("09_ascent", 6000, 16.5, G + 2, -16.5, 45F, -62F, true, fp, 90, null, null));
+        s.add(new Shot("09_ascent", 6000, 16.5, G + 2, -16.5, 45F, -66F, true, fp, 35, null, null));
         s.add(new Shot("10_earth_orbit", 6000, 0, 0, 0, 0F, 0F, true, fp, 120,
                 p -> {
                     clearScene(p);

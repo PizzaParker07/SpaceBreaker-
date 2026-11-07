@@ -207,7 +207,7 @@ public final class RocketHud {
             int hy = g.guiHeight() - 72;
             g.drawCenteredString(font, hint, w / 2, hy, 0xFFFFFF);
         }
-        if (s == FlightState.IDLE && here != Location.EARTH_SURFACE) {
+        if (s == FlightState.IDLE && !Location.EARTH_SURFACE.equals(here)) {
             g.drawCenteredString(font, Component.translatable("hud.spacebreaker.hint.map", RocketryClient.STAR_MAP.getTranslatedKeyMessage()),
                     w / 2, g.guiHeight() - 82, 0xC0C8D0);
         }
