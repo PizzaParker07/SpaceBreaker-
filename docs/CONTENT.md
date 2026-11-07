@@ -242,6 +242,9 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Titania `spacebreaker:titania` | Uranüs'ün en büyük uydusu: gri, orta yaşlı kraterli yaylalar; üç dev düz kanyon (~64 blok derin, 90 blok geniş, soluk katmanlı duvarlar), merkez tepeli büyük eski krater havzası, kutuplarda CO₂ kırağısı; gökte halkalı Uranüs |
 | 🎨 | Titania blokları | Titania Regoliti (kalıcı ayak izi), Titania Ana Kaya Buzu (+ merdiven, basamak, duvar), Kanyon Duvarı Buzu, Titania Karbon Yatağı (→ kömür) |
 | 🎨 | Zindan ve teknoloji | Düşmüş İkmal İniş Aracı (Titania) → Tektonik Haritalama (5) |
+| 🎨 | Umbriel `spacebreaker:umbriel` | Uranüs'ün en karanlık uydusu: kraterlerle doymuş, isli karbon tabakasıyla kaplı çok eski yüzey; iniş yerinin doğusunda Wunda krateri ve tabanındaki parlak kırağı halkası (CO₂ kırağısı), kutuplarda CO₂ kırağısı; gökte halkalı Uranüs |
+| 🎨 | Umbriel blokları | Umbriel Regoliti (kalıcı ayak izi), Umbriel Ana Kaya Buzu (+ merdiven, basamak, duvar), İsli Buz (eritilince → kömür) |
+| 🎨 | Zindan ve teknoloji | Düşmüş İkmal İniş Aracı (Umbriel) → Tektonik Haritalama (5) |
 | 🎨 | Ortak yüzey özellikleri | fay uçurumu (`fault_cliff`), taç yapıları (`coronae`), rift vadileri (`grabens`) |
 
 ### Neptün sistemi
@@ -302,6 +305,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | Titan 🎨 | Metan Kayıcısı (metan göllerinin üstünde yürür) · Tolin Solucanı (kumul denizlerinde halkalı, ürkek kazıcı: yaklaşınca kuma gömülür, sessizlikte çıkar, kumu eleyip ara sıra tolin bırakır; tolin kumuyla çoğalır) |
 | Enceladus 🎨 | Gayzer Süzülücüsü (gayzer bulutlarında süzülen parlak çan) |
 | Titania 🎨 | Moloz Yuvarlakçası (plakalı otlayıcı; vurulunca top olup hızla yuvarlanarak kaçar, top halindeyken hasarın bir kısmını alır; kömürle çoğalır) |
+| Umbriel 🎨 | Alacakaranlık Sıçrayanı (uzun arka bacaklı koyu otlayıcı; ovalarda yavaş, yüksek sıçrayışlarla gezer; vurulunca karbon tozu bulutu kaldırıp yakınındakileri kısa süre kör eder; kömürle çoğalır) |
 | Ariel 🎨 | Kırağı Güvesi (soluk, geniş kanatlı; vadi çıkıntılarının altında tüner, karanlıkta uçar) |
 | Miranda 🎨 | Uçurum Yapışkanı (beş kollu, yassı otlayıcı; duvarlara tırmanır, düşme hasarı almaz; kömürle çoğalır) |
 | Triton 🎨 | Gayzer Böceği (gayzer tozuyla beslenir, gayzer fırlatınca kanat kınlarını açıp süzülerek iner, düşme hasarı almaz; gayzer tozuyla çoğalır) |

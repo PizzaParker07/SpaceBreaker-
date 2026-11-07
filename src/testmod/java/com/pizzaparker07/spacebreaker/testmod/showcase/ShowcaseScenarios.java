@@ -51,6 +51,7 @@ public final class ShowcaseScenarios {
         ALL.put("miranda", new MirandaScenario());
         ALL.put("ariel", new ArielScenario());
         ALL.put("titania", new TitaniaScenario());
+        ALL.put("umbriel", new UmbrielScenario());
         ALL.put("triton", new TritonScenario());
         ALL.put("pluto", new PlutoScenario(false));
         ALL.put("charon", new PlutoScenario(true));
