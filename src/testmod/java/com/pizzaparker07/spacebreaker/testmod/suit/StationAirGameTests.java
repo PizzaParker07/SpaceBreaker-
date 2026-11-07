@@ -341,4 +341,60 @@ public final class StationAirGameTests {
                 .thenExecute(() -> helper.assertTrue(SealedRooms.providesOxygen(level, room), "the room still holds its air"))
                 .thenSucceed();
     }
+
+    /** A stand-in vehicle with a pressurised cabin (a boat here) and a small cabin oxygen supply. */
+    static final class TestCabin extends net.minecraft.world.entity.vehicle.Boat implements com.pizzaparker07.spacebreaker.core.env.PressurizedVehicle {
+        double oxygen = 100;
+
+        TestCabin(net.minecraft.world.level.Level level) {
+            super(net.minecraft.world.entity.EntityType.BOAT, level);
+        }
+
+        @Override
+        public boolean cabinPressurized() {
+            return oxygen > 0;
+        }
+
+        @Override
+        public double cabinTemperatureC() {
+            return 19.0;
+        }
+
+        @Override
+        public double radiationFactor() {
+            return 0.5;
+        }
+
+        @Override
+        public boolean breathe(net.minecraft.world.entity.LivingEntity rider, double breathingTicks) {
+            if (oxygen < breathingTicks) {
+                return false;
+            }
+            oxygen -= breathingTicks;
+            return true;
+        }
+    }
+
+    @GameTest(template = "empty")
+    public static void pressurisedCabinKeepsItsRiderAlive(GameTestHelper helper) {
+        var level = helper.getLevel();
+        Player p = helper.makeMockPlayer(GameType.SURVIVAL);
+        BlockPos at = helper.absolutePos(new BlockPos(2, 2, 2));
+        TestCabin cabin = new TestCabin(level);
+        cabin.setPos(at.getX() + 0.5, at.getY(), at.getZ() + 0.5);
+        level.addFreshEntity(cabin);
+        p.setPos(at.getX() + 0.5, at.getY(), at.getZ() + 0.5);
+        helper.assertTrue(p.startRiding(cabin, true), "the rider boards");
+        LifeSupport.Env env = LifeSupport.Env.at(p, 100.0);
+        helper.assertTrue(env.breathable() && env.ambientC() == 19.0 && Math.abs(env.doseRateMsvDay() - 50.0) < 1e-9
+                && env.pressureKpa() > 100, "cabin air, its temperature and half the outside dose, got " + env);
+        helper.assertTrue(cabin.oxygen < 100, "the rider breathes the cabin's oxygen, not the suit's");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.SuitEvents.pressurisedAt(p), "the HUD shows pressurised");
+        cabin.oxygen = 0;
+        helper.assertTrue(LifeSupport.cabin(p) == null && !com.pizzaparker07.spacebreaker.content.suit.SuitEvents.pressurisedAt(p)
+                && LifeSupport.Env.at(p, 100.0).ambientC() != 19.0, "an empty cabin tank is the outside again");
+        p.stopRiding();
+        cabin.discard();
+        helper.succeed();
+    }
 }

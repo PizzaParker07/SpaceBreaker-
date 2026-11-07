@@ -32,4 +32,17 @@ public final class BlockInfoGameTests {
                 "dust 50 %, output " + expectedOutput + " %: " + java.util.Arrays.toString(args));
         helper.succeed();
     }
+
+    /** Jade asserts (and fails resource loading) when a plugin component has no config name. */
+    @GameTest(template = "empty")
+    public static void jadeComponentHasAConfigName(GameTestHelper helper) throws java.io.IOException {
+        for (String lang : new String[]{"en_us", "tr_tr"}) {
+            try (var in = Spacebreaker.class.getResourceAsStream("/assets/spacebreaker/lang/" + lang + ".json")) {
+                helper.assertTrue(in != null, "no " + lang);
+                var json = com.google.gson.JsonParser.parseReader(new java.io.InputStreamReader(in, java.nio.charset.StandardCharsets.UTF_8)).getAsJsonObject();
+                helper.assertTrue(json.has("config.jade.plugin_spacebreaker.info_lines"), "Jade config name missing in " + lang);
+            }
+        }
+        helper.succeed();
+    }
 }

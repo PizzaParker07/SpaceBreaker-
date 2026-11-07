@@ -14,8 +14,9 @@ import net.neoforged.neoforge.client.event.ScreenEvent;
 import java.util.function.BooleanSupplier;
 
 /**
- * The level-loading screen while a rocket changes dimension: the same closing logic as vanilla's, but it
- * draws the transit view instead of a dirt background and "Loading terrain".
+ * Shown while a rocket changes dimension, in place of the "loading terrain" screen: the last frame of the flight stays
+ * on screen ({@link TransitView} takes and holds it) until the new world cross-fades in. Same closing logic as
+ * vanilla's.
  */
 public class TransitScreen extends ReceivingLevelScreen {
     public TransitScreen(BooleanSupplier levelReceived, Reason reason) {
@@ -30,9 +31,8 @@ public class TransitScreen extends ReceivingLevelScreen {
 
     @Override
     public void renderBackground(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
-        g.fill(0, 0, width, height, 0xFF01020A);
+        g.fill(0, 0, width, height, 0xFF000000);
         TransitView.render(g, width, height, 1F);
-        TransitView.caption(g, width, height, 1F);
     }
 
     @EventBusSubscriber(modid = Spacebreaker.MOD_ID, value = Dist.CLIENT)

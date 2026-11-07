@@ -34,7 +34,7 @@ final class OuterScanScenario implements ShowcaseScenario {
         List<ShowcaseDriver.Shot> s = new ArrayList<>();
         String only = System.getenv("SCAN_WORLDS");
         for (String world : only != null && !only.isBlank() ? only.split(",") : WORLDS) {
-            s.add(new ShowcaseDriver.Shot("scan_" + world, 6000, 0, 0, 0, 0F, 0F, true, CameraType.FIRST_PERSON, 20, p -> {
+            s.add(new ShowcaseDriver.Shot("scan_" + world, 6000, 0, 0, 0, 0F, 0F, true, CameraType.FIRST_PERSON, 600, p -> {
                 ServerLevel level = p.server.getLevel(ResourceKey.create(Registries.DIMENSION, Spacebreaker.id(world)));
                 if (level == null) {
                     ShowcaseDriver.log("[scan] no world " + world);
@@ -73,6 +73,46 @@ final class OuterScanScenario implements ShowcaseScenario {
                         }
                     }
                     ShowcaseDriver.log("[hash] " + world + " " + (cx0 + cx) + " " + (cz0 + cz) + " " + Long.toHexString(hash));
+                    String dump = System.getenv("SCAN_DUMP");
+                    if (dump != null && dump.equals(world + ":" + (cx0 + cx) + ":" + (cz0 + cz))) {
+                        // a hash per 16-block section (to find the height that differs), then every block near the surface
+                        var secs = chunk.getSections();
+                        for (int si = 0; si < secs.length; si++) {
+                            long sh = 7;
+                            java.util.Map<String, Integer> count = new java.util.TreeMap<>();
+                            for (int y = 0; y < 16; y++) {
+                                for (int z = 0; z < 16; z++) {
+                                    for (int x = 0; x < 16; x++) {
+                                        var st = secs[si].getBlockState(x, y, z);
+                                        sh = 31 * sh + net.minecraft.world.level.block.Block.getId(st);
+                                        String id = st.getBlock().getDescriptionId();
+                                        count.merge(id.substring(id.lastIndexOf('.') + 1), 1, Integer::sum);
+                                    }
+                                }
+                            }
+                            ShowcaseDriver.log("[section] " + (chunk.getMinBuildHeight() + si * 16) + " " + Long.toHexString(sh) + " " + count);
+                        }
+                        // every non-air block above the lowest surface of the chunk, to see what differs between two runs
+                        int bx = (cx0 + cx) << 4;
+                        int bz = (cz0 + cz) << 4;
+                        int low = Integer.MAX_VALUE;
+                        for (int x = 0; x < 16; x++) {
+                            for (int z = 0; z < 16; z++) {
+                                low = Math.min(low, level.getHeight(Heightmap.Types.WORLD_SURFACE, bx + x, bz + z));
+                            }
+                        }
+                        for (int x = 0; x < 16; x++) {
+                            for (int z = 0; z < 16; z++) {
+                                StringBuilder col = new StringBuilder();
+                                for (int y = low - 6; y < level.getHeight(Heightmap.Types.WORLD_SURFACE, bx + x, bz + z); y++) {
+                                    var st = chunk.getBlockState(new BlockPos(bx + x, y, bz + z));
+                                    String id = st.getBlock().getDescriptionId();
+                                    col.append(y).append('=').append(id.substring(id.lastIndexOf('.') + 1)).append(' ');
+                                }
+                                ShowcaseDriver.log("[dump] " + (((cx0 + cx) << 4) + x) + " " + (((cz0 + cz) << 4) + z) + " " + col);
+                            }
+                        }
+                    }
                 }
             }
         }

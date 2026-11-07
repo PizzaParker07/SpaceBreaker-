@@ -105,6 +105,46 @@ final class SkyDraw {
         RenderSystem.enableCull();
     }
 
+    /**
+     * Like {@link #blackout} but shaded from the zenith to the horizon: {@code over} straight up, {@code horizon} at
+     * eye level and below.
+     */
+    static void gradient(Matrix4f modelView, int over, int horizon) {
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.depthMask(false);
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        BufferBuilder b = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        float s = 60F;
+        float[][] ring = {{-s, -s}, {s, -s}, {s, s}, {-s, s}};
+        for (int i = 0; i < 4; i++) {
+            float[] p = ring[i], q = ring[(i + 1) % 4];
+            // upper half of each wall: horizon colour at eye level up to the zenith colour
+            vertex(b, modelView, p[0], 0, p[1], horizon);
+            vertex(b, modelView, q[0], 0, q[1], horizon);
+            vertex(b, modelView, q[0], s, q[1], over);
+            vertex(b, modelView, p[0], s, p[1], over);
+            // lower half: horizon colour all the way down
+            vertex(b, modelView, p[0], -s, p[1], horizon);
+            vertex(b, modelView, q[0], -s, q[1], horizon);
+            vertex(b, modelView, q[0], 0, q[1], horizon);
+            vertex(b, modelView, p[0], 0, p[1], horizon);
+        }
+        for (float[] p : ring) {
+            vertex(b, modelView, p[0], s, p[1], over);
+        }
+        for (float[] p : ring) {
+            vertex(b, modelView, p[0], -s, p[1], horizon);
+        }
+        RenderSystem.disableCull();
+        BufferUploader.drawWithShader(b.buildOrThrow());
+        RenderSystem.enableCull();
+    }
+
+    private static void vertex(BufferBuilder b, Matrix4f m, float x, float y, float z, int argb) {
+        b.addVertex(m, x, y, z).setColor(argb >> 16 & 255, argb >> 8 & 255, argb & 255, argb >>> 24);
+    }
+
     /** A textured billboard in the given direction (sun, distant bodies). */
     static void billboard(Matrix4f modelView, ResourceLocation texture, Vector3f dir, float distance, float size, float alpha) {
         RenderSystem.enableBlend();
