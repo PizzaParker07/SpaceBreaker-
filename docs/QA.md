@@ -213,6 +213,10 @@ Reviewed: no missing textures (purple/black), no untranslated keys, no invisible
   **Fixed** by industry 7a3da21 (panel, station array and rover roof panel multiply by `OrbitDaylight.sunlit` on the server;
   GameTest `stationArrayCarriesTheDepotThroughShadow`). Rocketry asked not to add the sunlight modifier as well (it would
   apply the shadow twice). To confirm on 1.21.1 after the 05:00 merge.
+  **Merge warning:** messages crossed and rocketry also registered `Environment.addSunlightModifier(OrbitDaylight::sunlit)`
+  (`RocketryModule.java:230`). With both branches merged the shadow is applied twice (sunlit²: same in full sun/shadow,
+  too low in penumbra). One of the two must go — suggested: keep the general modifier, drop the direct multiplication in
+  `SolarPanelBlockEntity.java:117` (and in `RoverEntity.java:375` if the rover also uses `solarFactor`). Integrator informed.
 
 - Model rule updated (inner planets, Moon change 8a61c8e: Mercury cold traps about −213 °C): Mercury's local industry now
   needs the heated suit **or** Mk1 with thermal regulator modules. Mercury stays a plain hydrolox round trip (step 15).
