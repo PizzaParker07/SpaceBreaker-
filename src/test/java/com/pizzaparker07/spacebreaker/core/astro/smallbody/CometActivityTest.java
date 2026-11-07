@@ -21,6 +21,10 @@ class CometActivityTest {
         assertTrue(Comet.HALLEY.retrograde());
         assertEquals(3.30, Comet.ENCKE.periodYears(), 0.03);
         assertEquals(0.336, Comet.ENCKE.perihelionAu(), 0.005);
+        assertEquals(2530, Comet.HALE_BOPP.periodYears(), 30);
+        assertEquals(0.914, Comet.HALE_BOPP.perihelionAu(), 0.005);
+        assertEquals(5.51, Comet.TEMPEL_1.periodYears(), 0.05);
+        assertEquals(1.506, Comet.TEMPEL_1.perihelionAu(), 0.01);
         for (Comet c : Comet.CATALOGUE) {
             assertTrue(c.density() > 300 && c.density() < 800, c.id() + " density " + c.density());
             assertEquals(c, Comet.byId(c.id()).orElseThrow());
@@ -67,6 +71,14 @@ class CometActivityTest {
         // Halley at 0.89 AU (Giotto, 1986): ≈ 7·10²⁹
         double qh = CometActivity.waterProduction(Comet.HALLEY, 0.89);
         assertTrue(qh > 2e29 && qh < 2e30, "Halley Q " + qh);
+        // Hale–Bopp near perihelion: ≈ 10³¹ s⁻¹; Tempel 1 during Deep Impact (1.5 AU): ≈ 10²⁸ s⁻¹
+        double qhb = CometActivity.waterProduction(Comet.HALE_BOPP, Comet.HALE_BOPP.perihelionAu());
+        assertTrue(qhb > 3e30 && qhb < 3e31, "Hale-Bopp Q " + qhb);
+        double qt = CometActivity.waterProduction(Comet.TEMPEL_1, Comet.TEMPEL_1.perihelionAu());
+        assertTrue(qt > 3e27 && qt < 3e28, "Tempel 1 Q " + qt);
+        assertEquals(Level.GREAT, CometActivity.at(Comet.HALE_BOPP, Comet.HALE_BOPP.perihelionDays() * DAY).level());
+        // the real Hale–Bopp was active at 7 AU (CO, not water); the water-only model switches it on later
+        assertTrue(CometActivity.activationDistance(Comet.HALE_BOPP) > CometActivity.activationDistance(Comet.HALLEY));
         double qe = CometActivity.waterProduction(Comet.ENCKE, Comet.ENCKE.perihelionAu());
         assertTrue(qe > 2e27 && qe < 3e28, "Encke Q " + qe);
         // Rosetta saw 67P switch on between 4 and 3 AU

@@ -200,7 +200,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 |---|---|---|
 | 🎨 | Yüzey özellikleri (`content/belt/world`) | gezegen motorunun zeminini yığın başına biçimlendirir: krater tabanlarında tuz lekeleri (faculae), dev kutup çarpma havzası, çatlak buz çizgileri (lineae) ve kaos arazisi, sıvı gölleri, bacalar/gayzerler |
 | 🎨 | Küçük gök cismi arazi üreticisi (`SmallBodyTerrain`) | yarıçap ve yüzey yaşından arazi profili; Ceres ve Vesta bununla yapılır, prosedürel asteroitler için hazır |
-| ✅ | Kuyruklu yıldız modeli (`Comet`, `CometActivity`): 67P/Çuryumov–Gerasimenko, 1P/Halley, 2P/Encke | gerçek yörüngeler; güneşe yakınken su ve toz çıkışı (Marsden yasası), koma ve kuyruk boyu, yörünge başına kütle kaybı; Rosetta ve Giotto ölçümleriyle uyumlu |
+| ✅ | Kuyruklu yıldız modeli (`Comet`, `CometActivity`): 67P/Çuryumov–Gerasimenko, 1P/Halley, 2P/Encke, Hale–Bopp, 9P/Tempel 1 | gerçek yörüngeler; güneşe yakınken su ve toz çıkışı (Marsden yasası), koma ve kuyruk boyu, yörünge başına kütle kaybı; Rosetta ve Giotto ölçümleriyle uyumlu |
 
 ### Ceres `spacebreaker:ceres`
 | Durum | İçerik | Not |

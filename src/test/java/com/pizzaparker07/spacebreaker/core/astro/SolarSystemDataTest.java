@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /** Sanity checks on every shipped celestial_body JSON file against basic physics. */
 class SolarSystemDataTest {
     private static final Set<String> EXPECTED = Set.of("sun", "mercury", "venus", "earth", "moon", "mars", "phobos",
-            "deimos", "ceres", "vesta", "bennu", "ryugu", "eros", "itokawa", "churyumov_gerasimenko", "halley", "encke", "jupiter", "io", "europa", "ganymede", "callisto", "saturn", "titan",
+            "deimos", "ceres", "vesta", "bennu", "ryugu", "eros", "itokawa", "churyumov_gerasimenko", "halley", "encke", "hale_bopp", "tempel_1", "jupiter", "io", "europa", "ganymede", "callisto", "saturn", "titan",
             "enceladus", "uranus", "miranda", "ariel", "umbriel", "titania", "oberon", "neptune", "proteus", "triton", "nereid", "pluto", "charon", "nix", "hydra");
 
     @Test
