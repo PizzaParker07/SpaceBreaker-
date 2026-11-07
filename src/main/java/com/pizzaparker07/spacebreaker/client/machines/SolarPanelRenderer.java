@@ -63,7 +63,7 @@ public class SolarPanelRenderer implements BlockEntityRenderer<SolarPanelBlockEn
     /** A rust-coloured film of settled dust over the cells; thicker cover is more opaque. */
     private void renderDust(PoseStack pose, VertexConsumer out, float dust, int light) {
         TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(DUST_TEXTURE);
-        float alpha = Math.min(1F, dust * 0.45F); // the cells still show through: full cover keeps 60% output
+        float alpha = Math.min(1F, dust * 0.6F); // at 80% cover the cell pattern still shows faintly
         float y = 15.05F / 16F;
         float z0 = (float) (0.5 - reach);
         float z1 = (float) (0.5 + reach);
@@ -83,7 +83,7 @@ public class SolarPanelRenderer implements BlockEntityRenderer<SolarPanelBlockEn
     }
 
     private static void vertex(VertexConsumer out, PoseStack.Pose pose, float x, float y, float z, float u, float v, float alpha, int light) {
-        out.addVertex(pose, x, y, z).setColor(0.86F, 0.56F, 0.36F, alpha).setUv(u, v).setLight(light).setNormal(pose, 0, 1, 0);
+        out.addVertex(pose, x, y, z).setColor(0.66F, 0.38F, 0.24F, alpha).setUv(u, v).setLight(light).setNormal(pose, 0, 1, 0);
     }
 
     @Override

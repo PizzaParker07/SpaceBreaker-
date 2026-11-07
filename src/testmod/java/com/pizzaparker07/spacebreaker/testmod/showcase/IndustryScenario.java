@@ -261,14 +261,14 @@ final class IndustryScenario implements ShowcaseScenario {
 
     /** Settled dust in steps across the tracker row, the station array fully covered. */
     private static void dustPanels(ServerPlayer player) {
-        float[] cover = {0.3F, 0.65F, 1F};
+        float[] cover = {0.3F, 0.55F, 0.8F};
         for (int i = 0; i < cover.length; i++) {
             if (player.level().getBlockEntity(new BlockPos(ISRU_X - 3 + i, F + 1, 5)) instanceof com.pizzaparker07.spacebreaker.content.machines.SolarPanelBlockEntity be) {
                 be.setDust(cover[i]);
             }
         }
         if (player.level().getBlockEntity(new BlockPos(ISRU_X - 4, F + 1, -1)) instanceof com.pizzaparker07.spacebreaker.content.machines.SolarPanelBlockEntity be) {
-            be.setDust(1F);
+            be.setDust(0.8F);
         }
     }
 
