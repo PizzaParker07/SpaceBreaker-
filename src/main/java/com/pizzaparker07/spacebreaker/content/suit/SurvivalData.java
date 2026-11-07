@@ -51,6 +51,8 @@ public final class SurvivalData {
     public boolean wasMagnetised;
     /** Inside a room pressurised by an oxygen distributor (station module, base), for the entry message. */
     public boolean wasPressurised;
+    /** In microgravity last time we checked, for the one-time hint on arrival. */
+    public boolean wasMicroGravity;
     /** Last known seal state, for the sealed / unsealed feedback (null until the first check). */
     public Boolean wasSealed;
 

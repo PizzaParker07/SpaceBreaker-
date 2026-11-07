@@ -43,6 +43,20 @@ public final class SuitEvents {
                     net.minecraft.sounds.SoundSource.PLAYERS, 0.35F, 1.7F);
         }
         data.wasMagnetised = magnetised;
+        if (player.tickCount % 20 == 0) {
+            double g = Environment.gravityFactor(player.level());
+            boolean micro = ZeroG.microGravity(g) && !player.isCreative();
+            if (micro && !data.wasMicroGravity) {
+                ItemStack torso = SuitTanks.wornTorso(player);
+                ItemStack mmu = torso.isEmpty() ? ItemStack.EMPTY : SuitTanks.maneuveringUnit(torso);
+                boolean boots = player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.FEET).is(SuitModule.MAGNETIC_BOOTS.get());
+                if (ZeroG.needsMicroGravityHint(g, boots, Tether.anchor(player).isPresent(), !mmu.isEmpty() && ManeuveringUnitItem.fuel(mmu) > 0)) {
+                    player.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.spacebreaker.suit.micro_g")
+                            .withStyle(net.minecraft.ChatFormatting.GOLD), true);
+                }
+            }
+            data.wasMicroGravity = micro;
+        }
         if (player.tickCount % 10 == 0) {
             boolean pressurised = pressurisedAt(player);
             if (pressurised && !data.wasPressurised) {
@@ -139,6 +153,9 @@ public final class SuitEvents {
         }
         if (data.wasPressurised) {
             flags |= SuitStatusPayload.PRESSURISED;
+        }
+        if (data.wasMicroGravity) {
+            flags |= SuitStatusPayload.MICRO_G;
         }
         if (com.pizzaparker07.spacebreaker.content.worldgen.ColdTraps.inColdTrap(player.level(), player.blockPosition())) {
             flags |= SuitStatusPayload.COLD_TRAP;

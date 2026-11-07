@@ -297,6 +297,9 @@ public final class SuitModule implements SbModule {
         lang.add("tooltip.spacebreaker.safety_tether.hint", "Use on a block to clip on, use again to unclip",
                 "Takmak için bir bloğa kullan, çözmek için yeniden kullan");
         lang.add("hud.spacebreaker.mag", "MAG", "MANYETİK");
+        lang.add("hud.spacebreaker.micro_g", "µG: TETHER!", "µG: İP TAK!");
+        lang.add("message.spacebreaker.suit.micro_g", "Microgravity: use a tether or magnetic boots, or one step sends you drifting off",
+                "Mikro yerçekimi: ip ya da manyetik bot kullan, yoksa tek adım seni uzaya savurur");
         lang.add("hud.spacebreaker.warn.strain", "%s BAR: SUIT UNDER STRAIN", "%s BAR: GİYSİ ZORLANIYOR");
         lang.add("key.spacebreaker.helmet_lamp", "Helmet lamps: wide / long beam", "Kask lambaları: geniş / uzun huzme");
         lang.add("message.spacebreaker.lamp.long", "Helmet lamps: long beam", "Kask lambaları: uzun huzme");
