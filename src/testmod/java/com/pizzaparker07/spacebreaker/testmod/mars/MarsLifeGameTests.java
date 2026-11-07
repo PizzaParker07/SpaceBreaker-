@@ -463,6 +463,32 @@ public final class MarsLifeGameTests {
         helper.succeed();
     }
 
+    /** Mars' air pressure follows the caps through the year: lowest in southern winter, highest in southern summer. */
+    @GameTest(template = EMPTY)
+    public static void marsPressureBreathesWithTheSeasons(GameTestHelper helper) {
+        double min = 2;
+        double max = 0;
+        double minLs = 0;
+        double maxLs = 0;
+        double sum = 0;
+        for (int ls = 0; ls < 360; ls++) {
+            double f = com.pizzaparker07.spacebreaker.content.mars.MarsSeasons.pressureFactor(ls);
+            sum += f;
+            if (f < min) {
+                min = f;
+                minLs = ls;
+            }
+            if (f > max) {
+                max = f;
+                maxLs = ls;
+            }
+        }
+        helper.assertTrue(Math.abs(sum / 360 - 1) < 1e-3, "the yearly mean is the body's pressure");
+        helper.assertTrue(min > 0.85 && min < 0.9 && minLs > 140 && minLs < 180, "lowest in southern winter: " + min + " at Ls " + minLs);
+        helper.assertTrue(max > 1.1 && max < 1.15 && maxLs > 240 && maxLs < 290, "highest in southern summer: " + max + " at Ls " + maxLs);
+        helper.succeed();
+    }
+
     private MarsLifeGameTests() {
     }
 }

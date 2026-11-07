@@ -115,6 +115,18 @@ public final class MarsSeasons {
         d.setDirty();
     }
 
+    // ------------------------------------------------------------------ pressure
+
+    /**
+     * Surface pressure relative to the yearly mean at this Ls. About a quarter of Mars' air freezes onto the winter
+     * cap, and the southern cap is the bigger one: pressure is lowest in southern winter (Ls ~160, -13 %) and highest
+     * in southern summer (Ls ~265, +13 %), with a smaller swing in between, as the Viking landers measured.
+     */
+    public static double pressureFactor(double ls) {
+        double r = Math.toRadians(ls);
+        return 1 + 0.0382 * Math.cos(r) - 0.0569 * Math.sin(r) - 0.0730 * Math.cos(2 * r) + 0.0369 * Math.sin(2 * r);
+    }
+
     // ------------------------------------------------------------------ frost
 
     static void tick(ServerLevel level) {

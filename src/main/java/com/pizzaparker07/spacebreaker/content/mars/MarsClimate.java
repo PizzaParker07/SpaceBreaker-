@@ -29,6 +29,9 @@ public final class MarsClimate {
                 ? com.pizzaparker07.spacebreaker.core.env.DustLoad.rate(MarsWeather.stormStrength(level)) : 0);
         com.pizzaparker07.spacebreaker.content.suit.EnvironmentSensorItem.dustRate = Environment::dustRate;
         PanelDust.register();
+        // the whole atmosphere breathes with the seasons as CO2 freezes onto and sublimates from the polar caps
+        Environment.addPressureModifier((level, pos) -> level.dimension() == MarsModule.MARS && level instanceof net.minecraft.server.level.ServerLevel sl
+                ? MarsSeasons.pressureFactor(MarsSeasons.ls(sl)) : 1);
     }
 
     /** Pole-to-equator distance of the level's terrain profile, or NaN without one. */
