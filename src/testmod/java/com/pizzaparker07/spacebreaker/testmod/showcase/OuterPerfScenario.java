@@ -88,6 +88,7 @@ final class OuterPerfScenario implements ShowcaseScenario {
 
     /** world, block x, latitude, what is there. */
     private static final String[][] HOTSPOTS = {
+            {"moon", "-3000", "0", "warm-up, not counted"},
             {"miranda", "380", "-18", "corona and great cliff"},
             {"ariel", "300", "-6", "rift valley"},
             {"titania", "250", "-4", "great canyon"},

@@ -107,7 +107,13 @@ public class RupesFeature extends Feature<RupesFeature.Config> {
                 // bare layered rock on the face, down the whole height the cliff can show
                 if (face) {
                     // the face: bare rock in layers, down the whole height that this column shows in the wall
-                    int depth = (int) cfg.height() + 4;
+                    // only as deep as this column actually shows: down to the lowest ground within two blocks, plus a little
+                    // (worked out from the cliff's own shape, since the neighbours may not be shifted yet)
+                    double drop = 0;
+                    for (int[] o : new int[][]{{2, 0}, {-2, 0}, {0, 2}, {0, -2}, {1, 0}, {-1, 0}, {0, 1}, {0, -1}}) {
+                        drop = Math.max(drop, dy - offset(t, cfg, x + o[0] + 0.5, z + o[1] + 0.5));
+                    }
+                    int depth = Math.min((int) cfg.height() + 4, (int) Math.ceil(drop) + 6);
                     for (int y = top; y > top - depth; y--) {
                         BlockPos p = new BlockPos(x, y, z);
                         if (!level.getBlockState(p).isAir()) {
