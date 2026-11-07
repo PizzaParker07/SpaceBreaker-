@@ -19,6 +19,9 @@
     "spacebreaker:cargo_module",
     "spacebreaker:station_core_module",
     "spacebreaker:docking_module",
+    "spacebreaker:habitation_module",
+    "spacebreaker:airlock_module",
+    "spacebreaker:solar_wings",
     "spacebreaker:station_hatch"
   ]
 }

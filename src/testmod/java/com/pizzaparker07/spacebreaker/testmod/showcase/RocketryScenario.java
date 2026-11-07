@@ -832,6 +832,31 @@ final class RocketryScenario implements ShowcaseScenario {
             com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.DOCKING.attach(orbit, c.east(3).above(2), "PizzaParker07");
             toDimension(p, Location.EARTH_ORBIT, c.getX() - 1.5, c.getY() + 2.6, c.getZ() + 0.5, -90F, 8F);
         }, null));
+        // modular station, stage 2: core + docking tunnel + living quarters + airlock + solar wings
+        s.add(new Shot("59_station_stage2", 6000, 0, 0, 0, 0F, 0F, true, fp, 200, p -> {
+            clearScene(p);
+            ServerLevel orbit = p.server.getLevel(Location.EARTH_ORBIT.dimension());
+            BlockPos c = BlockPos.containing(800, RocketEntity.ORBIT_Y - 6, 0);
+            net.minecraft.core.Direction east = net.minecraft.core.Direction.EAST;
+            com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.buildCore(orbit, c, east, "PizzaParker07");
+            com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.DOCKING.attach(orbit, c.east(3).above(2), "PizzaParker07");
+            com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.HABITATION.attach(orbit, c.west(3).above(2), "PizzaParker07");
+            com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.AIRLOCK.attach(orbit, c.north(3).above(2), "PizzaParker07");
+            com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.SOLAR_WINGS.attach(orbit, c.south(3).above(2), "PizzaParker07");
+            RocketEntity r = spawn(orbit, Vec3.atBottomCenterOf(c.east(10).above(2)), 0F, FlightState.ORBIT, 0, 2, false);
+            r.approachPort(c.east(10).above(2), east, 0.5);
+            toDimension(p, Location.EARTH_ORBIT, c.getX() + 14.5, c.getY() + 14.5, c.getZ() + 22.5, 150F, 30F);
+        }, null));
+        // inside the living quarters
+        s.add(new Shot("60_station_quarters", 6000, 0, 0, 0, 0F, 0F, true, fp, 320, p -> {
+            clearScene(p);
+            ServerLevel orbit = p.server.getLevel(Location.EARTH_ORBIT.dimension());
+            BlockPos c = BlockPos.containing(900, RocketEntity.ORBIT_Y - 6, 0);
+            net.minecraft.core.Direction east = net.minecraft.core.Direction.EAST;
+            com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.buildCore(orbit, c, east, "PizzaParker07");
+            com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.HABITATION.attach(orbit, c.east(3).above(2), "PizzaParker07");
+            toDimension(p, Location.EARTH_ORBIT, c.getX() + 2.5, c.getY() + 2.6, c.getZ() + 0.5, -90F, 10F);
+        }, null));
         s.add(new Shot("31_nearby_stars", 6000, 0, 0, 0, 0F, 0F, false, fp, 120,
                 p -> {
                     RocketryShowcaseClient.star = "Alpha Centauri";

@@ -7,6 +7,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -27,7 +28,16 @@ public enum StationModule {
     /** 7 × 7 × 7: the console, an oxygen distributor, lights, a docking port on the roof, four mouths. */
     CORE("station_core_module", 3, 2, 4, 6),
     /** 5 × 5 × 7 tunnel with a docking port at the far end. */
-    DOCKING("docking_module", 2, 2, 2, 6);
+    DOCKING("docking_module", 2, 2, 2, 6),
+    /** 7 × 5 × 9 living quarters: three bunks, a locker, a window band, a mouth at the far end to carry on. */
+    HABITATION("habitation_module", 3, 2, 2, 8),
+    /** 5 × 5 × 5 airlock: a door into the station, a door to space, a small chamber between (one person at a time). */
+    AIRLOCK("airlock_module", 2, 2, 2, 4),
+    /**
+     * Solar wings, outside the hull: a cable truss out from the mouth carrying three solar arrays, feeding a battery
+     * bank set into the mouth's middle (its output into the station). The mouth stays sealed.
+     */
+    SOLAR_WINGS("solar_wings", 1, 1, 2, 6);
 
     private final String part;
     private final int halfWidth, down, up, length;
@@ -100,6 +110,10 @@ public enum StationModule {
         if (!fits(level, wall, facing)) {
             return false;
         }
+        if (this == SOLAR_WINGS) {
+            buildWings(level, mouth, facing);
+            return true; // outside the hull: the mouth stays sealed
+        }
         build(level, wall, facing, true, owner);
         // open the old wall too: a two-block passage
         for (int r = -1; r <= 1; r++) {
@@ -145,7 +159,9 @@ public enum StationModule {
         }
         Direction right = forward.getClockWise();
         // the back mouth: open onto the module it joins, or sealed with hatches
-        mouth(level, wall, forward.getOpposite(), right, openBack);
+        if (this != AIRLOCK) {
+            mouth(level, wall, forward.getOpposite(), right, openBack);
+        }
         DockingPorts ports = DockingPorts.get(level);
         if (this == CORE) {
             int mid = length / 2;
@@ -172,6 +188,34 @@ public enum StationModule {
                 core.setOwner(owner);
             }
             level.setBlock(at(wall, forward, -2, -down + 1, 1), SuitModule.OXYGEN_DISTRIBUTOR.get().defaultBlockState(), 3);
+        } else if (this == HABITATION) {
+            for (int f = 2; f <= length - 2; f++) {
+                level.setBlock(at(wall, forward, halfWidth, 0, f), window, 3);
+                level.setBlock(at(wall, forward, -halfWidth, 0, f), window, 3);
+            }
+            for (int f : new int[]{2, 4, 6}) {
+                level.setBlock(at(wall, forward, -2, -down + 1, f), RocketryModule.STATION_BUNK.get().defaultBlockState()
+                        .setValue(HorizontalDirectionalBlock.FACING, forward), 3);
+                level.setBlock(at(wall, forward, 0, up, f), light, 3);
+            }
+            level.setBlock(at(wall, forward, 2, -down + 1, length - 2), Blocks.BARREL.defaultBlockState()
+                    .setValue(net.minecraft.world.level.block.BarrelBlock.FACING, right.getOpposite()), 3);
+            mouth(level, at(wall, forward, 0, 0, length), forward, right, false);
+        } else if (this == AIRLOCK) {
+            // the inner wall stays, with a door into the station; the outer wall has the door to space
+            BlockState door = SuitModule.AIRLOCK_DOOR.get().defaultBlockState();
+            for (int f : new int[]{0, length}) {
+                BlockState d = door.setValue(com.pizzaparker07.spacebreaker.content.suit.block.AirlockDoorBlock.FACING,
+                        f == 0 ? forward.getOpposite() : forward);
+                level.setBlock(at(wall, forward, 0, -1, f), hull, 3);
+                level.setBlock(at(wall, forward, 0, -1, f), d.setValue(com.pizzaparker07.spacebreaker.content.suit.block.AirlockDoorBlock.HALF,
+                        net.minecraft.world.level.block.state.properties.DoubleBlockHalf.LOWER), 3);
+                level.setBlock(at(wall, forward, 0, 0, f), d.setValue(com.pizzaparker07.spacebreaker.content.suit.block.AirlockDoorBlock.HALF,
+                        net.minecraft.world.level.block.state.properties.DoubleBlockHalf.UPPER), 3);
+            }
+            level.setBlock(at(wall, forward, halfWidth, 0, length / 2), window, 3);
+            level.setBlock(at(wall, forward, -halfWidth, 0, length / 2), window, 3);
+            level.setBlock(at(wall, forward, 0, up, length / 2), light, 3);
         } else {
             for (int f = 2; f <= length - 2; f++) {
                 level.setBlock(at(wall, forward, halfWidth, 0, f), window, 3);
@@ -181,6 +225,25 @@ public enum StationModule {
             BlockPos port = at(wall, forward, 0, 0, length);
             level.setBlock(port, RocketryModule.DOCKING_PORT.get().defaultBlockState().setValue(DockingPortBlock.FACING, forward), 3);
             ports.setOwner(port, owner);
+        }
+    }
+
+    /** Solar wings at a mouth: battery in the mouth's middle (output inwards), a cable truss and three arrays. */
+    private static void buildWings(ServerLevel level, BlockPos mouth, Direction facing) {
+        level.setBlock(mouth, com.pizzaparker07.spacebreaker.content.machines.MachinesModule.BATTERY_BANK.block().get().defaultBlockState()
+                .setValue(com.pizzaparker07.spacebreaker.content.machines.base.MachineBlock.FACING, facing.getOpposite()), 3);
+        BlockState cable = com.pizzaparker07.spacebreaker.content.machines.MachinesModule.COPPER_CABLE.get().defaultBlockState();
+        BlockState array = com.pizzaparker07.spacebreaker.content.machines.MachinesModule.SOLAR_ARRAY.get().defaultBlockState();
+        for (int k = 1; k <= SOLAR_WINGS.length; k++) {
+            BlockPos p = mouth.relative(facing, k);
+            level.setBlock(p, Block.updateFromNeighbourShapes(cable, level, p), 3);
+            if (k % 2 == 0) {
+                level.setBlock(p.above(), array, 3);
+            }
+        }
+        for (int k = 1; k <= SOLAR_WINGS.length; k++) {
+            BlockPos p = mouth.relative(facing, k);
+            level.setBlock(p, Block.updateFromNeighbourShapes(level.getBlockState(p), level, p), 3);
         }
     }
 

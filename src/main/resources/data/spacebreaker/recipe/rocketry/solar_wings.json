@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SCS",
+    "SBS",
+    " C "
+  ],
+  "key": {
+    "S": {
+      "item": "spacebreaker:solar_array"
+    },
+    "C": {
+      "item": "spacebreaker:copper_cable"
+    },
+    "B": {
+      "item": "spacebreaker:battery_bank"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:solar_wings",
+    "count": 1
+  }
+}
