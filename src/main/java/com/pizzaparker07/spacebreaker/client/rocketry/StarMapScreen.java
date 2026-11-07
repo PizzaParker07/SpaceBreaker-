@@ -188,7 +188,7 @@ public class StarMapScreen extends Screen {
             }
         } else {
             int cx = mapW / 2;
-            int pr = Mth.clamp(Math.min(mapW, height) / 9, 14, 30);
+            int pr = StarMapData.NEAR_EARTH_ASTEROIDS.equals(focus) ? 9 : Mth.clamp(Math.min(mapW, height) / 9, 14, 30);
             nodes.put(focus, new Node(focus, cx, cy, pr));
             List<ResourceLocation> moons = StarMapData.moons(focus);
             int first = pr + 46;
@@ -293,7 +293,8 @@ public class StarMapScreen extends Screen {
             focus = n.body;
             layoutMap();
         }
-        select(n.body);
+        // the asteroid group is not a place: pick its first member
+        select(StarMapData.NEAR_EARTH_ASTEROIDS.equals(n.body) ? StarMapData.moons(n.body).get(0) : n.body);
         return true;
     }
 
@@ -378,7 +379,8 @@ public class StarMapScreen extends Screen {
                 ellipse(g, p.x, p.y, (int) r, (int) (r * 0.8), 0x30A0B4C8);
             }
         }
-        g.drawCenteredString(font, Component.translatable("gui.spacebreaker.star_map.system_of", Location.bodyName(focus)), mapW / 2, 34, INK);
+        g.drawCenteredString(font, StarMapData.NEAR_EARTH_ASTEROIDS.equals(focus) ? Location.bodyName(focus)
+                : Component.translatable("gui.spacebreaker.star_map.system_of", Location.bodyName(focus)), mapW / 2, 34, INK);
     }
 
     private void drawNodes(GuiGraphics g, int mx, int my, float time) {
@@ -389,7 +391,9 @@ public class StarMapScreen extends Screen {
                 ring(g, n.x, n.y, n.r + 4, sel ? 0xC0FFD34A : 0x80FFFFFF);
             }
             planet(g, n.body, n.x, n.y, n.r);
-            Component name = Location.bodyName(n.body);
+            // the asteroid group gets a short label so it never runs into its neighbours
+            Component name = StarMapData.NEAR_EARTH_ASTEROIDS.equals(n.body)
+                    ? Component.translatable("body.spacebreaker.near_earth_asteroids.short") : Location.bodyName(n.body);
             int col = sel ? 0xFFFFE9A8 : 0xFFC8D0D8;
             g.drawCenteredString(font, name, n.x, n.y + n.r + 5, col);
             if (!com.pizzaparker07.spacebreaker.content.rocketry.station.Stations.around(n.body).isEmpty()) {
@@ -900,6 +904,15 @@ public class StarMapScreen extends Screen {
     // ------------------------------------------------------------------ primitives
 
     private static void planet(GuiGraphics g, ResourceLocation body, int cx, int cy, int r) {
+        if (StarMapData.NEAR_EARTH_ASTEROIDS.equals(body)) {
+            // a loose handful of grey rocks
+            int[][] rocks = {{-4, -3, 3}, {3, -4, 2}, {5, 2, 3}, {-2, 4, 2}, {0, 0, 2}};
+            for (int[] k : rocks) {
+                disc(g, cx + k[0] * r / 6, cy + k[1] * r / 6, Math.max(1, k[2] * r / 7), 0xFF8A8478);
+                disc(g, cx + k[0] * r / 6 - 1, cy + k[1] * r / 6 - 1, Math.max(1, k[2] * r / 7 - 1), 0xFFA8A296);
+            }
+            return;
+        }
         ResourceLocation tex = Location.MOON.equals(body) ? OrbitSkyEffects.MOON_DISC : OrbitSkyEffects.disc(body);
         g.blit(tex, cx - r, cy - r, r * 2, r * 2, 0F, 0F, 1, 1, 1, 1);
     }
@@ -932,7 +945,7 @@ public class StarMapScreen extends Screen {
 
     /** Opened from the HUD hint or the key; also used by the showcase to preselect a destination. */
     public void preselect(ResourceLocation b, boolean orbit) {
-        if (Locations.parentPlanet(b).isPresent()) {
+        if (Locations.parentPlanet(b).isPresent() || StarMapData.nearEarthAsteroid(b)) {
             focus = StarMapData.system(b);
             layoutMap();
         }

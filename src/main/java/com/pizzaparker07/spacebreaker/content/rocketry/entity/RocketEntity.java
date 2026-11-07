@@ -1115,6 +1115,14 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         }
     }
 
+    /** Shortest climb shown, ticks: on a tiny asteroid the burn to orbit is a nudge, but the rocket still lifts off. */
+    public static final int MIN_ASCENT_TICKS = 100;
+
+    /** The climb to orbit is over when its Δv is delivered and it has been seen to fly for a few seconds. */
+    public static boolean ascentDone(double delivered, double cost, int ticks) {
+        return delivered >= cost - 1e-6 && ticks >= MIN_ASCENT_TICKS;
+    }
+
     private void tickAscent() {
         int t = timer() + 1;
         setTimer(t);
@@ -1170,7 +1178,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         if (legCost > 0 && t % 2 == 0) {
             entityData.set(DATA_ASCENT, (float) Mth.clamp(legDelivered / legCost, 0, 1));
         }
-        if (legDelivered >= legCost - 1e-6) {
+        if (ascentDone(legDelivered, legCost, t)) {
             syncFuel();
             reachOrbit();
         }

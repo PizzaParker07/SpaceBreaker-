@@ -276,6 +276,8 @@ final class RocketryLang {
         l.add("gui.spacebreaker.star_map.block.interstellar", "Needs the deep space drive research: travel between stars is not possible yet.", "Derin uzay sürücüsü araştırması gerekiyor: yıldızlar arası yolculuk henüz mümkün değil.");
         l.add("gui.spacebreaker.star_map.you_are_here", "You are here", "Buradasın");
         l.add("gui.spacebreaker.star_map.system_of", "The %s system", "%s sistemi");
+        l.add("body.spacebreaker.near_earth_asteroids", "Near-Earth asteroids", "Dünya'ya yakın asteroitler");
+        l.add("body.spacebreaker.near_earth_asteroids.short", "Asteroids", "Asteroitler");
         l.add("gui.spacebreaker.star_map.back", "◀ Solar System", "◀ Güneş Sistemi");
         l.add("gui.spacebreaker.star_map.to_orbit", "Go to orbit", "Yörüngeye git");
         l.add("gui.spacebreaker.star_map.land", "Land", "Yüzeye in");
