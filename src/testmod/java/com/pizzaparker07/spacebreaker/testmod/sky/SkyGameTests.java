@@ -136,12 +136,12 @@ public final class SkyGameTests {
         helper.assertTrue(earth.center().length() < 1e-6 && earth.radius() == 128, "Earth at the origin, 128 blocks: " + earth);
         double d = moon.center().length();
         helper.assertTrue(d > 2000 && d < 2400, "the Moon about 2,200 blocks out: " + d);
-        helper.assertTrue(moon.radius() >= com.pizzaparker07.spacebreaker.content.worldgen.SpaceSceneLayout.MIN_RADIUS, "the Moon stays a visible target: " + moon.radius());
+        helper.assertTrue(moon.radius() >= com.pizzaparker07.spacebreaker.content.worldgen.SpaceSceneLayout.MOON_MIN_RADIUS, "the Moon reads as a landable target: " + moon.radius());
         helper.assertTrue(Math.abs(moon.center().y) < d * 0.1, "the Moon stays near the ecliptic plane (scene horizontal): " + moon.center().y);
         double tilt = Math.toDegrees(Math.acos(earth.pole().y));
         helper.assertTrue(Math.abs(tilt - 23.4) < 1.0, "Earth's pole leans 23.4 degrees from ecliptic north: " + tilt);
         var v = new com.pizzaparker07.spacebreaker.core.astro.Vec3(1, 2, 3);
-        var back = com.pizzaparker07.spacebreaker.content.worldgen.SpaceSceneLayout.toEcliptic(
+        var back = com.pizzaparker07.spacebreaker.content.worldgen.SpaceSceneLayout.fromScene(
                 com.pizzaparker07.spacebreaker.content.worldgen.SpaceSceneLayout.toScene(v));
         helper.assertTrue(back.sub(v).length() < 1e-9, "scene axes round-trip");
         helper.succeed();

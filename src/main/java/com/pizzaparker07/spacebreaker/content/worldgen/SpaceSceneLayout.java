@@ -15,7 +15,7 @@ import java.util.function.Function;
  * Where the bodies of a travel scene (the Earth–Moon space dimension) stand in blocks, and how they are turned and lit:
  * the pure part of the space scene sky, so it can be checked without a client.
  * <p>
- * Scene frame: the central body's centre is block {@link #ORIGIN}; Minecraft x is ecliptic x, Minecraft y is ecliptic
+ * Scene frame: the central body's centre is block {@link #ORIGIN} (the scene dimension spans y −1024..1024); Minecraft x is ecliptic x, Minecraft y is ecliptic
  * north, Minecraft z is minus ecliptic y (right-handed, like the world). Distances follow {@link SceneScale}: the central
  * body at its drawn radius, the others at their real size for the local scale but never below {@link #MIN_RADIUS}.
  */
@@ -24,6 +24,13 @@ public final class SpaceSceneLayout {
     public static final Vector3d ORIGIN = new Vector3d(0, 0, 0);
     /** Smallest drawn radius of a body other than the central one, blocks: far moons stay visible targets. */
     public static final double MIN_RADIUS = 8;
+    /** The Moon is drawn at least this big (blocks) so it reads as a landable target; at the true local scale it is about 2. */
+    public static final double MOON_MIN_RADIUS = 24;
+
+    /** Smallest drawn radius for a body. */
+    public static double minRadius(String id) {
+        return id.equals("spacebreaker:moon") ? MOON_MIN_RADIUS : MIN_RADIUS;
+    }
 
     /**
      * One body of the scene.
@@ -40,13 +47,16 @@ public final class SpaceSceneLayout {
     private SpaceSceneLayout() {
     }
 
-    /** Ecliptic (m or unit) to the Minecraft scene frame. */
+    /**
+     * Ecliptic (m or unit) to the Minecraft scene frame: a proper rotation (determinant +1), so handedness is kept. The
+     * ship code uses the same pair.
+     */
     public static Vector3d toScene(Vec3 v) {
         return new Vector3d(v.x(), v.z(), -v.y());
     }
 
     /** Minecraft scene frame back to ecliptic. */
-    public static Vec3 toEcliptic(Vector3d v) {
+    public static Vec3 fromScene(Vector3d v) {
         return new Vec3(v.x, -v.z, v.y);
     }
 
@@ -65,7 +75,7 @@ public final class SpaceSceneLayout {
             Vec3 rel = sys.position(b, t).sub(p0);
             double d = rel.length();
             Vector3d centre = toScene(scale.toBlocks(rel)).add(ORIGIN);
-            double radius = id.equals(central) ? scale.radiusBlocks() : scale.displayRadius(b.radius(), Math.max(d, c.radius()), MIN_RADIUS);
+            double radius = id.equals(central) ? scale.radiusBlocks() : scale.displayRadius(b.radius(), Math.max(d, c.radius()), minRadius(id));
             BodyLook look = looks.apply(id);
             out.add(new Body(id, centre, radius, toScene(look.spinAxis()).normalize(), toScene(look.primeMeridian()).normalize(),
                     toScene(look.sunDirection()).normalize()));

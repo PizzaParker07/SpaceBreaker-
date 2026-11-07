@@ -379,13 +379,14 @@ public final class BlockyBodyRenderer {
         Vector3f screenRight = new Vector3f(look).cross(screenUp).normalize();
         List<BlockyBodyMesh.Face> faces = BlockyBodyMesh.body(style, n);
         int[] colours = colours(map, faces, false);
+        boolean flat = depthKept(body) < 0.5F;
         int count = 0;
         for (int i = 0; i < faces.size(); i++) {
             BlockyBodyMesh.Face f = faces.get(i);
             Vector3f normal = rot.transform(new Vector3f(f.normal()));
             Vector3f centre = rot.transform(new Vector3f(f.center())).mul(body.radius()).add(body.center());
-            if (normal.dot(centre) >= 0) {
-                continue; // faces away from the viewer
+            if (facesAway(normal, centre, look, flat)) {
+                continue;
             }
             float light = BlockyBodyMesh.light(rot.transform(new Vector3f(f.surface())), normal, s, night)
                     * BlockyBodyMesh.blockShade(normal.dot(screenUp), normal.dot(screenRight)) * tint;
@@ -450,12 +451,12 @@ public final class BlockyBodyRenderer {
         if (withBody) {
             List<BlockyBodyMesh.Face> faces = BlockyBodyMesh.body(style, n);
             int[] colours = colours(map, faces, false);
+            boolean flat = viewDir == null && depthKept(body) < 0.5F;
             for (int i = 0; i < faces.size(); i++) {
                 BlockyBodyMesh.Face f = faces.get(i);
                 Vector3f normal = rot.transform(new Vector3f(f.normal()));
                 Vector3f centre = rot.transform(new Vector3f(f.center())).mul(body.radius()).add(body.center());
-                float toward = viewDir == null ? normal.dot(centre) : normal.dot(viewDir);
-                if (toward >= 0) {
+                if (viewDir != null ? normal.dot(viewDir) >= 0 : facesAway(normal, centre, look, flat)) {
                     continue; // faces away from the viewer
                 }
                 float light = BlockyBodyMesh.light(rot.transform(new Vector3f(f.surface())), normal, s, night)
@@ -501,6 +502,14 @@ public final class BlockyBodyRenderer {
      * while the small depth left keeps its faces correctly in front of each other.
      */
     static final float DEPTH_KEPT = 0.04F;
+
+    /**
+     * Whether a face is turned away from the viewer. A flattened body is seen almost straight on, so its faces are judged
+     * against the line of sight to its centre; a full-depth (big, near) body face by face from the camera.
+     */
+    private static boolean facesAway(Vector3f normal, Vector3f centre, Vector3f look, boolean flat) {
+        return flat ? normal.dot(look) >= 0 : normal.dot(centre) >= 0;
+    }
 
     /**
      * Depth kept for a body: flattened while it looks small (up to about 17° in radius), fully round once it fills much
