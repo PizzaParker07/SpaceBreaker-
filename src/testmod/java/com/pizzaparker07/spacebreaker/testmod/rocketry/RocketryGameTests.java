@@ -1146,6 +1146,12 @@ public final class RocketryGameTests {
         out.setItem(0, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.COBBLESTONE, 10));
         com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.routeArrived(rocket, port, moonOrbit);
         helper.assertTrue(rocket.missionTarget().filter(Location.MOON_SURFACE::equals).isPresent(), "next stop: the base");
+        rocket.tick();
+        for (int i = 0; i < 20; i++) {
+            rocket.tick();
+        }
+        helper.assertTrue(rocket.routeStatus() == RocketEntity.RouteStatus.LOADING && rocket.holdFilled() == 1,
+                "the console sees the route: " + rocket.routeStatus() + ", " + rocket.holdFilled() + " slots");
         helper.assertTrue(out.isEmpty() && rocket.cargo().countItem(net.minecraft.world.item.Items.COBBLESTONE) == 10, "the barrel's load came aboard");
         helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.storageNear(level, port).stream().noneMatch(barrel::equals),
                 "barrels are the outbox: deliveries go to chests");

@@ -104,7 +104,14 @@ public class LaunchConsoleScreen extends AbstractContainerScreen<LaunchConsoleMe
                 Fmt.twr(menu.get(LaunchConsoleMenu.TWR) / 100.0)), green, red);
         check(g, x, y + 88, menu.flag(LaunchConsoleBlockEntity.DV_OK), Component.translatable("gui.spacebreaker.console.dv",
                 Fmt.num(menu.get(LaunchConsoleMenu.DV)), Fmt.num(menu.get(LaunchConsoleMenu.COST))), green, red);
-        if (drone != null) {
+        if (drone != null && drone.hasCargoHold() && drone.routeStatus() != RocketEntity.RouteStatus.OFF) {
+            // automatic cargo route: next stop, hold, and what it is waiting for
+            RocketEntity.RouteStatus st = drone.routeStatus();
+            Component next = drone.missionTarget().map(l -> (Component) l.name()).orElse(Component.literal("?"));
+            Component line = Component.translatable("gui.spacebreaker.console.route", next, drone.holdFilled(),
+                    Component.translatable("gui.spacebreaker.console.route." + st.name().toLowerCase(Locale.ROOT)));
+            check(g, x, y + 99, st != RocketEntity.RouteStatus.WAIT_FUEL, line, green, 0xE8C060);
+        } else if (drone != null) {
             check(g, x, y + 99, true, Component.translatable("gui.spacebreaker.console.one_way"), green, 0xE8C060);
         } else {
             check(g, x, y + 99, menu.flag(LaunchConsoleBlockEntity.RETURN_OK), Component.translatable("gui.spacebreaker.console.return"), green, 0xE8C060);

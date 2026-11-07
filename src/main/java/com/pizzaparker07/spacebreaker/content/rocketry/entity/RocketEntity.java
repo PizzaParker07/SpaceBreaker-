@@ -85,6 +85,13 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
     private long dockCheckedAt = Long.MIN_VALUE;
     /** Approaching a station: thrusters puff (synced for the client effects). */
     private static final EntityDataAccessor<Boolean> DATA_DOCKING = SynchedEntityData.defineId(RocketEntity.class, EntityDataSerializers.BOOLEAN);
+    /** Cargo route for the console: status (see {@link RouteStatus}) in the low byte, filled hold slots above it. */
+    private static final EntityDataAccessor<Integer> DATA_ROUTE = SynchedEntityData.defineId(RocketEntity.class, EntityDataSerializers.INT);
+
+    /** What an automatic cargo route is doing, as the launch console shows it. */
+    public enum RouteStatus {
+        OFF, LOADING, WAIT_CARGO, WAIT_FUEL, FLYING
+    }
     /** Entity event: the docking latches closed (client camera jolt). */
     public static final byte EVENT_DOCKED = 70;
     /** How far out from the port a rocket arriving in orbit starts its approach, blocks. */
@@ -170,6 +177,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         builder.define(DATA_ASCENT, 0F);
         builder.define(DATA_MISSION, "");
         builder.define(DATA_DOCKING, false);
+        builder.define(DATA_ROUTE, 0);
         builder.define(DATA_FUEL, new CompoundTag());
     }
 
@@ -477,6 +485,35 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
 
     public void fuelledForRoute() {
         routeToldFuel = false;
+    }
+
+    public RouteStatus routeStatus() {
+        int v = entityData.get(DATA_ROUTE) & 0xFF;
+        return v < RouteStatus.values().length ? RouteStatus.values()[v] : RouteStatus.OFF;
+    }
+
+    /** Filled slots of the hold, as last synced. */
+    public int holdFilled() {
+        return entityData.get(DATA_ROUTE) >>> 8;
+    }
+
+    private void syncRoute() {
+        if (!hasCargoHold()) {
+            return;
+        }
+        int filled = 0;
+        for (int i = 0; i < cargo().getContainerSize(); i++) {
+            filled += cargo().getItem(i).isEmpty() ? 0 : 1;
+        }
+        RouteStatus st = !routeOn ? RouteStatus.OFF
+                : routeWait <= 0 ? RouteStatus.FLYING
+                : routeToldFuel ? RouteStatus.WAIT_FUEL
+                : filled == 0 ? RouteStatus.WAIT_CARGO
+                : RouteStatus.LOADING;
+        int v = st.ordinal() | filled << 8;
+        if (entityData.get(DATA_ROUTE) != v) {
+            entityData.set(DATA_ROUTE, v);
+        }
     }
 
     private void tickRoute() {
@@ -991,6 +1028,9 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
             return;
         }
         teleporting = false;
+        if (tickCount % 20 == 0) {
+            syncRoute();
+        }
         Vec3 v = getDeltaMovement();
         if (v.lengthSqr() > 0) {
             setPos(getX() + v.x, getY() + v.y, getZ() + v.z);
