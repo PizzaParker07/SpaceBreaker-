@@ -105,15 +105,17 @@ missions, station kit + docking port, hydrolox to Mercury.
 
 | ID | Severity | Owner | Finding |
 |---|---|---|---|
-| QA-8 | **High** | rocketry | Satellites and probes cannot go to any world with an atmosphere (Mars, Venus, Titan, and the orbits of Mars, Venus, Titan, Jupiter, Saturn, Uranus, Neptune). |
-| QA-9 | Info | rocketry + industry | A station can only be refuelled with fuel carried up in canisters/buckets: tanks drop empty and nothing can be made in orbit. |
-| QA-10 | Info | research | `space_probes` is learned from Mars samples (or a disk), so probes come after the first crewed Mars trip and cannot scout Mars first. |
+| QA-8 | Medium — **fixed** (rocketry 8a41e2b2) | rocketry | The star map said "not enough fuel" when the real problem was a missing heat shield. (The first report also claimed satellites/probes could not carry a heat shield: that was a QA model error, see below.) |
+| QA-9 | Info — **fixed** (industry b125472: tanks keep their contents; rocketry da199207: station fuel depot) | rocketry + industry | A station can only be refuelled with fuel carried up in canisters/buckets: tanks drop empty and nothing can be made in orbit. |
+| QA-10 | Info — **fixed** (research 9f07601: Moon / orbital flight samples) | research | `space_probes` is learned from Mars samples (or a disk), so probes come after the first crewed Mars trip and cannot scout Mars first. |
 
 ### QA-8 Uncrewed missions blocked by the heat shield rule
 - The star map flies uncrewed rockets on `StarMapData.flightPath` (Earth orbit → straight to the target). Arriving at a world
   with air needs heat-shield rating 2 (`Transfers.reentryRating`: direct entry / aerocapture from another body).
-- A satellite or probe sits in the capsule slot, and `AssemblerSlots` refuses a heat shield without a capsule
-  (`shield_without_capsule`), so the payload rating is always 0.
+- A satellite or probe sits in the capsule slot. Correction (rocketry): `shield_without_capsule` only fires when that slot
+  is empty, so a satellite **can** fly on a heat shield; the first QA run wrongly assumed it could not, and the satellite
+  part of this finding was a model error. Re-run with the corrected model on 1.21.1 @ 92d675c: satellites and probes on a
+  heat shield already reach every world, so only the misleading "not enough fuel" message was a real bug.
 - `StarMapData.trip` uses `MissionPlanner.fly(...).possible()` as "enough fuel"; `fly` fails with `heat_shield`, so the map
   shows **"Not enough fuel"** (wrong reason) and blocks Go even when the rocket has thousands of m/s to spare.
 - Model result (hydrolox, BALANCED): probes land on the Moon, Callisto, Europa, Ganymede, Io, Miranda, Triton and every
@@ -122,6 +124,8 @@ missions, station kit + docking port, hydrolox to Mercury.
 - Fix options: allow a heat shield under a satellite/probe (aeroshell), give the probe part its own heat-shield rating
   (`heat_shield` field in `space_probe.json`), or route uncrewed rockets through the target orbit with a propulsive capture.
   Separately, `StarMapData.trip` should report `heat_shield` instead of "not enough fuel".
+- Fixed in dev/rocketry 8a41e2b2: `space_probe` has its own aeroshell (heat_shield 2), the star map reports a separate
+  `NEEDS_HEAT_SHIELD` reason. Tested merged with 1.21.1: all 40 satellite/probe missions fly.
 - Guard: `moonAndMarsStayReachableOnceResearchIsFixed` now also requires a Moon satellite and a Moon probe to fly.
 
 ### QA-9 Station refuelling
@@ -426,10 +430,10 @@ None.
 | spacebreaker:io/orbit | round_trip | 9875 | 2-stage [hydrolox_engine, 3× fuel_tank_large / decoupler / hydrolox_vacuum_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 10292 m/s vacuum Δv |
 | spacebreaker:europa/surface | round_trip | 10310 | 3-stage [hydrolox_engine, 2× fuel_tank_large / decoupler / hydrolox_vacuum_engine, 2× fuel_tank_large / decoupler / hydrolox_vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 10479 m/s vacuum Δv |
 | spacebreaker:europa/orbit | round_trip | 9138 | 2-stage [hydrolox_engine, 3× fuel_tank_large / decoupler / hydrolox_vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 9408 m/s vacuum Δv |
-| spacebreaker:ganymede/surface | round_trip | 9924 | 2-stage [hydrolox_engine, 3× fuel_tank_large / decoupler / hydrolox_vacuum_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 10292 m/s vacuum Δv |
-| spacebreaker:ganymede/orbit | round_trip | 8327 | 2-stage [hydrolox_engine, 2× fuel_tank_large / decoupler / hydrolox_vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 8502 m/s vacuum Δv |
 | spacebreaker:callisto/surface | round_trip | 9304 | 2-stage [hydrolox_engine, 3× fuel_tank_large / decoupler / hydrolox_vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 9996 m/s vacuum Δv |
 | spacebreaker:callisto/orbit | round_trip | 7872 | 2-stage [hydrolox_engine, 2× fuel_tank_large / decoupler / hydrolox_vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 8502 m/s vacuum Δv |
+| spacebreaker:ganymede/surface | round_trip | 9924 | 2-stage [hydrolox_engine, 3× fuel_tank_large / decoupler / hydrolox_vacuum_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 10292 m/s vacuum Δv |
+| spacebreaker:ganymede/orbit | round_trip | 8327 | 2-stage [hydrolox_engine, 2× fuel_tank_large / decoupler / hydrolox_vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 8502 m/s vacuum Δv |
 | spacebreaker:saturn/orbit | round_trip | 9545 | 2-stage [hydrolox_engine, 3× fuel_tank_large / decoupler / hydrolox_vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 9996 m/s vacuum Δv |
 | spacebreaker:enceladus/surface | round_trip | 9735 | 2-stage [hydrolox_engine, 3× fuel_tank_large / decoupler / hydrolox_vacuum_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 10292 m/s vacuum Δv |
 | spacebreaker:enceladus/orbit | round_trip | 9604 | 2-stage [hydrolox_engine, 3× fuel_tank_large / decoupler / hydrolox_vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 9996 m/s vacuum Δv |
@@ -463,19 +467,19 @@ None.
 - observation_satellite → spacebreaker:europa/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, observation_satellite], 7849 m/s vacuum Δv
 - observation_satellite → spacebreaker:ganymede/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, observation_satellite], 7849 m/s vacuum Δv
 - observation_satellite → spacebreaker:io/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, observation_satellite], 7849 m/s vacuum Δv
-- observation_satellite → spacebreaker:jupiter/orbit: NOT POSSIBLE: heat_shield (leg 1); path spacebreaker:earth/orbit (shield 0) → spacebreaker:jupiter/orbit (shield 2)
-- observation_satellite → spacebreaker:mars/orbit: NOT POSSIBLE: heat_shield (leg 1); path spacebreaker:earth/orbit (shield 0) → spacebreaker:mars/orbit (shield 2)
+- observation_satellite → spacebreaker:jupiter/orbit: flown: 1-stage [hydrolox_engine, fuel_tank_large, heat_shield, observation_satellite], 5901 m/s vacuum Δv
+- observation_satellite → spacebreaker:mars/orbit: flown: 1-stage [hydrolox_vacuum_engine, fuel_tank_large, heat_shield, observation_satellite], 6717 m/s vacuum Δv
 - observation_satellite → spacebreaker:mercury/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, observation_satellite], 7849 m/s vacuum Δv
 - observation_satellite → spacebreaker:miranda/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, observation_satellite], 7849 m/s vacuum Δv
 - observation_satellite → spacebreaker:moon/orbit: flown: 1-stage [hydrolox_vacuum_engine, fuel_tank_large, observation_satellite], 7211 m/s vacuum Δv
-- observation_satellite → spacebreaker:neptune/orbit: NOT POSSIBLE: heat_shield (leg 1); path spacebreaker:earth/orbit (shield 0) → spacebreaker:neptune/orbit (shield 2)
+- observation_satellite → spacebreaker:neptune/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, heat_shield, observation_satellite], 7522 m/s vacuum Δv
 - observation_satellite → spacebreaker:phobos/orbit: flown: 1-stage [hydrolox_vacuum_engine, fuel_tank_large, observation_satellite], 7211 m/s vacuum Δv
 - observation_satellite → spacebreaker:pluto/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, observation_satellite], 7849 m/s vacuum Δv
-- observation_satellite → spacebreaker:saturn/orbit: NOT POSSIBLE: heat_shield (leg 1); path spacebreaker:earth/orbit (shield 0) → spacebreaker:saturn/orbit (shield 2)
-- observation_satellite → spacebreaker:titan/orbit: NOT POSSIBLE: heat_shield (leg 1); path spacebreaker:earth/orbit (shield 0) → spacebreaker:titan/orbit (shield 2)
+- observation_satellite → spacebreaker:saturn/orbit: flown: 1-stage [hydrolox_engine, fuel_tank_large, heat_shield, observation_satellite], 5901 m/s vacuum Δv
+- observation_satellite → spacebreaker:titan/orbit: flown: 1-stage [hydrolox_engine, fuel_tank_large, heat_shield, observation_satellite], 5901 m/s vacuum Δv
 - observation_satellite → spacebreaker:triton/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, observation_satellite], 7849 m/s vacuum Δv
-- observation_satellite → spacebreaker:uranus/orbit: NOT POSSIBLE: heat_shield (leg 1); path spacebreaker:earth/orbit (shield 0) → spacebreaker:uranus/orbit (shield 2)
-- observation_satellite → spacebreaker:venus/orbit: NOT POSSIBLE: heat_shield (leg 1); path spacebreaker:earth/orbit (shield 0) → spacebreaker:venus/orbit (shield 2)
+- observation_satellite → spacebreaker:uranus/orbit: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, heat_shield, observation_satellite], 7522 m/s vacuum Δv
+- observation_satellite → spacebreaker:venus/orbit: flown: 1-stage [hydrolox_vacuum_engine, fuel_tank_large, heat_shield, observation_satellite], 6717 m/s vacuum Δv
 - observation_satellite → spacebreaker:vesta/orbit: flown: 1-stage [hydrolox_engine, fuel_tank_large, observation_satellite], 6276 m/s vacuum Δv
 - space_probe → spacebreaker:callisto/surface: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, space_probe], 8214 m/s vacuum Δv
 - space_probe → spacebreaker:ceres/surface: flown: 1-stage [hydrolox_engine, fuel_tank_large, space_probe], 6712 m/s vacuum Δv
@@ -485,15 +489,15 @@ None.
 - space_probe → spacebreaker:europa/surface: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, space_probe], 8214 m/s vacuum Δv
 - space_probe → spacebreaker:ganymede/surface: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, space_probe], 8214 m/s vacuum Δv
 - space_probe → spacebreaker:io/surface: flown: 1-stage [hydrolox_engine, 3× fuel_tank_large, space_probe], 8931 m/s vacuum Δv
-- space_probe → spacebreaker:mars/surface: NOT POSSIBLE: heat_shield (leg 1); path spacebreaker:earth/orbit (shield 0) → spacebreaker:mars/surface (shield 2)
+- space_probe → spacebreaker:mars/surface: flown: 1-stage [hydrolox_vacuum_engine, fuel_tank_large, heat_shield, space_probe], 7211 m/s vacuum Δv
 - space_probe → spacebreaker:mercury/surface: flown: 2-stage [hydrolox_engine, fuel_tank_large / decoupler / hydrolox_vacuum_engine, fuel_tank_large, space_probe], 10157 m/s vacuum Δv
 - space_probe → spacebreaker:miranda/surface: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, space_probe], 8214 m/s vacuum Δv
 - space_probe → spacebreaker:moon/surface: flown: 1-stage [hydrolox_vacuum_engine, fuel_tank_large, space_probe], 7803 m/s vacuum Δv
 - space_probe → spacebreaker:phobos/surface: flown: 1-stage [hydrolox_vacuum_engine, fuel_tank_large, space_probe], 7803 m/s vacuum Δv
 - space_probe → spacebreaker:pluto/surface: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, space_probe], 8214 m/s vacuum Δv
-- space_probe → spacebreaker:titan/surface: NOT POSSIBLE: heat_shield (leg 1); path spacebreaker:earth/orbit (shield 0) → spacebreaker:titan/surface (shield 2)
+- space_probe → spacebreaker:titan/surface: flown: 1-stage [hydrolox_vacuum_engine, fuel_tank_large, heat_shield, space_probe], 7211 m/s vacuum Δv
 - space_probe → spacebreaker:triton/surface: flown: 1-stage [hydrolox_engine, 2× fuel_tank_large, space_probe], 8214 m/s vacuum Δv
-- space_probe → spacebreaker:venus/surface: NOT POSSIBLE: heat_shield (leg 1); path spacebreaker:earth/orbit (shield 0) → spacebreaker:venus/surface (shield 2)
+- space_probe → spacebreaker:venus/surface: flown: 1-stage [hydrolox_vacuum_engine, fuel_tank_large, heat_shield, space_probe], 7211 m/s vacuum Δv
 - space_probe → spacebreaker:vesta/surface: flown: 1-stage [hydrolox_vacuum_engine, fuel_tank_large, space_probe], 7803 m/s vacuum Δv
 
 # Localization audit (`tools/qa/lang_audit.py`)

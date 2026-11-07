@@ -50,7 +50,7 @@ final class RocketSearch {
         return designs(lookup, parts, fuels, null);
     }
 
-    /** With {@code uncrewed} set, the payload is that satellite or probe alone (no capsule, so no heat shield either). */
+    /** With {@code uncrewed} set, the payload is that satellite or probe (optionally on a heat shield) instead of a capsule. */
     static List<Candidate> designs(Function<ResourceLocation, RocketPart> lookup, Set<ResourceLocation> parts, Set<Propellant> fuels,
                                    ResourceLocation uncrewed) {
         List<Candidate> out = new ArrayList<>();
@@ -105,7 +105,11 @@ final class RocketSearch {
             }
         }
         if (uncrewed != null) {
+            // the satellite or probe sits in the capsule slot, so a heat shield may go under it (AssemblerSlots)
             payloads.add(List.of(uncrewed));
+            if (shield != null) {
+                payloads.add(List.of(shield, uncrewed));
+            }
         }
         List<List<ResourceLocation>> lower = stageOptions(engines, tanks, fins, rcs, true);
         List<List<ResourceLocation>> upper = stageOptions(engines, tanks, null, rcs, false);
