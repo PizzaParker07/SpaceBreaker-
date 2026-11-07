@@ -28,8 +28,8 @@ import org.joml.Vector3f;
  */
 public class InnerOrbitSkyEffects extends DimensionSpecialEffects {
     private static final ResourceLocation SUN = Spacebreaker.id("textures/environment/sun_vacuum.png");
-    /** One orbit (and one day/night cycle of the view) in ticks. */
-    public static final float ORBIT_TICKS = 12000F;
+    /** One orbit (and one day/night cycle of the view) in ticks: the same clock as the Earth and Moon orbits. */
+    public static final float ORBIT_TICKS = com.pizzaparker07.spacebreaker.content.rocketry.nav.OrbitDaylight.ORBIT_TICKS;
     private static final float DISTANCE = 100F;
     private static final float RADIUS = 76F;
     private static final int RING = 128;
@@ -48,10 +48,12 @@ public class InnerOrbitSkyEffects extends DimensionSpecialEffects {
     }
 
     private final Look look;
+    private final net.minecraft.resources.ResourceLocation bodyId;
     private VertexBuffer stars;
 
     public InnerOrbitSkyEffects(String body) {
         super(Float.NaN, false, SkyType.NONE, false, false);
+        this.bodyId = Spacebreaker.id(body);
         this.look = switch (body) {
             case "venus" -> new Look(env("orbit_venus"), 0.72F, new float[]{1F, 0.93F, 0.72F, 0.85F}, 0.085F,
                     new Far(env("orbit_earth_disc"), new Vector3f(-0.55F, 0.4F, 0.7F), 1.1F),
@@ -62,6 +64,26 @@ public class InnerOrbitSkyEffects extends DimensionSpecialEffects {
                     new Far(env("phobos"), new Vector3f(0.5F, 0.25F, -0.8F), 3.2F),
                     new Far(env("deimos"), new Vector3f(-0.7F, 0.55F, -0.3F), 1.2F));
         };
+    }
+
+    /** Share of sunlight now (1 day, 0 in the planet's shadow), from the same model as the rocketry orbits. */
+    private float sunlit(ClientLevel level, float partialTick) {
+        return (float) com.pizzaparker07.spacebreaker.content.rocketry.nav.OrbitDaylight.sunlit(
+                com.pizzaparker07.spacebreaker.content.rocketry.nav.OrbitDaylight.system(level.registryAccess()), bodyId, level.getGameTime() + partialTick);
+    }
+
+    /** Hard sunlight by day; in the planet's shadow only starlight, so lamps matter. */
+    @Override
+    public void adjustLightmapColors(ClientLevel level, float partialTicks, float skyDarken, float blockLightRedFlicker, float skyLight,
+                                     int pixelX, int pixelY, Vector3f colors) {
+        float lit = sunlit(level, partialTicks);
+        float daylight = 0.06F + 0.94F * lit;
+        float sky = net.minecraft.client.renderer.LightTexture.getBrightness(level.dimensionType(), pixelY) * daylight;
+        float bl = net.minecraft.client.renderer.LightTexture.getBrightness(level.dimensionType(), pixelX) * blockLightRedFlicker;
+        float bg = bl * ((bl * 0.6F + 0.4F) * 0.6F + 0.4F);
+        float bb = bl * (bl * bl * 0.6F + 0.4F);
+        colors.set(bl + sky, bg + sky, bb + sky * (1 + 0.25F * (1 - lit)));
+        colors.lerp(new Vector3f(0.75F, 0.75F, 0.75F), 0.04F);
     }
 
     private static ResourceLocation env(String name) {
@@ -98,9 +120,12 @@ public class InnerOrbitSkyEffects extends DimensionSpecialEffects {
     @Override
     public boolean renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelView, Camera camera, Matrix4f projection,
                              boolean isFoggy, Runnable setupFog) {
-        float orbit = (level.getGameTime() + partialTick) / ORBIT_TICKS;
-        float sunAngle = orbit * Mth.TWO_PI;
-        Vector3f sun = new Vector3f(Mth.cos(sunAngle), 0.9F, Mth.sin(sunAngle)).normalize();
+        float time = level.getGameTime() + partialTick;
+        float orbit = time / ORBIT_TICKS;
+        // the same orbital day and night as the rocketry orbits: the sun overhead at orbital noon, behind the planet at night
+        float a = (float) com.pizzaparker07.spacebreaker.content.rocketry.nav.OrbitDaylight.phase(time) * Mth.TWO_PI;
+        Vector3f sun = new Vector3f(Mth.sin(a), Mth.cos(a), 0.3F).normalize();
+        float lit = sunlit(level, partialTick);
         RenderSystem.depthMask(false);
         RenderSystem.disableDepthTest();
         RenderSystem.disableCull();
@@ -119,7 +144,11 @@ public class InnerOrbitSkyEffects extends DimensionSpecialEffects {
         // the sun texture's disc fills 12/32 of the quad
         float sunHalf = (float) (DISTANCE * Math.tan(Math.toRadians(look.sunDeg * com.pizzaparker07.spacebreaker.client.sky.SkyConfig.bodyScale() / 2))
                 / (12F / 32F));
-        billboard(modelView, SUN, sun, sunHalf, true);
+        if (lit > 0.01F) {
+            RenderSystem.setShaderColor(lit, lit, lit, 1F);
+            billboard(modelView, SUN, sun, sunHalf, true);
+            RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+        }
         for (Far f : look.far) {
             billboard(modelView, f.texture, f.dir, f.size, false);
         }
