@@ -6,7 +6,6 @@ import com.pizzaparker07.spacebreaker.content.rocketry.station.StationHatchBlock
 import com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule;
 import com.pizzaparker07.spacebreaker.content.rocketry.station.StationModuleItem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -63,7 +62,8 @@ final class StationPreview {
         pose.pushPose();
         pose.translate(-cam.x, -cam.y, -cam.z);
         var buffers = mc.renderBuffers().bufferSource();
-        LevelRenderer.renderLineBox(pose, buffers.getBuffer(RenderType.lines()), box,
+        // clipped at the camera: a shader pack's line program would turn an edge behind the viewer into a huge quad
+        com.pizzaparker07.spacebreaker.compat.client.ClippedLines.box(pose, buffers.getBuffer(RenderType.lines()), box, event.getCamera(),
                 fits ? 0.45F : 1F, fits ? 1F : 0.35F, fits ? 0.5F : 0.3F, 1F);
         buffers.endBatch(RenderType.lines());
         pose.popPose();

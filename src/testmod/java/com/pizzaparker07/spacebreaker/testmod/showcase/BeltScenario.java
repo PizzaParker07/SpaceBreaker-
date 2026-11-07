@@ -117,8 +117,14 @@ final class BeltScenario implements ShowcaseScenario {
         int ox = SX + 40;
         int oz = SZ - 30;
         int oy = (int) ground(level, ox + 14, oz + 14);
-        MarsScenario.placePiece(level, new MiningOutpostPiece(31L, ox, oy, oz, Direction.NORTH));
+        MiningOutpostPiece outpost = new MiningOutpostPiece(31L, ox, oy, oz, Direction.NORTH);
+        MarsScenario.placePiece(level, outpost);
         shot("07_mining_outpost", ox + 36.5, oy + 12, oz + 38.5, MoonScenario.yaw(-22, -24), 20F, 200, at(0.1), null);
+        // inside the habitat, from the bunks toward the desk, the log and the office locker
+        BlockPos hab = outpost.world(3, MiningOutpostPiece.DEPTH + 1, 5);
+        BlockPos desk = outpost.world(10, MiningOutpostPiece.DEPTH + 1, 8);
+        shot("07b_outpost_habitat", hab.getX() + 0.5, hab.getY() + 1.6, hab.getZ() + 0.5,
+                MoonScenario.yaw(desk.getX() - hab.getX(), desk.getZ() - hab.getZ()), 12F, 120, at(0.1), null);
         shot("08_outpost_drift", ox + 14.5, oy - MiningOutpostPiece.DEPTH + 1.6, oz + 7.5, 270F, 8F, 100, p -> {
             at(0.1).accept(p);
             p.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 2400, 0, false, false));

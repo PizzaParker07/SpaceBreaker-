@@ -26,9 +26,15 @@ public class StationCoreBlockEntity extends BaseContainerBlockEntity {
     public static final int SLOTS = 9;
     private NonNullList<ItemStack> items = NonNullList.withSize(SLOTS, ItemStack.EMPTY);
     private String owner = "";
+    /** Which station this is (berths and the station's orbit refer to it). */
+    private java.util.UUID stationId = java.util.UUID.randomUUID();
 
     public StationCoreBlockEntity(BlockPos pos, BlockState state) {
         super(RocketryModule.STATION_CORE_BE.get(), pos, state);
+    }
+
+    public java.util.UUID stationId() {
+        return stationId;
     }
 
     public String owner() {
@@ -108,6 +114,9 @@ public class StationCoreBlockEntity extends BaseContainerBlockEntity {
         items = NonNullList.withSize(SLOTS, ItemStack.EMPTY);
         ContainerHelper.loadAllItems(tag, items, registries);
         owner = tag.getString("owner");
+        if (tag.hasUUID("station")) {
+            stationId = tag.getUUID("station");
+        }
     }
 
     @Override
@@ -115,5 +124,6 @@ public class StationCoreBlockEntity extends BaseContainerBlockEntity {
         super.saveAdditional(tag, registries);
         ContainerHelper.saveAllItems(tag, items, registries);
         tag.putString("owner", owner);
+        tag.putUUID("station", stationId);
     }
 }
