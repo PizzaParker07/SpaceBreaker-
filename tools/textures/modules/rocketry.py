@@ -353,7 +353,7 @@ def hydrolox_vacuum_engine():
     return cv
 
 
-NTR_BELL = [(0, 2, 11), (2, 5, 9), (5, 8, 7), (8, 10, 5), (10, 12, 4)]
+NTR_BELL = [(y, y + 1, r) for y, r in enumerate([11, 10, 9, 8, 8, 7, 6, 6, 5, 5, 4, 4])]
 
 
 def nuclear_thermal_engine():
@@ -370,12 +370,12 @@ def nuclear_thermal_engine():
     for y in (18, 19):                                                   # one plain warning stripe
         ring(cv, SIDE, y, 8, HAZARD, 2, 4)
     bell(cv, 12, 14, lambda y: 4, STEEL, 1, 4, 174)                      # throat
-    bell(cv, 0, 12, lambda y: radius[y], COPPER, 3, 6, 175, lip=COPPER)  # regeneratively cooled bell
+    bell(cv, 0, 12, lambda y: radius[y], COPPER, 3, 5, 175, lip=COPPER)  # regeneratively cooled bell
     for y in range(1, 12):
         r = radius[y]
         for c in range(16 - r, 16 + r):
-            if (c - (16 - r)) % 3 == 0:
-                put_side(cv, SIDE, c, y, COPPER[2])                      # coolant tube seams
+            if (c - (16 - r)) % 4 == 0:
+                put_side(cv, SIDE, c, y, COPPER[3])                      # faint coolant tube seams
     # aux view: the coolant pipes, polished steel with flanges
     for y in range(32):
         for c in range(32):
@@ -383,7 +383,14 @@ def nuclear_thermal_engine():
     for y in (13, 23):
         for c in range(32):
             put_side(cv, AUX, c, y, STEEL[1])
-    engine_top(cv, TOP, 177)
+    # top view: hidden under the mount, except the bell's ledges, so it is painted as the copper bell seen from above
+    def top(dx, dz, d):
+        if d > 16.2:
+            return None
+        if d > 12:
+            return CARBON[3]
+        return COPPER[4]                       # same tone as the bell's side, so the ledges blend into one surface
+    top_view(cv, TOP, top)
     nozzle_exit(cv, BOTTOM, 11, 4)
     return cv
 

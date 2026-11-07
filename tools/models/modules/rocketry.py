@@ -215,7 +215,7 @@ def hydrolox_vacuum_engine():
 
 
 # the nuclear thermal engine's bell, (from y, to y, radius) from the exit up to the throat
-NTR_BELL = [(0, 2, 11), (2, 5, 9), (5, 8, 7), (8, 10, 5), (10, 12, 4)]
+NTR_BELL = [(y, y + 1, r) for y, r in enumerate([11, 10, 9, 8, 8, 7, 6, 6, 5, 5, 4, 4])]   # flares towards the exit
 
 
 def nuclear_thermal_engine():
@@ -225,8 +225,13 @@ def nuclear_thermal_engine():
     els += prism(24, 28, 13, top=False)                   # tungsten shadow shield
     els += prism(14, 24, 8, top=False, bottom=False)      # reactor vessel
     els += prism(12, 14, 4, top=False, bottom=False)      # nozzle throat
-    for y0, y1, r in NTR_BELL:                            # regeneratively cooled bell
-        els += prism(y0, y1, r, top=False, bottom=(y0 == 0))
+    for y0, y1, r in NTR_BELL:                            # regeneratively cooled bell: an even octagon per row, so the
+        k = round(r * 0.42, 1)                            # facets line up from throat to exit; ledges in copper (top view)
+        faces = SIDES + ('up',) + (('down',) if y0 == 0 else ())
+        els.append(box([8 - r, y0, 8 - k], [8 + r, y1, 8 + k], faces))
+        els.append(box([8 - k, y0, 8 - r], [8 + k, y1, 8 + r], faces))
+        d = round(r * 0.71, 1)
+        els.append(box([8 - d, y0, 8 - d], [8 + d, y1, 8 + d], faces))
     # four hydrogen coolant pipes running down the outside of the vessel
     for fr, to in (([7.5, 12, -1], [8.5, 24, 0]), ([7.5, 12, 16], [8.5, 24, 17]),
                    ([-1, 12, 7.5], [0, 24, 8.5]), ([16, 12, 7.5], [17, 24, 8.5])):
