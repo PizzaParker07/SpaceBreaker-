@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "spacebreaker:block/hematite_soil",
+    "up": "spacebreaker:block/hematite_soil_footprint_track",
+    "down": "spacebreaker:block/hematite_soil",
+    "north": "spacebreaker:block/hematite_soil",
+    "south": "spacebreaker:block/hematite_soil",
+    "east": "spacebreaker:block/hematite_soil",
+    "west": "spacebreaker:block/hematite_soil"
+  }
+}

@@ -13,10 +13,10 @@ FAMILIES = [
 
 
 def soil(name):
-    """Two random-rotated plain variants; prints keep their facing so trails line up."""
+    """Two random-rotated plain variants; boot prints and rover wheel tracks keep their facing so trails line up."""
     write(f'models/block/{name}.json', {'parent': 'minecraft:block/cube_all', 'textures': {'all': b(name)}})
     write(f'models/block/{name}_1.json', {'parent': 'minecraft:block/cube_all', 'textures': {'all': b(name + '_1')}})
-    for side in ('left', 'right'):
+    for side in ('left', 'right', 'track'):
         write(f'models/block/{name}_footprint_{side}.json', {
             'parent': 'minecraft:block/cube',
             'textures': {
@@ -37,7 +37,7 @@ def soil(name):
     variants = {}
     for facing, y in rot.items():
         variants[f'facing={facing},print=none'] = plain
-        for side in ('left', 'right'):
+        for side in ('left', 'right', 'track'):
             v = {'model': b(f'{name}_footprint_{side}')}
             if y:
                 v['y'] = y

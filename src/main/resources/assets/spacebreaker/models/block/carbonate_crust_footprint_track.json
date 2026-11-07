@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "spacebreaker:block/carbonate_crust",
+    "up": "spacebreaker:block/carbonate_crust_footprint_track",
+    "down": "spacebreaker:block/carbonate_crust",
+    "north": "spacebreaker:block/carbonate_crust",
+    "south": "spacebreaker:block/carbonate_crust",
+    "east": "spacebreaker:block/carbonate_crust",
+    "west": "spacebreaker:block/carbonate_crust"
+  }
+}

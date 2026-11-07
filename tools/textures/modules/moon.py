@@ -201,6 +201,47 @@ def soil_prints(r6):
     return r6[0], r6[1], r6[2], r6[4], r6[5], r6[2]
 
 
+def wheel_track(base):
+    """Rover wheel rut running north-south, pressed into a soil texture: a 6 px groove with chevron tread
+    ridges. Tones come from the soil's own colours (sorted by brightness) plus one deeper pit shadow,
+    lit from the top-left like the boot prints."""
+    cols = sorted({base[x, y][:3] for y in range(16) for x in range(16)}, key=lambda c: 0.3 * c[0] + 0.59 * c[1] + 0.11 * c[2])
+    dark, mid, light = cols[0], cols[min(1, len(cols) - 1)], cols[-1]
+    shadow = tuple(int(v * 0.72) for v in dark)
+    cv = base.copy()
+    x0, x1 = 5, 10
+    for y in range(16):
+        cv[x0 - 1, y] = light          # rim catching the light
+        cv[x1 + 1, y] = mid            # rim in shade
+        cv[x0, y] = shadow             # left wall in shadow
+        cv[x1, y] = light              # right wall lit
+        for x in range(x0 + 1, x1):
+            ridge = (y + abs(2 * x - (x0 + x1)) // 2) % 4 == 0
+            cv[x, y] = mid if ridge else dark
+    return cv
+
+
+def finish(save):
+    """After every module: a wheel-track texture for each soil that has boot prints (all planets)."""
+    import glob
+    import os
+    from PIL import Image
+    tex = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', 'src', 'main', 'resources',
+                       'assets', 'spacebreaker', 'textures', 'block')
+    n = 0
+    for path in sorted(glob.glob(os.path.join(tex, '*_footprint_left.png'))):
+        name = os.path.basename(path)[:-len('_footprint_left.png')]
+        src = os.path.join(tex, name + '.png')
+        if not os.path.exists(src):
+            continue
+        cv = Canvas()
+        cv.img = Image.open(src).convert('RGBA')
+        cv.p = cv.img.load()
+        save(wheel_track(cv), 'block', f'{name}_footprint_track', (22, 10, 64, None))
+        n += 1
+    return n
+
+
 # --------------------------------------------------------------------------- rocks
 
 def mare_basalt():

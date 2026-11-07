@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "spacebreaker:block/martian_regolith",
+    "up": "spacebreaker:block/martian_regolith_footprint_track",
+    "down": "spacebreaker:block/martian_regolith",
+    "north": "spacebreaker:block/martian_regolith",
+    "south": "spacebreaker:block/martian_regolith",
+    "east": "spacebreaker:block/martian_regolith",
+    "west": "spacebreaker:block/martian_regolith"
+  }
+}

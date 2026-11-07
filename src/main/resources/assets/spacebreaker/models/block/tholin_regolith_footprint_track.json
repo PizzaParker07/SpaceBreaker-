@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "spacebreaker:block/tholin_regolith",
+    "up": "spacebreaker:block/tholin_regolith_footprint_track",
+    "down": "spacebreaker:block/tholin_regolith",
+    "north": "spacebreaker:block/tholin_regolith",
+    "south": "spacebreaker:block/tholin_regolith",
+    "east": "spacebreaker:block/tholin_regolith",
+    "west": "spacebreaker:block/tholin_regolith"
+  }
+}

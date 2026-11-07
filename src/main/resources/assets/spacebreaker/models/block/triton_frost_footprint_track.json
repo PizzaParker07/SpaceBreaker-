@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "spacebreaker:block/triton_frost",
+    "up": "spacebreaker:block/triton_frost_footprint_track",
+    "down": "spacebreaker:block/triton_frost",
+    "north": "spacebreaker:block/triton_frost",
+    "south": "spacebreaker:block/triton_frost",
+    "east": "spacebreaker:block/triton_frost",
+    "west": "spacebreaker:block/triton_frost"
+  }
+}

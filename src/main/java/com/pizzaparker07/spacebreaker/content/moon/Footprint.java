@@ -2,11 +2,15 @@ package com.pizzaparker07.spacebreaker.content.moon;
 
 import net.minecraft.util.StringRepresentable;
 
-/** Boot print left in loose soil. Left and right alternate with the block position so walks leave a natural trail. */
+/**
+ * Print left in loose soil. Left and right boot prints alternate with the block position so walks leave a natural
+ * trail; {@link #TRACK} is a rover wheel rut along the driving direction.
+ */
 public enum Footprint implements StringRepresentable {
     NONE("none"),
     LEFT("left"),
-    RIGHT("right");
+    RIGHT("right"),
+    TRACK("track");
 
     private final String name;
 

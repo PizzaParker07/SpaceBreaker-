@@ -38,6 +38,9 @@
     "facing=north,print=right": {
       "model": "spacebreaker:block/bright_frost_footprint_right"
     },
+    "facing=north,print=track": {
+      "model": "spacebreaker:block/bright_frost_footprint_track"
+    },
     "facing=east,print=none": [
       {
         "model": "spacebreaker:block/bright_frost"
@@ -76,6 +79,10 @@
     },
     "facing=east,print=right": {
       "model": "spacebreaker:block/bright_frost_footprint_right",
+      "y": 90
+    },
+    "facing=east,print=track": {
+      "model": "spacebreaker:block/bright_frost_footprint_track",
       "y": 90
     },
     "facing=south,print=none": [
@@ -118,6 +125,10 @@
       "model": "spacebreaker:block/bright_frost_footprint_right",
       "y": 180
     },
+    "facing=south,print=track": {
+      "model": "spacebreaker:block/bright_frost_footprint_track",
+      "y": 180
+    },
     "facing=west,print=none": [
       {
         "model": "spacebreaker:block/bright_frost"
@@ -156,6 +167,10 @@
     },
     "facing=west,print=right": {
       "model": "spacebreaker:block/bright_frost_footprint_right",
+      "y": 270
+    },
+    "facing=west,print=track": {
+      "model": "spacebreaker:block/bright_frost_footprint_track",
       "y": 270
     }
   }

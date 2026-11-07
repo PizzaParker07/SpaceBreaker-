@@ -56,6 +56,44 @@ public class OutpostPiece extends StructurePiece {
         tag.putLong("Seed", seed);
     }
 
+    /** World position of a local block (local +x = east, +z = south before orientation). */
+    public BlockPos localToWorld(int x, int y, int z) {
+        return getWorldPos(x, y, z).immutable();
+    }
+
+    /** World direction of a local horizontal direction, from how this piece maps local coordinates. */
+    public Direction worldDirection(Direction local) {
+        int x0 = getWorldX(0, 0);
+        int z0 = getWorldZ(0, 0);
+        int x1 = getWorldX(local.getStepX(), local.getStepZ());
+        int z1 = getWorldZ(local.getStepX(), local.getStepZ());
+        Direction d = Direction.fromDelta(Integer.signum(x1 - x0), 0, Integer.signum(z1 - z0));
+        return d == null ? local : d;
+    }
+
+    /**
+     * Places a block with its facing given in local coordinates. Vanilla's mirror/rotation for piece
+     * orientations does not match its coordinate mapping (south mirrors facings but not positions), so signs,
+     * dispensers and buttons would face the wrong way; this turns facings exactly like positions.
+     */
+    @Override
+    protected void placeBlock(WorldGenLevel level, BlockState state, int x, int y, int z, BoundingBox box) {
+        BlockPos pos = getWorldPos(x, y, z);
+        if (!box.isInside(pos)) {
+            return;
+        }
+        for (var prop : java.util.List.of(net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING,
+                net.minecraft.world.level.block.state.properties.BlockStateProperties.FACING)) {
+            if (state.hasProperty(prop) && state.getValue(prop).getAxis().isHorizontal()) {
+                state = state.setValue(prop, worldDirection(state.getValue(prop)));
+            }
+        }
+        level.setBlock(pos, state, 2);
+        if (state.is(Blocks.IRON_BARS) || state.getBlock() instanceof net.minecraft.world.level.block.WallBlock) {
+            level.getChunk(pos).markPosForPostprocessing(pos);
+        }
+    }
+
     // local y: 0..3 foundation, 4 = floor level of the pad
     private static final int F = 4;
 

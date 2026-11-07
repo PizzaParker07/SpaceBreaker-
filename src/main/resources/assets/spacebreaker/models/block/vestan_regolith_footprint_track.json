@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "spacebreaker:block/vestan_regolith",
+    "up": "spacebreaker:block/vestan_regolith_footprint_track",
+    "down": "spacebreaker:block/vestan_regolith",
+    "north": "spacebreaker:block/vestan_regolith",
+    "south": "spacebreaker:block/vestan_regolith",
+    "east": "spacebreaker:block/vestan_regolith",
+    "west": "spacebreaker:block/vestan_regolith"
+  }
+}
