@@ -10,9 +10,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Cold traps: the floors of permanently shadowed polar craters never see the sun, so they stay far colder than
- * the night side (about -230 °C on the Moon). This cancels the daytime warming there and drops the floor
- * {@link #BELOW_NIGHT_C} under the body's night temperature: a first-tier suit cannot cope, a heated suit (or
- * enough thermal modules) can. Applies to every world whose terrain profile has shadowed polar craters.
+ * the night side, day and night. Which worlds have them and how cold they are comes from the astro library's
+ * {@link com.pizzaparker07.spacebreaker.core.astro.PolarIllumination} (Moon about 40 K = -233 °C, Mercury about
+ * 60 K; none where ice is not stable, e.g. worlds with air); without that data the floor sits {@link #BELOW_NIGHT_C}
+ * under the night temperature. On the Moon a first-tier suit cannot cope, a heated suit (or enough thermal
+ * modules) can.
  */
 public final class ColdTraps {
     /** How much colder than the night side a shadowed crater floor is. */
@@ -47,6 +49,20 @@ public final class ColdTraps {
                 : net.minecraft.network.chat.Component.translatable("message.spacebreaker.cold_trap.leave"), true);
     }
 
+    /** Binds the astro polar data of the level's body to its planet generator (on level load). */
+    static void bind(ServerLevel level) {
+        if (!(level.getChunkSource().getGenerator() instanceof PlanetChunkGenerator gen)) {
+            return;
+        }
+        var access = level.registryAccess();
+        var polar = Environment.body(level).flatMap(b -> com.pizzaparker07.spacebreaker.core.body.Bodies.registry(access).map(r -> r.getKey(b)))
+                .flatMap(id -> com.pizzaparker07.spacebreaker.core.astro.BodyAdapter.polarIllumination(access, id.toString()));
+        gen.bindPolar(polar.orElse(null));
+        synchronized (FLOOR) {
+            FLOOR.remove(level);
+        }
+    }
+
     /** Height of the shadowed crater floor at this column, or {@code Integer.MIN_VALUE} outside cold traps. */
     public static int floor(ServerLevel level, int x, int z) {
         if (!(level.getChunkSource().getGenerator() instanceof PlanetChunkGenerator gen)) {
@@ -75,11 +91,20 @@ public final class ColdTraps {
         if (!inColdTrap(level, pos)) {
             return 0;
         }
-        return Environment.body(level).map(b -> offsetC(b.climate().dayTempC(), b.climate().nightTempC(), Environment.sunElevation(level)))
-                .orElse(0.0);
+        var gen = (PlanetChunkGenerator) ((ServerLevel) level).getChunkSource().getGenerator();
+        var polar = gen.polar();
+        return Environment.body(level).map(b -> polar != null
+                ? offsetToC(b.climate().dayTempC(), b.climate().nightTempC(), Environment.sunElevation(level), polar.coldTrapTempK() - 273.15)
+                : offsetC(b.climate().dayTempC(), b.climate().nightTempC(), Environment.sunElevation(level))).orElse(0.0);
     }
 
-    /** Temperature offset inside a cold trap: cancels the sun's warming and drops below the night temperature. */
+    /** Temperature offset that brings the sun-warmed surface temperature to {@code trapC}. */
+    public static double offsetToC(double dayC, double nightC, float sunElevation, double trapC) {
+        double sun = Math.max(0.0, Math.sin(sunElevation));
+        return trapC - (nightC + (dayC - nightC) * Math.sqrt(sun));
+    }
+
+    /** Fallback without astro data: cancels the sun's warming and drops {@link #BELOW_NIGHT_C} below the night. */
     public static double offsetC(double dayC, double nightC, float sunElevation) {
         double sun = Math.max(0.0, Math.sin(sunElevation));
         return -(dayC - nightC) * Math.sqrt(sun) - BELOW_NIGHT_C;

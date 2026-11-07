@@ -70,6 +70,7 @@ public final class WorldgenModule implements SbModule {
         NeoForge.EVENT_BUS.addListener(LevelEvent.Load.class, e -> {
             if (e.getLevel() instanceof ServerLevel level) {
                 PlanetTime.onLevelLoad(level);
+                ColdTraps.bind(level);
             }
         });
         NeoForge.EVENT_BUS.addListener(LevelEvent.Unload.class, e -> {

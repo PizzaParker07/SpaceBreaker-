@@ -278,6 +278,45 @@ public final class MoonGameTests {
         helper.succeed();
     }
 
+    /**
+     * Cold traps follow the astro library's polar light data: stable ice (and cold traps) on the Moon, Mercury and
+     * Ceres, none on Mars or Pluto (they have air); the Moon's trap temperature needs a heated suit; a generator bound
+     * to a world without stable ice has no cold traps.
+     */
+    @GameTest(template = EMPTY)
+    public static void coldTrapsFollowPolarLightData(GameTestHelper helper) {
+        var access = helper.getLevel().registryAccess();
+        for (String id : List.of("spacebreaker:moon", "spacebreaker:mercury", "spacebreaker:ceres")) {
+            var p = com.pizzaparker07.spacebreaker.core.astro.BodyAdapter.polarIllumination(access, id).orElseThrow();
+            helper.assertTrue(p.iceStable(), id + " keeps ice in its cold traps (" + p.coldTrapTempK() + " K)");
+        }
+        for (String id : List.of("spacebreaker:mars", "spacebreaker:pluto")) {
+            var p = com.pizzaparker07.spacebreaker.core.astro.BodyAdapter.polarIllumination(access, id).orElseThrow();
+            helper.assertFalse(p.iceStable(), id + " has no airless cold traps");
+        }
+        var moon = com.pizzaparker07.spacebreaker.core.astro.BodyAdapter.polarIllumination(access, "spacebreaker:moon").orElseThrow();
+        double trapC = moon.coldTrapTempK() - 273.15;
+        helper.assertTrue(trapC < com.pizzaparker07.spacebreaker.content.suit.SuitTier.MK1.minTempC()
+                && trapC >= com.pizzaparker07.spacebreaker.content.suit.SuitTier.HEATED.minTempC(), "Moon cold traps need a heated suit: " + trapC);
+        double noon = 120 + com.pizzaparker07.spacebreaker.content.worldgen.ColdTraps.offsetToC(120, -173, (float) (Math.PI / 2), trapC);
+        helper.assertTrue(Math.abs(noon - trapC) < 1e-6, "the trap temperature holds at noon");
+        PlanetChunkGenerator gen = moonGenerator(helper, 5L);
+        PlanetTerrain t = gen.terrain();
+        double pd = t.profile().poleDistance();
+        Crater trap = null;
+        for (Crater c : t.cratersNear(-1500, pd * 0.9, 1500, pd)) {
+            if (trap == null && gen.coldTrapFloor((int) c.x(), (int) c.z()) != Integer.MIN_VALUE) {
+                trap = c;
+            }
+        }
+        helper.assertTrue(trap != null, "a cold trap near the pole");
+        gen.bindPolar(com.pizzaparker07.spacebreaker.core.astro.BodyAdapter.polarIllumination(access, "spacebreaker:mars").orElseThrow());
+        helper.assertTrue(gen.coldTrapFloor((int) trap.x(), (int) trap.z()) == Integer.MIN_VALUE, "no cold trap where ice is not stable");
+        gen.bindPolar(moon);
+        helper.assertTrue(gen.coldTrapFloor((int) trap.x(), (int) trap.z()) != Integer.MIN_VALUE, "the Moon's data keeps it");
+        helper.succeed();
+    }
+
     /** Ice-drilling stations find places on shadowed polar crater floors (and only there). */
     @GameTest(template = EMPTY, timeoutTicks = 600)
     public static void iceDrillStationsGenerateInColdTraps(GameTestHelper helper) {
