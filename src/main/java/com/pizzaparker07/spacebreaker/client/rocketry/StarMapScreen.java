@@ -31,37 +31,46 @@ import java.util.Map;
 import java.util.OptionalDouble;
 
 /**
- * The star map. The Sun sits on the left with every planet on its orbit; clicking a planet zooms into its
- * system, with its moons around it. The panel on the right describes the selected world (picture, a few
- * words, its dangers) and offers "Go to orbit" / "Land", each with a plain fuel check (fuel needed against
- * fuel on board, enough to come home?), the trip time, heat shield and leg warnings and the launch window.
- * The route from here is drawn step by step on the map and the big Go button says why when it is off.
+ * The star map: one calm, zoomable picture of the Solar System. Every world sits where it really is on its orbit
+ * (distances on a log scale so Mercury and Neptune both fit), drawn as a small disc in its own colours on a thin
+ * orbit line. Scroll to zoom, drag to move; clicking a world glides the view to it, and to its moons if it has any.
+ * The panel on the right stays short: the name, orbit or land, and for the chosen trip just the Δv, the time, one
+ * fuel bar and a word on getting home. The route from here is a thin line on the map.
  */
 public class StarMapScreen extends Screen {
-    private record Node(ResourceLocation body, int x, int y, int r) {
+    /** A world on the current frame: screen position and disc radius, both in GUI pixels. */
+    private record Node(ResourceLocation body, float x, float y, int r, boolean small) {
     }
 
     private static final int GREEN = 0xFF8FD88A, RED = 0xFFEF6A5A, AMBER = 0xFFE8C060, INK = 0xFFDDE4EC, DIM = 0xFF8A96A4;
     private static final int PANEL_BG = 0xE00B1018, ACCENT = 0xFFFFD34A;
+    private static final int ORBIT = 0x2CA0B4C8, ORBIT_SEL = 0x60FFD34A;
+    /** Map units per log-step of distance from the Sun (see {@link #radial}). */
+    private static final double UNIT = 60;
+    private static final double AU_KM = 149_597_870.7;
 
     private final RocketEntity rocket;
     private final Map<ResourceLocation, Node> nodes = new LinkedHashMap<>();
-    @Nullable
-    private ResourceLocation focus;
     private ResourceLocation body;
     @Nullable
     private Location target;
     @Nullable
     private StarMapData.Trip trip;
     private Button orbitButton, surfaceButton, goButton, backButton, starsButton;
-    /** Third zoom level: the stars around the Sun (information only, no interstellar travel yet). */
+    /** The stars around the Sun (information only, no interstellar travel yet). */
     private boolean starsView;
     @Nullable
     private com.pizzaparker07.spacebreaker.content.rocketry.nav.NearbyStars.Star star;
     @Nullable
     private int[][] galaxyColours;
     private int panelX, panelW, mapW;
-    private int fuelBarY = -1;
+
+    // camera: map position at the centre of the map area, and GUI pixels per map unit; eased towards the targets
+    private double camX, camY, scale = -1, toX, toY, toScale;
+    private long lastFrame;
+    private boolean dragging;
+    private double dragFromX, dragFromY;
+    private boolean dragged;
 
     /** Opened from the launch console of an uncrewed rocket: Go sets the mission target instead of flying. */
     private final boolean planning;
@@ -117,8 +126,8 @@ public class StarMapScreen extends Screen {
                 ? "gui.spacebreaker.star_map.soon" : "gui.spacebreaker.star_map.land"));
         goButton.active = trip != null && trip.canGo();
         goButton.visible = trip != null;
-        backButton.visible = focus != null || starsView;
-        starsButton.visible = focus == null && !starsView;
+        backButton.visible = starsView;
+        starsButton.visible = !starsView;
         if (starsView) {
             orbitButton.visible = false;
             surfaceButton.visible = false;
@@ -145,147 +154,220 @@ public class StarMapScreen extends Screen {
 
     @Override
     protected void init() {
-        panelW = Mth.clamp((int) (width * 0.36F), 150, 214);
+        panelW = Mth.clamp((int) (width * 0.3F), 140, 184);
         panelX = width - panelW;
         mapW = panelX;
         int bx = panelX + 8, bw = (panelW - 20) / 2;
-        int by = 148;
-        orbitButton = addRenderableWidget(Button.builder(Component.translatable("gui.spacebreaker.star_map.to_orbit"),
-                b -> choose(Locations.get(body, true).orElse(null))).bounds(bx, by, bw, 18).build());
+        orbitButton = addRenderableWidget(Button.builder(Component.translatable("gui.spacebreaker.star_map.orbit_short"),
+                b -> choose(Locations.get(body, true).orElse(null))).bounds(bx, 44, bw, 16).build());
         surfaceButton = addRenderableWidget(Button.builder(Component.translatable("gui.spacebreaker.star_map.land"),
-                b -> choose(Locations.get(body, false).orElse(null))).bounds(bx + bw + 4, by, bw, 18).build());
+                b -> choose(Locations.get(body, false).orElse(null))).bounds(bx + bw + 4, 44, bw, 16).build());
         goButton = addRenderableWidget(Button.builder(Component.translatable(planning ? "gui.spacebreaker.star_map.set_target" : "gui.spacebreaker.star_map.go"), b -> go())
-                .bounds(panelX + 8, height - 30, panelW - 16, 22).build());
+                .bounds(panelX + 8, height - 28, panelW - 16, 20).build());
         starsButton = addRenderableWidget(Button.builder(Component.translatable("gui.spacebreaker.star_map.nearby_stars"), b -> enterStars())
-                .bounds(8, height - 26, 110, 18).build());
+                .bounds(8, height - 24, 96, 16).build());
         backButton = addRenderableWidget(Button.builder(Component.translatable("gui.spacebreaker.star_map.back"), b -> {
             starsView = false;
-            focus = null;
-            layoutMap();
             updateButtons();
-        }).bounds(8, height - 26, 110, 18).build());
-        layoutMap();
+        }).bounds(8, height - 24, 96, 16).build());
+        if (scale < 0) {
+            // open on where the rocket is: its system if it is at a moon, otherwise the whole map
+            ResourceLocation sys = StarMapData.system(here().body());
+            if (!StarMapData.moons(sys).isEmpty() && !sys.equals(StarMapData.COMETS) && !sys.equals(StarMapData.NEAR_EARTH_ASTEROIDS)
+                    && Locations.parentPlanet(here().body()).isPresent()) {
+                focusOn(sys, true);
+            } else {
+                overview();
+            }
+            camX = toX;
+            camY = toY;
+            scale = toScale;
+        }
         if (target != null) {
             choose(target);
         }
         updateButtons();
     }
 
-    private void layoutMap() {
-        nodes.clear();
-        int cy = height / 2 + 6;
-        if (focus == null) {
-            List<ResourceLocation> planets = StarMapData.planets();
-            int n = Math.max(1, planets.size());
-            int left = sunEdge() + 26, right = mapW - 22;
-            float step = n == 1 ? 0 : (right - left) / (float) (n - 1);
-            for (int i = 0; i < planets.size(); i++) {
-                ResourceLocation p = planets.get(i);
-                int x = Math.round(left + i * step);
-                // stagger up and down along the orbits so the names never collide
-                int y = cy + (i % 2 == 0 ? -1 : 1) * (int) (height * 0.09F);
-                nodes.put(p, new Node(p, x, y, systemRadius(p)));
+    /** Fit the whole system (out to the last planet) into the map area. */
+    private void overview() {
+        double outer = 0;
+        for (ResourceLocation p : StarMapData.planets()) {
+            if (!StarMapData.COMETS.equals(p) && !StarMapData.NEAR_EARTH_ASTEROIDS.equals(p)) {
+                outer = Math.max(outer, radial(semiMajorAu(p)));
             }
-        } else if (StarMapData.COMETS.equals(focus)) {
-            layoutComets(cy);
+        }
+        toX = 0;
+        toY = 0;
+        toScale = Math.max(0.05, (Math.min(mapW, height - 30) / 2.0 - 14) / Math.max(1, outer));
+    }
+
+    /** Glide the view to a world; with {@code moons}, close enough to see its moons around it. */
+    private void focusOn(ResourceLocation b, boolean moons) {
+        double[] p = mapPos(b, time());
+        toX = p[0];
+        toY = p[1];
+        List<ResourceLocation> kids = StarMapData.COMETS.equals(b) || StarMapData.NEAR_EARTH_ASTEROIDS.equals(b) ? List.of() : StarMapData.moons(b);
+        if (moons && !kids.isEmpty()) {
+            toScale = (Math.min(mapW, height) * 0.36) / moonOffset(kids.size() - 1);
         } else {
-            int cx = mapW / 2;
-            int pr = StarMapData.NEAR_EARTH_ASTEROIDS.equals(focus) || StarMapData.COMETS.equals(focus) ? 9 : Mth.clamp(Math.min(mapW, height) / 9, 14, 30);
-            nodes.put(focus, new Node(focus, cx, cy, pr));
-            List<ResourceLocation> moons = StarMapData.moons(focus);
-            int first = pr + 46;
-            int ringStep = Math.max(22, (Math.min(mapW, height) / 2 - first - 16) / Math.max(1, moons.size()));
-            for (int i = 0; i < moons.size(); i++) {
-                ResourceLocation m = moons.get(i);
-                int ring = first + i * ringStep;
-                double a = 0.35 + i * 2.4;
-                nodes.put(m, new Node(m, cx + (int) (Math.cos(a) * ring), cy + (int) (Math.sin(a) * ring * 0.8), moonRadius(m)));
-            }
+            toScale = Math.max(toScale, overviewScale() * 2.2);
         }
     }
 
-    /** Comet orbits on the comet view: centre x, centre y, half-width, half-height of each ellipse (the Sun at a focus). */
-    private final Map<ResourceLocation, int[]> cometOrbits = new java.util.HashMap<>();
+    private double overviewScale() {
+        double old = toScale, ox = toX, oy = toY;
+        overview();
+        double s = toScale;
+        toScale = old;
+        toX = ox;
+        toY = oy;
+        return s;
+    }
 
-    /**
-     * The comet view: the Sun in the middle and each comet on its own stretched ellipse (eccentricity from the
-     * astro catalogue, size on a log scale of the semi-major axis so Encke and Halley both fit).
-     */
-    private void layoutComets(int cy) {
-        cometOrbits.clear();
-        int cx = mapW / 2;
-        List<ResourceLocation> comets = StarMapData.moons(StarMapData.COMETS);
-        double minA = Double.MAX_VALUE, maxA = 0;
-        for (ResourceLocation c : comets) {
-            double a = com.pizzaparker07.spacebreaker.core.astro.smallbody.Comet.byId(c.getPath()).map(k -> k.semiMajorAxisAu()).orElse(3.0);
-            minA = Math.min(minA, a);
-            maxA = Math.max(maxA, a);
+    /** Distance from the Sun on the map for a real distance in AU: logarithmic, so the inner worlds get room. */
+    private static double radial(double au) {
+        return UNIT * Math.log(1 + au / 0.3) / Math.log(2);
+    }
+
+    /** Distance of the i-th moon from its planet, in map units. */
+    private static double moonOffset(int i) {
+        return 1.6 + i * 1.15;
+    }
+
+    private static double semiMajorAu(ResourceLocation b) {
+        var comet = com.pizzaparker07.spacebreaker.core.astro.smallbody.Comet.byId(b.getPath());
+        if (StarMapData.comet(b) && comet.isPresent()) {
+            return comet.get().semiMajorAxisAu();
         }
-        int inner = 40, outer = Math.max(inner + 20, Math.min(mapW / 2 - 24, (int) (height * 0.6)));
-        for (int i = 0; i < comets.size(); i++) {
-            ResourceLocation c = comets.get(i);
-            var k = com.pizzaparker07.spacebreaker.core.astro.smallbody.Comet.byId(c.getPath()).orElse(null);
-            double a = k == null ? 3 : k.semiMajorAxisAu(), e = k == null ? 0.5 : k.eccentricity();
-            double f = maxA > minA ? (Math.log(a) - Math.log(minA)) / (Math.log(maxA) - Math.log(minA)) : 0;
-            // the far end (aphelion) reaches rx·(1 + e) from the Sun: keep it on the map
-            int rx = (int) Math.min(inner + f * (outer - inner), (mapW / 2 - 16) / (1 + e));
-            int ry = Math.max(6, (int) (rx * Math.sqrt(1 - e * e)));
-            int ecx = cx - (int) Math.round(rx * e);     // the Sun sits at the focus
-            cometOrbits.put(c, new int[]{ecx, cy, rx, ry});
-            // where it really is on its orbit now: mean anomaly from the last perihelion, then Kepler's equation
-            double E = 0;
-            if (k != null && minecraft != null && minecraft.level != null) {
-                double days = com.pizzaparker07.spacebreaker.core.astro.BodyAdapter.simTime(minecraft.level) / 86400.0;
-                double period = k.periodSeconds() / 86400.0;
-                double M = 2 * Math.PI * (((days - k.perihelionDays()) / period) % 1.0);
-                E = M;
-                for (int it = 0; it < 30; it++) {
-                    E -= (E - e * Math.sin(E) - M) / (1 - e * Math.cos(E));
+        return Locations.body(b).map(c -> c.orbit().semiMajorAxisKm() / AU_KM).orElse(1.0);
+    }
+
+    /** Simulated days since J2000 (the map shows the worlds where they are now). */
+    private double time() {
+        return minecraft == null || minecraft.level == null ? 0
+                : com.pizzaparker07.spacebreaker.core.astro.BodyAdapter.simTime(minecraft.level) / 86400.0;
+    }
+
+    /** Where a world is on the map (map units, y down), moons beside their planet. */
+    private double[] mapPos(ResourceLocation b, double days) {
+        if (StarMapData.COMETS.equals(b) || StarMapData.NEAR_EARTH_ASTEROIDS.equals(b)) {
+            List<ResourceLocation> m = StarMapData.moons(b);
+            return m.isEmpty() ? new double[]{0, 0} : mapPos(m.get(0), days);
+        }
+        var parent = Locations.parentPlanet(b);
+        if (parent.isPresent()) {
+            double[] p = mapPos(parent.get(), days);
+            List<ResourceLocation> kids = StarMapData.moons(parent.get());
+            int i = Math.max(0, kids.indexOf(b));
+            double period = Locations.body(b).map(c -> c.orbit().periodDays()).filter(d -> d > 0).orElse(10.0);
+            // the moons turn slowly around their planet (a whole circuit per 20 real orbits keeps them readable)
+            double a = 0.6 + i * 2.4 + 2 * Math.PI * days / (period * 20);
+            double r = moonOffset(i);
+            return new double[]{p[0] + Math.cos(a) * r, p[1] - Math.sin(a) * r};
+        }
+        double[] xy = heliocentric(b, days);
+        double r = Math.hypot(xy[0], xy[1]);
+        double k = r <= 0 ? 0 : radial(r) / r;
+        return new double[]{xy[0] * k, -xy[1] * k};
+    }
+
+    /** Heliocentric position in the ecliptic plane, AU (Kepler's equation from the catalogue's elements). */
+    private static double[] heliocentric(ResourceLocation b, double days) {
+        double a, e, peri, mean;
+        var comet = StarMapData.comet(b) ? com.pizzaparker07.spacebreaker.core.astro.smallbody.Comet.byId(b.getPath()) : java.util.Optional.<com.pizzaparker07.spacebreaker.core.astro.smallbody.Comet>empty();
+        if (comet.isPresent()) {
+            var c = comet.get();
+            a = c.semiMajorAxisAu();
+            e = c.eccentricity();
+            peri = Math.toRadians(c.nodeDeg() + c.periapsisArgDeg());
+            double period = c.periodSeconds() / 86400.0;
+            mean = 2 * Math.PI * (((days - c.perihelionDays()) / period) % 1.0);
+        } else {
+            CelestialBody.Orbit o = Locations.body(b).map(CelestialBody::orbit).orElse(CelestialBody.Orbit.NONE);
+            a = o.semiMajorAxisKm() / AU_KM;
+            e = o.eccentricity();
+            peri = Math.toRadians(o.longitudeAscendingNodeDeg() + o.argumentPeriapsisDeg());
+            mean = Math.toRadians(o.meanAnomalyDeg()) + (o.periodDays() > 0 ? 2 * Math.PI * days / o.periodDays() : 0);
+            if (a <= 0) {
+                a = 1;
+            }
+        }
+        double E = mean;
+        for (int it = 0; it < 30; it++) {
+            E -= (E - e * Math.sin(E) - mean) / (1 - e * Math.cos(E));
+        }
+        double nu = 2 * Math.atan2(Math.sqrt(1 + e) * Math.sin(E / 2), Math.sqrt(1 - e) * Math.cos(E / 2));
+        double r = a * (1 - e * Math.cos(E));
+        return new double[]{r * Math.cos(peri + nu), r * Math.sin(peri + nu)};
+    }
+
+    private float sx(double mx) {
+        return (float) (mapW / 2.0 + (mx - camX) * scale);
+    }
+
+    private float sy(double my) {
+        return (float) (height / 2.0 + 6 + (my - camY) * scale);
+    }
+
+    /** Places every world for this frame. */
+    private void layoutFrame(double days) {
+        nodes.clear();
+        float zoom = (float) (scale / Math.max(1e-6, overviewScale()));
+        float grow = Mth.clamp(1 + (float) Math.log(Math.max(1, zoom)) * 0.28F, 1, 3.2F);
+        for (ResourceLocation p : StarMapData.planets()) {
+            if (StarMapData.COMETS.equals(p) || StarMapData.NEAR_EARTH_ASTEROIDS.equals(p)) {
+                for (ResourceLocation m : StarMapData.moons(p)) {
+                    double[] q = mapPos(m, days);
+                    nodes.put(m, new Node(m, sx(q[0]), sy(q[1]), Math.round(2 * Math.min(grow, 2)), true));
                 }
+                continue;
             }
-            int nx = ecx + (int) Math.round(Math.cos(E) * rx);
-            int ny = cy - (int) Math.round(Math.sin(E) * ry);
-            nodes.put(c, new Node(c, nx, ny, moonRadius(c)));
+            double[] q = mapPos(p, days);
+            int pr = Math.round(systemRadius(p) * grow);
+            nodes.put(p, new Node(p, sx(q[0]), sy(q[1]), pr, false));
+            List<ResourceLocation> kids = StarMapData.moons(p);
+            for (ResourceLocation m : kids) {
+                // a moon shows once it is clear of its planet's disc
+                if (moonOffset(0) * scale < pr + 6) {
+                    break;
+                }
+                double[] mq = mapPos(m, days);
+                nodes.put(m, new Node(m, sx(mq[0]), sy(mq[1]), Math.round(moonRadius(m) * Math.min(grow, 2.2F) * 0.7F), false));
+            }
         }
-    }
-
-    private int sunEdge() {
-        return (int) (height * 0.13F);
     }
 
     private static int systemRadius(ResourceLocation body) {
         if (Location.EARTH.equals(body)) {
-            return 9;
+            return 5;
         }
         CelestialBody b = Locations.body(body).orElse(null);
         if (b == null) {
-            return 6;
+            return 3;
         }
         if (b.type() == BodyType.GAS_GIANT) {
-            return 15;
+            return 9;
         }
         if (b.type() == BodyType.ICE_GIANT) {
-            return 12;
+            return 7;
         }
-        return Mth.clamp((int) Math.round(3 + Math.sqrt(b.physical().radiusKm()) / 9.0), 4, 9);
+        return Mth.clamp((int) Math.round(1.5 + Math.sqrt(b.physical().radiusKm()) / 16.0), 2, 5);
     }
 
     private static int moonRadius(ResourceLocation body) {
         double km = Locations.body(body).map(b -> b.physical().radiusKm()).orElse(500.0);
-        return Mth.clamp((int) Math.round(3 + Math.sqrt(km) / 8.0), 4, 10);
+        return Mth.clamp((int) Math.round(2 + Math.sqrt(km) / 10.0), 2, 7);
     }
 
-    /** Where a location shows on the current view (moons of other systems sit on their planet). */
+    /** Where a location shows on the current frame. */
     @Nullable
-    private int[] posOf(Location l) {
+    private float[] posOf(Location l) {
         Node n = nodes.get(l.body());
         if (n == null) {
-            n = nodes.get(StarMapData.system(l.body()));
+            n = nodes.get(Locations.parentPlanet(l.body()).orElse(l.body()));
         }
-        if (n == null) {
-            return null;
-        }
-        return l.orbit() && nodes.containsKey(l.body()) ? new int[]{n.x + n.r + 4, n.y - n.r - 4} : new int[]{n.x, n.y};
+        return n == null ? null : new float[]{n.x, n.y};
     }
 
     @Nullable
@@ -294,7 +376,7 @@ public class StarMapScreen extends Screen {
         double bestD = Double.MAX_VALUE;
         for (Node n : nodes.values()) {
             double d = Math.hypot(mx - n.x, my - n.y);
-            if (d <= n.r + 6 && d < bestD) {
+            if (d <= n.r + 5 && d < bestD) {
                 best = n;
                 bestD = d;
             }
@@ -322,26 +404,63 @@ public class StarMapScreen extends Screen {
             }
             return true;
         }
-        if (button == 1 && focus != null) {
-            focus = null;
-            layoutMap();
-            updateButtons();
-            return true;
-        }
         if (button == 1) {
-            enterStars();
+            overview();
             return true;
         }
-        Node n = nodeAt(mx, my);
-        if (n == null) {
-            return false;
+        dragging = true;
+        dragged = false;
+        dragFromX = mx;
+        dragFromY = my;
+        return true;
+    }
+
+    @Override
+    public boolean mouseDragged(double mx, double my, int button, double dx, double dy) {
+        if (dragging && !starsView) {
+            if (Math.hypot(mx - dragFromX, my - dragFromY) > 3) {
+                dragged = true;
+            }
+            if (dragged) {
+                toX -= dx / scale;
+                toY -= dy / scale;
+                camX = toX;
+                camY = toY;
+            }
+            return true;
         }
-        if (focus == null && !StarMapData.moons(n.body).isEmpty()) {
-            focus = n.body;
-            layoutMap();
+        return super.mouseDragged(mx, my, button, dx, dy);
+    }
+
+    @Override
+    public boolean mouseReleased(double mx, double my, int button) {
+        if (dragging) {
+            dragging = false;
+            if (!dragged) {
+                Node n = nodeAt(mx, my);
+                if (n != null) {
+                    select(n.body);
+                    focusOn(n.body, Locations.parentPlanet(n.body).isEmpty() && !n.small);
+                }
+            }
+            return true;
         }
-        // the asteroid group is not a place: pick its first member
-        select(StarMapData.NEAR_EARTH_ASTEROIDS.equals(n.body) || StarMapData.COMETS.equals(n.body) ? StarMapData.moons(n.body).get(0) : n.body);
+        return super.mouseReleased(mx, my, button);
+    }
+
+    @Override
+    public boolean mouseScrolled(double mx, double my, double sxAmount, double syAmount) {
+        if (starsView || mx >= panelX || syAmount == 0) {
+            return super.mouseScrolled(mx, my, sxAmount, syAmount);
+        }
+        // zoom about the point under the mouse
+        double f = Math.pow(1.25, syAmount);
+        double min = overviewScale() * 0.6, max = overviewScale() * 400;
+        double next = Mth.clamp(toScale * f, min, max);
+        double wx = toX + (mx - mapW / 2.0) / toScale, wy = toY + (my - height / 2.0 - 6) / toScale;
+        toX = wx - (mx - mapW / 2.0) / next;
+        toY = wy - (my - height / 2.0 - 6) / next;
+        toScale = next;
         return true;
     }
 
@@ -351,10 +470,10 @@ public class StarMapScreen extends Screen {
     public void renderBackground(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
         g.fill(0, 0, width, height, 0xFF03050A);
         RandomSource rng = RandomSource.create(7);
-        for (int i = 0; i < 260; i++) {
+        for (int i = 0; i < 220; i++) {
             int x = rng.nextInt(Math.max(1, width));
             int y = rng.nextInt(Math.max(1, height));
-            int b = 70 + rng.nextInt(120);
+            int b = 50 + rng.nextInt(100);
             g.fill(x, y, x + 1, y + 1, 0xFF000000 | b << 16 | b << 8 | b);
         }
     }
@@ -372,118 +491,131 @@ public class StarMapScreen extends Screen {
             }
             return;
         }
-        if (focus == null) {
-            drawSystem(g);
-        } else {
-            drawFocus(g);
-        }
+        // ease the camera (frame-rate independent)
+        long now = System.nanoTime();
+        float dt = lastFrame == 0 ? 1F : Math.min(0.1F, (now - lastFrame) / 1e9F);
+        lastFrame = now;
+        double k = 1 - Math.exp(-dt * 9);
+        camX += (toX - camX) * k;
+        camY += (toY - camY) * k;
+        scale = Math.exp(Math.log(scale) + (Math.log(toScale) - Math.log(scale)) * k);
+        double days = time();
+        layoutFrame(days);
+        g.enableScissor(0, 0, mapW, height);
+        drawSystem(g, days);
         drawRoute(g, time);
-        drawNodes(g, mouseX, mouseY, time);
+        drawNodes(g, mouseX, mouseY);
         drawHere(g, time);
+        g.disableScissor();
         drawHeader(g);
-        drawPanel(g, mouseX, mouseY);
+        drawPanel(g);
         for (var r : renderables) {
             r.render(g, mouseX, mouseY, partialTick);
         }
-        if (trip != null && fuelBarY > 0 && mouseX >= panelX && mouseY >= fuelBarY - 12 && mouseY <= fuelBarY + 22) {
-            g.renderTooltip(font, font.split(Component.translatable("gui.spacebreaker.star_map.delta_v_help"), 200), mouseX, mouseY);
-        }
     }
 
-    private void drawSystem(GuiGraphics g) {
-        int cy = height / 2 + 6;
-        int sunR = (int) (height * 0.30F);
-        int sunX = sunEdge() - sunR;
-        // the Sun, cut by the left edge, with a soft glow
-        for (int i = 6; i > 0; i--) {
-            disc(g, sunX, cy, sunR + i * 5, 0x0CFFC860);
+    private void drawSystem(GuiGraphics g, double days) {
+        float cx = sx(0), cy = sy(0);
+        // the Sun, with a soft glow
+        int sunR = Mth.clamp((int) (scale * 9), 4, 40);
+        for (int i = 5; i > 0; i--) {
+            disc(g, Math.round(cx), Math.round(cy), sunR + i * 3, 0x0EFFC860);
         }
-        disc(g, sunX, cy, sunR, 0xFFFFC14A);
-        disc(g, sunX, cy, sunR - 4, 0xFFFFD873);
-        g.drawString(font, Component.translatable("gui.spacebreaker.star_map.sun"), 3, cy - 4, 0xFF6A4208, false);
-        // orbits as dotted arcs around the Sun
+        disc(g, Math.round(cx), Math.round(cy), sunR, 0xFFFFC14A);
+        disc(g, Math.round(cx), Math.round(cy), Math.max(1, sunR - 2), 0xFFFFD873);
+        // the asteroid belt: a faint band of dots between Mars and Jupiter
+        RandomSource rng = RandomSource.create(11);
+        for (int i = 0; i < 360; i++) {
+            double a = rng.nextDouble() * Math.PI * 2, r = radial(2.2 + rng.nextDouble() * 1.1);
+            g.fill(Math.round(sx(Math.cos(a) * r)), Math.round(sy(Math.sin(a) * r)), Math.round(sx(Math.cos(a) * r)) + 1,
+                    Math.round(sy(Math.sin(a) * r)) + 1, 0x40A09080);
+        }
+        // orbits: thin lines, planets always, small bodies only when chosen
         for (Node n : nodes.values()) {
-            double r = Math.hypot(n.x - sunX, n.y - cy);
-            int steps = (int) (r * 2.2);
-            for (int i = 0; i < steps; i += 3) {
-                double a = -Math.PI / 2 + Math.PI * i / steps;
-                int x = sunX + (int) (Math.cos(a) * r), y = cy + (int) (Math.sin(a) * r);
-                if (x > sunEdge() && x < mapW - 2 && y > 22 && y < height - 4) {
-                    g.fill(x, y, x + 1, y + 1, 0x30A0B4C8);
+            boolean sel = n.body.equals(body) || n.body.equals(Locations.parentPlanet(body).orElse(null));
+            if (n.small && !n.body.equals(body)) {
+                continue;
+            }
+            var parent = Locations.parentPlanet(n.body);
+            if (parent.isPresent()) {
+                Node p = nodes.get(parent.get());
+                if (p != null) {
+                    ellipse(g, Math.round(p.x), Math.round(p.y), (int) Math.round(Math.hypot(n.x - p.x, n.y - p.y)),
+                            (int) Math.round(Math.hypot(n.x - p.x, n.y - p.y)), n.body.equals(body) ? ORBIT_SEL : ORBIT);
                 }
+                continue;
+            }
+            // close in on a planet's moons the Sun's orbits only cut across the picture: leave them out
+            if (scale < overviewScale() * 12) {
+                orbitLine(g, n.body, days, sel ? ORBIT_SEL : ORBIT);
             }
         }
     }
 
-    private void drawFocus(GuiGraphics g) {
-        if (StarMapData.COMETS.equals(focus)) {
-            for (int[] o : cometOrbits.values()) {
-                ellipse(g, o[0], o[1], o[2], o[3], 0x30A0B4C8);
+    /** One orbit around the Sun, sampled along the real ellipse and drawn with the map's log scale. */
+    private void orbitLine(GuiGraphics g, ResourceLocation b, double days, int colour) {
+        double period = StarMapData.comet(b)
+                ? com.pizzaparker07.spacebreaker.core.astro.smallbody.Comet.byId(b.getPath()).map(c -> c.periodSeconds() / 86400.0).orElse(365.0)
+                : Locations.body(b).map(c -> c.orbit().periodDays()).filter(d -> d > 0).orElse(365.0);
+        int steps = 160;
+        float px = Float.NaN, py = Float.NaN;
+        for (int i = 0; i <= steps; i++) {
+            double[] q = mapPos(b, days + period * i / steps);
+            float x = sx(q[0]), y = sy(q[1]);
+            boolean off = Math.max(px, x) < 0 || Math.min(px, x) > mapW || Math.max(py, y) < 0 || Math.min(py, y) > height;
+            if (!Float.isNaN(px) && !off) {
+                line(g, px, py, x, y, colour, 1);
             }
-            disc(g, mapW / 2, height / 2 + 6, 6, 0xFFFFD34A);   // the Sun at the shared focus
-            g.drawCenteredString(font, Location.bodyName(focus), mapW / 2, 34, INK);
-            return;
+            px = x;
+            py = y;
         }
-        Node p = nodes.get(focus);
-        if (p == null) {
-            return;
-        }
-        for (Node n : nodes.values()) {
-            if (n != p) {
-                double r = Math.hypot(n.x - p.x, (n.y - p.y) / 0.8);
-                ellipse(g, p.x, p.y, (int) r, (int) (r * 0.8), 0x30A0B4C8);
-            }
-        }
-        g.drawCenteredString(font, StarMapData.NEAR_EARTH_ASTEROIDS.equals(focus) || StarMapData.COMETS.equals(focus) ? Location.bodyName(focus)
-                : Component.translatable("gui.spacebreaker.star_map.system_of", Location.bodyName(focus)), mapW / 2, 34, INK);
     }
 
-    private void drawNodes(GuiGraphics g, int mx, int my, float time) {
+    private void drawNodes(GuiGraphics g, int mx, int my) {
         Node hover = mx < panelX ? nodeAt(mx, my) : null;
+        List<int[]> taken = new ArrayList<>();
         for (Node n : nodes.values()) {
+            if (n.x < -20 || n.x > mapW + 20 || n.y < -20 || n.y > height + 20) {
+                continue;
+            }
             boolean sel = n.body.equals(body);
+            int x = Math.round(n.x), y = Math.round(n.y);
             if (sel || n == hover) {
-                ring(g, n.x, n.y, n.r + 4, sel ? 0xC0FFD34A : 0x80FFFFFF);
+                ring(g, x, y, n.r + 3, sel ? 0xD0FFD34A : 0x80FFFFFF);
             }
-            if (StarMapData.COMETS.equals(focus) && StarMapData.comet(n.body)) {
-                // the tail points away from the Sun, and only an awake comet has much of one
-                int sx = mapW / 2, sy = height / 2 + 6;
-                double dx = n.x - sx, dy = n.y - sy, d = Math.max(1, Math.hypot(dx, dy));
-                boolean awake = StarMapData.cometInfo(n.body, com.pizzaparker07.spacebreaker.core.astro.BodyAdapter.simTime(minecraft.level))
-                        .map(i -> i.level() != com.pizzaparker07.spacebreaker.core.astro.smallbody.CometActivity.Level.DORMANT).orElse(false);
-                comet(g, n.x, n.y, n.r, dx / d, dy / d, awake ? 1.0 : 0.25);
+            if (StarMapData.comet(n.body)) {
+                double dx = n.x - sx(0), dy = n.y - sy(0), d = Math.max(1, Math.hypot(dx, dy));
+                comet(g, x, y, Math.max(2, n.r + 1), dx / d, dy / d, 0.6);
             } else {
-                planet(g, n.body, n.x, n.y, n.r);
+                planet(g, n.body, x, y, Math.max(1, n.r));
             }
-            // the asteroid group gets a short label so it never runs into its neighbours
-            Component name = StarMapData.NEAR_EARTH_ASTEROIDS.equals(n.body)
-                    ? Component.translatable("body.spacebreaker.near_earth_asteroids.short") : Location.bodyName(n.body);
+            if (!com.pizzaparker07.spacebreaker.content.rocketry.station.Stations.around(n.body).isEmpty()) {
+                stationIcon(g, x + n.r + 1, y - n.r - 5);
+            }
+            if (!com.pizzaparker07.spacebreaker.content.rocketry.station.Stations.basesOn(n.body).isEmpty()) {
+                baseIcon(g, x + n.r + 1, y + n.r - 2);
+            }
+            // names: quiet, and only where they fit; small bodies only when pointed at or chosen
+            if (n.small && !sel && n != hover) {
+                continue;
+            }
+            Component name = Location.bodyName(n.body);
             if (StarMapData.comet(n.body)) {
                 name = com.pizzaparker07.spacebreaker.core.astro.smallbody.Comet.byId(n.body.getPath())
                         .map(c -> (Component) Component.literal(c.designation())).orElse(name);
             }
-            int col = sel ? 0xFFFFE9A8 : 0xFFC8D0D8;
-            if (!(n.body.equals(focus) && StarMapData.NEAR_EARTH_ASTEROIDS.equals(focus))) {   // the title already names the group
-                g.drawCenteredString(font, name, n.x, n.y + n.r + 5, col);
-            }
-            if (!com.pizzaparker07.spacebreaker.content.rocketry.station.Stations.around(n.body).isEmpty()) {
-                stationIcon(g, n.x + n.r + 1, n.y - n.r - 5);
-            }
-            if (!com.pizzaparker07.spacebreaker.content.rocketry.station.Stations.basesOn(n.body).isEmpty()) {
-                baseIcon(g, n.x + n.r + 1, n.y + n.r - 2);
-            }
-            if (focus == null) {
-                int moons = StarMapData.moons(n.body).size();
-                for (int i = 0; i < Math.min(moons, 8); i++) {
-                    g.fill(n.x - moons * 2 + i * 4, n.y + n.r + 15, n.x - moons * 2 + i * 4 + 2, n.y + n.r + 17, 0xFF8A96A4);
-                }
+            int tw = font.width(name);
+            int[] box = {x - tw / 2 - 1, y + n.r + 3, x + tw / 2 + 1, y + n.r + 12};
+            boolean free = taken.stream().noneMatch(b -> box[0] < b[2] && b[0] < box[2] && box[1] < b[3] && b[1] < box[3]);
+            if (free || sel || n == hover) {
+                g.drawCenteredString(font, name, x, y + n.r + 4, sel ? 0xFFFFE9A8 : n == hover ? 0xFFFFFFFF : 0xB0B8C2CC);
+                taken.add(box);
             }
         }
     }
 
     /** A tiny station: white module with blue solar wings, top-right of a world that has one in orbit. */
     private static void stationIcon(GuiGraphics g, int x, int y) {
-        g.fill(x - 1, y - 1, x + 10, y + 6, 0xFF101418);
         g.fill(x, y + 1, x + 3, y + 4, 0xFF4A6AA8);
         g.fill(x + 6, y + 1, x + 9, y + 4, 0xFF4A6AA8);
         g.fill(x + 3, y + 2, x + 6, y + 3, 0xFF8A96A4);
@@ -492,265 +624,225 @@ public class StarMapScreen extends Screen {
 
     /** A tiny surface base: a landing pad with a yellow ring and a little dome. */
     private static void baseIcon(GuiGraphics g, int x, int y) {
-        g.fill(x - 1, y - 1, x + 10, y + 6, 0xFF101418);
         g.fill(x, y + 3, x + 9, y + 5, 0xFFCFA823);
-        g.fill(x + 1, y + 4, x + 8, y + 5, 0xFF2D2F33);
         g.fill(x + 3, y, x + 6, y + 3, 0xFFEEF0F2);
         g.fill(x + 2, y + 1, x + 7, y + 3, 0xFFEEF0F2);
     }
 
+    /** Where the rocket is: a small gold marker bobbing above it. */
     private void drawHere(GuiGraphics g, float time) {
-        int[] p = posOf(here());
+        float[] p = posOf(here());
         if (p == null) {
             return;
         }
-        int bob = (int) (Mth.sin(time * 0.15F) * 2);
-        int x = p[0], y = p[1] - 14 + bob;
-        g.fill(x - 3, y - 7, x + 4, y, ACCENT);
-        g.fill(x - 1, y, x + 2, y + 5, ACCENT);
-        g.fill(x - 1, y - 5, x + 2, y - 2, 0xFF3A2A00);
-        Component label = Component.translatable("gui.spacebreaker.star_map.you_are_here");
-        int tw = font.width(label);
-        g.fill(x - tw / 2 - 3, y - 20, x + tw / 2 + 3, y - 9, 0xE0201606);
-        g.drawCenteredString(font, label, x, y - 18, ACCENT);
+        Node n = nodes.get(here().body());
+        int r = n == null ? 4 : n.r;
+        int bob = Math.round(Mth.sin(time * 0.15F) * 1.5F);
+        int x = Math.round(p[0]), y = Math.round(p[1]) - r - 9 + bob;
+        g.fill(x - 3, y, x + 4, y + 1, ACCENT);
+        g.fill(x - 2, y + 1, x + 3, y + 2, ACCENT);
+        g.fill(x - 1, y + 2, x + 2, y + 3, ACCENT);
+        g.fill(x, y + 3, x + 1, y + 4, ACCENT);
     }
 
+    /** The route from here: a thin line with a small dot at every stop. */
     private void drawRoute(GuiGraphics g, float time) {
         if (trip == null) {
             return;
         }
-        int colour = trip.enough() ? 0xFFFFD34A : 0xFFEF6A5A;
-        List<int[]> pts = new ArrayList<>();
+        int colour = trip.enough() ? 0xD0FFD34A : 0xD0EF6A5A;
+        List<float[]> pts = new ArrayList<>();
         for (Location l : trip.route()) {
-            int[] p = posOf(l);
-            if (p != null && (pts.isEmpty() || pts.get(pts.size() - 1)[0] != p[0] || pts.get(pts.size() - 1)[1] != p[1])) {
+            float[] p = posOf(l);
+            if (p != null && (pts.isEmpty() || Math.hypot(pts.get(pts.size() - 1)[0] - p[0], pts.get(pts.size() - 1)[1] - p[1]) > 1)) {
                 pts.add(p);
             }
         }
-        int dash = (int) (time / 2) % 6;
+        float phase = (time * 0.6F) % 8;
         for (int i = 0; i + 1 < pts.size(); i++) {
-            int[] a = pts.get(i), b = pts.get(i + 1);
-            int steps = (int) Math.max(Math.abs(b[0] - a[0]), Math.abs(b[1] - a[1]));
-            float bow = Math.min(30, steps * 0.18F);
-            for (int s = 0; s <= steps; s++) {
-                if ((s + dash) % 6 >= 3) {
+            float[] a = pts.get(i), b = pts.get(i + 1);
+            float len = (float) Math.hypot(b[0] - a[0], b[1] - a[1]);
+            // a gentle arc, dashed, moving towards the destination
+            float bow = Math.min(24, len * 0.15F);
+            int steps = Math.max(2, (int) len);
+            for (int s = 0; s < steps; s++) {
+                if ((s - phase + 800) % 8 >= 5) {
                     continue;
                 }
-                float t = steps == 0 ? 0 : (float) s / steps;
-                int x = Math.round(Mth.lerp(t, a[0], b[0]));
-                int y = Math.round(Mth.lerp(t, a[1], b[1]) - (float) Math.sin(t * Math.PI) * bow);
-                g.fill(x, y, x + 2, y + 2, colour);
+                float t0 = s / (float) steps;
+                float x = Mth.lerp(t0, a[0], b[0]);
+                float y = Mth.lerp(t0, a[1], b[1]) - (float) Math.sin(t0 * Math.PI) * bow;
+                g.fill(Math.round(x), Math.round(y), Math.round(x) + 1, Math.round(y) + 1, colour);
             }
-            // numbered stop
-            g.fill(b[0] - 5, b[1] - 5, b[0] + 6, b[1] + 6, colour);
-            g.fill(b[0] - 4, b[1] - 4, b[0] + 5, b[1] + 5, 0xFF0B1018);
-            g.drawCenteredString(font, String.valueOf(i + 1), b[0] + 1, b[1] - 3, colour);
+            g.fill(Math.round(b[0]) - 1, Math.round(b[1]) - 1, Math.round(b[0]) + 2, Math.round(b[1]) + 2, colour);
         }
     }
 
     private void drawHeader(GuiGraphics g) {
         g.drawString(font, title.copy().withStyle(ChatFormatting.BOLD), 8, 8, INK, false);
-        SbConfig.Realism realism = SbConfig.realism();
-        if (realism != SbConfig.Realism.REALISTIC) {
-            Component note = Component.translatable("gui.spacebreaker.star_map.mode." + realism.name().toLowerCase(Locale.ROOT),
-                    Math.round(Transfers.scale(realism) * 100));
-            g.drawString(font, note, 8, 19, DIM, false);
+        if (!starsView) {
+            g.drawString(font, Component.translatable("gui.spacebreaker.star_map.controls"), 8, 19, 0xFF5A6674, false);
         }
     }
 
     // ------------------------------------------------------------------ panel
 
-    private void drawPanel(GuiGraphics g, int mx, int my) {
+    private void drawPanel(GuiGraphics g) {
         int x = panelX + 8, w = panelW - 16;
         g.fill(panelX, 0, width, height, PANEL_BG);
-        g.fill(panelX, 0, panelX + 1, height, 0x60A0B4C8);
-        // picture and name
-        int disc = 44;
-        planet(g, body, x + disc / 2, 8 + disc / 2, disc / 2);
-        Component title = Location.bodyName(body).copy().withStyle(ChatFormatting.BOLD);
-        int room = w - disc - 6;
-        if (font.width(title) > room) {
-            // long names (67P/Churyumov–Gerasimenko) are cut with an ellipsis rather than run off the panel
-            title = Component.literal(font.plainSubstrByWidth(Location.bodyName(body).getString(), room - font.width("…") - 6) + "…")
+        g.fill(panelX, 0, panelX + 1, height, 0x40A0B4C8);
+        // the world: a disc, its name, what it is
+        planet(g, body, x + 12, 22, 12);
+        Component name = Location.bodyName(body).copy().withStyle(ChatFormatting.BOLD);
+        int room = w - 30;
+        if (font.width(name) > room) {
+            // long names (67P/Churyumov–Gerasimenko) are cut with an ellipsis; bold text is wider, hence the margin
+            name = Component.literal(font.plainSubstrByWidth(Location.bodyName(body).getString(), (int) (room * 0.86F) - font.width("…")) + "…")
                     .withStyle(ChatFormatting.BOLD);
         }
-        g.drawString(font, title, x + disc + 6, 12, 0xFFFFFFFF, false);
+        g.drawString(font, name, x + 30, 13, 0xFFFFFFFF, false);
         Component kind = Component.translatable("gui.spacebreaker.star_map.kind." + Locations.body(body).map(b -> b.type().name()).orElse("TERRESTRIAL")
                 .toLowerCase(Locale.ROOT));
-        g.drawString(font, kind, x + disc + 6, 24, DIM, false);
-        // a few words about it
-        int y = 8 + disc + 6;
-        Component desc = Component.translatableWithFallback("gui.spacebreaker.star_map.about." + body.getPath(),
-                Component.translatable("gui.spacebreaker.star_map.about_kind." + Locations.body(body).map(b -> b.type().name()).orElse("TERRESTRIAL")
-                        .toLowerCase(Locale.ROOT)).getString());
-        for (FormattedCharSequence line : font.split(desc, w)) {
-            if (y > 112) {
-                break;
-            }
-            g.drawString(font, line, x, y, 0xFFB8C2CC, false);
-            y += 9;
+        g.drawString(font, kind, x + 30, 24, DIM, false);
+        if (!surfaceButton.visible) {
+            g.drawString(font, Component.translatable("gui.spacebreaker.star_map.no_surface_short"), x + w / 2 + 6, 48, DIM, false);
         }
-        // dangers
-        y = Math.max(y + 3, 116);
+        int y = 68;
+        // dangers as a row of short coloured words
         int hx = x;
         for (StarMapData.Hazard hz : Locations.body(body).map(StarMapData::hazards).orElse(java.util.Set.of())) {
             Component t = Component.translatable(hz.key());
-            int tw = font.width(t) + 8;
+            int tw = font.width(t);
             if (hx + tw > x + w) {
                 hx = x;
-                y += 13;
+                y += 10;
             }
-            int col = hazardColour(hz);
-            g.fill(hx, y, hx + tw, y + 11, (col & 0xFFFFFF) | 0x40000000);
-            g.fill(hx, y, hx + 2, y + 11, col);
-            g.drawString(font, t, hx + 5, y + 2, col, false);
-            hx += tw + 3;
+            g.drawString(font, t, hx, y, hazardColour(hz), false);
+            hx += tw + 6;
         }
         y += 14;
-        if (StarMapData.comet(body)) {
-            y = drawComet(g, x, y, w);
+        if (trip == null) {
+            g.drawWordWrap(font, Component.translatable("gui.spacebreaker.star_map.pick_short"), x, y, w, DIM);
+            y += 22;
+        } else {
+            y = drawTrip(g, x, y, w);
         }
-        if (!com.pizzaparker07.spacebreaker.content.rocketry.mission.Coverage.hasSignal(body)) {
-            for (FormattedCharSequence line : font.split(Component.translatable("gui.spacebreaker.star_map.no_signal"), w)) {
-                g.drawString(font, line, x, y, 0xFFB0A070, false);
-                y += 9;
-            }
+        // what is there: stations, bases, a refuelling world, comet activity; one short line each
+        y += 4;
+        for (var st : com.pizzaparker07.spacebreaker.content.rocketry.station.Stations.around(body)) {
+            stationIcon(g, x, y + 1);
+            g.drawString(font, Component.translatable("gui.spacebreaker.star_map.station_short", st.ports()), x + 13, y, 0xFFC8D0D8, false);
+            y += 10;
         }
         for (var st : com.pizzaparker07.spacebreaker.content.rocketry.station.Stations.basesOn(body)) {
-            Component line = st.owner().isEmpty()
-                    ? Component.translatable("gui.spacebreaker.star_map.base", st.ports())
-                    : Component.translatable("gui.spacebreaker.star_map.base_owner", st.owner(), st.ports());
-            baseIcon(g, x, y);
-            for (FormattedCharSequence l : font.split(line, w - 14)) {
-                g.drawString(font, l, x + 14, y, 0xFFE1E3E6, false);
-                y += 9;
+            baseIcon(g, x, y + 1);
+            g.drawString(font, Component.translatable("gui.spacebreaker.star_map.base_short", st.ports()), x + 13, y, 0xFFC8D0D8, false);
+            y += 10;
+        }
+        if (com.pizzaparker07.spacebreaker.content.rocketry.mission.Coverage.observed(body) && Locations.canRefuel(body)) {
+            g.drawString(font, Component.translatable("gui.spacebreaker.star_map.refuel_short"), x, y, 0xFF8FD8C8, false);
+            y += 10;
+        }
+        if (StarMapData.comet(body)) {
+            var info = StarMapData.cometInfo(body, com.pizzaparker07.spacebreaker.core.astro.BodyAdapter.simTime(minecraft.level)).orElse(null);
+            if (info != null) {
+                String level = turkish() ? info.level().nameTr : info.level().nameEn;
+                g.drawString(font, Component.translatable("gui.spacebreaker.star_map.comet_short", decimal(info.sunAu()), level), x, y, 0xFFB8D8F0, false);
+                y += 10;
             }
         }
-        for (var st : com.pizzaparker07.spacebreaker.content.rocketry.station.Stations.around(body)) {
-            Component line = st.owner().isEmpty()
-                    ? Component.translatable("gui.spacebreaker.star_map.station", st.ports())
-                    : Component.translatable("gui.spacebreaker.star_map.station_owner", st.owner(), st.ports());
-            stationIcon(g, x, y);
-            for (FormattedCharSequence l : font.split(line, w - 14)) {
-                g.drawString(font, l, x + 14, y, 0xFFE1E3E6, false);
-                y += 9;
-            }
+        if (!com.pizzaparker07.spacebreaker.content.rocketry.mission.Coverage.hasSignal(body)) {
+            g.drawString(font, Component.translatable("gui.spacebreaker.star_map.no_signal_short"), x, y, 0xFFB0A070, false);
         }
-        if (com.pizzaparker07.spacebreaker.content.rocketry.mission.Coverage.observed(body)) {
-            Component mapped = Component.translatable(Locations.canRefuel(body) ? "gui.spacebreaker.star_map.mapped_fuel" : "gui.spacebreaker.star_map.mapped");
-            for (FormattedCharSequence line : font.split(mapped, w)) {
-                g.drawString(font, line, x, y, 0xFF8FD8C8, false);
-                y += 9;
-            }
+        // realism mode, small at the bottom
+        SbConfig.Realism realism = SbConfig.realism();
+        if (realism != SbConfig.Realism.REALISTIC) {
+            Component note = Component.translatable("gui.spacebreaker.star_map.mode_short." + realism.name().toLowerCase(Locale.ROOT),
+                    Math.round(Transfers.scale(realism) * 100));
+            g.drawString(font, note, x, height - 40, 0xFF5A6674, false);
         }
-        orbitButton.setY(Math.max(148, y + 2));
-        surfaceButton.setY(orbitButton.getY());
-        if (!surfaceButton.visible) {
-            // wrapped beside the orbit button so a long line (Turkish) never runs off the panel
-            g.drawWordWrap(font, Component.translatable("gui.spacebreaker.star_map.no_surface"), x + w / 2 + 4, orbitButton.getY() + 1, w / 2 - 4, DIM);
-        }
-        fuelBarY = -1;
-        if (trip == null) {
-            g.drawWordWrap(font, Component.translatable("gui.spacebreaker.star_map.pick_target"), x, orbitButton.getY() + 26, w, DIM);
-            return;
-        }
-        drawTrip(g, x, orbitButton.getY() + 26, w);
     }
 
-    /** A comet's card: where it is, when it next swings past the Sun, how active it is. */
-    private int drawComet(GuiGraphics g, int x, int y, int w) {
-        var info = StarMapData.cometInfo(body, com.pizzaparker07.spacebreaker.core.astro.BodyAdapter.simTime(minecraft.level)).orElse(null);
-        if (info == null) {
-            return y;
-        }
-        boolean tr = minecraft.getLanguageManager().getSelected().startsWith("tr");
-        String level = tr ? info.level().nameTr : info.level().nameEn;
-        y = fact(g, x, y, w, Component.translatable("gui.spacebreaker.star_map.comet.distance", decimal(info.sunAu())));
-        y = fact(g, x, y, w, Component.translatable("gui.spacebreaker.star_map.comet.perihelion",
-                info.nextPerihelion().format(java.time.format.DateTimeFormatter.ISO_LOCAL_DATE), decimal(info.perihelionAu())));
-        y = fact(g, x, y, w, Component.translatable("gui.spacebreaker.star_map.comet.period", decimal(info.periodYears())));
-        return fact(g, x, y, w, Component.translatable("gui.spacebreaker.star_map.comet.activity", level));
-    }
-
-    private void drawTrip(GuiGraphics g, int x, int y, int w) {
+    /** The chosen trip: two numbers, one bar, one line about getting home, at most one warning. */
+    private int drawTrip(GuiGraphics g, int x, int y, int w) {
         StarMapData.Trip t = trip;
-        g.drawString(font, Component.translatable("gui.spacebreaker.star_map.trip_to", t.to().name()), x, y, 0xFFFFFFFF, false);
-        y += 12;
-        // fuel: needed against on board, as one bar
-        fuelBarY = y;
-        g.drawString(font, Component.translatable("gui.spacebreaker.star_map.fuel_line", num(t.needed()), num(t.have())), x, y, INK, false);
-        y += 11;
+        int half = w / 2;
+        g.drawString(font, Component.translatable("gui.spacebreaker.star_map.stat_dv"), x, y, DIM, false);
+        g.drawString(font, Component.translatable("gui.spacebreaker.star_map.stat_time"), x + half, y, DIM, false);
+        y += 10;
+        big(g, num(t.needed()), x, y, t.enough() ? 0xFFFFFFFF : RED);
+        g.drawString(font, "m/s", x + Math.round(font.width(num(t.needed())) * 1.5F) + 2, y + 5, DIM, false);
+        OptionalDouble secs = travelSeconds(t);
+        String time = secs.isEmpty() ? "—" : secs.getAsDouble() >= 86400
+                ? Component.translatable("gui.spacebreaker.star_map.unit_days", decimalOrWhole(secs.getAsDouble() / 86400.0)).getString()
+                : Component.translatable("gui.spacebreaker.star_map.unit_hours", (int) (secs.getAsDouble() / 3600),
+                (int) (secs.getAsDouble() % 3600 / 60)).getString();
+        big(g, time, x + half, y, 0xFFFFFFFF);
+        y += 18;
+        // fuel: needed against on board
         float fill = t.needed() <= 0 ? 1F : (float) Math.min(1, t.have() / t.needed());
-        g.fill(x, y, x + w, y + 6, 0xFF1C222A);
-        g.fill(x, y, x + (int) (w * fill), y + 6, t.enough() ? GREEN : RED);
+        g.fill(x, y, x + w, y + 3, 0xFF1C222A);
+        g.fill(x, y, x + (int) (w * fill), y + 3, t.enough() ? GREEN : RED);
         if (t.needed() > 0 && t.have() > t.needed()) {
             int mark = x + (int) (w * t.needed() / t.have());
-            g.fill(mark, y - 1, mark + 1, y + 7, 0xFFFFFFFF);
+            g.fill(mark, y - 2, mark + 1, y + 5, 0xFFFFFFFF);
         }
-        y += 9;
-        Component verdict = t.enough() ? Component.translatable("gui.spacebreaker.star_map.enough")
-                : Component.translatable("gui.spacebreaker.star_map.short", num(t.shortBy()));
-        g.drawString(font, verdict, x, y, t.enough() ? GREEN : RED, false);
+        y += 6;
+        g.drawString(font, Component.translatable("gui.spacebreaker.star_map.on_board", num(t.have())), x, y, DIM, false);
         y += 12;
-        if (t.boilOff() >= 0.001) {
-            // cryogenic propellant warming up on the long coast
-            for (FormattedCharSequence line : font.split(Component.translatable("gui.spacebreaker.star_map.boil_off",
-                    decimal(t.boilOff() * 100)), w)) {
-                g.drawString(font, line, x, y, AMBER, false);
-                y += 9;
-            }
-            y += 2;
+        if (!t.enough()) {
+            g.drawString(font, Component.translatable("gui.spacebreaker.star_map.short", num(t.shortBy())), x, y, RED, false);
+            y += 10;
         }
         if (!planning) {
-            String back = t.returnHome() ? "gui.spacebreaker.star_map.return_yes"
-                    : t.refuelThere() ? "gui.spacebreaker.star_map.return_refuel" : "gui.spacebreaker.star_map.return_no";
-            for (FormattedCharSequence line : font.split(Component.translatable(back), w)) {
-                g.drawString(font, line, x, y, t.returnHome() ? GREEN : t.refuelThere() ? 0xFFB8D86A : AMBER, false);
-                y += 9;
-            }
-            y += 2;
-        }
-        OptionalDouble secs = travelSeconds(t);
-        if (secs.isPresent()) {
-            double sec = secs.getAsDouble();
-            Component time = sec >= 86400 ? Component.translatable("gui.spacebreaker.star_map.travel_time", decimal(sec / 86400.0))
-                    : Component.translatable("gui.spacebreaker.star_map.travel_time_short",
-                    Component.translatable("gui.spacebreaker.star_map.wait_hours", (int) (sec / 3600), (int) (sec % 3600 / 60)));
-            g.drawString(font, time, x, y, INK, false);
-            y += 11;
+            String back = t.returnHome() ? "gui.spacebreaker.star_map.home_yes"
+                    : t.refuelThere() ? "gui.spacebreaker.star_map.home_refuel" : "gui.spacebreaker.star_map.home_no";
+            g.drawString(font, Component.translatable(back), x, y, t.returnHome() ? GREEN : t.refuelThere() ? 0xFFB8D86A : AMBER, false);
+            y += 10;
         }
         Component window = LaunchWindows.describe(minecraft.level, here(), t.to());
         if (window != null) {
             for (FormattedCharSequence line : font.split(window, w)) {
-                g.drawString(font, line, x, y, 0xFFA0C8F0, false);
+                g.drawString(font, line, x, y, 0xFF7FA8D0, false);
                 y += 9;
             }
+        }
+        // the most important warning only
+        Component warning = t.needsNuclear() ? Component.translatable("gui.spacebreaker.star_map.need_nuclear")
+                : !t.shieldOk() ? Component.translatable("gui.spacebreaker.star_map.need_shield")
+                : t.legsMissing() ? Component.translatable("gui.spacebreaker.star_map.need_legs")
+                : !t.to().orbit() && t.to().atmosphere() && !rocket.layout().payload().parachute() ? Component.translatable("gui.spacebreaker.star_map.need_chute")
+                : t.boilOff() >= 0.001 ? Component.translatable("gui.spacebreaker.star_map.boil_off", decimal(t.boilOff() * 100))
+                : !t.next().equals(t.to()) && t.canGo() ? Component.translatable("gui.spacebreaker.star_map.first_stop", t.next().name())
+                : null;
+        if (warning != null) {
             y += 2;
-        }
-        if (t.needsNuclear()) {
-            y = warn(g, Component.translatable("gui.spacebreaker.star_map.need_nuclear"), x, y, w);
-        }
-        if (!t.shieldOk()) {
-            y = warn(g, Component.translatable("gui.spacebreaker.star_map.need_shield"), x, y, w);
-        }
-        if (t.legsMissing()) {
-            y = warn(g, Component.translatable("gui.spacebreaker.star_map.need_legs"), x, y, w);
-        }
-        if (!t.to().orbit() && t.to().atmosphere() && !rocket.layout().payload().parachute()) {
-            y = warn(g, Component.translatable("gui.spacebreaker.star_map.need_chute"), x, y, w);
-        }
-        if (!t.next().equals(t.to()) && t.canGo()) {
-            y = warn(g, Component.translatable("gui.spacebreaker.star_map.first_stop", t.next().name()), x, y, w);
+            for (FormattedCharSequence line : font.split(warning, w)) {
+                g.drawString(font, line, x, y, AMBER, false);
+                y += 9;
+            }
         }
         if (!t.canGo()) {
-            Component why = Component.translatable(t.block().key());
-            List<FormattedCharSequence> lines = font.split(why, w);
-            int ry = height - 34 - lines.size() * 9;
+            List<FormattedCharSequence> lines = font.split(Component.translatable(t.block().key()), w);
+            int ry = height - 32 - lines.size() * 9;
             for (FormattedCharSequence line : lines) {
                 g.drawString(font, line, x, ry, RED, false);
                 ry += 9;
             }
         }
+        return y;
+    }
+
+    private void big(GuiGraphics g, String text, int x, int y, int colour) {
+        g.pose().pushPose();
+        g.pose().translate(x, y, 0);
+        g.pose().scale(1.5F, 1.5F, 1F);
+        g.drawString(font, text, 0, 0, colour, false);
+        g.pose().popPose();
+    }
+
+    private String decimalOrWhole(double v) {
+        return v >= 100 ? num(v) : decimal(v);
     }
 
     /** Real flight time of the whole route in seconds: transfers, plus landings and launches (astro surface legs). */
@@ -764,14 +856,6 @@ public class StarMapScreen extends Screen {
             secs += astro.transferSeconds(path.get(i), path.get(i + 1)).orElse(0);
         }
         return secs >= 60 ? OptionalDouble.of(secs) : OptionalDouble.empty();
-    }
-
-    private int warn(GuiGraphics g, Component text, int x, int y, int w) {
-        for (FormattedCharSequence line : font.split(Component.literal("! ").append(text), w)) {
-            g.drawString(font, line, x, y, AMBER, false);
-            y += 9;
-        }
-        return y + 1;
     }
 
     private static int hazardColour(StarMapData.Hazard h) {
@@ -799,12 +883,24 @@ public class StarMapScreen extends Screen {
         return turkish() ? s.replace('.', ',') : s;
     }
 
+    /** A 1-pixel line (stepped). */
+    private static void line(GuiGraphics g, float x0, float y0, float x1, float y1, int colour, int width) {
+        int steps = (int) Math.max(Math.abs(x1 - x0), Math.abs(y1 - y0));
+        if (steps > 4000) {
+            return;
+        }
+        for (int s = 0; s <= steps; s++) {
+            float t = steps == 0 ? 0 : (float) s / steps;
+            int x = Math.round(Mth.lerp(t, x0, x1)), y = Math.round(Mth.lerp(t, y0, y1));
+            g.fill(x, y, x + width, y + width, colour);
+        }
+    }
+
     // ------------------------------------------------------------------ nearby stars
 
     private void enterStars() {
         starsView = true;
         star = null;
-        focus = null;
         if (com.pizzaparker07.spacebreaker.content.rocketry.nav.NearbyStars.received().isEmpty()) {
             PacketDistributor.sendToServer(new com.pizzaparker07.spacebreaker.content.rocketry.net.NearbyStarsPayload.Request());
         }
@@ -1068,11 +1164,18 @@ public class StarMapScreen extends Screen {
 
     /** Opened from the HUD hint or the key; also used by the showcase to preselect a destination. */
     public void preselect(ResourceLocation b, boolean orbit) {
-        if (Locations.parentPlanet(b).isPresent() || StarMapData.nearEarthAsteroid(b) || StarMapData.comet(b)) {
-            focus = StarMapData.system(b);
-            layoutMap();
-        }
         select(b);
         choose(Locations.get(b, orbit).orElse(null));
+        if (mapW > 0) {
+            var parent = Locations.parentPlanet(b);
+            if (parent.isPresent()) {
+                focusOn(parent.get(), true);
+            } else {
+                overview();
+            }
+            camX = toX;
+            camY = toY;
+            scale = toScale;
+        }
     }
 }
