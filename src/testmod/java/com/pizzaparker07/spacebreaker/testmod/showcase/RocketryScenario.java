@@ -376,23 +376,28 @@ final class RocketryScenario implements ShowcaseScenario {
                 }, () -> RocketryShowcaseClient.cockpit = true));
         var mars = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(Spacebreaker.id("mars"), false);
         var marsOrbit = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(Spacebreaker.id("mars"), true);
-        s.add(new Shot("26_transit_ascent", 6000, 0.5, G + 4, 0.5, 0F, 0F, false, fp, 70,
-                p -> clearScene(p), () -> {
+        // the climb out of the sky is seen in the world itself: high up the sky turns black (no full-screen effect)
+        s.add(new Shot("26_transit_ascent", 6000, 0.5, 650, 0.5, 30F, 12F, true, fp, 60,
+                p -> {
+                    clearScene(p);
                     RocketryShowcaseClient.cockpit = false;
-                    com.pizzaparker07.spacebreaker.client.rocketry.TransitView.showcase(
-                            com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.Kind.ASCENT, Location.EARTH_SURFACE, Location.EARTH_ORBIT);
-                }));
-        s.add(new Shot("27_transit_transfer", 6000, 0.5, G + 4, 0.5, 0F, 0F, false, fp, 110,
-                null, () -> com.pizzaparker07.spacebreaker.client.rocketry.TransitView.showcase(
-                        com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.Kind.TRANSFER, Location.EARTH_ORBIT,
-                        marsOrbit.orElse(Location.MOON_ORBIT))));
-        s.add(new Shot("28_transit_landing", 6000, 0.5, G + 4, 0.5, 0F, 0F, false, fp, 92,
-                null, () -> com.pizzaparker07.spacebreaker.client.rocketry.TransitView.showcase(
-                        com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit.Kind.LANDING, marsOrbit.orElse(Location.MOON_ORBIT),
-                        mars.orElse(Location.MOON_SURFACE))));
+                }, () -> com.pizzaparker07.spacebreaker.client.rocketry.TransitView.showcase(null, null, null, 0F)));
+        // a transfer keeps the orbit in view, with one quiet line on top; the screen only fades in its last second
+        s.add(new Shot("27_transit_transfer", 6000, 0, 0, 0, 0F, 0F, false, fp, 60,
+                p -> {
+                    clearScene(p);
+                    p.getInventory().clearContent();
+                    ServerLevel orbit = p.server.getLevel(Location.EARTH_ORBIT.dimension());
+                    RocketEntity r = spawn(orbit, new Vec3(0.5, RocketEntity.ORBIT_Y, 0.5), 0F, FlightState.TRANSFER, 0, 1, false);
+                    r.stageDestination(marsOrbit.orElse(Location.MOON_ORBIT));
+                    toDimension(p, Location.EARTH_ORBIT, 0.5, RocketEntity.ORBIT_Y + 1, 0.5, 30F, 35F);
+                    p.startRiding(r, true);
+                    later(p.server, 50, () -> net.minecraft.client.Minecraft.getInstance().execute(
+                            () -> net.minecraft.client.Minecraft.getInstance().getToasts().clear()));
+                }, null));
         s.add(new Shot("29_star_map_system", 6000, 0, 0, 0, 0F, 0F, false, fp, 120,
                 p -> mapShot(p, Spacebreaker.id("mars"), true),
-                () -> com.pizzaparker07.spacebreaker.client.rocketry.TransitView.showcase(null, null, null)));
+                () -> com.pizzaparker07.spacebreaker.client.rocketry.TransitView.showcase(null, null, null, 0F)));
         s.add(new Shot("30_star_map_moon", 6000, 0, 0, 0, 0F, 0F, false, fp, 120,
                 p -> mapShot(p, Location.MOON, false), null));
         s.add(new Shot("32_satellites", 6000, 0, 0, 0, 0F, 0F, true, fp, 120,

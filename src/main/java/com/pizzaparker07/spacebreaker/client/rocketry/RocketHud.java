@@ -59,27 +59,22 @@ public final class RocketHud {
                 float heat = Mth.clamp(t / 30F, 0, 1) * Mth.clamp((170 - t) / 50F, 0, 1);
                 plasma(g, w, h, heat, rocket.tickCount + pt);
             }
-            if (s == FlightState.TRANSFER && !TransitView.active()) {
-                float a = Mth.clamp(t / 25F, 0, 1);
-                g.fill(0, 0, w, h, (int) (a * 255) << 24);
-            }
-            if (s == FlightState.TRANSFER) {
-                float a = Mth.clamp(t / 25F, 0, 1);
-                if (a > 0.6F) {
-                    Component title = Component.translatable("hud.spacebreaker.coasting", rocket.destination().name());
-                    int alpha = (int) ((a - 0.6F) / 0.4F * 255) << 24;
-                    g.drawCenteredString(mc.font, title, w / 2, h / 2 - 10, 0xDDE6F0 | alpha);
-                    float p = Mth.clamp(t / RocketEntity.TRANSFER_TICKS, 0, 1);
-                    int bw = 120;
-                    g.fill(w / 2 - bw / 2, h / 2 + 6, w / 2 + bw / 2, h / 2 + 8, 0x40FFFFFF);
-                    g.fill(w / 2 - bw / 2, h / 2 + 6, w / 2 - bw / 2 + (int) (bw * p), h / 2 + 8, 0xC0FFFFFF);
-                }
+            if (s == FlightState.TRANSFER && t > 1) {
+                // the orbit stays in view: one quiet line at the top and a thin progress rule, no blackout
+                Component title = Component.translatable("hud.spacebreaker.coasting", rocket.destination().name());
+                float a = Mth.clamp(t / 20F, 0, 1);
+                int alpha = (int) (a * 220) << 24;
+                g.drawCenteredString(mc.font, title, w / 2, 14, 0xDDE6F0 | alpha);
+                float p = Mth.clamp(t / RocketEntity.TRANSFER_TICKS, 0, 1);
+                int bw = 100;
+                g.fill(w / 2 - bw / 2, 26, w / 2 + bw / 2, 27, (int) (a * 0x40) << 24 | 0xFFFFFF);
+                g.fill(w / 2 - bw / 2, 26, w / 2 - bw / 2 + (int) (bw * p), 27, (int) (a * 0xC0) << 24 | 0xFFFFFF);
             }
         }
         if (mc.level != null) {
             float since = mc.level.getGameTime() - arrivalTick + pt;
-            if (since < 30) {
-                float a = 1 - Mth.clamp(since / 30F, 0, 1);
+            if (since < 20) {
+                float a = 1 - Mth.clamp(since / 20F, 0, 1);
                 g.fill(0, 0, w, h, (int) (a * 255) << 24);
             }
         }

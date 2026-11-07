@@ -218,7 +218,7 @@ public final class RocketClientEvents {
             return 0;
         }
         double y = mc.gameRenderer.getMainCamera().getPosition().y;
-        return (float) Mth.clamp((y - 300) / 700.0, 0, 1);
+        return (float) Mth.clamp((y - 260) / 640.0, 0, 1);
     }
 
     @SubscribeEvent
@@ -247,7 +247,18 @@ public final class RocketClientEvents {
         // the sun stays bright in space
         Minecraft mc = Minecraft.getInstance();
         float theta = mc.level.getTimeOfDay(event.getPartialTick().getGameTimeDeltaPartialTick(false)) * Mth.TWO_PI;
-        SkyDraw.billboard(event.getModelViewMatrix(), OrbitSkyEffects.SUN, new org.joml.Vector3f(-Mth.sin(theta), Mth.cos(theta), 0), 100F, 15F, k);
+        org.joml.Vector3f sun = new org.joml.Vector3f(-Mth.sin(theta), Mth.cos(theta), 0);
+        SkyDraw.billboard(event.getModelViewMatrix(), OrbitSkyEffects.SUN, sun, 100F, 15F, k);
+        // the Earth below: its horizon curves away as the rocket climbs, until it looks as it will from orbit
+        // (angular radius from ~88 degrees, a flat horizon, down to the orbit sky's ~50 degrees)
+        float angle = Mth.lerp(k, 88F, 49.5F) * Mth.DEG_TO_RAD;
+        float radius = 100F * Mth.sin(angle);
+        org.joml.Vector3f center = new org.joml.Vector3f(0, -100F, 0);
+        float planet = Mth.clamp((k - 0.1F) / 0.4F, 0, 1);
+        com.mojang.blaze3d.systems.RenderSystem.depthMask(false);
+        SkyDraw.planet(event.getModelViewMatrix(), OrbitSkyEffects.EARTH, center, radius, 0F, sun, 0.05F, planet, false);
+        SkyDraw.planet(event.getModelViewMatrix(), OrbitSkyEffects.EARTH_CLOUDS, center, radius * 1.006F, 0F, sun, 0.03F, 0.6F * planet, false);
+        SkyDraw.planet(event.getModelViewMatrix(), OrbitSkyEffects.EARTH_LIMB, center, radius * 1.035F, 0F, sun, 0.25F, planet, true, true);
         com.mojang.blaze3d.systems.RenderSystem.depthMask(true);
     }
 }
