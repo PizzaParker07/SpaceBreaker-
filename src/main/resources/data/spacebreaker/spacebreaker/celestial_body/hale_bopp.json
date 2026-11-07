@@ -1,6 +1,7 @@
 {
   "type": "comet",
   "parent": "spacebreaker:sun",
+  "dimension": "spacebreaker:hale_bopp",
   "physical": { "mass_kg": 5.7e16, "radius_km": 30.0 },
   "orbit": { "semi_major_axis_km": 27795284376, "eccentricity": 0.99508, "inclination_deg": 89.43, "period_days": 925053.80, "longitude_ascending_node_deg": 282.47, "argument_periapsis_deg": 130.59, "mean_anomaly_deg": 0.391252 },
   "rotation": { "day_length_hours": 11.35, "axial_tilt_deg": 0.0 },
