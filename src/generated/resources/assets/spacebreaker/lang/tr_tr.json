@@ -1222,6 +1222,7 @@
   "message.spacebreaker.duststorm.clear": "Fırtına diniyor; gökyüzü açılacak.",
   "message.spacebreaker.duststorm.warning": "Ufukta bir toz duvarı yükseliyor: fırtına yaklaşık iki dakika içinde gelecek. Bir sığınağa gir; güneş enerjisi düşecek.",
   "message.spacebreaker.fuel_depot.status": "Yakıt deposu: RP-1 %s mB, LOX %s mB, metan %s mB, hidrojen %s mB · %s FE · %s yanaşma portu",
+  "message.spacebreaker.great_comet": "Görev kontrol: büyük kuyruklu yıldız %s gökyüzünde! Akşam karanlığından sonra ya da şafaktan önce ufka yakın bak",
   "message.spacebreaker.hologram.all_layers": "Tüm katmanlar gösteriliyor",
   "message.spacebreaker.hologram.cleared": "Yansıtma kaldırıldı",
   "message.spacebreaker.hologram.complete": "Yapı tamam: %s",

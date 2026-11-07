@@ -1222,6 +1222,7 @@
   "message.spacebreaker.duststorm.clear": "The storm is dying down; the sky will clear.",
   "message.spacebreaker.duststorm.warning": "A wall of dust is rising on the horizon: a storm will reach you in about two minutes. Get under cover; solar power will fail.",
   "message.spacebreaker.fuel_depot.status": "Fuel depot: RP-1 %s mB, LOX %s mB, methane %s mB, hydrogen %s mB · %s FE · %s docking ports",
+  "message.spacebreaker.great_comet": "Mission control: great comet %s is in your sky! Look low in the sky after dusk or before dawn",
   "message.spacebreaker.hologram.all_layers": "Showing all layers",
   "message.spacebreaker.hologram.cleared": "Projection removed",
   "message.spacebreaker.hologram.complete": "Structure complete: %s",

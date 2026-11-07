@@ -47,6 +47,27 @@ public final class SkyGameTests {
         helper.succeed();
     }
 
+    /**
+     * Comets in the sky: an active comet near perihelion is seen from Earth with its tail pointing away from the sun,
+     * Halley at its 2061 perihelion is a great comet, and comets far out at aphelion stay dormant and hidden.
+     */
+    @GameTest(template = "empty")
+    public static void cometsShowNearPerihelion(GameTestHelper helper) {
+        var sys = BodyAdapter.system(helper.getLevel().registryAccess()).orElseThrow();
+        var halley = com.pizzaparker07.spacebreaker.core.astro.smallbody.Comet.HALLEY;
+        double perihelion = halley.nextPerihelion(0);
+        var seen = com.pizzaparker07.spacebreaker.content.worldgen.CometPoints.compute(sys, "spacebreaker:earth", perihelion).stream()
+                .filter(c -> c.id().equals(halley.id())).findFirst().orElse(null);
+        helper.assertTrue(seen != null, "Halley is in Earth's sky at its 2061 perihelion");
+        helper.assertTrue(seen.great(), "and it is a great comet: " + seen.level());
+        helper.assertTrue(seen.tip().y < seen.head().y, "the tail points away from the sun (head " + seen.head() + ", tip " + seen.tip() + ")");
+        helper.assertTrue(seen.headSize() > 0 && seen.alpha() > 0.5F, "a great comet is bright");
+        double aphelion = perihelion + halley.periodSeconds() / 2;
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.worldgen.CometPoints.compute(sys, "spacebreaker:earth", aphelion).stream()
+                .noneMatch(c -> c.id().equals(halley.id())), "Halley is dormant and hidden near aphelion");
+        helper.succeed();
+    }
+
     private SkyGameTests() {
     }
 }
