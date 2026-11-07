@@ -221,6 +221,22 @@ public final class ShowcaseDriver {
         return true;
     }
 
+    /** Lowest field of view the game accepts: {@code options.fov().set} silently ignores anything below it. */
+    static final int MIN_FOV = 30;
+
+    /**
+     * Sets the camera's field of view for a shot. Values below {@link #MIN_FOV} (which the game would silently ignore)
+     * are clamped to it, with a warning in the log, so a narrow "telephoto" request still narrows the view.
+     */
+    static void fov(int degrees) {
+        int value = degrees;
+        if (degrees < MIN_FOV) {
+            value = MIN_FOV;
+            log("fov " + degrees + " is below the game's minimum, using " + MIN_FOV);
+        }
+        Minecraft.getInstance().options.fov().set(value);
+    }
+
     /** Opens the creative inventory on the Spacebreaker tab (dev-only reflection into a private method). */
     static void openCreativeTab() {
         Minecraft mc = Minecraft.getInstance();

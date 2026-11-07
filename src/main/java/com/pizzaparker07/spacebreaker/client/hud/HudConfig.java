@@ -20,8 +20,8 @@ public final class HudConfig {
         VISOR_FRAME_OPACITY = b.comment("Opacity of the visor frame (0.1 - 1.0).").defineInRange("visorFrameOpacity", 0.7, 0.1, 1.0);
         b.pop();
         b.push("sound");
-        REALISTIC_SOUND = b.comment("Realistic sound: in thin air the world sounds faint and dull, in vacuum only what the suit touches is heard",
-                "(own steps, the tool in hand, the machine underfoot). Helmet sounds and pressurised rooms stay normal.").define("realisticSound", true);
+        REALISTIC_SOUND = b.comment("Realistic sound (off by default): in thin air and vacuum the world sounds a little quieter and softer.",
+                "Your own steps and tools, helmet sounds and pressurised rooms stay normal.").define("realisticSound", false);
         b.pop();
         SPEC = b.build();
     }
@@ -42,7 +42,7 @@ public final class HudConfig {
     }
 
     public static boolean realisticSound() {
-        return SPEC.isLoaded() ? REALISTIC_SOUND.get() : true;
+        return SPEC.isLoaded() && REALISTIC_SOUND.get();
     }
 
     public static boolean visorFrame() {

@@ -81,6 +81,7 @@ final class OuterPerfScenario implements ShowcaseScenario {
                     () -> {
                         Minecraft.getInstance().options.renderDistance().set(12);
                         PerfScenario.Probe.start(world);
+                        Mspt.start(world);
                     }));
         }
         return s;
@@ -108,4 +109,64 @@ final class OuterPerfScenario implements ShowcaseScenario {
             {"tempel_1", String.valueOf(com.pizzaparker07.spacebreaker.content.belt.Comets.tempelPlain().x()), String.valueOf(com.pizzaparker07.spacebreaker.content.belt.Comets.tempelPlain().latitude()), "smooth plain"},
     };
 
+
+    /**
+     * Server tick time while the player stands in a world (the integrated server): every second for 10 s, the mean and the
+     * worst of the server's last 100 tick times and the mean of the world's own tick times, logged as "[perf] ... ticks".
+     */
+    @net.neoforged.fml.common.EventBusSubscriber(modid = Spacebreaker.MOD_ID, value = net.neoforged.api.distmarker.Dist.CLIENT)
+    static final class Mspt {
+        private static String world;
+        private static int ticks;
+        private static double meanSum;
+        private static double worldSum;
+        private static double worst;
+        private static int samples;
+
+        private Mspt() {
+        }
+
+        static void start(String name) {
+            world = name;
+            ticks = 0;
+            meanSum = 0;
+            worldSum = 0;
+            worst = 0;
+            samples = 0;
+        }
+
+        @net.neoforged.bus.api.SubscribeEvent
+        static void tick(net.neoforged.neoforge.client.event.ClientTickEvent.Post event) {
+            var server = Minecraft.getInstance().getSingleplayerServer();
+            if (world == null || server == null) {
+                return;
+            }
+            ticks++;
+            // let the view settle first (the first second is the chunk burst measured separately)
+            if (ticks <= 60 || ticks % 20 != 0) {
+                return;
+            }
+            long[] all = server.getTickTimesNanos();
+            double sum = 0;
+            for (long t : all) {
+                sum += t;
+                worst = Math.max(worst, t / 1.0e6);
+            }
+            meanSum += sum / all.length / 1.0e6;
+            long[] own = server.getTickTime(ResourceKey.create(Registries.DIMENSION, Spacebreaker.id(world)));
+            if (own != null && own.length > 0) {
+                double o = 0;
+                for (long t : own) {
+                    o += t;
+                }
+                worldSum += o / own.length / 1.0e6;
+            }
+            samples++;
+            if (samples == 10) {
+                ShowcaseDriver.log(String.format("[perf] %s server ticks: %.2f ms mean, %.2f ms worst, the world itself %.2f ms", world,
+                        meanSum / samples, worst, worldSum / samples));
+                world = null;
+            }
+        }
+    }
 }
