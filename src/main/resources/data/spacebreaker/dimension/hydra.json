@@ -1,0 +1,13 @@
+{
+  "type": "spacebreaker:hydra",
+  "generator": {
+    "type": "spacebreaker:planet",
+    "terrain": "spacebreaker:hydra",
+    "biome_source": {
+      "type": "spacebreaker:planet",
+      "highlands": "spacebreaker:hydra_plains",
+      "crater": "spacebreaker:hydra_crater",
+      "polar": "spacebreaker:hydra_polar"
+    }
+  }
+}

@@ -70,6 +70,8 @@ public final class OuterWorlds implements SbModule {
             FEATURES.register("coronae", com.pizzaparker07.spacebreaker.content.belt.world.CoronaFeature::new);
     public static final DeferredHolder<Feature<?>, com.pizzaparker07.spacebreaker.content.belt.world.GrabenFeature> GRABENS =
             FEATURES.register("grabens", com.pizzaparker07.spacebreaker.content.belt.world.GrabenFeature::new);
+    public static final DeferredHolder<Feature<?>, com.pizzaparker07.spacebreaker.content.belt.world.RidgeFeature> RIDGE =
+            FEATURES.register("latitude_ridge", com.pizzaparker07.spacebreaker.content.belt.world.RidgeFeature::new);
     public static final DeferredHolder<Feature<?>, com.pizzaparker07.spacebreaker.content.belt.world.RingFeature> MARKS =
             FEATURES.register("ground_marks", com.pizzaparker07.spacebreaker.content.belt.world.RingFeature::new);
     public static final DeferredRegister<net.minecraft.world.level.block.entity.BlockEntityType<?>> BLOCK_ENTITIES =
@@ -209,8 +211,8 @@ public final class OuterWorlds implements SbModule {
         return switch (world) {
             case "titan" -> com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_TITAN;
             case "io", "europa", "ganymede", "callisto" -> com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_JOVIAN;
-            case "ceres", "vesta" -> com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_BELT;
-            case "miranda", "ariel", "titania", "umbriel", "oberon", "triton", "pluto", "charon" -> com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_ICE_GIANTS;
+            case "ceres", "vesta", "bennu", "ryugu", "eros", "itokawa" -> com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_BELT;
+            case "miranda", "ariel", "titania", "umbriel", "oberon", "triton", "proteus", "nereid", "pluto", "charon", "nix", "hydra" -> com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_ICE_GIANTS;
             default -> look.sky() == 0 && look.fog() == 0 ? com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_MOON : null;
         };
     }

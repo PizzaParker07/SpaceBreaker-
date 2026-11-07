@@ -207,6 +207,32 @@ def charon_disc():
 
 # --------------------------------------------------------------------------- export
 
+# --------------------------------------------------------------------------- Nix and Hydra
+
+def nix_frost(v=0):
+    return dust(P.NIX_FROST, 13801 + v * 29)
+
+
+def nix_ice():
+    r = P.NIX_ICE
+    f = blend((clustered(16, 16, 13901, passes=1), 0.55), (white(13901 + 1), 0.3), (fbm(16, 16, 13901 + 2, [(8, 1.0)]), 0.15))
+    cv, _ = quant(f, [r[0], r[1], r[2], r[3], r[4], r[5]], [3, 12, 32, 32, 15, 6])
+    return cv
+
+
+# --------------------------------------------------------------------------- Hydra
+
+def hydra_frost(v=0):
+    return dust(P.HYDRA_FROST, 14001 + v * 29)
+
+
+def hydra_ice():
+    r = P.HYDRA_ICE
+    f = blend((clustered(16, 16, 14101, passes=1), 0.55), (white(14101 + 1), 0.3), (fbm(16, 16, 14101 + 2, [(8, 1.0)]), 0.15))
+    cv, _ = quant(f, [r[0], r[1], r[2], r[3], r[4], r[5]], [3, 12, 32, 32, 15, 6])
+    return cv
+
+
 def export(save):
     dust_spec = (18, 8, 64, None)
     for name, fn, r in (('plutonian_frost', plutonian_frost, P.PLUTO_FROST), ('tholin_regolith', tholin_regolith, P.PLUTO_THOLIN),
@@ -226,6 +252,20 @@ def export(save):
     save(ammonia_crystal(), 'item', 'ammonia_crystal')
     save(nitrogen_slider(), 'entity', 'pluto/nitrogen_slider')
     save(frost_tortoise(), 'entity', 'pluto/frost_tortoise')
+    for name, fn, r in (('nix_frost', nix_frost, P.NIX_FROST),):
+        base = fn(0)
+        save(base, 'block', name, dust_spec)
+        save(fn(1), 'block', name + '_1', dust_spec)
+        for side in ('left', 'right'):
+            save(footprint(base, prints(r), side), 'block', f'{name}_footprint_{side}', (22, 8, 64, None))
+    save(nix_ice(), 'block', 'nix_ice', (40, 12, 20, None))
+    for name, fn, r in (('hydra_frost', hydra_frost, P.HYDRA_FROST),):
+        base = fn(0)
+        save(base, 'block', name, dust_spec)
+        save(fn(1), 'block', name + '_1', dust_spec)
+        for side in ('left', 'right'):
+            save(footprint(base, prints(r), side), 'block', f'{name}_footprint_{side}', (22, 8, 64, None))
+    save(hydra_ice(), 'block', 'hydra_ice', (40, 12, 20, None))
     import os
     out = os.path.join(os.path.dirname(__file__), '..', '..', '..', 'src', 'main', 'resources', 'assets', 'spacebreaker', 'textures',
                        'environment')

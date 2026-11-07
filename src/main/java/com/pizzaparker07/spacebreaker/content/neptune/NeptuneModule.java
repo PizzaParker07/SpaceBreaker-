@@ -87,6 +87,8 @@ public final class NeptuneModule implements SbModule {
 
     @Override
     public void register(IEventBus modBus) {
+        Proteus.load();
+        Nereid.load();
         NeptuneEntities.register(modBus, KIT.items);
         KIT.blocks.register(modBus);
         KIT.items.register(modBus);
@@ -98,6 +100,8 @@ public final class NeptuneModule implements SbModule {
 
     @Override
     public void addTranslations(Lang lang) {
+        Proteus.translations(lang);
+        Nereid.translations(lang);
         lang.add("body.spacebreaker.neptune", "Neptune", "Neptün");
         lang.add("body.spacebreaker.triton", "Triton", "Triton");
         lang.add("dimension.spacebreaker.triton", "Triton", "Triton");
@@ -114,6 +118,8 @@ public final class NeptuneModule implements SbModule {
 
     @Override
     public void addBlockLoot(SbBlockLoot loot) {
+        Proteus.loot(loot);
+        Nereid.loot(loot);
         for (DeferredBlock<? extends Block> b : List.of(TRITON_FROST, PINK_NITROGEN_FROST, PLUME_DUST, NITROGEN_GEYSER)) {
             loot.self(b.get());
         }
@@ -123,6 +129,8 @@ public final class NeptuneModule implements SbModule {
 
     @Override
     public void addTags(SbTags tags) {
+        Proteus.tags(tags);
+        Nereid.tags(tags);
         // water ice for the ice melter: water, then hydrogen and oxygen for rocket fuel
         tags.item(com.pizzaparker07.spacebreaker.content.machines.IsruRecipes.WATER_ICES, TRITON_ICE.base().get().asItem());
         tags.block(BlockTags.MINEABLE_WITH_SHOVEL, TRITON_FROST.get(), PINK_NITROGEN_FROST.get(), PLUME_DUST.get());

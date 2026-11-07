@@ -1,0 +1,13 @@
+{
+  "type": "spacebreaker:ryugu",
+  "generator": {
+    "type": "spacebreaker:planet",
+    "terrain": "spacebreaker:ryugu",
+    "biome_source": {
+      "type": "spacebreaker:planet",
+      "highlands": "spacebreaker:ryugu_plains",
+      "crater": "spacebreaker:ryugu_crater",
+      "polar": "spacebreaker:ryugu_polar"
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "structure": "spacebreaker:nix_lander",
+  "world": "spacebreaker:nix",
+  "guardians": [],
+  "loot_tables": [
+    "spacebreaker:dungeons/nix/lander_cabin",
+    "spacebreaker:dungeons/nix/lander_cargo"
+  ]
+}

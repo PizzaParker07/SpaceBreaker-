@@ -1,0 +1,13 @@
+{
+  "type": "spacebreaker:bennu",
+  "generator": {
+    "type": "spacebreaker:planet",
+    "terrain": "spacebreaker:bennu",
+    "biome_source": {
+      "type": "spacebreaker:planet",
+      "highlands": "spacebreaker:bennu_plains",
+      "crater": "spacebreaker:bennu_crater",
+      "polar": "spacebreaker:bennu_polar"
+    }
+  }
+}

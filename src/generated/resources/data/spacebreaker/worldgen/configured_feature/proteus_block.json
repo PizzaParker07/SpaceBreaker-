@@ -1,0 +1,32 @@
+{
+  "type": "spacebreaker:boulder",
+  "config": {
+    "block": {
+      "type": "minecraft:weighted_state_provider",
+      "entries": [
+        {
+          "data": {
+            "Name": "spacebreaker:proteus_crust"
+          },
+          "weight": 3
+        },
+        {
+          "data": {
+            "Name": "spacebreaker:proteus_regolith",
+            "Properties": {
+              "facing": "north",
+              "print": "none"
+            }
+          },
+          "weight": 1
+        }
+      ]
+    },
+    "buried": 0.5,
+    "radius": {
+      "type": "minecraft:uniform",
+      "max_exclusive": 1.6,
+      "min_inclusive": 0.5
+    }
+  }
+}

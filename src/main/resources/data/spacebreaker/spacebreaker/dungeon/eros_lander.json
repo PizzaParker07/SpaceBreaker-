@@ -1,0 +1,9 @@
+{
+  "structure": "spacebreaker:eros_lander",
+  "world": "spacebreaker:eros",
+  "guardians": [],
+  "loot_tables": [
+    "spacebreaker:dungeons/eros/lander_cabin",
+    "spacebreaker:dungeons/eros/lander_cargo"
+  ]
+}

@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-07T10:04:22.326655284	Tags for minecraft:block mod id spacebreaker
+// 1.21.1	2026-11-07T10:18:41.420985919	Tags for minecraft:block mod id spacebreaker
 baa792afbbd764742ba879704d1a1ac2c34c5a78 data/c/tags/block/ore_rates/singular.json
 203c174f339db62a8ff7248872ae78b4b8ac7b1e data/c/tags/block/ores.json
 614424eab6df954a625b0fb41ae902f31f485d64 data/c/tags/block/ores/ammonia.json
@@ -40,8 +40,8 @@ e21077d057ed0923aae4f9d3cfd999103138de75 data/c/tags/block/storage_blocks/raw_ru
 49a8957c8b88dbafa3614439f907104f79c1ce9a data/minecraft/tags/block/beacon_base_blocks.json
 23f53dbe7b807a70ebd2412b806d5d94739792b0 data/minecraft/tags/block/coal_ores.json
 9bac14e09af682680848e770fc54d2f2468380da data/minecraft/tags/block/ice.json
-27607688495adadb4220e101ea6a36a9329b5ebf data/minecraft/tags/block/mineable/pickaxe.json
-c214fe0c7bad50837600e7d99d005ec4b60b3d86 data/minecraft/tags/block/mineable/shovel.json
+cc8dc113f1c07627ce0f58616828cf001930bf49 data/minecraft/tags/block/mineable/pickaxe.json
+03958ad2532bce91b796d31dd650ccbd717b26be data/minecraft/tags/block/mineable/shovel.json
 3eeaa79ccb654e45913a65715e52154e8e733293 data/minecraft/tags/block/needs_iron_tool.json
 ef162d68f6cda2eb75502db8b007d21fd80fb451 data/minecraft/tags/block/needs_stone_tool.json
 1137c1ba4d56080deb8301dbb264af90ec575b94 data/minecraft/tags/block/sand.json
@@ -52,9 +52,13 @@ fc930a2eca9de503c1ad5186478c931d85c46b63 data/minecraft/tags/block/walls.json
 0ac3e007f0bdd7939ada338f1af0f00e31a62f39 data/spacebreaker/tags/block/airtight.json
 5a45efcc0a579ae807a160139b602cbe812673a8 data/spacebreaker/tags/block/ariel_stone.json
 3b5fbb1840c423949990e13b51d7a53878f9a57e data/spacebreaker/tags/block/belt_stone.json
+df1b0a61c3b402fdd33aeb567075eefd33157389 data/spacebreaker/tags/block/bennu_stone.json
 baa3bd05bea7c8f0745984048aacb51b0a5caf29 data/spacebreaker/tags/block/ceres_ground.json
 5b703a515cbb2d14bcf6e3e4dc8c0ca00c496de3 data/spacebreaker/tags/block/charon_stone.json
+af843d10e81927a32428f91808c33a7ad9ec1e5c data/spacebreaker/tags/block/eros_stone.json
+a3b47eb65519d90e5f2f0951dfe3576583a2a366 data/spacebreaker/tags/block/hydra_stone.json
 64a626de38c94c1699f4f19c44a04fff6a8b9de8 data/spacebreaker/tags/block/io_stone.json
+e933cd9f6c422c642dd82640bf75511945850a4a data/spacebreaker/tags/block/itokawa_stone.json
 c1204579efcf8b297d6ddffec2292f59a5815228 data/spacebreaker/tags/block/jovian_ground.json
 83b856920949aa64a5d494d9074d959afe6093bf data/spacebreaker/tags/block/jovian_ice.json
 a4e8097fff07f9a74259d6b5dd583f3437ff28a2 data/spacebreaker/tags/block/leaky.json
@@ -65,13 +69,18 @@ fa4817a4b31eb3b99c938dcf1a4b5f6ec4d57eef data/spacebreaker/tags/block/mercury_st
 231177d534c2548d8743e904695c4ffc62fe0ef4 data/spacebreaker/tags/block/miranda_stone.json
 696e44fec8955ed65de944ded387d34fa944812f data/spacebreaker/tags/block/mirandan_ground.json
 3fdd2a67f181088985225042c5dc62b5b4a84539 data/spacebreaker/tags/block/moon_stone.json
+50b6ebfb0998afecdd5ace2c8d809fda18b88096 data/spacebreaker/tags/block/near_earth_asteroid_ground.json
+7fef32ab265bd5764f1a64824b7542b8463bbf09 data/spacebreaker/tags/block/nereid_stone.json
+de71a2016122cac9602fadfeee6aa356c6605f3c data/spacebreaker/tags/block/nix_stone.json
 135f8c778d051f9a6c52b118a8c5b4f2a0e7ff86 data/spacebreaker/tags/block/oberon_stone.json
 e6faa44958effafe7813399ad7de1eb205524161 data/spacebreaker/tags/block/pluto_stone.json
-d6b698fcd072b168e3026bc55cf7b2f196fda232 data/spacebreaker/tags/block/plutonian_ground.json
+3a34ca34534282b48b63393dee4bf99aae55bd79 data/spacebreaker/tags/block/plutonian_ground.json
+b766735a8848a4d1cd023b6414d3841fb3d9f6a3 data/spacebreaker/tags/block/proteus_stone.json
+84e47e58906b4fbec2be088afab84093ef18c099 data/spacebreaker/tags/block/ryugu_stone.json
 3a7719b971dcd285cbfe77a04c429e5de5d8e546 data/spacebreaker/tags/block/saturnian_ground.json
 c34fa357043c9e5ce7bf37a039f6748a771d0cef data/spacebreaker/tags/block/titan_stone.json
 ba17b92c52c1b6b01b655fb0554a5ff2e2ea0c66 data/spacebreaker/tags/block/titania_stone.json
-2078807c985e97f52915a780a486d4871dd8be8c data/spacebreaker/tags/block/triton_ground.json
+8f29efc34476cbc30282f2ce9087729f2a1a493b data/spacebreaker/tags/block/triton_ground.json
 53a8939b163592548d6ec65a0c6ea9af35761db2 data/spacebreaker/tags/block/triton_stone.json
 fe8aa8d80ccec96d25de1bdda164e9d9868c285b data/spacebreaker/tags/block/umbriel_stone.json
 24702f7157b6203501571a431f4f6dac228b9b15 data/spacebreaker/tags/block/venus_stone.json

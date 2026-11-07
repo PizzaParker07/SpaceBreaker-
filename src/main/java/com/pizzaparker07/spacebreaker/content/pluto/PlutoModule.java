@@ -94,6 +94,7 @@ public final class PlutoModule implements SbModule {
 
     @Override
     public void register(IEventBus modBus) {
+        PlutoMoonlets.load();
         PlutoEntities.register(modBus, KIT.items);
         KIT.blocks.register(modBus);
         KIT.items.register(modBus);
@@ -120,6 +121,7 @@ public final class PlutoModule implements SbModule {
         lang.block(AMMONIA_HYDRATE_ORE, "Ammonia Hydrate Deposit", "Amonyak Hidrat Yatağı");
         lang.item(AMMONIA_CRYSTAL, "Ammonia Crystal", "Amonyak Kristali");
         PlutoData.translations(lang);
+        PlutoMoonlets.translations(lang);
         PlutoEntities.translations(lang);
     }
 
@@ -131,11 +133,13 @@ public final class PlutoModule implements SbModule {
         }
         loot.ore(PLUTONIAN_THOLIN_ORE.get(), SaturnModule.THOLIN.get());
         loot.ore(AMMONIA_HYDRATE_ORE.get(), AMMONIA_CRYSTAL.get());
+        PlutoMoonlets.loot(loot);
         KIT.familyLoot(loot);
     }
 
     @Override
     public void addTags(SbTags tags) {
+        PlutoMoonlets.tags(tags);
         // water ice for the ice melter: water, then hydrogen and oxygen for rocket fuel
         tags.item(com.pizzaparker07.spacebreaker.content.machines.IsruRecipes.WATER_ICES, PLUTONIAN_ICE.base().get().asItem(), CHARON_ICE.get().asItem());
         tags.block(BlockTags.MINEABLE_WITH_SHOVEL, PLUTONIAN_FROST.get(), THOLIN_REGOLITH.get(), METHANE_FROST.get(), CHARON_REGOLITH.get(),

@@ -217,6 +217,17 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 |---|---|---|
 | 🎨 | Düşmüş İkmal İniş Aracı (Vesta, Ganymede, Kallisto, Enceladus) | kayma hendeği ve toprak sırtı, yan yatmış iniş aracı (kırık bacak, ısı kalkanı, kabin sandığı), kopmuş güneş paneli, enkaz, merdivenli gömülü kargo bölmesi; her dünyanın kendi zemini, kargosu ve teknolojisi |
 
+### Dünya'ya yakın asteroitler (ortak `TinyWorld` paketi)
+| Durum | İçerik | Not |
+|---|---|---|
+| 🎨 | Bennu `spacebreaker:bennu` | ~0,5 km'lik moloz yığını, kömürden koyu; her yerde iri kayalar, ekvator boyunca alçak bir şişkinlik; neredeyse sıfır yerçekimi; Ay'dan sonra en ucuz hedeflerden |
+| 🎨 | Ryugu `spacebreaker:ryugu` | topaç biçimli koyu karbonlu moloz; ekvatorda keskin sırt, koyu kayalar |
+| 🎨 | Eros `spacebreaker:eros` | ~17 km'lik uzun, taşlı (S-tipi) asteroit; yoğun kraterli bej-gri yüzey, yanında büyük Himeros çukuru |
+| 🎨 | Itokawa `spacebreaker:itokawa` | iki parçalı "fıstık"; engebeli, kayalık yüzey ve boynundaki düz çakıl ovası Muses Denizi (iniş yerinde) |
+| 🎨 | Bloklar | Bennu Regoliti, Bennu Kaya Bloğu, Ryugu Regoliti, Ryugu Kayası, Eros Regoliti, Eros Kondriti, Itokawa Çakılı, Itokawa Kayası (regolit/çakıl kalıcı ayak izi tutar); su buzu yok, yakıt ikmali yok |
+| 🎨 | Zindanlar | Düşmüş İkmal İniş Aracı (Bennu, Ryugu, Eros, Itokawa) → Mikro Yerçekiminde Madencilik / Spektroskopi |
+| 🎨 | Ortak yüzey özelliği | enlem sırtı (`latitude_ridge`): bir enlem çizgisi boyunca gövdeyi saran yükselti (Ryugu, Bennu) |
+
 ### Jüpiter uyduları
 | Durum | İçerik | Not |
 |---|---|---|
@@ -266,7 +277,11 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 |---|---|---|
 | 🎨 | Triton `spacebreaker:triton` | ters yönde dönen, yakalanmış cüce gezegen; -235 °C (ölçülen en soğuk yüzey); yuvarlak çukurlar ve keskin sırtlardan "kavun kabuğu" arazisi, pembe azot kırağısından kutup başlıkları, az krater; güney başlığında koyu azot-toz sütunları fışkırtıp rüzgârla yatık çizgiler bırakan azot gayzerleri (yakmaz, fırlatır; püskürürken çevreye toplanabilir Gayzer Tozu yağdırır); gökte 8° genişliğinde mavi Neptün |
 | 🎨 | Triton blokları | Triton Kırağısı, Pembe Azot Kırağısı, Gayzer Tozu (kalıcı ayak izi), Triton Ana Kaya Buzu (+ merdiven, basamak, duvar), Azot Gayzeri, Metan Klatrat Yatağı (→ Metan Klatrat, kömür kadar yanan yakıt) |
-| 🎨 | Zindanlar | Düşmüş İkmal İniş Aracı (Triton); Gayzer Gözlem İstasyonu (güney kutup başlığında bir azot gayzerinin üstüne kurulmuş cam kubbeli istasyon: ortada çubuk halkalı canlı gayzer, kubbe tepesinden yükselen alet direği, numune laboratuvarı ve depo sandıkları, kapıdan içeri savrulmuş pembe kırağı; 2 Gayzer Böceği bekçi) → Kriyovolkanizma |
+| 🎨 | Proteus `spacebreaker:proteus` | Neptün'ün ikinci büyük uydusu (~210 km), küresel olamayacak kadar küçük, isli koyu kabuklu engebeli cisim; batısında uyduyu neredeyse parçalayan dev Pharos havzası; gökte göğün çeyreğini dolduran Neptün; temiz su buzu yok (yakıt ikmali yok) |
+| 🎨 | Proteus blokları | Proteus Regoliti (kalıcı ayak izi), Proteus Kabuğu |
+| 🎨 | Nereid `spacebreaker:nereid` | Neptün'ün en dıştaki büyük uydusu (~170 km), muhtemelen yakalanmış cisim: açık gri, engebeli, kraterli su buzu; uyduların en basık yörüngesi (1,4–9,7 milyon km), gökte yalnız küçük mavi bir Neptün; yakıt için buz |
+| 🎨 | Nereid blokları | Nereid Kırağısı (kalıcı ayak izi), Nereid Buzu |
+| 🎨 | Zindanlar | Düşmüş İkmal İniş Aracı (Proteus, Nereid) → Kriyovolkanizma; Düşmüş İkmal İniş Aracı (Triton); Gayzer Gözlem İstasyonu (güney kutup başlığında bir azot gayzerinin üstüne kurulmuş cam kubbeli istasyon: ortada çubuk halkalı canlı gayzer, kubbe tepesinden yükselen alet direği, numune laboratuvarı ve depo sandıkları, kapıdan içeri savrulmuş pembe kırağı; 2 Gayzer Böceği bekçi) → Kriyovolkanizma |
 | 🎨 | Teknoloji | Kriyovolkanizma (5) |
 
 ### Plüton ve Charon
@@ -277,6 +292,10 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Charon `spacebreaker:charon` | gri su buzu ovaları, ekvator boyunca kanyon kuşağı, kuzey kutbunda koyu kızıl kutup başlığı; gökte 7° genişliğinde, hiç kıpırdamayan Plüton |
 | 🎨 | Charon blokları | Charon Regoliti, Charon Buzu, Kızıl Kutup Kırağısı, Amonyak Hidrat Yatağı (→ Amonyak Kristali → kemik tozu) |
 | 🎨 | Zindanlar | Düşmüş İkmal İniş Aracı (Plüton, Charon) |
+| 🎨 | Nix `spacebreaker:nix` | Plüton'un ~19 km'lik küçük, düzensiz uydusu (ortak `TinyWorld` paketi): kraterlerle dolu, çok engebeli gri su buzu, bir yanında büyük kızıl tolin lekesi; neredeyse sıfır yerçekimi; gökte Plüton ve Charon; buzu suya eritilebilir (yakıt) |
+| 🎨 | Hydra `spacebreaker:hydra` | Plüton sisteminin en parlak yüzeyi: neredeyse saf su buzundan ~19 km'lik engebeli uydu; neredeyse sıfır yerçekimi; yakıt için buz |
+| 🎨 | Nix ve Hydra blokları | Nix Kırağısı, Nix Buzu, Hydra Kırağısı, Hydra Buzu (kırağılar kalıcı ayak izi tutar) |
+| 🎨 | Zindanlar | Düşmüş İkmal İniş Aracı (Nix, Hydra) → Kuiper Kuşağı Navigasyonu |
 | 🎨 | Teknolojiler | Azot Buzulbilimi (5), Kuiper Kuşağı Seyrüseferi (5) |
 | 🎨 | Ortak yüzey özelliği | çokgen hücreler (`polygon_cells`): yastık hücreler + kenar çukurları (Plüton) veya çukurcuklu "kavun kabuğu" (Triton için) |
 

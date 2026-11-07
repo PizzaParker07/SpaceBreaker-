@@ -17,3 +17,7 @@ def generate():
     generated_item('ammonia_crystal')
     for e in ('nitrogen_slider', 'frost_tortoise'):
         write(f'models/item/{e}_spawn_egg.json', {'parent': 'minecraft:item/template_spawn_egg'})
+    for s in ('nix_frost', 'hydra_frost'):
+        soil(s)
+    for s in ('nix_ice', 'hydra_ice'):
+        simple_block(s)

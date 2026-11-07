@@ -1,0 +1,9 @@
+{
+  "structure": "spacebreaker:hydra_lander",
+  "world": "spacebreaker:hydra",
+  "guardians": [],
+  "loot_tables": [
+    "spacebreaker:dungeons/hydra/lander_cabin",
+    "spacebreaker:dungeons/hydra/lander_cargo"
+  ]
+}

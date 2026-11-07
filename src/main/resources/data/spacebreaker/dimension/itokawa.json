@@ -1,0 +1,13 @@
+{
+  "type": "spacebreaker:itokawa",
+  "generator": {
+    "type": "spacebreaker:planet",
+    "terrain": "spacebreaker:itokawa",
+    "biome_source": {
+      "type": "spacebreaker:planet",
+      "highlands": "spacebreaker:itokawa_plains",
+      "crater": "spacebreaker:itokawa_crater",
+      "polar": "spacebreaker:itokawa_polar"
+    }
+  }
+}

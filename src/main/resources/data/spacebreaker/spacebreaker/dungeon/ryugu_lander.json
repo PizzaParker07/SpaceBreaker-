@@ -1,0 +1,9 @@
+{
+  "structure": "spacebreaker:ryugu_lander",
+  "world": "spacebreaker:ryugu",
+  "guardians": [],
+  "loot_tables": [
+    "spacebreaker:dungeons/ryugu/lander_cabin",
+    "spacebreaker:dungeons/ryugu/lander_cargo"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "spacebreaker:block/itokawa_gravel",
+    "up": "spacebreaker:block/itokawa_gravel_footprint_left",
+    "down": "spacebreaker:block/itokawa_gravel",
+    "north": "spacebreaker:block/itokawa_gravel",
+    "south": "spacebreaker:block/itokawa_gravel",
+    "east": "spacebreaker:block/itokawa_gravel",
+    "west": "spacebreaker:block/itokawa_gravel"
+  }
+}

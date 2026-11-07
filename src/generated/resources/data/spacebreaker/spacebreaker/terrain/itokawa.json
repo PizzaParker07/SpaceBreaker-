@@ -1,0 +1,96 @@
+{
+  "base_height": 76,
+  "body": "spacebreaker:itokawa",
+  "craters": {
+    "central_peak": 0.4,
+    "classes": [
+      {
+        "cell": 32,
+        "chance": 0.55,
+        "max_radius": 6.0,
+        "min_radius": 2.5,
+        "per_cell": 2
+      },
+      {
+        "cell": 96,
+        "chance": 0.55,
+        "max_radius": 16.0,
+        "min_radius": 6.0,
+        "per_cell": 2
+      },
+      {
+        "cell": 270,
+        "chance": 0.6000000000000001,
+        "max_radius": 21.0,
+        "min_radius": 16.0
+      },
+      {
+        "cell": 326,
+        "chance": 0.65,
+        "max_radius": 46.666666666666664,
+        "min_radius": 21.0
+      }
+    ],
+    "complex_radius": 30.0,
+    "density": 1.4300000000000002,
+    "fresh_chance": 0.06,
+    "lowland_density": 1.0,
+    "ray_length": 4.0
+  },
+  "lowlands": {
+    "depth": 6.0,
+    "edge": 0.1,
+    "ridge_height": 0.0,
+    "threshold": 0.95,
+    "volcanic_patch": 1.0
+  },
+  "materials": {
+    "breccia": {
+      "Name": "spacebreaker:itokawa_rock"
+    },
+    "highland_rock": {
+      "Name": "spacebreaker:itokawa_rock"
+    },
+    "highland_soil": {
+      "Name": "spacebreaker:itokawa_gravel",
+      "Properties": {
+        "facing": "north",
+        "print": "none"
+      }
+    },
+    "ice": {
+      "Name": "spacebreaker:itokawa_rock"
+    },
+    "lowland_rock": {
+      "Name": "spacebreaker:itokawa_rock"
+    },
+    "lowland_soil": {
+      "Name": "spacebreaker:itokawa_gravel",
+      "Properties": {
+        "facing": "north",
+        "print": "none"
+      }
+    },
+    "ray_soil": {
+      "Name": "spacebreaker:itokawa_gravel",
+      "Properties": {
+        "facing": "north",
+        "print": "none"
+      }
+    },
+    "soil_depth": 3
+  },
+  "pole_distance": 400.0,
+  "poles": {
+    "ice_latitude": 82.0,
+    "polar_craters": 1.3,
+    "polar_latitude": 74.0
+  },
+  "relief": {
+    "amplitude": 10.0,
+    "detail_amplitude": 1.92,
+    "detail_scale": 26.0,
+    "roughness": 0.66,
+    "scale": 278.6666666666667
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "structure": "spacebreaker:itokawa_lander",
+  "world": "spacebreaker:itokawa",
+  "guardians": [],
+  "loot_tables": [
+    "spacebreaker:dungeons/itokawa/lander_cabin",
+    "spacebreaker:dungeons/itokawa/lander_cargo"
+  ]
+}

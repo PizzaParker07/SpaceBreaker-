@@ -140,6 +140,7 @@ public final class PlutoData {
         dp.add(TerrainProfile.REGISTRY, ctx -> {
             ctx.register(terrain("pluto"), plutoProfile());
             ctx.register(terrain("charon"), charonProfile());
+            PlutoMoonlets.terrain(ctx);
         });
         dp.add(Registries.CONFIGURED_FEATURE, PlutoData::configured);
         dp.add(Registries.PLACED_FEATURE, PlutoData::placed);
@@ -147,6 +148,7 @@ public final class PlutoData {
     }
 
     private static void configured(BootstrapContext<ConfiguredFeature<?, ?>> ctx) {
+        PlutoMoonlets.configured(ctx);
         ctx.register(cf("pluto_heart"), new ConfiguredFeature<>(OuterWorlds.BASIN.get(), heart()));
         ctx.register(cf("pluto_cells"), new ConfiguredFeature<>(OuterWorlds.CELLS.get(), convectionCells()));
         ctx.register(cf("pluto_tholin"), new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(new TagMatchTest(PLUTO_STONE),
@@ -158,6 +160,7 @@ public final class PlutoData {
     }
 
     private static void placed(BootstrapContext<PlacedFeature> ctx) {
+        PlutoMoonlets.placed(ctx);
         var cf = ctx.lookup(Registries.CONFIGURED_FEATURE);
         for (String whole : new String[]{"pluto_heart", "pluto_cells"}) {
             PlacementUtils.register(ctx, pf(whole), cf.getOrThrow(cf(whole)), BiomeFilter.biome());
@@ -175,6 +178,7 @@ public final class PlutoData {
     private static void biomes(BootstrapContext<Biome> ctx) {
         HolderGetter<PlacedFeature> pf = ctx.lookup(Registries.PLACED_FEATURE);
         HolderGetter<ConfiguredWorldCarver<?>> carvers = ctx.lookup(Registries.CONFIGURED_CARVER);
+        PlutoMoonlets.biomes(ctx, pf, carvers);
         var raw = GenerationStep.Decoration.RAW_GENERATION;
         var ores = GenerationStep.Decoration.UNDERGROUND_ORES;
         var local = GenerationStep.Decoration.LOCAL_MODIFICATIONS;

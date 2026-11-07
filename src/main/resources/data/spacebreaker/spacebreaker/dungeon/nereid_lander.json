@@ -1,0 +1,9 @@
+{
+  "structure": "spacebreaker:nereid_lander",
+  "world": "spacebreaker:nereid",
+  "guardians": [],
+  "loot_tables": [
+    "spacebreaker:dungeons/nereid/lander_cabin",
+    "spacebreaker:dungeons/nereid/lander_cargo"
+  ]
+}

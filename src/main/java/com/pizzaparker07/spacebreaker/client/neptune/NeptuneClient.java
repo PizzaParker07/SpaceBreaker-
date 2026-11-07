@@ -23,6 +23,8 @@ public final class NeptuneClient {
     @SubscribeEvent
     static void effects(RegisterDimensionSpecialEffectsEvent event) {
         event.register(Spacebreaker.id("triton"), new GiantPlanetSkyEffects(Bodies.key("triton"), GiantPlanetSkyEffects.Parent.plain(NEPTUNE_DISC)));
+        event.register(Spacebreaker.id("nereid"), new GiantPlanetSkyEffects(Bodies.key("nereid"), GiantPlanetSkyEffects.Parent.plain(NEPTUNE_DISC)));
+        event.register(Spacebreaker.id("proteus"), new GiantPlanetSkyEffects(Bodies.key("proteus"), GiantPlanetSkyEffects.Parent.plain(NEPTUNE_DISC)));
     }
 
     @SubscribeEvent

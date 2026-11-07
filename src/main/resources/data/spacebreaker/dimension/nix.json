@@ -1,0 +1,13 @@
+{
+  "type": "spacebreaker:nix",
+  "generator": {
+    "type": "spacebreaker:planet",
+    "terrain": "spacebreaker:nix",
+    "biome_source": {
+      "type": "spacebreaker:planet",
+      "highlands": "spacebreaker:nix_plains",
+      "crater": "spacebreaker:nix_crater",
+      "polar": "spacebreaker:nix_polar"
+    }
+  }
+}

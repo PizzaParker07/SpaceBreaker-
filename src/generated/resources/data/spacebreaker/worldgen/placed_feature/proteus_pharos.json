@@ -1,0 +1,8 @@
+{
+  "feature": "spacebreaker:proteus_pharos",
+  "placement": [
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

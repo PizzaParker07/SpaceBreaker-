@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "spacebreaker:block/eros_regolith",
+    "up": "spacebreaker:block/eros_regolith_footprint_left",
+    "down": "spacebreaker:block/eros_regolith",
+    "north": "spacebreaker:block/eros_regolith",
+    "south": "spacebreaker:block/eros_regolith",
+    "east": "spacebreaker:block/eros_regolith",
+    "west": "spacebreaker:block/eros_regolith"
+  }
+}

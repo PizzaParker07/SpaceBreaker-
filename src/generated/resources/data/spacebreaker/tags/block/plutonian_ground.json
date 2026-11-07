@@ -1,5 +1,9 @@
 {
   "values": [
+    "spacebreaker:nix_frost",
+    "spacebreaker:nix_ice",
+    "spacebreaker:hydra_frost",
+    "spacebreaker:hydra_ice",
     "spacebreaker:plutonian_frost",
     "spacebreaker:tholin_regolith",
     "spacebreaker:nitrogen_ice",

@@ -1,0 +1,32 @@
+{
+  "type": "spacebreaker:boulder",
+  "config": {
+    "block": {
+      "type": "minecraft:weighted_state_provider",
+      "entries": [
+        {
+          "data": {
+            "Name": "spacebreaker:bennu_boulder"
+          },
+          "weight": 3
+        },
+        {
+          "data": {
+            "Name": "spacebreaker:bennu_regolith",
+            "Properties": {
+              "facing": "north",
+              "print": "none"
+            }
+          },
+          "weight": 1
+        }
+      ]
+    },
+    "buried": 0.5,
+    "radius": {
+      "type": "minecraft:uniform",
+      "max_exclusive": 3.8,
+      "min_inclusive": 1.2
+    }
+  }
+}

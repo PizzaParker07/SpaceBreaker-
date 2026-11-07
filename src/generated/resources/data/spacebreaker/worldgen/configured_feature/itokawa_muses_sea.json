@@ -1,0 +1,25 @@
+{
+  "type": "spacebreaker:impact_basin",
+  "config": {
+    "depth": 6.0,
+    "floor_soil": {
+      "Name": "spacebreaker:itokawa_gravel",
+      "Properties": {
+        "facing": "north",
+        "print": "none"
+      }
+    },
+    "latitude": 0.0,
+    "peak": 0.0,
+    "peak_radius": 0.1,
+    "radius": 90.0,
+    "rim": 2.0,
+    "rings": 0.0,
+    "rock": {
+      "Name": "spacebreaker:itokawa_rock"
+    },
+    "terraces": 1,
+    "wall": 0.35,
+    "x": 40.0
+  }
+}
