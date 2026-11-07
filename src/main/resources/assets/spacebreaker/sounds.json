@@ -548,5 +548,23 @@
         "stream": false
       }
     ]
+  },
+  "machine.centrifuge_loop": {
+    "subtitle": "subtitles.spacebreaker.machine.centrifuge",
+    "sounds": [
+      {
+        "name": "spacebreaker:machine/centrifuge_loop",
+        "stream": false
+      }
+    ]
+  },
+  "machine.fission_reactor_loop": {
+    "subtitle": "subtitles.spacebreaker.machine.fission_reactor",
+    "sounds": [
+      {
+        "name": "spacebreaker:machine/fission_reactor_loop",
+        "stream": false
+      }
+    ]
   }
 }
