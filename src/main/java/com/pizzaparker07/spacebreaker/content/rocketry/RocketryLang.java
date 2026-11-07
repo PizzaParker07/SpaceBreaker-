@@ -104,6 +104,9 @@ final class RocketryLang {
                 "İstasyona ve uzaya açılan birer kapılı küçük oda: istasyonun havasını kaybetmeden dışarı çık");
         l.add("tooltip.spacebreaker.station_module.solar_wings", "Outside the hull: three solar arrays on a cable truss and a battery bank in the mouth, powering the station (FE)",
                 "Gövdenin dışında: kablo kafes üstünde üç güneş paneli dizisi ve ağızda batarya bankası; istasyona enerji (FE) verir");
+        l.item(RocketryModule.SHIPYARD_MODULE, "Shipyard Module", "Tersane Modülü");
+        l.add("tooltip.spacebreaker.station_module.shipyard", "An open 15 x 15 x 31 frame outside the hull: a berth for one spacecraft (up to 13 x 13 x 29), its docking port in the mouth, a fuel depot and floodlights",
+                "Gövdenin dışında açık 15 x 15 x 31 çerçeve: bir uzay aracı için yuva (en fazla 13 x 13 x 29), ağızda kenetlenme portu, yakıt deposu ve projektörler");
         l.block(RocketryModule.STATION_HATCH, "Station Hatch", "İstasyon Kapağı");
         l.block(RocketryModule.STATION_CORE, "Station Core Console", "İstasyon Çekirdek Konsolu");
         l.add("container.spacebreaker.station_core", "Station core: modules waiting", "İstasyon çekirdeği: bekleyen modüller");

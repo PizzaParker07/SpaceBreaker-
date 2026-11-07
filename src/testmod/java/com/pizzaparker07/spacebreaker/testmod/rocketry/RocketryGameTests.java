@@ -1126,6 +1126,41 @@ public final class RocketryGameTests {
         });
     }
 
+    @GameTest(template = EMPTY, timeoutTicks = 200, batch = "rocketry_station_shipyard")
+    public static void shipyardBerthDocksACraft(GameTestHelper helper) {
+        var level = helper.getLevel();
+        BlockPos centre = helper.absolutePos(new BlockPos(4, 30, 4));
+        Direction forward = Direction.SOUTH;
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.buildCore(level, centre, forward, "tester"), "the core unfolds");
+        var core = com.pizzaparker07.spacebreaker.content.rocketry.station.StationCoreBlockEntity.near(level, centre.above(2));
+        BlockPos mouth = centre.relative(forward, 3).above(2);
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.SHIPYARD.attach(level, mouth, "tester"), "the shipyard attaches");
+        helper.assertTrue(level.getBlockState(mouth).is(RocketryModule.DOCKING_PORT.get())
+                && level.getBlockState(mouth).getValue(com.pizzaparker07.spacebreaker.content.rocketry.station.DockingPortBlock.FACING) == forward,
+                "the berth's docking port is in the mouth, facing out");
+        helper.assertTrue(level.getBlockState(mouth.above()).is(RocketryModule.STATION_HATCH.get()), "the rest of the mouth stays sealed");
+        var berth = com.pizzaparker07.spacebreaker.content.rocketry.station.Berths.find(level, mouth.relative(forward, 10)).orElse(null);
+        helper.assertTrue(berth != null && berth.portPos().equals(mouth) && berth.portFacing() == forward, "the berth is found from inside the frame");
+        helper.assertTrue(berth.bounds().getXsize() == 13 && berth.bounds().getYsize() == 13 && berth.bounds().getZsize() == 29,
+                "a 13 x 13 x 29 berth: " + berth.bounds());
+        helper.assertTrue(core != null && berth.stationId().equals(core.stationId()), "the berth belongs to this station");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.station.Stations.orbit(core.stationId()).altitudeKm() == 400, "a station orbit for the space scene");
+        // a craft docks and undocks
+        var ship = net.minecraft.world.entity.EntityType.ARMOR_STAND.create(level);
+        ship.moveTo(net.minecraft.world.phys.Vec3.atCenterOf(mouth.relative(forward, 12)));
+        level.addFreshEntity(ship);
+        com.pizzaparker07.spacebreaker.content.rocketry.station.Berths.dock(ship, berth);
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.station.Berths.isDocked(ship)
+                && ship.position().distanceTo(net.minecraft.world.phys.Vec3.atCenterOf(mouth.relative(forward))) < 0.01, "docked nose to the port");
+        com.pizzaparker07.spacebreaker.content.rocketry.station.Berths.undock(ship);
+        helper.assertFalse(com.pizzaparker07.spacebreaker.content.rocketry.station.Berths.isDocked(ship), "and released");
+        // taking the port away removes the berth
+        level.removeBlock(mouth, false);
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.station.Berths.find(level, mouth.relative(forward, 10)).isEmpty(), "no port, no berth");
+        ship.discard();
+        helper.succeed();
+    }
+
     @GameTest(template = EMPTY)
     public static void stationBunkSetsRespawn(GameTestHelper helper) {
         BlockPos bunk = helper.absolutePos(new BlockPos(1, 2, 1));

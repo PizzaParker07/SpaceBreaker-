@@ -108,6 +108,7 @@ public final class RocketryModule implements SbModule {
     public static final DeferredItem<com.pizzaparker07.spacebreaker.content.rocketry.station.StationModuleItem> HABITATION_MODULE = modulePart("habitation_module");
     public static final DeferredItem<com.pizzaparker07.spacebreaker.content.rocketry.station.StationModuleItem> AIRLOCK_MODULE = modulePart("airlock_module");
     public static final DeferredItem<com.pizzaparker07.spacebreaker.content.rocketry.station.StationModuleItem> SOLAR_WINGS = modulePart("solar_wings");
+    public static final DeferredItem<com.pizzaparker07.spacebreaker.content.rocketry.station.StationModuleItem> SHIPYARD_MODULE = modulePart("shipyard_module");
     public static final DeferredItem<RocketPartItem> DECOUPLER = part("decoupler");
     public static final DeferredItem<RocketPartItem> INTERSTAGE = part("interstage");
     public static final DeferredItem<RocketPartItem> FINS = part("fins");

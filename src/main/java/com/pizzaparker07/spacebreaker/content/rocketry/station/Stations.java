@@ -169,4 +169,20 @@ public final class Stations {
             received = List.copyOf(payload.stations());
         }
     }
+
+    /**
+     * A station's orbit, for the space scenes (docs/ASTRO.md): circular, in the equator plane, at this altitude above
+     * its body; {@code phase} says where on the circle it is at time zero (radians).
+     */
+    public record Orbit(double altitudeKm, double inclinationDeg, double phase) {
+    }
+
+    /** Default altitude of a station's orbit, km. */
+    public static final double ORBIT_ALTITUDE_KM = 400;
+
+    /** The orbit of a station (fixed per station, its phase from the station's id). */
+    public static Orbit orbit(java.util.UUID stationId) {
+        double phase = (stationId.getLeastSignificantBits() & 0xFFFFL) / 65536.0 * Math.PI * 2;
+        return new Orbit(ORBIT_ALTITUDE_KM, 0, phase);
+    }
 }

@@ -588,6 +588,28 @@ def solar_wings_part():
     return cv
 
 
+def shipyard_part():
+    """Folded shipyard frame: grey beams stacked in a can-shaped bundle, hazard stripes, floodlight lenses."""
+    cv = new_sheet()
+    for y in range(0, 32):
+        for c in range(32):
+            if y < 2:
+                col = STEEL[2 + (c % 3 == 0)]
+            elif y >= 29:
+                col = STEEL[4]
+            elif y % 6 in (0, 1):
+                col = HAZARD[3] if (c + y) % 4 < 2 else CARBON[2]
+            else:
+                col = STEEL[4] if c % 4 == 0 else STEEL[3] if c % 4 in (1, 3) else STEEL[2]
+            put_side(cv, SIDE, c, y, col)
+    for c in (4, 12, 20, 28):
+        put_side(cv, SIDE, c, 15, WHITE[6])
+        put_side(cv, SIDE, c, 16, WHITE[5])
+    top_view(cv, TOP, lambda dx, dz, d: None if d > 16 else (CARBON[3] if d < 2 else STEEL[5] if d < 5 else STEEL[3] if d < 10 else STEEL[4]))
+    top_view(cv, BOTTOM, lambda dx, dz, d: None if d > 16 else (CARBON[2] if d < 6 else STEEL[3]))
+    return cv
+
+
 def observation_satellite():
     cv = new_sheet()
     for y in range(0, 10):
@@ -1192,6 +1214,24 @@ def icons():
         "................",
         "................",
     ], {'o': CARBON[0], 'K': STEEL[5], 'k': CARBON[2], 'S': STEEL[4], 'W': WHITE[6], 'w': WHITE[4], 'R': RED[3]})
+    out['shipyard_module'] = grid_icon([
+        "................",
+        ".oooooooooooooo.",
+        ".oYkkkkkkkkkkYo.",
+        ".ok..........ko.",
+        ".ok..........ko.",
+        ".oYkkkkkkkkkkYo.",
+        ".ok....P.....ko.",
+        ".ok...PPP....ko.",
+        ".ok....P.....ko.",
+        ".oYkkkkkkkkkkYo.",
+        ".ok..........ko.",
+        ".ok..........ko.",
+        ".oYkkkkkkkkkkYo.",
+        ".oooooooooooooo.",
+        "................",
+        "................",
+    ], {'o': CARBON[0], 'k': STEEL[4], 'Y': HAZARD[3], 'P': STEEL[5]})
     out['solar_wings'] = grid_icon([
         "................",
         "................",
@@ -1507,6 +1547,7 @@ SHEETS = {
     'habitation_module': habitation_part,
     'airlock_module': airlock_part,
     'solar_wings': solar_wings_part,
+    'shipyard_module': shipyard_part,
     'decoupler': decoupler,
     'interstage': interstage,
     'heat_shield': heat_shield,

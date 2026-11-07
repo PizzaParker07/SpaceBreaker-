@@ -444,6 +444,7 @@ PARTS = {
     'habitation_module': (lambda: station_can_part(30, 16), False),
     'airlock_module': (lambda: station_can_part(20, 12), False),
     'solar_wings': (solar_wings_part, False),
+    'shipyard_module': (lambda: station_can_part(32, 14, 10), False),
     'decoupler': (decoupler, False),
     'interstage': (interstage, False),
     'heat_shield': (heat_shield, False),
