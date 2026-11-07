@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_rover": {
+      "conditions": {
+        "items": [
+          {
+            "items": "spacebreaker:rover"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "spacebreaker:sprint_rover"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_rover"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "spacebreaker:sprint_rover"
+    ]
+  }
+}

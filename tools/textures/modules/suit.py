@@ -1145,12 +1145,12 @@ def visor_frost() -> Canvas:
 
 
 def visor_frame() -> Canvas:
-    """Inside of the helmet seen in first person: a rounded visor opening (curved corners, a little more brow at the
-    top), the dark rim fading in over a few pixels in steps, and faint reflections of the visor glass along the
-    upper left curve and the lower right corner. 320 x 180, stretched over the screen; drawn on the GUI layer."""
+    """Inside of the helmet seen in first person, kept subtle (an option, off by default): a thin rounded rim right at
+    the screen edge, fading in over two steps, with a faint glass line inside it. 320 x 180, stretched over the
+    screen; drawn on the GUI layer."""
     w, h = 320, 180
     cv = Canvas(w, h)
-    left, right, top, bottom, r = 9, w - 10, 13, h - 8, 34
+    left, right, top, bottom, r = 3, w - 4, 4, h - 3, 22
     rim = (16, 19, 24)
 
     def outside(x, y):
@@ -1165,20 +1165,9 @@ def visor_frame() -> Canvas:
         for x in range(w):
             d = outside(x + 0.5, y + 0.5)
             if d >= 0:
-                step = min(3, int(d / 2.5))
-                cv[x, y] = (*rim, (90, 150, 205, 235)[step])
-            elif d > -1.5:
-                # the visor's glass edge, all the way round, so the frame reads whole even against a dark sky
-                corner = x < left + r and y < top + r
-                cv[x, y] = (196, 214, 228, 70) if corner else (120, 132, 146, 54)
-    # two short glints on the glass: an arc in the upper left corner, a dash in the lower right
-    for i in range(26):
-        a = 3.14159 * (1.05 + 0.4 * i / 25)
-        x = int(left + r + (r - 6) * __import__('math').cos(a))
-        y = int(top + r + (r - 6) * __import__('math').sin(a))
-        cv[x, y] = (226, 238, 246, 70)
-    for i in range(14):
-        cv[right - 30 + i, bottom - 6 - i // 4] = (226, 238, 246, 44)
+                cv[x, y] = (*rim, (120, 200)[min(1, int(d / 1.5))])
+            elif d > -1.0:
+                cv[x, y] = (150, 162, 176, 40)
     return cv
 
 

@@ -87,3 +87,15 @@ side = "CLIENT"
 # Access transformer (see the file for what it opens and why)
 [[accessTransformers]]
 file="META-INF/accesstransformer.cfg"
+
+[[dependencies.${mod_id}]]
+modId = "lambdynlights"
+type = "optional"
+versionRange = "[4.8,)"
+ordering = "NONE"
+side = "CLIENT"
+
+# LambDynamicLights picks up our moving lights (helmet lamps, rover headlights) through this entrypoint; without the
+# mod it is never read and client/light draws its own soft light instead
+[[modproperties.${mod_id}."yumi:entrypoints"."lambdynlights:initializer"]]
+value = "com.pizzaparker07.spacebreaker.compat.dynlights.SbDynamicLights"

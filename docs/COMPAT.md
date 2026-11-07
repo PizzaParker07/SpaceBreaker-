@@ -218,6 +218,14 @@ Complementary the tint is weaker (the pack re-lights translucent entities) but t
 - **Mars clouds, canyon fog, seasonal frost:** clouds are part of our sky; the canyon morning fog is the world's fog,
   applied by the haze pass; frost blocks render as in vanilla (`mars_clouds_fog_frost_vanilla_vs_iris.jpg`). The
   ground looks browner than vanilla's grey basalt under the pack's warm sunlight.
+- **Blocky planets (`BlockyBodyRenderer`, voxel ball or cube):** drawn in the sky, so the sky pass carries them over to
+  the pack unchanged: Earth over the Moon by day and night looks the same with and without Complementary in both styles
+  (`blocky_earth_vanilla_vs_iris.jpg`; rows: voxel vanilla/pack ×2, cube vanilla/pack ×2).
+  Since the bodies depth-test among themselves (hidden corners), the sky pass's off-screen target has a depth
+  buffer and clears it with depth writes on: `glClear` skips depth while the mask is off, and the never-cleared 0
+  hid every planet under the pack (`blocky_earth_depth_iris.jpg`, with moon's 0c04bca9: columns voxel vanilla/pack,
+  cube vanilla/pack). Shot 10c shows no ground under the pack only because the 80-tick wait is too short for the
+  slower chunk builds; with 400 ticks the ground is there and not hidden by the planet.
 - **Docking jolt:** a camera roll/pitch from `ViewportEvent.ComputeCameraAngles`; Iris builds its matrices from the
   same camera, so the shake is the same with a pack (at most about 2°, too small to tell apart in a still frame).
 - **Inside a closed module the pack's ambient fill is blue:** the airless sky colour handed to the pack
@@ -360,10 +368,19 @@ environment; the plugins compile against both APIs and the line itself is covere
 - **HUD layers vs. Jade / WTHIT:** vanilla stacks GUI layers 200 units apart in depth (`LayeredDraw.Z_SEPARATION`) and
   draws them with the depth test; Jade draws in `RenderGuiEvent.Post`, WTHIT from a `Gui` mixin, both after all layers
   but near depth 0. Our overlay layers (visor frame, helmet panels, rocket and rover HUDs) therefore hide the info box
-  wherever they draw semi-transparent pixels. Draw overlays with `RenderSystem.depthMask(false)` (restore after) and
-  keep panels away from the top centre, where both overlays sit by default.
+  wherever they draw semi-transparent pixels. `compat/client/InfoOverlayDepth` clears the GUI depth at the start of
+  `RenderGuiEvent.Post` when Jade or WTHIT is installed, so their box is always on top; HUD code needs no change.
+  Keep panels away from the top centre anyway, where both overlays sit by default.
 - **Dynamic lights:** LambDynamicLights 4.8 (NeoForge 1.21.1) has an API (`lambdynlights:initializer` entrypoint
   in `neoforge.mods.toml` mod properties, `DynamicLightsContext`, `LineLightBehavior` for beam-like lights,
   `DynamicLightHandlers.registerDynamicLightHandler` for entities); the NeoForge port of Sodium Dynamic Lights is older
-  (LDL 2.x API). With a shader pack, dynamic light is ordinary block light and is tinted like torch light by the pack.
+  (LDL 2.x API). `lambdynlights` is an optional dependency (`[4.8,)`, declared with the suit lamps). With a shader pack, dynamic light is ordinary block light and is tinted like torch light by the pack.
+  Helmet lamps (suit, `client/light`): checked on the Moon at night, vanilla / Complementary × fallback pool /
+  LambDynamicLights (`helmet_lamps_iris_dynlights.jpg`; rows shots 06, 07, 11, 13, 14; columns vanilla, pack,
+  vanilla + LDL, pack + LDL). The fallback pool shows under the pack (a little dimmer and bluer); with LDL the pool is
+  off and the light is real block light, which the pack warms to a reddish brown on grey regolith. The glow cones
+  (`entityTranslucentEmissive`, no depth write) are much stronger under the pack (bloom) and, like the NTR plume,
+  are painted over by the sky pass where only sky is behind them unless drawn through `LateEffects.drawOrDefer`.
+  `extractLambDynLightsApi` works from a clean Gradle home (`./gradlew build`, Modrinth reachable); the mod jar holds
+  no LambDynamicLights classes.
 

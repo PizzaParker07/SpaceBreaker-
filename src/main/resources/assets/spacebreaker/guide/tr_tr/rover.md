@@ -24,4 +24,4 @@ research: spacebreaker:rovers
 
 ## Şarj
 - Bir {item spacebreaker:battery_bank} ya da kablonun yanında **200 FE/t** ile dolar.
-- Elinde {item spacebreaker:solar_panel} ya da {item spacebreaker:rtg} varken geziciye {key key.use}: üstüne takılır, yolda kendini şarj eder.
+- Elinde {item spacebreaker:solar_panel} ya da {item spacebreaker:rtg} varken geziciye {key key.use}: koltukların arkasındaki arka güverteye takılır, yolda kendini şarj eder.

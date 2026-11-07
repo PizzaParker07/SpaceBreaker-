@@ -12,7 +12,6 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
-import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +36,7 @@ public final class SensorCard {
 
     @SubscribeEvent
     static void register(RegisterGuiLayersEvent event) {
-        event.registerAbove(VanillaGuiLayers.BOSS_OVERLAY, Spacebreaker.id("sensor_card"), SensorCard::render);
+        event.registerBelowAll(Spacebreaker.id("sensor_card"), SensorCard::render);
     }
 
     static List<Component> lines(SensorReadingPayload r) {
@@ -104,7 +103,7 @@ public final class SensorCard {
         int h = lines.size() * 10 + 6;
         // top left: the top right is where advancement toasts appear
         int x = 6;
-        int y = 6;
+        int y = HelmetRadio.showing() ? 22 : 6;
         g.fill(x, y, x + w, y + h, argb(0x000000, 0.6F * alpha));
         g.fill(x, y, x + w, y + 1, argb(0x36B1C0, alpha));
         int ly = y + 4;
