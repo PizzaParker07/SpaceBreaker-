@@ -249,7 +249,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 ### Vesta zindanı ve diğer küçük dünyalar
 | Durum | İçerik | Not |
 |---|---|---|
-| 🎨 | Düşmüş İkmal İniş Aracı (Vesta, Ganymede, Kallisto, Enceladus) | kayma hendeği ve toprak sırtı, yan yatmış iniş aracı (kırık bacak, ısı kalkanı, kabin sandığı), kopmuş güneş paneli, enkaz, merdivenli gömülü kargo bölmesi; her dünyanın kendi zemini, kargosu ve teknolojisi |
+| 🎨 | Düşmüş İkmal İniş Aracı (tüm dış dünyalarda aynı yapı, her dünyanın kendi zemini ve ganimetiyle) | kayma hendeği, toprak sırtları ve ilk temasta kararmış zemin; hendeğin sonunda yan yatmış iki kademeli araç: alüminyum panelli sekizgen alt kademe, altın folyo kuşak, hendeğe dönük yanmış motor, havada iki ayak ve hendekte kopmuş üçüncüsü, direğinde asılı kalmış güneş kanadı; lomboz pencereli beyaz kabin, açık hava kilidi kapısı, iki koltuk, sönük konsol (güç monitörü), kabin dolabı ve mürettebatın "SON İLETİM" tabelası (toz, buz ya da kuyruklu yıldız sürümü, EN/TR); kopup tozda yatan ikinci güneş kanadı ve çanak anten, hendek boyunca patlamış kargo kapsülleri. Yeni bloklar: Altın Folyo Kaplama, Yanmış Roket Motoru |
 
 ### Dünya'ya yakın asteroitler (ortak `TinyWorld` paketi)
 | Durum | İçerik | Not |
