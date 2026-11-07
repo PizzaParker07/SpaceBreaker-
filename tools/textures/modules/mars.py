@@ -544,17 +544,20 @@ def whirl_puff(i):
 
 
 def ice_clouds():
-    """Thin water-ice cloud veil (128x128, tiling): long wind-drawn streaks of bluish white, mostly clear sky."""
-    base = fbm(32, 128, 6201, [(16, 1.0), (8, 0.55), (4, 0.25)], grain=0.04)
-    cv = Canvas(128, 128)
-    for y in range(128):
-        for x in range(128):
-            v = base[y][x // 4]
-            a = max(0.0, min(1.0, (v - 0.48) / 0.32)) ** 1.4
-            if a <= 0:
+    """Thin water-ice cloud veil (256x256, tiling): long, fine, feathery streaks of bluish white with soft edges;
+    mostly clear sky. Alpha falls off smoothly at every edge (the sky renderer samples it with linear filtering)."""
+    base = fbm(32, 256, 6201, [(32, 1.0), (16, 0.6), (8, 0.3)], grain=0.0)
+    fine = fbm(64, 256, 6202, [(8, 1.0), (4, 0.5)], grain=0.0)
+    cv = Canvas(256, 256)
+    for y in range(256):
+        for x in range(256):
+            v = base[y][x // 8] * 0.75 + fine[y][x // 4] * 0.25
+            a = max(0.0, min(1.0, (v - 0.55) / 0.3))
+            a = a * a * (3 - 2 * a)  # smooth edges
+            if a <= 0.01:
+                cv[x, y] = (236, 242, 255, 0)
                 continue
-            tone = (226, 234, 250) if a < 0.6 else (240, 245, 255)
-            cv[x, y] = tone + (int(30 + 190 * a),)
+            cv[x, y] = (236, 242, 255, int(150 * a))
     return cv
 
 

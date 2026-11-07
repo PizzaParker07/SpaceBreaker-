@@ -153,8 +153,9 @@ public final class MarsClient {
         float end = Mth.lerp(storm, far, Math.min(far, 22F));
         float start = Mth.lerp(storm, far * 0.35F, 0F);
         if (canyonFog > 0.01F) {
-            end = Mth.lerp(canyonFog * 0.85F, end, Math.min(end, 26F));
-            start = Mth.lerp(canyonFog, start, 0F);
+            // Martian fog is thin: even at its thickest the far wall fades out at ~80 blocks
+            end = Mth.lerp(canyonFog, end, Math.min(end, 80F));
+            start = Mth.lerp(canyonFog, start, 4F);
         }
         event.setFarPlaneDistance(end);
         event.setNearPlaneDistance(start);
@@ -171,11 +172,11 @@ public final class MarsClient {
             return;
         }
         float[] c = MarsSkyEffects.horizonFog(mc.level, event.getCamera(), (float) event.getPartialTick());
-        // canyon fog: a pale, faintly blue-white ice haze lit by the low morning sun
-        float k = canyonFog * 0.8F;
-        event.setRed(Mth.lerp(k, c[0], 0.86F));
-        event.setGreen(Mth.lerp(k, c[1], 0.85F));
-        event.setBlue(Mth.lerp(k, c[2], 0.87F));
+        // canyon fog: a pale pinkish-tan haze, the dusty sky's own colour lightened by the ice
+        float k = canyonFog * 0.7F;
+        event.setRed(Mth.lerp(k, c[0], 0.84F));
+        event.setGreen(Mth.lerp(k, c[1], 0.72F));
+        event.setBlue(Mth.lerp(k, c[2], 0.64F));
     }
 
     @SubscribeEvent

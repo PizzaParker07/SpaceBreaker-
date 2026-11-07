@@ -281,7 +281,9 @@ public class MarsSkyEffects extends DimensionSpecialEffects {
         // morning canyon fog: the low sky fills with the same pale haze as the canyon walls
         float fog = MarsClient.canyonFog() * (float) Mth.clamp(1 - elev / 0.45, 0, 1);
         if (fog > 0.01F) {
-            c = new float[]{Mth.lerp(fog * 0.8F, c[0], 0.86F), Mth.lerp(fog * 0.8F, c[1], 0.85F), Mth.lerp(fog * 0.8F, c[2], 0.87F)};
+            float k = fog * 0.7F;
+            c = new float[]{Mth.lerp(k, c[0], 0.84F), Mth.lerp(k, c[1], 0.72F),
+                    Mth.lerp(k, c[2], 0.64F)};
         }
         bb.addVertex(m, (float) d.x * 100, (float) d.y * 100, (float) d.z * 100).setColor(c[0], c[1], c[2], 1F);
     }
@@ -372,7 +374,7 @@ public class MarsSkyEffects extends DimensionSpecialEffects {
     private static void cloudVertex(BufferBuilder bb, Matrix4f m, float x, float z, float cover, float drift, float r, float g, float b) {
         float d = Mth.sqrt(x * x + z * z) / CLOUD_R;
         float fade = Mth.clamp(1F - d * d, 0F, 1F);
-        bb.addVertex(m, x, CLOUD_H, z).setUv(x / 90F + drift, z / 90F).setColor(r, g, b, 0.75F * cover * fade);
+        bb.addVertex(m, x, CLOUD_H, z).setUv(x / 90F + drift, z / 90F).setColor(r, g, b, 0.6F * cover * fade);
     }
 
     private void moon(PoseStack ps, ResourceLocation tex, double sols, double period, double phase0, double size, double lat,
