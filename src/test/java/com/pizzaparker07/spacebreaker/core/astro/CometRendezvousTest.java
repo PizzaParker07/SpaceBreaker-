@@ -20,7 +20,7 @@ class CometRendezvousTest {
     void tableForAllComets() throws IOException {
         StringBuilder sb = new StringBuilder("| Comet | Arrive near | Arrival (AU) | Departure from LEO | Velocity match | Total | Flight |\n|---|---|---:|---:|---:|---:|---:|\n");
         for (Comet c : Comet.CATALOGUE) {
-            for (Point p : Point.values()) {
+            for (Point p : new Point[]{Point.PERIHELION, Point.APHELION}) {
                 Result r = CometRendezvous.estimate(SYS, c, p, 0).orElseThrow(() -> new AssertionError(c.id() + " " + p));
                 assertTrue(r.totalDv() > 0 && Double.isFinite(r.totalDv()));
                 assertEquals(r.arrivalTime() - r.departureTime(), r.flightSeconds(), 1);
@@ -50,7 +50,9 @@ class CometRendezvousTest {
         assertTrue(seconds < 20, "table took " + seconds + " s");
         for (Comet c : Comet.CATALOGUE) {
             var list = table.of(c.id());
-            assertEquals(4, list.size(), c.id());
+            long anywhere = list.stream().filter(r -> r.point() == Point.ANYWHERE).count();
+            assertTrue(anywhere >= 1 && anywhere <= 4, c.id() + " anywhere options " + anywhere);
+            assertEquals(4 + anywhere, list.size(), c.id());
             for (int i = 1; i < list.size(); i++) {
                 assertTrue(list.get(i).arrivalTime() > list.get(i - 1).arrivalTime(), "arrival order");
             }
@@ -64,7 +66,17 @@ class CometRendezvousTest {
         assertTrue(table.reachable("churyumov_gerasimenko", 0, chemical, years));
         assertTrue(table.reachable("tempel_1", 0, chemical, years));
         assertTrue(table.reachable("encke", 0, chemical, years));
-        assertFalse(table.reachable("halley", 0, 30e3, years), "Halley: too fast near perihelion, too far near aphelion");
+        // the cheapest anywhere-on-orbit option makes Halley a nuclear-engine target: ≈ 19–20 km/s within 10 years
+        var halley = table.cheapest("halley", 0, 1e9, 10).orElseThrow();
+        assertTrue(halley.totalDv() > 15e3 && halley.totalDv() < 25e3, "Halley " + halley);
+        assertEquals(CometRendezvous.Access.NUCLEAR, table.access("halley", 0, 15e3, 30e3, 10));
+        for (String id : new String[]{"churyumov_gerasimenko", "encke", "tempel_1"}) {
+            assertEquals(CometRendezvous.Access.CHEMICAL, table.access(id, 0, 15e3, 30e3, 10), id);
+        }
+        assertEquals(CometRendezvous.Access.OBSERVATION_ONLY, table.access("hale_bopp", 0, 15e3, 30e3, 20));
+        for (CometRendezvous.Access a : CometRendezvous.Access.values()) {
+            assertFalse(a.nameEn.isBlank() || a.nameTr.isBlank());
+        }
         assertFalse(table.reachable("hale_bopp", 0, 30e3, years));
         assertTrue(table.reachable("halley", 0, 60e3, years), "a late-game drive reaches Halley near perihelion");
         var cheap = table.cheapest("churyumov_gerasimenko", 0, chemical, years).orElseThrow();
@@ -74,5 +86,52 @@ class CometRendezvousTest {
         // options whose departure has passed drop out
         double later = table.of("encke").get(0).departureTime() + 1;
         assertEquals(table.of("encke").size() - 1, table.upcoming("encke", later).size());
+    }
+
+    @Test
+    void anywhereAlongTheOrbit() throws IOException {
+        StringBuilder sb = new StringBuilder("| Comet | ≤ 5 y | ≤ 10 y | ≤ 20 y |\n|---|---:|---:|---:|\n");
+        for (Comet c : Comet.CATALOGUE) {
+            sb.append("| ").append(c.nameEn());
+            double prev = Double.MAX_VALUE;
+            for (double y : new double[]{5, 10, 20}) {
+                CometRendezvous.Result r = CometRendezvous.cheapestWithin(SYS, c, 0, y).orElseThrow();
+                assertTrue(r.flightYears() <= y + 1e-9 && r.departureTime() >= 0);
+                assertTrue(r.totalDv() <= prev + 1, c.id() + ": a longer allowance never costs more");
+                prev = r.totalDv();
+                sb.append(String.format(Locale.ROOT, " | %.1f km/s, %.1f y, %.1f AU", r.totalDv() / 1000, r.flightYears(), r.arrivalAu()));
+            }
+            sb.append(" |\n");
+        }
+        Files.createDirectories(Path.of("build/astro"));
+        Files.writeString(Path.of("build/astro/comet_rendezvous_anywhere.md"), sb.toString());
+    }
+
+    @Test
+    void returnTrips() throws IOException {
+        StringBuilder sb = new StringBuilder("| Comet | Rendezvous (≤ 10 y) | Return ≤ 10 y | Return ≤ 40 y | Round trip (≤ 10 y + ≤ 40 y) |\n|---|---:|---:|---:|---:|\n");
+        for (Comet c : Comet.CATALOGUE) {
+            CometRendezvous.Result out = CometRendezvous.cheapestWithin(SYS, c, 0, 10).orElseThrow();
+            var r10 = CometRendezvous.returnTrip(SYS, c, out.arrivalTime(), 10, 15e3).orElseThrow();
+            var r40 = CometRendezvous.returnTrip(SYS, c, out.arrivalTime(), 40, 15e3).orElseThrow();
+            for (var r : new CometRendezvous.Return[]{r10, r40}) {
+                assertTrue(r.departureTime() >= out.arrivalTime() && r.entrySpeed() <= 15e3 + 1, c.id() + " entry " + r.entrySpeed());
+                assertEquals(r.burnDv() + r.brakeDv(), r.totalDv(), 1e-9);
+            }
+            assertTrue(r40.totalDv() <= r10.totalDv() + 1, c.id() + ": more time never costs more");
+            sb.append(String.format(Locale.ROOT, "| %s | %.1f km/s, %.1f y | %s | %s | %.1f km/s |\n", c.nameEn(),
+                    out.totalDv() / 1000, out.flightYears(), cell(r10), cell(r40), (out.totalDv() + r40.totalDv()) / 1000));
+        }
+        // with no entry limit the trip home is the comet's own fall: almost free, but very fast
+        var free = CometRendezvous.returnTrip(SYS, Comet.HALLEY, 0, 40, Double.POSITIVE_INFINITY).orElseThrow();
+        assertEquals(0, free.brakeDv());
+        assertTrue(free.burnDv() < 1e3 && free.entrySpeed() > 40e3, "Halley free fall home " + free);
+        Files.createDirectories(Path.of("build/astro"));
+        Files.writeString(Path.of("build/astro/comet_returns.md"), sb.toString());
+    }
+
+    private static String cell(CometRendezvous.Return r) {
+        return String.format(Locale.ROOT, "%.1f km/s (%.1f + %.1f brake), %.1f y from %.1f AU", r.totalDv() / 1000, r.burnDv() / 1000,
+                r.brakeDv() / 1000, r.flightYears(), r.departureAu());
     }
 }

@@ -36,7 +36,8 @@ public final class OuterDungeonOrientationTests {
                 (p, d) -> new ProbePiece(3L, p.getX(), 120, p.getZ(), d),
                 (p, d) -> new ObservatoryPiece(3L, p.getX(), 120, p.getZ(), d),
                 (p, d) -> new HangarPiece(3L, p.getX(), 120, p.getZ(), d),
-                (p, d) -> new com.pizzaparker07.spacebreaker.content.neptune.dungeon.GeyserStationPiece(3L, p.getX(), 120, p.getZ(), d));
+                (p, d) -> new com.pizzaparker07.spacebreaker.content.neptune.dungeon.GeyserStationPiece(3L, p.getX(), 120, p.getZ(), d),
+                (p, d) -> new com.pizzaparker07.spacebreaker.content.uranus.dungeon.CanyonOutpostPiece(3L, p.getX(), 120, p.getZ(), d));
         int checked = 0;
         for (int k = 0; k < pieces.size(); k++) {
             for (Direction d : Direction.Plane.HORIZONTAL) {

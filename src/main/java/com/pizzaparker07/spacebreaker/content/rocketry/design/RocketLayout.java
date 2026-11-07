@@ -14,10 +14,13 @@ import java.util.function.Function;
  * Pure data, no game state, so the maths can be tested on its own.
  */
 public final class RocketLayout {
-    /** One stage: everything that is dropped together when the next separator fires. Its tanks hold the propellant its engine burns. */
+    /**
+     * One stage: everything that is dropped together when the next separator fires. Its tanks hold the propellant its
+     * engine burns. {@code insulated}: the share of its propellant capacity in tanks with multi-layer insulation.
+     */
     public record Stage(int index, int firstPart, int lastPart, double dryKg, double propellantKg, double thrustKn,
                         double ispSeaLevel, double ispVacuum, boolean fins, boolean gridFins, boolean legs, boolean rcs,
-                        Propellant propellant) {
+                        Propellant propellant, double insulated) {
         public boolean hasEngine() {
             return thrustKn > 0;
         }
@@ -56,7 +59,7 @@ public final class RocketLayout {
             RocketPart part = lookup.apply(id);
             if (part == null) {
                 problems.add("unknown_part");
-                part = new RocketPart(PartType.TANK, 0, 0, 0, 0, 0, 0, 0, 0, id, 0, Propellant.KEROLOX);
+                part = new RocketPart(PartType.TANK, 0, 0, 0, 0, 0, 0, 0, 0, id, 0, Propellant.KEROLOX, false);
             }
             parts.add(part);
         }
@@ -106,13 +109,16 @@ public final class RocketLayout {
     }
 
     private static Stage stage(int index, int from, int to, List<RocketPart> parts) {
-        double dry = 0, prop = 0, thrust = 0, flowSl = 0, flowVac = 0;
+        double dry = 0, prop = 0, thrust = 0, flowSl = 0, flowVac = 0, insulatedProp = 0;
         boolean fins = false, grid = false, legs = false, rcs = false;
         Propellant propellant = null;
         for (int i = from; i <= to; i++) {
             RocketPart p = parts.get(i);
             dry += p.massKg();
             prop += p.propellantKg();
+            if (p.insulated()) {
+                insulatedProp += p.propellantKg();
+            }
             if (p.isEngine()) {
                 thrust += p.thrustKn();
                 // engines burning together: Isp = total thrust / total mass flow
@@ -130,7 +136,7 @@ public final class RocketLayout {
         double ispSl = flowSl > 0 ? thrust / flowSl : 0;
         double ispVac = flowVac > 0 ? thrust / flowVac : 0;
         return new Stage(index, from, to, dry, prop, thrust, ispSl, ispVac, fins, grid, legs, rcs,
-                propellant == null ? Propellant.KEROLOX : propellant);
+                propellant == null ? Propellant.KEROLOX : propellant, prop > 0 ? insulatedProp / prop : 0);
     }
 
     public RocketDesign design() {

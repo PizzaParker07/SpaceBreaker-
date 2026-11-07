@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-07T17:00:29.381614809	Recipes
+// 1.21.1	2026-11-07T17:05:38.470511535	Recipes
 9adaaa5be5385cd4ce86f1592ecb1ea66c0c4dce data/spacebreaker/advancement/recipes/building_blocks/ariel_ice_slab.json
 c8a14effc004b99a09bfd245c11051a06fbb28f6 data/spacebreaker/advancement/recipes/building_blocks/ariel_ice_slab_from_ariel_ice_stonecutting.json
 6754d279fb144c57df42cb3960cf2152443405ff data/spacebreaker/advancement/recipes/building_blocks/ariel_ice_stairs.json
@@ -130,6 +130,7 @@ f4db26c1c1a3fd20cc9715cbce520e560406434a data/spacebreaker/advancement/recipes/m
 23b209e136d457cd39c9e85d3f93847fb0aa1035 data/spacebreaker/advancement/recipes/misc/electric_motor.json
 2daa82f3b1e0d5e03f6f15140453979e059bf567 data/spacebreaker/advancement/recipes/misc/electrolyzer.json
 e8ebeae0619e77fafc13145d77b28672e71b7b76 data/spacebreaker/advancement/recipes/misc/fabricator.json
+434308b95bbc696c9708dc32aecdc9ba87891239 data/spacebreaker/advancement/recipes/misc/fission_reactor.json
 dc222e87a2fd822c95d51dd895a2b33896d12af2 data/spacebreaker/advancement/recipes/misc/fluid_pipe.json
 48f9702d574a5ccd7c275da1b5815dde4f8de0ec data/spacebreaker/advancement/recipes/misc/fluid_tank.json
 8ab5e28aa3b1a7277e53fa7a63166c2919829265 data/spacebreaker/advancement/recipes/misc/gas_centrifuge.json
@@ -383,6 +384,7 @@ f223ad6bef05e019912e50d987799b33afb92cc5 data/spacebreaker/recipe/europan_ice_br
 df5e0e5840718defca221ec1aeef57013c8bddff data/spacebreaker/recipe/fabricating/orange_foam_insulation.json
 ca9d2d7ebb0d7ed17db96fb228ffcf80743d1088 data/spacebreaker/recipe/fabricating/solar_cell.json
 126ce7d8261d0ed725531943e7f27bbfe59e0bd0 data/spacebreaker/recipe/fabricator.json
+bc6a573de04304966044af54d6e2cd59935fd5d3 data/spacebreaker/recipe/fission_reactor.json
 2a2eefce4fe49b6ab1bbcd514edc22d68166eab4 data/spacebreaker/recipe/fluid_pipe.json
 0a63e38c2648c6e57ae61602b0b2ed8941591e45 data/spacebreaker/recipe/fluid_tank.json
 ced0955075c95e39ab39449e5be07f0de9fbdc1a data/spacebreaker/recipe/gas_centrifuge.json

@@ -1,6 +1,6 @@
 {
   "category": "propulsion",
-  "icon": "minecraft:glowstone_dust",
+  "icon": "spacebreaker:nuclear_thermal_engine",
   "requires": [
     "spacebreaker:hydrogen_engines",
     "spacebreaker:nuclear_fission"
@@ -8,5 +8,8 @@
   "samples": [
     "spacebreaker:mars"
   ],
-  "tier": 3
+  "tier": 3,
+  "unlocks": [
+    "spacebreaker:nuclear_thermal_engine"
+  ]
 }

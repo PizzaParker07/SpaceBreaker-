@@ -1,0 +1,12 @@
+{
+  "loader": "neoforge:separate_transforms",
+  "gui_light": "front",
+  "base": {
+    "parent": "spacebreaker:item/fuel_tank_medium_insulated_3d"
+  },
+  "perspectives": {
+    "gui": {
+      "parent": "spacebreaker:item/fuel_tank_medium_insulated_icon"
+    }
+  }
+}

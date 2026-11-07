@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "c:plates/aluminum"
+    },
+    "C": {
+      "item": "spacebreaker:advanced_circuit"
+    },
+    "R": {
+      "tag": "spacebreaker:radiation_shielding"
+    },
+    "S": {
+      "tag": "c:plates/steel"
+    },
+    "T": {
+      "tag": "c:plates/tungsten"
+    }
+  },
+  "pattern": [
+    "AAA",
+    "RCR",
+    "STS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "spacebreaker:fission_reactor"
+  }
+}
