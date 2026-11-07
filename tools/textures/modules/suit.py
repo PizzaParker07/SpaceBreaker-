@@ -1294,7 +1294,7 @@ def station_front(on=False) -> Canvas:
             elif ch == 'v':
                 cv[4 + x, 5 + y] = V[2]
             elif ch == 'b':
-                cv[4 + x, 5 + y] = A[5]
+                cv[4 + x, 5 + y] = V[2]
     cv[12, 12] = LAMP_ON if on else S[3]   # status lamp
     return cv
 
