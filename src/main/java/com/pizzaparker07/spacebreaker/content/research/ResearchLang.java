@@ -115,6 +115,8 @@ final class ResearchLang {
         l.add("gui.spacebreaker.guide.back", "Back", "Geri");
         l.add("gui.spacebreaker.guide.forward", "Forward", "İleri");
         l.add("gui.spacebreaker.guide.contents", "Contents", "İçindekiler");
+        l.add("gui.spacebreaker.guide.start_here", "Where to start", "Nereden başlamalı");
+        l.add("gui.spacebreaker.guide.pick_topic", "Pick a topic on the left to see its chapters here.", "Bölümlerini burada görmek için soldan bir konu seç.");
         l.add("gui.spacebreaker.guide.intro", "Click a chapter to open it. Arrows or the mouse wheel turn pages; the ribbons on the right jump between topics.",
                 "Açmak için bir bölüme tıkla. Sayfaları oklarla ya da fare tekerleğiyle çevir; sağdaki şeritler konular arasında atlar.");
         l.add("gui.spacebreaker.guide.research_needed", "Related research: %s", "İlgili araştırma: %s");
