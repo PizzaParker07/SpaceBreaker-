@@ -33,13 +33,18 @@ Each stage has **one engine** at the bottom and **fuel tanks** above it. The tan
 | Hydrolox (vacuum) | 110 kN | 465 s | hydrogen + LOX (1 : 6) |
 | Nuclear thermal (vacuum) | 150 kN | 880 s | liquid hydrogen only |
 
-**Hydrolox engines** are unlocked by {tech spacebreaker:hydrogen_engines}. Liquid hydrogen is the most efficient fuel but very **bulky** (a fourteenth of water's density): the same mass needs far bigger tanks.
+**Hydrolox engines** are unlocked by {tech spacebreaker:hydrogen_engines}. Liquid hydrogen is the most efficient fuel.
+
+> **Real life and the game:** in reality liquid hydrogen is very bulky (about 71 kg/m³, kerosene about 800). In the game a tank's capacity counts as mass whatever is inside, so hydrolox and nuclear stages fly with much smaller tanks than real ones would.
 
 ## Nuclear thermal engine {#ntr}
 {items spacebreaker:nuclear_thermal_engine}
 The {item spacebreaker:nuclear_thermal_engine} ({tech spacebreaker:nuclear_thermal_propulsion}) burns no oxidiser: a fission reactor heats liquid hydrogen. **880 s** of specific impulse in vacuum, about twice any chemical engine. But at 150 kN and 3.4 t it is too weak to leave the ground: it is an upper-stage engine. Its stage takes liquid hydrogen alone through the same hydrogen line as hydrolox stages.
 
->! While it burns it is a **radiation source**: the dose falls with the square of the distance, and the shadow shield above the engine protects the crew. Cold, it is safe. Its fuel: → [Nuclear Fuel](nuclear_fuel)
+>! While it burns it is a **radiation source**: the dose falls with the square of the distance, and the shadow shield above the engine protects the crew. Cold (with fresh fuel), it is safe. Its exhaust is almost invisible: a faint bluish-violet glow.
+
+Its recipe takes a nuclear fuel element, tungsten plate for the shadow shield, nickel superalloy, titanium plate and a hydrolox vacuum engine. → [Nuclear Fuel](nuclear_fuel)
+{recipe spacebreaker:rocketry/nuclear_thermal_engine}
 
 The assembler shows each stage's fuel type and Δv.
 

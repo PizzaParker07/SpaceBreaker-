@@ -33,13 +33,18 @@ Her kademede altta **bir motor**, üstünde **yakıt tankları** olur. Tanklar, 
 | Hidroloks (vakum) | 110 kN | 465 s | hidrojen + LOX (1 : 6) |
 | Nükleer termal (vakum) | 150 kN | 880 s | yalnız sıvı hidrojen |
 
-**Hidroloks motorları** {tech spacebreaker:hydrogen_engines} ile açılır. Sıvı hidrojen en verimli yakıttır ama çok **hacimlidir** (yoğunluğu suyun on dörtte biri): aynı kütle için çok daha büyük tank gerekir.
+**Hidroloks motorları** {tech spacebreaker:hydrogen_engines} ile açılır. Sıvı hidrojen en verimli yakıttır.
+
+> **Gerçek ve oyun farkı:** gerçekte sıvı hidrojen çok hacimlidir (yaklaşık 71 kg/m³, kerosen yaklaşık 800). Oyunda ise tank kapasitesi, içinde ne olursa olsun kütle olarak sayılır; bu yüzden hidroloks ve nükleer kademeler gerçektekinden çok daha küçük tanklarla uçar.
 
 ## Nükleer termal motor {#ntr}
 {items spacebreaker:nuclear_thermal_engine}
 {item spacebreaker:nuclear_thermal_engine} ({tech spacebreaker:nuclear_thermal_propulsion}) oksitleyici yakmaz: bir fisyon reaktörü sıvı hidrojeni ısıtır. Vakumda **880 s** özgül itki, her kimyasal motorun yaklaşık iki katı. Ama 150 kN itki ve 3,4 t kütleyle yerden kalkamayacak kadar zayıftır: üst kademe motorudur. Kademesi hidroloks kademeleri gibi aynı hidrojen hattından yalnız sıvı hidrojen alır.
 
->! Yanarken bir **radyasyon kaynağıdır**: doz uzaklığın karesiyle azalır, motorun üstündeki gölge kalkanı mürettebatı korur. Soğukken güvenlidir. Yakıtı: → [Nükleer Yakıt](nuclear_fuel)
+>! Yanarken bir **radyasyon kaynağıdır**: doz uzaklığın karesiyle azalır, motorun üstündeki gölge kalkanı mürettebatı korur. Soğukken (taze yakıtla) güvenlidir. Egzozu neredeyse görünmez: soluk, mavimsi-mor bir ışıma.
+
+Tarifinde bir nükleer yakıt elemanı, gölge kalkanı için tungsten levha, nikel süperalaşım, titanyum levha ve bir hidroloks vakum motoru var. → [Nükleer Yakıt](nuclear_fuel)
+{recipe spacebreaker:rocketry/nuclear_thermal_engine}
 
 Montaj tezgâhı her kademenin yakıt türünü ve Δv'sini gösterir.
 

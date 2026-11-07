@@ -28,7 +28,7 @@ Kuzey alçak ve düz bir ovadır, güney eski ve kraterli yaylalar. Dev volkanla
 Mars da Dünya gibi yaklaşık **25°** eğiktir; yarıküreler sırayla kışa girer. Gerçekte 669 sol süren Mars yılı oyunda **24 sola** sıkıştırılmıştır.
 - Kış yarıküresinde havanın bir kısmı donup yere yağar: kutup başlığı ekvatora doğru yaklaşık **52° enleme** kadar yayılır.
 - Açık gecelerde bunun yaklaşık 12° ötesinde ince bir {item spacebreaker:co2_frost_layer} oluşur. İlkbaharda doğrudan gaza döner; altındaki toprak olduğu gibi kalır.
-- **Basınç da mevsimle değişir:** havanın yaklaşık dörtte biri kış kutbuna donar. Güney başlığı daha büyük olduğu için basınç en düşük güney kışında (Ls ≈ 160, yaklaşık −%13), en yüksek güney yazında (Ls ≈ 265, yaklaşık +%13) olur; Viking iniş araçları bunu ölçtü. Kask göstergesi ve Çevre Sensörü bunu gösterir; atmosfer işlemcisinin verimi de basınçla birlikte hafifçe değişir.
+- **Basınç da mevsimle değişir:** havanın yaklaşık dörtte biri kış kutbuna donar. Güney başlığı daha büyük olduğu için basınç en düşük güney kışında (Ls ≈ 160, yaklaşık −%13), en yüksek güney yazında (Ls ≈ 265, yaklaşık +%13) olur; Mars yüzeyindeki ölçümler de bunu gösterir. Kask göstergesi ve Çevre Sensörü bunu gösterir; atmosfer işlemcisinin verimi de basınçla birlikte hafifçe değişir.
 - **Afelyon bulut kuşağı:** Mars Güneş'ten en uzaktayken (Ls ≈ 70–120) ekvatorun üstünde ince, mavimsi-beyaz bir su buzu bulutu tülü oluşur. Güney yazında gök açıktır.
 - **Kanyon sisi:** büyük kanyonda gün doğumundan hemen sonra tabanda ince, beyaz bir buz sisi durur; yukarı doğru incelir ve kuşluk vaktine doğru dağılır.
 - Mevsim değişince bir mesaj gelir. Yöneticiler **/spacebreaker season <Ls>** ile mevsimi seçebilir (0 kuzeyde ilkbahar, 90 yaz, 180 sonbahar, 270 kış).
