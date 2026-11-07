@@ -397,12 +397,12 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | Europa 🎨 | Buzaltı Işık Yılanı (biyolüminesan, pasif; tuzlu su havuzlarında ve gömülü okyanusta) |
 | Ganymede 🎨 | Oluk Otlayıcısı (zırhlı, sürü halinde, okyanus tuzuyla çoğalır) |
 | Kallisto 🎨 | Krater Sıçrayıcısı (ürkek, düşük yerçekiminde uzun sıçrayışlarla kaçar) |
-| Titan 🎨 | Metan Kayıcısı (metan göllerinin üstünde yürür) · Tolin Solucanı (kumul denizlerinde halkalı, ürkek kazıcı: yaklaşınca kuma gömülür, sessizlikte çıkar, kumu eleyip ara sıra tolin bırakır; tolin kumuyla çoğalır) |
+| Titan 🎨 | Metan Kayıcısı (metan göllerinin üstünde yürür; uzun bacak uçlarında sıvıyı çukurlaştıran parlak ayak pedleri, sırtta soluk mavi şerit) · Tolin Solucanı (bal rengi, ortası kalın boğumlu gövde, sırtta kılçık sırası, dört dudaklı ağız konisi (içi koyu turuncu) eleyerek açılıp kapanır; kumul denizlerinde ürkek kazıcı: gömülüyken yalnız kılçıkları görünür; yaklaşınca kuma gömülür, sessizlikte çıkar, kumu eleyip ara sıra tolin bırakır; tolin kumuyla çoğalır) |
 | Enceladus 🎨 | Gayzer Süzülücüsü (gayzer bulutlarında süzülen parlak çan) |
 | Titania 🎨 | Moloz Yuvarlakçası (plakalı otlayıcı; vurulunca top olup hızla yuvarlanarak kaçar, top halindeyken hasarın bir kısmını alır; kömürle çoğalır) |
-| Umbriel 🎨 | Alacakaranlık Sıçrayanı (uzun arka bacaklı koyu otlayıcı; ovalarda yavaş, yüksek sıçrayışlarla gezer; vurulunca karbon tozu bulutu kaldırıp yakınındakileri kısa süre kör eder; kömürle çoğalır) |
+| Umbriel 🎨 | Alacakaranlık Sıçrayanı (mor-gri, sırtı kaya plakalı, geniş yarasa kulaklı ve karanlıkta hafif ışıyan iri gözlü, püsküllü uzun kuyruklu, uzun ayaklı sıçrayıcı; konduğu yerde toz halkası; ovalarda yavaş, yüksek sıçrayışlarla gezer; vurulunca karbon tozu bulutu kaldırıp yakınındakileri kısa süre kör eder; kömürle çoğalır) |
 | Oberon 🎨 | Kenar Kazıcısı (geniş pençeli basık otlayıcı; gevşek zeminde vurulunca kendini toprağa gömer ve bir süre hasar almaz, sert buzda yalnızca kaçar; amonyak kristaliyle çoğalır) |
-| Ariel 🎨 | Kırağı Güvesi (soluk, geniş kanatlı; vadi çıkıntılarının altında tüner, karanlıkta uçar) |
+| Ariel 🎨 | Kırağı Güvesi (tüylü gövde, tüy antenler; ayrık ön/arka buz kanatlarında kırağı damarları, göz benekleri ve tırtıklı kenar, arka çift biraz geriden çırpar; vadi çıkıntılarının altında kanatlarını çatı gibi kapatıp tüner, karanlıkta uçar) |
 | Miranda 🎨 | Uçurum Yapışkanı (beş kollu, yassı otlayıcı; duvarlara tırmanır, düşme hasarı almaz; kömürle çoğalır) |
 | Triton 🎨 | Gayzer Böceği (gayzer tozuyla beslenir, gayzer fırlatınca kanat kınlarını açıp süzülerek iner, düşme hasarı almaz; gayzer tozuyla çoğalır) |
 | Plüton 🎨 | Azot Kaydırıcısı (azot buzunda karnı üstünde iki kat hızlı kayar, tolinle çoğalır) |
