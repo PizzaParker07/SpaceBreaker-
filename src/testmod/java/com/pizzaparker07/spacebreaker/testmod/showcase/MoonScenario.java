@@ -123,6 +123,25 @@ final class MoonScenario implements ShowcaseScenario {
                     180F, 90F, true, fp, 600, at(0.25), MoonScenario::farView));
         }
 
+        // a Gruithuisen-type volcanic dome just after sunrise: long shadows show its low relief
+        double[] dome = find(t, (x, z) -> Math.hypot(x, z) > 400 && t.column(x, z).volcanoS < 0.35, 8000);
+        if (dome != null) {
+            double bx = dome[0];
+            double bz = dome[1];
+            for (int i = -48; i <= 48; i += 4) {
+                for (int j = -48; j <= 48; j += 4) {
+                    if (t.column(dome[0] + i, dome[1] + j).volcanoS < t.column(bx, bz).volcanoS) {
+                        bx = dome[0] + i;
+                        bz = dome[1] + j;
+                    }
+                }
+            }
+            double r = t.column(bx, bz).volcanoRadius;
+            double cx = bx + r * 0.3;
+            double cz = bz - r * 2.6;
+            s.add(new ShowcaseDriver.Shot("07c_volcanic_dome", 0, cx, Math.max(ground(cx, cz), ground(bx, bz)) + r * 0.55, cz,
+                    yaw(bx - cx, bz - cz), 16F, true, fp, 220, at(0.012), MoonScenario::farView));
+        }
         // 9-10: the south pole region: low sun, icy shadowed crater floors
         double poleZ = t.profile().poleDistance() * 0.94;
         Crater polar = t.cratersNear(-800, poleZ - 600, 800, poleZ + 300).stream()
