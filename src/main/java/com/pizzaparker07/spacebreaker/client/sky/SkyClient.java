@@ -27,6 +27,9 @@ public final class SkyClient {
     @SubscribeEvent
     static void registerEffects(RegisterDimensionSpecialEffectsEvent event) {
         event.register(Spacebreaker.id("moon"), new PlanetSkyEffects(Bodies.MOON));
+        // the Earth–Moon travel scene (its dimension names this effects id)
+        event.register(Spacebreaker.id("space_earth_moon"),
+                new SpaceSceneSky(com.pizzaparker07.spacebreaker.core.astro.flight.SceneScale.EARTH_MOON));
     }
 
     private static boolean vacuumSky() {
@@ -66,6 +69,23 @@ public final class SkyClient {
             return;
         }
         float pt = event.getPartialTick().getGameTimeDeltaPartialTick(false);
+        // development camera for the travel scene (showcase only): draws the scene from a given scene block position
+        String devCamera = System.getProperty("spacebreaker.spaceCamera");
+        if (devCamera != null && !devCamera.isEmpty()) {
+            // "x,y,z" in scene blocks, or "body id|dx,dy,dz" to ride along with a body
+            String follow = null;
+            if (devCamera.contains("|")) {
+                follow = devCamera.substring(0, devCamera.indexOf('|'));
+                devCamera = devCamera.substring(devCamera.indexOf('|') + 1);
+            }
+            String[] xyz = devCamera.split(",");
+            com.mojang.blaze3d.systems.RenderSystem.clearColor(0F, 0F, 0F, 1F);
+            com.mojang.blaze3d.systems.RenderSystem.clear(org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT, Minecraft.ON_OSX);
+            SpaceSceneSky.render(level, event.getModelViewMatrix(), event.getProjectionMatrix(),
+                    new org.joml.Vector3d(Double.parseDouble(xyz[0]), Double.parseDouble(xyz[1]), Double.parseDouble(xyz[2])), follow,
+                    com.pizzaparker07.spacebreaker.core.astro.flight.SceneScale.EARTH_MOON);
+            return;
+        }
         // micrometeorite streaks over any world with a shower
         if (com.pizzaparker07.spacebreaker.content.worldgen.ShowerClientState.active(level.dimension())) {
             com.mojang.blaze3d.vertex.PoseStack sky = new com.mojang.blaze3d.vertex.PoseStack();

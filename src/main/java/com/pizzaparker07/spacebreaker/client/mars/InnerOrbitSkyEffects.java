@@ -41,7 +41,21 @@ public class InnerOrbitSkyEffects extends DimensionSpecialEffects {
      * @param thickness haze thickness as a fraction of the limb radius
      */
     private record Look(ResourceLocation texture, float sunDeg, float[] haze, float thickness, Far... far) {
+        /** The haze colour as one flat map, made once (the renderer caches by map). */
+        com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.ColorMap hazeMap() {
+            return HAZE_MAPS.computeIfAbsent(texture, t -> com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.flat(
+                    (int) (haze[0] * 255) << 16 | (int) (haze[1] * 255) << 8 | (int) (haze[2] * 255)));
+        }
     }
+
+    /**
+     * The planet below is a "very near" body: the finest approach level, fixed. (The automatic level reads the size on
+     * screen from the angular radius, which undercounts a planet that overfills the view, and would stay at 16-32.)
+     */
+    private static final int PLANET_BLOCKS = com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.LEVELS[
+            com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.LEVELS.length - 1];
+    private static final java.util.Map<ResourceLocation, com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.ColorMap> HAZE_MAPS =
+            new java.util.concurrent.ConcurrentHashMap<>();
 
     /** A distant body: texture, direction and half size of its billboard, and its colours for the blocky style. */
     private record Far(ResourceLocation texture, Vector3f dir, float size, com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.ColorMap map) {
@@ -166,11 +180,16 @@ public class InnerOrbitSkyEffects extends DimensionSpecialEffects {
                         new Vector3f(c).negate(), 0F);
                 com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.draw(modelView, blocky, 0, f.map, pose, sun, 0.03F, 1F, 1F, null);
             }
-            // the planet below stays a true sphere: it fills half the view, and the blocky renderer flattens a body's
-            // depth toward the viewer, which only holds for bodies far away (asked of the renderer's owners)
-            sphere(modelView, center, orbit * 0.5F, sun);
+            var pose = new com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.Pose(center, RADIUS, new Vector3f(0, 0, 1),
+                    new Vector3f(0, 1, 0), orbit * 0.5F * Mth.TWO_PI);
+            com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.draw(modelView, blocky, PLANET_BLOCKS,
+                    com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.surface(bodyId.getPath()), pose, sun, 0.03F, 1F, 1F, null);
             if (look.haze != null) {
-                haze(modelView, sun);
+                // the air: one translucent shell of blocks, thicker for Venus
+                var shell = new com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.Pose(center, RADIUS * (1F + look.thickness * 0.7F),
+                        pose.pole(), pose.facing(), pose.spin());
+                com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.draw(modelView, blocky, PLANET_BLOCKS, look.hazeMap(), shell, sun, 0F, 1F,
+                        look.haze[3] * 0.4F, null);
             }
         } else {
             for (Far f : look.far) {

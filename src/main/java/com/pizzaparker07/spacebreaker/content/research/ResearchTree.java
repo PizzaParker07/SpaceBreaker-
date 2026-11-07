@@ -342,7 +342,7 @@ public final class ResearchTree {
                 .samples(ORBIT)
                 .en("Heavy Launch", "Reinforced pads and bigger towers for super-heavy, three-stage rockets.")
                 .tr("Ağır Fırlatma", "Süper ağır, üç kademeli roketler için güçlendirilmiş rampalar ve daha büyük kuleler.");
-        t("space_stations", CONSTRUCTION, 2).req("pressurised_modules", "orbital_mechanics").icon("spacebreaker:docking_port").unlocks("station_kit", "docking_port", "habitat_kit", "station_bunk", "fuel_depot", "solar_array", "cargo_module", "station_core_module", "docking_module", "station_hatch")
+        t("space_stations", CONSTRUCTION, 2).req("pressurised_modules", "orbital_mechanics").icon("spacebreaker:docking_port").unlocks("station_kit", "docking_port", "habitat_kit", "station_bunk", "fuel_depot", "solar_array", "cargo_module", "station_core_module", "docking_module", "habitation_module", "airlock_module", "solar_wings", "station_hatch")
                 .samples(ORBIT)
                 .en("Space Stations", "Dock modules together in orbit: a home, a workshop and a fuel depot above the sky.")
                 .tr("Uzay İstasyonları", "Modülleri yörüngede birleştir: gökyüzünün üstünde bir ev, atölye ve yakıt deposu.");
@@ -363,7 +363,7 @@ public final class ResearchTree {
                 .samples(MOON)
                 .en("Lunar Surveying", "Map the maria and highlands; find ilmenite, ice and the safest landing sites.")
                 .tr("Ay Araştırması", "Denizleri ve yaylaları haritala; ilmeniti, buzu ve en güvenli iniş yerlerini bul.");
-        t("rovers", EXPLORATION, 2).req("lunar_surveying", "electronics").icon("spacebreaker:rover").unlocks("rover", "sprint_rover", "pressurized_rover")
+        t("rovers", EXPLORATION, 2).req("lunar_surveying", "electronics").icon("spacebreaker:rover").unlocks("rover", "sprint_rover", "pressurized_rover", "amphibious_rover")
                 .samples(MOON, PROBE_LANDING)
                 .en("Rovers", "Electric vehicles with wire-mesh wheels for driving across dusty plains.")
                 .tr("Gezici Araçlar", "Tozlu ovalarda sürmek için tel örgü tekerlekli elektrikli araçlar.");

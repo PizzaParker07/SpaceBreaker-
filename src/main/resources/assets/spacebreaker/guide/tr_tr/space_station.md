@@ -1,7 +1,7 @@
 ---
 title: Uzay İstasyonu
 icon: spacebreaker:docking_port
-items: [spacebreaker:station_kit, spacebreaker:habitat_kit, spacebreaker:station_hull, spacebreaker:station_window, spacebreaker:docking_port, spacebreaker:station_bunk, spacebreaker:fuel_depot, spacebreaker:solar_array, spacebreaker:crew_capsule_large, spacebreaker:cargo_module]
+items: [spacebreaker:station_kit, spacebreaker:habitat_kit, spacebreaker:station_hull, spacebreaker:station_window, spacebreaker:docking_port, spacebreaker:station_bunk, spacebreaker:fuel_depot, spacebreaker:solar_array, spacebreaker:crew_capsule_large, spacebreaker:cargo_module, spacebreaker:station_core_module, spacebreaker:docking_module, spacebreaker:station_hatch]
 research: spacebreaker:space_stations
 ---
 Yörüngede bir ev, atölye ve yakıt deposu. Roketini her seferinde yerden doldurmak zorunda kalmazsın.
@@ -13,6 +13,18 @@ Yörüngede bir ev, atölye ve yakıt deposu. Roketini her seferinde yerden dold
 2. {item spacebreaker:station_hull} ve {item spacebreaker:station_window} ile duvarları ve tavanı ör.
 3. İçine bir {item spacebreaker:oxygen_distributor} koy: kapalı oda basınçlanır, kask çıkarabilirsin. → [Üssün Havası](base_air)
 4. Dışarıya bir {item spacebreaker:docking_port} tak.
+
+## İstasyon modülleri {#modules}
+{items spacebreaker:station_core_module spacebreaker:docking_module}
+Hazır modüller standart **ağızlardan** birleşir: yürüme yüksekliğinde 3 × 3'lük bir açıklık; bir şey bağlı değilken dokuz {item spacebreaker:station_hatch} ile kapalıdır (ortadaki işaretlidir).
+- **{item spacebreaker:station_core_module}** (7 × 7 × 7): istasyonun kalbi; {item spacebreaker:station_core}, oksijen dağıtıcı, tavan ışıkları, çatıda bir kenetlenme portu ve üstünde birer pencere olan dört yan ağız.
+- **{item spacebreaker:docking_module}** (5 × 5 × 7): ucunda kenetlenme portu olan kısa bir tünel.
+
+**Elle:** modülü bir ağzın kapağına kullan. Duvara dayanarak kurulur ve iki duvar kısa bir geçide açılır; iki modül tek bir hava odası olur. Yörüngede boşlukta kullanılan bir çekirdek yeni bir istasyon kurar (başka yerde "İstasyon çekirdeği yalnızca yörüngede açılabilir" der). Elinde modül varken bir ağza bakarsan nereye geleceğinin taslağı görünür: yer varsa yeşil, yolda bir şey varsa kırmızı.
+
+**Roketle:** modüller kapsül yuvasına takılır. Modül taşıyan roket yörüngesindeki istasyona kenetlenir ve modülü çekirdek konsolunda bekletir; almak için konsolu aç. 512 blok içinde istasyon yoksa çekirdek modülü roketin önünde yeni bir istasyon açar, roket de onun çatısına kenetlenir.
+{recipe spacebreaker:rocketry/station_core_module}
+{recipe spacebreaker:rocketry/docking_module}
 
 ## Yaşam modülü kiti
 {items spacebreaker:habitat_kit}

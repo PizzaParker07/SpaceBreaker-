@@ -46,9 +46,9 @@ final class InnerOrbitScenario implements ShowcaseScenario {
         String[] bodies = {"venus", "mercury", "mars"};
         for (int i = 0; i < bodies.length; i++) {
             String b = bodies[i];
-            s.add(new ShowcaseDriver.Shot(String.format("%02d_%s_orbit", i * 2 + 1, b), 6000, 0.5, Y, 0.5, 0F, 0F, true, fp, 100,
+            s.add(new ShowcaseDriver.Shot(String.format("%02d_%s_orbit", i * 2 + 1, b), 6000, 0.5, Y, 0.5, 0F, 0F, true, fp, 300,
                     p -> go(p, b, 1500, 200F, 78F), null));
-            s.add(new ShowcaseDriver.Shot(String.format("%02d_%s_limb", i * 2 + 2, b), 6000, 0.5, Y, 0.5, 0F, 0F, true, fp, 100,
+            s.add(new ShowcaseDriver.Shot(String.format("%02d_%s_limb", i * 2 + 2, b), 6000, 0.5, Y, 0.5, 0F, 0F, true, fp, 300,
                     p -> go(p, b, 3000, 20F, 12F), null));
         }
         return s;

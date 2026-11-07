@@ -14,21 +14,17 @@ Yörüngeye çıkarken, gezegenler arasında ve inişte yükleme ekranı yoktur;
 
 ## Yıldız haritası
 Roket **yörüngedeyken** {key key.spacebreaker.star_map} haritayı açar. Yüzeyden önce rampadan fırlatman gerekir.
-1. Güneş soldadır; **Buradasın** iğnesi nerede olduğunu gösterir. Bir gezegene tıkla: sistemine yakınlaşır. Geri dönmek için **◀ Güneş Sistemi** ya da sağ tık.
-2. Sağdaki panel seçtiğin dünyanın resmini, kısa açıklamasını ve tehlikelerini gösterir: **Hava yok**, **Solunamaz hava**, **Ezici basınç**, **Sıcak**, **Soğuk**, **Radyasyon**.
-3. **Yörüngeye git** ya da **Yüzeye in**'i seç. (Henüz kurulmamış bir dünyada **Yakında**, yüzeyi olmayan bir cisimde **İnilecek yüzey yok** yazar.)
-4. Panel şunları yazar:
-   - **Gereken yakıt X · roketinde Y** → **Yeter ✔** ya da **X eksik ✘**
-   - **Geri dönüş yakıtı:** yeter ✔ / yetmez ✘
-   - **Yolculuk süresi:** X gün
-   - **Fırlatma penceresi:** şu an uygun, ya da en iyisi biraz sonra (şimdi gitmek daha çok yakıt ister)
-5. Rota haritada numaralı adımlarla çizilir. Büyük **Git** düğmesine bas. Düğme pasifse nedenini yazar.
+1. Bütün Güneş Sistemi tek bir haritadır: her dünya yörüngesinde gerçekte bulunduğu yerde, kendi renklerinde küçük bir disk olarak durur. Kuyruklu yıldızlar ve Dünya'ya yakın asteroitler yörüngelerinde küçük noktalardır. Küçük bir işaret roketinin nerede olduğunu gösterir.
+2. **Tekerlekle** yakınlaş, **sürükleyerek** kaydır, **sağ tıkla** her şeyi yeniden gör. Bir dünyaya tıkla: görünüm ona doğru kayar ve uydularını görecek kadar yaklaşır.
+3. Kısa panelde dünyanın adı ve türü, **Yörünge** ya da **Yüzeye in** seçimi ve tehlikeleri renkli kelimelerle yazar: **Hava yok**, **Solunamaz hava**, **Ezici basınç**, **Sıcak**, **Soğuk**, **Radyasyon**.
+4. Yolculuk için **Δv** ve **Süre** büyük rakamlarla, tek bir yakıt çubuğu (gereken yakıt ve roketteki yakıt), bir dönüş satırı (**Dönüş: yakıt yeter**, **Dönüş: orada yakıt üret** ya da **Dönüş: yakıt yetmez**), fırlatma penceresi ve yalnız en önemli uyarı görünür.
+5. Rota haritada ince, kesik çizgili bir yaydır. **Git**'e bas. Düğme gri ise panel nedenini söyler.
 
-Bir gezegenin yanındaki küçük **istasyon simgesi**, yörüngesinde bir uzay istasyonu olduğunu gösterir; yan panel onu kimin kurduğunu ve kaç yanaşma portu olduğunu yazar. → [Uzay İstasyonu](space_station)
+Bir dünyanın yanındaki küçük **istasyon** işareti, yörüngesinde bir uzay istasyonu olduğu anlamına gelir. → [Uzay İstasyonu](space_station)
 
-Uçarken göstergede **Kalan yakıt (Δv)** satırını izle.
+Uçarken göstergedeki **Kalan yakıt (Δv)** satırını izle.
 
-> **Δv**, roketinin hızını ne kadar değiştirebileceğidir; kısaca: yakıtın.
+> **Δv**, roketinin hızını ne kadar değiştirebileceğidir; kısacası yakıtın.
 
 ## Ay'a iniş
 - Ay yörüngesinden yüzeye yaklaşık **1870 m/s** gerekir. Dönüş için de bir o kadar.

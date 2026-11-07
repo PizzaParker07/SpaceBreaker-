@@ -60,6 +60,7 @@ public final class ShowcaseScenarios {
         ALL.put("perf", new PerfScenario());
         ALL.put("lod", new LodScenario());
         ALL.put("blocky_lod", new BlockyLodScenario());
+        ALL.put("space_scene", new SpaceSceneScenario());
         ALL.put("jei", new JeiScenario(true));
         ALL.put("emi", new JeiScenario(false));
         ALL.put("info", new InfoOverlayScenario());
