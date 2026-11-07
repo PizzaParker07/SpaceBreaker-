@@ -48,8 +48,12 @@ public class InnerOrbitSkyEffects extends DimensionSpecialEffects {
         }
     }
 
-    /** The planet below fills half the view: always the finest level, so its blocks stay small and it never steps. */
-    private static final int PLANET_BLOCKS = 64;
+    /**
+     * The planet below is a "very near" body: the finest approach level, fixed. (The automatic level reads the size on
+     * screen from the angular radius, which undercounts a planet that overfills the view, and would stay at 16-32.)
+     */
+    private static final int PLANET_BLOCKS = com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.LEVELS[
+            com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.LEVELS.length - 1];
     private static final java.util.Map<ResourceLocation, com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.ColorMap> HAZE_MAPS =
             new java.util.concurrent.ConcurrentHashMap<>();
 
