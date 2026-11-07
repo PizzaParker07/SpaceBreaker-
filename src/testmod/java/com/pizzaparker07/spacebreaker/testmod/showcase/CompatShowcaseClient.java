@@ -23,7 +23,19 @@ final class CompatShowcaseClient {
     private static final com.pizzaparker07.spacebreaker.compat.client.PassTimer TIMER =
             new com.pizzaparker07.spacebreaker.compat.client.PassTimer("ghost blocks (16)");
 
+    /** Keeps the docking jolt of the ridden rocket going (the camera shake is checked in a still frame). */
+    static volatile boolean joltLoop;
+
     private CompatShowcaseClient() {
+    }
+
+    @SubscribeEvent
+    static void tick(net.neoforged.neoforge.client.event.ClientTickEvent.Post event) {
+        var player = Minecraft.getInstance().player;
+        if (joltLoop && player != null && player.getVehicle() instanceof com.pizzaparker07.spacebreaker.content.rocketry.entity.RocketEntity rocket
+                && player.tickCount % 3 == 0) {
+            rocket.handleEntityEvent(com.pizzaparker07.spacebreaker.content.rocketry.entity.RocketEntity.EVENT_DOCKED);
+        }
     }
 
     @SubscribeEvent

@@ -20,8 +20,6 @@ public final class CompatClient {
     static void stage(RenderLevelStageEvent event) {
         if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_SOLID_BLOCKS) {
             HazePass.captureFog();
-        } else if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES) {
-            ShaderSkyPass.captureOpaqueDepth();
         } else if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_LEVEL) {
             float partialTick = event.getPartialTick().getGameTimeDeltaPartialTick(false);
             ShaderSkyPass.afterLevel(event.getModelViewMatrix(), event.getProjectionMatrix(), partialTick);

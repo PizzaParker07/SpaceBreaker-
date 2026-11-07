@@ -89,4 +89,48 @@ public final class ShaderState {
             return false;
         }
     }
+
+    private static boolean depthResolved;
+    private static java.lang.reflect.Method pipelineManager;
+    private static java.lang.reflect.Method pipeline;
+    private static java.lang.reflect.Field renderTargets;
+    private static java.lang.reflect.Method noTranslucents;
+    private static java.lang.reflect.Method textureId;
+
+    /**
+     * GL id of Iris's depth copy taken just before the translucent pass (the pack's depthtex1: terrain and entities,
+     * no glass or water), or 0 when it cannot be read. Iris internals, read by reflection: any change there only
+     * turns the feature off.
+     */
+    public static int opaqueDepthTexture() {
+        if (!depthResolved) {
+            depthResolved = true;
+            try {
+                Class<?> iris = Class.forName("net.irisshaders.iris.Iris");
+                pipelineManager = iris.getMethod("getPipelineManager");
+                pipeline = pipelineManager.getReturnType().getMethod("getPipelineNullable");
+                Class<?> irisPipeline = Class.forName("net.irisshaders.iris.pipeline.IrisRenderingPipeline");
+                renderTargets = irisPipeline.getDeclaredField("renderTargets");
+                renderTargets.setAccessible(true);
+                noTranslucents = renderTargets.getType().getMethod("getDepthTextureNoTranslucents");
+                textureId = noTranslucents.getReturnType().getMethod("getTextureId");
+            } catch (ReflectiveOperationException | LinkageError | RuntimeException e) {
+                pipelineManager = null;
+            }
+        }
+        if (pipelineManager == null) {
+            return 0;
+        }
+        try {
+            Object p = pipeline.invoke(pipelineManager.invoke(null));
+            if (p == null || !renderTargets.getDeclaringClass().isInstance(p)) {
+                return 0;
+            }
+            Object targets = renderTargets.get(p);
+            Object depth = targets == null ? null : noTranslucents.invoke(targets);
+            return depth == null ? 0 : (Integer) textureId.invoke(depth);
+        } catch (ReflectiveOperationException | RuntimeException e) {
+            return 0;
+        }
+    }
 }
