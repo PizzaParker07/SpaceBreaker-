@@ -419,7 +419,7 @@ def copper_pipe():
 def side_panel():
     """Small control box: dark face, two status lamps, a gauge."""
     cv = casing(91, rivets=False, seam=False)
-    rect(cv, 3, 3, 12, 12, S[1])
+    rect(cv, 3, 3, 12, 12, S[2])
     rect(cv, 5, 5, 6, 6, (88, 200, 90))
     rect(cv, 9, 5, 10, 6, (214, 170, 44))
     rect(cv, 5, 9, 10, 10, S[5])
