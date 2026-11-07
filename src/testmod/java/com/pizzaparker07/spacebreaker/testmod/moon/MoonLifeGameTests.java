@@ -374,6 +374,45 @@ public final class MoonLifeGameTests {
         });
     }
 
+    /**
+     * Micrometeorites: a hit costs half a heart and wears one worn suit piece; a player in the open is exposed, one under
+     * a roof is not; the damage type exists; showers only fall on airless planet surfaces (not on Earth).
+     */
+    @GameTest(template = EMPTY)
+    public static void micrometeoritesHitTheExposed(GameTestHelper helper) {
+        var mc = com.pizzaparker07.spacebreaker.content.worldgen.MeteorShowers.class;
+        helper.assertTrue(helper.getLevel().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE)
+                .containsKey(com.pizzaparker07.spacebreaker.content.worldgen.MeteorShowers.MICROMETEORITE), "micrometeorite damage type");
+        helper.assertFalse(com.pizzaparker07.spacebreaker.content.worldgen.MeteorShowers.eligible(helper.getLevel()), "no showers under Earth's air");
+        var player = helper.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        BlockPos open = helper.absolutePos(new BlockPos(1, 1, 1));
+        player.moveTo(open.getX() + 0.5, open.getY(), open.getZ() + 0.5);
+        var plate = new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.IRON_CHESTPLATE);
+        player.setItemSlot(net.minecraft.world.entity.EquipmentSlot.CHEST, plate);
+        float health = player.getHealth();
+        player.invulnerableTime = 0;
+        com.pizzaparker07.spacebreaker.content.worldgen.MeteorShowers.strike(player, RandomSource.create(1));
+        helper.assertTrue(player.getHealth() <= health - com.pizzaparker07.spacebreaker.content.worldgen.MeteorShowers.DAMAGE + 0.01F,
+                "a hit costs health: " + health + " -> " + player.getHealth());
+        helper.assertTrue(player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.CHEST).getDamageValue()
+                >= com.pizzaparker07.spacebreaker.content.worldgen.MeteorShowers.WEAR, "a hit wears the armour");
+        // a shower is capped: even unlucky, it can take at most a few hearts
+        float worst = com.pizzaparker07.spacebreaker.content.worldgen.MeteorShowers.MAX_PER_SHOWER;
+        helper.assertTrue(worst <= 6F, "at most three hearts per shower");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.worldgen.MeteorShowers.SUITED_DAMAGE
+                < com.pizzaparker07.spacebreaker.content.worldgen.MeteorShowers.DAMAGE, "a sealed suit softens the hits");
+        BlockPos eye = BlockPos.containing(player.getEyePosition());
+        boolean skyOpen = helper.getLevel().getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, eye.getX(), eye.getZ()) <= eye.getY();
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.worldgen.MeteorShowers.exposed(player) == skyOpen, "in the open you are exposed");
+        for (int x = 0; x <= 2; x++) {
+            for (int z = 0; z <= 2; z++) {
+                helper.setBlock(x, 4, z, Blocks.STONE);
+            }
+        }
+        helper.assertFalse(com.pizzaparker07.spacebreaker.content.worldgen.MeteorShowers.exposed(player), "a roof overhead keeps you safe");
+        helper.succeed();
+    }
+
     /** Ground height at a far-away test spot, with its chunk loaded first (an unloaded chunk reads as the world floor). */
     private static int surface(ServerLevel level, BlockPos pos) {
         level.getChunk(pos);
