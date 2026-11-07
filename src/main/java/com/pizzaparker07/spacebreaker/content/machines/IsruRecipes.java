@@ -35,10 +35,17 @@ public final class IsruRecipes {
     /** Regolith soaked in solar-wind volatiles (Mercury, the Moon): filled by the planet areas. */
     public static final TagKey<Item> SOLAR_WIND_REGOLITHS = SbTagKeys.commonItem("regoliths/solar_wind");
     public static final TagKey<Item> SULFUR = SbTagKeys.commonItem("dusts/sulfur");
+    /** Carbon-rich rubble (C-type asteroids, carbonaceous chondrite): clay minerals that hold water, and organics. */
+    public static final TagKey<Item> CARBONACEOUS_REGOLITHS = SbTagKeys.commonItem("regoliths/carbonaceous");
+    /** Stony (S-type) asteroid rubble with grains of meteoritic iron-nickel. */
+    public static final TagKey<Item> STONY_REGOLITHS = SbTagKeys.commonItem("regoliths/stony");
 
     /** Known feedstock from other areas, added by id only when it exists. */
     private static final List<String> REGOLITH_IDS = List.of("lunar_regolith", "mare_regolith", "martian_regolith",
             "phobos_regolith", "deimos_regolith", "venus_soil", "hematite_soil");
+    private static final List<String> CARBONACEOUS_IDS = List.of("bennu_regolith", "bennu_boulder", "ryugu_regolith", "ryugu_rock",
+            "carbonaceous_chondrite");
+    private static final List<String> STONY_IDS = List.of("eros_regolith", "eros_chondrite", "itokawa_gravel", "itokawa_rock");
     private static final List<String> ICE_IDS = List.of("lunar_ice", "icy_regolith", "martian_ice", "dusty_ice", "mercury_ice");
     private static final List<String> DRY_ICE_IDS = List.of("dry_ice");
     private static final List<String> PERCHLORATE_IDS = List.of("perchlorate_soil");
@@ -48,6 +55,10 @@ public final class IsruRecipes {
 
     static void tags(SbTags tags) {
         tags.item(REGOLITHS, byId(REGOLITH_IDS));
+        tags.item(CARBONACEOUS_REGOLITHS, byId(CARBONACEOUS_IDS));
+        tags.item(STONY_REGOLITHS, byId(STONY_IDS));
+        // asteroid rubble is regolith too: it sinters, and stony rubble gives oxygen in the heater like any other
+        tags.item(REGOLITHS, byId(STONY_IDS));
         tags.item(ICES, concat(byId(ICE_IDS), Items.ICE, Items.PACKED_ICE, Items.BLUE_ICE, Items.SNOW_BLOCK));
         tags.item(DRY_ICES, byId(DRY_ICE_IDS));
         tags.item(PERCHLORATE_SOILS, byId(PERCHLORATE_IDS));
@@ -71,6 +82,14 @@ public final class IsruRecipes {
         // molten regolith electrolysis; regolith is ~40 % oxygen by mass, metals stay behind
         ProcessingRecipeBuilder.of(REGOLITH_PROCESSING).in(REGOLITHS).fluidOut(FluidsModule.OXYGEN.get(), 250)
                 .bonus(EarthModule.IRON.dust.get(), 1, 0.2F).time(160).energy(120).save(out, "regolith");
+        // carbonaceous asteroids: heating drives water out of their clays (Bennu's rock is several % water) and burns
+        // off a little carbon as CO2; the char left behind is carbon
+        ProcessingRecipeBuilder.of(REGOLITH_PROCESSING).in(CARBONACEOUS_REGOLITHS).fluidOut(Fluids.WATER, 200)
+                .fluidOut(FluidsModule.CARBON_DIOXIDE.get(), 50).bonus(EarthModule.COAL_DUST.get(), 1, 0.3F).time(160).energy(100)
+                .priority(2).save(out, "carbonaceous_water");
+        // stony asteroids: crushed rubble gives up its iron-nickel grains
+        ProcessingRecipeBuilder.of(CRUSHING).in(STONY_REGOLITHS).out(EarthModule.IRON.dust.get())
+                .bonus(EarthModule.NICKEL.dust.get(), 1, 0.25F).time(80).energy(16).save(out, "stony_asteroid_metal");
         // perchlorate decomposition (ClO4- -> Cl- + 2 O2)
         ProcessingRecipeBuilder.of(REGOLITH_PROCESSING).in(PERCHLORATE_SOILS).fluidOut(FluidsModule.OXYGEN.get(), 500)
                 .time(100).energy(80).save(out, "perchlorate");

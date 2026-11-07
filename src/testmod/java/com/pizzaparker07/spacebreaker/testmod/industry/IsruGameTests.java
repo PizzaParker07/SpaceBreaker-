@@ -170,7 +170,10 @@ public final class IsruGameTests {
                 {"regoliths", "lunar_regolith", "martian_regolith", "phobos_regolith", "deimos_regolith"},
                 {"ices", "lunar_ice", "martian_ice", "icy_regolith"},
                 {"dry_ices", "dry_ice"},
-                {"perchlorate_soils", "perchlorate_soil"}};
+                {"perchlorate_soils", "perchlorate_soil"},
+                {"regoliths/carbonaceous", "bennu_regolith", "ryugu_regolith", "carbonaceous_chondrite"},
+                {"regoliths/stony", "eros_regolith", "itokawa_gravel"},
+                {"regoliths", "eros_regolith", "itokawa_gravel"}};
         for (String[] row : expected) {
             TagKey<Item> tag = com.pizzaparker07.spacebreaker.core.data.SbTagKeys.commonItem(row[0]);
             for (int i = 1; i < row.length; i++) {
@@ -208,6 +211,20 @@ public final class IsruGameTests {
         be.fluidCapability(null).fill(FluidsModule.OXYGEN.stack(3_000), IFluidHandler.FluidAction.EXECUTE);
         h.assertTrue(be.tank(0).getFluid().is(Fluids.WATER) && be.tank(1).getFluid().is(FluidsModule.TAG_OXYGEN), "each fluid gets its own input tank");
         h.succeed();
+    }
+
+    /** Bennu's dark rubble in the regolith heater gives water (and a little CO2), not oxygen. */
+    @GameTest(template = "empty", timeoutTicks = 400)
+    public static void carbonaceousAsteroidGivesWater(GameTestHelper h) {
+        MachineBlockEntity heater = machine(h, MachinesModule.REGOLITH_HEATER, new BlockPos(2, 1, 2), Direction.NORTH);
+        heater.items().setStackInSlot(0, new ItemStack(BuiltInRegistries.ITEM.get(Spacebreaker.id("bennu_regolith")), 2));
+        MachineBlockEntity crusher = machine(h, MachinesModule.CRUSHER, new BlockPos(4, 1, 4), Direction.NORTH);
+        crusher.items().setStackInSlot(0, new ItemStack(BuiltInRegistries.ITEM.get(Spacebreaker.id("eros_regolith")), 2));
+        h.succeedWhen(() -> {
+            h.assertTrue(heater.tank(0).getFluid().is(Fluids.WATER) && heater.tank(0).getFluidAmount() >= 200, "water from Bennu: " + heater.tank(0).getFluid());
+            h.assertTrue(crusher.items().getStackInSlot(1).is(com.pizzaparker07.spacebreaker.content.earth.EarthModule.IRON.dust.get()),
+                    "iron from Eros: " + crusher.items().getStackInSlot(1));
+        });
     }
 
     @GameTest(template = "empty")
