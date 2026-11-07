@@ -428,6 +428,79 @@ public final class RoverTests {
         });
     }
 
+    /** A pool of a liquid, 7 x 9 and 3 deep, on a stone floor. */
+    private static void pool(GameTestHelper h, BlockState liquid) {
+        for (int x = 0; x < 7; x++) {
+            for (int z = 0; z < 9; z++) {
+                h.setBlock(new BlockPos(x, 0, z), Blocks.STONE);
+                for (int y = 1; y <= 3; y++) {
+                    h.setBlock(new BlockPos(x, y, z), liquid);
+                }
+            }
+        }
+    }
+
+    /** The amphibious rover floats at its waterline on water and sails across it under its own power. */
+    @GameTest(template = "empty", timeoutTicks = 200)
+    public static void amphibiousRoverFloatsOnWater(GameTestHelper h) {
+        pool(h, Blocks.WATER.defaultBlockState());
+        RoverEntity boat = h.spawn(VehiclesModule.AMPHIBIOUS_ROVER.get(), Vec3.atBottomCenterOf(new BlockPos(3, 2, 1)));
+        boat.setYRot(0F);
+        boat.setEnergy(500_000);
+        RoverEntity sinker = h.spawn(VehiclesModule.ROVER.get(), Vec3.atBottomCenterOf(new BlockPos(1, 3, 7)));
+        double surface = h.absolutePos(new BlockPos(0, 4, 0)).getY();
+        double z0 = boat.getZ();
+        h.runAfterDelay(60, () -> {
+            h.assertTrue(boat.afloat(), "afloat");
+            double draft = surface - boat.getY();
+            h.assertTrue(draft > 0.2 && draft < 0.8, "riding at its waterline, draft " + draft);
+            h.assertTrue(sinker.getY() < surface - 1.5, "a plain rover sinks: " + (surface - sinker.getY()));
+        });
+        h.runAfterDelay(61, () -> boat.setSpeed(0.2));
+        h.runAfterDelay(100, () -> {
+            h.assertTrue(boat.getZ() - z0 > 2, "it sails on: moved " + (boat.getZ() - z0));
+            h.assertTrue(surface - boat.getY() < 0.8, "and stays up");
+            h.succeed();
+        });
+    }
+
+    /** Driving out: afloat, it noses into the bank and climbs out onto dry ground. */
+    @GameTest(template = "empty", timeoutTicks = 240)
+    public static void amphibiousRoverClimbsOutOntoTheShore(GameTestHelper h) {
+        for (int x = 0; x < 7; x++) {
+            for (int z = 0; z < 12; z++) {
+                h.setBlock(new BlockPos(x, 0, z), Blocks.STONE);
+                for (int y = 1; y <= 3; y++) {
+                    h.setBlock(new BlockPos(x, y, z), z < 6 ? Blocks.WATER : Blocks.STONE);
+                }
+            }
+        }
+        RoverEntity boat = h.spawn(VehiclesModule.AMPHIBIOUS_ROVER.get(), Vec3.atBottomCenterOf(new BlockPos(3, 3, 2)));
+        boat.setYRot(0F);
+        boat.setEnergy(500_000);
+        h.succeedWhen(() -> {
+            boat.setSpeed(0.2);
+            h.assertTrue(!boat.afloat() && boat.getY() >= h.absolutePos(new BlockPos(0, 4, 0)).getY() - 0.01
+                    && boat.getZ() > h.absolutePos(new BlockPos(0, 4, 6)).getZ() + 0.5, "out on the shore: y " + boat.getY() + " z " + boat.getZ());
+        });
+    }
+
+    /** Titan's methane lakes float it the same way. */
+    @GameTest(template = "empty", timeoutTicks = 120)
+    public static void amphibiousRoverFloatsOnLiquidMethane(GameTestHelper h) {
+        pool(h, com.pizzaparker07.spacebreaker.content.saturn.SaturnModule.TITAN_METHANE.get().defaultBlockState());
+        RoverEntity boat = h.spawn(VehiclesModule.AMPHIBIOUS_ROVER.get(), Vec3.atBottomCenterOf(new BlockPos(3, 2, 4)));
+        boat.setEnergy(500_000);
+        double surface = h.absolutePos(new BlockPos(0, 4, 0)).getY();
+        h.runAfterDelay(60, () -> {
+            double draft = surface - boat.getY();
+            h.assertTrue(boat.afloat() && draft > 0.2 && draft < 0.8, "floats on methane, draft " + draft);
+            var type = com.pizzaparker07.spacebreaker.content.vehicles.RoverType.AMPHIBIOUS;
+            h.assertTrue(type.amphibious() && type.cabin() && type.swimSpeed() * 20 >= 5 - 1e-9, "pressurised, 5 m/s afloat");
+            h.succeed();
+        });
+    }
+
     private static void floor(GameTestHelper h, BlockState state) {
         for (int z = 0; z < 5; z++) {
             for (int x = 0; x < 5; x++) {

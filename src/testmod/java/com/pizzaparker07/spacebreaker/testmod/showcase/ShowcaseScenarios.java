@@ -30,6 +30,8 @@ public final class ShowcaseScenarios {
         ALL.put("industry", new IndustryScenario());
         ALL.put("rover_moon", new RoverScenario(com.pizzaparker07.spacebreaker.content.moon.MoonModule.MOON, false));
         ALL.put("rover_mars", new RoverScenario(com.pizzaparker07.spacebreaker.content.mars.MarsModule.MARS, true));
+        ALL.put("amphibious_earth", new AmphibiousScenario(net.minecraft.world.level.Level.OVERWORLD, false));
+        ALL.put("amphibious_titan", new AmphibiousScenario(com.pizzaparker07.spacebreaker.content.saturn.SaturnModule.TITAN, true));
         ALL.put("solar_dust", new SolarDustScenario());
         ALL.put("item_duct", new ItemDuctScenario());
         ALL.put("moon", new MoonScenario());

@@ -27,6 +27,7 @@ public final class VehiclesClient {
         event.registerLayerDefinition(RoverModel.LAYER, RoverModel::createLayer);
         event.registerLayerDefinition(RoverModel.SPRINT_LAYER, RoverModel::createSprintLayer);
         event.registerLayerDefinition(RoverModel.PRESSURIZED_LAYER, RoverModel::createPressurizedLayer);
+        event.registerLayerDefinition(RoverModel.AMPHIBIOUS_LAYER, RoverModel::createAmphibiousLayer);
     }
 
     @SubscribeEvent
@@ -34,6 +35,7 @@ public final class VehiclesClient {
         event.registerEntityRenderer(VehiclesModule.ROVER.get(), RoverRenderer::new);
         event.registerEntityRenderer(VehiclesModule.SPRINT_ROVER.get(), RoverRenderer::sprint);
         event.registerEntityRenderer(VehiclesModule.PRESSURIZED_ROVER.get(), RoverRenderer::pressurized);
+        event.registerEntityRenderer(VehiclesModule.AMPHIBIOUS_ROVER.get(), RoverRenderer::amphibious);
     }
 
     private static final java.util.Map<Integer, RoverSound> SOUNDS = new java.util.HashMap<>();

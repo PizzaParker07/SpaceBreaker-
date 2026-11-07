@@ -122,4 +122,22 @@ public final class RoverPhysics {
     public static float tilt(double groundA, double groundB, double span) {
         return (float) Math.max(-MAX_TILT, Math.min(MAX_TILT, Math.atan2(groundA - groundB, span)));
     }
+
+    /** Afloat: the propeller accelerates gently, the water drags harder than tyres roll, no braking but reverse thrust. */
+    public static double swimSpeed(double speed, double throttle, double maxSpeed) {
+        speed += throttle * 0.008;
+        speed *= throttle == 0 ? 0.96 : 0.99;
+        if (Math.abs(speed) < 1e-4) {
+            speed = 0;
+        }
+        return Mth.clamp(speed, -maxSpeed * 0.4, maxSpeed);
+    }
+
+    /**
+     * Vertical speed of a floating hull: a damped spring pulling it to its waterline ({@code depthError} = how far
+     * the waterline is above the hull, blocks), so it settles and bobs instead of sinking.
+     */
+    public static double buoyancy(double vy, double depthError) {
+        return Mth.clamp((vy + depthError * 0.12) * 0.8, -0.3, 0.3);
+    }
 }
