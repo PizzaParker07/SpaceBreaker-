@@ -25,6 +25,7 @@ public final class ShowcaseScenarios {
         ALL.put("industry", new IndustryScenario());
         ALL.put("rover_moon", new RoverScenario(com.pizzaparker07.spacebreaker.content.moon.MoonModule.MOON, false));
         ALL.put("rover_mars", new RoverScenario(com.pizzaparker07.spacebreaker.content.mars.MarsModule.MARS, true));
+        ALL.put("solar_dust", new SolarDustScenario());
         ALL.put("moon", new MoonScenario());
         ALL.put("sky_planets", new SkyPlanetsScenario(false));
         ALL.put("sky_planets_mars", new SkyPlanetsScenario(true));

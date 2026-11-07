@@ -21,12 +21,18 @@ public class SolarPanelBlockEntity extends BlockEntity {
     /** Upper limit on the sunlight multiplier near the sun (hot cells lose efficiency). */
     public static final double MAX_SOLAR_FACTOR = 3.0;
     private static final float SLEW_PER_TICK = (float) Math.toRadians(0.6);
+    /** Output lost when the cells are fully covered in dust (some light still scatters through). */
+    public static final float MAX_DUST_LOSS = 0.4F;
+    /** How often settling dust is added, ticks. */
+    public static final int DUST_INTERVAL = 20;
 
     private final int peak;
     private final Buffer energy;
     private int lastOutput;
     private double carry;
     private double exactOutput;
+    /** Dust cover on the cells, 0 = clean, 1 = fully covered. */
+    private float dust;
 
     // client-side animation state
     private float tilt;
@@ -59,6 +65,35 @@ public class SolarPanelBlockEntity extends BlockEntity {
     /** Output this tick before whole-FE rounding (FE/t). */
     public double getExactOutput() {
         return exactOutput;
+    }
+
+    public float dust() {
+        return dust;
+    }
+
+    public void setDust(float value) {
+        float next = Mth.clamp(value, 0F, 1F);
+        if (next != dust) {
+            // clients only need the cover in 5% steps (and the moment it is wiped clean)
+            boolean visible = next == 0F || (int) (next * 20) != (int) (dust * 20);
+            dust = next;
+            setChanged();
+            if (visible && level != null && !level.isClientSide) {
+                level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+            }
+        }
+    }
+
+    /** Removes some dust (e.g. a dust devil passing over or a wipe); returns how much was taken off. */
+    public float clean(float amount) {
+        float before = dust;
+        setDust(dust - Math.max(0F, amount));
+        return before - dust;
+    }
+
+    /** Fraction of output kept under a given dust cover. */
+    public static float dustFactor(float dust) {
+        return 1F - MAX_DUST_LOSS * Mth.clamp(dust, 0F, 1F);
     }
 
     /** Sun angle in radians, 0 = noon, negative = morning (east), positive = afternoon (west). */
@@ -113,6 +148,13 @@ public class SolarPanelBlockEntity extends BlockEntity {
                     // sunlight at this body's distance from the sun, after dust storms and clouds (capped: cells overheat)
                     * (float) Math.min(MAX_SOLAR_FACTOR, com.pizzaparker07.spacebreaker.core.env.Environment.solarFactor(level, pos));
             factor *= weatherFactor(level, pos);
+            factor *= dustFactor(be.dust);
+            if (level.getGameTime() % DUST_INTERVAL == 0) {
+                double rate = com.pizzaparker07.spacebreaker.core.env.Environment.dustRate(level, pos);
+                if (rate > 0) {
+                    be.setDust(be.dust + (float) (rate * DUST_INTERVAL));
+                }
+            }
             // the orbit's shadow comes in through Environment.solarFactor (rocketry registers it as a sunlight modifier)
             // keep the fraction: far from the sun a panel makes well under 1 FE/t, and rounding would lose all of it
             be.exactOutput = be.peak * factor;
@@ -171,12 +213,26 @@ public class SolarPanelBlockEntity extends BlockEntity {
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
         tag.putInt("energy", energy.getEnergyStored());
+        tag.putFloat("dust", dust);
+    }
+
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        CompoundTag tag = super.getUpdateTag(registries);
+        tag.putFloat("dust", dust);
+        return tag;
+    }
+
+    @Override
+    public net.minecraft.network.protocol.Packet<net.minecraft.network.protocol.game.ClientGamePacketListener> getUpdatePacket() {
+        return net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         energy.setStored(tag.getInt("energy"));
+        dust = Mth.clamp(tag.getFloat("dust"), 0F, 1F);
     }
 
     /** Internal buffer: other blocks can only extract; the panel itself generates. */

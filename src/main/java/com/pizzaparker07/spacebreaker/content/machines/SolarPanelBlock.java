@@ -63,6 +63,17 @@ public class SolarPanelBlock extends BaseEntityBlock {
                                                                    net.minecraft.world.entity.player.Player player,
                                                                    net.minecraft.world.phys.BlockHitResult hit) {
         if (!level.isClientSide && level.getBlockEntity(pos) instanceof SolarPanelBlockEntity be) {
+            if (player.isShiftKeyDown() && be.dust() > 0) {
+                be.clean(1F);
+                level.playSound(null, pos, net.minecraft.sounds.SoundEvents.BRUSH_SAND_COMPLETED, net.minecraft.sounds.SoundSource.BLOCKS, 0.8F, 1.1F);
+                player.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.spacebreaker.solar_panel.wiped"), true);
+                return net.minecraft.world.InteractionResult.SUCCESS;
+            }
+            if (be.dust() >= 0.01F) {
+                player.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.spacebreaker.solar_panel.dusty",
+                        Math.round(be.dust() * 100), String.format(java.util.Locale.ROOT, "%.1f", be.getExactOutput())), true);
+                return net.minecraft.world.InteractionResult.SUCCESS;
+            }
             double factor = com.pizzaparker07.spacebreaker.core.env.Environment.solarFactor(level, pos);
             player.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.spacebreaker.solar_panel",
                     sunlightPercent(factor), String.format(java.util.Locale.ROOT, "%.1f", be.getExactOutput())), true);

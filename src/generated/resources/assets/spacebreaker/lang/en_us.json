@@ -1287,6 +1287,8 @@
   "message.spacebreaker.sample_taken": "Took a field sample (%s)",
   "message.spacebreaker.satellite.deployed": "%s released in %s",
   "message.spacebreaker.solar_panel": "Sunlight here: %s%% of Earth's - making %s FE/t now",
+  "message.spacebreaker.solar_panel.dusty": "Cells %s%% covered in dust - making %s FE/t. Sneak-use to wipe them",
+  "message.spacebreaker.solar_panel.wiped": "Wiped the dust off the cells",
   "message.spacebreaker.station_bunk.set": "Respawn point set",
   "message.spacebreaker.station_kit.blocked": "Something is in the way",
   "message.spacebreaker.suit.micro_g": "Microgravity: use a tether or magnetic boots, or one step sends you drifting off",
