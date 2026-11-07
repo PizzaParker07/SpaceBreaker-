@@ -332,6 +332,10 @@ final class RocketryLang {
         l.add("gui.spacebreaker.star_map.trip_to", "Trip to %s", "%s yolculuğu");
         l.add("gui.spacebreaker.star_map.fuel_line", "Fuel needed %s · on board %s", "Gereken yakıt %s · roketinde %s");
         l.add("gui.spacebreaker.star_map.enough", "Enough ✔", "Yeter ✔");
+        l.add("gui.spacebreaker.star_map.need_nuclear", "This comet is only reached with a nuclear thermal engine (and insulated tanks for the years on the way)",
+                "Bu kuyruklu yıldıza ancak nükleer termal motorla ulaşılır (yoldaki yıllar için yalıtımlı tanklar da gerekir)");
+        l.add("gui.spacebreaker.star_map.block.observation_only", "Observation only: no rocket can match this comet's speed in a sensible time",
+                "Yalnız gözlem: hiçbir roket bu kuyruklu yıldızın hızını makul bir sürede yakalayamaz");
         l.add("gui.spacebreaker.star_map.boil_off", "Boil-off on the way: %s%% of the propellant on board (counted above)",
                 "Yolda buharlaşma kaybı: roketteki yakıtın %%%s'i (yukarıdaki hesaba dahil)");
         l.add("gui.spacebreaker.star_map.short", "%s short ✘", "%s eksik ✘");

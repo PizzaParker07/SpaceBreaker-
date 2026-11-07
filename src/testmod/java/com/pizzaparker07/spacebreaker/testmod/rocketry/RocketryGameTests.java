@@ -472,6 +472,30 @@ public final class RocketryGameTests {
     }
 
     @GameTest(template = EMPTY)
+    public static void cometRendezvousRoutes(GameTestHelper helper) {
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.CometRoutes.ready(), "the rendezvous table is built");
+        var halley = Spacebreaker.id("halley");
+        var route = com.pizzaparker07.spacebreaker.content.rocketry.nav.CometRoutes.route(halley).orElseThrow();
+        helper.assertTrue(route.totalDv() > 15_000 && route.totalDv() < 25_000, "Halley is retrograde: a rendezvous costs " + (int) route.totalDv() + " m/s");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.CometRoutes.needsNuclear(halley), "the map hints at nuclear for Halley");
+        var halleyOrbit = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(halley, true).orElseThrow();
+        helper.assertTrue(within(com.pizzaparker07.spacebreaker.content.rocketry.nav.Transfers.real(Location.EARTH_ORBIT, halleyOrbit).orElse(0),
+                route.totalDv(), 1), "flights use the rendezvous Δv");
+        helper.assertTrue(within(com.pizzaparker07.spacebreaker.content.rocketry.nav.Transfers.coastSeconds(Location.EARTH_ORBIT, halleyOrbit),
+                route.flightSeconds(), 1), "and its flight time");
+        for (String id : List.of("churyumov_gerasimenko", "encke", "tempel_1")) {
+            var c = Spacebreaker.id(id);
+            helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.CometRoutes.route(c).isPresent()
+                    && !com.pizzaparker07.spacebreaker.content.rocketry.nav.CometRoutes.needsNuclear(c), id + " stays within chemical reach");
+        }
+        var haleBopp = Spacebreaker.id("hale_bopp");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.CometRoutes.observationOnly(haleBopp), "Hale-Bopp is for watching");
+        com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(haleBopp, true).ifPresent(o ->
+                helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.Transfers.real(Location.EARTH_ORBIT, o).isEmpty(), "no flight to Hale-Bopp"));
+        helper.succeed();
+    }
+
+    @GameTest(template = EMPTY)
     public static void nuclearEngineRadiation(GameTestHelper helper) {
         var level = helper.getLevel();
         RocketEntity rocket = RocketEntity.create(level, nuclearRocket("nuclear_thermal_engine"),

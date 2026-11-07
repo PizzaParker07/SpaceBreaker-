@@ -727,6 +727,9 @@ public class StarMapScreen extends Screen {
             }
             y += 2;
         }
+        if (t.needsNuclear()) {
+            y = warn(g, Component.translatable("gui.spacebreaker.star_map.need_nuclear"), x, y, w);
+        }
         if (!t.shieldOk()) {
             y = warn(g, Component.translatable("gui.spacebreaker.star_map.need_shield"), x, y, w);
         }
