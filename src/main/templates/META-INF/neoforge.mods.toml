@@ -9,7 +9,7 @@ version = "${mod_version}"
 displayName = "${mod_name}"
 displayURL = "https://github.com/PizzaParker07/SpaceBreaker-"
 logoFile = "spacebreaker_logo.png"
-credits = "PizzaParker07 / Pizzaci Cocuk"
+credits = "PizzaParker07 / Pizzacı Çocuk"
 authors = "${mod_authors}"
 description = '''${mod_description}'''
 
