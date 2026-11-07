@@ -14,7 +14,7 @@ Vücut ısın **yavaş** değişir; birkaç saniyelik güneş ya da gölge seni 
 
 Giysin belli bir aralığı dengeler (Mk1: −190 °C ile 130 °C). Bu aralığın dışında bile önce yavaş yavaş ısınır ya da soğursun.
 
-> Soğuk giysinin sınırını aşınca **vizörün kenarından kırağı** yayılır ve göstergede bir uyarı çıkar. Kırağı, giysinin aralığına ya da basınçlı bir modüle dönünce çözülür. Kutup kraterlerindeki **soğuk tuzaklar** yalnızca buzun kalıcı olduğu havasız dünyalarda vardır: Ay (≈ −233 °C), Merkür (≈ −213 °C) ve Ceres. Mars ve Plüton'da yoktur. Oraya ısıtmalı giysiyle ya da yeterince termal modülle in.
+> Soğuk giysinin sınırını aşınca göstergede sıcaklık simgesi ve **GİYSİ DAYANIMI AŞILDI** uyarısı çıkar (soğuk tuzakta **SOĞUK TUZAK: GİYSİ DAYANIMI AŞILDI**). **visorRim** ayarı açıksa vizörün kenarından kırağı da yayılır; kırağı giysinin aralığına ya da basınçlı bir modüle dönünce çözülür. Kutup kraterlerindeki **soğuk tuzaklar** yalnızca buzun kalıcı olduğu havasız dünyalarda vardır: Ay (≈ −233 °C), Merkür (≈ −213 °C) ve Ceres. Mars ve Plüton'da yoktur. Oraya ısıtmalı giysiyle ya da yeterince termal modülle in.
 
 > **Yer altı sığınaktır:** havasız dünyalarda yüzeyin en az **4 blok** altında ve gökyüzünü görmeyen yerde sıcaklık gece-gündüz ortalamasında sabit kalır (Ay'da yaklaşık −26 °C). Lav tüpleri bu yüzden doğal sığınaktır. Soğuk tuzaklar bunun dışındadır.
 

@@ -11,6 +11,8 @@
   ],
   "tier": 2,
   "unlocks": [
-    "spacebreaker:rover"
+    "spacebreaker:rover",
+    "spacebreaker:sprint_rover",
+    "spacebreaker:pressurized_rover"
   ]
 }
