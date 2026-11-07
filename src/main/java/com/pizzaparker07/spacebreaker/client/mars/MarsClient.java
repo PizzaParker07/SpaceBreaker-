@@ -63,6 +63,7 @@ public final class MarsClient {
                 new StonegrazerModel(ctx.bakeLayer(StonegrazerModel.LAYER)), tex("stonegrazer"), 1F, 0.9F, false));
         event.registerEntityRenderer(MarsEntities.POLAR_WORM.get(), ctx -> new SimpleMobRenderer<>(ctx,
                 new PolarWormModel(ctx.bakeLayer(PolarWormModel.LAYER)), tex("polar_worm"), 1F, 0.35F, false));
+        event.registerEntityRenderer(MarsEntities.DUST_WHIRL.get(), net.minecraft.client.renderer.entity.NoopRenderer::new);
         event.registerEntityRenderer(MarsEntities.TETHER_SPINNER.get(), ctx -> new SimpleMobRenderer<>(ctx,
                 new TetherSpinnerModel(ctx.bakeLayer(TetherSpinnerModel.LAYER)), tex("tether_spinner"), 1.3F, 0.45F, false));
         event.registerEntityRenderer(MarsEntities.DUST_DEVIL.get(), ctx -> new SimpleMobRenderer<>(ctx,

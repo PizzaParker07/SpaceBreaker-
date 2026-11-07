@@ -350,6 +350,46 @@ public final class MarsLifeGameTests {
         });
     }
 
+    /** Dust on panels: clean to fully covered in about three sols, six times faster in a full storm; 100 % to 60 % output. */
+    @GameTest(template = EMPTY)
+    public static void panelDustSettlesOverSols(GameTestHelper helper) {
+        float day = com.pizzaparker07.spacebreaker.core.env.DustLoad.settle(0F, 24000, 0);
+        helper.assertTrue(day > 0.3F && day < 0.36F, "one calm sol settles a third of the dust, got " + day);
+        helper.assertTrue(com.pizzaparker07.spacebreaker.core.env.DustLoad.settle(0F, 3 * 24000, 0) >= 0.999F, "three sols cover a panel");
+        float storm = com.pizzaparker07.spacebreaker.core.env.DustLoad.settle(0F, 4000, 1);
+        helper.assertTrue(Math.abs(storm - 6 * com.pizzaparker07.spacebreaker.core.env.DustLoad.settle(0F, 4000, 0)) < 1e-4, "storms settle six times faster");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.core.env.DustLoad.outputFactor(0F) == 1F, "a clean panel gives full output");
+        helper.assertTrue(Math.abs(com.pizzaparker07.spacebreaker.core.env.DustLoad.outputFactor(1F) - 0.6F) < 1e-6, "a covered panel gives 60 %");
+        var pos = helper.absolutePos(BlockPos.ZERO).above(3);
+        helper.assertTrue(com.pizzaparker07.spacebreaker.core.env.DustLoad.accumulate(helper.getLevel(), pos, 0.2F, 24000) == 0.2F,
+                "no dust settles on Earth");
+        helper.succeed();
+    }
+
+    /** A dust whirl swirls loose items aside, and fades away when nobody is near to see it. */
+    @GameTest(template = EMPTY, timeoutTicks = 100)
+    public static void dustWhirlNudgesThingsAndFadesUnseen(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos at = helper.absolutePos(new BlockPos(1, 1, 1));
+        var whirl = com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.spawnWhirl(level, at);
+        helper.assertTrue(whirl != null, "a whirl forms");
+        whirl.setHeading(0F);
+        var item = new net.minecraft.world.entity.item.ItemEntity(level, whirl.getX() + 1.0, whirl.getY() + 0.2, whirl.getZ(),
+                new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.STICK));
+        item.setNoGravity(true);
+        level.addFreshEntity(item);
+        net.minecraft.world.phys.Vec3 start = item.position();
+        helper.runAfterDelay(12, () -> {
+            helper.assertTrue(item.position().distanceTo(start) > 0.05, "the whirl swirls the item aside");
+        });
+        helper.runAfterDelay(45, () -> {
+            helper.assertTrue(whirl.isRemoved(), "with no player within sight the whirl fades away");
+            helper.assertFalse(whirl.shouldBeSaved(), "whirls are weather: never saved");
+            item.discard();
+            helper.succeed();
+        });
+    }
+
     private MarsLifeGameTests() {
     }
 }

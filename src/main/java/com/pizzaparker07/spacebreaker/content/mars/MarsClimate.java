@@ -24,6 +24,9 @@ public final class MarsClimate {
     static void register() {
         Environment.addTemperatureModifier(MarsClimate::temperatureOffset);
         Environment.addSunlightModifier((level, pos) -> 1 - 0.85 * MarsWeather.stormStrength(level));
+        com.pizzaparker07.spacebreaker.core.env.DustLoad.addDustyWorld(MarsWeather::dusty);
+        com.pizzaparker07.spacebreaker.core.env.DustLoad.addStorm(MarsWeather::stormStrength);
+        PanelDust.register();
     }
 
     /** Pole-to-equator distance of the level's terrain profile, or NaN without one. */
