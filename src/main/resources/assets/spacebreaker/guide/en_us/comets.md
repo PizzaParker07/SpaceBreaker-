@@ -25,6 +25,8 @@ A comet is a dirty snowball: water ice under a crust of dust darker than charcoa
 > While the Sun is above the horizon, thin columns of gas and dust rise from open {item spacebreaker:comet_jet} blocks. They are **visual only** and cannot hurt you.
 
 {page}
+> **Hale–Bopp** and **Tempel 1** are in the catalogue too, but have no world to land on: they show only in the sky and on the star map. At perihelion Hale–Bopp is a great comet.
+
 ## Fuel
 Comet dust is useful too: in the regolith heater one block gives **300 mB of water** and **100 mB of CO₂**, plus a lump of {item spacebreaker:tholin} 15% of the time. → [Asteroid mining](near_earth_asteroids#mining)
 {recipe spacebreaker:regolith_processing/comet_dust}

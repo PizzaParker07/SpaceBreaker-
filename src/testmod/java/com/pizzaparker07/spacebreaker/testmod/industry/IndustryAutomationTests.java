@@ -60,6 +60,54 @@ public final class IndustryAutomationTests {
         });
     }
 
+    /** Contents of a chest at a test position, counted for one item. */
+    private static int count(GameTestHelper h, BlockPos pos, net.minecraft.world.item.Item item) {
+        var chest = (net.minecraft.world.level.block.entity.ChestBlockEntity) h.getBlockEntity(pos);
+        int n = 0;
+        for (int i = 0; i < chest.getContainerSize(); i++) {
+            if (chest.getItem(i).is(item)) {
+                n += chest.getItem(i).getCount();
+            }
+        }
+        return n;
+    }
+
+    /**
+     * An item duct pulls from one chest and delivers to two others; the end filtered for cobblestone takes only
+     * cobblestone, and a hopper pushing into the side of the duct is delivered too.
+     */
+    @GameTest(template = "empty", timeoutTicks = 300, batch = "industry_automation")
+    public static void itemDuctMovesAndSortsItems(GameTestHelper h) {
+        BlockPos source = new BlockPos(0, 1, 2);
+        BlockPos plain = new BlockPos(4, 1, 2);
+        BlockPos sorted = new BlockPos(2, 2, 2);
+        for (BlockPos p : new BlockPos[]{source, plain, sorted}) {
+            h.setBlock(p, Blocks.CHEST);
+        }
+        var src = (net.minecraft.world.level.block.entity.ChestBlockEntity) h.getBlockEntity(source);
+        src.setItem(0, new ItemStack(Items.IRON_INGOT, 40));
+        src.setItem(1, new ItemStack(Items.COBBLESTONE, 20));
+        Block duct = MachinesModule.ITEM_DUCT.get();
+        for (int x = 1; x <= 3; x++) {
+            pipe(h, duct, new BlockPos(x, 1, 2));
+        }
+        BlockPos first = h.absolutePos(new BlockPos(1, 1, 2));
+        h.getLevel().setBlock(first, h.getLevel().getBlockState(first).setValue(ConduitBlock.SIDES.get(Direction.WEST), ConduitSide.EXTRACT), 3);
+        ConduitBlockEntity junction = h.getBlockEntity(new BlockPos(2, 1, 2));
+        junction.setItemFilter(Direction.UP, Items.COBBLESTONE);
+        // a hopper above the last duct pushes down into it
+        h.setBlock(new BlockPos(3, 2, 2), Blocks.HOPPER.defaultBlockState().setValue(net.minecraft.world.level.block.HopperBlock.FACING, Direction.DOWN));
+        ((net.minecraft.world.level.block.entity.HopperBlockEntity) h.getBlockEntity(new BlockPos(3, 2, 2))).setItem(0, new ItemStack(Items.GOLD_INGOT, 3));
+        h.succeedWhen(() -> {
+            h.assertTrue(count(h, plain, Items.IRON_INGOT) == 40, "plain end gets all the iron: " + count(h, plain, Items.IRON_INGOT));
+            h.assertTrue(count(h, sorted, Items.IRON_INGOT) == 0, "the cobblestone end takes no iron");
+            h.assertTrue(count(h, sorted, Items.COBBLESTONE) + count(h, plain, Items.COBBLESTONE) == 20, "all cobblestone delivered");
+            h.assertTrue(count(h, sorted, Items.COBBLESTONE) > 0, "the sorted end gets cobblestone");
+            h.assertTrue(count(h, plain, Items.GOLD_INGOT) == 3, "the hopper's gold went through the duct");
+            h.assertTrue(src.isEmpty(), "source emptied");
+        });
+    }
+
     /** One pulling end, two tanks: the end filtered for lava gets no water, the plain one fills. */
     @GameTest(template = "empty", timeoutTicks = 200, batch = "industry_automation")
     public static void filteredPipeEndOnlyPassesItsFluid(GameTestHelper h) {

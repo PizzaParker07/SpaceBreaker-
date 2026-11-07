@@ -1,0 +1,79 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "body": "spacebreaker:block/item_duct",
+    "end": "spacebreaker:block/item_duct_end",
+    "particle": "spacebreaker:block/item_duct",
+    "valve": "spacebreaker:block/pipe_valve"
+  },
+  "elements": [
+    {
+      "from": [
+        3,
+        12,
+        3
+      ],
+      "to": [
+        13,
+        14,
+        13
+      ],
+      "faces": {
+        "north": {
+          "texture": "#valve",
+          "uv": [
+            3,
+            2,
+            13,
+            4
+          ]
+        },
+        "south": {
+          "texture": "#valve",
+          "uv": [
+            3,
+            2,
+            13,
+            4
+          ]
+        },
+        "east": {
+          "texture": "#valve",
+          "uv": [
+            3,
+            2,
+            13,
+            4
+          ]
+        },
+        "west": {
+          "texture": "#valve",
+          "uv": [
+            3,
+            2,
+            13,
+            4
+          ]
+        },
+        "up": {
+          "texture": "#valve",
+          "uv": [
+            3,
+            3,
+            13,
+            13
+          ]
+        },
+        "down": {
+          "texture": "#valve",
+          "uv": [
+            3,
+            3,
+            13,
+            13
+          ]
+        }
+      }
+    }
+  ]
+}

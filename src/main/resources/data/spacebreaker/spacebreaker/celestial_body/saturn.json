@@ -3,7 +3,7 @@
   "parent": "spacebreaker:sun",
   "physical": { "mass_kg": 5.6834e26, "radius_km": 58232, "surface_gravity": 10.44 },
   "orbit": { "semi_major_axis_km": 1426666414, "eccentricity": 0.05386179, "inclination_deg": 2.48599187, "period_days": 10759.22, "longitude_ascending_node_deg": 113.66, "argument_periapsis_deg": 338.94, "mean_anomaly_deg": 317.36 },
-  "rotation": { "day_length_hours": 10.656, "axial_tilt_deg": 26.73 },
+  "rotation": { "day_length_hours": 10.656, "axial_tilt_deg": 26.73, "pole_ra_deg": 40.589, "pole_dec_deg": 83.537 },
   "atmosphere": {
     "pressure_kpa": 100.0,
     "composition": { "H2": 0.963, "He": 0.0325, "CH4": 0.0045 }

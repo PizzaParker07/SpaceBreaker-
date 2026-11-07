@@ -25,6 +25,8 @@ Kuyruklu yıldız, kirli bir kartopudur: kömürden koyu bir toz kabuğunun alt�
 > Güneş ufkun üstündeyken ve üstü açıkken {item spacebreaker:comet_jet} bloklarından ince gaz ve toz sütunları yükselir. Bunlar **yalnızca görseldir**, sana zarar vermez.
 
 {page}
+> **Hale–Bopp** ve **Tempel 1** de katalogdadır, ama inilebilecek dünyaları yoktur: yalnızca gökyüzünde ve yıldız haritasında görünürler. Hale–Bopp günberisinde dev bir kuyruklu yıldızdır.
+
 ## Yakıt
 Kuyruklu yıldız tozu da işe yarar: regolit ısıtıcıda bir blok **300 mB su** ve **100 mB CO₂** verir, %15 şansla da bir topak {item spacebreaker:tholin}. → [Asteroit madenciliği](near_earth_asteroids#mining)
 {recipe spacebreaker:regolith_processing/comet_dust}

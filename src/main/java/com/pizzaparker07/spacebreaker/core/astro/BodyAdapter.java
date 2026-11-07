@@ -54,8 +54,15 @@ public final class BodyAdapter {
     /** All bodies of the registry as one system (several trees if a data pack adds other stars). */
     public static BodySystem system(Registry<CelestialBody> registry) {
         List<AstroBody> list = new ArrayList<>();
-        registry.entrySet().forEach(e -> list.add(of(e.getKey().location(), e.getValue())));
-        return new BodySystem(list);
+        Map<String, Vec3> poles = new java.util.HashMap<>();
+        registry.entrySet().forEach(e -> {
+            list.add(of(e.getKey().location(), e.getValue()));
+            CelestialBody.Rotation r = e.getValue().rotation();
+            if (r.hasPole()) {
+                poles.put(e.getKey().location().toString(), Frames.eclipticFromEquatorial(r.poleRaDeg(), r.poleDecDeg()));
+            }
+        });
+        return new BodySystem(Frames.equatorialMoonOrbits(list, poles));
     }
 
     public static Optional<BodySystem> system(RegistryAccess access) {

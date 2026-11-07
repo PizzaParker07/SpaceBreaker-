@@ -1,0 +1,25 @@
+{
+  "type": "spacebreaker:arc_smelting",
+  "energy": 120,
+  "ingredients": [
+    {
+      "count": 2,
+      "item": "spacebreaker:enriched_uranium"
+    },
+    {
+      "count": 2,
+      "tag": "c:dusts/coal"
+    },
+    {
+      "count": 2,
+      "tag": "c:rods/tungsten"
+    }
+  ],
+  "results": [
+    {
+      "count": 1,
+      "id": "spacebreaker:nuclear_fuel_element"
+    }
+  ],
+  "time": 400
+}

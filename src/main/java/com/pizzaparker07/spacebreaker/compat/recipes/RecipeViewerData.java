@@ -58,7 +58,8 @@ public final class RecipeViewerData {
             category(MachinesModule.REGOLITH_PROCESSING, MachinesModule.REGOLITH_HEATER),
             category(MachinesModule.MELTING, MachinesModule.ICE_MELTER),
             category(MachinesModule.CHEMICAL_REACTION, MachinesModule.CHEMICAL_REACTOR),
-            category(MachinesModule.SINTERING, MachinesModule.SINTERING_FURNACE));
+            category(MachinesModule.SINTERING, MachinesModule.SINTERING_FURNACE),
+            category(MachinesModule.CENTRIFUGING, MachinesModule.GAS_CENTRIFUGE));
 
     /** The arc furnace also smelts anything a furnace can (twice as fast): a catalyst for vanilla smelting. */
     public static final Supplier<? extends ItemLike> EXTRA_SMELTER = MachinesModule.ARC_FURNACE.item();
@@ -71,6 +72,7 @@ public final class RecipeViewerData {
     public static final String KEY_TOOL = "recipe_viewer.spacebreaker.tool";
     public static final String KEY_INFO_ASSEMBLER = "recipe_viewer.spacebreaker.info.rocket_assembler";
     public static final String KEY_INFO_ATMOSPHERE = "recipe_viewer.spacebreaker.info.atmosphere_processor";
+    public static final String KEY_INFO_ITEM_DUCT = "recipe_viewer.spacebreaker.info.item_duct";
     /** "Research needed: %s" */
     public static final String KEY_REQUIRES = "recipe_viewer.spacebreaker.research";
 
@@ -173,11 +175,24 @@ public final class RecipeViewerData {
         return out;
     }
 
-    /** Info pages for things without a recipe. */
-    public record InfoPage(Supplier<? extends ItemLike> item, String key) {
+    /**
+     * Info pages for things without a recipe or with a use a recipe cannot show. {@code optional}: the item may not
+     * exist yet (another area's block looked up by id); such a page is skipped until it does.
+     */
+    public record InfoPage(Supplier<? extends ItemLike> item, String key, boolean optional) {
+        InfoPage(Supplier<? extends ItemLike> item, String key) {
+            this(item, key, false);
+        }
     }
 
     public static final List<InfoPage> INFO_PAGES = List.of(
             new InfoPage(RocketryModule.ROCKET_ASSEMBLER_ITEM, KEY_INFO_ASSEMBLER),
-            new InfoPage(MachinesModule.ATMOSPHERE_PROCESSOR.item(), KEY_INFO_ATMOSPHERE));
+            new InfoPage(MachinesModule.ATMOSPHERE_PROCESSOR.item(), KEY_INFO_ATMOSPHERE),
+            new InfoPage(() -> net.minecraft.core.registries.BuiltInRegistries.ITEM.get(
+                    com.pizzaparker07.spacebreaker.Spacebreaker.id("item_duct")), KEY_INFO_ITEM_DUCT, true));
+
+    /** The info pages whose item exists. */
+    public static List<InfoPage> infoPages() {
+        return INFO_PAGES.stream().filter(p -> p.item().get().asItem() != net.minecraft.world.item.Items.AIR).toList();
+    }
 }
