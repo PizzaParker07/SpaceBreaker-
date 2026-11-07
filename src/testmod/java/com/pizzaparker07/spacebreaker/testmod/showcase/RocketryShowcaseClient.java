@@ -31,6 +31,7 @@ final class RocketryShowcaseClient {
             if (!(mc.screen instanceof StarMapScreen)) {
                 StarMapScreen map = new StarMapScreen(rocket);
                 mc.setScreen(map);
+                mc.getToasts().clear(); // advancement pop-ups would cover the panel in the picture
                 if (star != null) {
                     map.showStar(star);
                 } else if (preselect != null) {
