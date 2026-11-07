@@ -282,6 +282,8 @@ public final class SuitModule implements SbModule {
         lang.add("tooltip.spacebreaker.safety_tether.hint", "Use on a block to clip on, use again to unclip",
                 "Takmak için bir bloğa kullan, çözmek için yeniden kullan");
         lang.add("hud.spacebreaker.mag", "MAG", "MANYETİK");
+        lang.add("hud.spacebreaker.pressurised", "Pressurised · helmet may come off", "Basınçlı ortam · kask çıkarılabilir");
+        lang.add("message.spacebreaker.suit.pressurised", "Pressurised module: breathable air", "Basınçlı modül: solunabilir hava");
         lang.add("hud.spacebreaker.tether", "TETHER", "HALAT");
         lang.add("message.spacebreaker.tether.clipped", "Tether clipped · %s blocks of line", "Halat takıldı · %s blok uzunluk");
         lang.add("message.spacebreaker.tether.released", "Tether unclipped", "Halat çözüldü");
@@ -365,7 +367,11 @@ public final class SuitModule implements SbModule {
     @Override
     public void addTags(SbTags tags) {
         tags.block(BlockTags.MINEABLE_WITH_PICKAXE, OXYGEN_FILLER.get(), OXYGEN_DISTRIBUTOR.get(), AIRLOCK_DOOR.get());
-        tags.block(AIRTIGHT, Blocks.IRON_TRAPDOOR, Blocks.IRON_DOOR);
+        // station modules (rocketry): hull, windows and docking ports always hold air
+        tags.block(AIRTIGHT, Blocks.IRON_TRAPDOOR, Blocks.IRON_DOOR,
+                com.pizzaparker07.spacebreaker.content.rocketry.RocketryModule.STATION_HULL.get(),
+                com.pizzaparker07.spacebreaker.content.rocketry.RocketryModule.STATION_WINDOW.get(),
+                com.pizzaparker07.spacebreaker.content.rocketry.RocketryModule.DOCKING_PORT.get());
         tags.blockTag(LEAKY, BlockTags.LEAVES);
         tags.item(ItemTags.HEAD_ARMOR, EVA_HELMET.get());
         tags.item(ItemTags.CHEST_ARMOR, EVA_CHESTPLATE.get());

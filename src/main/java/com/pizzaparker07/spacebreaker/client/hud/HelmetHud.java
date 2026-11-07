@@ -144,7 +144,11 @@ public final class HelmetHud {
         // surroundings: only off Earth-normal conditions
         // magnetic boots gripping / tether clipped: short tags after the surroundings
         boolean mag = s.has(SuitStatusPayload.MAGNETISED), tethered = s.has(SuitStatusPayload.TETHERED);
-        if (!breathable || s.gravity() < 0.95F || s.gravity() > 1.05F || s.ambientC() < -20 || s.ambientC() > 50 || mag || tethered) {
+        boolean pressurised = s.has(SuitStatusPayload.PRESSURISED);
+        if (pressurised) {
+            // inside a pressurised module: breathable air, the helmet may come off
+            rows.add(new Row(ICON_PRESSURE, -1F, 0, Component.translatable("hud.spacebreaker.pressurised").getString(), GOOD, false));
+        } else if (!breathable || s.gravity() < 0.95F || s.gravity() > 1.05F || s.ambientC() < -20 || s.ambientC() > 50 || mag || tethered) {
             String env = String.format(Locale.ROOT, "%s kPa %.2fg %.0f°", fmt(s.pressureKpa()), s.gravity(), s.ambientC());
             if (mag) {
                 env += " " + Component.translatable("hud.spacebreaker.mag").getString();

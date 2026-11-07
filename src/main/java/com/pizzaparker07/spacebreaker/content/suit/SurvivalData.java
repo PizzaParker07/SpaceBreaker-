@@ -49,6 +49,8 @@ public final class SurvivalData {
     public net.minecraft.world.phys.Vec3 thrustDir = net.minecraft.world.phys.Vec3.ZERO;
     /** Last magnetic boots state, for the clank when they grip. */
     public boolean wasMagnetised;
+    /** Inside a room pressurised by an oxygen distributor (station module, base), for the entry message. */
+    public boolean wasPressurised;
     /** Last known seal state, for the sealed / unsealed feedback (null until the first check). */
     public Boolean wasSealed;
 
