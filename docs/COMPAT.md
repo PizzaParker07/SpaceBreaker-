@@ -360,10 +360,11 @@ environment; the plugins compile against both APIs and the line itself is covere
 - **HUD layers vs. Jade / WTHIT:** vanilla stacks GUI layers 200 units apart in depth (`LayeredDraw.Z_SEPARATION`) and
   draws them with the depth test; Jade draws in `RenderGuiEvent.Post`, WTHIT from a `Gui` mixin, both after all layers
   but near depth 0. Our overlay layers (visor frame, helmet panels, rocket and rover HUDs) therefore hide the info box
-  wherever they draw semi-transparent pixels. Draw overlays with `RenderSystem.depthMask(false)` (restore after) and
-  keep panels away from the top centre, where both overlays sit by default.
+  wherever they draw semi-transparent pixels. `compat/client/InfoOverlayDepth` clears the GUI depth at the start of
+  `RenderGuiEvent.Post` when Jade or WTHIT is installed, so their box is always on top; HUD code needs no change.
+  Keep panels away from the top centre anyway, where both overlays sit by default.
 - **Dynamic lights:** LambDynamicLights 4.8 (NeoForge 1.21.1) has an API (`lambdynlights:initializer` entrypoint
   in `neoforge.mods.toml` mod properties, `DynamicLightsContext`, `LineLightBehavior` for beam-like lights,
   `DynamicLightHandlers.registerDynamicLightHandler` for entities); the NeoForge port of Sodium Dynamic Lights is older
-  (LDL 2.x API). With a shader pack, dynamic light is ordinary block light and is tinted like torch light by the pack.
+  (LDL 2.x API). `lambdynlights` is an optional dependency (`[4.0,)`). With a shader pack, dynamic light is ordinary block light and is tinted like torch light by the pack.
 
