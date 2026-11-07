@@ -32,6 +32,8 @@ A comet is a dirty snowball: water ice under a crust of dust darker than charcoa
 ## Getting there {#route}
 On the star map all comets share one node, **Comets**, beside the planets. Open it: the Sun sits in the middle and each comet has its own stretched orbit. The tail always points away from the Sun and is long only while the comet is awake. Pick a comet to see its card: distance from the Sun, next closest pass (date and AU), one orbit in years, and activity.
 
+> **Halley** orbits backwards: the star map says it is only reached with a nuclear thermal engine, and insulated tanks for the years on the way. **Hale–Bopp** is for watching only. → [Boil-off](rocket_parts#boil_off)
+
 > **Halley** takes about 75 years per orbit and swings out past Neptune, to about 35 AU from the Sun. Melt its ice and make fuel there before you head home.
 
 ## Fuel

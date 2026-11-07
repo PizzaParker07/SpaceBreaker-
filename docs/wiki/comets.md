@@ -35,6 +35,9 @@ Kuyruklu yıldız, kirli bir kartopudur: kömürden koyu bir toz kabuğunun alt�
 Yıldız haritasında bütün kuyruklu yıldızlar gezegenlerin yanında tek bir düğümde durur: **Kuyruklu yıldızlar**. Onu aç: ortada Güneş, her kuyruklu yıldızın da kendi uzun, basık yörüngesi var. Kuyruk her zaman Güneş'in tersini gösterir ve yalnız kuyruklu yıldız uyanıkken uzundur. Bir kuyruklu yıldızı seçince kartını görürsün: Güneş'e uzaklık, Güneş'e en yakın geçiş (tarih ve AU), bir turun kaç yıl sürdüğü ve etkinlik.
 
 > [!TIP]
+> **Halley** ters yönde dolanır: yıldız haritası ona ancak nükleer termal motorla ulaşılacağını, yoldaki yıllar için yalıtımlı tank da gerektiğini söyler. **Hale–Bopp** yalnız gözlem içindir. → [Buharlaşma](rocket_parts#boil_off)
+
+> [!TIP]
 > **Halley** bir turunu yaklaşık 75 yılda tamamlar ve Neptün'ün ötesine, Güneş'ten yaklaşık 35 AU uzağa kadar savrulur. Dönüş yolundan önce buzunu erit ve yakıtını orada üret.
 
 ### Yakıt
@@ -91,6 +94,9 @@ A comet is a dirty snowball: water ice under a crust of dust darker than charcoa
 <a id="route"></a>
 ### Getting there
 On the star map all comets share one node, **Comets**, beside the planets. Open it: the Sun sits in the middle and each comet has its own stretched orbit. The tail always points away from the Sun and is long only while the comet is awake. Pick a comet to see its card: distance from the Sun, next closest pass (date and AU), one orbit in years, and activity.
+
+> [!TIP]
+> **Halley** orbits backwards: the star map says it is only reached with a nuclear thermal engine, and insulated tanks for the years on the way. **Hale–Bopp** is for watching only. → [Boil-off](rocket_parts#boil_off)
 
 > [!TIP]
 > **Halley** takes about 75 years per orbit and swings out past Neptune, to about 35 AU from the Sun. Melt its ice and make fuel there before you head home.
