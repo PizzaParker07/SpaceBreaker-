@@ -534,6 +534,55 @@ public final class IndustryRtgTests {
         });
     }
 
+    /** Every machine screen on the shared grid: everything inside the machine area, nothing overlapping, the energy
+     * bar on the far left (alone in the middle for the battery bank). */
+    @GameTest(template = "empty", timeoutTicks = 100)
+    public static void machineScreensShareOneTidyLayout(GameTestHelper h) {
+        int i = 0;
+        for (MachineEntry<?, ?> m : MachinesModule.MACHINES) {
+            BlockPos pos = new BlockPos(1 + (i % 4), 1, 1 + (i / 4) % 4);
+            i++;
+            if (!m.block().get().defaultBlockState().hasProperty(MachineBlock.FACING)) {
+                continue;
+            }
+            h.setBlock(pos, m.block().get().defaultBlockState());
+            if (!(h.getBlockEntity(pos) instanceof MachineBlockEntity be)) {
+                continue;
+            }
+            var l = be.layout().tidy();
+            java.util.List<int[]> rects = new java.util.ArrayList<>();
+            if (l.hasEnergy()) {
+                rects.add(new int[]{l.energyX, l.energyY, 14, 54});
+            }
+            for (var sp : l.slots) {
+                rects.add(new int[]{sp.x(), sp.y(), 18, 18});
+            }
+            for (var tp : l.tanks) {
+                rects.add(new int[]{tp.x(), tp.y(), 18, 54});
+            }
+            if (l.progress == com.pizzaparker07.spacebreaker.content.machines.base.MachineLayout.Progress.ARROW) {
+                rects.add(new int[]{l.progressX, l.progressY, 22, 13});
+            } else if (l.progress == com.pizzaparker07.spacebreaker.content.machines.base.MachineLayout.Progress.FLAME) {
+                rects.add(new int[]{l.progressX, l.progressY, 14, 14});
+            }
+            String id = m.id();
+            for (int a = 0; a < rects.size(); a++) {
+                int[] r = rects.get(a);
+                h.assertTrue(r[0] >= 8 && r[0] + r[2] <= 168 && r[1] >= 17 && r[1] + r[3] <= 71,
+                        id + ": element " + a + " outside the machine area at " + r[0] + "," + r[1]);
+                for (int b = a + 1; b < rects.size(); b++) {
+                    int[] q = rects.get(b);
+                    boolean overlap = r[0] < q[0] + q[2] && q[0] < r[0] + r[2] && r[1] < q[1] + q[3] && q[1] < r[1] + r[3];
+                    h.assertFalse(overlap, id + ": elements " + a + " and " + b + " overlap");
+                }
+            }
+            if (l.hasEnergy() && !(l.slots.isEmpty() && l.tanks.isEmpty())) {
+                h.assertTrue(l.energyX == 8, id + ": energy bar on the far left");
+            }
+        }
+        h.succeed();
+    }
+
     private IndustryRtgTests() {
     }
 }

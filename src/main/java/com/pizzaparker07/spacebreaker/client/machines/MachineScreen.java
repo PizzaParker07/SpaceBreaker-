@@ -34,7 +34,7 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
     }
 
     private MachineLayout layout() {
-        return menu.machine.layout();
+        return menu.machine.layout().tidy();
     }
 
     private net.minecraft.client.gui.components.Button redstoneButton;
@@ -47,7 +47,7 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
             if (minecraft != null && minecraft.gameMode != null) {
                 minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 0);
             }
-        }).bounds(leftPos + imageWidth - 22, topPos + inventoryLabelY - 3, 14, 12).build());
+        }).bounds(leftPos + imageWidth - 20, topPos + 3, 12, 11).build());
     }
 
     private int redstoneMode() {
@@ -66,8 +66,13 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
         super.render(g, mouseX, mouseY, partialTick);
         renderTooltip(g, mouseX, mouseY);
         renderGaugeTooltips(g, mouseX, mouseY);
-        if (menu.data.get(6) == 7 && mouseX >= leftPos + 8 && mouseX < leftPos + imageWidth - 8 && mouseY >= topPos + 4 && mouseY < topPos + 15) {
-            g.renderTooltip(font, requiresLine(), mouseX, mouseY);
+        Component status = statusLine();
+        int sx = leftPos + imageWidth - 33;
+        if (font.width(title) > imageWidth - 36 - titleLabelX && mouseX >= leftPos + 8 && mouseX < sx && mouseY >= topPos + 3 && mouseY < topPos + 14) {
+            g.renderTooltip(font, title, mouseX, mouseY);
+        }
+        if (status != null && mouseX >= sx && mouseX < sx + 10 && mouseY >= topPos + 3 && mouseY < topPos + 14) {
+            g.renderTooltip(font, status, mouseX, mouseY);
         }
     }
 
@@ -125,7 +130,7 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
                 int h = Math.max(1, Math.round(52F * fluid.getAmount() / tank.getCapacity()));
                 drawFluid(g, fluid, x0 + p.x() + 1, y0 + p.y() + 1 + 52 - h, 16, h);
             }
-            g.blit(TEX, x0 + p.x() + 1, y0 + p.y() + 1, 220, 77, 16, 52);
+            g.fill(x0 + p.x() + 3, y0 + p.y() + 3, x0 + p.x() + 4, y0 + p.y() + 51, 0x40FFFFFF); // glass glint
         }
     }
 
@@ -144,20 +149,27 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
         }
     }
 
+    /** Only the machine's name: the inventory needs no caption, and a problem shows as a small red mark whose
+     * explanation comes up on hover. */
     @Override
     protected void renderLabels(GuiGraphics g, int mouseX, int mouseY) {
-        super.renderLabels(g, mouseX, mouseY);
+        int room = imageWidth - 36 - titleLabelX;
+        String name = font.width(title) > room ? font.plainSubstrByWidth(title.getString(), room - font.width("…")) + "…" : title.getString();
+        g.drawString(font, name, titleLabelX, titleLabelY, 0x404040, false);
+        if (statusLine() != null) {
+            int x = imageWidth - 33, y = 4;
+            g.fill(x + 3, y, x + 6, y + 6, 0xFFB02E26);
+            g.fill(x + 3, y + 7, x + 6, y + 9, 0xFFB02E26);
+        }
+    }
+
+    private Component statusLine() {
         int status = menu.data.get(6);
         String key = MachineBlockEntity.statusKey(status);
-        if (key != null) {
-            Component c = Component.translatable(key);
-            if (status == 7) {
-                c = requiresLine();
-            }
-            int room = imageWidth - 16 - font.width(title) - 6;
-            String text = font.plainSubstrByWidth(c.getString(), room);
-            g.drawString(font, text, imageWidth - 8 - font.width(text), titleLabelY, 0xB02E26, false);
+        if (key == null) {
+            return null;
         }
+        return status == 7 ? requiresLine() : Component.translatable(key);
     }
 
     /** "Requires: <technology names>" for a machine its owner has not researched yet. */
