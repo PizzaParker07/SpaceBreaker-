@@ -25,7 +25,6 @@ final class RocketryLang {
         l.add("propellant.spacebreaker.kerolox", "RP-1/LOX", "RP-1/LOX");
         l.add("propellant.spacebreaker.methalox", "Methane/LOX", "Metan/LOX");
         l.add("propellant.spacebreaker.hydrolox", "Hydrogen/LOX", "Hidrojen/LOX");
-        l.add("tag.item.spacebreaker.reactor_fuel", "Reactor Fuel", "Reaktör Yakıtı");
         l.add("propellant.spacebreaker.nuclear", "Hydrogen (nuclear thermal)", "Hidrojen (nükleer termal)");
         l.item(RocketryModule.NUCLEAR_THERMAL_ENGINE, "Nuclear Thermal Engine (Vacuum)", "Nükleer Termal Motor (Vakum)");
         l.add("tooltip.spacebreaker.part.propellant_nuclear", "In a nuclear thermal stage: LH2 %s mB, no LOX", "Nükleer termal kademede: LH2 %s mB, LOX yok");

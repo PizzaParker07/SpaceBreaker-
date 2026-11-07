@@ -1,7 +1,7 @@
 ---
 title: Mars
 icon: spacebreaker:martian_regolith
-items: [spacebreaker:martian_regolith, spacebreaker:martian_sand, spacebreaker:martian_basalt, spacebreaker:martian_sandstone]
+items: [spacebreaker:martian_regolith, spacebreaker:martian_sand, spacebreaker:martian_basalt, spacebreaker:martian_sandstone, spacebreaker:co2_frost_layer]
 research: spacebreaker:interplanetary_transfers
 ---
 A cold desert under a butterscotch sky.
@@ -18,8 +18,17 @@ The north is a low, smooth plain; the south is old cratered highland. Look for t
 {page}
 ## Dusty panels and dust whirls
 - On Mars, dust slowly settles on solar panels that see the sky: about **three Mars days** from clean to covered, six times faster in a storm. A fully covered panel gives only **60%** of its power.
-- {key key.use} a panel while holding {key key.sneak} to wipe the dust off.
-- On calm afternoons **dust whirls** wander over the plains and dunes. They push loose items and walkers aside, but also sweep clean the panels they pass.
+- {key key.use} a panel with an empty hand while holding {key key.sneak}, or use a **brush** on it, to wipe the dust off. The rover's roof panel gathers dust too.
+- The {item spacebreaker:environment_sensor} shows how fast dust is settling.
+- On calm afternoons **dust whirls** wander over the plains and dunes. They push loose items and walkers aside, but do no harm and sweep clean the panels they pass. They are not the aggressive dust devils of a storm.
+
+> Build your solar farm on an open plain where whirls often pass.
+
+## Seasons
+Like Earth, Mars is tilted about **25°**, so its hemispheres take turns at winter. The Martian year, 669 sols in reality, is squeezed into **24 sols** in the game.
+- In the winter hemisphere part of the air freezes onto the ground: the polar cap spreads toward the equator as far as about **52° latitude**.
+- On clear nights a thin {item spacebreaker:co2_frost_layer} forms about 12° beyond that. In spring it turns straight back into gas; the soil underneath stays as it was.
+- A message tells you when the season changes. Operators can pick one with **/spacebreaker season <Ls>** (0 northern spring, 90 summer, 180 autumn, 270 winter).
 
 ## Dust storms
 Storms can wrap the whole planet for days.

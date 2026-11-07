@@ -18,10 +18,16 @@ final class SolarSystemData {
     static synchronized BodySystem system() {
         if (cached == null) {
             List<AstroBody> list = new ArrayList<>();
+            Map<String, Vec3> poles = new java.util.HashMap<>();
             for (Path p : files()) {
                 list.add(load(p));
+                @SuppressWarnings("unchecked")
+                Map<String, Object> rot = (Map<String, Object>) json(p).get("rotation");
+                if (rot != null && rot.get("pole_ra_deg") != null) {
+                    poles.put(id(p), Frames.eclipticFromEquatorial((Double) rot.get("pole_ra_deg"), (Double) rot.get("pole_dec_deg")));
+                }
             }
-            cached = new BodySystem(list);
+            cached = new BodySystem(Frames.equatorialMoonOrbits(list, poles));
         }
         return cached;
     }

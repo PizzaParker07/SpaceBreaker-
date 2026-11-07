@@ -54,7 +54,7 @@ public final class SpacebreakerJeiPlugin implements IModPlugin {
             }
         }
         registration.addRecipes(SuitModuleCategory.TYPE, RecipeViewerData.suitUpgrades());
-        for (RecipeViewerData.InfoPage page : RecipeViewerData.INFO_PAGES) {
+        for (RecipeViewerData.InfoPage page : RecipeViewerData.infoPages()) {
             registration.addIngredientInfo(page.item().get(), Component.translatable(page.key()));
         }
     }

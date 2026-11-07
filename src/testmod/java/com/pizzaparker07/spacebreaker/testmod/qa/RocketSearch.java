@@ -36,6 +36,10 @@ final class RocketSearch {
     record Result(Candidate rocket, String mode, double need) {
     }
 
+    /** Earth surface gravity, a little low, and the TWR the callers need (1.05): only designs no caller can launch are dropped. */
+    private static final double LAUNCH_G = 0.99 * com.pizzaparker07.spacebreaker.core.body.CelestialBody.EARTH_GRAVITY;
+    private static final double MIN_TWR = 1.05;
+
     private static final List<List<String>> TANK_SETS = List.of(
             List.of("fuel_tank_small"), List.of("fuel_tank_medium"), List.of("fuel_tank_large"),
             List.of("fuel_tank_large", "fuel_tank_medium"), List.of("fuel_tank_large", "fuel_tank_large"),
@@ -112,6 +116,20 @@ final class RocketSearch {
             }
         }
         List<List<ResourceLocation>> lower = stageOptions(engines, tanks, fins, rcs, true);
+        // every caller launches from Earth and skips designs with launch TWR below 1.05: a bottom stage that cannot lift
+        // even itself with the lightest payload never can with more stages on top (same thrust, more mass), so drop it
+        // here (vacuum-only engines like the nuclear thermal engine would otherwise multiply the search)
+        lower.removeIf(option -> {
+            for (List<ResourceLocation> payload : payloads) {
+                List<ResourceLocation> all = new ArrayList<>(option);
+                all.addAll(payload);
+                RocketLayout l = RocketLayout.of(new RocketDesign(all), lookup);
+                if (!l.problems().isEmpty() || RocketMath.twr(l, 0, l.fullFuel(), LAUNCH_G) >= MIN_TWR) {
+                    return false; // keep: either it can lift off, or this check cannot judge it
+                }
+            }
+            return true;
+        });
         List<List<ResourceLocation>> upper = stageOptions(engines, tanks, null, rcs, false);
         int maxStages = separator == null ? 1 : 3;
         for (int n = 1; n <= maxStages; n++) {
@@ -130,7 +148,7 @@ final class RocketSearch {
                 all.addAll(payload);
                 RocketDesign design = new RocketDesign(all);
                 RocketLayout layout = RocketLayout.of(design, lookup);
-                if (layout.problems().isEmpty()) {
+                if (layout.problems().isEmpty() && RocketMath.twr(layout, 0, layout.fullFuel(), LAUNCH_G) >= MIN_TWR) {
                     out.add(new Candidate(design, layout, RocketMath.totalDeltaV(layout, 0, layout.fullFuel(), 0)));
                 }
             }

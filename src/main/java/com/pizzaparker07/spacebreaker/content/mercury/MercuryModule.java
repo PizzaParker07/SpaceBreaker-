@@ -71,6 +71,8 @@ public final class MercuryModule implements SbModule {
         MercuryEntities.eggs().forEach(SbTabs.PLANETS::add);
         MercuryData.register();
         MercuryClimate.register();
+        // the 3:2 resonance: the sun stops and turns back near perihelion (double sunrise and sunset)
+        com.pizzaparker07.spacebreaker.content.worldgen.PlanetTime.addWarp(MERCURY, MercuryDay::trueFraction);
     }
 
     @Override

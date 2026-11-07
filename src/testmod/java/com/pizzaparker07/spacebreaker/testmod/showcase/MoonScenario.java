@@ -162,6 +162,43 @@ final class MoonScenario implements ShowcaseScenario {
         s.add(new ShowcaseDriver.Shot("10b_eclipse_from_moon", 0, vx, gy + 3, vz, earthYaw, pitch(earth.x, earth.y, earth.z) * 0.85F,
                 true, fp, 40, at(0.25, p -> ((net.minecraft.world.level.storage.ServerLevelData) p.server.getWorldData().overworldData())
                         .setGameTime(eclipseTicks)), null));
+        // earthshine: the same spot near the limb, Earth low over the horizon, at the night of full Earth and of a crescent
+        double ex = (SkyMath.SUB_PARENT_LONGITUDE + 70) / 90.0 * t.profile().poleDistance();
+        double ez = 0.5;
+        Vector3d low = SkyMath.parentDirection(t.latitude(ez), t.longitude(ex), 0.5);
+        double fullAt = 0;
+        double crescentAt = 0;
+        double fullB = -1;
+        double crescentB = Double.MAX_VALUE;
+        for (double f = 0; f < 1; f += 0.0025) {
+            double tod = vanillaTimeOfDay(f);
+            if (SkyMath.sunDirection(tod, t.latitude(ez)).y > -0.08) {
+                continue;
+            }
+            double b = com.pizzaparker07.spacebreaker.content.worldgen.Earthshine.brightness(t.latitude(ez), t.longitude(ex), tod, f);
+            if (b > fullB) {
+                fullB = b;
+                fullAt = f;
+            }
+            if (b < crescentB) {
+                crescentB = b;
+                crescentAt = f;
+            }
+        }
+        float lowYaw = yaw(low.x, low.z);
+        s.add(new ShowcaseDriver.Shot("10c_earthshine_full", 0, ex, ground(ex, ez) + 2.5, ez, lowYaw, 4F, true, fp, 80, at(fullAt), null));
+        s.add(new ShowcaseDriver.Shot("10d_earthshine_crescent", 0, ex, ground(ex, ez) + 2.5, ez, lowYaw, 4F, true, fp, 80, at(crescentAt), null));
+        // the rare horizon glow, two degrees after sunset, on a day that shows it
+        double glowAt = 0.5;
+        for (double f = 0.26; f < 0.74; f += 0.0005) {
+            if (SkyMath.sunElevation(vanillaTimeOfDay(f), t.latitude(vz)) < -com.pizzaparker07.spacebreaker.content.worldgen.HorizonGlow.PEAK_DEG) {
+                glowAt = f;
+                break;
+            }
+        }
+        double glowFraction = glowAt;
+        s.add(new ShowcaseDriver.Shot("10e_horizon_glow", 0, vx, gy + 3, vz, 90F, 1F, true, fp, 60,
+                p -> glowingSunset(p.serverLevel(), glowFraction), null));
         // micrometeorite shower at night: streaks across the sky, dust puffs on the ground
         s.add(new ShowcaseDriver.Shot("11_micrometeorite_shower", 0, vx, gy + 2, vz, earthYaw + 60F, -35F, true, fp, 80,
                 at(0.75, p -> com.pizzaparker07.spacebreaker.content.worldgen.MeteorShowers.start(p.serverLevel(), 1200)), null));
@@ -169,6 +206,27 @@ final class MoonScenario implements ShowcaseScenario {
         s.addAll(MoonShowcaseBuilder.shots(this::ground));
         s.addAll(MoonShowcaseBuilder.dungeonShots(t));
         return s;
+    }
+
+    /** Moves to a whole solar day whose sunset shows the horizon glow, at {@code fraction} of that day. */
+    private static void glowingSunset(ServerLevel level, double fraction) {
+        var base = PlanetTime.clock(level).orElseThrow();
+        long seed = level.dimension().location().hashCode();
+        ServerLevel overworld = level.getServer().overworld();
+        long start = overworld.getDayTime();
+        for (int k = 0; k < 64; k++) {
+            overworld.setDayTime(start + k * base.dayTicks());
+            PlanetTime.setDayFraction(level, fraction);
+            var c = PlanetTime.clock(level).orElseThrow();
+            if (com.pizzaparker07.spacebreaker.content.worldgen.HorizonGlow.shows(seed, Math.floorDiv(level.getDayTime() + c.offset(), c.dayTicks()), true)) {
+                return;
+            }
+        }
+    }
+
+    /** Vanilla's celestial angle (0 = noon) for a day fraction, as {@link PlanetTime.Clock#timeOfDay} computes it. */
+    private static double vanillaTimeOfDay(double fraction) {
+        return new PlanetTime.Clock(24000, 0).timeOfDay(Math.round(fraction * 24000));
     }
 
     interface ColumnTest {

@@ -25,7 +25,7 @@ public final class MercuryClient {
 
     @SubscribeEvent
     static void effects(RegisterDimensionSpecialEffectsEvent event) {
-        event.register(Spacebreaker.id("mercury"), new PlanetSkyEffects(Bodies.key("mercury")));
+        event.register(Spacebreaker.id("mercury"), new MercurySkyEffects());
     }
 
     @SubscribeEvent

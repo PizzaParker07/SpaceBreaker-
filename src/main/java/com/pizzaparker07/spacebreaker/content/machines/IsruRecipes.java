@@ -36,6 +36,8 @@ public final class IsruRecipes {
     public static final TagKey<Item> SOLAR_WIND_REGOLITHS = SbTagKeys.commonItem("regoliths/solar_wind");
     public static final TagKey<Item> SULFUR = SbTagKeys.commonItem("dusts/sulfur");
     /** Carbon-rich rubble (C-type asteroids, carbonaceous chondrite): clay minerals that hold water, and organics. */
+    /** Fuel a nuclear reactor or nuclear thermal rocket accepts (spacebreaker:reactor_fuel). */
+    public static final TagKey<Item> REACTOR_FUEL = SbTagKeys.modItem("reactor_fuel");
     public static final TagKey<Item> CARBONACEOUS_REGOLITHS = SbTagKeys.commonItem("regoliths/carbonaceous");
     /** Stony (S-type) asteroid rubble with grains of meteoritic iron-nickel. */
     public static final TagKey<Item> STONY_REGOLITHS = SbTagKeys.commonItem("regoliths/stony");
@@ -56,6 +58,7 @@ public final class IsruRecipes {
     static void tags(SbTags tags) {
         tags.item(REGOLITHS, byId(REGOLITH_IDS));
         tags.item(CARBONACEOUS_REGOLITHS, byId(CARBONACEOUS_IDS));
+        tags.item(REACTOR_FUEL, NUCLEAR_FUEL_ELEMENT.get());
         tags.item(STONY_REGOLITHS, byId(STONY_IDS));
         // asteroid rubble is regolith too: it sinters, and stony rubble gives oxygen in the heater like any other
         tags.item(REGOLITHS, byId(STONY_IDS));
@@ -134,9 +137,21 @@ public final class IsruRecipes {
         shaped(out, RTG.item().get(), 1, has(EarthModule.TUNGSTEN.plateTag), "ATA", "SCS", "ATA",
                 'A', EarthModule.ALUMINUM.plateTag, 'T', EarthModule.TUNGSTEN.plateTag, 'S', EarthModule.SILICON_WAFER.get(),
                 'C', EarthModule.ADVANCED_CIRCUIT.get());
-        // pellet: leach crushed pitchblende in acid, precipitate the oxide and sinter it into a clad pellet
-        ProcessingRecipeBuilder.of(CHEMICAL_REACTION).in(EarthModule.URANIUM.dustTag, 4).fluidIn(FluidsModule.TAG_SULFURIC_ACID, 500)
-                .out(RTG_FUEL_PELLET.get()).time(200).energy(80).save(out, "rtg_fuel_pellet");
+        // yellowcake: leach crushed uraninite in sulfuric acid and precipitate the oxide concentrate
+        ProcessingRecipeBuilder.of(CHEMICAL_REACTION).in(EarthModule.URANIUM.dustTag).fluidIn(FluidsModule.TAG_SULFURIC_ACID, 125)
+                .out(YELLOWCAKE.get()).time(80).energy(60).save(out, "yellowcake");
+        // RTG pellet: the oxide pressed and sintered into a clad pellet
+        ProcessingRecipeBuilder.of(SINTERING).in(YELLOWCAKE.get(), 4).out(RTG_FUEL_PELLET.get()).time(200).energy(80).save(out, "rtg_fuel_pellet");
+        // enrichment: a slow, power-hungry spin; one part enriched to three parts depleted
+        ProcessingRecipeBuilder.of(CENTRIFUGING).in(YELLOWCAKE.get(), 4).out(ENRICHED_URANIUM.get()).out(DEPLETED_URANIUM.get(), 3)
+                .time(800).energy(160).save(out, "enriched_uranium");
+        // reactor fuel: carbothermic reduction of enriched uranium to carbide kernels, sealed in a tungsten cermet clad
+        ProcessingRecipeBuilder.of(ARC_SMELTING).in(ENRICHED_URANIUM.get(), 2).in(EarthModule.COAL_DUST_TAG, 2)
+                .in(EarthModule.TUNGSTEN.rodTag, 2).out(NUCLEAR_FUEL_ELEMENT.get()).time(400).energy(120).save(out, "nuclear_fuel_element");
+        // gas centrifuge: a tall rotor on magnetic bearings in a vacuum casing
+        shaped(out, GAS_CENTRIFUGE.item().get(), 1, has(EarthModule.TITANIUM.plateTag), "SRS", "MCM", "SAS",
+                'S', EarthModule.STEEL.plateTag, 'R', EarthModule.TITANIUM.rodTag, 'M', EarthModule.ELECTRIC_MOTOR.get(),
+                'C', EarthModule.ADVANCED_CIRCUIT.get(), 'A', EarthModule.ALUMINUM.plateTag);
         shaped(out, ICE_MELTER.item().get(), 1, has(EarthModule.ALUMINUM.plateTag), "AHA", "GKG", "ACA",
                 'A', EarthModule.ALUMINUM.plateTag, 'H', Items.HOPPER, 'G', Tags.Items.GLASS_BLOCKS_COLORLESS, 'K', Items.CAULDRON,
                 'C', EarthModule.BASIC_CIRCUIT.get());

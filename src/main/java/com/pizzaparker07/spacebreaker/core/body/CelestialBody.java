@@ -166,12 +166,28 @@ public record CelestialBody(
     }
 
     /** Solar day length in hours (what you experience on the surface) and axial tilt. */
-    public record Rotation(double dayLengthHours, double axialTiltDeg, boolean tidallyLocked) {
+    /**
+     * @param poleRaDeg  right ascension of the spin axis (right-hand rule, ICRF J2000), or NaN when not given
+     * @param poleDecDeg declination of the spin axis, or NaN. When a planet has a pole, its moons' orbit elements
+     *                   are measured in its equator
+     */
+    public record Rotation(double dayLengthHours, double axialTiltDeg, boolean tidallyLocked, double poleRaDeg, double poleDecDeg) {
         public static final Codec<Rotation> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.DOUBLE.fieldOf("day_length_hours").forGetter(Rotation::dayLengthHours),
                 Codec.DOUBLE.optionalFieldOf("axial_tilt_deg", 0.0).forGetter(Rotation::axialTiltDeg),
-                Codec.BOOL.optionalFieldOf("tidally_locked", false).forGetter(Rotation::tidallyLocked)
+                Codec.BOOL.optionalFieldOf("tidally_locked", false).forGetter(Rotation::tidallyLocked),
+                Codec.DOUBLE.optionalFieldOf("pole_ra_deg", Double.NaN).forGetter(Rotation::poleRaDeg),
+                Codec.DOUBLE.optionalFieldOf("pole_dec_deg", Double.NaN).forGetter(Rotation::poleDecDeg)
         ).apply(i, Rotation::new));
+
+        /** Rotation without a spin-axis direction (kept for code written before it existed). */
+        public Rotation(double dayLengthHours, double axialTiltDeg, boolean tidallyLocked) {
+            this(dayLengthHours, axialTiltDeg, tidallyLocked, Double.NaN, Double.NaN);
+        }
+
+        public boolean hasPole() {
+            return !Double.isNaN(poleRaDeg) && !Double.isNaN(poleDecDeg);
+        }
     }
 
     /** Surface pressure in kPa (Earth = 101.3) and composition as volume fractions. */

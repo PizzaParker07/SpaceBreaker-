@@ -1,7 +1,7 @@
 ---
 title: Üssün Havası
 icon: spacebreaker:oxygen_distributor
-items: [spacebreaker:oxygen_distributor, spacebreaker:airlock_door]
+items: [spacebreaker:oxygen_distributor, spacebreaker:airlock_door, spacebreaker:aluminum_panel, spacebreaker:titanium_deck, spacebreaker:pressure_glass, spacebreaker:porthole, spacebreaker:hazard_stripe, spacebreaker:cable_duct, spacebreaker:pipe_duct, spacebreaker:grate, spacebreaker:grate_platform, spacebreaker:railing, spacebreaker:steel_ladder, spacebreaker:floodlight, spacebreaker:led_panel, spacebreaker:warning_light, spacebreaker:sliding_door]
 research: spacebreaker:oxygen_distribution
 ---
 Kask takmadan dolaşabileceğin bir üs için kapalı bir oda, bir dağıtıcı ve bir hava kilidi gerekir.
@@ -27,3 +27,22 @@ Kask takmadan dolaşabileceğin bir üs için kapalı bir oda, bir dağıtıcı 
 
 > [!TIP]
 > Bir blok kırıldığında ya da konduğunda dağıtıcı odayı yeniden kontrol eder. Pencere için cam kullanabilirsin; kapı ise sıradan bir kapı olursa hava kaçar.
+
+{page}
+## Üs blokları
+{items spacebreaker:aluminum_panel spacebreaker:titanium_deck spacebreaker:pressure_glass spacebreaker:porthole spacebreaker:hazard_stripe spacebreaker:cable_duct}
+Üssünü {item spacebreaker:aluminum_panel}, {item spacebreaker:titanium_deck}, {item spacebreaker:pressure_glass} ve {item spacebreaker:porthole} ile kur. **Tam bloklar, basınçlı cam ve lombarlar havayı tutar**; uyarı şeritleri, kanal kapakları ve LED paneller de tam bloktur. Kapalı bir kayar kapı da havayı tutar.
+{recipe spacebreaker:rocketry/aluminum_panel}
+
+>! {item spacebreaker:grate}, ızgara platform, korkuluk, çelik merdiven, projektör basamaklar ve açık bir kayar kapı havayı geçirir. Dağıtıcı odayı düzenli aralıkla taradığı için kapı açılıp kapanınca durum kendiliğinden güncellenir. Bunları basınçlı odanın duvarına koyma.
+
+{items spacebreaker:led_panel spacebreaker:floodlight spacebreaker:warning_light}
+Aydınlatma için {item spacebreaker:led_panel} ve {item spacebreaker:floodlight}; ikisi de en parlak ışığı (15) verir; projektör konduğu yüze döner. Dönen amber {item spacebreaker:warning_light} kızıltaşla ya da kendiliğinden yanar: 32 blok içinde bir roket yakıt alırken, geri sayımda, kalkışta ya da yanaşırken.
+{recipe spacebreaker:rocketry/warning_light}
+
+## Kayar kapılar ve hava kilidi
+{items spacebreaker:sliding_door}
+Karşılıklı, en fazla **4 blok** arayla iki {item spacebreaker:sliding_door} bir **hava kilidi** olur: ikisi asla aynı anda açık kalmaz. Birini açmak istediğinde öbürü kapanır, hava kilidi döngüsü çalar ve kapı 40 tik sonra açılır. Elle ya da kızıltaşla aynı kural geçerlidir. Kapı 2 blok yüksektir ve kanatları yana açılır.
+
+> Tipik kurulum: iki kapı arasında 2–3 blokluk küçük bir oda.
+{recipe spacebreaker:rocketry/sliding_door}

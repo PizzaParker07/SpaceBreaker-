@@ -30,3 +30,12 @@ Regoliti fırında pişir: **sinterlenmiş regolit**, Ay üssünün ilk yapı ta
 
 > [!TIP]
 > Üssünü bir kutup kraterinin kenarına kur: güneş panelleri için ışık, içeride buz.
+
+{page}
+## Tutulmalar
+Bir uydudan bakınca gezegeni zaman zaman Güneş'in önünden geçer. Güneş kararır, gezegenin karanlık yüzünü bütün gün doğumu ve batımlarından oluşan ince, kızıl-turuncu bir halka çevreler. Işık ve güneş paneli üretimi düşer, günün sıcaklığı yavaşça gece sıcaklığına iner. Görev kontrol yaklaşık bir dakika önceden uyarır. Sıradaki tutulmayı **/spacebreaker eclipse** söyler.
+
+> Tutulma sırasında paneller karardığı için bataryan dolu olsun. → [Gece ve enerji](power#night)
+
+## Volkanik kubbeler
+Bazı yerlerde açık renkli anortozitten dik, düzgün kubbeler yükselir: 45–95 blok genişliğinde, 28 bloğa kadar yüksek, tepesinde küçük bir çukur.

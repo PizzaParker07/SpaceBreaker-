@@ -92,9 +92,6 @@ public final class RocketryModule implements SbModule {
     /** Nuclear thermal engine: a fission reactor heats liquid hydrogen; vacuum only, very efficient, radioactive while it burns. */
     public static final DeferredItem<RocketPartItem> NUCLEAR_THERMAL_ENGINE = part("nuclear_thermal_engine");
     public static final DeferredItem<RocketPartItem> CREW_CAPSULE_LARGE = part("crew_capsule_large");
-    /** Reactor fuel for nuclear thermal engines (industry's fuel elements join this tag). */
-    public static final net.minecraft.tags.TagKey<Item> REACTOR_FUEL = net.minecraft.tags.TagKey.create(
-            net.minecraft.core.registries.Registries.ITEM, com.pizzaparker07.spacebreaker.Spacebreaker.id("reactor_fuel"));
     public static final DeferredItem<RocketPartItem> COMM_SATELLITE = part("comm_satellite");
     public static final DeferredItem<RocketPartItem> OBSERVATION_SATELLITE = part("observation_satellite");
     public static final DeferredItem<RocketPartItem> SPACE_PROBE = part("space_probe");
@@ -401,8 +398,6 @@ public final class RocketryModule implements SbModule {
             }
         }
         tags.block(com.pizzaparker07.spacebreaker.content.suit.SuitModule.LEAKY, com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.GRATE.get());
-        // until industry's own fuel element arrives, enriched pellets stand in as reactor fuel
-        tags.item(REACTOR_FUEL, com.pizzaparker07.spacebreaker.content.machines.MachinesModule.RTG_FUEL_PELLET.get());
         tags.block(BlockTags.CLIMBABLE, com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.STEEL_LADDER.get());
         tags.block(BlockTags.SLABS, com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.GRATE_PLATFORM.get());
         // the sliding door holds air while shut (the airtight tag honours its OPEN property)

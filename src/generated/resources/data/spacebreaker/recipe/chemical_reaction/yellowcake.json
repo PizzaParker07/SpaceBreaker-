@@ -1,20 +1,21 @@
 {
   "type": "spacebreaker:chemical_reaction",
-  "energy": 80,
+  "energy": 60,
   "fluid_input": {
-    "amount": 500,
+    "amount": 125,
     "tag": "c:sulfuric_acid"
   },
   "ingredients": [
     {
-      "count": 4,
+      "count": 1,
       "tag": "c:dusts/uranium"
     }
   ],
   "results": [
     {
       "count": 1,
-      "id": "spacebreaker:rtg_fuel_pellet"
+      "id": "spacebreaker:yellowcake"
     }
-  ]
+  ],
+  "time": 80
 }

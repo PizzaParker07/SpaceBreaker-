@@ -3,6 +3,7 @@ package com.pizzaparker07.spacebreaker.content.machines.net;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.HopperBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
@@ -21,10 +22,22 @@ import java.util.Set;
  * tier's rate per tick. Networks are built lazily on first use and dropped whenever a member or neighbour changes.
  */
 public final class ConduitNetwork {
-    /** @param filter only this fluid passes through this end (null = anything) */
-    public record Endpoint(BlockPos pos, Direction face, boolean extract, @org.jetbrains.annotations.Nullable net.minecraft.world.level.material.Fluid filter) {
+    /**
+     * @param filter     only this fluid passes through this end (null = anything)
+     * @param itemFilter only this item passes through this end of an item duct (null = anything)
+     */
+    public record Endpoint(BlockPos pos, Direction face, boolean extract, @org.jetbrains.annotations.Nullable net.minecraft.world.level.material.Fluid filter,
+                           @org.jetbrains.annotations.Nullable net.minecraft.world.item.Item itemFilter) {
+        public Endpoint(BlockPos pos, Direction face, boolean extract, @org.jetbrains.annotations.Nullable net.minecraft.world.level.material.Fluid filter) {
+            this(pos, face, extract, filter, null);
+        }
+
         public boolean passes(FluidStack stack) {
             return filter == null || stack.getFluid().isSame(filter);
+        }
+
+        public boolean passes(net.minecraft.world.item.ItemStack stack) {
+            return itemFilter == null || stack.is(itemFilter);
         }
     }
 
@@ -39,6 +52,68 @@ public final class ConduitNetwork {
     private long lastTick = -1;
     private int rotate;
     private boolean busy;
+    /** Per-endpoint capability caches (same order as {@link #endpoints}); NeoForge drops a cache's value when the block changes. */
+    private net.neoforged.neoforge.capabilities.BlockCapabilityCache<?, Direction>[] caches;
+
+    private long resolvedTick = -1;
+    private net.neoforged.neoforge.capabilities.BlockCapability<?, Direction> resolvedCap;
+    private Object[] resolved = new Object[0];
+    private int[] resolvedIndex = new int[0];
+    private int resolvedCount;
+
+    /**
+     * Resolves every loaded endpoint's capability once per tick: a big base offers energy to the same network from
+     * dozens of generators each tick, and each offer then only walks this short array. A block change mid-tick drops
+     * the whole network (see {@link ConduitBlock#neighborChanged}), so nothing stale outlives the tick.
+     */
+    private int resolve(net.neoforged.neoforge.capabilities.BlockCapability<?, Direction> capability) {
+        long now = level.getGameTime();
+        if (now == resolvedTick && capability == resolvedCap) {
+            return resolvedCount;
+        }
+        int n = endpoints.size();
+        if (resolved.length < n) {
+            resolved = new Object[n];
+            resolvedIndex = new int[n];
+        }
+        int count = 0;
+        for (int k = 0; k < n; k++) {
+            if (!level.isLoaded(endpoints.get(k).pos())) {
+                continue;
+            }
+            Object c = cap(capability, k);
+            if (c != null) {
+                resolved[count] = c;
+                resolvedIndex[count] = k;
+                count++;
+            }
+        }
+        for (int k = count; k < resolvedCount; k++) {
+            resolved[k] = null;
+        }
+        resolvedTick = now;
+        resolvedCap = capability;
+        resolvedCount = count;
+        return count;
+    }
+
+    /** The capability on an endpoint's face, looked up once and then kept until that block changes. */
+    @SuppressWarnings("unchecked")
+    private <T> @org.jetbrains.annotations.Nullable T cap(net.neoforged.neoforge.capabilities.BlockCapability<T, Direction> capability, int index) {
+        Endpoint e = endpoints.get(index);
+        if (!(level instanceof net.minecraft.server.level.ServerLevel server)) {
+            return level.getCapability(capability, e.pos(), e.face());
+        }
+        if (caches == null || caches.length != endpoints.size()) {
+            caches = new net.neoforged.neoforge.capabilities.BlockCapabilityCache[endpoints.size()];
+        }
+        var cache = caches[index];
+        if (cache == null || cache.getCapability() != capability) {
+            cache = net.neoforged.neoforge.capabilities.BlockCapabilityCache.create(capability, server, e.pos(), e.face());
+            caches[index] = cache;
+        }
+        return (T) cache.getCapability();
+    }
 
     private ConduitNetwork(Level level, ConduitType type) {
         this.level = level;
@@ -71,9 +146,13 @@ public final class ConduitNetwork {
                     if (net.members.add(next.immutable())) {
                         queue.add(next.immutable());
                     }
+                } else if (type.items && side != ConduitSide.EXTRACT && ns.getBlock() instanceof HopperBlock
+                        && ns.getValue(HopperBlock.FACING) == dir.getOpposite()) {
+                    // a hopper pointing into the duct only feeds it: delivering back into it would just cycle the items
+                    continue;
                 } else {
                     net.endpoints.add(new Endpoint(next.immutable(), dir.getOpposite(), side == ConduitSide.EXTRACT,
-                            here == null ? null : here.filter(dir)));
+                            here == null ? null : here.filter(dir), here == null ? null : here.itemFilter(dir)));
                 }
             }
         }
@@ -117,27 +196,24 @@ public final class ConduitNetwork {
         busy = true;
         try {
             List<IEnergyStorage> targets = new ArrayList<>();
-            for (Endpoint e : endpoints) {
-                if (e.pos().equals(source) || !level.isLoaded(e.pos())) {
+            int count = left > 0 ? resolve(Capabilities.EnergyStorage.BLOCK) : 0;
+            for (int j = 0; j < count; j++) {
+                Endpoint e = endpoints.get(resolvedIndex[j]);
+                if (e.pos().equals(source)) {
                     continue;
                 }
-                IEnergyStorage t = level.getCapability(Capabilities.EnergyStorage.BLOCK, e.pos(), e.face());
-                if (t != null && t.canReceive()) {
+                IEnergyStorage t = (IEnergyStorage) resolved[j];
+                if (t.canReceive()) {
                     targets.add(t);
                 }
             }
             int n = targets.size();
-            int start = n == 0 ? 0 : Math.floorMod(rotate++, n);
+            // round robin: each offer starts at the next consumer and fills it before moving on, so a hundred
+            // generators feeding a hundred machines make a hundred deliveries a tick, not ten thousand 1 FE trickles;
+            // over a few ticks every consumer gets its turn (a dry run does not move the start)
+            int start = n == 0 ? 0 : Math.floorMod(simulate ? rotate : rotate++, n);
             for (int i = 0; i < n && left > 0; i++) {
-                IEnergyStorage t = targets.get((start + i) % n);
-                int share = Math.max(1, left / (n - i));
-                int got = t.receiveEnergy(share, simulate);
-                left -= got;
-                moved += got;
-            }
-            // second pass: let anyone take what the others could not
-            for (int i = 0; i < n && left > 0; i++) {
-                int got = targets.get(i).receiveEnergy(left, simulate);
+                int got = targets.get((start + i) % n).receiveEnergy(left, simulate);
                 left -= got;
                 moved += got;
             }
@@ -161,14 +237,14 @@ public final class ConduitNetwork {
         busy = true;
         try {
             List<IFluidHandler> targets = new ArrayList<>();
-            for (Endpoint e : endpoints) {
-                if (e.extract() || e.pos().equals(source) || !level.isLoaded(e.pos()) || !e.passes(stack)) {
+            int count = left > 0 ? resolve(Capabilities.FluidHandler.BLOCK) : 0;
+            for (int j = 0; j < count; j++) {
+                Endpoint e = endpoints.get(resolvedIndex[j]);
+                if (e.extract() || e.pos().equals(source) || !e.passes(stack)) {
                     continue;
                 }
-                IFluidHandler t = level.getCapability(Capabilities.FluidHandler.BLOCK, e.pos(), e.face());
-                if (t != null) {
-                    targets.add(t);
-                }
+                IFluidHandler t = (IFluidHandler) resolved[j];
+                targets.add(t);
             }
             int n = targets.size();
             int start = n == 0 ? 0 : Math.floorMod(rotate++, n);
@@ -218,13 +294,90 @@ public final class ConduitNetwork {
         }
     }
 
-    /** Runs once per tick per network: pulls fluid from blocks attached on EXTRACT sides. */
+    // ------------------------------------------------------------------ items
+
+    /**
+     * Offers a stack to the inventories on the network's delivering ends (round robin, never back to its source).
+     *
+     * @return what is left over
+     */
+    public net.minecraft.world.item.ItemStack distributeItem(net.minecraft.world.item.ItemStack stack, boolean simulate, @org.jetbrains.annotations.Nullable BlockPos source) {
+        if (busy || stack.isEmpty() || !type.items) {
+            return stack;
+        }
+        net.minecraft.world.item.ItemStack left = stack.copy();
+        busy = true;
+        try {
+            List<net.neoforged.neoforge.items.IItemHandler> targets = new ArrayList<>();
+            int count = resolve(Capabilities.ItemHandler.BLOCK);
+            for (int j = 0; j < count; j++) {
+                Endpoint e = endpoints.get(resolvedIndex[j]);
+                if (e.extract() || e.pos().equals(source) || !e.passes(stack)) {
+                    continue;
+                }
+                net.neoforged.neoforge.items.IItemHandler t = (net.neoforged.neoforge.items.IItemHandler) resolved[j];
+                targets.add(t);
+            }
+            int n = targets.size();
+            int start = n == 0 ? 0 : Math.floorMod(rotate, n);
+            if (!simulate) {
+                rotate++;
+            }
+            for (int i = 0; i < n && !left.isEmpty(); i++) {
+                left = net.neoforged.neoforge.items.ItemHandlerHelper.insertItemStacked(targets.get((start + i) % n), left, simulate);
+            }
+        } finally {
+            busy = false;
+        }
+        return left;
+    }
+
+    /** Pulls up to the duct's rate from one inventory into the network; returns how many items moved. */
+    private int pullItems(Endpoint e) {
+        net.neoforged.neoforge.items.IItemHandler from = level.getCapability(Capabilities.ItemHandler.BLOCK, e.pos(), e.face());
+        if (from == null) {
+            return 0;
+        }
+        for (int slot = 0; slot < from.getSlots(); slot++) {
+            net.minecraft.world.item.ItemStack offer = from.extractItem(slot, type.rate, true);
+            if (offer.isEmpty() || !e.passes(offer)) {
+                continue;
+            }
+            int accepted = offer.getCount() - distributeItem(offer, true, e.pos()).getCount();
+            if (accepted <= 0) {
+                continue;
+            }
+            net.minecraft.world.item.ItemStack taken = from.extractItem(slot, accepted, false);
+            net.minecraft.world.item.ItemStack rest = distributeItem(taken, false, e.pos());
+            if (!rest.isEmpty()) {
+                // whatever could not be delivered after all goes back where it came from
+                rest = from.insertItem(slot, rest, false);
+                if (!rest.isEmpty()) {
+                    net.minecraft.world.Containers.dropItemStack(level, e.pos().getX() + 0.5, e.pos().getY() + 1, e.pos().getZ() + 0.5, rest);
+                }
+            }
+            return taken.getCount() - rest.getCount();
+        }
+        return 0;
+    }
+
+    /** Runs once per tick per network: pulls fluid (or items) from blocks attached on EXTRACT sides. */
     public void tick() {
         long now = level.getGameTime();
         if (now == lastTick || type.energy) {
             return;
         }
         lastTick = now;
+        if (type.items) {
+            if (now % ConduitType.ITEM_INTERVAL == 0) {
+                for (Endpoint e : endpoints) {
+                    if (e.extract() && level.isLoaded(e.pos())) {
+                        pullItems(e);
+                    }
+                }
+            }
+            return;
+        }
         for (Endpoint e : endpoints) {
             if (!e.extract() || !level.isLoaded(e.pos())) {
                 continue;

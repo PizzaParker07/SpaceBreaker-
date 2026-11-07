@@ -100,6 +100,9 @@ public class ConduitBlock extends BaseEntityBlock implements SimpleWaterloggedBl
         if (type.energy) {
             return level.getCapability(Capabilities.EnergyStorage.BLOCK, np, ns, null, dir.getOpposite()) != null;
         }
+        if (type.items) {
+            return level.getCapability(Capabilities.ItemHandler.BLOCK, np, ns, null, dir.getOpposite()) != null;
+        }
         return level.getCapability(Capabilities.FluidHandler.BLOCK, np, ns, null, dir.getOpposite()) != null
                 || (type.accepts(new net.neoforged.neoforge.fluids.FluidStack(net.minecraft.world.level.material.Fluids.WATER, 1))
                 && ConduitNetwork.isWaterWell(level, np));
@@ -180,6 +183,9 @@ public class ConduitBlock extends BaseEntityBlock implements SimpleWaterloggedBl
         if (type.energy || !player.isShiftKeyDown()) {
             return net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
+        if (type.items) {
+            return setItemFilter(stack, state, level, pos, player, hit);
+        }
         var held = net.neoforged.neoforge.fluids.FluidUtil.getFluidHandler(stack);
         var contents = stack.get(com.pizzaparker07.spacebreaker.content.fluids.FluidsModule.FLUID_CONTENT.get());
         if (held.isEmpty() && contents == null) {
@@ -200,6 +206,26 @@ public class ConduitBlock extends BaseEntityBlock implements SimpleWaterloggedBl
             level.playSound(null, pos, SoundEvents.ITEM_FRAME_ADD_ITEM, SoundSource.BLOCKS, 0.6F, 1.2F);
             player.displayClientMessage(fluid.isEmpty() ? Component.translatable("message.spacebreaker.pipe_filter_off")
                     : Component.translatable("message.spacebreaker.pipe_filter_on", fluid.getHoverName()), true);
+        }
+        return net.minecraft.world.ItemInteractionResult.sidedSuccess(level.isClientSide);
+    }
+
+    /**
+     * Sneak-use an item duct end holding any item: that end now only passes that item (pulling or delivering). The
+     * same item again clears the filter.
+     */
+    private net.minecraft.world.ItemInteractionResult setItemFilter(net.minecraft.world.item.ItemStack stack, BlockState state, Level level, BlockPos pos,
+                                                                    Player player, BlockHitResult hit) {
+        Direction dir = armAt(hit.getLocation().subtract(Vec3.atLowerCornerWithOffset(pos, 0, 0, 0)), hit.getDirection());
+        if (stack.isEmpty() || !state.getValue(SIDES.get(dir)).connected() || level.getBlockState(pos.relative(dir)).getBlock() instanceof ConduitBlock) {
+            return net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        }
+        if (!level.isClientSide && level.getBlockEntity(pos) instanceof ConduitBlockEntity be) {
+            boolean clear = stack.is(be.itemFilter(dir) == null ? net.minecraft.world.item.Items.AIR : be.itemFilter(dir));
+            be.setItemFilter(dir, clear ? null : stack.getItem());
+            level.playSound(null, pos, SoundEvents.ITEM_FRAME_ADD_ITEM, SoundSource.BLOCKS, 0.6F, 1.2F);
+            player.displayClientMessage(clear ? Component.translatable("message.spacebreaker.pipe_filter_off")
+                    : Component.translatable("message.spacebreaker.pipe_filter_on", stack.getHoverName()), true);
         }
         return net.minecraft.world.ItemInteractionResult.sidedSuccess(level.isClientSide);
     }
@@ -245,7 +271,8 @@ public class ConduitBlock extends BaseEntityBlock implements SimpleWaterloggedBl
     @Override
     public void appendHoverText(net.minecraft.world.item.ItemStack stack, net.minecraft.world.item.Item.TooltipContext context,
                                 java.util.List<Component> tooltip, net.minecraft.world.item.TooltipFlag flag) {
-        tooltip.add(Component.translatable(type.energy ? "tooltip.spacebreaker.cable" : "tooltip.spacebreaker.pipe", type.rate)
+        tooltip.add(Component.translatable(type.energy ? "tooltip.spacebreaker.cable" : type.items ? "tooltip.spacebreaker.item_duct"
+                        : "tooltip.spacebreaker.pipe", type.items ? type.rate * 20 / ConduitType.ITEM_INTERVAL : type.rate)
                 .withStyle(net.minecraft.ChatFormatting.GRAY));
     }
 

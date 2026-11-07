@@ -129,6 +129,11 @@ abstract class OuterShowcase implements ShowcaseScenario {
         var piece = new com.pizzaparker07.spacebreaker.content.belt.dungeon.LanderPiece(91L, variant, x, y, z, Direction.NORTH);
         MarsScenario.placePiece(level, piece);
         BlockPos eye = piece.world(6, 9, -8);
+        // on lumpy little worlds the ground behind the trench can rise above the camera: keep the eye clear of it
+        double clear = ground(level, eye.getX() + 0.5, eye.getZ() + 0.5) + 2.5;
+        if (eye.getY() < clear) {
+            eye = new BlockPos(eye.getX(), (int) Math.ceil(clear), eye.getZ());
+        }
         BlockPos target = piece.world(6, 5, 14);
         shot(name, eye.getX() + 0.5, eye.getY(), eye.getZ() + 0.5, MoonScenario.yaw(target.getX() - eye.getX(), target.getZ() - eye.getZ()),
                 MoonScenario.pitch(target.getX() - eye.getX(), target.getY() - eye.getY(), target.getZ() - eye.getZ()), 160, at(dayFraction), null);

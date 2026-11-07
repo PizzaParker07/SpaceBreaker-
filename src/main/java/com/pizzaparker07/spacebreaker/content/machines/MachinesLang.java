@@ -57,6 +57,9 @@ final class MachinesLang {
         lang.block(MachinesModule.HV_CABLE, "High-Voltage Cable", "Yüksek Gerilim Kablosu");
         lang.block(MachinesModule.FLUID_PIPE, "Fluid Pipe", "Sıvı Borusu");
         lang.block(MachinesModule.GAS_PIPE, "Gas Pipe", "Gaz Borusu");
+        lang.block(MachinesModule.ITEM_DUCT, "Item Duct", "Eşya Kanalı");
+        lang.add("tooltip.spacebreaker.item_duct", "Moves up to %s items/s. Sneak-use an end: pull from that inventory; with an item: let only that item through",
+                "Saniyede %s eşyaya kadar taşır. Bir ucu eğilip kullan: o envanterden çeker; elde eşyayla: yalnız o eşyayı geçirir");
 
         lang.add("gui.spacebreaker.energy", "Energy: %s / %s FE", "Enerji: %s / %s FE");
         lang.add("gui.spacebreaker.tank", "%s: %s / %s mB", "%s: %s / %s mB");
@@ -89,6 +92,16 @@ final class MachinesLang {
         lang.add("tooltip.spacebreaker.rtg", "Up to %s FE/t, day and night, anywhere. Shielded casing",
                 "En fazla %s FE/t; gece gündüz, her yerde. Kalkanlı gövde");
         lang.item(MachinesModule.RTG_FUEL_PELLET, "RTG Fuel Pellet", "RTG Yakıt Peleti");
+        lang.item(MachinesModule.YELLOWCAKE, "Yellowcake", "Sarı Pasta");
+        lang.item(MachinesModule.ENRICHED_URANIUM, "Enriched Uranium", "Zenginleştirilmiş Uranyum");
+        lang.item(MachinesModule.DEPLETED_URANIUM, "Depleted Uranium", "Tükenmiş Uranyum");
+        lang.block(MachinesModule.GAS_CENTRIFUGE.block(), "Gas Centrifuge", "Gaz Santrifüjü");
+        lang.add("tooltip.spacebreaker.gas_centrifuge", "Enriches uranium slowly; each working centrifuge beside it adds half a stage of speed (up to 3x)",
+                "Uranyumu yavaşça zenginleştirir; yanındaki her çalışan santrifüj yarım kademe hız ekler (en çok 3 kat)");
+        lang.item(MachinesModule.NUCLEAR_FUEL_ELEMENT, "Nuclear Fuel Element", "Nükleer Yakıt Elemanı");
+        lang.add("tooltip.spacebreaker.nuclear_fuel_element", "Enriched uranium carbide in a tungsten clad: heats a nuclear thermal rocket's hydrogen",
+                "Tungsten kılıflı zenginleştirilmiş uranyum karbür: nükleer termal roketin hidrojenini ısıtır");
+        com.pizzaparker07.spacebreaker.content.earth.EarthModule.tag(lang, IsruRecipes.REACTOR_FUEL, "Reactor Fuel", "Reaktör Yakıtı");
         lang.add("tooltip.spacebreaker.rtg_fuel_pellet.activity", "Activity: %s%% (%s FE/t in an RTG)", "Etkinlik: %%%s (RTG'de %s FE/t)");
         lang.add("tooltip.spacebreaker.rtg_fuel_pellet.half_life", "Half-life: %s days, also in storage", "Yarı ömür: %s gün, depoda da azalır");
         lang.add("tooltip.spacebreaker.rtg_fuel_pellet.radiation", "Radioactive: a small dose while carried", "Radyoaktif: taşınırken küçük doz verir");

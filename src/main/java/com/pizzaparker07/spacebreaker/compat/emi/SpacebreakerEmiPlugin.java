@@ -63,7 +63,7 @@ public final class SpacebreakerEmiPlugin implements EmiPlugin {
             });
         }
         registry.addWorkstation(VanillaEmiRecipeCategories.SMELTING, EmiStack.of(RecipeViewerData.EXTRA_SMELTER.get()));
-        for (RecipeViewerData.InfoPage page : RecipeViewerData.INFO_PAGES) {
+        for (RecipeViewerData.InfoPage page : RecipeViewerData.infoPages()) {
             registry.addRecipe(new EmiInfoRecipe(List.of(EmiStack.of(page.item().get())), List.of(Component.translatable(page.key())),
                     synthetic(Spacebreaker.id("info/" + page.key().substring(page.key().lastIndexOf('.') + 1)))));
         }

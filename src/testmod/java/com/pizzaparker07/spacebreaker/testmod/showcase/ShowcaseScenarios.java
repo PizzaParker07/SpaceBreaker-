@@ -21,6 +21,7 @@ public final class ShowcaseScenarios {
         ALL.put("suit_eva_67p", new SuitEvaScenario(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.DIMENSION,
                 com.pizzaparker07.spacebreaker.Spacebreaker.id("churyumov_gerasimenko")), "eva_67p", () -> com.pizzaparker07.spacebreaker.content.belt.Comets.CHURYUMOV.soil.get().defaultBlockState(), true));
         ALL.put("suit_capsule", new SuitCapsuleScenario());
+        ALL.put("base_airlock", new BaseAirlockScenario());
         ALL.put("suit_eva_titan", new SuitEvaScenario(com.pizzaparker07.spacebreaker.content.saturn.SaturnModule.TITAN, "eva_titan",
                 net.minecraft.world.level.block.Blocks.PACKED_ICE::defaultBlockState));
         ALL.put("suit_eva_orbit", new SuitEvaScenario(com.pizzaparker07.spacebreaker.content.rocketry.nav.Location.Orbits.EARTH_ORBIT, "eva_orbit",
@@ -30,6 +31,7 @@ public final class ShowcaseScenarios {
         ALL.put("rover_moon", new RoverScenario(com.pizzaparker07.spacebreaker.content.moon.MoonModule.MOON, false));
         ALL.put("rover_mars", new RoverScenario(com.pizzaparker07.spacebreaker.content.mars.MarsModule.MARS, true));
         ALL.put("solar_dust", new SolarDustScenario());
+        ALL.put("item_duct", new ItemDuctScenario());
         ALL.put("moon", new MoonScenario());
         ALL.put("sky_planets", new SkyPlanetsScenario(false));
         ALL.put("sky_planets_mars", new SkyPlanetsScenario(true));
@@ -38,6 +40,7 @@ public final class ShowcaseScenarios {
         ALL.put("mars", new MarsScenario());
         ALL.put("mars_dust", new MarsDustScenario());
         ALL.put("mars_frost", new MarsFrostScenario());
+        ALL.put("mercury_sunrise", new MercurySunriseScenario());
         ALL.put("phobos", new MarsMoonScenario(false));
         ALL.put("deimos", new MarsMoonScenario(true));
         ALL.put("venus", new VenusScenario());

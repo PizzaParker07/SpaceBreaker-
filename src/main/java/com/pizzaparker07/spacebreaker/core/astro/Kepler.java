@@ -143,7 +143,8 @@ public final class Kepler {
         double vxp = -k * Math.sin(nu);
         double vyp = k * (e + Math.cos(nu));
         double node = el.longitudeAscendingNode(t), arg = el.argumentOfPeriapsis(t);
-        return new StateVector(perifocalToInertial(xp, yp, node, arg, el), perifocalToInertial(vxp, vyp, node, arg, el));
+        return new StateVector(el.toEcliptic(perifocalToInertial(xp, yp, node, arg, el)),
+                el.toEcliptic(perifocalToInertial(vxp, vyp, node, arg, el)));
     }
 
     private static Vec3 perifocalToInertial(double x, double y, double node, double arg, OrbitalElements el) {
