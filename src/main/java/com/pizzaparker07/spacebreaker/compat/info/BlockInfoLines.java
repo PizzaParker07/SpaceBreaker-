@@ -1,5 +1,6 @@
 package com.pizzaparker07.spacebreaker.compat.info;
 
+import com.pizzaparker07.spacebreaker.content.machines.SolarPanelBlockEntity;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -17,6 +18,11 @@ public final class BlockInfoLines {
 
     /** Lines for this block entity, empty when there is nothing to add. */
     public static List<Component> lines(BlockEntity be) {
+        if (be instanceof SolarPanelBlockEntity panel) {
+            float dust = panel.dust();
+            int output = Math.round(SolarPanelBlockEntity.dustFactor(dust) * 100F);
+            return List.of(Component.translatable(KEY_SOLAR_DUST, Math.round(dust * 100F), output));
+        }
         return List.of();
     }
 }

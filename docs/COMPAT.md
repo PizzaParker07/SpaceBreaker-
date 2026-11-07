@@ -299,7 +299,8 @@ their recipe tags are named, so EMI reports no untranslated tags. The Sintering 
 (`jei_emi_sintering.jpg`). Asteroid mining (`jei_emi_asteroid_mining.jpg`, uses of Bennu and Eros regolith): carbonaceous rubble
 in Regolith Heating (water, CO2, coal dust), stony rubble in Crushing (iron, nickel dust); the `c:regoliths/*` tags
 are named. JEI opens a uses view on its own Block Tags tab; our categories are the other tabs. Comet ice melts in Ice Melting (it is in `c:ices/water`);
-comet dust has no recipe use yet (`jei_emi_comet_blocks.jpg`). The Mars lander, like every rocket, is assembled,
+comet dust (and Encke and Halley dust) now has its own Regolith Heating recipe (water, CO2, tholin) and is
+also a carbonaceous regolith (`emi_comet_dust_recipes.jpg`). The Mars lander, like every rocket, is assembled,
 not crafted: the Rocket Assembler information page covers it.
 
 Screenshots: `jei_*` and `emi_*`. Test: `./gradlew runShowcase -Pscenario=jei -PwithJei=true` or
@@ -308,3 +309,18 @@ Screenshots: `jei_*` and `emi_*`. Test: `./gradlew runShowcase -Pscenario=jei -P
 Tag names: viewers show `tag.item.<ns>.<path>` on tag slots. Every item tag of ours used in a recipe has one now
 (metals in `EarthModule`, the rest as fallbacks in `CompatModule.TAG_NAMES`, added only when the owning area has not
 named it); the GameTest `everyRecipeTagOfOursHasAName` fails for a new unnamed one. REI is not covered yet.
+
+## 6. Block info overlays: Jade and WTHIT
+
+Optional, compile-only (Modrinth Maven, `jade_version` / `wthit_version` in `gradle.properties`, never bundled).
+Jade finds `compat/jade/SpacebreakerJadePlugin` through `@WailaPlugin`; WTHIT finds `compat/wthit/SpacebreakerWthitPlugin`
+through `waila_plugins.json`. Both show the lines of `compat/info/BlockInfoLines`, client side only (the values are
+already synced to the client by the block entities):
+
+- Solar panel: "Dust: 42%, output: 66%" / "Toz: %42, verim: %66" (dust on the cells, `SolarPanelBlockEntity`).
+
+New lines go into `BlockInfoLines.lines` and show in both overlays. GameTest: `dustySolarPanelShowsDustAndOutput`.
+Showcase: `-Pscenario=info -PwithJade=true` or `-PwithWthit=true` (a dusty panel under the crosshair).
+**Not yet run in the game here:** starting the client with the Jade or WTHIT jar was not permitted in this test
+environment; the plugins compile against both APIs and the line itself is covered by the GameTest.
+
