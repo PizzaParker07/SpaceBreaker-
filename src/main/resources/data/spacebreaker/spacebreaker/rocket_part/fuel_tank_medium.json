@@ -1,6 +1,6 @@
 {
   "type": "tank",
-  "mass_kg": 280,
+  "mass_kg": 224,
   "propellant_kg": 5600,
   "height": 24,
   "model": "spacebreaker:fuel_tank_medium"
