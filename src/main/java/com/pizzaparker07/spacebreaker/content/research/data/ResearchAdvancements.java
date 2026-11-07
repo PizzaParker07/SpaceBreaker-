@@ -156,6 +156,7 @@ public final class ResearchAdvancements implements AdvancementSubProvider {
 
     /** Advancement name, icon item, then the worlds of that system (dimension paths). */
     public static final String[][] SYSTEMS = {
+            {"inner_planets", "martian_regolith", "mars", "venus", "mercury", "phobos", "deimos"},
             {"belt", "carbonaceous_chondrite", "ceres", "vesta"},
             {"jupiter_system", "sulfur", "io", "europa", "ganymede", "callisto"},
             {"saturn_system", "tholin", "titan", "enceladus"},
@@ -241,14 +242,15 @@ public final class ResearchAdvancements implements AdvancementSubProvider {
         a(l, "full_suit", "Pressurised", "Collect all four pieces of an EVA suit", "Tam Donanım", "Bir EVA giysisinin dört parçasını da topla");
         a(l, "jetpack", "Free Flyer", "Get a maneuvering unit", "Serbest Uçuş", "Bir manevra ünitesi edin");
         a(l, "suit_up", "Suit Up", "Get an EVA helmet", "Giyin Kuşan", "Bir EVA kaskı edin");
+        a(l, "inner_planets", "Neighbours of the Sun", "Land on Mars, Venus, Mercury, Phobos or Deimos", "Güneş'in Komşuları", "Mars'a, Venüs'e, Merkür'e, Phobos'a ya da Deimos'a in");
         a(l, "belt", "Welcome to the Belt", "Land on Ceres or Vesta", "Kuşağa Hoş Geldin", "Ceres'e ya da Vesta'ya in");
         a(l, "jupiter_system", "In Jupiter's Shadow", "Land on one of Jupiter's moons", "Jüpiter'in Gölgesinde", "Jüpiter'in uydularından birine in");
-        a(l, "saturn_system", "Under the Rings", "Land on Titan or Enceladus", "Halkaların Altında", "Titan'a ya da Enceladus'a in");
+        a(l, "saturn_system", "Beneath the Rings", "Land on Titan or Enceladus", "Halkaların Altında", "Titan'a ya da Enceladus'a in");
         a(l, "uranus_system", "The Tilted Giant", "Land on one of Uranus' moons", "Yan Yatmış Dev", "Uranüs'ün uydularından birine in");
-        a(l, "neptune_system", "Shores of the Blue Giant", "Land on Triton, Proteus or Nereid", "Mavi Devin Kıyısı", "Triton'a, Proteus'a ya da Nereid'e in");
-        a(l, "kuiper_gate", "Gate of the Kuiper Belt", "Land on Pluto or one of its moons", "Kuiper'in Kapısı", "Plüton'a ya da uydularından birine in");
-        a(l, "near_earth", "Close Visitor", "Land on a near-Earth asteroid", "Yakın Ziyaretçi", "Dünya'ya yakın bir asteroite in");
-        a(l, "grand_tour", "Solar System Traveller", "Land on a world in every one of these systems", "Güneş Sistemi Gezgini", "Bu sistemlerin her birinde bir dünyaya in");
+        a(l, "neptune_system", "Edge of the Blue Giant", "Land on Triton, Proteus or Nereid", "Mavi Devin Kıyısı", "Triton'a, Proteus'a ya da Nereid'e in");
+        a(l, "kuiper_gate", "Gateway to the Kuiper Belt", "Land on Pluto or one of its moons", "Kuiper'in Kapısı", "Plüton'a ya da uydularından birine in");
+        a(l, "near_earth", "Close Visitors", "Land on a near-Earth asteroid", "Yakın Ziyaretçiler", "Dünya'ya yakın bir asteroite in");
+        a(l, "grand_tour", "Solar System Wanderer", "Land on a world in every one of these systems", "Güneş Sistemi Gezgini", "Bu sistemlerin her birinde bir dünyaya in");
         a(l, "deep_breath", "Deep Breath", "Get an oxygen tank", "Derin Nefes", "Bir oksijen tüpü edin");
     }
 

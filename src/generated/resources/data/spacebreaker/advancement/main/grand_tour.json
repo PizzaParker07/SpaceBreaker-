@@ -31,6 +31,12 @@
       },
       "trigger": "minecraft:changed_dimension"
     },
+    "deimos": {
+      "conditions": {
+        "to": "spacebreaker:deimos"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
     "enceladus": {
       "conditions": {
         "to": "spacebreaker:enceladus"
@@ -73,6 +79,18 @@
       },
       "trigger": "minecraft:changed_dimension"
     },
+    "mars": {
+      "conditions": {
+        "to": "spacebreaker:mars"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "mercury": {
+      "conditions": {
+        "to": "spacebreaker:mercury"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
     "miranda": {
       "conditions": {
         "to": "spacebreaker:miranda"
@@ -94,6 +112,12 @@
     "oberon": {
       "conditions": {
         "to": "spacebreaker:oberon"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "phobos": {
+      "conditions": {
+        "to": "spacebreaker:phobos"
       },
       "trigger": "minecraft:changed_dimension"
     },
@@ -139,6 +163,12 @@
       },
       "trigger": "minecraft:changed_dimension"
     },
+    "venus": {
+      "conditions": {
+        "to": "spacebreaker:venus"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
     "vesta": {
       "conditions": {
         "to": "spacebreaker:vesta"
@@ -160,6 +190,13 @@
     }
   },
   "requirements": [
+    [
+      "mars",
+      "venus",
+      "mercury",
+      "phobos",
+      "deimos"
+    ],
     [
       "ceres",
       "vesta"

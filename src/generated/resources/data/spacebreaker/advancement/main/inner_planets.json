@@ -1,0 +1,58 @@
+{
+  "parent": "spacebreaker:main/orbit",
+  "criteria": {
+    "deimos": {
+      "conditions": {
+        "to": "spacebreaker:deimos"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "mars": {
+      "conditions": {
+        "to": "spacebreaker:mars"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "mercury": {
+      "conditions": {
+        "to": "spacebreaker:mercury"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "phobos": {
+      "conditions": {
+        "to": "spacebreaker:phobos"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "venus": {
+      "conditions": {
+        "to": "spacebreaker:venus"
+      },
+      "trigger": "minecraft:changed_dimension"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.spacebreaker.inner_planets.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "spacebreaker:martian_regolith"
+    },
+    "title": {
+      "translate": "advancements.spacebreaker.inner_planets.title"
+    }
+  },
+  "requirements": [
+    [
+      "mars",
+      "venus",
+      "mercury",
+      "phobos",
+      "deimos"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
