@@ -238,4 +238,55 @@ public final class TetherGameTests {
         helper.assertTrue(r.composition().size() <= 5, "at most five gases");
         helper.succeed();
     }
+
+    /** A stand-in craft with a clip ring 1.5 blocks above its origin (a boat here). */
+    static final class TestCraft extends net.minecraft.world.entity.vehicle.Boat implements com.pizzaparker07.spacebreaker.core.env.TetherAnchor {
+        TestCraft(net.minecraft.world.level.Level level) {
+            super(net.minecraft.world.entity.EntityType.BOAT, level);
+        }
+
+        @Override
+        public Vec3 tetherPoint(Player player) {
+            return position().add(0, 1.5, 0);
+        }
+
+        @Override
+        public Vec3 frameVelocity() {
+            return new Vec3(0.5, 0, 0);
+        }
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 100)
+    public static void tetherClipsToACraftAndFollowsIt(GameTestHelper helper) {
+        var level = helper.getLevel();
+        Player p = helper.makeMockPlayer(GameType.SURVIVAL);
+        p.getInventory().add(new ItemStack(SuitModule.SAFETY_TETHER.get()));
+        BlockPos at = helper.absolutePos(new BlockPos(2, 2, 2));
+        p.setPos(at.getX() + 0.5, at.getY(), at.getZ() + 0.5);
+        TestCraft craft = new TestCraft(level);
+        craft.setPos(at.getX() + 3.5, at.getY(), at.getZ() + 0.5);
+        level.addFreshEntity(craft);
+        helper.assertTrue(Tether.clip(p, craft), "the line clips to the craft's ring");
+        helper.assertTrue(Tether.isTethered(p) && Tether.anchor(p).isEmpty(), "tethered, and not to a block");
+        helper.assertTrue(Tether.anchorPoint(p).map(v -> v.distanceTo(craft.position().add(0, 1.5, 0)) < 1e-6).orElse(false),
+                "the line holds at the ring");
+        helper.assertTrue(Tether.payload(p).anchorEntity().orElse(-1) == craft.getId(), "clients get the craft's id");
+        // the saved data keeps the anchor entity
+        SurvivalData d = LifeSupport.data(p);
+        SurvivalData back = SurvivalData.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE,
+                SurvivalData.CODEC.encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, d).getOrThrow()).getOrThrow();
+        helper.assertTrue(craft.getUUID().equals(back.tetherEntity) && back.tether == null, "saved with the craft's id");
+        // the craft moves on: the ring moves with it; far beyond the line's length the clip lets go
+        craft.setPos(craft.getX() + 40, craft.getY(), craft.getZ());
+        Tether.tick(p);
+        helper.assertFalse(Tether.isTethered(p), "a craft far beyond the line snaps it");
+        // clipped again, the craft is removed: the anchor is lost at the next check
+        craft.setPos(at.getX() + 3.5, at.getY(), at.getZ() + 0.5);
+        Tether.clip(p, craft);
+        craft.discard();
+        p.tickCount = 10;
+        Tether.tick(p);
+        helper.assertFalse(Tether.isTethered(p), "a craft that is gone lets the line go");
+        helper.succeed();
+    }
 }
