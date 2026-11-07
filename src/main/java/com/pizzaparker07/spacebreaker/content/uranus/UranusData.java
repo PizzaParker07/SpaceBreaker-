@@ -153,6 +153,7 @@ public final class UranusData {
             ctx.register(terrain("ariel"), arielProfile());
             ctx.register(terrain("titania"), titaniaProfile());
             ctx.register(terrain("umbriel"), Umbriel.profile());
+            ctx.register(terrain("oberon"), Oberon.profile());
         });
         dp.add(Registries.CONFIGURED_FEATURE, UranusData::configured);
         dp.add(Registries.PLACED_FEATURE, UranusData::placed);
@@ -172,6 +173,7 @@ public final class UranusData {
         ctx.register(cf("titania_block"), OuterWorlds.boulder(0.6F, 1.8F, 0.5F, s(TITANIA_ICE.base()), 3, s(CANYON_WALL_ICE), 1));
         ctx.register(cf("miranda_block"), OuterWorlds.boulder(0.6F, 1.8F, 0.5F, s(MIRANDAN_ICE.base()), 3, s(DARK_BAND_ICE), 1));
         Umbriel.configured(ctx);
+        Oberon.configured(ctx);
     }
 
     private static void placed(BootstrapContext<PlacedFeature> ctx) {
@@ -183,6 +185,7 @@ public final class UranusData {
         OuterWorlds.placedBoulder(ctx, "titania_block", 4);
         OuterWorlds.placedBoulder(ctx, "miranda_block", 4);
         Umbriel.placed(ctx);
+        Oberon.placed(ctx);
     }
 
     private static void biomes(BootstrapContext<Biome> ctx) {
@@ -204,5 +207,6 @@ public final class UranusData {
                     raw, "titania_crater", raw, "titania_canyons", ores, "titania_carbon", local, "titania_block"));
         }
         Umbriel.biomes(ctx, pf, carvers);
+        Oberon.biomes(ctx, pf, carvers);
     }
 }

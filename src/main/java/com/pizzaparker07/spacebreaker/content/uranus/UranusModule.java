@@ -45,7 +45,7 @@ import java.util.List;
  * pale cyan in the sky with its thin dark rings. Ariel, the youngest-looking of the large moons: bright ice cut by long,
  * straight, flat-floored rift valleys, fresh craters with bright rays, and carbon dioxide frost on the trailing side.
  * Titania, the largest: grey uplands crossed by enormous straight canyons with pale walls, and one great old crater basin.
- * Umbriel, the darkest, lives in its own small package ({@link Umbriel}).
+ * Umbriel, the darkest, and Oberon, the outermost, live in their own small packages ({@link Umbriel}, {@link Oberon}).
  */
 public final class UranusModule implements SbModule {
     public static final BlockKit KIT = new BlockKit();
@@ -91,6 +91,7 @@ public final class UranusModule implements SbModule {
     @Override
     public void register(IEventBus modBus) {
         Umbriel.load();
+        Oberon.load();
         UranusEntities.register(modBus, KIT.items);
         KIT.blocks.register(modBus);
         KIT.items.register(modBus);
@@ -118,6 +119,7 @@ public final class UranusModule implements SbModule {
         lang.block(GRABEN_FLOOR_ICE, "Graben Floor Ice", "Graben Tabanı Buzu");
         lang.block(ARIEL_AMMONIA_ORE, "Arielian Ammonia Deposit", "Ariel Amonyak Yatağı");
         Umbriel.translations(lang);
+        Oberon.translations(lang);
         UranusData.translations(lang);
         UranusEntities.translations(lang);
     }
@@ -131,6 +133,7 @@ public final class UranusModule implements SbModule {
         loot.ore(TITANIA_CARBON_ORE.get(), Items.COAL);
         loot.ore(ARIEL_AMMONIA_ORE.get(), com.pizzaparker07.spacebreaker.content.pluto.PlutoModule.AMMONIA_CRYSTAL.get());
         Umbriel.loot(loot);
+        Oberon.loot(loot);
         KIT.familyLoot(loot);
     }
 
@@ -164,6 +167,7 @@ public final class UranusModule implements SbModule {
         tags.block(MIRANDAN_GROUND, MIRANDAN_REGOLITH.get(), MIRANDAN_ICE.base().get(), BRIGHT_RIDGE_ICE.get(), DARK_BAND_ICE.get());
         tags.block(BlockTags.COAL_ORES, CARBON_ORE.get());
         Umbriel.tags(tags);
+        Oberon.tags(tags);
     }
 
     @Override

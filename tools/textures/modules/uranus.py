@@ -223,6 +223,48 @@ def gloam_hopper():
     return cv
 
 
+# --------------------------------------------------------------------------- Oberon
+
+def oberon_regolith(v=0):
+    return dust(P.OBERON_SOIL, 18101 + v * 19)
+
+
+def oberon_ice():
+    return _rock(P.OBERON_ICE, 18201)
+
+
+def dark_crater_fill():
+    """Dark crater fill: a near-black, finely grained deposit with a few low ripples."""
+    return dust(P.DARK_FILL, 18301)
+
+
+def rim_burrower():
+    """64x32 sheet for RimBurrowerModel: reddish-grey ridged back, darker sides, pale claws, small dark eyes."""
+    cv = Canvas(64, 32)
+    r = P.BURROWER
+    n = clustered(64, 64, 18401, passes=1)
+
+    def body(face, x, y, fw, fh):
+        if face == 'bottom':
+            return r[1]
+        if face == 'top':
+            return r[3] if x % 3 else r[4]
+        return r[3] if y == 0 else noise_pick(r, 2, n, x, y)
+
+    paint(cv, 0, 0, 8, 4, 10, body)
+    paint(cv, 36, 0, 2, 1, 8, lambda f, x, y, fw, fh: r[4])
+
+    def head(face, x, y, fw, fh):
+        if face == 'front' and y == 0 and x in (1, 3):
+            return r[0]
+        return noise_pick(r, 3, n, x + 40, y + 10)
+
+    paint(cv, 0, 14, 5, 3, 4, head)
+    paint(cv, 20, 14, 3, 2, 3, lambda f, x, y, fw, fh: r[5] if f == 'front' else r[2])
+    paint(cv, 32, 14, 2, 2, 2, lambda f, x, y, fw, fh: r[1])
+    return cv
+
+
 def uranus_disc(size=256):
     """Uranus: an almost featureless pale cyan disc, a slightly brighter polar cap and a few very faint bands."""
     from PIL import Image
@@ -300,6 +342,14 @@ def export(save):
     save(umbriel_ice(), 'block', 'umbriel_ice', (40, 12, 20, None))
     save(sooty_ice(), 'block', 'sooty_ice', (30, 10, 30, None))
     save(gloam_hopper(), 'entity', 'uranus/gloam_hopper')
+    base = oberon_regolith(0)
+    save(base, 'block', 'oberon_regolith', dust_spec)
+    save(oberon_regolith(1), 'block', 'oberon_regolith_1', dust_spec)
+    for side in ('left', 'right'):
+        save(footprint(base, prints(P.OBERON_SOIL), side), 'block', f'oberon_regolith_footprint_{side}', (22, 8, 64, None))
+    save(oberon_ice(), 'block', 'oberon_ice', (40, 12, 20, None))
+    save(dark_crater_fill(), 'block', 'dark_crater_fill', dust_spec)
+    save(rim_burrower(), 'entity', 'uranus/rim_burrower')
     import os
     out = os.path.join(os.path.dirname(__file__), '..', '..', '..', 'src', 'main', 'resources', 'assets', 'spacebreaker', 'textures',
                        'environment')

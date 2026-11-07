@@ -1,0 +1,49 @@
+{
+  "carvers": {},
+  "creature_spawn_probability": 0.04,
+  "downfall": 0.0,
+  "effects": {
+    "fog_color": 0,
+    "foliage_color": 7234912,
+    "grass_color": 7234912,
+    "music": {
+      "max_delay": 12000,
+      "min_delay": 3600,
+      "replace_current_music": false,
+      "sound": "spacebreaker:music.ice_giants"
+    },
+    "sky_color": 0,
+    "water_color": 4159204,
+    "water_fog_color": 329011
+  },
+  "features": [
+    [
+      "spacebreaker:oberon_chasma",
+      "spacebreaker:oberon_dark_floors"
+    ],
+    [],
+    [
+      "spacebreaker:oberon_block"
+    ]
+  ],
+  "has_precipitation": false,
+  "spawn_costs": {},
+  "spawners": {
+    "ambient": [],
+    "axolotls": [],
+    "creature": [
+      {
+        "type": "spacebreaker:rim_burrower",
+        "maxCount": 3,
+        "minCount": 1,
+        "weight": 8
+      }
+    ],
+    "misc": [],
+    "monster": [],
+    "underground_water_creature": [],
+    "water_ambient": [],
+    "water_creature": []
+  },
+  "temperature": -2.0
+}

@@ -1,0 +1,9 @@
+{
+  "structure": "spacebreaker:oberon_lander",
+  "world": "spacebreaker:oberon",
+  "guardians": [],
+  "loot_tables": [
+    "spacebreaker:dungeons/oberon/lander_cabin",
+    "spacebreaker:dungeons/oberon/lander_cargo"
+  ]
+}

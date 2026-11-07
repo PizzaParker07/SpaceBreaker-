@@ -169,4 +169,49 @@ public final class UranusGameTests {
         helper.assertTrue(hopper.isFood(new ItemStack(Items.COAL)), "breeds on coal");
         helper.succeed();
     }
+
+    @GameTest(template = WorldTests.EMPTY)
+    public static void oberonHasDarkFlooredCratersAGreatMountainAndAChasm(GameTestHelper helper) {
+        helper.assertTrue(WorldTests.stem(helper, "oberon").generator() instanceof PlanetChunkGenerator, "Oberon uses the planet engine");
+        var profile = WorldTests.profile(helper, "oberon");
+        helper.assertTrue(profile.poleDistance() > WorldTests.profile(helper, "umbriel").poleDistance(), "bigger than Umbriel");
+        var mountain = profile.landforms().volcanoes().orElseThrow(() -> new AssertionError("no mountain")).anchors().getFirst();
+        helper.assertTrue(mountain.height() >= 100, "a mountain about 11 km high (100+ blocks): " + mountain.height());
+        PlanetTerrain t = WorldTests.generator(helper, "oberon", 3L).terrain();
+        double summit = t.height(mountain.x(), mountain.z());
+        double plain = t.height(mountain.x() + mountain.radius() * 3, mountain.z());
+        helper.assertTrue(summit - plain > 60, "it towers over the plains: " + summit + " vs " + plain);
+        var floors = com.pizzaparker07.spacebreaker.content.uranus.Oberon.darkFloors();
+        helper.assertTrue(floors.block().is(com.pizzaparker07.spacebreaker.content.uranus.Oberon.DARK_FLOOR.get()) && floors.chance() >= 0.5
+                && floors.extent() >= 0.5, "dark fill covers most of the floor in most larger craters");
+        var cfg = com.pizzaparker07.spacebreaker.content.uranus.Oberon.chasma();
+        var g = cfg.grabens().getFirst();
+        double[] floor = new double[1];
+        double cz = -g.latitude() / 90.0 * t.profile().poleDistance();
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.belt.world.GrabenFeature.offset(t, cfg, g.x(), cz, floor) < -25, "a deep chasm");
+        helper.succeed();
+    }
+
+    @GameTest(template = WorldTests.EMPTY, timeoutTicks = 200)
+    public static void rimBurrowerDigsInOnLooseGroundOnly(GameTestHelper helper) {
+        for (int x = 0; x < 8; x++) {
+            helper.setBlock(new BlockPos(x, 1, 1), com.pizzaparker07.spacebreaker.content.uranus.Oberon.REGOLITH.get());
+            helper.setBlock(new BlockPos(x, 1, 5), com.pizzaparker07.spacebreaker.content.uranus.Oberon.ICE.base().get());
+        }
+        var soft = helper.spawn(UranusEntities.RIM_BURROWER.get(), new BlockPos(2, 2, 1));
+        var hard = helper.spawn(UranusEntities.RIM_BURROWER.get(), new BlockPos(2, 2, 5));
+        var player = helper.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        helper.runAfterDelay(10, () -> {
+            soft.hurt(helper.getLevel().damageSources().playerAttack(player), 1F);
+            hard.hurt(helper.getLevel().damageSources().playerAttack(player), 1F);
+            helper.assertTrue(soft.isBuried(), "digs into regolith");
+            helper.assertFalse(hard.isBuried(), "cannot dig into hard ice");
+            float before = soft.getHealth();
+            soft.invulnerableTime = 0;
+            soft.hurt(helper.getLevel().damageSources().playerAttack(player), 8F);
+            helper.assertTrue(soft.getHealth() == before, "buried, it cannot be hurt");
+            helper.assertTrue(soft.isFood(new ItemStack(com.pizzaparker07.spacebreaker.content.pluto.PlutoModule.AMMONIA_CRYSTAL.get())), "breeds on ammonia");
+            helper.succeed();
+        });
+    }
 }

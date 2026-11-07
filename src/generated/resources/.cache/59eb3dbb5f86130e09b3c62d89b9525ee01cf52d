@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-07T04:18:40.364175691	Loot Tables
+// 1.21.1	2026-11-07T04:28:41.594264702	Loot Tables
 c48f71ca60600cd6230f77a2e146a3df572494ae data/spacebreaker/loot_table/blocks/aerogel.json
 e37973997ec83c5b040a31bf9fcda1757b53fc00 data/spacebreaker/loot_table/blocks/airlock_door.json
 c511e60fe01f6dddc2d2b0e516ca81c11bf4ca91 data/spacebreaker/loot_table/blocks/aluminum_block.json
@@ -52,6 +52,7 @@ b19907a06263c8a72cb470b659f0bd73bd6a3eee data/spacebreaker/loot_table/blocks/com
 2f1d2e0868da0bc4392e31e7acea94f06470b5cb data/spacebreaker/loot_table/blocks/cryogenic_liquefier.json
 3749587a38b4409dde24331ea1e66b708beab49a data/spacebreaker/loot_table/blocks/cryogenic_tank.json
 6c3924795045f0d46870e0d073c5489b4254b6de data/spacebreaker/loot_table/blocks/dark_band_ice.json
+3d9df0bfff52e76de56442f05f622783bf27ae0c data/spacebreaker/loot_table/blocks/dark_crater_fill.json
 3be9f5e49c355c3629437e13ab70b944933a1163 data/spacebreaker/loot_table/blocks/dark_ice_crust.json
 8f191904fef6b2e1c7ed927b5dbd576104853403 data/spacebreaker/loot_table/blocks/deepslate_bauxite_ore.json
 6f038b42dbe187dd0f6cc3f7c107d0f57578daff data/spacebreaker/loot_table/blocks/deepslate_pentlandite_ore.json
@@ -156,6 +157,11 @@ b8fe448e460a856c91ca266d144604b5af5d305a data/spacebreaker/loot_table/blocks/mir
 d304bbe2262da1607312d6a822a8ac6111a49e28 data/spacebreaker/loot_table/blocks/nickel_superalloy_block.json
 1c0103da9c1647e82ff41b508454f7446f2ebb71 data/spacebreaker/loot_table/blocks/nitrogen_geyser.json
 0474747677ce254762bc72e401f13a058dee2eb6 data/spacebreaker/loot_table/blocks/nitrogen_ice.json
+00d708c6854076dd69fcc13c2e37120ea2ae6d94 data/spacebreaker/loot_table/blocks/oberon_ice.json
+360d86865e5d9fca54ecd8a6030580a1847f5010 data/spacebreaker/loot_table/blocks/oberon_ice_slab.json
+d7dda11bea74fe923615e175ce198aa5dbdcdd19 data/spacebreaker/loot_table/blocks/oberon_ice_stairs.json
+5659ac28d3c33a3c4118b9ee7d0509b31321d6d0 data/spacebreaker/loot_table/blocks/oberon_ice_wall.json
+049a66732b54466a0a6ed9f7c20b9f101f161bf3 data/spacebreaker/loot_table/blocks/oberon_regolith.json
 6c8393f66003e3ff137d69cfc5032f1dfdcc8369 data/spacebreaker/loot_table/blocks/oil_seep.json
 6c4660b797cf7d59ebc950540441cfaf2bf947e7 data/spacebreaker/loot_table/blocks/olivine_sand.json
 fa8d39140471b72a66f6b97e047ab9a12ff8d826 data/spacebreaker/loot_table/blocks/oxygen_distributor.json

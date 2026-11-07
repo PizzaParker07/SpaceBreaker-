@@ -1,0 +1,13 @@
+{
+  "type": "spacebreaker:crater_floor_deposit",
+  "config": {
+    "block": {
+      "Name": "spacebreaker:dark_crater_fill"
+    },
+    "chance": 0.6,
+    "dome": 0.0,
+    "extent": 0.7,
+    "min_radius": 12.0,
+    "spots": 0.0
+  }
+}

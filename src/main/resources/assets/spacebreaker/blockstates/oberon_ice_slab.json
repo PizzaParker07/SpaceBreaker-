@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "spacebreaker:block/oberon_ice_slab"
+    },
+    "type=top": {
+      "model": "spacebreaker:block/oberon_ice_slab_top"
+    },
+    "type=double": {
+      "model": "spacebreaker:block/oberon_ice"
+    }
+  }
+}

@@ -13,6 +13,9 @@
     "spacebreaker:dark_band_ice",
     "spacebreaker:umbriel_regolith",
     "spacebreaker:umbriel_ice",
-    "spacebreaker:sooty_ice"
+    "spacebreaker:sooty_ice",
+    "spacebreaker:oberon_regolith",
+    "spacebreaker:oberon_ice",
+    "spacebreaker:dark_crater_fill"
   ]
 }
