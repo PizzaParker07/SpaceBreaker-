@@ -145,6 +145,11 @@ public class RocketAssemblerScreen extends AbstractContainerScreen<RocketAssembl
                     Fmt.kg(s.propellantKg()), String.format(Locale.ROOT, "%.0f", RocketMath.burnTime(s, s.propellantKg(), 0))));
         }
         out.add(Component.translatable("gui.spacebreaker.assembler.payload", Fmt.kg(layout.payload().massKg()), layout.payload().seats()));
+        String nuclear = com.pizzaparker07.spacebreaker.content.rocketry.entity.NuclearExhaust.designWarning(layout);
+        if (nuclear != null) {
+            out.add(Component.translatable("gui.spacebreaker.assembler." + nuclear)
+                    .withStyle(nuclear.equals("nuclear_first") ? net.minecraft.ChatFormatting.RED : net.minecraft.ChatFormatting.GOLD));
+        }
         return out;
     }
 
@@ -171,6 +176,13 @@ public class RocketAssemblerScreen extends AbstractContainerScreen<RocketAssembl
         pose.popPose();
         String h = String.format(Locale.ROOT, "%.1f m", heightBlocks);
         g.drawString(font, h, leftPos + PREVIEW_X + 3, topPos + PREVIEW_Y + 3, 0x8FB0D0, false);
+        String nuclear = com.pizzaparker07.spacebreaker.content.rocketry.entity.NuclearExhaust.designWarning(layout);
+        if (nuclear != null) {
+            // a short tag on the preview; hovering it shows the full warning
+            Component tag = Component.translatable("gui.spacebreaker.assembler.nuclear_tag");
+            g.drawString(font, tag, leftPos + PREVIEW_X + PREVIEW_W - 3 - font.width(tag), topPos + PREVIEW_Y + 3,
+                    nuclear.equals("nuclear_first") ? 0xFF7A6A : 0xE8B84A, false);
+        }
         float pulse = Mth.sin(time * 0.1F) * 0.5F + 0.5F;
         if (!build.valid()) {
             g.drawString(font, "!", leftPos + PREVIEW_X + PREVIEW_W - 8, topPos + PREVIEW_Y + 3, pulse > 0.5F ? 0xFF7A6A : 0xA04A40, false);

@@ -18,16 +18,16 @@ import java.util.Locale;
  */
 public enum Propellant implements StringRepresentable {
     /** RP-1 kerosene, mixture ratio O/F 2.56. */
-    KEROLOX(1.0 / 3.56, 0.81, "rp1"),
+    KEROLOX(1.0 / 3.56, 0.81, "rp1", 0),
     /** Liquid methane, mixture ratio O/F 3.6 (made on Mars by the Sabatier process). */
-    METHALOX(1.0 / 4.6, 0.422, "liquid_methane"),
+    METHALOX(1.0 / 4.6, 0.422, "liquid_methane", 0.0002),
     /** Liquid hydrogen, mixture ratio O/F 6: the highest specific impulse, but very bulky and very cold. */
-    HYDROLOX(1.0 / 7.0, 0.071, "liquid_hydrogen"),
+    HYDROLOX(1.0 / 7.0, 0.071, "liquid_hydrogen", 0.001),
     /**
      * Liquid hydrogen alone, heated by a fission reactor in a nuclear thermal engine: no oxidiser at all, so the
      * whole propellant mass is hydrogen. It shares the hydrogen supply with hydrolox stages.
      */
-    NUCLEAR(1.0, 0.071, "liquid_hydrogen");
+    NUCLEAR(1.0, 0.071, "liquid_hydrogen", 0.001);
 
     public static final Codec<Propellant> CODEC = StringRepresentable.fromEnum(Propellant::values);
     /** Liquid oxygen, the oxidiser of every propellant. */
@@ -37,10 +37,14 @@ public enum Propellant implements StringRepresentable {
     private final double fuelFraction;
     private final double fuelDensity;
     private final TagKey<Fluid> fuelTag;
+    private final double fuelBoilOff;
+    /** Liquid oxygen lost to boil-off per day in a passively insulated tank (share of what is left). */
+    public static final double LOX_BOIL_OFF = 0.0002;
 
-    Propellant(double fuelFraction, double fuelDensity, String fuelTag) {
+    Propellant(double fuelFraction, double fuelDensity, String fuelTag, double fuelBoilOff) {
         this.fuelFraction = fuelFraction;
         this.fuelDensity = fuelDensity;
+        this.fuelBoilOff = fuelBoilOff;
         this.fuelTag = TagKey.create(Registries.FLUID, ResourceLocation.fromNamespaceAndPath("c", fuelTag));
     }
 
@@ -61,6 +65,15 @@ public enum Propellant implements StringRepresentable {
     /** Whether stages of this propellant take {@code fuel} (the same fuel liquid, e.g. hydrogen for hydrolox and nuclear). */
     public boolean takes(Propellant fuel) {
         return fuelTag.equals(fuel.fuelTag);
+    }
+
+    /**
+     * Share of a stage's usable propellant lost per day to boil-off: the faster-boiling of its fuel and its
+     * oxygen limits it (what boils away leaves the other liquid without a partner). Liquid hydrogen 0.1 %/day,
+     * liquid oxygen and methane 0.02 %/day, RP-1 none.
+     */
+    public double boilOffPerDay() {
+        return Math.max(fuelBoilOff, needsOxygen() ? LOX_BOIL_OFF : 0);
     }
 
     /** Whether this propellant needs liquid oxygen at all. */

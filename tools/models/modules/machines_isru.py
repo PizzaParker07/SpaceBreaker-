@@ -126,3 +126,19 @@ def generate():  # noqa: F811
     machine('gas_centrifuge', t, [body(6, top='top')] + tubes)
     for name in ('yellowcake', 'enriched_uranium', 'depleted_uranium', 'depleted_uranium_plate'):
         write(f'models/item/{name}.json', {'parent': 'minecraft:item/generated', 'textures': {'layer0': i(name)}})
+
+
+_generate_reactor = generate
+
+
+def generate():  # noqa: F811
+    _generate_reactor()
+    # fission surface power unit: a squat core drum with two crossed radiator panels standing on it
+    t = casing_tex('fission_reactor_front', top='machine_top', side='fission_reactor_side')
+    t['fin'] = b('fission_reactor_fin')
+    core = box([2, 0, 2], [14, 9, 14], {'north': 'front', 'south': 'side', 'east': 'side', 'west': 'side', 'up': 'top', 'down': 'bottom'},
+               uv={f: [2, 7, 14, 16] for f in ('north', 'south', 'east', 'west')})
+    fin_a = box([0, 9, 7.5], [16, 16, 8.5], 'fin', uv={f: [0, 0, 16, 7] for f in ('north', 'south')})
+    fin_b = box([7.5, 9, 0], [8.5, 16, 16], 'fin', uv={f: [0, 0, 16, 7] for f in ('east', 'west')})
+    pipe = box([7, 9, 7], [9, 16, 9], 'side')
+    machine('fission_reactor', t, [core, fin_a, fin_b, pipe])

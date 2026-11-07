@@ -1,0 +1,9 @@
+{
+  "structure": "spacebreaker:titania_canyon_outpost",
+  "world": "spacebreaker:titania",
+  "guardians": [],
+  "loot_tables": [
+    "spacebreaker:dungeons/titania/outpost_lab",
+    "spacebreaker:dungeons/titania/outpost_store"
+  ]
+}

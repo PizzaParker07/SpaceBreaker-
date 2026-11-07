@@ -1,7 +1,7 @@
 ---
 title: Nükleer Yakıt
 icon: spacebreaker:nuclear_fuel_element
-items: [spacebreaker:uraninite_ore, spacebreaker:raw_uraninite, spacebreaker:uranium_dust, spacebreaker:yellowcake, spacebreaker:gas_centrifuge, spacebreaker:enriched_uranium, spacebreaker:depleted_uranium, spacebreaker:nuclear_fuel_element, spacebreaker:rtg_fuel_pellet]
+items: [spacebreaker:uraninite_ore, spacebreaker:raw_uraninite, spacebreaker:uranium_dust, spacebreaker:yellowcake, spacebreaker:gas_centrifuge, spacebreaker:enriched_uranium, spacebreaker:depleted_uranium, spacebreaker:depleted_uranium_plate, spacebreaker:nuclear_fuel_element, spacebreaker:rtg_fuel_pellet]
 research: spacebreaker:nuclear_fission
 ---
 Uraninit cevherinden nükleer termal roketin yakıtına giden yol.
@@ -18,7 +18,8 @@ Uraninit cevherinden nükleer termal roketin yakıtına giden yol.
 ## Santrifüj dizisi
 Tek bir santrifüj yavaştır. Gerçek tesislerde binlercesi art arda çalışır. Burada aynı seviyede yanına konan ve **çalışan her santrifüj yarım kademe hız** ekler; en çok dört komşu, yani en fazla **3 kat**. Santrifüjleri bir sıra ya da artı biçiminde diz.
 
-> Her zenginleştirmede büyük bir yığın {item spacebreaker:depleted_uranium} çıkar: zenginleştirmenin doğal yan ürünüdür.
+> Her zenginleştirmede büyük bir yığın {item spacebreaker:depleted_uranium} çıkar: zenginleştirmenin doğal yan ürünüdür. Çok yoğundur: preste levha kalıbıyla {item spacebreaker:depleted_uranium_plate} olur ve tungsten levhayla birlikte **radyasyon kalkanı** malzemesi sayılır ({tech spacebreaker:radiation_shielding}).
+{recipe spacebreaker:pressing/depleted_uranium_plate}
 
 {recipe spacebreaker:arc_smelting/nuclear_fuel_element}
 
@@ -28,4 +29,4 @@ Tek bir santrifüj yavaştır. Gerçek tesislerde binlercesi art arda çalışı
 
 >! Peletin kendisi ise ışınım yayar: üstünde taşırken doz alırsın. RTG'ye tak ve uzak dur.
 
-> **Taze uranyum yakıtı tehlikeli değildir:** uranyumun etkinliği düşüktür, eline alıp taşıyabilirsin. Asıl radyasyon, yakıt elemanı **nükleer termal roket motorunda yanarken** çıkar. → [Roket Parçaları](rocket_parts)
+> **Taze uranyum yakıtı tehlikeli değildir:** uranyumun etkinliği düşüktür, eline alıp taşıyabilirsin. Asıl radyasyon, yakıt elemanı **nükleer termal roket motorunda yanarken** çıkar. → [Roket Parçaları](rocket_parts#ntr)

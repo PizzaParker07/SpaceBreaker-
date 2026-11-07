@@ -18,6 +18,11 @@ final class RocketryLang {
         l.item(RocketryModule.FUEL_TANK_SMALL, "Small Fuel Tank", "Küçük Yakıt Tankı");
         l.item(RocketryModule.FUEL_TANK_MEDIUM, "Medium Fuel Tank", "Orta Yakıt Tankı");
         l.item(RocketryModule.FUEL_TANK_LARGE, "Large Fuel Tank", "Büyük Yakıt Tankı");
+        l.item(RocketryModule.FUEL_TANK_SMALL_INSULATED, "Small Fuel Tank (Insulated)", "Küçük Yakıt Tankı (Yalıtımlı)");
+        l.item(RocketryModule.FUEL_TANK_MEDIUM_INSULATED, "Medium Fuel Tank (Insulated)", "Orta Yakıt Tankı (Yalıtımlı)");
+        l.item(RocketryModule.FUEL_TANK_LARGE_INSULATED, "Large Fuel Tank (Insulated)", "Büyük Yakıt Tankı (Yalıtımlı)");
+        l.item(RocketryModule.MULTI_LAYER_INSULATION, "Multi-Layer Insulation", "Çok Katmanlı Yalıtım");
+        l.add("tooltip.spacebreaker.part.insulated", "Multi-layer insulation: %s%% less boil-off", "Çok katmanlı yalıtım: %%%s daha az buharlaşma");
         l.item(RocketryModule.KEROSENE_ENGINE, "Kerosene Engine (Sea Level)", "Kerosen Motoru (Deniz Seviyesi)");
         l.item(RocketryModule.VACUUM_ENGINE, "Kerosene Engine (Vacuum)", "Kerosen Motoru (Vakum)");
         l.item(RocketryModule.METHALOX_ENGINE, "Methalox Engine (Sea Level)", "Metaloks Motoru (Deniz Seviyesi)");
@@ -27,6 +32,15 @@ final class RocketryLang {
         l.add("propellant.spacebreaker.hydrolox", "Hydrogen/LOX", "Hidrojen/LOX");
         l.add("propellant.spacebreaker.nuclear", "Hydrogen (nuclear thermal)", "Hidrojen (nükleer termal)");
         l.item(RocketryModule.NUCLEAR_THERMAL_ENGINE, "Nuclear Thermal Engine (Vacuum)", "Nükleer Termal Motor (Vakum)");
+        l.add("gui.spacebreaker.assembler.nuclear_tag", "☢ Nuclear", "☢ Nükleer");
+        l.add("gui.spacebreaker.assembler.nuclear", "☢ Nuclear stage: radioactive while it burns. Fire it only well away from the pad and from people",
+                "☢ Nükleer kademe: yanarken radyasyon yayar. Yalnız rampadan ve insanlardan uzakta ateşle");
+        l.add("gui.spacebreaker.assembler.nuclear_first", "☢ Nuclear first stage: too weak to lift off, and it would irradiate the pad. Put it on an upper stage",
+                "☢ Nükleer ilk kademe: kalkmaya gücü yetmez, rampayı da ışınlar. Üst kademeye koy");
+        l.add("tooltip.spacebreaker.part.boil_off", "Cryogenic: %s%% of its propellant boils off per day on long trips and in orbit",
+                "Kriyojenik: uzun yolculukta ve yörüngede yakıtının günde %%%s'i buharlaşır");
+        l.add("tooltip.spacebreaker.part.hydrogen_note", "Real liquid hydrogen is very bulky; in the game a tank's capacity counts as mass, whatever it holds",
+                "Gerçekte sıvı hidrojen çok hacimlidir; oyunda tank kapasitesi, içinde ne olursa olsun kütle olarak sayılır");
         l.add("tooltip.spacebreaker.part.propellant_nuclear", "In a nuclear thermal stage: LH2 %s mB, no LOX", "Nükleer termal kademede: LH2 %s mB, LOX yok");
         l.add("tooltip.spacebreaker.part.nuclear", "Radioactive while it burns: keep clear of the engine. Safe when cold; the crew rides behind a shadow shield",
                 "Yanarken radyasyon yayar: motordan uzak dur. Soğukken güvenlidir; mürettebat gölge kalkanının arkasında kalır");
@@ -318,6 +332,12 @@ final class RocketryLang {
         l.add("gui.spacebreaker.star_map.trip_to", "Trip to %s", "%s yolculuğu");
         l.add("gui.spacebreaker.star_map.fuel_line", "Fuel needed %s · on board %s", "Gereken yakıt %s · roketinde %s");
         l.add("gui.spacebreaker.star_map.enough", "Enough ✔", "Yeter ✔");
+        l.add("gui.spacebreaker.star_map.need_nuclear", "This comet is only reached with a nuclear thermal engine (and insulated tanks for the years on the way)",
+                "Bu kuyruklu yıldıza ancak nükleer termal motorla ulaşılır (yoldaki yıllar için yalıtımlı tanklar da gerekir)");
+        l.add("gui.spacebreaker.star_map.block.observation_only", "Observation only: no rocket can match this comet's speed in a sensible time",
+                "Yalnız gözlem: hiçbir roket bu kuyruklu yıldızın hızını makul bir sürede yakalayamaz");
+        l.add("gui.spacebreaker.star_map.boil_off", "Boil-off on the way: %s%% of the propellant on board (counted above)",
+                "Yolda buharlaşma kaybı: roketteki yakıtın %%%s'i (yukarıdaki hesaba dahil)");
         l.add("gui.spacebreaker.star_map.short", "%s short ✘", "%s eksik ✘");
         l.add("gui.spacebreaker.star_map.return_yes", "Fuel to come home: enough ✔", "Geri dönüş yakıtı: yeter ✔");
         l.add("gui.spacebreaker.star_map.return_refuel", "Fuel to come home: make it there ⛽ (fuel can be produced on this world)", "Geri dönüş yakıtı: orada üret ⛽ (bu dünyada yakıt üretilebilir)");
