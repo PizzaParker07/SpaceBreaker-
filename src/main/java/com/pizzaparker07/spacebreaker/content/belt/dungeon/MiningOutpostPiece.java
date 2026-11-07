@@ -151,8 +151,8 @@ public class MiningOutpostPiece extends StructurePiece {
 
     private void door(WorldGenLevel level, BoundingBox box, int x, int z, Direction facing) {
         BlockState d = Blocks.IRON_DOOR.defaultBlockState().setValue(DoorBlock.FACING, facing);
-        placeBlock(level, d.setValue(DoorBlock.HALF, DoubleBlockHalf.LOWER), x, F, z, box);
-        placeBlock(level, d.setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER), x, F + 1, z, box);
+        com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, d.setValue(DoorBlock.HALF, DoubleBlockHalf.LOWER), x, F, z, box);
+        com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, d.setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER), x, F + 1, z, box);
     }
 
     private void habitat(WorldGenLevel level, BoundingBox box, RandomSource r) {
@@ -204,7 +204,7 @@ public class MiningOutpostPiece extends StructurePiece {
         module(level, box, 16, 2, 26, 11, 6);
         // ice melters: furnaces under copper hoppers, cauldrons for the meltwater, an ice bunker
         for (int z = 3; z <= 5; z++) {
-            placeBlock(level, Blocks.BLAST_FURNACE.defaultBlockState().setValue(FurnaceBlock.FACING, Direction.WEST), 25, F, z, box);
+            com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, Blocks.BLAST_FURNACE.defaultBlockState().setValue(FurnaceBlock.FACING, Direction.WEST), 25, F, z, box);
             placeBlock(level, s(Blocks.HOPPER), 25, F + 1, z, box);
             placeBlock(level, s(Blocks.WAXED_CUT_COPPER), 25, F + 2, z, box);
         }
@@ -225,10 +225,10 @@ public class MiningOutpostPiece extends StructurePiece {
         placeBlock(level, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), 21, F + 5, 6, box);
         // trapdoor and ladder down the inner shaft to the drift
         for (int y = 2; y < F; y++) {
-            placeBlock(level, Blocks.LADDER.defaultBlockState().setValue(LadderBlock.FACING, Direction.SOUTH), 21, y, 10, box);
+            com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, Blocks.LADDER.defaultBlockState().setValue(LadderBlock.FACING, Direction.SOUTH), 21, y, 10, box);
             placeBlock(level, s(BeltModule.CEREAN_ROCK.base().get()), 21, y, 9, box);
         }
-        placeBlock(level, Blocks.IRON_TRAPDOOR.defaultBlockState(), 21, F - 1, 10, box);
+        com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, Blocks.IRON_TRAPDOOR.defaultBlockState(), 21, F - 1, 10, box);
         door(level, box, 21, 11, Direction.SOUTH);
     }
 
@@ -377,7 +377,7 @@ public class MiningOutpostPiece extends StructurePiece {
         // ladder down the head-frame shaft, against its south wall
         for (int y = fy + 1; y < F; y++) {
             placeBlock(level, rock, 21, y, 23, box);
-            placeBlock(level, Blocks.LADDER.defaultBlockState().setValue(LadderBlock.FACING, Direction.NORTH), 21, y, 22, box);
+            com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, Blocks.LADDER.defaultBlockState().setValue(LadderBlock.FACING, Direction.NORTH), 21, y, 22, box);
         }
         guard(level, box, BeltEntities.ROCK_MITE.get(), 9, fy + 1, 16);
         guard(level, box, BeltEntities.ROCK_MITE.get(), 6, fy + 1, 15);

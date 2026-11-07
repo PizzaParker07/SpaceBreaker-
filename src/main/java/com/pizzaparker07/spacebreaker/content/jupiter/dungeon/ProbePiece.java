@@ -122,7 +122,7 @@ public class ProbePiece extends StructurePiece {
             placeBlock(level, s(Blocks.WAXED_CUT_COPPER), SHAFT_X, y, SHAFT_Z, box);
         }
         placeBlock(level, s(Blocks.WAXED_COPPER_BULB), SHAFT_X, CAVE + 4, SHAFT_Z, box);
-        placeBlock(level, Blocks.LIGHTNING_ROD.defaultBlockState().setValue(LightningRodBlock.FACING, Direction.WEST), SHAFT_X - 1, CAVE + 1, SHAFT_Z, box);
+        com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, Blocks.LIGHTNING_ROD.defaultBlockState().setValue(LightningRodBlock.FACING, Direction.WEST), SHAFT_X - 1, CAVE + 1, SHAFT_Z, box);
         placeBlock(level, s(Blocks.WAXED_CUT_COPPER_SLAB), SHAFT_X + 1, CAVE + 1, SHAFT_Z, box);
         // shaft: melted straight down, walls refrozen and stained, a ladder bolted in later and the tether beside it
         for (int y = CAVE + 5; y <= F; y++) {
@@ -140,7 +140,7 @@ public class ProbePiece extends StructurePiece {
         }
         for (int y = CAVE + 1; y <= F; y++) {
             placeBlock(level, s(Blocks.AIR), SHAFT_X, y, SHAFT_Z + 1, box);
-            placeBlock(level, Blocks.LADDER.defaultBlockState().setValue(LadderBlock.FACING, Direction.NORTH), SHAFT_X, y, SHAFT_Z + 1, box);
+            com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, Blocks.LADDER.defaultBlockState().setValue(LadderBlock.FACING, Direction.NORTH), SHAFT_X, y, SHAFT_Z + 1, box);
             placeBlock(level, stained, SHAFT_X, y, SHAFT_Z + 2, box);
         }
         // instrument racks by the cave wall
