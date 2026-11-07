@@ -550,6 +550,7 @@
   "commands.spacebreaker.research.learned_all": "Taught %s technologies",
   "commands.spacebreaker.research.list": "%s knows %s of %s technologies:",
   "commands.spacebreaker.research.unknown": "Unknown technology %s",
+  "compat.spacebreaker.info.solar_dust": "Dust: %s%%, output: %s%%",
   "container.spacebreaker.cargo_hold": "Cargo Hold",
   "container.spacebreaker.launch_console": "Launch Control",
   "container.spacebreaker.research_lab": "Research Lab",

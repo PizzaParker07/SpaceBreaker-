@@ -550,6 +550,7 @@
   "commands.spacebreaker.research.learned_all": "%s teknoloji öğretildi",
   "commands.spacebreaker.research.list": "%s, %s / %s teknolojiyi biliyor:",
   "commands.spacebreaker.research.unknown": "Bilinmeyen teknoloji %s",
+  "compat.spacebreaker.info.solar_dust": "Toz: %%%s, verim: %%%s",
   "container.spacebreaker.cargo_hold": "Kargo Ambarı",
   "container.spacebreaker.launch_console": "Fırlatma Kontrolü",
   "container.spacebreaker.research_lab": "Araştırma Laboratuvarı",
