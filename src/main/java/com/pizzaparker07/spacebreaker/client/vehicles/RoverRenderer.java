@@ -73,7 +73,7 @@ public class RoverRenderer extends EntityRenderer<RoverEntity> {
         super.render(rover, yaw, partialTick, pose, buffers, light);
     }
 
-    /** The same dust film as on a solar tracker, laid over the roof panel (model space, y down: its top is y = 2). */
+    /** The same dust film as on a solar tracker, laid over the deck panel (model space, y down: its top is y = 5). */
     private static void roofDust(PoseStack pose, VertexConsumer vc, float dust, float bodyY, int light) {
         net.minecraft.client.renderer.texture.TextureAtlasSprite sprite = Minecraft.getInstance()
                 .getTextureAtlas(net.minecraft.client.renderer.texture.TextureAtlas.LOCATION_BLOCKS)
@@ -81,12 +81,12 @@ public class RoverRenderer extends EntityRenderer<RoverEntity> {
         // the roof cells are small and dark: a thinner film keeps them readable at full cover
         int alpha = Math.round(com.pizzaparker07.spacebreaker.client.machines.SolarPanelRenderer.dustAlpha(dust) * 0.6F * 255);
         PoseStack.Pose last = pose.last();
-        float y = (bodyY + 1.95F) / 16F;
+        float y = (bodyY + 4.95F) / 16F;
         float x0 = -12F / 16F;
         float x1 = 12F / 16F;
         // the 24 x 16 panel takes the 16 px dust tile one and a half times across so the grain keeps its size
-        float zs = 2F / 16F;
-        float ze = 18F / 16F;
+        float zs = 15F / 16F;
+        float ze = 31F / 16F;
         for (int i = 0; i < 2; i++) {
             float a = i == 0 ? x0 : 0F;
             float b = i == 0 ? 0F : x1;

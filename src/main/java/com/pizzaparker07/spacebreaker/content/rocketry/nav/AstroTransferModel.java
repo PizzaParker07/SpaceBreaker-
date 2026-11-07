@@ -44,8 +44,9 @@ public final class AstroTransferModel implements TransferModel {
             return OptionalDouble.empty();
         }
         // comets: realistic rendezvous, and none at all for the ones that are only to be watched
-        if (CometRoutes.ready() && (CometRoutes.isComet(from.body()) || CometRoutes.isComet(to.body())) && !from.body().equals(to.body())) {
-            return dv.computeIfAbsent(key(from, to), k -> comet(from, to));
+        if ((CometRoutes.isComet(from.body()) || CometRoutes.isComet(to.body())) && !from.body().equals(to.body())) {
+            // until the comet flights are worked out (a few seconds, in the background on a client), no route and no cache
+            return CometRoutes.ready() ? dv.computeIfAbsent(key(from, to), k -> comet(from, to)) : OptionalDouble.empty();
         }
         OptionalDouble v = dv.computeIfAbsent(key(from, to), k -> compute(from, to));
         return v.isPresent() ? v : fallback.deltaV(from, to);
@@ -94,22 +95,28 @@ public final class AstroTransferModel implements TransferModel {
 
     /**
      * Orbit to orbit between a comet and anywhere else: the comet's rendezvous (departure from low orbit plus the
-     * speed match, the same both ways). From a comet straight down into an atmosphere (home to Earth): only the
-     * burn away from the comet. Other surfaces go through their own orbit first.
+     * speed match, the same both ways). From a comet straight down into an atmosphere (home to Earth): astro's return
+     * search, the burn away from the comet plus braking to a safe entry speed. Other surfaces go through their own orbit.
      */
     private OptionalDouble comet(Location from, Location to) {
         if (!from.orbit()) {
             return OptionalDouble.empty();
         }
         boolean leaving = CometRoutes.isComet(from.body()) && !CometRoutes.isComet(to.body());
-        if (!to.orbit() && !(leaving && to.atmosphere())) {
+        if (leaving && !to.orbit() && to.atmosphere()) {
+            // straight home into the air: the burn away from the comet, plus braking down to a safe entry speed
+            return CometRoutes.of(from.body()).flatMap(CometRoutes.Route::home).map(r -> {
+                times.put(key(from, to), OptionalDouble.of(r.flightSeconds()));
+                return OptionalDouble.of(r.totalDv());
+            }).orElse(OptionalDouble.empty());
+        }
+        if (!to.orbit()) {
             return OptionalDouble.empty();
         }
         ResourceLocation comet = leaving ? from.body() : to.body();
         return CometRoutes.route(comet).map(r -> {
             times.put(key(from, to), OptionalDouble.of(r.flightSeconds()));
-            // straight home into the air: only the burn away from the comet; the atmosphere does the braking
-            return OptionalDouble.of(to.orbit() ? r.totalDv() : r.arrivalDv());
+            return OptionalDouble.of(r.totalDv());
         }).orElse(OptionalDouble.empty());
     }
 
@@ -139,6 +146,21 @@ public final class AstroTransferModel implements TransferModel {
         return times.getOrDefault(key(from, to), OptionalDouble.empty());
     }
 
+    /**
+     * Comet flights take several seconds to work out: at once on a server (every player and the progression model see
+     * the same numbers from the start), in the background on a client so joining a world does not stall.
+     */
+    private static void installComets(BodySystem sys) {
+        if (net.neoforged.neoforge.server.ServerLifecycleHooks.getCurrentServer() != null && CometRoutes.ready()) {
+            return; // single player: the integrated server already worked them out in this game
+        }
+        if (net.neoforged.fml.loading.FMLEnvironment.dist.isClient() && net.neoforged.neoforge.server.ServerLifecycleHooks.getCurrentServer() == null) {
+            java.util.concurrent.CompletableFuture.runAsync(() -> CometRoutes.install(sys));
+        } else {
+            CometRoutes.install(sys);
+        }
+    }
+
     /** Installs the places and the library-backed model for this world's body data. */
     public static void install(RegistryAccess access) {
         Locations.install(access);
@@ -146,7 +168,7 @@ public final class AstroTransferModel implements TransferModel {
             BodySystem sys = BodyAdapter.system(access).orElse(null);
             boolean astro = sys != null && sys.get("spacebreaker:earth").isPresent();
             if (astro) {
-                CometRoutes.install(sys);
+                installComets(sys);
             }
             Transfers.setModel(astro ? new AstroTransferModel(sys) : new SimpleTransfers());
         } catch (RuntimeException e) {

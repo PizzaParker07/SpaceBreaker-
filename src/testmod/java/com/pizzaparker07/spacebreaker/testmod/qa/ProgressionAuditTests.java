@@ -137,8 +137,8 @@ public final class ProgressionAuditTests {
     }
 
     /**
-     * Comet balance (decided for 1.0): Halley is the end-game target, reached with the nuclear thermal engine by step
-     * 17 and never by a direct chemical round trip (refuelling from its ice later is allowed); 67P and Tempel 1 stay
+     * Comet balance (decided for 1.0, Halley step widened in 1.0.1): Halley is the end-game target, reached by step 21
+     * (refuelling from its ice) and never by a direct chemical round trip; 67P and Tempel 1 stay
      * reachable with chemical rockets; Hale–Bopp is only seen in the sky.
      */
     @GameTest(template = "empty", timeoutTicks = 400)
@@ -155,13 +155,29 @@ public final class ProgressionAuditTests {
             return RocketSearch.mission(chemical, loc.get(), m.realism, gEarth, m.gravityOf(loc.get().dimension()), null);
         };
         var halley = m.facts.get("world:spacebreaker:halley");
-        h.assertTrue(halley != null && halley.step() <= 17, "Halley round trip by step 17: " + (halley == null ? "never" : halley.step()));
+        // end-game target (1.0.1): with the real return trip Halley needs fuel made from its own ice, at step 21
+        h.assertTrue(halley != null && halley.step() <= 21, "Halley reachable by step 21: " + (halley == null ? "never" : halley.step()));
         h.assertTrue(chemicalRoundTrip.apply("halley") == null, "no direct chemical round trip to Halley");
         for (String c : List.of("churyumov_gerasimenko", "tempel_1")) {
             h.assertTrue(chemicalRoundTrip.apply(c) != null, c + " is reachable with a chemical rocket");
         }
         h.assertTrue(m.missions.keySet().stream().noneMatch(k -> k.contains("hale_bopp")) && !m.has("world:spacebreaker:hale_bopp"),
                 "Hale-Bopp has no mission (sky only)");
+        h.succeed();
+    }
+
+    /**
+     * The realistic setting (1.0 target, decided with rocketry after QA-20): a fresh world reaches Earth orbit. The Moon and
+     * Mars need heavier rockets there and are not required.
+     */
+    @GameTest(template = "empty", timeoutTicks = 400)
+    public static void realisticSettingReachesOrbit(GameTestHelper h) {
+        var probe = h.makeMockPlayer(GameType.SURVIVAL);
+        ProgressionModel m = new ProgressionModel(h.getLevel().getServer(), probe, SbConfig.Realism.REALISTIC);
+        m.scan();
+        m.run();
+        ProgressionReport.Goal first = ProgressionReport.goals().get(0);
+        h.assertTrue(m.has(first.fact()), "realistic setting: " + first.title() + " is reachable");
         h.succeed();
     }
 
