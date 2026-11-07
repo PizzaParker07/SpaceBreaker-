@@ -788,6 +788,39 @@ final class ProgressionModel {
         });
     }
 
+    /**
+     * Suit a world's local industry needs (its resources sit somewhere a lighter suit cannot go). Mercury: the polar ice
+     * lies in cold-trap crater floors (about −240 °C), so its ice mine needs the heated suit (inner planets, by design).
+     */
+    static final Map<String, String> WORK_SUIT = Map.of("spacebreaker:mercury", "heated");
+
+    /** The fact "a full suit of this tier can be worn with its protection", or null. */
+    String suit(String tierId) {
+        for (SuitTier t : SuitTier.ALL) {
+            if (!t.id().equals(tierId)) {
+                continue;
+            }
+            List<String> deps = new ArrayList<>();
+            for (Item i : BuiltInRegistries.ITEM) {
+                if (i instanceof SpaceSuitItem s && s.tier() == t) {
+                    if (!hasItem(i)) {
+                        return null;
+                    }
+                    deps.add(item(i));
+                }
+            }
+            if (t.tech() != null) {
+                if (!has(tech(t.tech()))) {
+                    return null;
+                }
+                deps.add(tech(t.tech()));
+            }
+            add("suit:" + tierId, "full " + tierId + " suit with its research", deps);
+            return "suit:" + tierId;
+        }
+        return null;
+    }
+
     /** Machines usable in world {@code w}: built, unlocked when the machine enforces it, and powered there. */
     List<String> machineDeps(Block machine, ResourceKey<Level> w) {
         Item it = machine.asItem();
@@ -797,6 +830,14 @@ final class ProgressionModel {
         List<String> deps = new ArrayList<>();
         deps.add(item(it));
         deps.add(landed(w));
+        String tier = WORK_SUIT.get(w.location().toString());
+        if (tier != null) {
+            String suit = suit(tier);
+            if (suit == null) {
+                return null;
+            }
+            deps.add(suit);
+        }
         ResourceLocation id = BuiltInRegistries.BLOCK.getKey(machine);
         if (machinesThatEnforce.contains(id)) {
             String known = null;

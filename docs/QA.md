@@ -147,6 +147,10 @@ missions, station kit + docking port, hydrolox to Mercury.
   dispenser spawns them; they can drift out of the box (or one is lost) before the check. Suggest counting in
   `succeedWhen` over a few ticks, or counting spawned drones instead of drones still inside the bounding box.
 
+- Model rule (inner planets, by design): Mercury's local industry (polar ice in −240 °C cold traps) needs the heated suit
+  (`ProgressionModel.WORK_SUIT`). With it, the full heated suit is ready at step 13; on 1.21.1 @ 6e9af27 Mercury surface is
+  a plain hydrolox round trip (step 15, 2-stage, 9408 m/s vacuum), so the ice-mine refuel is optional, not a lock.
+
 ## Client playthrough (`-Pscenario=qa_playthrough`)
 `LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s "-screen 0 1920x1080x24" ./gradlew runShowcase -Pscenario=qa_playthrough`
 (`testmod/showcase/QaPlaythroughScenario.java`): survival bench (research lab with a disk waiting for prerequisites,
