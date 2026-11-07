@@ -427,11 +427,24 @@ public final class MarsLifeGameTests {
         helper.assertTrue(Math.abs(winterEdge - 52) < 1e-6, "northern winter cap reaches 52°, got " + winterEdge);
         helper.assertTrue(com.pizzaparker07.spacebreaker.content.mars.MarsSeasons.capEdge(270, false) == 82, "southern summer: residual cap only");
         helper.assertTrue(com.pizzaparker07.spacebreaker.content.mars.MarsSeasons.capEdge(90, false) < 53, "southern winter cap spreads too");
-        helper.assertTrue(com.pizzaparker07.spacebreaker.content.mars.MarsSeasons.wantsFrost(60, 270, false), "frost on the winter cap by day");
-        helper.assertFalse(com.pizzaparker07.spacebreaker.content.mars.MarsSeasons.wantsFrost(45, 270, false), "no daytime frost beyond the cap");
-        helper.assertTrue(com.pizzaparker07.spacebreaker.content.mars.MarsSeasons.wantsFrost(45, 270, true), "night frost beyond the cap");
-        helper.assertFalse(com.pizzaparker07.spacebreaker.content.mars.MarsSeasons.wantsFrost(60, 90, true), "none in northern summer");
-        helper.assertTrue(com.pizzaparker07.spacebreaker.content.mars.MarsSeasons.wantsFrost(-60, 90, false), "but on the southern winter cap");
+        var S = new Object() {
+            double cov(double lat, double ls, boolean night) {
+                return com.pizzaparker07.spacebreaker.content.mars.MarsSeasons.coverage(lat, ls, night);
+            }
+        };
+        helper.assertTrue(S.cov(75, 270, false) == 1, "deep in the winter cap the ground is fully frosted");
+        double edge = S.cov(53, 270, false);
+        helper.assertTrue(edge > 0.25 && edge < 0.5, "at the cap edge only patches, got " + edge);
+        helper.assertTrue(S.cov(45, 270, false) == 0, "no daytime frost beyond the cap");
+        double night = S.cov(45, 270, true);
+        helper.assertTrue(night > 0 && night < edge, "a thin night scatter beyond the cap, got " + night);
+        helper.assertTrue(S.cov(60, 90, true) == 0, "none in northern summer");
+        helper.assertTrue(S.cov(-70, 90, false) > 0.9, "but on the southern winter cap");
+        int frosted = 0;
+        for (int i = 0; i < 4000; i++) {
+            frosted += com.pizzaparker07.spacebreaker.content.mars.MarsSeasons.wantsFrost(i * 7, i * 13 % 997, 53, 270, false) ? 1 : 0;
+        }
+        helper.assertTrue(Math.abs(frosted / 4000.0 - edge) < 0.08, "patches cover about that share of the ground, got " + frosted / 4000.0);
         helper.assertTrue(com.pizzaparker07.spacebreaker.content.mars.MarsSeasons.season(275) == 3, "Ls 275 is northern winter");
 
         ServerLevel level = helper.getLevel();

@@ -66,11 +66,39 @@ public final class MarsSeasons {
         return SUMMER_EDGE - WINTER_SPREAD * winter(ls, north);
     }
 
-    /** Whether frost belongs on open ground at this latitude (positive north). */
-    public static boolean wantsFrost(double latitude, double ls, boolean night) {
-        double edge = capEdge(ls, latitude >= 0);
-        double a = Math.abs(latitude);
-        return a >= edge || (night && a >= edge - NIGHT_REACH);
+    /** Degrees inside the cap edge over which the frost thickens from sparse patches to a full cover. */
+    public static final double THICKEN = 10;
+    /** Share of the ground frosted right at the cap edge. */
+    public static final double EDGE_COVER = 0.3;
+
+    /**
+     * Share of the open ground (0..1) that frost covers at this latitude (positive north): full well inside the cap,
+     * patchy at its edge, and on nights a thin scatter reaching {@link #NIGHT_REACH} beyond it.
+     */
+    public static double coverage(double latitude, double ls, boolean night) {
+        double depth = Math.abs(latitude) - capEdge(ls, latitude >= 0);
+        if (depth >= 0) {
+            return EDGE_COVER + (1 - EDGE_COVER) * Mth.clamp(depth / THICKEN, 0, 1);
+        }
+        return night && depth > -NIGHT_REACH ? EDGE_COVER * (1 + depth / NIGHT_REACH) : 0;
+    }
+
+    /** A fixed 0..1 value per column, clumped into patches a few blocks wide, so frost forms and fades in patches. */
+    public static double patch(int x, int z) {
+        double coarse = hash(Math.floorDiv(x, 4), Math.floorDiv(z, 4));
+        return 0.7 * coarse + 0.3 * hash(x, z);
+    }
+
+    private static double hash(int x, int z) {
+        long h = x * 0x9E3779B97F4A7C15L ^ z * 0xC2B2AE3D27D4EB4FL;
+        h = (h ^ (h >>> 31)) * 0xBF58476D1CE4E5B9L;
+        h ^= h >>> 29;
+        return (h >>> 11) * 0x1.0p-53;
+    }
+
+    /** Whether frost belongs on the open ground of this column. */
+    public static boolean wantsFrost(int x, int z, double latitude, double ls, boolean night) {
+        return patch(x, z) < coverage(latitude, ls, night);
     }
 
     /** Season index 0..3 (northern spring, summer, autumn, winter) for announcements. */
@@ -105,7 +133,7 @@ public final class MarsSeasons {
                     continue;
                 }
                 double lat = MarsClimate.latitude(level, new BlockPos(x, 0, z));
-                updateColumn(level, x, z, wantsFrost(lat, ls, night));
+                updateColumn(level, x, z, wantsFrost(x, z, lat, ls, night));
             }
         }
     }

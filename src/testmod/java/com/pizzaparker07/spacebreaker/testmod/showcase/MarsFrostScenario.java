@@ -18,9 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-/** The northern plains at about 60°N: frosted over in northern winter, bare again in summer. */
+/** The northern plains near the winter cap edge: frost thick toward the pole, thinning to patches toward the edge; bare in summer. */
 final class MarsFrostScenario implements ShowcaseScenario {
-    private static final double LATITUDE = 60;
+    private static final double LATITUDE = 57;
     private static final int R = 112;
     private PlanetTerrain terrain;
 
@@ -56,7 +56,7 @@ final class MarsFrostScenario implements ShowcaseScenario {
             for (int x = -R; x <= R; x++) {
                 for (int z = z0 - R; z <= z0 + R; z++) {
                     double lat = MarsClimate.latitude(level, new BlockPos(x, 0, z));
-                    MarsSeasons.updateColumn(level, x, z, MarsSeasons.wantsFrost(lat, ls, false));
+                    MarsSeasons.updateColumn(level, x, z, MarsSeasons.wantsFrost(x, z, lat, ls, false));
                 }
             }
         };
