@@ -1074,6 +1074,25 @@ public final class RocketryGameTests {
     }
 
     @GameTest(template = EMPTY)
+    public static void marsLander(GameTestHelper helper) {
+        var level = helper.getLevel();
+        RocketLayout lander = RocketLayout.of(RocketryModule.MARS_LANDER, RocketParts.lookup(level.registryAccess()));
+        helper.assertTrue(lander.problems().isEmpty(), "a valid design: " + lander.problems());
+        helper.assertTrue(lander.hasLegsFrom(0) && lander.payload().seats() > 0 && lander.payload().parachute(), "legs, a seat and a parachute");
+        helper.assertTrue(lander.stages().stream().allMatch(s -> s.propellant() == com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant.METHALOX),
+                "burns methane, which is made on Mars");
+        var mars = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(Spacebreaker.id("mars"), false).orElseThrow();
+        var marsOrbit = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(Spacebreaker.id("mars"), true).orElseThrow();
+        helper.assertTrue(Transfers.reentryRating(marsOrbit, mars) <= lander.payload().heatShield(), "its shield takes the entry");
+        var balanced = SbConfig.Realism.BALANCED;
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.MissionPlanner.fly(lander, 0, lander.fullFuel(), List.of(marsOrbit, mars), balanced).possible(),
+                "down from Mars orbit");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.MissionPlanner.fly(lander, 0, lander.fullFuel(), List.of(mars, marsOrbit), balanced).possible(),
+                "and, refuelled on Mars, back up to orbit");
+        helper.succeed();
+    }
+
+    @GameTest(template = EMPTY)
     public static void cargoRocket(GameTestHelper helper) {
         var level = helper.getLevel();
         var lookup = RocketParts.lookup(level.registryAccess());

@@ -1141,6 +1141,7 @@
   "message.spacebreaker.travel.delta_v": "Yetersiz Δv: %s m/s var, %s m/s gerekli",
   "message.spacebreaker.travel.no_route": "Buradan bir rota yok",
   "message.spacebreaker.travel.unavailable": "%s bu dünyada henüz erişilebilir değil",
+  "message.spacebreaker.warn.dust_storm_launch": "Rampanın üstünde toz fırtınası: görüş kötü, rüzgâr sert. Kalkış senin sorumluluğunda; istersen fırtınanın geçmesini bekle",
   "message.spacebreaker.warn.heat_shield": "Uyarı: ısı kalkanı bu dönüş için yeterli değil",
   "message.spacebreaker.warn.no_legs": "Uyarı: iniş bacağı yok, sert iniş olacak",
   "message.spacebreaker.warn.no_return": "Uyarı: oradan eve dönmeye yetecek yakıt yok",

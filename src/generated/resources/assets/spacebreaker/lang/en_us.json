@@ -1141,6 +1141,7 @@
   "message.spacebreaker.travel.delta_v": "Not enough Δv: %s m/s available, %s m/s needed",
   "message.spacebreaker.travel.no_route": "No route from here",
   "message.spacebreaker.travel.unavailable": "%s cannot be reached yet in this world",
+  "message.spacebreaker.warn.dust_storm_launch": "Dust storm over the pad: poor visibility and gusts. Launch at your own risk, or wait it out",
   "message.spacebreaker.warn.heat_shield": "Warning: the heat shield is not rated for this reentry",
   "message.spacebreaker.warn.no_legs": "Warning: no landing legs, expect a hard landing",
   "message.spacebreaker.warn.no_return": "Warning: not enough propellant to come back home from there",

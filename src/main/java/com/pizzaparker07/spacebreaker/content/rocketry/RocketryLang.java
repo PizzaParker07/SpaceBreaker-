@@ -34,6 +34,8 @@ final class RocketryLang {
         l.block(RocketryModule.STATION_BUNK, "Station Bunk", "İstasyon Ranzası");
         l.block(RocketryModule.FUEL_DEPOT, "Fuel Depot", "Yakıt Deposu");
         l.block(RocketryModule.LANDING_BEACON, "Landing Beacon", "İniş İşareti");
+        l.add("message.spacebreaker.warn.dust_storm_launch", "Dust storm over the pad: poor visibility and gusts. Launch at your own risk, or wait it out",
+                "Rampanın üstünde toz fırtınası: görüş kötü, rüzgâr sert. Kalkış senin sorumluluğunda; istersen fırtınanın geçmesini bekle");
         l.add("message.spacebreaker.landing_beacon.guided", "Landing beacon in range: coming down on the base", "İniş işareti alındı: üsse iniliyor");
         l.add("tooltip.spacebreaker.habitat_kit", "Use in empty space: unfolds a sealed 7×5×7 room with an airlock, windows, docking port, bunk, a solar array and a battery bank",
                 "Boşlukta kullan: hava kilidi, pencereler, yanaşma portu, ranza, güneş paneli dizisi ve batarya bankasıyla kapalı 7×5×7 bir oda açar");

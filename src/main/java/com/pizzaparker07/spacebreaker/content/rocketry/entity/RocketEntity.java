@@ -454,6 +454,8 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
      */
     /** How far winds can carry a descent through air off its landing beacon, blocks (airless descents are exact). */
     public static final double LANDING_DRIFT = 6;
+    /** Dust storm strength above which mission control warns against a launch. */
+    public static final float STORM_WARNING = 0.3F;
 
     public static Vec3 landingSpot(ServerLevel level, Vec3 fallback) {
         return com.pizzaparker07.spacebreaker.content.rocketry.station.LandingBeacons.get(level).nearest(fallback)
@@ -805,6 +807,12 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         if (by != null) {
             owner = by.getUUID();
         }
+        float storm = com.pizzaparker07.spacebreaker.content.mars.MarsWeather.dusty(level())
+                ? com.pizzaparker07.spacebreaker.content.mars.MarsWeather.stormStrength(level()) : 0F;
+        if (storm > STORM_WARNING) {
+            // a launch into a dust storm is allowed, but mission control says what it thinks of it
+            notifyCrew(Component.translatable("message.spacebreaker.warn.dust_storm_launch").withStyle(ChatFormatting.GOLD));
+        }
         setState(FlightState.COUNTDOWN);
         setTimer(location().equals(Location.EARTH_SURFACE) ? COUNTDOWN_TICKS : MOON_COUNTDOWN_TICKS);
         if (Double.isNaN(homeX) && location().equals(Location.EARTH_SURFACE)) {
@@ -1116,8 +1124,10 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
             // entry into another world's air: aerobrake behind the shield, chutes, then a short retro-burn
             pos = landingSpot(target, new Vec3(getX() % 30000.0, Math.max(target.getMaxBuildHeight() + 200, 500), getZ() % 30000.0));
             if (LANDING_DRIFT > 0 && !pos.equals(new Vec3(getX() % 30000.0, pos.y, getZ() % 30000.0))) {
-                // winds carry a parachute descent a little off the beacon
-                double a = random.nextDouble() * Math.PI * 2, d = random.nextDouble() * LANDING_DRIFT;
+                // winds carry a parachute descent a little off the beacon, much further in a dust storm
+                float storm = com.pizzaparker07.spacebreaker.content.mars.MarsWeather.dusty(target)
+                        ? com.pizzaparker07.spacebreaker.content.mars.MarsWeather.stormStrength(target) : 0F;
+                double a = random.nextDouble() * Math.PI * 2, d = random.nextDouble() * LANDING_DRIFT * (1 + 3 * storm);
                 pos = pos.add(Math.cos(a) * d, 0, Math.sin(a) * d);
             }
             next = FlightState.REENTRY;
