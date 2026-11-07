@@ -197,6 +197,11 @@ Complementary the tint is weaker (the pack re-lights translucent entities) but t
 - **Mars lander and the launch console:** the lander on Mars looks as without shaders; the console is a screen,
   drawn after the pack's frame, so its rows (including the cargo route row of uncrewed cargo rockets) cannot be
   affected by a pack (`mars_lander_console_vanilla_vs_iris.jpg`).
+- **Micrometeorite streaks and tiny worlds:** the streaks are drawn right after the sky (AFTER_SKY), which the sky
+  pass replays, so they show with a pack; at very low frame rates there are fewer of them (one spawn batch per
+  frame, reported to the planet engine area). Dark Bennu and bright Hydra keep their contrast under the pack's
+  exposure: Bennu's rubble stays dark but readable, Hydra's ice is bright without blowing out
+  (`meteor_bennu_hydra_vanilla_vs_iris.jpg`).
 - **Docking jolt:** a camera roll/pitch from `ViewportEvent.ComputeCameraAngles`; Iris builds its matrices from the
   same camera, so the shake is the same with a pack (at most about 2°, too small to tell apart in a still frame).
 - **Inside a closed module the pack's ambient fill is blue:** the airless sky colour handed to the pack
@@ -287,7 +292,8 @@ satellites, 3-crew capsule) are plain `minecraft:crafting_shaped` recipes: both 
 Crafting category with no help from us (`jei_crafted_vehicles.jpg`, `emi_crafted_vehicles.jpg`; showcase shots
 `*_recipe_<item>`). Also checked: cargo module, landing beacon, suit maintenance station, regolith excavator,
 aerostat platform kit, Venus descent probe and solar array (`jei_emi_night_additions.jpg`, JEI top, EMI bottom);
-their recipe tags are named, so EMI reports no untranslated tags. The Mars lander, like every rocket, is assembled,
+their recipe tags are named, so EMI reports no untranslated tags. The Sintering category (industry) shows with the sintering furnace as icon and catalyst
+(`jei_emi_sintering.jpg`). The Mars lander, like every rocket, is assembled,
 not crafted: the Rocket Assembler information page covers it.
 
 Screenshots: `jei_*` and `emi_*`. Test: `./gradlew runShowcase -Pscenario=jei -PwithJei=true` or
