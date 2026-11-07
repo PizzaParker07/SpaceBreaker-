@@ -498,6 +498,91 @@ public final class IndustryRtgTests {
         });
     }
 
+    /** Breaking a reactor mid-burn gives back the element with the burn that was left; a second reactor carries on with it. */
+    @GameTest(template = "empty", timeoutTicks = 200, batch = "industry_power")
+    public static void fissionReactorKeepsPartialBurnWhenBroken(GameTestHelper h) {
+        var R = com.pizzaparker07.spacebreaker.content.machines.machine.FissionReactorBlockEntity.class;
+        int full = com.pizzaparker07.spacebreaker.content.machines.machine.FissionReactorBlockEntity.BURN_TICKS;
+        BlockPos at = new BlockPos(2, 1, 2);
+        MachineBlockEntity be = machine(h, MachinesModule.FISSION_REACTOR, at, false);
+        be.items().setStackInSlot(0, new ItemStack(MachinesModule.NUCLEAR_FUEL_ELEMENT.get()));
+        int[] left = new int[1];
+        h.runAfterDelay(20, () -> {
+            left[0] = R.cast(be).burnLeft();
+            h.assertTrue(left[0] > 0 && left[0] < full, "burning: " + left[0]);
+            h.getLevel().destroyBlock(h.absolutePos(at), true);
+        });
+        h.runAfterDelay(25, () -> {
+            var drops = h.getLevel().getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class,
+                    new net.minecraft.world.phys.AABB(h.absolutePos(at)).inflate(2));
+            ItemStack element = drops.stream().map(net.minecraft.world.entity.item.ItemEntity::getItem)
+                    .filter(st -> st.is(MachinesModule.NUCLEAR_FUEL_ELEMENT.get())).findFirst().orElse(ItemStack.EMPTY);
+            h.assertFalse(element.isEmpty(), "the element dropped");
+            Integer kept = element.get(MachinesModule.FUEL_BURN_LEFT.get());
+            h.assertTrue(kept != null && Math.abs(kept - left[0]) <= 5, "burn kept on the element: " + kept + " vs " + left[0]);
+            h.assertTrue(com.pizzaparker07.spacebreaker.content.machines.NuclearFuelElementItem.percentLeft(element) < 100, "shows as partly burnt");
+            h.assertFalse(ItemStack.isSameItemSameComponents(element, new ItemStack(MachinesModule.NUCLEAR_FUEL_ELEMENT.get())),
+                    "does not stack with fresh elements");
+            drops.forEach(net.minecraft.world.entity.Entity::discard);
+            MachineBlockEntity second = machine(h, MachinesModule.FISSION_REACTOR, new BlockPos(4, 1, 2), false);
+            second.items().setStackInSlot(0, element.copy());
+            h.runAfterDelay(5, () -> {
+                int b = R.cast(second).burnLeft();
+                h.assertTrue(b <= kept && b > kept - 10, "the second reactor carries on with the kept burn: " + b + " vs " + kept);
+                h.succeed();
+            });
+        });
+    }
+
+    /** Every machine screen on the shared grid: everything inside the machine area, nothing overlapping, the energy
+     * bar on the far left (alone in the middle for the battery bank). */
+    @GameTest(template = "empty", timeoutTicks = 100)
+    public static void machineScreensShareOneTidyLayout(GameTestHelper h) {
+        int i = 0;
+        for (MachineEntry<?, ?> m : MachinesModule.MACHINES) {
+            BlockPos pos = new BlockPos(1 + (i % 4), 1, 1 + (i / 4) % 4);
+            i++;
+            if (!m.block().get().defaultBlockState().hasProperty(MachineBlock.FACING)) {
+                continue;
+            }
+            h.setBlock(pos, m.block().get().defaultBlockState());
+            if (!(h.getBlockEntity(pos) instanceof MachineBlockEntity be)) {
+                continue;
+            }
+            var l = be.layout().tidy();
+            java.util.List<int[]> rects = new java.util.ArrayList<>();
+            if (l.hasEnergy()) {
+                rects.add(new int[]{l.energyX, l.energyY, 14, 54});
+            }
+            for (var sp : l.slots) {
+                rects.add(new int[]{sp.x(), sp.y(), 18, 18});
+            }
+            for (var tp : l.tanks) {
+                rects.add(new int[]{tp.x(), tp.y(), 18, 54});
+            }
+            if (l.progress == com.pizzaparker07.spacebreaker.content.machines.base.MachineLayout.Progress.ARROW) {
+                rects.add(new int[]{l.progressX, l.progressY, 22, 13});
+            } else if (l.progress == com.pizzaparker07.spacebreaker.content.machines.base.MachineLayout.Progress.FLAME) {
+                rects.add(new int[]{l.progressX, l.progressY, 14, 14});
+            }
+            String id = m.id();
+            for (int a = 0; a < rects.size(); a++) {
+                int[] r = rects.get(a);
+                h.assertTrue(r[0] >= 8 && r[0] + r[2] <= 168 && r[1] >= 17 && r[1] + r[3] <= 71,
+                        id + ": element " + a + " outside the machine area at " + r[0] + "," + r[1]);
+                for (int b = a + 1; b < rects.size(); b++) {
+                    int[] q = rects.get(b);
+                    boolean overlap = r[0] < q[0] + q[2] && q[0] < r[0] + r[2] && r[1] < q[1] + q[3] && q[1] < r[1] + r[3];
+                    h.assertFalse(overlap, id + ": elements " + a + " and " + b + " overlap");
+                }
+            }
+            if (l.hasEnergy() && !(l.slots.isEmpty() && l.tanks.isEmpty())) {
+                h.assertTrue(l.energyX == 8, id + ": energy bar on the far left");
+            }
+        }
+        h.succeed();
+    }
+
     private IndustryRtgTests() {
     }
 }

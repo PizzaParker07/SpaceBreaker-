@@ -68,7 +68,10 @@ final class BodyLook {
         var pose = new BlockyBodyRenderer.Pose(center, radius, new Vector3f(0, 0, 1), new Vector3f(0, 1, 0), spin * (float) (Math.PI * 2));
         // close below an orbit: up to the finest level, or the steps show as big bands
         BlockyBodyRenderer.draw(modelView, st, BlockyBodyRenderer.APPROACH, map(body), pose, sun, 0.05F, 1F, alpha, null);
-        // no air shell: seen face-on it washes the whole planet out; the colours carry the atmosphere
+        if (air) {
+            // a thin stepped band of air along the planet's outline (never over its face): the horizon from low orbit
+            BlockyBodyRenderer.drawLimb(modelView, pose, sun, 0x7FB4FF, 0.85F * alpha, 0.025F);
+        }
         return true;
     }
 

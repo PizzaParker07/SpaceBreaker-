@@ -147,6 +147,10 @@ public final class VenusModule implements SbModule {
         for (int i = 0; i < 4; i++) {
             lang.add("sign.spacebreaker.aerostat_valve." + i, valve[i][0], valve[i][1]);
         }
+        String[][] log = {{"LAST LOG", "SON KAYIT"}, {"Stern seals gone.", "Kıç contaları"}, {"Sealed it off.", "çöktü, kapattık."}, {"Heading home.", "Eve dönüyoruz."}};
+        for (int i = 0; i < 4; i++) {
+            lang.add("sign.spacebreaker.aerostat_log." + i, log[i][0], log[i][1]);
+        }
         lang.add("item.spacebreaker.lift_gas_sac.desc", "Use to sink slowly for 30 seconds", "Kullanınca 30 saniye yavaşça alçalırsın");
         lang.item(ACID_COATING, "Fluoropolymer Coating", "Floropolimer Kaplama");
         lang.add("tooltip.spacebreaker.acid_coated", "Acid-resistant coating", "Aside dayanıklı kaplama");

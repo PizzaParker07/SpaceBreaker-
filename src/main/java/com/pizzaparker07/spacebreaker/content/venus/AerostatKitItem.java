@@ -14,7 +14,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.LanternBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.List;
@@ -74,42 +73,65 @@ public class AerostatKitItem extends Item {
         return 0;
     }
 
-    /** Builds the platform with its deck centred at {@code deck}; returns the number of blocks placed. */
+    /**
+     * Builds the platform with its deck centred at {@code deck}; returns the number of blocks placed. A 9x9 composite deck
+     * with a safety railing (a gate on two sides) and mooring cleats at the corners, rigging up to a load ring, and
+     * above it a round envelope in the same two-tone gores as the research aerostats, with a grey equator ring and cap.
+     */
     public static int deploy(Level level, BlockPos deck) {
         int n = 0;
         BlockState panel = VenusModule.COMPOSITE_PANEL.get().defaultBlockState();
         BlockState fabric = VenusModule.ENVELOPE_FABRIC.get().defaultBlockState();
+        BlockState gold = Blocks.SMOOTH_SANDSTONE.defaultBlockState();
+        BlockState ring = Blocks.POLISHED_ANDESITE.defaultBlockState();
+        BlockState rail = com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.RAILING.get().defaultBlockState();
         for (int dx = -HALF; dx <= HALF; dx++) {
             for (int dz = -HALF; dz <= HALF; dz++) {
                 n += put(level, deck.offset(dx, 0, dz), panel);
-                if (Math.abs(dx) == HALF || Math.abs(dz) == HALF) {
-                    boolean gate = dx == 0 && Math.abs(dz) == HALF;
-                    if (!gate) {
-                        n += put(level, deck.offset(dx, 1, dz), Blocks.IRON_BARS.defaultBlockState());
-                    }
+            }
+        }
+        for (int dx = -HALF; dx <= HALF; dx++) {
+            for (int dz = -HALF; dz <= HALF; dz++) {
+                boolean edge = Math.abs(dx) == HALF || Math.abs(dz) == HALF;
+                boolean corner = Math.abs(dx) == HALF && Math.abs(dz) == HALF;
+                boolean gate = dx == 0 && Math.abs(dz) == HALF;
+                if (corner) {
+                    n += put(level, deck.offset(dx, 1, dz), ring); // mooring cleat
+                } else if (edge && !gate) {
+                    n += put(level, deck.offset(dx, 1, dz), rail);
                 }
             }
         }
-        // rigging from the deck corners up to the envelope
+        // rigging from the deck corners in to a load ring under the envelope
         for (int[] c : new int[][]{{-3, -3}, {-3, 3}, {3, -3}, {3, 3}}) {
             for (int dy = 1; dy <= 6; dy++) {
                 n += put(level, deck.offset(c[0], dy, c[1]), Blocks.CHAIN.defaultBlockState());
             }
         }
-        // the lift envelope: a flattened ellipsoid shell of fabric
-        for (int dx = -5; dx <= 5; dx++) {
-            for (int dz = -5; dz <= 5; dz++) {
-                for (int dy = 0; dy <= 5; dy++) {
-                    double e = dx * dx / 30.0 + dz * dz / 30.0 + (dy - 2.5) * (dy - 2.5) / 7.5;
-                    double inner = dx * dx / 18.0 + dz * dz / 18.0 + (dy - 2.5) * (dy - 2.5) / 3.5;
-                    if (e <= 1 && inner > 1) {
-                        n += put(level, deck.offset(dx, 7 + dy, dz), fabric);
-                    }
+        for (int dx = -3; dx <= 3; dx++) {
+            for (int dz = -3; dz <= 3; dz++) {
+                if (Math.abs(dx) == 3 || Math.abs(dz) == 3) {
+                    n += put(level, deck.offset(dx, 7, dz), Blocks.POLISHED_ANDESITE_SLAB.defaultBlockState());
                 }
             }
         }
-        n += put(level, deck.offset(0, 6, 0), Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true));
-        n += put(level, deck.offset(0, 7, 0), Blocks.CHAIN.defaultBlockState());
+        // the envelope: a round shell in gores, with a grey ring at its equator and a cap on top
+        int cy = 12;
+        for (int dx = -6; dx <= 6; dx++) {
+            for (int dz = -6; dz <= 6; dz++) {
+                for (int dy = 8; dy <= 16; dy++) {
+                    double e = (dx * dx + dz * dz) / 40.0 + (dy - cy) * (dy - cy) / 18.0;
+                    double inner = (dx * dx + dz * dz) / 26.0 + (dy - cy) * (dy - cy) / 9.5;
+                    if (e > 1 || inner <= 1) {
+                        continue;
+                    }
+                    int gore = (int) Math.floor((Math.atan2(dz, dx) + Math.PI) / (Math.PI / 4));
+                    BlockState st = dy == cy ? ring : dy >= 16 ? ring : gore % 2 == 0 ? fabric : gold;
+                    n += put(level, deck.offset(dx, dy, dz), st);
+                }
+            }
+        }
+        n += put(level, deck.offset(0, 7, 0), com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.LED_PANEL.get().defaultBlockState());
         return n;
     }
 }

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "ARA",
+    "PDP",
+    "AFA"
+  ],
+  "key": {
+    "A": {
+      "item": "spacebreaker:aluminum_panel"
+    },
+    "R": {
+      "item": "spacebreaker:railing"
+    },
+    "P": {
+      "item": "spacebreaker:docking_port"
+    },
+    "D": {
+      "item": "spacebreaker:fuel_depot"
+    },
+    "F": {
+      "item": "spacebreaker:floodlight"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:shipyard_module",
+    "count": 1
+  }
+}

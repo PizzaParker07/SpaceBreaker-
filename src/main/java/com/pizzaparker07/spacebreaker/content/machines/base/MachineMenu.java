@@ -21,7 +21,7 @@ public class MachineMenu extends AbstractContainerMenu {
         super(MachinesModule.MACHINE_MENU.get(), id);
         this.machine = machine;
         this.data = data;
-        MachineLayout layout = machine.layout();
+        MachineLayout layout = machine.layout().tidy();
         for (int i = 0; i < layout.slots.size(); i++) {
             MachineLayout.SlotPos s = layout.slots.get(i);
             boolean output = s.role() == MachineLayout.Role.OUTPUT;
