@@ -29,6 +29,11 @@ public final class Transfers {
         return model;
     }
 
+    /** How long the coast between two places really takes, in seconds (0 when the model does not know). */
+    public static double coastSeconds(Location from, Location to) {
+        return model instanceof AstroTransferModel astro ? astro.transferSeconds(from, to).orElse(0) : 0;
+    }
+
     /**
      * The one place where gameplay Δv is derived from real Δv: cost = real Δv (from the active
      * {@link TransferModel}, i.e. the core/astro TransferPlanner, see docs/ASTRO.md) × this factor,

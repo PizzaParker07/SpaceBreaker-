@@ -28,7 +28,7 @@ public final class StarMapData {
 
     /** Why the Go button is off (empty when it is on). */
     public enum Block {
-        NONE, HERE, NOT_IN_ORBIT, NOT_BUILT, NO_ROUTE, NEEDS_HEAT_SHIELD, NOT_ENOUGH_FUEL, BUSY;
+        NONE, HERE, NOT_IN_ORBIT, NOT_BUILT, NO_ROUTE, NEEDS_HEAT_SHIELD, NOT_ENOUGH_FUEL, BUSY, OBSERVATION_ONLY;
 
         public String key() {
             return "gui.spacebreaker.star_map.block." + name().toLowerCase(java.util.Locale.ROOT);
@@ -53,7 +53,7 @@ public final class StarMapData {
      */
     public record Trip(Location to, Location next, List<Location> route, double needed, double have, boolean enough, boolean returnHome,
                        boolean refuelThere,
-                       int heatShield, boolean shieldOk, boolean legsMissing, Block block) {
+                       int heatShield, boolean shieldOk, boolean legsMissing, Block block, double boilOff, boolean needsNuclear) {
         public double shortBy() {
             return Math.max(0, needed - have);
         }
@@ -158,13 +158,22 @@ public final class StarMapData {
             shield = Math.max(shield, Transfers.reentryRating(path.get(i), path.get(i + 1)));
         }
         // fuel alone; the heat shield is its own reason below
-        boolean enough = routed && MissionPlanner.fly(layout, active, fuel, path, realism, false).possible();
+        MissionPlanner.Plan plan = routed ? MissionPlanner.fly(layout, active, fuel, path, realism, false) : null;
+        boolean enough = plan != null && plan.possible();
+        // share of the propellant on board that boils off on the coasts there (cryogenic propellant only)
+        double onBoard = 0;
+        for (int i = Math.max(0, active); i < fuel.length; i++) {
+            onBoard += fuel[i];
+        }
+        double boilOff = plan == null || onBoard <= 0 ? 0 : plan.boilOffKg() / onBoard;
         boolean shieldOk = layout.payload().heatShield() >= shield;
         boolean home = enough && shieldOk && MissionPlanner.canReturnAfter(layout, active, fuel, here, to, realism);
         boolean legs = !to.orbit() && !to.isEarth() && !to.atmosphere() && !layout.hasLegsFrom(active);
         Block block;
         if (here.equals(to)) {
             block = Block.HERE;
+        } else if (CometRoutes.observationOnly(to.body())) {
+            block = Block.OBSERVATION_ONLY;
         } else if (!built) {
             block = Block.NOT_BUILT;
         } else if (!routed) {
@@ -178,8 +187,14 @@ public final class StarMapData {
         } else {
             block = Block.NONE;
         }
+        // a comet only a nuclear thermal engine reaches sensibly, and no nuclear stage on board
+        boolean nuclearOnBoard = false;
+        for (int i = Math.max(0, active); i < layout.stages().size(); i++) {
+            nuclearOnBoard |= layout.stages().get(i).propellant() == com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant.NUCLEAR;
+        }
+        boolean needsNuclear = !enough && !nuclearOnBoard && CometRoutes.needsNuclear(to.body());
         Location next = path.size() > 1 ? path.get(1) : to;
-        return new Trip(to, next, route(here, to), needed, have, enough, home, Locations.canRefuel(to.body()), shield, shieldOk, legs, block);
+        return new Trip(to, next, route(here, to), needed, have, enough, home, Locations.canRefuel(to.body()), shield, shieldOk, legs, block, boilOff, needsNuclear);
     }
 
     /** The map's group of near-Earth asteroids (not a real body): one node on the solar system view. */

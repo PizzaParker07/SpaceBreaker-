@@ -386,6 +386,14 @@ public final class RocketryGameTests {
         // weak thrust: it cannot lift its own fully fuelled stage off the Earth
         double m0 = upper.dryKg() + upper.propellantKg() + ntr.payload().massKg();
         helper.assertTrue(upper.thrustKn() * 1000 / (m0 * RocketPart.G0) < 1, "TWR below 1 on Earth: not a launch engine");
+        // the assembler warns: a nuclear upper stage is radioactive, a nuclear first stage is a mistake
+        helper.assertTrue("nuclear".equals(com.pizzaparker07.spacebreaker.content.rocketry.entity.NuclearExhaust.designWarning(ntr)),
+                "upper-stage warning");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.entity.NuclearExhaust.designWarning(chem) == null, "no warning without one");
+        RocketLayout bottom = RocketLayout.of(new RocketDesign(List.of(Spacebreaker.id("nuclear_thermal_engine"), Spacebreaker.id("fuel_tank_large"),
+                Spacebreaker.id("crew_capsule"))), lookup);
+        helper.assertTrue("nuclear_first".equals(com.pizzaparker07.spacebreaker.content.rocketry.entity.NuclearExhaust.designWarning(bottom)),
+                "first-stage warning");
         // hydrogen alone fills it: no oxygen for the nuclear stage
         RocketEntity rocket = RocketEntity.create(helper.getLevel(), nuclearRocket("nuclear_thermal_engine"),
                 helper.absoluteVec(new net.minecraft.world.phys.Vec3(1.5, 2, 1.5)), 0F);
@@ -404,6 +412,86 @@ public final class RocketryGameTests {
         handler.fill(com.pizzaparker07.spacebreaker.content.fluids.FluidsModule.LIQUID_OXYGEN.stack(loxRoom), exec);
         helper.assertTrue(rocket.fullyFuelled(), "fully fuelled: " + java.util.Arrays.toString(rocket.fuel()));
         rocket.discard();
+        helper.succeed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 1600)
+    public static void cryogenicBoilOff(GameTestHelper helper) {
+        var KEROLOX = com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant.KEROLOX;
+        var HYDROLOX = com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant.HYDROLOX;
+        var NUCLEAR = com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant.NUCLEAR;
+        helper.assertTrue(HYDROLOX.boilOffPerDay() == 0.001 && NUCLEAR.boilOffPerDay() == 0.001, "liquid hydrogen boils off 0.1 %/day");
+        helper.assertTrue(KEROLOX.boilOffPerDay() < HYDROLOX.boilOffPerDay() / 4, "kerolox only loses a little oxygen");
+        var lookup = RocketParts.lookup(helper.getLevel().registryAccess());
+        RocketLayout h2 = RocketLayout.of(nuclearRocket("hydrolox_vacuum_engine"), lookup);
+        double[] fuel = h2.fullFuel();
+        double before = fuel[1];
+        double lost = com.pizzaparker07.spacebreaker.content.rocketry.design.BoilOff.apply(h2, 1, fuel, 100, SbConfig.Realism.REALISTIC);
+        helper.assertTrue(within(fuel[1], before * Math.pow(0.999, 100), 1) && within(lost, before - fuel[1], 1),
+                "100 days cost a hydrolox stage about 9.5 %: " + (int) lost + " kg");
+        // multi-layer insulation on the upper stage's tanks stops three quarters of it
+        RocketLayout wrapped = RocketLayout.of(new RocketDesign(List.of(Spacebreaker.id("hydrolox_engine"), Spacebreaker.id("fuel_tank_large"),
+                Spacebreaker.id("interstage"), Spacebreaker.id("hydrolox_vacuum_engine"), Spacebreaker.id("fuel_tank_large_insulated"),
+                Spacebreaker.id("fuel_tank_large_insulated"), Spacebreaker.id("heat_shield"), Spacebreaker.id("crew_capsule"),
+                Spacebreaker.id("parachute"))), lookup);
+        helper.assertTrue(wrapped.problems().isEmpty() && wrapped.stages().get(1).insulated() == 1.0, "the upper stage is fully insulated");
+        helper.assertTrue(wrapped.stages().get(1).dryKg() > h2.stages().get(1).dryKg(), "insulation adds a little dry mass");
+        double[] wf = wrapped.fullFuel();
+        double wBefore = wf[1];
+        com.pizzaparker07.spacebreaker.content.rocketry.design.BoilOff.apply(wrapped, 1, wf, 100, SbConfig.Realism.REALISTIC);
+        helper.assertTrue(within(wf[1], wBefore * Math.pow(1 - 0.001 * 0.25, 100), 1), "insulated, 100 days cost only about 2.5 %");
+        // the planner counts it on a long coast: Earth orbit to Mars orbit
+        var marsOrbit = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(Spacebreaker.id("mars"), true).orElseThrow();
+        double days = com.pizzaparker07.spacebreaker.content.rocketry.nav.Transfers.coastSeconds(Location.EARTH_ORBIT, marsOrbit) / 86400;
+        helper.assertTrue(days > 100, "the coast to Mars takes months: " + (int) days + " days");
+        var plan = com.pizzaparker07.spacebreaker.content.rocketry.nav.MissionPlanner.fly(h2, 1, h2.fullFuel(),
+                List.of(Location.EARTH_ORBIT, marsOrbit), SbConfig.Realism.BALANCED);
+        helper.assertTrue(plan.boilOffKg() > 0, "the planner counts boil-off on the way to Mars");
+        var moonPlan = com.pizzaparker07.spacebreaker.content.rocketry.nav.MissionPlanner.fly(h2, 1, h2.fullFuel(),
+                List.of(Location.EARTH_ORBIT, Location.MOON_ORBIT), SbConfig.Realism.BALANCED);
+        helper.assertTrue(moonPlan.boilOffKg() < plan.boilOffKg() / 10, "a few days to the Moon cost far less");
+        // on the pad nothing boils off; waiting in orbit it does
+        RocketEntity pad = RocketEntity.create(helper.getLevel(), nuclearRocket("hydrolox_vacuum_engine"),
+                helper.absoluteVec(new net.minecraft.world.phys.Vec3(1.5, 2, 1.5)), 0F);
+        RocketEntity orbit = RocketEntity.create(helper.getLevel(), nuclearRocket("hydrolox_vacuum_engine"),
+                helper.absoluteVec(new net.minecraft.world.phys.Vec3(6.5, 2, 6.5)), 0F);
+        for (RocketEntity r : List.of(pad, orbit)) {
+            r.fillCompletely();
+            r.setNoGravity(true);
+            helper.getLevel().addFreshEntity(r);
+        }
+        orbit.stageScene(FlightState.ORBIT, 0, 0, false);
+        double padFuel = pad.fuel()[0], orbitFuel = orbit.fuel()[0];
+        helper.runAfterDelay(RocketEntity.BOIL_OFF_TICKS + 20, () -> {
+            helper.assertTrue(pad.fuel()[0] == padFuel, "nothing boils off on the pad");
+            helper.assertTrue(orbit.fuel()[0] < orbitFuel, "waiting in orbit, hydrogen boils off");
+            pad.discard();
+            orbit.discard();
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = EMPTY)
+    public static void cometRendezvousRoutes(GameTestHelper helper) {
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.CometRoutes.ready(), "the rendezvous table is built");
+        var halley = Spacebreaker.id("halley");
+        var route = com.pizzaparker07.spacebreaker.content.rocketry.nav.CometRoutes.route(halley).orElseThrow();
+        helper.assertTrue(route.totalDv() > 15_000 && route.totalDv() < 25_000, "Halley is retrograde: a rendezvous costs " + (int) route.totalDv() + " m/s");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.CometRoutes.needsNuclear(halley), "the map hints at nuclear for Halley");
+        var halleyOrbit = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(halley, true).orElseThrow();
+        helper.assertTrue(within(com.pizzaparker07.spacebreaker.content.rocketry.nav.Transfers.real(Location.EARTH_ORBIT, halleyOrbit).orElse(0),
+                route.totalDv(), 1), "flights use the rendezvous Δv");
+        helper.assertTrue(within(com.pizzaparker07.spacebreaker.content.rocketry.nav.Transfers.coastSeconds(Location.EARTH_ORBIT, halleyOrbit),
+                route.flightSeconds(), 1), "and its flight time");
+        for (String id : List.of("churyumov_gerasimenko", "encke", "tempel_1")) {
+            var c = Spacebreaker.id(id);
+            helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.CometRoutes.route(c).isPresent()
+                    && !com.pizzaparker07.spacebreaker.content.rocketry.nav.CometRoutes.needsNuclear(c), id + " stays within chemical reach");
+        }
+        var haleBopp = Spacebreaker.id("hale_bopp");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.CometRoutes.observationOnly(haleBopp), "Hale-Bopp is for watching");
+        com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(haleBopp, true).ifPresent(o ->
+                helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.Transfers.real(Location.EARTH_ORBIT, o).isEmpty(), "no flight to Hale-Bopp"));
         helper.succeed();
     }
 

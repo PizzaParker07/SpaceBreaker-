@@ -9,8 +9,8 @@ import net.minecraft.world.item.TooltipFlag;
 import java.util.List;
 
 /**
- * Reactor fuel for a nuclear thermal rocket: uranium carbide kernels in a tungsten cermet clad, the kind of element a
- * NERVA-style engine runs its hydrogen through. Fresh fuel is only weakly radioactive, so unlike an RTG pellet it gives
+ * Reactor fuel for a nuclear thermal rocket: uranium carbide kernels in a tungsten cermet clad, the kind of hexagonal
+ * element a solid-core engine runs its hydrogen through. Fresh fuel is only weakly radioactive, so unlike an RTG pellet it gives
  * no dose while carried; the engine itself is the radiation source while it burns.
  */
 public class NuclearFuelElementItem extends Item {

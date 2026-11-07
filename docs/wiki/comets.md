@@ -14,7 +14,7 @@ Kuyruklu yıldız, kirli bir kartopudur: kömürden koyu bir toz kabuğunun alt�
 > [!TIP]
 > Etkinlik Güneş'e uzaklıkla değişir: yaklaşık 3 AU'nun ötesinde buz çok az buharlaşır.
 
-### Üç kuyruklu yıldız
+### İnilebilen kuyruklu yıldızlar
 
 **Kuyruklu Yıldız Tozu** · **Kuyruklu Yıldız Buzu** · **Kuyruklu Yıldız Jeti**
 
@@ -25,8 +25,10 @@ Kuyruklu yıldız, kirli bir kartopudur: kömürden koyu bir toz kabuğunun alt�
 > [!TIP]
 > Güneş ufkun üstündeyken ve üstü açıkken **Kuyruklu Yıldız Jeti** bloklarından ince gaz ve toz sütunları yükselir. Bunlar **yalnızca görseldir**, sana zarar vermez.
 
+- **Tempel 1:** dördüncü inilebilir kuyruklu yıldız. **Tempel Buzu** suya, **Tempel Tozu** regolit ısıtıcıda su ve CO₂'ye döner.
+
 > [!TIP]
-> **Hale–Bopp** ve **Tempel 1** de katalogdadır, ama inilebilecek dünyaları yoktur: yalnızca gökyüzünde ve yıldız haritasında görünürler. Hale–Bopp günberisinde dev bir kuyruklu yıldızdır.
+> **Hale–Bopp** da katalogdadır, ama inilebilecek bir dünyası yoktur: yalnızca gökyüzünde ve yıldız haritasında görünür. Günberisinde dev bir kuyruklu yıldızdır.
 
 ### Yakıt
 Kuyruklu yıldız tozu da işe yarar: regolit ısıtıcıda bir blok **300 mB su** ve **100 mB CO₂** verir, %15 şansla da bir topak [Tolin](titan). → [Asteroit madenciliği](near_earth_asteroids#mining)
@@ -35,7 +37,7 @@ Kuyruklu yıldız tozu da işe yarar: regolit ısıtıcıda bir blok **300 mB su
 |---|---|---|
 | Kuyruklu Yıldız Tozu | Regolit Isıtıcı<br>100 FE/t · 8 sn | Tolin (%15 şansla)<br>Su (300 mB)<br>Karbondioksit (100 mB) |
 
-Üçünün de buzu su buzudur: **Kuyruklu Yıldız Buzu**, **Encke Buzu** ve **Halley Buzu** buz eriticide suya döner. Elektrolizle yakıt yap: kuyruklu yıldızlar birer **yakıt durağıdır**. → [Yerinde Üretim](isru)
+Hepsinin buzu su buzudur: **Kuyruklu Yıldız Buzu**, **Encke Buzu**, **Halley Buzu** ve **Tempel Buzu** buz eriticide suya döner. Elektrolizle yakıt yap: kuyruklu yıldızlar birer **yakıt durağıdır**. → [Yerinde Üretim](isru)
 
 > [!WARNING]
 > Yerçekimi neredeyse yok. İnerken yavaş yaklaş; bir zıplayış seni yörüngeye kadar savurabilir. Gerekirse bir [Güvenlik Halatı](mars_moons) tak.
@@ -63,7 +65,7 @@ A comet is a dirty snowball: water ice under a crust of dust darker than charcoa
 > [!TIP]
 > Activity follows the distance from the Sun: beyond about 3 AU the ice barely sublimates.
 
-### Three comets
+### Comets you can land on
 
 **Comet Dust** · **Comet Ice** · **Comet Jet**
 
@@ -74,8 +76,10 @@ A comet is a dirty snowball: water ice under a crust of dust darker than charcoa
 > [!TIP]
 > While the Sun is above the horizon, thin columns of gas and dust rise from open **Comet Jet** blocks. They are **visual only** and cannot hurt you.
 
+- **Tempel 1:** the fourth comet you can land on. **Tempel Ice** melts to water, and **Tempel Dust** gives water and CO₂ in the regolith heater.
+
 > [!TIP]
-> **Hale–Bopp** and **Tempel 1** are in the catalogue too, but have no world to land on: they show only in the sky and on the star map. At perihelion Hale–Bopp is a great comet.
+> **Hale–Bopp** is in the catalogue too, but has no world to land on: it shows only in the sky and on the star map. At perihelion it is a great comet.
 
 ### Fuel
 Comet dust is useful too: in the regolith heater one block gives **300 mB of water** and **100 mB of CO₂**, plus a lump of [Tholin](titan) 15% of the time. → [Asteroid mining](near_earth_asteroids#mining)
@@ -84,7 +88,7 @@ Comet dust is useful too: in the regolith heater one block gives **300 mB of wat
 |---|---|---|
 | Comet Dust | Regolith Heater<br>100 FE/t · 8 s | Tholin (15% chance)<br>Water (300 mB)<br>Carbon Dioxide (100 mB) |
 
-All three have water ice: **Comet Ice**, **Encke Ice** and **Halley Ice** melt to water in an ice melter. Split it into fuel by electrolysis: comets are **refuelling stops**. → [In-Situ Resources](isru)
+All of them have water ice: **Comet Ice**, **Encke Ice**, **Halley Ice** and **Tempel Ice** melt to water in an ice melter. Split it into fuel by electrolysis: comets are **refuelling stops**. → [In-Situ Resources](isru)
 
 > [!WARNING]
 > There is almost no gravity. Come in slowly when you land; a jump can fling you all the way to orbit. Clip on a [Safety Tether](mars_moons) if you need to.
