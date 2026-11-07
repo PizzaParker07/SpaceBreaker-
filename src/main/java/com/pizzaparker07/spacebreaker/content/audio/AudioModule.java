@@ -26,6 +26,12 @@ public final class AudioModule implements SbModule {
         lang.add(s + "rocket.reentry", "Plasma roars around the capsule", "Kapsülün çevresinde plazma gürlüyor");
         lang.add(s + "suit.oxygen_alarm", "Suit alarm: oxygen low", "Giysi alarmı: oksijen azaldı");
         lang.add(s + "mission_control.radio", "Radio beep", "Telsiz sinyali");
+        lang.add(s + "rocket.satellite_release", "Satellite released", "Uydu bırakıldı");
+        lang.add(s + "rocket.probe_landing", "Probe touches down", "Sonda iniyor");
+        lang.add(s + "station.airlock_cycle", "Airlock cycles", "Hava kilidi çalışıyor");
+        lang.add(s + "vehicle.rover_motor", "Rover motors whine", "Gezici motorları vınlıyor");
+        lang.add(s + "machine.electrolyzer", "Electrolyzer bubbles", "Elektroliz ünitesi fokurduyor");
+        lang.add(s + "machine.drill", "Drill grinds rock", "Matkap kaya öğütüyor");
 
         String m = "Mission control: ";
         String t = "Görev kontrol: ";
