@@ -93,6 +93,24 @@ final class RocketryLang {
         l.add("message.spacebreaker.cargo.delivered", "Cargo delivered at %s: %s items unloaded", "Kargo %s konumuna teslim edildi: %s eşya boşaltıldı");
         l.add("message.spacebreaker.cargo.waiting", "Cargo rocket at %s: %s items wait in its hold (no chests by the port or beacon)",
                 "Kargo roketi %s konumunda: %s eşya ambarda bekliyor (port ya da işaretin yanında sandık yok)");
+        l.item(RocketryModule.STATION_CORE_MODULE, "Station Core Module", "İstasyon Çekirdek Modülü");
+        l.item(RocketryModule.DOCKING_MODULE, "Docking Module", "Kenetlenme Modülü");
+        l.block(RocketryModule.STATION_HATCH, "Station Hatch", "İstasyon Kapağı");
+        l.block(RocketryModule.STATION_CORE, "Station Core Console", "İstasyon Çekirdek Konsolu");
+        l.add("container.spacebreaker.station_core", "Station core: modules waiting", "İstasyon çekirdeği: bekleyen modüller");
+        l.add("tooltip.spacebreaker.part.station_module", "Station module: goes in the capsule slot; docked at a station it waits in the core console",
+                "İstasyon modülü: kapsül yuvasına takılır; istasyona yanaşınca çekirdek konsolunda bekler");
+        l.add("tooltip.spacebreaker.station_module.core", "The heart of a station: console, air, lights, a docking port on the roof and four mouths",
+                "İstasyonun kalbi: konsol, hava, ışık, çatıda kenetlenme portu ve dört bağlantı ağzı");
+        l.add("tooltip.spacebreaker.station_module.docking", "A short tunnel with a docking port at its end",
+                "Ucunda kenetlenme portu olan kısa bir tünel");
+        l.add("tooltip.spacebreaker.station_module.use", "Use on a mouth's hatch to attach it; a core used in open space in orbit starts a new station",
+                "Bir ağzın kapağına kullanınca oraya bağlanır; yörüngede boşlukta kullanılan çekirdek yeni bir istasyon kurar");
+        l.add("message.spacebreaker.station_module.blocked", "Something is in the way of the module", "Modülün yolunda bir şey var");
+        l.add("message.spacebreaker.station_module.orbit_only", "A station core can only be unfolded in orbit", "İstasyon çekirdeği yalnızca yörüngede açılabilir");
+        l.add("message.spacebreaker.station_module.core_built", "The station core is up: a new station in orbit", "İstasyon çekirdeği kuruldu: yörüngede yeni bir istasyon");
+        l.add("message.spacebreaker.station_module.delivered", "%s delivered: it waits in the station core console", "%s teslim edildi: istasyon çekirdek konsolunda bekliyor");
+        l.add("message.spacebreaker.station_module.no_console", "%s delivered, but no core console in reach: it floats by the port", "%s teslim edildi ama yakında çekirdek konsolu yok: portun yanında süzülüyor");
         l.add("message.spacebreaker.cargo.no_station", "Cargo rocket in %s: no station to dock at, waiting in orbit", "Kargo roketi %s içinde: yanaşacak istasyon yok, yörüngede bekliyor");
         l.item(RocketryModule.OBSERVATION_SATELLITE, "Observation Satellite", "Gözlem Uydusu");
         l.item(RocketryModule.SPACE_PROBE, "Lander Probe", "İniş Sondası");
@@ -358,6 +376,25 @@ final class RocketryLang {
         l.add("gui.spacebreaker.star_map.need_chute", "No parachute: add one for a soft landing", "Paraşüt yok: yumuşak iniş için bir paraşüt ekle");
         l.add("gui.spacebreaker.star_map.first_stop", "First stop: %s", "İlk durak: %s");
         l.add("gui.spacebreaker.star_map.delta_v_help", "Fuel here means Δv (delta-v): how much your rocket can still change its speed. Every trip uses some; the numbers are in metres per second.", "Buradaki yakıt Δv (delta-v) demek: roketinin hızını daha ne kadar değiştirebileceği. Her yolculuk bir kısmını harcar; sayılar saniyede metre cinsindendir.");
+        l.add("gui.spacebreaker.star_map.orbit_short", "Orbit", "Yörünge");
+        l.add("gui.spacebreaker.star_map.no_surface_short", "No ground", "Yüzey yok");
+        l.add("gui.spacebreaker.star_map.pick_short", "Pick a world on the map.", "Haritadan bir dünya seç.");
+        l.add("gui.spacebreaker.star_map.station_short", "Station · %s ports", "İstasyon · %s port");
+        l.add("gui.spacebreaker.star_map.base_short", "Base · %s beacons", "Üs · %s işaret");
+        l.add("gui.spacebreaker.star_map.refuel_short", "⛽ Fuel can be made here", "⛽ Burada yakıt üretilebilir");
+        l.add("gui.spacebreaker.star_map.comet_short", "%s AU from the Sun · %s", "Güneş'e %s AU · %s");
+        l.add("gui.spacebreaker.star_map.no_signal_short", "No signal here", "Burada sinyal yok");
+        l.add("gui.spacebreaker.star_map.mode_short.balanced", "Balanced: %s%% of real Δv", "Dengeli: gerçek Δv'nin %%%s'i");
+        l.add("gui.spacebreaker.star_map.mode_short.easy", "Easy: %s%% of real Δv", "Kolay: gerçek Δv'nin %%%s'i");
+        l.add("gui.spacebreaker.star_map.stat_dv", "Δv", "Δv");
+        l.add("gui.spacebreaker.star_map.stat_time", "Time", "Süre");
+        l.add("gui.spacebreaker.star_map.unit_days", "%s d", "%s gün");
+        l.add("gui.spacebreaker.star_map.unit_hours", "%s h %s m", "%s sa %s dk");
+        l.add("gui.spacebreaker.star_map.on_board", "On board: %s m/s", "Rokette: %s m/s");
+        l.add("gui.spacebreaker.star_map.home_yes", "Home: enough fuel", "Dönüş: yakıt yeter");
+        l.add("gui.spacebreaker.star_map.home_refuel", "Home: make fuel there", "Dönüş: orada yakıt üret");
+        l.add("gui.spacebreaker.star_map.home_no", "Home: not enough fuel", "Dönüş: yakıt yetmez");
+        l.add("gui.spacebreaker.star_map.controls", "Scroll: zoom · drag: move · right-click: all", "Tekerlek: yakınlaş · sürükle: kaydır · sağ tık: tümü");
         l.add("gui.spacebreaker.star_map.mode.balanced", "Balanced mode: trips take %s%% of the real fuel", "Dengeli mod: yolculuklar gerçek yakıtın %%%s kadarını ister");
         l.add("gui.spacebreaker.star_map.mode.easy", "Easy mode: trips take %s%% of the real fuel", "Kolay mod: yolculuklar gerçek yakıtın %%%s kadarını ister");
         l.add("gui.spacebreaker.star_map.block.none", "", "");

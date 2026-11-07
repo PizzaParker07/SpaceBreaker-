@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "spacebreaker:block/station_core_front",
+    "side": "spacebreaker:block/station_hull",
+    "top": "spacebreaker:block/station_core_top"
+  }
+}

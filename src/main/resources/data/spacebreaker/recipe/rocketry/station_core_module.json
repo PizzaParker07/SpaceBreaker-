@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "HPH",
+    "WOW",
+    "HHH"
+  ],
+  "key": {
+    "H": {"item": "spacebreaker:station_hull"},
+    "P": {"item": "spacebreaker:docking_port"},
+    "W": {"item": "spacebreaker:station_window"},
+    "O": {"item": "spacebreaker:oxygen_distributor"}
+  },
+  "result": {"id": "spacebreaker:station_core_module", "count": 1}
+}

@@ -22,6 +22,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
+import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +33,8 @@ import java.util.Locale;
  * little oxygen gauge (bar and time left) beside the hotbar on the offhand side, small hazard icons there only while
  * something is wrong (cold or heat, radiation, pressure, a damaged or open suit), the way-home arrow only when the
  * oxygen runs short, and one warning line above the hotbar. The detailed HUD (an option) shows every gauge; the thin
- * visor rim is an option too. Nothing is drawn at the top centre, where block-info mods show their tooltip, and the
- * layers sit below vanilla's, so other mods' overlays stay on top. Visible in first person while an EVA helmet is worn.
+ * visor rim is an option too. Nothing is drawn at the top centre, where block-info mods show their tooltip; the visor
+ * tint sits below every other layer. Visible in first person while an EVA helmet is worn.
  */
 @EventBusSubscriber(modid = Spacebreaker.MOD_ID, value = Dist.CLIENT)
 public final class HelmetHud {
@@ -48,9 +49,10 @@ public final class HelmetHud {
 
     @SubscribeEvent
     static void register(RegisterGuiLayersEvent event) {
-        // below all vanilla layers (each registerBelowAll goes first): the visor tint/rim, then the gauges
-        event.registerBelowAll(Spacebreaker.id("helmet_hud"), HelmetHud::renderPanel);
+        // the full-screen visor tint/rim below every other layer; the small gauges beside the hotbar, above it and above
+        // full-screen overlays such as the capsule window (block-info mods still draw on top: compat clears the depth)
         event.registerBelowAll(Spacebreaker.id("visor_frame"), HelmetHud::renderFrame);
+        event.registerAbove(VanillaGuiLayers.HOTBAR, Spacebreaker.id("helmet_hud"), HelmetHud::renderPanel);
     }
 
     private static boolean active(Minecraft mc) {

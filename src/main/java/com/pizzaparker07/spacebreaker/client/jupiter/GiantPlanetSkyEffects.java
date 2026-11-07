@@ -28,6 +28,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 import org.joml.Vector3d;
+import org.joml.Vector3f;
 
 import java.util.Optional;
 
@@ -175,6 +176,11 @@ public class GiantPlanetSkyEffects extends PlanetSkyEffects {
         double size = Math.min(75, parentSize * SkyConfig.bodyScale());
         float half = (float) (100 * Math.tan(Math.toRadians(size / 2)));
         Vector3d c = new Vector3d(e).mul(100);
+        var blocky = SkyConfig.blockyStyle();
+        if (blocky != null) {
+            blocky(m, blocky, c, right, up, toViewer, half, s);
+            return;
+        }
         if (look.rings() != null) {
             rings(m, c, right, up, half, sun, false);
         }
@@ -195,6 +201,71 @@ public class GiantPlanetSkyEffects extends PlanetSkyEffects {
             rings(m, c, right, up, half, sun, true);
         }
         RenderSystem.defaultBlendFunc();
+    }
+
+    /**
+     * The parent the Minecraft way: a ball of blocks or a pixel cube coloured from its disc texture, lit by the sun, its
+     * pole tipped toward the viewer by the rings' opening angle, the rings (if any) as square tiles in its equator plane
+     * with the planet's shadow on them.
+     */
+    private void blocky(Matrix4f m, com.pizzaparker07.spacebreaker.content.worldgen.BlockyBodyMesh.Style style, Vector3d c, Vector3d right,
+                        Vector3d up, Vector3d toViewer, float half, Vector3d sunWorld) {
+        if (style == com.pizzaparker07.spacebreaker.content.worldgen.BlockyBodyMesh.Style.CUBE) {
+            // a cube's corners reach out to sqrt(3) radii: keep the whole cube in front of the camera (sky distance 100)
+            half = Math.min(half, 50F);
+        }
+        double tilt = Math.toRadians(look.ringTilt());
+        Vector3d pole = new Vector3d(up).mul(Math.cos(tilt)).add(new Vector3d(toViewer).mul(Math.sin(tilt)));
+        var pose = new com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.Pose(new Vector3f((float) c.x, (float) c.y, (float) c.z), half,
+                new Vector3f((float) pole.x, (float) pole.y, (float) pole.z), new Vector3f((float) toViewer.x, (float) toViewer.y, (float) toViewer.z), 0F);
+        com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.Ring ring = null;
+        if (look.rings() != null) {
+            ring = new com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.Ring((float) look.ringInner(), (float) look.ringOuter(),
+                    ringMap(look.rings()));
+        }
+        com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.draw(m, style, 0, faceMap(look.disc()), pose,
+                new Vector3f((float) sunWorld.x, (float) sunWorld.y, (float) sunWorld.z), 0.04F, look.haze(), 1F, ring);
+    }
+
+    private static final java.util.Map<ResourceLocation, com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.ColorMap> FACE_MAPS =
+            new java.util.concurrent.ConcurrentHashMap<>();
+
+    private static final java.util.Map<ResourceLocation, com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.ColorMap> RING_MAPS =
+            new java.util.concurrent.ConcurrentHashMap<>();
+
+    /** Ring colours by radius from a ring texture (a radial strip, inner edge on the left), read along its middle row; one per texture. */
+    static com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.ColorMap ringMap(ResourceLocation rings) {
+        return RING_MAPS.computeIfAbsent(rings, id -> {
+            var strip = com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.texture(id);
+            return (f, z) -> strip.argb((f - 0.5) * Math.PI * 2, 0);
+        });
+    }
+
+    /**
+     * A surface map from a disc texture (the planet's face as seen from the moon, north up): the near hemisphere is read
+     * straight off the disc and the far one mirrors it - fine for banded giants and for bodies that keep one face to us.
+     */
+    static com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.ColorMap faceMap(ResourceLocation disc) {
+        return FACE_MAPS.computeIfAbsent(disc, id -> {
+            var image = com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.texture(id);
+            return (lon, lat) -> {
+                double l = Math.atan2(Math.sin(lon), Math.abs(Math.cos(lon)));
+                double x = Math.cos(lat) * Math.sin(l);
+                double y = Math.sin(lat);
+                // pull in from the limb until the pixel is part of the disc (its soft edge is transparent)
+                int argb = 0;
+                for (double k = 0.985; k > 0.6; k -= 0.05) {
+                    // disc pixel (u right, v down) as the longitude/latitude that an equirectangular lookup reads it from
+                    double u = (x * k + 1) / 2;
+                    double v = (1 - y * k) / 2;
+                    argb = image.argb((u - 0.5) * Math.PI * 2, (0.5 - v) * Math.PI);
+                    if ((argb >>> 24) >= 200) {
+                        break;
+                    }
+                }
+                return argb | 0xFF000000;
+            };
+        });
     }
 
     private void disc(BufferBuilder bb, Matrix4f m, Vector3d c, Vector3d right, Vector3d up, float half, Vector3d sun, int i, int j) {

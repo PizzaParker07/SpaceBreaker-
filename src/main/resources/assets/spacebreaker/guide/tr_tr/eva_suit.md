@@ -35,11 +35,23 @@ Tüpler {item spacebreaker:eva_chestplate} içindeki sırt çantasında durur: *
 - Oksijen bitince ya da havasız yerde giysi açıkken: hızlı alarm. Göstergedeki uyarı yazısı yanıp söner.
 
 {page}
-## Kask
-Kask göstergesi oksijeni, giysinin durumunu, vücut ve dış sıcaklığı, radyasyonu ve yerçekimini gösterir. Güneş göz kamaştırıyorsa **altın güneş vizörünü** indir: kask elindeyken {key key.sneak} + {key key.use}. Ekranın kenarındaki yuvarlak vizör çerçevesini istemcinin ayarlarından (**visorFrame**, **visorFrameOpacity**) kapatabilir ya da saydamlaştırabilirsin.
+## Kask {#hud}
+Kask göstergesi küçük kalır. Hotbar'ın yanında, ana elinin karşı tarafında tek bir oksijen satırı vardır: tüp simgesi, bir çubuk ve kalan süre (dd:ss). Çubuk mavidir; **%30**'un altında turuncu, **%15**'in altında kırmızı olur ve yanıp söner.
+- **Tehlike simgeleri** oksijen süresinin yanında yalnız bir sorun varken çıkar: giysi (havasız yerde açık ya da %20'nin altında), sıcaklık (giysinin dayanımının ötesi ya da vücudun 35–38,5 °C dışında; 32–41 °C dışında kırmızı), radyasyon (günde 50 mSv'nin üstü ya da toplam 250 mSv; 1000'den sonra kırmızı), basınç (giysi zorlanıyor) ve manevra gazı (%10'un altı).
+- **Eve dönüş** (ok, hedef ve uzaklık) yalnız oksijenin, çevre sensörüyle seçtiğin hedefe yürüyerek dönmeye yetmeyecekse görünür. → [Çevre sensörü](tools)
+- Hotbar'ın üstünde **tek bir uyarı** yanıp söner: sarı **DÖN: DÖNÜŞ İÇİN O2 AZALIYOR** ya da kırmızı **GERİ DÖNMEYE O2 YETMİYOR**, **GİYSİ SIZDIRMAZ DEĞİL**, **GİYSİ DAYANIMI AŞILDI** gibi.
+- Telsiz altyazıları sol üstte çıkar; o sırada sensör kartı onların altına iner. Ekranın üst ortası boş bırakılır.
+
+Güneş göz kamaştırıyorsa **altın güneş vizörünü** indir: kask elindeyken {key key.sneak} + {key key.use}.
+
+> Bütün göstergeleri mi istiyorsun? İstemci ayarlarında **detailedHud**'u aç: vücut sıcaklığı, radyasyon, basınç, yerçekimi ve dış sıcaklık, MAG / HALAT / SOĞUK TUZAK / µG etiketleri, manevra gazı ve her zaman görünen eve dönüş. **visorRim** ekranın çevresine soğukta buzlanan ince bir vizör kenarı ekler (varsayılan kapalı; **visorRimOpacity**). **opacity** bütün göstergeyi saydamlaştırır, **enabled** kapatır.
+
+{page}
+## Kask lambaları {#lamps}
+Kask lambaları karanlıkta kendiliğinden yanar ve baktığın yeri aydınlatır. {key key.spacebreaker.helmet_lamp} ile yakındaki işler için **geniş** ışık (yaklaşık 20 blok) ve lav tünelleriyle gölgeli kraterler için **uzun** ışık (yaklaşık 40 blok) arasında geçiş yaparsın. Yalnız ışık değişir: fazladan enerji ya da oksijen harcamaz. Herkes aynı ışığı görür.
 
 ## Ses {#sound}
-İstemcideki **gerçekçi ses** ayarı (realisticSound, varsayılan olarak **kapalı**) açıksa, havanın ince olduğu yerlerde dünya biraz daha kısık ve yumuşak duyulur: Mars'ta ses en az %80, vakumda (Ay, yörünge, asteroitler, kuyruklu yıldızlar) yaklaşık yarı yarıya, önce de tizler kaybolur. Kendi adımların ve aletin, kask içi sesler (telsiz, görev kontrol, uyarı bipleri), solunabilir hava ve basınçlı odalar normaldir. Ayar kapalıyken her şey her zamanki gibi duyulur.
+İstemcideki **gerçekçi ses** ayarı (atmosphereSound, varsayılan olarak **kapalı**) açıksa, havanın ince olduğu yerlerde dünya biraz daha kısık ve yumuşak duyulur: Mars'ta ses en az %80, vakumda (Ay, yörünge, asteroitler, kuyruklu yıldızlar) yaklaşık yarı yarıya, önce de tizler kaybolur. Kendi adımların ve aletin, kask içi sesler (telsiz, görev kontrol, uyarı bipleri), solunabilir hava ve basınçlı odalar normaldir. Ayar kapalıyken her şey her zamanki gibi duyulur.
 
 ## Ölünce
 Tüpler gövdenin içinde kalır ve gövde sıradan bir zırh gibi düşer: geri aldığında tüpler de geri gelir. Nefes, vücut ısısı ve radyasyon dozu sıfırlanır.

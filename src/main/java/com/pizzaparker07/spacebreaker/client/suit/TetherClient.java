@@ -4,6 +4,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.pizzaparker07.spacebreaker.Spacebreaker;
 import com.pizzaparker07.spacebreaker.content.suit.Gravity;
+import com.pizzaparker07.spacebreaker.content.suit.SpaceSuitItem;
+import com.pizzaparker07.spacebreaker.core.env.TetherAnchor;
 import com.pizzaparker07.spacebreaker.content.suit.Tether;
 import com.pizzaparker07.spacebreaker.content.suit.net.TetherPayload;
 import net.minecraft.client.Minecraft;
@@ -36,15 +38,19 @@ import java.util.Map;
  */
 @EventBusSubscriber(modid = Spacebreaker.MOD_ID, value = Dist.CLIENT)
 public final class TetherClient {
-    private static final Map<Integer, BlockPos> ANCHORS = new HashMap<>();
+    /** A line's anchor: a block, or an entity by network id (-1 for none). */
+    private record Anchor(BlockPos block, int entity) {
+    }
+
+    private static final Map<Integer, Anchor> ANCHORS = new HashMap<>();
     private static final int SEGMENTS = 24;
 
     private TetherClient() {
     }
 
     public static void accept(TetherPayload payload) {
-        if (payload.anchor().isPresent()) {
-            ANCHORS.put(payload.entityId(), payload.anchor().get());
+        if (payload.anchor().isPresent() || payload.anchorEntity().isPresent()) {
+            ANCHORS.put(payload.entityId(), new Anchor(payload.anchor().orElse(null), payload.anchorEntity().orElse(-1)));
         } else {
             ANCHORS.remove(payload.entityId());
         }
@@ -62,15 +68,53 @@ public final class TetherClient {
         if (p == null || mc.isPaused() || p.isSpectator()) {
             return;
         }
-        BlockPos anchor = ANCHORS.get(p.getId());
-        if (anchor == null) {
+        Anchor anchor = ANCHORS.get(p.getId());
+        coMove(mc, p, anchor);
+        Vec3 at = anchor == null ? null : point(mc, p, anchor);
+        if (at == null) {
             return;
         }
         Vec3 next = Tether.waist(p).add(p.getDeltaMovement());
-        Vec3 v = Tether.constrain(next, p.getDeltaMovement(), Tether.anchorPoint(anchor), Tether.LENGTH);
+        Vec3 v = Tether.constrain(next, p.getDeltaMovement(), at, Tether.LENGTH);
         if (v != p.getDeltaMovement()) {
             p.setDeltaMovement(v);
             p.resetFallDistance();
+        }
+    }
+
+    /** Where a line holds now on the client: the block's centre or the entity's clip ring; null if not in view. */
+    private static Vec3 point(Minecraft mc, Player player, Anchor anchor) {
+        if (anchor.block() != null) {
+            return Tether.anchorPoint(anchor.block());
+        }
+        Entity e = mc.level.getEntity(anchor.entity());
+        return e instanceof TetherAnchor a ? a.tetherPoint(player) : null;
+    }
+
+    /**
+     * A craft moves through the world blocks: a suited player on its line, or drifting free within
+     * {@link Tether#CO_MOVE_RANGE} of it, moves along with it, so an EVA beside a moving craft stays beside it.
+     */
+    private static void coMove(Minecraft mc, LocalPlayer p, Anchor anchor) {
+        if (p.isPassenger() || p.onGround() || !SpaceSuitItem.wearsHelmet(p)) {
+            return;
+        }
+        Vec3 frame = Vec3.ZERO;
+        if (anchor != null && anchor.entity() >= 0 && mc.level.getEntity(anchor.entity()) instanceof TetherAnchor a) {
+            frame = a.frameVelocity();
+        } else {
+            double best = Double.MAX_VALUE;
+            for (Entity e : mc.level.getEntities(p, p.getBoundingBox().inflate(Tether.CO_MOVE_RANGE), e -> e instanceof TetherAnchor)) {
+                Vec3 v = ((TetherAnchor) e).frameVelocity();
+                double d = e.distanceToSqr(p);
+                if (v.lengthSqr() > 0 && d < best) {
+                    best = d;
+                    frame = v;
+                }
+            }
+        }
+        if (frame.lengthSqr() > 0) {
+            p.setPos(p.position().add(frame));
         }
     }
 
@@ -87,17 +131,20 @@ public final class TetherClient {
         Vec3 cam = event.getCamera().getPosition();
         MultiBufferSource.BufferSource buffers = mc.renderBuffers().bufferSource();
         PoseStack pose = event.getPoseStack();
-        for (Map.Entry<Integer, BlockPos> e : ANCHORS.entrySet()) {
+        for (Map.Entry<Integer, Anchor> e : ANCHORS.entrySet()) {
             Entity entity = mc.level.getEntity(e.getKey());
             if (!(entity instanceof Player player) || player.distanceToSqr(cam) > 96 * 96) {
                 continue;
             }
             boolean firstPerson = player == mc.player && mc.options.getCameraType().isFirstPerson();
             Vec3 from = belt(player, pt, firstPerson);
-            Vec3 to = Tether.anchorPoint(e.getValue());
+            Vec3 to = point(mc, player, e.getValue());
+            if (to == null) {
+                continue;
+            }
             pose.pushPose();
             pose.translate(from.x - cam.x, from.y - cam.y, from.z - cam.z);
-            rope(pose, buffers.getBuffer(RenderType.leash()), player, e.getValue(), to.subtract(from), Gravity.factorFor(player));
+            rope(pose, buffers.getBuffer(RenderType.leash()), player, BlockPos.containing(to), to.subtract(from), Gravity.factorFor(player));
             pose.popPose();
             buffers.endBatch(RenderType.leash()); // one strip per line
         }

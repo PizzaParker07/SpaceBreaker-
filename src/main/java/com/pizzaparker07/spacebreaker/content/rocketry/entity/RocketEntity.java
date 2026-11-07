@@ -96,6 +96,8 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
     public static final byte EVENT_DOCKED = 70;
     /** How far out from the port a rocket arriving in orbit starts its approach, blocks. */
     public static final double APPROACH_DISTANCE = 36;
+    /** A rocket bringing a station core builds a new station unless a docking port is this close (blocks). */
+    public static final double STATION_REACH = 512;
     private static final int JOLT_TICKS = 14;
     /** Where the approach ends, while approaching. */
     @Nullable
@@ -439,6 +441,61 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         return dockedCache;
     }
 
+    /** A station module still to hand over (delivered modules stay on the rocket's design but count no more). */
+    private boolean moduleDelivered;
+
+    /** The station module this rocket carries and has not delivered yet. */
+    public java.util.Optional<com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule> carriedModule() {
+        if (design.isEmpty() || moduleDelivered) {
+            return java.util.Optional.empty();
+        }
+        return com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.payloadId(this)
+                .flatMap(com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule::byPart);
+    }
+
+    /**
+     * Docked with a module on board: it goes into the station core's console (a core module that just built its
+     * station is used up by that). Without a console in reach it is set down by the port.
+     */
+    private void deliverModule(BlockPos port) {
+        var module = carriedModule().orElse(null);
+        if (module == null || !(level() instanceof ServerLevel server)) {
+            return;
+        }
+        moduleDelivered = true;
+        if (coreBuiltHere) {
+            coreBuiltHere = false;
+            tellOwner(Component.translatable("message.spacebreaker.station_module.core_built").withStyle(ChatFormatting.GREEN));
+            return;
+        }
+        ItemStack stack = new ItemStack(net.minecraft.core.registries.BuiltInRegistries.ITEM.get(
+                com.pizzaparker07.spacebreaker.Spacebreaker.id(module.part())));
+        var core = com.pizzaparker07.spacebreaker.content.rocketry.station.StationCoreBlockEntity.near(server, port);
+        if (core != null && core.store(stack)) {
+            tellOwner(Component.translatable("message.spacebreaker.station_module.delivered", stack.getHoverName()).withStyle(ChatFormatting.GREEN));
+        } else {
+            net.minecraft.world.entity.item.ItemEntity drop = new net.minecraft.world.entity.item.ItemEntity(server,
+                    port.getX() + 0.5, port.getY() + 1.5, port.getZ() + 0.5, stack);
+            drop.setNoGravity(true);
+            drop.setDeltaMovement(Vec3.ZERO);
+            server.addFreshEntity(drop);
+            tellOwner(Component.translatable("message.spacebreaker.station_module.no_console", stack.getHoverName()).withStyle(ChatFormatting.GOLD));
+        }
+    }
+
+    /** Set when a core module built a new station on arrival, until the rocket docks at it. */
+    private boolean coreBuiltHere;
+
+    private void tellOwner(Component message) {
+        notifyCrew(message);
+        if (isUncrewed() && level() instanceof ServerLevel server && owner() != null) {
+            ServerPlayer p = server.getServer().getPlayerList().getPlayer(owner());
+            if (p != null) {
+                p.displayClientMessage(message, false);
+            }
+        }
+    }
+
     /** Whether this rocket carries a cargo module. */
     public boolean hasCargoHold() {
         return !design.isEmpty() && com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.payload(this)
@@ -607,10 +664,26 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
 
     /** Arrived in orbit: if a station is in this orbit, fly to its nearest docking port. */
     private void seekStation(Location to) {
-        if (!(level() instanceof ServerLevel server) || isUncrewed() && !hasCargoHold()) {
+        if (!(level() instanceof ServerLevel server) || isUncrewed() && !hasCargoHold() && carriedModule().isEmpty()) {
             return;
         }
         boolean shared = Location.Orbits.SHARED.equals(to.dimension());
+        var ports = com.pizzaparker07.spacebreaker.content.rocketry.station.DockingPorts.get(server);
+        boolean nearby = ports.nearest(position(), p -> (!shared
+                || com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.bodyForSharedX(p.pos().getX()).filter(to.body()::equals).isPresent())
+                && p.pos().getCenter().distanceTo(position()) < STATION_REACH).isPresent();
+        if (!nearby && carriedModule().orElse(null) == com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.CORE) {
+            // the first module of a new station: unfold the core ahead of the rocket and dock on its roof
+            BlockPos centre = blockPosition().offset(24, -4, 0);
+            String who = owner() == null ? "" : java.util.Optional.ofNullable(server.getServer().getProfileCache())
+                    .flatMap(c -> c.get(owner())).map(com.mojang.authlib.GameProfile::getName).orElse("");
+            if (com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.buildCore(server, centre, Direction.EAST, who)) {
+                coreBuiltHere = true;
+                approachPort(com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.corePort(centre), Direction.UP, APPROACH_DISTANCE);
+                notifyCrew(Component.translatable("message.spacebreaker.docking.approach"));
+                return;
+            }
+        }
         com.pizzaparker07.spacebreaker.content.rocketry.station.DockingPorts.get(server).nearest(position(), p -> !shared
                         || com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.bodyForSharedX(p.pos().getX()).filter(to.body()::equals).isPresent())
                 .ifPresent(p -> {
@@ -632,6 +705,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
             level().playSound(null, at, SoundEvents.PISTON_CONTRACT, SoundSource.NEUTRAL, 1.0F, 0.6F);
             level().broadcastEntityEvent(this, EVENT_DOCKED);
             notifyCrew(Component.translatable("message.spacebreaker.docked"));
+            deliverModule(at);
             if (hasCargoHold()) {
                 com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.unloadCargo(this, at, location());
                 com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.routeArrived(this, at, location());
@@ -1597,6 +1671,8 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         timeScale = Math.max(1, tag.getDouble("timeScale"));
         ascentFirstStage = tag.getInt("ascentFirst");
         coast = tag.getInt("coast");
+        moduleDelivered = tag.getBoolean("moduleDelivered");
+        coreBuiltHere = tag.getBoolean("coreBuiltHere");
         homeX = tag.contains("homeX") ? tag.getDouble("homeX") : Double.NaN;
         beenAway = tag.getBoolean("beenAway");
         routeA = tag.getString("routeA");
@@ -1654,6 +1730,8 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         }
         tag.putInt("requiredShield", requiredShield);
         tag.putBoolean("beenAway", beenAway);
+        tag.putBoolean("moduleDelivered", moduleDelivered);
+        tag.putBoolean("coreBuiltHere", coreBuiltHere);
         tag.putString("routeA", routeA);
         tag.putString("routeB", routeB);
         tag.putBoolean("routeOn", routeOn);

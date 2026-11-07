@@ -78,8 +78,8 @@ public final class HelmetLamps {
      */
     static void beam(PoseStack pose, VertexConsumer vc, float lampX, float lampY, float lampZ, boolean longBeam) {
         PoseStack.Pose p = pose.last();
-        // shader packs add bloom to emissive glows: keep the cone fainter there
-        int color = com.pizzaparker07.spacebreaker.compat.client.ShaderState.shaderPackInUse() ? 0x38FFFFFF : 0x70FFFFFF;
+        // under a shader pack (drawn late, after its bloom) a little fainter than vanilla, which looks the same
+        int color = com.pizzaparker07.spacebreaker.compat.client.ShaderState.shaderPackInUse() ? 0x58FFFFFF : 0x70FFFFFF;
         // long beam: a narrow cone twice as long
         float len = (longBeam ? 24F : 12F) / 16F, r0 = 0.6F / 16F, r1 = (longBeam ? 1.4F : 3.0F) / 16F;
         float x = lampX / 16F, y = lampY / 16F, z = lampZ / 16F;

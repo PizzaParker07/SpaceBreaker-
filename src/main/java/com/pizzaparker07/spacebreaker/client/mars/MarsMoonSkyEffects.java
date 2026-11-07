@@ -36,6 +36,10 @@ import org.joml.Vector3d;
 public class MarsMoonSkyEffects extends PlanetSkyEffects {
     private static final ResourceLocation SUN = Spacebreaker.id("textures/environment/sun_vacuum.png");
     private static final ResourceLocation MARS = Spacebreaker.id("textures/environment/mars_disc.png");
+    /** Equirectangular map of Mars for the blocky planet. */
+    private static final ResourceLocation MARS_MAP = Spacebreaker.id("textures/environment/orbit_mars.png");
+    private static final com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.ColorMap AIR =
+            com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.flat(0xD8D2E6);
     private static final int GRID = 40;
     private static final int RING = 128;
     private final String bodyName;
@@ -134,6 +138,23 @@ public class MarsMoonSkyEffects extends PlanetSkyEffects {
         Vector3d sun = new Vector3d(s.dot(right), s.dot(up), s.dot(toViewer));
         float half = (float) (100 * Math.tan(Math.toRadians(Math.min(70, marsSize * SkyConfig.bodyScale()) / 2)));
         Vector3d c = new Vector3d(e).mul(100);
+        var blocky = SkyConfig.blockyStyle();
+        if (blocky != null) {
+            // Mars as a ball of blocks; the moon is tidally locked, so the same face always looks back
+            var pose = new com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.Pose(
+                    new org.joml.Vector3f((float) c.x, (float) c.y, (float) c.z), half,
+                    new org.joml.Vector3f((float) up.x, (float) up.y, (float) up.z),
+                    new org.joml.Vector3f((float) toViewer.x, (float) toViewer.y, (float) toViewer.z), 0F);
+            org.joml.Vector3f sunDir = new org.joml.Vector3f((float) s.x, (float) s.y, (float) s.z);
+            com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.draw(m, blocky, 0,
+                    com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.texture(MARS_MAP), pose, sunDir, 0.03F, 1F, 1F, null);
+            // the thin pale air: one translucent shell of blocks just outside the ground
+            var shell = new com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.Pose(pose.center(), half * 1.04F, pose.pole(), pose.facing(), 0F);
+            com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.draw(m, blocky, 16, AIR, shell, sunDir, 0F, 1F, 0.22F, null);
+            RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+            RenderSystem.defaultBlendFunc();
+            return;
+        }
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
         RenderSystem.setShaderTexture(0, MARS);

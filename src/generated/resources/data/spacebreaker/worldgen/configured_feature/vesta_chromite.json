@@ -12,6 +12,15 @@
           "block": "spacebreaker:diogenite",
           "predicate_type": "minecraft:block_match"
         }
+      },
+      {
+        "state": {
+          "Name": "spacebreaker:chromite_ore"
+        },
+        "target": {
+          "block": "spacebreaker:eucrite",
+          "predicate_type": "minecraft:block_match"
+        }
       }
     ]
   }

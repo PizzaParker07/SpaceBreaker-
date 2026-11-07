@@ -49,6 +49,17 @@ public class MarsSkyEffects extends DimensionSpecialEffects {
     private static final double SUN_SIZE = 0.35;
     /** Phobos (~0.2°) and Deimos (~0.04°, a bright star) from the surface, exaggerated a little to read at all. */
     private static final double PHOBOS_SIZE = 0.6;
+    /** Surface colours for the blocky moons: dark grey-brown dust, Phobos with the dark bowl of Stickney. */
+    private static final com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.ColorMap PHOBOS_MAP = (lon, lat) -> {
+        double sx = lon + 0.8;
+        boolean stickney = sx * sx + lat * lat < 0.18;
+        int v = (int) (Math.sin(lon * 7.0) * Math.cos(lat * 5.0) * 10);
+        return stickney ? 0xFF3E3833 : 0xFF000000 | (0x5E + v) << 16 | (0x55 + v) << 8 | (0x4D + v);
+    };
+    private static final com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.ColorMap DEIMOS_MAP = (lon, lat) -> {
+        int v = (int) (Math.sin(lon * 5.0 + 1) * Math.cos(lat * 4.0) * 8);
+        return 0xFF000000 | (0x8C + v) << 16 | (0x80 + v) << 8 | (0x72 + v);
+    };
     private static final double DEIMOS_SIZE = 0.22;
     /** Synodic periods relative to the ground, in sols: Phobos moves east (negative), Deimos west. */
     private static final double PHOBOS_PERIOD = -0.45;
@@ -390,6 +401,23 @@ public class MarsSkyEffects extends DimensionSpecialEffects {
         ps.mulPose(Axis.XP.rotationDegrees((float) lat));
         ps.mulPose(Axis.YP.rotationDegrees(-90F));
         ps.mulPose(Axis.XP.rotationDegrees((float) (hour * 360)));
+        var blocky = com.pizzaparker07.spacebreaker.client.sky.SkyConfig.blockyStyle();
+        if (blocky != null) {
+            // a little lumpy ball of blocks, lit by the sun; the frame's +Y points at the moon
+            org.joml.Quaternionf q = Axis.XP.rotationDegrees((float) lat).mul(Axis.YP.rotationDegrees(-90F))
+                    .mul(Axis.XP.rotationDegrees((float) (hour * 360)));
+            Vector3f sunLocal = q.conjugate(new org.joml.Quaternionf()).transform(new Vector3f((float) sun.x, (float) sun.y, (float) sun.z));
+            float radius = (float) (100 * Math.tan(Math.toRadians(size * com.pizzaparker07.spacebreaker.client.sky.SkyConfig.bodyScale() / 2)));
+            var pose = new com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.Pose(new Vector3f(0, 100, 0), radius,
+                    new Vector3f(0, 0, 1), new Vector3f(0, -1, 0), 0F);
+            float tint = (float) ((1 - 0.8 * storm) * (1 - 0.5 * day));
+            com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.draw(ps.last().pose(), blocky, 0,
+                    tex == PHOBOS ? PHOBOS_MAP : DEIMOS_MAP, pose, sunLocal, 0.03F, tint, 1F, null);
+            ps.popPose();
+            RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+            RenderSystem.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
+            return;
+        }
         RenderSystem.setShaderColor(b, b * 0.97F, b * 0.94F, 1F);
         float half = (float) (100 * Math.tan(Math.toRadians(size * com.pizzaparker07.spacebreaker.client.sky.SkyConfig.bodyScale() / 2)));
         Matrix4f m = ps.last().pose();
