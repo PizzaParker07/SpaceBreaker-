@@ -92,6 +92,7 @@ public final class BeltModule implements SbModule {
     public void register(IEventBus modBus) {
         NearEarthAsteroids.load();
         Comets.load();
+        LanderBlocks.load();
         OuterArrivals.register();
         BeltEntities.register(modBus, KIT.items);
         BeltStructures.register(modBus);
@@ -125,6 +126,7 @@ public final class BeltModule implements SbModule {
         lang.block(CHROMITE_ORE, "Chromite Ore", "Kromit Cevheri");
         lang.item(CHROMITE, "Chromite", "Kromit");
         BeltData.translations(lang);
+        LanderBlocks.translations(lang);
         BeltEntities.translations(lang);
     }
 
@@ -132,6 +134,7 @@ public final class BeltModule implements SbModule {
     public void addBlockLoot(SbBlockLoot loot) {
         NearEarthAsteroids.loot(loot);
         Comets.loot(loot);
+        LanderBlocks.loot(loot);
         loot.self(CERES_REGOLITH.get());
         loot.self(AMMONIATED_CLAY.get());
         loot.self(CARBONATE_CRUST.get());
@@ -148,6 +151,7 @@ public final class BeltModule implements SbModule {
     public void addTags(SbTags tags) {
         NearEarthAsteroids.tags(tags);
         Comets.tags(tags);
+        LanderBlocks.tags(tags);
         // water ice for the ice melter: water, then hydrogen and oxygen for rocket fuel
         tags.item(com.pizzaparker07.spacebreaker.content.machines.IsruRecipes.WATER_ICES, CEREAN_ICE.get().asItem());
         tags.block(BlockTags.MINEABLE_WITH_SHOVEL, CERES_REGOLITH.get(), AMMONIATED_CLAY.get(), CARBONATE_CRUST.get(), VESTAN_REGOLITH.get(),

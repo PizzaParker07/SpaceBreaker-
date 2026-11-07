@@ -254,7 +254,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 ### Vesta zindanı ve diğer küçük dünyalar
 | Durum | İçerik | Not |
 |---|---|---|
-| 🎨 | Düşmüş İkmal İniş Aracı (Vesta, Ganymede, Kallisto, Enceladus) | kayma hendeği ve toprak sırtı, yan yatmış iniş aracı (kırık bacak, ısı kalkanı, kabin sandığı), kopmuş güneş paneli, enkaz, merdivenli gömülü kargo bölmesi; her dünyanın kendi zemini, kargosu ve teknolojisi |
+| 🎨 | Düşmüş İkmal İniş Aracı (tüm dış dünyalarda aynı yapı, her dünyanın kendi zemini ve ganimetiyle) | kayma hendeği, toprak sırtları ve ilk temasta kararmış zemin; hendeğin sonunda yan yatmış iki kademeli araç: alüminyum panelli sekizgen alt kademe, altın folyo kuşak, hendeğe dönük yanmış motor, havada iki ayak ve hendekte kopmuş üçüncüsü, direğinde asılı kalmış güneş kanadı; lomboz pencereli beyaz kabin, açık hava kilidi kapısı, iki koltuk, sönük konsol (güç monitörü), kabin dolabı ve mürettebatın "SON İLETİM" tabelası (toz, buz ya da kuyruklu yıldız sürümü, EN/TR); kopup tozda yatan ikinci güneş kanadı ve çanak anten, hendek boyunca patlamış kargo kapsülleri. Yeni bloklar: Altın Folyo Kaplama, Yanmış Roket Motoru |
 
 ### Dünya'ya yakın asteroitler (ortak `TinyWorld` paketi)
 | Durum | İçerik | Not |
@@ -287,7 +287,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Io blokları | Kükürt Kumu, Kükürt Dioksit Kırağısı, Kırmızı Kükürt (kalıcı ayak izi), Io Bazaltı (+ merdiven, basamak, duvar), Io Kükürt Cevheri (→ kükürt), Kükürt Bulutu Bacası |
 | 🎨 | Ganymede `spacebreaker:ganymede` | parlak oluklu buz ovaları ile koyu kadim kraterli arazi, parlak kutup örtüleri; Ganymede Regoliti, Oluklu Buz, Koyu Buz Kabuğu |
 | 🎨 | Kallisto `spacebreaker:callisto` | Güneş Sistemi'nin en kraterli yüzeyi, parlak kırağı tümsekleri, Valhalla çok halkalı havzası; düşük radyasyon - güvenli üs yeri; Kallisto Regoliti, Parlak Kırağı, Kallisto Kayası (+ merdiven, basamak, duvar) |
-| 🎨 | Zindanlar | Gömülü Araştırma Sondası (Europa: iniş aracı, eritme kuyusu, tuzlu su havuzlu buz mağarası), Terk Edilmiş Volkan Gözlemevi (Io: bazalt sığınak, teleskop, sismometre kasası) |
+| 🎨 | Zindanlar | Gömülü Araştırma Sondası (Europa: buz delme kampı - kuyunun üstünde dört ayaklı sondaj kulesi, vinç ve tepe güvertesi, korkuluklu ızgara platform, hava kilitli lomboz pencereli yaşam modülünde araştırma laboratuvarı ve "kablo 22 m'de koptu" günlüğü, güneş panelli güç direği; çelik merdivenli eritme kuyusu, sıkışmış kriyobot ve tuzlu su havuzlu buz mağarası), Terk Edilmiş Volkan Gözlemevi (Io: kükürt düzlüğünden iki blok yükseltilmiş, tehlike şeritli ayaklı platform; radyatör kanatlı gövde, basamaklardan çıkılan hava kilidi kapısı, çatıda yarıklı kubbe ve yarıktan dışarı uzanan teleskop; içeride teleskop ayağı, güç monitörlü kontrol masası ve koltuklar, sismometreler, arşiv ve "püskürme gece yer değiştirdi" günlüğü; kapaktan çelik merdivenle inilen sismometre kasası; püskürmeye bakan yüzü yanık ve kükürt yığılmış) |
 | 🎨 | Teknolojiler | Kriyobot Sondajı (4), Radyasyona Dayanıklı Elektronik (4), Volkanik Isı Kalkanı (4), Manyetosfer Fiziği (4), Derin Uzay Yaşam Alanları (4) |
 
 ### Satürn uyduları
