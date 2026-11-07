@@ -1,0 +1,6 @@
+{
+  "type": "spacebreaker:deimos_relay_spire",
+  "biomes": "spacebreaker:deimos_surface",
+  "spawn_overrides": {},
+  "step": "surface_structures"
+}

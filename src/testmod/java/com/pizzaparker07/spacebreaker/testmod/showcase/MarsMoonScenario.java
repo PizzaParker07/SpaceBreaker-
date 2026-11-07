@@ -24,6 +24,9 @@ final class MarsMoonScenario implements ShowcaseScenario {
     private PlanetTerrain terrain;
     private static final int DX = 40;
     private static final int DZ = -30;
+    /** Corner of Deimos' relay spire in the showcase. */
+    private static final int SX = -70;
+    private static final int SZ = 30;
 
     MarsMoonScenario(boolean deimos) {
         this.deimos = deimos;
@@ -47,6 +50,10 @@ final class MarsMoonScenario implements ShowcaseScenario {
         terrain = ((PlanetChunkGenerator) level.getChunkSource().getGenerator()).terrain();
         int y = (int) Math.floor(terrain.height(DX + 7, DZ + 7));
         MarsScenario.placePiece(level, new MoonletDungeonPiece(77L, deimos, DX, y, DZ));
+        if (deimos) {
+            int sy = (int) Math.floor(terrain.height(SX + 13, SZ + 13)) + 1;
+            MarsScenario.placePiece(level, new com.pizzaparker07.spacebreaker.content.mars.dungeon.HopSpirePiece(19L, SX, sy, SZ));
+        }
         if (!deimos) {
             // the showcase world is made without structures: build Stickney's lander where the world would put it
             com.pizzaparker07.spacebreaker.content.mars.dungeon.StickneyLanderStructure.site(level.getChunkSource().getGenerator()).ifPresent(site -> {
@@ -81,6 +88,12 @@ final class MarsMoonScenario implements ShowcaseScenario {
         };
         s.add(new ShowcaseDriver.Shot("04_" + w + "_dungeon", 0, DX + 7.5, y + (deimos ? -4.4 : 5), DZ + (deimos ? 7.5 : 13.5), 180F,
                 deimos ? 10F : 38F, true, fp, 120, deimos ? lit : at(0.2), null));
+        if (deimos) {
+            double cx = SX + 13.5;
+            double cz = SZ + 13.5 + 40;
+            s.add(new ShowcaseDriver.Shot("05_deimos_relay_spire", 0, cx, Math.floor(t.height(SX + 13, SZ + 13)) + 16, cz, 180F, 2F,
+                    true, fp, 200, at(0.26), MoonScenario::farView));
+        }
         if (!deimos) {
             t.namedCrater("stickney").ifPresent(c -> {
                 // the floor of Stickney from its western slope: the anchored lander small on the floor, the far wall behind

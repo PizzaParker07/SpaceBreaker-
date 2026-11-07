@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-07T10:08:30.511231521	Spacebreaker inner planets worldgen
+// 1.21.1	2026-11-07T10:24:50.634306223	Spacebreaker inner planets worldgen
 16676fef966d898c9a200173130207149689a794 data/spacebreaker/worldgen/biome/deimos_surface.json
 a38bd155cbf32cd8a4fc3ed4b226773a6ca531ed data/spacebreaker/worldgen/biome/mars_canyon.json
 850d48863e1922b235d124c0eaa44a4d68de9604 data/spacebreaker/worldgen/biome/mars_crater.json
@@ -57,6 +57,7 @@ dea3748e6629b7b0ee321f2c7d20ee09d0aee659 data/spacebreaker/worldgen/placed_featu
 96b3cd896e095618717a4c306337af9b134df27e data/spacebreaker/worldgen/placed_feature/venus_sulfur.json
 8986d880b060d17c69054c13fffbc4b745ad6364 data/spacebreaker/worldgen/placed_feature/venus_sulfur_rich.json
 31cd2b739684a03c526aa4c76cf89a2c05d0532d data/spacebreaker/worldgen/structure/deimos_ice_cache.json
+02049aae18f754cba6e4dedc0055045095f884c4 data/spacebreaker/worldgen/structure/deimos_relay_spire.json
 4955dae7105fd2fbb6c233efafd39330bc92c382 data/spacebreaker/worldgen/structure/mars_lander_wreck.json
 20402c1a36bca58d0bb56c7e6266940a057b5824 data/spacebreaker/worldgen/structure/mars_lava_tube.json
 a359b7a2f8ad33d504a25ae130a5c8fe9f03ec3e data/spacebreaker/worldgen/structure/mars_research_station.json
@@ -66,6 +67,7 @@ ab9041d59226cc553658fa0cf0b2eafd1f25d264 data/spacebreaker/worldgen/structure/ph
 bcf8b8e57913d88877c78c23d56ca13a07c135a0 data/spacebreaker/worldgen/structure/stickney_lander.json
 f7bf688e27039deb132edac12acb3228415276c5 data/spacebreaker/worldgen/structure/venus_aerostat.json
 c66c9129ef40dcfb60ab2651f5691da89c9073a3 data/spacebreaker/worldgen/structure_set/deimos_ice_caches.json
+5521cfb58e528f9e7bfd7451c0d7908f40fb0e14 data/spacebreaker/worldgen/structure_set/deimos_relay_spires.json
 4bb7c7efc4b3559cd2afd504b161e414838c7cff data/spacebreaker/worldgen/structure_set/mars_lander_wrecks.json
 a49ea2931877cdc5d3f235a08f8c1a79bb645f7f data/spacebreaker/worldgen/structure_set/mars_lava_tubes.json
 7ab1779e38dd472b902abc400eb8ab7a20291f26 data/spacebreaker/worldgen/structure_set/mars_research_stations.json

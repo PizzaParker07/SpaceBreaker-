@@ -1,0 +1,8 @@
+{
+  "structure": "spacebreaker:deimos_relay_spire",
+  "world": "spacebreaker:deimos",
+  "guardians": [],
+  "loot_tables": [
+    "spacebreaker:dungeons/deimos/relay_cache"
+  ]
+}

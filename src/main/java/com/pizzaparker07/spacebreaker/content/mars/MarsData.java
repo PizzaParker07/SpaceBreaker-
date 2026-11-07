@@ -152,6 +152,12 @@ public final class MarsData {
         lang.add("sign.spacebreaker.stickney_lander.1", "It bounced off;", "Önce geri sekti;");
         lang.add("sign.spacebreaker.stickney_lander.2", "3 harpoons and a", "3 harpun ve vinç");
         lang.add("sign.spacebreaker.stickney_lander.3", "winch held it", "onu yerde tuttu");
+        lang.add("dungeon.spacebreaker.deimos_relay_spire", "Relay Spire of Deimos", "Deimos Röle Kulesi");
+        lang.add("structure.spacebreaker.deimos_relay_spire", "Relay Spire of Deimos", "Deimos Röle Kulesi");
+        lang.add("sign.spacebreaker.deimos_hop.0", "GRAVITY 1/4000 G", "YERÇEKİMİ 1/4000 G");
+        lang.add("sign.spacebreaker.deimos_hop.1", "One jump lasts", "Bir zıplama");
+        lang.add("sign.spacebreaker.deimos_hop.2", "for seconds:", "saniyeler sürer:");
+        lang.add("sign.spacebreaker.deimos_hop.3", "hop up the rocks", "kayalardan sek");
         lang.add("dungeon.spacebreaker.deimos_ice_cache", "Deimos Ice Cache", "Deimos Buz Deposu");
         lang.add("structure.spacebreaker.phobos_probe_wreck", "Crashed Sample-Return Probe", "Düşmüş Numune Dönüş Sondası");
         lang.add("structure.spacebreaker.deimos_ice_cache", "Deimos Ice Cache", "Deimos Buz Deposu");

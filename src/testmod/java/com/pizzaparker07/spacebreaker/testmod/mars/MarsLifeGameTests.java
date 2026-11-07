@@ -276,6 +276,61 @@ public final class MarsLifeGameTests {
         helper.succeed();
     }
 
+    /** Peak height of a standing jump (MC physics: jump velocity and gravity scaled like Gravity.apply, 0.98 drag). */
+    private static double jumpPeak(double factor) {
+        double v = 0.42 * Math.pow(factor, 0.25);
+        double g = 0.08 * factor;
+        double y = 0;
+        double peak = 0;
+        for (int t = 0; t < 20000 && y >= 0; t++) {
+            y += v;
+            v = (v - g) * 0.98;
+            peak = Math.max(peak, y);
+        }
+        return peak;
+    }
+
+    /**
+     * Deimos' relay spire: a spiral of rock stacks, each RISE blocks higher and several blocks away from the last; the
+     * rise is beyond an Earth jump but within a Deimos jump at every realism setting, and the relay cache sits on top.
+     */
+    @GameTest(template = EMPTY, timeoutTicks = 200)
+    public static void deimosSpireNeedsLowGravityJumps(GameTestHelper helper) {
+        var deimos = com.pizzaparker07.spacebreaker.core.body.Bodies.forDimension(access(helper), MarsModule.DEIMOS).orElseThrow(() -> new AssertionError("deimos body"));
+        double real = deimos.physical().surfaceGravity() / com.pizzaparker07.spacebreaker.core.body.CelestialBody.EARTH_GRAVITY;
+        int rise = com.pizzaparker07.spacebreaker.content.mars.dungeon.HopSpirePiece.RISE;
+        helper.assertTrue(jumpPeak(1.0) < rise, "on Earth a stack is out of reach (peak " + jumpPeak(1.0) + ")");
+        for (var realism : com.pizzaparker07.spacebreaker.core.config.SbConfig.Realism.values()) {
+            double peak = jumpPeak(realism.scaleGravity(real));
+            helper.assertTrue(peak > rise + 0.2, "on Deimos (" + realism + ") a stack is in reach, peak " + peak);
+        }
+        helper.assertTrue(access(helper).registryOrThrow(net.minecraft.core.registries.Registries.STRUCTURE)
+                .containsKey(com.pizzaparker07.spacebreaker.content.mars.dungeon.MarsStructures.HOP_SPIRE_KEY), "spire structure");
+
+        ServerLevel level = helper.getLevel();
+        BlockPos base = helper.absolutePos(BlockPos.ZERO).offset(4000, 0, 4000);
+        level.getChunk(base);
+        int y = level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.WORLD_SURFACE, base.getX(), base.getZ());
+        var piece = new com.pizzaparker07.spacebreaker.content.mars.dungeon.HopSpirePiece(3L, base.getX(), y, base.getZ());
+        place(level, piece);
+        var stacks = piece.stacks();
+        for (int k = 0; k < stacks.size(); k++) {
+            BlockPos top = stacks.get(k);
+            helper.assertTrue(!level.getBlockState(top.below()).isAir() && level.getBlockState(top).isAir(), "stack " + k + " stands at " + top + ": " + level.getBlockState(top.below()) + " / " + level.getBlockState(top));
+            if (k > 0) {
+                BlockPos prev = stacks.get(k - 1);
+                helper.assertTrue(top.getY() - prev.getY() == rise, "each stack rises by " + rise);
+                double gap = Math.hypot(top.getX() - prev.getX(), top.getZ() - prev.getZ()) - 2;
+                helper.assertTrue(gap >= 3.5, "stacks stand apart (gap " + gap + ")");
+            }
+        }
+        BlockPos summit = piece.summit();
+        helper.assertTrue(summit.getY() - stacks.get(stacks.size() - 1).getY() == rise, "the summit is one hop above the last stack");
+        helper.assertTrue(lootChests(level, piece.getBoundingBox()) == 1, "the relay cache on the summit");
+        helper.assertTrue(level.getBlockState(summit).is(Blocks.CHEST), "the cache sits on the summit");
+        helper.succeed();
+    }
+
     private MarsLifeGameTests() {
     }
 }
