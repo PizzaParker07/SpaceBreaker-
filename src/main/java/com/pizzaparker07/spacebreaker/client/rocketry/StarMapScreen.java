@@ -44,7 +44,7 @@ public class StarMapScreen extends Screen {
 
     private static final int GREEN = 0xFF8FD88A, RED = 0xFFEF6A5A, AMBER = 0xFFE8C060, INK = 0xFFDDE4EC, DIM = 0xFF8A96A4;
     private static final int PANEL_BG = 0xE00B1018, ACCENT = 0xFFFFD34A;
-    private static final int ORBIT = 0x2CA0B4C8, ORBIT_SEL = 0x60FFD34A;
+    private static final int ORBIT = 0x50A0B4C8, ORBIT_SEL = 0x90FFD34A;
     /** Map units per log-step of distance from the Sun (see {@link #radial}). */
     private static final double UNIT = 60;
     private static final double AU_KM = 149_597_870.7;
@@ -314,7 +314,7 @@ public class StarMapScreen extends Screen {
     private void layoutFrame(double days) {
         nodes.clear();
         float zoom = (float) (scale / Math.max(1e-6, overviewScale()));
-        float grow = Mth.clamp(1 + (float) Math.log(Math.max(1, zoom)) * 0.28F, 1, 3.2F);
+        float grow = Mth.clamp(1 + (float) Math.log(Math.max(1, zoom)) * 0.22F, 1, 2.6F);
         for (ResourceLocation p : StarMapData.planets()) {
             if (StarMapData.COMETS.equals(p) || StarMapData.NEAR_EARTH_ASTEROIDS.equals(p)) {
                 for (ResourceLocation m : StarMapData.moons(p)) {
@@ -333,31 +333,31 @@ public class StarMapScreen extends Screen {
                     break;
                 }
                 double[] mq = mapPos(m, days);
-                nodes.put(m, new Node(m, sx(mq[0]), sy(mq[1]), Math.round(moonRadius(m) * Math.min(grow, 2.2F) * 0.7F), false));
+                nodes.put(m, new Node(m, sx(mq[0]), sy(mq[1]), Math.round(moonRadius(m) * Math.min(grow, 2.2F)), false));
             }
         }
     }
 
     private static int systemRadius(ResourceLocation body) {
         if (Location.EARTH.equals(body)) {
-            return 5;
+            return 7;
         }
         CelestialBody b = Locations.body(body).orElse(null);
         if (b == null) {
-            return 3;
+            return 5;
         }
         if (b.type() == BodyType.GAS_GIANT) {
-            return 9;
+            return 12;
         }
         if (b.type() == BodyType.ICE_GIANT) {
-            return 7;
+            return 9;
         }
-        return Mth.clamp((int) Math.round(1.5 + Math.sqrt(b.physical().radiusKm()) / 16.0), 2, 5);
+        return Mth.clamp((int) Math.round(3 + Math.sqrt(b.physical().radiusKm()) / 18.0), 5, 7);
     }
 
     private static int moonRadius(ResourceLocation body) {
         double km = Locations.body(body).map(b -> b.physical().radiusKm()).orElse(500.0);
-        return Mth.clamp((int) Math.round(2 + Math.sqrt(km) / 10.0), 2, 7);
+        return Mth.clamp((int) Math.round(4 + Math.sqrt(km) / 14.0), 5, 8);
     }
 
     /** Where a location shows on the current frame. */
@@ -517,9 +517,9 @@ public class StarMapScreen extends Screen {
     private void drawSystem(GuiGraphics g, double days) {
         float cx = sx(0), cy = sy(0);
         // the Sun, with a soft glow
-        int sunR = Mth.clamp((int) (scale * 9), 4, 40);
-        for (int i = 5; i > 0; i--) {
-            disc(g, Math.round(cx), Math.round(cy), sunR + i * 3, 0x0EFFC860);
+        int sunR = Mth.clamp((int) (scale * 14), 7, 48);
+        for (int i = 9; i > 0; i--) {
+            disc(g, Math.round(cx), Math.round(cy), sunR + i * 4, 0x0BFFC860);
         }
         disc(g, Math.round(cx), Math.round(cy), sunR, 0xFFFFC14A);
         disc(g, Math.round(cx), Math.round(cy), Math.max(1, sunR - 2), 0xFFFFD873);
@@ -574,14 +574,21 @@ public class StarMapScreen extends Screen {
     private void drawNodes(GuiGraphics g, int mx, int my) {
         Node hover = mx < panelX ? nodeAt(mx, my) : null;
         List<int[]> taken = new ArrayList<>();
+        List<Runnable> labels = new ArrayList<>();
         for (Node n : nodes.values()) {
             if (n.x < -20 || n.x > mapW + 20 || n.y < -20 || n.y > height + 20) {
                 continue;
             }
             boolean sel = n.body.equals(body);
             int x = Math.round(n.x), y = Math.round(n.y);
-            if (sel || n == hover) {
-                ring(g, x, y, n.r + 3, sel ? 0xD0FFD34A : 0x80FFFFFF);
+            if (sel) {
+                // a soft glow and a thin gold ring around the chosen world
+                for (int i = 3; i > 0; i--) {
+                    disc(g, x, y, n.r + 3 + i * 2, 0x14FFD34A);
+                }
+                ring(g, x, y, n.r + 4, 0xF0FFD34A);
+            } else if (n == hover) {
+                ring(g, x, y, n.r + 3, 0x90FFFFFF);
             }
             if (StarMapData.comet(n.body)) {
                 double dx = n.x - sx(0), dy = n.y - sy(0), d = Math.max(1, Math.hypot(dx, dy));
@@ -608,10 +615,14 @@ public class StarMapScreen extends Screen {
             int[] box = {x - tw / 2 - 1, y + n.r + 3, x + tw / 2 + 1, y + n.r + 12};
             boolean free = taken.stream().noneMatch(b -> box[0] < b[2] && b[0] < box[2] && box[1] < b[3] && b[1] < box[3]);
             if (free || sel || n == hover) {
-                g.drawCenteredString(font, name, x, y + n.r + 4, sel ? 0xFFFFE9A8 : n == hover ? 0xFFFFFFFF : 0xB0B8C2CC);
+                Component label = name;
+                int colour = sel ? 0xFFFFE9A8 : n == hover ? 0xFFFFFFFF : 0xB0B8C2CC;
+                labels.add(() -> g.drawCenteredString(font, label, x, y + n.r + 4, colour));
                 taken.add(box);
             }
         }
+        // names last, so no disc covers them
+        labels.forEach(Runnable::run);
     }
 
     /** A tiny station: white module with blue solar wings, top-right of a world that has one in orbit. */
@@ -1121,6 +1132,9 @@ public class StarMapScreen extends Screen {
             }
             return;
         }
+        if (BodyLook.drawFlat(g, body, cx, cy, r, 0.6F)) {
+            return;
+        }
         ResourceLocation tex = Location.MOON.equals(body) ? OrbitSkyEffects.MOON_DISC : OrbitSkyEffects.disc(body);
         g.blit(tex, cx - r, cy - r, r * 2, r * 2, 0F, 0F, 1, 1, 1, 1);
     }
@@ -1143,8 +1157,19 @@ public class StarMapScreen extends Screen {
         }
     }
 
+    /** A solid thin circle. */
     private static void ring(GuiGraphics g, int cx, int cy, int r, int colour) {
-        ellipse(g, cx, cy, r, r, colour);
+        int steps = Math.max(24, r * 7);
+        int lx = Integer.MIN_VALUE, ly = Integer.MIN_VALUE;
+        for (int i = 0; i < steps; i++) {
+            double a = i * Math.PI * 2 / steps;
+            int x = cx + (int) Math.round(Math.cos(a) * r), y = cy + (int) Math.round(Math.sin(a) * r);
+            if (x != lx || y != ly) {
+                g.fill(x, y, x + 1, y + 1, colour);
+                lx = x;
+                ly = y;
+            }
+        }
     }
 
     private static void ellipse(GuiGraphics g, int cx, int cy, int rx, int ry, int colour) {

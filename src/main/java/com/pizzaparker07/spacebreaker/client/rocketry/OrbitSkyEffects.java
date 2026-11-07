@@ -184,17 +184,22 @@ public class OrbitSkyEffects extends DimensionSpecialEffects {
         float radius = 100F * Mth.sin(ORBIT_ANGULAR_RADIUS * Mth.DEG_TO_RAD);
         if (Location.EARTH.equals(body)) {
             SkyDraw.billboard(modelView, MOON_DISC, new Vector3f(0.7F, 0.45F, -0.55F), 100F, 2.4F, 1F);
-            SkyDraw.planet(modelView, EARTH, center, radius, orbit, sun, 0.05F, 1F, false);
-            SkyDraw.planet(modelView, EARTH_CLOUDS, center, radius * 1.006F, orbit * 1.15F, sun, 0.03F, 0.6F, false);
-            // thin blue atmosphere halo around the limb (drawn last, additive)
-            SkyDraw.planet(modelView, EARTH_LIMB, center, radius * 1.035F, 0, sun, 0.25F, 1F, true, true);
+            if (!BodyLook.drawBelow(modelView, Location.EARTH, center, radius, orbit, sun, 1F, true)) {
+                SkyDraw.planet(modelView, EARTH, center, radius, orbit, sun, 0.05F, 1F, false);
+                SkyDraw.planet(modelView, EARTH_CLOUDS, center, radius * 1.006F, orbit * 1.15F, sun, 0.03F, 0.6F, false);
+                // thin blue atmosphere halo around the limb (drawn last, additive)
+                SkyDraw.planet(modelView, EARTH_LIMB, center, radius * 1.035F, 0, sun, 0.25F, 1F, true, true);
+            }
         } else {
             // the planet a moon belongs to hangs in the sky (the Earth seen from the Moon)
             Locations.parentPlanet(body).ifPresent(parent -> SkyDraw.billboard(modelView, disc(parent),
                     new Vector3f(-0.6F, 0.35F, 0.7F), 100F, Location.EARTH.equals(parent) ? 3.2F : 6F, 1F));
-            SkyDraw.planet(modelView, Location.MOON.equals(body) ? MOON : surface(body), center, radius, orbit * 0.5F, sun, 0.04F, 1F, false);
-            Locations.body(body).filter(b -> b.atmosphere().pressureKpa() >= 0.1).ifPresent(b ->
-                    SkyDraw.planet(modelView, limb(body), center, radius * (b.atmosphere().pressureKpa() > 1000 ? 1.05F : 1.03F), 0, sun, 0.2F, 1F, true, true));
+            boolean air = Locations.body(body).filter(b -> b.atmosphere().pressureKpa() >= 0.1).isPresent();
+            if (!BodyLook.drawBelow(modelView, body, center, radius, orbit * 0.5F, sun, 1F, air)) {
+                SkyDraw.planet(modelView, Location.MOON.equals(body) ? MOON : surface(body), center, radius, orbit * 0.5F, sun, 0.04F, 1F, false);
+                Locations.body(body).filter(b -> b.atmosphere().pressureKpa() >= 0.1).ifPresent(b ->
+                        SkyDraw.planet(modelView, limb(body), center, radius * (b.atmosphere().pressureKpa() > 1000 ? 1.05F : 1.03F), 0, sun, 0.2F, 1F, true, true));
+            }
         }
         RenderSystem.enableDepthTest();
         RenderSystem.depthMask(true);

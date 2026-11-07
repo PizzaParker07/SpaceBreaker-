@@ -343,9 +343,11 @@ public final class RocketClientEvents {
         org.joml.Vector3f center = new org.joml.Vector3f(0, -100F, 0);
         float planet = Mth.clamp((k - 0.02F) / 0.15F, 0, 1);
         com.mojang.blaze3d.systems.RenderSystem.depthMask(false);
-        SkyDraw.planet(event.getModelViewMatrix(), OrbitSkyEffects.EARTH, center, radius, 0F, sun, 0.05F, planet, false);
-        SkyDraw.planet(event.getModelViewMatrix(), OrbitSkyEffects.EARTH_CLOUDS, center, radius * 1.006F, 0F, sun, 0.03F, 0.6F * planet, false);
-        SkyDraw.planet(event.getModelViewMatrix(), OrbitSkyEffects.EARTH_LIMB, center, radius * 1.035F, 0F, sun, 0.25F, planet, true, true);
+        if (!BodyLook.drawBelow(event.getModelViewMatrix(), Location.EARTH, center, radius, 0F, sun, planet, true)) {
+            SkyDraw.planet(event.getModelViewMatrix(), OrbitSkyEffects.EARTH, center, radius, 0F, sun, 0.05F, planet, false);
+            SkyDraw.planet(event.getModelViewMatrix(), OrbitSkyEffects.EARTH_CLOUDS, center, radius * 1.006F, 0F, sun, 0.03F, 0.6F * planet, false);
+            SkyDraw.planet(event.getModelViewMatrix(), OrbitSkyEffects.EARTH_LIMB, center, radius * 1.035F, 0F, sun, 0.25F, planet, true, true);
+        }
         com.mojang.blaze3d.systems.RenderSystem.depthMask(true);
     }
 }
