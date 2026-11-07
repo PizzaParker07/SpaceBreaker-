@@ -715,7 +715,7 @@ from sbtex.core import ramp as _ramp
 WHITE = P.SUIT_WHITE
 BLUE = P.ANODIZED_BLUE
 SILVER = _ramp('#3f4247', '#53575d', '#6a6e75', '#82878e', '#9a9fa6', '#b0b4ba', '#c4c8cd', '#d8dbdf')
-ORANGE = _ramp('#4a1f0a', '#6e2f0f', '#924015', '#b5521c', '#d06626', '#e47c36', '#f1974f', '#f8b46f')
+ORANGE = _ramp('#4c230f', '#703417', '#94481f', '#b55d29', '#cc7234', '#de8845', '#ea9f5e', '#f3bb80')
 LEAD = _ramp('#1e2124', '#2b2f33', '#3a3e44', '#4a4f56', '#5c626a', '#70767e', '#868c94', '#9ea4ab')
 HAZARD = _ramp('#4a3606', '#6e520a', '#93700f', '#b58e17', '#d2aa22', '#e6c235', '#f2d65a', '#fae896')
 DARK_STEEL = _ramp('#121418', '#1b1e23', '#262a30', '#31363d', '#3d434b', '#4b525b', '#5c636d', '#6f7781')
@@ -792,8 +792,7 @@ def helmet_extras(cv, tier):
     if tier == 'thermal':
         box(cv, (64, 28, 10, 1, 2), top=_flat(SILVER), north=_flat(G, 7, 6, 4), sides=_flat(SILVER, 6, 5, 3), bottom=solid(G[3]))
     elif tier == 'heated':
-        box(cv, (64, 0, 12, 2, 12), sides=_quilted(ORANGE), top=_quilted(ORANGE), bottom=solid(ORANGE[2]))
-        box(cv, (64, 14, 4, 1, 4), top=lambda x, y, w, h: S[6] if (x + y) % 2 else S[4], sides=solid(S[4]), bottom=solid(S[2]))
+        box(cv, (64, 0, 12, 1, 12), sides=_flat(ORANGE, 6, 5, 3), top=_flat(ORANGE), bottom=solid(ORANGE[2]))
     elif tier == 'radiation':
         # lead cheek guards only (the gold brow, chin plate and crest are gone: they read as a bucket)
         for u in (88, 104):
@@ -810,7 +809,6 @@ def torso_extras(cv, tier):
                 return (255, 150, 60) if x % 2 else (220, 110, 40)   # heater status bars
             return _flat(DARK_STEEL, 6, 5, 3)(x, y, w, h)
         box(cv, (64, 24, 6, 3, 1), north=pack, sides=solid(DARK_STEEL[4]), top=solid(DARK_STEEL[6]), bottom=solid(DARK_STEEL[2]))
-        box(cv, (64, 16, 4, 3, 4), sides=_quilted(ORANGE), top=_quilted(ORANGE), bottom=solid(ORANGE[3]))
     elif tier == 'radiation':
         def abdomen(x, y, w, h):
             if y in (1, 2) and x in (1, w - 2):
@@ -833,8 +831,6 @@ def torso_extras(cv, tier):
 def legs_extras(cv, tier):
     if tier == 'thermal':
         box(cv, (64, 0, 4, 2, 1), all=_flat(G, 7, 5, 3))
-    elif tier == 'heated':
-        box(cv, (64, 4, 4, 5, 4), sides=_quilted(ORANGE), top=solid(ORANGE[5]), bottom=solid(ORANGE[3]))
     elif tier == 'radiation':
         box(cv, (64, 16, 4, 5, 1), north=_flat(LEAD, 6, 5, 3), sides=solid(LEAD[3]), top=solid(LEAD[6]), bottom=solid(LEAD[2]))
 
