@@ -142,6 +142,8 @@ final class MachineRecipes {
                 'A', ALUMINUM.plateTag, 'F', GOLD_FOIL_INSULATION.get(), 'M', ELECTRIC_MOTOR.get(), 'K', Items.CAULDRON, 'C', ADVANCED_CIRCUIT.get());
         shaped(out, SOLAR_PANEL_ITEM.get(), 1, has(SOLAR_CELL.get()), "LLL", "ARA", " C ",
                 'L', SOLAR_CELL.get(), 'A', ALUMINUM.plateTag, 'R', STEEL.rodTag, 'C', BASIC_CIRCUIT.get());
+        shaped(out, SOLAR_ARRAY_ITEM.get(), 1, has(SOLAR_PANEL_ITEM.get()), "PPP", "ARA", " C ",
+                'P', SOLAR_PANEL_ITEM.get(), 'A', AL_LI.plateTag, 'R', STEEL.rodTag, 'C', ADVANCED_CIRCUIT.get());
         shaped(out, COPPER_CABLE.get(), 6, has(COPPER.wireTag), "KKK", "WWW", "KKK", 'K', Items.DRIED_KELP, 'W', COPPER.wireTag);
         shaped(out, HV_CABLE.get(), 6, has(ALUMINUM.wireTag), "PPP", "WWW", "PPP", 'P', PLASTIC_TAG, 'W', ALUMINUM.wireTag);
         shaped(out, FLUID_PIPE.get(), 8, has(IRON.plateTag), "PPP", "   ", "PPP", 'P', IRON.plateTag);

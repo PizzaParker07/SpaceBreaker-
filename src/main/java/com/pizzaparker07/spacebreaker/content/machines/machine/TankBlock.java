@@ -111,6 +111,12 @@ public class TankBlock extends BaseEntityBlock {
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         tooltip.add(Component.translatable("tooltip.spacebreaker.tank." + kind.name().toLowerCase(java.util.Locale.ROOT), kind.capacity)
                 .withStyle(net.minecraft.ChatFormatting.GRAY));
+        var content = stack.get(com.pizzaparker07.spacebreaker.content.fluids.FluidsModule.FLUID_CONTENT.get());
+        if (content != null && !content.isEmpty()) {
+            FluidStack fluid = content.copy();
+            tooltip.add(Component.translatable("tooltip.spacebreaker.tank.contents", fluid.getHoverName(), fluid.getAmount())
+                    .withStyle(net.minecraft.ChatFormatting.AQUA));
+        }
     }
 
 }

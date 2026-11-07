@@ -47,6 +47,11 @@ public class SolarPanelBlock extends BaseEntityBlock {
         return SHAPE;
     }
 
+    /** Peak output of this kind of panel at Earth's distance, FE/t. */
+    public int peak() {
+        return SolarPanelBlockEntity.PEAK_OUTPUT;
+    }
+
     /** Sunlight at this body's distance from the sun (and local weather) as a whole percentage of Earth's. */
     public static String sunlightPercent(double factor) {
         double pct = factor * 100;
@@ -68,13 +73,13 @@ public class SolarPanelBlock extends BaseEntityBlock {
     @Override
     public void appendHoverText(net.minecraft.world.item.ItemStack stack, net.minecraft.world.item.Item.TooltipContext context,
                                 java.util.List<net.minecraft.network.chat.Component> tooltip, net.minecraft.world.item.TooltipFlag flag) {
-        tooltip.add(net.minecraft.network.chat.Component.translatable("tooltip.spacebreaker.solar_panel", SolarPanelBlockEntity.PEAK_OUTPUT)
+        tooltip.add(net.minecraft.network.chat.Component.translatable("tooltip.spacebreaker.solar_panel", peak())
                 .withStyle(net.minecraft.ChatFormatting.GRAY));
         Level level = context.level();
         if (level != null) {
             double factor = com.pizzaparker07.spacebreaker.core.env.Environment.solarFactor(level);
             tooltip.add(net.minecraft.network.chat.Component.translatable("tooltip.spacebreaker.solar_panel.here", sunlightPercent(factor),
-                    String.format(java.util.Locale.ROOT, "%.1f", SolarPanelBlockEntity.PEAK_OUTPUT * Math.min(SolarPanelBlockEntity.MAX_SOLAR_FACTOR, factor)))
+                    String.format(java.util.Locale.ROOT, "%.1f", peak() * Math.min(SolarPanelBlockEntity.MAX_SOLAR_FACTOR, factor)))
                     .withStyle(factor < 0.25 ? net.minecraft.ChatFormatting.GOLD : net.minecraft.ChatFormatting.GRAY));
         }
     }

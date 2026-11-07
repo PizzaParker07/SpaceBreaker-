@@ -22,7 +22,8 @@ public class SolarPanelBlockEntity extends BlockEntity {
     public static final double MAX_SOLAR_FACTOR = 3.0;
     private static final float SLEW_PER_TICK = (float) Math.toRadians(0.6);
 
-    private final Buffer energy = new Buffer(8_000, PEAK_OUTPUT * 4);
+    private final int peak;
+    private final Buffer energy;
     private int lastOutput;
     private double carry;
     private double exactOutput;
@@ -33,11 +34,22 @@ public class SolarPanelBlockEntity extends BlockEntity {
     private boolean tiltInitialised;
 
     public SolarPanelBlockEntity(BlockPos pos, BlockState state) {
-        super(MachinesModule.SOLAR_PANEL_BE.get(), pos, state);
+        this(MachinesModule.SOLAR_PANEL_BE.get(), pos, state, PEAK_OUTPUT);
+    }
+
+    /** @param peak FE/t with the sun square on the cells at Earth's distance */
+    public SolarPanelBlockEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> type, BlockPos pos, BlockState state, int peak) {
+        super(type, pos, state);
+        this.peak = peak;
+        this.energy = new Buffer(peak * 400, peak * 4);
     }
 
     public IEnergyStorage getEnergy() {
         return energy;
+    }
+
+    public int peak() {
+        return peak;
     }
 
     public int getLastOutput() {
@@ -64,12 +76,17 @@ public class SolarPanelBlockEntity extends BlockEntity {
 
     /** Fraction of peak output for the current sun position (0..1), before weather and sky checks. */
     public static float irradiance(float sun) {
+        return irradiance(sun, false);
+    }
+
+    /** As {@link #irradiance(float)}; with no air there is no extra loss when the sun is low. */
+    public static float irradiance(float sun, boolean vacuum) {
         if (Math.abs(sun) >= Mth.HALF_PI) {
             return 0F;
         }
         float incidence = Mth.cos(sun - targetTilt(sun));            // cosine loss beyond the tracker limit
         float elevation = Mth.HALF_PI - Math.abs(sun);              // sun height above the horizon
-        float airMass = (float) Math.pow(Math.max(0F, Mth.sin(elevation)), 0.35); // thicker air near the horizon
+        float airMass = vacuum ? 1F : (float) Math.pow(Math.max(0F, Mth.sin(elevation)), 0.35); // thicker air near the horizon
         return Math.max(0F, incidence * airMass);
     }
 
@@ -92,12 +109,12 @@ public class SolarPanelBlockEntity extends BlockEntity {
     public static void serverTick(Level level, BlockPos pos, BlockState state, SolarPanelBlockEntity be) {
         int produced = 0;
         if (level.dimensionType().hasSkyLight() && level.canSeeSky(pos.above())) {
-            float factor = irradiance(sunAngle(level, 1F))
+            float factor = irradiance(sunAngle(level, 1F), com.pizzaparker07.spacebreaker.core.env.Environment.isVacuum(level))
                     // sunlight at this body's distance from the sun, after dust storms and clouds (capped: cells overheat)
                     * (float) Math.min(MAX_SOLAR_FACTOR, com.pizzaparker07.spacebreaker.core.env.Environment.solarFactor(level, pos));
             factor *= weatherFactor(level, pos);
             // keep the fraction: far from the sun a panel makes well under 1 FE/t, and rounding would lose all of it
-            be.exactOutput = PEAK_OUTPUT * factor;
+            be.exactOutput = be.peak * factor;
             be.carry += be.exactOutput;
             produced = (int) be.carry;
             be.carry -= produced;

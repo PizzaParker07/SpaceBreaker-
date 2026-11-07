@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-07T00:01:41.847776583	Recipes
+// 1.21.1	2026-11-07T00:22:39.511909191	Recipes
 a726668da2e09e168e3b51aa526fcef734254369 data/spacebreaker/advancement/recipes/building_blocks/callistan_rock_slab.json
 517cc96e074a84c8e60b0f1e8696eddf8a3225e2 data/spacebreaker/advancement/recipes/building_blocks/callistan_rock_slab_from_callistan_rock_stonecutting.json
 6ad721d2da9ec4682f05c03935f5d2068b42a144 data/spacebreaker/advancement/recipes/building_blocks/callistan_rock_stairs.json
@@ -173,6 +173,7 @@ d13fcb6d1aed42eb49be692eae77f12fe6b777b0 data/spacebreaker/advancement/recipes/m
 d70051abb5a342baeb99a1baf6764b143b50024f data/spacebreaker/advancement/recipes/misc/rtg.json
 1654316f3dcddc5510b2d54ebcbfd15cf9096475 data/spacebreaker/advancement/recipes/misc/sabatier_reactor.json
 7574889f2c55d83c2c75a67e67546182941f1f79 data/spacebreaker/advancement/recipes/misc/silicone_seal.json
+3e94217c234312ac45559ab2d7d02ad7a837702f data/spacebreaker/advancement/recipes/misc/solar_array.json
 e9a12573164929106977b184fca64ca6943c340c data/spacebreaker/advancement/recipes/misc/solar_panel.json
 922f465d24e1fa4c2682551411417edec884573f data/spacebreaker/advancement/recipes/misc/steel_block.json
 8385501ef2e8c8431b14a4c7de5add98a56c8f7e data/spacebreaker/advancement/recipes/misc/steel_ingot_from_block.json
@@ -462,6 +463,7 @@ ff846378b3a32793c473203a0cd0110b90f4c5cd data/spacebreaker/recipe/rover.json
 cefaf3bde2b24e7cc82ec75bd68702ce876da4c7 data/spacebreaker/recipe/sabatier/methane.json
 d81445a2a314ac9c4b50be1c431200e53cc5241e data/spacebreaker/recipe/sabatier_reactor.json
 76dedfbefbadfbf37c1041e40bc3ea8a165f017f data/spacebreaker/recipe/silicone_seal.json
+fb37a874e55617c875b9d2d961ee3741b54a7f6b data/spacebreaker/recipe/solar_array.json
 52a3e40e1782f6c45b9f720070653bae1ef952df data/spacebreaker/recipe/solar_panel.json
 3d3fdc9d4e34985a0bf43163e7a0febc6c63d121 data/spacebreaker/recipe/steel_block.json
 a05dbd5fb1831d8b603d089cc53d12418498e391 data/spacebreaker/recipe/steel_ingot_from_block.json

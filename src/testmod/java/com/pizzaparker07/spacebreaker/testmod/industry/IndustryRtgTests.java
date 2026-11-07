@@ -146,6 +146,56 @@ public final class IndustryRtgTests {
         h.succeed();
     }
 
+    /** No air, no extra loss with the sun low: the Moon and stations keep more of the morning and evening. */
+    @GameTest(template = "empty")
+    public static void vacuumPanelsLoseNothingNearTheHorizon(GameTestHelper h) {
+        float low = (float) Math.toRadians(75);
+        float air = com.pizzaparker07.spacebreaker.content.machines.SolarPanelBlockEntity.irradiance(low, false);
+        float vac = com.pizzaparker07.spacebreaker.content.machines.SolarPanelBlockEntity.irradiance(low, true);
+        h.assertTrue(vac > air * 1.3F, "low sun: air " + air + " vacuum " + vac);
+        h.assertTrue(com.pizzaparker07.spacebreaker.content.machines.SolarPanelBlockEntity.irradiance(0F, true) == 1F, "noon is full output");
+        h.succeed();
+    }
+
+    /** The station array is three trackers on one tube: three times the output from one block of footprint. */
+    @GameTest(template = "empty", timeoutTicks = 100)
+    public static void solarArrayMakesThreeTimesATracker(GameTestHelper h) {
+        h.getLevel().setDayTime(6000);
+        h.setBlock(new BlockPos(1, 1, 2), MachinesModule.SOLAR_PANEL.get());
+        h.setBlock(new BlockPos(4, 1, 2), MachinesModule.SOLAR_ARRAY.get());
+        h.succeedWhen(() -> {
+            com.pizzaparker07.spacebreaker.content.machines.SolarPanelBlockEntity panel = h.getBlockEntity(new BlockPos(1, 1, 2));
+            com.pizzaparker07.spacebreaker.content.machines.SolarPanelBlockEntity array = h.getBlockEntity(new BlockPos(4, 1, 2));
+            h.assertTrue(panel.getExactOutput() > 0, "the tracker sees the sun");
+            double ratio = array.getExactOutput() / panel.getExactOutput();
+            h.assertTrue(Math.abs(ratio - 3) < 0.01, "array / tracker = " + ratio);
+            h.assertTrue(array.getEnergy().getEnergyStored() > 0, "the array stores what it makes");
+        });
+    }
+
+    /** A broken tank keeps its fluid on the item and puts it back when placed: fuel can be carried to a station. */
+    @GameTest(template = "empty", timeoutTicks = 60)
+    public static void brokenTankKeepsItsFuel(GameTestHelper h) {
+        BlockPos at = new BlockPos(2, 1, 2);
+        h.setBlock(at, MachinesModule.CRYOGENIC_TANK.get());
+        com.pizzaparker07.spacebreaker.content.machines.machine.TankBlockEntity tank = h.getBlockEntity(at);
+        tank.tank().fill(FluidsModule.LIQUID_HYDROGEN.stack(12_000), net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE);
+        h.getLevel().destroyBlock(h.absolutePos(at), true);
+        h.runAfterDelay(2, () -> {
+            var drops = h.getLevel().getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, new net.minecraft.world.phys.AABB(h.absolutePos(at)).inflate(2));
+            h.assertTrue(drops.size() == 1, "one tank item, got " + drops.size());
+            ItemStack item = drops.get(0).getItem();
+            var content = item.get(FluidsModule.FLUID_CONTENT.get());
+            h.assertTrue(content != null && content.copy().getAmount() == 12_000 && content.copy().is(FluidsModule.TAG_LH2), "contents on the item: " + content);
+            BlockPos again = new BlockPos(4, 1, 2);
+            h.setBlock(again, MachinesModule.CRYOGENIC_TANK.get());
+            com.pizzaparker07.spacebreaker.content.machines.machine.TankBlockEntity placed = h.getBlockEntity(again);
+            placed.applyComponentsFromItemStack(item);
+            h.assertTrue(placed.tank().getFluidAmount() == 12_000, "placed tank holds " + placed.tank().getFluidAmount());
+            h.succeed();
+        });
+    }
+
     private IndustryRtgTests() {
     }
 }

@@ -18,14 +18,28 @@ import net.neoforged.neoforge.client.model.data.ModelData;
 /** Renders the moving part of the tracker (panel, rails and torque tube) rotated towards the sun. */
 public class SolarPanelRenderer implements BlockEntityRenderer<SolarPanelBlockEntity> {
     public static final ModelResourceLocation HEAD_MODEL = ModelResourceLocation.standalone(Spacebreaker.id("block/solar_panel_head"));
+    public static final ModelResourceLocation ARRAY_HEAD_MODEL = ModelResourceLocation.standalone(Spacebreaker.id("block/solar_array_head"));
     private static final float PIVOT_Y = 12.5F / 16F; // must match the torque tube in solar_panel_head.json
+    private final ModelResourceLocation head;
+    private final double reach;
 
     public SolarPanelRenderer(BlockEntityRendererProvider.Context context) {
+        this(HEAD_MODEL, 0.5);
+    }
+
+    private SolarPanelRenderer(ModelResourceLocation head, double reach) {
+        this.head = head;
+        this.reach = reach;
+    }
+
+    /** The three-module station array: same pivot, a longer head reaching a block out north and south. */
+    public static SolarPanelRenderer array(BlockEntityRendererProvider.Context context) {
+        return new SolarPanelRenderer(ARRAY_HEAD_MODEL, 1.5);
     }
 
     @Override
     public void render(SolarPanelBlockEntity be, float partialTick, PoseStack pose, MultiBufferSource buffers, int light, int overlay) {
-        BakedModel model = Minecraft.getInstance().getModelManager().getModel(HEAD_MODEL);
+        BakedModel model = Minecraft.getInstance().getModelManager().getModel(head);
         pose.pushPose();
         pose.translate(0.5F, PIVOT_Y, 0.5F);
         pose.mulPose(Axis.ZP.rotation(be.getTilt(partialTick)));
@@ -38,6 +52,6 @@ public class SolarPanelRenderer implements BlockEntityRenderer<SolarPanelBlockEn
 
     @Override
     public AABB getRenderBoundingBox(SolarPanelBlockEntity be) {
-        return new AABB(be.getBlockPos()).inflate(0.5);
+        return new AABB(be.getBlockPos()).inflate(reach);
     }
 }

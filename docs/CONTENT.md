@@ -33,7 +33,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Hava Kilidi Kapısı | 2 blok, kayar kanatlar (animasyonlu); kapalıyken hava geçirmez; el ya da kızıltaşla açılır |
 | 🎨 | Yanmalı Jeneratör, Batarya Bankası, Bakır / Yüksek Gerilim Kablosu | jeneratör yalnız oksijenli havada yanar; batarya önden verir, şarj göstergesi |
 | 🎨 | Kırıcı, Elektrik Ark Fırını, Pres (hareketli koç), Petrol Pompası (çok bloklu, animasyonlu), Rafineri (çok bloklu damıtma kulesi) | |
-| 🎨 | Elektroliz Ünitesi, Kriyojenik Sıvılaştırıcı, Sıvı / Basınçlı Gaz / Kriyojenik Tank (dolum görünür), sıvı/gaz borusu (uçtan çekme modu) | |
+| 🎨 | Elektroliz Ünitesi, Kriyojenik Sıvılaştırıcı, Sıvı / Basınçlı Gaz / Kriyojenik Tank (dolum görünür; kırınca içerik eşyada kalır, yerleştirince geri gelir), sıvı/gaz borusu (uçtan çekme modu) | |
 | 🎨 | Parça Üretim Tezgâhı | `spacebreaker:fabricating` tarifi; Roket ve Giysi alanları kendi tariflerini ekler |
 | 🎨 | Yerinde üretim (ISRU): Atmosfer İşlemcisi, Sabatier Reaktörü, Regolit Isıtıcı, Buz Eritici | atmosferden gaz (Mars/Venüs CO₂, Dünya O₂, Titan CH₄); CO₂ + H₂ → metan + su; regolit ve perklorattan O₂; buzdan su, kuru buzdan CO₂; `c:regoliths`, `c:ices`, `c:dry_ices`, `c:perchlorate_soils` etiketleriyle beslenir |
 | 🎨 | Karbondioksit gazı (`c:carbon_dioxide`); güneş paneli verimi gezegenin güneşe uzaklığına göre (en fazla 3×) | |
@@ -258,6 +258,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Uraninit → Uranyum (cevher ×2, ham, ham blok, külçe, parça, blok, toz) | Dünya'da en derin (y −64…−32) ve en nadir cevher; külçe yalnız ark fırınında |
 | 🎨 | RTG Yakıt Peleti | kimyasal reaktör: 4 uranyum tozu + 500 mB sülfürik asit; etkinliği 21 oyun gününde yarıya iner (depoda da); taşınırken pelet başına ~8 mSv/gün doz (ortam radyasyon kancasıyla giysi doz sistemine eklenir) |
 | 🎨 | Radyoizotop Jeneratör (RTG) | taze peletle 40 FE/t, gece gündüz, havasız ve güneşsiz her yerde; kalkanlı gövde (içindeki pelet doz vermez); çıkış peletin etkinliğiyle azalır |
+| 🎨 | Güneş Paneli Dizisi (`spacebreaker:solar_array`) | istasyon ve karakollar için: tek blok taban, kuzey-güney 3 blok kanat, 60 FE/t tepe (3 takipçi); vakumda ufka yakın güneşte hava kaybı yok, yörüngede sürekli öğle |
 | 🎨 | Güneş paneli: "burada güneş ışığı %…" | ipucunda gezegene göre yüzde ve öğle tepe değeri, sağ tıkta anlık üretim; 1 FE/t altındaki üretim yuvarlanıp kaybolmaz, birikir |
 
 ### Araçlar (Endüstri)

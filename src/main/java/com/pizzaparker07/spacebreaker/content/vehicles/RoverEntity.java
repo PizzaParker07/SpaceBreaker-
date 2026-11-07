@@ -365,7 +365,7 @@ public class RoverEntity extends Entity {
             travelled = 0;
         }
         if (hasSolar() && level().canSeeSky(blockPosition().above())) {
-            float sun = SolarPanelBlockEntity.irradiance(SolarPanelBlockEntity.sunAngle(level(), 1F));
+            float sun = SolarPanelBlockEntity.irradiance(SolarPanelBlockEntity.sunAngle(level(), 1F), Environment.isVacuum(level()));
             gain += SOLAR_PEAK * sun * Math.min(SolarPanelBlockEntity.MAX_SOLAR_FACTOR, Environment.solarFactor(level(), blockPosition()))
                     * SolarPanelBlockEntity.weatherFactor(level(), blockPosition());
         }

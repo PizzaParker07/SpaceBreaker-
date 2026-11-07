@@ -11,6 +11,15 @@
       "entries": [
         {
           "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_components",
+              "include": [
+                "spacebreaker:fluid"
+              ],
+              "source": "block_entity"
+            }
+          ],
           "name": "spacebreaker:pressurized_tank"
         }
       ],

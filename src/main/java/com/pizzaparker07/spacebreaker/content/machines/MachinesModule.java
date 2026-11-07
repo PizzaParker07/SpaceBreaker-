@@ -111,6 +111,17 @@ public final class MachinesModule implements SbModule {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SolarPanelBlockEntity>> SOLAR_PANEL_BE =
             BLOCK_ENTITIES.register("solar_panel", () -> BlockEntityType.Builder.of(SolarPanelBlockEntity::new, SOLAR_PANEL.get()).build(null));
 
+    public static final DeferredBlock<SolarArrayBlock> SOLAR_ARRAY = BLOCKS.registerBlock("solar_array",
+            SolarArrayBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLUE).strength(2.0F, 6.0F)
+                    .sound(SoundType.METAL).noOcclusion().requiresCorrectToolForDrops());
+    public static final DeferredItem<BlockItem> SOLAR_ARRAY_ITEM = ITEMS.registerSimpleBlockItem(SOLAR_ARRAY);
+    @SuppressWarnings("DataFlowIssue")
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SolarPanelBlockEntity>> SOLAR_ARRAY_BE =
+            BLOCK_ENTITIES.register("solar_array", () -> BlockEntityType.Builder.<SolarPanelBlockEntity>of(
+                    (pos, state) -> new SolarPanelBlockEntity(MachinesModule.SOLAR_ARRAY_BE.get(), pos, state, SolarArrayBlock.PEAK_OUTPUT),
+                    SOLAR_ARRAY.get()).build(null));
+
     public static final MachineEntry<MachineBlock, CombustionGeneratorBlockEntity> COMBUSTION_GENERATOR =
             machine("combustion_generator", CombustionGeneratorBlockEntity::new, null, 13);
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CombustionGeneratorBlockEntity>> COMBUSTION_GENERATOR_BE = COMBUSTION_GENERATOR.type();
@@ -335,7 +346,7 @@ public final class MachinesModule implements SbModule {
         COMPONENTS.register(modBus);
         modBus.addListener(MachinesModule::capabilities);
         com.pizzaparker07.spacebreaker.core.env.Environment.addRadiationSource(RtgFuelPelletItem::carriedDose);
-        SbTabs.Tab tab = SbTabs.MACHINES.icon(SOLAR_PANEL_ITEM).add(SOLAR_PANEL_ITEM);
+        SbTabs.Tab tab = SbTabs.MACHINES.icon(SOLAR_PANEL_ITEM).add(SOLAR_PANEL_ITEM).add(SOLAR_ARRAY_ITEM);
         for (MachineEntry<?, ?> m : MACHINES) {
             tab.add(m.item());
         }
@@ -347,6 +358,8 @@ public final class MachinesModule implements SbModule {
     @SuppressWarnings({"unchecked", "rawtypes"})
     private static void capabilities(RegisterCapabilitiesEvent event) {
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, SOLAR_PANEL_BE.get(),
+                (be, side) -> side != Direction.UP ? be.getEnergy() : null);
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, SOLAR_ARRAY_BE.get(),
                 (be, side) -> side != Direction.UP ? be.getEnergy() : null);
         for (MachineEntry<?, ?> m : MACHINES) {
             BlockEntityType type = m.type().get();
@@ -374,6 +387,7 @@ public final class MachinesModule implements SbModule {
     public void addTranslations(Lang lang) {
         lang.add("itemGroup.spacebreaker.machines", "Spacebreaker: Machines", "Spacebreaker: Makineler");
         lang.block(SOLAR_PANEL, "Solar Tracker", "Güneş Takipli Panel");
+        lang.block(SOLAR_ARRAY, "Solar Array", "Güneş Paneli Dizisi");
         lang.add("tooltip.spacebreaker.solar_panel", "Follows the sun. Peak output: %s FE/t", "Güneşi takip eder. En yüksek üretim: %s FE/t");
         lang.add("tooltip.spacebreaker.solar_panel.here", "Sunlight here: %s%% of Earth's (noon peak %s FE/t)",
                 "Burada güneş ışığı: Dünya'nın %%%s'i (öğle tepe değeri %s FE/t)");
@@ -385,16 +399,26 @@ public final class MachinesModule implements SbModule {
     @Override
     public void addBlockLoot(SbBlockLoot loot) {
         loot.self(SOLAR_PANEL.get());
+        loot.self(SOLAR_ARRAY.get());
         for (MachineEntry<?, ?> m : MACHINES) {
             loot.self(m.block().get());
         }
         CONDUITS.forEach(c -> loot.self(c.get()));
-        TANKS.forEach(t -> loot.self(t.get()));
+        // tanks keep what is in them: carry fuel to a station in its tank instead of canister by canister
+        TANKS.forEach(t -> loot.custom(t.get(), b -> net.minecraft.world.level.storage.loot.LootTable.lootTable()
+                .withPool(net.minecraft.world.level.storage.loot.LootPool.lootPool()
+                        .setRolls(net.minecraft.world.level.storage.loot.providers.number.ConstantValue.exactly(1))
+                        .add(net.minecraft.world.level.storage.loot.entries.LootItem.lootTableItem(b)
+                                .apply(net.minecraft.world.level.storage.loot.functions.CopyComponentsFunction
+                                        .copyComponents(net.minecraft.world.level.storage.loot.functions.CopyComponentsFunction.Source.BLOCK_ENTITY)
+                                        .include(com.pizzaparker07.spacebreaker.content.fluids.FluidsModule.FLUID_CONTENT.get())))
+                        .when(net.minecraft.world.level.storage.loot.predicates.ExplosionCondition.survivesExplosion()))));
     }
 
     @Override
     public void addTags(SbTags tags) {
         tags.block(BlockTags.MINEABLE_WITH_PICKAXE, SOLAR_PANEL.get());
+        tags.block(BlockTags.MINEABLE_WITH_PICKAXE, SOLAR_ARRAY.get());
         for (MachineEntry<?, ?> m : MACHINES) {
             tags.block(BlockTags.MINEABLE_WITH_PICKAXE, m.block().get());
         }

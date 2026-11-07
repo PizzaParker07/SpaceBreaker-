@@ -1,0 +1,272 @@
+{
+  "parent": "minecraft:block/block",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "cells": "spacebreaker:block/solar_panel_cells",
+    "back": "spacebreaker:block/solar_panel_back",
+    "frame": "spacebreaker:block/solar_panel_frame",
+    "steel": "spacebreaker:block/solar_panel_steel",
+    "base": "spacebreaker:block/solar_panel_base_top",
+    "housing": "spacebreaker:block/solar_panel_housing",
+    "particle": "spacebreaker:block/solar_panel_cells"
+  },
+  "elements": [
+    {
+      "from": [
+        2,
+        0,
+        2
+      ],
+      "to": [
+        14,
+        2,
+        14
+      ],
+      "faces": {
+        "north": {
+          "texture": "#steel",
+          "uv": [
+            2,
+            14,
+            14,
+            16
+          ]
+        },
+        "south": {
+          "texture": "#steel",
+          "uv": [
+            2,
+            14,
+            14,
+            16
+          ]
+        },
+        "east": {
+          "texture": "#steel",
+          "uv": [
+            2,
+            14,
+            14,
+            16
+          ]
+        },
+        "west": {
+          "texture": "#steel",
+          "uv": [
+            2,
+            14,
+            14,
+            16
+          ]
+        },
+        "up": {
+          "texture": "#base",
+          "uv": [
+            2,
+            2,
+            14,
+            14
+          ]
+        },
+        "down": {
+          "texture": "#steel",
+          "uv": [
+            2,
+            2,
+            14,
+            14
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        7,
+        2,
+        7
+      ],
+      "to": [
+        9,
+        10.5,
+        9
+      ],
+      "faces": {
+        "north": {
+          "texture": "#steel",
+          "uv": [
+            7,
+            5.5,
+            9,
+            14
+          ]
+        },
+        "south": {
+          "texture": "#steel",
+          "uv": [
+            7,
+            5.5,
+            9,
+            14
+          ]
+        },
+        "east": {
+          "texture": "#steel",
+          "uv": [
+            7,
+            5.5,
+            9,
+            14
+          ]
+        },
+        "west": {
+          "texture": "#steel",
+          "uv": [
+            7,
+            5.5,
+            9,
+            14
+          ]
+        },
+        "down": {
+          "texture": "#steel"
+        }
+      }
+    },
+    {
+      "from": [
+        9,
+        6,
+        6.5
+      ],
+      "to": [
+        12,
+        9,
+        9.5
+      ],
+      "faces": {
+        "north": {
+          "texture": "#housing",
+          "uv": [
+            3,
+            4,
+            6,
+            7
+          ]
+        },
+        "south": {
+          "texture": "#housing",
+          "uv": [
+            3,
+            4,
+            6,
+            7
+          ]
+        },
+        "east": {
+          "texture": "#housing",
+          "uv": [
+            3,
+            4,
+            9,
+            10
+          ]
+        },
+        "west": {
+          "texture": "#steel",
+          "uv": [
+            0,
+            0,
+            3,
+            3
+          ]
+        },
+        "up": {
+          "texture": "#steel",
+          "uv": [
+            9,
+            6,
+            12,
+            9
+          ]
+        },
+        "down": {
+          "texture": "#steel",
+          "uv": [
+            9,
+            6,
+            12,
+            9
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        6.5,
+        10.5,
+        6.5
+      ],
+      "to": [
+        9.5,
+        11.5,
+        9.5
+      ],
+      "faces": {
+        "north": {
+          "texture": "#steel",
+          "uv": [
+            6,
+            4,
+            9,
+            5
+          ]
+        },
+        "south": {
+          "texture": "#steel",
+          "uv": [
+            6,
+            4,
+            9,
+            5
+          ]
+        },
+        "east": {
+          "texture": "#steel",
+          "uv": [
+            6,
+            4,
+            9,
+            5
+          ]
+        },
+        "west": {
+          "texture": "#steel",
+          "uv": [
+            6,
+            4,
+            9,
+            5
+          ]
+        },
+        "up": {
+          "texture": "#steel",
+          "uv": [
+            6,
+            4,
+            9,
+            5
+          ]
+        },
+        "down": {
+          "texture": "#steel",
+          "uv": [
+            6,
+            4,
+            9,
+            5
+          ]
+        }
+      }
+    }
+  ]
+}

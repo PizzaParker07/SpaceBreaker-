@@ -56,6 +56,31 @@ public class TankBlockEntity extends BlockEntity {
         tank.readFromNBT(registries, tag.getCompound("tank"));
     }
 
+    // ------------------------------------------------------------------ keep the contents on the item when broken
+
+    @Override
+    protected void applyImplicitComponents(DataComponentInput input) {
+        super.applyImplicitComponents(input);
+        net.neoforged.neoforge.fluids.SimpleFluidContent content = input.get(com.pizzaparker07.spacebreaker.content.fluids.FluidsModule.FLUID_CONTENT.get());
+        if (content != null) {
+            tank.setFluid(content.copy());
+        }
+    }
+
+    @Override
+    protected void collectImplicitComponents(net.minecraft.core.component.DataComponentMap.Builder components) {
+        super.collectImplicitComponents(components);
+        if (!tank.isEmpty()) {
+            components.set(com.pizzaparker07.spacebreaker.content.fluids.FluidsModule.FLUID_CONTENT.get(),
+                    net.neoforged.neoforge.fluids.SimpleFluidContent.copyOf(tank.getFluid()));
+        }
+    }
+
+    @Override
+    public void removeComponentsFromTag(CompoundTag tag) {
+        tag.remove("tank");
+    }
+
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
         return saveWithoutMetadata(registries);

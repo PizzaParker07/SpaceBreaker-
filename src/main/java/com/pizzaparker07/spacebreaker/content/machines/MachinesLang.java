@@ -69,6 +69,7 @@ final class MachinesLang {
         lang.add("tooltip.spacebreaker.electrolyzer", "Hydrogen leaves on the left, oxygen on the right (seen from the front)",
                 "Hidrojen soldan, oksijen sağdan çıkar (önden bakınca)");
         lang.add("tooltip.spacebreaker.generator", "%s FE/t. Needs breathable air", "%s FE/t. Solunabilir hava gerekir");
+        lang.add("tooltip.spacebreaker.tank.contents", "Contains %s: %s mB (kept when broken)", "İçinde %s: %s mB (kırınca korunur)");
         name(lang, MachinesModule.RTG, "Radioisotope Generator (RTG)", "Radyoizotop Jeneratör (RTG)");
         lang.add("tooltip.spacebreaker.rtg", "Up to %s FE/t, day and night, anywhere. Shielded casing",
                 "En fazla %s FE/t; gece gündüz, her yerde. Kalkanlı gövde");

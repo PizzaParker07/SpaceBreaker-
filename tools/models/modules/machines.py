@@ -63,5 +63,42 @@ def solar_panel():
         }})
 
 
+def solar_array_head_elements():
+    """Three tracker modules on one long torque tube (z -16..32), same pivot as the single tracker."""
+    sides = ('north', 'south', 'east', 'west')
+    els = [cube([7, 11.5, -16], [9, 13.5, 32], 'steel', per_face={
+        'north': [7, 2, 9, 4], 'south': [7, 2, 9, 4], 'east': [0, 6, 16, 8], 'west': [0, 6, 16, 8], 'up': [7, 0, 9, 16], 'down': [7, 0, 9, 16]})]
+    for z0 in (-16, 0, 16):
+        els += [
+            cube([0.5, 13.5, z0 + 2.5], [15.5, 14, z0 + 4], 'frame', per_face={s: [0, 0, 15, 0.5] for s in sides} | {'up': [0, 0, 15, 1.5], 'down': [0, 0, 15, 1.5]}),
+            cube([0.5, 13.5, z0 + 12], [15.5, 14, z0 + 13.5], 'frame', per_face={s: [0, 0, 15, 0.5] for s in sides} | {'up': [0, 0, 15, 1.5], 'down': [0, 0, 15, 1.5]}),
+            cube([0, 14, z0], [16, 15, z0 + 16], {'up': 'cells', 'down': 'back', **{s: 'frame' for s in sides}},
+                 per_face={'up': [0, 0, 16, 16], 'down': [0, 0, 16, 16], **{s: [0, 0, 16, 1] for s in sides}}),
+        ]
+    return els
+
+
+def solar_array():
+    write('models/block/solar_array_base.json', {
+        'parent': 'minecraft:block/block', 'render_type': 'minecraft:cutout',
+        'textures': SOLAR_TEX, 'elements': solar_base_elements()})
+    write('models/block/solar_array_head.json', {
+        'parent': 'minecraft:block/block', 'render_type': 'minecraft:cutout', 'ambientocclusion': False,
+        'textures': SOLAR_TEX, 'elements': solar_array_head_elements()})
+    write('blockstates/solar_array.json', {'variants': {'': {'model': b('solar_array_base')}}})
+    write('models/item/solar_array.json', {
+        'parent': 'minecraft:block/block', 'textures': SOLAR_TEX,
+        'elements': solar_base_elements() + solar_array_head_elements(),
+        'display': {
+            'gui': {'rotation': [30, 225, 0], 'translation': [0, -1, 0], 'scale': [0.3, 0.3, 0.3]},
+            'ground': {'rotation': [0, 0, 0], 'translation': [0, 3, 0], 'scale': [0.15, 0.15, 0.15]},
+            'fixed': {'rotation': [0, 0, 0], 'translation': [0, 0, 0], 'scale': [0.3, 0.3, 0.3]},
+            'thirdperson_righthand': {'rotation': [75, 45, 0], 'translation': [0, 2.5, 0], 'scale': [0.2, 0.2, 0.2]},
+            'firstperson_righthand': {'rotation': [0, 45, 0], 'translation': [0, 0, 0], 'scale': [0.25, 0.25, 0.25]},
+            'firstperson_lefthand': {'rotation': [0, 225, 0], 'translation': [0, 0, 0], 'scale': [0.25, 0.25, 0.25]},
+        }})
+
+
 def generate():
     solar_panel()
+    solar_array()

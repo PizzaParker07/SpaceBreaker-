@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "c:plates/aluminum_lithium"
+    },
+    "C": {
+      "item": "spacebreaker:advanced_circuit"
+    },
+    "P": {
+      "item": "spacebreaker:solar_panel"
+    },
+    "R": {
+      "tag": "c:rods/steel"
+    }
+  },
+  "pattern": [
+    "PPP",
+    "ARA",
+    " C "
+  ],
+  "result": {
+    "count": 1,
+    "id": "spacebreaker:solar_array"
+  }
+}
