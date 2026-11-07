@@ -413,6 +413,33 @@ public final class MoonLifeGameTests {
         helper.succeed();
     }
 
+    /** Micrometeorites wear an EVA suit piece through the suit's wear model, but never past 75 %: a shower never makes it leak. */
+    @GameTest(template = EMPTY)
+    public static void micrometeoritesNeverHoleASuit(GameTestHelper helper) {
+        var player = helper.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        net.minecraft.world.item.ItemStack suit = null;
+        for (var item : net.minecraft.core.registries.BuiltInRegistries.ITEM) {
+            if (item instanceof com.pizzaparker07.spacebreaker.content.suit.SpaceSuitItem s && s.getEquipmentSlot()
+                    == net.minecraft.world.entity.EquipmentSlot.CHEST) {
+                suit = new net.minecraft.world.item.ItemStack(item);
+                break;
+            }
+        }
+        helper.assertTrue(suit != null && suit.isDamageableItem(), "an EVA suit torso to test with");
+        player.setItemSlot(net.minecraft.world.entity.EquipmentSlot.CHEST, suit);
+        var rnd = RandomSource.create(4);
+        for (int i = 0; i < 2000; i++) {
+            player.setHealth(player.getMaxHealth());
+            player.invulnerableTime = 0;
+            com.pizzaparker07.spacebreaker.content.worldgen.MeteorShowers.strike(player, rnd);
+        }
+        var worn = player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.CHEST);
+        helper.assertTrue(!worn.isEmpty() && worn.getDamageValue() > 0, "the suit took wear: " + worn);
+        helper.assertTrue(worn.getDamageValue() <= Math.floor(worn.getMaxDamage() * com.pizzaparker07.spacebreaker.content.worldgen.MeteorShowers.SUIT_WEAR_LIMIT),
+                "never past 75 %: " + worn.getDamageValue() + " / " + worn.getMaxDamage());
+        helper.succeed();
+    }
+
     /** Ground height at a far-away test spot, with its chunk loaded first (an unloaded chunk reads as the world floor). */
     private static int surface(ServerLevel level, BlockPos pos) {
         level.getChunk(pos);

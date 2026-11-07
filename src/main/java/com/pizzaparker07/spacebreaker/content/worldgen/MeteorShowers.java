@@ -46,6 +46,8 @@ public final class MeteorShowers {
     public static final float SUITED_DAMAGE = 0.5F;
     /** Most health one shower can take from one player (3 hearts), so it never becomes a death trap. */
     public static final float MAX_PER_SHOWER = 6F;
+    /** Showers wear an EVA suit piece at most to this share of its durability: it never leaks from them. */
+    public static final double SUIT_WEAR_LIMIT = 0.75;
     private static final Map<ServerLevel, State> STATES = new WeakHashMap<>();
 
     /** Per-level schedule: the next shower starts at {@code start} and lasts {@code duration}. */
@@ -121,12 +123,16 @@ public final class MeteorShowers {
         for (int i = 0; i < 4; i++) {
             EquipmentSlot slot = armour[(random.nextInt(4) + i) % 4];
             ItemStack piece = entity.getItemBySlot(slot);
-            // EVA suit pieces are left alone until the suit's own wear model takes over (they must never leak from this)
-            if (!piece.isEmpty() && piece.isDamageableItem()
-                    && !(piece.getItem() instanceof com.pizzaparker07.spacebreaker.content.suit.SpaceSuitItem)) {
-                piece.hurtAndBreak(WEAR, entity, slot);
-                break;
+            if (piece.isEmpty() || !piece.isDamageableItem()) {
+                continue;
             }
+            if (piece.getItem() instanceof com.pizzaparker07.spacebreaker.content.suit.SpaceSuitItem) {
+                // EVA suits wear through the suit's own model, never far enough to leak from a shower
+                com.pizzaparker07.spacebreaker.content.suit.SuitWear.wearPiece(entity, slot, WEAR, SUIT_WEAR_LIMIT);
+            } else {
+                piece.hurtAndBreak(WEAR, entity, slot);
+            }
+            break;
         }
         if (entity.level() instanceof ServerLevel server) {
             server.sendParticles(ParticleTypes.CRIT, entity.getX(), entity.getEyeY(), entity.getZ(), 6, 0.2, 0.2, 0.2, 0.3);
