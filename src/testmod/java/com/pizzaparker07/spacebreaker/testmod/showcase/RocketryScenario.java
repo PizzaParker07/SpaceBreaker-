@@ -137,6 +137,73 @@ final class RocketryScenario implements ShowcaseScenario {
         RocketryShowcaseClient.openMapWhenRiding = true;
     }
 
+    /**
+     * A habitat module with a solar panel on its roof, on the night or the day side of the orbit. After the panel
+     * has run a while its output is written to the log and shown over it, so the shadow can be checked without the
+     * picture.
+     */
+    private static void orbitPanelShot(ServerPlayer p, boolean night) {
+        clearScene(p);
+        ServerLevel orbit = p.server.getLevel(Location.EARTH_ORBIT.dimension());
+        BlockPos c = BlockPos.containing(night ? 200 : 260, RocketEntity.ORBIT_Y, 0);
+        net.minecraft.core.Direction east = net.minecraft.core.Direction.EAST;
+        com.pizzaparker07.spacebreaker.content.rocketry.station.HabitatKitItem.unfold(orbit, c, east);
+        orbit.setBlock(c.above(3), net.minecraft.world.level.block.Blocks.SEA_LANTERN.defaultBlockState(), 3);
+        BlockPos panel = c.offset(2, com.pizzaparker07.spacebreaker.content.rocketry.station.HabitatKitItem.HEIGHT, 2);
+        orbit.setBlock(panel, com.pizzaparker07.spacebreaker.content.machines.MachinesModule.SOLAR_PANEL.get().defaultBlockState(), 3);
+        // move the clock to the far side of the orbit (Earth's shadow) or to orbital noon
+        long now = p.server.overworld().getGameTime();
+        long orbitTicks = (long) com.pizzaparker07.spacebreaker.content.rocketry.nav.OrbitDaylight.ORBIT_TICKS;
+        long time = (now / orbitTicks + 1) * orbitTicks + (night ? orbitTicks / 2 : 0);
+        if (p.server.overworld().getLevelData() instanceof net.minecraft.world.level.storage.PrimaryLevelData data) {
+            data.setGameTime(time);
+        }
+        toDimension(p, Location.EARTH_ORBIT, c.getX() + 6.5, RocketEntity.ORBIT_Y + 8.5, 7.5, 150F, 30F);
+        later(p.server, 60, () -> {
+            double sun = com.pizzaparker07.spacebreaker.core.env.Environment.solarFactor(orbit, panel);
+            double out = orbit.getBlockEntity(panel) instanceof com.pizzaparker07.spacebreaker.content.machines.SolarPanelBlockEntity be ? be.getExactOutput() : -1;
+            Spacebreaker.LOGGER.info("[showcase] orbit {}: sunlit {} solarFactor {} panel {} FE/t", night ? "night" : "day",
+                    String.format(java.util.Locale.ROOT, "%.3f", com.pizzaparker07.spacebreaker.content.rocketry.nav.OrbitDaylight.sunlit(orbit, panel)),
+                    String.format(java.util.Locale.ROOT, "%.3f", sun), String.format(java.util.Locale.ROOT, "%.2f", out));
+            var label = net.minecraft.world.entity.EntityType.TEXT_DISPLAY.create(orbit);
+            if (label != null) {
+                label.moveTo(panel.getX() + 0.5, panel.getY() + 1.4, panel.getZ() + 0.5);
+                var tag = label.saveWithoutId(new net.minecraft.nbt.CompoundTag());
+                tag.putString("text", net.minecraft.network.chat.Component.Serializer.toJson(
+                        net.minecraft.network.chat.Component.literal(String.format(java.util.Locale.ROOT, "%.1f FE/t", out)), orbit.registryAccess()));
+                tag.putString("billboard", "center");
+                var bright = new net.minecraft.nbt.CompoundTag();
+                bright.putInt("sky", 15);
+                bright.putInt("block", 15);
+                tag.put("brightness", bright);
+                label.load(tag);
+                orbit.addFreshEntity(label);
+            }
+        });
+    }
+
+    private static final java.util.List<long[]> LATER_AT = new java.util.ArrayList<>();
+    private static final java.util.List<Runnable> LATER = new java.util.ArrayList<>();
+    private static boolean laterHooked;
+
+    /** Runs a server task this many ticks from now. */
+    private static void later(net.minecraft.server.MinecraftServer server, int ticks, Runnable task) {
+        if (!laterHooked) {
+            laterHooked = true;
+            net.neoforged.neoforge.common.NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.tick.ServerTickEvent.Post e) -> {
+                for (int i = LATER.size() - 1; i >= 0; i--) {
+                    if (e.getServer().getTickCount() >= LATER_AT.get(i)[0]) {
+                        Runnable r = LATER.remove(i);
+                        LATER_AT.remove(i);
+                        r.run();
+                    }
+                }
+            });
+        }
+        LATER_AT.add(new long[]{server.getTickCount() + ticks});
+        LATER.add(task);
+    }
+
     private static void clearScene(ServerPlayer player) {
         player.stopRiding();
         for (RocketEntity r : scene) {
@@ -404,23 +471,8 @@ final class RocketryScenario implements ShowcaseScenario {
                             com.pizzaparker07.spacebreaker.content.rocketry.station.HabitatKitItem.port(c, east), "PizzaParker07");
                     mapShot(p, Location.EARTH_ORBIT.body(), true);
                 }, null));
-        s.add(new Shot("37_orbit_night", 6000, 0, 0, 0, 0F, 0F, true, fp, 140,
-                p -> {
-                    clearScene(p);
-                    ServerLevel orbit = p.server.getLevel(Location.EARTH_ORBIT.dimension());
-                    BlockPos c = BlockPos.containing(200, RocketEntity.ORBIT_Y, 0);
-                    net.minecraft.core.Direction east = net.minecraft.core.Direction.EAST;
-                    com.pizzaparker07.spacebreaker.content.rocketry.station.HabitatKitItem.unfold(orbit, c, east);
-                    orbit.setBlock(c.above(3), net.minecraft.world.level.block.Blocks.SEA_LANTERN.defaultBlockState(), 3);
-                    // the far side of the orbit: the station is in Earth's shadow
-                    long now = p.server.overworld().getGameTime();
-                    long orbitTicks = (long) com.pizzaparker07.spacebreaker.content.rocketry.nav.OrbitDaylight.ORBIT_TICKS;
-                    long night = (now / orbitTicks + 1) * orbitTicks + orbitTicks / 2;
-                    if (p.server.overworld().getLevelData() instanceof net.minecraft.world.level.storage.PrimaryLevelData data) {
-                        data.setGameTime(night);
-                    }
-                    toDimension(p, Location.EARTH_ORBIT, 214.5, RocketEntity.ORBIT_Y + 5.5, 12.5, 135F, 15F);
-                }, null));
+        s.add(new Shot("37_orbit_night", 6000, 0, 0, 0, 0F, 0F, true, fp, 160, p -> orbitPanelShot(p, true), null));
+        s.add(new Shot("38_orbit_day", 6000, 0, 0, 0, 0F, 0F, true, fp, 160, p -> orbitPanelShot(p, false), null));
         s.add(new Shot("31_nearby_stars", 6000, 0, 0, 0, 0F, 0F, false, fp, 120,
                 p -> {
                     RocketryShowcaseClient.star = "Alpha Centauri";

@@ -844,6 +844,10 @@ public final class RocketryGameTests {
                 .is(RocketryModule.STATION_BUNK.get()), "a bunk inside");
         helper.assertTrue(level.getBlockState(centre.above(com.pizzaparker07.spacebreaker.content.rocketry.station.HabitatKitItem.HEIGHT))
                 .is(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.SOLAR_ARRAY.get()), "a solar array on the roof");
+        helper.assertTrue(level.getBlockState(com.pizzaparker07.spacebreaker.content.rocketry.station.HabitatKitItem.battery(centre))
+                .is(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.BATTERY_BANK.block().get()), "a battery bank under the array, for the night");
+        helper.assertTrue(level.getBlockState(com.pizzaparker07.spacebreaker.content.rocketry.station.HabitatKitItem.battery(centre).below())
+                .is(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.COPPER_CABLE.get()), "a cable end under the battery");
         // the distributor finds a closed room: hull, windows, port and the shut airlock keep the air in
         helper.succeedWhen(() -> {
             var be = (com.pizzaparker07.spacebreaker.content.suit.block.OxygenDistributorBlockEntity) level.getBlockEntity(dist);
@@ -900,35 +904,49 @@ public final class RocketryGameTests {
     }
 
     // own batch: the rocket flies in from outside its port, and a neighbouring test clearing its area must not catch it
-    @GameTest(template = EMPTY, timeoutTicks = 300, batch = "rocketry_docking")
+    @GameTest(template = EMPTY, timeoutTicks = 600, batch = "rocketry_docking")
     public static void dockingApproach(GameTestHelper helper) {
         var level = helper.getLevel();
-        BlockPos port = helper.absolutePos(new BlockPos(1, 30, 2));
+        // a sideways port puts the capsule level with the hatch
+        BlockPos side = helper.absolutePos(new BlockPos(1, 30, 2));
+        net.minecraft.world.phys.Vec3 beside = RocketEntity.dockPoint(side, Direction.EAST, 20, 1.5);
+        helper.assertTrue(beside.y + 20 > side.getY() && beside.y < side.getY() && beside.x > side.getX() + 1, "beside the hatch, capsule level with it");
+        // the approach itself onto an upward port, flying straight down its column (stays in the test's chunk)
+        BlockPos port = helper.absolutePos(new BlockPos(2, 1, 2));
         level.setBlock(port, RocketryModule.DOCKING_PORT.get().defaultBlockState()
-                .setValue(com.pizzaparker07.spacebreaker.content.rocketry.station.DockingPortBlock.FACING, Direction.EAST), 3);
+                .setValue(com.pizzaparker07.spacebreaker.content.rocketry.station.DockingPortBlock.FACING, Direction.UP), 3);
         var ports = com.pizzaparker07.spacebreaker.content.rocketry.station.DockingPorts.get(level);
-        helper.assertTrue(ports.nearest(port.getCenter(), p -> true).filter(p -> p.pos().equals(port) && p.facing() == Direction.EAST).isPresent(),
+        helper.assertTrue(ports.nearest(port.getCenter(), p -> true).filter(p -> p.pos().equals(port) && p.facing() == Direction.UP).isPresent(),
                 "the port registers itself for arriving rockets");
-        RocketEntity rocket = RocketEntity.create(level, RocketryModule.MOON_ROCKET, port.getCenter(), 0F);
+        // keep the chunk ticking and let the rocket settle in before the approach starts
+        net.minecraft.world.level.ChunkPos chunk = new net.minecraft.world.level.ChunkPos(port);
+        level.setChunkForced(chunk.x, chunk.z, true);
+        RocketEntity rocket = RocketEntity.create(level, RocketryModule.MOON_ROCKET, port.getCenter().add(0, 1, 0), 0F);
         level.addFreshEntity(rocket);
         rocket.stageScene(FlightState.ORBIT, 0, 0, false);
-        rocket.approachPort(port, Direction.EAST, 6);
-        net.minecraft.world.phys.Vec3 end = RocketEntity.dockPoint(port, Direction.EAST, rocket.getBbHeight(), rocket.getBbWidth());
-        helper.assertTrue(rocket.docking() && !rocket.docked() && !rocket.canDismount(), "still flying in: nobody steps out");
-        helper.assertTrue(rocket.position().distanceTo(end) > 5.9, "starts out from the port");
-        helper.assertTrue(end.y + rocket.getBbHeight() > port.getY() && end.y < port.getY(), "the capsule ends up level with the hatch");
-        double[] last = {rocket.position().distanceTo(end)};
+        net.minecraft.world.phys.Vec3 end = RocketEntity.dockPoint(port, Direction.UP, rocket.getBbHeight(), rocket.getBbWidth());
+        int[] ticks = {0};
+        double[] last = {Double.MAX_VALUE};
         helper.onEachTick(() -> {
-            double d = rocket.position().distanceTo(end);
-            helper.assertTrue(d <= last[0] + 1e-6, "always closing in");
-            last[0] = d;
+            if (++ticks[0] == 10) {
+                rocket.approachPort(port, Direction.UP, 6);
+                helper.assertTrue(rocket.docking() && !rocket.docked() && !rocket.canDismount(), "still flying in: nobody steps out");
+                helper.assertTrue(rocket.position().distanceTo(end) > 5.9, "starts out from the port");
+            }
+            if (ticks[0] > 10) {
+                double d = rocket.position().distanceTo(end);
+                helper.assertTrue(d <= last[0] + 1e-6, "always closing in");
+                last[0] = d;
+            }
         });
         helper.succeedWhen(() -> {
-            helper.assertFalse(rocket.docking(), "approach finished");
+            helper.assertTrue(ticks[0] > 10, "waiting for the rocket to settle");
+            helper.assertFalse(rocket.docking(), "approach finished: " + rocket.position().distanceTo(end));
             helper.assertTrue(rocket.position().distanceTo(end) < 0.01 && rocket.docked() && rocket.canDismount(), "latched on");
             level.removeBlock(port, false);
             helper.assertTrue(ports.nearest(port.getCenter(), p -> p.pos().equals(port)).isEmpty(), "a broken port leaves the list");
             rocket.discard();
+            level.setChunkForced(chunk.x, chunk.z, false);
         });
     }
 
@@ -1007,6 +1025,7 @@ public final class RocketryGameTests {
             BlockPos eyes = BlockPos.containing(crew.getEyePosition());
             helper.assertTrue(RocketEntity.cabinAir(level, eyes), "seated in the capsule, the crew breathes cabin air (no suit)");
             helper.assertTrue(com.pizzaparker07.spacebreaker.core.env.Environment.canBreathe(level, eyes), "the environment knows it");
+            helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.SuitEvents.pressurisedAt(crew), "the suit HUD sees a pressurised cabin");
             rocket.ejectPassengers();
             crew.moveTo(rocket.position().add(4, 0, 0));
             helper.runAfterDelay(1, () -> {

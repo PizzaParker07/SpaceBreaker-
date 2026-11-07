@@ -1543,7 +1543,7 @@
   "tooltip.spacebreaker.fluid_amount": "%s: %s / %s mB",
   "tooltip.spacebreaker.generator": "%s FE/t. Solunabilir hava gerekir",
   "tooltip.spacebreaker.guide_book": "Bilmen gereken her şey, resimli",
-  "tooltip.spacebreaker.habitat_kit": "Boşlukta kullan: hava kilidi, pencereler, yanaşma portu, ranza ve güneş paneli dizisiyle kapalı 7×5×7 bir oda açar",
+  "tooltip.spacebreaker.habitat_kit": "Boşlukta kullan: hava kilidi, pencereler, yanaşma portu, ranza, güneş paneli dizisi ve batarya bankasıyla kapalı 7×5×7 bir oda açar",
   "tooltip.spacebreaker.habitat_kit.air": "Havayla doldurmak için dağıtıcıya bir oksijen tüpü tak",
   "tooltip.spacebreaker.hologram.blueprint": "Yansıtılan: %s",
   "tooltip.spacebreaker.hologram.hint1": "Kullan: yapı seç · bloğa kullan: yansıtmayı yerleştir",

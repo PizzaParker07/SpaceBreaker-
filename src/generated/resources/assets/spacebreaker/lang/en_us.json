@@ -1543,7 +1543,7 @@
   "tooltip.spacebreaker.fluid_amount": "%s: %s / %s mB",
   "tooltip.spacebreaker.generator": "%s FE/t. Needs breathable air",
   "tooltip.spacebreaker.guide_book": "Everything you need to know, illustrated",
-  "tooltip.spacebreaker.habitat_kit": "Use in empty space: unfolds a sealed 7×5×7 room with an airlock, windows, docking port, bunk and a solar array",
+  "tooltip.spacebreaker.habitat_kit": "Use in empty space: unfolds a sealed 7×5×7 room with an airlock, windows, docking port, bunk, a solar array and a battery bank",
   "tooltip.spacebreaker.habitat_kit.air": "Put an oxygen tank in the distributor to fill it with air",
   "tooltip.spacebreaker.hologram.blueprint": "Projecting: %s",
   "tooltip.spacebreaker.hologram.hint1": "Use: choose a structure · use on a block: place the projection",
