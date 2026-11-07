@@ -319,6 +319,23 @@ flight between dimensions, rovers being driven, and client-side frame time.
   area; a freshly added entity can be missing from the area query for a tick). The failure message names the kind that
   changed. Two full runs green.
 
+## Propellant density what-if (2026-11-07, 1.21.1 @ 66b77afa)
+
+Rocketry asked whether scaling the propellant a tank holds by the fuel's density is safe for progression. New
+`qa/DensityWhatIfTests` (runs only with `-Dspacebreaker.qa.densityWhatIf=true`) re-runs the whole model per option:
+
+| option | goals | techs | grand_tour | round-trip worlds | Io | others (Mercury … Charon) | upper stage chosen |
+|---|---|---|---|---|---|---|---|
+| A: no factor (today) | 4/4 | 87/87 | ✅ | 40 | 16 | 16 (Vesta 10) | hydrolox + **NTR** everywhere outside Mars |
+| B: realistic (methalox 0.81, hydrolox 0.35, NTR 0.07), today's tanks | 4/4 | 87/87 | ✅ | 40 | 21 | 16 | methalox/kerosene, often refuelling at the target; **NTR never used** |
+| C: square root (0.90 / 0.59 / 0.26) | 4/4 | 87/87 | ✅ | 40 | 21 | 16 | methalox + hydrolox vacuum stages; **NTR never used** |
+| D: NTR only 0.35 | 4/4 | 87/87 | ✅ | 40 | 21 | 16 | hydrolox; **NTR never used** |
+
+No option breaks a goal, a technology or grand_tour: methalox, kerosene and local refuelling cover every world, and only
+Io moves from step 16 to 21 (it then needs fuel made there). The real difference is the NTR's role: with any factor on
+liquid hydrogen it is never the best upper stage, so it would only make sense together with lighter, larger LH₂ tanks
+(option B with new tanks), which the model can check once they exist.
+
 ## Round 14 (2026-11-07, 1.21.1 @ 66b77afa)
 
 - Merged 66b77afa (nuclear thermal engine, Tempel 1 world, uranium enrichment, RTG power in the model): runData clean,

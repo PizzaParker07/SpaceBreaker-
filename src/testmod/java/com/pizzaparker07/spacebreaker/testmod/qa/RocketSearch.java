@@ -40,6 +40,33 @@ final class RocketSearch {
     private static final double LAUNCH_G = 0.99 * com.pizzaparker07.spacebreaker.core.body.CelestialBody.EARTH_GRAVITY;
     private static final double MIN_TWR = 1.05;
 
+    /**
+     * What-if only (see {@code DensityWhatIfTests}): multiplies the propellant a stage's tanks hold by a factor per
+     * propellant. Empty in every normal run.
+     */
+    static final java.util.Map<Propellant, Double> DENSITY = new java.util.EnumMap<>(Propellant.class);
+
+    /** A layout, with {@link #DENSITY} applied to its stages. */
+    static RocketLayout layout(RocketDesign design, Function<ResourceLocation, RocketPart> lookup) {
+        RocketLayout l = RocketLayout.of(design, lookup);
+        if (DENSITY.isEmpty()) {
+            return l;
+        }
+        List<RocketLayout.Stage> stages = new ArrayList<>();
+        for (RocketLayout.Stage s : l.stages()) {
+            double f = s.propellant() == null ? 1.0 : DENSITY.getOrDefault(s.propellant(), 1.0);
+            stages.add(new RocketLayout.Stage(s.index(), s.firstPart(), s.lastPart(), s.dryKg(), s.propellantKg() * f, s.thrustKn(),
+                    s.ispSeaLevel(), s.ispVacuum(), s.fins(), s.gridFins(), s.legs(), s.rcs(), s.propellant()));
+        }
+        try {
+            var c = RocketLayout.class.getDeclaredConstructor(RocketDesign.class, List.class, List.class, RocketLayout.Payload.class, List.class);
+            c.setAccessible(true);
+            return c.newInstance(l.design(), l.parts(), List.copyOf(stages), l.payload(), l.problems());
+        } catch (ReflectiveOperationException e) {
+            throw new IllegalStateException("cannot rebuild a rocket layout for the density what-if", e);
+        }
+    }
+
     private static final List<List<String>> TANK_SETS = List.of(
             List.of("fuel_tank_small"), List.of("fuel_tank_medium"), List.of("fuel_tank_large"),
             List.of("fuel_tank_large", "fuel_tank_medium"), List.of("fuel_tank_large", "fuel_tank_large"),
@@ -123,7 +150,7 @@ final class RocketSearch {
             for (List<ResourceLocation> payload : payloads) {
                 List<ResourceLocation> all = new ArrayList<>(option);
                 all.addAll(payload);
-                RocketLayout l = RocketLayout.of(new RocketDesign(all), lookup);
+                RocketLayout l = layout(new RocketDesign(all), lookup);
                 if (!l.problems().isEmpty() || RocketMath.twr(l, 0, l.fullFuel(), LAUNCH_G) >= MIN_TWR) {
                     return false; // keep: either it can lift off, or this check cannot judge it
                 }
@@ -147,7 +174,7 @@ final class RocketSearch {
                 List<ResourceLocation> all = new ArrayList<>(below);
                 all.addAll(payload);
                 RocketDesign design = new RocketDesign(all);
-                RocketLayout layout = RocketLayout.of(design, lookup);
+                RocketLayout layout = layout(design, lookup);
                 if (layout.problems().isEmpty() && RocketMath.twr(layout, 0, layout.fullFuel(), LAUNCH_G) >= MIN_TWR) {
                     out.add(new Candidate(design, layout, RocketMath.totalDeltaV(layout, 0, layout.fullFuel(), 0)));
                 }
