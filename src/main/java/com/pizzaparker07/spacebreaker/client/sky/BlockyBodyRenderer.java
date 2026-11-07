@@ -27,8 +27,8 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Draws a planet or moon the Minecraft way ({@link BlockyBodyMesh}): a ball of blocks or a pixel cube, coloured from
  * the body's surface map, turning on its axis, lit by the sun with a stepped day/night line, and optionally a ring of
- * square tiles. Plain coloured quads sorted back to front (the sky pass cannot write depth), so it works in the same
- * places and with the same shader packs as the old textured discs.
+ * square tiles. Plain coloured quads (no render types), sorted back to front and depth-tested against a depth buffer
+ * cleared before and after, so it works in the same places and with the same shader packs as the old textured discs.
  * <p>
  * Use: build a {@link Pose} for the body (where it is, which way its pole points, how far it has turned), then
  * {@link #draw} in the sky (camera at the origin) or {@link #drawFlat} on a GUI (looking down -Z).
@@ -205,6 +205,16 @@ public final class BlockyBodyRenderer {
             return;
         }
         quads.sort((a, b) -> Float.compare(b.depth(), a.depth()));
+        boolean sky = viewDir == null;
+        if (sky) {
+            // the stepped body has hidden corners: draw it with its own depth, then clear that depth again so the
+            // terrain drawn after the sky is not hidden behind a planet 100 blocks away (the sky comes before terrain,
+            // so nothing else has written depth yet)
+            RenderSystem.clear(org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
+            RenderSystem.enableDepthTest();
+            RenderSystem.depthFunc(org.lwjgl.opengl.GL11.GL_LEQUAL);
+            RenderSystem.depthMask(true);
+        }
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.disableCull();
@@ -220,6 +230,11 @@ public final class BlockyBodyRenderer {
         }
         BufferUploader.drawWithShader(bb.buildOrThrow());
         RenderSystem.enableCull();
+        if (sky) {
+            RenderSystem.depthMask(false);
+            RenderSystem.disableDepthTest();
+            RenderSystem.clear(org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
+        }
     }
 
     private static Quad quad(BlockyBodyMesh.Face f, Matrix3f rot, Pose body, int rgb, float light, float alpha, Vector3f viewDir) {
