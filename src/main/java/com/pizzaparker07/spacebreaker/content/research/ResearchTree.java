@@ -218,6 +218,7 @@ public final class ResearchTree {
                 .en("Water Recycling", "Recover more than nine litres of every ten: humidity, wash water and the rest.")
                 .tr("Su Geri Kazanımı", "Her on litrenin dokuzundan fazlasını geri kazan: nem, yıkama suyu ve geri kalanı.");
         t("radiation_shielding", LIFE_SUPPORT, 3).req("suit_mk2", "nuclear_fission").icon("minecraft:netherite_scrap")
+                .unlocks("depleted_uranium_plate")
                 .samples(IO, EUROPA, GANYMEDE)
                 .en("Radiation Shielding", "Layers of water, polyethylene and lead against solar storms and cosmic rays.")
                 .tr("Radyasyon Kalkanı", "Güneş fırtınalarına ve kozmik ışınlara karşı su, polietilen ve kurşun katmanları.");

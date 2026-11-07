@@ -1,7 +1,7 @@
 ---
 title: Nuclear Fuel
 icon: spacebreaker:nuclear_fuel_element
-items: [spacebreaker:uraninite_ore, spacebreaker:raw_uraninite, spacebreaker:uranium_dust, spacebreaker:yellowcake, spacebreaker:gas_centrifuge, spacebreaker:enriched_uranium, spacebreaker:depleted_uranium, spacebreaker:nuclear_fuel_element, spacebreaker:rtg_fuel_pellet]
+items: [spacebreaker:uraninite_ore, spacebreaker:raw_uraninite, spacebreaker:uranium_dust, spacebreaker:yellowcake, spacebreaker:gas_centrifuge, spacebreaker:enriched_uranium, spacebreaker:depleted_uranium, spacebreaker:depleted_uranium_plate, spacebreaker:nuclear_fuel_element, spacebreaker:rtg_fuel_pellet]
 research: spacebreaker:nuclear_fission
 ---
 The road from uraninite ore to the fuel of a nuclear thermal rocket.
@@ -18,7 +18,8 @@ The road from uraninite ore to the fuel of a nuclear thermal rocket.
 ## The centrifuge cascade
 One centrifuge alone is slow. Real plants run thousands one after another. Here **every working centrifuge** placed beside one on the same level adds **half a stage of speed**; up to four neighbours, so at most **3×**. Line them up in a row or a plus shape.
 
-> Every enrichment leaves a big pile of {item spacebreaker:depleted_uranium}: the natural by-product of enrichment.
+> Every enrichment leaves a big pile of {item spacebreaker:depleted_uranium}: the natural by-product of enrichment. It is very dense: the press with a plate die turns it into {item spacebreaker:depleted_uranium_plate}, which counts as **radiation shielding** material alongside tungsten plate ({tech spacebreaker:radiation_shielding}).
+{recipe spacebreaker:pressing/depleted_uranium_plate}
 
 {recipe spacebreaker:arc_smelting/nuclear_fuel_element}
 

@@ -22,7 +22,11 @@ Uraninit cevherinden nükleer termal roketin yakıtına giden yol.
 Tek bir santrifüj yavaştır. Gerçek tesislerde binlercesi art arda çalışır. Burada aynı seviyede yanına konan ve **çalışan her santrifüj yarım kademe hız** ekler; en çok dört komşu, yani en fazla **3 kat**. Santrifüjleri bir sıra ya da artı biçiminde diz.
 
 > [!TIP]
-> Her zenginleştirmede büyük bir yığın **Tükenmiş Uranyum** çıkar: zenginleştirmenin doğal yan ürünüdür.
+> Her zenginleştirmede büyük bir yığın **Tükenmiş Uranyum** çıkar: zenginleştirmenin doğal yan ürünüdür. Çok yoğundur: preste levha kalıbıyla **Tükenmiş Uranyum Levhası** olur ve tungsten levhayla birlikte **radyasyon kalkanı** malzemesi sayılır (*Radyasyon Kalkanı*).
+
+| Girdi | Makine | Çıktı |
+|---|---|---|
+| Tükenmiş Uranyum | Pres<br>30 FE/t · 3 sn | Tükenmiş Uranyum Levhası |
 
 | Girdi | Makine | Çıktı |
 |---|---|---|
@@ -66,7 +70,11 @@ The road from uraninite ore to the fuel of a nuclear thermal rocket.
 One centrifuge alone is slow. Real plants run thousands one after another. Here **every working centrifuge** placed beside one on the same level adds **half a stage of speed**; up to four neighbours, so at most **3×**. Line them up in a row or a plus shape.
 
 > [!TIP]
-> Every enrichment leaves a big pile of **Depleted Uranium**: the natural by-product of enrichment.
+> Every enrichment leaves a big pile of **Depleted Uranium**: the natural by-product of enrichment. It is very dense: the press with a plate die turns it into **Depleted Uranium Plate**, which counts as **radiation shielding** material alongside tungsten plate (*Radiation Shielding*).
+
+| Input | Machine | Output |
+|---|---|---|
+| Depleted Uranium | Press<br>30 FE/t · 3 s | Depleted Uranium Plate |
 
 | Input | Machine | Output |
 |---|---|---|
