@@ -397,6 +397,9 @@ PARTS = {
     'fuel_tank_small': (lambda: tank(16), False),
     'fuel_tank_medium': (lambda: tank(24), False),
     'fuel_tank_large': (lambda: tank(32), False),
+    'fuel_tank_small_insulated': (lambda: tank(16), False),
+    'fuel_tank_medium_insulated': (lambda: tank(24), False),
+    'fuel_tank_large_insulated': (lambda: tank(32), False),
     'kerosene_engine': (kerosene_engine, False),
     'vacuum_engine': (vacuum_engine, False),
     'methalox_engine': (methalox_engine, False),
@@ -716,6 +719,7 @@ def station_blocks():
                     dv[f'facing={facing},half={half},open={opened},powered={powered}'] = v
     write('blockstates/sliding_door.json', {'variants': dv})
     generated_item('sliding_door')
+    generated_item('multi_layer_insulation')
     # hazard stripes (block, stairs, slab); LED panel and duct covers; floodlight; ladder; railing; grate platform
     simple_block('hazard_stripe', b('hazard_stripe'))
     _stairs('hazard_stripe_stairs', 'hazard_stripe')

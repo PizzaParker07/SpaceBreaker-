@@ -92,6 +92,7 @@ public final class UranusModule implements SbModule {
     public void register(IEventBus modBus) {
         Umbriel.load();
         Oberon.load();
+        com.pizzaparker07.spacebreaker.content.uranus.dungeon.UranusStructures.register(modBus);
         UranusEntities.register(modBus, KIT.items);
         KIT.blocks.register(modBus);
         KIT.items.register(modBus);

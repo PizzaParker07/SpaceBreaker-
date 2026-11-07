@@ -1,5 +1,6 @@
 package com.pizzaparker07.spacebreaker.content.rocketry.nav;
 
+import net.minecraft.resources.ResourceLocation;
 import com.pizzaparker07.spacebreaker.core.astro.AstroBody;
 import com.pizzaparker07.spacebreaker.core.astro.BodyAdapter;
 import com.pizzaparker07.spacebreaker.core.astro.BodySystem;
@@ -41,6 +42,10 @@ public final class AstroTransferModel implements TransferModel {
     public OptionalDouble deltaV(Location from, Location to) {
         if (from.equals(to)) {
             return OptionalDouble.empty();
+        }
+        // comets: realistic rendezvous, and none at all for the ones that are only to be watched
+        if (CometRoutes.ready() && (CometRoutes.isComet(from.body()) || CometRoutes.isComet(to.body())) && !from.body().equals(to.body())) {
+            return dv.computeIfAbsent(key(from, to), k -> comet(from, to));
         }
         OptionalDouble v = dv.computeIfAbsent(key(from, to), k -> compute(from, to));
         return v.isPresent() ? v : fallback.deltaV(from, to);
@@ -87,6 +92,27 @@ public final class AstroTransferModel implements TransferModel {
         }
     }
 
+    /**
+     * Orbit to orbit between a comet and anywhere else: the comet's rendezvous (departure from low orbit plus the
+     * speed match, the same both ways). From a comet straight down into an atmosphere (home to Earth): only the
+     * burn away from the comet. Other surfaces go through their own orbit first.
+     */
+    private OptionalDouble comet(Location from, Location to) {
+        if (!from.orbit()) {
+            return OptionalDouble.empty();
+        }
+        boolean leaving = CometRoutes.isComet(from.body()) && !CometRoutes.isComet(to.body());
+        if (!to.orbit() && !(leaving && to.atmosphere())) {
+            return OptionalDouble.empty();
+        }
+        ResourceLocation comet = leaving ? from.body() : to.body();
+        return CometRoutes.route(comet).map(r -> {
+            times.put(key(from, to), OptionalDouble.of(r.flightSeconds()));
+            // straight home into the air: only the burn away from the comet; the atmosphere does the braking
+            return OptionalDouble.of(to.orbit() ? r.totalDv() : r.arrivalDv());
+        }).orElse(OptionalDouble.empty());
+    }
+
     private static OptionalDouble finite(double v) {
         return Double.isFinite(v) && v >= 0 ? OptionalDouble.of(v) : OptionalDouble.empty();
     }
@@ -118,7 +144,11 @@ public final class AstroTransferModel implements TransferModel {
         Locations.install(access);
         try {
             BodySystem sys = BodyAdapter.system(access).orElse(null);
-            Transfers.setModel(sys != null && sys.get("spacebreaker:earth").isPresent() ? new AstroTransferModel(sys) : new SimpleTransfers());
+            boolean astro = sys != null && sys.get("spacebreaker:earth").isPresent();
+            if (astro) {
+                CometRoutes.install(sys);
+            }
+            Transfers.setModel(astro ? new AstroTransferModel(sys) : new SimpleTransfers());
         } catch (RuntimeException e) {
             Transfers.setModel(new SimpleTransfers());
         }

@@ -178,7 +178,7 @@ public final class SuitEvents {
                 (float) data.pressureKpa, (float) Gravity.factorFor(player), mmu.isEmpty() ? 0 : ManeuveringUnitItem.fuel(mmu),
                 integrity(player), flags, rating == null ? 0 : (int) Math.round(LifeSupport.ratedRange(rating, data.pressureKpa)[0]),
                 rating == null ? 0 : (int) Math.round(LifeSupport.ratedRange(rating, data.pressureKpa)[1]),
-                rating == null ? 0 : rating.shieldingPercent()));
+                rating == null ? 0 : rating.shieldingPercent(), (float) data.oxygenRate));
     }
 
     /** Suit integrity in percent: the most worn piece counts. */

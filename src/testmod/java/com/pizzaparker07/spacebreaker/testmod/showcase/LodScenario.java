@@ -70,11 +70,13 @@ final class LodScenario implements ShowcaseScenario {
                 () -> Minecraft.getInstance().options.renderDistance().set(6));
     }
 
+    /**
+     * Ground height from the generator's own surface query, without generating the chunk: a fully generated chunk at
+     * the far target would sit inside DH's own LOD generation and could show as a seam there.
+     */
     private static double groundY(ServerLevel level, double x, double z) {
-        int bx = net.minecraft.util.Mth.floor(x);
-        int bz = net.minecraft.util.Mth.floor(z);
-        level.getChunk(bx >> 4, bz >> 4); // generate it first: an unloaded chunk reports the world's floor
-        return level.getHeight(Heightmap.Types.MOTION_BLOCKING, bx, bz);
+        return level.getChunkSource().getGenerator().getBaseHeight(net.minecraft.util.Mth.floor(x), net.minecraft.util.Mth.floor(z),
+                Heightmap.Types.MOTION_BLOCKING, level, level.getChunkSource().randomState());
     }
 
     /** The volcanic dome nearest the origin (its summit). */
@@ -107,8 +109,11 @@ final class LodScenario implements ShowcaseScenario {
     @Override
     public List<ShowcaseDriver.Shot> shots() {
         return List.of(shot("01_lod_moon", MoonModule.MOON, 30F, 12F, 0.15), shot("02_lod_venus", VenusModule.VENUS, 30F, 12F, 0.25),
-                // low morning sun so the low relief shows; both targets lie far beyond the 6-chunk view distance
+                // low morning sun so the low relief shows; both targets lie far beyond the 6-chunk view distance.
+                // 05/06: the same targets up close in normal chunks, as the reference for what the LODs should show
                 moonTarget("03_lod_moon_dome", LodScenario::dome, 280, 40, 0.03),
-                moonTarget("04_lod_moon_central_peak", LodScenario::peakCrater, 330, 60, 0.06));
+                moonTarget("04_lod_moon_central_peak", LodScenario::peakCrater, 330, 60, 0.06),
+                moonTarget("05_close_dome", LodScenario::dome, 45, 18, 0.2),
+                moonTarget("06_close_central_peak", LodScenario::peakCrater, 45, 18, 0.2));
     }
 }

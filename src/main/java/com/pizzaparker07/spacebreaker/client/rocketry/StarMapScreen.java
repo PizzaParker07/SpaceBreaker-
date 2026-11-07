@@ -692,6 +692,15 @@ public class StarMapScreen extends Screen {
                 : Component.translatable("gui.spacebreaker.star_map.short", num(t.shortBy()));
         g.drawString(font, verdict, x, y, t.enough() ? GREEN : RED, false);
         y += 12;
+        if (t.boilOff() >= 0.001) {
+            // cryogenic propellant warming up on the long coast
+            for (FormattedCharSequence line : font.split(Component.translatable("gui.spacebreaker.star_map.boil_off",
+                    decimal(t.boilOff() * 100)), w)) {
+                g.drawString(font, line, x, y, AMBER, false);
+                y += 9;
+            }
+            y += 2;
+        }
         if (!planning) {
             String back = t.returnHome() ? "gui.spacebreaker.star_map.return_yes"
                     : t.refuelThere() ? "gui.spacebreaker.star_map.return_refuel" : "gui.spacebreaker.star_map.return_no";
@@ -717,6 +726,9 @@ public class StarMapScreen extends Screen {
                 y += 9;
             }
             y += 2;
+        }
+        if (t.needsNuclear()) {
+            y = warn(g, Component.translatable("gui.spacebreaker.star_map.need_nuclear"), x, y, w);
         }
         if (!t.shieldOk()) {
             y = warn(g, Component.translatable("gui.spacebreaker.star_map.need_shield"), x, y, w);

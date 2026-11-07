@@ -767,6 +767,21 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         syncFuel();
     }
 
+    /** How often a rocket waiting in orbit loses its boil-off, ticks. */
+    public static final int BOIL_OFF_TICKS = 1200;
+
+    /** Boils off {@code days} worth of cryogenic propellant from the stages still on the rocket. Returns kg lost. */
+    public double boilOff(double days) {
+        if (days <= 0) {
+            return 0;
+        }
+        double lost = com.pizzaparker07.spacebreaker.content.rocketry.design.BoilOff.apply(layout(), activeStage(), fuel, days, SbConfig.realism());
+        if (lost > 0) {
+            syncFuel();
+        }
+        return lost;
+    }
+
     /** Pump liquid in (mB of RP-1 or LOX, kerolox stages only). Returns the amount accepted. */
     public int fill(boolean oxidiser, int millibuckets, boolean simulate) {
         return fill(oxidiser ? null : Propellant.KEROLOX, millibuckets, simulate);
@@ -1054,6 +1069,10 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
             case ASCENT -> tickAscent();
             case ORBIT -> {
                 setDeltaMovement(Vec3.ZERO);
+                // waiting in orbit, cryogenic propellant slowly boils off (a game day is a day)
+                if (tickCount % BOIL_OFF_TICKS == 0) {
+                    boilOff((double) BOIL_OFF_TICKS / 24_000.0);
+                }
                 if (dockTarget != null) {
                     tickDocking();
                 } else if (docked()) {
@@ -1238,6 +1257,8 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         if (!(level() instanceof ServerLevel server)) {
             return;
         }
+        // the coast there took real days: cryogenic propellant in the tanks boiled off on the way
+        boilOff(Transfers.coastSeconds(location(), to) / com.pizzaparker07.spacebreaker.content.rocketry.design.BoilOff.SECONDS_PER_DAY);
         ServerLevel target = server.getServer().getLevel(to.dimension());
         if (target == null) {
             // destination not installed: stay where we are, in orbit

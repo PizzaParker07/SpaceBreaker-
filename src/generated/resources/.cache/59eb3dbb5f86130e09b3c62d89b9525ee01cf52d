@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-07T16:15:50.960981006	Loot Tables
+// 1.21.1	2026-11-07T17:05:38.464139025	Loot Tables
 c48f71ca60600cd6230f77a2e146a3df572494ae data/spacebreaker/loot_table/blocks/aerogel.json
 e37973997ec83c5b040a31bf9fcda1757b53fc00 data/spacebreaker/loot_table/blocks/airlock_door.json
 c511e60fe01f6dddc2d2b0e516ca81c11bf4ca91 data/spacebreaker/loot_table/blocks/aluminum_block.json
@@ -100,6 +100,7 @@ ef63e5d8c5c9e176f357d9a2a577f7655fe27852 data/spacebreaker/loot_table/blocks/eur
 daededd65c8a716fd2d4edb6cbbbe981628d06d7 data/spacebreaker/loot_table/blocks/europan_ice_brick_wall.json
 0089ffcdeb0c4838b1050bb422e175f9748f9a9b data/spacebreaker/loot_table/blocks/europan_ice_bricks.json
 69566a758d031026ead32d4806d6406678bdad14 data/spacebreaker/loot_table/blocks/fabricator.json
+da00526cc440fde23285060743e4a8cb305a206e data/spacebreaker/loot_table/blocks/fission_reactor.json
 ec3841a929c56952a2490ed1f9f3042ad34584d4 data/spacebreaker/loot_table/blocks/flame_trench.json
 4f87eca60726e49a8581ad94c2b28c14a48de2a3 data/spacebreaker/loot_table/blocks/floodlight.json
 f8a912ae2ed2caddcf774d65bcd7632140a23fad data/spacebreaker/loot_table/blocks/fluid_pipe.json

@@ -85,7 +85,7 @@ public final class SuitGameTests {
             LifeSupport.tick(p, VACUUM);
         }
         int left = SuitTanks.oxygen(SuitTanks.wornTorso(p));
-        helper.assertTrue(left == OxygenTankItem.SMALL_CAPACITY - 200, "one breathing tick per tick, left " + left);
+        helper.assertTrue(left == OxygenTankItem.SMALL_CAPACITY - 160, "standing still breathes 0.8 tank ticks per tick, left " + left);
         helper.assertTrue(LifeSupport.data(p).breath == SurvivalData.MAX_BREATH, "breath stays full while supplied");
         helper.assertTrue(p.getHealth() == p.getMaxHealth(), "no damage while supplied");
         helper.succeed();

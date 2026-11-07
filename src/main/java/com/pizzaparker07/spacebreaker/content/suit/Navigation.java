@@ -56,7 +56,10 @@ public final class Navigation {
         return distance / speed * 20.0;
     }
 
-    /** Does the oxygen left ({@code oxygenTicks} of breathing) last the walk home? */
+    /**
+     * Does the oxygen left last the walk home? {@code oxygenTicks}: game ticks of breathing left at the wearer's average
+     * rate ({@link OxygenUse#ticksLeft}), so a sprint or hard work out shortens the safe range.
+     */
     public static Status status(double distance, double gravity, int oxygenTicks) {
         double need = walkTicks(distance, gravity);
         if (need > oxygenTicks) {

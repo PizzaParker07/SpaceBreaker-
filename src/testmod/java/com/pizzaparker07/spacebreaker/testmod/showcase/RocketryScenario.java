@@ -752,6 +752,31 @@ final class RocketryScenario implements ShowcaseScenario {
             scene.add(r);
             toDimension(p, Location.EARTH_ORBIT, 4.2, RocketEntity.ORBIT_Y + 1.5, 1.6, 107F, 14F);
         }, null));
+        s.add(new Shot("53_assembler_nuclear", 6000, 7.5, G + 1.6, -3.5, 180F, 20F, false, fp, 40, p -> {
+            clearScene(p);
+            toDimension(p, Location.EARTH_SURFACE, 7.5, G + 1.6, -3.5, 180F, 20F);
+            p.getAbilities().flying = false;
+            if (p.serverLevel().getBlockEntity(ASSEMBLER) instanceof RocketAssemblerBlockEntity be) {
+                // the second stage runs on a nuclear thermal engine: the assembler warns about it
+                be.items().setStackInSlot(AssemblerSlots.stageSlot(1, AssemblerSlots.ENGINE), new ItemStack(RocketryModule.NUCLEAR_THERMAL_ENGINE.get()));
+                p.openMenu(be, ASSEMBLER);
+            }
+        }, null));
+        s.add(new Shot("54_insulated_tanks", 6000, 0, 0, 0, 0F, 0F, true, fp, 120, p -> {
+            clearScene(p);
+            ServerLevel orbit = p.server.getLevel(Location.EARTH_ORBIT.dimension());
+            // a hydrogen transfer stage with its tanks wrapped in gold multi-layer insulation, waiting in orbit
+            var design = new com.pizzaparker07.spacebreaker.content.rocketry.design.RocketDesign(java.util.List.of(
+                    Spacebreaker.id("hydrolox_vacuum_engine"), Spacebreaker.id("fuel_tank_large_insulated"),
+                    Spacebreaker.id("fuel_tank_medium_insulated"), Spacebreaker.id("heat_shield"), Spacebreaker.id("crew_capsule"),
+                    Spacebreaker.id("parachute")));
+            RocketEntity r = RocketEntity.create(orbit, design, new Vec3(0.5, RocketEntity.ORBIT_Y, 0.5), 0F);
+            r.fillCompletely();
+            orbit.addFreshEntity(r);
+            r.stageScene(FlightState.ORBIT, 0, 0, false);
+            scene.add(r);
+            toDimension(p, Location.EARTH_ORBIT, 5.6, RocketEntity.ORBIT_Y + 3.2, 2.4, 110F, 6F);
+        }, null));
         s.add(new Shot("31_nearby_stars", 6000, 0, 0, 0, 0F, 0F, false, fp, 120,
                 p -> {
                     RocketryShowcaseClient.star = "Alpha Centauri";

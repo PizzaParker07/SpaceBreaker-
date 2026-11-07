@@ -75,7 +75,7 @@ public class SampleItem extends Item {
             case "proteus" -> 0x45403C;    // soot-dark crust
             case "bennu", "ryugu" -> 0x2E2B29; // coal-dark rubble
             case "eros", "itokawa" -> 0x8A7C68; // stony
-            case "churyumov_gerasimenko", "encke", "halley" -> 0x26231F; // charcoal-dark comet dust
+            case "churyumov_gerasimenko", "encke", "halley", "tempel_1" -> 0x26231F; // charcoal-dark comet dust
             case "suborbital_flight" -> 0x6FA0D8;
             case "orbital_flight" -> 0x3E5FA8;
             case "orbital_survey" -> 0x4F8A8B;
