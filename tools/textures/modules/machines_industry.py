@@ -391,6 +391,32 @@ def pipe_flange(r):
     return cv
 
 
+def item_duct():
+    """Square steel duct: a dark seam down the middle and a green band so it never reads as a fluid pipe."""
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            cv[x, y] = S[[5, 4, 4, 4, 3, 4, 4, 2][y % 8]]
+    green = (70, 140, 70)
+    for y in range(16):
+        cv[7, y] = S[1]
+        if y % 8 in (2, 3):
+            for x in range(16):
+                cv[x, y] = green if x != 7 else S[1]
+    return cv
+
+
+def item_duct_end():
+    """Duct mouth: a steel frame round a dark opening with a green rim."""
+    cv = Canvas()
+    green = (70, 140, 70)
+    for y in range(16):
+        for x in range(16):
+            edge = min(x, y, 15 - x, 15 - y)
+            cv[x, y] = S[5] if edge == 0 else S[3] if edge == 1 else green if edge == 2 else S[0]
+    return cv
+
+
 def valve():
     cv = Canvas()
     red = [(110, 24, 20), (150, 36, 28), (186, 56, 40), (214, 90, 70)]
@@ -572,6 +598,8 @@ def export(save):
     save(pipe_flange(P.IRON), 'block', 'fluid_pipe_flange', metal)
     save(pipe_flange(P.COPPER), 'block', 'gas_pipe_flange', metal)
     save(valve(), 'block', 'pipe_valve', metal)
+    save(item_duct(), 'block', 'item_duct', metal)
+    save(item_duct_end(), 'block', 'item_duct_end', metal)
     save(paint_panel(OCHRE), 'block', 'pumpjack_paint', (110, 20, 0, None))
     save(lattice(), 'block', 'pumpjack_lattice', metal)
     save(weight(), 'block', 'pumpjack_weight', metal)

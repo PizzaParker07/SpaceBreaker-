@@ -75,6 +75,7 @@
     "spacebreaker:hv_cable",
     "spacebreaker:fluid_pipe",
     "spacebreaker:gas_pipe",
+    "spacebreaker:item_duct",
     "spacebreaker:fluid_tank",
     "spacebreaker:pressurized_tank",
     "spacebreaker:cryogenic_tank",

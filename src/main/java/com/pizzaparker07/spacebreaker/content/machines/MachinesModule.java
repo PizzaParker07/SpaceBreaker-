@@ -236,6 +236,7 @@ public final class MachinesModule implements SbModule {
     public static final DeferredBlock<ConduitBlock> HV_CABLE = conduit(ConduitType.HV_CABLE, SoundType.WOOL);
     public static final DeferredBlock<ConduitBlock> FLUID_PIPE = conduit(ConduitType.FLUID_PIPE, SoundType.METAL);
     public static final DeferredBlock<ConduitBlock> GAS_PIPE = conduit(ConduitType.GAS_PIPE, SoundType.COPPER);
+    public static final DeferredBlock<ConduitBlock> ITEM_DUCT = conduit(ConduitType.ITEM_DUCT, SoundType.METAL);
     public static final List<DeferredItem<BlockItem>> CONDUIT_ITEMS = CONDUITS.stream().map(ITEMS::registerSimpleBlockItem).toList();
     @SuppressWarnings("DataFlowIssue")
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ConduitBlockEntity>> CONDUIT_BE =
@@ -391,6 +392,7 @@ public final class MachinesModule implements SbModule {
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, PART_BE.get(), (be, side) -> forward(be, Capabilities.ItemHandler.BLOCK, side));
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, CONDUIT_BE.get(), ConduitBlockEntity::energy);
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CONDUIT_BE.get(), ConduitBlockEntity::fluid);
+        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CONDUIT_BE.get(), ConduitBlockEntity::items);
     }
 
     private static <T> T forward(PartBlockEntity part, net.neoforged.neoforge.capabilities.BlockCapability<T, Direction> cap, Direction side) {

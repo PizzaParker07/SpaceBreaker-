@@ -57,6 +57,9 @@ final class MachinesLang {
         lang.block(MachinesModule.HV_CABLE, "High-Voltage Cable", "Yüksek Gerilim Kablosu");
         lang.block(MachinesModule.FLUID_PIPE, "Fluid Pipe", "Sıvı Borusu");
         lang.block(MachinesModule.GAS_PIPE, "Gas Pipe", "Gaz Borusu");
+        lang.block(MachinesModule.ITEM_DUCT, "Item Duct", "Eşya Kanalı");
+        lang.add("tooltip.spacebreaker.item_duct", "Moves up to %s items/s. Sneak-use an end: pull from that inventory; with an item: let only that item through",
+                "Saniyede %s eşyaya kadar taşır. Bir ucu eğilip kullan: o envanterden çeker; elde eşyayla: yalnız o eşyayı geçirir");
 
         lang.add("gui.spacebreaker.energy", "Energy: %s / %s FE", "Enerji: %s / %s FE");
         lang.add("gui.spacebreaker.tank", "%s: %s / %s mB", "%s: %s / %s mB");

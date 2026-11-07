@@ -32,6 +32,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Oksijen Dağıtıcı | kapalı odayı tick'lere yayılmış taşkın dolumla bulur (en çok 4096 blok), tüpten ya da borudan gelen oksijenle önce odayı basınçlandırır (blok başına oksijen), sonra hacme göre tüketir; sızıntıda hava boşalır; blok değişince yeniden kontrol |
 | 🎨 | Hava Kilidi Kapısı | 2 blok, kayar kanatlar (animasyonlu); kapalıyken hava geçirmez; el ya da kızıltaşla açılır |
 | 🎨 | Yanmalı Jeneratör, Batarya Bankası, Bakır / Yüksek Gerilim Kablosu | jeneratör yalnız oksijenli havada yanar; batarya önden verir (tavana takılınca ön yüzü aşağı bakar: çatıdaki batarya üstteki panelden dolar, alttaki odaya verir), şarj göstergesi |
+| 🎨 | Eşya Kanalı (`spacebreaker:item_duct`) | envanterler arası eşya taşır (saniyede 16, uç başına); bir ucu eğilip boş elle kullan → o envanterden çeker (kırmızı valf); elde eşyayla eğilip kullan → o uç yalnız o eşyayı geçirir (aynı eşyayla tekrar: filtre kalkar); kanala bakan huni yalnız besler; tarif: 6 demir levha + huni → 8 |
 | 🎨 | Kırıcı, Elektrik Ark Fırını, Pres (hareketli koç), Petrol Pompası (çok bloklu, animasyonlu), Rafineri (çok bloklu damıtma kulesi) | |
 | 🎨 | Elektroliz Ünitesi, Kriyojenik Sıvılaştırıcı, Sıvı / Basınçlı Gaz / Kriyojenik Tank (dolum görünür; kırınca içerik eşyada kalır, yerleştirince geri gelir), sıvı/gaz borusu (uçtan çekme modu; sıvı borusu sonsuz su kaynağından 100 mB/t su çeker) | |
 | 🎨 | Parça Üretim Tezgâhı | `spacebreaker:fabricating` tarifi; Roket ve Giysi alanları kendi tariflerini ekler |

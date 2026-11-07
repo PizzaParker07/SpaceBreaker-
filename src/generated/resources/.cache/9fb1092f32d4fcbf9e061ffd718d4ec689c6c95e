@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-07T13:13:02.623374541	Recipes
+// 1.21.1	2026-11-07T15:05:33.984810002	Recipes
 9adaaa5be5385cd4ce86f1592ecb1ea66c0c4dce data/spacebreaker/advancement/recipes/building_blocks/ariel_ice_slab.json
 c8a14effc004b99a09bfd245c11051a06fbb28f6 data/spacebreaker/advancement/recipes/building_blocks/ariel_ice_slab_from_ariel_ice_stonecutting.json
 6754d279fb144c57df42cb3960cf2152443405ff data/spacebreaker/advancement/recipes/building_blocks/ariel_ice_stairs.json
@@ -150,6 +150,7 @@ a7aee896468464a6bb468e42b4285368282228d6 data/spacebreaker/advancement/recipes/m
 de127828287936c4c0982c5fcc37df590c06a958 data/spacebreaker/advancement/recipes/misc/iron_ingot_from_smelting_raw_magnetite.json
 7204e959bdb15d0a2f18bab2bf4ba482108f5710 data/spacebreaker/advancement/recipes/misc/iron_plate_by_hand.json
 6245a47c8960e90459563b2c375ed3691d2f7b86 data/spacebreaker/advancement/recipes/misc/iron_rod_by_hand.json
+29a433f022d052066bc89f0ac475cf113eec0f27 data/spacebreaker/advancement/recipes/misc/item_duct.json
 1ecbd94a7632dbfd2e6de6c575ef3c7bc156e774 data/spacebreaker/advancement/recipes/misc/lithium_block.json
 c4a57fb9dfb37dd16d78833e5ec1b517e0343a2d data/spacebreaker/advancement/recipes/misc/lithium_ingot_from_block.json
 0d52f21cb1b53a865f4e757b8a50ab25796dfaf2 data/spacebreaker/advancement/recipes/misc/lithium_ingot_from_dust_blasting.json
@@ -405,6 +406,7 @@ a2cf02edb327128a6a29f07bcbd1b5f027225d9d data/spacebreaker/recipe/iron_ingot_fro
 e7751942d7561858866d483c5ff59b23a19c57e4 data/spacebreaker/recipe/iron_ingot_from_smelting_raw_magnetite.json
 2551692ba0c6b17a5ff8b4e8d67039631762d13c data/spacebreaker/recipe/iron_plate_by_hand.json
 b992e00894b1a8e79b2a2f5b7e0088c726d5e174 data/spacebreaker/recipe/iron_rod_by_hand.json
+de46df8a2bfa96171ecb636e7692d92440acf68f data/spacebreaker/recipe/item_duct.json
 bc0308cf5f6f19b76ac5b4567be3923ce1ffd357 data/spacebreaker/recipe/liquefaction/hydrogen.json
 b1752b66fc9c970389974ad1987d5c6bf44df7d9 data/spacebreaker/recipe/liquefaction/methane.json
 c5f1c5cc1d04d0a18d5234c798633bbc87e92067 data/spacebreaker/recipe/liquefaction/oxygen.json

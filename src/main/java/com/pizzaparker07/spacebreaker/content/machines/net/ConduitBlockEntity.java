@@ -24,6 +24,26 @@ public class ConduitBlockEntity extends BlockEntity {
     }
 
     private final Map<Direction, net.minecraft.world.level.material.Fluid> filters = new EnumMap<>(Direction.class);
+    private final Map<Direction, net.minecraft.world.item.Item> itemFilters = new EnumMap<>(Direction.class);
+    private final Map<Direction, net.neoforged.neoforge.items.IItemHandler> itemSides = new EnumMap<>(Direction.class);
+
+    /** Item allowed through the end on this side of an item duct, or null for any. */
+    public @Nullable net.minecraft.world.item.Item itemFilter(Direction side) {
+        return itemFilters.get(side);
+    }
+
+    public void setItemFilter(Direction side, @Nullable net.minecraft.world.item.Item item) {
+        if (item == null || item == net.minecraft.world.item.Items.AIR) {
+            itemFilters.remove(side);
+        } else {
+            itemFilters.put(side, item);
+        }
+        setChanged();
+        invalidateNetwork();
+        if (level != null) {
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), net.minecraft.world.level.block.Block.UPDATE_CLIENTS);
+        }
+    }
 
     /** Fluid allowed through the end on this side, or null for any. */
     public @Nullable net.minecraft.world.level.material.Fluid filter(Direction side) {
@@ -52,6 +72,12 @@ public class ConduitBlockEntity extends BlockEntity {
                     net.minecraft.core.registries.BuiltInRegistries.FLUID.getKey(fluid).toString()));
             tag.put("filters", f);
         }
+        if (!itemFilters.isEmpty()) {
+            net.minecraft.nbt.CompoundTag f = new net.minecraft.nbt.CompoundTag();
+            itemFilters.forEach((d, item) -> f.putString(d.getSerializedName(),
+                    net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(item).toString()));
+            tag.put("item_filters", f);
+        }
     }
 
     @Override
@@ -64,6 +90,16 @@ public class ConduitBlockEntity extends BlockEntity {
                 var fluid = net.minecraft.core.registries.BuiltInRegistries.FLUID.get(net.minecraft.resources.ResourceLocation.parse(f.getString(d.getSerializedName())));
                 if (fluid != net.minecraft.world.level.material.Fluids.EMPTY) {
                     filters.put(d, fluid);
+                }
+            }
+        }
+        itemFilters.clear();
+        net.minecraft.nbt.CompoundTag fi = tag.getCompound("item_filters");
+        for (Direction d : Direction.values()) {
+            if (fi.contains(d.getSerializedName())) {
+                var item = net.minecraft.core.registries.BuiltInRegistries.ITEM.get(net.minecraft.resources.ResourceLocation.parse(fi.getString(d.getSerializedName())));
+                if (item != net.minecraft.world.item.Items.AIR) {
+                    itemFilters.put(d, item);
                 }
             }
         }
@@ -147,8 +183,53 @@ public class ConduitBlockEntity extends BlockEntity {
         });
     }
 
+    /**
+     * Items pushed into an item duct (by a hopper or a machine's output) go straight on to the inventories on its
+     * delivering ends; the duct itself holds nothing.
+     */
+    public @Nullable net.neoforged.neoforge.items.IItemHandler items(@Nullable Direction side) {
+        if (!type().items || side == null) {
+            return null;
+        }
+        return itemSides.computeIfAbsent(side, s -> new net.neoforged.neoforge.items.IItemHandler() {
+            @Override
+            public int getSlots() {
+                return 1;
+            }
+
+            @Override
+            public net.minecraft.world.item.ItemStack getStackInSlot(int slot) {
+                return net.minecraft.world.item.ItemStack.EMPTY;
+            }
+
+            @Override
+            public net.minecraft.world.item.ItemStack insertItem(int slot, net.minecraft.world.item.ItemStack stack, boolean simulate) {
+                ConduitNetwork net = network();
+                if (net == null || getBlockState().getValue(ConduitBlock.SIDES.get(s)) == ConduitSide.EXTRACT) {
+                    return stack;
+                }
+                return net.distributeItem(stack, simulate, worldPosition.relative(s));
+            }
+
+            @Override
+            public net.minecraft.world.item.ItemStack extractItem(int slot, int amount, boolean simulate) {
+                return net.minecraft.world.item.ItemStack.EMPTY;
+            }
+
+            @Override
+            public int getSlotLimit(int slot) {
+                return 64;
+            }
+
+            @Override
+            public boolean isItemValid(int slot, net.minecraft.world.item.ItemStack stack) {
+                return true;
+            }
+        });
+    }
+
     public @Nullable IFluidHandler fluid(@Nullable Direction side) {
-        if (type().energy || side == null) {
+        if (type().energy || type().items || side == null) {
             return null;
         }
         return fluidSides.computeIfAbsent(side, s -> new IFluidHandler() {
