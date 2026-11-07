@@ -47,7 +47,14 @@ final class TinyMoonScenario extends OuterShowcase {
                         com.pizzaparker07.spacebreaker.content.belt.Comets.JET.get().defaultBlockState(), 3);
             }
             double y = Math.max(ground(level, gx - 7, gz), ground(level, gx, gz)) + 5.5;
-            shot("03_comet_jets", gx - 6.5, y, gz + 0.5, MoonScenario.yaw(7, 0), -18F, 160, at(0.12), null);
+            // jets follow the comet's activity: wind the sky clock on to the comet's next perihelion so it is awake
+            var comet = com.pizzaparker07.spacebreaker.core.astro.smallbody.Comet.byId(world.name).orElseThrow();
+            shot("03_comet_jets", gx - 6.5, y, gz + 0.5, MoonScenario.yaw(7, 0), -18F, 200, p -> {
+                double peri = comet.nextPerihelion(com.pizzaparker07.spacebreaker.core.astro.BodyAdapter.simTime(p.serverLevel()));
+                p.server.getWorldData().overworldData().setGameTime(com.pizzaparker07.spacebreaker.core.astro.GameClock.ticks(peri,
+                        com.pizzaparker07.spacebreaker.core.astro.BodyAdapter.timeScale()));
+                at(0.12).accept(p);
+            }, null);
         }
         lander(level, LanderPiece.Variant.valueOf(world.name.toUpperCase(Locale.ROOT)), "04_crashed_lander", 0.12);
     }
