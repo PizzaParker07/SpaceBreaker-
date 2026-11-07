@@ -135,6 +135,49 @@ public final class DensityWhatIfTests {
         h.succeed();
     }
 
+    /**
+     * Comet missions with and without the nuclear thermal engine: Halley is meant to need it, Encke, 67P and Tempel 1
+     * to stay reachable with chemical rockets. Runs only with {@code -Dspacebreaker.qa.cometWhatIf=true}; writes
+     * {@code run-gametest/qa/comet_whatif.md}.
+     */
+    @GameTest(template = "empty", timeoutTicks = 2000)
+    public static void cometWhatIf(GameTestHelper h) {
+        if (!Boolean.getBoolean("spacebreaker.qa.cometWhatIf")) {
+            h.succeed();
+            return;
+        }
+        List<String> comets = List.of("halley", "encke", "churyumov_gerasimenko", "tempel_1", "hale_bopp");
+        StringBuilder md = new StringBuilder("## Comet missions with and without the nuclear thermal engine\n\n");
+        var probe = h.makeMockPlayer(GameType.SURVIVAL);
+        try {
+            for (boolean ntr : List.of(true, false)) {
+                RocketSearch.EXCLUDED.clear();
+                if (!ntr) {
+                    RocketSearch.EXCLUDED.add(Spacebreaker.id("nuclear_thermal_engine"));
+                }
+                ProgressionModel m = new ProgressionModel(h.getLevel().getServer(), probe, SbConfig.realism());
+                m.scan();
+                m.run();
+                md.append("### ").append(ntr ? "all engines" : "without the nuclear thermal engine").append("\n\n");
+                md.append("grand_tour gaps: ").append(ProgressionAuditTests.grandTourGaps(h.getLevel().getServer(), m)).append("\n\n");
+                for (String c : comets) {
+                    for (String where : List.of("surface", "orbit")) {
+                        var f = m.facts.get("world:spacebreaker:" + c);
+                        var r = m.missions.get("spacebreaker:" + c + "/" + where);
+                        md.append("- ").append(c).append('/').append(where).append(": ")
+                                .append(r == null ? "no round trip" : r.mode() + ", " + ProgressionModel.describe(r.rocket()))
+                                .append(where.equals("surface") && f != null ? " (world step " + f.step() + ")" : "").append('\n');
+                    }
+                }
+                md.append('\n');
+            }
+        } finally {
+            RocketSearch.EXCLUDED.clear();
+        }
+        ProgressionReport.write("comet_whatif.md", md.toString());
+        h.succeed();
+    }
+
     private DensityWhatIfTests() {
     }
 }

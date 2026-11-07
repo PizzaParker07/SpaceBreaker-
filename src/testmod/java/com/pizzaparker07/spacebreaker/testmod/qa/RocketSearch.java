@@ -87,6 +87,9 @@ final class RocketSearch {
         }
     }
 
+    /** What-if only: parts the search must not use (e.g. the nuclear thermal engine, to see what chemistry alone reaches). */
+    static final java.util.Set<ResourceLocation> EXCLUDED = new java.util.HashSet<>();
+
     /** Upper stages may also use the insulated versions of every tank set (when those parts exist and are unlocked). */
     static boolean INSULATED = true;
 
@@ -117,7 +120,7 @@ final class RocketSearch {
             RocketPart p = lookup.apply(id);
             if (p != null) {
                 byId.put(id, p);
-                if (p.isEngine() && fuels.contains(p.propellant())) {
+                if (p.isEngine() && fuels.contains(p.propellant()) && !EXCLUDED.contains(id)) {
                     engines.add(id);
                 }
             }
