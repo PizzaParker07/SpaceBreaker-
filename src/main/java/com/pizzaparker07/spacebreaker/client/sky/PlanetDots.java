@@ -53,6 +53,7 @@ public final class PlanetDots {
             return;
         }
         refresh(level, observer);
+        CometTrails.render(level, sunFrame, observer, visibility);
         if (dots.isEmpty()) {
             return;
         }

@@ -90,6 +90,53 @@ final class SkyPlanetsScenario implements ShowcaseScenario {
                         }
                     }, null));
         }
+        if (!mars) {
+            cometShot(level, y, shots);
+        }
         return shots;
+    }
+
+    /** Halley's 2061 return over Earth: the date its tail looks longest (away from the sun's glare), then the darkest moment it is up. */
+    private static void cometShot(ServerLevel level, double y, List<ShowcaseDriver.Shot> shots) {
+        var sys = BodyAdapter.system(level.registryAccess()).orElseThrow();
+        var halley = com.pizzaparker07.spacebreaker.core.astro.smallbody.Comet.HALLEY;
+        double peri = halley.nextPerihelion(0);
+        double bestT = 0;
+        com.pizzaparker07.spacebreaker.content.worldgen.CometPoints.Sighting best = null;
+        for (int day = -80; day <= 80; day += 2) {
+            double t = peri + day * 86400.0;
+            for (var s : com.pizzaparker07.spacebreaker.content.worldgen.CometPoints.compute(sys, "spacebreaker:earth", t)) {
+                if (s.id().equals(halley.id()) && s.great() && s.head().y < 0.85F && (best == null || s.head().angle(s.tip()) > best.head().angle(best.tip()))) {
+                    best = s;
+                    bestT = t;
+                }
+            }
+        }
+        if (best == null) {
+            return;
+        }
+        double fraction = -1;
+        double darkest = 2;
+        for (int i = 0; i < 400; i++) {
+            double f = i / 400.0;
+            double alt = Math.toDegrees(Math.asin(world(best.head(), f).y));
+            double sun = world(new Vector3f(0, 1, 0), f).y;
+            if (alt > 8 && alt < 35 && sun < -0.15 && sun < darkest) {
+                darkest = sun;
+                fraction = f;
+            }
+        }
+        if (fraction < 0) {
+            return;
+        }
+        Vector3f dir = world(best.head(), fraction);
+        Vector3f tip = world(best.tip(), fraction);
+        Vector3f mid = new Vector3f(dir).add(tip).normalize();
+        float yaw = (float) Math.toDegrees(Math.atan2(-mid.x, mid.z));
+        float pitch = (float) -Math.toDegrees(Math.asin(mid.y));
+        long ticks = com.pizzaparker07.spacebreaker.core.astro.GameClock.ticks(bestT, BodyAdapter.timeScale());
+        long dayTime = Math.round(fraction * 24000);
+        shots.add(new ShowcaseDriver.Shot("03_earth_halley_2061", dayTime, 0.5, y, 0.5, yaw, pitch, true, CameraType.FIRST_PERSON, 160,
+                p -> ((net.minecraft.world.level.storage.ServerLevelData) p.server.getWorldData().overworldData()).setGameTime(ticks), null));
     }
 }

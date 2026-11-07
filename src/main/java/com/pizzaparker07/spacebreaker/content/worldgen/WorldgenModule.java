@@ -58,6 +58,7 @@ public final class WorldgenModule implements SbModule {
         ColdTraps.register();
         Subsurface.register();
         MeteorShowers.register();
+        CometNotice.register();
         BIOME_SOURCES.register(modBus);
         FEATURES.register(modBus);
         ModLoadingContext.get().getActiveContainer().registerConfig(ModConfig.Type.SERVER, WorldgenConfig.SPEC, "spacebreaker-worlds-server.toml");
@@ -161,6 +162,8 @@ public final class WorldgenModule implements SbModule {
         lang.add("commands.spacebreaker.meteorshower.started", "A micrometeorite shower begins", "Mikrometeorit yağmuru başlıyor");
         lang.add("commands.spacebreaker.meteorshower.none", "Only airless planet surfaces get micrometeorite showers",
                 "Mikrometeorit yağmuru yalnız havasız gezegen yüzeylerinde olur");
+        lang.add("message.spacebreaker.great_comet", "Mission control: great comet %s is in your sky! Look low in the sky after dusk or before dawn",
+                "Görev kontrol: büyük kuyruklu yıldız %s gökyüzünde! Akşam karanlığından sonra ya da şafaktan önce ufka yakın bak");
         lang.add("commands.spacebreaker.localtime.none", "This world follows Earth's clock", "Bu dünya Dünya'nın saatini kullanıyor");
     }
 }
