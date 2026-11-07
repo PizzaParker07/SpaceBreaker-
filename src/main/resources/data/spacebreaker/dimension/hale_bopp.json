@@ -1,0 +1,13 @@
+{
+  "type": "spacebreaker:hale_bopp",
+  "generator": {
+    "type": "spacebreaker:planet",
+    "terrain": "spacebreaker:hale_bopp",
+    "biome_source": {
+      "type": "spacebreaker:planet",
+      "highlands": "spacebreaker:hale_bopp_plains",
+      "crater": "spacebreaker:hale_bopp_crater",
+      "polar": "spacebreaker:hale_bopp_polar"
+    }
+  }
+}

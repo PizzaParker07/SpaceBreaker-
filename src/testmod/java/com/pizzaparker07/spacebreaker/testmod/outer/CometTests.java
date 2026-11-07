@@ -38,7 +38,7 @@ public final class CometTests {
             dust += top.is(Comets.CHURYUMOV.soil.get()) || top.is(Comets.CHURYUMOV.rock.get()) ? 1 : 0;
         }
         helper.assertTrue(dust >= 8, "covered in comet dust over ice: " + dust + "/16");
-        for (var c : new com.pizzaparker07.spacebreaker.content.belt.TinyWorld[]{Comets.ENCKE, Comets.HALLEY}) {
+        for (var c : new com.pizzaparker07.spacebreaker.content.belt.TinyWorld[]{Comets.ENCKE, Comets.HALLEY, Comets.TEMPEL, Comets.HALE_BOPP}) {
             PlanetChunkGenerator g = WorldTests.generator(helper, c.name, 6L);
             int own = 0;
             for (int i = 0; i < 16; i++) {
@@ -51,6 +51,8 @@ public final class CometTests {
         }
         helper.assertTrue(WorldTests.profile(helper, "halley").poleDistance() > WorldTests.profile(helper, "encke").poleDistance(),
                 "Halley is the bigger nucleus");
+        helper.assertTrue(WorldTests.profile(helper, "hale_bopp").poleDistance() > WorldTests.profile(helper, "halley").poleDistance(),
+                "Hale-Bopp is the giant among them");
         helper.succeed();
     }
 

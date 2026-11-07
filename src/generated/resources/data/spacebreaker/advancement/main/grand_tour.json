@@ -73,6 +73,12 @@
       },
       "trigger": "minecraft:changed_dimension"
     },
+    "hale_bopp": {
+      "conditions": {
+        "to": "spacebreaker:hale_bopp"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
     "halley": {
       "conditions": {
         "to": "spacebreaker:halley"
@@ -154,6 +160,12 @@
     "ryugu": {
       "conditions": {
         "to": "spacebreaker:ryugu"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "tempel_1": {
+      "conditions": {
+        "to": "spacebreaker:tempel_1"
       },
       "trigger": "minecraft:changed_dimension"
     },
@@ -256,7 +268,9 @@
     [
       "churyumov_gerasimenko",
       "encke",
-      "halley"
+      "halley",
+      "tempel_1",
+      "hale_bopp"
     ]
   ],
   "sends_telemetry_event": true

@@ -1,0 +1,13 @@
+{
+  "type": "spacebreaker:tempel_1",
+  "generator": {
+    "type": "spacebreaker:planet",
+    "terrain": "spacebreaker:tempel_1",
+    "biome_source": {
+      "type": "spacebreaker:planet",
+      "highlands": "spacebreaker:tempel_1_plains",
+      "crater": "spacebreaker:tempel_1_crater",
+      "polar": "spacebreaker:tempel_1_polar"
+    }
+  }
+}

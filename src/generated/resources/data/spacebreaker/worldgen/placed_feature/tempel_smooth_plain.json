@@ -1,0 +1,8 @@
+{
+  "feature": "spacebreaker:tempel_smooth_plain",
+  "placement": [
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

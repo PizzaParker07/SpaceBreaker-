@@ -34,7 +34,8 @@ public final class TinyMoonTests {
             com.pizzaparker07.spacebreaker.content.neptune.Nereid.NEREID, com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.BENNU,
             com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.RYUGU, com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.EROS,
             com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.ITOKAWA, com.pizzaparker07.spacebreaker.content.belt.Comets.CHURYUMOV,
-            com.pizzaparker07.spacebreaker.content.belt.Comets.ENCKE, com.pizzaparker07.spacebreaker.content.belt.Comets.HALLEY);
+            com.pizzaparker07.spacebreaker.content.belt.Comets.ENCKE, com.pizzaparker07.spacebreaker.content.belt.Comets.HALLEY,
+            com.pizzaparker07.spacebreaker.content.belt.Comets.TEMPEL, com.pizzaparker07.spacebreaker.content.belt.Comets.HALE_BOPP);
 
     @GameTest(template = WorldTests.EMPTY, timeoutTicks = 200)
     public static void tinyMoonsAreWorlds(GameTestHelper helper) {
@@ -69,6 +70,15 @@ public final class TinyMoonTests {
         var pharos = Proteus.pharos();
         double floor = BasinFeature.offset(t, pharos, pharos.x(), BasinFeature.centreZ(t, pharos));
         helper.assertTrue(floor < -20, "Pharos is a deep basin: " + floor);
+        // Tempel 1: a smooth plain, flat across its floor, sunk a few blocks behind a low scarp, on the nucleus
+        var tempel = WorldTests.generator(helper, "tempel_1", 4L).terrain();
+        var plain = com.pizzaparker07.spacebreaker.content.belt.Comets.tempelPlain();
+        double pz = BasinFeature.centreZ(tempel, plain);
+        double mid = BasinFeature.offset(tempel, plain, plain.x(), pz);
+        double side = BasinFeature.offset(tempel, plain, plain.x() + plain.radius() * 0.6, pz);
+        double out = BasinFeature.offset(tempel, plain, plain.x() + plain.radius() * 2.5, pz);
+        helper.assertTrue(mid < -3 && Math.abs(mid - side) < 1.5 && out == 0, "Tempel 1's smooth plain: " + mid + " / " + side + " / " + out);
+        helper.assertTrue(Math.abs(pz) + plain.radius() < tempel.profile().poleDistance(), "the plain lies on the nucleus: " + pz);
         // the near-Earth asteroids' own shapes
         var ryugu = WorldTests.generator(helper, "ryugu", 4L).terrain();
         var ridge = com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.ryuguRidge();
