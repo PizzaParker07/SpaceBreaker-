@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "c:plates/aluminum"
+    },
+    "C": {
+      "item": "spacebreaker:advanced_circuit"
+    },
+    "M": {
+      "item": "spacebreaker:electric_motor"
+    },
+    "R": {
+      "tag": "c:rods/titanium"
+    },
+    "S": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "pattern": [
+    "SRS",
+    "MCM",
+    "SAS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "spacebreaker:gas_centrifuge"
+  }
+}

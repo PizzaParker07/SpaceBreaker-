@@ -1,0 +1,147 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "spacebreaker:block/item_duct_core"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "north": "connected"
+          },
+          {
+            "north": "extract"
+          }
+        ]
+      },
+      "apply": {
+        "model": "spacebreaker:block/item_duct_north"
+      }
+    },
+    {
+      "when": {
+        "north": "extract"
+      },
+      "apply": {
+        "model": "spacebreaker:block/item_duct_north_extract"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "south": "connected"
+          },
+          {
+            "south": "extract"
+          }
+        ]
+      },
+      "apply": {
+        "model": "spacebreaker:block/item_duct_south"
+      }
+    },
+    {
+      "when": {
+        "south": "extract"
+      },
+      "apply": {
+        "model": "spacebreaker:block/item_duct_south_extract"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "east": "connected"
+          },
+          {
+            "east": "extract"
+          }
+        ]
+      },
+      "apply": {
+        "model": "spacebreaker:block/item_duct_east"
+      }
+    },
+    {
+      "when": {
+        "east": "extract"
+      },
+      "apply": {
+        "model": "spacebreaker:block/item_duct_east_extract"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "west": "connected"
+          },
+          {
+            "west": "extract"
+          }
+        ]
+      },
+      "apply": {
+        "model": "spacebreaker:block/item_duct_west"
+      }
+    },
+    {
+      "when": {
+        "west": "extract"
+      },
+      "apply": {
+        "model": "spacebreaker:block/item_duct_west_extract"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "up": "connected"
+          },
+          {
+            "up": "extract"
+          }
+        ]
+      },
+      "apply": {
+        "model": "spacebreaker:block/item_duct_up"
+      }
+    },
+    {
+      "when": {
+        "up": "extract"
+      },
+      "apply": {
+        "model": "spacebreaker:block/item_duct_up_extract"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "down": "connected"
+          },
+          {
+            "down": "extract"
+          }
+        ]
+      },
+      "apply": {
+        "model": "spacebreaker:block/item_duct_down"
+      }
+    },
+    {
+      "when": {
+        "down": "extract"
+      },
+      "apply": {
+        "model": "spacebreaker:block/item_duct_down_extract"
+      }
+    }
+  ]
+}

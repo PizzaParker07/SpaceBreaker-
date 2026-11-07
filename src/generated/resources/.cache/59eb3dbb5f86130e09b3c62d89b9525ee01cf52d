@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-07T15:00:06.364185847	Loot Tables
+// 1.21.1	2026-11-07T15:41:10.010536703	Loot Tables
 c48f71ca60600cd6230f77a2e146a3df572494ae data/spacebreaker/loot_table/blocks/aerogel.json
 e37973997ec83c5b040a31bf9fcda1757b53fc00 data/spacebreaker/loot_table/blocks/airlock_door.json
 c511e60fe01f6dddc2d2b0e516ca81c11bf4ca91 data/spacebreaker/loot_table/blocks/aluminum_block.json
@@ -107,6 +107,7 @@ d27396d04a8e7be3c7aeda6f72504e4f65ad5b65 data/spacebreaker/loot_table/blocks/flu
 8374fad6d0c2967a622ffdcb47b42a57fcac16d6 data/spacebreaker/loot_table/blocks/fuel_depot.json
 6dc54d2bbe6c8792e110fd205a578d864eb516a5 data/spacebreaker/loot_table/blocks/fuel_umbilical.json
 afa2d853ffd2fba7d0303cc2fb4d19925857f3fa data/spacebreaker/loot_table/blocks/ganymede_regolith.json
+9307ce9a4c8b8e6e06c80073c27d406fc2640ce3 data/spacebreaker/loot_table/blocks/gas_centrifuge.json
 3e22e09bcd3f6e170c78bdc196ee3ea7af9ec3c2 data/spacebreaker/loot_table/blocks/gas_pipe.json
 e0be94612403e1ca368e10baddda0048850ed3f2 data/spacebreaker/loot_table/blocks/glimmer_lamp.json
 fa5650148331794d151ce2948460254d10936313 data/spacebreaker/loot_table/blocks/graben_floor_ice.json
@@ -138,6 +139,7 @@ bf6e45d8b1fec3c1ea5a1762fc9418d60666c35b data/spacebreaker/loot_table/blocks/ion
 a167786a151be60653789942dd4705ebbb90ab9a data/spacebreaker/loot_table/blocks/ionian_basalt_stairs.json
 ebda587025ca63981fb7acf0fd08559e2099744f data/spacebreaker/loot_table/blocks/ionian_basalt_wall.json
 33525458edb9a5cf8d1343ad83ce609f6fd119ba data/spacebreaker/loot_table/blocks/ionian_sulfur_ore.json
+eb2eaeff1891992c321db9f18ca4c65fe22e5855 data/spacebreaker/loot_table/blocks/item_duct.json
 389024c28e82816a7f9c72fb6c919048ae1dbe59 data/spacebreaker/loot_table/blocks/itokawa_gravel.json
 58f47e91bf46cc22a9914a0980b9a077f2bdbe18 data/spacebreaker/loot_table/blocks/itokawa_rock.json
 93fac53325008f2437b22913aad76c2c6f8744ad data/spacebreaker/loot_table/blocks/kreep_ore.json

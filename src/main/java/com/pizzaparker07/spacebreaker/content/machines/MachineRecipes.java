@@ -150,6 +150,7 @@ final class MachineRecipes {
         shaped(out, HV_CABLE.get(), 6, has(ALUMINUM.wireTag), "PPP", "WWW", "PPP", 'P', PLASTIC_TAG, 'W', ALUMINUM.wireTag);
         shaped(out, FLUID_PIPE.get(), 8, has(IRON.plateTag), "PPP", "   ", "PPP", 'P', IRON.plateTag);
         shaped(out, GAS_PIPE.get(), 8, has(COPPER.plateTag), "PPP", " S ", "PPP", 'P', COPPER.plateTag, 'S', SILICONE_SEAL.get());
+        shaped(out, ITEM_DUCT.get(), 8, has(IRON.plateTag), "PPP", " H ", "PPP", 'P', IRON.plateTag, 'H', Items.HOPPER);
         MachineRecipesExtra.add(out);
     }
 

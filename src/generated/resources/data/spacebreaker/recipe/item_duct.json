@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "H": {
+      "item": "minecraft:hopper"
+    },
+    "P": {
+      "tag": "c:plates/iron"
+    }
+  },
+  "pattern": [
+    "PPP",
+    " H ",
+    "PPP"
+  ],
+  "result": {
+    "count": 8,
+    "id": "spacebreaker:item_duct"
+  }
+}

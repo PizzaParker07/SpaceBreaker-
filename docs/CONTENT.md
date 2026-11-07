@@ -32,6 +32,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Oksijen Dağıtıcı | kapalı odayı tick'lere yayılmış taşkın dolumla bulur (en çok 4096 blok), tüpten ya da borudan gelen oksijenle önce odayı basınçlandırır (blok başına oksijen), sonra hacme göre tüketir; sızıntıda hava boşalır; blok değişince yeniden kontrol |
 | 🎨 | Hava Kilidi Kapısı | 2 blok, kayar kanatlar (animasyonlu); kapalıyken hava geçirmez; el ya da kızıltaşla açılır |
 | 🎨 | Yanmalı Jeneratör, Batarya Bankası, Bakır / Yüksek Gerilim Kablosu | jeneratör yalnız oksijenli havada yanar; batarya önden verir (tavana takılınca ön yüzü aşağı bakar: çatıdaki batarya üstteki panelden dolar, alttaki odaya verir), şarj göstergesi |
+| 🎨 | Eşya Kanalı (`spacebreaker:item_duct`) | envanterler arası eşya taşır (saniyede 16, uç başına); bir ucu eğilip boş elle kullan → o envanterden çeker (kırmızı valf); elde eşyayla eğilip kullan → o uç yalnız o eşyayı geçirir (aynı eşyayla tekrar: filtre kalkar); kanala bakan huni yalnız besler; tarif: 6 demir levha + huni → 8 |
 | 🎨 | Kırıcı, Elektrik Ark Fırını, Pres (hareketli koç), Petrol Pompası (çok bloklu, animasyonlu), Rafineri (çok bloklu damıtma kulesi) | |
 | 🎨 | Elektroliz Ünitesi, Kriyojenik Sıvılaştırıcı, Sıvı / Basınçlı Gaz / Kriyojenik Tank (dolum görünür; kırınca içerik eşyada kalır, yerleştirince geri gelir), sıvı/gaz borusu (uçtan çekme modu; sıvı borusu sonsuz su kaynağından 100 mB/t su çeker) | |
 | 🎨 | Parça Üretim Tezgâhı | `spacebreaker:fabricating` tarifi; Roket ve Giysi alanları kendi tariflerini ekler |
@@ -323,7 +324,10 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | Durum | İçerik | Not |
 |---|---|---|
 | 🎨 | Uraninit → Uranyum (cevher ×2, ham, ham blok, külçe, parça, blok, toz) | Dünya'da en derin (y −64…−32) ve en nadir cevher; külçe yalnız ark fırınında |
-| 🎨 | RTG Yakıt Peleti | kimyasal reaktör: 4 uranyum tozu + 500 mB sülfürik asit; etkinliği 21 oyun gününde yarıya iner (depoda da); taşınırken pelet başına ~8 mSv/gün doz (ortam radyasyon kancasıyla giysi doz sistemine eklenir) |
+| 🎨 | RTG Yakıt Peleti | sinter fırını: 4 sarı pasta; etkinliği 21 oyun gününde yarıya iner (depoda da); taşınırken pelet başına ~8 mSv/gün doz (ortam radyasyon kancasıyla giysi doz sistemine eklenir) |
+| 🎨 | Sarı Pasta (`spacebreaker:yellowcake`) | kimyasal reaktör: 1 uranyum tozu + 125 mB sülfürik asit → 1 (uranyum oksit konsantresi); RTG peletinin ve zenginleştirmenin hammaddesi |
+| 🎨 | Gaz Santrifüjü (`spacebreaker:gas_centrifuge`), Zenginleştirilmiş / Tükenmiş Uranyum | 4 sarı pasta → 1 zenginleştirilmiş + 3 tükenmiş uranyum, 800 tick, 160 FE/t (yavaş, çok enerji); yan yana çalışan her santrifüj yarım kademe hız ekler (4 komşuyla 3 kat) — kademeli dizi; tükenmiş uranyum ileride zırh/balast |
+| 🎨 | Nükleer Yakıt Elemanı (`spacebreaker:nuclear_fuel_element`, etiket `spacebreaker:reactor_fuel`) | ark ocağı: 2 zenginleştirilmiş uranyum + 2 kömür tozu + 2 tungsten çubuk → 1 (uranyum karbür, tungsten kılıf; NERVA tipi altıgen eleman); nükleer termal roket motorunun yakıtı (roketçilik); taze yakıt zayıf radyoaktif, taşınırken doz vermez — radyasyonu motor yanarken yayar |
 | 🎨 | Radyoizotop Jeneratör (RTG) | taze peletle 40 FE/t, gece gündüz, havasız ve güneşsiz her yerde; kalkanlı gövde (içindeki pelet doz vermez); çıkış peletin etkinliğiyle azalır |
 | 🎨 | Güneş Paneli Dizisi (`spacebreaker:solar_array`) | istasyon ve karakollar için: tek blok taban, kuzey-güney 3 blok kanat, 60 FE/t tepe (3 takipçi); vakumda ufka yakın güneşte hava kaybı yok; yörüngede gezegenin gölgesine girince (turun ~1/3'ü) üretim düşer, yaşam modülü kitinin tek dizisi + yakıt deposunun tamponu gölgede yakıt basmaya yeter |
 | 🎨 | Güç Göstergesi (`spacebreaker:power_monitor`) | batarya bankasının (ya da enerji depolayan herhangi bir bloğun) önüne/arkasına dayanır; ekranında doluluk %, net FE/t ve dolma/boşalma süresi; sağ tıkta özet, karşılaştırıcı çıkışı doluluğa göre |

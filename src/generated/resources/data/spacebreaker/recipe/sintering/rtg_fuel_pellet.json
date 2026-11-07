@@ -1,0 +1,16 @@
+{
+  "type": "spacebreaker:sintering",
+  "energy": 80,
+  "ingredients": [
+    {
+      "count": 4,
+      "item": "spacebreaker:yellowcake"
+    }
+  ],
+  "results": [
+    {
+      "count": 1,
+      "id": "spacebreaker:rtg_fuel_pellet"
+    }
+  ]
+}
