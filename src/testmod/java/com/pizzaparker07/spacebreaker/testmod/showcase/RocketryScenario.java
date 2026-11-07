@@ -597,15 +597,18 @@ final class RocketryScenario implements ShowcaseScenario {
                 Spacebreaker.LOGGER.info("[showcase] comet: end state {} dim {} removed {}", now.state(), now.level().dimension().location(), r.isRemoved());
             });
         }, null));
-        s.add(new Shot("48_warning_lights", 13000, 5.5, G + 1.2, 6.5, 150F, 25F, true, fp, 60, p -> {
-            clearScene(p);
-            ServerLevel level = p.serverLevel();
-            // two beacons on the pad edge, one lit by redstone, one dark, at dusk
-            BlockPos a = PAD.offset(3, 1, 4), b2 = PAD.offset(1, 1, 5);
-            level.setBlock(a.below(), net.minecraft.world.level.block.Blocks.REDSTONE_BLOCK.defaultBlockState(), 3);
-            level.setBlock(a, RocketryModule.WARNING_LIGHT.get().defaultBlockState(), 3);
-            level.setBlock(b2, RocketryModule.WARNING_LIGHT.get().defaultBlockState(), 3);
-        }, null));
+        // warning lights at night, away from the console: lit (beams turning, light on the deck) and dark
+        for (boolean on : new boolean[]{true, false}) {
+            s.add(new Shot(on ? "48_warning_lights" : "48b_warning_lights_off", 18000, -1.5, G + 1.5, 12.5, 153F, 15F, true, fp, 60, p -> {
+                clearScene(p);
+                ServerLevel level = p.serverLevel();
+                for (BlockPos a : new BlockPos[]{PAD.offset(-3, 1, 8), PAD.offset(-5, 1, 6)}) {
+                    level.setBlock(a.below(), on ? net.minecraft.world.level.block.Blocks.REDSTONE_BLOCK.defaultBlockState()
+                            : RocketryModule.LAUNCH_PAD.get().defaultBlockState(), 3);
+                    level.setBlock(a, RocketryModule.WARNING_LIGHT.get().defaultBlockState(), 3);
+                }
+            }, null));
+        }
         s.add(new Shot("49_base_blocks", 6000, 0, 0, 0, 0F, 0F, true, fp, 80, p -> {
             clearScene(p);
             ServerLevel moon = p.server.getLevel(Location.MOON_SURFACE.dimension());

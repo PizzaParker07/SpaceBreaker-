@@ -25,11 +25,12 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import java.util.Map;
 
 /**
- * Rotating amber warning beacon for launch pads and stations. It turns and flashes (an animated texture, so it
- * is safe with shader packs, and real block light) while a redstone signal reaches it, or by itself whenever a
+ * Rotating amber warning beacon for launch pads and stations. It turns and flashes (an animated lens texture and
+ * beams drawn by client.rocketry.WarningLightRenderer with the beacon beam render type, both safe with shader packs,
+ * plus real block light) while a redstone signal reaches it, or by itself whenever a
  * rocket within {@link #RANGE} blocks is being fuelled, counting down, lifting off or docking.
  */
-public class WarningLightBlock extends DirectionalBlock {
+public class WarningLightBlock extends DirectionalBlock implements net.minecraft.world.level.block.EntityBlock {
     public static final MapCodec<WarningLightBlock> CODEC = simpleCodec(WarningLightBlock::new);
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
@@ -120,5 +121,10 @@ public class WarningLightBlock extends DirectionalBlock {
             }
         }
         return false;
+    }
+
+    @Override
+    public net.minecraft.world.level.block.entity.BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new WarningLightBlockEntity(pos, state);
     }
 }

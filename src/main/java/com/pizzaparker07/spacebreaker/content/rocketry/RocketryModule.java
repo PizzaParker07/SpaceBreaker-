@@ -184,6 +184,9 @@ public final class RocketryModule implements SbModule {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<RocketAssemblerBlockEntity>> ASSEMBLER_BE = BLOCK_ENTITIES.register("rocket_assembler",
             () -> BlockEntityType.Builder.of(RocketAssemblerBlockEntity::new, ROCKET_ASSEMBLER.get()).build(null));
     @SuppressWarnings("DataFlowIssue")
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.pizzaparker07.spacebreaker.content.rocketry.pad.WarningLightBlockEntity>> WARNING_LIGHT_BE =
+            BLOCK_ENTITIES.register("warning_light", () -> BlockEntityType.Builder.of(
+                    com.pizzaparker07.spacebreaker.content.rocketry.pad.WarningLightBlockEntity::new, WARNING_LIGHT.get()).build(null));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CrewArmBlockEntity>> CREW_ARM_BE = BLOCK_ENTITIES.register("crew_access_arm",
             () -> BlockEntityType.Builder.of(CrewArmBlockEntity::new, CREW_ARM.get()).build(null));
     @SuppressWarnings("DataFlowIssue")

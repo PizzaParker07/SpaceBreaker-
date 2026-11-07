@@ -35,6 +35,7 @@ public final class RocketryClient {
         event.registerEntityRenderer(RocketryModule.SPENT_STAGE.get(), SpentStageRenderer::new);
         event.registerEntityRenderer(RocketryModule.SATELLITE_ENTITY.get(), SatelliteRenderer::new);
         event.registerBlockEntityRenderer(RocketryModule.CREW_ARM_BE.get(), CrewArmRenderer::new);
+        event.registerBlockEntityRenderer(RocketryModule.WARNING_LIGHT_BE.get(), WarningLightRenderer::new);
     }
 
     @SubscribeEvent

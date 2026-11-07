@@ -2178,23 +2178,31 @@ def warning_light_lens(phase=None):
 
 
 ALPANEL = ramp('#7e848c', '#9aa0a8', '#b2b8bf', '#c6cbd1', '#d8dce0', '#e8ebee')
+AL_BRUSH = ramp('#7f8994', '#9ea7b1', '#b4bcc5', '#bec6ce', '#d2d8de')
 TITAN = ramp('#3e444c', '#4f565f', '#5f6772', '#717a86', '#86909c')
 
 
 def aluminum_panel():
-    """Brushed aluminium panel: fine horizontal grain, a seam frame and corner rivets."""
+    """Brushed aluminium panel: soft horizontal brush streaks, a seam frame and corner rivets, low contrast."""
     cv = Canvas()
     for y in range(16):
         for x in range(16):
-            grain = (x * 7 + y * 13) % 11
-            cv[x, y] = ALPANEL[3] if grain < 4 else ALPANEL[2] if grain < 9 else ALPANEL[4]
+            cv[x, y] = AL_BRUSH[2]
+        # one long thin streak per row, lighter on darker rows and darker on lighter rows
+        x0 = (2, 9, 5, 12, 1, 7, 14, 4, 10, 3, 13, 6, 0, 11, 8, 15)[y]
+        length = (6, 4, 8, 5, 7, 3, 6, 9, 4, 7, 5, 8, 3, 6, 9, 5)[y]
+        for k in range(length):
+            x = (x0 + k) % 16
+            cv[x, y] = AL_BRUSH[3]
+    # panel seam: light top-left edge, darker bottom-right edge
     for i in range(16):
-        cv[i, 0] = ALPANEL[5]
-        cv[0, i] = ALPANEL[5]
-        cv[i, 15] = ALPANEL[0]
-        cv[15, i] = ALPANEL[0]
+        cv[i, 0] = AL_BRUSH[4]
+        cv[0, i] = AL_BRUSH[4]
+        cv[i, 15] = AL_BRUSH[1]
+        cv[15, i] = AL_BRUSH[1]
     for x, y in ((2, 2), (13, 2), (2, 13), (13, 13)):
-        cv[x, y] = ALPANEL[1]
+        cv[x, y] = AL_BRUSH[0]
+        cv[x - 1, y - 1] = AL_BRUSH[4]
     return cv
 
 
