@@ -14,6 +14,8 @@ public final class SkyConfig {
         VOXEL,
         /** A slowly turning cube with pixel faces. */
         CUBE,
+        /** A ball of blocks far away that turns into a smooth sphere in its pixel map when it fills the view. */
+        PIXEL,
         /** The old smooth disc. */
         ROUND
     }
@@ -23,7 +25,7 @@ public final class SkyConfig {
         b.push("sky");
         BODY_SCALE = b.comment("Apparent size of the sun and planets relative to reality (1 = real angular size, which is tiny on screen).")
                 .defineInRange("bodyScale", 8.0, 1.0, 20.0);
-        PLANET_STYLE = b.comment("How planets and moons look from outside: VOXEL (a ball of blocks), CUBE (a pixel cube) or ROUND (smooth disc).")
+        PLANET_STYLE = b.comment("How planets and moons look from outside: VOXEL (a ball of blocks), CUBE (a pixel cube), PIXEL (blocks far away, a pixel-textured sphere close up) or ROUND (smooth disc).")
                 .defineEnum("planetStyle", PlanetStyle.VOXEL);
         b.pop();
         SPEC = b.build();
@@ -49,7 +51,7 @@ public final class SkyConfig {
     /** The blocky style to draw with, or null for the old smooth disc. */
     public static com.pizzaparker07.spacebreaker.content.worldgen.BlockyBodyMesh.Style blockyStyle() {
         return switch (planetStyle()) {
-            case VOXEL -> com.pizzaparker07.spacebreaker.content.worldgen.BlockyBodyMesh.Style.VOXEL;
+            case VOXEL, PIXEL -> com.pizzaparker07.spacebreaker.content.worldgen.BlockyBodyMesh.Style.VOXEL;
             case CUBE -> com.pizzaparker07.spacebreaker.content.worldgen.BlockyBodyMesh.Style.CUBE;
             case ROUND -> null;
         };

@@ -81,8 +81,8 @@ final class SpaceSceneScenario implements ShowcaseScenario {
     private static ShowcaseDriver.Shot shot(String name, Framing framing) {
         return new ShowcaseDriver.Shot(name, 0, 0.5, 200, 0.5, 0F, 0F, true, CameraType.FIRST_PERSON, 160, p -> aim(p, framing, false), () -> {
             System.setProperty("spacebreaker.blockyTiming", "true");
-            // -PshotPrefix=voxel: balls of blocks only, for side-by-side checks with the pixel sphere
-            System.setProperty("spacebreaker.noPixelSphere", Boolean.toString("voxel".equals(System.getProperty("spacebreaker.shotPrefix"))));
+            // -PshotPrefix=pixel: the optional pixel sphere (planetStyle = PIXEL), for side-by-side checks
+            System.setProperty("spacebreaker.pixelSphere", Boolean.toString("pixel".equals(System.getProperty("spacebreaker.shotPrefix"))));
         });
     }
 
@@ -90,8 +90,8 @@ final class SpaceSceneScenario implements ShowcaseScenario {
     private static ShowcaseDriver.Shot nearMoon(String name, Framing framing) {
         return new ShowcaseDriver.Shot(name, 0, 0.5, 200, 0.5, 0F, 0F, true, CameraType.FIRST_PERSON, 160, p -> aim(p, framing, true), () -> {
             System.setProperty("spacebreaker.blockyTiming", "true");
-            // -PshotPrefix=voxel: balls of blocks only, for side-by-side checks with the pixel sphere
-            System.setProperty("spacebreaker.noPixelSphere", Boolean.toString("voxel".equals(System.getProperty("spacebreaker.shotPrefix"))));
+            // -PshotPrefix=pixel: the optional pixel sphere (planetStyle = PIXEL), for side-by-side checks
+            System.setProperty("spacebreaker.pixelSphere", Boolean.toString("pixel".equals(System.getProperty("spacebreaker.shotPrefix"))));
         });
     }
 

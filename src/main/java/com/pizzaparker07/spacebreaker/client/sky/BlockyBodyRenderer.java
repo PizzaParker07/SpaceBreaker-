@@ -876,8 +876,10 @@ public final class BlockyBodyRenderer {
 
     /** The texture behind a colour map made by {@link #texture} or {@link #surface}, for the pixel sphere; null if none. */
     static PixelMap pixelMap(ColorMap map) {
-        // -Dspacebreaker.noPixelSphere=true keeps balls of blocks at every size (for side-by-side checks)
-        return Boolean.getBoolean("spacebreaker.noPixelSphere") ? null : PIXEL_MAPS.get(map);
+        // only when chosen in the client settings (planetStyle = PIXEL), or for side-by-side checks (-Dspacebreaker.pixelSphere=true);
+        // the default keeps balls of blocks at every size, with the fine surface patch close up
+        boolean on = SkyConfig.planetStyle() == SkyConfig.PlanetStyle.PIXEL || Boolean.getBoolean("spacebreaker.pixelSphere");
+        return on ? PIXEL_MAPS.get(map) : null;
     }
 
     /**
