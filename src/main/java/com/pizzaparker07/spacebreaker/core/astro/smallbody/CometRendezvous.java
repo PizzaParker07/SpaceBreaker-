@@ -20,8 +20,24 @@ public final class CometRendezvous {
     public static final double ARRIVAL_WINDOW_DAYS = 60;
     private static final int TOF_STEPS = 160, ARRIVAL_STEPS = 25;
 
+    /** How a comet can be reached, for the map. */
+    public enum Access {
+        CHEMICAL("Reachable", "Ulaşılabilir"),
+        NUCLEAR("Needs a nuclear engine", "Nükleer motor gerekir"),
+        OBSERVATION_ONLY("Observation only", "Yalnız gözlem");
+
+        public final String nameEn, nameTr;
+
+        Access(String en, String tr) {
+            nameEn = en;
+            nameTr = tr;
+        }
+    }
+
     public enum Point {
-        PERIHELION, APHELION
+        PERIHELION, APHELION,
+        /** Anywhere along the orbit, departing after the start time, within a flight-time limit. */
+        ANYWHERE
     }
 
     /**
@@ -61,15 +77,26 @@ public final class CometRendezvous {
         }
 
         public static Table compute(BodySystem sys, double after, int passages) {
+            return compute(sys, after, passages, DEFAULT_MAX_YEARS);
+        }
+
+        /** Flight-time limits for which the table keeps the cheapest anywhere-on-orbit option, years. */
+        public static final double[] TABLE_FLIGHT_YEARS = {5, 10, 20, 40};
+
+        /** As {@link #compute(BodySystem, double, int)}; {@code maxYears} is ignored (see {@link #TABLE_FLIGHT_YEARS}). */
+        public static Table compute(BodySystem sys, double after, int passages, double maxYears) {
             java.util.Map<String, java.util.List<Result>> out = new java.util.LinkedHashMap<>();
             for (Comet c : Comet.CATALOGUE) {
                 java.util.List<Result> list = new java.util.ArrayList<>();
                 double t = after;
                 for (int k = 0; k < passages; k++) {
-                    for (Point p : Point.values()) {
+                    for (Point p : new Point[]{Point.PERIHELION, Point.APHELION}) {
                         estimate(sys, c, p, t).ifPresent(list::add);
                     }
                     t = c.nextPerihelion(t) + c.periodSeconds() * 0.75; // move past this perihelion and aphelion
+                }
+                for (Result r : cheapestWithin(sys, c, after, TABLE_FLIGHT_YEARS)) {
+                    if (r != null && !list.contains(r)) list.add(r);
                 }
                 list.sort(java.util.Comparator.comparingDouble(Result::arrivalTime));
                 out.put(c.id(), java.util.List.copyOf(list));
@@ -99,6 +126,16 @@ public final class CometRendezvous {
                     .min(java.util.Comparator.comparingDouble(Result::arrivalTime));
         }
 
+        /**
+         * Map classification for budgets of two engine generations: reachable with chemical rockets, only with a
+         * nuclear thermal stage, or observation only.
+         */
+        public Access access(String cometId, double now, double chemicalDv, double nuclearDv, double maxYears) {
+            if (reachable(cometId, now, chemicalDv, maxYears)) return Access.CHEMICAL;
+            if (reachable(cometId, now, nuclearDv, maxYears)) return Access.NUCLEAR;
+            return Access.OBSERVATION_ONLY;
+        }
+
         /** Whether any upcoming option fits the budget: false means "observation only" for that budget. */
         public boolean reachable(String cometId, double now, double maxDv, double maxYears) {
             return cheapest(cometId, now, maxDv, maxYears).isPresent();
@@ -110,22 +147,75 @@ public final class CometRendezvous {
 
     /** Cheapest direct rendezvous at the first perihelion or aphelion passage at or after {@code after}. */
     public static Optional<Result> estimate(BodySystem sys, Comet comet, Point point, double after) {
-        AstroBody earth = sys.require("spacebreaker:earth");
+        if (point == Point.ANYWHERE) {
+            return cheapestWithin(sys, comet, after, DEFAULT_MAX_YEARS);
+        }
         double period = comet.periodSeconds();
         double passage = comet.nextPerihelion(after) + (point == Point.APHELION ? period / 2 : 0);
         double rArrive = (point == Point.PERIHELION ? comet.perihelionAu() : comet.aphelionAu()) * AstroConstants.AU;
         // transfer times: from a month up to twice the Hohmann time to the arrival distance
         double aT = 0.5 * (AstroConstants.AU + rArrive);
         double hohmann = Math.PI * Math.sqrt(aT * aT * aT / AstroConstants.MU_SUN);
-        double minTof = 30 * AstroConstants.DAY, maxTof = Math.max(2 * hohmann, 400 * AstroConstants.DAY);
-        double rLeo = earth.lowOrbitRadius(), vLeo = Math.sqrt(earth.mu() / rLeo);
-        Result best = null;
+        double[] arrivals = new double[ARRIVAL_STEPS];
         for (int ia = 0; ia < ARRIVAL_STEPS; ia++) {
-            double tArr = passage + (ia / (ARRIVAL_STEPS - 1.0) * 2 - 1) * ARRIVAL_WINDOW_DAYS * AstroConstants.DAY;
+            arrivals[ia] = passage + (ia / (ARRIVAL_STEPS - 1.0) * 2 - 1) * ARRIVAL_WINDOW_DAYS * AstroConstants.DAY;
+        }
+        return search(sys, comet, point, arrivals, 30 * AstroConstants.DAY, Math.max(2 * hohmann, 400 * AstroConstants.DAY),
+                TOF_STEPS, Double.NEGATIVE_INFINITY);
+    }
+
+    /** Flight-time limit used by {@link Point#ANYWHERE} through {@link #estimate}, years. */
+    public static final double DEFAULT_MAX_YEARS = 20;
+    /** How far ahead {@link #cheapestWithin} looks for an arrival, years. */
+    public static final double HORIZON_YEARS = 80;
+
+    /**
+     * Cheapest rendezvous anywhere along the orbit: departure after {@code after}, flight at most {@code maxYears},
+     * arrival within one orbital period (at most {@link #HORIZON_YEARS}) of departure. This is the "best affordable
+     * passage" for a mission planner: slow far-out points are cheap to match but take long to reach.
+     */
+    public static Optional<Result> cheapestWithin(BodySystem sys, Comet comet, double after, double maxYears) {
+        return Optional.ofNullable(cheapestWithin(sys, comet, after, new double[]{maxYears})[0]);
+    }
+
+    /** {@link #cheapestWithin(BodySystem, Comet, double, double)} for several flight-time limits in one pass. */
+    public static Result[] cheapestWithin(BodySystem sys, Comet comet, double after, double[] maxYears) {
+        // fixed grids, so a longer allowance only ever adds candidates
+        double span = (Math.min(comet.periodSeconds() / AstroConstants.YEAR, HORIZON_YEARS) + MAX_FLIGHT_YEARS) * AstroConstants.YEAR;
+        int n = 360;
+        double[] arrivals = new double[n];
+        for (int i = 0; i < n; i++) {
+            arrivals[i] = after + 30 * AstroConstants.DAY + span * i / (n - 1.0);
+        }
+        double[] limits = new double[maxYears.length];
+        for (int i = 0; i < limits.length; i++) {
+            limits[i] = Math.min(maxYears[i], MAX_FLIGHT_YEARS) * AstroConstants.YEAR;
+        }
+        return search(sys, comet, Point.ANYWHERE, arrivals, 30 * AstroConstants.DAY, MAX_FLIGHT_YEARS * AstroConstants.YEAR, 80,
+                after, limits);
+    }
+
+    /** Longest flight {@link #cheapestWithin} considers, years. */
+    public static final double MAX_FLIGHT_YEARS = 40;
+
+    private static Optional<Result> search(BodySystem sys, Comet comet, Point point, double[] arrivals, double minTof,
+                                           double maxTof, int tofSteps, double earliestDeparture) {
+        return Optional.ofNullable(search(sys, comet, point, arrivals, minTof, maxTof, tofSteps, earliestDeparture,
+                new double[]{maxTof})[0]);
+    }
+
+    /** One pass over the grids; the cheapest result for each flight-time limit (null where none). */
+    private static Result[] search(BodySystem sys, Comet comet, Point point, double[] arrivals, double minTof,
+                                   double maxTof, int tofSteps, double earliestDeparture, double[] tofLimits) {
+        AstroBody earth = sys.require("spacebreaker:earth");
+        double rLeo = earth.lowOrbitRadius(), vLeo = Math.sqrt(earth.mu() / rLeo);
+        Result[] best = new Result[tofLimits.length];
+        for (double tArr : arrivals) {
             StateVector cs = Kepler.stateFromElements(comet.elements(), tArr);
-            for (int it = 0; it < TOF_STEPS; it++) {
-                double tof = minTof * Math.pow(maxTof / minTof, it / (TOF_STEPS - 1.0));
+            for (int it = 0; it < tofSteps; it++) {
+                double tof = minTof * Math.pow(maxTof / minTof, it / (tofSteps - 1.0));
                 double tDep = tArr - tof;
+                if (tDep < earliestDeparture) continue;
                 Vec3 rE = sys.position(earth, tDep), vE = sys.velocity(earth, tDep);
                 for (boolean prograde : new boolean[]{true, false}) {
                     Optional<Lambert.Solution> s = Lambert.solve(rE, cs.position(), tof, AstroConstants.MU_SUN, prograde);
@@ -133,13 +223,19 @@ public final class CometRendezvous {
                     double vInf = s.get().v1().sub(vE).length();
                     double dep = Math.sqrt(vInf * vInf + 2 * earth.mu() / rLeo) - vLeo;
                     double arr = cs.velocity().sub(s.get().v2()).length();
-                    if (best == null || dep + arr < best.totalDv()) {
-                        best = new Result(comet.id(), point, dep, arr, tof, tDep, tArr, cs.position().length() / AstroConstants.AU);
+                    Result r = null;
+                    for (int k = 0; k < tofLimits.length; k++) {
+                        if (tof <= tofLimits[k] * (1 + 1e-12) && (best[k] == null || dep + arr < best[k].totalDv())) {
+                            if (r == null) {
+                                r = new Result(comet.id(), point, dep, arr, tof, tDep, tArr, cs.position().length() / AstroConstants.AU);
+                            }
+                            best[k] = r;
+                        }
                     }
                 }
             }
         }
-        return Optional.ofNullable(best);
+        return best;
     }
 
     /** The cheaper of the perihelion and aphelion rendezvous. */
