@@ -131,12 +131,16 @@ public class BasinFeature extends Feature<BasinFeature.Config> {
                 int z = z0 + dz;
                 double s = distance(t, cfg, x, z);
                 int dy = (int) Math.round(offset(t, cfg, x + 0.5, z + 0.5));
+                int top = Integer.MIN_VALUE;
                 if (dy != 0) {
-                    Columns.shift(level, x, z, dy, cfg.rock());
+                    top = Columns.shift(level, x, z, dy, cfg.rock());
                     any = true;
                 }
                 if (cfg.floorSoil().isPresent() && s < 0.7 && s > cfg.peakRadius() * 0.8) {
-                    Columns.paint(level, x, z, 1, cfg.floorSoil().get());
+                    if (top == Integer.MIN_VALUE) {
+                        top = Columns.top(level, x, z);
+                    }
+                    Columns.paint(level, x, top, z, 1, cfg.floorSoil().get());
                 }
                 if (cfg.band().isPresent()) {
                     band(level, cfg, n, x, z, s);

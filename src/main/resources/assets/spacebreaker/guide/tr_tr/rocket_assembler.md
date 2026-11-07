@@ -16,6 +16,8 @@ Parçaları tezgâhın yuvalarına yerleştir, tezgâh roketi senin için hesapl
 
 Elinde bir {item spacebreaker:rocket} olur. İpucu satırı yüksekliğini, kütlesini, kademe sayısını ve toplam Δv'sini gösterir.
 
+> Nükleer termal motorlu kademe **☢ Nükleer** diye işaretlenir. İlk kademedeyse işaret kırmızı olur: kalkmaya gücü yetmez ve rampayı ışınlar, o yüzden onu üst kademeye koy. → [Nükleer termal motor](rocket_parts#ntr)
+
 ## Ne kadar Δv lazım?
 | Yol | Δv (m/s) |
 |---|---|

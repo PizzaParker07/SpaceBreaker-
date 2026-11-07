@@ -45,6 +45,8 @@ Bir {item spacebreaker:power_monitor}'ü batarya bankasına (ya da enerji depola
 | Titan | 35 dk | %1,1 | 100 | 0,4 |
 | Plüton | 22 dk | %0,06 | ~1000 | 0,3 |
 
->! Europa ve ötesinde güneş paneli pratik değildir: Güneş çok uzaktır. Oralarda bir {item spacebreaker:rtg} kullan ({tech spacebreaker:radioisotope_power}); tek bir RTG dört tane 10 FE/t'lik yükü taşır ve {item spacebreaker:rtg_fuel_pellet} ile çalışır.
+>! Europa ve ötesinde güneş paneli pratik değildir: Güneş çok uzaktır. Oralarda bir {item spacebreaker:rtg} kullan ({tech spacebreaker:radioisotope_power}); tek bir RTG dört tane 10 FE/t'lik yükü taşır ve {item spacebreaker:rtg_fuel_pellet} ile çalışır. Pelet, sinterleme fırınında sarı pastadan yapılır. → [Nükleer Yakıt](nuclear_fuel)
+
+> Büyük bir üs için {item spacebreaker:fission_reactor} tek yakıt elemanıyla 10 gün boyunca 320 FE/t verir, ama gömülmeli ya da kalkanlanmalıdır. → [Fisyon güç ünitesi](nuclear_fuel#fission)
 
 {recipe? spacebreaker:rtg}
