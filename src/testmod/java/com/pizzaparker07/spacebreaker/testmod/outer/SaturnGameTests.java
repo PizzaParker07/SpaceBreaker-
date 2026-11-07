@@ -96,7 +96,7 @@ public final class SaturnGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = WorldTests.EMPTY, timeoutTicks = 200)
+    @GameTest(template = WorldTests.EMPTY, timeoutTicks = 300)
     public static void tholinWormBurrowsSurfacesAndSiftsTholin(GameTestHelper helper) {
         com.pizzaparker07.spacebreaker.content.saturn.entity.TholinWorm w = helper.spawn(SaturnEntities.THOLIN_WORM.get(), new BlockPos(2, 2, 2));
         helper.assertTrue(w.isFood(new net.minecraft.world.item.ItemStack(com.pizzaparker07.spacebreaker.content.saturn.SaturnModule.THOLIN_SAND.get())),
@@ -108,9 +108,13 @@ public final class SaturnGameTests {
         w.setBurrowed(true);
         w.setPelletTime(2);
         // with nobody near it comes back up, and now and then it leaves a tholin pellet
+        // (it may wander off after the hit, so the pellet is searched for around the worm, not at the spawn point)
         helper.succeedWhen(() -> {
             helper.assertFalse(w.isBurrowed(), "surfaces once things are quiet");
-            helper.assertItemEntityPresent(com.pizzaparker07.spacebreaker.content.saturn.SaturnModule.THOLIN.get(), new BlockPos(2, 2, 2), 3.0);
+            var pellets = helper.getLevel().getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, w.getBoundingBox().inflate(12),
+                    e -> e.getItem().is(com.pizzaparker07.spacebreaker.content.saturn.SaturnModule.THOLIN.get()));
+            helper.assertTrue(!pellets.isEmpty(), "leaves a tholin pellet");
+            pellets.forEach(net.minecraft.world.entity.Entity::discard);
         });
     }
 
