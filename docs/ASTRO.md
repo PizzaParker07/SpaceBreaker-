@@ -1051,6 +1051,14 @@ built on them.
   HUD. Each segment ends in an impact, an exit from the current sphere of influence or an entry into a
   moon's, and the next conic continues in the new body's frame. `soi(sys, body)` gives a sphere of influence.
 
+- `ManeuverNode(time, prograde, normal, radial)` is a planned burn in the local orbital frame: `deltaV(state)`,
+  `apply`, `burnSeconds(mass, thrust, isp)` and `startTime` (the burn centred on the node).
+- `EntryGate` gives a body's layers: `zone(body, altitude)` returns SPACE, ORBIT_SHELL (below twice the
+  low-orbit altitude), ENTRY (below the top of the air, or half the low-orbit altitude on airless worlds) or
+  SURFACE. `descendsThroughEntry(body, state)` is the hand-over test to the surface world.
+- `SurfacePoint(lat, lon, altitude)` converts to and from a position over a turning body through `BodyLook`.
+  `mapXZ(blocksPerDegree)` maps it onto a surface world (x east, z south).
+
 `FlightCoreTest` checks:
 - scale round trips and the Earth–Moon distances in blocks;
 - Earth-frame gravity within 1e-5 of μ/r² in low orbit, with the Moon dominating near the Moon;

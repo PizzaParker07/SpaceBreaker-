@@ -131,4 +131,60 @@ class FlightCoreTest {
         assertTrue(n.hasNode());
         assertEquals(1, n.dvFraction());
     }
+
+    @Test
+    void maneuverNodes() {
+        double r = EARTH.radius() + 200e3, vc = Math.sqrt(EARTH.mu() / r);
+        StateVector leo = new StateVector(new Vec3(r, 0, 0), new Vec3(0, vc, 0));
+        var node = new com.pizzaparker07.spacebreaker.core.astro.flight.ManeuverNode(0, 100, 0, 0);
+        OrbitalElements after = Kepler.elementsFromState(node.apply(leo), EARTH.mu());
+        double v = vc + 100, a = 1 / (2 / r - v * v / EARTH.mu());
+        assertEquals(2 * a - r, after.apoapsis(), 10, "prograde raises the far side (vis-viva)");
+        assertEquals(r, after.periapsis(), 10);
+        // normal burns tilt the plane, radial burns keep the energy-to-first-order
+        var plane = new com.pizzaparker07.spacebreaker.core.astro.flight.ManeuverNode(0, 0, 200, 0);
+        assertEquals(Math.atan2(200, vc), Kepler.elementsFromState(plane.apply(leo), EARTH.mu()).inclination(), 1e-6);
+        assertEquals(Math.sqrt(3 * 3 + 4 * 4), new com.pizzaparker07.spacebreaker.core.astro.flight.ManeuverNode(0, 3, 0, 4).totalDv(), 1e-12);
+        double burn = node.burnSeconds(5000, 20_000, 350);
+        assertEquals(RocketMath.burnTimeForDeltaV(100, 5000, 20_000, 350), burn, 1e-9);
+        assertEquals(-burn / 2, node.startTime(5000, 20_000, 350), 1e-9, "the burn is centred on the node");
+    }
+
+    @Test
+    void entryGates() {
+        var gate = com.pizzaparker07.spacebreaker.core.astro.flight.EntryGate.class;
+        assertEquals(com.pizzaparker07.spacebreaker.core.astro.flight.EntryGate.Zone.SPACE,
+                com.pizzaparker07.spacebreaker.core.astro.flight.EntryGate.zone(EARTH, 2_000e3));
+        assertEquals(com.pizzaparker07.spacebreaker.core.astro.flight.EntryGate.Zone.ORBIT_SHELL,
+                com.pizzaparker07.spacebreaker.core.astro.flight.EntryGate.zone(EARTH, 200e3));
+        assertEquals(com.pizzaparker07.spacebreaker.core.astro.flight.EntryGate.Zone.ENTRY,
+                com.pizzaparker07.spacebreaker.core.astro.flight.EntryGate.zone(EARTH, 60e3));
+        assertEquals(com.pizzaparker07.spacebreaker.core.astro.flight.EntryGate.Zone.SURFACE,
+                com.pizzaparker07.spacebreaker.core.astro.flight.EntryGate.zone(EARTH, 0));
+        assertTrue(com.pizzaparker07.spacebreaker.core.astro.flight.EntryGate.entryAltitude(EARTH) > 50e3, "Earth's entry interface is in the upper air");
+        assertTrue(com.pizzaparker07.spacebreaker.core.astro.flight.EntryGate.entryAltitude(MOON) < 60e3, "the airless Moon hands over on a low pass");
+        double r = EARTH.radius() + 50e3;
+        assertTrue(com.pizzaparker07.spacebreaker.core.astro.flight.EntryGate.descendsThroughEntry(EARTH,
+                new StateVector(new Vec3(r, 0, 0), new Vec3(-100, 7000, 0))));
+        assertFalse(com.pizzaparker07.spacebreaker.core.astro.flight.EntryGate.descendsThroughEntry(EARTH,
+                new StateVector(new Vec3(r, 0, 0), new Vec3(100, 7000, 0))), "climbing out does not hand over");
+        assertNotNull(gate);
+    }
+
+    @Test
+    void surfacePoints() {
+        BodyLook look = BodyLook.of(SYS, EARTH, null, 23.44, new Vec3(0, 0, 1e15), 1234.5 * DAY);
+        var p = new com.pizzaparker07.spacebreaker.core.astro.flight.SurfacePoint(41.0, 29.0, 1500);
+        Vec3 e = p.toEcliptic(look, EARTH.radius());
+        var back = com.pizzaparker07.spacebreaker.core.astro.flight.SurfacePoint.of(e, look, EARTH.radius());
+        assertEquals(41.0, back.latitudeDeg(), 1e-9);
+        assertEquals(29.0, back.longitudeDeg(), 1e-9);
+        assertEquals(1500, back.altitude(), 1e-6);
+        // the pole is at latitude 90
+        var pole = com.pizzaparker07.spacebreaker.core.astro.flight.SurfacePoint.of(look.spinAxis().scale(EARTH.radius() + 10), look, EARTH.radius());
+        assertEquals(90, pole.latitudeDeg(), 1e-6);
+        long[] xz = p.mapXZ(100);
+        assertEquals(2900, xz[0]);
+        assertEquals(-4100, xz[1]);
+    }
 }
