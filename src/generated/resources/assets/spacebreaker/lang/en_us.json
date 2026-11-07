@@ -1390,7 +1390,7 @@
   "message.spacebreaker.rocket.pick_up_hint": "Sneak and hit to take the rocket down",
   "message.spacebreaker.rocket.tank_full": "No room left for %s",
   "message.spacebreaker.rover.cabin_o2": "Cabin oxygen: %s%%",
-  "message.spacebreaker.rover.whirl_cleaned": "A dust whirl swept the roof panel clean",
+  "message.spacebreaker.rover.whirl_cleaned": "A dust whirl swept the solar panel clean",
   "message.spacebreaker.sample_taken": "Took a field sample (%s)",
   "message.spacebreaker.satellite.deployed": "%s released in %s",
   "message.spacebreaker.solar_panel": "Sunlight here: %s%% of Earth's - making %s FE/t now",

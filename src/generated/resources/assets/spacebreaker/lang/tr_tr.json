@@ -1390,7 +1390,7 @@
   "message.spacebreaker.rocket.pick_up_hint": "Roketi sökmek için eğilip vur",
   "message.spacebreaker.rocket.tank_full": "%s için yer kalmadı",
   "message.spacebreaker.rover.cabin_o2": "Kabin oksijeni: %%%s",
-  "message.spacebreaker.rover.whirl_cleaned": "Bir toz hortumu tavan panelini temizledi",
+  "message.spacebreaker.rover.whirl_cleaned": "Bir toz hortumu güneş panelini temizledi",
   "message.spacebreaker.sample_taken": "Saha numunesi alındı (%s)",
   "message.spacebreaker.satellite.deployed": "%s, %s içine bırakıldı",
   "message.spacebreaker.solar_panel": "Burada güneş ışığı: Dünya'nın %%%s'i - şu an %s FE/t üretiyor",
