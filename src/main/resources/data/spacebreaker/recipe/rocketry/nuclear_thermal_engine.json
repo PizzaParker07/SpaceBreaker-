@@ -11,7 +11,10 @@
       "tag": "spacebreaker:radiation_shielding"
     },
     "F": {
-      "tag": "spacebreaker:reactor_fuel"
+      "type": "neoforge:components",
+      "items": "spacebreaker:nuclear_fuel_element",
+      "components": {},
+      "strict": true
     },
     "H": {
       "item": "spacebreaker:hydrolox_vacuum_engine"
