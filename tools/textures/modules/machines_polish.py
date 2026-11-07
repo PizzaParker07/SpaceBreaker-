@@ -399,3 +399,224 @@ _export_second = export
 def export(save):  # noqa: F811
     _export_second(save)
     save(bucket(), 'block', 'regolith_excavator_bucket', (150, 230, 0, None))
+
+
+# ----------------------------------------------------------------------------- third round: side parts
+
+def copper_pipe():
+    """Copper pipe run with a flange band every 8 pixels (lengthwise along u)."""
+    C = P.COPPER
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            band = x % 8 == 0
+            cv[x, y] = C[5] if y % 4 == 1 else (C[2] if y % 4 == 3 else C[3])
+            if band:
+                cv[x, y] = C[1]
+    return cv
+
+
+def side_panel():
+    """Small control box: dark face, two status lamps, a gauge."""
+    cv = casing(91, rivets=False, seam=False)
+    rect(cv, 3, 3, 12, 12, S[2])
+    rect(cv, 5, 5, 6, 6, (88, 200, 90))
+    rect(cv, 9, 5, 10, 6, (214, 170, 44))
+    rect(cv, 5, 9, 10, 10, S[5])
+    return cv
+
+
+def cable():
+    R = P.RUBBER
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            cv[x, y] = R[4] if y % 4 == 1 else (R[1] if y % 4 == 3 else R[2])
+    return cv
+
+
+_export_third = export
+
+
+def export(save):  # noqa: F811
+    _export_third(save)
+    metal = (150, 230, 0, None)
+    save(copper_pipe(), 'block', 'machine_copper_pipe', metal)
+    save(side_panel(), 'block', 'machine_side_panel', metal)
+    save(cable(), 'block', 'machine_cable', (60, 10, 0, None))
+
+
+# ----------------------------------------------------------------------------- group 2: running lights and fans
+
+def panel_glow():
+    """Lamps of the side control box while the machine runs: green steady, amber blinking."""
+    cv = strip(4)
+    for f in range(4):
+        def draw(c, f=f):
+            rect(c, 5, 5, 6, 6, (120, 240, 120))
+            if f % 2 == 0:
+                rect(c, 9, 5, 10, 6, (250, 200, 80))
+        frame(cv, f, draw)
+    return cv
+
+
+def fan(frames=1):
+    """Compressor fan seen from above: a dark shroud with six blades (turning when animated)."""
+    cv = strip(frames)
+    for f in range(frames):
+        def draw(c, f=f):
+            c.paste(casing(20, rivets=False, seam=False))
+            for y in range(2, 14):
+                for x in range(2, 14):
+                    if math.hypot(x + 0.5 - 8, y + 0.5 - 8) < 5.8:
+                        c[x, y] = S[0]
+            wheel(c, 8, 8, 5.2, 6, f * math.pi / 12, S[0], S[3], S[5])
+        frame(cv, f, draw)
+    return cv
+
+
+def centrifuge_lamps():
+    """Stage lamps of a running cascade: a light walks along the row."""
+    cv = strip(4)
+    for f in range(4):
+        def draw(c, f=f):
+            for k, x in enumerate((4, 5, 6, 7)):
+                c[x, 11] = (150, 240, 160) if k == f else (90, 200, 110)
+            c[10, 11] = (150, 240, 160)
+            c[12, 11] = (150, 240, 160) if f % 2 else (90, 200, 110)
+        frame(cv, f, draw)
+    return cv
+
+
+def reactor_window():
+    """Status window of the running core: a warm amber that slowly breathes."""
+    cv = strip(2)
+    for f in range(2):
+        frame(cv, f, lambda c, f=f: rect(c, 6, 12, 9, 12, (250, 200, 80) if f else (230, 160, 50)))
+    return cv
+
+
+_export_group1 = export
+
+
+def export(save):  # noqa: F811
+    _export_group1(save)
+    save(panel_glow(), 'block', 'machine_side_panel_glow')
+    mcmeta('machine_side_panel_glow', 10)
+    save(fan(), 'block', 'machine_fan', (150, 230, 0, None))
+    save(fan(4), 'block', 'machine_fan_on')
+    mcmeta('machine_fan_on', 1)
+    save(centrifuge_lamps(), 'block', 'gas_centrifuge_lamps')
+    mcmeta('gas_centrifuge_lamps', 4)
+    save(reactor_window(), 'block', 'fission_reactor_window')
+    mcmeta('fission_reactor_window', 30, True)
+
+
+# ----------------------------------------------------------------------------- control box variants
+
+SCREEN = (18, 32, 28)
+SCREEN_LIT = (110, 230, 170)
+RED = (160, 40, 30)
+GREEN = (88, 200, 90)
+
+
+def panel_screen():
+    cv = casing(92, rivets=False, seam=False)
+    rect(cv, 3, 3, 12, 12, S[1])
+    rect(cv, 4, 4, 11, 10, SCREEN)
+    return cv
+
+
+def panel_screen_glow():
+    """Scrolling readout lines on the screen while running."""
+    cv = strip(4)
+    for f in range(4):
+        def draw(c, f=f):
+            for k, y in enumerate((5, 7, 9)):
+                n = 3 + (k * 2 + f) % 5
+                for x in range(5, 5 + n):
+                    c[x, y] = SCREEN_LIT
+        frame(cv, f, draw)
+    return cv
+
+
+def panel_dial():
+    """Round pressure dial with a needle and a red limit mark."""
+    cv = casing(93, rivets=False, seam=False)
+    for y in range(3, 13):
+        for x in range(3, 13):
+            d = math.hypot(x + 0.5 - 8, y + 0.5 - 8)
+            if d < 5:
+                cv[x, y] = S[1] if d > 4 else S[5]
+    cv[11, 5] = RED
+    for i in range(3):
+        cv[7 - i, 7 + i] = S[1]
+    return cv
+
+
+def panel_dial_glow():
+    """Backlit dial while running: the needle swings."""
+    cv = strip(4)
+    for f in range(4):
+        def draw(c, f=f):
+            a = math.radians(225 - 30 * (f if f < 3 else 1))
+            for r in (1, 2, 3):
+                c[int(8 + math.cos(a) * r), int(8 - math.sin(a) * r)] = RED
+            c[8, 8] = S[1]
+        frame(cv, f, draw)
+    return cv
+
+
+def panel_buttons():
+    """Push-button panel: a 2 x 3 grid of red and green buttons."""
+    cv = casing(94, rivets=False, seam=False)
+    rect(cv, 3, 3, 12, 12, S[2])
+    for i, (x, y) in enumerate((x, y) for y in (4, 7, 10) for x in (5, 9)):
+        rect(cv, x, y, x + 1, y + 1, RED if i % 3 == 0 else (GREEN if i % 3 == 1 else S[5]))
+    return cv
+
+
+def panel_buttons_glow():
+    cv = strip(4)
+    for f in range(4):
+        def draw(c, f=f):
+            rect(c, 9, 4, 10, 5, (150, 250, 150))
+            if f in (1, 2):
+                rect(c, 5, 10, 6, 11, (250, 120, 90))
+        frame(cv, f, draw)
+    return cv
+
+
+def panel_valve():
+    """Valve station: a red handwheel on a stem between pipe flanges."""
+    cv = casing(95, rivets=False, seam=False)
+    for y in range(3, 13):
+        for x in range(3, 13):
+            d = math.hypot(x + 0.5 - 8, y + 0.5 - 8)
+            if 3.4 < d < 5:
+                cv[x, y] = RED
+            elif d <= 3.4 and (x in (7, 8) or y in (7, 8)):
+                cv[x, y] = (110, 28, 22)
+    rect(cv, 7, 7, 8, 8, S[5])
+    return cv
+
+
+def panel_valve_glow():
+    """A small green 'open' lamp beside the wheel while running."""
+    cv = strip(2)
+    frame(cv, 0, lambda c: rect(c, 11, 11, 12, 12, (140, 250, 140)))
+    frame(cv, 1, lambda c: rect(c, 11, 11, 12, 12, (110, 220, 120)))
+    return cv
+
+
+_export_panels = export
+
+
+def export(save):  # noqa: F811
+    _export_panels(save)
+    metal = (150, 230, 0, None)
+    for name, fn, glow, ft in (('screen', panel_screen, panel_screen_glow, 6), ('dial', panel_dial, panel_dial_glow, 8),
+                               ('buttons', panel_buttons, panel_buttons_glow, 8), ('valve', panel_valve, panel_valve_glow, 20)):
+        save(fn(), 'block', f'machine_panel_{name}', metal)
+        save(glow(), 'block', f'machine_panel_{name}_glow')
+        mcmeta(f'machine_panel_{name}_glow', ft, name == 'valve')
