@@ -719,6 +719,39 @@ At the default orbitalTimeScale (1 real s per simulated hour) a Mars transfer co
 | Phobos surface → orbit | 0.01 | 0.01 ± 0.01 | 0.00 | 0.00 | ok |
 
 
+## Body look for model rendering (`BodyLook`)
+
+`BodyLook.of(sys, body, pole, axialTiltDeg, observer, t)` or `BodyAdapter.look(access | sys, id, ...)` returns what
+a renderer needs to draw a body as a model:
+
+| Field | Meaning |
+|---|---|
+| `spinAxis` | right-hand spin axis (ecliptic unit vector) |
+| `rotationAngle` | prime meridian angle about the axis, from the axis's ascending node on the ecliptic |
+| `siderealRotationSeconds` | one turn against the stars, from the data's solar day and the orbital period (Earth 23.93 h, Venus 243 d backwards) |
+| `retrograde` | spins backwards (axis more than 90° from the orbit normal) |
+| `axialTiltDeg` | angle between the spin axis and the orbit normal |
+| `sunDirection`, `viewDirection` | from the body to the Sun and to the observer |
+| `phaseAngleRad`, `illuminatedFraction` | Sun–body–observer angle and the lit fraction (1 + cos α)/2 |
+
+Helpers:
+- `toBodyFixed` / `toEcliptic` convert between frames; the body-fixed frame has x on the prime meridian and z
+  on the spin axis.
+- `sunInBodyFrame` and `viewInBodyFrame` give the light direction and the visible face.
+
+The spin axis comes from the data's pole. Without one, it comes from `KNOWN_POLES` (IAU 2015 values for
+Mercury, Venus, Earth and the Moon; they are not in the data, so the Moon's orbit stays on the ecliptic).
+Otherwise it is the orbit normal tilted by `axial_tilt_deg` about the line of nodes. A tidally locked body
+turns its prime meridian to its parent. `BodyLookTest` checks:
+- every planet's tilt and spin direction;
+- the sidereal periods of Mercury, Venus, Earth and Mars;
+- the Moon's full and new phases on real 2022 dates, and its near side facing Earth;
+- Jupiter's phase angle staying under 12.5°;
+- the Sun crossing Uranus's equator in 2007 and standing over a pole in 2028.
+
+Keep one `BodySystem` per frame and use `BodyAdapter.look(sys, id, body, observer, t)`, because building the
+system each call is wasteful.
+
 ## Sky ephemeris (`SkyEphemeris`)
 
 What you see in the sky from any body, for the sky renderer (`client/sky`) and telescopes.
@@ -994,3 +1027,30 @@ is higher than the star's top elevation plus its radius. Floors are warmed only 
 (10⁻⁴ of the starlight) and internal heat (0.02 W/m²). Results: Moon, Mercury and Ceres keep ice in polar
 cold traps (as LRO, MESSENGER and Dawn found); Mars, Earth and Pluto (large tilts) and bodies with air have
 none. For the planet engine: use `psrLatitudeDeg()` as the latitude above which deep crater floors hold ice.
+
+## Free-flight core (`core/astro/flight`)
+
+These are the pure-maths parts of free spaceflight. Gameplay (the craft entity, the scenes, transitions) is
+built on them.
+
+- `SceneScale(centralRadius, radiusBlocks, compression)` maps real metres to blocks around a scene's central
+  body. Inside the body the scale is linear; outside it is logarithmic, b = Rb·(1 + k·ln(d/R)). Directions
+  are kept and the mapping is exactly invertible. `EARTH_MOON` draws Earth at 128 blocks. Low orbit is about
+  15 blocks up and the Moon about 2,200 blocks out. `blocksPerMetre(d)` gives the local scale for speeds;
+  `displayRadius(r, d, min)` keeps far bodies visible.
+- `Gravity.acceleration(sys, center, bodies, rel, t)` is real-scale gravity in the central body's
+  non-rotating frame. Third-body pulls are taken as perturbations, so the frame's own acceleration cancels.
+  `Gravity.pull` gives a single point mass.
+- `FlightState(position, velocity, mass)` steps with velocity Verlet (symplectic, so orbits do not drift),
+  with constant thrust and mass flow; `advance` adds substeps for long ticks. `assist(v, reference, maxDv)`
+  is the optional flight assist that damps the relative velocity.
+- `OrbitPredictor.predict(sys, body, state, t, horizon, step, maxSegments)` predicts patched conics for the
+  HUD. Each segment ends in an impact, an exit from the current sphere of influence or an entry into a
+  moon's, and the next conic continues in the new body's frame. `soi(sys, body)` gives a sphere of influence.
+
+`FlightCoreTest` checks:
+- scale round trips and the Earth–Moon distances in blocks;
+- Earth-frame gravity within 1e-5 of μ/r² in low orbit, with the Moon dominating near the Moon;
+- 100 low-Earth orbits at 10 s steps staying within 2 km;
+- the Δv of a burn matching the rocket equation to 1e-6;
+- a 3.13 km/s translunar injection entering the Moon's sphere of influence (66,000 km) within 1.5–6 days.
