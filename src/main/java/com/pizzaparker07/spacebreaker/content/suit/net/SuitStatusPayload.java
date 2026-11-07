@@ -15,10 +15,11 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
  *                  bit 4 jetpack booster fitted
  * @param ratingMinC/ratingMaxC temperature range of the sealed suit (0/0 when unsealed)
  * @param mmuFuel   maneuvering unit gas, thrust ticks
+ * @param oxygenRate running average of the breathing rate (tank ticks per tick, 1 = walking)
  */
 public record SuitStatusPayload(int oxygen, int capacity, int breath, float bodyTempC, float ambientC, float doseMsv,
                                 float doseRate, float pressureKpa, float gravity, int mmuFuel, int integrity, int flags,
-                                int ratingMinC, int ratingMaxC, int shieldingPercent)
+                                int ratingMinC, int ratingMaxC, int shieldingPercent, float oxygenRate)
         implements CustomPacketPayload {
     public static final int SEALED = 1, BREATHABLE = 2, HAZARDS = 4, MMU = 8, BOOSTER = 16, MAGNETISED = 32, TETHERED = 64, PRESSURISED = 128, COLD_TRAP = 256, MICRO_G = 512;
     public static final Type<SuitStatusPayload> TYPE = new Type<>(Spacebreaker.id("suit_status"));
@@ -39,10 +40,11 @@ public record SuitStatusPayload(int oxygen, int capacity, int breath, float body
                 buf.writeInt(p.ratingMinC);
                 buf.writeInt(p.ratingMaxC);
                 buf.writeVarInt(p.shieldingPercent);
+                buf.writeFloat(p.oxygenRate);
             },
             buf -> new SuitStatusPayload(buf.readVarInt(), buf.readVarInt(), buf.readVarInt(), buf.readFloat(), buf.readFloat(),
                     buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readVarInt(), buf.readVarInt(), buf.readVarInt(),
-                    buf.readInt(), buf.readInt(), buf.readVarInt()));
+                    buf.readInt(), buf.readInt(), buf.readVarInt(), buf.readFloat()));
 
     /**
      * How much rime the visor rim should carry (0..1): full when the cold is beyond the suit's rating, a light
@@ -56,6 +58,11 @@ public record SuitStatusPayload(int oxygen, int capacity, int breath, float body
             return 1F;
         }
         return has(COLD_TRAP) ? 0.3F : 0F;
+    }
+
+    /** Game ticks of breathing left at the current average rate. */
+    public int oxygenTicksLeft() {
+        return com.pizzaparker07.spacebreaker.content.suit.OxygenUse.ticksLeft(oxygen, oxygenRate);
     }
 
     public boolean has(int flag) {

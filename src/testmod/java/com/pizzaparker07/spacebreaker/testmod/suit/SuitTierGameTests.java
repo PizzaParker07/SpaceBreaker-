@@ -187,7 +187,7 @@ public final class SuitTierGameTests {
 
     private static com.pizzaparker07.spacebreaker.content.suit.net.SuitStatusPayload status(float ambientC, int flags, int minC) {
         return new com.pizzaparker07.spacebreaker.content.suit.net.SuitStatusPayload(1000, 2000, 300, 37F, ambientC, 0F, 0F, 0F, 0.165F,
-                0, 100, flags, minC, 130, 30);
+                0, 100, flags, minC, 130, 30, 1F);
     }
 
     @GameTest(template = EMPTY)
@@ -277,6 +277,50 @@ public final class SuitTierGameTests {
             helper.assertTrue(takesUranium, id + " takes a depleted uranium plate");
             helper.assertTrue(takesTungsten, id + " still takes a tungsten plate");
         }
+        helper.succeed();
+    }
+
+    /** Oxygen use follows the activity: sprinting and work cost more, rest less, heavy suits a little more. */
+    @GameTest(template = "empty")
+    public static void oxygenUseFollowsActivity(GameTestHelper helper) {
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.OxygenUse.activity(true, true, 0.3) == 1.5, "sprinting x1.5");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.OxygenUse.activity(false, true, 0.0) == 1.25, "mining or hitting x1.25");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.OxygenUse.activity(false, false, 0.2) == 1.0, "walking x1");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.OxygenUse.activity(false, false, 0.0) == 0.8, "standing still x0.8");
+        // a sprinting wearer in a thermal suit: 1.5 x 1.1 tank ticks per tick
+        var player = net.neoforged.neoforge.common.util.FakePlayerFactory.getMinecraft(helper.getLevel());
+        player.setItemSlot(net.minecraft.world.entity.EquipmentSlot.CHEST, new ItemStack(SuitModule.THERMAL_CHESTPLATE.get()));
+        helper.assertTrue(Math.abs(com.pizzaparker07.spacebreaker.content.suit.OxygenUse.suitFactor(player) - 1.1) < 1e-9, "heavy suits x1.1");
+        player.setItemSlot(net.minecraft.world.entity.EquipmentSlot.CHEST, new ItemStack(SuitModule.EVA_CHESTPLATE.get()));
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.OxygenUse.suitFactor(player) == 1.0, "the Mk1 suit x1");
+        // the tanks drain by the rate, fractions carried over
+        ItemStack torso = new ItemStack(SuitModule.EVA_CHESTPLATE.get());
+        com.pizzaparker07.spacebreaker.content.suit.SuitTanks.insert(torso,
+                com.pizzaparker07.spacebreaker.content.suit.OxygenTankItem.filled(SuitModule.OXYGEN_TANK.get()));
+        int full = com.pizzaparker07.spacebreaker.content.suit.SuitTanks.oxygen(torso);
+        var data = new com.pizzaparker07.spacebreaker.content.suit.SurvivalData();
+        for (int i = 0; i < 100; i++) {
+            com.pizzaparker07.spacebreaker.content.suit.OxygenUse.breathe(torso, data, 1.5);
+        }
+        helper.assertTrue(full - com.pizzaparker07.spacebreaker.content.suit.SuitTanks.oxygen(torso) == 150, "100 ticks of sprinting use 150");
+        for (int i = 0; i < 100; i++) {
+            com.pizzaparker07.spacebreaker.content.suit.OxygenUse.breathe(torso, data, 0.8);
+        }
+        helper.assertTrue(full - com.pizzaparker07.spacebreaker.content.suit.SuitTanks.oxygen(torso) == 230, "100 ticks of rest use 80");
+        // the HUD time follows a running average: it moves smoothly, about 63 % of the way in 5 s
+        double avg = 1.0;
+        for (int i = 0; i < com.pizzaparker07.spacebreaker.content.suit.OxygenUse.AVERAGE_TICKS; i++) {
+            avg = com.pizzaparker07.spacebreaker.content.suit.OxygenUse.follow(avg, 1.5);
+        }
+        helper.assertTrue(avg > 1.30 && avg < 1.33, "after 5 s of sprinting the average is ~1.32, got " + avg);
+        // 10 min of oxygen lasts 12.5 min at rest and 6:40 sprinting; the way-home check uses the same time
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.OxygenUse.ticksLeft(12000, 0.8) == 15000, "12:30 at rest");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.OxygenUse.ticksLeft(12000, 1.5) == 8000, "6:40 sprinting");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.Navigation.status(300, 0.26,
+                com.pizzaparker07.spacebreaker.content.suit.OxygenUse.ticksLeft(3600, 1.0)) == com.pizzaparker07.spacebreaker.content.suit.Navigation.Status.OK
+                && com.pizzaparker07.spacebreaker.content.suit.Navigation.status(300, 0.26,
+                com.pizzaparker07.spacebreaker.content.suit.OxygenUse.ticksLeft(3600, 1.5)) == com.pizzaparker07.spacebreaker.content.suit.Navigation.Status.TURN_BACK,
+                "the same oxygen is enough walking but means turn back after a sprint");
         helper.succeed();
     }
 }
