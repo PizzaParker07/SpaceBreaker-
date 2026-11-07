@@ -59,6 +59,28 @@ public class MethaneSkater extends Animal {
         goalSelector.addGoal(7, new RandomLookAroundGoal(this));
     }
 
+    /** Pad positions (blocks, in the body's frame: right, forward) of the middle and rear pairs, matching the model. */
+    private static final double[][] PADS = {{0.8, 0.25}, {-0.8, 0.25}, {0.6, -0.45}, {-0.6, -0.45}};
+
+    @Override
+    public void tick() {
+        super.tick();
+        // small ring ripples where the pads press on a lake: with every stroke while skating, now and then at rest
+        if (level().isClientSide && level().getFluidState(blockPosition().below()).is(FluidsModule.TAG_LCH4)) {
+            boolean moving = getDeltaMovement().horizontalDistanceSqr() > 1.0E-4;
+            if (tickCount % (moving ? 6 : 40) == 0) {
+                double yaw = Math.toRadians(yBodyRot);
+                double fx = -Math.sin(yaw);
+                double fz = Math.cos(yaw);
+                for (double[] pad : PADS) {
+                    double x = getX() + pad[1] * fx - pad[0] * fz;
+                    double z = getZ() + pad[1] * fz + pad[0] * fx;
+                    level().addParticle(net.minecraft.core.particles.ParticleTypes.BUBBLE_POP, x, getY() + 0.02, z, 0, 0, 0);
+                }
+            }
+        }
+    }
+
     @Override
     public boolean isFood(ItemStack stack) {
         return stack.is(SaturnModule.THOLIN.get());
