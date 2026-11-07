@@ -386,6 +386,14 @@ public final class RocketryGameTests {
         // weak thrust: it cannot lift its own fully fuelled stage off the Earth
         double m0 = upper.dryKg() + upper.propellantKg() + ntr.payload().massKg();
         helper.assertTrue(upper.thrustKn() * 1000 / (m0 * RocketPart.G0) < 1, "TWR below 1 on Earth: not a launch engine");
+        // the assembler warns: a nuclear upper stage is radioactive, a nuclear first stage is a mistake
+        helper.assertTrue("nuclear".equals(com.pizzaparker07.spacebreaker.content.rocketry.entity.NuclearExhaust.designWarning(ntr)),
+                "upper-stage warning");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.entity.NuclearExhaust.designWarning(chem) == null, "no warning without one");
+        RocketLayout bottom = RocketLayout.of(new RocketDesign(List.of(Spacebreaker.id("nuclear_thermal_engine"), Spacebreaker.id("fuel_tank_large"),
+                Spacebreaker.id("crew_capsule"))), lookup);
+        helper.assertTrue("nuclear_first".equals(com.pizzaparker07.spacebreaker.content.rocketry.entity.NuclearExhaust.designWarning(bottom)),
+                "first-stage warning");
         // hydrogen alone fills it: no oxygen for the nuclear stage
         RocketEntity rocket = RocketEntity.create(helper.getLevel(), nuclearRocket("nuclear_thermal_engine"),
                 helper.absoluteVec(new net.minecraft.world.phys.Vec3(1.5, 2, 1.5)), 0F);

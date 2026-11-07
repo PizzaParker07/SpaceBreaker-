@@ -752,6 +752,16 @@ final class RocketryScenario implements ShowcaseScenario {
             scene.add(r);
             toDimension(p, Location.EARTH_ORBIT, 4.2, RocketEntity.ORBIT_Y + 1.5, 1.6, 107F, 14F);
         }, null));
+        s.add(new Shot("53_assembler_nuclear", 6000, 7.5, G + 1.6, -3.5, 180F, 20F, false, fp, 40, p -> {
+            clearScene(p);
+            toDimension(p, Location.EARTH_SURFACE, 7.5, G + 1.6, -3.5, 180F, 20F);
+            p.getAbilities().flying = false;
+            if (p.serverLevel().getBlockEntity(ASSEMBLER) instanceof RocketAssemblerBlockEntity be) {
+                // the second stage runs on a nuclear thermal engine: the assembler warns about it
+                be.items().setStackInSlot(AssemblerSlots.stageSlot(1, AssemblerSlots.ENGINE), new ItemStack(RocketryModule.NUCLEAR_THERMAL_ENGINE.get()));
+                p.openMenu(be, ASSEMBLER);
+            }
+        }, null));
         s.add(new Shot("31_nearby_stars", 6000, 0, 0, 0, 0F, 0F, false, fp, 120,
                 p -> {
                     RocketryShowcaseClient.star = "Alpha Centauri";

@@ -27,6 +27,11 @@ final class RocketryLang {
         l.add("propellant.spacebreaker.hydrolox", "Hydrogen/LOX", "Hidrojen/LOX");
         l.add("propellant.spacebreaker.nuclear", "Hydrogen (nuclear thermal)", "Hidrojen (nükleer termal)");
         l.item(RocketryModule.NUCLEAR_THERMAL_ENGINE, "Nuclear Thermal Engine (Vacuum)", "Nükleer Termal Motor (Vakum)");
+        l.add("gui.spacebreaker.assembler.nuclear_tag", "☢ Nuclear", "☢ Nükleer");
+        l.add("gui.spacebreaker.assembler.nuclear", "☢ Nuclear stage: radioactive while it burns. Fire it only well away from the pad and from people",
+                "☢ Nükleer kademe: yanarken radyasyon yayar. Yalnız rampadan ve insanlardan uzakta ateşle");
+        l.add("gui.spacebreaker.assembler.nuclear_first", "☢ Nuclear first stage: too weak to lift off, and it would irradiate the pad. Put it on an upper stage",
+                "☢ Nükleer ilk kademe: kalkmaya gücü yetmez, rampayı da ışınlar. Üst kademeye koy");
         l.add("tooltip.spacebreaker.part.boil_off", "Cryogenic: %s%% of its propellant boils off per day on long trips and in orbit",
                 "Kriyojenik: uzun yolculukta ve yörüngede yakıtının günde %%%s'i buharlaşır");
         l.add("tooltip.spacebreaker.part.hydrogen_note", "Real liquid hydrogen is very bulky; in the game a tank's capacity counts as mass, whatever it holds",
