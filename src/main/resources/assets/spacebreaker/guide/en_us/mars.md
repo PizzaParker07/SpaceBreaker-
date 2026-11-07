@@ -28,6 +28,9 @@ The north is a low, smooth plain; the south is old cratered highland. Look for t
 Like Earth, Mars is tilted about **25°**, so its hemispheres take turns at winter. The Martian year, 669 sols in reality, is squeezed into **24 sols** in the game.
 - In the winter hemisphere part of the air freezes onto the ground: the polar cap spreads toward the equator as far as about **52° latitude**.
 - On clear nights a thin {item spacebreaker:co2_frost_layer} forms about 12° beyond that. In spring it turns straight back into gas; the soil underneath stays as it was.
+- **Pressure follows the seasons too:** about a quarter of the air freezes onto the winter cap. The southern cap is the larger, so pressure is lowest in southern winter (Ls ≈ 160, about −13%) and highest in southern summer (Ls ≈ 265, about +13%), as the Viking landers measured. The helmet display and the Environment Sensor show it, and the atmosphere processor's output follows it slightly.
+- **Aphelion cloud belt:** when Mars is farthest from the Sun (Ls ≈ 70–120), a veil of thin bluish-white water-ice cloud drifts over the equator. In southern summer the sky is clear.
+- **Canyon fog:** just after sunrise a thin white ice fog lies on the floor of the great canyon, thinning upward and burning off through the morning.
 - A message tells you when the season changes. Operators can pick one with **/spacebreaker season <Ls>** (0 northern spring, 90 summer, 180 autumn, 270 winter).
 
 ## Dust storms
