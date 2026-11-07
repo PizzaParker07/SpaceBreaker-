@@ -44,6 +44,7 @@ import org.jetbrains.annotations.Nullable;
  * vehicle packets; energy, upgrades and damage are server authoritative and synced to everyone nearby.
  */
 public class RoverEntity extends Entity {
+    /** Battery of the standard rover; each {@link RoverType} has its own. */
     public static final int CAPACITY = 400_000;
     /** Roof panel: a small array, so a fraction of a solar tracker's peak. */
     public static final int SOLAR_PEAK = 6;
@@ -63,7 +64,8 @@ public class RoverEntity extends Entity {
     private static final byte RTG = 2;
     private static final byte PELLET = 4;
 
-    private final SimpleContainer cargo = new SimpleContainer(CARGO_SLOTS) {
+    private final RoverType roverType = VehiclesModule.typeOf(getType());
+    private final SimpleContainer cargo = new SimpleContainer(roverType.cargoSlots()) {
         @Override
         public boolean stillValid(Player player) {
             return isAlive() && player.distanceToSqr(RoverEntity.this) < 64;
@@ -109,17 +111,30 @@ public class RoverEntity extends Entity {
         builder.define(ENERGY, 0).define(UPGRADES, (byte) 0).define(DAMAGE, 0F).define(HURT, 0).define(DUST, 0F);
     }
 
+    private net.minecraft.world.inventory.MenuType<?> cargoMenu() {
+        return switch (roverType.cargoSlots() / 9) {
+            case 1 -> net.minecraft.world.inventory.MenuType.GENERIC_9x1;
+            case 2 -> net.minecraft.world.inventory.MenuType.GENERIC_9x2;
+            case 4 -> net.minecraft.world.inventory.MenuType.GENERIC_9x4;
+            default -> net.minecraft.world.inventory.MenuType.GENERIC_9x3;
+        };
+    }
+
+    public RoverType roverType() {
+        return roverType;
+    }
+
     public int energy() {
         return entityData.get(ENERGY);
     }
 
     public void setEnergy(int fe) {
-        energyServer = Mth.clamp(fe, 0, CAPACITY);
+        energyServer = Mth.clamp(fe, 0, roverType.capacity());
         entityData.set(ENERGY, energyServer);
     }
 
     public float energyFraction() {
-        return energy() / (float) CAPACITY;
+        return energy() / (float) roverType.capacity();
     }
 
     private boolean flag(byte f) {
@@ -270,7 +285,7 @@ public class RoverEntity extends Entity {
 
     @Override
     public ItemStack getPickResult() {
-        return new ItemStack(VehiclesModule.ROVER_ITEM.get());
+        return new ItemStack(VehiclesModule.itemOf(roverType));
     }
 
     // ------------------------------------------------------------------ interaction
@@ -280,7 +295,7 @@ public class RoverEntity extends Entity {
         ItemStack held = player.getItemInHand(hand);
         if (player.isSecondaryUseActive()) {
             if (!level().isClientSide) {
-                player.openMenu(new SimpleMenuProvider((id, inv, p) -> ChestMenu.threeRows(id, inv, cargo),
+                player.openMenu(new SimpleMenuProvider((id, inv, p) -> new ChestMenu(cargoMenu(), id, inv, cargo, roverType.cargoSlots() / 9),
                         Component.translatable("container.spacebreaker.rover")));
             }
             return InteractionResult.sidedSuccess(level().isClientSide);
@@ -341,7 +356,7 @@ public class RoverEntity extends Entity {
         boolean creative = source.getEntity() instanceof Player p && p.getAbilities().instabuild;
         if (creative || entityData.get(DAMAGE) > 60F) {
             if (!creative) {
-                spawnAtLocation(VehiclesModule.ROVER_ITEM.get());
+                spawnAtLocation(VehiclesModule.itemOf(roverType));
                 if (hasSolar()) {
                     spawnAtLocation(MachinesModule.SOLAR_PANEL_ITEM.get());
                 }
@@ -405,8 +420,9 @@ public class RoverEntity extends Entity {
             steer = Mth.clamp(driver.xxa, -1F, 1F);
         }
         BlockPos under = getBlockPosBelowThatAffectsMyMovement();
-        double grip = onGround() ? RoverPhysics.grip(level().getBlockState(under).getFriction(level(), under, this)) : 0;
-        speed = RoverPhysics.speed(speed, throttle, onGround(), RoverPhysics.traction(g) * Math.max(grip, 0.02));
+        double grip = onGround() ? Math.min(1.0, RoverPhysics.grip(level().getBlockState(under).getFriction(level(), under, this)) * roverType.grip()) : 0;
+        speed = RoverPhysics.speed(speed, throttle, onGround(), RoverPhysics.traction(g) * Math.max(grip, 0.02),
+                roverType.maxSpeed(), roverType.accel());
         deltaYaw = RoverPhysics.yawChange(speed, steer, onGround() ? grip : 0);
         setYRot(getYRot() + deltaYaw);
         Vec3 v = getDeltaMovement();
@@ -434,7 +450,7 @@ public class RoverEntity extends Entity {
         int fe = energyServer;
         travelled += moved;
         if (travelled >= 0.25) {
-            fe -= RoverPhysics.driveCost(travelled);
+            fe -= RoverPhysics.driveCost(travelled, roverType.fePerBlock());
             travelled = 0;
         }
         if (hasSolar() && level().canSeeSky(blockPosition().above())) {
@@ -466,8 +482,8 @@ public class RoverEntity extends Entity {
         int whole = (int) gain;
         gain -= whole;
         fe += whole;
-        if (tickCount % 10 == 0 && lastMoved < 0.02 && fe < CAPACITY) {
-            fe += chargeFromNeighbours(Math.min(CHARGE_RATE * 10, CAPACITY - fe));
+        if (tickCount % 10 == 0 && lastMoved < 0.02 && fe < roverType.capacity()) {
+            fe += chargeFromNeighbours(Math.min(CHARGE_RATE * 10, roverType.capacity() - fe));
         }
         if (fe != energyServer) {
             setEnergy(fe);
@@ -675,9 +691,9 @@ public class RoverEntity extends Entity {
     protected void readAdditionalSaveData(CompoundTag tag) {
         setEnergy(tag.getInt("energy"));
         entityData.set(UPGRADES, tag.getByte("upgrades"));
-        net.minecraft.core.NonNullList<ItemStack> items = net.minecraft.core.NonNullList.withSize(CARGO_SLOTS, ItemStack.EMPTY);
+        net.minecraft.core.NonNullList<ItemStack> items = net.minecraft.core.NonNullList.withSize(roverType.cargoSlots(), ItemStack.EMPTY);
         net.minecraft.world.ContainerHelper.loadAllItems(tag.getCompound("cargo"), items, registryAccess());
-        for (int i = 0; i < CARGO_SLOTS; i++) {
+        for (int i = 0; i < roverType.cargoSlots(); i++) {
             cargo.setItem(i, items.get(i));
         }
         pellet = ItemStack.parseOptional(registryAccess(), tag.getCompound("pellet"));

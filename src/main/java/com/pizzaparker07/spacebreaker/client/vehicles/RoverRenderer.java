@@ -23,12 +23,24 @@ public class RoverRenderer extends EntityRenderer<RoverEntity> {
     private static final ResourceLocation TEXTURE = Spacebreaker.id("textures/entity/rover.png");
     private static final ResourceLocation LIGHTS = Spacebreaker.id("textures/entity/rover_lights.png");
     private static final ResourceLocation BEAM = Spacebreaker.id("textures/entity/rover_beam.png");
+    private static final ResourceLocation SPRINT_TEXTURE = Spacebreaker.id("textures/entity/sprint_rover.png");
     private final RoverModel model;
+    private final ResourceLocation texture;
 
     public RoverRenderer(EntityRendererProvider.Context ctx) {
+        this(ctx, new RoverModel(ctx.bakeLayer(RoverModel.LAYER)), TEXTURE);
+    }
+
+    private RoverRenderer(EntityRendererProvider.Context ctx, RoverModel model, ResourceLocation texture) {
         super(ctx);
-        this.model = new RoverModel(ctx.bakeLayer(RoverModel.LAYER));
+        this.model = model;
+        this.texture = texture;
         this.shadowRadius = 1.1F;
+    }
+
+    /** The sprint rover: same parts and UV layout, its own proportions and paint. */
+    public static RoverRenderer sprint(EntityRendererProvider.Context ctx) {
+        return new RoverRenderer(ctx, new RoverModel(ctx.bakeLayer(RoverModel.SPRINT_LAYER), RoverModel.SPRINT), SPRINT_TEXTURE);
     }
 
     /**
@@ -62,7 +74,7 @@ public class RoverRenderer extends EntityRenderer<RoverEntity> {
         }
         pose.scale(-1F, -1F, 1F);
         model.setupAnim(rover, 0, 0, rover.tickCount + partialTick, 0, 0);
-        model.renderToBuffer(pose, buffers.getBuffer(model.renderType(TEXTURE)), light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);
+        model.renderToBuffer(pose, buffers.getBuffer(model.renderType(texture)), light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);
         float dust = rover.hasSolar() ? rover.dust() : 0F;
         if (dust > 0.05F) {
             roofDust(pose, buffers.getBuffer(RenderType.entityTranslucent(net.minecraft.client.renderer.texture.TextureAtlas.LOCATION_BLOCKS)),
@@ -148,6 +160,6 @@ public class RoverRenderer extends EntityRenderer<RoverEntity> {
 
     @Override
     public ResourceLocation getTextureLocation(RoverEntity rover) {
-        return TEXTURE;
+        return texture;
     }
 }

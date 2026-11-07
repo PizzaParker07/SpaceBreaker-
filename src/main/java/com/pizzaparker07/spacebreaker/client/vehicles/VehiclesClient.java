@@ -25,11 +25,13 @@ public final class VehiclesClient {
     @SubscribeEvent
     static void layers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(RoverModel.LAYER, RoverModel::createLayer);
+        event.registerLayerDefinition(RoverModel.SPRINT_LAYER, RoverModel::createSprintLayer);
     }
 
     @SubscribeEvent
     static void renderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(VehiclesModule.ROVER.get(), RoverRenderer::new);
+        event.registerEntityRenderer(VehiclesModule.SPRINT_ROVER.get(), RoverRenderer::sprint);
     }
 
     private static final java.util.Map<Integer, RoverSound> SOUNDS = new java.util.HashMap<>();

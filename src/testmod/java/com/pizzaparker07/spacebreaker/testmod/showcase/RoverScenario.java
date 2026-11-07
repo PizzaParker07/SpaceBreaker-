@@ -74,6 +74,10 @@ final class RoverScenario implements ShowcaseScenario {
                 level.setBlock(new BlockPos(x, gy, z), Blocks.SMOOTH_STONE_SLAB.defaultBlockState(), 2);
             }
         }
+        RoverEntity sprint = com.pizzaparker07.spacebreaker.content.vehicles.VehiclesModule.SPRINT_ROVER.get().create(level);
+        sprint.moveTo(X0 + 2.5, gy, Z0 + 2.5, 35F, 0F);
+        sprint.setEnergy(250_000);
+        level.addFreshEntity(sprint);
         RoverEntity tilted = rover(level, X0 - 5.5, Z0 + 10.3, 0F);
         tilted.installSolar();
     }
@@ -121,6 +125,9 @@ final class RoverScenario implements ShowcaseScenario {
         // in the driver's seat with the battery readout
         s.add(new ShowcaseDriver.Shot(w + "_05_driver_view", 0, px, gy + 2, pz, 35F, 12F, false, CameraType.THIRD_PERSON_BACK, 60,
                 at(0.3, p -> p.startRiding(parked, true)), null));
+        // the sprint rover beside the standard one
+        s.add(new ShowcaseDriver.Shot(w + "_08_sprint", 0, X0 + 5.6, gy + 1.9, Z0 + 6.4, MoonScenario.yaw(-3.6, -4.4), 16F, true, fp, 80,
+                at(0.3, p -> { }), null));
         // the rover leans with the ground under its wheels
         s.add(new ShowcaseDriver.Shot(w + "_07_slope", 0, X0 - 1.5, gy + 1.4, Z0 + 10.3, 90F, 8F, true, fp, 60, at(0.3, p -> { }), null));
         // two seats taken (helmeted stand-ins for the crew, sitting like players do), side view: the roof panel must clear their heads

@@ -361,6 +361,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | Durum | İçerik | Not |
 |---|---|---|
 | 🎨 | Gezegen Gezicisi (`spacebreaker:rover`) | iki kişilik, akülü (400 kFE, blok başına 50 FE → ~8000 blok); düşük yerçekiminde az tutuş ve uzun sıçrayışlar, buzda (blok sürtünmesi) zor fren, zayıf direksiyon ve kayma — Plüton azot buzunda en kaygan, sert inişte yaylanır; toz parçacıkları, gevşek zeminde (Ay regoliti, Mars toprağı) tekerlek izi; karanlıkta kendiliğinden yanan farlar; 27 yuvalı kargo (eğilip tıkla); güneş paneli ve RTG (+ pelet) yükseltmesi; Mars'ta tavan paneli tozlanır (tam tozda %60, göstergede toz %), fırçayla ya da yanından geçen toz hortumuyla temizlenir; batarya bankası ya da kablonun yanına park edince şarj; sürücüye akü/hız göstergesi |
+| 🎨 | Hızlı Gezici (`spacebreaker:sprint_rover`) | hafif, hızlı ve sessiz: 13 m/s, 300 kFE akü, blok başına 35 FE (~8500 blok), 9 yuvalı kargo, gevşek zeminde daha çabuk kayar; dar gövde, büyük tekerlekler, uzun alçak burun, grafit boya ve kırmızı koltuklar; tarif: Gezegen Gezicisi + 4 Al-Li levha + 2 elektrik motoru + ileri devre; güneş paneli, RTG, toz ve farlar standart gezicideki gibi |
 
 ## Ses
 | Durum | İçerik | Not |

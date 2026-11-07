@@ -48,14 +48,19 @@ public final class RoverPhysics {
         return new double[]{vx + (wantX - vx) * k, vz + (wantZ - vz) * k};
     }
 
-    /** Speed after one tick. throttle -1..1 (forward positive); airborne wheels neither push nor brake. */
+    /** Speed after one tick for the standard rover. */
     public static double speed(double speed, double throttle, boolean onGround, double traction) {
+        return speed(speed, throttle, onGround, traction, MAX_SPEED, ACCEL);
+    }
+
+    /** Speed after one tick. throttle -1..1 (forward positive); airborne wheels neither push nor brake. */
+    public static double speed(double speed, double throttle, boolean onGround, double traction, double maxSpeed, double accel) {
         if (onGround) {
             if (throttle != 0 && Math.signum(throttle) != Math.signum(speed) && Math.abs(speed) > 1e-4) {
                 double brake = BRAKE * traction * Math.abs(throttle);
                 speed = Math.abs(speed) <= brake ? 0 : speed - Math.signum(speed) * brake;
             } else {
-                speed += throttle * ACCEL * traction;
+                speed += throttle * accel * traction;
             }
             // rolling resistance grows with how hard the wheels press on the ground
             speed *= throttle == 0 ? 1 - 0.06 * traction : 1 - 0.015 * traction;
@@ -65,7 +70,7 @@ public final class RoverPhysics {
         if (Math.abs(speed) < 1e-4) {
             speed = 0;
         }
-        return Mth.clamp(speed, -MAX_REVERSE, MAX_SPEED);
+        return Mth.clamp(speed, -MAX_REVERSE, maxSpeed);
     }
 
     /** Change of heading in degrees for a steering input (-1 right .. 1 left, the player's strafe axis). */
@@ -91,12 +96,20 @@ public final class RoverPhysics {
 
     /** Motor whine pitch for a ground speed: 0.8 standing, 1.3 at top speed. */
     public static float motorPitch(double speed) {
-        return 0.8F + 0.5F * (float) Mth.clamp(speed / MAX_SPEED, 0, 1);
+        return motorPitch(speed, MAX_SPEED);
+    }
+
+    public static float motorPitch(double speed, double maxSpeed) {
+        return 0.8F + 0.5F * (float) Mth.clamp(speed / maxSpeed, 0, 1);
     }
 
     /** Energy for a stretch of driving. */
     public static int driveCost(double blocks) {
-        return (int) Math.ceil(blocks * FE_PER_BLOCK);
+        return driveCost(blocks, FE_PER_BLOCK);
+    }
+
+    public static int driveCost(double blocks, int fePerBlock) {
+        return (int) Math.ceil(blocks * fePerBlock);
     }
 
     /** Largest body tilt the chassis shows, radians (beyond this the wheels are in the air anyway). */

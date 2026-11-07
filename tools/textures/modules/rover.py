@@ -321,7 +321,20 @@ def wheel_hub(face, x, y, fw, fh):
     return AL[3]
 
 
-def sheet(glow=False):
+def sheet(glow=False, sprint=False):
+    global WHITE, FABRIC
+    saved = (WHITE, FABRIC)
+    if sprint:
+        # graphite body panels and red seats: the same parts in the sprint rover's paint
+        WHITE = ramp('#2a2d33', '#3a3e46', '#4b5059', '#5d636d', '#727a85')
+        FABRIC = ramp('#3a0e0e', '#5a1616', '#7a2020', '#962a26', '#b03a30', '#c64f40')
+    try:
+        return _sheet(glow)
+    finally:
+        WHITE, FABRIC = saved
+
+
+def _sheet(glow=False):
     cv = Canvas(256, 256)
     if glow:
         paint(cv, 240, 0, 3, 2, 1, headlight_glow)
@@ -367,6 +380,7 @@ def beam():
 
 
 def export(save):
+    save(sheet(sprint=True), 'entity', 'sprint_rover')
     save(sheet(), 'entity', 'rover')
     save(sheet(glow=True), 'entity', 'rover_lights')
     save(beam(), 'entity', 'rover_beam')
@@ -405,3 +419,35 @@ _export_rover = export
 def export(save):  # noqa: F811
     _export_rover(save)
     save(icon(), 'item', 'rover')
+
+
+def sprint_icon():
+    """The sprint rover: low graphite deck, bigger wheels, a red seat and a long nose with a lamp."""
+    cv = Canvas()
+    deck = ramp('#2a2d33', '#3a3e46', '#4b5059', '#5d636d', '#727a85')
+    red = ramp('#5a1616', '#7a2020', '#962a26', '#b03a30')
+    for x in range(0, 16):
+        cv[x, 8] = deck[3] if x > 1 else deck[2]
+        cv[x, 9] = deck[1]
+    for x in range(0, 4):
+        cv[x, 7] = deck[3] if x else LENS[3]
+    for cx in (4, 12):
+        for y in range(8, 16):
+            for x in range(cx - 4, cx + 4):
+                d = math.hypot(x + 0.5 - cx, y + 0.5 - 12)
+                if d < 3.8:
+                    cv[x, y] = ST[1] if d > 2.6 else (AL[5] if d < 1.0 else ST[3])
+    for y in (4, 5, 6, 7):
+        cv[8, y] = red[2]
+    for x in (8, 9, 10):
+        cv[x, 7] = red[2]
+    cv[15, 7] = ORANGE
+    return cv
+
+
+_export_rover_sprint = export
+
+
+def export(save):  # noqa: F811
+    _export_rover_sprint(save)
+    save(sprint_icon(), 'item', 'sprint_rover')

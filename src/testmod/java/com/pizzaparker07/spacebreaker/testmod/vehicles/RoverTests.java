@@ -359,6 +359,35 @@ public final class RoverTests {
         h.succeed();
     }
 
+    /** The sprint rover: faster and further on a smaller battery, a small cargo bay, and it keeps its type when saved. */
+    @GameTest(template = "empty", timeoutTicks = 40)
+    public static void sprintRoverIsFastLightAndQuiet(GameTestHelper h) {
+        var sprint = com.pizzaparker07.spacebreaker.content.vehicles.RoverType.SPRINT;
+        var standard = com.pizzaparker07.spacebreaker.content.vehicles.RoverType.STANDARD;
+        double v1 = 0, v2 = 0;
+        for (int i = 0; i < 400; i++) {
+            v1 = com.pizzaparker07.spacebreaker.content.vehicles.RoverPhysics.speed(v1, 1, true, 1, standard.maxSpeed(), standard.accel());
+            v2 = com.pizzaparker07.spacebreaker.content.vehicles.RoverPhysics.speed(v2, 1, true, 1, sprint.maxSpeed(), sprint.accel());
+        }
+        h.assertTrue(Math.abs(v1 - standard.maxSpeed()) < 1e-9 && Math.abs(v2 - sprint.maxSpeed()) < 1e-9, "top speeds " + v1 + " / " + v2);
+        h.assertTrue(sprint.maxSpeed() * 20 >= 13 - 1e-9, "13 m/s");
+        h.assertTrue(sprint.range() > standard.range(), "goes further on less: " + sprint.range() + " vs " + standard.range());
+        h.assertTrue(sprint.loudness() < standard.loudness() && sprint.grip() < standard.grip(), "quieter, skids sooner");
+        floor(h, Blocks.STONE.defaultBlockState());
+        RoverEntity rover = h.spawn(VehiclesModule.SPRINT_ROVER.get(), Vec3.atBottomCenterOf(new BlockPos(2, 1, 2)));
+        h.assertTrue(rover.roverType() == sprint, "the entity knows its type");
+        h.assertTrue(rover.cargo().getContainerSize() == 9, "one row of cargo");
+        h.assertTrue(rover.getPickResult().is(VehiclesModule.SPRINT_ROVER_ITEM.get()), "picks as a sprint rover");
+        rover.setEnergy(1_000_000);
+        h.assertTrue(rover.energy() == sprint.capacity(), "battery capped at its own capacity");
+        CompoundTag tag = new CompoundTag();
+        rover.save(tag);
+        var copy = net.minecraft.world.entity.EntityType.create(tag, h.getLevel()).orElseThrow();
+        h.assertTrue(copy instanceof RoverEntity r && r.roverType() == sprint, "loads back as a sprint rover");
+        h.assertTrue(h.getLevel().getRecipeManager().byKey(com.pizzaparker07.spacebreaker.Spacebreaker.id("sprint_rover")).isPresent(), "craftable");
+        h.succeed();
+    }
+
     private static void floor(GameTestHelper h, BlockState state) {
         for (int z = 0; z < 5; z++) {
             for (int x = 0; x < 5; x++) {

@@ -15,8 +15,15 @@ import java.util.List;
 
 /** Places a rover on the clicked surface, facing where the player looks. */
 public class RoverItem extends Item {
+    private final java.util.function.Supplier<? extends net.minecraft.world.entity.EntityType<? extends RoverEntity>> type;
+
     public RoverItem(Properties properties) {
+        this(properties, VehiclesModule.ROVER);
+    }
+
+    public RoverItem(Properties properties, java.util.function.Supplier<? extends net.minecraft.world.entity.EntityType<? extends RoverEntity>> type) {
         super(properties);
+        this.type = type;
     }
 
     @Override
@@ -25,7 +32,7 @@ public class RoverItem extends Item {
             return InteractionResult.SUCCESS;
         }
         BlockPos pos = ctx.getClickedPos().relative(ctx.getClickedFace());
-        RoverEntity rover = VehiclesModule.ROVER.get().create(level);
+        RoverEntity rover = type.get().create(level);
         if (rover == null) {
             return InteractionResult.FAIL;
         }
@@ -42,6 +49,10 @@ public class RoverItem extends Item {
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         tooltip.add(Component.translatable("tooltip.spacebreaker.rover").withStyle(ChatFormatting.GRAY));
+        if (type == VehiclesModule.SPRINT_ROVER) {
+            tooltip.add(Component.translatable("tooltip.spacebreaker.sprint_rover",
+                    String.format(java.util.Locale.ROOT, "%.0f", RoverType.SPRINT.maxSpeed() * 20)).withStyle(ChatFormatting.AQUA));
+        }
         tooltip.add(Component.translatable("tooltip.spacebreaker.rover.charge").withStyle(ChatFormatting.DARK_GRAY));
     }
 }

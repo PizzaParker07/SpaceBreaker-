@@ -27,6 +27,21 @@ public final class VehiclesModule implements SbModule {
             () -> EntityType.Builder.<RoverEntity>of(RoverEntity::new, MobCategory.MISC).sized(1.9F, 1.3F).clientTrackingRange(10)
                     .build("rover"));
     public static final DeferredItem<RoverItem> ROVER_ITEM = ITEMS.registerItem("rover", RoverItem::new, new Item.Properties().stacksTo(1));
+    /** Light, fast, quiet rover (an upgrade of the standard one). */
+    public static final DeferredHolder<EntityType<?>, EntityType<RoverEntity>> SPRINT_ROVER = ENTITIES.register("sprint_rover",
+            () -> EntityType.Builder.<RoverEntity>of(RoverEntity::new, MobCategory.MISC).sized(1.7F, 1.3F).clientTrackingRange(10)
+                    .build("sprint_rover"));
+    public static final DeferredItem<RoverItem> SPRINT_ROVER_ITEM = ITEMS.registerItem("sprint_rover",
+            p -> new RoverItem(p, SPRINT_ROVER), new Item.Properties().stacksTo(1));
+
+    /** The stats behind an entity type (the standard rover for anything unknown). */
+    public static RoverType typeOf(EntityType<?> type) {
+        return type == SPRINT_ROVER.get() ? RoverType.SPRINT : RoverType.STANDARD;
+    }
+
+    public static Item itemOf(RoverType type) {
+        return type == RoverType.SPRINT ? SPRINT_ROVER_ITEM.get() : ROVER_ITEM.get();
+    }
 
     @Override
     public String id() {
@@ -38,6 +53,7 @@ public final class VehiclesModule implements SbModule {
         ENTITIES.register(modBus);
         ITEMS.register(modBus);
         com.pizzaparker07.spacebreaker.core.SbTabs.SPACEFLIGHT.add(ROVER_ITEM);
+        com.pizzaparker07.spacebreaker.core.SbTabs.SPACEFLIGHT.add(SPRINT_ROVER_ITEM);
     }
 
     @Override
@@ -45,6 +61,10 @@ public final class VehiclesModule implements SbModule {
         lang.item(ROVER_ITEM, "Planetary Rover", "Gezegen Gezicisi");
         lang.add("entity.spacebreaker.rover", "Planetary Rover", "Gezegen Gezicisi");
         lang.add("container.spacebreaker.rover", "Rover Cargo", "Gezici Kargosu");
+        lang.item(SPRINT_ROVER_ITEM, "Sprint Rover", "Hızlı Gezici");
+        lang.add("entity.spacebreaker.sprint_rover", "Sprint Rover", "Hızlı Gezici");
+        lang.add("tooltip.spacebreaker.sprint_rover", "Light and quiet: %s m/s, a smaller battery and cargo bay, skids sooner on loose ground",
+                "Hafif ve sessiz: %s m/s, daha küçük akü ve kargo, gevşek zeminde daha çabuk kayar");
         lang.add("tooltip.spacebreaker.rover", "Two seats, battery-electric. Sneak-use: cargo. Use with a solar panel, an RTG or a pellet to fit it",
                 "İki kişilik, akülü elektrikli. Eğilip tıkla: kargo. Güneş paneli, RTG ya da peletle tıklayıp tak");
         lang.add("tooltip.spacebreaker.rover.charge", "Charges when parked next to a battery bank or cable",
@@ -66,6 +86,13 @@ public final class VehiclesModule implements SbModule {
                 .define('C', EarthModule.ADVANCED_CIRCUIT.get()).define('B', MachinesModule.BATTERY_BANK.item().get())
                 .unlockedBy("has_battery_bank", net.minecraft.advancements.critereon.InventoryChangeTrigger.TriggerInstance.hasItems(
                         MachinesModule.BATTERY_BANK.item().get()))
+                .save(out);
+        // the sprint rover: the standard one rebuilt on an aluminium-lithium frame with twin motors per axle
+        ShapedRecipeBuilder.shaped(RecipeCategory.TRANSPORTATION, SPRINT_ROVER_ITEM.get())
+                .pattern("AMA").pattern("ARA").pattern("ACA")
+                .define('A', EarthModule.AL_LI.plateTag).define('M', EarthModule.ELECTRIC_MOTOR.get())
+                .define('R', ROVER_ITEM.get()).define('C', EarthModule.ADVANCED_CIRCUIT.get())
+                .unlockedBy("has_rover", net.minecraft.advancements.critereon.InventoryChangeTrigger.TriggerInstance.hasItems(ROVER_ITEM.get()))
                 .save(out);
     }
 }
