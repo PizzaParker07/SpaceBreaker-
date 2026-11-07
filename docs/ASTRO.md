@@ -1027,3 +1027,30 @@ is higher than the star's top elevation plus its radius. Floors are warmed only 
 (10⁻⁴ of the starlight) and internal heat (0.02 W/m²). Results: Moon, Mercury and Ceres keep ice in polar
 cold traps (as LRO, MESSENGER and Dawn found); Mars, Earth and Pluto (large tilts) and bodies with air have
 none. For the planet engine: use `psrLatitudeDeg()` as the latitude above which deep crater floors hold ice.
+
+## Free-flight core (`core/astro/flight`)
+
+These are the pure-maths parts of free spaceflight. Gameplay (the craft entity, the scenes, transitions) is
+built on them.
+
+- `SceneScale(centralRadius, radiusBlocks, compression)` maps real metres to blocks around a scene's central
+  body. Inside the body the scale is linear; outside it is logarithmic, b = Rb·(1 + k·ln(d/R)). Directions
+  are kept and the mapping is exactly invertible. `EARTH_MOON` draws Earth at 128 blocks. Low orbit is about
+  15 blocks up and the Moon about 2,200 blocks out. `blocksPerMetre(d)` gives the local scale for speeds;
+  `displayRadius(r, d, min)` keeps far bodies visible.
+- `Gravity.acceleration(sys, center, bodies, rel, t)` is real-scale gravity in the central body's
+  non-rotating frame. Third-body pulls are taken as perturbations, so the frame's own acceleration cancels.
+  `Gravity.pull` gives a single point mass.
+- `FlightState(position, velocity, mass)` steps with velocity Verlet (symplectic, so orbits do not drift),
+  with constant thrust and mass flow; `advance` adds substeps for long ticks. `assist(v, reference, maxDv)`
+  is the optional flight assist that damps the relative velocity.
+- `OrbitPredictor.predict(sys, body, state, t, horizon, step, maxSegments)` predicts patched conics for the
+  HUD. Each segment ends in an impact, an exit from the current sphere of influence or an entry into a
+  moon's, and the next conic continues in the new body's frame. `soi(sys, body)` gives a sphere of influence.
+
+`FlightCoreTest` checks:
+- scale round trips and the Earth–Moon distances in blocks;
+- Earth-frame gravity within 1e-5 of μ/r² in low orbit, with the Moon dominating near the Moon;
+- 100 low-Earth orbits at 10 s steps staying within 2 km;
+- the Δv of a burn matching the rocket equation to 1e-6;
+- a 3.13 km/s translunar injection entering the Moon's sphere of influence (66,000 km) within 1.5–6 days.
