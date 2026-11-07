@@ -1,5 +1,6 @@
 package com.pizzaparker07.spacebreaker.content.moon.dungeon;
 
+import com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation;
 import com.pizzaparker07.spacebreaker.content.machines.MachinesModule;
 import com.pizzaparker07.spacebreaker.content.moon.MoonModule;
 import com.pizzaparker07.spacebreaker.content.moon.entity.MoonEntities;
@@ -58,37 +59,28 @@ public class OutpostPiece extends StructurePiece {
 
     /** World position of a local block (local +x = east, +z = south before orientation). */
     public BlockPos localToWorld(int x, int y, int z) {
-        return getWorldPos(x, y, z).immutable();
+        return PieceOrientation.worldPos(this, x, y, z);
     }
 
-    /** World direction of a local horizontal direction, from how this piece maps local coordinates. */
+    /** World direction of a local direction, from how this piece maps local coordinates. */
     public Direction worldDirection(Direction local) {
-        int x0 = getWorldX(0, 0);
-        int z0 = getWorldZ(0, 0);
-        int x1 = getWorldX(local.getStepX(), local.getStepZ());
-        int z1 = getWorldZ(local.getStepX(), local.getStepZ());
-        Direction d = Direction.fromDelta(Integer.signum(x1 - x0), 0, Integer.signum(z1 - z0));
-        return d == null ? local : d;
+        return PieceOrientation.direction(this, local);
     }
 
     /**
-     * Places a block with its facing given in local coordinates. Vanilla's mirror/rotation for piece
-     * orientations does not match its coordinate mapping (south mirrors facings but not positions), so signs,
-     * dispensers and buttons would face the wrong way; this turns facings exactly like positions.
+     * Places a block written in piece space, turned with the shared dungeon transform (vanilla's own mirror/rotation
+     * would leave signs, dispensers, buttons and doors facing the wrong way). Like world generation, it does not
+     * update neighbour shapes, so building in a live level (tests, commands) never pops a sign or button whose wall
+     * is still being laid in a neighbouring chunk.
      */
     @Override
     protected void placeBlock(WorldGenLevel level, BlockState state, int x, int y, int z, BoundingBox box) {
-        BlockPos pos = getWorldPos(x, y, z);
+        BlockPos pos = PieceOrientation.worldPos(this, x, y, z);
         if (!box.isInside(pos)) {
             return;
         }
-        for (var prop : java.util.List.of(net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING,
-                net.minecraft.world.level.block.state.properties.BlockStateProperties.FACING)) {
-            if (state.hasProperty(prop) && state.getValue(prop).getAxis().isHorizontal()) {
-                state = state.setValue(prop, worldDirection(state.getValue(prop)));
-            }
-        }
-        level.setBlock(pos, state, 2);
+        level.setBlock(pos, PieceOrientation.transform(this, state), net.minecraft.world.level.block.Block.UPDATE_CLIENTS
+                | net.minecraft.world.level.block.Block.UPDATE_KNOWN_SHAPE);
         if (state.is(Blocks.IRON_BARS) || state.getBlock() instanceof net.minecraft.world.level.block.WallBlock) {
             level.getChunk(pos).markPosForPostprocessing(pos);
         }

@@ -210,23 +210,28 @@ public final class MoonModule implements SbModule {
         MoonData.register(modBus);
         // creature spawns per biome (written into the biome JSON by datagen)
         MoonData.SPAWNS.add(new MoonData.BiomeSpawns(MoonData.HIGHLANDS, s -> {
+            s.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MoonEntities.HEAT_SIPHON.get(), 30, 1, 2));
             s.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MoonEntities.REGOLITH_TICK.get(), 100, 2, 4));
             s.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(MoonEntities.DUST_SWIMMER.get(), 6, 1, 2));
         }));
         MoonData.SPAWNS.add(new MoonData.BiomeSpawns(MoonData.MARE, s -> {
+            s.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MoonEntities.HEAT_SIPHON.get(), 30, 1, 2));
             s.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MoonEntities.REGOLITH_TICK.get(), 60, 1, 3));
             s.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(MoonEntities.DUST_SWIMMER.get(), 14, 2, 3));
         }));
         MoonData.SPAWNS.add(new MoonData.BiomeSpawns(MoonData.CRATER, s -> {
+            s.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MoonEntities.HEAT_SIPHON.get(), 20, 1, 2));
             s.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MoonEntities.REGOLITH_TICK.get(), 120, 2, 5));
             s.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MoonEntities.ELDER_REGOLITH_TICK.get(), 4, 1, 1));
             s.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(MoonEntities.GLIMMER_BEETLE.get(), 4, 1, 3));
         }));
         MoonData.SPAWNS.add(new MoonData.BiomeSpawns(MoonData.VOLCANIC, s -> {
+            s.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MoonEntities.HEAT_SIPHON.get(), 20, 1, 2));
             s.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(MoonEntities.DUST_SWIMMER.get(), 18, 2, 4));
             s.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MoonEntities.REGOLITH_TICK.get(), 40, 1, 2));
         }));
         MoonData.SPAWNS.add(new MoonData.BiomeSpawns(MoonData.POLAR, s -> {
+            s.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MoonEntities.HEAT_SIPHON.get(), 12, 1, 2));
             s.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MoonEntities.REGOLITH_TICK.get(), 30, 1, 2));
             s.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(MoonEntities.GLIMMER_BEETLE.get(), 12, 2, 4));
         }));

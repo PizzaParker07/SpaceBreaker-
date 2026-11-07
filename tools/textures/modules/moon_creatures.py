@@ -391,3 +391,86 @@ def export(save):  # noqa: F811 - extend the module export
     _export_creatures(save)
     save(glimmer_beetle(), 'entity/moon', 'glimmer_beetle')
     save(glimmer_beetle_glow(), 'entity/moon', 'glimmer_beetle_glow')
+
+
+# --------------------------------------------------------------------------- heat siphon
+
+FROST = ramp('#1c2a36', '#2c4352', '#43626f', '#6a8c96', '#9dbcc2', '#d3e8ea')
+CORE = ramp('#1d4f7a', '#3d86c4', '#7cc2f0', '#d2efff')
+
+
+def heat_siphon():
+    """Frost-crystal body: cold blue-grey facets with pale edges, a dark feeding mouth, translucent-looking shards."""
+    r = FROST
+    c = CORE
+    cv = Canvas(64, 32)
+    rng = random.Random(41)
+
+    def body(face, x, y, fw, fh):
+        if face == 'top':
+            if x in (0, fw - 1) or y in (0, fh - 1):
+                return r[4]
+            # diagonal facets
+            return r[3] if (x + y) % 4 == 0 else (r[2] if (x - y) % 5 == 0 else r[1 + (rng.random() < 0.2)])
+        if face == 'bottom':
+            return c[0] if 2 <= x < fw - 2 and 3 <= y < fh - 3 else r[0]
+        if y == 0:
+            return r[4]
+        return r[2] if (x + y) % 3 == 0 else r[1]
+
+    def head(face, x, y, fw, fh):
+        if face == 'front':
+            if y == fh - 1 and 1 <= x < fw - 1:
+                return r[0]  # mouth slit
+            if y == 0 and x in (1, fw - 2):
+                return c[3]  # eye glints
+            return r[2]
+        if face == 'top':
+            return r[4] if y == 0 else r[3]
+        return r[1]
+
+    def shard(face, x, y, fw, fh):
+        if face in ('top', 'bottom'):
+            return r[5]
+        t = 5 if x == 0 else 4
+        return r[t] if y < 2 else (c[1] if y == fh - 1 else r[t - 1])
+
+    def leg(face, x, y, fw, fh):
+        return r[3] if x % 2 == 0 else r[2]
+
+    paint(cv, 0, 0, 8, 4, 10, body)
+    paint(cv, 0, 14, 6, 3, 4, head)
+    paint(cv, 36, 0, 2, 7, 2, shard)
+    paint(cv, 44, 0, 2, 5, 2, shard)
+    paint(cv, 20, 14, 6, 1, 1, leg)
+    return cv
+
+
+def heat_siphon_glow():
+    """Glowing parts: the core seen through the belly, the shard tips, the eyes. Brightness is scaled by the renderer."""
+    c = CORE
+    cv = Canvas(64, 32)
+    # belly (bottom face at (18, 0), 8 x 10)
+    for x in range(2, 6):
+        for y in range(3, 7):
+            cv[18 + x, y] = c[2] if (x + y) % 2 else c[1]
+    # shard tips: side faces start at v + d
+    for u, h in ((36, 7), (44, 5)):
+        for x in range(8):
+            cv[u + x, 2 + h - 1] = c[2]
+            cv[u + x, 2 + h - 2] = c[1]
+        cv[u + 2, 0] = c[3]
+        cv[u + 3, 0] = c[3]
+    # eyes on the head front (4, 18)
+    cv[5, 18] = c[3]
+    cv[8, 18] = c[3]
+    return cv
+
+
+_export_moon_creatures = export
+
+
+def export(save):  # noqa: F811 - extend the module export
+    _export_moon_creatures(save)
+    save(heat_siphon(), 'entity/moon', 'heat_siphon')
+    save(heat_siphon_glow(), 'entity/moon', 'heat_siphon_glow')

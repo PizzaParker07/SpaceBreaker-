@@ -7,6 +7,7 @@ import com.pizzaparker07.spacebreaker.content.moon.dungeon.MoonLoot;
 import com.pizzaparker07.spacebreaker.content.moon.dungeon.MoonStructures;
 import com.pizzaparker07.spacebreaker.content.moon.dungeon.OutpostPiece;
 import com.pizzaparker07.spacebreaker.content.moon.entity.DustSwimmer;
+import com.pizzaparker07.spacebreaker.content.moon.entity.HeatSiphon;
 import com.pizzaparker07.spacebreaker.content.moon.entity.MoonEntities;
 import com.pizzaparker07.spacebreaker.content.moon.entity.RegolithTick;
 import com.pizzaparker07.spacebreaker.content.moon.entity.StunBolt;
@@ -208,16 +209,17 @@ public final class MoonLifeGameTests {
             int y = level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.WORLD_SURFACE, base.getX(), base.getZ());
             OutpostPiece piece = new OutpostPiece(98L, base.getX(), y, base.getZ(), dirs[i]);
             BoundingBox bb = piece.getBoundingBox();
-            // two passes: in a live level, blocks placed before their neighbour chunk exists can lose support
-            // (world generation has no such shape updates); the second pass settles them
-            for (int pass = 0; pass < 2; pass++) {
-                for (int cx = bb.minX() >> 4; cx <= bb.maxX() >> 4; cx++) {
-                    for (int cz = bb.minZ() >> 4; cz <= bb.maxZ() >> 4; cz++) {
-                        level.getChunk(cx, cz);
-                        BoundingBox cb = new BoundingBox(cx << 4, level.getMinBuildHeight(), cz << 4, (cx << 4) + 15, level.getMaxBuildHeight(), (cz << 4) + 15);
-                        piece.postProcess(level, level.structureManager(), level.getChunkSource().getGenerator(), RandomSource.create(1),
-                                cb, new ChunkPos(cx, cz), bb.getCenter());
-                    }
+            // load every chunk first, then build chunk by chunk like world generation does
+            for (int cx = bb.minX() >> 4; cx <= bb.maxX() >> 4; cx++) {
+                for (int cz = bb.minZ() >> 4; cz <= bb.maxZ() >> 4; cz++) {
+                    level.getChunk(cx, cz);
+                }
+            }
+            for (int cx = bb.minX() >> 4; cx <= bb.maxX() >> 4; cx++) {
+                for (int cz = bb.minZ() >> 4; cz <= bb.maxZ() >> 4; cz++) {
+                    BoundingBox cb = new BoundingBox(cx << 4, level.getMinBuildHeight(), cz << 4, (cx << 4) + 15, level.getMaxBuildHeight(), (cz << 4) + 15);
+                    piece.postProcess(level, level.structureManager(), level.getChunkSource().getGenerator(), RandomSource.create(1),
+                            cb, new ChunkPos(cx, cz), bb.getCenter());
                 }
             }
             String o = " (" + dirs[i] + ")";
@@ -291,6 +293,55 @@ public final class MoonLifeGameTests {
                     com.pizzaparker07.spacebreaker.content.moon.Footprint.TRACK);
         }
         helper.assertTrue(soils >= 4, "print soils found: " + soils);
+        helper.succeed();
+    }
+
+    /**
+     * Lunar night: a heat siphon walks to a charged battery bank and drinks from it, glowing brighter as it fills,
+     * and its touch chills a player (vanilla freezing).
+     */
+    @GameTest(template = EMPTY, timeoutTicks = 400)
+    public static void heatSiphonDrainsBatteries(GameTestHelper helper) {
+        // a roof keeps the frost creature out of the sun
+        for (int x = -1; x <= 6; x++) {
+            for (int z = -1; z <= 2; z++) {
+                helper.setBlock(x, 4, z, Blocks.STONE);
+            }
+        }
+        BlockPos batteryPos = new BlockPos(5, 1, 0);
+        helper.setBlock(batteryPos, com.pizzaparker07.spacebreaker.content.machines.MachinesModule.BATTERY_BANK.block().get());
+        var battery = (com.pizzaparker07.spacebreaker.content.machines.base.MachineBlockEntity) helper.getBlockEntity(batteryPos);
+        battery.energyCapability(null).receiveEnergy(200_000, false);
+        int before = battery.energyCapability(null).getEnergyStored();
+        HeatSiphon siphon = helper.spawn(MoonEntities.HEAT_SIPHON.get(), new BlockPos(0, 1, 0));
+        helper.assertTrue(siphon.glow() < 0.4F, "a hungry siphon glows faintly");
+        var player = helper.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        int frozen = player.getTicksFrozen();
+        siphon.doHurtTarget(player);
+        helper.assertTrue(player.getTicksFrozen() >= frozen + HeatSiphon.CHILL, "its touch chills the player");
+        helper.succeedWhen(() -> {
+            helper.assertTrue(siphon.isAlive(), "the siphon is alive");
+            helper.assertTrue(siphon.fed() >= 400, "the siphon drank from the battery: " + siphon.fed());
+            helper.assertTrue(battery.energyCapability(null).getEnergyStored() <= before - 400, "the battery lost charge");
+            helper.assertTrue(siphon.glow() > 0.3F, "glows brighter as it fills");
+        });
+    }
+
+    /** The heat siphon spawns in every Moon biome (written into the biome files by datagen) and has a loot table. */
+    @GameTest(template = EMPTY)
+    public static void heatSiphonSpawnsOnTheMoon(GameTestHelper helper) {
+        for (String biome : List.of("moon_highlands", "moon_mare", "moon_crater", "moon_volcanic", "moon_polar")) {
+            String path = "/data/spacebreaker/worldgen/biome/" + biome + ".json";
+            try (var in = MoonLifeGameTests.class.getResourceAsStream(path)) {
+                helper.assertTrue(in != null, "biome file " + path);
+                helper.assertTrue(new String(in.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8).contains("spacebreaker:heat_siphon"),
+                        "heat siphons spawn in " + biome);
+            } catch (java.io.IOException e) {
+                helper.fail("cannot read " + path + ": " + e);
+            }
+        }
+        var key = ResourceKey.create(Registries.LOOT_TABLE, Spacebreaker.id("entities/heat_siphon"));
+        helper.assertTrue(helper.getLevel().getServer().reloadableRegistries().getLootTable(key) != LootTable.EMPTY, "heat siphon loot table");
         helper.succeed();
     }
 

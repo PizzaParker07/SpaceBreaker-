@@ -118,6 +118,20 @@ final class MoonShowcaseBuilder {
         spawn(level, MoonEntities.GLIMMER_BEETLE.get(), STAGE_X - 7.5, y0 + 1, STAGE_Z + 8.0, 160F, false);
         spawn(level, MoonEntities.GLIMMER_BEETLE.get(), STAGE_X - 6.2, y0 + 1, STAGE_Z + 8.6, 200F, false);
         level.setBlock(new BlockPos(STAGE_X - 9, y0 + 1, STAGE_Z + 7), MoonModule.GLIMMER_LAMP.get().defaultBlockState(), Block.UPDATE_ALL);
+        // lunar night: a heat siphon drinking from a battery bank, glowing with stolen charge
+        BlockPos bank = new BlockPos(STAGE_X - 13, y0 + 1, STAGE_Z + 3);
+        level.setBlock(bank.below(), MoonModule.SINTERED_REGOLITH.get().defaultBlockState(), Block.UPDATE_CLIENTS);
+        level.setBlock(bank, com.pizzaparker07.spacebreaker.content.machines.MachinesModule.BATTERY_BANK.block().get().defaultBlockState(), Block.UPDATE_ALL);
+        if (level.getBlockEntity(bank) instanceof com.pizzaparker07.spacebreaker.content.machines.base.MachineBlockEntity be) {
+            var energy = be.energyCapability(null);
+            energy.receiveEnergy(500_000, false);
+            var siphon = (com.pizzaparker07.spacebreaker.content.moon.entity.HeatSiphon) spawn(level, MoonEntities.HEAT_SIPHON.get(),
+                    STAGE_X - 12.5, y0 + 1, STAGE_Z + 5.2, 180F, false);
+            while (siphon.fed() < com.pizzaparker07.spacebreaker.content.moon.entity.HeatSiphon.CAPACITY * 3 / 4 && siphon.drink(energy) > 0) {
+                // fill it up so it glows
+            }
+            spawn(level, MoonEntities.HEAT_SIPHON.get(), STAGE_X - 15.0, y0 + 1, STAGE_Z + 6.5, 140F, false);
+        }
         var drone = spawn(level, MoonEntities.SURVEY_DRONE.get(), STAGE_X - 6.0, y0 + 3.2, STAGE_Z + 6.0, 10F, false);
         drone.setNoGravity(true);
         for (int x = hx - 2; x <= hx + 4; x++) {
@@ -251,6 +265,8 @@ final class MoonShowcaseBuilder {
         s.add(new ShowcaseDriver.Shot("24_tick_macro", 0, STAGE_X - 8.0, y + 1.2, STAGE_Z + 7.6, 190F, 18F, true, fp, 40,
                 p -> PlanetTime.setDayFraction(p.serverLevel(), 0.12), null));
         s.add(new ShowcaseDriver.Shot("26_glimmer_night", 0, STAGE_X - 7.0, y + 1.4, STAGE_Z + 10.8, 180F, 22F, true, fp, 60,
+                p -> PlanetTime.setDayFraction(p.serverLevel(), 0.75), null));
+        s.add(new ShowcaseDriver.Shot("27_heat_siphon_night", 0, STAGE_X - 12.0, y + 1.6, STAGE_Z + 9.2, 175F, 16F, true, fp, 60,
                 p -> PlanetTime.setDayFraction(p.serverLevel(), 0.75), null));
         s.add(new ShowcaseDriver.Shot("25_drone_macro", 0, STAGE_X - 6.0, y + 3.0, STAGE_Z + 8.6, 180F, 2F, true, fp, 40,
                 p -> PlanetTime.setDayFraction(p.serverLevel(), 0.12), null));

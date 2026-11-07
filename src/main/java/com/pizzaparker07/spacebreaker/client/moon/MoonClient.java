@@ -19,6 +19,7 @@ public final class MoonClient {
         event.registerLayerDefinition(DustSwimmerModel.LAYER, DustSwimmerModel::createLayer);
         event.registerLayerDefinition(SurveyDroneModel.LAYER, SurveyDroneModel::createLayer);
         event.registerLayerDefinition(GlimmerBeetleModel.LAYER, GlimmerBeetleModel::createLayer);
+        event.registerLayerDefinition(HeatSiphonModel.LAYER, HeatSiphonModel::createLayer);
     }
 
     @SubscribeEvent
@@ -29,5 +30,6 @@ public final class MoonClient {
         event.registerEntityRenderer(MoonEntities.SURVEY_DRONE.get(), SurveyDroneRenderer::new);
         event.registerEntityRenderer(MoonEntities.STUN_BOLT.get(), StunBoltRenderer::new);
         event.registerEntityRenderer(MoonEntities.GLIMMER_BEETLE.get(), GlimmerBeetleRenderer::new);
+        event.registerEntityRenderer(MoonEntities.HEAT_SIPHON.get(), HeatSiphonRenderer::new);
     }
 }

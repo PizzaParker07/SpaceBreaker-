@@ -1,9 +1,9 @@
-// 1.21.1	2026-11-06T21:46:37.115708917	Spacebreaker Moon worldgen
-9e1020e451e211d54cb38a369b7927445e4831a2 data/spacebreaker/worldgen/biome/moon_crater.json
-cd6751e426a48066284f4f07b4b5ea59981bee38 data/spacebreaker/worldgen/biome/moon_highlands.json
-9acf7c9f3e49e5b61deaa4fe78d73b0dc3cead0d data/spacebreaker/worldgen/biome/moon_mare.json
-53f3efe4ecaa3f938c4c9a9a30d39119156ce059 data/spacebreaker/worldgen/biome/moon_polar.json
-6f3a79c41b3d14db7a6dcecf2a8718be93513e2e data/spacebreaker/worldgen/biome/moon_volcanic.json
+// 1.21.1	2026-11-07T00:37:34.628783131	Spacebreaker Moon worldgen
+9bbb4ab7909eec5f90dfa0daa619aa4f58ff6b78 data/spacebreaker/worldgen/biome/moon_crater.json
+fdce2fe11ca38fc0f34291d8a4fd1aed0dd3beec data/spacebreaker/worldgen/biome/moon_highlands.json
+240a09001417baa7bf5205549b034ab235e575fc data/spacebreaker/worldgen/biome/moon_mare.json
+fc4693de2035eca76cb887f1401aeb27f4268a6d data/spacebreaker/worldgen/biome/moon_polar.json
+9d7d6d18a27cf19dd21e02c70449765db741f841 data/spacebreaker/worldgen/biome/moon_volcanic.json
 f5921c29bb0e751ecee3e3d7dc8a689a7a6f4bb6 data/spacebreaker/worldgen/configured_feature/moon_boulder_highland.json
 b48a975f60ada6cc74b0bcc5649165a04f676aac data/spacebreaker/worldgen/configured_feature/moon_boulder_large.json
 2e7f9e55b463382d295863d6137b386c105164ec data/spacebreaker/worldgen/configured_feature/moon_boulder_mare.json

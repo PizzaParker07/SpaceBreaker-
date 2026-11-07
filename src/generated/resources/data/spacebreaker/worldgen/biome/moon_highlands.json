@@ -48,6 +48,12 @@
     "misc": [],
     "monster": [
       {
+        "type": "spacebreaker:heat_siphon",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 30
+      },
+      {
         "type": "spacebreaker:regolith_tick",
         "maxCount": 4,
         "minCount": 2,

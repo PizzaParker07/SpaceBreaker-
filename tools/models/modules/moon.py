@@ -122,5 +122,5 @@ def generate():
     simple_block('glimmer_lamp')
     for item in ('raw_ilmenite', 'kreep_fragment', 'glimmer_shell'):
         generated_item(item)
-    for mob in ('regolith_tick', 'elder_regolith_tick', 'dust_swimmer', 'survey_drone', 'glimmer_beetle'):
+    for mob in ('regolith_tick', 'elder_regolith_tick', 'dust_swimmer', 'survey_drone', 'glimmer_beetle', 'heat_siphon'):
         write(f'models/item/{mob}_spawn_egg.json', {'parent': 'minecraft:item/template_spawn_egg'})
