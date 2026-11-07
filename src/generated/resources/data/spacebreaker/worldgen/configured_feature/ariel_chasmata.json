@@ -1,0 +1,47 @@
+{
+  "type": "spacebreaker:grabens",
+  "config": {
+    "floor": {
+      "Name": "spacebreaker:graben_floor_ice"
+    },
+    "grabens": [
+      {
+        "angle": 12.0,
+        "depth": 34.0,
+        "latitude": -6.0,
+        "length": 2200.0,
+        "width": 48.0,
+        "x": 300.0
+      },
+      {
+        "angle": -8.0,
+        "depth": 28.0,
+        "latitude": 10.0,
+        "length": 1800.0,
+        "width": 36.0,
+        "x": -200.0
+      },
+      {
+        "angle": 30.0,
+        "depth": 40.0,
+        "latitude": 22.0,
+        "length": 1400.0,
+        "width": 60.0,
+        "x": 900.0
+      },
+      {
+        "angle": -20.0,
+        "depth": 30.0,
+        "latitude": -24.0,
+        "length": 1600.0,
+        "width": 40.0,
+        "x": -900.0
+      }
+    ],
+    "ridge": 4.0,
+    "rock": {
+      "Name": "spacebreaker:ariel_ice"
+    },
+    "wall": 9.0
+  }
+}

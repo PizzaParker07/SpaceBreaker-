@@ -1,5 +1,9 @@
 {
   "values": [
+    "spacebreaker:ariel_regolith",
+    "spacebreaker:ariel_ice",
+    "spacebreaker:graben_floor_ice",
+    "spacebreaker:co2_frost",
     "spacebreaker:mirandan_regolith",
     "spacebreaker:mirandan_ice",
     "spacebreaker:bright_ridge_ice",

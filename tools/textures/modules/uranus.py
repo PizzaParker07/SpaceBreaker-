@@ -76,6 +76,49 @@ def cliff_clinger():
     return cv
 
 
+# --------------------------------------------------------------------------- Ariel
+
+def ariel_regolith(v=0):
+    return dust(P.ARIEL_SOIL, 15601 + v * 19)
+
+
+def ariel_ice():
+    return _rock(P.ARIEL_ICE, 15701)
+
+
+def graben_floor_ice():
+    """Smooth floor of the rift valleys, flooded by icy lava: calm, faint flow lines along the valley."""
+    r = P.GRABEN_FLOOR
+    f = blend((blur_dir(clustered(16, 16, 15801, passes=2), 4, 1, 0), 0.7), (white(15802), 0.3))
+    cv, _ = quant(f, [r[1], r[2], r[3], r[4]], [10, 40, 38, 12])
+    return cv
+
+
+def frost_moth():
+    """32x32 sheet for FrostMothModel: grey body, pale frosty wings with a darker eye spot and edge."""
+    cv = Canvas(32, 32)
+    r = P.MOTH
+    n = clustered(32, 32, 16001, passes=1)
+    paint(cv, 0, 0, 2, 2, 6, lambda f, x, y, fw, fh: noise_pick(r, 1, n, x, y))
+    paint(cv, 16, 0, 3, 3, 2, lambda f, x, y, fw, fh: hexc('#1c1d1e') if f == 'front' and y == 1 and x in (0, 2) else r[2])
+    for y in range(0, 3):
+        for x in range(26, 30):
+            cv[x, y + 3] = r[3]
+
+    def wing(w, h, ox, oy, spot):
+        for y in range(h):
+            for x in range(w):
+                edge = x in (0, w - 1) or y in (0, h - 1)
+                t = 2 if edge else noise_pick(r, 4, n, x + ox, y + oy)
+                if spot and abs(x - w // 2) <= 1 and abs(y - h // 2) <= 1:
+                    t = r[1]
+                cv[ox + x, oy + y] = r[t] if isinstance(t, int) else t
+    # top faces of the flat wing planes (texOffs + depth for the top face)
+    wing(9, 6, 6, 10, True)
+    wing(7, 5, 5, 18, False)
+    return cv
+
+
 def uranus_disc(size=256):
     """Uranus: an almost featureless pale cyan disc, a slightly brighter polar cap and a few very faint bands."""
     from PIL import Image
@@ -129,6 +172,14 @@ def export(save):
     save(dark_band_ice(), 'block', 'dark_band_ice', (40, 12, 20, None))
     save(carbon_overlay(), 'block', 'mirandan_carbon_ore_overlay', (60, 20, 0, None), wrap=False)
     save(cliff_clinger(), 'entity', 'uranus/cliff_clinger')
+    base = ariel_regolith(0)
+    save(base, 'block', 'ariel_regolith', dust_spec)
+    save(ariel_regolith(1), 'block', 'ariel_regolith_1', dust_spec)
+    for side in ('left', 'right'):
+        save(footprint(base, prints(P.ARIEL_SOIL), side), 'block', f'ariel_regolith_footprint_{side}', (22, 8, 64, None))
+    save(ariel_ice(), 'block', 'ariel_ice', (40, 12, 20, None))
+    save(graben_floor_ice(), 'block', 'graben_floor_ice', (100, 16, 0, None))
+    save(frost_moth(), 'entity', 'uranus/frost_moth')
     import os
     out = os.path.join(os.path.dirname(__file__), '..', '..', '..', 'src', 'main', 'resources', 'assets', 'spacebreaker', 'textures',
                        'environment')

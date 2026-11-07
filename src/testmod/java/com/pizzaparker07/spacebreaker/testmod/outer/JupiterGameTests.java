@@ -210,6 +210,7 @@ public final class JupiterGameTests {
         helper.assertTrue(level.registryAccess().registryOrThrow(Registries.STRUCTURE).containsKey(JupiterStructures.PROBE_KEY), "probe structure");
         BlockPos base = helper.absolutePos(BlockPos.ZERO).offset(7000, 0, -3000);
         ProbePiece piece = new ProbePiece(5L, base.getX(), 120, base.getZ(), Direction.SOUTH);
+        ObservatoryPiece obs = new ObservatoryPiece(6L, base.getX() + 60, 120, base.getZ(), Direction.NORTH);
         BoundingBox bb = piece.getBoundingBox();
         // keep the area (entity sections too) loaded for the whole test, so the serpents stay visible to queries
         java.util.List<net.minecraft.world.level.ChunkPos> forced = new java.util.ArrayList<>();
@@ -219,34 +220,39 @@ public final class JupiterGameTests {
                 forced.add(new net.minecraft.world.level.ChunkPos(cx, cz));
             }
         }
-        BeltGameTests.place(level, piece);
-        int chests = 0;
-        int water = 0;
-        for (BlockPos p : BlockPos.betweenClosed(bb.minX(), bb.minY(), bb.minZ(), bb.maxX(), bb.maxY(), bb.maxZ())) {
-            var st = level.getBlockState(p);
-            if (st.is(Blocks.CHEST) && level.getBlockEntity(p) instanceof ChestBlockEntity ch && ch.getLootTable() != null) {
-                chests++;
+        // build only once the forced tickets have fully loaded the chunks (and their entity sections), so the serpents
+        // are added to a live area and never lost to load order
+        java.util.concurrent.atomic.AtomicBoolean built = new java.util.concurrent.atomic.AtomicBoolean();
+        helper.runAfterDelay(10, () -> {
+            BeltGameTests.place(level, piece);
+            int chests = 0;
+            int water = 0;
+            for (BlockPos p : BlockPos.betweenClosed(bb.minX(), bb.minY(), bb.minZ(), bb.maxX(), bb.maxY(), bb.maxZ())) {
+                var st = level.getBlockState(p);
+                if (st.is(Blocks.CHEST) && level.getBlockEntity(p) instanceof ChestBlockEntity ch && ch.getLootTable() != null) {
+                    chests++;
+                }
+                if (st.is(Blocks.WATER)) {
+                    water++;
+                }
             }
-            if (st.is(Blocks.WATER)) {
-                water++;
+            helper.assertTrue(chests == 2, "instrument and sample chests, found " + chests);
+            helper.assertTrue(water > 30, "a pocket of liquid brine, found " + water);
+            helper.assertTrue(Environment.radiation(level, piece.caveCentre()) >= 0, "the cave is under the ice");
+            BeltGameTests.place(level, obs);
+            int obsChests = 0;
+            BoundingBox ob = obs.getBoundingBox();
+            for (BlockPos p : BlockPos.betweenClosed(ob.minX(), ob.minY(), ob.minZ(), ob.maxX(), ob.maxY(), ob.maxZ())) {
+                if (level.getBlockState(p).is(Blocks.CHEST) && level.getBlockEntity(p) instanceof ChestBlockEntity ch && ch.getLootTable() != null) {
+                    obsChests++;
+                }
             }
-        }
-        helper.assertTrue(chests == 2, "instrument and sample chests, found " + chests);
-        helper.assertTrue(water > 30, "a pocket of liquid brine, found " + water);
-        double shielded = Environment.radiation(level, piece.caveCentre());
-        helper.assertTrue(shielded >= 0, "the cave is under the ice");
-        ObservatoryPiece obs = new ObservatoryPiece(6L, base.getX() + 60, 120, base.getZ(), Direction.NORTH);
-        BeltGameTests.place(level, obs);
-        int obsChests = 0;
-        BoundingBox ob = obs.getBoundingBox();
-        for (BlockPos p : BlockPos.betweenClosed(ob.minX(), ob.minY(), ob.minZ(), ob.maxX(), ob.maxY(), ob.maxZ())) {
-            if (level.getBlockState(p).is(Blocks.CHEST) && level.getBlockEntity(p) instanceof ChestBlockEntity ch && ch.getLootTable() != null) {
-                obsChests++;
-            }
-        }
-        helper.assertTrue(obsChests == 2, "observatory logs and vault, found " + obsChests);
+            helper.assertTrue(obsChests == 2, "observatory logs and vault, found " + obsChests);
+            built.set(true);
+        });
         var area = AABB.of(bb).inflate(24);
         helper.succeedWhen(() -> {
+            helper.assertTrue(built.get(), "probe built");
             var serpents = level.getEntitiesOfClass(GlowSerpent.class, area);
             helper.assertTrue(serpents.size() >= 2, "glow serpents live in the brine pool, found " + serpents.size());
             serpents.forEach(net.minecraft.world.entity.Entity::discard);

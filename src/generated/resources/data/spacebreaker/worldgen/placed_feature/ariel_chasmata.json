@@ -1,0 +1,8 @@
+{
+  "feature": "spacebreaker:ariel_chasmata",
+  "placement": [
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

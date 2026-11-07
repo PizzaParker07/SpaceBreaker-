@@ -1,0 +1,13 @@
+{
+  "type": "spacebreaker:ariel",
+  "generator": {
+    "type": "spacebreaker:planet",
+    "terrain": "spacebreaker:ariel",
+    "biome_source": {
+      "type": "spacebreaker:planet",
+      "highlands": "spacebreaker:ariel_plains",
+      "crater": "spacebreaker:ariel_crater",
+      "polar": "spacebreaker:ariel_polar"
+    }
+  }
+}

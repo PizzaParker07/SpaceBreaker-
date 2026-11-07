@@ -217,3 +217,10 @@ DARK_BAND = ramp('#2c2c2c', '#363635', '#40403f', '#4a4a49', '#555554', '#61615f
 CLINGER = ramp('#2a2a2b', '#3a3a3b', '#4c4c4d', '#606061', '#78787a', '#929294')
 # Stained nitrogen ice: the dark grey-brown methane-stained ice of the cell troughs, a hint of tholin red.
 STAINED_N2 = ramp('#3b3330', '#4a403b', '#574b44', '#64574e', '#72645a', '#837266')
+
+# --------------------------------------------------------------------------- Ariel (ramps from docs/ASTRO.md)
+ARIEL_SOIL = ramp('#7c7872', '#8e8a84', '#a19c95', '#b3aea6', '#c1bcb4', '#cfcac2')
+ARIEL_ICE = ramp('#6f6b66', '#807c76', '#8e8a84', '#9e9993', '#aea9a1', '#bfbab2')
+GRABEN_FLOOR = ramp('#7f7a74', '#8c8781', '#9a958e', '#a7a29b', '#b4afa8', '#c2bdb6')
+CO2_FROST = ramp('#b9bcbf', '#c7cacd', '#d1d4d7', '#dadde0', '#e3e5e7', '#eeeff0')
+MOTH = ramp('#7a7d80', '#9a9da0', '#b9bcbf', '#d3d5d7', '#e7e8e9', '#f4f5f5')

@@ -42,7 +42,8 @@ import java.util.List;
  * Miranda, the smallest of Uranus' round moons and its strangest: a patchwork world, as if broken apart and put back
  * together. Old cratered grey plains; three great racetrack-shaped coronae of bright and dark parallel ridges; and the
  * tallest cliff known, a fault scarp so high that in the feeble gravity a fall from its top takes minutes. Uranus hangs
- * pale cyan in the sky with its thin dark rings.
+ * pale cyan in the sky with its thin dark rings. Ariel, the youngest-looking of the large moons: bright ice cut by long,
+ * straight, flat-floored rift valleys, fresh craters with bright rays, and carbon dioxide frost on the trailing side.
  */
 public final class UranusModule implements SbModule {
     public static final BlockKit KIT = new BlockKit();
@@ -56,6 +57,17 @@ public final class UranusModule implements SbModule {
     public static final DeferredBlock<DropExperienceBlock> CARBON_ORE = KIT.block("mirandan_carbon_ore",
             p -> new DropExperienceBlock(UniformInt.of(0, 2), p), BlockKit.rockProps(MapColor.COLOR_GRAY, SoundType.STONE, 2.0F));
 
+    // ---- Ariel
+    public static final ResourceKey<Level> ARIEL = ResourceKey.create(Registries.DIMENSION, Spacebreaker.id("ariel"));
+    public static final DeferredBlock<LunarRegolithBlock> ARIEL_REGOLITH = KIT.block("ariel_regolith", LunarRegolithBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.TERRACOTTA_WHITE).strength(0.5F).sound(SoundType.SAND));
+    public static final BlockKit.Family ARIEL_ICE = KIT.family("ariel_ice", MapColor.TERRACOTTA_LIGHT_GRAY, SoundType.STONE, 1.6F, true);
+    public static final DeferredBlock<Block> GRABEN_FLOOR_ICE = KIT.block("graben_floor_ice", BlockBehaviour.Properties.of()
+            .mapColor(MapColor.TERRACOTTA_LIGHT_GRAY).strength(1.2F).friction(0.9F).sound(SoundType.GLASS));
+    public static final DeferredBlock<DropExperienceBlock> ARIEL_AMMONIA_ORE = KIT.block("ariel_ammonia_ore",
+            p -> new DropExperienceBlock(UniformInt.of(1, 3), p), BlockKit.rockProps(MapColor.TERRACOTTA_LIGHT_GRAY, SoundType.STONE, 2.2F));
+
+    public static final TagKey<Block> ARIEL_STONE = SbTagKeys.modBlock("ariel_stone");
     public static final TagKey<Block> MIRANDA_STONE = SbTagKeys.modBlock("miranda_stone");
     public static final TagKey<Block> MIRANDAN_GROUND = SbTagKeys.modBlock("mirandan_ground");
 
@@ -82,24 +94,37 @@ public final class UranusModule implements SbModule {
         lang.block(BRIGHT_RIDGE_ICE, "Bright Ridge Ice", "Parlak Sırt Buzu");
         lang.block(DARK_BAND_ICE, "Dark Band Ice", "Koyu Bant Buzu");
         lang.block(CARBON_ORE, "Mirandan Carbon Deposit", "Miranda Karbon Yatağı");
+        lang.add("dimension.spacebreaker.ariel", "Ariel", "Ariel");
+        lang.block(ARIEL_REGOLITH, "Arielian Regolith", "Ariel Regoliti");
+        BlockKit.familyNames(lang, ARIEL_ICE, "Arielian Bedrock Ice", "Ariel Ana Kaya Buzu");
+        lang.block(GRABEN_FLOOR_ICE, "Graben Floor Ice", "Graben Tabanı Buzu");
+        lang.block(ARIEL_AMMONIA_ORE, "Arielian Ammonia Deposit", "Ariel Amonyak Yatağı");
         UranusData.translations(lang);
         UranusEntities.translations(lang);
     }
 
     @Override
     public void addBlockLoot(SbBlockLoot loot) {
-        for (DeferredBlock<? extends Block> b : List.of(MIRANDAN_REGOLITH, BRIGHT_RIDGE_ICE, DARK_BAND_ICE)) {
+        for (DeferredBlock<? extends Block> b : List.of(MIRANDAN_REGOLITH, BRIGHT_RIDGE_ICE, DARK_BAND_ICE, ARIEL_REGOLITH, GRABEN_FLOOR_ICE)) {
             loot.self(b.get());
         }
         loot.ore(CARBON_ORE.get(), Items.COAL);
+        loot.ore(ARIEL_AMMONIA_ORE.get(), com.pizzaparker07.spacebreaker.content.pluto.PlutoModule.AMMONIA_CRYSTAL.get());
         KIT.familyLoot(loot);
     }
 
     @Override
     public void addTags(SbTags tags) {
         // water ice for the ice melter: water, then hydrogen and oxygen for rocket fuel
-        tags.item(com.pizzaparker07.spacebreaker.content.machines.IsruRecipes.WATER_ICES, MIRANDAN_ICE.base().get().asItem(), BRIGHT_RIDGE_ICE.get().asItem());
-        tags.block(BlockTags.MINEABLE_WITH_SHOVEL, MIRANDAN_REGOLITH.get());
+        tags.item(com.pizzaparker07.spacebreaker.content.machines.IsruRecipes.WATER_ICES, MIRANDAN_ICE.base().get().asItem(), BRIGHT_RIDGE_ICE.get().asItem(),
+                ARIEL_ICE.base().get().asItem(), GRABEN_FLOOR_ICE.get().asItem());
+        tags.block(BlockTags.MINEABLE_WITH_SHOVEL, MIRANDAN_REGOLITH.get(), ARIEL_REGOLITH.get());
+        tags.block(BlockTags.MINEABLE_WITH_PICKAXE, GRABEN_FLOOR_ICE.get(), ARIEL_AMMONIA_ORE.get());
+        tags.block(BlockTags.NEEDS_STONE_TOOL, ARIEL_AMMONIA_ORE.get());
+        tags.block(ARIEL_STONE, ARIEL_ICE.base().get());
+        tags.block(MIRANDAN_GROUND, ARIEL_REGOLITH.get(), ARIEL_ICE.base().get(), GRABEN_FLOOR_ICE.get(),
+                com.pizzaparker07.spacebreaker.content.mars.MarsModule.CO2_FROST.get());
+        tags.block(com.pizzaparker07.spacebreaker.content.pluto.PlutoModule.ORES_AMMONIA, ARIEL_AMMONIA_ORE.get());
         tags.block(BlockTags.MINEABLE_WITH_PICKAXE, BRIGHT_RIDGE_ICE.get(), DARK_BAND_ICE.get(), CARBON_ORE.get());
         for (BlockKit.Family f : KIT.families()) {
             f.all().forEach(b -> tags.block(BlockTags.MINEABLE_WITH_PICKAXE, b.get()));
