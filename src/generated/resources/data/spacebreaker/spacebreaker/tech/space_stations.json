@@ -15,6 +15,7 @@
     "spacebreaker:habitat_kit",
     "spacebreaker:station_bunk",
     "spacebreaker:fuel_depot",
-    "spacebreaker:solar_array"
+    "spacebreaker:solar_array",
+    "spacebreaker:cargo_module"
   ]
 }

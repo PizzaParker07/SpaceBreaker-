@@ -1,7 +1,7 @@
 ---
 title: Space Station
 icon: spacebreaker:docking_port
-items: [spacebreaker:station_kit, spacebreaker:habitat_kit, spacebreaker:station_hull, spacebreaker:station_window, spacebreaker:docking_port, spacebreaker:station_bunk, spacebreaker:fuel_depot, spacebreaker:solar_array, spacebreaker:crew_capsule_large]
+items: [spacebreaker:station_kit, spacebreaker:habitat_kit, spacebreaker:station_hull, spacebreaker:station_window, spacebreaker:docking_port, spacebreaker:station_bunk, spacebreaker:fuel_depot, spacebreaker:solar_array, spacebreaker:crew_capsule_large, spacebreaker:cargo_module]
 research: spacebreaker:space_stations
 ---
 A home, workshop and fuel depot in orbit. You no longer have to fuel your rocket from the ground every time.
@@ -43,6 +43,15 @@ The {item spacebreaker:solar_array} carries three panels on a one-block footprin
 - A crewed rocket arriving in an orbit with a station starts **36 blocks** out from the nearest docking port. It closes in quickly, then creeps the last stretch on thruster puffs and locks on with a clunk: **"Docked"**. Nobody can step off on the way in.
 - The crew of a rocket in orbit within **12 blocks** of the port can step off into the station and back on.
 - Fuel and liquid oxygen piped into the port flow into the docked rocket: the station becomes a **fuel depot**.
+
+## Cargo rocket
+{items spacebreaker:cargo_module}
+You do not have to carry supplies yourself. In the rocket assembler, fit a {item spacebreaker:cargo_module} in place of the capsule: it is a **27-slot** hold and the rocket flies uncrewed.
+- **Orbit target:** it docks at the station and unloads the hold into the chests, barrels and other storage within **4 blocks** of the port. With no station in that orbit it waits.
+- **Surface target:** it lands on the nearest {item spacebreaker:landing_beacon} and unloads into the storage within 4 blocks of the beacon.
+{recipe spacebreaker:rocketry/cargo_module}
+
+> What does not fit stays in the hold, and chat tells you how many items are waiting. Put enough chests next to the port or beacon.
 
 ## The large capsule
 {items spacebreaker:crew_capsule_large}

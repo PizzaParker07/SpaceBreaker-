@@ -1,7 +1,7 @@
 ---
 title: Uzay İstasyonu
 icon: spacebreaker:docking_port
-items: [spacebreaker:station_kit, spacebreaker:habitat_kit, spacebreaker:station_hull, spacebreaker:station_window, spacebreaker:docking_port, spacebreaker:station_bunk, spacebreaker:fuel_depot, spacebreaker:solar_array, spacebreaker:crew_capsule_large]
+items: [spacebreaker:station_kit, spacebreaker:habitat_kit, spacebreaker:station_hull, spacebreaker:station_window, spacebreaker:docking_port, spacebreaker:station_bunk, spacebreaker:fuel_depot, spacebreaker:solar_array, spacebreaker:crew_capsule_large, spacebreaker:cargo_module]
 research: spacebreaker:space_stations
 ---
 Yörüngede bir ev, atölye ve yakıt deposu. Roketini her seferinde yerden doldurmak zorunda kalmazsın.
@@ -43,6 +43,15 @@ Dünya dışında yatak çalışmaz. {item spacebreaker:station_bunk} kullanınc
 - İstasyonu olan bir yörüngeye varan mürettebatlı roket en yakın yanaşma portunun **36 blok** uzağında belirir. Hızla yaklaşır, son metreleri manevra iticileriyle ağır ağır alır ve bir tık sesiyle kilitlenir: **"Yanaşıldı"**. Yaklaşma sırasında kimse inemez.
 - Portun **12 blok** yakınındaki yörüngedeki bir roketten mürettebat istasyona iner ve geri biner.
 - Porta borulanan yakıt ve sıvı oksijen yanaşan rokete akar: istasyon bir **yakıt deposu** olur.
+
+## Kargo roketi
+{items spacebreaker:cargo_module}
+Malzemeyi kendin taşımak zorunda değilsin. Montaj tezgâhında kapsül yerine bir {item spacebreaker:cargo_module} tak: **27 yuvalı** bir ambar olur ve roket insansız uçar.
+- **Yörünge hedefi:** istasyona yanaşır ve ambarı portun **4 blok** yakınındaki sandık, varil ve depolara boşaltır. Yörüngede istasyon yoksa bekler.
+- **Yüzey hedefi:** en yakın {item spacebreaker:landing_beacon}'ne iner ve ambarı işaretin 4 blok yakınındaki depolara boşaltır.
+{recipe spacebreaker:rocketry/cargo_module}
+
+> Sığmayan eşyalar ambarda kalır; sohbete kaç eşyanın beklediği yazılır. Portun ya da işaretin yanına yeterince sandık koy.
 
 ## Büyük kapsül
 {items spacebreaker:crew_capsule_large}
