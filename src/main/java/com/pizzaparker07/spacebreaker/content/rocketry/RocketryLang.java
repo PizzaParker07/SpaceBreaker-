@@ -358,6 +358,9 @@ final class RocketryLang {
         l.add("gui.spacebreaker.console.abort", "Abort", "Durdur");
         l.add("gui.spacebreaker.console.check", "Check pad", "Denetle");
         l.add("gui.spacebreaker.console.check.tip", "Writes the full pad report to chat", "Rampanın tam raporunu sohbete yazar");
+        l.add("gui.spacebreaker.console.goal", "→ %s", "→ %s");
+        l.add("gui.spacebreaker.console.goal_uncrewed", "uncrewed", "insansız");
+        l.add("gui.spacebreaker.console.goal_route", "cargo route", "kargo seferi");
         l.add("gui.spacebreaker.console.all_ready", "Ready for launch", "Fırlatmaya hazır");
         l.add("gui.spacebreaker.console.name.pad", "Pad and trench", "Rampa ve kanal");
         l.add("gui.spacebreaker.console.name.tower", "Service tower", "Servis kulesi");

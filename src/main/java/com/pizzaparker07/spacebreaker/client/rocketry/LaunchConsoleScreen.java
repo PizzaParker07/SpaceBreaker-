@@ -162,6 +162,24 @@ public class LaunchConsoleScreen extends AbstractContainerScreen<LaunchConsoleMe
         return out;
     }
 
+    /** Where the rocket is going ("-> Mars") and, smaller, what kind of flight (uncrewed, cargo route); a crewed rocket first goes to orbit. */
+    @org.jetbrains.annotations.Nullable
+    private Component[] destination() {
+        if (menu.get(LaunchConsoleMenu.STATE) < 0) {
+            return null;
+        }
+        RocketEntity drone = uncrewed();
+        if (drone == null) {
+            return new Component[]{Component.translatable("gui.spacebreaker.console.goal",
+                    com.pizzaparker07.spacebreaker.content.rocketry.nav.Location.EARTH_ORBIT.name()), null};
+        }
+        Component where = drone.missionTarget().map(l -> (Component) l.name())
+                .orElse(com.pizzaparker07.spacebreaker.content.rocketry.nav.Location.EARTH_ORBIT.name());
+        boolean route = drone.hasCargoHold() && drone.routeStatus() != RocketEntity.RouteStatus.OFF;
+        return new Component[]{Component.translatable("gui.spacebreaker.console.goal", where),
+                Component.translatable(route ? "gui.spacebreaker.console.goal_route" : "gui.spacebreaker.console.goal_uncrewed")};
+    }
+
     private static Component name(String key) {
         return Component.translatable("gui.spacebreaker.console.name." + key);
     }
@@ -183,6 +201,19 @@ public class LaunchConsoleScreen extends AbstractContainerScreen<LaunchConsoleMe
         if (shown.isEmpty()) {
             g.drawString(font, "\u2714 ", x, y, GREEN, false);
             g.drawString(font, Component.translatable("gui.spacebreaker.console.all_ready"), x + 10, y, TEXT, false);
+            // where it is going, large, so nobody has to hover to see it
+            Component[] goal = destination();
+            if (goal != null) {
+                g.pose().pushPose();
+                g.pose().translate(x, y + 22, 0);
+                float scale = Math.min(1.5F, 136F / Math.max(1, font.width(goal[0])));
+                g.pose().scale(scale, scale, 1);
+                g.drawString(font, goal[0], 0, 0, TEXT, false);
+                g.pose().popPose();
+                if (goal[1] != null) {
+                    g.drawString(font, goal[1], x + 12, y + 37, DIM, false);
+                }
+            }
         }
         for (int i = 0; i < shown.size(); i++) {
             Row r = shown.get(i);
