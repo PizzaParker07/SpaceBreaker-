@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "minecraft:bricks"
+    },
+    "C": {
+      "item": "spacebreaker:basic_circuit"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "S": {
+      "tag": "c:plates/steel"
+    },
+    "W": {
+      "tag": "c:wires/tungsten"
+    }
+  },
+  "pattern": [
+    "BWB",
+    "BCB",
+    "SPS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "spacebreaker:sintering_furnace"
+  }
+}

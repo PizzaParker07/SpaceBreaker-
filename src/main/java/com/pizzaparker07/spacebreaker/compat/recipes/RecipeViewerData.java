@@ -57,7 +57,8 @@ public final class RecipeViewerData {
             category(MachinesModule.SABATIER, MachinesModule.SABATIER_REACTOR),
             category(MachinesModule.REGOLITH_PROCESSING, MachinesModule.REGOLITH_HEATER),
             category(MachinesModule.MELTING, MachinesModule.ICE_MELTER),
-            category(MachinesModule.CHEMICAL_REACTION, MachinesModule.CHEMICAL_REACTOR));
+            category(MachinesModule.CHEMICAL_REACTION, MachinesModule.CHEMICAL_REACTOR),
+            category(MachinesModule.SINTERING, MachinesModule.SINTERING_FURNACE));
 
     /** The arc furnace also smelts anything a furnace can (twice as fast): a catalyst for vanilla smelting. */
     public static final Supplier<? extends ItemLike> EXTRA_SMELTER = MachinesModule.ARC_FURNACE.item();

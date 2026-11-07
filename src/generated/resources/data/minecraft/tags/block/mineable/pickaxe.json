@@ -67,6 +67,7 @@
     "spacebreaker:atmosphere_processor",
     "spacebreaker:sabatier_reactor",
     "spacebreaker:regolith_heater",
+    "spacebreaker:sintering_furnace",
     "spacebreaker:regolith_excavator",
     "spacebreaker:ice_melter",
     "spacebreaker:chemical_reactor",

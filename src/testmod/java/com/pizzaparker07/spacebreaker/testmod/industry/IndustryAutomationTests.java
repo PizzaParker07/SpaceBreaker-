@@ -149,6 +149,25 @@ public final class IndustryAutomationTests {
         h.succeed();
     }
 
+    /** The sintering furnace turns Martian (and lunar) regolith into sintered blocks that seal a base. */
+    @GameTest(template = "empty", timeoutTicks = 400, batch = "industry_automation")
+    public static void sinteringFurnaceMakesAirtightBlocksFromAnyRegolith(GameTestHelper h) {
+        MachineBlockEntity furnace = machine(h, MachinesModule.SINTERING_FURNACE, new BlockPos(2, 1, 2), Direction.NORTH);
+        furnace.items().setStackInSlot(0, new ItemStack(BuiltInRegistries.ITEM.get(Spacebreaker.id("martian_regolith")), 2));
+        var sintered = com.pizzaparker07.spacebreaker.content.moon.MoonModule.SINTERED_REGOLITH.get();
+        h.setBlock(new BlockPos(0, 1, 0), sintered);
+        h.setBlock(new BlockPos(0, 2, 0), com.pizzaparker07.spacebreaker.content.moon.MoonModule.SINTERED_REGOLITH_BRICKS.base().get());
+        h.assertTrue(com.pizzaparker07.spacebreaker.content.suit.block.SealedRoom.airtight(h.getLevel(), h.absolutePos(new BlockPos(0, 1, 0)),
+                h.getBlockState(new BlockPos(0, 1, 0))), "sintered regolith seals a room");
+        h.assertTrue(com.pizzaparker07.spacebreaker.content.suit.block.SealedRoom.airtight(h.getLevel(), h.absolutePos(new BlockPos(0, 2, 0)),
+                h.getBlockState(new BlockPos(0, 2, 0))), "sintered regolith bricks seal a room");
+        h.succeedWhen(() -> {
+            furnace.energy().generate(1_000);
+            h.assertTrue(furnace.items().getStackInSlot(1).is(sintered.asItem()) && furnace.items().getStackInSlot(1).getCount() == 2,
+                    "sintered blocks out: " + furnace.items().getStackInSlot(1));
+        });
+    }
+
     private IndustryAutomationTests() {
     }
 }

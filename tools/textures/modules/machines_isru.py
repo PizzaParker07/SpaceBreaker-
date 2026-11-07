@@ -270,3 +270,28 @@ _export_excavator = export
 def export(save):  # noqa: F811
     _export_excavator(save)
     save(excavator_front(), 'block', 'regolith_excavator_front', (150, 230, 0, None))
+
+
+def sinter_front():
+    """Kiln door: a brick-lined arch with a dark firing chamber (the glow layer fills it when hot)."""
+    cv = casing(81, seam=False)
+    brick = [(132, 72, 51), (132, 72, 51)]
+    for y in range(3, 13):
+        for x in range(3, 13):
+            if y == 3 and x in (3, 12):
+                continue
+            cv[x, y] = brick[(x // 2 + y) % 2] if (x in (3, 12) or y in (3, 12)) else S[0]
+    return cv
+
+
+def sinter_glow():
+    return glow_overlay([(x, y, GLOW[(x + y) % 3]) for y in range(4, 12) for x in range(4, 12) if not (y < 6 and x in (4, 11))])
+
+
+_export_sinter = export
+
+
+def export(save):  # noqa: F811
+    _export_sinter(save)
+    save(sinter_front(), 'block', 'sintering_furnace_front', (150, 230, 0, None))
+    save(sinter_glow(), 'block', 'sintering_furnace_glow', (60, 10, 0, lambda c: (60, 10, 0, 200) if c[3] else None), normal=False)

@@ -204,7 +204,7 @@ final class IndustryScenario implements ShowcaseScenario {
         BlockState floor = net.minecraft.core.registries.BuiltInRegistries.BLOCK
                 .getOptional(com.pizzaparker07.spacebreaker.Spacebreaker.id("martian_regolith")).map(Block::defaultBlockState)
                 .orElse(Blocks.RED_SAND.defaultBlockState());
-        for (int x = ISRU_X - 5; x <= ISRU_X + 11; x++) {
+        for (int x = ISRU_X - 5; x <= ISRU_X + 16; x++) {
             for (int z = -3; z <= 8; z++) {
                 set(level, x, F, z, floor);
             }
@@ -237,7 +237,8 @@ final class IndustryScenario implements ShowcaseScenario {
         set(level, x0 - 4, F + 1, 1, MachinesModule.COPPER_CABLE.get().defaultBlockState());
         // display row facing the camera, all running
         List<MachineEntry<?, ?>> show = List.of(MachinesModule.ATMOSPHERE_PROCESSOR, MachinesModule.SABATIER_REACTOR,
-                MachinesModule.REGOLITH_HEATER, MachinesModule.ICE_MELTER, MachinesModule.CHEMICAL_REACTOR, MachinesModule.RTG);
+                MachinesModule.REGOLITH_HEATER, MachinesModule.ICE_MELTER, MachinesModule.CHEMICAL_REACTOR, MachinesModule.RTG,
+                MachinesModule.REGOLITH_EXCAVATOR, MachinesModule.SINTERING_FURNACE);
         for (int i = 0; i < show.size(); i++) {
             BlockPos pos = new BlockPos(x0 + 1 + i * 2, F + 1, 6);
             level.setBlock(pos, show.get(i).block().get().defaultBlockState().setValue(MachineBlock.FACING, Direction.SOUTH), Block.UPDATE_ALL);
@@ -251,6 +252,7 @@ final class IndustryScenario implements ShowcaseScenario {
                     case 2 -> be.items().setStackInSlot(0, new ItemStack(floor.getBlock().asItem(), 64));
                     case 3 -> be.items().setStackInSlot(0, new ItemStack(Items.PACKED_ICE, 64));
                     case 5 -> be.items().setStackInSlot(0, new ItemStack(MachinesModule.RTG_FUEL_PELLET.get()));
+                    case 7 -> be.items().setStackInSlot(0, new ItemStack(floor.getBlock().asItem(), 64));
                     default -> { }
                 }
             }
@@ -259,7 +261,7 @@ final class IndustryScenario implements ShowcaseScenario {
 
     /** Keeps the ISRU bay running between photos (software rendering is slow, the machines are hungry). */
     private static void rechargeIsru(ServerPlayer player) {
-        for (int x = ISRU_X - 1; x <= ISRU_X + 10; x++) {
+        for (int x = ISRU_X - 1; x <= ISRU_X + 16; x++) {
             for (int z = 0; z <= 6; z++) {
                 if (player.level().getBlockEntity(new BlockPos(x, F + 1, z)) instanceof MachineBlockEntity be) {
                     be.energy().generate(be.energy().getMaxEnergyStored());
@@ -341,6 +343,7 @@ final class IndustryScenario implements ShowcaseScenario {
         s.add(new Shot("14_isru_night", 18000, ISRU_X + 3.5, G + 2.6, -4.0, 0F, 20F, true, fp, 60, IndustryScenario::rechargeIsru, null));
         s.add(new Shot("15_gui_sabatier", 6000, ISRU_X + 2.5, G + 1.62, -1.0, 0F, 30F, false, fp, 40,
                 p -> openAt(p, new BlockPos(ISRU_X + 2, F + 1, 1)), null));
+        s.add(new Shot("20_excavator_sinter", 6000, ISRU_X + 14.0, G + 2.2, 10.6, 180F, 16F, true, fp, 120, IndustryScenario::rechargeIsru, null));
         s.add(new Shot("19_power_monitor", 6000, ISRU_X - 3.5, G + 1.7, 5.3, 180F, 12F, true, fp, 120, null, null));
         s.add(new Shot("18_solar_array", 6000, ISRU_X - 0.5, G + 2.4, 2.5, 120F, 18F, true, fp, 60, null, null));
         s.add(new Shot("16_rtg", 6000, ISRU_X + 11.5, G + 2.0, 8.9, 180F, 22F, true, fp, 60, null, null));

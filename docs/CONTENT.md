@@ -39,6 +39,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Karbondioksit gazı (`c:carbon_dioxide`); güneş paneli verimi gezegenin güneşe uzaklığına göre (en fazla 3×) | |
 | 🎨 | Kimyasal Reaktör (`spacebreaker:chemical_reaction`), Sülfürik Asit (`c:sulfuric_acid`), Helyum-3 (`c:helium_3`) | kükürt + su + oksijen → sülfürik asit; Ay/Merkür güneş rüzgârı regolitinden (`c:regoliths/solar_wind`) oksijen + He-3 (hidrojen buzdan) |
 | 🎨 | Otomasyon: Regolit Kazıcı, kızıltaş kontrolü, filtreli boru ucu | kazıcı altındaki 5x5 alanı 16 blok derine kazar ve yanındaki makinelere verir; her makinede kızıltaş modu (yok say / sinyal varken / sinyal yokken; ekrandaki düğme); boru ucuna dolu bir kapla eğilip tıklayınca o uç yalnız o sıvıyı geçirir (boş kapla kaldırılır); sıvılaştırıcı yalnız O₂/H₂/CH₄ kabul eder. Ay üssünde kazıcı → ısıtıcı → sıvılaştırıcı → tank zinciri kendi kendine LOX yapar |
+| 🎨 | Sinterleme Fırını (`spacebreaker:sintering`) | her gezegenin regolitini (`c:regoliths`, Ay/Mars/Merkür) elektrikle Sinterlenmiş Regolite çevirir (hava gerekmez); tam blok olduğu için oda sızdırmaz; tuğla/merdiven/basamak Ay ailesinin taş kesici tarifleriyle; kazıcıyla beslenip otomatik çalışır |
 | 🎨 | Roket Montaj Tezgâhı | 3 kademe + faydalı yük yuvası, canlı 3B önizleme, kademe başına Δv ve itki/ağırlık, ulaşılabilir hedefler (yörünge, Ay, iniş, dönüş) |
 
 ### Paket ③ Roket, rampa, giysi ve Ay
