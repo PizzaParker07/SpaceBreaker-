@@ -2,6 +2,7 @@ package com.pizzaparker07.spacebreaker.content.mars.dungeon;
 
 import com.pizzaparker07.spacebreaker.content.mars.MarsModule;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
@@ -115,22 +116,38 @@ public class HopSpirePiece extends StructurePiece {
                 column(level, box, sum.getX() + dx, sum.getZ() + dz, sum.getY() - 1, r);
             }
         }
-        // the relay on the summit: a mast with a dish and a sealed data cache
+        // the relay on the summit: a lattice mast with a dish and a beacon, a foil-wrapped transmitter, the data cache
         int sy = sum.getY();
-        set(level, box, sum.getX() - 1, sy, sum.getZ() - 1, s(Blocks.IRON_BLOCK));
-        for (int dy = 1; dy <= 3; dy++) {
-            set(level, box, sum.getX() - 1, sy + dy, sum.getZ() - 1, s(Blocks.LIGHTNING_ROD));
+        int mx = sum.getX() - 1;
+        int mz = sum.getZ() - 1;
+        set(level, box, mx, sy, mz, s(Blocks.POLISHED_ANDESITE));
+        for (int dy = 1; dy <= 6; dy++) {
+            set(level, box, mx, sy + dy, mz, dy % 3 == 0 ? s(Blocks.POLISHED_ANDESITE) : s(Blocks.IRON_BARS));
         }
-        set(level, box, sum.getX() - 1, sy + 4, sum.getZ() - 1, s(Blocks.DAYLIGHT_DETECTOR));
-        set(level, box, sum.getX() + 1, sy, sum.getZ() + 1, s(Blocks.WHITE_CONCRETE));
-        set(level, box, sum.getX() + 1, sy + 1, sum.getZ() + 1, s(Blocks.GOLD_BLOCK));
-        BlockPos chest = new BlockPos(sum.getX(), sy, sum.getZ());
-        if (box.isInside(chest)) {
-            level.setBlock(chest, s(Blocks.CHEST), Block.UPDATE_CLIENTS);
-            if (level.getBlockEntity(chest) instanceof net.minecraft.world.level.block.entity.ChestBlockEntity be) {
+        // the dish: a ring of slabs round a receiver, turned to the sky
+        set(level, box, mx, sy + 7, mz, s(Blocks.DAYLIGHT_DETECTOR));
+        for (int[] d : new int[][]{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}) {
+            set(level, box, mx + d[0], sy + 7, mz + d[1], s(Blocks.SMOOTH_QUARTZ_SLAB));
+        }
+        set(level, box, mx, sy + 8, mz, s(Blocks.LIGHTNING_ROD));
+        set(level, box, mx, sy + 9, mz, s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.LED_PANEL.get()));
+        set(level, box, sum.getX() + 1, sy, sum.getZ() + 1, s(Blocks.SMOOTH_QUARTZ));
+        set(level, box, sum.getX() + 1, sy + 1, sum.getZ() + 1, s(com.pizzaparker07.spacebreaker.content.belt.LanderBlocks.GOLD_FOIL_CLADDING.get()));
+        BlockPos cache = new BlockPos(sum.getX(), sy, sum.getZ());
+        if (box.isInside(cache)) {
+            level.setBlock(cache, com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.BLOCK.get().defaultBlockState()
+                    .setValue(com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlock.FACING, Direction.SOUTH), Block.UPDATE_CLIENTS);
+            if (level.getBlockEntity(cache) instanceof com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlockEntity be) {
                 be.setLootTable(MarsLoot.DEIMOS_RELAY, seed);
             }
         }
+        // the cable: down the needle's north face to a ground station at its foot
+        int cz = sum.getZ() - 2;
+        int gy = ground(level, sum.getX(), cz);
+        for (int y = gy; y < sy; y++) {
+            set(level, box, sum.getX(), y, cz, s(Blocks.CHAIN));
+        }
+        groundStation(level, box, sum.getX() - 2, cz - 4);
         // the plate at the foot of the first stack
         BlockPos first = stacks().get(0);
         int signX = first.getX() - 2;
@@ -139,5 +156,29 @@ public class HopSpirePiece extends StructurePiece {
             level.setBlock(sign, s(Blocks.OAK_SIGN).setValue(StandingSignBlock.ROTATION, 12), Block.UPDATE_CLIENTS);
             DungeonBits.signText(level, sign, "deimos_hop");
         }
+    }
+
+    /** The relay's ground station: a small panelled hut with a dish on its roof and a floodlight over the door. */
+    private void groundStation(WorldGenLevel level, BoundingBox box, int x0, int z0) {
+        BlockState panel = s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.ALUMINUM_PANEL.base().get());
+        int gy = ground(level, x0 + 2, z0 + 1);
+        for (int x = x0; x <= x0 + 4; x++) {
+            for (int z = z0; z <= z0 + 2; z++) {
+                for (int y = ground(level, x, z); y < gy; y++) {
+                    set(level, box, x, y, z, s(MarsModule.CARBONACEOUS_CHONDRITE.get()));
+                }
+                for (int y = gy; y <= gy + 2; y++) {
+                    boolean shell = x == x0 || x == x0 + 4 || z == z0 || z == z0 + 2;
+                    boolean door = z == z0 + 2 && x == x0 + 2 && y <= gy + 1;
+                    set(level, box, x, y, z, shell && !door ? panel : s(Blocks.AIR));
+                }
+                set(level, box, x, gy + 3, z, s(Blocks.POLISHED_ANDESITE_SLAB));
+            }
+        }
+        set(level, box, x0 + 2, gy, z0 + 1, s(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.POWER_MONITOR.get()));
+        set(level, box, x0 + 1, gy + 4, z0 + 1, s(Blocks.DAYLIGHT_DETECTOR));
+        set(level, box, x0 + 3, gy + 4, z0 + 1, s(Blocks.LIGHTNING_ROD));
+        set(level, box, x0 + 2, gy + 2, z0 + 3, s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.FLOODLIGHT.get())
+                .setValue(net.minecraft.world.level.block.DirectionalBlock.FACING, Direction.SOUTH));
     }
 }

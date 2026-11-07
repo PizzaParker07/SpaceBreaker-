@@ -99,11 +99,11 @@ public final class MarsMoonsGameTests {
             }
             int chests = 0;
             for (BlockPos p : BlockPos.betweenClosed(bb.minX(), bb.minY(), bb.minZ(), bb.maxX(), bb.maxY(), bb.maxZ())) {
-                if (level.getBlockState(p).is(Blocks.CHEST) && level.getBlockEntity(p) instanceof ChestBlockEntity c && c.getLootTable() != null) {
+                if (level.getBlockEntity(p) instanceof com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlockEntity c && c.getLootTable() != null) {
                     chests++;
                 }
             }
-            helper.assertTrue(chests >= 1, (cache ? "ice cache" : "probe wreck") + " needs its loot chest");
+            helper.assertTrue(chests >= 1, (cache ? "ice cache" : "probe wreck") + " needs its loot locker");
         }
         helper.succeed();
     }
