@@ -28,7 +28,7 @@ public class OrbitSkyEffects extends DimensionSpecialEffects {
     static final ResourceLocation MOON_DISC = Spacebreaker.id("textures/environment/orbit_moon_disc.png");
 
     /** One orbit (and one day/night cycle of the view) in ticks. */
-    public static final float ORBIT_TICKS = 12000F;
+    public static final float ORBIT_TICKS = com.pizzaparker07.spacebreaker.content.rocketry.nav.OrbitDaylight.ORBIT_TICKS;
 
     private static ResourceLocation lastBody = Location.EARTH;
 
@@ -128,20 +128,54 @@ public class OrbitSkyEffects extends DimensionSpecialEffects {
         return true;
     }
 
+    /** Where the sun is in the orbit sky at this time: overhead at phase 0, straight below (behind the body) at 0.5. */
+    static Vector3f sunDirection(float time) {
+        float a = (float) com.pizzaparker07.spacebreaker.content.rocketry.nav.OrbitDaylight.phase(time) * Mth.TWO_PI;
+        return new Vector3f(Mth.sin(a), Mth.cos(a), 0.3F).normalize();
+    }
+
+    /** Share of sunlight now (1 day, 0 in the shadow), smoothed over the penumbra. */
+    static float sunlit(ClientLevel level, float partialTick) {
+        return (float) com.pizzaparker07.spacebreaker.content.rocketry.nav.OrbitDaylight.sunlit(
+                com.pizzaparker07.spacebreaker.content.rocketry.nav.OrbitDaylight.system(level.registryAccess()),
+                orbitedBody(level), level.getGameTime() + partialTick);
+    }
+
+    /**
+     * Light in orbit: hard white sunlight by day; in the planet's shadow only starlight and the faint glow of the
+     * night side, so lamps matter.
+     */
+    @Override
+    public void adjustLightmapColors(ClientLevel level, float partialTicks, float skyDarken, float blockLightRedFlicker, float skyLight,
+                                     int pixelX, int pixelY, org.joml.Vector3f colors) {
+        float lit = sunlit(level, partialTicks);
+        float daylight = 0.06F + 0.94F * lit;
+        float sky = net.minecraft.client.renderer.LightTexture.getBrightness(level.dimensionType(), pixelY) * daylight;
+        float bl = net.minecraft.client.renderer.LightTexture.getBrightness(level.dimensionType(), pixelX) * blockLightRedFlicker;
+        float bg = bl * ((bl * 0.6F + 0.4F) * 0.6F + 0.4F);
+        float bb = bl * (bl * bl * 0.6F + 0.4F);
+        // the shadow side is faintly blue
+        colors.set(bl + sky, bg + sky, bb + sky * (1 + 0.25F * (1 - lit)));
+        colors.lerp(new org.joml.Vector3f(0.75F, 0.75F, 0.75F), 0.04F);
+    }
+
     @Override
     public boolean renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelView, Camera camera, Matrix4f projection,
                              boolean isFoggy, Runnable setupFog) {
         ResourceLocation body = orbitedBody(level);
         float t = level.getGameTime() + partialTick;
         float orbit = t / ORBIT_TICKS;
-        // the sun swings around once per orbit; the planet turns underneath us
-        float sunAngle = orbit * Mth.TWO_PI;
-        Vector3f sun = new Vector3f(Mth.cos(sunAngle), 0.9F, Mth.sin(sunAngle)).normalize();
+        // the sun swings around once per orbit: overhead at orbital noon, then down behind the planet (night)
+        Vector3f sun = sunDirection(t);
         RenderSystem.depthMask(false);
         RenderSystem.disableDepthTest();
         SkyDraw.blackout(modelView, 0xFF000000);
         SkyDraw.stars(modelView, projection, 1F);
-        SkyDraw.billboard(modelView, SUN, sun, 100F, sunSize(body), 1F);
+        // the sun fades through the penumbra as it slips behind the planet's edge
+        float lit = sunlit(level, partialTick);
+        if (lit > 0.01F) {
+            SkyDraw.billboard(modelView, SUN, sun, 100F, sunSize(body), lit);
+        }
         // the body below, seen from a high orbit (angular radius ~50 degrees) so the whole curve reads
         Vector3f center = new Vector3f(0, -100F, 0);
         float radius = 76F;

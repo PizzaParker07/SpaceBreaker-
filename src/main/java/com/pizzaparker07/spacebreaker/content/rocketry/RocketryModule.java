@@ -223,6 +223,8 @@ public final class RocketryModule implements SbModule {
         modBus.addListener(RocketryModule::capabilities);
         modBus.addListener(RocketryModule::payloads);
         NeoForge.EVENT_BUS.addListener(RocketryModule::onMount);
+        // the crew capsule is pressurised: seated crew breathe without a suit (in orbit and on the way)
+        com.pizzaparker07.spacebreaker.core.env.Environment.addOxygenSource(RocketEntity::cabinAir);
         NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent e) -> {
             if (e.getEntity() instanceof net.minecraft.server.level.ServerPlayer sp) {
                 var data = com.pizzaparker07.spacebreaker.content.rocketry.mission.SatelliteData.get(sp.server);

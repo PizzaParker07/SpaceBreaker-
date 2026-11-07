@@ -830,7 +830,7 @@ public final class RocketryGameTests {
         });
     }
 
-    @GameTest(template = EMPTY, timeoutTicks = 400)
+    @GameTest(template = EMPTY, timeoutTicks = 400, batch = "rocketry_habitat")
     public static void habitatModuleHoldsAir(GameTestHelper helper) {
         var level = helper.getLevel();
         BlockPos centre = helper.absolutePos(new BlockPos(4, 2, 4));
@@ -899,10 +899,11 @@ public final class RocketryGameTests {
         });
     }
 
-    @GameTest(template = EMPTY, timeoutTicks = 300)
+    // own batch: the rocket flies in from outside its port, and a neighbouring test clearing its area must not catch it
+    @GameTest(template = EMPTY, timeoutTicks = 300, batch = "rocketry_docking")
     public static void dockingApproach(GameTestHelper helper) {
         var level = helper.getLevel();
-        BlockPos port = helper.absolutePos(new BlockPos(2, 30, 2));
+        BlockPos port = helper.absolutePos(new BlockPos(1, 30, 2));
         level.setBlock(port, RocketryModule.DOCKING_PORT.get().defaultBlockState()
                 .setValue(com.pizzaparker07.spacebreaker.content.rocketry.station.DockingPortBlock.FACING, Direction.EAST), 3);
         var ports = com.pizzaparker07.spacebreaker.content.rocketry.station.DockingPorts.get(level);
@@ -911,10 +912,10 @@ public final class RocketryGameTests {
         RocketEntity rocket = RocketEntity.create(level, RocketryModule.MOON_ROCKET, port.getCenter(), 0F);
         level.addFreshEntity(rocket);
         rocket.stageScene(FlightState.ORBIT, 0, 0, false);
-        rocket.approachPort(port, Direction.EAST, 12);
+        rocket.approachPort(port, Direction.EAST, 6);
         net.minecraft.world.phys.Vec3 end = RocketEntity.dockPoint(port, Direction.EAST, rocket.getBbHeight(), rocket.getBbWidth());
         helper.assertTrue(rocket.docking() && !rocket.docked() && !rocket.canDismount(), "still flying in: nobody steps out");
-        helper.assertTrue(rocket.position().distanceTo(end) > 11, "starts well out from the port");
+        helper.assertTrue(rocket.position().distanceTo(end) > 5.9, "starts out from the port");
         helper.assertTrue(end.y + rocket.getBbHeight() > port.getY() && end.y < port.getY(), "the capsule ends up level with the hatch");
         double[] last = {rocket.position().distanceTo(end)};
         helper.onEachTick(() -> {
@@ -959,6 +960,61 @@ public final class RocketryGameTests {
         helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.station.Stations.Payload.STREAM_CODEC.decode(buf).equals(payload), "sent intact");
         level.removeBlock(a, false);
         helper.succeed();
+    }
+
+    @GameTest(template = EMPTY)
+    public static void dayAndNightInOrbit(GameTestHelper helper) {
+        var sys = com.pizzaparker07.spacebreaker.content.rocketry.nav.OrbitDaylight.system(helper.getLevel().registryAccess());
+        helper.assertTrue(sys != null, "the body system is there");
+        float orbit = com.pizzaparker07.spacebreaker.content.rocketry.nav.OrbitDaylight.ORBIT_TICKS;
+        for (var body : List.of(Location.EARTH, Location.MOON, Spacebreaker.id("mars"))) {
+            java.util.function.DoubleUnaryOperator lit = t -> com.pizzaparker07.spacebreaker.content.rocketry.nav.OrbitDaylight.sunlit(sys, body, t);
+            helper.assertTrue(lit.applyAsDouble(0) > 0.99, body + ": full sun under the sun");
+            helper.assertTrue(lit.applyAsDouble(orbit * 0.5) < 0.01, body + ": dark behind the planet");
+            int dark = 0, n = 400;
+            double last = lit.applyAsDouble(0);
+            double biggestJump = 0;
+            for (int i = 1; i <= n; i++) {
+                double v = lit.applyAsDouble(orbit * i / n);
+                dark += v < 0.5 ? 1 : 0;
+                biggestJump = Math.max(biggestJump, Math.abs(v - last));
+                last = v;
+            }
+            double share = dark / (double) n;
+            helper.assertTrue(share > 0.25 && share < 0.5, body + ": a low orbit spends about a third in shadow: " + share);
+            helper.assertTrue(biggestJump < 0.6, body + ": dusk through the penumbra, no flicker: " + biggestJump);
+        }
+        // the same time gives the same light everywhere (server panels, every client)
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.OrbitDaylight.sunlit(sys, Location.EARTH, 4321)
+                == com.pizzaparker07.spacebreaker.content.rocketry.nav.OrbitDaylight.sunlit(sys, Location.EARTH, 4321), "deterministic");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.OrbitDaylight.sunlit(helper.getLevel(), helper.absolutePos(BlockPos.ZERO)) == 1.0,
+                "on the ground the dimension keeps its own day");
+        helper.succeed();
+    }
+
+    @GameTest(template = EMPTY)
+    public static void pressurisedCabin(GameTestHelper helper) {
+        var level = helper.getLevel();
+        RocketEntity rocket = RocketEntity.create(level, RocketryModule.MOON_ROCKET, helper.absoluteVec(new net.minecraft.world.phys.Vec3(2.5, 2, 2.5)), 0F);
+        level.addFreshEntity(rocket);
+        helper.assertTrue(rocket.hasCabin(), "a crew capsule is a cabin");
+        helper.assertFalse(RocketEntity.create(level, uncrewed("comm_satellite"), rocket.position(), 0F).hasCabin(), "a satellite has none");
+        ServerPlayer crew = helper.makeMockServerPlayerInLevel();
+        crew.moveTo(rocket.position());
+        helper.assertTrue(crew.startRiding(rocket, false), "boards");
+        rocket.stageScene(FlightState.ORBIT, 0, 0, false);
+        helper.runAfterDelay(3, () -> {
+            BlockPos eyes = BlockPos.containing(crew.getEyePosition());
+            helper.assertTrue(RocketEntity.cabinAir(level, eyes), "seated in the capsule, the crew breathes cabin air (no suit)");
+            helper.assertTrue(com.pizzaparker07.spacebreaker.core.env.Environment.canBreathe(level, eyes), "the environment knows it");
+            rocket.ejectPassengers();
+            crew.moveTo(rocket.position().add(4, 0, 0));
+            helper.runAfterDelay(1, () -> {
+                helper.assertFalse(RocketEntity.cabinAir(level, BlockPos.containing(crew.getEyePosition())), "outside the capsule there is no cabin air");
+                rocket.discard();
+                helper.succeed();
+            });
+        });
     }
 
     @GameTest(template = EMPTY)

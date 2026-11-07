@@ -412,6 +412,25 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         return dockedCache;
     }
 
+    /** A crewed capsule is a pressurised cabin: whoever sits in it breathes without a suit. */
+    public boolean hasCabin() {
+        return !design.isEmpty() && layout().payload().seats() > 0;
+    }
+
+    /**
+     * Oxygen source for {@code Environment}: air at this block if the eyes of someone seated in a crewed capsule
+     * are there. Climbing out (into space, or a station) leaves the cabin air behind.
+     */
+    public static boolean cabinAir(Level level, BlockPos pos) {
+        for (net.minecraft.world.entity.player.Player p : level.getEntitiesOfClass(net.minecraft.world.entity.player.Player.class,
+                new net.minecraft.world.phys.AABB(pos).inflate(0.1))) {
+            if (p.getVehicle() instanceof RocketEntity r && r.hasCabin() && BlockPos.containing(p.getEyePosition()).equals(pos)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /** Flying in towards a docking port. */
     public boolean docking() {
         return entityData.get(DATA_DOCKING);

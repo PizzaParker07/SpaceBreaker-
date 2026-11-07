@@ -404,6 +404,23 @@ final class RocketryScenario implements ShowcaseScenario {
                             com.pizzaparker07.spacebreaker.content.rocketry.station.HabitatKitItem.port(c, east), "PizzaParker07");
                     mapShot(p, Location.EARTH_ORBIT.body(), true);
                 }, null));
+        s.add(new Shot("37_orbit_night", 6000, 0, 0, 0, 0F, 0F, true, fp, 140,
+                p -> {
+                    clearScene(p);
+                    ServerLevel orbit = p.server.getLevel(Location.EARTH_ORBIT.dimension());
+                    BlockPos c = BlockPos.containing(200, RocketEntity.ORBIT_Y, 0);
+                    net.minecraft.core.Direction east = net.minecraft.core.Direction.EAST;
+                    com.pizzaparker07.spacebreaker.content.rocketry.station.HabitatKitItem.unfold(orbit, c, east);
+                    orbit.setBlock(c.above(3), net.minecraft.world.level.block.Blocks.SEA_LANTERN.defaultBlockState(), 3);
+                    // the far side of the orbit: the station is in Earth's shadow
+                    long now = p.server.overworld().getGameTime();
+                    long orbitTicks = (long) com.pizzaparker07.spacebreaker.content.rocketry.nav.OrbitDaylight.ORBIT_TICKS;
+                    long night = (now / orbitTicks + 1) * orbitTicks + orbitTicks / 2;
+                    if (p.server.overworld().getLevelData() instanceof net.minecraft.world.level.storage.PrimaryLevelData data) {
+                        data.setGameTime(night);
+                    }
+                    toDimension(p, Location.EARTH_ORBIT, 214.5, RocketEntity.ORBIT_Y + 5.5, 12.5, 135F, 15F);
+                }, null));
         s.add(new Shot("31_nearby_stars", 6000, 0, 0, 0, 0F, 0F, false, fp, 120,
                 p -> {
                     RocketryShowcaseClient.star = "Alpha Centauri";

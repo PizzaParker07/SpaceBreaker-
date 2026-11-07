@@ -102,8 +102,8 @@ public final class UncrewedMissions {
         UUID owner = rocket.owner();
         data.add(new SatelliteData.Craft(part, at.body(), false, owner, level.getGameTime()));
         level.addFreshEntity(SatelliteEntity.create(level, part, rocket.position().add(0, 2, 0)));
-        level.playSound(null, rocket.blockPosition(), com.pizzaparker07.spacebreaker.content.audio.SbSounds.ROCKET_STAGE_SEPARATION.get(),
-                SoundSource.NEUTRAL, 2F, 1.2F);
+        level.playSound(null, rocket.blockPosition(), com.pizzaparker07.spacebreaker.content.audio.SbSounds.ROCKET_SATELLITE_RELEASE.get(),
+                SoundSource.NEUTRAL, 2F, 1F);
         if (part.getPath().equals("observation_satellite")) {
             data.deliver(server, owner, Research.experimentData(ORBITAL_SURVEY));
         }
@@ -122,6 +122,8 @@ public final class UncrewedMissions {
         SatelliteData data = SatelliteData.get(server);
         UUID owner = rocket.owner();
         data.add(new SatelliteData.Craft(payloadId(rocket).orElseThrow(), at.body(), true, owner, level.getGameTime()));
+        level.playSound(null, rocket.blockPosition(), com.pizzaparker07.spacebreaker.content.audio.SbSounds.ROCKET_PROBE_LANDING.get(),
+                SoundSource.NEUTRAL, 2F, 1F);
         data.deliver(server, owner, Research.sample(at.body()).copyWithCount(2));
         data.deliver(server, owner, Research.experimentData(PROBE_LANDING));
         tell(server, owner, Component.translatable("message.spacebreaker.probe.landed", at.name()).withStyle(ChatFormatting.GREEN));
