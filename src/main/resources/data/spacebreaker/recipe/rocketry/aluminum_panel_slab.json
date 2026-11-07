@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "XXX"
+  ],
+  "key": {
+    "X": {
+      "item": "spacebreaker:aluminum_panel"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:aluminum_panel_slab",
+    "count": 6
+  }
+}

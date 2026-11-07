@@ -606,6 +606,36 @@ final class RocketryScenario implements ShowcaseScenario {
             level.setBlock(a, RocketryModule.WARNING_LIGHT.get().defaultBlockState(), 3);
             level.setBlock(b2, RocketryModule.WARNING_LIGHT.get().defaultBlockState(), 3);
         }, null));
+        s.add(new Shot("49_base_blocks", 6000, 0, 0, 0, 0F, 0F, true, fp, 80, p -> {
+            clearScene(p);
+            ServerLevel moon = p.server.getLevel(Location.MOON_SURFACE.dimension());
+            int gx = 120, gz = 40;
+            moon.getChunk(gx >> 4, gz >> 4);
+            int gy = moon.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, gx, gz);
+            var panel = com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.ALUMINUM_PANEL;
+            var deck = com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.TITANIUM_DECK;
+            // a short open corridor: titanium deck with a grate strip, a wall of panels with a porthole and pressure glass
+            for (int dx = -1; dx <= 7; dx++) {
+                for (int dz = -2; dz <= 2; dz++) {
+                    var floor = dz == 0 ? com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.GRATE.get() : deck.base().get();
+                    moon.setBlock(new BlockPos(gx + dx, gy - 1, gz + dz), floor.defaultBlockState(), 3);
+                    for (int up = 0; up < 4; up++) {
+                        moon.setBlock(new BlockPos(gx + dx, gy + up, gz + dz), net.minecraft.world.level.block.Blocks.AIR.defaultBlockState(), 3);
+                    }
+                }
+                for (int up = 0; up < 3; up++) {
+                    net.minecraft.world.level.block.Block w = panel.base().get();
+                    if (up == 1 && dx == 2) w = com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.PORTHOLE.get();
+                    if (up == 1 && (dx == 4 || dx == 5)) w = com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.PRESSURE_GLASS.get();
+                    moon.setBlock(new BlockPos(gx + dx, gy + up, gz - 2), w.defaultBlockState(), 3);
+                }
+                moon.setBlock(new BlockPos(gx + dx, gy + 3, gz - 2), panel.slab().get().defaultBlockState(), 3);
+            }
+            moon.setBlock(new BlockPos(gx + 6, gy, gz + 2), panel.wall().get().defaultBlockState(), 3);
+            moon.setBlock(new BlockPos(gx + 7, gy, gz + 2), deck.stairs().get().defaultBlockState(), 3);
+            moon.setBlock(new BlockPos(gx + 1, gy, gz - 1), RocketryModule.WARNING_LIGHT.get().defaultBlockState(), 3);
+            toDimension(p, Location.MOON_SURFACE, gx + 7.5, gy + 2.6, gz + 2.5, 135F, 28F);
+        }, null));
         s.add(new Shot("31_nearby_stars", 6000, 0, 0, 0, 0F, 0F, false, fp, 120,
                 p -> {
                     RocketryShowcaseClient.star = "Alpha Centauri";

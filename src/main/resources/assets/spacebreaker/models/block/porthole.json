@@ -1,0 +1,23 @@
+{
+  "loader": "neoforge:composite",
+  "parent": "minecraft:block/block",
+  "children": {
+    "frame": {
+      "parent": "minecraft:block/cube_all",
+      "render_type": "minecraft:cutout",
+      "textures": {
+        "all": "spacebreaker:block/porthole_frame"
+      }
+    },
+    "pane": {
+      "parent": "minecraft:block/cube_all",
+      "render_type": "minecraft:translucent",
+      "textures": {
+        "all": "spacebreaker:block/porthole_pane"
+      }
+    }
+  },
+  "textures": {
+    "particle": "spacebreaker:block/porthole"
+  }
+}

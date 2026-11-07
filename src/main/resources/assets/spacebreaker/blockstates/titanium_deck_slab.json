@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "spacebreaker:block/titanium_deck_slab"
+    },
+    "type=top": {
+      "model": "spacebreaker:block/titanium_deck_slab_top"
+    },
+    "type=double": {
+      "model": "spacebreaker:block/titanium_deck"
+    }
+  }
+}

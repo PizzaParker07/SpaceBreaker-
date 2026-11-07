@@ -1248,6 +1248,25 @@ public final class RocketryGameTests {
     }
 
     @GameTest(template = EMPTY)
+    public static void baseBlocksHoldAir(GameTestHelper helper) {
+        var level = helper.getLevel();
+        java.util.function.Function<net.minecraft.world.level.block.Block, Boolean> airtight = block -> {
+            BlockPos p = helper.absolutePos(new BlockPos(1, 2, 1));
+            level.setBlock(p, block.defaultBlockState(), 3);
+            return com.pizzaparker07.spacebreaker.content.suit.block.SealedRoom.airtight(level, p, level.getBlockState(p));
+        };
+        for (var block : List.of(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.ALUMINUM_PANEL.base().get(),
+                com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.TITANIUM_DECK.base().get(),
+                com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.PRESSURE_GLASS.get(),
+                com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.PORTHOLE.get())) {
+            helper.assertTrue(airtight.apply(block), block + " holds air");
+        }
+        helper.assertFalse(airtight.apply(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.GRATE.get()), "the grate lets air through");
+        helper.assertFalse(airtight.apply(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.ALUMINUM_PANEL.slab().get()), "a slab leaves a gap");
+        helper.succeed();
+    }
+
+    @GameTest(template = EMPTY)
     public static void fuelFromFluidContainers(GameTestHelper helper) {
         RocketEntity rocket = RocketEntity.create(helper.getLevel(), RocketryModule.MOON_ROCKET, helper.absoluteVec(new net.minecraft.world.phys.Vec3(1.5, 2, 1.5)), 0F);
         helper.getLevel().addFreshEntity(rocket);

@@ -228,6 +228,9 @@ public final class RocketryModule implements SbModule {
         BLOCKS.register(modBus);
         ITEMS.register(modBus);
         BLOCK_ENTITIES.register(modBus);
+        com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.init();
+        com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.KIT.blocks.register(modBus);
+        com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.KIT.items.register(modBus);
         ENTITIES.register(modBus);
         MENUS.register(modBus);
         modBus.addListener(RocketParts::registerRegistry);
@@ -259,6 +262,7 @@ public final class RocketryModule implements SbModule {
                 com.pizzaparker07.spacebreaker.content.rocketry.nav.AstroTransferModel.install(e.getServer().registryAccess()));
         SbTabs.SPACEFLIGHT.icon(CREW_CAPSULE);
         SbTabs.SPACEFLIGHT.add(WARNING_LIGHT_ITEM);
+        com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.KIT.tab.forEach(SbTabs.SPACEFLIGHT::add);
         SbTabs.SPACEFLIGHT.add(ROCKET_ASSEMBLER_ITEM).add(LAUNCH_PAD_ITEM).add(FLAME_TRENCH_ITEM).add(SERVICE_TOWER_ITEM)
                 .add(CREW_ARM_ITEM).add(FUEL_UMBILICAL_ITEM).add(LAUNCH_CONSOLE_ITEM);
         PARTS.forEach(SbTabs.SPACEFLIGHT::add);
@@ -353,6 +357,10 @@ public final class RocketryModule implements SbModule {
         loot.self(FUEL_DEPOT.get());
         loot.self(LANDING_BEACON.get());
         loot.self(WARNING_LIGHT.get());
+        com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.KIT.familyLoot(loot);
+        loot.self(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.PRESSURE_GLASS.get());
+        loot.self(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.PORTHOLE.get());
+        loot.self(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.GRATE.get());
     }
 
     @Override
@@ -360,6 +368,16 @@ public final class RocketryModule implements SbModule {
         tags.block(BlockTags.MINEABLE_WITH_PICKAXE, ROCKET_ASSEMBLER.get(), LAUNCH_PAD.get(), FLAME_TRENCH.get(), SERVICE_TOWER.get(),
                 CREW_ARM.get(), FUEL_UMBILICAL.get(), LAUNCH_CONSOLE.get(), STATION_HULL.get(), STATION_WINDOW.get(), DOCKING_PORT.get(), FUEL_DEPOT.get(), LANDING_BEACON.get(), WARNING_LIGHT.get());
         tags.block(BlockTags.NEEDS_STONE_TOOL, LAUNCH_PAD.get(), FLAME_TRENCH.get(), SERVICE_TOWER.get());
+        // base blocks: mined with a pickaxe; stairs, slabs and walls tagged as such; the grate lets air through
+        tags.block(BlockTags.MINEABLE_WITH_PICKAXE, com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.all());
+        for (var f : com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.KIT.families()) {
+            tags.block(BlockTags.STAIRS, f.stairs().get());
+            tags.block(BlockTags.SLABS, f.slab().get());
+            if (f.wall() != null) {
+                tags.block(BlockTags.WALLS, f.wall().get());
+            }
+        }
+        tags.block(com.pizzaparker07.spacebreaker.content.suit.SuitModule.LEAKY, com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.GRATE.get());
     }
 
     @Override

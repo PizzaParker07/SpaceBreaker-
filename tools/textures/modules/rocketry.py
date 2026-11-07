@@ -2177,6 +2177,89 @@ def warning_light_lens(phase=None):
     return cv
 
 
+ALPANEL = ramp('#7e848c', '#9aa0a8', '#b2b8bf', '#c6cbd1', '#d8dce0', '#e8ebee')
+TITAN = ramp('#3e444c', '#4f565f', '#5f6772', '#717a86', '#86909c')
+
+
+def aluminum_panel():
+    """Brushed aluminium panel: fine horizontal grain, a seam frame and corner rivets."""
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            grain = (x * 7 + y * 13) % 11
+            cv[x, y] = ALPANEL[3] if grain < 4 else ALPANEL[2] if grain < 9 else ALPANEL[4]
+    for i in range(16):
+        cv[i, 0] = ALPANEL[5]
+        cv[0, i] = ALPANEL[5]
+        cv[i, 15] = ALPANEL[0]
+        cv[15, i] = ALPANEL[0]
+    for x, y in ((2, 2), (13, 2), (2, 13), (13, 13)):
+        cv[x, y] = ALPANEL[1]
+    return cv
+
+
+def titanium_plate():
+    """Heavy dark titanium deck plate with raised diamond tread and hex bolts."""
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            tread = (x + y) % 4 == 0 and (x - y) % 8 == 0
+            cv[x, y] = TITAN[4] if tread else TITAN[2] if (x * 5 + y * 3) % 7 else TITAN[1]
+    for i in range(16):
+        cv[i, 0] = TITAN[3]
+        cv[0, i] = TITAN[3]
+        cv[i, 15] = TITAN[0]
+        cv[15, i] = TITAN[0]
+    for x, y in ((3, 3), (12, 3), (3, 12), (12, 12)):
+        cv[x, y] = TITAN[4]
+        cv[x + 1, y] = TITAN[3]
+    return cv
+
+
+def pressure_glass():
+    """Thick laminated glass in a narrow steel frame (frame and pane split for the composite model)."""
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            if x == 0 or y == 0 or x == 15 or y == 15:
+                cv[x, y] = ALPANEL[4] if (x == 0 or y == 0) else ALPANEL[1]
+            else:
+                glint = (x - y) in (3, 4) and 4 < x < 11
+                layer = x in (1, 14) or y in (1, 14)
+                cv[x, y] = (235, 245, 255, 160) if glint else (150, 190, 215, 110) if layer else (130, 175, 205, 80)
+    return cv
+
+
+def porthole():
+    """A round window set in a riveted hull plate."""
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            d = math.hypot(x - 7.5, y - 7.5)
+            if d < 4.6:
+                glint = (x - y) in (0, 1) and x < 8
+                cv[x, y] = (235, 245, 255, 160) if glint else (130, 175, 205, 90)
+            elif d < 6.2:
+                cv[x, y] = STEEL[4] if d < 5.4 else STEEL[2]
+            else:
+                cv[x, y] = HULL[3] if (x + y) % 6 else HULL[2]
+    for a in range(8):
+        ang = a * math.pi / 4
+        cv[int(round(7.5 + 5.4 * math.cos(ang))), int(round(7.5 + 5.4 * math.sin(ang)))] = STEEL[2]   # bolts round the ring
+    return cv
+
+
+def grate():
+    """Open steel grating: bars with square holes you can see through."""
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            bar = x % 4 == 0 or y % 4 == 0 or x == 15 or y == 15
+            if bar:
+                cv[x, y] = STEEL[4] if (x % 4 == 0 and y % 4 == 0) else STEEL[3] if y % 4 == 0 else STEEL[2]
+    return cv
+
+
 def habitat_kit_icon():
     cv = Canvas()
     rows = [
@@ -2219,6 +2302,13 @@ def export_facility(save):
     save(station_kit_icon(), 'item', 'station_kit')
     save(habitat_kit_icon(), 'item', 'habitat_kit')
     save(limit_colours(warning_light_base()), 'block', 'warning_light_base', (140, 230, 0, None))
+    save(limit_colours(aluminum_panel()), 'block', 'aluminum_panel', (170, 230, 0, None))
+    save(limit_colours(titanium_plate()), 'block', 'titanium_deck', (150, 230, 0, None))
+    for name, fn in (('pressure_glass', pressure_glass), ('porthole', porthole)):
+        save(fn(), 'block', name, (200, 20, 0, None))
+        save(window_part(fn(), True), 'block', name + '_frame', (200, 20, 0, None))
+        save(window_part(fn(), False), 'block', name + '_pane', (200, 20, 0, None))
+    save(grate(), 'block', 'grate', (140, 230, 0, None))
     save(limit_colours(warning_light_lens()), 'block', 'warning_light_lens', (200, 20, 0, None))
     # lit lens: 8 frames of a beam sweeping round the dome
     frames = Canvas(16, 128)
