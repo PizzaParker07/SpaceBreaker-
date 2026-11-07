@@ -44,7 +44,7 @@ Dünya dışında yatak çalışmaz. **İstasyon Ranzası** kullanınca **yenide
 
 **Güneş Paneli Dizisi**
 
-**Güneş Paneli Dizisi** tek blokluk tabanda üç panel taşır ve en fazla **60 FE/t** üretir. Yörüngede güneş hiç batmaz: dizi gece gündüz tam güçte çalışır.
+**Güneş Paneli Dizisi** tek blokluk tabanda üç panel taşır ve en fazla **60 FE/t** üretir. Yörüngede de gece olur: her tur yaklaşık **12000 tick** sürer ve bunun üçte birine yakını gezegenin gölgesinde geçer. Gece için bir [Batarya Bankası](power) kur. → [Gece ve enerji](power#night)
 
 ### Yanaşma
 - İstasyonu olan bir yörüngeye varan mürettebatlı roket en yakın yanaşma portunun **36 blok** uzağında belirir. Hızla yaklaşır, son metreleri manevra iticileriyle ağır ağır alır ve bir tık sesiyle kilitlenir: **"Yanaşıldı"**. Yaklaşma sırasında kimse inemez.
@@ -104,7 +104,7 @@ The **Fuel Depot** stores fuel and liquid oxygen and pumps them into rockets doc
 
 **Solar Array**
 
-The **Solar Array** carries three panels on a one-block footprint and makes up to **60 FE/t**. The sun never sets in orbit, so the array runs at full power around the clock.
+The **Solar Array** carries three panels on a one-block footprint and makes up to **60 FE/t**. Orbit has nights too: each orbit lasts about **12000 ticks** and close to a third of it is spent in the planet's shadow. Add a [Battery Bank](power) for the night. → [Night and power](power#night)
 
 ### Docking
 - A crewed rocket arriving in an orbit with a station starts **36 blocks** out from the nearest docking port. It closes in quickly, then creeps the last stretch on thruster puffs and locks on with a clunk: **"Docked"**. Nobody can step off on the way in.

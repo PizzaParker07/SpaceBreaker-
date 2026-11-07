@@ -1,7 +1,7 @@
 ---
 title: Enerji
 icon: spacebreaker:combustion_generator
-items: [spacebreaker:combustion_generator, spacebreaker:solar_panel, spacebreaker:battery_bank, spacebreaker:copper_cable, spacebreaker:hv_cable, spacebreaker:rtg, spacebreaker:rtg_fuel_pellet]
+items: [spacebreaker:combustion_generator, spacebreaker:solar_panel, spacebreaker:battery_bank, spacebreaker:copper_cable, spacebreaker:hv_cable, spacebreaker:rtg, spacebreaker:rtg_fuel_pellet, spacebreaker:power_monitor]
 ---
 Bütün makineler **FE** (enerji) ile çalışır. Üretim ve tüketim "FE/t" ile, yani her oyun tikinde (saniyede 20 tik) ölçülür.
 
@@ -24,6 +24,10 @@ Bütün makineler **FE** (enerji) ile çalışır. Üretim ve tüketim "FE/t" il
 > Güneş paneli enerjiyi üst yüzü hariç her yöne verir. Laboratuvarın hemen yanına koymak yeter.
 
 {page}
+## Güç göstergesi
+{items spacebreaker:power_monitor}
+Bir {item spacebreaker:power_monitor}'ü batarya bankasına (ya da enerji depolayan herhangi bir bloğa) daya: ekranında doluluk, net akış ve dolma ya da boşalma süresi görünür. Karşılaştırıcı çıkışı doluluğu izler; düşük şarjda bir jeneratörü kızıltaşla açabilirsin.
+
 ## Gece ve enerji {#night}
 10 FE/t'lik sürekli bir yük için (panel öğlede en çok 20 FE/t, akü bankası 1 000 000 FE):
 

@@ -67,9 +67,9 @@ Tüpler gövdenin içinde kalır ve gövde sıradan bir zırh gibi düşer: geri
 ### Giysi kademeleri
 | Giysi | Sıcaklık | Radyasyon kalkanı |
 |---|---|---|
-| EVA (Mk1) | −160 / 125 °C | %30 |
+| EVA (Mk1) | −190 / 130 °C | %30 |
 | Isıtmalı | −250 / 80 °C | %40 |
-| Termal | −170 / 500 °C | %40 |
+| Termal | −190 / 500 °C | %40 |
 | Radyasyon | −190 / 130 °C | %96 |
 
 - **Isıtmalı giysi** (*Isıtmalı Giysiler*): soğuk dünyalar, Mars geceleri ve dış uydular.
@@ -149,9 +149,9 @@ The tanks stay inside the body piece, which drops like any armour: pick it up an
 ### Suit tiers
 | Suit | Temperature | Radiation shielding |
 |---|---|---|
-| EVA (Mk1) | −160 / 125 °C | 30% |
+| EVA (Mk1) | −190 / 130 °C | 30% |
 | Heated | −250 / 80 °C | 40% |
-| Thermal | −170 / 500 °C | 40% |
+| Thermal | −190 / 500 °C | 40% |
 | Radiation | −190 / 130 °C | 96% |
 
 - **Heated suit** (*Heated Suits*): cold worlds, Martian nights and the outer moons.

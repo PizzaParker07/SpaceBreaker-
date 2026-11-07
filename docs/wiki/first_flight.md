@@ -7,7 +7,7 @@
 Rampadan yörüngeye ve eve dönüşe, adım adım.
 
 ### 1. Hazırlık
-- Dört parçalı [EVA giysini](eva_suit) giy, iki dolu tüp tak.
+- Dört parçalı [EVA giysini](eva_suit) giy, iki dolu tüp tak. Kapsül basınçlıdır: koltukta otururken giysisiz de nefes alırsın, ama dışarı adım attığın an yine vakumdasın.
 - Yedek tüp ve bir [Acil Dönüş İşareti](navigation) al.
 - [Fırlatma rampanı](launch_pad) kur ve konsolda kontrol et.
 
@@ -55,7 +55,7 @@ Yükleme ekranı yoktur: kısa bir geçişten sonra yörüngeye varınca bir mes
 From the pad to orbit and back home, step by step.
 
 ### 1. Get ready
-- Wear the four-piece [EVA suit](eva_suit) with two full tanks.
+- Wear the four-piece [EVA suit](eva_suit) with two full tanks. The capsule is pressurised: seated, you breathe even without a suit, but the moment you step out you are back in vacuum.
 - Take spare tanks and an [Emergency Return Beacon](navigation).
 - Build your [launch pad](launch_pad) and check it at the console.
 

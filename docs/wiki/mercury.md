@@ -10,7 +10,14 @@ Hava yok ve güneş evdekinden neredeyse **üç kat** büyük.
 | Kutup kraterlerinin tabanı | yaklaşık −240 °C |
 
 > [!WARNING]
-> Hiçbir giysi bu aralığın tamamına dayanmaz: termal giysi −170 / 500 °C, ısıtmalı giysi −250 / 80 °C. → [EVA Giysisi](eva_suit)
+> Gündüzle geceye **termal giysi** (−190 / 500 °C) dayanır, ama kutup kraterlerindeki soğuk tuzaklara dayanmaz; oraya **ısıtmalı giysi** (−250 / 80 °C) gerekir. → [EVA Giysisi](eva_suit)
+
+<a id="shade"></a>
+### Gölge
+Hava olmadığı için güneşin göremediği yer öğlen bile soğuktur. Güneşle arana katı bir blok girerse (sarplık, krater kenarı ya da kurduğun bir çatı; cam ve saydam bloklar sayılmaz) sıcaklık 430 °C yerine **−60 °C** olur: temel giysiyle dayanırsın. Gölgeye girip çıkarken aksiyon çubuğu yazar: **Gölgedesin / Güneştesin: X °C**.
+- Terminatöre yakın, güneş alçakken gölgeler uzundur: gündüz tarafını **gölgeden gölgeye** geç.
+- Öğlen gölge azdır: bir çatı kur.
+- Kutup kraterlerinin soğuk tuzakları ayrıdır ve çok daha soğuktur.
 
 > [!TIP]
 > Buz için kraterlere ısıtmalı giysiyle in, gündüz ovalarına termal giysiyle çık; ikisinin arasında gündüzle geceyi ayıran **terminatör** kuşağında dolaş.
@@ -26,7 +33,7 @@ Hava yok ve güneş evdekinden neredeyse **üç kat** büyük.
 
 **Grafit Cevheri** · **Grafit**
 
-Kutup kraterlerinin tabanı hiç güneş görmez: yaklaşık −240 °C'lik bir **soğuk tuzak** olup **Merkür Kutup Buzu** saklar. Termal giysi yalnızca −170 °C'ye dayanır (her termal regülatör modülü bunu 15 °C genişletir); orada ısıtmalı giysi giy. Eritince su, sudan hidrojen ve oksijen elde edersin.
+Kutup kraterlerinin tabanı hiç güneş görmez: yaklaşık −240 °C'lik bir **soğuk tuzak** olup **Merkür Kutup Buzu** saklar. Termal giysi yalnızca −190 °C'ye dayanır (her termal regülatör modülü bunu 15 °C genişletir); orada ısıtmalı giysi giy. Eritince su, sudan hidrojen ve oksijen elde edersin.
 
 > [!TIP]
 > **Merkür'de yakıt:** grafit + oksijen → CO₂ (kimyasal reaktör); CO₂ + hidrojen → metan (Sabatier reaktörü). Böylece metaloks yakıtını yerinde tamamlarsın. → [Yerinde Üretim](isru)
@@ -52,7 +59,14 @@ No air, and a sun almost **three times** as wide as at home.
 | Polar crater floors | about −240 °C |
 
 > [!WARNING]
-> No single suit covers that whole range: the thermal suit is rated −170 / 500 °C, the heated suit −250 / 80 °C. → [EVA Suit](eva_suit)
+> The **thermal suit** (−190 / 500 °C) handles both day and night, but not the cold traps in the polar craters; those need the **heated suit** (−250 / 80 °C). → [EVA Suit](eva_suit)
+
+<a id="shade"></a>
+### Shade
+With no air to carry heat, ground the sun cannot see is cold even at noon. Put anything solid between you and the sun (a scarp, a crater rim or a roof you build; glass and other see-through blocks do not count) and the temperature is **−60 °C** instead of 430 °C: a first-tier suit can stand that. The action bar tells you when you step into shade or back into the sun: **In shadow / In the sun: X °C**.
+- Near the terminator the low sun casts long shadows: cross the day side **from shadow to shadow**.
+- At noon there is little shade: build a roof.
+- The cold traps in the polar craters are separate, and far colder.
 
 > [!TIP]
 > Go down into the craters for ice in a heated suit, out onto the daylit plains in a thermal suit, and travel between them along the **terminator**, the band between day and night.
@@ -68,7 +82,7 @@ No air, and a sun almost **three times** as wide as at home.
 
 **Graphite Ore** · **Graphite**
 
-The floors of the polar craters lie in permanent shadow: a **cold trap** at about −240 °C that keeps **Mercurian Polar Ice**. The thermal suit is rated only to −170 °C (each thermal regulator module widens that by 15 °C), so wear the heated suit down there. Melt it for water, then split the water into hydrogen and oxygen.
+The floors of the polar craters lie in permanent shadow: a **cold trap** at about −240 °C that keeps **Mercurian Polar Ice**. The thermal suit is rated only to −190 °C (each thermal regulator module widens that by 15 °C), so wear the heated suit down there. Melt it for water, then split the water into hydrogen and oxygen.
 
 > [!TIP]
 > **Fuel on Mercury:** graphite + oxygen → CO₂ (chemical reactor); CO₂ + hydrogen → methane (Sabatier reactor). That tops up methalox fuel on the spot. → [In-Situ Resources](isru)

@@ -6,7 +6,7 @@ research: spacebreaker:basic_rocketry
 Rampadan yörüngeye ve eve dönüşe, adım adım.
 
 ## 1. Hazırlık
-- Dört parçalı [EVA giysini](eva_suit) giy, iki dolu tüp tak.
+- Dört parçalı [EVA giysini](eva_suit) giy, iki dolu tüp tak. Kapsül basınçlıdır: koltukta otururken giysisiz de nefes alırsın, ama dışarı adım attığın an yine vakumdasın.
 - Yedek tüp ve bir {item spacebreaker:emergency_beacon} al.
 - [Fırlatma rampanı](launch_pad) kur ve konsolda kontrol et.
 

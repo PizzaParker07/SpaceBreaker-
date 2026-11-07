@@ -74,6 +74,7 @@ Bu wiki, oyun içindeki **Saha Rehberi**nin metinlerinden otomatik üretilir.
 - [Titan](titan) · *Titan*
 - [Enceladus](enceladus) · *Enceladus*
 - [Miranda](miranda) · *Miranda*
+- [Ariel](ariel) · *Ariel*
 - [Triton](triton) · *Triton*
 - [Plüton](pluto) · *Pluto*
 - [Charon](charon) · *Charon*
