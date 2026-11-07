@@ -4,7 +4,6 @@ import com.mojang.serialization.MapCodec;
 import com.pizzaparker07.spacebreaker.content.suit.SuitModule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -136,8 +135,9 @@ public class AirlockDoorBlock extends BaseEntityBlock {
         }
         level.setBlock(lower, lowerState.setValue(OPEN, open), Block.UPDATE_ALL);
         // the upper half follows through updateShape
-        level.playSound(null, lower, open ? SoundEvents.PISTON_EXTEND : SoundEvents.PISTON_CONTRACT, SoundSource.BLOCKS, 0.5F, 1.3F);
-        level.playSound(null, lower, SoundEvents.IRON_DOOR_OPEN, SoundSource.BLOCKS, 0.4F, 0.6F);
+        // the airlock cycle: hatch, latches and the hiss of air (closing plays it a touch lower)
+        level.playSound(null, lower, com.pizzaparker07.spacebreaker.content.audio.SbSounds.AIRLOCK_CYCLE.get(), SoundSource.BLOCKS,
+                0.8F, open ? 1.0F : 0.92F);
     }
 
     @Override
