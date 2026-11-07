@@ -143,7 +143,7 @@ public final class HelmetHud {
         float o2 = s.capacity() > 0 ? (float) s.oxygen() / s.capacity() : 0F;
         boolean o2Low = s.capacity() == 0 || o2 < 0.15F;
         rows.add(new Row(ICON_OXYGEN, o2, o2Low ? ALARM : (o2 < 0.3F ? WARN : OXYGEN),
-                s.capacity() > 0 ? OxygenTankItem.time(s.oxygen()) : "--:--", o2Low && !breathable ? ALARM : 0xFFFFFF, false));
+                s.capacity() > 0 ? OxygenTankItem.time(s.oxygenTicksLeft()) : "--:--", o2Low && !breathable ? ALARM : 0xFFFFFF, false));
         // suit: only when it matters
         if (!sealed || s.integrity() < 50) {
             int c = !sealed ? WARN : (s.integrity() < 20 ? ALARM : WARN);
@@ -210,7 +210,7 @@ public final class HelmetHud {
         if (navTarget != null && ClientNav.kind() != null) {
             double dist = Math.sqrt(player.distanceToSqr(net.minecraft.world.phys.Vec3.atCenterOf(navTarget)));
             if (!breathable) {
-                navStatus = com.pizzaparker07.spacebreaker.content.suit.Navigation.status(dist, s.gravity(), s.oxygen());
+                navStatus = com.pizzaparker07.spacebreaker.content.suit.Navigation.status(dist, s.gravity(), s.oxygenTicksLeft());
             }
             navYaw = com.pizzaparker07.spacebreaker.content.suit.Navigation.relativeYaw(player.position(), player.getYRot(), navTarget);
             int c = switch (navStatus) {
