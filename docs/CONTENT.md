@@ -152,8 +152,10 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | Durum | İçerik | Not |
 |---|---|---|
 | 🎨 | Boyutlar `spacebreaker:phobos`, `spacebreaker:deimos` | çok küçük, havasız; Phobos'ta oluk zincirleri; gökte dev Mars (≈40° / 16°), evresiyle |
+| 🎨 | Stickney krateri | Phobos'un dev krateri sabit yerde (doğuş noktasının ~320 blok doğusu, 230 blok yarıçap, 58 blok derin kase); arazi motoruna `named_craters` (ad, x, enlem, yarıçap, derinlik, tepe) eklendi |
 | 🎨 | Bloklar | Phobos Regoliti, Deimos Regoliti (kalıcı ayak izi), Karbonlu Kondrit |
-| 🎨 | Zindanlar | Düşmüş Numune Dönüş Sondası (Phobos), Deimos Buz Deposu |
+| 🎨 | Yaratık: Çapa Örücüsü (Tether Spinner) | Phobos ve Deimos'ta; altı bacaklı, uzun sekmelerle gider; her sekmeden önce zemine ipek ip yapıştırır, ip gerilince geri çekilir (küçük ayda kaçış hızı dersi); havada ip parıltıyla görünür, bacaklar toplanır; ip (string) bırakır; karbonlu kondritle çekilir/üretilir |
+| 🎨 | Zindanlar | Düşmüş Numune Dönüş Sondası (Phobos), Deimos Buz Deposu, Stickney'nin Çapalı İniş Aracı (dünyada tek: Stickney tabanında, 3 harpun zinciriyle zemine bağlı, "1/2000 g: geri sekti" levhası; güvenlik ipi, mikro-yerçekimi madenciliği / uzay sondası diskleri), Deimos Röle Kulesi (spiral 12 kaya yığını, her biri 2 blok yüksek ve 4+ blok uzak: Dünya'da aşılamaz, Deimos'ta her gerçekçilik ayarında aşılır — test MC zıplama fiziğiyle doğrular; tepede röle ve veri kasası, "1/4000 g" levhası) |
 
 ### Venüs `spacebreaker:venus`
 | Durum | İçerik | Not |

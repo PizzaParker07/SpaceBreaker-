@@ -48,6 +48,7 @@ public final class MarsClient {
         event.registerLayerDefinition(CanyonLurkerModel.LAYER, CanyonLurkerModel::createLayer);
         event.registerLayerDefinition(PolarWormModel.LAYER, PolarWormModel::createLayer);
         event.registerLayerDefinition(DustDevilModel.LAYER, DustDevilModel::createLayer);
+        event.registerLayerDefinition(TetherSpinnerModel.LAYER, TetherSpinnerModel::createLayer);
     }
 
     private static net.minecraft.resources.ResourceLocation tex(String name) {
@@ -62,6 +63,8 @@ public final class MarsClient {
                 new StonegrazerModel(ctx.bakeLayer(StonegrazerModel.LAYER)), tex("stonegrazer"), 1F, 0.9F, false));
         event.registerEntityRenderer(MarsEntities.POLAR_WORM.get(), ctx -> new SimpleMobRenderer<>(ctx,
                 new PolarWormModel(ctx.bakeLayer(PolarWormModel.LAYER)), tex("polar_worm"), 1F, 0.35F, false));
+        event.registerEntityRenderer(MarsEntities.TETHER_SPINNER.get(), ctx -> new SimpleMobRenderer<>(ctx,
+                new TetherSpinnerModel(ctx.bakeLayer(TetherSpinnerModel.LAYER)), tex("tether_spinner"), 1.3F, 0.45F, false));
         event.registerEntityRenderer(MarsEntities.DUST_DEVIL.get(), ctx -> new SimpleMobRenderer<>(ctx,
                 new DustDevilModel(ctx.bakeLayer(DustDevilModel.LAYER)), tex("dust_devil"), 1.75F, 0F, true));
         event.registerEntityRenderer(MarsEntities.CANYON_LURKER.get(), ctx -> {

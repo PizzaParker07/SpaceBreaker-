@@ -240,6 +240,116 @@ public final class MarsLifeGameTests {
         helper.succeed();
     }
 
+    /** Phobos' Stickney: a real, fixed giant crater, with one anchored lander on its floor held down by harpoon tethers. */
+    @GameTest(template = EMPTY, timeoutTicks = 200)
+    public static void stickneyHoldsTheAnchoredLander(GameTestHelper helper) {
+        var profile = WorldTests.profile(helper, "phobos");
+        var terrain = new com.pizzaparker07.spacebreaker.content.worldgen.PlanetTerrain(profile, 1234L);
+        var stickney = terrain.namedCrater("stickney").orElseThrow(() -> new AssertionError("Phobos must have Stickney"));
+        helper.assertTrue(stickney.radius() >= 200, "Stickney spans a large part of the moon");
+        double floor = terrain.height(stickney.x(), stickney.z());
+        double outside = terrain.height(stickney.x() + stickney.radius() * 2.5, stickney.z());
+        helper.assertTrue(outside - floor > 35, "Stickney is a deep bowl: floor " + floor + ", outside " + outside);
+        helper.assertTrue(Math.hypot(stickney.x(), stickney.z()) < 600, "Stickney lies near the landing site");
+        var site = com.pizzaparker07.spacebreaker.content.mars.dungeon.StickneyLanderStructure.site(WorldTests.stem(helper, "phobos").generator())
+                .orElseThrow(() -> new AssertionError("the lander has a site"));
+        helper.assertTrue(Math.hypot(site.getX() - stickney.x(), site.getZ() - stickney.z()) < stickney.radius() * 0.3, "the lander sits on the floor");
+        helper.assertTrue(access(helper).registryOrThrow(net.minecraft.core.registries.Registries.STRUCTURE)
+                .containsKey(com.pizzaparker07.spacebreaker.content.mars.dungeon.MarsStructures.STICKNEY_KEY), "stickney structure");
+
+        ServerLevel level = helper.getLevel();
+        BlockPos base = helper.absolutePos(BlockPos.ZERO).offset(-4000, 0, 4000);
+        int y = level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.WORLD_SURFACE, base.getX(), base.getZ());
+        var piece = new com.pizzaparker07.spacebreaker.content.mars.dungeon.StickneyLanderPiece(5L, base.getX(), y, base.getZ());
+        place(level, piece);
+        BoundingBox bb = piece.getBoundingBox();
+        int chains = 0;
+        int signs = 0;
+        for (BlockPos p : BlockPos.betweenClosed(bb.minX(), bb.minY(), bb.minZ(), bb.maxX(), bb.maxY(), bb.maxZ())) {
+            var st = level.getBlockState(p);
+            chains += st.is(Blocks.CHAIN) ? 1 : 0;
+            signs += st.is(Blocks.OAK_SIGN) ? 1 : 0;
+        }
+        helper.assertTrue(lootChests(level, bb) == 1, "one survey recorder, found " + lootChests(level, bb));
+        helper.assertTrue(chains >= 12, "three harpoon tethers, found " + chains + " chain blocks");
+        helper.assertTrue(signs == 1, "the plate that explains the anchoring");
+        helper.succeed();
+    }
+
+    /** Peak height of a standing jump (MC physics: jump velocity and gravity scaled like Gravity.apply, 0.98 drag). */
+    private static double jumpPeak(double factor) {
+        double v = 0.42 * Math.pow(factor, 0.25);
+        double g = 0.08 * factor;
+        double y = 0;
+        double peak = 0;
+        for (int t = 0; t < 20000 && y >= 0; t++) {
+            y += v;
+            v = (v - g) * 0.98;
+            peak = Math.max(peak, y);
+        }
+        return peak;
+    }
+
+    /**
+     * Deimos' relay spire: a spiral of rock stacks, each RISE blocks higher and several blocks away from the last; the
+     * rise is beyond an Earth jump but within a Deimos jump at every realism setting, and the relay cache sits on top.
+     */
+    @GameTest(template = EMPTY, timeoutTicks = 200)
+    public static void deimosSpireNeedsLowGravityJumps(GameTestHelper helper) {
+        var deimos = com.pizzaparker07.spacebreaker.core.body.Bodies.forDimension(access(helper), MarsModule.DEIMOS).orElseThrow(() -> new AssertionError("deimos body"));
+        double real = deimos.physical().surfaceGravity() / com.pizzaparker07.spacebreaker.core.body.CelestialBody.EARTH_GRAVITY;
+        int rise = com.pizzaparker07.spacebreaker.content.mars.dungeon.HopSpirePiece.RISE;
+        helper.assertTrue(jumpPeak(1.0) < rise, "on Earth a stack is out of reach (peak " + jumpPeak(1.0) + ")");
+        for (var realism : com.pizzaparker07.spacebreaker.core.config.SbConfig.Realism.values()) {
+            double peak = jumpPeak(realism.scaleGravity(real));
+            helper.assertTrue(peak > rise + 0.2, "on Deimos (" + realism + ") a stack is in reach, peak " + peak);
+        }
+        helper.assertTrue(access(helper).registryOrThrow(net.minecraft.core.registries.Registries.STRUCTURE)
+                .containsKey(com.pizzaparker07.spacebreaker.content.mars.dungeon.MarsStructures.HOP_SPIRE_KEY), "spire structure");
+
+        ServerLevel level = helper.getLevel();
+        BlockPos base = helper.absolutePos(BlockPos.ZERO).offset(4000, 0, 4000);
+        level.getChunk(base);
+        int y = level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.WORLD_SURFACE, base.getX(), base.getZ());
+        var piece = new com.pizzaparker07.spacebreaker.content.mars.dungeon.HopSpirePiece(3L, base.getX(), y, base.getZ());
+        place(level, piece);
+        var stacks = piece.stacks();
+        for (int k = 0; k < stacks.size(); k++) {
+            BlockPos top = stacks.get(k);
+            helper.assertTrue(!level.getBlockState(top.below()).isAir() && level.getBlockState(top).isAir(), "stack " + k + " stands at " + top + ": " + level.getBlockState(top.below()) + " / " + level.getBlockState(top));
+            if (k > 0) {
+                BlockPos prev = stacks.get(k - 1);
+                helper.assertTrue(top.getY() - prev.getY() == rise, "each stack rises by " + rise);
+                double gap = Math.hypot(top.getX() - prev.getX(), top.getZ() - prev.getZ()) - 2;
+                helper.assertTrue(gap >= 3.5, "stacks stand apart (gap " + gap + ")");
+            }
+        }
+        BlockPos summit = piece.summit();
+        helper.assertTrue(summit.getY() - stacks.get(stacks.size() - 1).getY() == rise, "the summit is one hop above the last stack");
+        helper.assertTrue(lootChests(level, piece.getBoundingBox()) == 1, "the relay cache on the summit");
+        helper.assertTrue(level.getBlockState(summit).is(Blocks.CHEST), "the cache sits on the summit");
+        helper.succeed();
+    }
+
+    /** The Tether Spinner: flung away from its silk anchor, the taut line stops it and reels it back. Fed chondrite. */
+    @GameTest(template = EMPTY, timeoutTicks = 100)
+    public static void tetherSpinnerReelsBackOnItsLine(GameTestHelper helper) {
+        var spinner = helper.spawn(com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.TETHER_SPINNER.get(), new BlockPos(1, 12, 1));
+        spinner.setNoAi(true);
+        spinner.setNoGravity(true);
+        net.minecraft.world.phys.Vec3 start = spinner.position();
+        double tether = com.pizzaparker07.spacebreaker.content.mars.entity.TetherSpinner.TETHER;
+        spinner.anchorAt(start.add(-tether - 2, 0, 0));
+        spinner.setDeltaMovement(0.8, 0, 0);
+        helper.assertTrue(spinner.isFood(new net.minecraft.world.item.ItemStack(MarsModule.CARBONACEOUS_CHONDRITE.get())), "it eats chondrite");
+        helper.runAfterDelay(20, () -> {
+            double reach = spinner.position().distanceTo(spinner.anchor());
+            helper.assertTrue(reach < tether + 2.5, "the line holds it near its anchor, at " + reach);
+            helper.assertTrue(spinner.getDeltaMovement().x < 0, "the line reels it back, vx " + spinner.getDeltaMovement().x);
+            helper.succeed();
+        });
+    }
+
     private MarsLifeGameTests() {
     }
 }

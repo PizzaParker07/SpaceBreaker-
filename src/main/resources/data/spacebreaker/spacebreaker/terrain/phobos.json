@@ -88,6 +88,15 @@
     "lowland_rock_depth": 4
   },
   "landforms": {
+    "named_craters": [
+      {
+        "name": "stickney",
+        "x": 320,
+        "latitude": 0,
+        "radius": 230,
+        "depth": 58
+      }
+    ],
     "grooves": {
       "spacing": 26,
       "width": 6,

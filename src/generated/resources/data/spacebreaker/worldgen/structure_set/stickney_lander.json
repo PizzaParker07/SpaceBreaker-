@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 5708878,
+    "separation": 0,
+    "spacing": 1
+  },
+  "structures": [
+    {
+      "structure": "spacebreaker:stickney_lander",
+      "weight": 1
+    }
+  ]
+}

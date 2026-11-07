@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 14555909,
+    "separation": 9,
+    "spacing": 22
+  },
+  "structures": [
+    {
+      "structure": "spacebreaker:deimos_relay_spire",
+      "weight": 1
+    }
+  ]
+}

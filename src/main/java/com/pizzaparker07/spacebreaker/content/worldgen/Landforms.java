@@ -15,9 +15,17 @@ import java.util.Optional;
  */
 public record Landforms(Optional<Dunes> dunes, Optional<Rift> rift, Optional<Volcanoes> volcanoes, Optional<Valleys> valleys,
                         Optional<Strata> strata, Optional<IceCap> iceCap, List<SoilPatch> patches, Optional<Scarps> scarps,
-                        Optional<Grooves> grooves, Optional<Tesserae> tesserae, Optional<Peaks> peaks, List<Rupes> rupes) {
+                        Optional<Grooves> grooves, Optional<Tesserae> tesserae, Optional<Peaks> peaks, List<Rupes> rupes,
+                        List<NamedCrater> namedCraters) {
     public static final Landforms NONE = new Landforms(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
             Optional.empty(), Optional.empty(), List.of(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), List.of());
+
+    /** The earlier form without named craters. */
+    public Landforms(Optional<Dunes> dunes, Optional<Rift> rift, Optional<Volcanoes> volcanoes, Optional<Valleys> valleys,
+                     Optional<Strata> strata, Optional<IceCap> iceCap, List<SoilPatch> patches, Optional<Scarps> scarps,
+                     Optional<Grooves> grooves, Optional<Tesserae> tesserae, Optional<Peaks> peaks, List<Rupes> rupes) {
+        this(dunes, rift, volcanoes, valleys, strata, iceCap, patches, scarps, grooves, tesserae, peaks, rupes, List.of());
+    }
 
     /** The earlier form without giant cliffs. */
     public Landforms(Optional<Dunes> dunes, Optional<Rift> rift, Optional<Volcanoes> volcanoes, Optional<Valleys> valleys,
@@ -38,8 +46,31 @@ public record Landforms(Optional<Dunes> dunes, Optional<Rift> rift, Optional<Vol
             Grooves.CODEC.optionalFieldOf("grooves").forGetter(Landforms::grooves),
             Tesserae.CODEC.optionalFieldOf("tesserae").forGetter(Landforms::tesserae),
             Peaks.CODEC.optionalFieldOf("peaks").forGetter(Landforms::peaks),
-            Rupes.CODEC.listOf().optionalFieldOf("rupes", List.of()).forGetter(Landforms::rupes)
+            Rupes.CODEC.listOf().optionalFieldOf("rupes", List.of()).forGetter(Landforms::rupes),
+            NamedCrater.CODEC.listOf().optionalFieldOf("named_craters", List.of()).forGetter(Landforms::namedCraters)
     ).apply(i, Landforms::new));
+
+    /**
+     * One real, named crater at a fixed place (e.g. Phobos' Stickney), shaped like any other crater of its size but
+     * always there, so structures and guides can point to it.
+     *
+     * @param name     id used by code and guides (e.g. "stickney")
+     * @param x        centre (block x)
+     * @param latitude centre (latitude)
+     * @param radius   rim radius in blocks
+     * @param peak     central peak height as a share of the depth (Stickney has none)
+     * @param depth    floor depth in blocks; 0 = from the size like any crater. A depth also makes it a simple bowl
+     */
+    public record NamedCrater(String name, double x, double latitude, double radius, double peak, double depth) {
+        public static final Codec<NamedCrater> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Codec.STRING.fieldOf("name").forGetter(NamedCrater::name),
+                Codec.DOUBLE.optionalFieldOf("x", 0.0).forGetter(NamedCrater::x),
+                Codec.DOUBLE.optionalFieldOf("latitude", 0.0).forGetter(NamedCrater::latitude),
+                Codec.DOUBLE.fieldOf("radius").forGetter(NamedCrater::radius),
+                Codec.DOUBLE.optionalFieldOf("peak", 0.0).forGetter(NamedCrater::peak),
+                Codec.DOUBLE.optionalFieldOf("depth", 0.0).forGetter(NamedCrater::depth)
+        ).apply(i, NamedCrater::new));
+    }
 
     /**
      * A giant fault cliff (rupes), like Miranda's: along a straight, slightly wavering line the ground on one side
