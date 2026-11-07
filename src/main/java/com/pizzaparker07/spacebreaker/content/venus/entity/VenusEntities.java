@@ -41,6 +41,10 @@ public final class VenusEntities {
             () -> EntityType.Builder.of(CloudJelly::new, MobCategory.CREATURE).sized(1.4F, 2.2F).eyeHeight(1.6F).clientTrackingRange(10)
                     .build("cloud_jelly"));
 
+    public static final DeferredHolder<EntityType<?>, EntityType<DescentProbe>> DESCENT_PROBE = ENTITIES.register("descent_probe",
+            () -> EntityType.Builder.<DescentProbe>of(DescentProbe::new, MobCategory.MISC).sized(0.6F, 0.6F).clientTrackingRange(16)
+                    .updateInterval(2).build("descent_probe"));
+
     private VenusEntities() {
     }
 

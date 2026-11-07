@@ -204,6 +204,33 @@ public final class VenusGameTests {
         helper.succeed();
     }
 
+    /** A descent probe sinks to the ground, lands and sends its owner Venus samples and landing data. */
+    @GameTest(template = WorldTests.EMPTY, timeoutTicks = 200)
+    public static void descentProbeSendsSurfaceSamples(GameTestHelper helper) {
+        var player = helper.makeMockServerPlayerInLevel();
+        com.pizzaparker07.spacebreaker.content.venus.entity.DescentProbe.deliverTo(player);
+        int samples = 0;
+        int data = 0;
+        for (var stack : player.getInventory().items) {
+            var kind = stack.get(com.pizzaparker07.spacebreaker.content.research.ResearchModule.SAMPLE.get());
+            if (kind != null && kind.getPath().equals("venus")) {
+                samples += stack.getCount();
+            }
+            if (kind != null && kind.getPath().equals("probe_landing")) {
+                data += stack.getCount();
+            }
+        }
+        helper.assertTrue(samples == 2 && data == 1, "two Venus samples and landing data, got " + samples + " / " + data);
+        var probe = com.pizzaparker07.spacebreaker.content.venus.entity.DescentProbe.release(helper.getLevel(),
+                net.minecraft.world.phys.Vec3.atCenterOf(helper.absolutePos(new BlockPos(1, 8, 1))), player.getUUID());
+        helper.getLevel().addFreshEntity(probe);
+        helper.succeedWhen(() -> {
+            helper.assertTrue(probe.landed(), "the probe is still descending");
+            helper.assertTrue(probe.getY() < helper.absolutePos(new BlockPos(1, 4, 1)).getY(), "it sank to the ground");
+            helper.succeed();
+        });
+    }
+
     private VenusGameTests() {
     }
 }

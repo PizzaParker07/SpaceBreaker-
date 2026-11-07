@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "spacebreaker:aerogel"
+    },
+    "C": {
+      "item": "spacebreaker:basic_circuit"
+    },
+    "F": {
+      "item": "spacebreaker:envelope_fabric"
+    },
+    "T": {
+      "tag": "c:ingots/tungsten"
+    }
+  },
+  "pattern": [
+    " F ",
+    "ACA",
+    "TTT"
+  ],
+  "result": {
+    "count": 1,
+    "id": "spacebreaker:descent_probe"
+  }
+}

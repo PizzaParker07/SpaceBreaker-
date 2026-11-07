@@ -154,6 +154,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Bulut katmanı (y 195–245) | ~1 bar, oda sıcaklığı; asit bulutları kaplamasız zırhı aşındırır; üstünde bulut denizi, Güneş batıdan doğar |
 | 🎨 | Bloklar ve eşyalar | Venüs Bazaltı, Kavrulmuş Çakıl, Tessera Kayası, Kükürt Kabuğu (→ kükürt), Metal Kırağısı; Hafif Kompozit Panel, Aerojel, Balon Kumaşı; Floropolimer Kaplama (zırh + kaplama → aside dayanıklı zırh) |
 | 🎨 | Zindan | Terk Edilmiş Araştırma Balonu (bulut tepelerinde, Asit Vatozu muhafızları) |
+| 🎨 | Venüs İniş Sondası | yüzey (464 °C, 92 bar) insana kapalı; bulut katmanından bırakılır, paraşütle iner, yüzeye değince sahibine 2 Venüs numunesi + iniş verisi gönderir, sonra 1 dakikada ısıdan susar; tarif: zarf kumaşı, aerojel, devre, tungsten |
 | 🎨 | Aerostat Platform Kiti | bulut kuşağında (≈1 bar, oda sıcaklığı) kullanılınca yüzen bir üs şişirir: 9×9 kompozit güverte, kapılı korkuluk, halatlar, fener ve kaldırma gazı zarfı; yalnız boş havaya yerleşir; tarif: zarf kumaşı + Kaldırma Gazı Kesesi + kompozit panel + zincir |
 
 ### Merkür `spacebreaker:mercury`
