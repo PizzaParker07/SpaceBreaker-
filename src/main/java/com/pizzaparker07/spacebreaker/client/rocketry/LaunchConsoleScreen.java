@@ -91,7 +91,11 @@ public class LaunchConsoleScreen extends AbstractContainerScreen<LaunchConsoleMe
         check(g, x, y + 33, menu.flag(LaunchConsoleBlockEntity.UMBILICAL), Component.translatable("gui.spacebreaker.console.umbilical"), green, dim);
         check(g, x, y + 44, menu.flag(LaunchConsoleBlockEntity.ROCKET), Component.translatable("gui.spacebreaker.console.rocket"), green, red);
         RocketEntity drone = uncrewed();
-        if (drone != null) {
+        boolean route = drone != null && drone.hasCargoHold() && drone.routeStatus() != RocketEntity.RouteStatus.OFF;
+        if (route) {
+            Component next = drone.missionTarget().map(l -> (Component) l.name()).orElse(Component.literal("?"));
+            check(g, x, y + 55, true, Component.translatable("gui.spacebreaker.console.route", next, drone.holdFilled()), green, red);
+        } else if (drone != null) {
             Component goal = drone.missionTarget().map(l -> (Component) Component.translatable("gui.spacebreaker.console.mission", l.name()))
                     .orElse(Component.translatable("gui.spacebreaker.console.mission_none"));
             check(g, x, y + 55, true, goal, green, red);
@@ -104,13 +108,11 @@ public class LaunchConsoleScreen extends AbstractContainerScreen<LaunchConsoleMe
                 Fmt.twr(menu.get(LaunchConsoleMenu.TWR) / 100.0)), green, red);
         check(g, x, y + 88, menu.flag(LaunchConsoleBlockEntity.DV_OK), Component.translatable("gui.spacebreaker.console.dv",
                 Fmt.num(menu.get(LaunchConsoleMenu.DV)), Fmt.num(menu.get(LaunchConsoleMenu.COST))), green, red);
-        if (drone != null && drone.hasCargoHold() && drone.routeStatus() != RocketEntity.RouteStatus.OFF) {
-            // automatic cargo route: next stop, hold, and what it is waiting for
+        if (route) {
+            // automatic cargo route: what it is doing at this end
             RocketEntity.RouteStatus st = drone.routeStatus();
-            Component next = drone.missionTarget().map(l -> (Component) l.name()).orElse(Component.literal("?"));
-            Component line = Component.translatable("gui.spacebreaker.console.route", next, drone.holdFilled(),
-                    Component.translatable("gui.spacebreaker.console.route." + st.name().toLowerCase(Locale.ROOT)));
-            check(g, x, y + 99, st != RocketEntity.RouteStatus.WAIT_FUEL, line, green, 0xE8C060);
+            check(g, x, y + 99, st != RocketEntity.RouteStatus.WAIT_FUEL,
+                    Component.translatable("gui.spacebreaker.console.route." + st.name().toLowerCase(Locale.ROOT)), green, 0xE8C060);
         } else if (drone != null) {
             check(g, x, y + 99, true, Component.translatable("gui.spacebreaker.console.one_way"), green, 0xE8C060);
         } else {
