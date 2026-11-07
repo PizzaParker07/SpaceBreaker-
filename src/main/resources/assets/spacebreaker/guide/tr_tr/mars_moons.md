@@ -8,7 +8,7 @@ research: spacebreaker:interplanetary_transfers
 İki minik, karanlık uydu. Büyük olasılıkla yakalanmış asteroitler.
 - Yerçekimleri çok zayıf: bir zıplama seni **çok uzağa** taşır.
 - Mars gökyüzünü doldurur: Phobos'tan yaklaşık 40, Deimos'tan 16 derece genişliğinde ve hep aynı yerde.
-- Toprakları en eski göktaşları gibi **karbonca zengindir**.
+- Toprakları en eski göktaşları gibi **karbonca zengindir**: {item spacebreaker:carbonaceous_chondrite} regolit ısıtıcıda su verir. → [Asteroit madenciliği](near_earth_asteroids#mining)
 
 > [!WARNING]
 > Kenarlara yakın zıplarken dikkat et: yerçekimi o kadar düşük ki yere dönmen uzun sürer.

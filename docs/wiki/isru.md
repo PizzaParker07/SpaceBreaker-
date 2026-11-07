@@ -85,6 +85,9 @@ Bir katı ve iki sıvıyı birleştirir; örneğin kükürt, su ve oksijenden **
 > Üssünü yerinde üretilen tuğlayla kur: Dünya'dan blok taşıman gerekmez. **Tam bloklar sızdırmaz**; merdiven, basamak ve duvar gibi tam olmayan bloklardan hava kaçar. → [Üssün Havası](base_air)
 
 > [!TIP]
+> Asteroitlerde de üretim var: karbonlu asteroitler sudan, taşlı asteroitler metalden zengindir. → [Dünya'ya Yakın Asteroitler](near_earth_asteroids#mining)
+
+> [!TIP]
 > Kazıcıyı fırının yanına koy: kazdığı regolit doğrudan fırına girer ve yapı bloğu kendiliğinden birikir.
 
 <details>
@@ -171,6 +174,9 @@ The **Sintering Furnace** heats any planet's regolith with electricity and fuses
 
 > [!TIP]
 > Build your base from bricks made on site: no need to ship blocks from Earth. **Full blocks are airtight**; stairs, slabs, walls and other partial blocks leak air. → [Air for the Base](base_air)
+
+> [!TIP]
+> Asteroids can be mined too: carbonaceous ones for water, stony ones for metal. → [Near-Earth Asteroids](near_earth_asteroids#mining)
 
 > [!TIP]
 > Put the excavator next to the furnace: the regolith it digs goes straight in and building blocks pile up on their own.

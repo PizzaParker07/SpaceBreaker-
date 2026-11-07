@@ -56,4 +56,6 @@ Bir katı ve iki sıvıyı birleştirir; örneğin kükürt, su ve oksijenden **
 
 > Üssünü yerinde üretilen tuğlayla kur: Dünya'dan blok taşıman gerekmez. **Tam bloklar sızdırmaz**; merdiven, basamak ve duvar gibi tam olmayan bloklardan hava kaçar. → [Üssün Havası](base_air)
 
+> Asteroitlerde de üretim var: karbonlu asteroitler sudan, taşlı asteroitler metalden zengindir. → [Dünya'ya Yakın Asteroitler](near_earth_asteroids#mining)
+
 > Kazıcıyı fırının yanına koy: kazdığı regolit doğrudan fırına girer ve yapı bloğu kendiliğinden birikir.

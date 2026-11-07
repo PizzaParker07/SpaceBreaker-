@@ -56,4 +56,6 @@ The {item spacebreaker:sintering_furnace} heats any planet's regolith with elect
 
 > Build your base from bricks made on site: no need to ship blocks from Earth. **Full blocks are airtight**; stairs, slabs, walls and other partial blocks leak air. → [Air for the Base](base_air)
 
+> Asteroids can be mined too: carbonaceous ones for water, stony ones for metal. → [Near-Earth Asteroids](near_earth_asteroids#mining)
+
 > Put the excavator next to the furnace: the regolith it digs goes straight in and building blocks pile up on their own.

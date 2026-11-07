@@ -7,7 +7,7 @@
 İki minik, karanlık uydu. Büyük olasılıkla yakalanmış asteroitler.
 - Yerçekimleri çok zayıf: bir zıplama seni **çok uzağa** taşır.
 - Mars gökyüzünü doldurur: Phobos'tan yaklaşık 40, Deimos'tan 16 derece genişliğinde ve hep aynı yerde.
-- Toprakları en eski göktaşları gibi **karbonca zengindir**.
+- Toprakları en eski göktaşları gibi **karbonca zengindir**: **Karbonlu Kondrit** regolit ısıtıcıda su verir. → [Asteroit madenciliği](near_earth_asteroids#mining)
 
 > [!WARNING]
 > Kenarlara yakın zıplarken dikkat et: yerçekimi o kadar düşük ki yere dönmen uzun sürer.
@@ -43,7 +43,7 @@ Phobos ve Deimos'ta yaşayan, uzun sekmelerle giden altı bacaklı bir otçul. H
 Two tiny, dark moons, probably captured asteroids.
 - Their gravity is very weak: a jump carries you **a long way**.
 - Mars fills the sky: about 40 degrees across from Phobos, 16 from Deimos, always in the same place.
-- Their soil is **rich in carbon**, like the oldest meteorites.
+- Their soil is **rich in carbon**, like the oldest meteorites: **Carbonaceous Chondrite** gives water in the regolith heater. → [Asteroid mining](near_earth_asteroids#mining)
 
 > [!WARNING]
 > Careful jumping near edges: gravity is so low that coming back down takes a long time.
