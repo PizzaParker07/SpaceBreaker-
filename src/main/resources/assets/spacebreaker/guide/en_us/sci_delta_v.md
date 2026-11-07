@@ -33,9 +33,9 @@ The rocket assembler shows each stage's Δv and thrust-to-weight ratio. The serv
 | Setting | Cost | Earth → orbit |
 |---|---|---|
 | Realistic | real value | ≈ 9.0–9.4 km/s |
-| Balanced | 35 % | ≈ 3.2 km/s |
+| Balanced | 43 % | ≈ 4.0 km/s |
 | Easy | 25 % | ≈ 2.3 km/s |
 
->! On **Realistic** you can reach orbit; the Moon and Mars need a heavier rocket than today's assembly limit. For farther worlds pick **Balanced** or **Easy**.
+>! On **Realistic** a rocket reaches orbit and comes home under its heat shield; the Moon and Mars need a heavier rocket than today's assembly limit. For farther worlds pick **Balanced** or **Easy**.
 
 → [Rocket Equation](rocket_equation) · [Transfer Orbits](sci_transfers)

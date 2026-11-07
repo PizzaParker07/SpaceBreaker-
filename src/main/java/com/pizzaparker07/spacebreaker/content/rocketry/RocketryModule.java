@@ -243,6 +243,7 @@ public final class RocketryModule implements SbModule {
         com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.KIT.blocks.register(modBus);
         com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.KIT.items.register(modBus);
         ENTITIES.register(modBus);
+        RocketryParticles.register(modBus);
         MENUS.register(modBus);
         modBus.addListener(RocketParts::registerRegistry);
         modBus.addListener(RocketryModule::capabilities);

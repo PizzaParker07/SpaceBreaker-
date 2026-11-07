@@ -25,8 +25,8 @@ Each stage has **one engine** at the bottom and **fuel tanks** above it. The tan
 
 | Engine | Thrust | Isp | Fuel |
 |---|---|---|---|
-| Kerosene (sea level) | 560 kN | 282 / 311 s | RP-1 + LOX (1 : 2.56) |
-| Kerosene (vacuum) | 190 kN | 345 s | RP-1 + LOX (1 : 2.56) |
+| Kerosene (sea level) | 845 kN | 282 / 311 s | RP-1 + LOX (1 : 2.56) |
+| Kerosene (vacuum) | 190 kN | 348 s | RP-1 + LOX (1 : 2.56) |
 | Methalox (sea level) | 600 kN | 330 / 350 s | methane + LOX (1 : 3.6) |
 | Methalox (vacuum) | 220 kN | 380 s | methane + LOX (1 : 3.6) |
 | Hydrolox (sea level) | 650 kN | 366 / 452 s | hydrogen + LOX (1 : 6) |

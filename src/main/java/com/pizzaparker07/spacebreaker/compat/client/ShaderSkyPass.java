@@ -147,6 +147,9 @@ public final class ShaderSkyPass {
 
         // 1) our sky, exactly as without shaders, into the off-screen target
         target.setClearColor(0F, 0F, 0F, 1F);
+        // glClear leaves depth alone while depth writes are off (as they are once the pack has finished), which left
+        // this depth at its initial 0 and every depth-tested sky body behind it
+        RenderSystem.depthMask(true);
         target.clear(Minecraft.ON_OSX);
         target.bindWrite(true);
         RenderSystem.setProjectionMatrix(new Matrix4f(projection), VertexSorting.DISTANCE_TO_ORIGIN);

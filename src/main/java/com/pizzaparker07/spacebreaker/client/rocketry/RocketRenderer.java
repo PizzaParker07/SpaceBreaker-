@@ -52,7 +52,7 @@ public class RocketRenderer extends EntityRenderer<RocketEntity> {
         int skipFrom = cockpit && rocket.layout().payload().present() ? rocket.layout().payload().firstPart() : Integer.MAX_VALUE;
         RocketStackRenderer.render(rocket.layout(), geo, pose, buffers, light, legs, skipFrom);
         if (rocket.burning()) {
-            boolean vacuum = rocket.location() != Location.EARTH_SURFACE || rocket.getY() > 400;
+            boolean vacuum = !Location.EARTH_SURFACE.equals(rocket.location()) || rocket.getY() > 400;
             float strength = state == FlightState.COUNTDOWN ? Mth.clamp((RocketEntity.IGNITION_TICKS - rocket.timer() + partialTick) / 30F, 0.15F, 1F)
                     : state == FlightState.DESCENT ? 0.65F : 1F;
             // the plume writes no depth: with a shader pack and our sky it is drawn after the sky (LateEffects)
@@ -66,14 +66,15 @@ public class RocketRenderer extends EntityRenderer<RocketEntity> {
             renderCanopy(pose, buffers, geo, open, time, light);
         }
         pose.popPose();
+        LaunchEffects.render(rocket, partialTick, pose, buffers, light, entityRenderDispatcher.camera.getPosition());
         super.render(rocket, yaw, partialTick, pose, buffers, light);
     }
 
     private static float legDeploy(RocketEntity rocket, float partialTick) {
         return switch (rocket.state()) {
             case DESCENT -> Mth.clamp((rocket.timer() + partialTick - 40) / 40F, 0F, 1F);
-            case IDLE -> rocket.location() == Location.MOON_SURFACE || rocket.activeStage() > 0 ? 1F : 0F;
-            case COUNTDOWN, ASCENT -> rocket.location() == Location.MOON_SURFACE ? Math.max(0F, 1F - (rocket.timer() > 0 && rocket.state() == FlightState.ASCENT ? rocket.timer() / 40F : 0F)) : 0F;
+            case IDLE -> Location.MOON_SURFACE.equals(rocket.location()) || rocket.activeStage() > 0 ? 1F : 0F;
+            case COUNTDOWN, ASCENT -> Location.MOON_SURFACE.equals(rocket.location()) ? Math.max(0F, 1F - (rocket.timer() > 0 && rocket.state() == FlightState.ASCENT ? rocket.timer() / 40F : 0F)) : 0F;
             default -> 0F;
         };
     }
