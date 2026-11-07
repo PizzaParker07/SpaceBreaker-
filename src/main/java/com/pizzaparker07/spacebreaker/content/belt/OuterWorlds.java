@@ -66,8 +66,6 @@ public final class OuterWorlds implements SbModule {
             FEATURES.register("buried_layer", com.pizzaparker07.spacebreaker.content.belt.world.LayerFeature::new);
     public static final DeferredHolder<Feature<?>, com.pizzaparker07.spacebreaker.content.belt.world.CellsFeature> CELLS =
             FEATURES.register("polygon_cells", com.pizzaparker07.spacebreaker.content.belt.world.CellsFeature::new);
-    public static final DeferredHolder<Feature<?>, com.pizzaparker07.spacebreaker.content.belt.world.RupesFeature> RUPES =
-            FEATURES.register("fault_cliff", com.pizzaparker07.spacebreaker.content.belt.world.RupesFeature::new);
     public static final DeferredHolder<Feature<?>, com.pizzaparker07.spacebreaker.content.belt.world.CoronaFeature> CORONAE =
             FEATURES.register("coronae", com.pizzaparker07.spacebreaker.content.belt.world.CoronaFeature::new);
     public static final DeferredHolder<Feature<?>, com.pizzaparker07.spacebreaker.content.belt.world.GrabenFeature> GRABENS =

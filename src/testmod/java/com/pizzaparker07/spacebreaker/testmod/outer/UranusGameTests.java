@@ -2,7 +2,6 @@ package com.pizzaparker07.spacebreaker.testmod.outer;
 
 import com.pizzaparker07.spacebreaker.Spacebreaker;
 import com.pizzaparker07.spacebreaker.content.belt.world.CoronaFeature;
-import com.pizzaparker07.spacebreaker.content.belt.world.RupesFeature;
 import com.pizzaparker07.spacebreaker.content.uranus.UranusData;
 import com.pizzaparker07.spacebreaker.content.uranus.UranusModule;
 import com.pizzaparker07.spacebreaker.content.uranus.entity.CliffClinger;
@@ -27,17 +26,19 @@ public final class UranusGameTests {
     public static void mirandaHasAGiantCliffAndCoronae(GameTestHelper helper) {
         helper.assertTrue(WorldTests.stem(helper, "miranda").generator() instanceof PlanetChunkGenerator, "Miranda uses the planet engine");
         PlanetTerrain t = WorldTests.generator(helper, "miranda", 8L).terrain();
-        RupesFeature.Config cliff = UranusData.cliff();
-        double cz = RupesFeature.centreZ(t, cliff);
+        var cliff = UranusData.cliff();
+        helper.assertTrue(t.rupes().length == 1, "the cliff is built into the terrain");
+        var shape = t.rupes()[0];
+        double cz = -cliff.latitude() / 90.0 * t.profile().poleDistance();
         double a = Math.toRadians(cliff.angleDeg());
         // across the middle of the cliff: high side untouched, low side far below
         double nx = -Math.sin(a);
         double nz = Math.cos(a);
-        double high = RupesFeature.offset(t, cliff, cliff.x() - nx * 40, cz - nz * 40);
-        double low = RupesFeature.offset(t, cliff, cliff.x() + nx * 40, cz + nz * 40);
+        double high = shape.offset(shape.local(cliff.x() - nx * 40, cz - nz * 40));
+        double low = shape.offset(shape.local(cliff.x() + nx * 40, cz + nz * 40));
         helper.assertTrue(high == 0, "the high side keeps its ground: " + high);
         helper.assertTrue(low < -80, "the low side lies more than 80 blocks down: " + low);
-        double end = RupesFeature.offset(t, cliff, cliff.x() + Math.cos(a) * cliff.length() * 0.7 + nx * 40, cz + Math.sin(a) * cliff.length() * 0.7 + nz * 40);
+        double end = shape.offset(shape.local(cliff.x() + Math.cos(a) * cliff.length() * 0.7 + nx * 40, cz + Math.sin(a) * cliff.length() * 0.7 + nz * 40));
         helper.assertTrue(end == 0, "the cliff ends: " + end);
         CoronaFeature.Config cor = UranusData.coronae();
         CoronaFeature.Corona c = cor.coronae().getFirst();
