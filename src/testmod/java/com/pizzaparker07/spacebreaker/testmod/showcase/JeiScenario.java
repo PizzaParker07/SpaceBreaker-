@@ -49,6 +49,18 @@ final class JeiScenario implements ShowcaseScenario {
                         EmiScreens.showInfo(Spacebreaker.id("/info/rocket_assembler"));
                     }
                 }));
+        // items added later by other areas (crafted with vanilla recipes or fabricated): their recipes must show up
+        for (String item : new String[]{"rover", "rtg", "space_probe", "comm_satellite", "observation_satellite", "crew_capsule_large"}) {
+            String name = String.format("%02d_recipe_%s", ++n, item);
+            s.add(new ShowcaseDriver.Shot(name, 6000, 0.5, -55, 0.5, 0F, 20F, false, fp, 60, null,
+                    () -> {
+                        if (jei) {
+                            JeiScreens.showRecipesFor(Spacebreaker.id(item));
+                        } else {
+                            EmiScreens.showRecipesFor(Spacebreaker.id(item));
+                        }
+                    }));
+        }
         return s;
     }
 }

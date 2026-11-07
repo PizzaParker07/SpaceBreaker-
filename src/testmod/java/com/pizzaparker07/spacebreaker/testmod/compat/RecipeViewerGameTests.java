@@ -75,4 +75,37 @@ public final class RecipeViewerGameTests {
         }
         helper.succeed();
     }
+
+    /** Recipe viewers name tag slots from tag.item.* keys (EMI warns about each unnamed tag). */
+    @GameTest(template = "empty")
+    public static void everyRecipeTagOfOursHasAName(GameTestHelper helper) throws java.io.IOException {
+        com.google.gson.JsonObject en;
+        try (var in = Spacebreaker.class.getResourceAsStream("/assets/spacebreaker/lang/en_us.json")) {
+            helper.assertTrue(in != null, "no en_us.json");
+            en = com.google.gson.JsonParser.parseReader(new java.io.InputStreamReader(in, java.nio.charset.StandardCharsets.UTF_8)).getAsJsonObject();
+        }
+        Set<String> missing = new java.util.TreeSet<>();
+        for (var holder : helper.getLevel().getRecipeManager().getRecipes()) {
+            for (net.minecraft.world.item.crafting.Ingredient ing : holder.value().getIngredients()) {
+                if (ing.isCustom()) {
+                    continue; // custom ingredients have no plain tag values
+                }
+                for (net.minecraft.world.item.crafting.Ingredient.Value v : ing.getValues()) {
+                    if (!(v instanceof net.minecraft.world.item.crafting.Ingredient.TagValue tv)) {
+                        continue;
+                    }
+                    var id = tv.tag().location();
+                    boolean ours = id.getNamespace().equals(Spacebreaker.MOD_ID) || (id.getNamespace().equals("c")
+                            && net.minecraft.core.registries.BuiltInRegistries.ITEM.getTag(tv.tag()).stream().flatMap(t -> t.stream())
+                            .allMatch(h -> h.unwrapKey().map(k -> k.location().getNamespace().equals(Spacebreaker.MOD_ID)).orElse(false)));
+                    String key = "tag.item." + id.getNamespace() + "." + id.getPath().replace('/', '.');
+                    if (ours && !en.has(key) && !net.minecraft.locale.Language.getInstance().has(key)) {
+                        missing.add(key);
+                    }
+                }
+            }
+        }
+        helper.assertTrue(missing.isEmpty(), "unnamed recipe tags: " + missing);
+        helper.succeed();
+    }
 }

@@ -231,9 +231,14 @@ tool (not consumed), bonus outputs with their chance, energy (FE/t and total), t
 New recipe kinds only need a line in `RecipeViewerData.CATEGORIES` and a title in `CompatModule` (a GameTest fails
 when a `ProcessingRecipe.Kind` in `MachinesModule` has no category).
 
+Vehicles and spacecraft made at a crafting table (rover, RTG, space probe, communication and observation
+satellites, 3-crew capsule) are plain `minecraft:crafting_shaped` recipes: both viewers list them in their own
+Crafting category with no help from us (`jei_crafted_vehicles.jpg`, `emi_crafted_vehicles.jpg`; showcase shots
+`*_recipe_<item>`).
+
 Screenshots: `jei_*` and `emi_*`. Test: `./gradlew runShowcase -Pscenario=jei -PwithJei=true` or
 `-Pscenario=emi -PwithEmi=true` (JEI/EMI come from maven.blamejared.com / maven.terraformersmc.com).
 
-Known: EMI's dev mode lists ~98 untranslated item/fluid tags (`#c:ingots/titanium`, `#spacebreaker:press_dies`...);
-players see the raw tag id in tag tooltips. The areas that own those tags can add `tag.item.<ns>.<path>` /
-`tag.fluid.<ns>.<path>` translations. REI is not covered yet.
+Tag names: viewers show `tag.item.<ns>.<path>` on tag slots. Every item tag of ours used in a recipe has one now
+(metals in `EarthModule`, the rest as fallbacks in `CompatModule.TAG_NAMES`, added only when the owning area has not
+named it); the GameTest `everyRecipeTagOfOursHasAName` fails for a new unnamed one. REI is not covered yet.
