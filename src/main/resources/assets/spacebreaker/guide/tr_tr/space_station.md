@@ -47,9 +47,15 @@ Dünya dışında yatak çalışmaz. {item spacebreaker:station_bunk} kullanınc
 ## Kargo roketi
 {items spacebreaker:cargo_module}
 Malzemeyi kendin taşımak zorunda değilsin. Montaj tezgâhında kapsül yerine bir {item spacebreaker:cargo_module} tak: **27 yuvalı** bir ambar olur ve roket insansız uçar.
-- **Yörünge hedefi:** istasyona yanaşır ve ambarı portun **4 blok** yakınındaki sandık, varil ve depolara boşaltır. Yörüngede istasyon yoksa bekler.
-- **Yüzey hedefi:** en yakın {item spacebreaker:landing_beacon}'ne iner ve ambarı işaretin 4 blok yakınındaki depolara boşaltır.
+- **Yörünge hedefi:** istasyona yanaşır. **Yüzey hedefi:** en yakın {item spacebreaker:landing_beacon}'ne iner.
+- Varınca ambarı portun ya da işaretin **4 blok** yakınındaki **sandıklara ve shulker kutularına** boşaltır, en yakından başlayarak. Makinelere hiçbir şey koymaz.
+- **Variller giden kutusudur:** oraya koyduğun eşyalar bir sonraki seferde yüklenir.
 {recipe spacebreaker:rocketry/cargo_module}
+
+### Otomatik sefer
+Dünya yüzeyi dışındaki bir hedefe fırlatılan kargo roketi, kalktığı yerle hedef arasında kendi kendine gidip gelir (örneğin Ay üssü ↔ Ay yörüngesindeki istasyon). Her uçta: sandıklara boşaltır → varillerden yükler → **200 tick** bekler (yakıt deposu onu doldurur) → öbür uca uçar. Ambar boşsa ya da yakıt yetmezse bekler ve sana bir kez haber verir.
+
+> Seferi açıp kapatmak için rokete {key key.sneak} basılıyken boş elle {key key.use} yap.
 
 > Sığmayan eşyalar ambarda kalır; sohbete kaç eşyanın beklediği yazılır. Portun ya da işaretin yanına yeterince sandık koy.
 

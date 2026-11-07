@@ -24,7 +24,7 @@ Storms can wrap the whole planet for days.
 - A storm is announced in chat **about two minutes ahead**: "A wall of dust is rising on the horizon…". You also get a message when it arrives and when it clears.
 
 > [!TIP]
-> Don't rely on the sun in storm season: keep a fuelled generator or a full battery nearby. When you see the warning, get into a shelter and bring the rover in.
+> Don't rely on the sun in storm season: keep a fuelled generator or a full battery nearby. When you see the warning, get into a shelter and bring the rover in. Start a countdown in a storm and mission control warns you; a parachute descent in a full storm drifts up to four times further off its landing beacon.
 
 ## Blue sunsets
 Fine dust scatters red light to the sides and lets blue pass straight on. Around a low sun the sky turns **blue**: the opposite of Earth.

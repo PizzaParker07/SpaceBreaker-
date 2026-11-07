@@ -47,9 +47,15 @@ The {item spacebreaker:solar_array} carries three panels on a one-block footprin
 ## Cargo rocket
 {items spacebreaker:cargo_module}
 You do not have to carry supplies yourself. In the rocket assembler, fit a {item spacebreaker:cargo_module} in place of the capsule: it is a **27-slot** hold and the rocket flies uncrewed.
-- **Orbit target:** it docks at the station and unloads the hold into the chests, barrels and other storage within **4 blocks** of the port. With no station in that orbit it waits.
-- **Surface target:** it lands on the nearest {item spacebreaker:landing_beacon} and unloads into the storage within 4 blocks of the beacon.
+- **Orbit target:** it docks at the station. **Surface target:** it lands on the nearest {item spacebreaker:landing_beacon}.
+- On arrival it unloads the hold into the **chests and shulker boxes** within **4 blocks** of the port or beacon, nearest first. It never puts anything into machines.
+- **Barrels are the outbox:** whatever you put in them is loaded for the next trip.
 {recipe spacebreaker:rocketry/cargo_module}
+
+### Automatic route
+A cargo rocket launched to a target other than Earth's surface keeps shuttling between where it took off and its target (a Moon base ↔ a station in Moon orbit, for example). At each end it unloads into the chests → loads from the barrels → waits **200 ticks** (the fuel depot refuels it) → flies to the other end. With an empty hold or not enough fuel it waits, and tells you once.
+
+> To switch the route on or off, {key key.use} the rocket with an empty hand while holding {key key.sneak}.
 
 > What does not fit stays in the hold, and chat tells you how many items are waiting. Put enough chests next to the port or beacon.
 
