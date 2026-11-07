@@ -49,3 +49,7 @@ type = "optional"
 versionRange = "[0.6,)"
 ordering = "NONE"
 side = "CLIENT"
+
+# Access transformer (see the file for what it opens and why)
+[[accessTransformers]]
+file="META-INF/accesstransformer.cfg"
