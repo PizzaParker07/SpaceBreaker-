@@ -76,6 +76,7 @@ public final class VenusModule implements SbModule {
 
     public static final DeferredItem<Item> SULFUR = KIT.item("sulfur");
     public static final DeferredItem<Item> ACID_COATING = KIT.item("acid_coating");
+    public static final DeferredItem<AerostatKitItem> AEROSTAT_KIT = KIT.item("aerostat_kit", () -> new AerostatKitItem(new Item.Properties().stacksTo(4)));
     public static final DeferredItem<LiftGasSacItem> LIFT_GAS_SAC = KIT.item("lift_gas_sac", () -> new LiftGasSacItem(new Item.Properties().stacksTo(16)));
 
     /** Armour with this component resists the acid clouds. */
@@ -127,6 +128,12 @@ public final class VenusModule implements SbModule {
         lang.block(ENVELOPE_FABRIC, "Envelope Fabric", "Balon Kumaşı");
         lang.item(SULFUR, "Sulfur", "Kükürt");
         lang.item(LIFT_GAS_SAC, "Lift Gas Sac", "Kaldırma Gazı Kesesi");
+        lang.item(AEROSTAT_KIT, "Aerostat Platform Kit", "Aerostat Platform Kiti");
+        lang.add("item.spacebreaker.aerostat_kit.desc", "Use inside Venus's habitable cloud band to inflate a floating base",
+                "Venüs'ün yaşanabilir bulut kuşağında kullan: yüzen bir üs şişirir");
+        lang.add("message.spacebreaker.aerostat_kit.band", "The envelope only lifts inside Venus's cloud band",
+                "Zarf yalnızca Venüs'ün bulut kuşağında yükselir");
+        lang.add("message.spacebreaker.aerostat_kit.blocked", "No room to inflate here", "Burada şişecek yer yok");
         String[][] valve = {{"GONDOLA SEALED", "GONDOL KAPALI"}, {"open the gas", "kükürt sarısı"}, {"valve under the", "işaretin altındaki"}, {"sulfur mark", "vanayı aç"}};
         for (int i = 0; i < 4; i++) {
             lang.add("sign.spacebreaker.aerostat_valve." + i, valve[i][0], valve[i][1]);

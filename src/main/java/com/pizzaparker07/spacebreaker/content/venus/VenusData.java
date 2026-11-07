@@ -129,5 +129,12 @@ public final class VenusData {
                 .pattern("WW").pattern("WP")
                 .unlockedBy("has_plastic", net.minecraft.advancements.critereon.InventoryChangeTrigger.TriggerInstance.hasItems(EarthModule.PLASTIC_SHEET.get()))
                 .save(out, Spacebreaker.id("envelope_fabric"));
+        // a floating base in a box: lift gas from Cloud Jellies, envelope, deck and rigging
+        ShapedRecipeBuilder.shaped(RecipeCategory.TRANSPORTATION, VenusModule.AEROSTAT_KIT.get())
+                .define('F', VenusModule.ENVELOPE_FABRIC.get()).define('G', VenusModule.LIFT_GAS_SAC.get())
+                .define('P', VenusModule.COMPOSITE_PANEL.get()).define('C', Items.CHAIN)
+                .pattern("FGF").pattern("PCP").pattern("FGF")
+                .unlockedBy("has_gas_sac", net.minecraft.advancements.critereon.InventoryChangeTrigger.TriggerInstance.hasItems(VenusModule.LIFT_GAS_SAC.get()))
+                .save(out, Spacebreaker.id("aerostat_kit"));
     }
 }

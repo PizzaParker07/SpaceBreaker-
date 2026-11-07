@@ -37,6 +37,10 @@ final class VenusScenario implements ShowcaseScenario {
     static final int PX = -20;
     static final int PZ = 20;
     static final int PY = VenusClimate.CLOUD_TOP + 6;
+    /** A deployed aerostat platform kit. */
+    static final int KX = -60;
+    static final int KY = VenusClimate.CLOUD_TOP + 8;
+    static final int KZ = -40;
 
     @Override
     public ResourceKey<Level> dimension() {
@@ -70,6 +74,7 @@ final class VenusScenario implements ShowcaseScenario {
         for (int i = 0; i < show.length; i++) {
             level.setBlock(new BlockPos(PX - 5 + i + i / 4, PY + 1, PZ - 2), show[i].defaultBlockState(), Block.UPDATE_CLIENTS);
         }
+        com.pizzaparker07.spacebreaker.content.venus.AerostatKitItem.deploy(level, new BlockPos(KX, KY, KZ));
         spawn(level, VenusEntities.CLOUD_JELLY.get(), PX + 3, PY + 4, PZ + 9, 200F);
         spawn(level, VenusEntities.ACID_RAY.get(), PX - 4, PY + 3, PZ + 8, 160F);
     }
@@ -112,6 +117,7 @@ final class VenusScenario implements ShowcaseScenario {
         s.add(new ShowcaseDriver.Shot("07_cloud_creatures", 0, PX + 0.5, PY + 3.6, PZ + 1.5, 0F, -6F, true, fp, 80, at(0.2), null));
         s.add(new ShowcaseDriver.Shot("08_aerostat", 0, AX + 13.5, AY + 16, AZ + 40.5, 180F, 8F, true, fp, 160, at(0.22), null));
         s.add(new ShowcaseDriver.Shot("09_aerostat_gondola", 0, AX + 13.5, AY + 3.6, AZ + 9.5, 180F, 6F, true, fp, 80, at(0.22), null));
+        s.add(new ShowcaseDriver.Shot("11_aerostat_kit_base", 0, KX + 14.5, KY + 7, KZ + 14.5, 135F, 18F, true, fp, 140, at(0.22), null));
         s.add(new ShowcaseDriver.Shot("10_sunset_above_clouds", 0, PX + 0.5, PY + 6, PZ + 0.5, -90F, 2F, true, fp, 120, at(0.49), null));
         return s;
     }

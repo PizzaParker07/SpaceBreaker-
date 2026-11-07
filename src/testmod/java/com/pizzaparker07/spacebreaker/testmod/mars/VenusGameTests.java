@@ -175,6 +175,28 @@ public final class VenusGameTests {
         });
     }
 
+    /** The aerostat kit inflates a floating base: a full deck with railings under a fabric envelope, only in the cloud band. */
+    @GameTest(template = WorldTests.EMPTY, timeoutTicks = 100)
+    public static void aerostatKitInflatesAFloatingBase(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        helper.assertFalse(com.pizzaparker07.spacebreaker.content.venus.AerostatKitItem.inLiftBand(level, 220), "not on Earth");
+        BlockPos deck = helper.absolutePos(BlockPos.ZERO).offset(-3000, 0, 3000).atY(220);
+        level.getChunk(deck);
+        int placed = com.pizzaparker07.spacebreaker.content.venus.AerostatKitItem.deploy(level, deck);
+        int panels = 0;
+        int fabric = 0;
+        for (BlockPos p : BlockPos.betweenClosed(deck.offset(-6, 0, -6), deck.offset(6, 13, 6))) {
+            panels += level.getBlockState(p).is(VenusModule.COMPOSITE_PANEL.get()) ? 1 : 0;
+            fabric += level.getBlockState(p).is(VenusModule.ENVELOPE_FABRIC.get()) ? 1 : 0;
+        }
+        helper.assertTrue(panels == 81, "a 9x9 deck, got " + panels);
+        helper.assertTrue(fabric > 60, "a lift envelope, got " + fabric);
+        helper.assertTrue(level.getBlockState(deck.offset(0, 1, 4)).isAir(), "a gate in the railing");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.venus.AerostatKitItem.deploy(level, deck) == 0, "a second kit does not overwrite anything");
+        helper.assertTrue(placed > 150, "placed " + placed);
+        helper.succeed();
+    }
+
     private VenusGameTests() {
     }
 }

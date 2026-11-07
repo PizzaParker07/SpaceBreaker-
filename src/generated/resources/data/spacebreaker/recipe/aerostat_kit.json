@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "minecraft:chain"
+    },
+    "F": {
+      "item": "spacebreaker:envelope_fabric"
+    },
+    "G": {
+      "item": "spacebreaker:lift_gas_sac"
+    },
+    "P": {
+      "item": "spacebreaker:composite_panel"
+    }
+  },
+  "pattern": [
+    "FGF",
+    "PCP",
+    "FGF"
+  ],
+  "result": {
+    "count": 1,
+    "id": "spacebreaker:aerostat_kit"
+  }
+}

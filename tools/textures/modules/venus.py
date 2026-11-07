@@ -203,6 +203,35 @@ def acid_coating_item():
     return cv
 
 
+def aerostat_kit():
+    """A packed aerostat: a strapped bundle of cream envelope fabric on a grey composite base, with a yellow tag."""
+    rows = [
+        "................",
+        "................",
+        "....FFFFFFF.....",
+        "...FfffSfffF....",
+        "..FffffSffffF...",
+        "..FfffYSYfffF...",
+        "..SSSSSSSSSSS...",
+        "..FfffYSYfffF...",
+        "..FffffSffffF...",
+        "...FfffSfffF....",
+        "..PPPPPPPPPPP...",
+        "..PpppppppppP...",
+        "..DDDDDDDDDDD...",
+        "................",
+        "................",
+        "................",
+    ]
+    tone = {'F': COMPOSITE[1], 'f': COMPOSITE[4], 'S': WEAVE[0], 'Y': SULFUR[4], 'P': COMPOSITE[2], 'p': COMPOSITE[3], 'D': COMPOSITE[0]}
+    cv = Canvas()
+    for y, row in enumerate(rows):
+        for x, ch in enumerate(row):
+            if ch in tone:
+                cv[x, y] = tone[ch]
+    return cv
+
+
 def lift_gas_sac():
     """A Cloud Jelly's gas bladder: a pale, translucent-looking lilac balloon with a tied neck and a soft highlight."""
     m = mask_from(parse_mask([
@@ -252,6 +281,7 @@ def export(save):
     save(sulfur_item(), 'item', 'sulfur')
     save(acid_coating_item(), 'item', 'acid_coating')
     save(lift_gas_sac(), 'item', 'lift_gas_sac')
+    save(aerostat_kit(), 'item', 'aerostat_kit')
     export_more(save)
 
 
