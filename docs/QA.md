@@ -329,8 +329,9 @@ flight between dimensions, rovers being driven, and client-side frame time.
 - **QA-20 (rocketry, high): the realistic setting stalls at the first goal.** Earth surface → orbit needs 9022 m/s there,
   but the best rocket buildable at that point gives 8079 m/s vacuum Δv (kerosene, up to 3 stages of up to 3 large tanks
   each, the search's limits). With no orbit there is no Moon, no samples, no further research: 0/4 goals, 26/87
-  technologies, insulated or not. If the assembler allows more tanks or stages than the search tries, this may be a
-  limit of the model; otherwise the realistic ascent cost or the early engines need a look.
+  technologies, insulated or not. The search already covers the assembler's whole layout (3 stages, each one engine,
+  up to 3 tanks and a radial part; `AssemblerSlots`), only a nose cone on top is not tried. So on the realistic setting
+  a new world cannot reach orbit: the realistic ascent cost or the early engines/tanks need a look.
 - The rocket search now keeps candidates without their layout (rebuilt on demand): 2.6 million designs with insulated
   tops ran out of heap otherwise.
 
