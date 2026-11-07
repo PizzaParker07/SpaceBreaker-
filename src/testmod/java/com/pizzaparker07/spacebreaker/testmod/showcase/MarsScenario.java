@@ -58,7 +58,7 @@ final class MarsScenario implements ShowcaseScenario {
         spawn(level, com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.POLAR_WORM.get(), STAGE_X + 9, y0 + 1, STAGE_Z + 6, 35F);
         spawn(level, com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.DUST_DEVIL.get(), STAGE_X + 12, y0 + 1, STAGE_Z + 6, 0F);
         // dungeons near the vista point
-        int sy = (int) Math.floor(t.height(STATION_X + 16, STATION_Z + 16)) + 1;
+        int sy = (int) Math.floor(t.height(STATION_X + 20, STATION_Z + 20)) + 1;
         place(level, new com.pizzaparker07.spacebreaker.content.mars.dungeon.ResearchStationPiece(4242L, STATION_X, sy, STATION_Z, net.minecraft.core.Direction.NORTH));
         int top = (int) Math.floor(t.height(CAVE_X, CAVE_Z));
         cave = new com.pizzaparker07.spacebreaker.content.mars.dungeon.RiverbedCavePiece(5150L, CAVE_X, top, CAVE_Z);
@@ -155,14 +155,20 @@ final class MarsScenario implements ShowcaseScenario {
                         p.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.NIGHT_VISION, 2400, 0, false, false));
                     }, null));
         }
-        int sy = (int) Math.floor(t.height(STATION_X + 16, STATION_Z + 16)) + 1;
-        s.add(new ShowcaseDriver.Shot("15_research_station", 0, STATION_X + 40, sy + 14, STATION_Z + 44, yaw(-24, -28), 22F, true,
+        int sy = (int) Math.floor(t.height(STATION_X + 20, STATION_Z + 20)) + 1;
+        s.add(new ShowcaseDriver.Shot("15_research_station", 0, STATION_X - 18, sy + 18, STATION_Z + 62, -138F, 16F, true,
                 CameraType.FIRST_PERSON, 200, p -> {
                     p.removeAllEffects();
                     at(0.15).accept(p);
                 }, null));
-        s.add(new ShowcaseDriver.Shot("16_station_inside", 0, STATION_X + 16.5, sy + 2.6, STATION_Z + 24.5, 0F, 8F, true,
-                CameraType.FIRST_PERSON, 100, at(0.2), null));
+        s.add(new ShowcaseDriver.Shot("15b_station_east", 0, STATION_X + 60, sy + 14, STATION_Z - 12, 51F, 13F, true,
+                CameraType.FIRST_PERSON, 100, at(0.15), null));
+        s.add(new ShowcaseDriver.Shot("16_station_inside", 0, STATION_X + 20.5, sy + 1.6, STATION_Z + 15.5, 0F, 6F, true,
+                CameraType.FIRST_PERSON, 100, at(0.2).andThen(MarsScenario::clearDrones), null));
+        s.add(new ShowcaseDriver.Shot("16b_station_lab", 0, STATION_X + 30.5, sy + 1.6, STATION_Z + 20.5, -90F, 6F, true,
+                CameraType.FIRST_PERSON, 100, at(0.2).andThen(MarsScenario::clearDrones), null));
+        s.add(new ShowcaseDriver.Shot("16c_station_garage", 0, STATION_X + 11.5, sy + 1.6, STATION_Z + 20.5, 90F, 4F, true,
+                CameraType.FIRST_PERSON, 100, at(0.2).andThen(MarsScenario::clearDrones), null));
         {
             var c = new com.pizzaparker07.spacebreaker.content.mars.dungeon.RiverbedCavePiece(5150L, CAVE_X,
                     (int) Math.floor(t.height(CAVE_X, CAVE_Z)), CAVE_Z).chamber();
@@ -294,5 +300,11 @@ final class MarsScenario implements ShowcaseScenario {
         s.add(new ShowcaseDriver.Shot("12_night_moons", 0, vx, gy + 3, vz, -90F, -35F, true, fp, 160, at(0.7), null));
         s.addAll(extraShots(t));
         return s;
+    }
+
+    /** Keeps the station's drones and beetles out of the interior shots (they wander into the lens). */
+    private static void clearDrones(net.minecraft.server.level.ServerPlayer p) {
+        p.serverLevel().getEntitiesOfClass(net.minecraft.world.entity.Mob.class, p.getBoundingBox().inflate(48))
+                .forEach(net.minecraft.world.entity.Entity::discard);
     }
 }

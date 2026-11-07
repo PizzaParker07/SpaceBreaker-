@@ -152,6 +152,10 @@ public final class MarsData {
         lang.add("sign.spacebreaker.stickney_lander.1", "It bounced off;", "Önce geri sekti;");
         lang.add("sign.spacebreaker.stickney_lander.2", "3 harpoons and a", "3 harpun ve vinç");
         lang.add("sign.spacebreaker.stickney_lander.3", "winch held it", "onu yerde tuttu");
+        lang.add("sign.spacebreaker.station_log.0", "SOL 412 LOG", "SOL 412 KAYDI");
+        lang.add("sign.spacebreaker.station_log.1", "A storm broke", "Fırtına garajı");
+        lang.add("sign.spacebreaker.station_log.2", "into the garage.", "deldi. Lab yedek");
+        lang.add("sign.spacebreaker.station_log.3", "Lab on reserve.", "enerjiyle açık.");
         lang.add("dungeon.spacebreaker.deimos_relay_spire", "Relay Spire of Deimos", "Deimos Röle Kulesi");
         lang.add("structure.spacebreaker.deimos_relay_spire", "Relay Spire of Deimos", "Deimos Röle Kulesi");
         lang.add("sign.spacebreaker.deimos_hop.0", "GRAVITY 1/4000 G", "YERÇEKİMİ 1/4000 G");
