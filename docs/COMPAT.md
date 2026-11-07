@@ -126,11 +126,13 @@ Complementary the tint is weaker (the pack re-lights translucent entities) but t
     as beyond the render distance (fully hazed on Venus/Titan). With that, `AUTO` stays on with DH.
   - Tested with DH 3.3.3 + Iris + Complementary before the DH depth support: `AUTO` then switched our passes off and
     the Moon showed the pack's blue Overworld sky (`dh_auto_moon_before_lod_support`); `ALWAYS` gave the right sky
-    (`dh_always_moon`). **The DH depth support itself is not verified with LOD terrain on screen**: running the DH jar
-    in this test environment was not permitted afterwards. To verify: put DH in `run-mods/`, run
-    `-Pscenario=lod -PwithCompat=true` (6-chunk view, 90 s for LODs to build, Moon and Venus) and check that LOD
-    terrain beyond 6 chunks stays visible under the black sky and is hazed on Venus. If DH's texture cannot be read,
-    `AUTO` falls back to off as before.
+    (`dh_always_moon`).
+  - Verified with the DH depth support (DH 3.3.3 + Iris + Complementary, `AUTO`, fresh world,
+    `-Pscenario=lod -PwithCompat=true`): on the Moon the LOD terrain beyond the 6-chunk view stays visible under the
+    black sky and stars (`dh_lod_moon_verified`); on Venus it is covered by the thick haze as intended
+    (`dh_lod_venus_verified`); no errors from our passes in the log. The curved horizon and the dithered fade
+    between real and LOD chunks on the Moon are DH's own settings. If DH's texture cannot be read, `AUTO` falls
+    back to off as before.
   - Voxy: no depth API; `AUTO` keeps the passes off, `ALWAYS` paints over its terrain.
 - **Sun direction vs. shadows:** packs cast shadows from vanilla's sun path (plus their own `sunPathRotation`); our
   drawn Sun also tilts with the observer's latitude. Near the poles the two differ by up to the latitude.
