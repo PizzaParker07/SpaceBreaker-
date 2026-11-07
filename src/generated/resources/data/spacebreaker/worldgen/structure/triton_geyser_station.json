@@ -1,0 +1,6 @@
+{
+  "type": "spacebreaker:triton_geyser_station",
+  "biomes": "spacebreaker:triton_polar_cap",
+  "spawn_overrides": {},
+  "step": "surface_structures"
+}

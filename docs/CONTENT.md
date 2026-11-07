@@ -256,7 +256,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 |---|---|---|
 | 🎨 | Triton `spacebreaker:triton` | ters yönde dönen, yakalanmış cüce gezegen; -235 °C (ölçülen en soğuk yüzey); yuvarlak çukurlar ve keskin sırtlardan "kavun kabuğu" arazisi, pembe azot kırağısından kutup başlıkları, az krater; güney başlığında koyu azot-toz sütunları fışkırtıp rüzgârla yatık çizgiler bırakan azot gayzerleri (yakmaz, fırlatır; püskürürken çevreye toplanabilir Gayzer Tozu yağdırır); gökte 8° genişliğinde mavi Neptün |
 | 🎨 | Triton blokları | Triton Kırağısı, Pembe Azot Kırağısı, Gayzer Tozu (kalıcı ayak izi), Triton Ana Kaya Buzu (+ merdiven, basamak, duvar), Azot Gayzeri, Metan Klatrat Yatağı (→ Metan Klatrat, kömür kadar yanan yakıt) |
-| 🎨 | Zindan | Düşmüş İkmal İniş Aracı (Triton) |
+| 🎨 | Zindanlar | Düşmüş İkmal İniş Aracı (Triton); Gayzer Gözlem İstasyonu (güney kutup başlığında bir azot gayzerinin üstüne kurulmuş cam kubbeli istasyon: ortada çubuk halkalı canlı gayzer, kubbe tepesinden yükselen alet direği, numune laboratuvarı ve depo sandıkları, kapıdan içeri savrulmuş pembe kırağı; 2 Gayzer Böceği bekçi) → Kriyovolkanizma |
 | 🎨 | Teknoloji | Kriyovolkanizma (5) |
 
 ### Plüton ve Charon

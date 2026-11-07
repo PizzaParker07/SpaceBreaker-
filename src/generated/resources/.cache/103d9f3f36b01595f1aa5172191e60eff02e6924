@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-07T04:28:41.60185318	Registries
+// 1.21.1	2026-11-07T05:14:23.891304074	Registries
 a38072ba4c640199737ebfbbc034c7ff4c262ce1 data/spacebreaker/neoforge/biome_modifier/add_oil_deposit.json
 359e688a8c7c731c92b480293ac4de3414233fdb data/spacebreaker/neoforge/biome_modifier/add_oil_deposit_sparse.json
 09748e9f324cff73a2a33cba57c1dd08e29a4564 data/spacebreaker/neoforge/biome_modifier/add_ore_bauxite.json
@@ -224,6 +224,7 @@ d890b9e682ac69d1d67e1c9d95d18a44ae1c4f39 data/spacebreaker/worldgen/structure/ob
 62def3bdf95a72c99e62f4f68cb923eb8f5c6b06 data/spacebreaker/worldgen/structure/pluto_lander.json
 d0513577bf178712f9dd987c4a71d30637cc1040 data/spacebreaker/worldgen/structure/titan_hangar.json
 4f895de360389e801fcd504fa837b22760de25ac data/spacebreaker/worldgen/structure/titania_lander.json
+c4f7c2f5de7be535bd6aa271c9fad71dfcd2442a data/spacebreaker/worldgen/structure/triton_geyser_station.json
 b1c67c875462b9f81b043812870a52d28b2c88dc data/spacebreaker/worldgen/structure/triton_lander.json
 3da976772088c9155ea51879a152230e656645a8 data/spacebreaker/worldgen/structure/umbriel_lander.json
 70d4baa7c715bcd38ba76e3f8bb8599fe3d5baab data/spacebreaker/worldgen/structure/vesta_lander.json
@@ -240,6 +241,7 @@ d0fec376e6e56cfbeb895dd40a18f24b7c6364f4 data/spacebreaker/worldgen/structure_se
 8bc28e52f73b6f90a57e685dc304cecd6ab63227 data/spacebreaker/worldgen/structure_set/pluto_landers.json
 bdfb17230b05d316364a488ad6ec9088f8d6fb59 data/spacebreaker/worldgen/structure_set/titan_hangars.json
 149dbfda2c0a4127b4378567fbcddc8a19814f0c data/spacebreaker/worldgen/structure_set/titania_landers.json
+1430c03aef1d6f7b5f123d7eda021739feb5fb99 data/spacebreaker/worldgen/structure_set/triton_geyser_stations.json
 5b37ff28a7b8faa178cfb3db336d44584fd472ee data/spacebreaker/worldgen/structure_set/triton_landers.json
 871973907c53cb3c22e0fd24a7e10c429fa53965 data/spacebreaker/worldgen/structure_set/umbriel_landers.json
 8aef5918e765f13566506a5238d50646aac5e18d data/spacebreaker/worldgen/structure_set/vesta_landers.json

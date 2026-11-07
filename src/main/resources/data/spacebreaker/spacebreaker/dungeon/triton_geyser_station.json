@@ -1,0 +1,12 @@
+{
+  "structure": "spacebreaker:triton_geyser_station",
+  "world": "spacebreaker:triton",
+  "guardians": [
+    { "entity": "spacebreaker:plume_beetle", "count": 2 }
+  ],
+  "guardian_radius": 8,
+  "loot_tables": [
+    "spacebreaker:dungeons/triton/station_lab",
+    "spacebreaker:dungeons/triton/station_store"
+  ]
+}

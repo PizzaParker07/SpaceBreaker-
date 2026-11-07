@@ -122,7 +122,16 @@ def frost_moth():
 # --------------------------------------------------------------------------- Titania
 
 def titania_regolith(v=0):
-    return dust(P.TITANIA_SOIL, 16101 + v * 19)
+    """Coarse-grained: most pixels grouped into 2x2 grains, so it reads rougher than the other moons' fine dust."""
+    cv = dust(P.TITANIA_SOIL, 16101 + v * 19)
+    w = white(16151 + v * 19)
+    for y in range(0, 16, 2):
+        for x in range(0, 16, 2):
+            if w[y][x] < 0.7:
+                c = cv[x, y]
+                for dx, dy in ((1, 0), (0, 1), (1, 1)):
+                    cv[x + dx, y + dy] = c
+    return cv
 
 
 def titania_ice():
@@ -226,7 +235,16 @@ def gloam_hopper():
 # --------------------------------------------------------------------------- Oberon
 
 def oberon_regolith(v=0):
-    return dust(P.OBERON_SOIL, 18101 + v * 19)
+    """Calmer than plain dust: the darkest and brightest lone grains are pulled one step toward the middle."""
+    r = P.OBERON_SOIL
+    cv = dust(r, 18101 + v * 19)
+    for y in range(16):
+        for x in range(16):
+            if cv[x, y] == r[0]:
+                cv[x, y] = r[1]
+            elif cv[x, y] == r[5]:
+                cv[x, y] = r[4]
+    return cv
 
 
 def oberon_ice():
