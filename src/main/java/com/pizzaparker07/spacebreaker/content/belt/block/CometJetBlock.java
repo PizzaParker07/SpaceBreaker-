@@ -43,13 +43,13 @@ public class CometJetBlock extends Block {
         }
         // the client animates a given block only now and then, so each call draws a whole thin column at once: small
         // grey-white specks (1-2 pixels) rising from the vent and fanning out slightly with height, fading as they go
-        for (int i = 0; i < 16; i++) {
-            double h = 1.05 + i * 0.45 + random.nextDouble() * 0.3;
-            double spread = 0.05 + i * 0.03;
+        for (int i = 0; i < 40; i++) {
+            double h = 1.05 + i * 0.18 + random.nextDouble() * 0.3;
+            double spread = 0.05 + i * 0.012;
             double x = pos.getX() + 0.5 + (random.nextDouble() - 0.5) * spread * 2;
             double z = pos.getZ() + 0.5 + (random.nextDouble() - 0.5) * spread * 2;
-            float grey = 0.78F + random.nextFloat() * 0.22F;
-            float size = 0.8F - i * 0.025F;
+            float grey = 0.86F + random.nextFloat() * 0.14F;
+            float size = 0.95F - i * 0.011F;
             level.addParticle(new DustParticleOptions(new Vector3f(grey, grey, grey * 1.02F), size), x, pos.getY() + h, z,
                     (x - pos.getX() - 0.5) * 2, 2.0, (z - pos.getZ() - 0.5) * 2);
         }
