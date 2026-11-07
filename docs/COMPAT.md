@@ -283,6 +283,7 @@ What is shown (data in `compat/recipes/RecipeViewerData`, shared by both plugins
 | Crushing, Arc Smelting, Pressing, Fabricating | crusher, arc furnace, press, fabricator |
 | Refining, Electrolysis, Cryogenic Liquefaction | refinery, electrolyzer, cryogenic liquefier |
 | Sabatier Reaction, Regolith Heating, Ice Melting, Chemical Reaction | Sabatier reactor, regolith heater, ice melter, chemical reactor |
+| Sintering, Uranium Enrichment | sintering furnace, gas centrifuge (`jei_emi_enrichment_item_duct.jpg`) |
 | Suit Modules (smithing) | smithing table: template + suit piece + module = fitted piece, every fitting combination |
 | Smelting (vanilla) | the arc furnace is added as a catalyst (it smelts anything a furnace can) |
 | Information pages | Rocket Assembler (rockets are assembled from parts, not crafted), Atmosphere Processor, Item Duct (sneak-use an end: pull / filter) |
