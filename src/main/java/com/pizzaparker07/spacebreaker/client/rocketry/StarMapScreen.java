@@ -596,8 +596,12 @@ public class StarMapScreen extends Screen {
             } else {
                 planet(g, n.body, x, y, Math.max(1, n.r));
             }
-            if (!com.pizzaparker07.spacebreaker.content.rocketry.station.Stations.around(n.body).isEmpty()) {
+            var around = com.pizzaparker07.spacebreaker.content.rocketry.station.Stations.around(n.body);
+            if (!around.isEmpty()) {
                 stationIcon(g, x + n.r + 1, y - n.r - 5);
+                if (around.stream().anyMatch(com.pizzaparker07.spacebreaker.content.rocketry.station.Stations.Station::shipyard)) {
+                    yardIcon(g, x + n.r + 11, y - n.r - 5);
+                }
             }
             if (!com.pizzaparker07.spacebreaker.content.rocketry.station.Stations.basesOn(n.body).isEmpty()) {
                 baseIcon(g, x + n.r + 1, y + n.r - 2);
@@ -631,6 +635,16 @@ public class StarMapScreen extends Screen {
         g.fill(x + 6, y + 1, x + 9, y + 4, 0xFF4A6AA8);
         g.fill(x + 3, y + 2, x + 6, y + 3, 0xFF8A96A4);
         g.fill(x + 3, y, x + 6, y + 5, 0xFFEEF0F2);
+    }
+
+    /** A tiny shipyard: an open grey frame with a striped corner, beside the station of a world that has one. */
+    private static void yardIcon(GuiGraphics g, int x, int y) {
+        int c = 0xFFA0A8B0;
+        g.fill(x, y, x + 7, y + 1, c);
+        g.fill(x, y + 5, x + 7, y + 6, c);
+        g.fill(x, y, x + 1, y + 6, c);
+        g.fill(x + 6, y, x + 7, y + 6, c);
+        g.fill(x, y, x + 2, y + 1, 0xFFE8C443);
     }
 
     /** A tiny surface base: a landing pad with a yellow ring and a little dome. */
@@ -742,7 +756,11 @@ public class StarMapScreen extends Screen {
         y += 4;
         for (var st : com.pizzaparker07.spacebreaker.content.rocketry.station.Stations.around(body)) {
             stationIcon(g, x, y + 1);
-            g.drawString(font, Component.translatable("gui.spacebreaker.star_map.station_short", st.ports()), x + 13, y, 0xFFC8D0D8, false);
+            Component line = st.modules() > 0
+                    ? Component.translatable(st.shipyard() ? "gui.spacebreaker.star_map.station_yard" : "gui.spacebreaker.star_map.station_modules",
+                    st.modules(), st.ports())
+                    : Component.translatable("gui.spacebreaker.star_map.station_short", st.ports());
+            g.drawString(font, line, x + 13, y, 0xFFC8D0D8, false);
             y += 10;
         }
         for (var st : com.pizzaparker07.spacebreaker.content.rocketry.station.Stations.basesOn(body)) {

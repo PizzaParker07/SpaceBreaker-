@@ -55,6 +55,12 @@ public final class RocketryClient {
 
     @SubscribeEvent
     static void setup(net.neoforged.fml.event.lifecycle.FMLClientSetupEvent event) {
+        com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipyardConsoleBlock.openScreen = pos -> {
+            var mc = net.minecraft.client.Minecraft.getInstance();
+            if (mc.level != null && mc.level.getBlockEntity(pos) instanceof com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipyardConsoleBlockEntity be) {
+                mc.setScreen(new ShipyardScreen(pos, be.design()));
+            }
+        };
         com.pizzaparker07.spacebreaker.content.rocketry.item.Fmt.localDots = () -> {
             var mc = net.minecraft.client.Minecraft.getInstance();
             return mc != null && mc.getLanguageManager() != null && mc.getLanguageManager().getSelected().startsWith("tr");

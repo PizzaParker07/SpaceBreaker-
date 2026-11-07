@@ -150,8 +150,11 @@ public final class HelmetHud {
         // oxygen: always
         float o2 = s.capacity() > 0 ? (float) s.oxygen() / s.capacity() : 0F;
         boolean o2Low = s.capacity() == 0 || o2 < 0.15F;
+        // the simple HUD shows the time left only when it matters (under 30 %) or while a screen such as the inventory is
+        // open; the bar alone tells the rest
+        boolean showTime = detailed || o2 < 0.3F || s.capacity() == 0 || mc.screen != null;
         rows.add(new Row(ICON_OXYGEN, o2, o2Low ? ALARM : (o2 < 0.3F ? WARN : OXYGEN),
-                s.capacity() > 0 ? OxygenTankItem.time(s.oxygenTicksLeft()) : "--:--", o2Low && !breathable ? ALARM : 0xFFFFFF, false));
+                !showTime ? "" : s.capacity() > 0 ? OxygenTankItem.time(s.oxygenTicksLeft()) : "--:--", o2Low && !breathable ? ALARM : 0xFFFFFF, false));
         float body = s.bodyTempC();
         boolean beyond = sealed && (s.ambientC() < s.ratingMinC() || s.ambientC() > s.ratingMaxC());
         if (!detailed) {
@@ -259,7 +262,7 @@ public final class HelmetHud {
             width = Math.max(width, 11 + (r.fill() >= 0 ? BAR_W + 3 : 0) + font.width(r.value()));
         }
         // the hazard icons sit after the oxygen time
-        int hazardX = 11 + BAR_W + 3 + font.width(rows.get(0).value()) + 4;
+        int hazardX = 11 + BAR_W + 3 + (rows.get(0).value().isEmpty() ? 0 : font.width(rows.get(0).value()) + 4);
         if (!hazards.isEmpty()) {
             width = Math.max(width, hazardX + hazards.size() * 10 - 1);
         }

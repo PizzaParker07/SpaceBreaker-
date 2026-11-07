@@ -41,6 +41,41 @@ Hazır modüller standart **ağızlardan** birleşir: yürüme yüksekliğinde 3
 
 → **Kenetlenme Modülü** (Çalışma Masası)
 
+<a id="stage2"></a>
+#### Yaşam, hava kilidi ve enerji
+
+**Yaşam Modülü** · **Hava Kilidi Modülü** · **Güneş Kanatları**
+
+- ****Yaşam Modülü**** (7 × 5 × 9): uyku bölmelerinde üç ranza, iki fıçı dolap, iki pencere bandı, tavan ışıkları ve istasyonu büyütmek için uçta kapalı bir ağız.
+- ****Hava Kilidi Modülü**** (5 × 5 × 5): istasyona açılan bir hava kilidi kapısı, uzaya açılan bir hava kilidi kapısı ve aralarında küçük bir oda. Dış kapıyı açmadan önce iç kapıyı kapat; sen dışarı çıkarken istasyon havasını korur.
+- ****Güneş Kanatları****: gövdenin dışına kurulur, ağız kapalı kalır; ortadaki kapak istasyonu besleyen bir batarya bankasına dönüşür. Döner bir eklemden ızgara ve bakır kablodan bir kol uzanır; üstünde her yanda ikişer olmak üzere **dört güneş paneli dizisi** ve ucunda bir anten vardır.
+
+Bunlar da çekirdek ve kenetlenme modülü gibi bağlanır ve teslim edilir.
+
+|   |   |   |
+|---|---|---|
+| İstasyon Gövdesi | İstasyon Penceresi | İstasyon Gövdesi |
+| İstasyon Ranzası | Fıçı | İstasyon Ranzası |
+| İstasyon Gövdesi | İstasyon Gövdesi | İstasyon Gövdesi |
+
+→ **Yaşam Modülü** (Çalışma Masası)
+
+|   |   |   |
+|---|---|---|
+| İstasyon Gövdesi | Hava Kilidi Kapısı | İstasyon Gövdesi |
+| İstasyon Penceresi |   | İstasyon Penceresi |
+| İstasyon Gövdesi | Hava Kilidi Kapısı | İstasyon Gövdesi |
+
+→ **Hava Kilidi Modülü** (Çalışma Masası)
+
+|   |   |   |
+|---|---|---|
+| Güneş Paneli Dizisi | Bakır Kablo | Güneş Paneli Dizisi |
+| Güneş Paneli Dizisi | Batarya Bankası | Güneş Paneli Dizisi |
+|   | Bakır Kablo |   |
+
+→ **Güneş Kanatları** (Çalışma Masası)
+
 ### Yaşam modülü kiti
 
 **Yaşam Modülü Kiti**
@@ -158,6 +193,41 @@ Ready-made modules join through standard **mouths**: a 3 × 3 opening at walking
 | Station Hull | Station Hull | Station Hull |
 
 → **Docking Module** (Crafting Table)
+
+<a id="stage2"></a>
+#### Living, airlock and power
+
+**Habitation Module** · **Airlock Module** · **Solar Wings**
+
+- ****Habitation Module**** (7 × 5 × 9): living quarters with three bunks in sleeping pods, two barrel lockers, two window bands, roof lights and a sealed mouth at the far end so the station can grow on.
+- ****Airlock Module**** (5 × 5 × 5): an airlock door into the station, an airlock door to space and a small chamber between them. Close the inner door before you open the outer one, and the station keeps its air while you step out.
+- ****Solar Wings****: built outside the hull, so the mouth stays sealed; its middle hatch becomes a battery bank feeding the station. A boom of grate and copper cable runs out from a rotary joint and carries **four solar arrays**, two on each side, with an antenna at the tip.
+
+They are attached and delivered like the core and the docking module.
+
+|   |   |   |
+|---|---|---|
+| Station Hull | Station Window | Station Hull |
+| Station Bunk | Barrel | Station Bunk |
+| Station Hull | Station Hull | Station Hull |
+
+→ **Habitation Module** (Crafting Table)
+
+|   |   |   |
+|---|---|---|
+| Station Hull | Airlock Door | Station Hull |
+| Station Window |   | Station Window |
+| Station Hull | Airlock Door | Station Hull |
+
+→ **Airlock Module** (Crafting Table)
+
+|   |   |   |
+|---|---|---|
+| Solar Array | Copper Cable | Solar Array |
+| Solar Array | Battery Bank | Solar Array |
+|   | Copper Cable |   |
+
+→ **Solar Wings** (Crafting Table)
 
 ### Habitat module kit
 

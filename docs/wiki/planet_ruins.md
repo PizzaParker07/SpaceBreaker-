@@ -15,6 +15,9 @@
 Bu harabelerin diskleri **metan motorlarını**, **Sabatier sürecini** ve **Mars jeolojisini** öğretir.
 
 > [!TIP]
+> Mars araştırma istasyonu gibi bazı harabelerde ganimet bir **Malzeme Dolabı** içinde bekler: ilk açıldığında dolan, 27 yuvalı bir duvar dolabı. Karşılaştırıcıya sinyal verir; kırıp eve götürebilirsin.
+
+> [!TIP]
 > Her harabeyi ilk keşfettiğinde bir başarım kazanırsın. Yanına numune kiti al: harabelerin çevresi iyi numune verir.
 
 <details>
@@ -33,6 +36,9 @@ Bu harabelerin diskleri **metan motorlarını**, **Sabatier sürecini** ve **Mar
 | Mercury | Abandoned polar ice mine |
 
 Their disks teach **methane engines**, the **Sabatier process** and **Martian geology**.
+
+> [!TIP]
+> Loot in some ruins, such as the Mars research station, waits in a **Supply Locker**: a wall cabinet with 27 slots that fills the first time it is opened. It gives a comparator signal, and you can break it and take it home.
 
 > [!TIP]
 > You earn an advancement the first time you discover each ruin. Bring a sample kit: the ground around ruins gives good samples.

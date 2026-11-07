@@ -70,43 +70,81 @@ public final class VehiclesClient {
         event.registerAbove(VanillaGuiLayers.HOTBAR, Spacebreaker.id("rover_hud"), (g, delta) -> hud(g));
     }
 
+    private static final net.minecraft.resources.ResourceLocation ICONS = Spacebreaker.id("textures/gui/rover_hud_icons.png");
+    /** The suit HUD's icon sheet: its oxygen icon marks the cabin air, so both panels read the same. */
+    private static final net.minecraft.resources.ResourceLocation SUIT_ICONS = Spacebreaker.id("textures/gui/hud_icons.png");
+    private static final int BAR_W = 41, ROW_H = 11, PAD = 3;
+
+    /**
+     * Rover panel in the suit HUD's style (icon, bar, short value on a translucent backing), beside the hotbar on the
+     * main-hand side so it mirrors the suit panel on the off-hand side. Battery bar, speed only while moving, the
+     * power sources as small icons (the solar icon turns rust when the panel is dusty, the RTG greys out without a
+     * pellet), cabin air as a second bar on pressurised rovers.
+     */
     private static void hud(GuiGraphics g) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || mc.options.hideGui || !(mc.player.getVehicle() instanceof RoverEntity rover)) {
             return;
         }
-        int w = g.guiWidth();
-        int h = g.guiHeight();
-        int x = w / 2 + 96;
-        int y = h - 22;
         float f = rover.energyFraction();
-        int barW = 60;
-        g.fill(x - 1, y - 1, x + barW + 1, y + 6, 0xC0101010);
-        int color = f > 0.5F ? 0xFF58C048 : f > 0.2F ? 0xFFE0B030 : 0xFFD04030;
-        g.fill(x, y, x + Math.round(barW * f), y + 5, color);
         double speed = Math.hypot(rover.getX() - rover.xo, rover.getZ() - rover.zo) * 20.0;
-        Component line = rover.energy() <= 0 ? Component.translatable("hud.spacebreaker.rover.empty")
-                : Component.translatable("hud.spacebreaker.rover.battery", Mth.floor(f * 100))
-                .append("  ").append(Component.translatable("hud.spacebreaker.rover.speed", String.format(Locale.ROOT, "%.1f", speed)));
-        g.drawString(mc.font, line, x, y - 11, 0xFFFFFFFF, true);
-        int ix = x + barW + 4;
+        String speedText = speed >= 0.3 ? String.format(Locale.ROOT, "%.1f m/s", speed) : "";
+        boolean blink = (mc.player.tickCount / 5) % 2 == 0;
+        int battColor = rover.energy() <= 0 ? (blink ? 0xFFD04030 : 0xFF601810) : f > 0.5F ? 0xFF58C048 : f > 0.2F ? 0xFFE0B030 : 0xFFD04030;
+        int sources = (rover.hasSolar() ? 1 : 0) + (rover.hasRtg() ? 1 : 0);
+        boolean cabin = rover.roverType().cabin();
+        int width = 11 + BAR_W + (speedText.isEmpty() ? 0 : 3 + mc.font.width(speedText)) + (sources > 0 ? 3 + sources * 10 - 1 : 0);
+        int rows = cabin ? 2 : 1;
+        int height = rows * ROW_H - 2;
+        int pw = width + PAD * 2, ph = height + PAD * 2;
+        boolean rightHanded = mc.options.mainHand().get() == net.minecraft.world.entity.HumanoidArm.RIGHT;
+        int ax = rightHanded ? g.guiWidth() / 2 + 91 + 29 + 6 : g.guiWidth() / 2 - 91 - 29 - 6 - pw;
+        int ay = g.guiHeight() - 2 - ph;
+        if (ax < 2 || ax + pw > g.guiWidth() - 2) {
+            ax = g.guiWidth() - pw - 4;
+            ay = 4;
+        }
+        com.mojang.blaze3d.systems.RenderSystem.enableBlend();
+        g.fill(ax, ay, ax + pw, ay + ph, 0x73000000);
+        int x = ax + PAD, y = ay + PAD;
+        if (cabin) {
+            // cabin air on top, like the suit's oxygen row
+            float o2 = rover.cabinOxygen() / (float) RoverEntity.CABIN_O2_CAPACITY;
+            int c = !rover.cabinPressurized() ? (blink ? 0xFFD04030 : 0xFF601810) : o2 > 0.2F ? 0xFF8FD0F0 : 0xFFE0B030;
+            g.blit(SUIT_ICONS, x, y, 0, 0, 9, 9, 54, 9);
+            bar(g, x + 11, y + 2, rover.cabinPressurized() ? o2 : 0F, c);
+            y += ROW_H;
+        }
+        g.blit(ICONS, x, y, 0, 0, 9, 9, 27, 9);
+        bar(g, x + 11, y + 2, f, battColor);
+        int ix = x + 11 + BAR_W + 3;
+        if (!speedText.isEmpty()) {
+            g.drawString(mc.font, speedText, ix, y + 1, 0xFFE8E8E8, false);
+            ix += mc.font.width(speedText) + 3;
+        }
         if (rover.hasSolar()) {
-            // a dusty roof panel reads in rust instead of blue, with how much of it is covered
-            int dust = Math.round(rover.dust() * 100);
-            Component solar = dust >= 5 ? Component.translatable("hud.spacebreaker.rover.solar_dusty", dust)
-                    : Component.translatable("hud.spacebreaker.rover.solar");
-            g.drawString(mc.font, solar, ix, y - 2, dust >= 5 ? 0xFFC8854A : 0xFF8FB8F0, true);
-            ix += mc.font.width(solar) + 4;
+            if (rover.dust() >= 0.05F) {
+                g.setColor(0.85F, 0.55F, 0.35F, 1F);
+            }
+            g.blit(ICONS, ix, y, 9, 0, 9, 9, 27, 9);
+            g.setColor(1F, 1F, 1F, 1F);
+            ix += 10;
         }
         if (rover.hasRtg()) {
-            g.drawString(mc.font, Component.translatable("hud.spacebreaker.rover.rtg"), ix, y - 2, rover.hasPellet() ? 0xFFF0C040 : 0xFF808080, true);
+            if (!rover.hasPellet()) {
+                g.setColor(0.45F, 0.45F, 0.45F, 1F);
+            }
+            g.blit(ICONS, ix, y, 18, 0, 9, 9, 27, 9);
+            g.setColor(1F, 1F, 1F, 1F);
         }
-        if (rover.roverType().cabin()) {
-            // cabin air above the battery line: blue while pressurised, red when the tank is empty
-            int o2 = Math.round(rover.cabinOxygen() * 100F / RoverEntity.CABIN_O2_CAPACITY);
-            Component cabin = rover.cabinPressurized() ? Component.translatable("hud.spacebreaker.rover.cabin", o2)
-                    : Component.translatable("hud.spacebreaker.rover.cabin_empty");
-            g.drawString(mc.font, cabin, x, y - 22, rover.cabinPressurized() ? (o2 > 20 ? 0xFF8FD0F0 : 0xFFE0B030) : 0xFFD04030, true);
+    }
+
+    private static void bar(GuiGraphics g, int x, int y, float fill, int color) {
+        g.fill(x, y, x + BAR_W, y + 5, 0xBF101014);
+        g.fill(x + 1, y + 1, x + BAR_W - 1, y + 4, 0xBF2A2C33);
+        int w = Math.round((BAR_W - 2) * Mth.clamp(fill, 0F, 1F));
+        if (w > 0) {
+            g.fill(x + 1, y + 1, x + 1 + w, y + 4, color);
         }
     }
 }

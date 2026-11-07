@@ -1,7 +1,7 @@
 ---
 title: Space Station
 icon: spacebreaker:docking_port
-items: [spacebreaker:station_kit, spacebreaker:habitat_kit, spacebreaker:station_hull, spacebreaker:station_window, spacebreaker:docking_port, spacebreaker:station_bunk, spacebreaker:fuel_depot, spacebreaker:solar_array, spacebreaker:crew_capsule_large, spacebreaker:cargo_module, spacebreaker:station_core_module, spacebreaker:docking_module, spacebreaker:station_hatch]
+items: [spacebreaker:station_kit, spacebreaker:habitat_kit, spacebreaker:station_hull, spacebreaker:station_window, spacebreaker:docking_port, spacebreaker:station_bunk, spacebreaker:fuel_depot, spacebreaker:solar_array, spacebreaker:crew_capsule_large, spacebreaker:cargo_module, spacebreaker:station_core_module, spacebreaker:docking_module, spacebreaker:habitation_module, spacebreaker:airlock_module, spacebreaker:solar_wings, spacebreaker:station_hatch]
 research: spacebreaker:space_stations
 ---
 A home, workshop and fuel depot in orbit. You no longer have to fuel your rocket from the ground every time.
@@ -25,6 +25,17 @@ Ready-made modules join through standard **mouths**: a 3 × 3 opening at walking
 **By rocket:** modules fit the capsule slot. A module rocket docks at the station in its orbit and leaves the module waiting in the core console; open the console to take it. With no station within 512 blocks, a core module unfolds a new station ahead of the rocket, which docks on its roof.
 {recipe spacebreaker:rocketry/station_core_module}
 {recipe spacebreaker:rocketry/docking_module}
+
+### Living, airlock and power {#stage2}
+{items spacebreaker:habitation_module spacebreaker:airlock_module spacebreaker:solar_wings}
+- **{item spacebreaker:habitation_module}** (7 × 5 × 9): living quarters with three bunks in sleeping pods, two barrel lockers, two window bands, roof lights and a sealed mouth at the far end so the station can grow on.
+- **{item spacebreaker:airlock_module}** (5 × 5 × 5): an airlock door into the station, an airlock door to space and a small chamber between them. Close the inner door before you open the outer one, and the station keeps its air while you step out.
+- **{item spacebreaker:solar_wings}**: built outside the hull, so the mouth stays sealed; its middle hatch becomes a battery bank feeding the station. A boom of grate and copper cable runs out from a rotary joint and carries **four solar arrays**, two on each side, with an antenna at the tip.
+
+They are attached and delivered like the core and the docking module.
+{recipe spacebreaker:rocketry/habitation_module}
+{recipe spacebreaker:rocketry/airlock_module}
+{recipe spacebreaker:rocketry/solar_wings}
 
 ## Habitat module kit
 {items spacebreaker:habitat_kit}

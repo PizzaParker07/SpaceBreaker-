@@ -12,7 +12,6 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
@@ -145,11 +144,12 @@ public final class BlueprintClient {
         VertexConsumer lines = buffers.getBuffer(RenderType.lines());
         for (BlockPos p : CACHE.wrong) {
             AABB box = new AABB(p).inflate(0.004).move(-cam.x, -cam.y, -cam.z);
-            LevelRenderer.renderLineBox(pose, lines, box, 1F, 0.25F, 0.2F, 1F);
+            com.pizzaparker07.spacebreaker.compat.client.ClippedLines.boxRelative(pose, lines, box, mc.gameRenderer.getMainCamera(), 1F, 0.25F, 0.2F, 1F);
         }
         // faint frame around the whole projection
         AABB all = new AABB(Vec3.atLowerCornerOf(CACHE.min), Vec3.atLowerCornerOf(CACHE.max).add(1, 1, 1)).move(-cam.x, -cam.y, -cam.z);
-        LevelRenderer.renderLineBox(pose, lines, all, 0.45F, 0.85F, 1F, 0.35F);
+        // edges clipped at the camera: from inside the projection a line behind the eye would fill the screen under Iris
+        com.pizzaparker07.spacebreaker.compat.client.ClippedLines.boxRelative(pose, lines, all, mc.gameRenderer.getMainCamera(), 0.45F, 0.85F, 1F, 0.35F);
         buffers.endBatch(RenderType.lines());
     }
 
@@ -169,7 +169,9 @@ public final class BlueprintClient {
 
     static void materials(GuiGraphics g, DeltaTracker delta) {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.player == null || mc.options.hideGui || CACHE.key() == null || CACHE.def() == null || held(mc.player) == null) {
+        // hidden while the blueprint screen is open (it lists the same things)
+        if (mc.player == null || mc.options.hideGui || mc.screen instanceof BlueprintScreen || CACHE.key() == null || CACHE.def() == null
+                || held(mc.player) == null) {
             return;
         }
         var font = mc.font;

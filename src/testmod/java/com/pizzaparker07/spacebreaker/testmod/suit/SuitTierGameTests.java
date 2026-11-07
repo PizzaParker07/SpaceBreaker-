@@ -366,4 +366,20 @@ public final class SuitTierGameTests {
         helper.assertTrue(com.pizzaparker07.spacebreaker.client.hud.CockpitReadout.name("ship-7").getString().equals("ship-7"), "other names as written");
         helper.succeed();
     }
+
+    /** The cockpit target marker's projection: ahead lands on screen, behind gives a direction for the edge arrow. */
+    @GameTest(template = "empty")
+    public static void cockpitTargetProjection(GameTestHelper helper) {
+        var view = new org.joml.Matrix4f();
+        var proj = new org.joml.Matrix4f().perspective((float) Math.toRadians(70), 16F / 9F, 0.05F, 1000F);
+        var cam = net.minecraft.world.phys.Vec3.ZERO;
+        double[] ahead = com.pizzaparker07.spacebreaker.client.hud.CockpitHud.project(view, proj, cam, new net.minecraft.world.phys.Vec3(0, 0, -100), 10, 640, 360);
+        helper.assertTrue(ahead[2] == 1 && Math.abs(ahead[0] - 320) < 1 && Math.abs(ahead[1] - 180) < 1, "straight ahead: the screen centre");
+        helper.assertTrue(ahead[3] > 10 && ahead[3] < 40, "a 10-block body 100 blocks away is a few dozen pixels, got " + ahead[3]);
+        double[] right = com.pizzaparker07.spacebreaker.client.hud.CockpitHud.project(view, proj, cam, new net.minecraft.world.phys.Vec3(30, 0, -100), 1, 640, 360);
+        helper.assertTrue(right[2] == 1 && right[0] > 320, "to the right: right of centre");
+        double[] behind = com.pizzaparker07.spacebreaker.client.hud.CockpitHud.project(view, proj, cam, new net.minecraft.world.phys.Vec3(-5, 0, 100), 1, 640, 360);
+        helper.assertTrue(behind[2] == 0 && behind[0] < 320, "behind and to the left: off screen, pointing left, got " + behind[0]);
+        helper.succeed();
+    }
 }

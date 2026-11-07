@@ -44,6 +44,7 @@ public final class CompatGameTests {
         expect(helper, access, "pluto", Kind.AIRLESS);
         expect(helper, access, "earth_orbit", Kind.ORBIT);
         expect(helper, access, "moon_orbit", Kind.ORBIT);
+        expect(helper, access, "orbit", Kind.ORBIT);
         expect(helper, access, "mars", Kind.THIN_ATMOSPHERE);
         expect(helper, access, "venus", Kind.THICK_ATMOSPHERE);
         expect(helper, access, "titan", Kind.THICK_ATMOSPHERE);
