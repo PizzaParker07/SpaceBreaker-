@@ -59,6 +59,7 @@ public final class WorldgenModule implements SbModule {
         Subsurface.register();
         MeteorShowers.register();
         CometNotice.register();
+        EclipseState.register();
         BIOME_SOURCES.register(modBus);
         FEATURES.register(modBus);
         ModLoadingContext.get().getActiveContainer().registerConfig(ModConfig.Type.SERVER, WorldgenConfig.SPEC, "spacebreaker-worlds-server.toml");
@@ -108,6 +109,22 @@ public final class WorldgenModule implements SbModule {
                     ctx.getSource().sendSuccess(() -> Component.translatable("commands.spacebreaker.meteorshower.started"), true);
                     return 1;
                 })));
+        event.getDispatcher().register(Commands.literal("spacebreaker").then(Commands.literal("eclipse").executes(ctx -> {
+            double secs = EclipseState.secondsToNext(ctx.getSource().getLevel());
+            if (Double.isNaN(secs)) {
+                ctx.getSource().sendFailure(Component.translatable("commands.spacebreaker.eclipse.none"));
+                return 0;
+            }
+            if (EclipseState.coverage(ctx.getSource().getLevel()) > 0) {
+                ctx.getSource().sendSuccess(() -> Component.translatable("commands.spacebreaker.eclipse.now"), false);
+                return 1;
+            }
+            long s = Math.round(secs);
+            String when = s >= 3600 ? String.format(Locale.ROOT, "%d:%02d:%02d", s / 3600, s / 60 % 60, s % 60)
+                    : String.format(Locale.ROOT, "%d:%02d", s / 60, s % 60);
+            ctx.getSource().sendSuccess(() -> Component.translatable("commands.spacebreaker.eclipse.next", when), false);
+            return 1;
+        })));
         event.getDispatcher().register(Commands.literal("spacebreaker").then(Commands.literal("localtime")
                 .requires(s -> s.hasPermission(2))
                 .then(Commands.literal("query").executes(ctx -> {
@@ -164,6 +181,12 @@ public final class WorldgenModule implements SbModule {
                 "Mikrometeorit yağmuru yalnız havasız gezegen yüzeylerinde olur");
         lang.add("message.spacebreaker.great_comet", "Mission control: great comet %s is in your sky! Look low in the sky after dusk or before dawn",
                 "Görev kontrol: büyük kuyruklu yıldız %s gökyüzünde! Akşam karanlığından sonra ya da şafaktan önce ufka yakın bak");
+        lang.add("message.spacebreaker.eclipse.soon", "Mission control: in about a minute %s will pass in front of the Sun. Watch its ring of sunsets",
+                "Görev kontrol: yaklaşık bir dakika sonra %s Güneş'in önünden geçecek. Gün batımlarından oluşan halkasını izle");
+        lang.add("message.spacebreaker.eclipse.now", "Eclipse: %s hides the Sun; solar panels go dark", "Tutulma: %s Güneş'i örtüyor; güneş panelleri kararıyor");
+        lang.add("commands.spacebreaker.eclipse.next", "Next eclipse of the Sun in %s (real time)", "Sıradaki Güneş tutulması %s sonra (gerçek zaman)");
+        lang.add("commands.spacebreaker.eclipse.now", "An eclipse is happening now", "Şu anda tutulma var");
+        lang.add("commands.spacebreaker.eclipse.none", "No eclipse of the Sun from here within a year", "Buradan bir yıl içinde Güneş tutulması yok");
         lang.add("commands.spacebreaker.localtime.none", "This world follows Earth's clock", "Bu dünya Dünya'nın saatini kullanıyor");
     }
 }

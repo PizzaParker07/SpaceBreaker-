@@ -137,6 +137,12 @@ final class MoonScenario implements ShowcaseScenario {
         // 11: lunar night under a full Earth
         s.add(new ShowcaseDriver.Shot("10_night_full_earth", 0, vx, gy + 3, vz, earthYaw, pitch(earth.x, earth.y, earth.z) * 0.7F,
                 true, fp, 80, at(0.75), null));
+        // 2000-01-21: Earth hides the Sun (the total lunar eclipse seen from the Moon) - the ring of all Earth's sunsets
+        long eclipseTicks = com.pizzaparker07.spacebreaker.core.astro.GameClock.ticks(1701776.0,
+                com.pizzaparker07.spacebreaker.core.astro.BodyAdapter.timeScale()) - 70; // taken ~36 ticks later, near mid-eclipse in the model
+        s.add(new ShowcaseDriver.Shot("10b_eclipse_from_moon", 0, vx, gy + 3, vz, earthYaw, pitch(earth.x, earth.y, earth.z) * 0.85F,
+                true, fp, 40, at(0.25, p -> ((net.minecraft.world.level.storage.ServerLevelData) p.server.getWorldData().overworldData())
+                        .setGameTime(eclipseTicks)), null));
         // micrometeorite shower at night: streaks across the sky, dust puffs on the ground
         s.add(new ShowcaseDriver.Shot("11_micrometeorite_shower", 0, vx, gy + 2, vz, earthYaw + 60F, -35F, true, fp, 80,
                 at(0.75, p -> com.pizzaparker07.spacebreaker.content.worldgen.MeteorShowers.start(p.serverLevel(), 1200)), null));
