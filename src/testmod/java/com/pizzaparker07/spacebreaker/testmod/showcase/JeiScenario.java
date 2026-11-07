@@ -50,7 +50,8 @@ final class JeiScenario implements ShowcaseScenario {
                     }
                 }));
         // items added later by other areas (crafted with vanilla recipes or fabricated): their recipes must show up
-        for (String item : new String[]{"rover", "rtg", "space_probe", "comm_satellite", "observation_satellite", "crew_capsule_large"}) {
+        for (String item : new String[]{"rover", "rtg", "space_probe", "comm_satellite", "observation_satellite", "crew_capsule_large",
+                "cargo_module", "landing_beacon", "suit_station", "regolith_excavator", "aerostat_kit", "descent_probe", "solar_array"}) {
             String name = String.format("%02d_recipe_%s", ++n, item);
             s.add(new ShowcaseDriver.Shot(name, 6000, 0.5, -55, 0.5, 0F, 20F, false, fp, 60, null,
                     () -> {
