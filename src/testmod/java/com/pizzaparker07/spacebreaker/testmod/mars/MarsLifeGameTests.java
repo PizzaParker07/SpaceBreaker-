@@ -463,6 +463,59 @@ public final class MarsLifeGameTests {
         helper.succeed();
     }
 
+    /** Mars' air pressure follows the caps through the year: lowest in southern winter, highest in southern summer. */
+    @GameTest(template = EMPTY)
+    public static void marsPressureBreathesWithTheSeasons(GameTestHelper helper) {
+        double min = 2;
+        double max = 0;
+        double minLs = 0;
+        double maxLs = 0;
+        double sum = 0;
+        for (int ls = 0; ls < 360; ls++) {
+            double f = com.pizzaparker07.spacebreaker.content.mars.MarsSeasons.pressureFactor(ls);
+            sum += f;
+            if (f < min) {
+                min = f;
+                minLs = ls;
+            }
+            if (f > max) {
+                max = f;
+                maxLs = ls;
+            }
+        }
+        helper.assertTrue(Math.abs(sum / 360 - 1) < 1e-3, "the yearly mean is the body's pressure");
+        helper.assertTrue(min > 0.85 && min < 0.9 && minLs > 140 && minLs < 180, "lowest in southern winter: " + min + " at Ls " + minLs);
+        helper.assertTrue(max > 1.1 && max < 1.15 && maxLs > 240 && maxLs < 290, "highest in southern summer: " + max + " at Ls " + maxLs);
+        helper.succeed();
+    }
+
+    /**
+     * Water-ice clouds: canyon fog thickest just after sunrise and gone by noon and at night, filling the floor and
+     * thinning upward; the aphelion cloud belt over the equator around Ls 95, absent in southern summer.
+     */
+    @GameTest(template = EMPTY)
+    public static void marsIceCloudsFollowTimeAndSeason(GameTestHelper helper) {
+        var C = new Object() {
+            double fog(double f) {
+                return com.pizzaparker07.spacebreaker.content.mars.MarsClouds.canyonFog(f);
+            }
+
+            double belt(double ls, double lat) {
+                return com.pizzaparker07.spacebreaker.content.mars.MarsClouds.cloudBelt(ls, lat);
+            }
+        };
+        helper.assertTrue(C.fog(0.02) > 0.9, "thick fog just after sunrise, got " + C.fog(0.02));
+        helper.assertTrue(C.fog(0.10) < C.fog(0.04), "it burns off through the morning");
+        helper.assertTrue(C.fog(0.25) == 0 && C.fog(0.5) == 0 && C.fog(0.75) == 0, "none at noon, sunset or midnight");
+        helper.assertTrue(C.fog(0.94) == 0 && C.fog(0.98) > 0, "it gathers in the last hour before sunrise");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.mars.MarsClouds.fogAtHeight(2) == 1, "the canyon floor is in the fog");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.mars.MarsClouds.fogAtHeight(40) == 0, "the rims stand above it");
+        helper.assertTrue(C.belt(95, 0) > 0.99, "the aphelion belt over the equator");
+        helper.assertTrue(C.belt(95, 60) < 0.5 * C.belt(95, 0), "thinner far from the equator");
+        helper.assertTrue(C.belt(270, 0) == 0 && C.belt(200, 0) == 0, "no belt in southern summer");
+        helper.succeed();
+    }
+
     private MarsLifeGameTests() {
     }
 }

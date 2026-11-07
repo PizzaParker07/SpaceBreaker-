@@ -43,15 +43,42 @@ public final class MarsSeasons {
 
     // ------------------------------------------------------------------ the calendar
 
-    /** Sols since the start of the clock (fractional), including any season set by command. */
-    public static double sol(ServerLevel level) {
+    /** Season offset (sols) known on the client, synced from the server. */
+    private static volatile double clientOffsetSols;
+
+    /** Server → client: the season offset set by command, so the client's sky follows the same calendar. */
+    public record Payload(double offsetSols) implements net.minecraft.network.protocol.common.custom.CustomPacketPayload {
+        public static final Type<Payload> TYPE = new Type<>(com.pizzaparker07.spacebreaker.Spacebreaker.id("mars_season"));
+        public static final net.minecraft.network.codec.StreamCodec<io.netty.buffer.ByteBuf, Payload> STREAM_CODEC =
+                net.minecraft.network.codec.ByteBufCodecs.DOUBLE.map(Payload::new, Payload::offsetSols);
+
+        @Override
+        public Type<? extends net.minecraft.network.protocol.common.custom.CustomPacketPayload> type() {
+            return TYPE;
+        }
+    }
+
+    static void receive(Payload payload) {
+        clientOffsetSols = payload.offsetSols();
+    }
+
+    static void syncTo(ServerPlayer player) {
+        var mars = player.server.getLevel(MarsModule.MARS);
+        if (mars != null) {
+            net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(player, new Payload(data(mars).offsetSols));
+        }
+    }
+
+    /** Sols since the start of the clock (fractional), including any season set by command. Works on both sides. */
+    public static double sol(net.minecraft.world.level.Level level) {
         long dayTicks = PlanetTime.clock(level).map(PlanetTime.Clock::dayTicks).orElse(24000L);
         long offset = PlanetTime.clock(level).map(PlanetTime.Clock::offset).orElse(0L);
-        return (level.getDayTime() + offset) / (double) dayTicks + data(level).offsetSols;
+        double extra = level instanceof ServerLevel server ? data(server).offsetSols : clientOffsetSols;
+        return (level.getDayTime() + offset) / (double) dayTicks + extra;
     }
 
     /** Areocentric solar longitude Ls in degrees: 0 northern spring, 90 northern summer, 180 autumn, 270 winter. */
-    public static double ls(ServerLevel level) {
+    public static double ls(net.minecraft.world.level.Level level) {
         return 360.0 * Mth.frac(sol(level) / YEAR_SOLS);
     }
 
@@ -113,6 +140,19 @@ public final class MarsSeasons {
         d.offsetSols += (Mth.positiveModulo(ls - now, 360)) / 360.0 * YEAR_SOLS;
         d.lastSeason = season(ls);
         d.setDirty();
+        net.neoforged.neoforge.network.PacketDistributor.sendToAllPlayers(new Payload(d.offsetSols));
+    }
+
+    // ------------------------------------------------------------------ pressure
+
+    /**
+     * Surface pressure relative to the yearly mean at this Ls. About a quarter of Mars' air freezes onto the winter
+     * cap, and the southern cap is the bigger one: pressure is lowest in southern winter (Ls ~160, -13 %) and highest
+     * in southern summer (Ls ~265, +13 %), with a smaller swing in between, as the Viking landers measured.
+     */
+    public static double pressureFactor(double ls) {
+        double r = Math.toRadians(ls);
+        return 1 + 0.0382 * Math.cos(r) - 0.0569 * Math.sin(r) - 0.0730 * Math.cos(2 * r) + 0.0369 * Math.sin(2 * r);
     }
 
     // ------------------------------------------------------------------ frost
