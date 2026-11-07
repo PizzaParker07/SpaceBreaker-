@@ -30,7 +30,7 @@ import java.util.WeakHashMap;
  * Micrometeorite showers on airless worlds: with no air to burn them up, grains of dust and sand hit the ground at
  * many kilometres per second. Now and then a shower passes: a warning a minute ahead on the action bar, bright
  * streaks across the sky, puffs of dust where grains strike, and a player standing in the open takes small hits that
- * also wear the suit. Any roof overhead (a pressurised module, a hut, a cave or lava tube) keeps you safe. Rare,
+ * also wear their armour (at most three hearts per shower, half as much in a sealed suit). Any roof overhead (a pressurised module, a hut, a cave or lava tube) keeps you safe. Rare,
  * short and never locking you in; can be switched off in the server config.
  */
 public final class MeteorShowers {
@@ -42,6 +42,10 @@ public final class MeteorShowers {
     public static final int WEAR = 3;
     /** Chance per tick that an exposed player is hit during a shower. */
     public static final float HIT_CHANCE = 1F / 70F;
+    /** A sealed suit takes the edge off: damage per hit with helmet and suit on. */
+    public static final float SUITED_DAMAGE = 0.5F;
+    /** Most health one shower can take from one player (3 hearts), so it never becomes a death trap. */
+    public static final float MAX_PER_SHOWER = 6F;
     private static final Map<ServerLevel, State> STATES = new WeakHashMap<>();
 
     /** Per-level schedule: the next shower starts at {@code start} and lasts {@code duration}. */
@@ -51,6 +55,7 @@ public final class MeteorShowers {
         boolean warned;
         boolean running;
         boolean manual;
+        final Map<java.util.UUID, Float> dealt = new java.util.HashMap<>();
     }
 
     private MeteorShowers() {
@@ -88,6 +93,7 @@ public final class MeteorShowers {
         s.warned = true;
         s.running = false;
         s.manual = true;
+        s.dealt.clear();
     }
 
     /** True if a player is out in the open where grains can reach them. */
@@ -101,15 +107,23 @@ public final class MeteorShowers {
         return level.getHeight(Heightmap.Types.MOTION_BLOCKING, eye.getX(), eye.getZ()) <= eye.getY();
     }
 
-    /** One micrometeorite hit: a little damage and wear on one worn suit piece. */
-    public static void strike(LivingEntity entity, RandomSource random) {
+    /** Damage of one hit for this wearer: less in a sealed suit. */
+    public static float damageFor(LivingEntity entity) {
+        return com.pizzaparker07.spacebreaker.content.suit.SpaceSuitItem.isSealed(entity) ? SUITED_DAMAGE : DAMAGE;
+    }
+
+    /** One micrometeorite hit: a little damage and wear on one worn armour piece. Returns the damage dealt. */
+    public static float strike(LivingEntity entity, RandomSource random) {
+        float amount = damageFor(entity);
         DamageSource source = new DamageSource(entity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(MICROMETEORITE));
-        entity.hurt(source, DAMAGE);
+        entity.hurt(source, amount);
         EquipmentSlot[] armour = {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
         for (int i = 0; i < 4; i++) {
             EquipmentSlot slot = armour[(random.nextInt(4) + i) % 4];
             ItemStack piece = entity.getItemBySlot(slot);
-            if (!piece.isEmpty() && piece.isDamageableItem()) {
+            // EVA suit pieces are left alone until the suit's own wear model takes over (they must never leak from this)
+            if (!piece.isEmpty() && piece.isDamageableItem()
+                    && !(piece.getItem() instanceof com.pizzaparker07.spacebreaker.content.suit.SpaceSuitItem)) {
                 piece.hurtAndBreak(WEAR, entity, slot);
                 break;
             }
@@ -117,6 +131,7 @@ public final class MeteorShowers {
         if (entity.level() instanceof ServerLevel server) {
             server.sendParticles(ParticleTypes.CRIT, entity.getX(), entity.getEyeY(), entity.getZ(), 6, 0.2, 0.2, 0.2, 0.3);
         }
+        return amount;
     }
 
     /** Mean ticks between showers and their length, from the server config. */
@@ -167,8 +182,9 @@ public final class MeteorShowers {
             }
             for (ServerPlayer p : level.players()) {
                 if (exposed(p)) {
-                    if (level.random.nextFloat() < HIT_CHANCE) {
-                        strike(p, level.random);
+                    float dealt = s.dealt.getOrDefault(p.getUUID(), 0F);
+                    if (level.random.nextFloat() < HIT_CHANCE && dealt + damageFor(p) <= MAX_PER_SHOWER) {
+                        s.dealt.put(p.getUUID(), dealt + strike(p, level.random));
                     }
                     if (level.random.nextInt(4) == 0) {
                         impact(level, p);
@@ -205,6 +221,7 @@ public final class MeteorShowers {
         s.warned = false;
         s.running = false;
         s.manual = false;
+        s.dealt.clear();
     }
 
     private static void tell(ServerLevel level, Component msg) {

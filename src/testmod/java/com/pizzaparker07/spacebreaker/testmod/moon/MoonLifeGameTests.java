@@ -395,7 +395,12 @@ public final class MoonLifeGameTests {
         helper.assertTrue(player.getHealth() <= health - com.pizzaparker07.spacebreaker.content.worldgen.MeteorShowers.DAMAGE + 0.01F,
                 "a hit costs health: " + health + " -> " + player.getHealth());
         helper.assertTrue(player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.CHEST).getDamageValue()
-                >= com.pizzaparker07.spacebreaker.content.worldgen.MeteorShowers.WEAR, "a hit wears the suit");
+                >= com.pizzaparker07.spacebreaker.content.worldgen.MeteorShowers.WEAR, "a hit wears the armour");
+        // a shower is capped: even unlucky, it can take at most a few hearts
+        float worst = com.pizzaparker07.spacebreaker.content.worldgen.MeteorShowers.MAX_PER_SHOWER;
+        helper.assertTrue(worst <= 6F, "at most three hearts per shower");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.worldgen.MeteorShowers.SUITED_DAMAGE
+                < com.pizzaparker07.spacebreaker.content.worldgen.MeteorShowers.DAMAGE, "a sealed suit softens the hits");
         BlockPos eye = BlockPos.containing(player.getEyePosition());
         boolean skyOpen = helper.getLevel().getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, eye.getX(), eye.getZ()) <= eye.getY();
         helper.assertTrue(com.pizzaparker07.spacebreaker.content.worldgen.MeteorShowers.exposed(player) == skyOpen, "in the open you are exposed");
