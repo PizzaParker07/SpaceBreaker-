@@ -83,6 +83,18 @@ public final class NeptuneGameTests {
         helper.assertFalse(b.causeFallDamage(30F, 1F, helper.getLevel().damageSources().fall()), "and it never takes fall damage");
         helper.assertTrue(b.isFood(new ItemStack(NeptuneModule.PLUME_DUST.get())), "breeds on plume dust");
         helper.assertTrue(new ItemStack(NeptuneModule.METHANE_CLATHRATE.get()).getBurnTime(RecipeType.SMELTING) == 1600, "clathrate burns like coal");
+        // the plume rains dust around the geyser: a renewable food for the beetles, capped so it never piles up
+        VentBlock geyser = (VentBlock) NeptuneModule.NITROGEN_GEYSER.get();
+        int dropped = 0;
+        for (int i = 0; i < 20; i++) {
+            dropped += VentBlockEntity.fallout(helper.getLevel(), helper.absolutePos(vent), geyser) ? 1 : 0;
+        }
+        helper.assertTrue(dropped == VentBlockEntity.FALLOUT_CAP, "fallout stops at the cap: " + dropped);
+        var dust = helper.getLevel().getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class,
+                new net.minecraft.world.phys.AABB(helper.absolutePos(vent)).inflate(12, 8, 12), e -> e.getItem().is(NeptuneModule.PLUME_DUST.get().asItem()));
+        helper.assertTrue(dust.size() == VentBlockEntity.FALLOUT_CAP, "plume dust lies around the geyser: " + dust.size());
+        dust.forEach(net.minecraft.world.entity.Entity::discard);
+        helper.assertTrue(((VentBlock) com.pizzaparker07.spacebreaker.content.jupiter.JupiterModule.ICE_GEYSER.get()).fallout() == null, "ice geysers rain nothing");
         helper.succeed();
     }
 

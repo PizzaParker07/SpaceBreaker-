@@ -87,6 +87,38 @@ public class VentBlockEntity extends BlockEntity {
             return;
         }
         erupt(level, pos, kind);
+        if (state.getBlock() instanceof VentBlock v && v.fallout() != null && level.getGameTime() % FALLOUT_EVERY == 0) {
+            fallout(level, pos, v);
+        }
+    }
+
+    /** Ticks between two grains of fallout while a vent erupts. */
+    public static final int FALLOUT_EVERY = 120;
+    /** No more fallout while this many of its items already lie around the vent. */
+    public static final int FALLOUT_CAP = 6;
+
+    /**
+     * Drops one item of the vent's fallout a few blocks from it, as if it rained out of the plume. Stops when enough is
+     * already lying around, so an unattended geyser does not pile items up. Returns whether it dropped something.
+     */
+    public static boolean fallout(Level level, BlockPos pos, VentBlock vent) {
+        net.minecraft.world.level.ItemLike item = vent.fallout();
+        if (item == null) {
+            return false;
+        }
+        AABB around = new AABB(pos).inflate(12, 8, 12);
+        int lying = level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, around, e -> e.getItem().is(item.asItem())).size();
+        if (lying >= FALLOUT_CAP) {
+            return false;
+        }
+        RandomSource r = level.random;
+        double a = r.nextDouble() * Math.PI * 2;
+        double d = 2 + r.nextDouble() * 6;
+        var e = new net.minecraft.world.entity.item.ItemEntity(level, pos.getX() + 0.5 + Math.cos(a) * d, pos.getY() + 6,
+                pos.getZ() + 0.5 + Math.sin(a) * d, new net.minecraft.world.item.ItemStack(item));
+        e.setDeltaMovement(0, -0.05, 0);
+        level.addFreshEntity(e);
+        return true;
     }
 
     /** One eruption pulse: lifts (and, for hot vents, burns) everything in the column above the vent. */

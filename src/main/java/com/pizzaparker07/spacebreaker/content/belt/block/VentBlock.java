@@ -33,19 +33,30 @@ public class VentBlock extends BaseEntityBlock {
     }
 
     private final Kind kind;
+    /** What the plume rains down around the vent while it erupts (dust you can collect), or null. */
+    private final java.util.function.Supplier<? extends net.minecraft.world.level.ItemLike> fallout;
 
     public VentBlock(Kind kind, Properties properties) {
+        this(kind, null, properties);
+    }
+
+    public VentBlock(Kind kind, java.util.function.Supplier<? extends net.minecraft.world.level.ItemLike> fallout, Properties properties) {
         super(properties);
         this.kind = kind;
+        this.fallout = fallout;
     }
 
     public Kind kind() {
         return kind;
     }
 
+    public @org.jetbrains.annotations.Nullable net.minecraft.world.level.ItemLike fallout() {
+        return fallout == null ? null : fallout.get();
+    }
+
     @Override
     protected MapCodec<? extends BaseEntityBlock> codec() {
-        return simpleCodec(p -> new VentBlock(kind, p));
+        return simpleCodec(p -> new VentBlock(kind, fallout, p));
     }
 
     /** Whether a vent at this position is erupting at this game time. */
