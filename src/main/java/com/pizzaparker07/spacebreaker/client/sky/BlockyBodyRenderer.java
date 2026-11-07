@@ -171,6 +171,15 @@ public final class BlockyBodyRenderer {
                                float tint, float alpha, Ring ring, Vector3f viewDir) {
         Matrix3f rot = body.rotation(style);
         Vector3f s = new Vector3f(sun).normalize();
+        // line of sight to the body, and "up" on screen around it (for Minecraft's block shading: tops light, sides darker)
+        Vector3f look = viewDir != null ? new Vector3f(viewDir) : new Vector3f(body.center()).normalize();
+        Vector3f screenUp = viewDir != null ? new Vector3f(0, -1, 0) : new Vector3f(0, 1, 0);
+        screenUp.sub(new Vector3f(look).mul(look.dot(screenUp)));
+        if (screenUp.lengthSquared() < 1e-6F) {
+            screenUp.set(0, 0, -1);
+        }
+        screenUp.normalize();
+        Vector3f screenRight = new Vector3f(look).cross(screenUp).normalize();
         List<Quad> quads = new ArrayList<>();
         List<BlockyBodyMesh.Face> faces = BlockyBodyMesh.body(style, n);
         int[] colours = colours(map, faces, false);
@@ -182,8 +191,9 @@ public final class BlockyBodyRenderer {
             if (toward >= 0) {
                 continue; // faces away from the viewer
             }
-            float light = BlockyBodyMesh.light(rot.transform(new Vector3f(f.surface())), normal, s, night) * tint;
-            quads.add(quad(f, rot, body, colours[i], light, alpha, viewDir));
+            float light = BlockyBodyMesh.light(rot.transform(new Vector3f(f.surface())), normal, s, night)
+                    * BlockyBodyMesh.blockShade(normal.dot(screenUp), normal.dot(screenRight)) * tint;
+            quads.add(quad(f, rot, body, colours[i], light, alpha, viewDir, look));
         }
         if (ring != null) {
             List<BlockyBodyMesh.Face> tiles = BlockyBodyMesh.ring(ring.inner(), ring.outer(), Math.max(24, n * 3));
@@ -198,7 +208,7 @@ public final class BlockyBodyRenderer {
                 Vector3f normal = rot.transform(new Vector3f(0, 1, 0));
                 float lit = shadow ? night : Math.max(night, 0.55F + 0.45F * Math.abs(normal.dot(s)));
                 int c = bands[i];
-                quads.add(quad(f, rot, body, c, lit * tint, alpha * ((c >>> 24) / 255F), viewDir));
+                quads.add(quad(f, rot, body, c, lit * tint, alpha * ((c >>> 24) / 255F), viewDir, look));
             }
         }
         if (quads.isEmpty()) {
@@ -237,16 +247,32 @@ public final class BlockyBodyRenderer {
         }
     }
 
-    private static Quad quad(BlockyBodyMesh.Face f, Matrix3f rot, Pose body, int rgb, float light, float alpha, Vector3f viewDir) {
+    /**
+     * How much of a body's depth is kept when it is drawn: a big body close to the camera would otherwise bulge like a
+     * pillow in perspective. Flattened along the line of sight it looks like an item in a picture, with straight edges,
+     * while the small depth left keeps its faces correctly in front of each other.
+     */
+    static final float DEPTH_KEPT = 0.04F;
+
+    private static Quad quad(BlockyBodyMesh.Face f, Matrix3f rot, Pose body, int rgb, float light, float alpha, Vector3f viewDir,
+                             Vector3f look) {
         Vector3f c = rot.transform(new Vector3f(f.center())).mul(body.radius()).add(body.center());
         Vector3f u = rot.transform(new Vector3f(f.u())).mul(body.radius());
         Vector3f v = rot.transform(new Vector3f(f.v())).mul(body.radius());
         float[] xyz = new float[12];
         int k = 0;
         for (float[] s : new float[][]{{-1, -1}, {1, -1}, {1, 1}, {-1, 1}}) {
-            xyz[k++] = c.x + u.x * s[0] + v.x * s[1];
-            xyz[k++] = c.y + u.y * s[0] + v.y * s[1];
-            xyz[k++] = c.z + u.z * s[0] + v.z * s[1];
+            Vector3f p = new Vector3f(c).add(new Vector3f(u).mul(s[0])).add(new Vector3f(v).mul(s[1]));
+            if (viewDir == null) {
+                // offset from the body centre: keep its sideways part, squeeze its depth
+                Vector3f d = p.sub(body.center());
+                float along = d.dot(look);
+                d.sub(new Vector3f(look).mul(along * (1 - DEPTH_KEPT)));
+                p = d.add(body.center());
+            }
+            xyz[k++] = p.x;
+            xyz[k++] = p.y;
+            xyz[k++] = p.z;
         }
         float l = Mth.clamp(light, 0, 1);
         int r = (int) ((rgb >> 16 & 255) * l);

@@ -153,6 +153,27 @@ public final class BlockyBodyMesh {
         return Math.max(night, lit * side);
     }
 
+    /**
+     * Minecraft's block shading by which way a face points on screen: faces turned up are lit fully, faces toward the
+     * viewer nearly so, sideways ones darker and those turned down darkest, so a ball of blocks reads as a solid and
+     * not as a flat disc.
+     *
+     * @param up   dot product of the face normal with the screen's up direction
+     * @param side dot product of the face normal with the screen's right direction
+     */
+    public static float blockShade(float up, float side) {
+        if (up > 0.5F) {
+            return 1F;
+        }
+        if (up < -0.5F) {
+            return 0.55F;
+        }
+        if (Math.abs(side) > 0.5F) {
+            return 0.7F;
+        }
+        return 0.9F;
+    }
+
     /** Longitude (radians, -pi..pi, 0 toward +Z, east toward +X) and latitude of a body-space direction. */
     public static double longitude(Vector3f d) {
         return Math.atan2(d.x, d.z);
