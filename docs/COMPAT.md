@@ -194,6 +194,9 @@ Complementary the tint is weaker (the pack re-lights translucent entities) but t
   there, so the two do not stack. With a pack the storm looks a little thinner than vanilla because the pack lights
   the ground brighter under the same fog amount and colour. Dust devils render and cast pack shadows.
   `mars_storm_haze_steps.jpg`: vanilla, pack with `atmosphereHaze = false`, pack with the haze, dust devil.
+- **Mars lander and the launch console:** the lander on Mars looks as without shaders; the console is a screen,
+  drawn after the pack's frame, so its rows (including the cargo route row of uncrewed cargo rockets) cannot be
+  affected by a pack (`mars_lander_console_vanilla_vs_iris.jpg`).
 - **Docking jolt:** a camera roll/pitch from `ViewportEvent.ComputeCameraAngles`; Iris builds its matrices from the
   same camera, so the shake is the same with a pack (at most about 2°, too small to tell apart in a still frame).
 - **Inside a closed module the pack's ambient fill is blue:** the airless sky colour handed to the pack
@@ -282,7 +285,10 @@ when a `ProcessingRecipe.Kind` in `MachinesModule` has no category).
 Vehicles and spacecraft made at a crafting table (rover, RTG, space probe, communication and observation
 satellites, 3-crew capsule) are plain `minecraft:crafting_shaped` recipes: both viewers list them in their own
 Crafting category with no help from us (`jei_crafted_vehicles.jpg`, `emi_crafted_vehicles.jpg`; showcase shots
-`*_recipe_<item>`).
+`*_recipe_<item>`). Also checked: cargo module, landing beacon, suit maintenance station, regolith excavator,
+aerostat platform kit, Venus descent probe and solar array (`jei_emi_night_additions.jpg`, JEI top, EMI bottom);
+their recipe tags are named, so EMI reports no untranslated tags. The Mars lander, like every rocket, is assembled,
+not crafted: the Rocket Assembler information page covers it.
 
 Screenshots: `jei_*` and `emi_*`. Test: `./gradlew runShowcase -Pscenario=jei -PwithJei=true` or
 `-Pscenario=emi -PwithEmi=true` (JEI/EMI come from maven.blamejared.com / maven.terraformersmc.com).
