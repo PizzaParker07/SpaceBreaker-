@@ -159,6 +159,9 @@ public class OrbitSkyEffects extends DimensionSpecialEffects {
         colors.lerp(new org.joml.Vector3f(0.75F, 0.75F, 0.75F), 0.04F);
     }
 
+    /** Angular radius of the body below as seen from orbit (degrees); the ascent sky grows towards it. */
+    static final float ORBIT_ANGULAR_RADIUS = 68F;
+
     @Override
     public boolean renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelView, Camera camera, Matrix4f projection,
                              boolean isFoggy, Runnable setupFog) {
@@ -176,9 +179,9 @@ public class OrbitSkyEffects extends DimensionSpecialEffects {
         if (lit > 0.01F) {
             SkyDraw.billboard(modelView, SUN, sun, 100F, sunSize(body), lit);
         }
-        // the body below, seen from a high orbit (angular radius ~50 degrees) so the whole curve reads
+        // the body below, seen from low orbit: the horizon dips ~22 degrees, so the curve fills the lower view
         Vector3f center = new Vector3f(0, -100F, 0);
-        float radius = 76F;
+        float radius = 100F * Mth.sin(ORBIT_ANGULAR_RADIUS * Mth.DEG_TO_RAD);
         if (Location.EARTH.equals(body)) {
             SkyDraw.billboard(modelView, MOON_DISC, new Vector3f(0.7F, 0.45F, -0.55F), 100F, 2.4F, 1F);
             SkyDraw.planet(modelView, EARTH, center, radius, orbit, sun, 0.05F, 1F, false);

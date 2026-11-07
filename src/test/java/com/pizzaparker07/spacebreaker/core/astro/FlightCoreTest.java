@@ -1,0 +1,122 @@
+package com.pizzaparker07.spacebreaker.core.astro;
+
+import com.pizzaparker07.spacebreaker.core.astro.flight.FlightState;
+import com.pizzaparker07.spacebreaker.core.astro.flight.Gravity;
+import com.pizzaparker07.spacebreaker.core.astro.flight.OrbitPredictor;
+import com.pizzaparker07.spacebreaker.core.astro.flight.SceneScale;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.function.BiFunction;
+
+import static com.pizzaparker07.spacebreaker.core.astro.AstroConstants.DAY;
+import static org.junit.jupiter.api.Assertions.*;
+
+class FlightCoreTest {
+    private static final BodySystem SYS = SolarSystemData.system();
+    private static final AstroBody EARTH = SYS.require("spacebreaker:earth"), MOON = SYS.require("spacebreaker:moon"),
+            SUN = SYS.require("spacebreaker:sun");
+
+    @Test
+    void sceneScale() {
+        SceneScale s = SceneScale.EARTH_MOON;
+        assertEquals(128, s.blocks(EARTH.radius()), 1e-9, "Earth's surface");
+        double moon = s.blocks(384_400e3);
+        assertTrue(moon > 2000 && moon < 2500, "the Moon is ≈ 2 200 blocks out: " + moon);
+        double leo = s.blocks(EARTH.radius() + 200e3) - 128;
+        assertTrue(leo > 10 && leo < 25, "low orbit is a dozen-plus blocks up: " + leo);
+        double prev = -1;
+        for (double d = 1e5; d < 1e9; d *= 1.3) {
+            double b = s.blocks(d);
+            assertTrue(b > prev);
+            prev = b;
+            assertEquals(d, s.metres(b), d * 1e-12, "round trip");
+        }
+        Vec3 v = new Vec3(3e8, -1e8, 2e7);
+        assertEquals(0, s.toMetres(s.toBlocks(v)).distance(v), 1e-3);
+        assertEquals(0, s.toBlocks(v).normalize().distance(v.normalize()), 1e-12, "directions kept");
+        // the Moon is drawn at least 24 blocks wide even though its local scale would make it ≈ 2
+        assertEquals(24, s.displayRadius(MOON.radius(), 384_400e3, 24), 1e-9);
+        assertThrows(IllegalArgumentException.class, () -> new SceneScale(0, 1, 1));
+    }
+
+    @Test
+    void gravityInTheEarthFrame() {
+        double r = EARTH.radius() + 400e3;
+        Vec3 a = Gravity.acceleration(SYS, EARTH, List.of(EARTH, MOON, SUN), new Vec3(r, 0, 0), 0);
+        assertEquals(EARTH.mu() / (r * r), a.length(), 1e-5 * a.length(), "Earth dominates; tides are tiny");
+        assertTrue(a.x() < 0, "pulls down");
+        // near the Moon the Moon wins
+        Vec3 moonRel = SYS.relativePosition(MOON, 0);
+        Vec3 nearMoon = moonRel.add(moonRel.normalize().scale(-(MOON.radius() + 100e3)));
+        Vec3 g = Gravity.acceleration(SYS, EARTH, List.of(EARTH, MOON), nearMoon, 0);
+        assertTrue(g.dot(moonRel.normalize()) > 1.0, "towards the Moon at ≈ 1.4 m/s²: " + g);
+    }
+
+    @Test
+    void leapfrogKeepsAnOrbit() {
+        double r = EARTH.radius() + 400e3, v = Math.sqrt(EARTH.mu() / r);
+        BiFunction<Vec3, Double, Vec3> g = (p, t) -> Gravity.pull(EARTH.mu(), p, Vec3.ZERO);
+        FlightState s = new FlightState(new Vec3(r, 0, 0), new Vec3(0, v, 0), 10_000);
+        double period = Kepler.period(r, EARTH.mu());
+        int steps = (int) Math.round(100 * period / 10);
+        double minR = r, maxR = r;
+        for (int i = 0; i < steps; i++) {
+            s = s.step(g, Vec3.ZERO, 0, i * 10, 10);
+            double rr = s.position().length();
+            minR = Math.min(minR, rr);
+            maxR = Math.max(maxR, rr);
+        }
+        assertTrue(maxR - minR < 2000, "100 orbits at 10 s steps stay within 2 km: " + (maxR - minR));
+        assertEquals(10_000, s.mass());
+    }
+
+    @Test
+    void thrustFollowsTheRocketEquation() {
+        double isp = 350, thrust = 20_000, m0 = 5_000, flow = thrust / (isp * AstroConstants.G0);
+        FlightState s = new FlightState(Vec3.ZERO, Vec3.ZERO, m0);
+        double burn = 100;
+        s = s.advance((p, t) -> Vec3.ZERO, new Vec3(thrust, 0, 0), flow, 0, burn, 1000);
+        double expected = RocketMath.deltaV(isp, m0, m0 - flow * burn);
+        assertEquals(expected, s.velocity().x(), expected * 1e-6);
+        assertEquals(m0 - flow * burn, s.mass(), 1e-6);
+        // flight assist
+        Vec3 slowed = FlightState.assist(new Vec3(10, 0, 0), Vec3.ZERO, 3);
+        assertEquals(7, slowed.x(), 1e-12);
+        assertEquals(Vec3.ZERO, FlightState.assist(new Vec3(1, 1, 0), Vec3.ZERO, 5));
+    }
+
+    @Test
+    void predictorFindsTheMoon() {
+        double r = EARTH.radius() + 200e3, vc = Math.sqrt(EARTH.mu() / r);
+        // circular low orbit: one conic, no events
+        StateVector leo = new StateVector(new Vec3(r, 0, 0), new Vec3(0, vc, 0));
+        List<OrbitPredictor.Segment> one = OrbitPredictor.predict(SYS, EARTH, leo, 0, 2 * 3600, 60, 4);
+        assertEquals(1, one.size());
+        assertEquals(OrbitPredictor.End.NONE, one.get(0).endEvent());
+        assertEquals(r, one.get(0).periapsis(), 1);
+        // falling straight down: impact
+        var fall = OrbitPredictor.predict(SYS, EARTH, new StateVector(new Vec3(r + 800e3, 0, 0), new Vec3(0, 300, 0)), 0, 3600, 10, 2);
+        assertEquals(OrbitPredictor.End.IMPACT, fall.get(0).endEvent());
+        // a translunar injection (≈ 3.1 km/s prograde from low orbit in the Moon's plane) reaches the Moon's sphere of influence
+        StateVector moon = MOON.orbit().stateAt(0);
+        Vec3 n = moon.position().cross(moon.velocity()).normalize();
+        boolean reached = false;
+        for (int k = 0; k < 72 && !reached; k++) {
+            double ang = Math.toRadians(5 * k);
+            Vec3 u = moon.position().normalize(), w = n.cross(u);
+            Vec3 pos = u.scale(Math.cos(ang)).add(w.scale(Math.sin(ang))).scale(r);
+            Vec3 vel = n.cross(pos).normalize().scale(vc + 3130);
+            var path = OrbitPredictor.predict(SYS, EARTH, new StateVector(pos, vel), 0, 7 * DAY, 600, 3);
+            if (path.get(0).endEvent() == OrbitPredictor.End.ENTER_SOI && path.get(0).next() == MOON) {
+                double days = path.get(0).end() / DAY;
+                assertTrue(days > 1.5 && days < 6, "coast to the Moon " + days + " d");
+                assertEquals(MOON, path.get(1).body(), "next conic is around the Moon");
+                reached = true;
+            }
+        }
+        assertTrue(reached, "some departure point reaches the Moon");
+        assertEquals(Double.POSITIVE_INFINITY, OrbitPredictor.soi(SYS, SUN));
+        assertEquals(66_100e3, OrbitPredictor.soi(SYS, MOON), 2_000e3);
+    }
+}

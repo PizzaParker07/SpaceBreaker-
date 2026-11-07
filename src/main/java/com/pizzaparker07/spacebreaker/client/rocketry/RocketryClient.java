@@ -25,6 +25,9 @@ public final class RocketryClient {
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_R, KEY_CATEGORY);
     public static final KeyMapping STAR_MAP = new KeyMapping("key.spacebreaker.star_map", KeyConflictContext.IN_GAME,
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_M, KEY_CATEGORY);
+    /** Shows or hides the full flight panel (by default only destination, time and fuel are shown). */
+    public static final KeyMapping FLIGHT_DETAILS = new KeyMapping("key.spacebreaker.flight_details", KeyConflictContext.IN_GAME,
+            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_I, KEY_CATEGORY);
 
     private RocketryClient() {
     }
@@ -59,9 +62,15 @@ public final class RocketryClient {
     }
 
     @SubscribeEvent
+    static void particles(net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent event) {
+        event.registerSpriteSet(com.pizzaparker07.spacebreaker.content.rocketry.RocketryParticles.STEAM.get(), SteamParticle.Provider::new);
+    }
+
+    @SubscribeEvent
     static void keys(RegisterKeyMappingsEvent event) {
         event.register(LAUNCH);
         event.register(STAR_MAP);
+        event.register(FLIGHT_DETAILS);
     }
 
     @SubscribeEvent

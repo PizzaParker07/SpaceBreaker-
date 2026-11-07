@@ -337,6 +337,21 @@ public class PlanetSkyEffects extends DimensionSpecialEffects {
         double dayTicks = level.getDayTime() + partialTick;
         double spin = dayTicks / 24000.0 * Math.PI * 2;
         double cloudSpin = spin * 0.985 + level.getGameTime() / 90000.0;
+        float eclipseNow = (float) com.pizzaparker07.spacebreaker.content.worldgen.EclipseState.coverage(level);
+        var blocky = SkyConfig.blockyStyle();
+        if (blocky != null) {
+            // Minecraft-style planet: a ball of blocks or a pixel cube, its pole up, turning with its own day
+            float radius = (float) (100 * Math.tan(Math.toRadians(parentSize * scale / 2)));
+            Vector3f centre = new Vector3f((float) e.x, (float) e.y, (float) e.z).mul(100);
+            var pose = new BlockyBodyRenderer.Pose(centre, radius, new Vector3f((float) up.x, (float) up.y, (float) up.z),
+                    new Vector3f((float) toViewer.x, (float) toViewer.y, (float) toViewer.z), (float) spin);
+            BlockyBodyRenderer.draw(ps.last().pose(), blocky, 0, earthMap(), pose,
+                    new Vector3f((float) s.x, (float) s.y, (float) s.z), 0.07F, 1F - 0.9F * eclipseNow, 1F, null);
+            if (eclipseNow > 0.01F) {
+                sunsetRing(ps.last().pose(), new Vector3d(e).mul(100), right, up, radius * 0.985F, eclipseNow);
+            }
+            return;
+        }
         ResourceLocation tex = EarthDisc.update(sunInDisc, spin, cloudSpin);
         if (tex == null) {
             return;
@@ -361,6 +376,17 @@ public class PlanetSkyEffects extends DimensionSpecialEffects {
         if (eclipse > 0.01F) {
             sunsetRing(m, c, right, up, half * 0.985F, eclipse);
         }
+    }
+
+    private static BlockyBodyRenderer.ColorMap earthMap;
+
+    /** Earth's surface with its clouds, for the blocky planet. */
+    private static BlockyBodyRenderer.ColorMap earthMap() {
+        if (earthMap == null) {
+            earthMap = BlockyBodyRenderer.withClouds(BlockyBodyRenderer.texture(Spacebreaker.id("textures/environment/earth_map.png")),
+                    BlockyBodyRenderer.texture(Spacebreaker.id("textures/environment/earth_clouds.png")));
+        }
+        return earthMap;
     }
 
     /**

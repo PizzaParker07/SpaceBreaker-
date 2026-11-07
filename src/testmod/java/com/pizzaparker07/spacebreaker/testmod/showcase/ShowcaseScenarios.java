@@ -55,6 +55,7 @@ public final class ShowcaseScenarios {
         ALL.put("compat", new CompatScenario());
         ALL.put("perf", new PerfScenario());
         ALL.put("lod", new LodScenario());
+        ALL.put("blocky_lod", new BlockyLodScenario());
         ALL.put("jei", new JeiScenario(true));
         ALL.put("emi", new JeiScenario(false));
         ALL.put("info", new InfoOverlayScenario());
@@ -90,6 +91,8 @@ public final class ShowcaseScenarios {
         ALL.put("pluto", new PlutoScenario(false));
         ALL.put("charon", new PlutoScenario(true));
         ALL.put("qa_playthrough", new QaPlaythroughScenario(new RocketryScenario()));
+        ALL.put("qa_launch", new QaLaunchScenario(new RocketryScenario()));
+        ALL.put("qa_hud_overlay", new QaHudOverlayScenario());
     }
 
     public static ShowcaseScenario get(String name) {

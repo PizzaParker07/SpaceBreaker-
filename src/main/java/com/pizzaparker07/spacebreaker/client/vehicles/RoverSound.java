@@ -43,8 +43,10 @@ public class RoverSound extends AbstractTickableSoundInstance {
         z = rover.getZ();
         boolean riding = Minecraft.getInstance().player != null && Minecraft.getInstance().player.getVehicle() == rover;
         float target = !on ? 0F : (Environment.isVacuum(rover.level()) && !riding ? 0F
-                : 0.25F + 0.65F * (float) Mth.clamp(speed / RoverPhysics.MAX_SPEED, 0, 1));
-        pitch = Mth.lerp(0.2F, pitch, RoverPhysics.motorPitch(speed));
+                : (0.25F + 0.65F * (float) Mth.clamp(speed / rover.roverType().maxSpeed(), 0, 1)) * rover.roverType().loudness());
+        // lighter motors spin faster: a higher, thinner whine
+        float tune = rover.roverType().loudness() < 1F ? 1.25F : 1F;
+        pitch = Mth.lerp(0.2F, pitch, RoverPhysics.motorPitch(speed, rover.roverType().maxSpeed()) * tune);
         volume = Mth.lerp(0.15F, volume, target);
         if (rover.isRemoved() || (!on && volume < 0.02F)) {
             stop();
