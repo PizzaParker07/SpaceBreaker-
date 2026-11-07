@@ -374,11 +374,17 @@ def groove_grazer():
     return cv
 
 
+# Crater hopper (Callisto): dark brown-grey hide like the moon's old dark surface, white ring plates like its bright
+# crater rims, pale icy eyes.
+CRATER_HIDE = [hexc(h) for h in ('#1c1a17', '#28241f', '#35302a', '#433c35', '#524a42', '#635a51', '#786e63')]
+CRATER_PLATE = [hexc(h) for h in ('#5d6166', '#a9b0b6', '#ccd2d6', '#e8ecee')]
+
+
 def crater_hopper():
-    """64x32 sheet for CraterHopperModel: dark brown-grey hide, frost-white sensory plates and tail tip, pale belly."""
+    """64x32 sheet for CraterHopperModel (box layout in moon_creatures.faces)."""
     cv = Canvas(64, 32)
-    r = P.HOPPER
-    w = P.HOPPER_PLATE
+    r = CRATER_HIDE
+    w = CRATER_PLATE
     n = clustered(64, 64, 11021, passes=1)
 
     def hide(base):
@@ -388,22 +394,29 @@ def crater_hopper():
             return noise_pick(r, base + (1 if face == 'top' else 0), n, x + base * 7, y)
         return fn
 
-    paint(cv, 0, 0, 6, 6, 8, hide(2))
+    def plate(face, x, y, fw, fh):
+        # a ring: white rim round a darker middle on the top face
+        if face == 'top':
+            return w[0] if (0 < x < fw - 1 and 0 < y < fh - 1) or (fh <= 2 and 0 < x < fw - 1 and y == 1) else w[3]
+        return w[2] if face != 'bottom' else w[1]
 
     def head(face, x, y, fw, fh):
         if face == 'front':
-            if y == 1 and x in (0, fw - 1):
-                return hexc('#d9e6ee')
-            if y == 3 and 1 <= x <= 2:
-                return r[0]
+            if y == 0 and x in (0, fw - 1):
+                return hexc('#d9e6ee')  # pale icy eyes at the corners
             return r[3]
         return noise_pick(r, 3, n, x + 30, y)
 
-    paint(cv, 28, 0, 4, 4, 4, head)
-    paint(cv, 44, 0, 1, 5, 2, lambda f, x, y, fw, fh: w[2] if y < 2 else w[1] if y < 4 else w[0])
-    paint(cv, 0, 14, 2, 7, 4, hide(1))
-    paint(cv, 12, 14, 1, 4, 1, hide(1))
-    paint(cv, 16, 14, 2, 2, 6, lambda f, x, y, fw, fh: w[1] if (f == 'back' or (f in ('top', 'left', 'right') and x >= 4)) else r[2])
+    paint(cv, 0, 0, 6, 4, 7, hide(2))
+    paint(cv, 26, 0, 4, 1, 2, plate)
+    paint(cv, 38, 0, 4, 3, 4, head)
+    paint(cv, 54, 0, 2, 1, 1, lambda f, x, y, fw, fh: r[1] if f == 'front' else r[4])
+    paint(cv, 26, 4, 1, 1, 4, lambda f, x, y, fw, fh: w[3] if (f in ('back',) or (f != 'front' and x >= 3)) else w[1])
+    paint(cv, 0, 12, 2, 3, 3, hide(2))
+    paint(cv, 10, 12, 1, 3, 1, hide(1))
+    paint(cv, 14, 12, 2, 1, 3, lambda f, x, y, fw, fh: r[1] if f == 'bottom' else r[4])
+    paint(cv, 24, 12, 1, 3, 1, hide(1))
+    paint(cv, 28, 12, 2, 2, 3, lambda f, x, y, fw, fh: w[2] if f == 'back' else r[3])
     return cv
 
 

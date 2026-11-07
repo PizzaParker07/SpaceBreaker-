@@ -396,7 +396,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | Io 🎨 | Kükürt Yengeci (ısıya dayanıklı, yakınına gelene saldırır) |
 | Europa 🎨 | Buzaltı Işık Yılanı (biyolüminesan, pasif; tuzlu su havuzlarında ve gömülü okyanusta) |
 | Ganymede 🎨 | Oluk Otlayıcısı (zırhlı, sürü halinde, okyanus tuzuyla çoğalır) |
-| Kallisto 🎨 | Krater Sıçrayıcısı (ürkek, düşük yerçekiminde uzun sıçrayışlarla kaçar) |
+| Kallisto 🎨 | Krater Sıçrayıcısı (alçak, koyu kahve-gri; sırtında krater kenarı gibi üç beyaz halka plaka, ensesine yatık iki kemik boynuz plakası, yaylı eklemli arka bacaklar ve küt kuyruk; ürkek, düşük yerçekiminde uzun sıçrayışlarla kaçar) |
 | Titan 🎨 | Metan Kayıcısı (metan göllerinin üstünde yürür: koyu kahve-zeytin üç parçalı gövde (iri gözlü küçük baş, göğüs, soluk mavi şeritli uzun karın) sıvıya çok yakın durur; kısa kavrayıcı ön bacaklar, dizleri gövdeden yüksekte çok uzun orta ve arka bacaklar, uçlarında yüzeyde halka dalga bırakan parlak pedler; kayarken bacaklar kürek gibi birlikte iter) · Tolin Solucanı (bal rengi, ortası kalın boğumlu gövde, sırtta kılçık sırası, dört dudaklı ağız konisi (içi koyu turuncu) eleyerek açılıp kapanır; kumul denizlerinde ürkek kazıcı: gömülüyken yalnız kılçıkları görünür; yaklaşınca kuma gömülür, sessizlikte çıkar, kumu eleyip ara sıra tolin bırakır; tolin kumuyla çoğalır) |
 | Enceladus 🎨 | Gayzer Süzülücüsü (gayzer bulutlarında süzülen parlak çan) |
 | Titania 🎨 | Moloz Yuvarlakçası (plakalı otlayıcı; vurulunca top olup hızla yuvarlanarak kaçar, top halindeyken hasarın bir kısmını alır; kömürle çoğalır) |
