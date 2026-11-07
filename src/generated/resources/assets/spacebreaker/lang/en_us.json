@@ -1804,7 +1804,7 @@
   "tech.spacebreaker.oxygen_distribution": "Oxygen Distribution",
   "tech.spacebreaker.oxygen_distribution.desc": "Fill sealed rooms with breathable air and keep it there.",
   "tech.spacebreaker.oxygen_storage": "Oxygen Storage",
-  "tech.spacebreaker.oxygen_storage.desc": "High-pressure aluminium tanks and a filling station: five minutes of air per tank.",
+  "tech.spacebreaker.oxygen_storage.desc": "High-pressure aluminium tanks and a filling station: about five minutes of air per tank at a walk; sprinting and hard work use more.",
   "tech.spacebreaker.phobos_survey": "Phobos Survey",
   "tech.spacebreaker.phobos_survey.desc": "A captured asteroid or a chip of Mars? Grooved, dusty and so small you could jump off it.",
   "tech.spacebreaker.plume_sampling": "Plume Sampling",
