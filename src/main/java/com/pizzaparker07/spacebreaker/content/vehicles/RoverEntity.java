@@ -217,6 +217,12 @@ public class RoverEntity extends Entity {
         return true;
     }
 
+    /** The rear deck and the antenna reach past the hitbox: keep the model drawn while any of it is on screen. */
+    @Override
+    public net.minecraft.world.phys.AABB getBoundingBoxForCulling() {
+        return getBoundingBox().inflate(1.2, 0.6, 1.2);
+    }
+
     @Override
     public float maxUpStep() {
         return 1.0F;

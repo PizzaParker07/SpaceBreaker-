@@ -113,6 +113,27 @@ final class RoverScenario implements ShowcaseScenario {
         // in the driver's seat with the battery readout
         s.add(new ShowcaseDriver.Shot(w + "_05_driver_view", 0, px, gy + 2, pz, 35F, 12F, false, CameraType.THIRD_PERSON_BACK, 60,
                 at(0.3, p -> p.startRiding(parked, true)), null));
+        // two seats taken (helmeted stand-ins for the crew, sitting like players do), side view: the roof panel must clear their heads
+        s.add(new ShowcaseDriver.Shot(w + "_06_two_seats", 0, px + 3.7, gy + 1.6, pz + 2.6, MoonScenario.yaw(-3.7, -2.6), 8F, true, fp, 60,
+                at(0.3, p -> crew(p.serverLevel())), null));
         return s;
+    }
+
+    private void crew(ServerLevel level) {
+        if (parked.getPassengers().size() >= 2) {
+            return;
+        }
+        // peaceful removes zombies; the stand-ins have no AI and wear helmets, so nothing happens to the scene
+        level.getServer().setDifficulty(net.minecraft.world.Difficulty.EASY, true);
+        for (int i = 0; i < 2; i++) {
+            net.minecraft.world.entity.monster.Zombie stand = net.minecraft.world.entity.EntityType.ZOMBIE.create(level);
+            stand.setNoAi(true);
+            stand.setPersistenceRequired();
+            stand.moveTo(parked.getX(), parked.getY(), parked.getZ());
+            stand.setItemSlot(net.minecraft.world.entity.EquipmentSlot.HEAD, new ItemStack(Items.IRON_HELMET));
+            stand.setItemSlot(net.minecraft.world.entity.EquipmentSlot.CHEST, new ItemStack(Items.IRON_CHESTPLATE));
+            level.addFreshEntity(stand);
+            stand.startRiding(parked, true);
+        }
     }
 }
