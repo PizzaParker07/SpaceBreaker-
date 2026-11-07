@@ -178,6 +178,45 @@ public final class DensityWhatIfTests {
         h.succeed();
     }
 
+    /**
+     * The 1.0 matrix: the whole model on every realism setting. Runs only with
+     * {@code -Dspacebreaker.qa.realismMatrix=true}; writes {@code run-gametest/qa/realism_matrix.md}.
+     */
+    @GameTest(template = "empty", timeoutTicks = 2000)
+    public static void realismMatrix(GameTestHelper h) {
+        if (!Boolean.getBoolean("spacebreaker.qa.realismMatrix")) {
+            h.succeed();
+            return;
+        }
+        StringBuilder md = new StringBuilder("## Progression on every realism setting\n\n");
+        md.append("| setting | goals | techs | grand_tour gaps | round-trip worlds | Earth orbit | Moon | Mars | unobtainable items | model steps |\n")
+                .append("|---|---|---|---|---|---|---|---|---|---|\n");
+        var probe = h.makeMockPlayer(GameType.SURVIVAL);
+        for (SbConfig.Realism realism : SbConfig.Realism.values()) {
+            ProgressionModel m = new ProgressionModel(h.getLevel().getServer(), probe, realism);
+            m.scan();
+            m.run();
+            long goals = ProgressionReport.goals().stream().filter(g -> m.has(g.fact())).count();
+            long techs = m.techTree.keySet().stream().filter(id -> m.has(ProgressionModel.tech(id))).count();
+            List<String> gaps = ProgressionAuditTests.grandTourGaps(h.getLevel().getServer(), m);
+            long round = m.facts.keySet().stream().filter(k -> k.startsWith("world:spacebreaker:")).count();
+            java.util.function.Function<String, String> step = k -> {
+                var f = m.facts.get(k);
+                return f == null ? "—" : String.valueOf(f.step());
+            };
+            String report = ProgressionReport.render(m);
+            int i = report.indexOf("## Items that cannot be obtained");
+            long unobtainable = i < 0 ? -1 : report.substring(i).lines().skip(2).takeWhile(l -> l.startsWith("- ")).count();
+            int steps = m.facts.values().stream().mapToInt(ProgressionModel.Fact::step).max().orElse(0);
+            md.append(String.format(Locale.ROOT, "| %s | %d/%d | %d/%d | %s | %d | %s | %s | %s | %d | %d |%n", realism, goals,
+                    ProgressionReport.goals().size(), techs, m.techTree.size(), gaps.isEmpty() ? "none" : String.valueOf(gaps.size()),
+                    round, step.apply("world:spacebreaker:earth_orbit"), step.apply("world:spacebreaker:moon"),
+                    step.apply("world:spacebreaker:mars"), unobtainable, steps));
+        }
+        ProgressionReport.write("realism_matrix.md", md.toString());
+        h.succeed();
+    }
+
     private DensityWhatIfTests() {
     }
 }

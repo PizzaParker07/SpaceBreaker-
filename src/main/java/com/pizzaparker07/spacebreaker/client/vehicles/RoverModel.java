@@ -16,8 +16,9 @@ import net.minecraft.util.Mth;
 
 /**
  * Open two-seat rover in the spirit of the crewed lunar rovers: a flat aluminium chassis on four wire-mesh wheels with
- * fenders, tandem seats, a console with headlights at the front, a cargo box, a high-gain antenna mast, and the
- * optional roof solar panel and rear RTG. Front is model -Z; the ground is model y = 24. UVs: tools/textures/modules/rover.py.
+ * fenders, hub motors and dampers, tandem seats with armrests, a console with headlights and the high-gain antenna at
+ * the front, and a rear deck carrying the cargo box, the optional RTG and, on posts above them and clear of the
+ * passenger, the optional solar panel. Front is model -Z; the ground is model y = 24. UVs: tools/textures/modules/rover.py.
  */
 public class RoverModel extends EntityModel<RoverEntity> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Spacebreaker.id("rover"), "main");
@@ -41,29 +42,44 @@ public class RoverModel extends EntityModel<RoverEntity> {
         PartDefinition root = mesh.getRoot();
         PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create()
                 .texOffs(0, 0).addBox(-11F, 14F, -18F, 22F, 3F, 36F)                 // chassis deck
+                .texOffs(0, 100).addBox(-10F, 14F, 18F, 20F, 2F, 12F)                // rear deck (cargo and the upgrades)
                 .texOffs(0, 40).addBox(-4F, 12F, -8F, 8F, 2F, 7F)                    // driver seat
                 .texOffs(0, 50).addBox(-4F, 4F, -1F, 8F, 8F, 1F)
+                .texOffs(90, 100).addBox(-5F, 10F, -8F, 1F, 2F, 7F)                  // driver armrests
+                .texOffs(90, 100).addBox(4F, 10F, -8F, 1F, 2F, 7F)
                 .texOffs(0, 40).addBox(-4F, 12F, 5F, 8F, 2F, 7F)                     // passenger seat
                 .texOffs(0, 50).addBox(-4F, 4F, 12F, 8F, 8F, 1F)
+                .texOffs(90, 100).addBox(-5F, 10F, 5F, 1F, 2F, 7F)                   // passenger armrests
+                .texOffs(90, 100).addBox(4F, 10F, 5F, 1F, 2F, 7F)
                 .texOffs(32, 40).addBox(-7F, 9F, -14F, 14F, 5F, 3F)                  // console
                 .texOffs(32, 49).addBox(-9F, 12F, -19F, 18F, 3F, 2F)                 // headlight bar
-                .texOffs(72, 56).addBox(-7F, 9F, 13F, 14F, 5F, 5F)                   // cargo box
-                .texOffs(72, 40).addBox(8F, 0F, 14F, 1F, 14F, 1F)                    // antenna mast
-                .texOffs(78, 40).addBox(4.5F, -4F, 15F, 8F, 8F, 1F),                 // high-gain dish
+                .texOffs(0, 114).addBox(-10F, 15F, -21F, 20F, 2F, 2F)                // front bumper
+                .texOffs(72, 56).addBox(-5F, 9F, 20F, 14F, 5F, 5F)                   // cargo box, on the rear deck
+                .texOffs(72, 40).addBox(9F, 0F, -13F, 1F, 14F, 1F)                   // antenna mast, beside the console
+                .texOffs(78, 40).addBox(5.5F, -4F, -12F, 8F, 8F, 1F),                // high-gain dish
                 PartPose.ZERO);
         for (int s = -1; s <= 1; s += 2) {
             for (int a = -1; a <= 1; a += 2) {
-                body.addOrReplaceChild("fender_" + (s < 0 ? "l" : "r") + (a < 0 ? "f" : "b"), CubeListBuilder.create()
+                String n = (s < 0 ? "l" : "r") + (a < 0 ? "f" : "b");
+                body.addOrReplaceChild("fender_" + n, CubeListBuilder.create()
                         .texOffs(30, 60).addBox(-3F, 0F, -7F, 6F, 1F, 14F), PartPose.offset(13F * s, 13F, 12F * a));
+                // suspension leg: a damper from the fender down to the hub motor on the outside of the wheel
+                body.addOrReplaceChild("strut_" + n, CubeListBuilder.create()
+                        .texOffs(84, 100).addBox(-0.5F, 0F, -0.5F, 1F, 4F, 1F), PartPose.offset(15.5F * s, 14F, 12F * a));
+                body.addOrReplaceChild("hub_" + n, CubeListBuilder.create()
+                        .texOffs(72, 100).addBox(-0.5F, -2F, -2F, 1F, 4F, 4F), PartPose.offset(15.5F * s, 19F, 12F * a));
             }
         }
-        body.addOrReplaceChild("solar", CubeListBuilder.create()
-                .texOffs(0, 82).addBox(-12F, 2F, 2F, 24F, 1F, 16F)
-                .texOffs(72, 40).addBox(-11F, 3F, 3F, 1F, 11F, 1F)
-                .texOffs(72, 40).addBox(10F, 3F, 3F, 1F, 11F, 1F)
-                .texOffs(72, 40).addBox(-11F, 3F, 16F, 1F, 11F, 1F), PartPose.ZERO);
+        // the solar panel rides flat on posts over the rear deck, behind the passenger's head
+        CubeListBuilder solar = CubeListBuilder.create().texOffs(0, 82).addBox(-12F, 5F, 15F, 24F, 1F, 16F);
+        for (float px : new float[]{-10F, 9F}) {
+            for (float pz : new float[]{19F, 28F}) {
+                solar.texOffs(66, 100).addBox(px, 6F, pz, 1F, 8F, 1F);
+            }
+        }
+        body.addOrReplaceChild("solar", solar, PartPose.ZERO);
         body.addOrReplaceChild("rtg", CubeListBuilder.create()
-                .texOffs(82, 82).addBox(-12F, 6F, 12F, 5F, 8F, 5F), PartPose.ZERO);
+                .texOffs(82, 82).addBox(-11F, 6F, 21F, 5F, 8F, 5F), PartPose.ZERO);
         for (int i = 0; i < 4; i++) {
             PartDefinition w = root.addOrReplaceChild("wheel" + i, CubeListBuilder.create()
                     .texOffs(0, 60).addBox(-2F, -5F, -5F, 4F, 10F, 10F), PartPose.offset(WHEELS[i][0], WHEELS[i][1], WHEELS[i][2]));

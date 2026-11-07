@@ -27,6 +27,7 @@ Tek bir santrifüj yavaştır. Gerçek tesislerde binlercesi art arda çalışı
 {items spacebreaker:fission_reactor}
 {item spacebreaker:fission_reactor}, kilovat sınıfı bir fisyon yüzey güç ünitesidir. İçine bir {item spacebreaker:nuclear_fuel_element} koy: gece gündüz, nerede olursan ol **320 FE/t** verir. Bir eleman **10 oyun günü** dayanır ve yakıt yalnız güç çekilirken yanar.
 {recipe spacebreaker:fission_reactor}
+Kalkan yuvalarına tükenmiş uranyum levha ya da tungsten levha konabilir.
 
 >! Çalışan çekirdek radyasyon yayar: bir blok uzakta günde yaklaşık **50 Sv**, uzaklığın karesiyle azalır. Aradaki her katı blok yalnız **%30**'unu geçirir; üç blok regolit bunu yaklaşık **%3**'e indirir. Üniteyi göm ya da çevresine regolitten bir set yap, üssünü de onun doğrudan görüş hattından uzak tut.
 

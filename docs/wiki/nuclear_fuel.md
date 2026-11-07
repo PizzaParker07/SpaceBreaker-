@@ -47,6 +47,8 @@ Tek bir santrifüj yavaştır. Gerçek tesislerde binlercesi art arda çalışı
 
 → **Fisyon Yüzey Güç Ünitesi** (Çalışma Masası)
 
+Kalkan yuvalarına tükenmiş uranyum levha ya da tungsten levha konabilir.
+
 > [!WARNING]
 > Çalışan çekirdek radyasyon yayar: bir blok uzakta günde yaklaşık **50 Sv**, uzaklığın karesiyle azalır. Aradaki her katı blok yalnız **%30**'unu geçirir; üç blok regolit bunu yaklaşık **%3**'e indirir. Üniteyi göm ya da çevresine regolitten bir set yap, üssünü de onun doğrudan görüş hattından uzak tut.
 
@@ -112,6 +114,8 @@ The **Fission Surface Power Unit** is a kilowatt-class fission surface power uni
 | Steel Plate | Tungsten Plate | Steel Plate |
 
 → **Fission Surface Power Unit** (Crafting Table)
+
+The shielding slots take depleted uranium plate or tungsten plate.
 
 > [!WARNING]
 > A running core is radioactive: about **50 Sv/day** one block away, falling with the square of the distance. Every solid block in between lets only **30 %** through, so three blocks of regolith cut it to about **3 %**. Bury the unit or build a regolith berm round it, and keep your base out of its line of sight.

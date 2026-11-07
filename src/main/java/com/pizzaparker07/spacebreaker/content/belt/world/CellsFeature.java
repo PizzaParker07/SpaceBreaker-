@@ -144,18 +144,20 @@ public class CellsFeature extends Feature<CellsFeature.Config> {
                 }
                 Sample s = sample(t, cfg, x + 0.5, z + 0.5);
                 int dy = (int) Math.round(offset(cfg, s) * w);
+                // the column's top, found once and carried through the steps below
+                int top = Columns.top(level, x, z);
                 if (cfg.level().isPresent()) {
                     // level the ground first: the plain is a flat sheet of ice, the cells ride on it
-                    dy += (int) Math.round((cfg.level().get() - Columns.top(level, x, z)) * w);
+                    dy += (int) Math.round((cfg.level().get() - top) * w);
                 }
                 if (dy != 0) {
-                    Columns.shift(level, x, z, dy, level.getBlockState(new net.minecraft.core.BlockPos(x, Columns.top(level, x, z) - Columns.CARRY, z)));
+                    top = Columns.shift(level, x, top, z, dy, level.getBlockState(new net.minecraft.core.BlockPos(x, top - Columns.CARRY, z)));
                 }
                 boolean onBorder = s.border() < cfg.edge() * 0.6 && w > 0.5;
                 if (onBorder && cfg.edgeBlock().isPresent()) {
-                    Columns.paint(level, x, z, 1, cfg.edgeBlock().get());
+                    Columns.paint(level, x, top, z, 1, cfg.edgeBlock().get());
                 } else if (!onBorder && cfg.topBlock().isPresent() && w > 0.3) {
-                    Columns.paint(level, x, z, 2, cfg.topBlock().get());
+                    Columns.paint(level, x, top, z, 2, cfg.topBlock().get());
                 }
                 any = true;
             }
