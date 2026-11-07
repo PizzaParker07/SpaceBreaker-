@@ -645,7 +645,7 @@ final class RocketryScenario implements ShowcaseScenario {
             moon.setBlock(new BlockPos(gx + 1, gy, gz - 1), RocketryModule.WARNING_LIGHT.get().defaultBlockState(), 3);
             toDimension(p, Location.MOON_SURFACE, gx + 7.5, gy + 2.6, gz + 2.5, 135F, 28F);
         }, null));
-        s.add(new Shot("50_base_fittings", 18000, 0, 0, 0, 0F, 0F, true, fp, 80, p -> {
+        s.add(new Shot("50_base_fittings", 18000, 0, 0, 0, 0F, 0F, true, fp, 300, p -> {
             clearScene(p);
             ServerLevel moon = p.server.getLevel(Location.MOON_SURFACE.dimension());
             int gx = 160, gz = 40;

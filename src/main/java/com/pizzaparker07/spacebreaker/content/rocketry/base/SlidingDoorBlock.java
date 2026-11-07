@@ -47,6 +47,8 @@ public class SlidingDoorBlock extends Block {
     public static final int AIRLOCK_REACH = 4;
     /** How long the cycle takes between one door shutting and the other opening, ticks. */
     public static final int CYCLE_TICKS = 40;
+    /** How many doors side by side in one wall still count as one door. */
+    public static final int MAX_GROUP = 8;
 
     private static final VoxelShape JAMBS_NS = Shapes.or(box(0, 0, 6, 2, 16, 10), box(14, 0, 6, 16, 16, 10));
     private static final VoxelShape JAMBS_EW = Shapes.or(box(6, 0, 0, 10, 16, 2), box(6, 0, 14, 10, 16, 16));
@@ -120,14 +122,22 @@ public class SlidingDoorBlock extends Block {
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (!level.isClientSide) {
-            request(level, pos, state, !state.getValue(OPEN));
+            BlockPos lower = state.getValue(HALF) == DoubleBlockHalf.LOWER ? pos : pos.below();
+            if (cycling(level, lower)) {
+                // a second press while the airlock cycles calls the opening off
+                request(level, lower, level.getBlockState(lower), false);
+            } else {
+                request(level, pos, state, !state.getValue(OPEN));
+            }
         }
         return InteractionResult.sidedSuccess(level.isClientSide);
     }
 
     /**
-     * Asks the door to open or close, keeping the airlock rule: closing always goes through; opening while the
-     * partner door is open shuts the partner, runs the cycle and opens this door after {@link #CYCLE_TICKS}.
+     * Asks the door to open or close, keeping the airlock rule. Sliding doors side by side in one wall act as one
+     * door (they open and shut together). Closing always goes through and calls off a waiting opening; opening
+     * while any door on the other side of the airlock is open shuts all of those first, runs the cycle and opens
+     * this door after {@link #CYCLE_TICKS}.
      */
     public void request(Level level, BlockPos pos, BlockState state, boolean open) {
         BlockPos lower = state.getValue(HALF) == DoubleBlockHalf.LOWER ? pos : pos.below();
@@ -135,8 +145,12 @@ public class SlidingDoorBlock extends Block {
         if (!lowerState.is(this)) {
             return;
         }
+        java.util.List<BlockPos> group = group(level, lower, lowerState);
         if (!open) {
-            setOpen(level, lower, lowerState, false);
+            cancelCycle(level, group);
+            for (BlockPos d : group) {
+                setOpen(level, d, level.getBlockState(d), false);
+            }
             return;
         }
         boolean partnerOpen = false;
@@ -148,37 +162,80 @@ public class SlidingDoorBlock extends Block {
             }
         }
         if (!partnerOpen) {
-            setOpen(level, lower, lowerState, true);
-        } else if (!level.getBlockTicks().hasScheduledTick(lower, this)) {
+            for (BlockPos d : group) {
+                setOpen(level, d, level.getBlockState(d), true);
+            }
+        } else if (group.stream().noneMatch(d -> level.getBlockTicks().hasScheduledTick(d, this))) {
             level.playSound(null, lower, com.pizzaparker07.spacebreaker.content.audio.SbSounds.AIRLOCK_CYCLE.get(), SoundSource.BLOCKS, 0.8F, 1.0F);
             level.scheduleTick(lower, this, CYCLE_TICKS);
         }
     }
 
-    @Override
-    protected void tick(BlockState state, net.minecraft.server.level.ServerLevel level, BlockPos pos, net.minecraft.util.RandomSource random) {
-        // the end of an airlock cycle: open, unless the partner was opened again meanwhile
-        if (state.getValue(HALF) == DoubleBlockHalf.LOWER && !state.getValue(OPEN)
-                && partners(level, pos, state).stream().noneMatch(p -> level.getBlockState(p).getValue(OPEN))) {
-            setOpen(level, pos, state, true);
+    /** Whether this door (or one beside it in the same wall) is waiting out an airlock cycle. */
+    public boolean cycling(Level level, BlockPos lower) {
+        BlockState state = level.getBlockState(lower);
+        return state.is(this) && group(level, lower, state).stream().anyMatch(d -> level.getBlockTicks().hasScheduledTick(d, this));
+    }
+
+    private void cancelCycle(Level level, java.util.List<BlockPos> group) {
+        if (level instanceof net.minecraft.server.level.ServerLevel server) {
+            for (BlockPos d : group) {
+                server.getBlockTicks().clearArea(new net.minecraft.world.level.levelgen.structure.BoundingBox(d));
+            }
         }
     }
 
-    /** Lower halves of the doors that make an airlock with this one: same line, same axis, within reach. */
-    public java.util.List<BlockPos> partners(Level level, BlockPos lower, BlockState state) {
+    @Override
+    protected void tick(BlockState state, net.minecraft.server.level.ServerLevel level, BlockPos pos, net.minecraft.util.RandomSource random) {
+        // the end of an airlock cycle: open the whole door, unless the far side was opened again meanwhile
+        if (state.getValue(HALF) == DoubleBlockHalf.LOWER && !state.getValue(OPEN)
+                && partners(level, pos, state).stream().noneMatch(p -> level.getBlockState(p).getValue(OPEN))) {
+            for (BlockPos d : group(level, pos, state)) {
+                setOpen(level, d, level.getBlockState(d), true);
+            }
+        }
+    }
+
+    /** Lower halves of the sliding doors side by side with this one in the same wall (this one included). */
+    public java.util.List<BlockPos> group(Level level, BlockPos lower, BlockState state) {
         Direction facing = state.getValue(FACING);
         java.util.List<BlockPos> found = new java.util.ArrayList<>();
-        for (Direction d : new Direction[]{facing, facing.getOpposite()}) {
-            for (int k = 1; k <= AIRLOCK_REACH; k++) {
+        found.add(lower);
+        for (Direction d : new Direction[]{facing.getClockWise(), facing.getCounterClockWise()}) {
+            for (int k = 1; k <= MAX_GROUP; k++) {
                 BlockPos p = lower.relative(d, k);
                 BlockState ps = level.getBlockState(p);
-                if (ps.is(this) && ps.getValue(HALF) == DoubleBlockHalf.LOWER && ps.getValue(FACING).getAxis() == facing.getAxis()) {
-                    found.add(p);
+                if (!(ps.is(this) && ps.getValue(HALF) == DoubleBlockHalf.LOWER && ps.getValue(FACING).getAxis() == facing.getAxis())) {
                     break;
                 }
+                found.add(p);
             }
         }
         return found;
+    }
+
+    /**
+     * Lower halves of every door on the other side(s) of the airlock: for each door of this one's group, the
+     * nearest sliding door straight ahead or behind within {@link #AIRLOCK_REACH}, together with its own group.
+     */
+    public java.util.List<BlockPos> partners(Level level, BlockPos lower, BlockState state) {
+        Direction facing = state.getValue(FACING);
+        java.util.List<BlockPos> group = group(level, lower, state);
+        java.util.Set<BlockPos> found = new java.util.LinkedHashSet<>();
+        for (BlockPos member : group) {
+            for (Direction d : new Direction[]{facing, facing.getOpposite()}) {
+                for (int k = 1; k <= AIRLOCK_REACH; k++) {
+                    BlockPos p = member.relative(d, k);
+                    BlockState ps = level.getBlockState(p);
+                    if (ps.is(this) && ps.getValue(HALF) == DoubleBlockHalf.LOWER && ps.getValue(FACING).getAxis() == facing.getAxis()) {
+                        found.addAll(group(level, p, ps));
+                        break;
+                    }
+                }
+            }
+        }
+        group.forEach(found::remove);
+        return new java.util.ArrayList<>(found);
     }
 
     /** Opens or closes the whole door (both halves), with a hiss of the leaves sliding. */
