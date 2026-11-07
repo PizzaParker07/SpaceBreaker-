@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 516446,
+    "separation": 3,
+    "spacing": 9
+  },
+  "structures": [
+    {
+      "structure": "spacebreaker:triton_geyser_station",
+      "weight": 1
+    }
+  ]
+}

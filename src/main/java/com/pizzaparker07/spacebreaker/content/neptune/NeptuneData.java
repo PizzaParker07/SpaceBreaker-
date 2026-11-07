@@ -52,6 +52,8 @@ public final class NeptuneData {
     }
 
     static void translations(Lang lang) {
+        lang.add("dungeon.spacebreaker.triton_geyser_station", "Geyser Watch Station", "Gayzer Gözlem İstasyonu");
+        lang.add("structure.spacebreaker.triton_geyser_station", "Geyser Watch Station", "Gayzer Gözlem İstasyonu");
         lang.add("biome.spacebreaker.triton_cantaloupe", "Cantaloupe Terrain", "Kavun Kabuğu Arazisi");
         lang.add("biome.spacebreaker.triton_crater", "Tritonian Crater", "Triton Krateri");
         lang.add("biome.spacebreaker.triton_polar_cap", "Pink Polar Cap", "Pembe Kutup Başlığı");
@@ -93,6 +95,8 @@ public final class NeptuneData {
         dp.add(Registries.CONFIGURED_FEATURE, NeptuneData::configured);
         dp.add(Registries.PLACED_FEATURE, NeptuneData::placed);
         dp.add(Registries.BIOME, NeptuneData::biomes);
+        dp.add(Registries.STRUCTURE, com.pizzaparker07.spacebreaker.content.neptune.dungeon.NeptuneStructures::structures);
+        dp.add(Registries.STRUCTURE_SET, com.pizzaparker07.spacebreaker.content.neptune.dungeon.NeptuneStructures::sets);
     }
 
     private static void configured(BootstrapContext<ConfiguredFeature<?, ?>> ctx) {

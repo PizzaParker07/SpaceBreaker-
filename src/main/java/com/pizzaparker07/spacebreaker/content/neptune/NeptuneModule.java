@@ -93,6 +93,7 @@ public final class NeptuneModule implements SbModule {
         KIT.tab.forEach(SbTabs.PLANETS::add);
         NeptuneEntities.eggs().forEach(SbTabs.PLANETS::add);
         OuterWorlds.VENT_BLOCKS.add(NITROGEN_GEYSER);
+        com.pizzaparker07.spacebreaker.content.neptune.dungeon.NeptuneStructures.register(modBus);
     }
 
     @Override

@@ -104,4 +104,35 @@ public final class NeptuneGameTests {
         helper.assertTrue(node != null && node.tier() == 5, "cryovolcanism is a tier-5 tech");
         helper.succeed();
     }
+
+    @GameTest(template = WorldTests.EMPTY, timeoutTicks = 200)
+    public static void geyserStationStandsOverAGeyser(GameTestHelper helper) {
+        var level = helper.getLevel();
+        helper.assertTrue(level.registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.STRUCTURE)
+                .containsKey(com.pizzaparker07.spacebreaker.content.neptune.dungeon.NeptuneStructures.STATION_KEY), "station structure");
+        BlockPos base = helper.absolutePos(BlockPos.ZERO).offset(-5000, 0, 9000);
+        var piece = new com.pizzaparker07.spacebreaker.content.neptune.dungeon.GeyserStationPiece(5L, base.getX(), 110, base.getZ(),
+                net.minecraft.core.Direction.EAST);
+        BeltGameTests.place(level, piece);
+        var bb = piece.getBoundingBox();
+        int chests = 0;
+        int glass = 0;
+        for (BlockPos p : BlockPos.betweenClosed(bb.minX(), bb.minY(), bb.minZ(), bb.maxX(), bb.maxY(), bb.maxZ())) {
+            var st = level.getBlockState(p);
+            if (st.is(net.minecraft.world.level.block.Blocks.CHEST) && level.getBlockEntity(p) instanceof net.minecraft.world.level.block.entity.ChestBlockEntity ch
+                    && ch.getLootTable() != null) {
+                chests++;
+            }
+            glass += st.is(net.minecraft.world.level.block.Blocks.LIGHT_BLUE_STAINED_GLASS) ? 1 : 0;
+        }
+        int c = com.pizzaparker07.spacebreaker.content.neptune.dungeon.GeyserStationPiece.C;
+        BlockPos vent = piece.world(c, 2, c);
+        helper.assertTrue(level.getBlockState(vent).is(NeptuneModule.NITROGEN_GEYSER.get()), "a live geyser in the middle of the floor");
+        helper.assertTrue(level.getBlockEntity(vent) instanceof VentBlockEntity, "with its vent working");
+        helper.assertTrue(chests == 2, "lab and store chests, found " + chests);
+        helper.assertTrue(glass > 60, "a glass dome, found " + glass);
+        helper.assertTrue(level.getBlockState(piece.world(c, 15, c + 2)).is(net.minecraft.world.level.block.Blocks.WAXED_COPPER_BULB),
+                "the mast light above the crown");
+        helper.succeed();
+    }
 }

@@ -59,5 +59,18 @@ final class TritonScenario extends OuterShowcase {
         shot("06_plume_beetle", SX + 0.5, y0 + 2.4, SZ + 10.5, 180F, 20F, 60, at(0.12), null);
         // on the flat polar cap, away from the pits of the cantaloupe terrain
         lander(level, LanderPiece.Variant.TRITON, "07_crashed_lander", 0.12, 120, (int) (pole * 0.66));
+        // the geyser watch station, also on the cap
+        int gx = -140;
+        int gz = (int) (pole * 0.66);
+        int gy = (int) ground(level, gx + 7, gz + 7);
+        var station = new com.pizzaparker07.spacebreaker.content.neptune.dungeon.GeyserStationPiece(71L, gx, gy, gz, net.minecraft.core.Direction.SOUTH);
+        MarsScenario.placePiece(level, station);
+        BlockPos centre = station.world(7, 3, 7);
+        BlockPos out = station.world(7, 3, -9);
+        shot("08_geyser_station", out.getX() + 3.5, out.getY() + 5, out.getZ() + 0.5,
+                MoonScenario.yaw(centre.getX() - out.getX() - 3, centre.getZ() - out.getZ()), 12F, 140, at(0.12), MoonScenario::farView);
+        BlockPos door = station.world(7, 3, 2);
+        shot("09_geyser_station_inside", door.getX() + 0.5, door.getY() + 1.6, door.getZ() + 0.5,
+                MoonScenario.yaw(centre.getX() - door.getX(), centre.getZ() - door.getZ()), 15F, 100, erupting(station.world(7, 2, 7), 0.12, false), null);
     }
 }
