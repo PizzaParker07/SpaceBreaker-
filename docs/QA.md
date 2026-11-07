@@ -314,6 +314,11 @@ flight between dimensions, rovers being driven, and client-side frame time.
   has at least one world the model reaches and returns from.
 - Soak: mean tick 3.4 ms, heap +3 MB, 60/60 entities.
 
+- Soak test hardened (flake reported by moon: "mod entities 59 → 60" once): the baseline is now what the test spawned,
+  counted per entity kind, and only those kinds are compared at the end (other mod creatures may spawn naturally near the
+  area; a freshly added entity can be missing from the area query for a tick). The failure message names the kind that
+  changed. Two full runs green.
+
 ## Localization (round 1)
 - Key parity en_us/tr_tr is complete (1305 each), placeholders and colour codes match, no broken characters.
 - Turkish reads naturally overall. Small suggestions (research keeps docs/GLOSSARY.md):

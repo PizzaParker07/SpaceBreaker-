@@ -108,7 +108,13 @@ public final class SoakTests {
         }
         var server = level.getServer();
         AABB area = new AABB(base).inflate(80, 60, 80);
-        int startEntities = count(level, area);
+        // only the kinds of entity this test spawns: other mod creatures may spawn naturally around the area
+        java.util.Set<net.minecraft.world.entity.EntityType<?>> kinds = new java.util.HashSet<>();
+        spawned.forEach(e -> kinds.add(e.getType()));
+        // baseline = what the test spawned (a freshly added entity can be missing from the area query for a tick)
+        java.util.Map<String, Integer> startByType = new java.util.TreeMap<>();
+        spawned.forEach(e -> startByType.merge(net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.getKey(e.getType()).getPath(), 1, Integer::sum));
+        int startEntities = startByType.values().stream().mapToInt(Integer::intValue).sum();
         long heapStart = usedHeap();
         List<Double> windows = new ArrayList<>();
         int[] tick = {0};
@@ -131,7 +137,17 @@ public final class SoakTests {
         });
         h.runAfterDelay(TICKS, () -> {
             long heapEnd = usedHeap();
-            int endEntities = count(level, area);
+            java.util.Map<String, Integer> endByType = byType(level, area, kinds);
+            int endEntities = endByType.values().stream().mapToInt(Integer::intValue).sum();
+            List<String> changed = new ArrayList<>();
+            java.util.Set<String> names = new java.util.TreeSet<>(startByType.keySet());
+            names.addAll(endByType.keySet());
+            for (String n : names) {
+                int a = startByType.getOrDefault(n, 0), b = endByType.getOrDefault(n, 0);
+                if (a != b) {
+                    changed.add(n + " " + a + " -> " + b);
+                }
+            }
             int alive = (int) spawned.stream().filter(Entity::isAlive).count();
             double ticked = spawned.stream().mapToInt(e -> e.tickCount).average().orElse(0);
             int crushed = 0;
@@ -181,17 +197,19 @@ public final class SoakTests {
             // generous limits: this guards against leaks and runaway growth, not against a slow test machine
             h.assertTrue(ticked > TICKS * 0.8, "the entities really ticked: " + ticked);
             h.assertTrue(alive == spawned.size(), "entities lost during the session: " + (spawned.size() - alive));
-            h.assertTrue(endEntities == startEntities, "mod entities changed: " + startEntities + " -> " + endEntities);
+            h.assertTrue(changed.isEmpty(), "spawned entity kinds changed in number: " + changed);
             h.assertTrue(last <= Math.max(3 * first, first + 20), "tick time grew from " + first + " ms to " + last + " ms");
             h.assertTrue(heapEnd - heapStart < 512L << 20, "heap grew by " + ((heapEnd - heapStart) >> 20) + " MB");
             h.succeed();
         });
     }
 
-    private static int count(ServerLevel level, AABB area) {
-        // only the mod's own entities: vanilla falling blocks or items around the test area are not ours
-        return level.getEntitiesOfClass(Entity.class, area, e -> net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE
-                .getKey(e.getType()).getNamespace().equals(Spacebreaker.MOD_ID)).size();
+    private static java.util.Map<String, Integer> byType(ServerLevel level, AABB area, java.util.Set<net.minecraft.world.entity.EntityType<?>> kinds) {
+        java.util.Map<String, Integer> out = new java.util.TreeMap<>();
+        for (Entity e : level.getEntitiesOfClass(Entity.class, area, e -> kinds.contains(e.getType()))) {
+            out.merge(net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.getKey(e.getType()).getPath(), 1, Integer::sum);
+        }
+        return out;
     }
 
     private static long usedHeap() {
