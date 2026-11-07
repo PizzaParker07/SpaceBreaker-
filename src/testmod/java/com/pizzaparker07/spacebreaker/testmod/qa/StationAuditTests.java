@@ -132,8 +132,10 @@ public final class StationAuditTests {
         BlockPos east = centre.relative(Direction.WEST, 3).above(2);
         h.assertTrue(StationModule.AIRLOCK.attach(level, east, "qa"), "the airlock attaches at a side");
         BlockPos inner = east.relative(Direction.WEST, 1).below(), outer = east.relative(Direction.WEST, 5).below();
-        h.assertTrue(level.getBlockState(inner).getBlock() instanceof com.pizzaparker07.spacebreaker.content.suit.block.AirlockDoorBlock
-                && level.getBlockState(outer).getBlock() instanceof com.pizzaparker07.spacebreaker.content.suit.block.AirlockDoorBlock, "two airlock doors");
+        // the module's doors are interlocked sliding doors since QA-27 (older builds: airlock doors)
+        java.util.function.Predicate<BlockPos> door = pos -> level.getBlockState(pos).getBlock() instanceof com.pizzaparker07.spacebreaker.content.suit.block.AirlockDoorBlock
+                || level.getBlockState(pos).getBlock() instanceof com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock;
+        h.assertTrue(door.test(inner) && door.test(outer), "two airlock doors");
         var player = h.makeMockServerPlayerInLevel();
         BlockPos dist = centre.relative(forward.getOpposite(), 2).relative(forward.getClockWise(), -2).above();
         List<String> out = new ArrayList<>();
