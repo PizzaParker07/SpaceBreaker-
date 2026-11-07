@@ -175,6 +175,12 @@ final class SuitEvaScenario implements ShowcaseScenario {
         }), null));
         s.add(new Shot(prefix + "_14_wide_beam", 0, 0.5, g + 1.62, 9.5, 180F, 12F, true, fp, 60, at(true, SuitEvaScenario::astronaut), null));
         s.add(new Shot(prefix + "_15_suit_station", 0, -6.0, g + 1.9, 7.0, 160F, 22F, true, fp, 40, at(false, null), null));
+        s.add(new Shot(prefix + "_16_sensor", 0, 0.5, g + 1.62, 8.5, 180F, 10F, false, fp, 60, at(false, p -> {
+            astronaut(p);
+            p.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(SuitModule.ENVIRONMENT_SENSOR.get()));
+            net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(p,
+                    com.pizzaparker07.spacebreaker.content.suit.EnvironmentSensorItem.read(p.serverLevel(), p.blockPosition()));
+        }), null));
         return s;
     }
 }

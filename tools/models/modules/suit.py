@@ -63,7 +63,7 @@ def generate():
     for name in pieces:
         write(f'models/item/{name}.json', {'parent': 'minecraft:item/generated',
                                             'textures': {'layer0': i(name), 'layer1': i(name + '_accent')}})
-    for name in ('maneuvering_unit', 'safety_tether', 'suit_upgrade_template', 'thermal_regulator_module', 'radiation_shield_module',
+    for name in ('maneuvering_unit', 'safety_tether', 'environment_sensor', 'suit_upgrade_template', 'thermal_regulator_module', 'radiation_shield_module',
                  'extra_oxygen_module', 'jetpack_booster_module'):
         generated_item(name)
     oxygen_tank()

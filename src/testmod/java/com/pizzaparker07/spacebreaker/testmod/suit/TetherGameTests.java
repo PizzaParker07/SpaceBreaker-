@@ -224,4 +224,18 @@ public final class TetherGameTests {
                         / com.pizzaparker07.spacebreaker.core.body.CelestialBody.EARTH_GRAVITY)), "the Moon is never microgravity");
         helper.succeed();
     }
+
+    @GameTest(template = EMPTY)
+    public static void environmentSensorReadsTheSurroundings(GameTestHelper helper) {
+        helper.setBlock(new BlockPos(2, 1, 2), Blocks.SAND);
+        BlockPos at = helper.absolutePos(new BlockPos(2, 2, 2));
+        var r = com.pizzaparker07.spacebreaker.content.suit.EnvironmentSensorItem.read(helper.getLevel(), at);
+        helper.assertTrue(r.pressureKpa() > 90 && r.pressureKpa() < 110, "Earth-like pressure, got " + r.pressureKpa());
+        helper.assertTrue(Math.abs(r.gravity() - 1F) < 0.01F, "1 g here, got " + r.gravity());
+        helper.assertTrue(r.ground().equals(Blocks.SAND.getDescriptionId()), "reads the ground underfoot, got " + r.ground());
+        helper.assertTrue(r.composition().isEmpty() || r.composition().keySet().iterator().next().equals("N2"),
+                "the main gas is listed first, got " + r.composition());
+        helper.assertTrue(r.composition().size() <= 5, "at most five gases");
+        helper.succeed();
+    }
 }

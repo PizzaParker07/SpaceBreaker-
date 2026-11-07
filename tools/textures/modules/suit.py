@@ -1181,6 +1181,33 @@ def visor_frame() -> Canvas:
     return cv
 
 
+# Environment Sensor: a handheld instrument with a cyan screen, a keypad and a stub antenna
+ICON_SENSOR = [
+    "..........ss....",
+    "..........ms....",
+    "....oooooooso...",
+    "...oHWWWWWWwo...",
+    "...oWkkkkkkwo...",
+    "...oWkCcCckwo...",
+    "...oWkcCcCkwo...",
+    "...oWkCCcckwo...",
+    "...oWkkkkkkwo...",
+    "...oWWWWWWWwo...",
+    "...oWbWrWbWwo...",
+    "...oWWWWWWWwo...",
+    "...oWbWbWbWwo...",
+    "...owwwwwwwwo...",
+    "....oooooooo....",
+    "................",
+]
+
+
+def icon_sensor() -> Canvas:
+    pal = {'o': S[1], 'W': S[5], 'H': S[6], 'w': S[3], 'k': (24, 26, 30), 'C': C[5], 'c': C[3], 'b': S[2],
+           'r': (200, 60, 50), 's': S[5], 'm': S[3]}
+    return _icon(ICON_SENSOR, pal)
+
+
 def export(save):
     save(hud_icons(), 'gui', 'hud_icons')
     save(visor_frost(), 'gui', 'visor_frost')
@@ -1191,6 +1218,7 @@ def export(save):
     save(icon_large_tank(), 'item', 'large_oxygen_tank')
     save(icon_mmu(), 'item', 'maneuvering_unit')
     save(icon_tether(), 'item', 'safety_tether')
+    save(icon_sensor(), 'item', 'environment_sensor')
     export_tiers(save)
     save(eva_suit_overlay(), 'models/armor', 'eva_suit_overlay')
     save(lamp_beam(), 'misc', 'helmet_lamp_beam')

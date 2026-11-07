@@ -176,6 +176,8 @@ public final class SuitModule implements SbModule {
     }
     public static final DeferredItem<ManeuveringUnitItem> MANEUVERING_UNIT = ITEMS.registerItem("maneuvering_unit",
             ManeuveringUnitItem::new, new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON));
+    public static final DeferredItem<EnvironmentSensorItem> ENVIRONMENT_SENSOR = ITEMS.registerItem("environment_sensor",
+            EnvironmentSensorItem::new, new Item.Properties().stacksTo(1));
     public static final DeferredItem<SafetyTetherItem> SAFETY_TETHER = ITEMS.registerItem("safety_tether",
             SafetyTetherItem::new, new Item.Properties().stacksTo(1));
 
@@ -245,7 +247,7 @@ public final class SuitModule implements SbModule {
                 .add(JETPACK_BOOSTER_MODULE)
                 .addStack(() -> OxygenTankItem.filled(OXYGEN_TANK.get()))
                 .addStack(() -> OxygenTankItem.filled(LARGE_OXYGEN_TANK.get()))
-                .addStack(() -> ManeuveringUnitItem.filled(MANEUVERING_UNIT.get())).add(SAFETY_TETHER)
+                .addStack(() -> ManeuveringUnitItem.filled(MANEUVERING_UNIT.get())).add(SAFETY_TETHER).add(ENVIRONMENT_SENSOR)
                 .add(OXYGEN_FILLER_ITEM).add(SUIT_STATION_ITEM).add(OXYGEN_DISTRIBUTOR_ITEM).add(AIRLOCK_DOOR_ITEM);
     }
 
@@ -292,6 +294,21 @@ public final class SuitModule implements SbModule {
         lang.item(MAGNETIC_BOOTS, "Magnetic EVA Boots", "Manyetik EVA Botları");
         lang.item(MANEUVERING_UNIT, "Maneuvering Unit", "Manevra Ünitesi");
         lang.item(SAFETY_TETHER, "Safety Tether", "Güvenlik Halatı");
+        lang.item(ENVIRONMENT_SENSOR, "Environment Sensor", "Çevre Sensörü");
+        lang.add("tooltip.spacebreaker.environment_sensor", "Use to read pressure, air, temperature, radiation, gravity and ground",
+                "Basınç, hava, sıcaklık, radyasyon, yerçekimi ve zemini okumak için kullan");
+        lang.add("sensor.spacebreaker.title", "Environment reading", "Çevre ölçümü");
+        lang.add("sensor.spacebreaker.title_at", "Environment reading: %s", "Çevre ölçümü: %s");
+        lang.add("sensor.spacebreaker.pressure", "Pressure: %s kPa (%s bar)", "Basınç: %s kPa (%s bar)");
+        lang.add("sensor.spacebreaker.no_air", "Air: none (vacuum)", "Hava: yok (vakum)");
+        lang.add("sensor.spacebreaker.air", "Air: %s", "Hava: %s");
+        lang.add("sensor.spacebreaker.temperature", "Temperature: %s °C (%s)", "Sıcaklık: %s °C (%s)");
+        lang.add("sensor.spacebreaker.sunlit", "in sunlight", "güneşte");
+        lang.add("sensor.spacebreaker.shade", "in shade", "gölgede");
+        lang.add("sensor.spacebreaker.radiation", "Radiation: %s mSv/day", "Radyasyon: %s mSv/gün");
+        lang.add("sensor.spacebreaker.gravity", "Gravity: %s g", "Yerçekimi: %s g");
+        lang.add("sensor.spacebreaker.ground", "Ground: %s", "Zemin: %s");
+        lang.add("sensor.spacebreaker.dust", "Panel dust: %s %%/day", "Panel tozu: günde %%%s");
         lang.add("tooltip.spacebreaker.safety_tether", "A %s-block line from your belt to a block: you cannot drift away",
                 "Kemerden bir bloğa %s blokluk halat: uzaklaşıp sürüklenemezsin");
         lang.add("tooltip.spacebreaker.safety_tether.hint", "Use on a block to clip on, use again to unclip",
