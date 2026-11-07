@@ -161,8 +161,18 @@ final class JovianScenario extends OuterShowcase {
         int ox = SX + 40;
         int oz = SZ - 36;
         int oy = (int) ground(level, ox + 8, oz + 8);
-        MarsScenario.placePiece(level, new ObservatoryPiece(51L, ox, oy, oz, Direction.NORTH));
+        ObservatoryPiece obs = new ObservatoryPiece(51L, ox, oy, oz, Direction.NORTH);
+        MarsScenario.placePiece(level, obs);
         shot("08_volcano_observatory", ox + 26.5, oy + 9, oz + 26.5, MoonScenario.yaw(-18, -18), 22F, 160, at(0.1), null);
+        // close, from the south-east by the steps: the stilts, fins, door and dome; inside, from the door to the archive
+        BlockPos near = obs.world(16, ObservatoryPiece.DECK + 4, 18);
+        BlockPos dome = obs.world(ObservatoryPiece.C, ObservatoryPiece.DECK + 5, ObservatoryPiece.C);
+        shot("08b_observatory_close", near.getX() + 0.5, near.getY(), near.getZ() + 0.5, MoonScenario.yaw(dome.getX() - near.getX(), dome.getZ() - near.getZ()),
+                MoonScenario.pitch(dome.getX() - near.getX(), dome.getY() - near.getY(), dome.getZ() - near.getZ()), 140, at(0.1), null);
+        BlockPos in = obs.world(ObservatoryPiece.C, ObservatoryPiece.DECK + 1, 11);
+        BlockPos archive = obs.world(6, ObservatoryPiece.DECK + 1, 5);
+        shot("08c_observatory_inside", in.getX() + 0.5, in.getY() + 1.4, in.getZ() + 0.5, MoonScenario.yaw(archive.getX() - in.getX(), archive.getZ() - in.getZ()),
+                20F, 100, at(0.1), null);
     }
 
     private void ganymede(ServerLevel level, PlanetTerrain t) {

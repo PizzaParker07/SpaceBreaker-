@@ -95,6 +95,10 @@ public final class JupiterData {
         lang.add("sign.spacebreaker.europa_probe_log.3", "pinging. Going.", "var. İniyoruz.");
         lang.add("structure.spacebreaker.europa_probe", "Buried Research Probe", "Gömülü Araştırma Sondası");
         lang.add("dungeon.spacebreaker.io_observatory", "Abandoned Volcano Observatory", "Terk Edilmiş Volkan Gözlemevi");
+        lang.add("sign.spacebreaker.io_observatory_log.0", "OBSERVATORY LOG", "GÖZLEM GÜNLÜĞÜ");
+        lang.add("sign.spacebreaker.io_observatory_log.1", "The plume moved", "Püskürme gece");
+        lang.add("sign.spacebreaker.io_observatory_log.2", "in the night.", "yer değiştirdi.");
+        lang.add("sign.spacebreaker.io_observatory_log.3", "We are leaving.", "Çıkıyoruz.");
         lang.add("structure.spacebreaker.io_observatory", "Abandoned Volcano Observatory", "Terk Edilmiş Volkan Gözlemevi");
         tech(lang, "cryobot_drilling", "Cryobot Drilling",
                 "A heated probe that melts its way down through kilometres of ice, paying out a tether behind it: the way into Europa's hidden ocean.",
