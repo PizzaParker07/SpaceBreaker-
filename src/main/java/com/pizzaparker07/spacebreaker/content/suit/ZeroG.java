@@ -83,4 +83,19 @@ public final class ZeroG {
         }
         return vy;
     }
+
+    /** Below this gravity factor (Earth = 1) a step can send you drifting off: small asteroids like Bennu (~6 µg). */
+    public static final double MICRO_G = 0.001;
+
+    public static boolean microGravity(double gravityFactor) {
+        return gravityFactor < MICRO_G;
+    }
+
+    /**
+     * Should the wearer be told to use a tether or magnetic boots? Only in microgravity and only when they have
+     * none of the aids: magnetic boots, a clipped tether or a fuelled Maneuvering Unit.
+     */
+    public static boolean needsMicroGravityHint(double gravityFactor, boolean magneticBoots, boolean tethered, boolean fuelledMmu) {
+        return microGravity(gravityFactor) && !magneticBoots && !tethered && !fuelledMmu;
+    }
 }

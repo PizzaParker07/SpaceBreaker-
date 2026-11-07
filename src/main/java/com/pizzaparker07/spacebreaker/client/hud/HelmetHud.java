@@ -181,6 +181,9 @@ public final class HelmetHud {
             if (s.has(SuitStatusPayload.COLD_TRAP)) {
                 env += " " + Component.translatable("hud.spacebreaker.cold_trap").getString();
             }
+            if (s.has(SuitStatusPayload.MICRO_G) && !mag && !tethered) {
+                env += " " + Component.translatable("hud.spacebreaker.micro_g").getString();
+            }
             rows.add(new Row(ICON_PRESSURE, -1F, 0, env, TEXT, false));
         }
         if (s.has(SuitStatusPayload.MMU)) {

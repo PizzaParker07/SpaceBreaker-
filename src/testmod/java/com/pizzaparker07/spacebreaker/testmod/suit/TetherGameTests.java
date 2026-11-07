@@ -192,4 +192,16 @@ public final class TetherGameTests {
         helper.assertTrue(Boolean.FALSE.equals(com.pizzaparker07.spacebreaker.content.suit.HelmetLamp.toggle(p)), "and back to wide");
         helper.succeed();
     }
+
+    @GameTest(template = EMPTY)
+    public static void microGravityHintOnlyWithoutAids(GameTestHelper helper) {
+        double bennu = 6e-6, moon = 0.165;
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.ZeroG.needsMicroGravityHint(bennu, false, false, false),
+                "on Bennu without any aid the wearer is warned");
+        helper.assertFalse(com.pizzaparker07.spacebreaker.content.suit.ZeroG.needsMicroGravityHint(bennu, true, false, false), "magnetic boots are enough");
+        helper.assertFalse(com.pizzaparker07.spacebreaker.content.suit.ZeroG.needsMicroGravityHint(bennu, false, true, false), "a clipped tether is enough");
+        helper.assertFalse(com.pizzaparker07.spacebreaker.content.suit.ZeroG.needsMicroGravityHint(bennu, false, false, true), "a fuelled unit is enough");
+        helper.assertFalse(com.pizzaparker07.spacebreaker.content.suit.ZeroG.needsMicroGravityHint(moon, false, false, false), "the Moon holds you down");
+        helper.succeed();
+    }
 }
