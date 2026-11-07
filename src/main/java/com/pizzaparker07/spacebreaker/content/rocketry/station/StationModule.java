@@ -192,6 +192,13 @@ public enum StationModule {
         return com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.HAZARD_STRIPE.base().get().defaultBlockState();
     }
 
+    /** A supply locker (the shared one from the dungeons kit), its doors facing {@code facing}. */
+    private static BlockState locker(Direction facing) {
+        Direction f = facing.getAxis().isVertical() ? Direction.NORTH : facing;
+        return com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.BLOCK.get().defaultBlockState()
+                .setValue(com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlock.FACING, f);
+    }
+
     private static BlockState light() {
         return com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.LED_PANEL.get().defaultBlockState();
     }
@@ -228,8 +235,7 @@ public enum StationModule {
                     .defaultBlockState(), 3);
             level.setBlock(at(wall, forward, -2, -down + 1, 1), SuitModule.OXYGEN_DISTRIBUTOR.get().defaultBlockState(), 3);
             for (int[] c : new int[][]{{2, length - 1}, {-2, length - 1}}) {
-                level.setBlock(at(wall, forward, c[0], -down + 1, c[1]), Blocks.BARREL.defaultBlockState()
-                        .setValue(net.minecraft.world.level.block.BarrelBlock.FACING, forward.getOpposite()), 3);
+                level.setBlock(at(wall, forward, c[0], -down + 1, c[1]), locker(forward.getOpposite()), 3);
             }
         } else if (this == HABITATION) {
             // three sleeping pods along the left wall: a bunk in an alcove between grey partitions, a light above
@@ -243,10 +249,8 @@ public enum StationModule {
                 }
                 level.setBlock(at(wall, forward, -halfWidth, 0, f), light(), 3);
             }
-            level.setBlock(at(wall, forward, 2, -down + 1, length - 2), Blocks.BARREL.defaultBlockState()
-                    .setValue(net.minecraft.world.level.block.BarrelBlock.FACING, right.getOpposite()), 3);
-            level.setBlock(at(wall, forward, 2, -down + 1, length - 3), Blocks.BARREL.defaultBlockState()
-                    .setValue(net.minecraft.world.level.block.BarrelBlock.FACING, right.getOpposite()), 3);
+            level.setBlock(at(wall, forward, 2, -down + 1, length - 2), locker(right.getOpposite()), 3);
+            level.setBlock(at(wall, forward, 2, -down + 1, length - 3), locker(right.getOpposite()), 3);
             level.setBlock(at(wall, forward, 2, -down + 1, 2), com.pizzaparker07.spacebreaker.content.machines.MachinesModule.POWER_MONITOR.get()
                     .defaultBlockState(), 3);
             mouth(level, at(wall, forward, 0, 0, length), forward, right, false);

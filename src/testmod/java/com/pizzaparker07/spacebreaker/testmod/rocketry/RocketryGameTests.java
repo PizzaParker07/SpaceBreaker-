@@ -1082,7 +1082,7 @@ public final class RocketryGameTests {
     @GameTest(template = EMPTY, timeoutTicks = 600, batch = "rocketry_station_stage2")
     public static void stationLivingAirlockAndWings(GameTestHelper helper) {
         var level = helper.getLevel();
-        BlockPos centre = helper.absolutePos(new BlockPos(4, 24, 4));
+        BlockPos centre = helper.absolutePos(new BlockPos(4, 70, 4));
         Direction forward = Direction.SOUTH;
         helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.buildCore(level, centre, forward, "tester"), "the core unfolds");
         BlockPos front = centre.relative(forward, 3).above(2);
@@ -1129,7 +1129,7 @@ public final class RocketryGameTests {
     @GameTest(template = EMPTY, timeoutTicks = 200, batch = "rocketry_station_shipyard")
     public static void shipyardBerthDocksACraft(GameTestHelper helper) {
         var level = helper.getLevel();
-        BlockPos centre = helper.absolutePos(new BlockPos(4, 30, 4));
+        BlockPos centre = helper.absolutePos(new BlockPos(4, 110, 4));
         Direction forward = Direction.SOUTH;
         helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.buildCore(level, centre, forward, "tester"), "the core unfolds");
         var core = com.pizzaparker07.spacebreaker.content.rocketry.station.StationCoreBlockEntity.near(level, centre.above(2));
@@ -1164,7 +1164,7 @@ public final class RocketryGameTests {
     @GameTest(template = EMPTY, timeoutTicks = 400, batch = "rocketry_station_delivery")
     public static void moduleRocketDeliversToTheConsole(GameTestHelper helper) {
         var level = helper.getLevel();
-        BlockPos centre = helper.absolutePos(new BlockPos(4, 30, 4));
+        BlockPos centre = helper.absolutePos(new BlockPos(4, 160, 4));
         helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.buildCore(level, centre, Direction.SOUTH, "tester"), "the core unfolds");
         BlockPos port = com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.corePort(centre);
         var design = new com.pizzaparker07.spacebreaker.content.rocketry.design.RocketDesign(java.util.List.of(
