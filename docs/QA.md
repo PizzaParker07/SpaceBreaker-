@@ -217,6 +217,9 @@ Reviewed: no missing textures (purple/black), no untranslated keys, no invisible
   (`RocketryModule.java:230`). With both branches merged the shadow is applied twice (sunlit²: same in full sun/shadow,
   too low in penumbra). One of the two must go — suggested: keep the general modifier, drop the direct multiplication in
   `SolarPanelBlockEntity.java:117` (and in `RoverEntity.java:375` if the rover also uses `solarFactor`). Integrator informed.
+  Update 04:25: both sides then removed their change (industry e38b4ff5, rocketry reverted the modifier), so **no** server
+  code applies the orbital shadow — QA-16 is open again. Integrator decision: rocketry restores the modifier, industry
+  stays as e38b4ff5.
 
 - Model rule updated (inner planets, Moon change 8a61c8e: Mercury cold traps about −213 °C): Mercury's local industry now
   needs the heated suit **or** Mk1 with thermal regulator modules. Mercury stays a plain hydrolox round trip (step 15).
@@ -224,6 +227,7 @@ Reviewed: no missing textures (purple/black), no untranslated keys, no invisible
   300-tick timeout with "approach finished" (`RocketryGameTests.java:927`): the rocket was still `docking()` when the test
   ended. The other runs pass. Possibly the approach speed depends on the tick the entity first ticks (spawned in a chunk
   that starts ticking late); a longer timeout or waiting for the first entity tick before `approachPort` would tell.
+  **Fixed** on dev/rocketry (forced chunk, approach starts after 10 settled ticks, 600-tick timeout; 5 green runs in a row).
 
 ## Localization (round 1)
 - Key parity en_us/tr_tr is complete (1305 each), placeholders and colour codes match, no broken characters.
