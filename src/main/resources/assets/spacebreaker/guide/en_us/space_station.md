@@ -1,7 +1,7 @@
 ---
 title: Space Station
 icon: spacebreaker:docking_port
-items: [spacebreaker:station_kit, spacebreaker:habitat_kit, spacebreaker:station_hull, spacebreaker:station_window, spacebreaker:docking_port, spacebreaker:station_bunk, spacebreaker:fuel_depot, spacebreaker:solar_array, spacebreaker:crew_capsule_large, spacebreaker:cargo_module]
+items: [spacebreaker:station_kit, spacebreaker:habitat_kit, spacebreaker:station_hull, spacebreaker:station_window, spacebreaker:docking_port, spacebreaker:station_bunk, spacebreaker:fuel_depot, spacebreaker:solar_array, spacebreaker:crew_capsule_large, spacebreaker:cargo_module, spacebreaker:station_core_module, spacebreaker:docking_module, spacebreaker:station_hatch]
 research: spacebreaker:space_stations
 ---
 A home, workshop and fuel depot in orbit. You no longer have to fuel your rocket from the ground every time.
@@ -13,6 +13,18 @@ A home, workshop and fuel depot in orbit. You no longer have to fuel your rocket
 2. Build walls and a roof with {item spacebreaker:station_hull} and {item spacebreaker:station_window}.
 3. Put an {item spacebreaker:oxygen_distributor} inside: the closed room is pressurised and you can take off your helmet. → [Air for the Base](base_air)
 4. Fit a {item spacebreaker:docking_port} on the outside.
+
+## Station modules {#modules}
+{items spacebreaker:station_core_module spacebreaker:docking_module}
+Ready-made modules join through standard **mouths**: a 3 × 3 opening at walking height, closed by nine {item spacebreaker:station_hatch} blocks (the middle one is marked) while nothing is attached.
+- **{item spacebreaker:station_core_module}** (7 × 7 × 7): the heart of a station, with the {item spacebreaker:station_core} console, an oxygen distributor, roof lights, a docking port on the roof and four side mouths, each with a window above it.
+- **{item spacebreaker:docking_module}** (5 × 5 × 7): a short tunnel with a docking port at its far end.
+
+**By hand:** use a module on a mouth's hatch. It is built against the wall and both walls open into a short passage, so the two modules share one room of air. A core used in open space in orbit starts a new station ("A station core can only be unfolded in orbit" anywhere else). While you hold a module and look at a mouth, an outline shows where it goes: green when there is room, red when something is in the way.
+
+**By rocket:** modules fit the capsule slot. A module rocket docks at the station in its orbit and leaves the module waiting in the core console; open the console to take it. With no station within 512 blocks, a core module unfolds a new station ahead of the rocket, which docks on its roof.
+{recipe spacebreaker:rocketry/station_core_module}
+{recipe spacebreaker:rocketry/docking_module}
 
 ## Habitat module kit
 {items spacebreaker:habitat_kit}
