@@ -557,3 +557,43 @@ def export(save):  # noqa: F811
     _export_rover_cabin(save)
     save(pressurized_icon(), 'item', 'pressurized_rover')
     save(amphibious_icon(), 'item', 'amphibious_rover')
+
+
+def hud_icons():
+    """9x9 HUD icons for the rover panel, in the suit HUD's style (dark outline, flat fill):
+    0 battery, 1 solar panel, 2 RTG pellet."""
+    from sbtex.core import Canvas
+    K = (16, 16, 20)
+    cv = Canvas(27, 9)
+    # battery: outlined cell with a terminal nub, green charge
+    for x in range(1, 8):
+        for y in range(2, 9):
+            edge = x in (1, 7) or y in (2, 8)
+            cv[x, y] = K if edge else (88, 200, 90)
+    cv[3, 1] = K; cv[4, 1] = (200, 200, 205); cv[5, 1] = K
+    cv[3, 0] = K; cv[4, 0] = K; cv[5, 0] = K
+    for y in range(3, 8):
+        cv[4, y] = (150, 240, 160) if y < 5 else cv[4, y]
+    # solar panel: blue cell grid in a white frame, tilted feel by a darker lower row
+    o = 9
+    for x in range(0, 9):
+        for y in range(1, 8):
+            edge = x in (0, 8) or y in (1, 7)
+            cv[o + x, y] = K if edge else ((60, 100, 190) if (x % 3 and (y - 1) % 3) else (200, 210, 225))
+    cv[o + 4, 8] = K
+    # RTG pellet: dark finned can with a yellow warning dot
+    o = 18
+    for x in range(1, 8):
+        for y in range(1, 9):
+            edge = x in (1, 7) or y in (1, 8)
+            cv[o + x, y] = K if edge else ((120, 124, 132) if x % 2 else (90, 94, 102))
+    cv[o + 4, 4] = (240, 192, 64); cv[o + 4, 5] = (240, 192, 64)
+    return cv
+
+
+_export_rover_hud = export
+
+
+def export(save):  # noqa: F811
+    _export_rover_hud(save)
+    save(hud_icons(), 'gui', 'rover_hud_icons')
