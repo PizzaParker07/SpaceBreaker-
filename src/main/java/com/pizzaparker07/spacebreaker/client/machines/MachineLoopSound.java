@@ -34,6 +34,7 @@ public class MachineLoopSound extends AbstractTickableSoundInstance {
         this.looping = true;
         this.delay = 0;
         this.volume = 0.01F;
+        this.pitch = block.loopPitch();
         this.x = pos.getX() + 0.5;
         this.y = pos.getY() + 0.5;
         this.z = pos.getZ() + 0.5;

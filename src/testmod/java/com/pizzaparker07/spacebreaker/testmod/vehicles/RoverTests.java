@@ -283,6 +283,10 @@ public final class RoverTests {
         h.assertTrue(electrolyzer.loopSound() == com.pizzaparker07.spacebreaker.content.audio.SbSounds.ELECTROLYZER_LOOP.get(), "electrolyser hum");
         h.assertTrue(crusher.loopSound() == com.pizzaparker07.spacebreaker.content.audio.SbSounds.DRILL_LOOP.get(), "crusher grind");
         h.assertTrue(press.loopSound() == null, "the press has its own ram sounds");
+        var centrifuge = (com.pizzaparker07.spacebreaker.content.machines.base.MachineBlock) MachinesModule.GAS_CENTRIFUGE.block().get();
+        var reactor = (com.pizzaparker07.spacebreaker.content.machines.base.MachineBlock) MachinesModule.FISSION_REACTOR.block().get();
+        h.assertTrue(centrifuge.loopSound() != null && centrifuge.loopPitch() > 1.5F, "the centrifuge whines high");
+        h.assertTrue(reactor.loopSound() != null && reactor.loopPitch() < 0.8F, "the fission unit thrums low");
         h.succeed();
     }
 
