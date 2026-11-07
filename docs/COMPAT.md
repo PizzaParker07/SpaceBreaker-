@@ -373,4 +373,12 @@ environment; the plugins compile against both APIs and the line itself is covere
   in `neoforge.mods.toml` mod properties, `DynamicLightsContext`, `LineLightBehavior` for beam-like lights,
   `DynamicLightHandlers.registerDynamicLightHandler` for entities); the NeoForge port of Sodium Dynamic Lights is older
   (LDL 2.x API). `lambdynlights` is an optional dependency (`[4.0,)`). With a shader pack, dynamic light is ordinary block light and is tinted like torch light by the pack.
+  Helmet lamps (suit, `client/light`): checked on the Moon at night, vanilla / Complementary × fallback pool /
+  LambDynamicLights (`helmet_lamps_iris_dynlights.jpg`; rows shots 06, 07, 11, 13, 14; columns vanilla, pack,
+  vanilla + LDL, pack + LDL). The fallback pool shows under the pack (a little dimmer and bluer); with LDL the pool is
+  off and the light is real block light, which the pack warms to a reddish brown on grey regolith. The glow cones
+  (`entityTranslucentEmissive`, no depth write) are much stronger under the pack (bloom) and, like the NTR plume,
+  are painted over by the sky pass where only sky is behind them unless drawn through `LateEffects.drawOrDefer`.
+  `extractLambDynLightsApi` works from a clean Gradle home (`./gradlew build`, Modrinth reachable); the mod jar holds
+  no LambDynamicLights classes.
 
