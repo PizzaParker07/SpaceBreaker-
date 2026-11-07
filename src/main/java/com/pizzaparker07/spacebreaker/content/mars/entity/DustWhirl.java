@@ -125,20 +125,21 @@ public class DustWhirl extends Entity {
 
     private void clientParticles() {
         Level level = level();
-        // dust spiralling up the column: the particle itself circles the axis, so the column holds together
-        for (int i = 0; i < 9; i++) {
-            double h = random.nextDouble() * random.nextDouble() * HEIGHT;
-            double a = random.nextDouble() * Math.PI * 2;
-            double r = 0.35 + h * 0.07;
+        // the funnel: grains laid along three spiral strands, so the column reads as one continuous, twisting body;
+        // each grain then climbs the funnel by itself (WhirlDustParticle), flaring out and fading with height
+        for (int i = 0; i < 8; i++) {
+            double h = random.nextDouble() * random.nextDouble() * HEIGHT * 0.8;
+            double strand = (i % 3) * (Math.PI * 2 / 3);
+            double a = tickCount * 0.26 - h * 0.55 + strand + (random.nextDouble() - 0.5) * 0.5;
+            double r = 0.25 + 0.016 * h * h;
             level.addParticle(MarsParticles.WHIRL_DUST.get(), getX() + Math.cos(a) * r, getY() + h, getZ() + Math.sin(a) * r,
-                    getX(), 0.06 + random.nextDouble() * 0.05, getZ());
+                    getX(), getY(), getZ());
         }
-        // a skirt of dust kicked up at its foot
-        if (tickCount % 2 == 0) {
-            double a = random.nextDouble() * Math.PI * 2;
-            level.addParticle(MarsParticles.DUST_MOTE.get(), getX() + Math.cos(a) * 0.9, getY() + 0.1, getZ() + Math.sin(a) * 0.9,
-                    Math.cos(a) * 0.05, 0.02, Math.sin(a) * 0.05);
-        }
+        // a low ring of dust lifting off the ground at its foot
+        double a = random.nextDouble() * Math.PI * 2;
+        double r = 0.8 + random.nextDouble() * 0.5;
+        level.addParticle(MarsParticles.DUST_MOTE.get(), getX() + Math.cos(a) * r, getY() + 0.05, getZ() + Math.sin(a) * r,
+                -Math.sin(a) * 0.08 + Math.cos(a) * 0.03, 0.01, Math.cos(a) * 0.08 + Math.sin(a) * 0.03);
     }
 
     @Override
