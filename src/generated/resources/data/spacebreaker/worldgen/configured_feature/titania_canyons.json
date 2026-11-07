@@ -1,0 +1,43 @@
+{
+  "type": "spacebreaker:grabens",
+  "config": {
+    "floor": {
+      "Name": "spacebreaker:titania_regolith",
+      "Properties": {
+        "facing": "north",
+        "print": "none"
+      }
+    },
+    "grabens": [
+      {
+        "angle": 20.0,
+        "depth": 64.0,
+        "latitude": -4.0,
+        "length": 3200.0,
+        "width": 90.0,
+        "x": 250.0
+      },
+      {
+        "angle": 35.0,
+        "depth": 52.0,
+        "latitude": 18.0,
+        "length": 2400.0,
+        "width": 70.0,
+        "x": -600.0
+      },
+      {
+        "angle": 10.0,
+        "depth": 48.0,
+        "latitude": -28.0,
+        "length": 2000.0,
+        "width": 60.0,
+        "x": 1100.0
+      }
+    ],
+    "ridge": 0.0,
+    "rock": {
+      "Name": "spacebreaker:canyon_wall_ice"
+    },
+    "wall": 14.0
+  }
+}

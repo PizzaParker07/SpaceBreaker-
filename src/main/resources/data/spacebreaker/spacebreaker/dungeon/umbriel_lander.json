@@ -1,0 +1,9 @@
+{
+  "structure": "spacebreaker:umbriel_lander",
+  "world": "spacebreaker:umbriel",
+  "guardians": [],
+  "loot_tables": [
+    "spacebreaker:dungeons/umbriel/lander_cabin",
+    "spacebreaker:dungeons/umbriel/lander_cargo"
+  ]
+}

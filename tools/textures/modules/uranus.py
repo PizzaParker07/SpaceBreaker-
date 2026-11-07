@@ -119,6 +119,152 @@ def frost_moth():
     return cv
 
 
+# --------------------------------------------------------------------------- Titania
+
+def titania_regolith(v=0):
+    return dust(P.TITANIA_SOIL, 16101 + v * 19)
+
+
+def titania_ice():
+    return _rock(P.TITANIA_ICE, 16201)
+
+
+def canyon_wall_ice():
+    """Pale canyon-wall ice: layered in thin horizontal bands, like the faces of the great canyons."""
+    r = P.CANYON_WALL
+    cv = _rock(r, 16301)
+    for y in (3, 4, 10):
+        for x in range(16):
+            if (x * 7 + y) % 5:
+                cv[x, y] = r[1] if y != 4 else r[4]
+    return cv
+
+
+def scree_roller():
+    """64x32 sheet for ScreeRollerModel: banded grey-brown plates with pale edges, soft darker body, pale snout."""
+    cv = Canvas(64, 32)
+    r = P.ROLLER
+    n = clustered(64, 64, 16401, passes=1)
+
+    def plate(face, x, y, fw, fh):
+        if face == 'bottom':
+            return r[1]
+        if face == 'top':
+            return r[5] if y in (0, fh - 1) else noise_pick(r, 3, n, x, y)
+        return r[4] if y == 0 else noise_pick(r, 2, n, x + 20, y)
+
+    paint(cv, 0, 0, 8, 5, 4, plate)
+    paint(cv, 0, 9, 9, 6, 3, plate)
+    paint(cv, 0, 18, 8, 5, 4, plate)
+
+    def ball(face, x, y, fw, fh):
+        return r[5] if (x + y) % 5 == 0 else noise_pick(r, 3, n, x + 30, y + 10)
+
+    paint(cv, 28, 0, 7, 7, 7, ball)
+
+    def head(face, x, y, fw, fh):
+        if face == 'front' and y == 0 and x in (0, 2):
+            return hexc('#141210')
+        return r[4] if face == 'front' else noise_pick(r, 3, n, x + 50, y)
+
+    paint(cv, 28, 14, 3, 3, 4, head)
+    paint(cv, 42, 14, 2, 3, 2, lambda f, x, y, fw, fh: r[1])
+    return cv
+
+
+# --------------------------------------------------------------------------- Umbriel
+
+def umbriel_regolith(v=0):
+    return dust(P.UMBRIEL_SOIL, 17101 + v * 19)
+
+
+def umbriel_ice():
+    return _rock(P.UMBRIEL_ICE, 17201)
+
+
+def sooty_ice():
+    """Sooty ice: almost black, with a few faint grey ice grains showing through the carbon film."""
+    r = P.SOOT
+    cv = _rock(r, 17301)
+    w = white(17302)
+    for y in range(16):
+        for x in range(16):
+            if w[x][y] > 0.94:
+                cv[x, y] = r[5]
+    return cv
+
+
+def gloam_hopper():
+    """64x32 sheet for GloamHopperModel: soot-dark body with a slightly paler back stripe, pale eyes, dark ear plates."""
+    cv = Canvas(64, 32)
+    r = P.HOPPER
+    n = clustered(64, 64, 17401, passes=1)
+
+    def body(face, x, y, fw, fh):
+        if face == 'bottom':
+            return r[1]
+        if face == 'top' and x in (2, 3):
+            return r[4]
+        return noise_pick(r, 3, n, x, y)
+
+    paint(cv, 0, 0, 6, 5, 8, body)
+
+    def head(face, x, y, fw, fh):
+        if face == 'front' and y == 1 and x in (0, 4):
+            return r[5]
+        if face == 'front' and y == 3 and x in (1, 2, 3):
+            return r[0]
+        return noise_pick(r, 3, n, x + 30, y)
+
+    paint(cv, 28, 0, 5, 4, 4, head)
+    paint(cv, 46, 0, 2, 4, 1, lambda f, x, y, fw, fh: r[2] if y else r[3])
+    paint(cv, 0, 14, 2, 5, 5, lambda f, x, y, fw, fh: r[0] if y == fh - 1 else noise_pick(r, 2, n, x + 10, y + 20))
+    paint(cv, 16, 14, 1, 5, 1, lambda f, x, y, fw, fh: r[0] if y == fh - 1 else r[2])
+    return cv
+
+
+# --------------------------------------------------------------------------- Oberon
+
+def oberon_regolith(v=0):
+    return dust(P.OBERON_SOIL, 18101 + v * 19)
+
+
+def oberon_ice():
+    return _rock(P.OBERON_ICE, 18201)
+
+
+def dark_crater_fill():
+    """Dark crater fill: a near-black, finely grained deposit with a few low ripples."""
+    return dust(P.DARK_FILL, 18301)
+
+
+def rim_burrower():
+    """64x32 sheet for RimBurrowerModel: reddish-grey ridged back, darker sides, pale claws, small dark eyes."""
+    cv = Canvas(64, 32)
+    r = P.BURROWER
+    n = clustered(64, 64, 18401, passes=1)
+
+    def body(face, x, y, fw, fh):
+        if face == 'bottom':
+            return r[1]
+        if face == 'top':
+            return r[3] if x % 3 else r[4]
+        return r[3] if y == 0 else noise_pick(r, 2, n, x, y)
+
+    paint(cv, 0, 0, 8, 4, 10, body)
+    paint(cv, 36, 0, 2, 1, 8, lambda f, x, y, fw, fh: r[4])
+
+    def head(face, x, y, fw, fh):
+        if face == 'front' and y == 0 and x in (1, 3):
+            return r[0]
+        return noise_pick(r, 3, n, x + 40, y + 10)
+
+    paint(cv, 0, 14, 5, 3, 4, head)
+    paint(cv, 20, 14, 3, 2, 3, lambda f, x, y, fw, fh: r[5] if f == 'front' else r[2])
+    paint(cv, 32, 14, 2, 2, 2, lambda f, x, y, fw, fh: r[1])
+    return cv
+
+
 def uranus_disc(size=256):
     """Uranus: an almost featureless pale cyan disc, a slightly brighter polar cap and a few very faint bands."""
     from PIL import Image
@@ -180,6 +326,30 @@ def export(save):
     save(ariel_ice(), 'block', 'ariel_ice', (40, 12, 20, None))
     save(graben_floor_ice(), 'block', 'graben_floor_ice', (100, 16, 0, None))
     save(frost_moth(), 'entity', 'uranus/frost_moth')
+    base = titania_regolith(0)
+    save(base, 'block', 'titania_regolith', dust_spec)
+    save(titania_regolith(1), 'block', 'titania_regolith_1', dust_spec)
+    for side in ('left', 'right'):
+        save(footprint(base, prints(P.TITANIA_SOIL), side), 'block', f'titania_regolith_footprint_{side}', (22, 8, 64, None))
+    save(titania_ice(), 'block', 'titania_ice', (40, 12, 20, None))
+    save(canyon_wall_ice(), 'block', 'canyon_wall_ice', (40, 12, 20, None))
+    save(scree_roller(), 'entity', 'uranus/scree_roller')
+    base = umbriel_regolith(0)
+    save(base, 'block', 'umbriel_regolith', dust_spec)
+    save(umbriel_regolith(1), 'block', 'umbriel_regolith_1', dust_spec)
+    for side in ('left', 'right'):
+        save(footprint(base, prints(P.UMBRIEL_SOIL), side), 'block', f'umbriel_regolith_footprint_{side}', (22, 8, 64, None))
+    save(umbriel_ice(), 'block', 'umbriel_ice', (40, 12, 20, None))
+    save(sooty_ice(), 'block', 'sooty_ice', (30, 10, 30, None))
+    save(gloam_hopper(), 'entity', 'uranus/gloam_hopper')
+    base = oberon_regolith(0)
+    save(base, 'block', 'oberon_regolith', dust_spec)
+    save(oberon_regolith(1), 'block', 'oberon_regolith_1', dust_spec)
+    for side in ('left', 'right'):
+        save(footprint(base, prints(P.OBERON_SOIL), side), 'block', f'oberon_regolith_footprint_{side}', (22, 8, 64, None))
+    save(oberon_ice(), 'block', 'oberon_ice', (40, 12, 20, None))
+    save(dark_crater_fill(), 'block', 'dark_crater_fill', dust_spec)
+    save(rim_burrower(), 'entity', 'uranus/rim_burrower')
     import os
     out = os.path.join(os.path.dirname(__file__), '..', '..', '..', 'src', 'main', 'resources', 'assets', 'spacebreaker', 'textures',
                        'environment')

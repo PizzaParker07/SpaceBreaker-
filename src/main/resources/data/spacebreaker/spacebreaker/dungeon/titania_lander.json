@@ -1,0 +1,9 @@
+{
+  "structure": "spacebreaker:titania_lander",
+  "world": "spacebreaker:titania",
+  "guardians": [],
+  "loot_tables": [
+    "spacebreaker:dungeons/titania/lander_cabin",
+    "spacebreaker:dungeons/titania/lander_cargo"
+  ]
+}

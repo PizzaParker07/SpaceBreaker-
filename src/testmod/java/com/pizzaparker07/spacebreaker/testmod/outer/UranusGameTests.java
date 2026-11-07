@@ -101,4 +101,131 @@ public final class UranusGameTests {
         helper.assertTrue(node != null && node.tier() == 4, "ice shell tectonics is a tier-4 tech");
         helper.succeed();
     }
+
+    @GameTest(template = WorldTests.EMPTY, timeoutTicks = 200)
+    public static void titaniaHasGreatCanyonsAndACraterBasin(GameTestHelper helper) {
+        helper.assertTrue(WorldTests.stem(helper, "titania").generator() instanceof PlanetChunkGenerator, "Titania uses the planet engine");
+        PlanetTerrain t = WorldTests.generator(helper, "titania", 5L).terrain();
+        var cfg = UranusData.canyons();
+        var g = cfg.grabens().getFirst();
+        double cz = -g.latitude() / 90.0 * t.profile().poleDistance();
+        double[] floor = new double[1];
+        double centre = com.pizzaparker07.spacebreaker.content.belt.world.GrabenFeature.offset(t, cfg, g.x(), cz, floor);
+        helper.assertTrue(floor[0] > 0 && centre < -50, "a canyon more than 50 blocks deep: " + centre);
+        var ariel = UranusData.chasmata().grabens().getFirst();
+        helper.assertTrue(g.width() > ariel.width() && g.depth() > ariel.depth(), "wider and deeper than Ariel's valleys");
+        var basin = UranusData.greatCrater();
+        double bz = com.pizzaparker07.spacebreaker.content.belt.world.BasinFeature.centreZ(t, basin);
+        double peak = com.pizzaparker07.spacebreaker.content.belt.world.BasinFeature.offset(t, basin, basin.x(), bz);
+        double bfloor = com.pizzaparker07.spacebreaker.content.belt.world.BasinFeature.offset(t, basin, basin.x() + basin.radius() * 0.5, bz);
+        helper.assertTrue(bfloor < -15 && peak > bfloor + 20, "a great crater with a central peak: " + bfloor + " / " + peak);
+        var roller = helper.spawn(UranusEntities.SCREE_ROLLER.get(), new BlockPos(2, 2, 2));
+        var player = helper.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        roller.hurt(helper.getLevel().damageSources().playerAttack(player), 2F);
+        helper.assertTrue(roller.isRolled(), "a hit curls it into a ball");
+        float before = roller.getHealth();
+        roller.invulnerableTime = 0;
+        roller.hurt(helper.getLevel().damageSources().playerAttack(player), 10F);
+        helper.assertTrue(before - roller.getHealth() < 4F, "curled, it takes a fraction of the damage");
+        var node = Tech.all(helper.getLevel().registryAccess()).get(Spacebreaker.id("tectonic_mapping"));
+        helper.assertTrue(node != null && node.tier() == 5, "tectonic mapping is a tier-5 tech");
+        helper.succeed();
+    }
+
+    @GameTest(template = WorldTests.EMPTY)
+    public static void umbrielIsDarkWithABrightRingInWunda(GameTestHelper helper) {
+        helper.assertTrue(WorldTests.stem(helper, "umbriel").generator() instanceof PlanetChunkGenerator, "Umbriel uses the planet engine");
+        PlanetTerrain t = WorldTests.generator(helper, "umbriel", 7L).terrain();
+        helper.assertTrue(WorldTests.profile(helper, "umbriel").poleDistance() < WorldTests.profile(helper, "titania").poleDistance(),
+                "smaller than Titania");
+        var wunda = com.pizzaparker07.spacebreaker.content.uranus.Umbriel.wunda();
+        double wz = com.pizzaparker07.spacebreaker.content.belt.world.BasinFeature.centreZ(t, wunda);
+        double floor = com.pizzaparker07.spacebreaker.content.belt.world.BasinFeature.offset(t, wunda, wunda.x(), wz);
+        double far = com.pizzaparker07.spacebreaker.content.belt.world.BasinFeature.offset(t, wunda, wunda.x() + wunda.radius() * 3, wz);
+        helper.assertTrue(floor < -10 && far == 0, "Wunda is a sunken crater floor: " + floor);
+        var ring = com.pizzaparker07.spacebreaker.content.uranus.Umbriel.ring();
+        var mark = ring.marks().getFirst();
+        helper.assertTrue(mark.radius() < wunda.radius(), "the ring lies on the crater floor");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.belt.world.RingFeature.markAt(t, ring, mark.x() + mark.radius(), wz) != null,
+                "frost on the ring");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.belt.world.RingFeature.markAt(t, ring, mark.x(), wz) == null,
+                "dark in the ring's middle");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.belt.world.RingFeature.markAt(t, ring, mark.x() + mark.radius() * 2, wz) == null,
+                "dark outside it");
+        helper.succeed();
+    }
+
+    @GameTest(template = WorldTests.EMPTY, timeoutTicks = 100)
+    public static void gloamHopperBlindsWhatHitsIt(GameTestHelper helper) {
+        var hopper = helper.spawn(UranusEntities.GLOAM_HOPPER.get(), new BlockPos(2, 2, 2));
+        var near = helper.spawn(UranusEntities.SCREE_ROLLER.get(), new BlockPos(4, 2, 2));
+        var other = helper.spawn(UranusEntities.GLOAM_HOPPER.get(), new BlockPos(2, 2, 4));
+        var player = helper.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        helper.assertTrue(hopper.cloudReady(), "ready to kick up dust");
+        hopper.hurt(helper.getLevel().damageSources().playerAttack(player), 1F);
+        helper.assertTrue(near.hasEffect(net.minecraft.world.effect.MobEffects.BLINDNESS), "the dust cloud blinds what is close");
+        helper.assertFalse(other.hasEffect(net.minecraft.world.effect.MobEffects.BLINDNESS), "but not other hoppers");
+        helper.assertFalse(hopper.cloudReady(), "then it needs a while before the next cloud");
+        helper.assertTrue(hopper.isFood(new ItemStack(Items.COAL)), "breeds on coal");
+        helper.succeed();
+    }
+
+    @GameTest(template = WorldTests.EMPTY)
+    public static void oberonHasDarkFlooredCratersAGreatMountainAndAChasm(GameTestHelper helper) {
+        helper.assertTrue(WorldTests.stem(helper, "oberon").generator() instanceof PlanetChunkGenerator, "Oberon uses the planet engine");
+        var profile = WorldTests.profile(helper, "oberon");
+        helper.assertTrue(profile.poleDistance() > WorldTests.profile(helper, "umbriel").poleDistance(), "bigger than Umbriel");
+        var mountain = profile.landforms().volcanoes().orElseThrow(() -> new AssertionError("no mountain")).anchors().getFirst();
+        helper.assertTrue(mountain.height() >= 100, "a mountain about 11 km high (100+ blocks): " + mountain.height());
+        PlanetTerrain t = WorldTests.generator(helper, "oberon", 3L).terrain();
+        double summit = t.height(mountain.x(), mountain.z());
+        double plain = t.height(mountain.x() + mountain.radius() * 3, mountain.z());
+        helper.assertTrue(summit - plain > 60, "it towers over the plains: " + summit + " vs " + plain);
+        var floors = com.pizzaparker07.spacebreaker.content.uranus.Oberon.darkFloors();
+        helper.assertTrue(floors.block().is(com.pizzaparker07.spacebreaker.content.uranus.Oberon.DARK_FLOOR.get()) && floors.chance() >= 0.5
+                && floors.extent() >= 0.5, "dark fill covers most of the floor in most larger craters");
+        // the real feature on the chunk at the centre of a nearby large crater that holds dark fill
+        var gen = WorldTests.generator(helper, "oberon", 3L);
+        var host = gen.terrain().cratersNear(-600, -600, 600, 600).stream()
+                .filter(c -> com.pizzaparker07.spacebreaker.content.belt.world.CraterFloorFeature.holds(c, floors)).findFirst()
+                .orElseThrow(() -> new AssertionError("no dark-floored crater near the landing site"));
+        var level = helper.getLevel();
+        int hx = (int) Math.floor(host.x());
+        int hz = (int) Math.floor(host.z());
+        level.getChunk(hx >> 4, hz >> 4);
+        new com.pizzaparker07.spacebreaker.content.belt.world.CraterFloorFeature().place(new net.minecraft.world.level.levelgen.feature.FeaturePlaceContext<>(
+                java.util.Optional.empty(), level, gen, net.minecraft.util.RandomSource.create(1), new BlockPos(hx & ~15, 0, hz & ~15), floors));
+        var top = level.getBlockState(new BlockPos(hx, com.pizzaparker07.spacebreaker.content.belt.world.Columns.top(level, hx, hz), hz));
+        helper.assertTrue(top.is(com.pizzaparker07.spacebreaker.content.uranus.Oberon.DARK_FLOOR.get()),
+                "dark fill on the floor of the crater at " + hx + "," + hz + " (r " + host.radius() + "): " + top);
+        var cfg = com.pizzaparker07.spacebreaker.content.uranus.Oberon.chasma();
+        var g = cfg.grabens().getFirst();
+        double[] floor = new double[1];
+        double cz = -g.latitude() / 90.0 * t.profile().poleDistance();
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.belt.world.GrabenFeature.offset(t, cfg, g.x(), cz, floor) < -25, "a deep chasm");
+        helper.succeed();
+    }
+
+    @GameTest(template = WorldTests.EMPTY, timeoutTicks = 200)
+    public static void rimBurrowerDigsInOnLooseGroundOnly(GameTestHelper helper) {
+        for (int x = 0; x < 8; x++) {
+            helper.setBlock(new BlockPos(x, 1, 1), com.pizzaparker07.spacebreaker.content.uranus.Oberon.REGOLITH.get());
+            helper.setBlock(new BlockPos(x, 1, 5), com.pizzaparker07.spacebreaker.content.uranus.Oberon.ICE.base().get());
+        }
+        var soft = helper.spawn(UranusEntities.RIM_BURROWER.get(), new BlockPos(2, 2, 1));
+        var hard = helper.spawn(UranusEntities.RIM_BURROWER.get(), new BlockPos(2, 2, 5));
+        var player = helper.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        helper.runAfterDelay(10, () -> {
+            soft.hurt(helper.getLevel().damageSources().playerAttack(player), 1F);
+            hard.hurt(helper.getLevel().damageSources().playerAttack(player), 1F);
+            helper.assertTrue(soft.isBuried(), "digs into regolith");
+            helper.assertFalse(hard.isBuried(), "cannot dig into hard ice");
+            float before = soft.getHealth();
+            soft.invulnerableTime = 0;
+            soft.hurt(helper.getLevel().damageSources().playerAttack(player), 8F);
+            helper.assertTrue(soft.getHealth() == before, "buried, it cannot be hurt");
+            helper.assertTrue(soft.isFood(new ItemStack(com.pizzaparker07.spacebreaker.content.pluto.PlutoModule.AMMONIA_CRYSTAL.get())), "breeds on ammonia");
+            helper.succeed();
+        });
+    }
 }

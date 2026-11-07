@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "spacebreaker:umbriel_ice"
+  },
+  "result": {
+    "count": 1,
+    "id": "spacebreaker:umbriel_ice_wall"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "type": "spacebreaker:ground_marks",
+  "config": {
+    "marks": [
+      {
+        "block": {
+          "Name": "spacebreaker:co2_frost",
+          "Properties": {
+            "facing": "north",
+            "print": "none"
+          }
+        },
+        "latitude": -4.0,
+        "radius": 105.0,
+        "width": 26.0,
+        "x": 320.0
+      }
+    ]
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "feature": "spacebreaker:oberon_chasma",
+  "placement": [
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

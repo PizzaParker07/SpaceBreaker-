@@ -1,0 +1,13 @@
+{
+  "type": "spacebreaker:oberon",
+  "generator": {
+    "type": "spacebreaker:planet",
+    "terrain": "spacebreaker:oberon",
+    "biome_source": {
+      "type": "spacebreaker:planet",
+      "highlands": "spacebreaker:oberon_plains",
+      "crater": "spacebreaker:oberon_crater",
+      "polar": "spacebreaker:oberon_polar"
+    }
+  }
+}

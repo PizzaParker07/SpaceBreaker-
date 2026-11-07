@@ -1,0 +1,25 @@
+{
+  "type": "spacebreaker:grabens",
+  "config": {
+    "floor": {
+      "Name": "spacebreaker:oberon_regolith",
+      "Properties": {
+        "facing": "north",
+        "print": "none"
+      }
+    },
+    "grabens": [
+      {
+        "angle": -15.0,
+        "depth": 38.0,
+        "latitude": 8.0,
+        "length": 2600.0,
+        "width": 50.0,
+        "x": 520.0
+      }
+    ],
+    "rock": {
+      "Name": "spacebreaker:oberon_ice"
+    }
+  }
+}

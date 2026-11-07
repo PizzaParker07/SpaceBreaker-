@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/stairs",
+  "textures": {
+    "bottom": "spacebreaker:block/oberon_ice",
+    "side": "spacebreaker:block/oberon_ice",
+    "top": "spacebreaker:block/oberon_ice"
+  }
+}

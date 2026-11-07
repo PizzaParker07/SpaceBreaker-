@@ -1,0 +1,103 @@
+{
+  "base_height": 76,
+  "body": "spacebreaker:umbriel",
+  "craters": {
+    "central_peak": 0.4,
+    "classes": [
+      {
+        "cell": 32,
+        "chance": 0.55,
+        "max_radius": 6.0,
+        "min_radius": 2.5,
+        "per_cell": 2
+      },
+      {
+        "cell": 96,
+        "chance": 0.55,
+        "max_radius": 16.0,
+        "min_radius": 6.0,
+        "per_cell": 2
+      },
+      {
+        "cell": 270,
+        "chance": 0.5900000000000001,
+        "max_radius": 43.5,
+        "min_radius": 16.0
+      },
+      {
+        "cell": 676,
+        "chance": 0.63,
+        "max_radius": 96.66666666666666,
+        "min_radius": 43.5
+      }
+    ],
+    "complex_radius": 30.0,
+    "density": 1.2839999999999998,
+    "fresh_chance": 0.06,
+    "lowland_density": 1.0,
+    "ray_length": 4.0
+  },
+  "lowlands": {
+    "depth": 6.0,
+    "edge": 0.1,
+    "ridge_height": 0.0,
+    "threshold": 0.95,
+    "volcanic_patch": 1.0
+  },
+  "materials": {
+    "breccia": {
+      "Name": "spacebreaker:sooty_ice"
+    },
+    "highland_rock": {
+      "Name": "spacebreaker:umbriel_ice"
+    },
+    "highland_soil": {
+      "Name": "spacebreaker:umbriel_regolith",
+      "Properties": {
+        "facing": "north",
+        "print": "none"
+      }
+    },
+    "ice": {
+      "Name": "spacebreaker:umbriel_ice"
+    },
+    "lowland_rock": {
+      "Name": "spacebreaker:umbriel_ice"
+    },
+    "lowland_soil": {
+      "Name": "spacebreaker:umbriel_regolith",
+      "Properties": {
+        "facing": "north",
+        "print": "none"
+      }
+    },
+    "polar_soil": {
+      "Name": "spacebreaker:co2_frost",
+      "Properties": {
+        "facing": "north",
+        "print": "none"
+      }
+    },
+    "ray_soil": {
+      "Name": "spacebreaker:umbriel_regolith",
+      "Properties": {
+        "facing": "north",
+        "print": "none"
+      }
+    },
+    "soil_depth": 3
+  },
+  "pole_distance": 3400.0,
+  "poles": {
+    "ice_latitude": 82.0,
+    "polar_craters": 1.3,
+    "polar_latitude": 74.0
+  },
+  "relief": {
+    "amplitude": 21.0,
+    "detail_amplitude": 1.4400000000000002,
+    "detail_scale": 26.0,
+    "roughness": 0.49500000000000005,
+    "scale": 418.66666666666663
+  }
+}

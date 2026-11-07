@@ -1,0 +1,12 @@
+{
+  "category": "exploration",
+  "tier": 5,
+  "requires": [
+    "spacebreaker:ice_shell_tectonics"
+  ],
+  "icon": "spacebreaker:canyon_wall_ice",
+  "samples": [
+    "spacebreaker:titania"
+  ],
+  "unlocks": []
+}

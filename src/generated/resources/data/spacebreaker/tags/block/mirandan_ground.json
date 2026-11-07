@@ -1,5 +1,8 @@
 {
   "values": [
+    "spacebreaker:titania_regolith",
+    "spacebreaker:titania_ice",
+    "spacebreaker:canyon_wall_ice",
     "spacebreaker:ariel_regolith",
     "spacebreaker:ariel_ice",
     "spacebreaker:graben_floor_ice",
@@ -7,6 +10,12 @@
     "spacebreaker:mirandan_regolith",
     "spacebreaker:mirandan_ice",
     "spacebreaker:bright_ridge_ice",
-    "spacebreaker:dark_band_ice"
+    "spacebreaker:dark_band_ice",
+    "spacebreaker:umbriel_regolith",
+    "spacebreaker:umbriel_ice",
+    "spacebreaker:sooty_ice",
+    "spacebreaker:oberon_regolith",
+    "spacebreaker:oberon_ice",
+    "spacebreaker:dark_crater_fill"
   ]
 }

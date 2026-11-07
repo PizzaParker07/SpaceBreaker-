@@ -1,0 +1,13 @@
+{
+  "type": "spacebreaker:titania",
+  "generator": {
+    "type": "spacebreaker:planet",
+    "terrain": "spacebreaker:titania",
+    "biome_source": {
+      "type": "spacebreaker:planet",
+      "highlands": "spacebreaker:titania_uplands",
+      "crater": "spacebreaker:titania_crater",
+      "polar": "spacebreaker:titania_polar"
+    }
+  }
+}

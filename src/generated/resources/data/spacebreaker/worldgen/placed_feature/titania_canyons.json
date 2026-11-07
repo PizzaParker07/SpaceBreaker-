@@ -1,0 +1,8 @@
+{
+  "feature": "spacebreaker:titania_canyons",
+  "placement": [
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

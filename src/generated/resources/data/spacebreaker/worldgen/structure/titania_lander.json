@@ -1,0 +1,7 @@
+{
+  "type": "spacebreaker:supply_lander",
+  "biomes": "spacebreaker:titania_uplands",
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "variant": "titania"
+}

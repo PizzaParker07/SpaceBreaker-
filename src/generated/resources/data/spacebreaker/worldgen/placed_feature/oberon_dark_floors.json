@@ -1,0 +1,8 @@
+{
+  "feature": "spacebreaker:oberon_dark_floors",
+  "placement": [
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/stairs",
+  "textures": {
+    "bottom": "spacebreaker:block/titania_ice",
+    "side": "spacebreaker:block/titania_ice",
+    "top": "spacebreaker:block/titania_ice"
+  }
+}

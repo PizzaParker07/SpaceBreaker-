@@ -1,0 +1,25 @@
+{
+  "type": "spacebreaker:impact_basin",
+  "config": {
+    "depth": 16.0,
+    "floor_soil": {
+      "Name": "spacebreaker:umbriel_regolith",
+      "Properties": {
+        "facing": "north",
+        "print": "none"
+      }
+    },
+    "latitude": -4.0,
+    "peak": 0.0,
+    "peak_radius": 0.1,
+    "radius": 170.0,
+    "rim": 8.0,
+    "rings": 0.0,
+    "rock": {
+      "Name": "spacebreaker:umbriel_ice"
+    },
+    "terraces": 2,
+    "wall": 0.22,
+    "x": 320.0
+  }
+}
