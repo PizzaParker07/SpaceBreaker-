@@ -136,9 +136,19 @@ public class MachineBlock extends BaseEntityBlock {
         var id = net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(this).getPath();
         return switch (id) {
             case "electrolyzer" -> com.pizzaparker07.spacebreaker.content.audio.SbSounds.ELECTROLYZER_LOOP.get();
+            case "gas_centrifuge" -> com.pizzaparker07.spacebreaker.content.audio.SbSounds.CENTRIFUGE_LOOP.get();
+            case "fission_reactor" -> com.pizzaparker07.spacebreaker.content.audio.SbSounds.FISSION_REACTOR_LOOP.get();
             case "crusher", "regolith_excavator" -> com.pizzaparker07.spacebreaker.content.audio.SbSounds.DRILL_LOOP.get();
             default -> null;
         };
+    }
+
+    /**
+     * How close another running machine of the same kind may be before this one stays quiet: a centrifuge cascade
+     * is one sound, not a chorus of identical loops. 0 = every machine plays its own.
+     */
+    public int loopShareRadius() {
+        return this == com.pizzaparker07.spacebreaker.content.machines.MachinesModule.GAS_CENTRIFUGE.block().get() ? 4 : 0;
     }
 
     @Override
@@ -198,6 +208,12 @@ public class MachineBlock extends BaseEntityBlock {
             tooltip.add(net.minecraft.network.chat.Component.translatable("tooltip.spacebreaker.generator",
                     com.pizzaparker07.spacebreaker.content.machines.machine.CombustionGeneratorBlockEntity.OUTPUT)
                     .withStyle(net.minecraft.ChatFormatting.GRAY));
+        }
+        if (this == com.pizzaparker07.spacebreaker.content.machines.MachinesModule.FISSION_REACTOR.block().get()) {
+            tooltip.add(net.minecraft.network.chat.Component.translatable("tooltip.spacebreaker.fission_reactor",
+                    com.pizzaparker07.spacebreaker.content.machines.machine.FissionReactorBlockEntity.OUTPUT).withStyle(net.minecraft.ChatFormatting.GRAY));
+            tooltip.add(net.minecraft.network.chat.Component.translatable("tooltip.spacebreaker.fission_reactor.radiation")
+                    .withStyle(net.minecraft.ChatFormatting.GOLD));
         }
         if (this == com.pizzaparker07.spacebreaker.content.machines.MachinesModule.RTG.block().get()) {
             tooltip.add(net.minecraft.network.chat.Component.translatable("tooltip.spacebreaker.rtg",

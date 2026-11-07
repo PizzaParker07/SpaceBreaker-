@@ -136,6 +136,27 @@ def fuel_tank(h, style, seed):
     return cv
 
 
+def fuel_tank_insulated(h, seed):
+    """A tank wrapped in multi-layer insulation: crinkled gold foil blankets, silver seams and tie-down bands."""
+    cv = new_sheet()
+    rng = random.Random(seed)
+    paint_body(cv, SIDE, 0, h, 16, GOLD, 2, 6, seed, grain=0.35)       # crinkled foil catches the light unevenly
+    for y in range(h):
+        for c in range(32):
+            if rng.random() < 0.08:
+                put_side(cv, SIDE, c, y, GOLD[6] if rng.random() < 0.5 else GOLD[1])
+    for c in range(3, 32, 8):                                           # blanket seams, silver tape
+        for y in range(h):
+            put_side(cv, SIDE, c, y, ALU[4] if y % 2 else ALU[3])
+    for y in (1, h // 2, h - 2):                                        # tie-down bands
+        ring(cv, SIDE, y, 16, ALU, 2, 4)
+    ring(cv, SIDE, 0, 16, ALU, 1, 3)
+    ring(cv, SIDE, h - 1, 16, ALU, 3, 5)
+    bulkhead(cv, TOP, seed=seed)
+    bulkhead(cv, BOTTOM, dark=True, seed=seed + 1)
+    return cv
+
+
 # --------------------------------------------------------------------------- engines
 
 def thrust_structure(cv, y0, y1, seed):
@@ -856,11 +877,29 @@ def cylinder_icon(top_y, bottom_y, x0=3, x1=12, body=WHITE, outline=None, bands=
     return cv
 
 
+def mli_icon():
+    """A folded multi-layer insulation blanket: gold foil on top, silver layers showing at the edge."""
+    cv = Canvas()
+    rng = random.Random(41)
+    for y in range(3, 13):
+        for x in range(2 + (y - 3) // 3, 14 - (12 - y) // 4):
+            if y >= 11:
+                cv[x, y] = ALU[4] if (x + y) % 2 else ALU[2]          # the stacked silver layers at the folded edge
+            else:
+                cv[x, y] = GOLD[5] if rng.random() < 0.25 else GOLD[3] if (x * 3 + y) % 5 else GOLD[2]
+    return cv
+
+
 def icons():
     out = {}
     out['fuel_tank_small'] = cylinder_icon(4, 12, bands=(5,), outline=WHITE[0])
     out['fuel_tank_medium'] = cylinder_icon(2, 14, bands=(3, 8), dark_band=(10, 11), outline=WHITE[0])
     out['fuel_tank_large'] = cylinder_icon(1, 15, bands=(8, 13), dark_band=(3, 4, 5), outline=WHITE[0])
+    gold = [GOLD[0], GOLD[1], GOLD[2], ALU[4], GOLD[3], GOLD[4], GOLD[5], GOLD[6]]     # body[3] is the silver seam band
+    out['fuel_tank_small_insulated'] = cylinder_icon(4, 12, body=gold, bands=(5, 10), outline=GOLD[0])
+    out['fuel_tank_medium_insulated'] = cylinder_icon(2, 14, body=gold, bands=(3, 8, 12), outline=GOLD[0])
+    out['fuel_tank_large_insulated'] = cylinder_icon(1, 15, body=gold, bands=(2, 8, 14), outline=GOLD[0])
+    out['multi_layer_insulation'] = mli_icon()
     w, s, c, k = WHITE, STEEL, COPPER, CARBON
     out['kerosene_engine'] = grid_icon([
         "................",
@@ -1254,6 +1293,9 @@ SHEETS = {
     'fuel_tank_small': lambda: fuel_tank(16, 'plain', 11),
     'fuel_tank_medium': lambda: fuel_tank(24, 'band', 12),
     'fuel_tank_large': lambda: fuel_tank(32, 'collar', 13),
+    'fuel_tank_small_insulated': lambda: fuel_tank_insulated(16, 21),
+    'fuel_tank_medium_insulated': lambda: fuel_tank_insulated(24, 22),
+    'fuel_tank_large_insulated': lambda: fuel_tank_insulated(32, 23),
     'kerosene_engine': kerosene_engine,
     'vacuum_engine': vacuum_engine,
     'methalox_engine': methalox_engine,

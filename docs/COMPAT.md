@@ -208,6 +208,16 @@ Complementary the tint is weaker (the pack re-lights translucent entities) but t
 - **Base blocks (pressurised glass, porthole, LED panels, sliding door, warning light):** the glass is see-through and
   tinted under the pack, the LED panels light the corridor at night as in vanilla, door and warning light render
   (`base_blocks_vanilla_vs_iris.jpg`). The rotating warning-light beam was not caught in a still frame.
+- **Glows without depth (rocket plumes, beams) in front of the sky:** emissive translucent render types
+  (`entityTranslucentEmissive`, `eyes`) write no depth, so the sky pass, which copies our sky wherever the depth is
+  still far, painted over them (the NTR plume vanished under the pack). `compat/client/LateEffects.drawOrDefer(pose,
+  buffers, (p, b) -> ...)` draws such an effect at once without a pack, and with the sky pass active queues it and
+  draws it after our sky and haze, tested against the scene depth (`ntr_plume_late_effects.jpg`: vanilla, pack before,
+  pack with the deferral). Effects that do write depth (glass, water, ice) get our sky blended in behind them; that
+  blend now only covers translucent blocks (depth after AFTER_TRANSLUCENT_BLOCKS), not translucent entities.
+- **Mars clouds, canyon fog, seasonal frost:** clouds are part of our sky; the canyon morning fog is the world's fog,
+  applied by the haze pass; frost blocks render as in vanilla (`mars_clouds_fog_frost_vanilla_vs_iris.jpg`). The
+  ground looks browner than vanilla's grey basalt under the pack's warm sunlight.
 - **Docking jolt:** a camera roll/pitch from `ViewportEvent.ComputeCameraAngles`; Iris builds its matrices from the
   same camera, so the shake is the same with a pack (at most about 2°, too small to tell apart in a still frame).
 - **Inside a closed module the pack's ambient fill is blue:** the airless sky colour handed to the pack
@@ -327,4 +337,20 @@ New lines go into `BlockInfoLines.lines` and show in both overlays. GameTest: `d
 Showcase: `-Pscenario=info -PwithJade=true` or `-PwithWthit=true` (a dusty panel under the crosshair).
 **Not yet run in the game here:** starting the client with the Jade or WTHIT jar was not permitted in this test
 environment; the plugins compile against both APIs and the line itself is covered by the GameTest.
+
+## 7. Release checklist (1.0)
+
+- **Dedicated server:** the GameTest server runs on the dedicated-server side with every module (all tests pass).
+  Client classes are only referenced from client packages, from compat plugins that only the client-side mods load,
+  from mixins in the client list, and from `playToClient` handler lambdas (never run on a server).
+- **Optional mods:** Iris, Sodium, JEI, EMI, Jade and WTHIT are `optional` dependencies with minimum versions in
+  `neoforge.mods.toml` (an older one is refused with a message, not a crash); Distant Horizons and Voxy are only read by
+  reflection and need no entry. Without any of them the mod runs unchanged.
+- **Showcase pass with a pack** (`-PwithCompat=true`, Iris + Sodium + Complementary in `run-mods/`; add DH for `lod`):
+  `compat`, `moon`, `mars`, `mars_dust`, `mars_clouds`, `mars_frost`, `venus`, `mercury`, `mercury_sunrise`,
+  `inner_orbit`, `phobos`, `rocketry -Pshots='(32|34|35|37|47|49|50|52)_.*'`, `rover_moon`, `rover_mars`,
+  `sky_planets`, `coma_sky`, `jovian`, `io`, `ganymede`, `saturnian`, `suit_eva_titan`, `enceladus`, `miranda`,
+  `umbriel`, `oberon`, `triton`, `pluto`, `churyumov_gerasimenko`, `halley`, `bennu`, `hydra`, `lod`.
+  Look for: our black sky with stars and planets (not the pack's blue), no pack clouds, haze on Venus/Titan/Mars
+  storms, plumes and glows in front of space, windows showing space, orbit night darkening.
 

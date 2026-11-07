@@ -121,12 +121,36 @@ public final class UranusCreatureTests {
         });
     }
 
-    @GameTest(template = WorldTests.EMPTY, timeoutTicks = 100)
+    /**
+     * The frost moth takes to the wing. Hardened against a rare flake: its chunks are force-loaded, it is set flying (not
+     * hanging at rest), success is "it has flown at least a block from where it started" whenever that happens, and a
+     * failure says where it is and how fast it is moving.
+     */
+    @GameTest(template = WorldTests.EMPTY, timeoutTicks = 400, batch = "frost_moth")
     public static void frostMothFlies(GameTestHelper helper) {
+        var level = helper.getLevel();
+        BlockPos origin = helper.absolutePos(BlockPos.ZERO);
+        java.util.List<net.minecraft.world.level.ChunkPos> forced = new java.util.ArrayList<>();
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dz = -1; dz <= 1; dz++) {
+                var c = new net.minecraft.world.level.ChunkPos((origin.getX() >> 4) + dx, (origin.getZ() >> 4) + dz);
+                level.setChunkForced(c.x, c.z, true);
+                forced.add(c);
+            }
+        }
         var m = helper.spawn(UranusEntities.FROST_MOTH.get(), new BlockPos(3, 4, 3));
         helper.assertTrue(m.getType().getCategory() == MobCategory.AMBIENT, "an ambient creature");
         helper.assertTrue(m instanceof net.minecraft.world.entity.ambient.Bat, "it flies like a bat");
-        double y0 = m.getY();
-        helper.succeedWhen(() -> helper.assertTrue(m.isAlive() && Math.abs(m.getY() - y0) > 0.3, "alive and on the wing"));
+        ((net.minecraft.world.entity.ambient.Bat) m).setResting(false);
+        var start = m.position();
+        double[] farthest = {0};
+        helper.onEachTick(() -> farthest[0] = Math.max(farthest[0], m.position().distanceTo(start)));
+        helper.succeedWhen(() -> {
+            String state = String.format(" (at %.2f %.2f %.2f, moved %.2f, speed %.3f, resting %s, alive %s)", m.getX(), m.getY(), m.getZ(),
+                    farthest[0], m.getDeltaMovement().length(), ((net.minecraft.world.entity.ambient.Bat) m).isResting(), m.isAlive());
+            helper.assertTrue(m.isAlive(), "the moth is alive" + state);
+            helper.assertTrue(farthest[0] > 1.0, "the moth is on the wing" + state);
+            forced.forEach(c -> level.setChunkForced(c.x, c.z, false));
+        });
     }
 }

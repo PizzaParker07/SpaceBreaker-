@@ -1,5 +1,6 @@
 package com.pizzaparker07.spacebreaker.content.rocketry.nav;
 
+import com.pizzaparker07.spacebreaker.content.rocketry.design.BoilOff;
 import com.pizzaparker07.spacebreaker.content.rocketry.design.RocketLayout;
 import com.pizzaparker07.spacebreaker.content.rocketry.design.RocketMath;
 import com.pizzaparker07.spacebreaker.core.config.SbConfig;
@@ -11,7 +12,8 @@ import java.util.OptionalDouble;
 /** Answers "can this rocket get there, and can it get back?" by simulating the burns with staging. */
 public final class MissionPlanner {
     /** Result of flying a sequence of legs. */
-    public record Plan(boolean possible, int legsFlown, double[] fuel, int activeStage, String failure) {
+    /** {@code boilOffKg}: propellant lost to boil-off on the coasts flown. */
+    public record Plan(boolean possible, int legsFlown, double[] fuel, int activeStage, String failure, double boilOffKg) {
     }
 
     /** One step of the standard Moon mission, for the assembler's checklist. */
@@ -33,23 +35,24 @@ public final class MissionPlanner {
     public static Plan fly(RocketLayout layout, int active, double[] fuel, List<Location> route, SbConfig.Realism realism, boolean checkShield) {
         double[] f = fuel.clone();
         int stage = active;
+        double boiled = 0;
         for (int i = 0; i + 1 < route.size(); i++) {
             Location from = route.get(i);
             Location to = route.get(i + 1);
             OptionalDouble cost = Transfers.cost(from, to, layout, stage, realism);
             if (cost.isEmpty()) {
-                return new Plan(false, i, f, stage, "no_route");
+                return new Plan(false, i, f, stage, "no_route", boiled);
             }
             int rating = Transfers.reentryRating(from, to);
             if (checkShield && rating > 0 && layout.payload().heatShield() < rating) {
-                return new Plan(false, i, f, stage, "heat_shield");
+                return new Plan(false, i, f, stage, "heat_shield", boiled);
             }
             boolean reentry = to.isEarth() && !to.orbit();
             if (reentry) {
                 // the capsule is released before reentry; only the deorbit burn uses the stack
                 RocketMath.Burn burn = RocketMath.burn(layout, stage, f, cost.getAsDouble(), 0);
                 if (!burn.complete()) {
-                    return new Plan(false, i, f, stage, "delta_v");
+                    return new Plan(false, i, f, stage, "delta_v", boiled);
                 }
                 f = burn.fuel();
                 stage = layout.stages().size();
@@ -58,12 +61,14 @@ public final class MissionPlanner {
             double atmosphere = from.atmosphere() && !from.orbit() ? RocketMath.ASCENT_ATMOSPHERE : 0;
             RocketMath.Burn burn = RocketMath.burn(layout, stage, f, cost.getAsDouble(), atmosphere);
             if (!burn.complete()) {
-                return new Plan(false, i, f, stage, "delta_v");
+                return new Plan(false, i, f, stage, "delta_v", boiled);
             }
             f = burn.fuel();
             stage = burn.activeStage();
+            // the long coast after the burn: cryogenic propellant left in the tanks boils off
+            boiled += BoilOff.apply(layout, stage, f, Transfers.coastSeconds(from, to) / BoilOff.SECONDS_PER_DAY, realism);
         }
-        return new Plan(true, route.size() - 1, f, stage, "");
+        return new Plan(true, route.size() - 1, f, stage, "", boiled);
     }
 
     /** The classic mission from the pad: orbit, Moon orbit, landing, ascent, home. */

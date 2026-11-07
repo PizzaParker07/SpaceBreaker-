@@ -158,6 +158,10 @@ public final class IsruRecipes {
         // depleted uranium is pressed into shielding plate on the same die as any metal
         ProcessingRecipeBuilder.of(PRESSING).in(DEPLETED_URANIUM.get()).tool(EarthModule.PLATE_DIE.get()).out(DEPLETED_URANIUM_PLATE.get())
                 .time(60).energy(30).save(out, "depleted_uranium_plate");
+        // fission surface power: tungsten-reflected core, a depleted-uranium (or tungsten) shield plug, aluminium radiators
+        shaped(out, FISSION_REACTOR.item().get(), 1, has(NUCLEAR_FUEL_ELEMENT.get()), "AAA", "RCR", "STS",
+                'A', EarthModule.ALUMINUM.plateTag, 'R', RADIATION_SHIELDING, 'C', EarthModule.ADVANCED_CIRCUIT.get(),
+                'S', EarthModule.STEEL.plateTag, 'T', EarthModule.TUNGSTEN.plateTag);
         // gas centrifuge: a tall rotor on magnetic bearings in a vacuum casing
         shaped(out, GAS_CENTRIFUGE.item().get(), 1, has(EarthModule.TITANIUM.plateTag), "SRS", "MCM", "SAS",
                 'S', EarthModule.STEEL.plateTag, 'R', EarthModule.TITANIUM.rodTag, 'M', EarthModule.ELECTRIC_MOTOR.get(),

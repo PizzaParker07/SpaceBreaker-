@@ -49,7 +49,7 @@ public final class CometNotice {
                 continue;
             }
             player.getPersistentData().putLong(key, passage + 1);
-            player.sendSystemMessage(Component.translatable("message.spacebreaker.great_comet", s.nameEn()).withStyle(ChatFormatting.AQUA));
+            player.sendSystemMessage(Component.translatable("message.spacebreaker.great_comet", Component.translatable("body.spacebreaker." + s.id())).withStyle(ChatFormatting.AQUA));
         }
     }
 }

@@ -229,4 +229,67 @@ public final class UranusGameTests {
             helper.succeed();
         });
     }
+
+    /**
+     * Titania's canyon outpost: it is found only on a rim, facing the canyon's middle, on both sides of a canyon; built, it
+     * has its hut, two loot chests, a balcony out over the edge and the winch cable hanging down.
+     */
+    @GameTest(template = WorldTests.EMPTY, timeoutTicks = 200)
+    public static void canyonOutpostStandsOnARimFacingTheCanyon(GameTestHelper helper) {
+        var level = helper.getLevel();
+        helper.assertTrue(level.registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.STRUCTURE)
+                .containsKey(com.pizzaparker07.spacebreaker.content.uranus.dungeon.UranusStructures.OUTPOST_KEY), "outpost structure");
+        PlanetTerrain t = WorldTests.generator(helper, "titania", 5L).terrain();
+        var g = UranusData.canyons().grabens().getFirst();
+        double a = Math.toRadians(g.angleDeg());
+        double gz = -g.latitude() / 90.0 * t.profile().poleDistance();
+        int W = com.pizzaparker07.spacebreaker.content.uranus.dungeon.CanyonOutpostPiece.W;
+        int D = com.pizzaparker07.spacebreaker.content.uranus.dungeon.CanyonOutpostPiece.D;
+        int plus = 0;
+        int minus = 0;
+        for (int v = -160; v <= 160; v++) {
+            double cx = g.x() - Math.sin(a) * v;
+            double cz = gz + Math.cos(a) * v;
+            int x = (int) Math.floor(cx - W / 2.0);
+            int z = (int) Math.floor(cz - D / 2.0);
+            var facing = com.pizzaparker07.spacebreaker.content.uranus.dungeon.UranusStructures.rimFacing(t, x, z);
+            if (facing.isEmpty()) {
+                continue;
+            }
+            helper.assertTrue(Math.abs(v) > g.width() / 2, "an outpost spot on the canyon floor at v = " + v);
+            // a step toward the facing brings the spot closer to the canyon's middle
+            var d = facing.get();
+            double[] here = com.pizzaparker07.spacebreaker.content.belt.world.GrabenFeature.local(t, g, cx, cz);
+            double[] ahead = com.pizzaparker07.spacebreaker.content.belt.world.GrabenFeature.local(t, g, cx + d.getStepX() * 8, cz + d.getStepZ() * 8);
+            helper.assertTrue(Math.abs(ahead[1]) < Math.abs(here[1]), "the outpost at v = " + v + " faces " + d + ", away from the canyon");
+            if (v > 0) {
+                plus++;
+            } else {
+                minus++;
+            }
+        }
+        helper.assertTrue(plus > 0 && minus > 0, "rim spots on both sides of the canyon: " + plus + " / " + minus);
+        // the centre line and the far uplands are no place for one
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.uranus.dungeon.UranusStructures.rimFacing(t, (int) g.x() - W / 2,
+                (int) gz - D / 2).isEmpty(), "no outpost in the middle of the canyon");
+        BlockPos base = helper.absolutePos(BlockPos.ZERO).offset(-5000, 0, 13000);
+        var piece = new com.pizzaparker07.spacebreaker.content.uranus.dungeon.CanyonOutpostPiece(5L, base.getX(), 110, base.getZ(),
+                net.minecraft.core.Direction.EAST);
+        BeltGameTests.place(level, piece);
+        var bb = piece.getBoundingBox();
+        int chests = 0;
+        for (BlockPos p : BlockPos.betweenClosed(bb.minX(), bb.minY(), bb.minZ(), bb.maxX(), bb.maxY(), bb.maxZ())) {
+            if (level.getBlockEntity(p) instanceof net.minecraft.world.level.block.entity.ChestBlockEntity ch && ch.getLootTable() != null) {
+                chests++;
+            }
+        }
+        int f = com.pizzaparker07.spacebreaker.content.uranus.dungeon.CanyonOutpostPiece.FLOOR;
+        int mid = com.pizzaparker07.spacebreaker.content.uranus.dungeon.CanyonOutpostPiece.MID;
+        helper.assertTrue(chests == 2, "mapping and store chests, found " + chests);
+        helper.assertTrue(level.getBlockState(piece.world(mid, f - 1, 13)).is(net.minecraft.world.level.block.Blocks.SMOOTH_STONE), "the balcony deck");
+        helper.assertTrue(level.getBlockState(piece.world(mid, f - 10, 16)).is(net.minecraft.world.level.block.Blocks.CHAIN), "the winch cable hangs down");
+        helper.assertTrue(level.getBlockState(piece.world(mid, f, 9)).isAir() && level.getBlockState(piece.world(mid, f, 1)).isAir(),
+                "doors front and back");
+        helper.succeed();
+    }
 }

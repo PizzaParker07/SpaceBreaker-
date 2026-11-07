@@ -24,8 +24,8 @@ final class MachinesLang {
         name(lang, MachinesModule.ICE_MELTER, "Ice Melter", "Buz Eritici");
         name(lang, MachinesModule.CHEMICAL_REACTOR, "Chemical Reactor", "Kimyasal Reaktör");
         name(lang, MachinesModule.SINTERING_FURNACE, "Sintering Furnace", "Sinterleme Fırını");
-        lang.add("tooltip.spacebreaker.sintering_furnace", "Fuses regolith into building blocks with electric heat, no air needed",
-                "Regoliti elektrikle ısıtıp yapı bloğuna kaynaştırır, hava gerekmez");
+        lang.add("tooltip.spacebreaker.sintering_furnace", "Fuses regolith into building blocks and yellowcake into RTG pellets with electric heat, no air needed",
+                "Regoliti yapı bloğuna, sarı pastayı RTG peletine elektrikle kaynaştırır, hava gerekmez");
         name(lang, MachinesModule.REGOLITH_EXCAVATOR, "Regolith Excavator", "Regolit Kazıcı");
         lang.add("tooltip.spacebreaker.regolith_excavator", "Digs a 5x5 patch below, 16 deep, and feeds the machines beside it",
                 "Altındaki 5x5 alanı 16 blok derine kazar, yanındaki makinelere verir");
@@ -76,7 +76,7 @@ final class MachinesLang {
         lang.add("gui.spacebreaker.redstone.1", "Redstone: runs with a signal", "Kızıltaş: sinyal varken çalışır");
         lang.add("gui.spacebreaker.redstone.2", "Redstone: runs without a signal", "Kızıltaş: sinyal yokken çalışır");
         lang.add("gui.spacebreaker.requires", "Requires: %s", "Gerekli: %s");
-        lang.add("gui.spacebreaker.status.incomplete", "Structure blocked", "Yapı engellenmiş");
+        lang.add("gui.spacebreaker.status.incomplete", "Structure blocked: clear the space around it", "Yapı engellenmiş: çevresindeki alanı boşalt");
         lang.add("message.spacebreaker.pipe_extract_on", "Pipe now pulls from this side", "Boru artık bu taraftan çekiyor");
         lang.add("message.spacebreaker.pipe_filter_on", "This end now only passes %s", "Bu uç artık yalnız %s geçirir");
         lang.add("message.spacebreaker.pipe_filter_off", "Filter cleared", "Filtre kaldırıldı");
@@ -100,6 +100,11 @@ final class MachinesLang {
         lang.block(MachinesModule.GAS_CENTRIFUGE.block(), "Gas Centrifuge", "Gaz Santrifüjü");
         lang.add("tooltip.spacebreaker.gas_centrifuge", "Enriches uranium slowly; each working centrifuge beside it adds half a stage of speed (up to 3x)",
                 "Uranyumu yavaşça zenginleştirir; yanındaki her çalışan santrifüj yarım kademe hız ekler (en çok 3 kat)");
+        lang.block(MachinesModule.FISSION_REACTOR.block(), "Fission Surface Power Unit", "Fisyon Yüzey Güç Ünitesi");
+        lang.add("tooltip.spacebreaker.fission_reactor", "%s FE/t from a nuclear fuel element, 10 days per element; fuel only burns while power is drawn",
+                "Nükleer yakıt elemanından %s FE/t, eleman başına 10 gün; yakıt yalnız güç çekilirken yanar");
+        lang.add("tooltip.spacebreaker.fission_reactor.radiation", "Radiates while running: bury it or bank regolith around it",
+                "Çalışırken radyasyon yayar: göm ya da çevresine regolit yığ");
         lang.item(MachinesModule.NUCLEAR_FUEL_ELEMENT, "Nuclear Fuel Element", "Nükleer Yakıt Elemanı");
         lang.add("tooltip.spacebreaker.nuclear_fuel_element", "Enriched uranium carbide in a tungsten clad: heats a nuclear thermal rocket's hydrogen",
                 "Tungsten kılıflı zenginleştirilmiş uranyum karbür: nükleer termal roketin hidrojenini ısıtır");

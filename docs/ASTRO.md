@@ -114,6 +114,11 @@ Landable bodies use the dimension `spacebreaker:<name>` (Earth is the overworld)
 Phobos, Deimos, Ceres, Vesta, Io, Europa, Ganymede, Callisto, Titan, Enceladus, Miranda, Triton, Pluto,
 Charon, the Moon. Jupiter, Saturn, Uranus and Neptune are not landable.
 
+Galilean moons: the J2000 phases (`mean_anomaly_deg`, measured from Jupiter's equatorial node on the
+ecliptic at 337.8°) and the periods come from Meeus's mean longitudes and mean motions (*Astronomical
+Algorithms*, ch. 44), so the moons stand where the real ones did. `GalileanMoonsTest` checks the Laplace
+resonance λ_Io − 3λ_Europa + 2λ_Ganymede = 180° (±0.5°) from 2000 to 2100.
+
 Surface radiation doses are real where measured (Moon 1.37 mSv/day, Mars 0.67, Jovian moons from
 NASA estimates: Io ≈ 36 Sv/day, Europa ≈ 5.4 Sv/day, Ganymede ≈ 80 mSv/day, Callisto ≈ 0.1 mSv/day)
 and estimates elsewhere. Ceres and Vesta mean anomalies are approximate.
@@ -853,7 +858,8 @@ aphelion, about 3 years). Halley costs about 56 km/s near perihelion (retrograde
 gravity assists in 10 years, so assists (`GravityAssist`) would lower these figures.
 
 For the map, `CometRendezvous.Table.compute(sys, after, passages)` precomputes every catalogue comet's
-next `passages` perihelion and aphelion options. Two passages take about 1.5 s; build the table once,
+next `passages` perihelion and aphelion options, plus the cheapest anywhere-on-orbit option within 5, 10, 20
+and 40 years (`TABLE_FLIGHT_YEARS`). Two passages take about 4 s; build the table once,
 off the main thread, and keep it, since it is immutable. Queries take a budget (total Δv in m/s,
 flight time in years):
 - `of(id)`: every option, in arrival order.
@@ -861,8 +867,47 @@ flight time in years):
 - `cheapest(id, now, maxDv, maxYears)` and `soonest(...)`: the best option within the budget.
 - `reachable(...)`: whether any option fits. False means "observation only" for that budget.
 
-With 30 km/s and 20 years, 67P, Tempel 1 and Encke are reachable; Halley and Hale–Bopp are not.
-With 60 km/s Halley becomes reachable near perihelion.
+**Anywhere along the orbit.** `cheapestWithin(sys, comet, after, maxYears)` (also `Point.ANYWHERE`, and the table's
+anywhere options) drops the perihelion/aphelion pin. It searches arrivals along the next
+orbit (at most 80 years ahead) with departure after `after` and flight time at most `maxYears`
+(capped at 40), so a longer allowance never costs more. The cheapest from J2000:
+
+| Comet | ≤ 5 y | ≤ 10 y | ≤ 20 y |
+|---|---:|---:|---:|
+| 67P/Churyumov–Gerasimenko | 7.9 km/s, 2.8 y, 5.6 AU | 7.9 km/s, 2.8 y, 5.6 AU | 7.9 km/s, 2.8 y, 5.6 AU |
+| 1P/Halley | 20.5 km/s, 4.5 y, 14.0 AU | 19.5 km/s, 8.3 y, 19.8 AU | 19.1 km/s, 14.4 y, 27.0 AU |
+| 2P/Encke | 9.7 km/s, 1.6 y, 4.0 AU | 9.7 km/s, 1.6 y, 4.0 AU | 9.7 km/s, 1.6 y, 4.0 AU |
+| C/1995 O1 (Hale–Bopp) | 49.0 km/s, 4.8 y, 21.1 AU | 43.4 km/s, 9.8 y, 29.5 AU | 38.3 km/s, 18.3 y, 41.2 AU |
+| 9P/Tempel 1 | 8.1 km/s, 2.4 y, 4.7 AU | 8.1 km/s, 2.4 y, 4.7 AU | 8.1 km/s, 2.4 y, 4.7 AU |
+
+Far out, a comet is slow enough that even Halley's retrograde motion costs about 19.5 km/s within 10 years.
+That is beyond chemical stages but within a nuclear thermal stack (Isp 880 s). Hale–Bopp stays near
+40 km/s. `Table.access(id, now, chemicalDv, nuclearDv, maxYears)` turns this into the map label
+`Access.CHEMICAL` / `NUCLEAR` ("Needs a nuclear engine" / "Nükleer motor gerekir") / `OBSERVATION_ONLY`
+("Yalnız gözlem"). With 15 km/s chemical, 30 km/s nuclear and 10 years, 67P, Encke and Tempel 1 are
+chemical, Halley is nuclear and Hale–Bopp is observation only. The actual limits come from rocketry's
+designs (QA's progression model). Long flights still need rocketry's boil-off model.
+
+**Going home.** `returnTrip(sys, comet, after, maxYears, maxEntrySpeed)` returns the cheapest way from the
+comet onto a Lambert arc that ends in Earth's atmosphere. It is a burn at the comet plus, if the arrival is
+faster than `maxEntrySpeed`, a braking burn just above the atmosphere (`Return.brakeDv`). There is no orbit
+capture at Earth. Departure is at or after `after` (the rendezvous arrival plus any stay). The search is a
+grid followed by a multi-start pattern refinement and takes about 1 s per call. Below, each row takes the
+cheapest rendezvous within 10 years, then the cheapest return, with entry at most 15 km/s (Stardust
+re-entered at 12.9 km/s):
+
+| Comet | Rendezvous (≤ 10 y) | Return ≤ 10 y | Return ≤ 40 y | Round trip (≤ 10 y + ≤ 40 y) |
+|---|---:|---:|---:|---:|
+| 67P/Churyumov–Gerasimenko | 7.9 km/s, 2.8 y | 0.8 km/s (0.8 + 0.0 brake), 3.2 y from 5.7 AU | 0.8 km/s (0.8 + 0.0 brake), 3.2 y from 5.7 AU | 8.6 km/s |
+| 1P/Halley | 19.5 km/s, 8.3 y | 10.7 km/s (3.6 + 7.2 brake), 9.0 y from 20.6 AU | 10.7 km/s (3.6 + 7.2 brake), 9.0 y from 20.6 AU | 30.2 km/s |
+| 2P/Encke | 9.7 km/s, 1.6 y | 3.4 km/s (3.4 + 0.0 brake), 2.0 y from 4.1 AU | 3.4 km/s (3.4 + 0.0 brake), 2.0 y from 4.1 AU | 13.2 km/s |
+| C/1995 O1 (Hale–Bopp) | 43.4 km/s, 9.8 y | 48.7 km/s (18.4 + 30.2 brake), 10.0 y from 30.5 AU | 36.1 km/s (5.9 + 30.2 brake), 40.0 y from 29.6 AU | 79.4 km/s |
+| 9P/Tempel 1 | 8.1 km/s, 2.4 y | 1.6 km/s (1.6 + 0.0 brake), 2.2 y from 4.7 AU | 1.6 km/s (1.6 + 0.0 brake), 2.2 y from 4.7 AU | 9.7 km/s |
+
+Leaving a comet from far out is cheap, because it is slow there: 67P, Tempel 1 and Encke return for 1–3 km/s.
+For a retrograde comet the hard part is the arrival. Riding Halley home costs almost nothing but enters at
+≈ 68 km/s, so the best return is a 3.6 km/s burn far out plus a 7.2 km/s brake: about 30 km/s for the
+whole round trip. Hale–Bopp is hopeless at about 80 km/s.
 
 
 ## Gravity assists (`GravityAssist`, `TransferPlanner.planWithAssists`)

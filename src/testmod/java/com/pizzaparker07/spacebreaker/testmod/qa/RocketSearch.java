@@ -29,7 +29,14 @@ import java.util.function.Function;
  * this mission?".
  */
 final class RocketSearch {
-    record Candidate(RocketDesign design, RocketLayout layout, double totalDv) {
+    /**
+     * A design that can lift off from Earth, with its vacuum Δv. The layout is rebuilt on demand rather than kept: the
+     * search holds hundreds of thousands of candidates, and their layouts were most of the memory.
+     */
+    record Candidate(RocketDesign design, Function<ResourceLocation, RocketPart> lookup, double totalDv) {
+        RocketLayout layout() {
+            return RocketSearch.layout(design, lookup);
+        }
     }
 
     /** Outcome of a mission check: the smallest design that flies it, or null. */
@@ -39,6 +46,52 @@ final class RocketSearch {
     /** Earth surface gravity, a little low, and the TWR the callers need (1.05): only designs no caller can launch are dropped. */
     private static final double LAUNCH_G = 0.99 * com.pizzaparker07.spacebreaker.core.body.CelestialBody.EARTH_GRAVITY;
     private static final double MIN_TWR = 1.05;
+
+    /**
+     * What-if only (see {@code DensityWhatIfTests}): multiplies the propellant a stage's tanks hold by a factor per
+     * propellant. Empty in every normal run.
+     */
+    static final java.util.Map<Propellant, Double> DENSITY = new java.util.EnumMap<>(Propellant.class);
+
+    /** A layout, with {@link #DENSITY} applied to its stages. */
+    static RocketLayout layout(RocketDesign design, Function<ResourceLocation, RocketPart> lookup) {
+        RocketLayout l = RocketLayout.of(design, lookup);
+        if (DENSITY.isEmpty()) {
+            return l;
+        }
+        List<RocketLayout.Stage> stages = new ArrayList<>();
+        try {
+            // copy each stage record with only propellantKg scaled, whatever other components the record has
+            var comps = RocketLayout.Stage.class.getRecordComponents();
+            Class<?>[] types = new Class<?>[comps.length];
+            for (int i = 0; i < comps.length; i++) {
+                types[i] = comps[i].getType();
+            }
+            var ctor = RocketLayout.Stage.class.getDeclaredConstructor(types);
+            for (RocketLayout.Stage s : l.stages()) {
+                double f = s.propellant() == null ? 1.0 : DENSITY.getOrDefault(s.propellant(), 1.0);
+                Object[] args = new Object[comps.length];
+                for (int i = 0; i < comps.length; i++) {
+                    args[i] = comps[i].getAccessor().invoke(s);
+                    if (comps[i].getName().equals("propellantKg")) {
+                        args[i] = s.propellantKg() * f;
+                    }
+                }
+                stages.add(ctor.newInstance(args));
+            }
+            var c = RocketLayout.class.getDeclaredConstructor(RocketDesign.class, List.class, List.class, RocketLayout.Payload.class, List.class);
+            c.setAccessible(true);
+            return c.newInstance(l.design(), l.parts(), List.copyOf(stages), l.payload(), l.problems());
+        } catch (ReflectiveOperationException e) {
+            throw new IllegalStateException("cannot rebuild a rocket layout for the density what-if", e);
+        }
+    }
+
+    /** What-if only: parts the search must not use (e.g. the nuclear thermal engine, to see what chemistry alone reaches). */
+    static final java.util.Set<ResourceLocation> EXCLUDED = new java.util.HashSet<>();
+
+    /** Upper stages may also use the insulated versions of every tank set (when those parts exist and are unlocked). */
+    static boolean INSULATED = true;
 
     private static final List<List<String>> TANK_SETS = List.of(
             List.of("fuel_tank_small"), List.of("fuel_tank_medium"), List.of("fuel_tank_large"),
@@ -67,7 +120,7 @@ final class RocketSearch {
             RocketPart p = lookup.apply(id);
             if (p != null) {
                 byId.put(id, p);
-                if (p.isEngine() && fuels.contains(p.propellant())) {
+                if (p.isEngine() && fuels.contains(p.propellant()) && !EXCLUDED.contains(id)) {
                     engines.add(id);
                 }
             }
@@ -123,44 +176,56 @@ final class RocketSearch {
             for (List<ResourceLocation> payload : payloads) {
                 List<ResourceLocation> all = new ArrayList<>(option);
                 all.addAll(payload);
-                RocketLayout l = RocketLayout.of(new RocketDesign(all), lookup);
+                RocketLayout l = layout(new RocketDesign(all), lookup);
                 if (!l.problems().isEmpty() || RocketMath.twr(l, 0, l.fullFuel(), LAUNCH_G) >= MIN_TWR) {
                     return false; // keep: either it can lift off, or this check cannot judge it
                 }
             }
             return true;
         });
+        List<List<ResourceLocation>> upperTanks = new ArrayList<>(tanks);
+        if (INSULATED) {
+            // insulated tanks only matter against boil-off on long coasts: only the top stage (the one that coasts
+            // longest and flies home) gets them, which keeps the search from growing more than twofold
+            for (List<String> set : TANK_SETS) {
+                List<ResourceLocation> ids = set.stream().map(t -> Spacebreaker.id(t + "_insulated")).toList();
+                if (parts.containsAll(ids)) {
+                    upperTanks.add(ids);
+                }
+            }
+        }
         List<List<ResourceLocation>> upper = stageOptions(engines, tanks, null, rcs, false);
+        List<List<ResourceLocation>> top = stageOptions(engines, upperTanks, null, rcs, false);
         int maxStages = separator == null ? 1 : 3;
         for (int n = 1; n <= maxStages; n++) {
-            stack(new ArrayList<>(), 0, n, lower, upper, separator, payloads, lookup, out);
+            stack(new ArrayList<>(), 0, n, lower, upper, top, separator, payloads, lookup, out);
         }
         out.sort(Comparator.comparingInt((Candidate c) -> c.design().parts().size()).thenComparingDouble(c -> -c.totalDv()));
         return out;
     }
 
     private static void stack(List<ResourceLocation> below, int stage, int stages, List<List<ResourceLocation>> lower,
-                              List<List<ResourceLocation>> upper, ResourceLocation separator, List<List<ResourceLocation>> payloads,
+                              List<List<ResourceLocation>> upper, List<List<ResourceLocation>> top, ResourceLocation separator, List<List<ResourceLocation>> payloads,
                               Function<ResourceLocation, RocketPart> lookup, List<Candidate> out) {
         if (stage == stages) {
             for (List<ResourceLocation> payload : payloads) {
                 List<ResourceLocation> all = new ArrayList<>(below);
                 all.addAll(payload);
                 RocketDesign design = new RocketDesign(all);
-                RocketLayout layout = RocketLayout.of(design, lookup);
+                RocketLayout layout = layout(design, lookup);
                 if (layout.problems().isEmpty() && RocketMath.twr(layout, 0, layout.fullFuel(), LAUNCH_G) >= MIN_TWR) {
-                    out.add(new Candidate(design, layout, RocketMath.totalDeltaV(layout, 0, layout.fullFuel(), 0)));
+                    out.add(new Candidate(design, lookup, RocketMath.totalDeltaV(layout, 0, layout.fullFuel(), 0)));
                 }
             }
             return;
         }
-        for (List<ResourceLocation> option : stage == 0 ? lower : upper) {
+        for (List<ResourceLocation> option : stage == 0 ? lower : stage == stages - 1 ? top : upper) {
             List<ResourceLocation> next = new ArrayList<>(below);
             next.addAll(option);
             if (stage < stages - 1) {
                 next.add(separator);
             }
-            stack(next, stage + 1, stages, lower, upper, separator, payloads, lookup, out);
+            stack(next, stage + 1, stages, lower, upper, top, separator, payloads, lookup, out);
         }
     }
 
@@ -269,12 +334,12 @@ final class RocketSearch {
         round.addAll(home.subList(1, home.size()));
         double needRound = need(round, realism);
         for (Candidate c : designs) {
+            if (c.totalDv() < needRound - 500) { // vacuum Δv is an upper bound; bonuses are below 500 m/s
+                continue;
+            }
             RocketLayout l = c.layout();
             double[] full = l.fullFuel();
             if (RocketMath.twr(l, 0, full, gLaunch) < 1.05) {
-                continue;
-            }
-            if (c.totalDv() < needRound - 500) { // vacuum Δv is an upper bound; bonuses are below 500 m/s
                 continue;
             }
             if (MissionPlanner.fly(l, 0, full, round, realism).possible()) {
