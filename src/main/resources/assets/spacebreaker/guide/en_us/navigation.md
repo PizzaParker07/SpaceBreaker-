@@ -14,17 +14,13 @@ There are no loading screens on the way to orbit, between worlds or when landing
 
 ## The star map
 With the rocket **in orbit**, {key key.spacebreaker.star_map} opens the map. Launch from a pad first.
-1. The Sun is on the left; the **You are here** pin shows where you are. Click a planet to zoom into its system. Go back with **◀ Solar System** or a right-click.
-2. The panel on the right shows the chosen world's picture, a short description and its hazards: **No air**, **Unbreathable air**, **Crushing pressure**, **Hot**, **Cold**, **Radiation**.
-3. Pick **Go to orbit** or **Land**. (A world that is not built yet says **Coming soon**; a body without ground says **No ground to land on**.)
-4. The panel tells you:
-   - **Fuel needed X · on board Y** → **Enough ✔** or **X short ✘**
-   - **Fuel to come home:** enough ✔ / not enough ✘
-   - **Trip time:** X days
-   - **Launch window:** now is fine, or the best one is a little later (going now costs more fuel)
-5. The route is drawn on the map in numbered steps. Press the big **Go** button. If it is greyed out, it tells you why.
+1. It is one map of the whole Solar System: every world sits where it really is on its orbit, as a small disc in its own colours. Comets and near-Earth asteroids are small dots on their orbits. A small marker shows where your rocket is.
+2. **Scroll** to zoom, **drag** to move, **right-click** to see everything again. Click a world: the view glides to it, close enough to see its moons.
+3. The short panel shows the world's name and kind, **Orbit** or **Land**, and its dangers as coloured words: **No air**, **Unbreathable air**, **Crushing air**, **Hot**, **Cold**, **Radiation**.
+4. For the trip it shows the **Δv** and the **Time** in large figures, one fuel bar (fuel needed against fuel on board), a line on getting home (**Home: enough fuel**, **Home: make fuel there** or **Home: not enough fuel**), the launch window and only the most important warning.
+5. The route is a thin dashed arc on the map. Press **Go**. If it is greyed out, the panel says why.
 
-A small **station icon** beside a planet means there is a space station in its orbit; the side panel shows who built it and how many docking ports it has. → [Space Station](space_station)
+A small **station** mark beside a world means there is a space station in its orbit. → [Space Station](space_station)
 
 While flying, watch the **Fuel left (Δv)** line on the display.
 
