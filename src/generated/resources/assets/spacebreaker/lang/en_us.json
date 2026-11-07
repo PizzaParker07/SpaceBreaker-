@@ -595,6 +595,7 @@
   "commands.spacebreaker.season.none": "Seasons are only modelled on Mars",
   "commands.spacebreaker.season.set": "Mars season set to Ls %s° (%s)",
   "compat.spacebreaker.info.solar_dust": "Dust: %s%%, output: %s%%",
+  "config.jade.plugin_spacebreaker.info_lines": "Spacebreaker details",
   "container.spacebreaker.cargo_hold": "Cargo Hold",
   "container.spacebreaker.launch_console": "Launch Control",
   "container.spacebreaker.research_lab": "Research Lab",
