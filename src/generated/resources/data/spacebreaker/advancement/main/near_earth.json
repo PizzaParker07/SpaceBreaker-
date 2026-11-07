@@ -1,0 +1,51 @@
+{
+  "parent": "spacebreaker:main/orbit",
+  "criteria": {
+    "bennu": {
+      "conditions": {
+        "to": "spacebreaker:bennu"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "eros": {
+      "conditions": {
+        "to": "spacebreaker:eros"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "itokawa": {
+      "conditions": {
+        "to": "spacebreaker:itokawa"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "ryugu": {
+      "conditions": {
+        "to": "spacebreaker:ryugu"
+      },
+      "trigger": "minecraft:changed_dimension"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.spacebreaker.near_earth.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "spacebreaker:bennu_boulder"
+    },
+    "title": {
+      "translate": "advancements.spacebreaker.near_earth.title"
+    }
+  },
+  "requirements": [
+    [
+      "bennu",
+      "ryugu",
+      "eros",
+      "itokawa"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

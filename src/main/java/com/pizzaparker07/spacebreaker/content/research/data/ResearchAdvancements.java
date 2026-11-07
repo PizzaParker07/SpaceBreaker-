@@ -13,6 +13,7 @@ import com.pizzaparker07.spacebreaker.content.research.ResearchTree;
 import com.pizzaparker07.spacebreaker.content.research.TechLearnedTrigger;
 import com.pizzaparker07.spacebreaker.content.suit.SuitModule;
 import com.pizzaparker07.spacebreaker.core.lang.Lang;
+import java.util.List;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementRequirements;
@@ -114,6 +115,29 @@ public final class ResearchAdvancements implements AdvancementSubProvider {
                 .save(out, id("safe_return"));
         task(out, orbit, "moon_orbit", new ItemStack(Items.ENDER_PEARL), ChangeDimensionTrigger.TriggerInstance.changedDimensionTo(
                 ResourceKey.create(Registries.DIMENSION, Spacebreaker.id("moon_orbit"))));
+
+        // the outer solar system, one advancement per system (any of its worlds), and one for having been to all of them
+        List<List<String>> requirements = new java.util.ArrayList<>();
+        Advancement.Builder tour = Advancement.Builder.advancement();
+        for (String[] system : SYSTEMS) {
+            String name = system[0];
+            Advancement.Builder b = Advancement.Builder.advancement().parent(orbit)
+                    .display(new ItemStack(item(system[1])), title(name), desc(name), null, AdvancementType.GOAL, true, true, false);
+            List<String> any = new java.util.ArrayList<>();
+            for (int i = 2; i < system.length; i++) {
+                Criterion<?> c = ChangeDimensionTrigger.TriggerInstance.changedDimensionTo(
+                        ResourceKey.create(Registries.DIMENSION, Spacebreaker.id(system[i])));
+                b.addCriterion(system[i], c);
+                tour.addCriterion(system[i], c);
+                any.add(system[i]);
+            }
+            b.requirements(AdvancementRequirements.Strategy.OR).save(out, id(name));
+            requirements.add(any);
+        }
+        tour.parent(orbit)
+                .display(new ItemStack(Items.FILLED_MAP), title("grand_tour"), desc("grand_tour"), null, AdvancementType.CHALLENGE, true, true, false)
+                .requirements(new AdvancementRequirements(requirements))
+                .save(out, id("grand_tour"));
         task(out, moon, "moon_dungeon", Research.disk(ResearchTree.id("lunar_surveying")),
                 DungeonsModule.DISCOVERED_TRIGGER.get().createCriterion(new DungeonDiscoveredTrigger.Instance(Optional.empty(), Optional.empty(),
                         Optional.of(ResearchTree.MOON))));
@@ -129,6 +153,17 @@ public final class ResearchAdvancements implements AdvancementSubProvider {
                 InventoryChangeTrigger.TriggerInstance.hasItems(item("eva_helmet"), item("eva_chestplate"), item("eva_leggings"), item("eva_boots")));
         task(out, full, "jetpack", new ItemStack(item("maneuvering_unit")), InventoryChangeTrigger.TriggerInstance.hasItems(item("maneuvering_unit")));
     }
+
+    /** Advancement name, icon item, then the worlds of that system (dimension paths). */
+    public static final String[][] SYSTEMS = {
+            {"belt", "carbonaceous_chondrite", "ceres", "vesta"},
+            {"jupiter_system", "sulfur", "io", "europa", "ganymede", "callisto"},
+            {"saturn_system", "tholin", "titan", "enceladus"},
+            {"uranus_system", "graben_floor_ice", "miranda", "ariel", "titania", "umbriel", "oberon"},
+            {"neptune_system", "nitrogen_geyser", "triton", "proteus", "nereid"},
+            {"kuiper_gate", "tholin_sand", "pluto", "charon", "nix", "hydra"},
+            {"near_earth", "bennu_boulder", "bennu", "ryugu", "eros", "itokawa"},
+    };
 
     private static net.minecraft.world.item.Item item(String path) {
         return BuiltInRegistries.ITEM.get(Spacebreaker.id(path));
@@ -206,6 +241,14 @@ public final class ResearchAdvancements implements AdvancementSubProvider {
         a(l, "full_suit", "Pressurised", "Collect all four pieces of an EVA suit", "Tam Donanım", "Bir EVA giysisinin dört parçasını da topla");
         a(l, "jetpack", "Free Flyer", "Get a maneuvering unit", "Serbest Uçuş", "Bir manevra ünitesi edin");
         a(l, "suit_up", "Suit Up", "Get an EVA helmet", "Giyin Kuşan", "Bir EVA kaskı edin");
+        a(l, "belt", "Welcome to the Belt", "Land on Ceres or Vesta", "Kuşağa Hoş Geldin", "Ceres'e ya da Vesta'ya in");
+        a(l, "jupiter_system", "In Jupiter's Shadow", "Land on one of Jupiter's moons", "Jüpiter'in Gölgesinde", "Jüpiter'in uydularından birine in");
+        a(l, "saturn_system", "Under the Rings", "Land on Titan or Enceladus", "Halkaların Altında", "Titan'a ya da Enceladus'a in");
+        a(l, "uranus_system", "The Tilted Giant", "Land on one of Uranus' moons", "Yan Yatmış Dev", "Uranüs'ün uydularından birine in");
+        a(l, "neptune_system", "Shores of the Blue Giant", "Land on Triton, Proteus or Nereid", "Mavi Devin Kıyısı", "Triton'a, Proteus'a ya da Nereid'e in");
+        a(l, "kuiper_gate", "Gate of the Kuiper Belt", "Land on Pluto or one of its moons", "Kuiper'in Kapısı", "Plüton'a ya da uydularından birine in");
+        a(l, "near_earth", "Close Visitor", "Land on a near-Earth asteroid", "Yakın Ziyaretçi", "Dünya'ya yakın bir asteroite in");
+        a(l, "grand_tour", "Solar System Traveller", "Land on a world in every one of these systems", "Güneş Sistemi Gezgini", "Bu sistemlerin her birinde bir dünyaya in");
         a(l, "deep_breath", "Deep Breath", "Get an oxygen tank", "Derin Nefes", "Bir oksijen tüpü edin");
     }
 

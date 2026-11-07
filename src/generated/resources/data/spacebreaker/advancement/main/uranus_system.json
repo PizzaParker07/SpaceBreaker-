@@ -1,0 +1,58 @@
+{
+  "parent": "spacebreaker:main/orbit",
+  "criteria": {
+    "ariel": {
+      "conditions": {
+        "to": "spacebreaker:ariel"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "miranda": {
+      "conditions": {
+        "to": "spacebreaker:miranda"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "oberon": {
+      "conditions": {
+        "to": "spacebreaker:oberon"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "titania": {
+      "conditions": {
+        "to": "spacebreaker:titania"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "umbriel": {
+      "conditions": {
+        "to": "spacebreaker:umbriel"
+      },
+      "trigger": "minecraft:changed_dimension"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.spacebreaker.uranus_system.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "spacebreaker:graben_floor_ice"
+    },
+    "title": {
+      "translate": "advancements.spacebreaker.uranus_system.title"
+    }
+  },
+  "requirements": [
+    [
+      "miranda",
+      "ariel",
+      "titania",
+      "umbriel",
+      "oberon"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

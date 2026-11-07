@@ -1,0 +1,37 @@
+{
+  "parent": "spacebreaker:main/orbit",
+  "criteria": {
+    "enceladus": {
+      "conditions": {
+        "to": "spacebreaker:enceladus"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "titan": {
+      "conditions": {
+        "to": "spacebreaker:titan"
+      },
+      "trigger": "minecraft:changed_dimension"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.spacebreaker.saturn_system.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "spacebreaker:tholin"
+    },
+    "title": {
+      "translate": "advancements.spacebreaker.saturn_system.title"
+    }
+  },
+  "requirements": [
+    [
+      "titan",
+      "enceladus"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

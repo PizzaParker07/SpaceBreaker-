@@ -1,0 +1,203 @@
+{
+  "parent": "spacebreaker:main/orbit",
+  "criteria": {
+    "ariel": {
+      "conditions": {
+        "to": "spacebreaker:ariel"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "bennu": {
+      "conditions": {
+        "to": "spacebreaker:bennu"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "callisto": {
+      "conditions": {
+        "to": "spacebreaker:callisto"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "ceres": {
+      "conditions": {
+        "to": "spacebreaker:ceres"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "charon": {
+      "conditions": {
+        "to": "spacebreaker:charon"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "enceladus": {
+      "conditions": {
+        "to": "spacebreaker:enceladus"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "eros": {
+      "conditions": {
+        "to": "spacebreaker:eros"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "europa": {
+      "conditions": {
+        "to": "spacebreaker:europa"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "ganymede": {
+      "conditions": {
+        "to": "spacebreaker:ganymede"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "hydra": {
+      "conditions": {
+        "to": "spacebreaker:hydra"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "io": {
+      "conditions": {
+        "to": "spacebreaker:io"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "itokawa": {
+      "conditions": {
+        "to": "spacebreaker:itokawa"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "miranda": {
+      "conditions": {
+        "to": "spacebreaker:miranda"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "nereid": {
+      "conditions": {
+        "to": "spacebreaker:nereid"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "nix": {
+      "conditions": {
+        "to": "spacebreaker:nix"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "oberon": {
+      "conditions": {
+        "to": "spacebreaker:oberon"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "pluto": {
+      "conditions": {
+        "to": "spacebreaker:pluto"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "proteus": {
+      "conditions": {
+        "to": "spacebreaker:proteus"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "ryugu": {
+      "conditions": {
+        "to": "spacebreaker:ryugu"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "titan": {
+      "conditions": {
+        "to": "spacebreaker:titan"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "titania": {
+      "conditions": {
+        "to": "spacebreaker:titania"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "triton": {
+      "conditions": {
+        "to": "spacebreaker:triton"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "umbriel": {
+      "conditions": {
+        "to": "spacebreaker:umbriel"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "vesta": {
+      "conditions": {
+        "to": "spacebreaker:vesta"
+      },
+      "trigger": "minecraft:changed_dimension"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.spacebreaker.grand_tour.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "count": 1,
+      "id": "minecraft:filled_map"
+    },
+    "title": {
+      "translate": "advancements.spacebreaker.grand_tour.title"
+    }
+  },
+  "requirements": [
+    [
+      "ceres",
+      "vesta"
+    ],
+    [
+      "io",
+      "europa",
+      "ganymede",
+      "callisto"
+    ],
+    [
+      "titan",
+      "enceladus"
+    ],
+    [
+      "miranda",
+      "ariel",
+      "titania",
+      "umbriel",
+      "oberon"
+    ],
+    [
+      "triton",
+      "proteus",
+      "nereid"
+    ],
+    [
+      "pluto",
+      "charon",
+      "nix",
+      "hydra"
+    ],
+    [
+      "bennu",
+      "ryugu",
+      "eros",
+      "itokawa"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

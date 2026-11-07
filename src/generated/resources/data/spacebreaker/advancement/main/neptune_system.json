@@ -1,0 +1,44 @@
+{
+  "parent": "spacebreaker:main/orbit",
+  "criteria": {
+    "nereid": {
+      "conditions": {
+        "to": "spacebreaker:nereid"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "proteus": {
+      "conditions": {
+        "to": "spacebreaker:proteus"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "triton": {
+      "conditions": {
+        "to": "spacebreaker:triton"
+      },
+      "trigger": "minecraft:changed_dimension"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.spacebreaker.neptune_system.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "spacebreaker:nitrogen_geyser"
+    },
+    "title": {
+      "translate": "advancements.spacebreaker.neptune_system.title"
+    }
+  },
+  "requirements": [
+    [
+      "triton",
+      "proteus",
+      "nereid"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

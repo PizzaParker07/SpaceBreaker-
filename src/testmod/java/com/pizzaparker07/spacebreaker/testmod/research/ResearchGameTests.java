@@ -74,6 +74,22 @@ public final class ResearchGameTests {
      * Every technology can be researched from some sample or flight data, so nobody depends on a lucky disk.
      * The one exception is Basic Rocketry: its disk is guaranteed in every observatory archive.
      */
+    /** Every world named in the outer-system advancements is a real dimension, so each one can be earned. */
+    @GameTest(template = EMPTY)
+    public static void outerSystemAdvancementsNameRealWorlds(GameTestHelper helper) {
+        java.util.List<String> missing = new java.util.ArrayList<>();
+        for (String[] system : com.pizzaparker07.spacebreaker.content.research.data.ResearchAdvancements.SYSTEMS) {
+            for (int i = 2; i < system.length; i++) {
+                // the test server only loads the vanilla dimensions, so look for the dimension file itself
+                if (helper.getLevel().getServer().getResourceManager().getResource(Spacebreaker.id("dimension/" + system[i] + ".json")).isEmpty()) {
+                    missing.add(system[0] + ":" + system[i]);
+                }
+            }
+        }
+        helper.assertTrue(missing.isEmpty(), "advancement worlds without a dimension: " + missing);
+        helper.succeed();
+    }
+
     @GameTest(template = EMPTY)
     public static void everyTechnologyHasASampleSource(GameTestHelper helper) {
         List<String> missing = new java.util.ArrayList<>();
