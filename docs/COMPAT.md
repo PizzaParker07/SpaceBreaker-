@@ -338,3 +338,19 @@ Showcase: `-Pscenario=info -PwithJade=true` or `-PwithWthit=true` (a dusty panel
 **Not yet run in the game here:** starting the client with the Jade or WTHIT jar was not permitted in this test
 environment; the plugins compile against both APIs and the line itself is covered by the GameTest.
 
+## 7. Release checklist (1.0)
+
+- **Dedicated server:** the GameTest server runs on the dedicated-server side with every module (all tests pass).
+  Client classes are only referenced from client packages, from compat plugins that only the client-side mods load,
+  from mixins in the client list, and from `playToClient` handler lambdas (never run on a server).
+- **Optional mods:** Iris, Sodium, JEI, EMI, Jade and WTHIT are `optional` dependencies with minimum versions in
+  `neoforge.mods.toml` (an older one is refused with a message, not a crash); Distant Horizons and Voxy are only read by
+  reflection and need no entry. Without any of them the mod runs unchanged.
+- **Showcase pass with a pack** (`-PwithCompat=true`, Iris + Sodium + Complementary in `run-mods/`; add DH for `lod`):
+  `compat`, `moon`, `mars`, `mars_dust`, `mars_clouds`, `mars_frost`, `venus`, `mercury`, `mercury_sunrise`,
+  `inner_orbit`, `phobos`, `rocketry -Pshots='(32|34|35|37|47|49|50|52)_.*'`, `rover_moon`, `rover_mars`,
+  `sky_planets`, `coma_sky`, `jovian`, `io`, `ganymede`, `saturnian`, `suit_eva_titan`, `enceladus`, `miranda`,
+  `umbriel`, `oberon`, `triton`, `pluto`, `churyumov_gerasimenko`, `halley`, `bennu`, `hydra`, `lod`.
+  Look for: our black sky with stars and planets (not the pack's blue), no pack clouds, haze on Venus/Titan/Mars
+  storms, plumes and glows in front of space, windows showing space, orbit night darkening.
+
