@@ -186,9 +186,11 @@ public class StarMapScreen extends Screen {
                 int y = cy + (i % 2 == 0 ? -1 : 1) * (int) (height * 0.09F);
                 nodes.put(p, new Node(p, x, y, systemRadius(p)));
             }
+        } else if (StarMapData.COMETS.equals(focus)) {
+            layoutComets(cy);
         } else {
             int cx = mapW / 2;
-            int pr = StarMapData.NEAR_EARTH_ASTEROIDS.equals(focus) ? 9 : Mth.clamp(Math.min(mapW, height) / 9, 14, 30);
+            int pr = StarMapData.NEAR_EARTH_ASTEROIDS.equals(focus) || StarMapData.COMETS.equals(focus) ? 9 : Mth.clamp(Math.min(mapW, height) / 9, 14, 30);
             nodes.put(focus, new Node(focus, cx, cy, pr));
             List<ResourceLocation> moons = StarMapData.moons(focus);
             int first = pr + 46;
@@ -199,6 +201,51 @@ public class StarMapScreen extends Screen {
                 double a = 0.35 + i * 2.4;
                 nodes.put(m, new Node(m, cx + (int) (Math.cos(a) * ring), cy + (int) (Math.sin(a) * ring * 0.8), moonRadius(m)));
             }
+        }
+    }
+
+    /** Comet orbits on the comet view: centre x, centre y, half-width, half-height of each ellipse (the Sun at a focus). */
+    private final Map<ResourceLocation, int[]> cometOrbits = new java.util.HashMap<>();
+
+    /**
+     * The comet view: the Sun in the middle and each comet on its own stretched ellipse (eccentricity from the
+     * astro catalogue, size on a log scale of the semi-major axis so Encke and Halley both fit).
+     */
+    private void layoutComets(int cy) {
+        cometOrbits.clear();
+        int cx = mapW / 2;
+        List<ResourceLocation> comets = StarMapData.moons(StarMapData.COMETS);
+        double minA = Double.MAX_VALUE, maxA = 0;
+        for (ResourceLocation c : comets) {
+            double a = com.pizzaparker07.spacebreaker.core.astro.smallbody.Comet.byId(c.getPath()).map(k -> k.semiMajorAxisAu()).orElse(3.0);
+            minA = Math.min(minA, a);
+            maxA = Math.max(maxA, a);
+        }
+        int inner = 40, outer = Math.max(inner + 20, Math.min(mapW / 2 - 24, (int) (height * 0.6)));
+        for (int i = 0; i < comets.size(); i++) {
+            ResourceLocation c = comets.get(i);
+            var k = com.pizzaparker07.spacebreaker.core.astro.smallbody.Comet.byId(c.getPath()).orElse(null);
+            double a = k == null ? 3 : k.semiMajorAxisAu(), e = k == null ? 0.5 : k.eccentricity();
+            double f = maxA > minA ? (Math.log(a) - Math.log(minA)) / (Math.log(maxA) - Math.log(minA)) : 0;
+            // the far end (aphelion) reaches rx·(1 + e) from the Sun: keep it on the map
+            int rx = (int) Math.min(inner + f * (outer - inner), (mapW / 2 - 16) / (1 + e));
+            int ry = Math.max(6, (int) (rx * Math.sqrt(1 - e * e)));
+            int ecx = cx - (int) Math.round(rx * e);     // the Sun sits at the focus
+            cometOrbits.put(c, new int[]{ecx, cy, rx, ry});
+            // where it really is on its orbit now: mean anomaly from the last perihelion, then Kepler's equation
+            double E = 0;
+            if (k != null && minecraft != null && minecraft.level != null) {
+                double days = com.pizzaparker07.spacebreaker.core.astro.BodyAdapter.simTime(minecraft.level) / 86400.0;
+                double period = k.periodSeconds() / 86400.0;
+                double M = 2 * Math.PI * (((days - k.perihelionDays()) / period) % 1.0);
+                E = M;
+                for (int it = 0; it < 30; it++) {
+                    E -= (E - e * Math.sin(E) - M) / (1 - e * Math.cos(E));
+                }
+            }
+            int nx = ecx + (int) Math.round(Math.cos(E) * rx);
+            int ny = cy - (int) Math.round(Math.sin(E) * ry);
+            nodes.put(c, new Node(c, nx, ny, moonRadius(c)));
         }
     }
 
@@ -294,7 +341,7 @@ public class StarMapScreen extends Screen {
             layoutMap();
         }
         // the asteroid group is not a place: pick its first member
-        select(StarMapData.NEAR_EARTH_ASTEROIDS.equals(n.body) ? StarMapData.moons(n.body).get(0) : n.body);
+        select(StarMapData.NEAR_EARTH_ASTEROIDS.equals(n.body) || StarMapData.COMETS.equals(n.body) ? StarMapData.moons(n.body).get(0) : n.body);
         return true;
     }
 
@@ -369,6 +416,14 @@ public class StarMapScreen extends Screen {
     }
 
     private void drawFocus(GuiGraphics g) {
+        if (StarMapData.COMETS.equals(focus)) {
+            for (int[] o : cometOrbits.values()) {
+                ellipse(g, o[0], o[1], o[2], o[3], 0x30A0B4C8);
+            }
+            disc(g, mapW / 2, height / 2 + 6, 6, 0xFFFFD34A);   // the Sun at the shared focus
+            g.drawCenteredString(font, Location.bodyName(focus), mapW / 2, 34, INK);
+            return;
+        }
         Node p = nodes.get(focus);
         if (p == null) {
             return;
@@ -379,7 +434,7 @@ public class StarMapScreen extends Screen {
                 ellipse(g, p.x, p.y, (int) r, (int) (r * 0.8), 0x30A0B4C8);
             }
         }
-        g.drawCenteredString(font, StarMapData.NEAR_EARTH_ASTEROIDS.equals(focus) ? Location.bodyName(focus)
+        g.drawCenteredString(font, StarMapData.NEAR_EARTH_ASTEROIDS.equals(focus) || StarMapData.COMETS.equals(focus) ? Location.bodyName(focus)
                 : Component.translatable("gui.spacebreaker.star_map.system_of", Location.bodyName(focus)), mapW / 2, 34, INK);
     }
 
@@ -390,12 +445,27 @@ public class StarMapScreen extends Screen {
             if (sel || n == hover) {
                 ring(g, n.x, n.y, n.r + 4, sel ? 0xC0FFD34A : 0x80FFFFFF);
             }
-            planet(g, n.body, n.x, n.y, n.r);
+            if (StarMapData.COMETS.equals(focus) && StarMapData.comet(n.body)) {
+                // the tail points away from the Sun, and only an awake comet has much of one
+                int sx = mapW / 2, sy = height / 2 + 6;
+                double dx = n.x - sx, dy = n.y - sy, d = Math.max(1, Math.hypot(dx, dy));
+                boolean awake = StarMapData.cometInfo(n.body, com.pizzaparker07.spacebreaker.core.astro.BodyAdapter.simTime(minecraft.level))
+                        .map(i -> i.level() != com.pizzaparker07.spacebreaker.core.astro.smallbody.CometActivity.Level.DORMANT).orElse(false);
+                comet(g, n.x, n.y, n.r, dx / d, dy / d, awake ? 1.0 : 0.25);
+            } else {
+                planet(g, n.body, n.x, n.y, n.r);
+            }
             // the asteroid group gets a short label so it never runs into its neighbours
             Component name = StarMapData.NEAR_EARTH_ASTEROIDS.equals(n.body)
                     ? Component.translatable("body.spacebreaker.near_earth_asteroids.short") : Location.bodyName(n.body);
+            if (StarMapData.comet(n.body)) {
+                name = com.pizzaparker07.spacebreaker.core.astro.smallbody.Comet.byId(n.body.getPath())
+                        .map(c -> (Component) Component.literal(c.designation())).orElse(name);
+            }
             int col = sel ? 0xFFFFE9A8 : 0xFFC8D0D8;
-            g.drawCenteredString(font, name, n.x, n.y + n.r + 5, col);
+            if (!(n.body.equals(focus) && StarMapData.NEAR_EARTH_ASTEROIDS.equals(focus))) {   // the title already names the group
+                g.drawCenteredString(font, name, n.x, n.y + n.r + 5, col);
+            }
             if (!com.pizzaparker07.spacebreaker.content.rocketry.station.Stations.around(n.body).isEmpty()) {
                 stationIcon(g, n.x + n.r + 1, n.y - n.r - 5);
             }
@@ -497,7 +567,14 @@ public class StarMapScreen extends Screen {
         // picture and name
         int disc = 44;
         planet(g, body, x + disc / 2, 8 + disc / 2, disc / 2);
-        g.drawString(font, Location.bodyName(body).copy().withStyle(ChatFormatting.BOLD), x + disc + 6, 12, 0xFFFFFFFF, false);
+        Component title = Location.bodyName(body).copy().withStyle(ChatFormatting.BOLD);
+        int room = w - disc - 6;
+        if (font.width(title) > room) {
+            // long names (67P/Churyumov–Gerasimenko) are cut with an ellipsis rather than run off the panel
+            title = Component.literal(font.plainSubstrByWidth(Location.bodyName(body).getString(), room - font.width("…") - 6) + "…")
+                    .withStyle(ChatFormatting.BOLD);
+        }
+        g.drawString(font, title, x + disc + 6, 12, 0xFFFFFFFF, false);
         Component kind = Component.translatable("gui.spacebreaker.star_map.kind." + Locations.body(body).map(b -> b.type().name()).orElse("TERRESTRIAL")
                 .toLowerCase(Locale.ROOT));
         g.drawString(font, kind, x + disc + 6, 24, DIM, false);
@@ -530,6 +607,9 @@ public class StarMapScreen extends Screen {
             hx += tw + 3;
         }
         y += 14;
+        if (StarMapData.comet(body)) {
+            y = drawComet(g, x, y, w);
+        }
         if (!com.pizzaparker07.spacebreaker.content.rocketry.mission.Coverage.hasSignal(body)) {
             for (FormattedCharSequence line : font.split(Component.translatable("gui.spacebreaker.star_map.no_signal"), w)) {
                 g.drawString(font, line, x, y, 0xFFB0A070, false);
@@ -566,7 +646,8 @@ public class StarMapScreen extends Screen {
         orbitButton.setY(Math.max(148, y + 2));
         surfaceButton.setY(orbitButton.getY());
         if (!surfaceButton.visible) {
-            g.drawString(font, Component.translatable("gui.spacebreaker.star_map.no_surface"), x + w / 2 + 4, orbitButton.getY() + 5, DIM, false);
+            // wrapped beside the orbit button so a long line (Turkish) never runs off the panel
+            g.drawWordWrap(font, Component.translatable("gui.spacebreaker.star_map.no_surface"), x + w / 2 + 4, orbitButton.getY() + 1, w / 2 - 4, DIM);
         }
         fuelBarY = -1;
         if (trip == null) {
@@ -574,6 +655,21 @@ public class StarMapScreen extends Screen {
             return;
         }
         drawTrip(g, x, orbitButton.getY() + 26, w);
+    }
+
+    /** A comet's card: where it is, when it next swings past the Sun, how active it is. */
+    private int drawComet(GuiGraphics g, int x, int y, int w) {
+        var info = StarMapData.cometInfo(body, com.pizzaparker07.spacebreaker.core.astro.BodyAdapter.simTime(minecraft.level)).orElse(null);
+        if (info == null) {
+            return y;
+        }
+        boolean tr = minecraft.getLanguageManager().getSelected().startsWith("tr");
+        String level = tr ? info.level().nameTr : info.level().nameEn;
+        y = fact(g, x, y, w, Component.translatable("gui.spacebreaker.star_map.comet.distance", decimal(info.sunAu())));
+        y = fact(g, x, y, w, Component.translatable("gui.spacebreaker.star_map.comet.perihelion",
+                info.nextPerihelion().format(java.time.format.DateTimeFormatter.ISO_LOCAL_DATE), decimal(info.perihelionAu())));
+        y = fact(g, x, y, w, Component.translatable("gui.spacebreaker.star_map.comet.period", decimal(info.periodYears())));
+        return fact(g, x, y, w, Component.translatable("gui.spacebreaker.star_map.comet.activity", level));
     }
 
     private void drawTrip(GuiGraphics g, int x, int y, int w) {
@@ -904,6 +1000,10 @@ public class StarMapScreen extends Screen {
     // ------------------------------------------------------------------ primitives
 
     private static void planet(GuiGraphics g, ResourceLocation body, int cx, int cy, int r) {
+        if (StarMapData.COMETS.equals(body) || StarMapData.comet(body)) {
+            comet(g, cx, cy, r, 0.8, -0.6, 1.0);   // a picture: tail to the upper right
+            return;
+        }
         if (StarMapData.NEAR_EARTH_ASTEROIDS.equals(body)) {
             // a loose handful of grey rocks
             int[][] rocks = {{-4, -3, 3}, {3, -4, 2}, {5, 2, 3}, {-2, 4, 2}, {0, 0, 2}};
@@ -915,6 +1015,17 @@ public class StarMapScreen extends Screen {
         }
         ResourceLocation tex = Location.MOON.equals(body) ? OrbitSkyEffects.MOON_DISC : OrbitSkyEffects.disc(body);
         g.blit(tex, cx - r, cy - r, r * 2, r * 2, 0F, 0F, 1, 1, 1, 1);
+    }
+
+    /** A comet: bright nucleus and a fading tail along (ux, uy), {@code length} 1 for an active comet. */
+    private static void comet(GuiGraphics g, int cx, int cy, int r, double ux, double uy, double length) {
+        int n = Math.max(1, (int) Math.round(r * 2 * length));
+        for (int i = n; i > 0; i--) {
+            int a = 0x10 + 0xA0 * (n - i) / n;
+            double t = i * 0.85;
+            disc(g, cx + (int) Math.round(ux * t), cy + (int) Math.round(uy * t), Math.max(1, r / 3 + i / 5), (a << 24) | 0xB8D8F0);
+        }
+        disc(g, cx, cy, Math.max(2, r / 3), 0xFFEEF4FA);
     }
 
     private static void disc(GuiGraphics g, int cx, int cy, int r, int colour) {
@@ -945,7 +1056,7 @@ public class StarMapScreen extends Screen {
 
     /** Opened from the HUD hint or the key; also used by the showcase to preselect a destination. */
     public void preselect(ResourceLocation b, boolean orbit) {
-        if (Locations.parentPlanet(b).isPresent() || StarMapData.nearEarthAsteroid(b)) {
+        if (Locations.parentPlanet(b).isPresent() || StarMapData.nearEarthAsteroid(b) || StarMapData.comet(b)) {
             focus = StarMapData.system(b);
             layoutMap();
         }

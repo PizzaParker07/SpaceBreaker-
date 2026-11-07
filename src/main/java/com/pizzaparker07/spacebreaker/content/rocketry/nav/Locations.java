@@ -45,6 +45,7 @@ public final class Locations {
         }
         Map<ResourceLocation, CelestialBody> b = new LinkedHashMap<>();
         List<Location> out = new ArrayList<>();
+        List<ResourceLocation> cometIds = new ArrayList<>();
         reg.get().entrySet().stream()
                 .sorted(Comparator.comparingDouble(e -> order(reg.get(), e.getValue())))
                 .forEach(e -> {
@@ -54,6 +55,9 @@ public final class Locations {
                         return;
                     }
                     b.put(id, body);
+                    if (body.type() == BodyType.COMET) {
+                        cometIds.add(id); // grouped on the map; still places to fly to (orbit, and a surface once built)
+                    }
                     Location surface = Location.of(id, body, false);
                     if (surface != null) {
                         out.add(surface);
@@ -62,6 +66,7 @@ public final class Locations {
                 });
         bodies = Map.copyOf(b);
         all = List.copyOf(out);
+        comets = List.copyOf(cometIds);
         java.util.Set<ResourceLocation> fuel = new java.util.HashSet<>();
         reg.get().getTag(REFUEL).ifPresent(tag -> tag.forEach(h -> h.unwrapKey().ifPresent(k -> fuel.add(k.location()))));
         fuel.add(Location.EARTH);
@@ -76,6 +81,13 @@ public final class Locations {
             return parent.get().orbit().semiMajorAxisKm() + Math.min(own, 1e6) * 1e-3;
         }
         return own;
+    }
+
+    private static volatile List<ResourceLocation> comets = List.of();
+
+    /** Comets of the body data, in order from the Sun (the map groups them). */
+    public static List<ResourceLocation> comets() {
+        return comets;
     }
 
     /** Whether propellant can be made on this world's surface (see {@link #REFUEL}). */

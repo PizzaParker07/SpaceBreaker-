@@ -184,6 +184,38 @@ public final class StarMapData {
 
     /** The map's group of near-Earth asteroids (not a real body): one node on the solar system view. */
     public static final ResourceLocation NEAR_EARTH_ASTEROIDS = ResourceLocation.fromNamespaceAndPath("spacebreaker", "near_earth_asteroids");
+    /** The map's group of comets (one node on the solar system view; the comets themselves are destinations). */
+    public static final ResourceLocation COMETS = ResourceLocation.fromNamespaceAndPath("spacebreaker", "comets");
+
+    public static boolean comet(ResourceLocation body) {
+        return Locations.comets().contains(body);
+    }
+
+    /**
+     * What the map shows about a comet now.
+     *
+     * @param sunAu            distance from the Sun, AU
+     * @param nextPerihelion   date of the next closest pass to the Sun
+     * @param level            how active it is (asleep far out, a bright tail near the Sun)
+     * @param periodYears      orbital period
+     */
+    public record CometInfo(double sunAu, java.time.LocalDate nextPerihelion, com.pizzaparker07.spacebreaker.core.astro.smallbody.CometActivity.Level level,
+                            double periodYears, double perihelionAu) {
+    }
+
+    /** The comet card at simulated time {@code t} (seconds from J2000), if the astro library knows the comet. */
+    public static java.util.Optional<CometInfo> cometInfo(ResourceLocation body, double t) {
+        return com.pizzaparker07.spacebreaker.core.astro.smallbody.Comet.byId(body.getPath()).map(c -> {
+            var activity = com.pizzaparker07.spacebreaker.core.astro.smallbody.CometActivity.at(c, t);
+            double periodDays = c.periodSeconds() / 86400.0;
+            double nowDays = t / 86400.0;
+            double k = Math.ceil((nowDays - c.perihelionDays()) / periodDays);
+            double next = c.perihelionDays() + k * periodDays;
+            java.time.LocalDate date = java.time.LocalDate.of(2000, 1, 1).plusDays((long) Math.floor(next + 0.5));
+            return new CometInfo(activity.distanceAu(), date, activity.level(), c.periodYears(), c.perihelionAu());
+        });
+    }
+
     /** A near-Earth asteroid comes closer to the Sun than 1.3 AU (the usual definition). */
     public static final double NEA_PERIHELION_KM = 1.3 * 149_597_870.7;
 
@@ -201,15 +233,21 @@ public final class StarMapData {
         List<ResourceLocation> out = new ArrayList<>();
         for (Location l : Locations.all()) {
             ResourceLocation b = nearEarthAsteroid(l.body()) ? NEAR_EARTH_ASTEROIDS : l.body();
-            if (Locations.parentPlanet(l.body()).isEmpty() && !out.contains(b)) {
+            if (Locations.parentPlanet(l.body()).isEmpty() && !comet(l.body()) && !out.contains(b)) {
                 out.add(b);
             }
+        }
+        if (!Locations.comets().isEmpty()) {
+            out.add(COMETS); // last: their orbits reach out past the planets
         }
         return out;
     }
 
     public static List<ResourceLocation> moons(ResourceLocation planet) {
         List<ResourceLocation> out = new ArrayList<>();
+        if (COMETS.equals(planet)) {
+            return Locations.comets();
+        }
         if (NEAR_EARTH_ASTEROIDS.equals(planet)) {
             for (Location l : Locations.all()) {
                 if (nearEarthAsteroid(l.body()) && !out.contains(l.body())) {
@@ -228,6 +266,6 @@ public final class StarMapData {
 
     /** The planet a body belongs to (itself for planets): the map focuses on this system. */
     public static ResourceLocation system(ResourceLocation body) {
-        return nearEarthAsteroid(body) ? NEAR_EARTH_ASTEROIDS : Locations.parentPlanet(body).orElse(body);
+        return comet(body) ? COMETS : nearEarthAsteroid(body) ? NEAR_EARTH_ASTEROIDS : Locations.parentPlanet(body).orElse(body);
     }
 }
