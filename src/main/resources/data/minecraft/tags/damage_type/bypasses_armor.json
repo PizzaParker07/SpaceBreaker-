@@ -4,6 +4,7 @@
     "spacebreaker:vacuum",
     "spacebreaker:hypothermia",
     "spacebreaker:hyperthermia",
-    "spacebreaker:radiation"
+    "spacebreaker:radiation",
+    "spacebreaker:micrometeorite"
   ]
 }

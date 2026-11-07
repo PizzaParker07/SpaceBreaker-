@@ -39,20 +39,27 @@ public final class MeteorStreaks {
         if (tick == lastTick) {
             return;
         }
+        // one batch for every tick since the last frame (at most 20), so slow frames do not thin the shower out
+        long from = lastTick == Long.MIN_VALUE || tick < lastTick ? tick : lastTick + 1;
         lastTick = tick;
         STREAKS.removeIf(s -> tick - s.born() > s.life());
         if (!ShowerClientState.active(level.dimension())) {
             return;
         }
-        int n = 1 + RANDOM.nextInt(4);
-        for (int i = 0; i < n; i++) {
-            // a start point high in the sky, moving roughly downward at a slant
-            float az = RANDOM.nextFloat() * (float) Math.PI * 2;
-            float el = 0.25F + RANDOM.nextFloat() * 1.1F;
-            Vector3f from = new Vector3f((float) (Math.cos(el) * Math.cos(az)), (float) Math.sin(el), (float) (Math.cos(el) * Math.sin(az)));
-            float daz = az + (RANDOM.nextFloat() - 0.5F) * 1.2F;
-            Vector3f dir = new Vector3f((float) Math.cos(daz), -0.6F - RANDOM.nextFloat() * 0.8F, (float) Math.sin(daz)).normalize();
-            STREAKS.add(new Streak(from, dir, tick, 10 + RANDOM.nextInt(12), 0.12F + RANDOM.nextFloat() * 0.25F, 0.7F + RANDOM.nextFloat() * 0.3F));
+        for (long t = Math.max(from, tick - 20); t <= tick; t++) {
+            int n = 1 + RANDOM.nextInt(4);
+            for (int i = 0; i < n; i++) {
+                // a start point high in the sky, moving roughly downward at a slant
+                float az = RANDOM.nextFloat() * (float) Math.PI * 2;
+                float el = 0.25F + RANDOM.nextFloat() * 1.1F;
+                Vector3f start = new Vector3f((float) (Math.cos(el) * Math.cos(az)), (float) Math.sin(el), (float) (Math.cos(el) * Math.sin(az)));
+                float daz = az + (RANDOM.nextFloat() - 0.5F) * 1.2F;
+                Vector3f dir = new Vector3f((float) Math.cos(daz), -0.6F - RANDOM.nextFloat() * 0.8F, (float) Math.sin(daz)).normalize();
+                int life = 10 + RANDOM.nextInt(12);
+                if (tick - t <= life) {
+                    STREAKS.add(new Streak(start, dir, t, life, 0.12F + RANDOM.nextFloat() * 0.25F, 0.7F + RANDOM.nextFloat() * 0.3F));
+                }
+            }
         }
     }
 
