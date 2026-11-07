@@ -24,8 +24,13 @@ public final class Transit {
     public static final float ASCENT_LEAD_IN = 0.93F;
     /** Ticks at the end of a transfer over which the screen fades to black (one second). */
     public static final int TRANSFER_FADE_TICKS = 20;
-    /** Seconds over which the new dimension fades in. */
-    public static final float FADE_OUT_SECONDS = 1.0F;
+    /** Seconds over which the held last frame cross-fades into the new dimension. */
+    public static final float FADE_OUT_SECONDS = 0.3F;
+    /**
+     * How dark the view gets before the jump (0..1): only a slight dip. The screen never goes black; the last frame
+     * is held while the next dimension loads and then cross-fades into it.
+     */
+    public static final float MAX_DIP = 0.25F;
 
     private Transit() {
     }
