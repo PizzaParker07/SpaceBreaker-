@@ -31,13 +31,18 @@ Example: a 100-block room first needs 400 breath ticks (200 mB of oxygen gas), t
 {page}
 ## Base blocks
 {items spacebreaker:aluminum_panel spacebreaker:titanium_deck spacebreaker:pressure_glass spacebreaker:porthole spacebreaker:hazard_stripe spacebreaker:cable_duct}
-Build your base from {item spacebreaker:aluminum_panel}, {item spacebreaker:titanium_deck}, {item spacebreaker:pressure_glass} and {item spacebreaker:porthole}. **Full blocks, pressure glass and portholes hold air**; hazard stripes and duct covers are full blocks too.
+Build your base from {item spacebreaker:aluminum_panel}, {item spacebreaker:titanium_deck}, {item spacebreaker:pressure_glass} and {item spacebreaker:porthole}. **Full blocks, pressure glass and portholes hold air**; hazard stripes, duct covers and LED panels are full blocks too. A closed sliding door holds air as well.
+{recipe spacebreaker:rocketry/aluminum_panel}
 
->! The {item spacebreaker:grate}, grate platform, railing, steel ladder, floodlight and slabs let air through. Keep them out of the walls of a pressurised room.
+>! The {item spacebreaker:grate}, grate platform, railing, steel ladder, floodlight slabs and an open sliding door let air through. The distributor rescans the room regularly, so opening and closing a door updates it on its own. Keep them out of the walls of a pressurised room.
 
 {items spacebreaker:led_panel spacebreaker:floodlight spacebreaker:warning_light}
-Light it with {item spacebreaker:led_panel} and {item spacebreaker:floodlight}s; a {item spacebreaker:warning_light} with a turning beam marks the dangerous spots.
+Light it with {item spacebreaker:led_panel} and {item spacebreaker:floodlight}s; both give full light (15), and the floodlight turns to face the side it is placed on. The amber {item spacebreaker:warning_light} with its turning beam lights up from redstone or on its own: while a rocket within 32 blocks is fuelling, counting down, launching or docking.
+{recipe spacebreaker:rocketry/warning_light}
 
 ## Sliding doors and airlocks
 {items spacebreaker:sliding_door}
-Two {item spacebreaker:sliding_door}s facing each other up to **4 blocks** apart become an **airlock**: they never stand open together. Asking one to open shuts the other, plays the airlock cycle and opens it 40 ticks later. Hand and redstone follow the same rule.
+Two {item spacebreaker:sliding_door}s facing each other up to **4 blocks** apart become an **airlock**: they never stand open together. Asking one to open shuts the other, plays the airlock cycle and opens it 40 ticks later. Hand and redstone follow the same rule. The door is 2 blocks tall and its leaves slide sideways.
+
+> A typical setup: a small room 2–3 blocks long between the two doors.
+{recipe spacebreaker:rocketry/sliding_door}
