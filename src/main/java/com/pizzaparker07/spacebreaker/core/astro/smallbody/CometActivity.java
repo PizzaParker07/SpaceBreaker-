@@ -121,6 +121,34 @@ public final class CometActivity {
         return at(c, c.position(t));
     }
 
+    /**
+     * Heliocentric total magnitude of the coma (as if seen from 1 AU) from the water production, after Jorda et al.
+     * (2008): log₁₀ Q = 30.675 − 0.2453 m_H.
+     */
+    public static double comaHeliocentricMagnitude(double waterPerSecond) {
+        return (30.675 - Math.log10(Math.max(waterPerSecond, 1)) ) / 0.2453;
+    }
+
+    /** Absolute magnitude H of the bare nucleus, from its size and geometric albedo. */
+    public static double nucleusAbsoluteMagnitude(Comet c) {
+        return 5 * Math.log10(1329 / (2 * c.radiusKm() * Math.sqrt(c.geometricAlbedo())));
+    }
+
+    /**
+     * Apparent total magnitude seen from {@code observer} (both positions heliocentric, m): the brighter of the coma,
+     * m_H + 5 log Δ, and the bare nucleus, H + 5 log (r Δ) (phase effects ignored). About 6 or less is naked-eye.
+     */
+    public static double apparentMagnitude(Comet c, Vec3 comet, Vec3 observer) {
+        double r = comet.length() / AstroConstants.AU, delta = comet.sub(observer).length() / AstroConstants.AU;
+        double coma = comaHeliocentricMagnitude(waterProduction(c, r)) + 5 * Math.log10(delta);
+        double nucleus = nucleusAbsoluteMagnitude(c) + 5 * Math.log10(r * delta);
+        return Math.min(coma, nucleus);
+    }
+
+    public static boolean nakedEye(double magnitude) {
+        return magnitude <= 6.0;
+    }
+
     /** Water lost over one orbit, kg (integrated in mean anomaly). */
     public static double waterLossPerOrbit(Comet c) {
         int steps = 20000;

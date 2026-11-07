@@ -808,6 +808,21 @@ world exists: 67P, Encke and Halley have one (`spacebreaker:<id>`); Hale–Bopp 
 a coplanar Hohmann estimate means nothing at Halley's 162° inclination. `CometActivityTest` checks orbits, perihelion timing, production
 against Rosetta, Giotto and Encke values, mass loss per orbit, the coma and the tail.
 
+**Brightness.** `CometActivity.apparentMagnitude(comet, cometPos, observerPos)` is the brighter of two
+magnitudes:
+- the coma, m_H + 5 log Δ, where m_H comes from the water production through Jorda et al. (2008),
+  log₁₀ Q = 30.675 − 0.2453 m_H;
+- the bare nucleus, H + 5 log(rΔ), with H = 5 log₁₀(1329 km / (D √p)) and no phase effects.
+
+`nakedEye(m)` means m ≤ 6. Against real apparitions from Earth (`CometMagnitudeTest`):
+
+| Apparition | Model | Observed |
+|---|---|---|
+| Hale–Bopp at perihelion, 1997 | −0.7 | about −0.8 |
+| 67P at perihelion, 2015 | 11.3 | 11–12 |
+| Halley, March 1986 | 4.5 | 2.5–4 |
+| Halley in 2000, 25 AU | 28 | bare nucleus |
+
 ### Comet rendezvous (`Lambert`, `CometRendezvous`)
 `TransferPlanner.plan` treats every target as a coplanar circular orbit at its semi-major axis. That is
 meaningless for comets. Hale–Bopp would take 451 years, and Halley's retrograde motion is ignored.
