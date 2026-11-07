@@ -23,6 +23,10 @@ final class MachineLineupScenario implements ShowcaseScenario {
     static final int X0 = 0;
     static final int Z0 = 0;
     private int gy;
+    @SuppressWarnings("unchecked")
+    private static final java.util.function.Supplier<? extends Block>[] EXTRA = new java.util.function.Supplier[]{
+            MachinesModule.FLUID_TANK, MachinesModule.PRESSURIZED_TANK, MachinesModule.CRYOGENIC_TANK,
+            MachinesModule.SOLAR_PANEL, MachinesModule.SOLAR_ARRAY, MachinesModule.POWER_MONITOR};
 
     static List<MachineEntry<?, ?>> singles() {
         List<MachineEntry<?, ?>> out = new ArrayList<>();
@@ -62,10 +66,12 @@ final class MachineLineupScenario implements ShowcaseScenario {
             level.setBlock(p, s, Block.UPDATE_ALL);
         }
         // other industry blocks: tanks, solar trackers, the power monitor
-        Block[] extra = {MachinesModule.FLUID_TANK.get(), MachinesModule.PRESSURIZED_TANK.get(), MachinesModule.CRYOGENIC_TANK.get(),
-                MachinesModule.SOLAR_PANEL.get(), MachinesModule.SOLAR_ARRAY.get(), MachinesModule.POWER_MONITOR.get()};
-        for (int i = 0; i < extra.length; i++) {
-            level.setBlock(new BlockPos(X0 + i * 2, gy, Z0 - 12), extra[i].defaultBlockState(), Block.UPDATE_ALL);
+        for (int i = 0; i < EXTRA.length; i++) {
+            BlockState es = EXTRA[i].get().defaultBlockState();
+            if (es.hasProperty(net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING)) {
+                es = es.setValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH);
+            }
+            level.setBlock(new BlockPos(X0 + i * 2, gy, Z0 - 12), es, Block.UPDATE_ALL);
         }
         // hold the LIT (running) look for the photos: idle machines would switch it off on their first tick
         level.getServer().tickRateManager().setFrozen(true);
@@ -93,6 +99,12 @@ final class MachineLineupScenario implements ShowcaseScenario {
             int i = list.indexOf(e);
             double bx = X0 + (i % 6) * 2 + 0.5, bz = Z0 - (i / 6) * 3 + 0.5;
             s.add(new ShowcaseDriver.Shot("polish_" + e.block().getId().getPath(), 6000, bx + 1.25, gy + 1.35, bz + 1.65, 143F, 24F, true,
+                    CameraType.FIRST_PERSON, 40, null, null));
+        }
+        for (int i = 0; i < EXTRA.length; i++) {
+            double bx = X0 + i * 2 + 0.5, bz = Z0 - 12 + 0.5;
+            String id = net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(EXTRA[i].get()).getPath();
+            s.add(new ShowcaseDriver.Shot("polish_" + id, 6000, bx + 1.25, gy + 1.35, bz + 1.65, 143F, 24F, true,
                     CameraType.FIRST_PERSON, 40, null, null));
         }
         s.add(new ShowcaseDriver.Shot("lineup_blocks", 6000, X0 + 5.5, gy + 2.3, Z0 - 12 + 4.0, 180F, 18F, true,

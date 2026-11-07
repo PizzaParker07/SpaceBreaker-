@@ -3,6 +3,9 @@ excavator and ice melter. Each gets a readable silhouette (hopper, flywheel, buc
 while running (lit), animated textures or a glow. Runs after machines_industry / machines_isru and replaces their
 models for these six."""
 from sbmodels.common import *  # noqa: F401,F403
+import json
+import os
+
 from modules.machines_industry import box, casing_tex, GLOW_DATA, ROT, SIDES
 
 STEEL6 = 'steel'
@@ -139,6 +142,7 @@ def generate():
     battery_bank()
     group_one()
     group_two()
+    group_three()
 
 
 def battery_bank():
@@ -407,3 +411,60 @@ def group_two():
         box([-0.5, 9, 7.5], [1, 10.5, 9], 'pipe'),
         pnl,
     ], on_glow=[pglow, lit_glow([1, 2, 1.99], [15, 10, 1.99], 'north', 'glow', [1, 2, 15, 10])])
+
+
+def group_three():
+    """Tanks, solar trackers and the power monitor."""
+    from modules.machines import SOLAR_TEX, solar_base_elements, solar_head_elements, solar_array_head_elements
+
+    # tanks: shell on corner feet (TankRenderer draws the level window on the shell, 2..14 px high, so the shell keeps
+    # its 1..15 footprint), a flanged top ring and one nozzle stub per side; each kind has its own top fittings
+    def stubs():
+        out = []
+        for face, fr, to in (('north', [11, 3, 0], [14, 6, 1]), ('south', [2, 3, 15], [5, 6, 16]),
+                             ('east', [15, 3, 11], [16, 6, 14]), ('west', [0, 3, 2], [1, 6, 5])):
+            out.append(box(fr, to, 'pipe'))
+        return out
+
+    tops = {
+        'fluid_tank': [box([5, 16, 5], [11, 17, 11], STEEL6), box([7, 17, 7], [9, 17.5, 9], STEEL6),
+                       box([11.5, 16, 2.5], [13, 19, 4], 'pipe')],
+        'pressurized_tank': [box([3, 16, 3], [13, 17, 13], STEEL6), box([5, 17, 5], [11, 18, 11], STEEL6),
+                             box([7, 18, 7], [9, 20, 9], 'pipe'), box([6.5, 20, 6.5], [9.5, 20.5, 9.5], STEEL6)],
+        'cryogenic_tank': [box([5, 16, 5], [11, 17, 11], STEEL6), box([11, 16, 11], [13, 22, 13], STEEL6),
+                           box([10.5, 22, 10.5], [13.5, 22.5, 13.5], STEEL6), box([3, 16, 3], [4.5, 18, 4.5], 'pipe')],
+    }
+    for name, top in tops.items():
+        t = {'side': b(f'{name}_side'), 'top': b(f'{name}_top'), 'particle': b(f'{name}_side')} | PARTS | {'steel': b('press_steel')}
+        els = legs(0.5, 0.5, 15.5, 15.5) + [
+            box([1, 2, 1], [15, 15, 15], {'north': 'side', 'south': 'side', 'east': 'side', 'west': 'side', 'down': 'top'}),
+            box([0.5, 15, 0.5], [15.5, 16, 15.5], sides('steel', up='top', down='steel'), uv={'up': [0.5, 0.5, 15.5, 15.5]}),
+        ] + stubs() + top
+        model(name, t, els)
+        write(f'blockstates/{name}.json', {'variants': {'': {'model': b(name)}}})
+        write(f'models/item/{name}.json', {'parent': b(name)})
+
+    # solar trackers: anchor bolts on the base plate, a junction box and the power lead leaving the post
+    tex = SOLAR_TEX | {'cable': b('machine_cable'), 'box': b('press_steel')}
+    extra = [box([x, 2, z], [x + 1, 2.5, z + 1], 'steel') for x in (2.5, 12.5) for z in (2.5, 12.5)] + [
+        box([3, 2, 9], [6, 6, 12], 'box'), box([4, 6, 10], [5, 6.5, 11], 'steel'),
+        box([6, 2, 10], [7, 3, 11], 'cable'), box([7, 2, 10], [8, 4, 11], 'cable'),
+        box([4, 0, 12], [5, 2, 16], 'cable'),
+    ]
+    for name, head in (('solar_panel', solar_head_elements), ('solar_array', solar_array_head_elements)):
+        model(name + '_base', tex, solar_base_elements() + extra)
+        item = {'parent': 'minecraft:block/block', 'textures': tex, 'elements': solar_base_elements() + extra + head()}
+        with open(os.path.join(ASSETS, f'models/item/{name}.json'), encoding='utf-8') as fh:
+            item['display'] = json.load(fh)['display']
+        write(f'models/item/{name}.json', item)
+
+    # power monitor: the cabinet keeps its full front (PowerMonitorRenderer draws the figures on it), with a sun visor
+    # over the screen, two grab handles and a cable gland underneath
+    t = parts_tex(casing_tex('power_monitor_front'))
+    els = [
+        box([0, 0, 0], [16, 16, 16], sides('side', north='front', up='top', down='bottom')),
+        box([0, 14, -2], [16, 15, 0], STEEL6), box([0, 12, -2], [1, 14, -1], STEEL6), box([15, 12, -2], [16, 14, -1], STEEL6),
+        box([-1, 3, 3], [0, 4, 13], STEEL6), box([-1, 4, 3], [0, 10, 4], STEEL6), box([-1, 4, 12], [0, 10, 13], STEEL6),
+        box([16, 3, 3], [17, 4, 13], STEEL6), box([16, 4, 3], [17, 10, 4], STEEL6), box([16, 4, 12], [17, 10, 13], STEEL6),
+    ]
+    model('power_monitor', t, els)
