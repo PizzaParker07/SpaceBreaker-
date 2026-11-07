@@ -147,6 +147,23 @@ missions, station kit + docking port, hydrolox to Mercury.
   dispenser spawns them; they can drift out of the box (or one is lost) before the check. Suggest counting in
   `succeedWhen` over a few ticks, or counting spawned drones instead of drones still inside the bounding box.
 
+## Client playthrough (`-Pscenario=qa_playthrough`)
+`LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s "-screen 0 1920x1080x24" ./gradlew runShowcase -Pscenario=qa_playthrough`
+(`testmod/showcase/QaPlaythroughScenario.java`): survival bench (research lab with a disk waiting for prerequisites,
+combustion generator, press, fabricator, electrolyser, cryogenic liquefier, each GUI opened), then the rocketry scenes in
+flight order (pad, assembler, launch console, ignition, liftoff, ascent, Earth orbit, orbit HUD, star map, Moon descent,
+Moon landing), the EVA suit HUD on the Moon with two tanks, and a Turkish pass (rocket camera HUD, suit HUD).
+Compressed shots: `docs/screenshots/qa/` (22 images, vanilla renderer, 2026-11-07, 1.21.1 @ 6e9af27).
+
+Reviewed: no missing textures (purple/black), no untranslated keys, no invisible entities, Turkish HUD and key hints correct.
+- QA-12 (research, low): Research Lab status line is cut off — "Learn the prerequisit…" (`gui.spacebreaker.lab.status.9`,
+  `qa02_research_lab.jpg`). Shorter text ("Missing prerequisites" / "Ön koşul eksik") or a tooltip with the full line.
+- QA-13 (research, info): advancement "Welcome Home" (`safe_return`, a challenge under "One Small Step") is also granted by
+  criterion `b` = any change from `earth_orbit` to the Overworld, e.g. coming down from the very first orbital flight or with
+  the emergency beacon, before any Moon landing. If it should mean "back from the Moon", drop criterion `b` or require the
+  milestone only.
+- Suit HUD: two filled tanks show 10:00 of oxygen on the Moon. Not yet compared with real flight + EVA times (next round).
+
 ## Localization (round 1)
 - Key parity en_us/tr_tr is complete (1305 each), placeholders and colour codes match, no broken characters.
 - Turkish reads naturally overall. Small suggestions (research keeps docs/GLOSSARY.md):
@@ -440,10 +457,10 @@ None.
 | spacebreaker:io/orbit | round_trip | 9875 | 2-stage [hydrolox_engine, 3× fuel_tank_large / decoupler / hydrolox_vacuum_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 10292 m/s vacuum Δv |
 | spacebreaker:europa/surface | round_trip | 10310 | 3-stage [hydrolox_engine, 2× fuel_tank_large / decoupler / hydrolox_vacuum_engine, 2× fuel_tank_large / decoupler / hydrolox_vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 10479 m/s vacuum Δv |
 | spacebreaker:europa/orbit | round_trip | 9138 | 2-stage [hydrolox_engine, 3× fuel_tank_large / decoupler / hydrolox_vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 9408 m/s vacuum Δv |
-| spacebreaker:ganymede/surface | round_trip | 9924 | 2-stage [hydrolox_engine, 3× fuel_tank_large / decoupler / hydrolox_vacuum_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 10292 m/s vacuum Δv |
-| spacebreaker:ganymede/orbit | round_trip | 8327 | 2-stage [hydrolox_engine, 2× fuel_tank_large / decoupler / hydrolox_vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 8502 m/s vacuum Δv |
 | spacebreaker:callisto/surface | round_trip | 9304 | 2-stage [hydrolox_engine, 3× fuel_tank_large / decoupler / hydrolox_vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 9996 m/s vacuum Δv |
 | spacebreaker:callisto/orbit | round_trip | 7872 | 2-stage [hydrolox_engine, 2× fuel_tank_large / decoupler / hydrolox_vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 8502 m/s vacuum Δv |
+| spacebreaker:ganymede/surface | round_trip | 9924 | 2-stage [hydrolox_engine, 3× fuel_tank_large / decoupler / hydrolox_vacuum_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 10292 m/s vacuum Δv |
+| spacebreaker:ganymede/orbit | round_trip | 8327 | 2-stage [hydrolox_engine, 2× fuel_tank_large / decoupler / hydrolox_vacuum_engine, fuel_tank_large, heat_shield, crew_capsule], 8502 m/s vacuum Δv |
 | spacebreaker:saturn/orbit | round_trip | 9545 | 2-stage [hydrolox_engine, 3× fuel_tank_large / decoupler / hydrolox_vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 9996 m/s vacuum Δv |
 | spacebreaker:enceladus/surface | round_trip | 9735 | 2-stage [hydrolox_engine, 3× fuel_tank_large / decoupler / hydrolox_vacuum_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 10292 m/s vacuum Δv |
 | spacebreaker:enceladus/orbit | round_trip | 9604 | 2-stage [hydrolox_engine, 3× fuel_tank_large / decoupler / hydrolox_vacuum_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 9996 m/s vacuum Δv |
