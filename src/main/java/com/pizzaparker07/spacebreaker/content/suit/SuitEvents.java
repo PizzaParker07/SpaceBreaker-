@@ -66,6 +66,12 @@ public final class SuitEvents {
             }
             data.wasPressurised = pressurised;
         }
+        if (player.tickCount % 20 == 7 && SpaceSuitItem.wearsHelmet(player) && sp.connection != null
+                && sp.connection.hasChannel(com.pizzaparker07.spacebreaker.content.suit.net.NavPayload.TYPE)) {
+            var target = Navigation.find(sp.serverLevel(), player, data.navKind);
+            PacketDistributor.sendToPlayer(sp, new com.pizzaparker07.spacebreaker.content.suit.net.NavPayload(data.navKind.ordinal(),
+                    target.map(t -> t.kind().ordinal()).orElse(0), target.map(Navigation.Target::pos)));
+        }
         if (player.tickCount % 5 == 0) {
             sendStatus(sp, data);
         }
@@ -184,6 +190,19 @@ public final class SuitEvents {
             }
         }
         return worst;
+    }
+
+    @SubscribeEvent
+    static void onBlockBreak(net.neoforged.neoforge.event.level.BlockEvent.BreakEvent event) {
+        if (event.getPlayer() instanceof ServerPlayer sp && !event.isCanceled()) {
+            // after this block goes, the wide-bore drill takes its neighbours (scheduled so this break finishes first)
+            BlockPos pos = event.getPos().immutable();
+            var face = ElectricDrillItem.wideFace(sp, pos);
+            if (face != null) {
+                var state = event.getState();
+                sp.server.execute(() -> ElectricDrillItem.breakAround(sp, pos, state, face));
+            }
+        }
     }
 
     @SubscribeEvent

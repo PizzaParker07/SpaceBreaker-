@@ -147,23 +147,23 @@ final class SuitScenario implements ShowcaseScenario {
     public List<Shot> shots() {
         List<Shot> s = new ArrayList<>();
         CameraType fp = CameraType.FIRST_PERSON;
-        s.add(new Shot("suit_01_lineup", 5000, 0.5, G + 2.0, 7.0, 180F, 8F, true, fp, 140, null, null));
-        s.add(new Shot("suit_02_front_close", 5000, -4.5, G + 1.5, 2.6, 180F, 4F, true, fp, 40, null, null));
-        s.add(new Shot("suit_03_helmet_macro", 5000, -4.4, G + 1.75, 1.75, 175F, 8F, true, fp, 40, null, null));
-        s.add(new Shot("suit_04_three_quarter", 5000, -1.4, G + 1.5, 2.9, 190F, 6F, true, fp, 40, null, null));
-        s.add(new Shot("suit_05_back_plss", 5000, 3.0, G + 1.6, 2.7, 180F, 8F, true, fp, 40, null, null));
-        s.add(new Shot("suit_06_gold_visor_mmu", 5000, 5.0, G + 1.6, 2.6, 170F, 6F, true, fp, 40, null, null));
-        s.add(new Shot("suit_07_night_lamps", 17800, 0.5, G + 1.8, 5.0, 180F, 6F, true, fp, 80, null, null));
+        s.add(new Shot("suit_01_lineup", 5000, 0.5, G + 2.0, 7.0, 180F, 8F, true, fp, 140, null, SuitShots.CLEAR_TOASTS));
+        s.add(new Shot("suit_02_front_close", 5000, -4.5, G + 1.5, 2.6, 180F, 4F, true, fp, 40, null, SuitShots.CLEAR_TOASTS));
+        s.add(new Shot("suit_03_helmet_macro", 5000, -4.4, G + 1.75, 1.75, 175F, 8F, true, fp, 40, null, SuitShots.CLEAR_TOASTS));
+        s.add(new Shot("suit_04_three_quarter", 5000, -1.4, G + 1.5, 2.9, 190F, 6F, true, fp, 40, null, SuitShots.CLEAR_TOASTS));
+        s.add(new Shot("suit_05_back_plss", 5000, 3.0, G + 1.6, 2.7, 180F, 8F, true, fp, 40, null, SuitShots.CLEAR_TOASTS));
+        s.add(new Shot("suit_06_gold_visor_mmu", 5000, 5.0, G + 1.6, 2.6, 170F, 6F, true, fp, 40, null, SuitShots.CLEAR_TOASTS));
+        s.add(new Shot("suit_07_night_lamps", 17800, 0.5, G + 1.8, 5.0, 180F, 6F, true, fp, 80, null, SuitShots.CLEAR_TOASTS));
         s.add(new Shot("suit_08_player", 5200, 0.5, G + 1.62, 6.0, 0F, 0F, true, CameraType.THIRD_PERSON_FRONT, 40,
-                SuitScenario::suitUp, null));
+                SuitScenario::suitUp, SuitShots.CLEAR_TOASTS));
         s.add(new Shot("suit_09_player_back", 5200, 0.5, G + 1.62, 6.0, 0F, 0F, true, CameraType.THIRD_PERSON_BACK, 40,
-                SuitScenario::suitUp, null));
-        s.add(new Shot("suit_11_habitat", 6000, 11.0, G + 2.6, 15.5, 175F, 14F, true, fp, 80, null, null));
-        s.add(new Shot("suit_12_machines_close", 6000, 9.2, G + 1.8, 14.6, 170F, 30F, true, fp, 40, null, null));
-        s.add(new Shot("suit_13_airlock_open", 6000, 16.2, G + 2.0, 8.5, 90F, 10F, true, fp, 60, null, null));
+                SuitScenario::suitUp, SuitShots.CLEAR_TOASTS));
+        s.add(new Shot("suit_11_habitat", 6000, 11.0, G + 2.6, 15.5, 175F, 14F, true, fp, 80, null, SuitShots.CLEAR_TOASTS));
+        s.add(new Shot("suit_12_machines_close", 6000, 9.2, G + 1.8, 14.6, 170F, 30F, true, fp, 40, null, SuitShots.CLEAR_TOASTS));
+        s.add(new Shot("suit_13_airlock_open", 6000, 16.2, G + 2.0, 8.5, 90F, 10F, true, fp, 60, null, SuitShots.CLEAR_TOASTS));
         s.add(new Shot("suit_14_inventory", 6000, 0.5, G + 1.62, 7.0, 180F, 5F, false, fp, 30, SuitScenario::fillHotbar,
-                ShowcaseDriver::openCreativeTab));
-        s.add(new Shot("suit_10_hud", 6000, 0.5, G + 1.62, 7.0, 180F, 5F, false, fp, 60, SuitScenario::suitUp, null));
+                SuitShots.clearToastsThen(ShowcaseDriver::openCreativeTab)));
+        s.add(new Shot("suit_10_hud", 6000, 0.5, G + 1.62, 7.0, 180F, 5F, false, fp, 60, SuitScenario::suitUp, SuitShots.CLEAR_TOASTS));
         return s;
     }
 

@@ -203,4 +203,81 @@ public final class StationAirGameTests {
         helper.assertTrue(cap != null && cap.receiveEnergy(500, false) == 500, "any FE charger can fill it");
         helper.succeed();
     }
+
+    @GameTest(template = "empty")
+    public static void wideBoreDrillDigsThreeByThree(GameTestHelper helper) {
+        // smithing: template + drill + head keeps the charge and adds the wide bore
+        ItemStack drill = new ItemStack(SuitModule.ELECTRIC_DRILL.get());
+        com.pizzaparker07.spacebreaker.content.suit.ElectricDrillItem.setEnergy(drill, 5000);
+        var input = new net.minecraft.world.item.crafting.SmithingRecipeInput(new ItemStack(SuitModule.SUIT_UPGRADE_TEMPLATE.get()), drill,
+                new ItemStack(SuitModule.WIDE_BORE_HEAD.get()));
+        var recipe = helper.getLevel().getRecipeManager().getRecipeFor(net.minecraft.world.item.crafting.RecipeType.SMITHING, input, helper.getLevel());
+        helper.assertTrue(recipe.isPresent(), "the wide-bore smithing recipe matches");
+        ItemStack wide = recipe.get().value().assemble(input, helper.getLevel().registryAccess());
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.ElectricDrillItem.wideBore(wide), "the result has the wide bore");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.ElectricDrillItem.energy(wide) == 5000, "and keeps its charge");
+        // a 3 x 3 floor of stone; the centre has just been mined, looking down at it
+        for (int x = 1; x <= 3; x++) {
+            for (int z = 1; z <= 3; z++) {
+                helper.setBlock(x, 1, z, Blocks.STONE);
+            }
+        }
+        helper.setBlock(2, 1, 2, Blocks.AIR);
+        // a survival miner (the GameTest mock player is creative, which spends no charge)
+        net.minecraft.server.level.ServerPlayer sp = net.neoforged.neoforge.common.util.FakePlayerFactory.getMinecraft(helper.getLevel());
+        sp.gameMode.changeGameModeForPlayer(GameType.SURVIVAL);
+        helper.assertFalse(sp.isCreative(), "the miner is in survival");
+        sp.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, wide);
+        BlockPos centre = helper.absolutePos(new BlockPos(2, 1, 2));
+        com.pizzaparker07.spacebreaker.content.suit.ElectricDrillItem.breakAround(sp, centre, Blocks.STONE.defaultBlockState(), Direction.UP);
+        int left = 0;
+        for (int x = 1; x <= 3; x++) {
+            for (int z = 1; z <= 3; z++) {
+                if (!helper.getBlockState(new BlockPos(x, 1, z)).isAir()) {
+                    left++;
+                }
+            }
+        }
+        helper.assertTrue(left == 0, "the eight neighbours are dug too, " + left + " left");
+        int spent = 5000 - com.pizzaparker07.spacebreaker.content.suit.ElectricDrillItem.energy(sp.getMainHandItem());
+        helper.assertTrue(spent == 8 * com.pizzaparker07.spacebreaker.content.suit.ElectricDrillItem.FE_PER_BLOCK, "each block spends its own charge, spent " + spent);
+        sp.setShiftKeyDown(true);
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.ElectricDrillItem.wideFace(sp, centre) == null, "sneaking digs a single block");
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void wayHomeArrowAndOxygenCheck(GameTestHelper helper) {
+        // direction: looking south (yaw 0) at a target due south is straight ahead; due east is 90 degrees to the left
+        net.minecraft.world.phys.Vec3 o = net.minecraft.world.phys.Vec3.ZERO;
+        float ahead = com.pizzaparker07.spacebreaker.content.suit.Navigation.relativeYaw(o, 0F, new BlockPos(0, 0, 20));
+        float east = com.pizzaparker07.spacebreaker.content.suit.Navigation.relativeYaw(o, 0F, new BlockPos(20, 0, 0));
+        helper.assertTrue(Math.abs(ahead) < 3F, "straight ahead, got " + ahead);
+        helper.assertTrue(Math.abs(east + 90F) < 3F, "east is to the left when facing south, got " + east);
+        // oxygen: 300 blocks on the Moon take 100 s = 2000 ticks of walking
+        var ok = com.pizzaparker07.spacebreaker.content.suit.Navigation.status(300, 0.26, 6000);
+        var turn = com.pizzaparker07.spacebreaker.content.suit.Navigation.status(300, 0.26, 2500);
+        var crit = com.pizzaparker07.spacebreaker.content.suit.Navigation.status(300, 0.26, 1500);
+        helper.assertTrue(ok == com.pizzaparker07.spacebreaker.content.suit.Navigation.Status.OK, "plenty of oxygen: OK");
+        helper.assertTrue(turn == com.pizzaparker07.spacebreaker.content.suit.Navigation.Status.TURN_BACK, "within the margin: turn back");
+        helper.assertTrue(crit == com.pizzaparker07.spacebreaker.content.suit.Navigation.Status.CRITICAL, "not enough: critical");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.Navigation.walkTicks(30, 1e-5)
+                > com.pizzaparker07.spacebreaker.content.suit.Navigation.walkTicks(30, 0.26), "walking home on a comet is slower");
+        // targets: only the player's own beacon counts
+        Player p = helper.makeMockPlayer(GameType.SURVIVAL);
+        p.setPos(helper.absoluteVec(new net.minecraft.world.phys.Vec3(1, 1, 1)));
+        var beacons = com.pizzaparker07.spacebreaker.content.rocketry.station.LandingBeacons.get(helper.getLevel());
+        BlockPos mine = helper.absolutePos(new BlockPos(5, 1, 5));
+        BlockPos theirs = helper.absolutePos(new BlockPos(2, 1, 2));
+        beacons.add(mine);
+        beacons.setOwner(mine, p.getGameProfile().getName());
+        beacons.add(theirs);
+        beacons.setOwner(theirs, "someone_else");
+        var found = com.pizzaparker07.spacebreaker.content.suit.Navigation.find(helper.getLevel(), p,
+                com.pizzaparker07.spacebreaker.content.suit.Navigation.Kind.BEACON);
+        beacons.remove(mine);
+        beacons.remove(theirs);
+        helper.assertTrue(found.isPresent() && found.get().pos().equals(mine), "the arrow points at my own beacon, not the nearer one of another player");
+        helper.succeed();
+    }
 }

@@ -104,8 +104,79 @@ public class ElectricDrillItem extends DiggerItem {
         return slotChanged || oldStack.getItem() != newStack.getItem();
     }
 
+    public static boolean wideBore(ItemStack stack) {
+        return stack.getOrDefault(SuitModule.WIDE_BORE.get(), false);
+    }
+
+    /**
+     * The other eight blocks of the 3 x 3 square around {@code centre}, in the plane facing {@code face} (the side
+     * of the block the miner looks at).
+     */
+    public static List<BlockPos> ring(BlockPos centre, net.minecraft.core.Direction face) {
+        List<BlockPos> out = new java.util.ArrayList<>(8);
+        for (int a = -1; a <= 1; a++) {
+            for (int b = -1; b <= 1; b++) {
+                if (a == 0 && b == 0) {
+                    continue;
+                }
+                out.add(switch (face.getAxis()) {
+                    case X -> centre.offset(0, a, b);
+                    case Y -> centre.offset(a, 0, b);
+                    case Z -> centre.offset(a, b, 0);
+                });
+            }
+        }
+        return out;
+    }
+
+    private static boolean widening;
+
+    /**
+     * Server: a wide-bore drill (not sneaking) breaks the eight neighbours of a mined block too, each as a normal
+     * player break (drops, protection, events) spending its own charge, while charge lasts. Only blocks the drill
+     * can mine and that are no harder than the one mined are taken.
+     */
+    /** The face of {@code centre} the player is looking at, or null when a wide-bore break does not apply. */
+    public static net.minecraft.core.Direction wideFace(Player player, BlockPos centre) {
+        ItemStack drill = player.getMainHandItem();
+        if (widening || !(drill.getItem() instanceof ElectricDrillItem) || !wideBore(drill) || player.isShiftKeyDown()) {
+            return null;
+        }
+        var hit = player.pick(player.blockInteractionRange(), 1F, false);
+        return hit instanceof net.minecraft.world.phys.BlockHitResult bhr && bhr.getBlockPos().equals(centre) ? bhr.getDirection() : null;
+    }
+
+    public static void breakAround(net.minecraft.server.level.ServerPlayer player, BlockPos centre, BlockState centreState,
+                                   net.minecraft.core.Direction face) {
+        ItemStack drill = player.getMainHandItem();
+        if (widening || !(drill.getItem() instanceof ElectricDrillItem) || !wideBore(drill)) {
+            return;
+        }
+        Level level = player.level();
+        float hardness = centreState.getDestroySpeed(level, centre);
+        widening = true;
+        try {
+            for (BlockPos p : ring(centre, face)) {
+                if (!charged(drill)) {
+                    break;
+                }
+                BlockState s = level.getBlockState(p);
+                float h = s.getDestroySpeed(level, p);
+                if (s.isAir() || !s.is(MINEABLE) || h < 0 || h > hardness + 1.5F) {
+                    continue;
+                }
+                player.gameMode.destroyBlock(p);
+            }
+        } finally {
+            widening = false;
+        }
+    }
+
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext ctx, List<Component> tooltip, TooltipFlag flag) {
+        if (wideBore(stack)) {
+            tooltip.add(Component.translatable("tooltip.spacebreaker.electric_drill.wide").withStyle(ChatFormatting.GOLD));
+        }
         tooltip.add(Component.translatable("tooltip.spacebreaker.electric_drill.energy", energy(stack), CAPACITY)
                 .withStyle(charged(stack) ? ChatFormatting.AQUA : ChatFormatting.RED));
         tooltip.add(Component.translatable("tooltip.spacebreaker.electric_drill").withStyle(ChatFormatting.GRAY));

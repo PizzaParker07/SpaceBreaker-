@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:smithing_transform",
+  "template": {
+    "item": "spacebreaker:suit_upgrade_template"
+  },
+  "base": {
+    "item": "spacebreaker:electric_drill"
+  },
+  "addition": {
+    "item": "spacebreaker:wide_bore_drill_head"
+  },
+  "result": {
+    "id": "spacebreaker:electric_drill",
+    "count": 1,
+    "components": {
+      "spacebreaker:wide_bore": true
+    }
+  }
+}

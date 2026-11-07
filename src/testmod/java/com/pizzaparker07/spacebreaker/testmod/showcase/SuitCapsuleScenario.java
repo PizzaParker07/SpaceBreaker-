@@ -49,10 +49,10 @@ final class SuitCapsuleScenario implements ShowcaseScenario {
         return List.of(
                 // the first boarding shows the rocket's chase camera; the cockpit view follows on the next shots
                 new Shot("capsule_00_boarding", 6000, 0.5, RocketEntity.ORBIT_Y + 1, 0.5, 30F, 20F, true, fp, 120,
-                        p -> seated(p, false), null),
+                        p -> seated(p, false), SuitShots.CLEAR_TOASTS),
                 new Shot("capsule_01_helmet_off", 6000, 0.5, RocketEntity.ORBIT_Y + 1, 0.5, 30F, 20F, false, fp, 120,
-                        p -> seated(p, false), null),
+                        p -> seated(p, false), SuitShots.CLEAR_TOASTS),
                 new Shot("capsule_02_hud_pressurised", 6000, 0.5, RocketEntity.ORBIT_Y + 1, 0.5, 30F, 20F, false, fp, 160,
-                        p -> seated(p, true), null));
+                        p -> seated(p, true), SuitShots.CLEAR_TOASTS));
     }
 }
