@@ -199,33 +199,33 @@ final class SuitEvaScenario implements ShowcaseScenario {
         CameraType fp = CameraType.FIRST_PERSON;
         CameraType back = CameraType.THIRD_PERSON_BACK;
         CameraType front = CameraType.THIRD_PERSON_FRONT;
-        s.add(new Shot(prefix + "_01_tiers_day", 0, 0.0, g + 2.0, 7.0, 180F, 9F, true, fp, 200, at(false, null), null));
-        s.add(new Shot(prefix + "_02_close_mk1_thermal", 0, -3.0, g + 1.75, 3.0, 180F, 5F, true, fp, 40, at(false, null), null));
-        s.add(new Shot(prefix + "_03_close_heated_radiation", 0, 3.0, g + 1.75, 3.0, 180F, 5F, true, fp, 40, at(false, null), null));
-        s.add(new Shot(prefix + "_04_tiers_back", 0, 0.0, g + 2.0, -5.5, 0F, 9F, true, fp, 40, at(false, null), null));
-        s.add(new Shot(prefix + "_05_tiers_night", 0, 0.0, g + 2.0, 7.0, 180F, 9F, true, fp, 60, at(true, null), null));
-        s.add(new Shot(prefix + "_06_lamps_pool", 0, 0.5, g + 1.62, 9.5, 180F, 35F, true, fp, 60, at(true, SuitEvaScenario::astronaut), null));
-        s.add(new Shot(prefix + "_07_lamps_front", 0, 0.5, g + 1.62, 4.5, 0F, 5F, true, front, 40, at(true, SuitEvaScenario::astronaut), null));
-        s.add(new Shot(prefix + "_08_tether", 0, -2.5, g + 1.62, 3.5, 0F, 8F, true, front, 60, at(false, this::tethered), null));
-        s.add(new Shot(prefix + "_09_mmu", 0, -1.5, g + 4.0, 8.0, 150F, 10F, true, back, 40, at(false, SuitEvaScenario::thrusting), null));
-        s.add(new Shot(prefix + "_10_hud", 0, 1.5, g + 1.62, 9.5, 220F, 12F, false, fp, 40, at(false, this::tethered), null));
+        s.add(new Shot(prefix + "_01_tiers_day", 0, 0.0, g + 2.0, 7.0, 180F, 9F, true, fp, 200, at(false, null), SuitShots.CLEAR_TOASTS));
+        s.add(new Shot(prefix + "_02_close_mk1_thermal", 0, -3.0, g + 1.75, 3.0, 180F, 5F, true, fp, 40, at(false, null), SuitShots.CLEAR_TOASTS));
+        s.add(new Shot(prefix + "_03_close_heated_radiation", 0, 3.0, g + 1.75, 3.0, 180F, 5F, true, fp, 40, at(false, null), SuitShots.CLEAR_TOASTS));
+        s.add(new Shot(prefix + "_04_tiers_back", 0, 0.0, g + 2.0, -5.5, 0F, 9F, true, fp, 40, at(false, null), SuitShots.CLEAR_TOASTS));
+        s.add(new Shot(prefix + "_05_tiers_night", 0, 0.0, g + 2.0, 7.0, 180F, 9F, true, fp, 60, at(true, null), SuitShots.CLEAR_TOASTS));
+        s.add(new Shot(prefix + "_06_lamps_pool", 0, 0.5, g + 1.62, 9.5, 180F, 35F, true, fp, 60, at(true, SuitEvaScenario::astronaut), SuitShots.CLEAR_TOASTS));
+        s.add(new Shot(prefix + "_07_lamps_front", 0, 0.5, g + 1.62, 4.5, 0F, 5F, true, front, 40, at(true, SuitEvaScenario::astronaut), SuitShots.CLEAR_TOASTS));
+        s.add(new Shot(prefix + "_08_tether", 0, -2.5, g + 1.62, 3.5, 0F, 8F, true, front, 60, at(false, this::tethered), SuitShots.CLEAR_TOASTS));
+        s.add(new Shot(prefix + "_09_mmu", 0, -1.5, g + 4.0, 8.0, 150F, 10F, true, back, 40, at(false, SuitEvaScenario::thrusting), SuitShots.CLEAR_TOASTS));
+        s.add(new Shot(prefix + "_10_hud", 0, 1.5, g + 1.62, 9.5, 220F, 12F, false, fp, 40, at(false, this::tethered), SuitShots.CLEAR_TOASTS));
         // lamp glow cones from the side (they point the way the helmets face, +z), close to the Mk1 stand
-        s.add(new Shot(prefix + "_11_lamp_cones", 0, -6.8, g + 1.85, 1.6, -100F, 6F, true, fp, 60, at(true, null), null));
+        s.add(new Shot(prefix + "_11_lamp_cones", 0, -6.8, g + 1.85, 1.6, -100F, 6F, true, fp, 60, at(true, null), SuitShots.CLEAR_TOASTS));
         // first person in the cold beyond the suit's rating (Titan's dense air with a Mk1 suit): rime on the visor
-        s.add(new Shot(prefix + "_12_visor_frost", 0, 0.5, g + 1.62, 8.0, 180F, 8F, false, fp, 260, at(false, SuitEvaScenario::astronaut), null));
+        s.add(new Shot(prefix + "_12_visor_frost", 0, 0.5, g + 1.62, 8.0, 180F, 8F, false, fp, 260, at(false, SuitEvaScenario::astronaut), SuitShots.CLEAR_TOASTS));
         // the same view as shot 06 with the lamps on long beam: a narrow pool far ahead
         s.add(new Shot(prefix + "_13_long_beam", 0, 0.5, g + 1.62, 9.5, 180F, 12F, true, fp, 60, at(true, p -> {
             astronaut(p);
             p.getItemBySlot(EquipmentSlot.HEAD).set(SuitModule.LONG_BEAM.get(), true);
-        }), null));
-        s.add(new Shot(prefix + "_14_wide_beam", 0, 0.5, g + 1.62, 9.5, 180F, 12F, true, fp, 60, at(true, SuitEvaScenario::astronaut), null));
-        s.add(new Shot(prefix + "_15_suit_station", 0, -6.0, g + 1.9, 7.0, 160F, 22F, true, fp, 40, at(false, null), null));
+        }), SuitShots.CLEAR_TOASTS));
+        s.add(new Shot(prefix + "_14_wide_beam", 0, 0.5, g + 1.62, 9.5, 180F, 12F, true, fp, 60, at(true, SuitEvaScenario::astronaut), SuitShots.CLEAR_TOASTS));
+        s.add(new Shot(prefix + "_15_suit_station", 0, -6.0, g + 1.9, 7.0, 160F, 22F, true, fp, 40, at(false, null), SuitShots.CLEAR_TOASTS));
         s.add(new Shot(prefix + "_16_sensor", 0, 0.5, g + 1.62, 8.5, 180F, 10F, false, fp, 60, at(false, p -> {
             astronaut(p);
             p.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(SuitModule.ENVIRONMENT_SENSOR.get()));
             net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(p,
                     com.pizzaparker07.spacebreaker.content.suit.EnvironmentSensorItem.read(p.serverLevel(), p.blockPosition()));
-        }), null));
+        }), SuitShots.CLEAR_TOASTS));
         // the prospecting kit in the hotbar, the charged drill in hand
         s.add(new Shot(prefix + "_17_tools", 0, 0.5, g + 1.62, 8.5, 180F, 25F, false, fp, 60, at(false, p -> {
             astronaut(p);
@@ -238,7 +238,7 @@ final class SuitEvaScenario implements ShowcaseScenario {
                 p.getInventory().setItem(slot++, new ItemStack(tool.get()));
             }
             p.getInventory().selected = 0;
-        }), null));
+        }), SuitShots.CLEAR_TOASTS));
         // the wide-bore drill has dug a 3 x 3 pit (and one more square beside it) in front of the player
         s.add(new Shot(prefix + "_18_wide_bore", 0, 0.5, g + 1.62, 9.0, 180F, 40F, false, fp, 60, at(false, p -> {
             astronaut(p);
@@ -252,18 +252,18 @@ final class SuitEvaScenario implements ShowcaseScenario {
                 com.pizzaparker07.spacebreaker.content.suit.ElectricDrillItem.breakAround(p, centre,
                         net.minecraft.world.level.block.Blocks.STONE.defaultBlockState(), net.minecraft.core.Direction.UP);
             }
-        }), null));
+        }), SuitShots.CLEAR_TOASTS));
         // way home: the player's own landing beacon a long walk away (behind and to the right); then low on oxygen
         s.add(new Shot(prefix + "_19_way_home", 0, 0.5, g + 1.62, 8.5, 180F, 10F, false, fp, 60,
-                at(false, p -> beaconBehind(p, g, 0)), null));
+                at(false, p -> beaconBehind(p, g, 0)), SuitShots.CLEAR_TOASTS));
         s.add(new Shot(prefix + "_19b_turn_back", 0, 0.5, g + 1.62, 8.5, 180F, 10F, false, fp, 60,
-                at(false, p -> beaconBehind(p, g, 1)), null));
+                at(false, p -> beaconBehind(p, g, 1)), SuitShots.CLEAR_TOASTS));
         if (comet) {
             s.add(new Shot(prefix + "_20_tethered_eva", 0, -2.5, g + 1.62, 3.5, 0F, 8F, true, CameraType.THIRD_PERSON_FRONT, 80,
-                    at(false, this::tethered), null));
-            s.add(new Shot(prefix + "_21_micro_g_hud", 0, 0.5, g + 1.62, 8.5, 180F, 12F, false, fp, 60, at(false, SuitEvaScenario::freshArrival), null));
-            s.add(new Shot(prefix + "_22_heated_night_hud", 0, 0.5, g + 1.62, 8.5, 180F, 12F, false, fp, 260, at(true, SuitEvaScenario::heated), null));
-            s.add(new Shot(prefix + "_23_mk1_night_frost", 0, 0.5, g + 1.62, 8.5, 180F, 12F, false, fp, 260, at(true, SuitEvaScenario::astronaut), null));
+                    at(false, this::tethered), SuitShots.CLEAR_TOASTS));
+            s.add(new Shot(prefix + "_21_micro_g_hud", 0, 0.5, g + 1.62, 8.5, 180F, 12F, false, fp, 60, at(false, SuitEvaScenario::freshArrival), SuitShots.CLEAR_TOASTS));
+            s.add(new Shot(prefix + "_22_heated_night_hud", 0, 0.5, g + 1.62, 8.5, 180F, 12F, false, fp, 260, at(true, SuitEvaScenario::heated), SuitShots.CLEAR_TOASTS));
+            s.add(new Shot(prefix + "_23_mk1_night_frost", 0, 0.5, g + 1.62, 8.5, 180F, 12F, false, fp, 260, at(true, SuitEvaScenario::astronaut), SuitShots.CLEAR_TOASTS));
         }
         return s;
     }

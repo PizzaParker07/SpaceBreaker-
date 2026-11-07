@@ -988,7 +988,7 @@
   "hud.spacebreaker.warn.radiation": "HIGH RADIATION",
   "hud.spacebreaker.warn.rating": "BEYOND SUIT RATING",
   "hud.spacebreaker.warn.strain": "%s BAR: SUIT UNDER STRAIN",
-  "hud.spacebreaker.warn.turn_back": "TURN BACK: O2 FOR THE WAY HOME",
+  "hud.spacebreaker.warn.turn_back": "TURN BACK: O2 RUNNING LOW FOR THE WAY HOME",
   "hud.spacebreaker.warn.unsealed": "SUIT NOT SEALED",
   "item.spacebreaker.ablative_shield_plate": "Ablative Shield Plate",
   "item.spacebreaker.acid_coating": "Fluoropolymer Coating",

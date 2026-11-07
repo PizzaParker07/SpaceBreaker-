@@ -39,6 +39,8 @@ public final class HelmetHud {
     private static final int TEXT = 0x9FE3EA;
     private static final int WARN = 0xFFB040;
     private static final int ALARM = 0xFF5A4A;
+    /** Caution yellow: the warning that still leaves time to act (turn back now). */
+    private static final int CAUTION = 0xFFD24A;
 
     private HelmetHud() {
     }
@@ -267,6 +269,7 @@ public final class HelmetHud {
 
         // warnings: centred above the hotbar, like vanilla's action bar
         Component warning = null;
+        int warningColor = ALARM;
         if (!breathable && !sealed) {
             warning = Component.translatable("hud.spacebreaker.warn.unsealed");
         } else if (!breathable && s.oxygen() == 0) {
@@ -275,6 +278,7 @@ public final class HelmetHud {
             warning = Component.translatable("hud.spacebreaker.warn.cant_make_it");
         } else if (!breathable && navStatus == com.pizzaparker07.spacebreaker.content.suit.Navigation.Status.TURN_BACK) {
             warning = Component.translatable("hud.spacebreaker.warn.turn_back");
+            warningColor = CAUTION;
         } else if (!breathable && o2 < 0.15F) {
             warning = Component.translatable("hud.spacebreaker.warn.low_oxygen");
         } else if (beyond) {
@@ -297,7 +301,7 @@ public final class HelmetHud {
             int ww = font.width(warning);
             int wx = (g.guiWidth() - ww) / 2;
             int wy = g.guiHeight() - 59 - (player.isCreative() ? 0 : 10);
-            g.drawString(font, warning, wx, wy, argb(ALARM, alpha), true);
+            g.drawString(font, warning, wx, wy, argb(warningColor, alpha), true);
         }
     }
 

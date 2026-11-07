@@ -84,13 +84,13 @@ final class SuitTiersScenario implements ShowcaseScenario {
     public List<Shot> shots() {
         List<Shot> s = new ArrayList<>();
         CameraType fp = CameraType.FIRST_PERSON;
-        s.add(new Shot("tiers_01_front", 5000, 0.0, G + 2.2, 6.5, 180F, 10F, true, fp, 140, null, null));
-        s.add(new Shot("tiers_02_back", 5000, 0.0, G + 2.2, -10.0, 0F, 10F, true, fp, 60, null, null));
-        s.add(new Shot("tiers_03_thermal_heated", 5000, 0.0, G + 1.7, 3.6, 180F, 6F, true, fp, 40, null, null));
-        s.add(new Shot("tiers_04_radiation_close", 5000, 3.0, G + 1.7, 2.9, 180F, 6F, true, fp, 40, null, null));
-        s.add(new Shot("tiers_05_three_quarter", 5000, 5.5, G + 2.0, 4.5, 140F, 12F, true, fp, 40, null, null));
-        s.add(new Shot("tiers_06_dyed", 5000, -6.0, G + 1.8, 8.5, 185F, 8F, true, fp, 40, null, null));
-        s.add(new Shot("tiers_07_inventory", 5000, 0.0, G + 1.62, 7.0, 180F, 5F, false, fp, 30, null, ShowcaseDriver::openCreativeTab));
+        s.add(new Shot("tiers_01_front", 5000, 0.0, G + 2.2, 6.5, 180F, 10F, true, fp, 140, null, SuitShots.CLEAR_TOASTS));
+        s.add(new Shot("tiers_02_back", 5000, 0.0, G + 2.2, -10.0, 0F, 10F, true, fp, 60, null, SuitShots.CLEAR_TOASTS));
+        s.add(new Shot("tiers_03_thermal_heated", 5000, 0.0, G + 1.7, 3.6, 180F, 6F, true, fp, 40, null, SuitShots.CLEAR_TOASTS));
+        s.add(new Shot("tiers_04_radiation_close", 5000, 3.0, G + 1.7, 2.9, 180F, 6F, true, fp, 40, null, SuitShots.CLEAR_TOASTS));
+        s.add(new Shot("tiers_05_three_quarter", 5000, 5.5, G + 2.0, 4.5, 140F, 12F, true, fp, 40, null, SuitShots.CLEAR_TOASTS));
+        s.add(new Shot("tiers_06_dyed", 5000, -6.0, G + 1.8, 8.5, 185F, 8F, true, fp, 40, null, SuitShots.CLEAR_TOASTS));
+        s.add(new Shot("tiers_07_inventory", 5000, 0.0, G + 1.62, 7.0, 180F, 5F, false, fp, 30, null, SuitShots.clearToastsThen(ShowcaseDriver::openCreativeTab)));
         return s;
     }
 }

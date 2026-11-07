@@ -349,7 +349,7 @@ public final class SuitModule implements SbModule {
         lang.add("hud.spacebreaker.nav.rocket", "ROCKET", "ROKET");
         lang.add("hud.spacebreaker.nav.beacon", "BEACON", "İŞARET");
         lang.add("hud.spacebreaker.nav.base", "BASE", "ÜS");
-        lang.add("hud.spacebreaker.warn.turn_back", "TURN BACK: O2 FOR THE WAY HOME", "DÖN: DÖNÜŞ İÇİN O2 AZALIYOR");
+        lang.add("hud.spacebreaker.warn.turn_back", "TURN BACK: O2 RUNNING LOW FOR THE WAY HOME", "DÖN: DÖNÜŞ İÇİN O2 AZALIYOR");
         lang.add("hud.spacebreaker.warn.cant_make_it", "NOT ENOUGH O2 TO GET BACK", "GERİ DÖNMEYE O2 YETMİYOR");
         lang.add("sensor.spacebreaker.title", "Environment reading", "Çevre ölçümü");
         lang.add("sensor.spacebreaker.title_at", "Environment reading: %s", "Çevre ölçümü: %s");

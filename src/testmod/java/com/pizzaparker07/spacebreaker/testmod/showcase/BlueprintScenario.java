@@ -80,13 +80,13 @@ final class BlueprintScenario implements ShowcaseScenario {
     public List<Shot> shots() {
         List<Shot> s = new ArrayList<>();
         CameraType fp = CameraType.FIRST_PERSON;
-        s.add(new Shot("blueprint_01_launch_site", 6000, 0.5, G + 4.5, 9.5, 180F, 22F, false, fp, 160, projecting("launch_site", LAUNCH, -1), null));
-        s.add(new Shot("blueprint_02_close", 6000, -3.5, G + 3.0, 5.5, 215F, 18F, false, fp, 60, projecting("launch_site", LAUNCH, -1), null));
-        s.add(new Shot("blueprint_03_layer_mode", 6000, 0.5, G + 4.5, 9.5, 180F, 22F, false, fp, 60, projecting("launch_site", LAUNCH, 4), null));
-        s.add(new Shot("blueprint_04_habitat", 6000, 10.5, G + 3.5, 7.5, 180F, 20F, false, fp, 60, projecting("pressurised_habitat", HABITAT, -1), null));
-        s.add(new Shot("blueprint_05_hidden_gui", 6000, -3.5, G + 3.0, 5.5, 215F, 18F, true, fp, 40, projecting("launch_site", LAUNCH, -1), null));
+        s.add(new Shot("blueprint_01_launch_site", 6000, 0.5, G + 4.5, 9.5, 180F, 22F, false, fp, 160, projecting("launch_site", LAUNCH, -1), SuitShots.CLEAR_TOASTS));
+        s.add(new Shot("blueprint_02_close", 6000, -3.5, G + 3.0, 5.5, 215F, 18F, false, fp, 60, projecting("launch_site", LAUNCH, -1), SuitShots.CLEAR_TOASTS));
+        s.add(new Shot("blueprint_03_layer_mode", 6000, 0.5, G + 4.5, 9.5, 180F, 22F, false, fp, 60, projecting("launch_site", LAUNCH, 4), SuitShots.CLEAR_TOASTS));
+        s.add(new Shot("blueprint_04_habitat", 6000, 10.5, G + 3.5, 7.5, 180F, 20F, false, fp, 60, projecting("pressurised_habitat", HABITAT, -1), SuitShots.CLEAR_TOASTS));
+        s.add(new Shot("blueprint_05_hidden_gui", 6000, -3.5, G + 3.0, 5.5, 215F, 18F, true, fp, 40, projecting("launch_site", LAUNCH, -1), SuitShots.CLEAR_TOASTS));
         s.add(new Shot("blueprint_06_select", 6000, 0.5, G + 4.5, 9.5, 180F, 22F, false, fp, 30, projecting("launch_site", LAUNCH, -1),
-                () -> Minecraft.getInstance().setScreen(new BlueprintScreen())));
+                SuitShots.clearToastsThen(() -> Minecraft.getInstance().setScreen(new BlueprintScreen()))));
         return s;
     }
 }

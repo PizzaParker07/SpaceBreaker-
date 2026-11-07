@@ -109,12 +109,12 @@ final class SuitMoonScenario implements ShowcaseScenario {
         double gy = ground(0.5, 0.5);
         List<Shot> s = new ArrayList<>();
         CameraType fp = CameraType.FIRST_PERSON;
-        s.add(new Shot("suit_moon_01_day", 0, 0.0, gy + 1.9, 6.0, 180F, 8F, true, fp, 200, at(0.2, null), null));
-        s.add(new Shot("suit_moon_02_night_lamps", 0, 0.0, gy + 1.9, 5.0, 180F, 8F, true, fp, 80, at(0.75, null), null));
-        s.add(new Shot("suit_moon_03_hud_vacuum", 0, 0.5, gy + 1.62, 6.5, 180F, 6F, false, fp, 60, at(0.2, SuitMoonScenario::suited), null));
-        s.add(new Shot("suit_moon_04_hud_warning", 0, 0.5, gy + 1.62, 6.5, 180F, 6F, false, fp, 60, at(0.2, SuitMoonScenario::incomplete), null));
+        s.add(new Shot("suit_moon_01_day", 0, 0.0, gy + 1.9, 6.0, 180F, 8F, true, fp, 200, at(0.2, null), SuitShots.CLEAR_TOASTS));
+        s.add(new Shot("suit_moon_02_night_lamps", 0, 0.0, gy + 1.9, 5.0, 180F, 8F, true, fp, 80, at(0.75, null), SuitShots.CLEAR_TOASTS));
+        s.add(new Shot("suit_moon_03_hud_vacuum", 0, 0.5, gy + 1.62, 6.5, 180F, 6F, false, fp, 60, at(0.2, SuitMoonScenario::suited), SuitShots.CLEAR_TOASTS));
+        s.add(new Shot("suit_moon_04_hud_warning", 0, 0.5, gy + 1.62, 6.5, 180F, 6F, false, fp, 60, at(0.2, SuitMoonScenario::incomplete), SuitShots.CLEAR_TOASTS));
         s.add(new Shot("suit_moon_05_player", 0, 0.5, gy + 1.62, 6.5, 180F, 0F, true, CameraType.THIRD_PERSON_FRONT, 60,
-                at(0.2, SuitMoonScenario::suited), null));
+                at(0.2, SuitMoonScenario::suited), SuitShots.CLEAR_TOASTS));
         return s;
     }
 }
