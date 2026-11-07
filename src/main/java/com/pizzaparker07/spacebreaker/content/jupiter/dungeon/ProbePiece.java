@@ -147,8 +147,8 @@ public class ProbePiece extends StructurePiece {
             placeBlock(level, stained, SHAFT_X, y, SHAFT_Z + 2, box);
         }
         // instrument racks by the cave wall
-        createChest(level, box, RandomSource.create(seed + 1), 15, CAVE + 1, 8, INSTRUMENTS);
-        createChest(level, box, RandomSource.create(seed + 2), 15, CAVE + 1, 12, SAMPLES);
+        com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.place(level, this, 15, CAVE + 1, 8, Direction.WEST, INSTRUMENTS, seed + 1, box);
+        com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.place(level, this, 15, CAVE + 1, 12, Direction.WEST, SAMPLES, seed + 2, box);
         placeBlock(level, s(Blocks.IRON_BLOCK), 15, CAVE + 1, 10, box);
         placeBlock(level, s(Blocks.DAYLIGHT_DETECTOR), 15, CAVE + 2, 10, box);
         placeBlock(level, s(Blocks.BREWING_STAND), 14, CAVE + 1, 10, box);
