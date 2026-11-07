@@ -291,6 +291,57 @@ public final class RoverTests {
         h.succeed();
     }
 
+    /**
+     * Two riders: the driver in front, the passenger behind, both on their seats, and the deck solar panel well behind
+     * the passenger's head (it used to stand over the rear seat). Getting off puts each rider beside the rover.
+     */
+    @GameTest(template = "empty", timeoutTicks = 60)
+    public static void twoRidersSitClearOfThePanel(GameTestHelper h) {
+        floor(h, Blocks.STONE.defaultBlockState());
+        RoverEntity rover = spawn(h, new BlockPos(2, 1, 2));
+        rover.installSolar();
+        net.minecraft.world.entity.player.Player driver = h.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        net.minecraft.world.entity.player.Player passenger = h.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        h.assertTrue(driver.startRiding(rover, true) && passenger.startRiding(rover, true), "both get on");
+        h.assertTrue(!h.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL).startRiding(rover), "a third does not fit");
+        h.runAfterDelay(2, () -> {
+            h.assertTrue(rover.getControllingPassenger() == driver, "the first rider drives");
+            // rover yaw 0 faces +z: the driver sits ahead of the centre, the passenger behind it
+            double dz = driver.getZ() - rover.getZ();
+            double pz = passenger.getZ() - rover.getZ();
+            h.assertTrue(dz > 0.1 && pz < -0.3, "driver ahead, passenger behind: " + dz + " / " + pz);
+            // the panel starts 15 px behind the centre: the passenger's head (4 px either side) stays clear of it
+            double panelFront = -15 / 16.0;
+            h.assertTrue(pz - 0.25 > panelFront, "passenger's head clear of the panel: " + (pz - 0.25) + " vs " + panelFront);
+            driver.stopRiding();
+            passenger.stopRiding();
+            h.assertTrue(!driver.isPassenger() && !passenger.isPassenger(), "both get off");
+            h.assertTrue(!h.getLevel().getBlockState(driver.blockPosition()).isSuffocating(h.getLevel(), driver.blockPosition()),
+                    "dismounted into free space");
+            h.succeed();
+        });
+    }
+
+    /** One-block steps and slopes do not stop the rover: it climbs onto a raised floor. */
+    @GameTest(template = "empty", timeoutTicks = 120)
+    public static void roverClimbsAOneBlockStep(GameTestHelper h) {
+        for (int z = 0; z < 12; z++) {
+            for (int x = 0; x < 5; x++) {
+                h.setBlock(new BlockPos(x, 0, z), Blocks.STONE);
+                if (z >= 5) {
+                    h.setBlock(new BlockPos(x, 1, z), Blocks.STONE);
+                }
+            }
+        }
+        RoverEntity rover = spawn(h, new BlockPos(2, 1, 1));
+        rover.setEnergy(100_000);
+        h.succeedWhen(() -> {
+            rover.setSpeed(0.25);
+            h.assertTrue(rover.getY() >= h.absolutePos(new BlockPos(2, 2, 7)).getY() - 0.01 && rover.getZ() > h.absolutePos(new BlockPos(2, 2, 6)).getZ(),
+                    "up on the step: y " + rover.getY() + " z " + rover.getZ());
+        });
+    }
+
     private static void floor(GameTestHelper h, BlockState state) {
         for (int z = 0; z < 5; z++) {
             for (int x = 0; x < 5; x++) {

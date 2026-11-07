@@ -171,6 +171,23 @@ def rtg(face, x, y, fw, fh):
     return (AL[5], AL[3], AL[1])[x % 3] if 0 < y < fh - 1 else W[3]
 
 
+def hub(face, x, y, fw, fh):
+    # hub motor cap: dark housing with a bright bolt circle
+    if face in ('left', 'right'):
+        return AL[6] if (x, y) in ((1, 1), (2, 2), (1, 2), (2, 1)) else ST[1]
+    return ST[2]
+
+
+def strut(face, x, y, fw, fh):
+    return AL[5] if y % 2 == 0 else AL[3]
+
+
+def bumper(face, x, y, fw, fh):
+    if face == 'front':
+        return YELLOW if (x // 2) % 2 == 0 else ST[1]
+    return shade(ST, face, 2)
+
+
 def sheet(glow=False):
     cv = Canvas(128, 128)
     if glow:
@@ -194,6 +211,12 @@ def sheet(glow=False):
     paint(cv, 72, 56, 14, 5, 5, cargo)
     paint(cv, 0, 82, 24, 1, 16, solar)
     paint(cv, 82, 82, 5, 8, 5, rtg)
+    paint(cv, 0, 100, 20, 2, 12, chassis)       # rear deck
+    paint(cv, 66, 100, 1, 8, 1, mast)           # solar panel posts
+    paint(cv, 72, 100, 1, 4, 4, hub)
+    paint(cv, 84, 100, 1, 4, 1, strut)
+    paint(cv, 90, 100, 1, 2, 7, seat)           # armrests
+    paint(cv, 0, 114, 20, 2, 2, bumper)
     return cv
 
 
