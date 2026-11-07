@@ -158,7 +158,8 @@ public final class BlockyBodyRenderer {
      * @param sun    unit direction toward the sun, same frame
      * @param night  brightness of the night side (0..1)
      * @param tint   overall brightness (1 normally; less while an eclipse darkens a planet)
-     * @param n      blocks across, or 0 to choose by size on screen (steps through {@link #LEVELS}, fading between them)
+     * @param n      blocks across; 0 to choose by size on screen (steps through {@link #LEVELS} up to 64, fading between
+     *               them); {@link #APPROACH} the same but up to 128 (flying close to a planet)
      * @param ring   optional ring
      */
     public static void draw(Matrix4f pose, BlockyBodyMesh.Style style, int n, ColorMap map, Pose body, Vector3f sun, float night,
@@ -188,8 +189,15 @@ public final class BlockyBodyRenderer {
 
     /** Voxel resolutions a body steps through as it grows on screen. */
     public static final int[] LEVELS = {16, 32, 64, 128};
-    /** Screen pixels per block a level aims for: finer levels come in only when blocks would get this big. */
-    static final float BLOCK_PX = 14F;
+    /**
+     * Screen pixels per block a level aims for: finer levels come in only when blocks would get this big, so a body stays
+     * clearly blocky at every size.
+     */
+    static final float BLOCK_PX = 30F;
+    /** Finest level for bodies in the sky; the finest of all ({@link #LEVELS}' last) only on a close approach in flight. */
+    static final int SKY_MAX = 64;
+    /** Pass as {@code n} for a close approach in flight: chosen by size like 0, but may go up to the finest level. */
+    public static final int APPROACH = -1;
     /** Length of the cross-fade between two levels, ms. */
     static final long FADE_MS = 350;
 
@@ -235,7 +243,7 @@ public final class BlockyBodyRenderer {
         RenderSystem.disableCull();
         int level = n > 0 ? n : 0;
         if (n <= 0) {
-            Lod lod = lod(map, style, body);
+            Lod lod = lod(map, style, body, n == APPROACH ? LEVELS[LEVELS.length - 1] : SKY_MAX);
             float t = lod.previous == 0 ? 1F : Mth.clamp((net.minecraft.Util.getMillis() - lod.since) / (float) FADE_MS, 0F, 1F);
             if (t < 1F) {
                 // cross-fade: the old level underneath, the new one fading in over it
@@ -260,7 +268,7 @@ public final class BlockyBodyRenderer {
     }
 
     /** The resolution to draw a body at, stepping up as it grows on screen and fading between steps. */
-    private static Lod lod(ColorMap map, BlockyBodyMesh.Style style, Pose body) {
+    private static Lod lod(ColorMap map, BlockyBodyMesh.Style style, Pose body, int max) {
         Minecraft mc = Minecraft.getInstance();
         double distance = Math.max(1e-3, body.center().length());
         double fov = Math.toRadians(mc.options.fov().get());
@@ -272,14 +280,18 @@ public final class BlockyBodyRenderer {
             return l;
         });
         for (int l : LEVELS) {
-            BlockyBodyMesh.prepare(style, l); // build every size in the background once
+            if (l <= max) {
+                BlockyBodyMesh.prepare(style, l); // build every size in use in the background once
+            }
         }
         if (lod.previous != 0) {
             return lod; // finish the running fade first
         }
         int index = java.util.Arrays.binarySearch(LEVELS, lod.current);
         int next = lod.current;
-        if (want > lod.current * 1.25 && index + 1 < LEVELS.length) {
+        if (lod.current > max) {
+            next = LEVELS[index - 1];
+        } else if (want > lod.current * 1.25 && index + 1 < LEVELS.length && LEVELS[index + 1] <= max) {
             next = LEVELS[index + 1];
         } else if (want < lod.current / 2.0 * 0.8 && index > 0) {
             next = LEVELS[index - 1];
