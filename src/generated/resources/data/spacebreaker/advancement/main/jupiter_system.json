@@ -1,0 +1,51 @@
+{
+  "parent": "spacebreaker:main/orbit",
+  "criteria": {
+    "callisto": {
+      "conditions": {
+        "to": "spacebreaker:callisto"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "europa": {
+      "conditions": {
+        "to": "spacebreaker:europa"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "ganymede": {
+      "conditions": {
+        "to": "spacebreaker:ganymede"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "io": {
+      "conditions": {
+        "to": "spacebreaker:io"
+      },
+      "trigger": "minecraft:changed_dimension"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.spacebreaker.jupiter_system.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "spacebreaker:sulfur"
+    },
+    "title": {
+      "translate": "advancements.spacebreaker.jupiter_system.title"
+    }
+  },
+  "requirements": [
+    [
+      "io",
+      "europa",
+      "ganymede",
+      "callisto"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

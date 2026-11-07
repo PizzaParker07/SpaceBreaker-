@@ -1,7 +1,7 @@
 ---
 title: In-Situ Resources (ISRU)
 icon: spacebreaker:sabatier_reactor
-items: [spacebreaker:atmosphere_processor, spacebreaker:sabatier_reactor, spacebreaker:regolith_heater, spacebreaker:ice_melter, spacebreaker:chemical_reactor, spacebreaker:regolith_excavator]
+items: [spacebreaker:atmosphere_processor, spacebreaker:sabatier_reactor, spacebreaker:regolith_heater, spacebreaker:ice_melter, spacebreaker:chemical_reactor, spacebreaker:regolith_excavator, spacebreaker:sintering_furnace, spacebreaker:sintered_regolith, spacebreaker:sintered_regolith_bricks]
 research: spacebreaker:isru
 ---
 Every kilogram launched from Earth is expensive. So make what you can **where you land**. This is called in-situ resource utilisation (ISRU).
@@ -47,3 +47,13 @@ Turns carbon dioxide and hydrogen into **methane and water**. The water goes bac
 ## Chemical reactor
 Combines one solid and two fluids; for example sulfur, water and oxygen make **sulfuric acid**.
 {recipe spacebreaker:chemical_reaction/sulfuric_acid}
+
+{page}
+## Sintering furnace
+{items spacebreaker:sintering_furnace spacebreaker:sintered_regolith spacebreaker:sintered_regolith_bricks}
+The {item spacebreaker:sintering_furnace} heats any planet's regolith with electricity and fuses it into {item spacebreaker:sintered_regolith}; no air needed. A stonecutter turns it into bricks, slabs, stairs and walls.
+{recipe spacebreaker:sintering/regolith}
+
+> Build your base from bricks made on site: no need to ship blocks from Earth. **Full blocks are airtight**; stairs, slabs, walls and other partial blocks leak air. → [Air for the Base](base_air)
+
+> Put the excavator next to the furnace: the regolith it digs goes straight in and building blocks pile up on their own.

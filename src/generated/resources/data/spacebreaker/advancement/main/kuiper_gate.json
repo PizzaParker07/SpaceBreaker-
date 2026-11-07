@@ -1,0 +1,51 @@
+{
+  "parent": "spacebreaker:main/orbit",
+  "criteria": {
+    "charon": {
+      "conditions": {
+        "to": "spacebreaker:charon"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "hydra": {
+      "conditions": {
+        "to": "spacebreaker:hydra"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "nix": {
+      "conditions": {
+        "to": "spacebreaker:nix"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "pluto": {
+      "conditions": {
+        "to": "spacebreaker:pluto"
+      },
+      "trigger": "minecraft:changed_dimension"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.spacebreaker.kuiper_gate.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "spacebreaker:tholin_sand"
+    },
+    "title": {
+      "translate": "advancements.spacebreaker.kuiper_gate.title"
+    }
+  },
+  "requirements": [
+    [
+      "pluto",
+      "charon",
+      "nix",
+      "hydra"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

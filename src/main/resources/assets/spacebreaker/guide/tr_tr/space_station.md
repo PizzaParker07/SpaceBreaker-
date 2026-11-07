@@ -55,6 +55,8 @@ Malzemeyi kendin taşımak zorunda değilsin. Montaj tezgâhında kapsül yerine
 ### Otomatik sefer
 Dünya yüzeyi dışındaki bir hedefe fırlatılan kargo roketi, kalktığı yerle hedef arasında kendi kendine gidip gelir (örneğin Ay üssü ↔ Ay yörüngesindeki istasyon). Her uçta: sandıklara boşaltır → varillerden yükler → **200 tick** bekler (yakıt deposu onu doldurur) → öbür uca uçar. Ambar boşsa ya da yakıt yetmezse bekler ve sana bir kez haber verir.
 
+> Fırlatma konsolunun son satırı seferin durumunu gösterir: sonraki durak, ambarın doluluğu ve roketin yüklediğini, yük ya da yakıt beklediğini veya yolda olduğunu.
+
 > Seferi açıp kapatmak için rokete {key key.sneak} basılıyken boş elle {key key.use} yap.
 
 > Sığmayan eşyalar ambarda kalır; sohbete kaç eşyanın beklediği yazılır. Portun ya da işaretin yanına yeterince sandık koy.

@@ -1,0 +1,37 @@
+{
+  "parent": "spacebreaker:main/orbit",
+  "criteria": {
+    "ceres": {
+      "conditions": {
+        "to": "spacebreaker:ceres"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "vesta": {
+      "conditions": {
+        "to": "spacebreaker:vesta"
+      },
+      "trigger": "minecraft:changed_dimension"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.spacebreaker.belt.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "spacebreaker:carbonaceous_chondrite"
+    },
+    "title": {
+      "translate": "advancements.spacebreaker.belt.title"
+    }
+  },
+  "requirements": [
+    [
+      "ceres",
+      "vesta"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

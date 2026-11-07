@@ -60,6 +60,7 @@
 - [Venüs](venus)
 - [Bulutlarda Yaşam ve Harabeler](venus_clouds)
 - [Merkür](mercury)
+- [Dünya'ya Yakın Asteroitler](near_earth_asteroids)
 
 **Dış Güneş Sistemi**
 
@@ -77,8 +78,12 @@
 - [Umbriel](umbriel)
 - [Oberon](oberon)
 - [Triton](triton)
+- [Proteus](proteus)
+- [Nereid](nereid)
 - [Plüton](pluto)
 - [Charon](charon)
+- [Nix](nix)
+- [Hydra](hydra)
 
 **Harabeler**
 

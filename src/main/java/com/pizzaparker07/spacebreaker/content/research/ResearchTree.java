@@ -332,7 +332,7 @@ public final class ResearchTree {
                 .en("Pressurised Modules", "Sealed aluminium hulls, windows and doors that hold an atmosphere.")
                 .tr("Basınçlı Modüller", "Atmosferi içinde tutan sızdırmaz alüminyum gövdeler, pencereler ve kapılar.");
         t("regolith_sintering", CONSTRUCTION, 1).req("pressurised_modules").icon("spacebreaker:sintered_regolith_bricks")
-                .unlocks("sintered_regolith_bricks").samples(MOON)
+                .unlocks("sintered_regolith_bricks", "sintering_furnace").samples(MOON)
                 .en("Regolith Sintering", "Bake lunar dust into hard bricks: radiation shielding you do not have to launch.")
                 .tr("Regolit Sinterleme", "Ay tozunu sert tuğlalara pişir: fırlatman gerekmeyen radyasyon kalkanı.");
         t("heavy_launch", CONSTRUCTION, 2).req("launch_infrastructure", "staging").icon("spacebreaker:service_tower").unlocks("crew_capsule_large")

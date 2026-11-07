@@ -18,6 +18,9 @@ Giysin belli bir aralığı dengeler (Mk1: −190 °C ile 130 °C). Bu aralığ�
 
 > **Yer altı sığınaktır:** havasız dünyalarda yüzeyin en az **4 blok** altında ve gökyüzünü görmeyen yerde sıcaklık gece-gündüz ortalamasında sabit kalır (Ay'da yaklaşık −26 °C). Lav tüpleri bu yüzden doğal sığınaktır. Soğuk tuzaklar bunun dışındadır.
 
+## Mikrometeorit yağmurları
+Havasız gezegen yüzeylerinde ara sıra (ortalama saatte bir, 40 saniye) mikrometeorit yağmuru olur. Bir dakika önceden aksiyon çubuğu uyarır: "bir çatının altına gir". Açıkta kalırsan tanecikler can ve giysi aşındırır: yağmur başına en fazla **üç kalp**, sızdırmaz giysiyle bunun yarısı. **Herhangi bir çatı** seni korur.
+
 ## Basınç
 **10 bar** üstünde (Venüs yüzeyi 92 bar) sızdırmaz giysi her 10 saniyede parça başına 1 dayanıklılık kaybeder, ama **%75**'in altına inmez: sızdırmaz ama yıpranır. Gösterge uyarır: "92 BAR: GİYSİ ZORLANIYOR".
 
