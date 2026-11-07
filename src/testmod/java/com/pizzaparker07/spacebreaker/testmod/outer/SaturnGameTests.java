@@ -96,8 +96,22 @@ public final class SaturnGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = WorldTests.EMPTY, timeoutTicks = 300)
+    /**
+     * In its own batch, with its chunks force-loaded so the worm always ticks; the waits follow the worm's state (calm
+     * while burrowed, pellet timer), not a tick count, and every failure says what the worm was doing.
+     */
+    @GameTest(template = WorldTests.EMPTY, timeoutTicks = 800, batch = "tholin_worm")
     public static void tholinWormBurrowsSurfacesAndSiftsTholin(GameTestHelper helper) {
+        var level = helper.getLevel();
+        BlockPos origin = helper.absolutePos(BlockPos.ZERO);
+        java.util.List<net.minecraft.world.level.ChunkPos> forced = new java.util.ArrayList<>();
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dz = -1; dz <= 1; dz++) {
+                var c = new net.minecraft.world.level.ChunkPos((origin.getX() >> 4) + dx, (origin.getZ() >> 4) + dz);
+                level.setChunkForced(c.x, c.z, true);
+                forced.add(c);
+            }
+        }
         com.pizzaparker07.spacebreaker.content.saturn.entity.TholinWorm w = helper.spawn(SaturnEntities.THOLIN_WORM.get(), new BlockPos(2, 2, 2));
         helper.assertTrue(w.isFood(new net.minecraft.world.item.ItemStack(com.pizzaparker07.spacebreaker.content.saturn.SaturnModule.THOLIN_SAND.get())),
                 "breeds on tholin sand");
@@ -107,14 +121,18 @@ public final class SaturnGameTests {
         helper.assertFalse(w.isBurrowed(), "a hit drives it out of the sand");
         w.setBurrowed(true);
         w.setPelletTime(2);
-        // with nobody near it comes back up, and now and then it leaves a tholin pellet
-        // (it may wander off after the hit, so the pellet is searched for around the worm, not at the spawn point)
+        java.util.function.Supplier<String> state = () -> String.format(" [worm at %s, burrowed %s, calm %d ticks, alive %s, nearest player %s]",
+                w.blockPosition(), w.isBurrowed(), w.calmTicks(), w.isAlive(),
+                level.getNearestPlayer(w, com.pizzaparker07.spacebreaker.content.saturn.entity.TholinWorm.QUIET) == null ? "none" : "near");
         helper.succeedWhen(() -> {
-            helper.assertFalse(w.isBurrowed(), "surfaces once things are quiet");
-            var pellets = helper.getLevel().getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, w.getBoundingBox().inflate(12),
+            helper.assertTrue(w.isAlive(), "the worm is alive" + state.get());
+            helper.assertFalse(w.isBurrowed(), "surfaces once things are quiet" + state.get());
+            // it may wander off after the hit, so the pellet is searched for around the worm, not at the spawn point
+            var pellets = level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, w.getBoundingBox().inflate(16),
                     e -> e.getItem().is(com.pizzaparker07.spacebreaker.content.saturn.SaturnModule.THOLIN.get()));
-            helper.assertTrue(!pellets.isEmpty(), "leaves a tholin pellet");
+            helper.assertTrue(!pellets.isEmpty(), "leaves a tholin pellet" + state.get());
             pellets.forEach(net.minecraft.world.entity.Entity::discard);
+            forced.forEach(c -> level.setChunkForced(c.x, c.z, false));
         });
     }
 
