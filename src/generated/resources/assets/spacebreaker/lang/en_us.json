@@ -1971,6 +1971,7 @@
   "tech_category.spacebreaker.life_support": "Life Support",
   "tech_category.spacebreaker.propulsion": "Propulsion",
   "toast.spacebreaker.tech_learned": "Technology learned!",
+  "toast.spacebreaker.tech_learned_many": "%s technologies learned!",
   "tooltip.spacebreaker.acid_coated": "Acid-resistant coating",
   "tooltip.spacebreaker.airlock_door": "Airtight when closed. Opens by hand or redstone",
   "tooltip.spacebreaker.amphibious_rover": "Pressurized cabin on a floating hull: drives into water or liquid methane and sails on at %s m/s",

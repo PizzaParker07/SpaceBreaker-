@@ -106,6 +106,7 @@ final class ResearchLang {
         l.add("key.spacebreaker.guide", "Open field guide", "Saha rehberini aç");
         l.add("key.categories.spacebreaker", "Spacebreaker", "Spacebreaker");
         l.add("toast.spacebreaker.tech_learned", "Technology learned!", "Teknoloji öğrenildi!");
+        l.add("toast.spacebreaker.tech_learned_many", "%s technologies learned!", "%s teknoloji öğrenildi!");
         // guide
         l.add("gui.spacebreaker.guide.title", "Field Guide", "Saha Rehberi");
         l.add("gui.spacebreaker.guide.search", "Search...", "Ara...");

@@ -1971,6 +1971,7 @@
   "tech_category.spacebreaker.life_support": "Yaşam Desteği",
   "tech_category.spacebreaker.propulsion": "İtki",
   "toast.spacebreaker.tech_learned": "Teknoloji öğrenildi!",
+  "toast.spacebreaker.tech_learned_many": "%s teknoloji öğrenildi!",
   "tooltip.spacebreaker.acid_coated": "Aside dayanıklı kaplama",
   "tooltip.spacebreaker.airlock_door": "Kapalıyken hava geçirmez. Elle ya da kızıltaşla açılır",
   "tooltip.spacebreaker.amphibious_rover": "Yüzen gövde üstünde basınçlı kabin: suya ya da sıvı metana girer, %s m/s ile yüzerek devam eder",
