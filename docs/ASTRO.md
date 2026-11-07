@@ -791,6 +791,36 @@ world exists: 67P, Encke and Halley have one (`spacebreaker:<id>`); Hale–Bopp 
 a coplanar Hohmann estimate means nothing at Halley's 162° inclination. `CometActivityTest` checks orbits, perihelion timing, production
 against Rosetta, Giotto and Encke values, mass loss per orbit, the coma and the tail.
 
+### Comet rendezvous (`Lambert`, `CometRendezvous`)
+`TransferPlanner.plan` treats every target as a coplanar circular orbit at its semi-major axis. That is
+meaningless for comets. Hale–Bopp would take 451 years, and Halley's retrograde motion is ignored.
+`CometRendezvous.estimate(sys, comet, point, after)` instead solves Lambert arcs in 3-D. It starts
+from the real Earth, from low Earth orbit, and flies to the comet near its next perihelion or aphelion
+after `after` (arrival within ±60 days). It searches the flight time and both transfer directions for
+the cheapest total. The cost is the departure burn plus a full velocity match on arrival, so
+inclination and retrograde motion are paid in full. There are no gravity assists. `best(...)` returns
+the cheaper end. Values from the first passages after J2000 (`CometRendezvousTest`):
+
+| Comet | Arrive near | Arrival (AU) | Departure from LEO | Velocity match | Total | Flight |
+|---|---|---:|---:|---:|---:|---:|
+| 67P/Churyumov–Gerasimenko | perihelion | 1.28 | 7.8 km/s | 11.3 km/s | 19.1 km/s | 0.55 y |
+| 67P/Churyumov–Gerasimenko | aphelion | 5.67 | 7.2 km/s | 0.7 km/s | 7.9 km/s | 2.94 y |
+| 1P/Halley | perihelion | 1.32 | 4.0 km/s | 52.5 km/s | 56.5 km/s | 1.08 y |
+| 1P/Halley | aphelion | 35.08 | 17.0 km/s | 2.2 km/s | 19.2 km/s | 45.74 y |
+| 2P/Encke | perihelion | 0.88 | 19.5 km/s | 5.9 km/s | 25.4 km/s | 1.04 y |
+| 2P/Encke | aphelion | 4.07 | 6.5 km/s | 3.6 km/s | 10.1 km/s | 2.37 y |
+| C/1995 O1 (Hale–Bopp) | perihelion | 0.92 | 32.2 km/s | 13.5 km/s | 45.7 km/s | 0.36 y |
+| C/1995 O1 (Hale–Bopp) | aphelion | 370.69 | 31.4 km/s | 0.2 km/s | 31.5 km/s | 1322.48 y |
+| 9P/Tempel 1 | perihelion | 1.51 | 4.6 km/s | 8.7 km/s | 13.2 km/s | 0.65 y |
+| 9P/Tempel 1 | aphelion | 4.73 | 6.3 km/s | 2.8 km/s | 9.0 km/s | 2.98 y |
+
+Reading: near perihelion a comet moves fast, so the velocity match dominates; near aphelion it is
+slow, but the trip is long. 67P and Tempel 1 are reachable with chemical rockets (8–9 km/s near
+aphelion, about 3 years). Halley costs about 56 km/s near perihelion (retrograde) or 19 km/s and
+46 years near aphelion, and Hale–Bopp about 31 km/s in either case. Rosetta reached 67P with four
+gravity assists in 10 years, so assists (`GravityAssist`) would lower these figures.
+
+
 ## Gravity assists (`GravityAssist`, `TransferPlanner.planWithAssists`)
 
 `TransferPlanner.planWithAssists(sys, from, to, aerobrake)` returns the cheaper of the direct Hohmann
