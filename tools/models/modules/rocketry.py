@@ -593,6 +593,29 @@ def station_blocks():
     write('models/item/docking_port.json', {'parent': b('docking_port')})
     generated_item('station_kit')
     generated_item('habitat_kit')
+    # warning light: steel base, ribbed amber dome, little cap; the lit dome glows at full brightness
+    def light_model(lens, glow):
+        bright = {'neoforge_data': {'block_light': 15, 'sky_light': 15, 'ambient_occlusion': False}} if glow else {}
+        def faces(tex, cull_down=False):
+            f = {d: dict({'texture': tex}, **(bright if tex == '#lens' else {})) for d in ('north', 'south', 'east', 'west', 'up', 'down')}
+            if cull_down:
+                f['down']['cullface'] = 'down'
+            return f
+        return {'parent': 'minecraft:block/block', 'textures': {'base': b('warning_light_base'), 'lens': b(lens), 'particle': b('warning_light_base')},
+                'elements': [
+                    {'from': [3, 0, 3], 'to': [13, 2, 13], 'faces': faces('#base', True)},
+                    {'from': [4, 2, 4], 'to': [12, 9, 12], 'faces': faces('#lens')},
+                    {'from': [5, 9, 5], 'to': [11, 10, 11], 'faces': faces('#base')}]}
+    write('models/block/warning_light.json', light_model('warning_light_lens', False))
+    write('models/block/warning_light_on.json', light_model('warning_light_lens_on', True))
+    frot = {'up': {}, 'down': {'x': 180}, 'north': {'x': 90}, 'south': {'x': 90, 'y': 180}, 'west': {'x': 90, 'y': 270}, 'east': {'x': 90, 'y': 90}}
+    variants = {}
+    for f, r in frot.items():
+        for lit in ('false', 'true'):
+            for powered in ('false', 'true'):
+                variants[f'facing={f},lit={lit},powered={powered}'] = dict({'model': b('warning_light_on' if lit == 'true' else 'warning_light')}, **r)
+    write('blockstates/warning_light.json', {'variants': variants})
+    write('models/item/warning_light.json', {'parent': b('warning_light_on')})
     write('models/block/landing_beacon.json', {'parent': 'minecraft:block/cube_bottom_top', 'textures': {
         'top': b('landing_beacon_top'), 'side': b('landing_beacon_side'), 'bottom': b('station_hull')}})
     write('blockstates/landing_beacon.json', {'variants': {'': {'model': b('landing_beacon')}}})

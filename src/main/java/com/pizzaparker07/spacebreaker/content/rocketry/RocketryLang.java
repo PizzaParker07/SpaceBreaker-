@@ -34,6 +34,7 @@ final class RocketryLang {
         l.block(RocketryModule.STATION_BUNK, "Station Bunk", "İstasyon Ranzası");
         l.block(RocketryModule.FUEL_DEPOT, "Fuel Depot", "Yakıt Deposu");
         l.block(RocketryModule.LANDING_BEACON, "Landing Beacon", "İniş İşareti");
+        l.block(RocketryModule.WARNING_LIGHT, "Warning Light", "Uyarı Işığı");
         l.add("message.spacebreaker.warn.dust_storm_launch", "Dust storm over the pad: poor visibility and gusts. Launch at your own risk, or wait it out",
                 "Rampanın üstünde toz fırtınası: görüş kötü, rüzgâr sert. Kalkış senin sorumluluğunda; istersen fırtınanın geçmesini bekle");
         l.add("message.spacebreaker.landing_beacon.guided", "Landing beacon in range: coming down on the base", "İniş işareti alındı: üsse iniliyor");

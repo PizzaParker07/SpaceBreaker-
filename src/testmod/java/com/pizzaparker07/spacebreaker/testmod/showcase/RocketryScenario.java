@@ -597,6 +597,15 @@ final class RocketryScenario implements ShowcaseScenario {
                 Spacebreaker.LOGGER.info("[showcase] comet: end state {} dim {} removed {}", now.state(), now.level().dimension().location(), r.isRemoved());
             });
         }, null));
+        s.add(new Shot("48_warning_lights", 13000, 5.5, G + 1.2, 6.5, 150F, 25F, true, fp, 60, p -> {
+            clearScene(p);
+            ServerLevel level = p.serverLevel();
+            // two beacons on the pad edge, one lit by redstone, one dark, at dusk
+            BlockPos a = PAD.offset(3, 1, 4), b2 = PAD.offset(1, 1, 5);
+            level.setBlock(a.below(), net.minecraft.world.level.block.Blocks.REDSTONE_BLOCK.defaultBlockState(), 3);
+            level.setBlock(a, RocketryModule.WARNING_LIGHT.get().defaultBlockState(), 3);
+            level.setBlock(b2, RocketryModule.WARNING_LIGHT.get().defaultBlockState(), 3);
+        }, null));
         s.add(new Shot("31_nearby_stars", 6000, 0, 0, 0, 0F, 0F, false, fp, 120,
                 p -> {
                     RocketryShowcaseClient.star = "Alpha Centauri";

@@ -2140,6 +2140,43 @@ def landing_beacon_side():
     return cv
 
 
+AMBER = ramp('#5a2a04', '#8a4508', '#c06a0e', '#e8901a', '#ffb830', '#ffd870', '#fff2c0')
+
+
+def warning_light_base():
+    """Dark steel housing with four screws."""
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            cv[x, y] = STEEL[2] if (x + y) % 5 else STEEL[1]
+    for x in range(16):
+        cv[x, 0] = STEEL[4]
+        cv[0, x] = STEEL[4]
+        cv[x, 15] = STEEL[0]
+        cv[15, x] = STEEL[0]
+    for x, y in ((3, 3), (12, 3), (3, 12), (12, 12)):
+        cv[x, y] = STEEL[5]
+    return cv
+
+
+def warning_light_lens(phase=None):
+    """Ribbed amber dome. With a phase (0..7) a bright beam sweeps round it, frame by frame."""
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            rib = x % 3 == 0
+            if phase is None:
+                c = AMBER[1] if rib else AMBER[2]
+            else:
+                # the mirror's beam: brightest at its centre column, wrapping round the dome
+                d = min((x - phase * 2) % 16, (phase * 2 - x) % 16)
+                c = AMBER[6] if d == 0 else AMBER[5] if d <= 2 else AMBER[4]
+                if rib and d > 2:
+                    c = AMBER[3]
+            cv[x, y] = c
+    return cv
+
+
 def habitat_kit_icon():
     cv = Canvas()
     rows = [
@@ -2181,6 +2218,18 @@ def export_facility(save):
     save(limit_colours(docking_port_side()), 'block', 'docking_port_side', (180, 30, 0, None))
     save(station_kit_icon(), 'item', 'station_kit')
     save(habitat_kit_icon(), 'item', 'habitat_kit')
+    save(limit_colours(warning_light_base()), 'block', 'warning_light_base', (140, 230, 0, None))
+    save(limit_colours(warning_light_lens()), 'block', 'warning_light_lens', (200, 20, 0, None))
+    # lit lens: 8 frames of a beam sweeping round the dome
+    frames = Canvas(16, 128)
+    for f in range(8):
+        frame = warning_light_lens(f)
+        for y in range(16):
+            for x in range(16):
+                frames[x, f * 16 + y] = frame[x, y]
+    path = save(frames, 'block', 'warning_light_lens_on')
+    with open(path + '.mcmeta', 'w') as fh:
+        fh.write('{\n  "animation": {\n    "frametime": 2\n  }\n}\n')
     save(limit_colours(landing_beacon_top()), 'block', 'landing_beacon_top', (180, 30, 0, None))
     save(limit_colours(landing_beacon_side()), 'block', 'landing_beacon_side', (180, 30, 0, None))
     save(limit_colours(station_bunk_top()), 'block', 'station_bunk_top', (180, 30, 0, None))

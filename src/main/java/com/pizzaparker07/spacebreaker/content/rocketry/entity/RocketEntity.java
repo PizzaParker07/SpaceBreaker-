@@ -103,6 +103,14 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
     /** The port this rocket last docked at (tall rockets reach past the port's block scan). */
     @Nullable
     private BlockPos dockedPort;
+    /** Game time of the last propellant taken on (warning lights spin while a rocket is being fuelled). */
+    private long lastFilled = -1_000_000L;
+
+    /** Whether propellant went in within the last {@code ticks}. */
+    public boolean fuelledRecently(int ticks) {
+        return level().getGameTime() - lastFilled < ticks;
+    }
+
     /** Client: ticks left of the docking jolt. */
     private int jolt;
     /** Automatic cargo route: the two ends (location ids), whether it runs, and the wait before the next step. */
@@ -818,6 +826,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         if (accepted <= 0 || simulate) {
             return Math.max(0, accepted);
         }
+        lastFilled = level().getGameTime();
         if (fuel == null) {
             loxKg += accepted * density;
         } else {

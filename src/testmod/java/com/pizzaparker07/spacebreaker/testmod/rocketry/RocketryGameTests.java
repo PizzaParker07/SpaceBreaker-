@@ -1218,6 +1218,35 @@ public final class RocketryGameTests {
         helper.succeed();
     }
 
+    @GameTest(template = EMPTY, timeoutTicks = 200)
+    public static void warningLight(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var LIT = com.pizzaparker07.spacebreaker.content.rocketry.pad.WarningLightBlock.LIT;
+        BlockPos light = helper.absolutePos(new BlockPos(1, 2, 1));
+        level.setBlock(light, RocketryModule.WARNING_LIGHT.get().defaultBlockState(), 3);
+        helper.assertFalse(level.getBlockState(light).getValue(LIT), "dark at first");
+        // redstone turns it on and gives real light
+        level.setBlock(light.east(), net.minecraft.world.level.block.Blocks.REDSTONE_BLOCK.defaultBlockState(), 3);
+        helper.assertTrue(level.getBlockState(light).getValue(LIT) && level.getBlockState(light).getLightEmission() >= 12, "redstone lights it");
+        level.removeBlock(light.east(), false);
+        helper.assertFalse(level.getBlockState(light).getValue(LIT), "and turns it off");
+        // a rocket being fuelled nearby turns it on by itself
+        RocketEntity rocket = RocketEntity.create(level, RocketryModule.MOON_ROCKET, helper.absoluteVec(new net.minecraft.world.phys.Vec3(4.5, 2, 4.5)), 0F);
+        level.addFreshEntity(rocket);
+        helper.runAfterDelay(15, () -> {
+            helper.assertFalse(level.getBlockState(light).getValue(LIT), "an idle rocket does not");
+            rocket.fill(com.pizzaparker07.spacebreaker.content.fluids.FluidsModule.LIQUID_OXYGEN.stack(1000), false);
+            helper.runAfterDelay(15, () -> {
+                helper.assertTrue(level.getBlockState(light).getValue(LIT), "fuelling nearby: it spins");
+                helper.runAfterDelay(60, () -> {
+                    helper.assertFalse(level.getBlockState(light).getValue(LIT), "and stops once the fuelling is over");
+                    rocket.discard();
+                    helper.succeed();
+                });
+            });
+        });
+    }
+
     @GameTest(template = EMPTY)
     public static void fuelFromFluidContainers(GameTestHelper helper) {
         RocketEntity rocket = RocketEntity.create(helper.getLevel(), RocketryModule.MOON_ROCKET, helper.absoluteVec(new net.minecraft.world.phys.Vec3(1.5, 2, 1.5)), 0F);

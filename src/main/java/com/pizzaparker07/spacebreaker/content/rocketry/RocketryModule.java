@@ -123,6 +123,12 @@ public final class RocketryModule implements SbModule {
             steel().noOcclusion());
     public static final DeferredBlock<CrewArmBlock> CREW_ARM = BLOCKS.registerBlock("crew_access_arm", CrewArmBlock::new, steel().noOcclusion());
     public static final DeferredBlock<FuelUmbilicalBlock> FUEL_UMBILICAL = BLOCKS.registerBlock("fuel_umbilical", FuelUmbilicalBlock::new, steel().noOcclusion());
+    /** Rotating amber beacon for pads and stations (redstone, or by itself while a rocket nearby is busy). */
+    public static final DeferredBlock<com.pizzaparker07.spacebreaker.content.rocketry.pad.WarningLightBlock> WARNING_LIGHT = BLOCKS.registerBlock(
+            "warning_light", com.pizzaparker07.spacebreaker.content.rocketry.pad.WarningLightBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).strength(1.5F, 6.0F).sound(SoundType.METAL).noOcclusion()
+                    .requiresCorrectToolForDrops());
+    public static final DeferredItem<BlockItem> WARNING_LIGHT_ITEM = ITEMS.registerSimpleBlockItem(WARNING_LIGHT);
     public static final DeferredBlock<LaunchConsoleBlock> LAUNCH_CONSOLE = BLOCKS.registerBlock("launch_control_console", LaunchConsoleBlock::new,
             steel().noOcclusion().lightLevel(s -> 5));
 
@@ -252,6 +258,7 @@ public final class RocketryModule implements SbModule {
         NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.server.ServerStartedEvent e) ->
                 com.pizzaparker07.spacebreaker.content.rocketry.nav.AstroTransferModel.install(e.getServer().registryAccess()));
         SbTabs.SPACEFLIGHT.icon(CREW_CAPSULE);
+        SbTabs.SPACEFLIGHT.add(WARNING_LIGHT_ITEM);
         SbTabs.SPACEFLIGHT.add(ROCKET_ASSEMBLER_ITEM).add(LAUNCH_PAD_ITEM).add(FLAME_TRENCH_ITEM).add(SERVICE_TOWER_ITEM)
                 .add(CREW_ARM_ITEM).add(FUEL_UMBILICAL_ITEM).add(LAUNCH_CONSOLE_ITEM);
         PARTS.forEach(SbTabs.SPACEFLIGHT::add);
@@ -345,12 +352,13 @@ public final class RocketryModule implements SbModule {
         loot.self(STATION_BUNK.get());
         loot.self(FUEL_DEPOT.get());
         loot.self(LANDING_BEACON.get());
+        loot.self(WARNING_LIGHT.get());
     }
 
     @Override
     public void addTags(SbTags tags) {
         tags.block(BlockTags.MINEABLE_WITH_PICKAXE, ROCKET_ASSEMBLER.get(), LAUNCH_PAD.get(), FLAME_TRENCH.get(), SERVICE_TOWER.get(),
-                CREW_ARM.get(), FUEL_UMBILICAL.get(), LAUNCH_CONSOLE.get(), STATION_HULL.get(), STATION_WINDOW.get(), DOCKING_PORT.get(), FUEL_DEPOT.get(), LANDING_BEACON.get());
+                CREW_ARM.get(), FUEL_UMBILICAL.get(), LAUNCH_CONSOLE.get(), STATION_HULL.get(), STATION_WINDOW.get(), DOCKING_PORT.get(), FUEL_DEPOT.get(), LANDING_BEACON.get(), WARNING_LIGHT.get());
         tags.block(BlockTags.NEEDS_STONE_TOOL, LAUNCH_PAD.get(), FLAME_TRENCH.get(), SERVICE_TOWER.get());
     }
 
