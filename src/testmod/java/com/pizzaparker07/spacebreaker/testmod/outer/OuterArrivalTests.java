@@ -33,4 +33,18 @@ public final class OuterArrivalTests {
         }
         helper.succeed();
     }
+
+    /** The arrival notes and the research tree's system achievements name the same outer worlds (inner planets aside). */
+    @GameTest(template = WorldTests.EMPTY)
+    public static void arrivalNotesMatchTheSystemAchievements(GameTestHelper helper) {
+        java.util.Set<String> achievements = new java.util.TreeSet<>();
+        for (String[] system : com.pizzaparker07.spacebreaker.content.research.data.ResearchAdvancements.SYSTEMS) {
+            if (!system[0].equals("inner_planets")) {
+                achievements.addAll(java.util.Arrays.asList(system).subList(2, system.length));
+            }
+        }
+        java.util.Set<String> notes = new java.util.TreeSet<>(OuterArrivals.worlds());
+        helper.assertTrue(notes.equals(achievements), "outer worlds differ: notes " + notes + " vs achievements " + achievements);
+        helper.succeed();
+    }
 }

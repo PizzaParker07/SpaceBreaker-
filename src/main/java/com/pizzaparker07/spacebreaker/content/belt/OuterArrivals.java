@@ -107,6 +107,11 @@ public final class OuterArrivals {
         return true;
     }
 
+    /** The outer worlds that have an arrival note. */
+    public static java.util.Set<String> worlds() {
+        return java.util.Collections.unmodifiableSet(NOTES.keySet());
+    }
+
     /** True if the player has already been to that outer world. */
     public static boolean visited(ServerPlayer player, String world) {
         return player.getPersistentData().getCompound(VISITED).getBoolean(world);
