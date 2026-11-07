@@ -73,4 +73,47 @@ public final class StationAirGameTests {
                 .thenWaitUntil(() -> helper.assertTrue(SealedRooms.providesOxygen(helper.getLevel(), inside), "closed again, the module re-pressurises"))
                 .thenSucceed();
     }
+
+    /**
+     * The habitat module kit (rocketry) builds a room the suit systems understand: once its distributor has a
+     * tank the room pressurises, a player can take the helmet off and breathe, and opening its airlock vents it.
+     */
+    @GameTest(template = "empty", timeoutTicks = 600)
+    public static void habitatKitRoomSupportsHelmetOff(GameTestHelper helper) {
+        BlockPos centre = helper.absolutePos(new BlockPos(4, 1, 4));
+        Direction forward = Direction.SOUTH;
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.station.HabitatKitItem.unfold(helper.getLevel(), centre, forward),
+                "the habitat kit unfolds in empty space");
+        BlockPos dPos = com.pizzaparker07.spacebreaker.content.rocketry.station.HabitatKitItem.distributor(centre);
+        OxygenDistributorBlockEntity be = (OxygenDistributorBlockEntity) helper.getLevel().getBlockEntity(dPos);
+        helper.assertTrue(be != null, "the kit places an oxygen distributor");
+        be.setStack(OxygenTankItem.filled(SuitModule.LARGE_OXYGEN_TANK.get()));
+        BlockPos inside = centre.above().relative(forward.getClockWise(), 1).relative(forward, -1);
+        BlockPos door = centre.above().relative(forward, -com.pizzaparker07.spacebreaker.content.rocketry.station.HabitatKitItem.HALF);
+        Player p = helper.makeMockPlayer(GameType.SURVIVAL);
+        helper.startSequence()
+                .thenWaitUntil(() -> helper.assertTrue(be.room().sealed(), "the habitat room must be sealed, got " + be.room().state()))
+                .thenWaitUntil(() -> helper.assertTrue(SealedRooms.providesOxygen(helper.getLevel(), inside.above()), "the habitat pressurises"))
+                .thenExecute(() -> {
+                    // no suit at all: breathing normally inside
+                    p.setPos(inside.getX() + 0.5, inside.getY(), inside.getZ() + 0.5);
+                    var data = LifeSupport.data(p);
+                    data.breath = 10;
+                    for (int i = 0; i < 100; i++) {
+                        LifeSupport.tick(p, LifeSupport.Env.at(p, 0));
+                    }
+                    helper.assertTrue(data.breathable, "the air inside the habitat is breathable");
+                    helper.assertTrue(data.breath == com.pizzaparker07.spacebreaker.content.suit.SurvivalData.MAX_BREATH,
+                            "breath recovers without a helmet inside, got " + data.breath);
+                    helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.SuitEvents.pressurisedAt(p), "the HUD reports a pressurised module");
+                    ((AirlockDoorBlock) SuitModule.AIRLOCK_DOOR.get()).setOpen(helper.getLevel(), door, helper.getLevel().getBlockState(door), true);
+                })
+                .thenWaitUntil(() -> helper.assertTrue(!be.room().isScanning() && !be.room().sealed(), "the open airlock vents the habitat"))
+                .thenExecute(() -> {
+                    // the test world itself has air, so check the habitat's own supply and the HUD flag
+                    helper.assertFalse(SealedRooms.providesOxygen(helper.getLevel(), inside.above()), "a vented habitat holds no air");
+                    helper.assertFalse(com.pizzaparker07.spacebreaker.content.suit.SuitEvents.pressurisedAt(p), "the HUD drops the pressurised tag");
+                })
+                .thenSucceed();
+    }
 }
