@@ -313,7 +313,7 @@ public class LanderPiece extends StructurePiece {
                 s(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.POWER_MONITOR.get())
                         .setValue(net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING, Direction.SOUTH), AX, AY - 1, CABIN0 + 1, box);
         placeBlock(level, s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.LED_PANEL.get()), AX, AY + 1, CABIN0 + 2, box);
-        createChest(level, box, RandomSource.create(seed + 1), AX - 1, AY - 1, CABIN1 - 1, variant.cabin());
+        com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.place(level, this, AX - 1, AY - 1, CABIN1 - 1, Direction.EAST, variant.cabin(), seed + 1, box);
         BlockPos sign = com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this,
                 s(Blocks.BIRCH_SIGN).setValue(net.minecraft.world.level.block.StandingSignBlock.ROTATION, 8), AX + 1, AY - 1, CABIN1 - 1, box);
         if (sign != null && box.isInside(sign)) {
@@ -339,10 +339,11 @@ public class LanderPiece extends StructurePiece {
         placeBlock(level, hazard, 2, F, 14, box);
         placeBlock(level, panel, 1, F + 1, 14, box);
         placeBlock(level, panel, 1, F, 13, box);
-        createChest(level, box, RandomSource.create(seed + 2), 2, F, 13, variant.cargo());
+        com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.place(level, this, 2, F, 13, Direction.EAST, variant.cargo(), seed + 2, box);
         placeBlock(level, panel, 11, F, 21, box);
         placeBlock(level, hazard, 11, F, 22, box);
-        placeBlock(level, s(Blocks.BARREL), 10, F, 22, box);
+        com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.BLOCK.get().defaultBlockState()
+                .setValue(com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlock.FACING, Direction.WEST), 10, F, 22, box);
         placeBlock(level, panel, 11, F + 1, 22, box);
         // debris strewn back along the skid
         for (int i = 0; i < 7; i++) {

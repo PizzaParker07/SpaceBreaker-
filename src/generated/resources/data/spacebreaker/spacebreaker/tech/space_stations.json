@@ -22,6 +22,7 @@
     "spacebreaker:habitation_module",
     "spacebreaker:airlock_module",
     "spacebreaker:solar_wings",
+    "spacebreaker:shipyard_module",
     "spacebreaker:station_hatch"
   ]
 }

@@ -173,7 +173,7 @@ public class ObservatoryPiece extends StructurePiece {
         placeBlock(level, s(Blocks.CARTOGRAPHY_TABLE), 5, floor, 5, box);
         placeBlock(level, s(Blocks.CHISELED_BOOKSHELF), 6, floor, 5, box);
         placeBlock(level, s(Blocks.CHISELED_BOOKSHELF), 7, floor, 5, box);
-        createChest(level, box, RandomSource.create(seed + 1), 5, floor, 6, LOGS);
+        com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.place(level, this, 5, floor, 6, Direction.EAST, LOGS, seed + 1, box);
         BlockPos sign = com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this,
                 s(Blocks.BIRCH_SIGN).setValue(net.minecraft.world.level.block.StandingSignBlock.ROTATION, 8), 7, floor, 7, box);
         if (sign != null && box.isInside(sign)) {
@@ -212,7 +212,7 @@ public class ObservatoryPiece extends StructurePiece {
                 placeBlock(level, s(Blocks.POLISHED_BASALT), x, 0, z, box);
             }
         }
-        createChest(level, box, RandomSource.create(seed + 2), 12, 1, 4, VAULT);
+        com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.place(level, this, 12, 1, 4, Direction.WEST, VAULT, seed + 2, box);
         placeBlock(level, s(Blocks.SEA_LANTERN), 12, 2, 5, box);
         placeBlock(level, s(Blocks.CALIBRATED_SCULK_SENSOR), 11, 1, 4, box);
         // the plume-facing south side scorched, sulfur and frost drifted onto the deck and against the stilts

@@ -60,6 +60,10 @@ public final class UranusData {
     static void translations(Lang lang) {
         lang.add("dungeon.spacebreaker.titania_canyon_outpost", "Canyon Rim Outpost", "Kanyon Kenarı Karakolu");
         lang.add("structure.spacebreaker.titania_canyon_outpost", "Canyon Rim Outpost", "Kanyon Kenarı Karakolu");
+        lang.add("sign.spacebreaker.titania_outpost_log.0", "SURVEY LOG", "ETÜT GÜNLÜĞÜ");
+        lang.add("sign.spacebreaker.titania_outpost_log.1", "The wall slid", "Duvar akşam");
+        lang.add("sign.spacebreaker.titania_outpost_log.2", "again at dusk.", "yine kaydı.");
+        lang.add("sign.spacebreaker.titania_outpost_log.3", "Cable left down.", "Kablo aşağıda.");
         lang.add("biome.spacebreaker.miranda_plains", "Patchwork Plains", "Yamalı Ovalar");
         lang.add("biome.spacebreaker.miranda_crater", "Mirandan Crater", "Miranda Krateri");
         lang.add("biome.spacebreaker.miranda_polar", "Mirandan Pole", "Miranda Kutbu");

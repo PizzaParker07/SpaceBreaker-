@@ -124,14 +124,18 @@ public final class SuitEvents {
         boolean sealed = SpaceSuitItem.isSealed(player);
         if (data.wasSealed != null && data.wasSealed != sealed) {
             if (sealed) {
-                player.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.spacebreaker.suit.sealed")
-                        .withStyle(net.minecraft.ChatFormatting.AQUA), true);
+                // the sealed note once in a while, not on every quick swap of a piece
+                if (player.tickCount - data.lastSealNoteTick > 600) {
+                    data.lastSealNoteTick = player.tickCount;
+                    player.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.spacebreaker.suit.sealed")
+                            .withStyle(net.minecraft.ChatFormatting.AQUA), true);
+                }
                 player.level().playSound(null, player.blockPosition(), net.minecraft.sounds.SoundEvents.FIRE_EXTINGUISH,
                         net.minecraft.sounds.SoundSource.PLAYERS, 0.25F, 1.8F);
-            } else {
-                player.displayClientMessage(net.minecraft.network.chat.Component.translatable(data.breathable
-                        ? "message.spacebreaker.suit.unsealed" : "message.spacebreaker.suit.unsealed_vacuum")
-                        .withStyle(data.breathable ? net.minecraft.ChatFormatting.GRAY : net.minecraft.ChatFormatting.RED), true);
+            } else if (!data.breathable) {
+                // opening the suit only needs words where there is no air
+                player.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.spacebreaker.suit.unsealed_vacuum")
+                        .withStyle(net.minecraft.ChatFormatting.RED), true);
                 player.level().playSound(null, player.blockPosition(), net.minecraft.sounds.SoundEvents.ARMOR_EQUIP_GENERIC.value(),
                         net.minecraft.sounds.SoundSource.PLAYERS, 0.6F, 0.8F);
             }

@@ -20,7 +20,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ChainBlock;
 import net.minecraft.world.level.block.LanternBlock;
 import net.minecraft.world.level.block.SlabBlock;
-import net.minecraft.world.level.block.entity.BarrelBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -206,32 +205,19 @@ public class IceDrillPiece extends StructurePiece {
     }
 
     private void container(WorldGenLevel level, BoundingBox box, int x, int y, int z, ResourceKey<LootTable> loot, boolean chest) {
+        // the shared supply locker for every kind of store (it was a chest or a barrel); doors turned toward the middle
         RandomSource r = RandomSource.create(seed ^ (x * 341873128712L + y * 132897987541L + z));
-        if (chest) {
-            placeChest(level, box, r, x, y, z, loot);
-            return;
-        }
-        BlockPos pos = PieceOrientation.worldPos(this, x, y, z);
-        if (box.isInside(pos)) {
-            placeBlock(level, s(Blocks.BARREL), x, y, z, box);
-            if (level.getBlockEntity(pos) instanceof BarrelBlockEntity barrel) {
-                barrel.setLootTable(loot, r.nextLong());
-            }
-        }
+        com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.place(level, this, x, y, z, inward(x, z, SIZE), loot, r.nextLong(), box);
     }
 
-    /** A chest placed through the shared orientation helper (vanilla's chest placement turns it its own way). */
-    private boolean placeChest(WorldGenLevel level, BoundingBox box, RandomSource random, int x, int y, int z,
-                                  ResourceKey<LootTable> loot) {
-        BlockPos pos = PieceOrientation.worldPos(this, x, y, z);
-        if (!box.isInside(pos) || level.getBlockState(pos).is(Blocks.CHEST)) {
-            return false;
+    /** The side of a square piece's floor plan facing its middle from cell (x, z), along the longer way. */
+    static Direction inward(int x, int z, int size) {
+        int dx = size / 2 - x;
+        int dz = size / 2 - z;
+        if (Math.abs(dx) >= Math.abs(dz)) {
+            return dx >= 0 ? Direction.EAST : Direction.WEST;
         }
-        level.setBlock(pos, Blocks.CHEST.defaultBlockState(), 2);
-        if (level.getBlockEntity(pos) instanceof net.minecraft.world.level.block.entity.ChestBlockEntity chest) {
-            chest.setLootTable(loot, random.nextLong());
-        }
-        return true;
+        return dz >= 0 ? Direction.SOUTH : Direction.NORTH;
     }
 
     private void guard(WorldGenLevel level, BoundingBox box, int x, int y, int z) {

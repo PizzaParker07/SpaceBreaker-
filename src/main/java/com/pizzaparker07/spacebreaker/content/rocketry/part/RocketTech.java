@@ -48,6 +48,7 @@ public final class RocketTech {
             Map.entry("habitation_module", "space_stations"),
             Map.entry("airlock_module", "space_stations"),
             Map.entry("solar_wings", "space_stations"),
+            Map.entry("shipyard_module", "space_stations"),
             Map.entry("landing_legs", "landing_systems"),
             Map.entry("parachute", "landing_systems"),
             Map.entry("heat_shield", "landing_systems"),

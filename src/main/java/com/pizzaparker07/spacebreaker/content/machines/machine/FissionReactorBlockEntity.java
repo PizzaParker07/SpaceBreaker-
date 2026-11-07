@@ -68,8 +68,8 @@ public class FissionReactorBlockEntity extends MachineBlockEntity {
             if (burn <= 0) {
                 ItemStack fuel = items.getStackInSlot(0);
                 if (!fuel.isEmpty()) {
+                    burn = burnOf(fuel);
                     fuel.shrink(1);
-                    burn = BURN_TICKS;
                     setChanged();
                 }
             }
@@ -87,6 +87,26 @@ public class FissionReactorBlockEntity extends MachineBlockEntity {
             map.put(pos.immutable(), level.getGameTime());
         }
         return running;
+    }
+
+    /** Burn an element brings: what is left on a partly used one, a full load on a fresh one. */
+    public static int burnOf(ItemStack element) {
+        Integer left = element.get(MachinesModule.FUEL_BURN_LEFT.get());
+        return left == null ? BURN_TICKS : Math.max(1, Math.min(BURN_TICKS, left));
+    }
+
+    /** A broken reactor gives back the element it was burning, carrying the burn that was left in it. */
+    @Override
+    public void dropContents(Level level, BlockPos pos) {
+        super.dropContents(level, pos);
+        if (burn > 0) {
+            ItemStack spent = new ItemStack(MachinesModule.NUCLEAR_FUEL_ELEMENT.get());
+            if (burn < BURN_TICKS) {
+                spent.set(MachinesModule.FUEL_BURN_LEFT.get(), burn);
+            }
+            net.minecraft.world.Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), spent);
+            burn = 0;
+        }
     }
 
     @Override
