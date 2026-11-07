@@ -98,7 +98,7 @@ public final class VenusGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = WorldTests.EMPTY, timeoutTicks = 200)
+    @GameTest(template = WorldTests.EMPTY, timeoutTicks = 300)
     public static void aerostatFloatsWithLootAndGuards(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         helper.assertTrue(level.registryAccess().registryOrThrow(Registries.STRUCTURE).containsKey(VenusStructures.AEROSTAT_KEY), "aerostat structure");
@@ -116,63 +116,92 @@ public final class VenusGameTests {
                 forced.add(new ChunkPos(cx, cz));
             }
         }
-        for (int cx = bb.minX() >> 4; cx <= bb.maxX() >> 4; cx++) {
-            for (int cz = bb.minZ() >> 4; cz <= bb.maxZ() >> 4; cz++) {
-                level.getChunk(cx, cz);
-                piece.postProcess(level, level.structureManager(), level.getChunkSource().getGenerator(), RandomSource.create(cx),
-                        new BoundingBox(cx << 4, -64, cz << 4, (cx << 4) + 15, 319, (cz << 4) + 15), new ChunkPos(cx, cz), bb.getCenter());
+        // build only once the forced tickets have made the chunks (and their entity sections) fully loaded, so the
+        // guards are added to a live area and never lost to load order
+        java.util.concurrent.atomic.AtomicBoolean built = new java.util.concurrent.atomic.AtomicBoolean();
+        helper.runAfterDelay(10, () -> {
+            for (int cx = bb.minX() >> 4; cx <= bb.maxX() >> 4; cx++) {
+                for (int cz = bb.minZ() >> 4; cz <= bb.maxZ() >> 4; cz++) {
+                    level.getChunk(cx, cz);
+                    piece.postProcess(level, level.structureManager(), level.getChunkSource().getGenerator(), RandomSource.create(cx),
+                            new BoundingBox(cx << 4, -64, cz << 4, (cx << 4) + 15, 319, (cz << 4) + 15), new ChunkPos(cx, cz), bb.getCenter());
+                }
             }
-        }
-        int chests = 0;
-        int fabric = 0;
-        for (BlockPos p : BlockPos.betweenClosed(bb.minX(), bb.minY(), bb.minZ(), bb.maxX(), bb.maxY(), bb.maxZ())) {
-            var st = level.getBlockState(p);
-            if (st.is(Blocks.CHEST) && level.getBlockEntity(p) instanceof ChestBlockEntity c && c.getLootTable() != null) {
-                chests++;
+            int chests = 0;
+            int fabric = 0;
+            for (BlockPos p : BlockPos.betweenClosed(bb.minX(), bb.minY(), bb.minZ(), bb.maxX(), bb.maxY(), bb.maxZ())) {
+                var st = level.getBlockState(p);
+                if (st.is(Blocks.CHEST) && level.getBlockEntity(p) instanceof ChestBlockEntity c && c.getLootTable() != null) {
+                    chests++;
+                }
+                if (st.is(VenusModule.ENVELOPE_FABRIC.get())) {
+                    fabric++;
+                }
             }
-            if (st.is(VenusModule.ENVELOPE_FABRIC.get())) {
-                fabric++;
+            helper.assertTrue(chests >= 2, "aerostat lab and stores, found " + chests);
+            helper.assertTrue(fabric > 200, "a big envelope, found " + fabric);
+            // valve puzzle: of the three levers above the gondola door exactly one opens it
+            List<BlockPos> levers = new java.util.ArrayList<>();
+            BlockPos doorPos = null;
+            int webs = 0;
+            int trapdoors = 0;
+            for (BlockPos p : BlockPos.betweenClosed(bb.minX(), bb.minY(), bb.minZ(), bb.maxX(), bb.maxY(), bb.maxZ())) {
+                var st = level.getBlockState(p);
+                if (st.is(Blocks.LEVER)) {
+                    levers.add(p.immutable());
+                }
+                if (st.is(Blocks.IRON_DOOR) && st.getValue(net.minecraft.world.level.block.DoorBlock.HALF)
+                        == net.minecraft.world.level.block.state.properties.DoubleBlockHalf.LOWER) {
+                    doorPos = p.immutable();
+                }
+                webs += st.is(Blocks.COBWEB) ? 1 : 0;
+                trapdoors += st.is(Blocks.IRON_TRAPDOOR) ? 1 : 0;
             }
-        }
-        helper.assertTrue(chests >= 2, "aerostat lab and stores, found " + chests);
-        helper.assertTrue(fabric > 200, "a big envelope, found " + fabric);
-        // valve puzzle: of the three levers above the gondola door exactly one opens it
-        List<BlockPos> levers = new java.util.ArrayList<>();
-        BlockPos doorPos = null;
-        int webs = 0;
-        int trapdoors = 0;
-        for (BlockPos p : BlockPos.betweenClosed(bb.minX(), bb.minY(), bb.minZ(), bb.maxX(), bb.maxY(), bb.maxZ())) {
-            var st = level.getBlockState(p);
-            if (st.is(Blocks.LEVER)) {
-                levers.add(p.immutable());
+            helper.assertTrue(levers.size() == 3 && doorPos != null, "three valves and a sealed door, levers " + levers.size());
+            helper.assertTrue(webs >= 1 && trapdoors >= 1, "walkway trap with a net");
+            helper.assertFalse(level.getBlockState(doorPos).getValue(net.minecraft.world.level.block.DoorBlock.OPEN), "door starts closed");
+            int opening = 0;
+            for (BlockPos l : levers) {
+                var lever = (net.minecraft.world.level.block.LeverBlock) Blocks.LEVER;
+                lever.pull(level.getBlockState(l), level, l, null);
+                if (level.getBlockState(doorPos).getValue(net.minecraft.world.level.block.DoorBlock.OPEN)) {
+                    opening++;
+                }
+                lever.pull(level.getBlockState(l), level, l, null);
             }
-            if (st.is(Blocks.IRON_DOOR) && st.getValue(net.minecraft.world.level.block.DoorBlock.HALF)
-                    == net.minecraft.world.level.block.state.properties.DoubleBlockHalf.LOWER) {
-                doorPos = p.immutable();
-            }
-            webs += st.is(Blocks.COBWEB) ? 1 : 0;
-            trapdoors += st.is(Blocks.IRON_TRAPDOOR) ? 1 : 0;
-        }
-        helper.assertTrue(levers.size() == 3 && doorPos != null, "three valves and a sealed door, levers " + levers.size());
-        helper.assertTrue(webs >= 1 && trapdoors >= 1, "walkway trap with a net");
-        helper.assertFalse(level.getBlockState(doorPos).getValue(net.minecraft.world.level.block.DoorBlock.OPEN), "door starts closed");
-        int opening = 0;
-        for (BlockPos l : levers) {
-            var lever = (net.minecraft.world.level.block.LeverBlock) Blocks.LEVER;
-            lever.pull(level.getBlockState(l), level, l, null);
-            if (level.getBlockState(doorPos).getValue(net.minecraft.world.level.block.DoorBlock.OPEN)) {
-                opening++;
-            }
-            lever.pull(level.getBlockState(l), level, l, null);
-        }
-        helper.assertTrue(opening == 1, "exactly one valve opens the door, got " + opening);
+            helper.assertTrue(opening == 1, "exactly one valve opens the door, got " + opening);
+            built.set(true);
+        });
         var area = net.minecraft.world.phys.AABB.of(bb).inflate(48);
         helper.succeedWhen(() -> {
+            helper.assertTrue(built.get(), "aerostat not built yet");
             var rays = level.getEntitiesOfClass(AcidRay.class, area);
             helper.assertTrue(rays.size() >= 2 && rays.stream().allMatch(AcidRay::isGuardian), "acid ray guardians, found " + rays.size());
             rays.forEach(net.minecraft.world.entity.Entity::discard);
             forced.forEach(c -> level.setChunkForced(c.x, c.z, false));
         });
+    }
+
+    /** The aerostat kit inflates a floating base: a full deck with railings under a fabric envelope, only in the cloud band. */
+    @GameTest(template = WorldTests.EMPTY, timeoutTicks = 100)
+    public static void aerostatKitInflatesAFloatingBase(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        helper.assertFalse(com.pizzaparker07.spacebreaker.content.venus.AerostatKitItem.inLiftBand(level, 220), "not on Earth");
+        BlockPos deck = helper.absolutePos(BlockPos.ZERO).offset(-3000, 0, 3000).atY(220);
+        level.getChunk(deck);
+        int placed = com.pizzaparker07.spacebreaker.content.venus.AerostatKitItem.deploy(level, deck);
+        int panels = 0;
+        int fabric = 0;
+        for (BlockPos p : BlockPos.betweenClosed(deck.offset(-6, 0, -6), deck.offset(6, 13, 6))) {
+            panels += level.getBlockState(p).is(VenusModule.COMPOSITE_PANEL.get()) ? 1 : 0;
+            fabric += level.getBlockState(p).is(VenusModule.ENVELOPE_FABRIC.get()) ? 1 : 0;
+        }
+        helper.assertTrue(panels == 81, "a 9x9 deck, got " + panels);
+        helper.assertTrue(fabric > 60, "a lift envelope, got " + fabric);
+        helper.assertTrue(level.getBlockState(deck.offset(0, 1, 4)).isAir(), "a gate in the railing");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.venus.AerostatKitItem.deploy(level, deck) == 0, "a second kit does not overwrite anything");
+        helper.assertTrue(placed > 150, "placed " + placed);
+        helper.succeed();
     }
 
     private VenusGameTests() {

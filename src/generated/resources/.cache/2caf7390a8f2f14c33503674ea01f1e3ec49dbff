@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-06T22:17:47.852812248	Spacebreaker inner planets recipes
+// 1.21.1	2026-11-07T02:02:05.254151097	Spacebreaker inner planets recipes
 ea6a05797061b01256ddc22d4b818ba0c3c92238 data/spacebreaker/advancement/recipes/building_blocks/aerogel.json
 9b7cff5c72a5ba7dc92a04601c1af32f7d61c349 data/spacebreaker/advancement/recipes/building_blocks/composite_panel.json
 f46d66f4e27e5564e14498f719b0e24f696fe219 data/spacebreaker/advancement/recipes/building_blocks/envelope_fabric.json
@@ -36,8 +36,10 @@ d97b530d2077cf9a20cab7db2932c43d4ade4132 data/spacebreaker/advancement/recipes/m
 4810ed5db7fac3806add4d17a20180dd221554cc data/spacebreaker/advancement/recipes/misc/iron_ingot_from_hematite_ore_smelting.json
 252e49a0e4591cc13219b284e62f48dd8f3871a9 data/spacebreaker/advancement/recipes/misc/iron_ingot_from_raw_hematite_blasting.json
 64a2e247ee70d61fc6de7deba4905a7cf82386b4 data/spacebreaker/advancement/recipes/misc/iron_ingot_from_raw_hematite_smelting.json
+a9b29629d66834e56d899e13b1d02f537f1c3b03 data/spacebreaker/advancement/recipes/transportation/aerostat_kit.json
 e40575726b0ec158c002cb66f9f4aa60f30fb778 data/spacebreaker/recipe/acid_coating.json
 170de7ea8520121a6aba0d890d73704ae4637976 data/spacebreaker/recipe/aerogel.json
+f1af7c12b67af69f662aaafd2e15a1465fd0ba7b data/spacebreaker/recipe/aerostat_kit.json
 91b30167686e58077dd0416a10467cde41d9747e data/spacebreaker/recipe/chemical_reaction/graphite_combustion.json
 8566862f008d8d9a756828d83c4efd684e85920b data/spacebreaker/recipe/composite_panel.json
 e877ca5735af35ecf3868fbe9c304bb81a38cd38 data/spacebreaker/recipe/crushing/dusty_ice.json

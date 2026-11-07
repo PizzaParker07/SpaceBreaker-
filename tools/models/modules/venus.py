@@ -16,5 +16,6 @@ def generate():
     generated_item('sulfur')
     generated_item('acid_coating')
     generated_item('lift_gas_sac')
+    generated_item('aerostat_kit')
     for e in ('acid_ray', 'cloud_jelly'):
         write(f'models/item/{e}_spawn_egg.json', {'parent': 'minecraft:item/template_spawn_egg'})
