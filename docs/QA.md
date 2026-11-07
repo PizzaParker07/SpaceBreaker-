@@ -210,6 +210,9 @@ Reviewed: no missing textures (purple/black), no untranslated keys, no invisible
   `Environment.addSunlightModifier((level, pos) -> Bodies.isOrbit(level) ? OrbitDaylight.sunlit(level, pos) : 1)` (rocketry)
   — the panel already multiplies by `solarFactor(level, pos)`. Then a station drawing 40 FE/t (fuel depot pumping) through
   ~4000 ticks of shadow needs ~160 000 FE of batteries; worth a line in the station guide.
+  **Fixed** by industry 7a3da21 (panel, station array and rover roof panel multiply by `OrbitDaylight.sunlit` on the server;
+  GameTest `stationArrayCarriesTheDepotThroughShadow`). Rocketry asked not to add the sunlight modifier as well (it would
+  apply the shadow twice). To confirm on 1.21.1 after the 05:00 merge.
 
 ## Localization (round 1)
 - Key parity en_us/tr_tr is complete (1305 each), placeholders and colour codes match, no broken characters.
