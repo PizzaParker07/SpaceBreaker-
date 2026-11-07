@@ -13,6 +13,8 @@
     "spacebreaker:encke_dust",
     "spacebreaker:encke_ice",
     "spacebreaker:halley_dust",
-    "spacebreaker:halley_ice"
+    "spacebreaker:halley_ice",
+    "spacebreaker:tempel_dust",
+    "spacebreaker:tempel_ice"
   ]
 }

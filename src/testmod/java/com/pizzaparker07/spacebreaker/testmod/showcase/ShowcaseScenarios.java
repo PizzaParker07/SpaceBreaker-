@@ -71,6 +71,7 @@ public final class ShowcaseScenarios {
         ALL.put("churyumov_gerasimenko", new TinyMoonScenario(com.pizzaparker07.spacebreaker.content.belt.Comets.CHURYUMOV, null, 0, 0));
         ALL.put("encke", new TinyMoonScenario(com.pizzaparker07.spacebreaker.content.belt.Comets.ENCKE, null, 0, 0));
         ALL.put("halley", new TinyMoonScenario(com.pizzaparker07.spacebreaker.content.belt.Comets.HALLEY, null, 0, 0));
+        ALL.put("tempel_1", new TinyMoonScenario(com.pizzaparker07.spacebreaker.content.belt.Comets.TEMPEL, "smooth_plain", com.pizzaparker07.spacebreaker.content.belt.Comets.tempelPlain().x(), com.pizzaparker07.spacebreaker.content.belt.Comets.tempelPlain().latitude()));
         ALL.put("bennu", new TinyMoonScenario(com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.BENNU, null, 0, 0));
         ALL.put("ryugu", new TinyMoonScenario(com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.RYUGU, "equatorial_ridge", 0, 0));
         ALL.put("eros", new TinyMoonScenario(com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.EROS, "himeros", com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.himeros().x(), com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.himeros().latitude()));

@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 6756,
+    "separation": 4,
+    "spacing": 11
+  },
+  "structures": [
+    {
+      "structure": "spacebreaker:tempel_1_lander",
+      "weight": 1
+    }
+  ]
+}

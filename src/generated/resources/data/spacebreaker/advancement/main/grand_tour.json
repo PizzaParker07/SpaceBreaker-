@@ -157,6 +157,12 @@
       },
       "trigger": "minecraft:changed_dimension"
     },
+    "tempel_1": {
+      "conditions": {
+        "to": "spacebreaker:tempel_1"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
     "titan": {
       "conditions": {
         "to": "spacebreaker:titan"
@@ -256,7 +262,8 @@
     [
       "churyumov_gerasimenko",
       "encke",
-      "halley"
+      "halley",
+      "tempel_1"
     ]
   ],
   "sends_telemetry_event": true

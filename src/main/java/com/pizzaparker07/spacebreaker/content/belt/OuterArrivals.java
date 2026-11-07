@@ -78,6 +78,8 @@ public final class OuterArrivals {
                 "En kısa yörüngeli kuyruklu yıldız, her 3,3 yılda Güneş'e döner: yaşlı, küçük ve neredeyse tükenmiş.");
         note("halley", "The most famous comet, seen from Earth for over two thousand years: a long nucleus blacker than coal.",
                 "İki bin yılı aşkın süredir Dünya'dan görülen en ünlü kuyruklu yıldız: kömürden kara, uzun bir çekirdek.");
+        note("tempel_1", "A small, dark comet. Among the rough, pitted ground lie smooth flat plains that end at low scarps.",
+                "Küçük, karanlık bir kuyruklu yıldız. Engebeli, çukurlu zeminin arasında alçak yamaçlarla biten düz, pürüzsüz ovalar uzanır.");
     }
 
     private OuterArrivals() {

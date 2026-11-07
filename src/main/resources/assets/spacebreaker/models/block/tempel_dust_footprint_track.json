@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "spacebreaker:block/tempel_dust",
+    "up": "spacebreaker:block/tempel_dust_footprint_track",
+    "down": "spacebreaker:block/tempel_dust",
+    "north": "spacebreaker:block/tempel_dust",
+    "south": "spacebreaker:block/tempel_dust",
+    "east": "spacebreaker:block/tempel_dust",
+    "west": "spacebreaker:block/tempel_dust"
+  }
+}

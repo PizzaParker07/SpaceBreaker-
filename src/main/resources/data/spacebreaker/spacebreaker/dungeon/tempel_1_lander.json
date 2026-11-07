@@ -1,0 +1,9 @@
+{
+  "structure": "spacebreaker:tempel_1_lander",
+  "world": "spacebreaker:tempel_1",
+  "guardians": [],
+  "loot_tables": [
+    "spacebreaker:dungeons/tempel_1/lander_cabin",
+    "spacebreaker:dungeons/tempel_1/lander_cargo"
+  ]
+}

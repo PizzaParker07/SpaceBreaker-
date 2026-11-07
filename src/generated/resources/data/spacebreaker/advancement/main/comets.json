@@ -18,6 +18,12 @@
         "to": "spacebreaker:halley"
       },
       "trigger": "minecraft:changed_dimension"
+    },
+    "tempel_1": {
+      "conditions": {
+        "to": "spacebreaker:tempel_1"
+      },
+      "trigger": "minecraft:changed_dimension"
     }
   },
   "display": {
@@ -37,7 +43,8 @@
     [
       "churyumov_gerasimenko",
       "encke",
-      "halley"
+      "halley",
+      "tempel_1"
     ]
   ],
   "sends_telemetry_event": true

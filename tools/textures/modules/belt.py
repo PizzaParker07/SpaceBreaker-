@@ -420,6 +420,18 @@ def halley_ice():
     return cv
 
 
+def tempel_dust(v=0):
+    return dust(P.TEMPEL_DUST, 20701 + v * 29)
+
+
+def tempel_ice():
+    r = P.TEMPEL_ICE
+    f = blend((clustered(16, 16, 20801, passes=1), 0.55), (white(20801 + 1), 0.3), (fbm(16, 16, 20801 + 2, [(8, 1.0)]), 0.15))
+    cv, _ = quant(f, [r[0], r[1], r[2], r[3], r[4], r[5]], [12, 28, 30, 16, 9, 5])
+    return cv
+
+
+
 def export(save):
     for name, fn, r in (('encke_dust', encke_dust, P.ENCKE_DUST),):
         base = fn(0)
@@ -435,6 +447,13 @@ def export(save):
         for side in ('left', 'right'):
             save(footprint(base, prints(r), side), 'block', f'{name}_footprint_{side}', (22, 8, 64, None))
     save(halley_ice(), 'block', 'halley_ice', (60, 14, 10, None))
+    for name, fn, r, ice in (('tempel_dust', tempel_dust, P.TEMPEL_DUST, tempel_ice),):
+        base = fn(0)
+        save(base, 'block', name, (18, 8, 64, None))
+        save(fn(1), 'block', name + '_1', (18, 8, 64, None))
+        for side in ('left', 'right'):
+            save(footprint(base, prints(r), side), 'block', f'{name}_footprint_{side}', (22, 8, 64, None))
+        save(ice(), 'block', name.replace('_dust', '_ice'), (60, 14, 10, None))
     for name, fn, r in (('comet_dust', comet_dust, P.COMET_DUST),):
         base = fn(0)
         save(base, 'block', name, (18, 8, 64, None))
