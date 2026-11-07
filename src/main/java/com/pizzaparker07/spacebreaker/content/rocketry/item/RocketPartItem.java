@@ -43,6 +43,10 @@ public class RocketPartItem extends Item {
                     com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant.HYDROLOX.loxMillibuckets(p.propellantKg())).withStyle(grey));
             tooltip.add(Component.translatable("tooltip.spacebreaker.part.propellant_nuclear",
                     com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant.NUCLEAR.fuelMillibuckets(p.propellantKg())).withStyle(grey));
+            if (p.insulated()) {
+                tooltip.add(Component.translatable("tooltip.spacebreaker.part.insulated",
+                        Math.round(com.pizzaparker07.spacebreaker.content.rocketry.design.BoilOff.INSULATION * 100)).withStyle(ChatFormatting.GOLD));
+            }
             tooltip.add(Component.translatable("tooltip.spacebreaker.part.hydrogen_note").withStyle(ChatFormatting.DARK_GRAY));
         }
         if (p.isEngine()) {

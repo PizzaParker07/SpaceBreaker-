@@ -5,11 +5,14 @@ import com.pizzaparker07.spacebreaker.core.config.SbConfig;
 /**
  * Cryogenic boil-off: liquid hydrogen (and, much more slowly, oxygen and methane) warms up and escapes from the
  * tanks during long coasts and while a rocket waits in orbit. Never on the pad, where the umbilical keeps
- * topping the tanks up. The rate is per stage propellant (see Propellant#boilOffPerDay) and scaled by the
- * realism setting, like the Δv costs.
+ * topping the tanks up. The rate is per stage propellant (see Propellant#boilOffPerDay), cut by multi-layer
+ * insulation on the stage's tanks ({@link #INSULATION} of it, for the insulated share) and scaled by the realism
+ * setting, like the Δv costs.
  */
 public final class BoilOff {
     public static final double SECONDS_PER_DAY = 86_400;
+    /** How much of the boil-off multi-layer insulation stops. */
+    public static final double INSULATION = 0.75;
 
     private BoilOff() {
     }
@@ -33,7 +36,8 @@ public final class BoilOff {
         }
         double lost = 0;
         for (int i = Math.max(0, active); i < fuel.length && i < layout.stages().size(); i++) {
-            double rate = layout.stages().get(i).propellant().boilOffPerDay() * scale(realism);
+            RocketLayout.Stage stage = layout.stages().get(i);
+            double rate = stage.propellant().boilOffPerDay() * scale(realism) * (1 - INSULATION * stage.insulated());
             if (rate <= 0 || fuel[i] <= 0) {
                 continue;
             }

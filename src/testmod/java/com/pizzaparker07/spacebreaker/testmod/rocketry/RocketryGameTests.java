@@ -429,6 +429,17 @@ public final class RocketryGameTests {
         double lost = com.pizzaparker07.spacebreaker.content.rocketry.design.BoilOff.apply(h2, 1, fuel, 100, SbConfig.Realism.REALISTIC);
         helper.assertTrue(within(fuel[1], before * Math.pow(0.999, 100), 1) && within(lost, before - fuel[1], 1),
                 "100 days cost a hydrolox stage about 9.5 %: " + (int) lost + " kg");
+        // multi-layer insulation on the upper stage's tanks stops three quarters of it
+        RocketLayout wrapped = RocketLayout.of(new RocketDesign(List.of(Spacebreaker.id("hydrolox_engine"), Spacebreaker.id("fuel_tank_large"),
+                Spacebreaker.id("interstage"), Spacebreaker.id("hydrolox_vacuum_engine"), Spacebreaker.id("fuel_tank_large_insulated"),
+                Spacebreaker.id("fuel_tank_large_insulated"), Spacebreaker.id("heat_shield"), Spacebreaker.id("crew_capsule"),
+                Spacebreaker.id("parachute"))), lookup);
+        helper.assertTrue(wrapped.problems().isEmpty() && wrapped.stages().get(1).insulated() == 1.0, "the upper stage is fully insulated");
+        helper.assertTrue(wrapped.stages().get(1).dryKg() > h2.stages().get(1).dryKg(), "insulation adds a little dry mass");
+        double[] wf = wrapped.fullFuel();
+        double wBefore = wf[1];
+        com.pizzaparker07.spacebreaker.content.rocketry.design.BoilOff.apply(wrapped, 1, wf, 100, SbConfig.Realism.REALISTIC);
+        helper.assertTrue(within(wf[1], wBefore * Math.pow(1 - 0.001 * 0.25, 100), 1), "insulated, 100 days cost only about 2.5 %");
         // the planner counts it on a long coast: Earth orbit to Mars orbit
         var marsOrbit = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(Spacebreaker.id("mars"), true).orElseThrow();
         double days = com.pizzaparker07.spacebreaker.content.rocketry.nav.Transfers.coastSeconds(Location.EARTH_ORBIT, marsOrbit) / 86400;

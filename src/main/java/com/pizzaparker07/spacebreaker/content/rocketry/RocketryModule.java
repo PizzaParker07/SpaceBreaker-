@@ -83,6 +83,12 @@ public final class RocketryModule implements SbModule {
     public static final DeferredItem<RocketPartItem> FUEL_TANK_SMALL = part("fuel_tank_small");
     public static final DeferredItem<RocketPartItem> FUEL_TANK_MEDIUM = part("fuel_tank_medium");
     public static final DeferredItem<RocketPartItem> FUEL_TANK_LARGE = part("fuel_tank_large");
+    /** Tanks wrapped in multi-layer insulation: cryogenic propellant boils off far more slowly. */
+    public static final DeferredItem<RocketPartItem> FUEL_TANK_SMALL_INSULATED = part("fuel_tank_small_insulated");
+    public static final DeferredItem<RocketPartItem> FUEL_TANK_MEDIUM_INSULATED = part("fuel_tank_medium_insulated");
+    public static final DeferredItem<RocketPartItem> FUEL_TANK_LARGE_INSULATED = part("fuel_tank_large_insulated");
+    /** Multi-layer insulation blanket: dozens of aluminised film layers with spacer net in between. */
+    public static final DeferredItem<Item> MULTI_LAYER_INSULATION = ITEMS.registerSimpleItem("multi_layer_insulation");
     public static final DeferredItem<RocketPartItem> KEROSENE_ENGINE = part("kerosene_engine");
     public static final DeferredItem<RocketPartItem> VACUUM_ENGINE = part("vacuum_engine");
     public static final DeferredItem<RocketPartItem> METHALOX_ENGINE = part("methalox_engine");
@@ -273,6 +279,7 @@ public final class RocketryModule implements SbModule {
         SbTabs.SPACEFLIGHT.add(ROCKET_ASSEMBLER_ITEM).add(LAUNCH_PAD_ITEM).add(FLAME_TRENCH_ITEM).add(SERVICE_TOWER_ITEM)
                 .add(CREW_ARM_ITEM).add(FUEL_UMBILICAL_ITEM).add(LAUNCH_CONSOLE_ITEM);
         PARTS.forEach(SbTabs.SPACEFLIGHT::add);
+        SbTabs.SPACEFLIGHT.add(MULTI_LAYER_INSULATION);
         SbTabs.SPACEFLIGHT.add(STATION_KIT).add(HABITAT_KIT).add(STATION_HULL_ITEM).add(STATION_WINDOW_ITEM).add(DOCKING_PORT_ITEM)
                 .add(STATION_BUNK_ITEM).add(FUEL_DEPOT_ITEM).add(LANDING_BEACON_ITEM);
         SbTabs.SPACEFLIGHT.addStack(RocketryModule::exampleRocket);

@@ -18,6 +18,11 @@ final class RocketryLang {
         l.item(RocketryModule.FUEL_TANK_SMALL, "Small Fuel Tank", "Küçük Yakıt Tankı");
         l.item(RocketryModule.FUEL_TANK_MEDIUM, "Medium Fuel Tank", "Orta Yakıt Tankı");
         l.item(RocketryModule.FUEL_TANK_LARGE, "Large Fuel Tank", "Büyük Yakıt Tankı");
+        l.item(RocketryModule.FUEL_TANK_SMALL_INSULATED, "Small Fuel Tank (Insulated)", "Küçük Yakıt Tankı (Yalıtımlı)");
+        l.item(RocketryModule.FUEL_TANK_MEDIUM_INSULATED, "Medium Fuel Tank (Insulated)", "Orta Yakıt Tankı (Yalıtımlı)");
+        l.item(RocketryModule.FUEL_TANK_LARGE_INSULATED, "Large Fuel Tank (Insulated)", "Büyük Yakıt Tankı (Yalıtımlı)");
+        l.item(RocketryModule.MULTI_LAYER_INSULATION, "Multi-Layer Insulation", "Çok Katmanlı Yalıtım");
+        l.add("tooltip.spacebreaker.part.insulated", "Multi-layer insulation: %s%% less boil-off", "Çok katmanlı yalıtım: %%%s daha az buharlaşma");
         l.item(RocketryModule.KEROSENE_ENGINE, "Kerosene Engine (Sea Level)", "Kerosen Motoru (Deniz Seviyesi)");
         l.item(RocketryModule.VACUUM_ENGINE, "Kerosene Engine (Vacuum)", "Kerosen Motoru (Vakum)");
         l.item(RocketryModule.METHALOX_ENGINE, "Methalox Engine (Sea Level)", "Metaloks Motoru (Deniz Seviyesi)");
