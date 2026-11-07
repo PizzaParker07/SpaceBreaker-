@@ -23,7 +23,7 @@ Hafif kompozit paneller ve aerojel, solunabilir hava katmanında yüzen platform
 
 ## Aerostat platform kiti
 {items spacebreaker:aerostat_kit}
-Bulutlarda bir eve en kısa yol. {item spacebreaker:aerostat_kit}'ni **yaşanabilir bulut kuşağında** (yaklaşık 1 bar ve oda sıcaklığı; bulut tabanından bulut tepelerinin ~30 blok üstüne kadar) kullan: yüzen bir üs şişer. **9×9** kompozit güverte, kapılı korkuluk, halatlar, bir fener ve tepede kaldırma gazı zarfı.
+Bulutlarda bir eve en kısa yol. {item spacebreaker:aerostat_kit}'ni **yaşanabilir bulut kuşağında** (yaklaşık 1 bar ve oda sıcaklığı; bulut tabanından bulut tepelerinin ~30 blok üstüne kadar) kullan: yüzen bir üs şişer. **9×9** kompozit güverte, iki kapılı güvenlik korkuluğu ve köşelerde bağlama babaları; tepede gri ekvator halkalı, iki renkli yuvarlak bir kaldırma gazı zarfı, LED lambalı bir yük halkasına asılı.
 
 {recipe spacebreaker:aerostat_kit}
 
@@ -41,7 +41,7 @@ Yüzey (464 °C, 92 bar) insana kapalıdır. {item spacebreaker:descent_probe}'n
 > Bulut Medüzü → aerostat kiti → bulutta üs → iniş sondası → Venüs numuneleri → Venüs teknolojileri.
 
 > [!NOTE]
-> Bulut tepelerinin üstünde terk edilmiş bir araştırma balonu süzülür. Laboratuvarında hâlâ teknoloji diskleri var; Asit Vatozları onları korur.
+> Bulut tepelerinin üstünde terk edilmiş bir araştırma aerostatı süzülür: kanatçıklı ve iki motor bölmeli uzun bir zarf, altında altın renkli asit geçirmez bantlı sekizgen bir gondol. İçeride camlı bir köprü, mürettebat ranzaları, araştırma tezgâhı ve atmosfer işlemcili bir laboratuvar ve teknoloji diskli malzeme dolapları var; Asit Vatozları onları korur. Kıç bölmeyi asit delmiş, bölme kapatılmış; kapının yanındaki son kaydı oku.
 
 ## Balonun bulmacaları
 - Üç **gaz vanası** var; gondol kapısını yalnızca **kükürt sarısı** işaretli olan açar.

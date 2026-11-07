@@ -39,6 +39,11 @@ public class ResearchScreen extends Screen {
     private static final ResourceLocation NODE_AVAILABLE = Spacebreaker.id("research/node_available");
     private static final ResourceLocation NODE_LOCKED = Spacebreaker.id("research/node_locked");
     private static final ResourceLocation BACKGROUND = Spacebreaker.id("textures/gui/research/blueprint.png");
+    private static final ResourceLocation LOCK = Spacebreaker.id("guide/lock");
+    /** The move/zoom hint shows on the first opening of a play session only; after that it sits in the "?" tooltip. */
+    private static boolean hintShown;
+    /** Header progress bar (right side of the title row). */
+    private static final int BAR_W = 60, BAR_H = 4;
     private static final int NODE = 26, STEP_X = 38, STEP_Y = 30, BAND_GAP = 14, LABEL_W = 0, PAD = 16;
 
     private final @Nullable Screen parent;
@@ -208,15 +213,31 @@ public class ResearchScreen extends Screen {
             g.drawString(font, Component.translatable(TechNode.categoryKey(b.category())), PAD, b.y() - 11, color, true);
             g.fill(PAD, b.y() - 2, contentW - PAD, b.y() - 1, (color & 0x00FFFFFF) | 0x55000000);
         }
+        Placed hovered = null;
+        for (Placed p : placed.values()) {
+            if (inside && mx >= p.x() && mx < p.x() + NODE && my >= p.y() && my < p.y() + NODE) {
+                hovered = p;
+            }
+        }
+        // every link faint; the hovered technology's prerequisites and followers drawn bright on top
         for (Placed p : placed.values()) {
             for (ResourceLocation r : p.node().requires()) {
                 Placed from = placed.get(r);
-                if (from != null) {
-                    drawLink(g, from, p);
+                if (from != null && hovered != p && hovered != from) {
+                    drawLink(g, from, p, false);
                 }
             }
         }
-        Placed hovered = null;
+        if (hovered != null) {
+            for (Placed p : placed.values()) {
+                for (ResourceLocation r : p.node().requires()) {
+                    Placed from = placed.get(r);
+                    if (from != null && (hovered == p || hovered == from)) {
+                        drawLink(g, from, p, true);
+                    }
+                }
+            }
+        }
         for (Placed p : placed.values()) {
             State s = state(p);
             g.blitSprite(switch (s) {
@@ -231,10 +252,8 @@ public class ResearchScreen extends Screen {
                 g.pose().pushPose();
                 g.pose().translate(0, 0, 200);
                 g.fill(p.x() + 4, p.y() + 3, p.x() + NODE - 4, p.y() + NODE - 5, 0xA0101418);
+                g.blitSprite(LOCK, p.x() + NODE - 10, p.y() + 1, 9, 9);
                 g.pose().popPose();
-            }
-            if (inside && mx >= p.x() && mx < p.x() + NODE && my >= p.y() && my < p.y() + NODE) {
-                hovered = p;
             }
         }
         g.pose().popPose();
@@ -245,11 +264,31 @@ public class ResearchScreen extends Screen {
         g.pose().translate(0, 0, 300);
         g.blitSprite(WINDOW, winX, winY, winW, winH);
         g.drawString(font, title, winX + 8, winY + 6, 0x404040, false);
-        Component progress = Component.translatable("gui.spacebreaker.research.progress", knownCount, placed.size());
-        g.drawString(font, progress, winX + winW - 8 - font.width(progress), winY + 6, 0x404040, false);
+        // progress: a thin bar (the count is in its tooltip) and a "?" for the controls
+        int bx = barX(), by = winY + 8;
+        g.fill(bx - 1, by - 1, bx + BAR_W + 1, by + BAR_H + 1, 0xFF373737);
+        g.fill(bx, by, bx + BAR_W, by + BAR_H, 0xFF8B8B8B);
+        int filled = placed.isEmpty() ? 0 : Math.round((float) BAR_W * knownCount / placed.size());
+        g.fill(bx, by, bx + filled, by + BAR_H, 0xFF5FB84A);
+        g.drawString(font, "?", helpX(), winY + 6, 0x404040, false);
         g.pose().popPose();
-        Component hint = Component.translatable("gui.spacebreaker.research.hint");
-        g.drawString(font, hint, (width - font.width(hint)) / 2, winY + winH + 3, 0xA0A0A0, false);
+        if (!hintShown) {
+            Component hint = Component.translatable("gui.spacebreaker.research.hint");
+            g.drawString(font, hint, (width - font.width(hint)) / 2, winY + winH + 3, 0xA0A0A0, false);
+        }
+        if (hovered == null) {
+            if (mouseX >= bx - 1 && mouseX < bx + BAR_W + 1 && mouseY >= winY + 4 && mouseY < winY + 15) {
+                g.pose().pushPose();
+                g.pose().translate(0, 0, 400);
+                g.renderTooltip(font, Component.translatable("gui.spacebreaker.research.progress", knownCount, placed.size()), mouseX, mouseY);
+                g.pose().popPose();
+            } else if (mouseX >= helpX() - 2 && mouseX < helpX() + 8 && mouseY >= winY + 4 && mouseY < winY + 15) {
+                g.pose().pushPose();
+                g.pose().translate(0, 0, 400);
+                g.renderTooltip(font, Component.translatable("gui.spacebreaker.research.hint"), mouseX, mouseY);
+                g.pose().popPose();
+            }
+        }
 
         if (hovered != null) {
             g.pose().pushPose();
@@ -264,13 +303,28 @@ public class ResearchScreen extends Screen {
         renderTransparentBackground(g);
     }
 
-    private void drawLink(GuiGraphics g, Placed from, Placed to) {
+    private int barX() {
+        return winX + winW - 18 - BAR_W;
+    }
+
+    private int helpX() {
+        return winX + winW - 13;
+    }
+
+    @Override
+    public void removed() {
+        hintShown = true;
+        super.removed();
+    }
+
+    /** A prerequisite link: faint by default, bright (and in the branch colour once learned) for the hovered node. */
+    private void drawLink(GuiGraphics g, Placed from, Placed to, boolean bright) {
         boolean lit = ResearchClientData.isKnownOnClient(from.id());
-        boolean sameBand = from.node().category().equals(to.node().category());
-        int inner = lit ? (0xFF000000 | ResearchTree.categoryColor(from.node().category())) : 0xFF8A8F96;
+        int inner = lit ? (0xFF000000 | ResearchTree.categoryColor(from.node().category())) : 0xFFC8CDD4;
         int outer = 0xFF101418;
-        if (!sameBand && !lit) {
-            inner = 0xFF5A6068;
+        if (!bright) {
+            inner = (inner & 0x00FFFFFF) | 0x40000000;
+            outer = 0x30101418;
         }
         int x1 = from.x() + NODE, y1 = from.y() + NODE / 2;
         int x2 = to.x(), y2 = to.y() + NODE / 2;

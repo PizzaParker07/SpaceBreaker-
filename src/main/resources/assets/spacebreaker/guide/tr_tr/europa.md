@@ -13,4 +13,4 @@ Gizli bir okyanusun üstünde genç bir buz kabuğu; lekeli çatlaklar (lineae) 
 **Buzaltı Işık Yılanları** aşağıdaki tuzlu suda yüzer.
 
 ## Harabe
-Bir kriyobot sondası alanı şunu öğretir: {tech spacebreaker:cryobot_drilling}.
+Bir buz sondaj kampı şunu öğretir: {tech spacebreaker:cryobot_drilling}. Deliğin üstünde dört ayaklı bir sondaj kulesi var; vinç zinciri kaybolan kriyobotun peşinden kuyuya iner. Yanında Araştırma Laboratuvarlı mürettebat yaşam alanı ve son kayıt durur ("Kablo 22 m'de koptu. Sinyal var. İniyoruz.").

@@ -13,4 +13,4 @@ A young ice shell over a hidden ocean, criss-crossed by stained cracks (lineae) 
 **Glow serpents** swim in the brine below.
 
 ## Ruins
-A cryobot probe site teaches {tech spacebreaker:cryobot_drilling}.
+An ice-drilling camp teaches {tech spacebreaker:cryobot_drilling}: a four-legged drill derrick over the bore, its winch chain running down the shaft after the lost cryobot, and the crew habitat beside it with a Research Lab and the last log ("Tether cut at 22 m. Still pinging. Going.").

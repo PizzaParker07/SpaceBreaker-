@@ -20,7 +20,7 @@ In space, your suit is your personal spacecraft. You make the first one before l
 
 {page}
 ## Sealing
-Put on all four pieces and you hear a hiss and see **"Suit sealed · life support online"**. Take one off and it says **"Suit unsealed"**; in an airless place the warning is red.
+Put on all four pieces and you hear a hiss and see **"Suit sealed · life support online"**. The note shows at most once every 30 seconds. Taking a piece off is only announced where there is no air: **"Suit unsealed: no air out here!"**
 
 >! With even one piece missing you cannot breathe in a vacuum.
 
@@ -36,7 +36,7 @@ The tanks sit in the backpack inside the {item spacebreaker:eva_chestplate}: **t
 
 {page}
 ## Helmet {#hud}
-The helmet display stays small. Beside the hotbar, on the side away from your main hand, is one oxygen line: a tank icon, a bar and the time left (mm:ss). The bar is blue, orange below **30 %**, and red and blinking below **15 %**.
+The helmet display stays small. Beside the hotbar, on the side away from your main hand, is one oxygen line: a tank icon and a bar. The time left (mm:ss) appears beside it below 30 %, or while a screen such as your inventory is open. The bar is blue, orange below **30 %**, and red and blinking below **15 %**.
 - **Hazard icons** appear after the oxygen time only while something is wrong: suit (open or below 20 % in an airless place), temperature (beyond your suit's rating, or your body outside 35–38.5 °C; red outside 32–41 °C), radiation (over 50 mSv/day, or 250 mSv in total; red from 1,000), pressure (suit under strain) and maneuvering gas (below 10 %).
 - **The way home** (arrow, target and distance) only shows when your oxygen will not last the walk back to the target you picked with the environment sensor. → [Environment sensor](tools)
 - **One warning** blinks above the hotbar, such as **TURN BACK: O2 RUNNING LOW FOR THE WAY HOME** in yellow, or **NOT ENOUGH O2 TO GET BACK**, **SUIT NOT SEALED** and **BEYOND SUIT RATING** in red.

@@ -23,7 +23,7 @@ Light composite panels and aerogel let you build platforms that float in the bre
 
 ## Aerostat platform kit
 {items spacebreaker:aerostat_kit}
-The quickest way to a home in the clouds. Use an {item spacebreaker:aerostat_kit} in the **habitable cloud band** (about 1 bar and room temperature, from the cloud base to about 30 blocks above the cloud tops) and it inflates a floating base: a **9×9** composite deck with a gated railing, rigging, a lantern and a lift-gas envelope overhead.
+The quickest way to a home in the clouds. Use an {item spacebreaker:aerostat_kit} in the **habitable cloud band** (about 1 bar and room temperature, from the cloud base to about 30 blocks above the cloud tops) and it inflates a floating base: a **9×9** composite deck with a safety railing, two gates and mooring cleats at the corners, and overhead a round two-tone envelope of lift gas with a grey equator ring, hung from a load ring with an LED lamp.
 
 {recipe spacebreaker:aerostat_kit}
 
@@ -41,7 +41,7 @@ The surface (464 °C, 92 bar) is closed to people. Release a {item spacebreaker:
 > Cloud jelly → aerostat kit → base in the clouds → descent probe → Venus samples → Venus technologies.
 
 > [!NOTE]
-> A derelict research balloon floats above the cloud tops. Its lab still holds tech disks, guarded by acid rays.
+> A derelict research aerostat floats above the cloud tops: a long envelope with fins and two engine pods over an octagonal gondola with a gold acid-proof band. Inside are a glazed bridge, crew berths, a lab with a research bench and an atmosphere processor, and supply lockers with tech disks, guarded by acid rays. The stern compartment has been eaten through by acid and sealed off; read the last log by the door.
 
 ## The balloon's puzzles
 - There are three **gas valves**; only the one marked **sulfur yellow** opens the gondola door.
