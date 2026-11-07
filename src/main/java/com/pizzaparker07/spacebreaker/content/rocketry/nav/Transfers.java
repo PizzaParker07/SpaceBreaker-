@@ -43,7 +43,7 @@ public final class Transfers {
     public static double scale(SbConfig.Realism realism) {
         return switch (realism) {
             case REALISTIC -> 1.0;
-            case BALANCED -> 0.42;
+            case BALANCED -> 0.43;
             case EASY -> 0.25;
         };
     }

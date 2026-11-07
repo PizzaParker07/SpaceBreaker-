@@ -107,8 +107,8 @@ public class GrabenFeature extends Feature<GrabenFeature.Config> {
                 if (dy == 0) {
                     continue;
                 }
-                Columns.shift(level, x, z, dy, cfg.rock());
-                Columns.paint(level, x, z, floor[0] > 0 ? 2 : 3, floor[0] > 0 ? cfg.floor() : cfg.rock());
+                int top = Columns.shift(level, x, z, dy, cfg.rock());
+                Columns.paint(level, x, top, z, floor[0] > 0 ? 2 : 3, floor[0] > 0 ? cfg.floor() : cfg.rock());
                 any = true;
             }
         }

@@ -168,6 +168,16 @@ def main():
             for lang, d in (("en_us", en), ("tr_tr", tr)):
                 if key not in d:
                     a.err(f"{kind} `{rid}`: name `{key}` missing in {lang}")
+    # every dimension has a display name (shown by /execute, the star map and messages)
+    dims = 0
+    for base in (ROOT / "src/main/resources/data", ROOT / "src/generated/resources/data"):
+        for f in base.glob("*/dimension/*.json"):
+            dims += 1
+            key = f"dimension.{f.parent.parent.name}.{f.stem}"
+            for lang, d in (("en_us", en), ("tr_tr", tr)):
+                if key not in d:
+                    a.err(f"dimension `{f.parent.parent.name}:{f.stem}`: name `{key}` missing in {lang}")
+    counts["dimension"] = dims
     # every literal translation key used in the code (tooltips, messages, HUD, screens) exists in both languages
     import re
     lit = re.compile(r'(?:translatable|translatableWithFallback|Component\.translatable|I18n\.get|keybind)\(\s*"([a-z0-9_.\-]+)"')
