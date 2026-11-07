@@ -47,8 +47,14 @@ final class RocketSearch {
 
     /** All designs from these parts whose stage propellants are in {@code fuels}, fewest parts first. */
     static List<Candidate> designs(Function<ResourceLocation, RocketPart> lookup, Set<ResourceLocation> parts, Set<Propellant> fuels) {
+        return designs(lookup, parts, fuels, null);
+    }
+
+    /** With {@code uncrewed} set, the payload is that satellite or probe (optionally on a heat shield) instead of a capsule. */
+    static List<Candidate> designs(Function<ResourceLocation, RocketPart> lookup, Set<ResourceLocation> parts, Set<Propellant> fuels,
+                                   ResourceLocation uncrewed) {
         List<Candidate> out = new ArrayList<>();
-        if (!parts.contains(Spacebreaker.id("crew_capsule"))) {
+        if (uncrewed == null ? !parts.contains(Spacebreaker.id("crew_capsule")) : !parts.contains(uncrewed)) {
             return out;
         }
         List<ResourceLocation> engines = new ArrayList<>();
@@ -82,7 +88,7 @@ final class RocketSearch {
         ResourceLocation capsule = Spacebreaker.id("crew_capsule");
         ResourceLocation shield = parts.contains(Spacebreaker.id("heat_shield")) ? Spacebreaker.id("heat_shield") : null;
         ResourceLocation chute = parts.contains(Spacebreaker.id("parachute")) ? Spacebreaker.id("parachute") : null;
-        for (int s = 0; s < 2; s++) {
+        for (int s = 0; s < 2 && uncrewed == null; s++) {
             for (int c = 0; c < 2; c++) {
                 if ((s == 1 && shield == null) || (c == 1 && chute == null)) {
                     continue;
@@ -96,6 +102,13 @@ final class RocketSearch {
                     p.add(chute);
                 }
                 payloads.add(p);
+            }
+        }
+        if (uncrewed != null) {
+            // the satellite or probe sits in the capsule slot, so a heat shield may go under it (AssemblerSlots)
+            payloads.add(List.of(uncrewed));
+            if (shield != null) {
+                payloads.add(List.of(shield, uncrewed));
             }
         }
         List<List<ResourceLocation>> lower = stageOptions(engines, tanks, fins, rcs, true);

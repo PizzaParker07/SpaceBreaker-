@@ -111,6 +111,11 @@ public final class ProgressionAuditTests {
             }
         }
         h.assertTrue(lost.isEmpty(), "goals no longer reachable even with every source-less technology on a disk: " + lost);
+        // uncrewed missions to an airless world: a satellite in Moon orbit and a probe on the Moon
+        for (String mission : List.of("observation_satellite → spacebreaker:moon/orbit", "space_probe → spacebreaker:moon/surface")) {
+            String r = m.uncrewedResults.getOrDefault(mission, "not tried (part not buildable or not unlocked)");
+            h.assertTrue(r.startsWith("flown"), mission + ": " + r);
+        }
         h.succeed();
     }
 
