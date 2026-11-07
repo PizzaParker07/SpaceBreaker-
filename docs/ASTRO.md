@@ -719,6 +719,39 @@ At the default orbitalTimeScale (1 real s per simulated hour) a Mars transfer co
 | Phobos surface → orbit | 0.01 | 0.01 ± 0.01 | 0.00 | 0.00 | ok |
 
 
+## Body look for model rendering (`BodyLook`)
+
+`BodyLook.of(sys, body, pole, axialTiltDeg, observer, t)` or `BodyAdapter.look(access | sys, id, ...)` returns what
+a renderer needs to draw a body as a model:
+
+| Field | Meaning |
+|---|---|
+| `spinAxis` | right-hand spin axis (ecliptic unit vector) |
+| `rotationAngle` | prime meridian angle about the axis, from the axis's ascending node on the ecliptic |
+| `siderealRotationSeconds` | one turn against the stars, from the data's solar day and the orbital period (Earth 23.93 h, Venus 243 d backwards) |
+| `retrograde` | spins backwards (axis more than 90° from the orbit normal) |
+| `axialTiltDeg` | angle between the spin axis and the orbit normal |
+| `sunDirection`, `viewDirection` | from the body to the Sun and to the observer |
+| `phaseAngleRad`, `illuminatedFraction` | Sun–body–observer angle and the lit fraction (1 + cos α)/2 |
+
+Helpers:
+- `toBodyFixed` / `toEcliptic` convert between frames; the body-fixed frame has x on the prime meridian and z
+  on the spin axis.
+- `sunInBodyFrame` and `viewInBodyFrame` give the light direction and the visible face.
+
+The spin axis comes from the data's pole. Without one, it comes from `KNOWN_POLES` (IAU 2015 values for
+Mercury, Venus, Earth and the Moon; they are not in the data, so the Moon's orbit stays on the ecliptic).
+Otherwise it is the orbit normal tilted by `axial_tilt_deg` about the line of nodes. A tidally locked body
+turns its prime meridian to its parent. `BodyLookTest` checks:
+- every planet's tilt and spin direction;
+- the sidereal periods of Mercury, Venus, Earth and Mars;
+- the Moon's full and new phases on real 2022 dates, and its near side facing Earth;
+- Jupiter's phase angle staying under 12.5°;
+- the Sun crossing Uranus's equator in 2007 and standing over a pole in 2028.
+
+Keep one `BodySystem` per frame and use `BodyAdapter.look(sys, id, body, observer, t)`, because building the
+system each call is wasteful.
+
 ## Sky ephemeris (`SkyEphemeris`)
 
 What you see in the sky from any body, for the sky renderer (`client/sky`) and telescopes.
