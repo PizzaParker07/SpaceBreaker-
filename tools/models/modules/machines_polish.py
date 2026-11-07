@@ -138,6 +138,7 @@ def generate():
 
     battery_bank()
     group_one()
+    group_two()
 
 
 def battery_bank():
@@ -319,3 +320,90 @@ def group_one():
         box([14, 5, 10], [15.5, 6.5, 12.5], 'pipe'), box([14, 6.5, 11], [15.5, 11, 12.5], 'pipe'),
         pnl,
     ], on_glow=[pglow, lit_glow([2, 2, 1.99], [14, 10, 1.99], 'north', 'window', [2, 7, 14, 15])])
+
+
+def group_two():
+    """RTG, combustion generator, press, fabricator, atmosphere processor and Sabatier reactor."""
+    # RTG: finned body on four feet, bolted cap with lifting lugs, terminal box on the right, power lead to the ground
+    t = parts_tex({'front': b('rtg_front'), 'side': b('rtg_side'), 'top': b('rtg_top'), 'bottom': b('machine_bottom'),
+                   'particle': b('rtg_side')})
+    pnl, pglow = panel('west', [-1, 3, 5], [1, 9, 11])
+    polished('rtg', t, legs(1, 1, 15, 15) + [
+        box([1, 2, 1], [15, 14, 15], sides('side', north='front', up='top', down='bottom'), uv={f: [1, 2, 15, 14] for f in SIDES}),
+        box([3, 14, 3], [13, 16, 13], sides('steel', up='top', down='bottom')),
+        box([4, 16, 7], [6, 17, 9], STEEL6), box([10, 16, 7], [12, 17, 9], STEEL6),
+        box([-0.5, 0, 7.5], [0.5, 3, 8.5], 'cable'),
+        pnl,
+    ], on_glow=[pglow])
+
+    # combustion generator: firebox body on feet behind a frame, chimney with a rain cap, fuel line on the left,
+    # controls on the right; the chimney mouth glows while it burns
+    t = parts_tex(casing_tex('combustion_generator_front')) | {'glow': b('combustion_generator_glow'),
+                                                              'flue': b('machine_flue_top'), 'ember': b('machine_flue_ember')}
+    pnl, pglow = panel('west', [-1, 4, 5], [1, 10, 11])
+    polished('combustion_generator', t, legs(1, 1, 15, 15) + front_frame(1, 15, 2, 13) + [
+        box([1, 2, 2], [15, 13, 15], sides('side', north='front', up='top', down='bottom'), uv={'north': [1, 2, 15, 13]}),
+        box([10, 13, 10], [14, 21, 14], {f: 'side' for f in SIDES} | {'up': 'flue'}, uv={'up': [6, 6, 10, 10]}),
+        box([9, 21, 9], [15, 22, 15], {f: 'side' for f in SIDES} | {'down': 'side'}),
+        box([15, 3, 4], [16.5, 4.5, 13], 'pipe'), box([15, 4.5, 4], [16.5, 10, 5.5], 'pipe'),
+        pnl,
+    ], on_glow=[pglow, lit_glow([1, 2, 1.99], [15, 13, 1.99], 'north', 'glow', [1, 2, 15, 13]),
+                lit_glow([10, 20.99, 10], [14, 20.99, 14], 'up', 'ember', [6, 6, 10, 10])])
+
+    # press: bed on feet, four columns, crown with the hydraulic cylinder on top, pressure line down the left side,
+    # pump box on the right; the ram is drawn and stroked by PressRenderer
+    t = parts_tex(casing_tex('press_front')) | {'die': b('press_die')}
+    pnl, pglow = panel('west', [-1, 2, 5], [1, 8, 11])
+    els = legs(1, 1, 15, 15) + [
+        box([1, 2, 1], [15, 5, 15], sides('side', north='front', up='die', down='bottom'), uv={'north': [1, 11, 15, 14]}),
+        box([1, 13, 1], [15, 16, 15], sides('steel', up='top')),
+        box([5, 16, 5], [11, 19, 11], STEEL6), box([6, 19, 6], [10, 20, 10], STEEL6),
+    ]
+    for x, z in ((1, 1), (13, 1), (1, 13), (13, 13)):
+        els.append(box([x, 5, z], [x + 2, 13, z + 2], STEEL6))
+    els += [box([15, 3, 7], [16.5, 4.5, 9], 'pipe'), box([15, 4.5, 7], [16.5, 18, 8.5], 'pipe'),
+            box([11, 17, 7], [16.5, 18.5, 8.5], 'pipe'), pnl]
+    polished('press', t, els, on_glow=[pglow])
+
+    # fabricator: cabinet on feet with the screen set back, work table, gantry with the tool head, a wire spool on the
+    # left and controls on the right
+    t = parts_tex(casing_tex('fabricator_front', top='fabricator_top')) | {'glow': b('fabricator_glow')}
+    pnl, pglow = panel('west', [-1, 3, 5], [1, 9, 11])
+    polished('fabricator', t, legs(1, 1, 15, 15) + front_frame(1, 15, 2, 12) + [
+        box([1, 2, 2], [15, 12, 15], sides('side', north='front', up='top', down='bottom'), uv={'north': [1, 2, 15, 12]}),
+        box([1, 12, 1], [15, 13, 15], sides('steel', up='top')),
+        box([1, 13, 13], [3, 18, 15], STEEL6), box([13, 13, 13], [15, 18, 15], STEEL6),
+        box([1, 18, 12], [15, 20, 15], STEEL6),
+        box([6, 15, 11], [10, 19, 13], STEEL6), box([7, 14, 11], [9, 15, 12], STEEL6),
+        box([15, 4, 5], [17, 10, 11], sides('cable', up='steel', down='steel', east='steel')),
+        box([17, 6, 7], [17.5, 8, 9], STEEL6),
+        pnl,
+    ], on_glow=[pglow, lit_glow([1, 2, 1.99], [15, 12, 1.99], 'north', 'glow', [1, 2, 15, 12])])
+
+    # atmosphere processor: compressor body on feet behind its louvred front, fan plenum (the fan turns while it runs),
+    # intake stack with a rain cap, product line on the left and controls on the right
+    t = parts_tex(casing_tex('atmosphere_processor_front', top='atmosphere_processor_top', side='atmosphere_processor_side'))
+    pnl, pglow = panel('west', [-1, 3, 5], [1, 9, 11])
+    polished('atmosphere_processor', t, legs(1, 1, 15, 15) + front_frame(1, 15, 2, 12) + [
+        box([1, 2, 2], [15, 12, 15], sides('side', north='front', up='bottom', down='bottom'), uv={'north': [1, 2, 15, 12]}),
+        box([1, 12, 1], [15, 14, 15], sides('bottom', up='top'), uv={'up': [1, 1, 15, 15]}),
+        box([11, 14, 11], [14, 20, 14], STEEL6), box([10, 20, 10], [15, 21, 15], STEEL6),
+        box([15, 3, 4], [16.5, 4.5, 12], 'pipe'), box([15, 4.5, 10.5], [16.5, 13, 12], 'pipe'),
+        pnl,
+    ], on_textures={'top': b('machine_fan_on')}, on_glow=[pglow])
+
+    # Sabatier reactor: base on feet with the sight glass behind a frame, catalyst vessel between two flanges, CO2 and
+    # H2 feed lines into the flanges, the water drain on the left, controls on the right
+    t = parts_tex(casing_tex('sabatier_reactor_front')) | {'tube': b('sabatier_reactor_tube'), 'glow': b('sabatier_reactor_glow')}
+    pnl, pglow = panel('west', [-1, 2, 5], [1, 8, 11])
+    polished('sabatier_reactor', t, legs(1, 1, 15, 15) + front_frame(1, 15, 2, 10) + [
+        box([1, 2, 2], [15, 10, 15], sides('side', north='front', up='top', down='bottom'), uv={'north': [1, 2, 15, 10]}),
+        box([2, 10, 4], [14, 15, 12], {'north': 'tube', 'south': 'tube', 'up': 'tube', 'down': 'tube'},
+            uv={'north': [0, 3, 12, 8], 'south': [0, 3, 12, 8], 'up': [0, 0, 12, 8], 'down': [0, 0, 12, 8]}),
+        box([1, 9, 3], [2, 16, 13], STEEL6), box([14, 9, 3], [15, 16, 13], STEEL6),
+        box([7, 15, 7], [9, 17, 9], STEEL6),
+        box([15, 12, 5], [17, 13.5, 6.5], 'pipe'), box([15, 12, 9.5], [17, 13.5, 11], 'pipe'),
+        box([15.5, 3, 5], [17, 12, 6.5], 'pipe'), box([15.5, 3, 9.5], [17, 12, 11], 'pipe'),
+        box([-0.5, 9, 7.5], [1, 10.5, 9], 'pipe'),
+        pnl,
+    ], on_glow=[pglow, lit_glow([1, 2, 1.99], [15, 10, 1.99], 'north', 'glow', [1, 2, 15, 10])])
