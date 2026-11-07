@@ -51,6 +51,25 @@ Dünya dışında yatak çalışmaz. **İstasyon Ranzası** kullanınca **yenide
 - Portun **12 blok** yakınındaki yörüngedeki bir roketten mürettebat istasyona iner ve geri biner.
 - Porta borulanan yakıt ve sıvı oksijen yanaşan rokete akar: istasyon bir **yakıt deposu** olur.
 
+### Kargo roketi
+
+**Kargo Modülü**
+
+Malzemeyi kendin taşımak zorunda değilsin. Montaj tezgâhında kapsül yerine bir **Kargo Modülü** tak: **27 yuvalı** bir ambar olur ve roket insansız uçar.
+- **Yörünge hedefi:** istasyona yanaşır ve ambarı portun **4 blok** yakınındaki sandık, varil ve depolara boşaltır. Yörüngede istasyon yoksa bekler.
+- **Yüzey hedefi:** en yakın [İniş İşareti](navigation)'ne iner ve ambarı işaretin 4 blok yakınındaki depolara boşaltır.
+
+|   |   |   |
+|---|---|---|
+|   | Yanaşma Portu |   |
+| Alüminyum Levha | Sandık | Alüminyum Levha |
+|   | Alüminyum Levha |   |
+
+→ **Kargo Modülü** (Çalışma Masası)
+
+> [!TIP]
+> Sığmayan eşyalar ambarda kalır; sohbete kaç eşyanın beklediği yazılır. Portun ya da işaretin yanına yeterince sandık koy.
+
 ### Büyük kapsül
 
 **Mürettebat Kapsülü (3 kişilik)**
@@ -110,6 +129,25 @@ The **Solar Array** carries three panels on a one-block footprint and makes up t
 - A crewed rocket arriving in an orbit with a station starts **36 blocks** out from the nearest docking port. It closes in quickly, then creeps the last stretch on thruster puffs and locks on with a clunk: **"Docked"**. Nobody can step off on the way in.
 - The crew of a rocket in orbit within **12 blocks** of the port can step off into the station and back on.
 - Fuel and liquid oxygen piped into the port flow into the docked rocket: the station becomes a **fuel depot**.
+
+### Cargo rocket
+
+**Cargo Module**
+
+You do not have to carry supplies yourself. In the rocket assembler, fit a **Cargo Module** in place of the capsule: it is a **27-slot** hold and the rocket flies uncrewed.
+- **Orbit target:** it docks at the station and unloads the hold into the chests, barrels and other storage within **4 blocks** of the port. With no station in that orbit it waits.
+- **Surface target:** it lands on the nearest [Landing Beacon](navigation) and unloads into the storage within 4 blocks of the beacon.
+
+|   |   |   |
+|---|---|---|
+|   | Docking Port |   |
+| Aluminum Plate | Chest | Aluminum Plate |
+|   | Aluminum Plate |   |
+
+→ **Cargo Module** (Crafting Table)
+
+> [!TIP]
+> What does not fit stays in the hold, and chat tells you how many items are waiting. Put enough chests next to the port or beacon.
 
 ### The large capsule
 
