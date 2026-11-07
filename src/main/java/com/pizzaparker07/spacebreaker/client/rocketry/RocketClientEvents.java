@@ -29,6 +29,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 public final class RocketClientEvents {
     private static ResourceKey<Level> lastDimension;
     private static float shake;
+    private static int unseated;
     private static final java.util.Map<Integer, EngineSound> SOUNDS = new java.util.HashMap<>();
     private static final java.util.Map<Integer, EngineSound> ENTRY_SOUNDS = new java.util.HashMap<>();
 
@@ -47,7 +48,12 @@ public final class RocketClientEvents {
             TransitView.update(ridden);
         }
         if (TransitView.active() && TransitView.holding() && !(mc.screen instanceof TransitScreen)) {
-            TransitView.arrived(); // the new dimension is on screen: fade the view out into it
+            // the new dimension is on screen: fade the view out into it once the crew is back in the seat
+            // (the passenger follows the rocket a few ticks later), or after two seconds in any case
+            if (ridden != null || ++unseated > 40) {
+                unseated = 0;
+                TransitView.arrived();
+            }
         } else if (ridden != null && lastDimension != null && lastDimension != level.dimension() && !TransitView.active()) {
             RocketHud.markArrival();
         }
@@ -55,6 +61,11 @@ public final class RocketClientEvents {
         while (RocketryClient.LAUNCH.consumeClick()) {
             if (ridden != null) {
                 PacketDistributor.sendToServer(new RocketActionPayload(ridden.getId(), RocketActionPayload.LAUNCH, 0));
+            }
+        }
+        while (RocketryClient.FLIGHT_DETAILS.consumeClick()) {
+            if (ridden != null) {
+                RocketHud.toggleDetails();
             }
         }
         while (RocketryClient.STAR_MAP.consumeClick()) {
@@ -286,15 +297,40 @@ public final class RocketClientEvents {
         return (float) Mth.clamp((y - 260) / 640.0, 0, 1);
     }
 
+    /** True for the overworld's sky effects while the camera is high enough that its clouds are left out. */
+    public static boolean cloudsBelowView(net.minecraft.client.renderer.DimensionSpecialEffects effects) {
+        Minecraft mc = Minecraft.getInstance();
+        return mc.level != null && mc.level.effects() == effects && spaceFactor() > CLOUDS_GONE;
+    }
+
+    /** Above this (camera ~y 325) the vanilla clouds go; the Earth's own cloud layer is in by then. */
+    private static final float CLOUDS_GONE = 0.1F;
+
+    /** The air thins: the fog draws back with altitude and is gone well before the sky turns black. */
+    @SubscribeEvent
+    static void fogDistance(ViewportEvent.RenderFog event) {
+        float k = spaceFactor();
+        if (k <= 0) {
+            return;
+        }
+        float clear = Mth.clamp(k / 0.3F, 0, 1);
+        event.setFarPlaneDistance(event.getFarPlaneDistance() * (1 + 30 * clear));
+        event.setNearPlaneDistance(event.getNearPlaneDistance() * (1 + 30 * clear));
+        event.setCanceled(true);
+    }
+
     @SubscribeEvent
     static void fog(ViewportEvent.ComputeFogColor event) {
-        float k = spaceFactor();
-        if (k > 0) {
-            float keep = 1 - k;
-            event.setRed(event.getRed() * keep);
-            event.setGreen(event.getGreen() * keep);
-            event.setBlue(event.getBlue() * keep);
+        // the horizon turns a clear, saturated blue as the air thins (never grey), then fades to black at the top
+        float f = spaceFactor();
+        if (f <= 0) {
+            return;
         }
+        float clear = Mth.clamp(f * 3F, 0, 1);
+        float keep = 1 - Mth.clamp((f - 0.45F) / 0.55F, 0, 1);
+        event.setRed(Mth.lerp(clear, event.getRed(), 0.38F) * keep);
+        event.setGreen(Mth.lerp(clear, event.getGreen(), 0.62F) * keep);
+        event.setBlue(Mth.lerp(clear, event.getBlue(), 1.0F) * keep);
     }
 
     @SubscribeEvent
@@ -306,8 +342,13 @@ public final class RocketClientEvents {
         if (k <= 0) {
             return;
         }
-        int alpha = (int) (Mth.clamp(k * 1.1F, 0, 1) * 235);
-        SkyDraw.blackout(event.getModelViewMatrix(), alpha << 24);
+        // deep blue overhead first, then black; the horizon stays a thin band of light blue the longest
+        float top = Mth.clamp(k * 3F, 0, 1);
+        float night = Mth.clamp((k - 0.3F) / 0.6F, 0, 1);
+        int r = (int) Mth.lerp(night, 8, 0), g = (int) Mth.lerp(night, 16, 0), b = (int) Mth.lerp(night, 52, 0);
+        int over = (int) (top * 255) << 24 | r << 16 | g << 8 | b;
+        int horizon = (int) (Mth.clamp((k - 0.35F) / 0.6F, 0, 1) * 255) << 24 | r << 16 | g << 8 | b;
+        SkyDraw.gradient(event.getModelViewMatrix(), over, horizon);
         SkyDraw.stars(event.getModelViewMatrix(), event.getProjectionMatrix(), k);
         // the sun stays bright in space
         Minecraft mc = Minecraft.getInstance();
@@ -315,11 +356,11 @@ public final class RocketClientEvents {
         org.joml.Vector3f sun = new org.joml.Vector3f(-Mth.sin(theta), Mth.cos(theta), 0);
         SkyDraw.billboard(event.getModelViewMatrix(), OrbitSkyEffects.SUN, sun, 100F, 15F, k);
         // the Earth below: its horizon curves away as the rocket climbs, until it looks as it will from orbit
-        // (angular radius from ~88 degrees, a flat horizon, down to the orbit sky's ~50 degrees)
-        float angle = Mth.lerp(k, 88F, 49.5F) * Mth.DEG_TO_RAD;
+        // (angular radius from ~88 degrees, a flat horizon, down to the orbit sky's)
+        float angle = Mth.lerp(k, 88F, OrbitSkyEffects.ORBIT_ANGULAR_RADIUS) * Mth.DEG_TO_RAD;
         float radius = 100F * Mth.sin(angle);
         org.joml.Vector3f center = new org.joml.Vector3f(0, -100F, 0);
-        float planet = Mth.clamp((k - 0.1F) / 0.4F, 0, 1);
+        float planet = Mth.clamp((k - 0.02F) / 0.15F, 0, 1);
         com.mojang.blaze3d.systems.RenderSystem.depthMask(false);
         SkyDraw.planet(event.getModelViewMatrix(), OrbitSkyEffects.EARTH, center, radius, 0F, sun, 0.05F, planet, false);
         SkyDraw.planet(event.getModelViewMatrix(), OrbitSkyEffects.EARTH_CLOUDS, center, radius * 1.006F, 0F, sun, 0.03F, 0.6F * planet, false);

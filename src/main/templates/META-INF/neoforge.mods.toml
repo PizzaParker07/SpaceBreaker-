@@ -35,6 +35,10 @@ config = "spacebreaker.worldgen.mixins.json"
 [[mixins]]
 config = "spacebreaker.compat.mixins.json"
 
+# Rocket ascent: vanilla clouds left out high above them
+[[mixins]]
+config = "spacebreaker.rocketry.mixins.json"
+
 # Optional renderers (never required; see docs/COMPAT.md)
 [[dependencies.${mod_id}]]
 modId = "iris"

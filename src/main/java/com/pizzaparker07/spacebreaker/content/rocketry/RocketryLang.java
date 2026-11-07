@@ -185,6 +185,7 @@ final class RocketryLang {
         l.add("key.categories.spacebreaker.spaceflight", "Spacebreaker: Spaceflight", "Spacebreaker: Uzay Uçuşu");
         l.add("key.spacebreaker.launch", "Launch / abort countdown", "Fırlat / geri sayımı durdur");
         l.add("key.spacebreaker.star_map", "Star map", "Yıldız haritası");
+        l.add("key.spacebreaker.flight_details", "Flight details", "Uçuş ayrıntıları");
         l.add("tooltip.spacebreaker.propellant_cartridge", "Use on a rocket to fill every tank", "Tüm tankları doldurmak için rokete kullan");
         l.add("tooltip.spacebreaker.emergency_beacon", "Away from Earth: calls a capsule that brings you home", "Dünya dışında: seni eve getiren bir kapsül çağırır");
 
@@ -238,6 +239,9 @@ final class RocketryLang {
 
         // HUD
         l.add("hud.spacebreaker.coasting", "Coasting to %s", "%s hedefine süzülüyor");
+        l.add("hud.spacebreaker.brief", "→ %s · %s", "→ %s · %s");
+        l.add("hud.spacebreaker.days", "%s days", "%s gün");
+        l.add("hud.spacebreaker.details_hint", "%s: details", "%s: ayrıntılar");
         l.add("hud.spacebreaker.ignition", "Ignition sequence start", "Ateşleme dizisi başladı");
         l.add("hud.spacebreaker.liftoff", "Liftoff!", "Kalkış!");
         l.add("hud.spacebreaker.state.idle", "Ready", "Hazır");
