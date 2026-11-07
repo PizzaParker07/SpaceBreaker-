@@ -1,0 +1,27 @@
+{
+  "type": "spacebreaker:regolith_processing",
+  "bonus": {
+    "count": 1,
+    "id": "spacebreaker:coal_dust"
+  },
+  "bonus_chance": 0.3,
+  "energy": 100,
+  "fluid_results": [
+    {
+      "amount": 200,
+      "id": "minecraft:water"
+    },
+    {
+      "amount": 50,
+      "id": "spacebreaker:carbon_dioxide"
+    }
+  ],
+  "ingredients": [
+    {
+      "count": 1,
+      "tag": "c:regoliths/carbonaceous"
+    }
+  ],
+  "priority": 2,
+  "time": 160
+}

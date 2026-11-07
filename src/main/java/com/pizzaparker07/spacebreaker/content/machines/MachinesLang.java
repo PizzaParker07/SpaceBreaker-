@@ -39,6 +39,8 @@ final class MachinesLang {
         lang.add("tooltip.spacebreaker.ice_melter", "Ice to clean water; dry ice to carbon dioxide", "Buzdan temiz su; kuru buzdan karbondioksit");
         com.pizzaparker07.spacebreaker.content.earth.EarthModule.tag(lang, IsruRecipes.REGOLITHS, "Regoliths", "Regolitler");
         com.pizzaparker07.spacebreaker.content.earth.EarthModule.tag(lang, IsruRecipes.ICES, "Ices", "Buzlar");
+        com.pizzaparker07.spacebreaker.content.earth.EarthModule.tag(lang, IsruRecipes.CARBONACEOUS_REGOLITHS, "Carbonaceous Regoliths", "Karbonlu Regolitler");
+        com.pizzaparker07.spacebreaker.content.earth.EarthModule.tag(lang, IsruRecipes.STONY_REGOLITHS, "Stony Regoliths", "Taşlı Regolitler");
         com.pizzaparker07.spacebreaker.content.earth.EarthModule.tag(lang, IsruRecipes.DRY_ICES, "Dry Ices", "Kuru Buzlar");
         com.pizzaparker07.spacebreaker.content.earth.EarthModule.tag(lang, IsruRecipes.PERCHLORATE_SOILS, "Perchlorate Soils", "Perkloratlı Topraklar");
         lang.add("multiblock.spacebreaker.pumpjack", "Pumpjack", "Petrol Pompası");

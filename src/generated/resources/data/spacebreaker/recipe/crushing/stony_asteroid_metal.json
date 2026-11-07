@@ -1,0 +1,22 @@
+{
+  "type": "spacebreaker:crushing",
+  "bonus": {
+    "count": 1,
+    "id": "spacebreaker:nickel_dust"
+  },
+  "bonus_chance": 0.25,
+  "energy": 16,
+  "ingredients": [
+    {
+      "count": 1,
+      "tag": "c:regoliths/stony"
+    }
+  ],
+  "results": [
+    {
+      "count": 1,
+      "id": "spacebreaker:iron_dust"
+    }
+  ],
+  "time": 80
+}
