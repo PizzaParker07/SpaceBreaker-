@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-07T16:07:09.852728329	Recipes
+// 1.21.1	2026-11-07T17:00:29.381614809	Recipes
 9adaaa5be5385cd4ce86f1592ecb1ea66c0c4dce data/spacebreaker/advancement/recipes/building_blocks/ariel_ice_slab.json
 c8a14effc004b99a09bfd245c11051a06fbb28f6 data/spacebreaker/advancement/recipes/building_blocks/ariel_ice_slab_from_ariel_ice_stonecutting.json
 6754d279fb144c57df42cb3960cf2152443405ff data/spacebreaker/advancement/recipes/building_blocks/ariel_ice_stairs.json
@@ -514,6 +514,7 @@ be7705014b8b4b68bedf55ab6bb7508e4f0d7086 data/spacebreaker/recipe/regolith_proce
 0a50463e67864e776ced7d737dccedc8acb8f1cf data/spacebreaker/recipe/regolith_processing/perchlorate_salt.json
 b8a70dc20ad4c05d6311b37457ed37994dc56803 data/spacebreaker/recipe/regolith_processing/regolith.json
 a7f53bc41747c21d10e4473866c8a5efa3399252 data/spacebreaker/recipe/regolith_processing/solar_wind_volatiles.json
+4601546a071a21cb2d04ba94c0ea3d0a5b0c0728 data/spacebreaker/recipe/regolith_processing/tempel_dust.json
 528c41d23487c961361d289271888dd198443173 data/spacebreaker/recipe/rod_press_die.json
 ff846378b3a32793c473203a0cd0110b90f4c5cd data/spacebreaker/recipe/rover.json
 1f98cd259dae76257bf4152fc61a2c6c50dd3e06 data/spacebreaker/recipe/rtg.json
