@@ -191,6 +191,25 @@ public final class MarsGameTests {
         helper.succeed();
     }
 
+    /** Natural storms are announced first: calm during the warning, then the dust rolls in, then it clears. */
+    @GameTest(template = EMPTY)
+    public static void dustStormIsForecast(GameTestHelper helper) {
+        var d = new com.pizzaparker07.spacebreaker.content.mars.MarsWeather.Data();
+        d.forecast(0.8F, 30, 20);
+        helper.assertTrue(d.warning() == 20 && d.target() == 0F, "the warning comes before the dust");
+        String event = null;
+        for (int i = 0; i < 20; i++) {
+            event = d.step();
+        }
+        helper.assertTrue("arrive".equals(event) && d.target() == 0.8F, "the storm must arrive when the warning runs out");
+        for (int i = 0; i < 30; i++) {
+            event = d.step();
+        }
+        helper.assertTrue("clear".equals(event) && d.target() == 0F, "the storm must die down after its time");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.mars.MarsWeather.WARNING_TICKS >= 1200, "players get at least a minute of warning");
+        helper.succeed();
+    }
+
     private MarsGameTests() {
     }
 }

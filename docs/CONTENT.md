@@ -136,7 +136,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Kumlar, kayalar, buzlar | Mars Kumu (koyu bazalt kumu), Olivin Kumu, Mars Bazaltı / Cilalı / Tuğla aileleri, Katmanlı Kumtaşı ailesi, Mars Çamurtaşı, Alçıtaşı Bloğu, Mars Su Buzu, Tozlu Buz, Kuru Buz (sıcakta süblimleşir) |
 | 🎨 | Cevherler | Hematit (→ demir), Alçıtaşı Damarı (→ kristal, Taş Otlayan yemi); Mars'ta da meteor demiri |
 | 🎨 | Gökyüzü | karamela rengi gün, gün batımında mavi hale, küçük Güneş, kendi saat açılarıyla Phobos (batıdan doğar) ve Deimos |
-| 🎨 | Toz fırtınaları | seviye başına kayıtlı, sise ve GUI katmanında toz tonu (shader güvenli), uçuşan toz, %85 daha az güneş, kutuplar daha soğuk; `/spacebreaker duststorm` |
+| 🎨 | Toz fırtınaları | seviye başına kayıtlı, sise ve GUI katmanında toz tonu (shader güvenli), uçuşan toz, %85 daha az güneş, kutuplar daha soğuk; doğal fırtınadan 2 dk önce ufuk uyarısı, geliş ve diniş mesajları (EN+TR); `/spacebreaker duststorm start|forecast|stop` |
 | 🎨 | Zindanlar | Terk Edilmiş Mars Araştırma İstasyonu (sera, ISRU tesisi, garaj, sondaj kulesi), Antik Gömülü Nehir Yatağı (katmanlı mağara, kil yatak, düşmüş sonda) |
 | 🎨 | Kayıp İniş Aracı | ovalarda seyrek (≈1/km, gezici yolculuğu): eğik altıgen gövde, kırık bacak, gömülü ısı kalkanı, toza serilmiş turuncu-beyaz paraşüt; veri kaydedicide uzay sondaları / Mars jeolojisi / derin uzay ağı diski, deney verisi |
 | 🎨 | Lav tüpleri | volkan ve ova altında doğal tüneller (bazalt kabuk, cilalı lav astarı, olivin kumlu taban), çökmüş ışıklıklardan girilir; 5+ blok tavan radyasyonu 1/32'nin altına düşürür: hazır üs yeri |
