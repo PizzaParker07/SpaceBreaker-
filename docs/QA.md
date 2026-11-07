@@ -319,6 +319,16 @@ flight between dimensions, rovers being driven, and client-side frame time.
   area; a freshly added entity can be missing from the area query for a tick). The failure message names the kind that
   changed. Two full runs green.
 
+## Launch re-check with rocketry 0453578b (2026-11-07)
+
+`qa_launch` on 1.21.1 + dev/rocketry 0453578b (`docs/screenshots/qa/qa_launch_4_fixed.jpg`):
+- QA-23 **fixed**: Earth stays in view through the ascent and after arrival in orbit.
+- QA-24 **fixed**: the star-map and dismount hints sit on separate lines above the action bar.
+- QA-21: the stop before the switch is 4 ticks (825–828), inside the fade, so not visible.
+- QA-22: a deliberate fade: picture brightness 29 → 18 (tick 800) → black from ~815 to 840 → back to full at 860;
+  about 1.25 s of full black, 2.5 s in all. The flight HUD is now a slim top-left line.
+- The rider stays in the seat through the switch (no unseated ticks). Transit screen 8 ticks (829–836).
+
 ## Re-check of the 1.0.0 feedback fixes (2026-11-07, branch tips merged locally)
 
 dev/qa + dev/suit 722c4777 + dev/compat a80fda8d + dev/rocketry 224d6856 + dev/industry 89620b70: runData clean,
@@ -826,10 +836,10 @@ None.
 | spacebreaker:io/orbit | round_trip | 12133 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 13615 m/s vacuum Δv |
 | spacebreaker:europa/surface | round_trip | 12666 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 13615 m/s vacuum Δv |
 | spacebreaker:europa/orbit | round_trip | 11226 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 11624 m/s vacuum Δv |
-| spacebreaker:ganymede/surface | round_trip | 12192 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 13615 m/s vacuum Δv |
-| spacebreaker:ganymede/orbit | round_trip | 10230 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 11624 m/s vacuum Δv |
 | spacebreaker:callisto/surface | round_trip | 11430 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 13615 m/s vacuum Δv |
 | spacebreaker:callisto/orbit | round_trip | 9672 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 11624 m/s vacuum Δv |
+| spacebreaker:ganymede/surface | round_trip | 12192 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 13615 m/s vacuum Δv |
+| spacebreaker:ganymede/orbit | round_trip | 10230 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 11624 m/s vacuum Δv |
 | spacebreaker:saturn/orbit | round_trip | 11726 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 13615 m/s vacuum Δv |
 | spacebreaker:enceladus/surface | round_trip | 11960 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 13276 m/s vacuum Δv |
 | spacebreaker:enceladus/orbit | round_trip | 11799 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 13276 m/s vacuum Δv |
