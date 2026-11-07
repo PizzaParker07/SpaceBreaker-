@@ -8,13 +8,15 @@ public final class HudConfig {
     public static final ModConfigSpec.BooleanValue ENABLED;
     public static final ModConfigSpec.DoubleValue OPACITY;
     public static final ModConfigSpec.BooleanValue VISOR_FRAME;
+    public static final ModConfigSpec.DoubleValue VISOR_FRAME_OPACITY;
 
     static {
         ModConfigSpec.Builder b = new ModConfigSpec.Builder();
         b.push("hud");
         ENABLED = b.comment("Show the helmet HUD while wearing an EVA helmet.").define("enabled", true);
         OPACITY = b.comment("Opacity of the helmet HUD (0.2 - 1.0).").defineInRange("opacity", 0.9, 0.2, 1.0);
-        VISOR_FRAME = b.comment("Darken the screen edges like the inside of a visor.").define("visorFrame", true);
+        VISOR_FRAME = b.comment("Show the visor frame (rounded rim with glass reflections) around the screen in first person.").define("visorFrame", true);
+        VISOR_FRAME_OPACITY = b.comment("Opacity of the visor frame (0.1 - 1.0).").defineInRange("visorFrameOpacity", 0.7, 0.1, 1.0);
         b.pop();
         SPEC = b.build();
     }
@@ -28,6 +30,10 @@ public final class HudConfig {
 
     public static float opacity() {
         return SPEC.isLoaded() ? OPACITY.get().floatValue() : 0.9F;
+    }
+
+    public static float visorFrameOpacity() {
+        return SPEC.isLoaded() ? VISOR_FRAME_OPACITY.get().floatValue() : 0.7F;
     }
 
     public static boolean visorFrame() {

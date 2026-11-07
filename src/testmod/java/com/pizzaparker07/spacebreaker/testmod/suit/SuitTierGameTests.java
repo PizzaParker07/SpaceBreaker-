@@ -225,4 +225,18 @@ public final class SuitTierGameTests {
         helper.assertTrue(bodyTarget(p, VENUS_C, VENUS_KPA) == SurvivalData.NORMAL_BODY_C, "and still keeps the body at 37 °C");
         helper.succeed();
     }
+
+    @GameTest(template = EMPTY)
+    public static void suitWearApiRespectsItsLimit(GameTestHelper helper) {
+        Player p = wearing(helper, GameType.SURVIVAL, set(SuitTier.MK1));
+        ItemStack boots = p.getItemBySlot(EquipmentSlot.FEET);
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.SuitWear.wearAll(p, 3, 1.0) == 4, "all four pieces take wear");
+        helper.assertTrue(boots.getDamageValue() == 3, "three points of wear, got " + boots.getDamageValue());
+        com.pizzaparker07.spacebreaker.content.suit.SuitWear.wearPiece(p, EquipmentSlot.FEET, 100000, 0.5);
+        helper.assertTrue(boots.getDamageValue() == (int) Math.floor(boots.getMaxDamage() * 0.5), "capped at half, got " + boots.getDamageValue());
+        com.pizzaparker07.spacebreaker.content.suit.SuitWear.wearPiece(p, EquipmentSlot.FEET, 100000, 1.0);
+        helper.assertTrue(!boots.isEmpty() && boots.getDamageValue() == boots.getMaxDamage() - 1, "worn out but still worn");
+        helper.assertFalse(SpaceSuitItem.isSealed(p), "a worn-out piece leaks");
+        helper.succeed();
+    }
 }
