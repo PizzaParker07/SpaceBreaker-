@@ -32,7 +32,7 @@ Kuyruklu yıldız, kirli bir kartopudur: kömürden koyu bir toz kabuğunun alt�
 
 <a id="route"></a>
 ### Oraya gitmek
-Yıldız haritasında bütün kuyruklu yıldızlar gezegenlerin yanında tek bir düğümde durur: **Kuyruklu yıldızlar**. Onu aç: ortada Güneş, her kuyruklu yıldızın da kendi uzun, basık yörüngesi var. Kuyruk her zaman Güneş'in tersini gösterir ve yalnız kuyruklu yıldız uyanıkken uzundur. Bir kuyruklu yıldızı seçince kartını görürsün: Güneş'e uzaklık, Güneş'e en yakın geçiş (tarih ve AU), bir turun kaç yıl sürdüğü ve etkinlik.
+Yıldız haritasında kuyruklu yıldızlar uzun, basık yörüngelerinde küçük noktalardır; yakınlaşıp birinin üstüne gelince adı görünür. Onu seçince panel Güneş'e uzaklığını, etkinliğini, Δv'yi ve yolculuk süresini gösterir.
 
 > [!TIP]
 > **Halley** ters yönde dolanır: yıldız haritası ona ancak nükleer termal motorla ulaşılacağını, yoldaki yıllar için yalıtımlı tank da gerektiğini söyler. **Hale–Bopp** yalnız gözlem içindir. → [Buharlaşma](rocket_parts#boil_off)
@@ -93,7 +93,7 @@ A comet is a dirty snowball: water ice under a crust of dust darker than charcoa
 
 <a id="route"></a>
 ### Getting there
-On the star map all comets share one node, **Comets**, beside the planets. Open it: the Sun sits in the middle and each comet has its own stretched orbit. The tail always points away from the Sun and is long only while the comet is awake. Pick a comet to see its card: distance from the Sun, next closest pass (date and AU), one orbit in years, and activity.
+On the star map the comets are small dots on their long, stretched orbits; zoom in and point at one to see its name. Choose it and the panel shows its distance from the Sun, its activity, the Δv and the trip time.
 
 > [!TIP]
 > **Halley** orbits backwards: the star map says it is only reached with a nuclear thermal engine, and insulated tanks for the years on the way. **Hale–Bopp** is for watching only. → [Boil-off](rocket_parts#boil_off)

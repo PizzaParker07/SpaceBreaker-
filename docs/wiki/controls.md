@@ -39,6 +39,12 @@ Aşağıdaki tuşlar **senin** ayarlarındaki tuşlardır; değiştirdiğinde bu
 | İçindekiler | Home |
 | Ara | Ctrl+F |
 
+<a id="settings"></a>
+### Ayarlar
+İstemci ayarları oyunun config klasöründedir:
+- **spacebreaker-worlds-client.toml:** **planetStyle** gezegenlerin ve uyduların dışarıdan nasıl göründüğünü seçer: **VOXEL** (bloklardan bir top, varsayılan), **CUBE** (yavaşça dönen pikselli bir küp) ya da **ROUND** (eski düz disk). **bodyScale** Güneş'in ve gezegenlerin ne kadar büyük göründüğünü ayarlar (1 = gerçek boyut; varsayılan 8). Bu görünüm gökyüzünde, yörüngede altındaki dünyada ve yıldız haritasında kullanılır.
+- **spacebreaker-hud.toml:** kask göstergesi, vizör kenarı ve ses. → [Kask](eva_suit#hud)
+
 <details>
 <summary>English: Keys and Controls</summary>
 
@@ -80,5 +86,11 @@ The keys below are **your** keys; change them in the options and this page follo
 | Back | Backspace |
 | Contents | Home |
 | Search | Ctrl+F |
+
+<a id="settings"></a>
+### Settings
+Client settings live in the game's config folder:
+- **spacebreaker-worlds-client.toml:** **planetStyle** sets how planets and moons look from outside: **VOXEL** (a ball of blocks, the default), **CUBE** (a slowly turning pixel cube) or **ROUND** (the old smooth disc). **bodyScale** sets how big the Sun and planets look (1 = real size; 8 by default). The style is used in the sky, below you in orbit and on the star map.
+- **spacebreaker-hud.toml:** the helmet display, visor rim and sound. → [Helmet](eva_suit#hud)
 
 </details>
