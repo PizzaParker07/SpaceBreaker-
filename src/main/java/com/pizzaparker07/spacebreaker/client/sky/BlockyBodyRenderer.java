@@ -166,10 +166,24 @@ public final class BlockyBodyRenderer {
         render(pose, style, n, map, body, sun, night, tint, alpha, ring, null);
     }
 
-    /** Draws a body on a flat view looking down -Z (GUI screens: x right, y down). */
+    /**
+     * Draws a body on a flat view looking down -Z (GUI screens: x right, y down). With {@code n} 0 the size is chosen from
+     * the body's size in real screen pixels (GUI units times the GUI scale), a block every few pixels.
+     */
     public static void drawFlat(Matrix4f pose, BlockyBodyMesh.Style style, int n, ColorMap map, Pose body, Vector3f sun, float night,
                                 float tint, float alpha, Ring ring) {
-        render(pose, style, n, map, body, sun, night, tint, alpha, ring, new Vector3f(0, 0, -1));
+        int size = n > 0 ? n : flatResolution(style, body.radius(), Minecraft.getInstance().getWindow().getGuiScale());
+        render(pose, style, size, map, body, sun, night, tint, alpha, ring, new Vector3f(0, 0, -1));
+    }
+
+    /** Blocks across for a body {@code radius} GUI units wide drawn at {@code guiScale}: about one block per 3 screen pixels. */
+    public static int flatResolution(BlockyBodyMesh.Style style, float radius, double guiScale) {
+        double pixels = 2 * radius * guiScale;
+        int n = (int) Math.round(pixels / 3);
+        if (style == BlockyBodyMesh.Style.CUBE) {
+            n = n * 2 / 3;
+        }
+        return Mth.clamp(n, 8, 64);
     }
 
     /** Voxel resolutions a body steps through as it grows on screen. */
