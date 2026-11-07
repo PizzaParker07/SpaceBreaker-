@@ -214,18 +214,23 @@ def hydrolox_vacuum_engine():
     return els
 
 
+# the nuclear thermal engine's bell, (from y, to y, radius) from the exit up to the throat
+NTR_BELL = [(0, 2, 11), (2, 5, 9), (5, 8, 7), (8, 10, 5), (10, 12, 4)]
+
+
 def nuclear_thermal_engine():
-    """Nuclear thermal engine: shadow shield under the mount, a squat reactor vessel, then a long hydrogen bell."""
+    """Nuclear thermal engine: thick shadow shield, cylindrical reactor with coolant pipes, a smooth bell."""
     els = []
     els += prism(28, 32, 16)                              # mount ring
-    els += prism(25, 28, 11, top=False)                   # tungsten shadow shield
-    els += prism(15, 25, 9, top=False, bottom=False)      # reactor pressure vessel
-    els += prism(13, 15, 5, top=False, bottom=False)      # plenum
-    els += prism(11, 13, 3, top=False, bottom=False)      # throat
-    els += prism(8, 11, 6, top=False, bottom=False)
-    els += prism(4, 8, 9, top=False, bottom=False)
-    els += prism(0, 4, 12, top=False)
-    els.append(box([12, 17, 6], [15, 25, 9], region='aux'))   # hydrogen turbopump and feed line
+    els += prism(24, 28, 13, top=False)                   # tungsten shadow shield
+    els += prism(14, 24, 8, top=False, bottom=False)      # reactor vessel
+    els += prism(12, 14, 4, top=False, bottom=False)      # nozzle throat
+    for y0, y1, r in NTR_BELL:                            # regeneratively cooled bell
+        els += prism(y0, y1, r, top=False, bottom=(y0 == 0))
+    # four hydrogen coolant pipes running down the outside of the vessel
+    for fr, to in (([7.5, 12, -1], [8.5, 24, 0]), ([7.5, 12, 16], [8.5, 24, 17]),
+                   ([-1, 12, 7.5], [0, 24, 8.5]), ([16, 12, 7.5], [17, 24, 8.5])):
+        els.append(box(fr, to, region='aux'))
     return els
 
 

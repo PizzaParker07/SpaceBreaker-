@@ -353,30 +353,38 @@ def hydrolox_vacuum_engine():
     return cv
 
 
+NTR_BELL = [(0, 2, 11), (2, 5, 9), (5, 8, 7), (8, 10, 5), (10, 12, 4)]
+
+
 def nuclear_thermal_engine():
     cv = new_sheet()
+    radius = {y: r for y0, y1, r in NTR_BELL for y in range(y0, y1)}
     thrust_structure(cv, 28, 32, 171)
-    bell(cv, 25, 28, lambda y: 11, NIOBIUM, 1, 4, 172)                   # tungsten shadow shield
-    bell(cv, 15, 25, lambda y: 9, WHITE, 3, 7, 173)                      # reactor vessel under white insulation
-    for y in (16, 24):
-        ring(cv, SIDE, y, 9, NIOBIUM, 2, 4)
-    for y in range(19, 22):                                              # yellow-black radiation band
+    bell(cv, 24, 28, lambda y: 13, CARBON, 1, 4, 172)                    # thick tungsten shadow shield
+    ring(cv, SIDE, 27, 13, STEEL, 3, 6)                                  # bright rim on its top edge
+    for c in range(1, 32, 4):
+        put_side(cv, SIDE, c, 25, STEEL[4])                              # bolts round the shield
+    bell(cv, 14, 24, lambda y: 8, STEEL, 2, 6, 173)                      # reactor pressure vessel
+    for y in (15, 23):
+        ring(cv, SIDE, y, 8, STEEL, 1, 3)
+    for y in (18, 19):                                                   # one plain warning stripe
+        ring(cv, SIDE, y, 8, HAZARD, 2, 4)
+    bell(cv, 12, 14, lambda y: 4, STEEL, 1, 4, 174)                      # throat
+    bell(cv, 0, 12, lambda y: radius[y], COPPER, 3, 6, 175, lip=COPPER)  # regeneratively cooled bell
+    for y in range(1, 12):
+        r = radius[y]
+        for c in range(16 - r, 16 + r):
+            if (c - (16 - r)) % 3 == 0:
+                put_side(cv, SIDE, c, y, COPPER[2])                      # coolant tube seams
+    # aux view: the coolant pipes, polished steel with flanges
+    for y in range(32):
         for c in range(32):
-            if radius_at(c, 9):
-                put_side(cv, SIDE, c, y, HAZARD[3] if (c // 3) % 2 else CARBON[2])
-    bell(cv, 13, 15, lambda y: 5, STEEL, 2, 5, 174)
-    radii = {}
-    for y0, y1, r in [(11, 13, 3), (8, 11, 6), (4, 8, 9), (0, 4, 12)]:
-        for y in range(y0, y1):
-            radii[y] = r
-    bell(cv, 0, 13, lambda y: radii[y], NIOBIUM, 2, 6, 175, lip=NIOBIUM)   # radiatively cooled bell
-    for y in range(1, 11):
-        for c in range(0, 32, 4):
-            if radius_at(c, radii[y]):
-                put_side(cv, SIDE, c, y, NIOBIUM[1])
-    turbopump(cv, (20, 24), 176)
+            put_side(cv, AUX, c, y, STEEL[5] if c % 4 == 1 else STEEL[3])
+    for y in (13, 23):
+        for c in range(32):
+            put_side(cv, AUX, c, y, STEEL[1])
     engine_top(cv, TOP, 177)
-    nozzle_exit(cv, BOTTOM, 12, 3)
+    nozzle_exit(cv, BOTTOM, 11, 4)
     return cv
 
 
@@ -1818,6 +1826,24 @@ def rocket_plume():
     return cv
 
 
+def rocket_plume_nuclear():
+    """Nuclear thermal exhaust (16x64): hot hydrogen, almost invisible, a faint blue-violet core that fades fast."""
+    cv = Canvas(16, 64)
+    for y in range(64):
+        t = y / 63
+        for x in range(16):
+            c = abs(x + 0.5 - 8) / 8
+            core = max(0.0, 1 - c * (1.8 + t))
+            if core <= 0:
+                continue
+            a = int(200 * min(1, core * 1.2) * (1 - t) ** 1.8)
+            if a < 6:
+                continue
+            col = (225, 230, 255) if t < 0.15 and c < 0.3 else (170, 175, 255) if c < 0.5 else (150, 130, 240)
+            cv[x, y] = (*col, a)
+    return cv
+
+
 # =========================================================================== GUI backgrounds
 
 GUI_BG, GUI_HI, GUI_LO, GUI_EDGE = (198, 198, 198), (255, 255, 255), (85, 85, 85), (0, 0, 0)
@@ -2565,6 +2591,7 @@ def export_facility(save):
     save(disc(earth_map, 2048, 1024, limb=(110, 170, 240, 120)), 'environment', 'orbit_earth_disc')
     save(disc(moon_map, 512, 256), 'environment', 'orbit_moon_disc')
     save(rocket_plume(), 'entity', 'rocket_plume')
+    save(rocket_plume_nuclear(), 'entity', 'rocket_plume_nuclear')
     save(gui_assembler(), 'gui', 'rocket_assembler')
     save(gui_console(), 'gui', 'launch_console')
 

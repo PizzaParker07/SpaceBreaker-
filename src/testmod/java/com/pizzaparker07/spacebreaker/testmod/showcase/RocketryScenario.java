@@ -750,7 +750,7 @@ final class RocketryScenario implements ShowcaseScenario {
             orbit.addFreshEntity(r);
             r.stageScene(FlightState.ORBIT, 0, 0, true);
             scene.add(r);
-            toDimension(p, Location.EARTH_ORBIT, 3.0, RocketEntity.ORBIT_Y + 1.6, 3.8, 143F, 4F);
+            toDimension(p, Location.EARTH_ORBIT, 4.2, RocketEntity.ORBIT_Y + 1.5, 1.6, 107F, 14F);
         }, null));
         s.add(new Shot("31_nearby_stars", 6000, 0, 0, 0, 0F, 0F, false, fp, 120,
                 p -> {

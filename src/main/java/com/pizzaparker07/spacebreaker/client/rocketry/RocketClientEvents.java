@@ -133,6 +133,10 @@ public final class RocketClientEvents {
         double bx = x - Math.sin(tilt) * 0.2, by = y - 0.2;
         double ground = level.getHeight(Heightmap.Types.MOTION_BLOCKING, rocket.getBlockX(), rocket.getBlockZ());
         double h = y - ground;
+        // a nuclear thermal stage throws out hot hydrogen: no flame, no smoke
+        if (com.pizzaparker07.spacebreaker.content.rocketry.entity.NuclearExhaust.reactorHot(rocket)) {
+            return;
+        }
         int n = quality * (airless ? 1 : 3);
         for (int i = 0; i < n; i++) {
             level.addParticle(ParticleTypes.FLAME, bx + rng.nextGaussian() * 0.25, by - rng.nextDouble() * 1.5, z + rng.nextGaussian() * 0.25,

@@ -30,6 +30,7 @@ import java.util.Map;
  */
 public final class RocketStackRenderer {
     public static final ResourceLocation PLUME = Spacebreaker.id("textures/entity/rocket_plume.png");
+    public static final ResourceLocation PLUME_NUCLEAR = Spacebreaker.id("textures/entity/rocket_plume_nuclear.png");
     private static final Map<ResourceLocation, ItemStack> STACKS = new HashMap<>();
 
     private RocketStackRenderer() {
@@ -96,37 +97,59 @@ public final class RocketStackRenderer {
             }
             float r = part.nozzle() / 16F;
             float flicker = 0.9F + 0.1F * Mth.sin(time * 2.3F) + 0.05F * Mth.sin(time * 7.1F);
+            boolean nuclear = part.propellant() == com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant.NUCLEAR;
             float length = (vacuum ? 3.2F : 4.5F) * strength * flicker;
             float width = r * (vacuum ? 2.2F : 1.05F);
             pose.pushPose();
             pose.translate(0, p.y() / 16.0, 0);
+            if (nuclear) {
+                // hot hydrogen is nearly invisible: a thin, faint blue-violet glow, then a dull red glow at the nozzle lip
+                // (one buffer at a time: asking for the next one ends the previous)
+                VertexConsumer hydrogen = buffers.getBuffer(RenderType.entityTranslucentEmissive(PLUME_NUCLEAR));
+                for (int k = 0; k < 4; k++) {
+                    pose.pushPose();
+                    pose.mulPose(Axis.YP.rotationDegrees(k * 45F + time * 3F));
+                    plane(hydrogen, pose.last().pose(), pose.last(), r * 0.85F, r * 1.25F, length, 0.8F, 255, 255, 255);
+                    pose.popPose();
+                }
+                VertexConsumer lip = buffers.getBuffer(RenderType.entityTranslucentEmissive(PLUME));
+                for (int k = 0; k < 4; k++) {
+                    pose.pushPose();
+                    pose.mulPose(Axis.YP.rotationDegrees(k * 45F));
+                    plane(lip, pose.last().pose(), pose.last(), r * 0.98F, r * 0.92F, 0.2F, 0.5F, 255, 110, 80);
+                    pose.popPose();
+                }
+                pose.popPose();
+                continue;
+            }
             VertexConsumer vc = buffers.getBuffer(RenderType.entityTranslucentEmissive(PLUME));
             for (int k = 0; k < 4; k++) {
                 pose.pushPose();
                 pose.mulPose(Axis.YP.rotationDegrees(k * 45F + time * 3F));
-                plane(vc, pose.last().pose(), pose.last(), r * 0.95F, width, length, vacuum ? 0.75F : 1F);
+                plane(vc, pose.last().pose(), pose.last(), r * 0.95F, width, length, vacuum ? 0.75F : 1F, 255, 255, 255);
                 pose.popPose();
             }
             pose.popPose();
         }
     }
 
-    private static void plane(VertexConsumer vc, Matrix4f m, PoseStack.Pose last, float top, float bottom, float length, float alpha) {
+    private static void plane(VertexConsumer vc, Matrix4f m, PoseStack.Pose last, float top, float bottom, float length, float alpha,
+                              int r, int g, int b) {
         int a = (int) (alpha * 255);
-        // a tapered quad: nozzle width at the top, wider (or narrower) at the bottom
-        vertex(vc, m, last, -top, 0, 0, 0, a);
-        vertex(vc, m, last, top, 0, 1, 0, a);
-        vertex(vc, m, last, bottom, -length, 1, 1, a);
-        vertex(vc, m, last, -bottom, -length, 0, 1, a);
+        // a tapered quad: nozzle width at the top, wider (or narrower) at the bottom; the colour tints the texture
+        vertex(vc, m, last, -top, 0, 0, 0, a, r, g, b);
+        vertex(vc, m, last, top, 0, 1, 0, a, r, g, b);
+        vertex(vc, m, last, bottom, -length, 1, 1, a, r, g, b);
+        vertex(vc, m, last, -bottom, -length, 0, 1, a, r, g, b);
         // back face
-        vertex(vc, m, last, -bottom, -length, 0, 1, a);
-        vertex(vc, m, last, bottom, -length, 1, 1, a);
-        vertex(vc, m, last, top, 0, 1, 0, a);
-        vertex(vc, m, last, -top, 0, 0, 0, a);
+        vertex(vc, m, last, -bottom, -length, 0, 1, a, r, g, b);
+        vertex(vc, m, last, bottom, -length, 1, 1, a, r, g, b);
+        vertex(vc, m, last, top, 0, 1, 0, a, r, g, b);
+        vertex(vc, m, last, -top, 0, 0, 0, a, r, g, b);
     }
 
-    private static void vertex(VertexConsumer vc, Matrix4f m, PoseStack.Pose last, float x, float y, float u, float v, int a) {
-        vc.addVertex(m, x, y, 0).setColor(255, 255, 255, a).setUv(u, v).setOverlay(OverlayTexture.NO_OVERLAY)
+    private static void vertex(VertexConsumer vc, Matrix4f m, PoseStack.Pose last, float x, float y, float u, float v, int a, int r, int g, int b) {
+        vc.addVertex(m, x, y, 0).setColor(r, g, b, a).setUv(u, v).setOverlay(OverlayTexture.NO_OVERLAY)
                 .setLight(0xF000F0).setNormal(last, 0, 0, 1);
     }
 }
