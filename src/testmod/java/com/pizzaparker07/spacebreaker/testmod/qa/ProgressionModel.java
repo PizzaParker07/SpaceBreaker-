@@ -133,7 +133,7 @@ final class ProgressionModel {
             Map.entry("fabricating", "fabricator"), Map.entry("refining", "refinery"), Map.entry("electrolysis", "electrolyzer"),
             Map.entry("liquefaction", "cryogenic_liquefier"), Map.entry("sabatier", "sabatier_reactor"),
             Map.entry("regolith_processing", "regolith_heater"), Map.entry("melting", "ice_melter"),
-            Map.entry("chemical_reaction", "chemical_reactor"));
+            Map.entry("chemical_reaction", "chemical_reactor"), Map.entry("sintering", "sintering_furnace"));
 
     ProgressionModel(MinecraftServer server, Player probe, SbConfig.Realism realism) {
         this.server = server;
