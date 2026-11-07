@@ -2299,6 +2299,105 @@ def door_frame():
     return cv
 
 
+def hazard_stripe():
+    """Diagonal yellow and black stripes."""
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            band = ((x + y) // 4) % 2 == 0
+            cv[x, y] = (HAZARD[3] if (x * 3 + y) % 7 else HAZARD[2]) if band else (CARBON[1] if (x + y * 3) % 5 else CARBON[2])
+    return cv
+
+
+def led_panel():
+    """A flush LED light panel: bright diffuser in a thin frame."""
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            edge = x in (0, 15) or y in (0, 15)
+            inner = x in (1, 14) or y in (1, 14)
+            cv[x, y] = ALPANEL[1] if edge else ALPANEL[4] if inner else (250, 252, 255) if (x + y) % 6 else (236, 242, 250)
+    return cv
+
+
+def floodlight_face():
+    """The lamp face: a bright lens behind a grille."""
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            d = math.hypot(x - 7.5, y - 7.5)
+            if d > 7.2:
+                c = STEEL[1]
+            elif y % 3 == 0:
+                c = STEEL[3]
+            else:
+                c = (255, 252, 230) if d < 4 else (240, 232, 190)
+            cv[x, y] = c
+    return cv
+
+
+def floodlight_side():
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            cv[x, y] = STEEL[2] if y % 2 else STEEL[1]      # cooling fins
+    return cv
+
+
+def cable_duct():
+    """A grey wall cover; through its slots, coloured cable runs."""
+    cv = Canvas()
+    colours = ((200, 60, 50), (60, 120, 200), (230, 190, 60), (60, 160, 90))
+    for y in range(16):
+        for x in range(16):
+            cv[x, y] = ALPANEL[2] if (x + y) % 5 else ALPANEL[1]
+    for i, y0 in enumerate((3, 7, 11)):
+        for x in range(2, 14):
+            cv[x, y0] = CARBON[1]
+            cv[x, y0 + 1] = colours[(x // 3 + i) % 4] if x % 3 else CARBON[2]
+    for x, y in ((1, 1), (14, 1), (1, 14), (14, 14)):
+        cv[x, y] = ALPANEL[4]
+    return cv
+
+
+def pipe_duct():
+    """A cover with two pipes showing through: a cold blue one and a warm red one, with flanges."""
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            cv[x, y] = ALPANEL[2] if (x + y) % 5 else ALPANEL[1]
+    for x0, col in ((3, ((90, 140, 200), (60, 100, 160))), (10, ((200, 90, 70), (150, 60, 50)))):
+        for y in range(16):
+            for x in range(x0, x0 + 3):
+                cv[x, y] = col[0] if x == x0 + 1 else col[1]
+            if y in (4, 12):
+                for x in range(x0 - 1, x0 + 4):
+                    cv[x, y] = STEEL[3]
+    return cv
+
+
+def steel_ladder():
+    cv = Canvas()
+    for y in range(16):
+        for x in (2, 3, 12, 13):
+            cv[x, y] = STEEL[3] if x in (2, 12) else STEEL[1]
+        if y % 4 == 1:
+            for x in range(4, 12):
+                cv[x, y] = STEEL[4]
+                cv[x, y + 1] = STEEL[1]
+    return cv
+
+
+def railing():
+    """Yellow safety railing: two rails and posts."""
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            if y in (1, 2, 8, 9) or x in (7, 8):
+                cv[x, y] = HAZARD[3] if y in (1, 8) or x == 7 else HAZARD[1]
+    return cv
+
+
 def habitat_kit_icon():
     cv = Canvas()
     rows = [
@@ -2351,6 +2450,14 @@ def export_facility(save):
     save(limit_colours(sliding_door(False)), 'block', 'sliding_door_lower', (170, 230, 0, None))
     save(limit_colours(sliding_door(True)), 'block', 'sliding_door_upper', (170, 230, 0, None))
     save(limit_colours(door_frame()), 'block', 'sliding_door_frame', (140, 230, 0, None))
+    save(limit_colours(hazard_stripe()), 'block', 'hazard_stripe', (120, 230, 0, None))
+    save(limit_colours(led_panel()), 'block', 'led_panel', (220, 20, 0, None))
+    save(limit_colours(floodlight_face()), 'block', 'floodlight_face', (220, 20, 0, None))
+    save(limit_colours(floodlight_side()), 'block', 'floodlight_side', (140, 230, 0, None))
+    save(limit_colours(cable_duct()), 'block', 'cable_duct', (150, 230, 0, None))
+    save(limit_colours(pipe_duct()), 'block', 'pipe_duct', (150, 230, 0, None))
+    save(steel_ladder(), 'block', 'steel_ladder')
+    save(railing(), 'block', 'railing')
     icon = Canvas()
     lower, upper = sliding_door(False), sliding_door(True)
     for y in range(16):

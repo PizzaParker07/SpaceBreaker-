@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "spacebreaker:block/grate_platform"
+    },
+    "type=top": {
+      "model": "spacebreaker:block/grate_platform_top"
+    },
+    "type=double": {
+      "model": "spacebreaker:block/grate"
+    }
+  }
+}

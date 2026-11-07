@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "spacebreaker:hazard_stripe"
+  },
+  "result": {
+    "id": "spacebreaker:hazard_stripe_slab",
+    "count": 2
+  }
+}

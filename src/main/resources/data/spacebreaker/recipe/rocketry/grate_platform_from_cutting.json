@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "spacebreaker:grate"
+  },
+  "result": {
+    "id": "spacebreaker:grate_platform",
+    "count": 2
+  }
+}

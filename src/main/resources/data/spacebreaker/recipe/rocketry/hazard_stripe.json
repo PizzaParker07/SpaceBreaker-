@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "PY",
+    "KP"
+  ],
+  "key": {
+    "P": {
+      "item": "spacebreaker:aluminum_panel"
+    },
+    "Y": {
+      "item": "minecraft:yellow_dye"
+    },
+    "K": {
+      "item": "minecraft:black_dye"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:hazard_stripe",
+    "count": 4
+  }
+}

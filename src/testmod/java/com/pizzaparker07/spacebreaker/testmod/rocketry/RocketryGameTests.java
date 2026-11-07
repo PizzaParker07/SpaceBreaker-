@@ -1267,6 +1267,35 @@ public final class RocketryGameTests {
     }
 
     @GameTest(template = EMPTY)
+    public static void baseFittings(GameTestHelper helper) {
+        var level = helper.getLevel();
+        BlockPos p = helper.absolutePos(new BlockPos(1, 2, 1));
+        java.util.function.Function<net.minecraft.world.level.block.state.BlockState, Boolean> airtight = state -> {
+            level.setBlock(p, state, 3);
+            return com.pizzaparker07.spacebreaker.content.suit.block.SealedRoom.airtight(level, p, level.getBlockState(p));
+        };
+        // stripes and duct covers are full walls; grate platform, railing and ladder let air through
+        for (var block : List.of(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.HAZARD_STRIPE.base().get(),
+                com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.CABLE_DUCT.get(),
+                com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.PIPE_DUCT.get(),
+                com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.LED_PANEL.get())) {
+            helper.assertTrue(airtight.apply(block.defaultBlockState()), block + " holds air");
+        }
+        for (var block : List.of(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.GRATE_PLATFORM.get(),
+                com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.RAILING.get(),
+                com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.STEEL_LADDER.get(),
+                com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.FLOODLIGHT.get())) {
+            helper.assertFalse(airtight.apply(block.defaultBlockState()), block + " lets air through");
+        }
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.STEEL_LADDER.get().defaultBlockState()
+                .is(net.minecraft.tags.BlockTags.CLIMBABLE), "the ladder is climbable");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.LED_PANEL.get().defaultBlockState().getLightEmission() == 15
+                && com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.FLOODLIGHT.get().defaultBlockState().getLightEmission() == 15,
+                "the lamps light the base");
+        helper.succeed();
+    }
+
+    @GameTest(template = EMPTY)
     public static void slidingDoor(GameTestHelper helper) {
         var level = helper.getLevel();
         var door = com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.SLIDING_DOOR.get();

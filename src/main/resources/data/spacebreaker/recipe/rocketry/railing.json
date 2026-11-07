@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "YYY",
+    "YYY"
+  ],
+  "key": {
+    "Y": {
+      "item": "minecraft:iron_bars"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:railing",
+    "count": 6
+  }
+}

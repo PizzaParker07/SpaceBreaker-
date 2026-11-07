@@ -361,6 +361,13 @@ public final class RocketryModule implements SbModule {
         loot.self(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.PRESSURE_GLASS.get());
         loot.self(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.PORTHOLE.get());
         loot.self(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.GRATE.get());
+        for (var b : java.util.List.of(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.LED_PANEL,
+                com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.FLOODLIGHT, com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.CABLE_DUCT,
+                com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.PIPE_DUCT, com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.STEEL_LADDER,
+                com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.RAILING)) {
+            loot.self(b.get());
+        }
+        loot.slab(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.GRATE_PLATFORM.get());
         loot.custom(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.SLIDING_DOOR.get(), b -> net.minecraft.world.level.storage.loot.LootTable.lootTable()
                 .withPool(net.minecraft.world.level.storage.loot.LootPool.lootPool().add(net.minecraft.world.level.storage.loot.entries.LootItem.lootTableItem(b)
                         .when(net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition.hasBlockStateProperties(b)
@@ -384,6 +391,8 @@ public final class RocketryModule implements SbModule {
             }
         }
         tags.block(com.pizzaparker07.spacebreaker.content.suit.SuitModule.LEAKY, com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.GRATE.get());
+        tags.block(BlockTags.CLIMBABLE, com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.STEEL_LADDER.get());
+        tags.block(BlockTags.SLABS, com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.GRATE_PLATFORM.get());
         // the sliding door holds air while shut (the airtight tag honours its OPEN property)
         tags.block(com.pizzaparker07.spacebreaker.content.suit.SuitModule.AIRTIGHT, com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.SLIDING_DOOR.get());
     }

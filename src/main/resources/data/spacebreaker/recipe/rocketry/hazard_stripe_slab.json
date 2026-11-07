@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "XXX"
+  ],
+  "key": {
+    "X": {
+      "item": "spacebreaker:hazard_stripe"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:hazard_stripe_slab",
+    "count": 6
+  }
+}

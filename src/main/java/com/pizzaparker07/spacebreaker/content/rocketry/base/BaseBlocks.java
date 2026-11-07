@@ -36,6 +36,26 @@ public final class BaseBlocks {
     public static final DeferredBlock<TransparentBlock> GRATE = KIT.block("grate", TransparentBlock::new,
             metal(MapColor.METAL).noOcclusion().isViewBlocking((s, l, p) -> false));
 
+    /** Yellow-and-black hazard stripes, with a slab for floor edges. */
+    public static final BlockKit.Family HAZARD_STRIPE = KIT.family("hazard_stripe", MapColor.COLOR_YELLOW, SoundType.METAL, 3.0F, false);
+    /** Flush LED ceiling and wall panel, full light. */
+    public static final DeferredBlock<Block> LED_PANEL = KIT.block("led_panel", metal(MapColor.SNOW).lightLevel(s -> 15));
+    /** A floodlight on any face. */
+    public static final DeferredBlock<FloodlightBlock> FLOODLIGHT = KIT.block("floodlight", FloodlightBlock::new,
+            metal(MapColor.METAL).noOcclusion().lightLevel(s -> 15));
+    /** Wall covers that hide cable runs and pipe runs (full blocks: they hold air). */
+    public static final DeferredBlock<Block> CABLE_DUCT = KIT.block("cable_duct", metal(MapColor.COLOR_GRAY));
+    public static final DeferredBlock<Block> PIPE_DUCT = KIT.block("pipe_duct", metal(MapColor.COLOR_GRAY));
+    /** A steel ladder. */
+    public static final DeferredBlock<net.minecraft.world.level.block.LadderBlock> STEEL_LADDER = KIT.block("steel_ladder",
+            net.minecraft.world.level.block.LadderBlock::new, metal(MapColor.METAL).noOcclusion());
+    /** Safety railing that joins up like iron bars. */
+    public static final DeferredBlock<net.minecraft.world.level.block.IronBarsBlock> RAILING = KIT.block("railing",
+            net.minecraft.world.level.block.IronBarsBlock::new, metal(MapColor.COLOR_YELLOW).noOcclusion());
+    /** Half-height grate platform for catwalks. */
+    public static final DeferredBlock<net.minecraft.world.level.block.SlabBlock> GRATE_PLATFORM = KIT.block("grate_platform",
+            net.minecraft.world.level.block.SlabBlock::new, metal(MapColor.METAL).noOcclusion().isViewBlocking((s, l, p) -> false));
+
     /** Two-high sliding door: holds air when shut. */
     public static final DeferredBlock<SlidingDoorBlock> SLIDING_DOOR = KIT.blocks.registerBlock("sliding_door", SlidingDoorBlock::new,
             metal(MapColor.METAL).noOcclusion());
@@ -62,6 +82,9 @@ public final class BaseBlocks {
         out.add(PORTHOLE.get());
         out.add(GRATE.get());
         out.add(SLIDING_DOOR.get());
+        for (var b : java.util.List.of(LED_PANEL, FLOODLIGHT, CABLE_DUCT, PIPE_DUCT, STEEL_LADDER, RAILING, GRATE_PLATFORM)) {
+            out.add(b.get());
+        }
         return out.toArray(Block[]::new);
     }
 }

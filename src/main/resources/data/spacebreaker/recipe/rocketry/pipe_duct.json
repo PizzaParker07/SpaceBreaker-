@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "PBP"
+  ],
+  "key": {
+    "P": {
+      "item": "spacebreaker:aluminum_panel"
+    },
+    "B": {
+      "item": "minecraft:bucket"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:pipe_duct",
+    "count": 2
+  }
+}

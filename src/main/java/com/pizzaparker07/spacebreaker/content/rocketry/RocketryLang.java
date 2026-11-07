@@ -43,6 +43,15 @@ final class RocketryLang {
         l.block(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.PORTHOLE, "Porthole", "Lombar");
         l.block(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.GRATE, "Grate Floor", "Izgara Zemin");
         l.block(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.SLIDING_DOOR, "Sliding Door", "Kayar Kapı");
+        com.pizzaparker07.spacebreaker.content.mars.BlockKit.familyNames(l, com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.HAZARD_STRIPE,
+                "Hazard Stripe", "Uyarı Şeridi");
+        l.block(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.LED_PANEL, "LED Panel Light", "LED Panel Lamba");
+        l.block(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.FLOODLIGHT, "Floodlight", "Projektör");
+        l.block(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.CABLE_DUCT, "Cable Duct Cover", "Kablo Kanalı Kapağı");
+        l.block(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.PIPE_DUCT, "Pipe Duct Cover", "Boru Kanalı Kapağı");
+        l.block(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.STEEL_LADDER, "Steel Ladder", "Çelik Merdiven");
+        l.block(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.RAILING, "Safety Railing", "Korkuluk");
+        l.block(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.GRATE_PLATFORM, "Grate Platform", "Izgara Platform");
         l.add("message.spacebreaker.warn.dust_storm_launch", "Dust storm over the pad: poor visibility and gusts. Launch at your own risk, or wait it out",
                 "Rampanın üstünde toz fırtınası: görüş kötü, rüzgâr sert. Kalkış senin sorumluluğunda; istersen fırtınanın geçmesini bekle");
         l.add("message.spacebreaker.landing_beacon.guided", "Landing beacon in range: coming down on the base", "İniş işareti alındı: üsse iniliyor");
