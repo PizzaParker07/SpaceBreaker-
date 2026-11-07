@@ -124,6 +124,39 @@ public final class IndustryAutomationTests {
         h.succeed();
     }
 
+    /**
+     * Cargo rockets unload into any ItemHandler block near their port (UncrewedMissions.unloadCargo, null side).
+     * Industry machines take only what they can use into their input slots; the excavator, whose slots are output
+     * only, and fluid tanks take nothing; a chest next to them takes the rest.
+     */
+    @GameTest(template = "empty", batch = "industry_automation")
+    public static void cargoUnloadsIntoIndustryStorage(GameTestHelper h) {
+        machine(h, MachinesModule.REGOLITH_HEATER, new BlockPos(1, 1, 1), Direction.NORTH);
+        machine(h, MachinesModule.RTG, new BlockPos(2, 1, 1), Direction.NORTH);
+        machine(h, MachinesModule.REGOLITH_EXCAVATOR, new BlockPos(3, 1, 1), Direction.NORTH);
+        h.setBlock(new BlockPos(4, 1, 1), MachinesModule.CRYOGENIC_TANK.get());
+        h.setBlock(new BlockPos(1, 1, 3), Blocks.CHEST);
+        var level = h.getLevel();
+        java.util.function.Function<BlockPos, net.neoforged.neoforge.items.IItemHandler> cap =
+                p -> level.getCapability(net.neoforged.neoforge.capabilities.Capabilities.ItemHandler.BLOCK, h.absolutePos(p), null);
+        ItemStack regolith = new ItemStack(BuiltInRegistries.ITEM.get(Spacebreaker.id("lunar_regolith")), 16);
+        ItemStack pellet = new ItemStack(MachinesModule.RTG_FUEL_PELLET.get());
+        ItemStack diamonds = new ItemStack(Items.DIAMOND, 5);
+        // the heater takes regolith, not diamonds
+        h.assertTrue(net.neoforged.neoforge.items.ItemHandlerHelper.insertItemStacked(cap.apply(new BlockPos(1, 1, 1)), regolith.copy(), false).isEmpty(),
+                "the regolith heater takes regolith");
+        h.assertTrue(net.neoforged.neoforge.items.ItemHandlerHelper.insertItemStacked(cap.apply(new BlockPos(1, 1, 1)), diamonds.copy(), false).getCount() == 5,
+                "the heater refuses what it cannot process");
+        h.assertTrue(net.neoforged.neoforge.items.ItemHandlerHelper.insertItemStacked(cap.apply(new BlockPos(2, 1, 1)), pellet.copy(), false).isEmpty(),
+                "the RTG takes a fuel pellet");
+        h.assertTrue(net.neoforged.neoforge.items.ItemHandlerHelper.insertItemStacked(cap.apply(new BlockPos(3, 1, 1)), regolith.copy(), false).getCount() == 16,
+                "the excavator's slots are output only");
+        h.assertTrue(cap.apply(new BlockPos(4, 1, 1)) == null, "a fluid tank holds no items");
+        h.assertTrue(net.neoforged.neoforge.items.ItemHandlerHelper.insertItemStacked(cap.apply(new BlockPos(1, 1, 3)), diamonds.copy(), false).isEmpty(),
+                "the rest goes to a chest");
+        h.succeed();
+    }
+
     private IndustryAutomationTests() {
     }
 }
