@@ -64,6 +64,20 @@ Kask göstergesi oksijeni, giysinin durumunu, vücut ve dış sıcaklığı, rad
 ### Ölünce
 Tüpler gövdenin içinde kalır ve gövde sıradan bir zırh gibi düşer: geri aldığında tüpler de geri gelir. Nefes, vücut ısısı ve radyasyon dozu sıfırlanır.
 
+### Giysi Bakım İstasyonu
+
+**Giysi Bakım İstasyonu**
+
+Giysiyle bir **Giysi Bakım İstasyonu**'nun üstünde ya da yanında dur: tüplerini ve Manevra Ünitesini doldurur, giysi parçalarındaki aşınmayı yavaşça onarır. Yuvasına konan bir parçayı da onarır. Havası solunabilir bir dünyada havayı, değilse borulanan oksijeni kullanır; enerjiyle (FE) çalışır.
+
+|   |   |   |
+|---|---|---|
+| Alüminyum Levha | Demir Parmaklık | Alüminyum Levha |
+| Örs | Oksijen Dolum İstasyonu | Örs |
+| Alüminyum Levha | Redstone Tozu | Alüminyum Levha |
+
+→ **Giysi Bakım İstasyonu** (Çalışma Masası)
+
 ### Giysi kademeleri
 | Giysi | Sıcaklık | Radyasyon kalkanı |
 |---|---|---|
@@ -145,6 +159,20 @@ The helmet display shows oxygen, suit state, body and outside temperature, radia
 
 ### When you die
 The tanks stay inside the body piece, which drops like any armour: pick it up and the tanks come back with it. Breath, body temperature and radiation dose reset.
+
+### Suit maintenance station
+
+**Suit Maintenance Station**
+
+Stand on or next to a **Suit Maintenance Station** in your suit: it tops up your tanks and Maneuvering Unit and slowly mends wear on your suit pieces. A piece placed in its slot is mended too. It uses the planet's breathable air, or piped oxygen where there is none, and runs on FE.
+
+|   |   |   |
+|---|---|---|
+| Aluminum Plate | Iron Bars | Aluminum Plate |
+| Anvil | Oxygen Filler | Anvil |
+| Aluminum Plate | Redstone Dust | Aluminum Plate |
+
+→ **Suit Maintenance Station** (Crafting Table)
 
 ### Suit tiers
 | Suit | Temperature | Radiation shielding |

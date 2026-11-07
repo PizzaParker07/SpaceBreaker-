@@ -4,7 +4,7 @@
 
 **Titania Regoliti** · **Titania Ana Kaya Buzu** · **Kanyon Duvarı Buzu** · **Titania Karbon Yatağı**
 
-Uranüs'ün en büyük uydusu: soluk katmanlı duvarlı dev düz kanyonlarla kesilmiş gri, kraterli yaylalar ve merkez tepeli büyük, eski bir krater havzası.
+Uranüs'ün en büyük uydusu: soluk katmanlı duvarlı dev düz kanyonlarla kesilmiş, iri taneli koyu sıcak gri, kraterli yaylalar ve merkez tepeli büyük, eski bir krater havzası.
 
 > [!TIP]
 > **Titania Karbon Yatağı** kömür verir. Buzlar buz eriticide suya döner: yakıtın için su.
@@ -23,7 +23,7 @@ Düşmüş bir ikmal iniş aracı şunu öğretir: *Tektonik Haritalama*. Önce 
 
 **Titanian Regolith** · **Titanian Bedrock Ice** · **Canyon Wall Ice** · **Titanian Carbon Deposit**
 
-Uranus' largest moon: grey cratered uplands crossed by enormous straight canyons with pale layered walls, and a great old crater basin with a central peak.
+Uranus' largest moon: coarse-grained, dark warm-grey cratered uplands crossed by enormous straight canyons with pale layered walls, and a great old crater basin with a central peak.
 
 > [!TIP]
 > **Titanian Carbon Deposit** gives coal. The ices melt to water in an ice melter: water for your fuel.

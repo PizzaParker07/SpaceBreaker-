@@ -13,6 +13,7 @@
     "spacebreaker:thermal_regulator_module",
     "spacebreaker:radiation_shield_module",
     "spacebreaker:extra_oxygen_module",
-    "spacebreaker:jetpack_booster_module"
+    "spacebreaker:jetpack_booster_module",
+    "spacebreaker:suit_station"
   ]
 }
