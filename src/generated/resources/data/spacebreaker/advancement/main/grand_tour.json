@@ -31,6 +31,12 @@
       },
       "trigger": "minecraft:changed_dimension"
     },
+    "churyumov_gerasimenko": {
+      "conditions": {
+        "to": "spacebreaker:churyumov_gerasimenko"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
     "deimos": {
       "conditions": {
         "to": "spacebreaker:deimos"
@@ -40,6 +46,12 @@
     "enceladus": {
       "conditions": {
         "to": "spacebreaker:enceladus"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "encke": {
+      "conditions": {
+        "to": "spacebreaker:encke"
       },
       "trigger": "minecraft:changed_dimension"
     },
@@ -58,6 +70,12 @@
     "ganymede": {
       "conditions": {
         "to": "spacebreaker:ganymede"
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "halley": {
+      "conditions": {
+        "to": "spacebreaker:halley"
       },
       "trigger": "minecraft:changed_dimension"
     },
@@ -234,6 +252,11 @@
       "ryugu",
       "eros",
       "itokawa"
+    ],
+    [
+      "churyumov_gerasimenko",
+      "encke",
+      "halley"
     ]
   ],
   "sends_telemetry_event": true

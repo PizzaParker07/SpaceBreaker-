@@ -1,0 +1,9 @@
+{
+  "structure": "spacebreaker:churyumov_gerasimenko_lander",
+  "world": "spacebreaker:churyumov_gerasimenko",
+  "guardians": [],
+  "loot_tables": [
+    "spacebreaker:dungeons/churyumov_gerasimenko/lander_cabin",
+    "spacebreaker:dungeons/churyumov_gerasimenko/lander_cargo"
+  ]
+}

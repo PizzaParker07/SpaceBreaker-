@@ -142,6 +142,7 @@ public final class BeltData {
             ctx.register(CERES_TERRAIN, ceresProfile());
             ctx.register(VESTA_TERRAIN, vestaProfile());
             NearEarthAsteroids.terrain(ctx);
+            Comets.terrain(ctx);
         });
         dp.add(Registries.CONFIGURED_FEATURE, BeltData::configured);
         dp.add(Registries.PLACED_FEATURE, BeltData::placed);
@@ -152,6 +153,7 @@ public final class BeltData {
 
     private static void configured(BootstrapContext<ConfiguredFeature<?, ?>> ctx) {
         NearEarthAsteroids.configured(ctx);
+        Comets.configured(ctx);
         var stone = new TagMatchTest(BeltModule.BELT_STONE);
         ctx.register(cf("ceres_faculae"), new ConfiguredFeature<>(OuterWorlds.CRATER_FLOOR.get(), faculae()));
         ctx.register(cf("ceres_magnetite"), new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(stone, s(BeltModule.MAGNETITE_ORE), 8)));
@@ -168,6 +170,7 @@ public final class BeltData {
 
     private static void placed(BootstrapContext<PlacedFeature> ctx) {
         NearEarthAsteroids.placed(ctx);
+        Comets.placed(ctx);
         var cf = ctx.lookup(Registries.CONFIGURED_FEATURE);
         PlacementUtils.register(ctx, pf("ceres_faculae"), cf.getOrThrow(cf("ceres_faculae")), BiomeFilter.biome());
         PlacementUtils.register(ctx, pf("ceres_magnetite"), cf.getOrThrow(cf("ceres_magnetite")), CountPlacement.of(9), InSquarePlacement.spread(),
@@ -193,6 +196,7 @@ public final class BeltData {
         HolderGetter<PlacedFeature> pf = ctx.lookup(Registries.PLACED_FEATURE);
         HolderGetter<ConfiguredWorldCarver<?>> carvers = ctx.lookup(Registries.CONFIGURED_CARVER);
         NearEarthAsteroids.biomes(ctx, pf, carvers);
+        Comets.biomes(ctx, pf, carvers);
         var raw = GenerationStep.Decoration.RAW_GENERATION;
         var ores = GenerationStep.Decoration.UNDERGROUND_ORES;
         var local = GenerationStep.Decoration.LOCAL_MODIFICATIONS;

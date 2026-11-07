@@ -1,0 +1,32 @@
+{
+  "type": "spacebreaker:boulder",
+  "config": {
+    "block": {
+      "type": "minecraft:weighted_state_provider",
+      "entries": [
+        {
+          "data": {
+            "Name": "spacebreaker:halley_ice"
+          },
+          "weight": 3
+        },
+        {
+          "data": {
+            "Name": "spacebreaker:halley_dust",
+            "Properties": {
+              "facing": "north",
+              "print": "none"
+            }
+          },
+          "weight": 1
+        }
+      ]
+    },
+    "buried": 0.5,
+    "radius": {
+      "type": "minecraft:uniform",
+      "max_exclusive": 2.6,
+      "min_inclusive": 0.8
+    }
+  }
+}

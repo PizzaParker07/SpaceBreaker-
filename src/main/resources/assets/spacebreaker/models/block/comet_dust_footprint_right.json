@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "spacebreaker:block/comet_dust",
+    "up": "spacebreaker:block/comet_dust_footprint_right",
+    "down": "spacebreaker:block/comet_dust",
+    "north": "spacebreaker:block/comet_dust",
+    "south": "spacebreaker:block/comet_dust",
+    "east": "spacebreaker:block/comet_dust",
+    "west": "spacebreaker:block/comet_dust"
+  }
+}

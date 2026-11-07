@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "spacebreaker:block/halley_dust",
+    "up": "spacebreaker:block/halley_dust_footprint_right",
+    "down": "spacebreaker:block/halley_dust",
+    "north": "spacebreaker:block/halley_dust",
+    "south": "spacebreaker:block/halley_dust",
+    "east": "spacebreaker:block/halley_dust",
+    "west": "spacebreaker:block/halley_dust"
+  }
+}

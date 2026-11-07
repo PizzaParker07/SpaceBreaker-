@@ -1,0 +1,13 @@
+{
+  "type": "spacebreaker:halley",
+  "generator": {
+    "type": "spacebreaker:planet",
+    "terrain": "spacebreaker:halley",
+    "biome_source": {
+      "type": "spacebreaker:planet",
+      "highlands": "spacebreaker:halley_plains",
+      "crater": "spacebreaker:halley_crater",
+      "polar": "spacebreaker:halley_polar"
+    }
+  }
+}

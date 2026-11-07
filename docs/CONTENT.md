@@ -230,6 +230,15 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Zindanlar | Düşmüş İkmal İniş Aracı (Bennu, Ryugu, Eros, Itokawa) → Mikro Yerçekiminde Madencilik / Spektroskopi |
 | 🎨 | Ortak yüzey özelliği | enlem sırtı (`latitude_ridge`): bir enlem çizgisi boyunca gövdeyi saran yükselti (Ryugu, Bennu) |
 
+### Kuyruklu yıldızlar (ortak `TinyWorld` paketi)
+| Durum | İçerik | Not |
+|---|---|---|
+| 🎨 | 67P/Çuryumov-Gerasimenko `spacebreaker:churyumov_gerasimenko` | ~4 km'lik iki loblu çekirdek; kömürden koyu toz kabuğunun altında buz; güneş tepedeyken açık gökyüzündeki jet ağızlarından ince gaz/toz sütunları yükselir (yalnız görsel, istemci tarafı: hasar ya da itme yok, FPS'e yük bindirmez); buzu yakıt için suya eritilebilir |
+| 🎨 | Encke `spacebreaker:encke` | ~5 km'lik küçük, yaşlı, neredeyse tükenmiş çekirdek; 3,3 yılda bir Güneş'e yaklaşan kısa yörünge; tozlu, tümsekli yüzey, seyrek jetler; buzu yakıt için suya eritilebilir |
+| 🎨 | Halley `spacebreaker:halley` | en ünlü kuyruklu yıldız: ~15 km'lik uzun, kömürden kara çekirdek, güçlü jetler; buzu yakıt için suya eritilebilir |
+| 🎨 | Bloklar | Kuyruklu Yıldız Tozu (kalıcı ayak izi), Kuyruklu Yıldız Buzu, Kuyruklu Yıldız Jeti (tüm kuyruklu yıldızlarda ortak), Encke Tozu, Encke Buzu, Halley Tozu, Halley Buzu |
+| 🎨 | Zindan | Düşmüş İkmal İniş Aracı (67P, Encke, Halley) → Mikro Yerçekiminde Madencilik / Spektroskopi |
+
 ### Jüpiter uyduları
 | Durum | İçerik | Not |
 |---|---|---|

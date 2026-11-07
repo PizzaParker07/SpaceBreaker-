@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "spacebreaker:block/encke_dust",
+    "up": "spacebreaker:block/encke_dust_footprint_right",
+    "down": "spacebreaker:block/encke_dust",
+    "north": "spacebreaker:block/encke_dust",
+    "south": "spacebreaker:block/encke_dust",
+    "east": "spacebreaker:block/encke_dust",
+    "west": "spacebreaker:block/encke_dust"
+  }
+}

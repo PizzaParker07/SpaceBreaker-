@@ -72,6 +72,12 @@ public final class OuterArrivals {
                 "Bir uzay aracının yörüngesine girip indiği ilk asteroit; uzun ve taşlı.");
         note("itokawa", "A peanut of two rubble lumps; the smooth gravel of the Muses Sea lies in its neck.",
                 "İki moloz parçasından bir fıstık; boynunda Muses Denizi'nin düz çakılı uzanır.");
+        note("churyumov_gerasimenko", "A two-lobed comet nucleus under dust darker than charcoal. In sunlight, jets of gas lift from the ice.",
+                "Kömürden koyu tozun altında iki loblu bir kuyruklu yıldız çekirdeği. Güneş vurunca buzdan gaz jetleri yükselir.");
+        note("encke", "The comet with the shortest orbit, back near the Sun every 3.3 years: old, small and nearly worn out.",
+                "En kısa yörüngeli kuyruklu yıldız, her 3,3 yılda Güneş'e döner: yaşlı, küçük ve neredeyse tükenmiş.");
+        note("halley", "The most famous comet, seen from Earth for over two thousand years: a long nucleus blacker than coal.",
+                "İki bin yılı aşkın süredir Dünya'dan görülen en ünlü kuyruklu yıldız: kömürden kara, uzun bir çekirdek.");
     }
 
     private OuterArrivals() {
@@ -105,6 +111,11 @@ public final class OuterArrivals {
                 .append(Component.literal("  "))
                 .append(Component.translatable("arrival.spacebreaker." + world.getPath()).withStyle(ChatFormatting.GRAY)));
         return true;
+    }
+
+    /** The outer worlds that have an arrival note. */
+    public static java.util.Set<String> worlds() {
+        return java.util.Collections.unmodifiableSet(NOTES.keySet());
     }
 
     /** True if the player has already been to that outer world. */
