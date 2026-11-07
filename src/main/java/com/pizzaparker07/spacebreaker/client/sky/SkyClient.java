@@ -62,11 +62,23 @@ public final class SkyClient {
             return;
         }
         var level = Minecraft.getInstance().level;
-        if (level == null || level.effects() instanceof PlanetSkyEffects
-                || level.effects().skyType() == net.minecraft.client.renderer.DimensionSpecialEffects.SkyType.END) {
+        if (level == null) {
             return;
         }
         float pt = event.getPartialTick().getGameTimeDeltaPartialTick(false);
+        // micrometeorite streaks over any world with a shower
+        if (com.pizzaparker07.spacebreaker.content.worldgen.ShowerClientState.active(level.dimension())) {
+            com.mojang.blaze3d.vertex.PoseStack sky = new com.mojang.blaze3d.vertex.PoseStack();
+            sky.mulPose(event.getModelViewMatrix());
+            com.mojang.blaze3d.systems.RenderSystem.depthMask(false);
+            net.minecraft.client.renderer.FogRenderer.setupNoFog();
+            MeteorStreaks.render(level, sky, pt);
+            com.mojang.blaze3d.systems.RenderSystem.depthMask(true);
+        }
+        if (level.effects() instanceof PlanetSkyEffects
+                || level.effects().skyType() == net.minecraft.client.renderer.DimensionSpecialEffects.SkyType.END) {
+            return;
+        }
         float visibility = Math.min(1F, level.getStarBrightness(pt) * 2F) * (1F - level.getRainLevel(pt));
         if (visibility <= 0.01F) {
             return;
@@ -85,5 +97,7 @@ public final class SkyClient {
     static void loggingOut(ClientPlayerNetworkEvent.LoggingOut event) {
         PlanetTime.clearClient();
         EarthDisc.reset();
+        com.pizzaparker07.spacebreaker.content.worldgen.ShowerClientState.clear();
+        MeteorStreaks.clear();
     }
 }

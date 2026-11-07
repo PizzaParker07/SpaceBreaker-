@@ -137,6 +137,9 @@ final class MoonScenario implements ShowcaseScenario {
         // 11: lunar night under a full Earth
         s.add(new ShowcaseDriver.Shot("10_night_full_earth", 0, vx, gy + 3, vz, earthYaw, pitch(earth.x, earth.y, earth.z) * 0.7F,
                 true, fp, 80, at(0.75), null));
+        // micrometeorite shower at night: streaks across the sky, dust puffs on the ground
+        s.add(new ShowcaseDriver.Shot("11_micrometeorite_shower", 0, vx, gy + 2, vz, earthYaw + 60F, -35F, true, fp, 80,
+                at(0.75, p -> com.pizzaparker07.spacebreaker.content.worldgen.MeteorShowers.start(p.serverLevel(), 1200)), null));
         // 12+: close-ups of the showcase stage (blocks, creatures, dungeon) built by MoonShowcaseBuilder
         s.addAll(MoonShowcaseBuilder.shots(this::ground));
         s.addAll(MoonShowcaseBuilder.dungeonShots(t));

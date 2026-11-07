@@ -57,6 +57,7 @@ public final class WorldgenModule implements SbModule {
         CHUNK_GENERATORS.register(modBus);
         ColdTraps.register();
         Subsurface.register();
+        MeteorShowers.register();
         BIOME_SOURCES.register(modBus);
         FEATURES.register(modBus);
         ModLoadingContext.get().getActiveContainer().registerConfig(ModConfig.Type.SERVER, WorldgenConfig.SPEC, "spacebreaker-worlds-server.toml");
@@ -67,6 +68,8 @@ public final class WorldgenModule implements SbModule {
                 e -> e.dataPackRegistry(TerrainProfile.REGISTRY, TerrainProfile.CODEC, TerrainProfile.CODEC));
         modBus.addListener(RegisterPayloadHandlersEvent.class, e -> e.registrar("1").playToClient(PlanetTimePayload.TYPE,
                 PlanetTimePayload.STREAM_CODEC, (payload, ctx) -> PlanetTime.receive(payload)));
+        modBus.addListener(RegisterPayloadHandlersEvent.class, e -> e.registrar("1").playToClient(MeteorShowerPayload.TYPE,
+                MeteorShowerPayload.STREAM_CODEC, (payload, ctx) -> ShowerClientState.receive(payload)));
 
         NeoForge.EVENT_BUS.addListener(LevelEvent.Load.class, e -> {
             if (e.getLevel() instanceof ServerLevel level) {
@@ -93,6 +96,17 @@ public final class WorldgenModule implements SbModule {
     }
 
     private static void registerCommands(RegisterCommandsEvent event) {
+        event.getDispatcher().register(Commands.literal("spacebreaker").then(Commands.literal("meteorshower")
+                .requires(s -> s.hasPermission(2))
+                .executes(ctx -> {
+                    if (!MeteorShowers.eligible(ctx.getSource().getLevel())) {
+                        ctx.getSource().sendFailure(Component.translatable("commands.spacebreaker.meteorshower.none"));
+                        return 0;
+                    }
+                    MeteorShowers.start(ctx.getSource().getLevel(), MeteorShowers.duration());
+                    ctx.getSource().sendSuccess(() -> Component.translatable("commands.spacebreaker.meteorshower.started"), true);
+                    return 1;
+                })));
         event.getDispatcher().register(Commands.literal("spacebreaker").then(Commands.literal("localtime")
                 .requires(s -> s.hasPermission(2))
                 .then(Commands.literal("query").executes(ctx -> {
@@ -136,6 +150,17 @@ public final class WorldgenModule implements SbModule {
         lang.add("message.spacebreaker.cold_trap.enter", "Permanently shadowed crater: %s °C, the sun never reaches here",
                 "Kalıcı gölgeli krater: %s °C, buraya hiç güneş ulaşmaz");
         lang.add("message.spacebreaker.cold_trap.leave", "Out of the cold trap", "Soğuk tuzaktan çıktın");
+        lang.add("message.spacebreaker.meteor_shower.warning", "Micrometeorite shower in one minute: get under a roof",
+                "Bir dakika içinde mikrometeorit yağmuru: bir çatının altına gir");
+        lang.add("message.spacebreaker.meteor_shower.start", "Micrometeorite shower! Grains strike the open ground",
+                "Mikrometeorit yağmuru! Açık alana tanecikler çarpıyor");
+        lang.add("message.spacebreaker.meteor_shower.end", "The micrometeorite shower has passed", "Mikrometeorit yağmuru geçti");
+        lang.add("death.attack.spacebreaker.micrometeorite", "%1$s was caught in a micrometeorite shower", "%1$s mikrometeorit yağmuruna yakalandı");
+        lang.add("death.attack.spacebreaker.micrometeorite.player", "%1$s was caught in a micrometeorite shower while fighting %2$s",
+                "%1$s, %2$s ile dövüşürken mikrometeorit yağmuruna yakalandı");
+        lang.add("commands.spacebreaker.meteorshower.started", "A micrometeorite shower begins", "Mikrometeorit yağmuru başlıyor");
+        lang.add("commands.spacebreaker.meteorshower.none", "Only airless planet surfaces get micrometeorite showers",
+                "Mikrometeorit yağmuru yalnız havasız gezegen yüzeylerinde olur");
         lang.add("commands.spacebreaker.localtime.none", "This world follows Earth's clock", "Bu dünya Dünya'nın saatini kullanıyor");
     }
 }
