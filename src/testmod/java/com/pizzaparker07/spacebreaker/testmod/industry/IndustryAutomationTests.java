@@ -124,6 +124,31 @@ public final class IndustryAutomationTests {
         h.succeed();
     }
 
+    /**
+     * Cargo rockets unload only into chests, barrels and shulker boxes near their port, never into machines. No
+     * industry block may carry those tags (a heater or RTG would swallow cargo); a vanilla chest beside them still
+     * takes items through the block item capability.
+     */
+    @GameTest(template = "empty", batch = "industry_automation")
+    public static void cargoSkipsIndustryMachines(GameTestHelper h) {
+        java.util.List<Block> industry = new java.util.ArrayList<>();
+        MachinesModule.MACHINES.forEach(m -> industry.add(m.block().get()));
+        MachinesModule.TANKS.forEach(t -> industry.add(t.get()));
+        industry.add(MachinesModule.SOLAR_PANEL.get());
+        industry.add(MachinesModule.SOLAR_ARRAY.get());
+        industry.add(MachinesModule.POWER_MONITOR.get());
+        for (Block b : industry) {
+            var state = b.defaultBlockState();
+            h.assertTrue(!state.is(net.neoforged.neoforge.common.Tags.Blocks.CHESTS) && !state.is(net.neoforged.neoforge.common.Tags.Blocks.BARRELS)
+                    && !state.is(net.minecraft.tags.BlockTags.SHULKER_BOXES), BuiltInRegistries.BLOCK.getKey(b) + " must not look like cargo storage");
+        }
+        h.setBlock(new BlockPos(1, 1, 1), Blocks.CHEST);
+        var chest = h.getLevel().getCapability(net.neoforged.neoforge.capabilities.Capabilities.ItemHandler.BLOCK, h.absolutePos(new BlockPos(1, 1, 1)), null);
+        h.assertTrue(chest != null && net.neoforged.neoforge.items.ItemHandlerHelper.insertItemStacked(chest,
+                new ItemStack(MachinesModule.RTG_FUEL_PELLET.get(), 4), false).isEmpty(), "a chest takes the cargo");
+        h.succeed();
+    }
+
     private IndustryAutomationTests() {
     }
 }
