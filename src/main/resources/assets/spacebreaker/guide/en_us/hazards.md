@@ -19,7 +19,7 @@ Your suit balances a range (Mk1: −190 °C to 130 °C). Even outside that range
 > **Underground is shelter:** on airless worlds, at least **4 blocks** below the surface and out of sight of the sky, the temperature stays at the day-night average (about −26 °C on the Moon). That makes lava tubes natural shelters. Cold traps are the exception.
 
 ## Micrometeorite showers
-On airless planet surfaces a micrometeorite shower falls now and then (about once an hour, 40 seconds long). The action bar warns you a minute ahead: "get under a roof". In the open the grains cost health and suit wear: at most **three hearts** per shower, half that in a sealed suit. **Any roof** keeps you safe.
+On airless planet surfaces a micrometeorite shower falls now and then (about once an hour, 40 seconds long). The action bar warns you a minute ahead: "get under a roof". In the open the grains cost health and suit wear: at most **three hearts** per shower, half that in a sealed suit. **Any roof** keeps you safe: any block overhead that stops movement (a full block, glass, a slab, a fence…) stops micrometeorites. No special shield block is needed.
 
 ## Pressure
 Above **10 bar** (Venus's surface is 92 bar) a sealed suit loses 1 durability per piece every 10 seconds, but never below **75%**: it never leaks, it only wears. The HUD warns you: "92 BAR: SUIT UNDER STRAIN".
