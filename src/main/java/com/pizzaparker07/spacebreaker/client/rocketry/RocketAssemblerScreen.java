@@ -28,8 +28,9 @@ import java.util.Locale;
 
 public class RocketAssemblerScreen extends AbstractContainerScreen<RocketAssemblerMenu> {
     private static final ResourceLocation BG = Spacebreaker.id("textures/gui/rocket_assembler.png");
-    public static final int PREVIEW_X = 182, PREVIEW_Y = 18, PREVIEW_W = 110, PREVIEW_H = 104;
-    public static final int STATS_X = 184, STATS_Y = 128;
+    public static final int PREVIEW_X = 182, PREVIEW_Y = 18, PREVIEW_W = 110, PREVIEW_H = 150;
+    public static final int STATS_X = 184, STATS_Y = 174, STATS_W = 106, STATS_H = 38;
+    private static final int ROW_ICON_X = 8, ROW_ICON_W = 9;
 
     private Button assemble;
     private AssemblerSlots.Build build;
@@ -39,15 +40,17 @@ public class RocketAssemblerScreen extends AbstractContainerScreen<RocketAssembl
         super(menu, inventory, title);
         imageWidth = 300;
         imageHeight = 222;
-        inventoryLabelY = RocketAssemblerMenu.INV_Y - 11;
     }
 
     @Override
     protected void init() {
         super.init();
-        assemble = addRenderableWidget(Button.builder(Component.translatable("gui.spacebreaker.assembler.assemble"),
+        // parts -> assemble arrow -> output, on one line like a machine's progress arrow
+        assemble = addRenderableWidget(Button.builder(Component.literal("\u25B6"),
                         b -> minecraft.gameMode.handleInventoryButtonClick(menu.containerId, RocketAssemblerMenu.BUTTON_ASSEMBLE))
-                .bounds(leftPos + 82, topPos + RocketAssemblerMenu.OUTPUT_Y, 60, 18).build());
+                .bounds(leftPos + RocketAssemblerMenu.OUTPUT_X - 24, topPos + RocketAssemblerMenu.OUTPUT_Y, 20, 18)
+                .tooltip(net.minecraft.client.gui.components.Tooltip.create(Component.translatable("gui.spacebreaker.assembler.assemble")))
+                .build());
     }
 
     @Override
@@ -80,46 +83,70 @@ public class RocketAssemblerScreen extends AbstractContainerScreen<RocketAssembl
     @Override
     protected void renderLabels(GuiGraphics g, int mouseX, int mouseY) {
         g.drawString(font, title, titleLabelX, titleLabelY, 0x404040, false);
-        g.drawString(font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, 0x404040, false);
-        int lx = 10;
-        g.drawString(font, "P", lx, RocketAssemblerMenu.PAYLOAD_Y + 5, 0x606060, false);
-        for (int s = 0; s < AssemblerSlots.STAGES; s++) {
-            int y = RocketAssemblerMenu.STAGE_Y0 + (AssemblerSlots.STAGES - 1 - s) * RocketAssemblerMenu.ROW_GAP;
-            g.drawString(font, String.valueOf(s + 1), lx, y + 5, 0x606060, false);
-        }
-        drawStats(g);
+        drawVerdict(g);
     }
 
-    private void drawStats(GuiGraphics g) {
-        int x = STATS_X, y = STATS_Y;
+    /** One line: the problem, or how far the rocket gets; the numbers are in the tooltip. */
+    private void drawVerdict(GuiGraphics g) {
         if (build == null) {
             return;
         }
         if (layout == null || layout.stages().isEmpty()) {
-            g.drawWordWrap(font, Component.translatable("gui.spacebreaker.assembler.empty"), x, y, 106, 0x8A939C);
+            g.drawWordWrap(font, Component.translatable("gui.spacebreaker.assembler.empty"), STATS_X, STATS_Y, STATS_W, 0x8A939C);
             return;
         }
+        if (!build.problems().isEmpty()) {
+            g.drawWordWrap(font, Component.literal("\u2716 ").append(Component.translatable("message.spacebreaker.assembler." + build.problems().get(0))),
+                    STATS_X, STATS_Y, STATS_W, 0xFF7A6A);
+            return;
+        }
+        int reached = farthest();
+        Component line = Component.translatable("gui.spacebreaker.assembler.reach." + (reached < 0 ? "none" : MILESTONES[reached]));
+        g.drawWordWrap(font, line, STATS_X, STATS_Y, STATS_W, reached < 0 ? 0xFF7A6A : 0x8FD88A);
+    }
+
+    private static final String[] MILESTONES = {"orbit", "moon_orbit", "landing", "lunar_ascent", "home"};
+
+    /** Index of the last milestone the design reaches, -1 for none. */
+    private int farthest() {
+        List<MissionPlanner.Milestone> ms = MissionPlanner.milestones(layout, SbConfig.realism());
+        int last = -1;
+        for (int i = 0; i < ms.size() && i < MILESTONES.length; i++) {
+            if (!ms.get(i).reached()) {
+                break;
+            }
+            last = i;
+        }
+        return last;
+    }
+
+    /** Tooltip of the verdict: delta-v, thrust/weight, mass and the mission ladder. */
+    private List<Component> statLines() {
+        List<Component> out = new ArrayList<>();
         double[] fuel = layout.fullFuel();
         double g0 = Environment.gravity(minecraft.level);
         double dv = RocketMath.totalDeltaV(layout, 0, fuel, RocketMath.ASCENT_ATMOSPHERE);
         double twr = RocketMath.twr(layout, 0, fuel, g0);
-        g.drawString(font, Component.translatable("gui.spacebreaker.assembler.dv", Fmt.ms(dv)), x, y, 0xE0E6EC, false);
-        g.drawString(font, Component.translatable("gui.spacebreaker.assembler.twr", Fmt.twr(twr)), x, y + 10, twr >= 1.05 ? 0xE0E6EC : 0xFF7A6A, false);
-        g.drawString(font, Component.translatable("gui.spacebreaker.assembler.mass", Fmt.kg(RocketMath.mass(layout, 0, fuel))), x, y + 20, 0xE0E6EC, false);
-        int ly = y + 33;
-        if (!build.problems().isEmpty()) {
-            g.drawWordWrap(font, Component.translatable("message.spacebreaker.assembler." + build.problems().get(0)), x, ly, 106, 0xFF7A6A);
-            return;
-        }
-        String[] keys = {"orbit", "moon_orbit", "landing", "lunar_ascent", "home"};
+        out.add(Component.translatable("gui.spacebreaker.assembler.dv", Fmt.ms(dv)));
+        out.add(Component.translatable("gui.spacebreaker.assembler.twr", Fmt.twr(twr))
+                .withStyle(twr >= 1.05 ? net.minecraft.ChatFormatting.GRAY : net.minecraft.ChatFormatting.RED));
+        out.add(Component.translatable("gui.spacebreaker.assembler.mass", Fmt.kg(RocketMath.mass(layout, 0, fuel))).withStyle(net.minecraft.ChatFormatting.GRAY));
         List<MissionPlanner.Milestone> ms = MissionPlanner.milestones(layout, SbConfig.realism());
-        for (int i = 0; i < ms.size() && i < keys.length; i++) {
-            MissionPlanner.Milestone m = ms.get(i);
-            String mark = m.reached() ? "\u2714 " : "\u2716 ";
-            int col = m.reached() ? 0x8FD88A : 0x8A939C;
-            g.drawString(font, mark + Component.translatable("gui.spacebreaker.milestone." + keys[i]).getString(), x, ly, col, false);
-            ly += 10;
+        for (int i = 0; i < ms.size() && i < MILESTONES.length; i++) {
+            boolean ok = ms.get(i).reached();
+            out.add(Component.literal(ok ? "\u2714 " : "\u2716 ").append(Component.translatable("gui.spacebreaker.milestone." + MILESTONES[i]))
+                    .withStyle(ok ? net.minecraft.ChatFormatting.GREEN : net.minecraft.ChatFormatting.DARK_GRAY));
         }
+        return out;
+    }
+
+    /** Tooltip of a row icon. */
+    private List<Component> rowLines(int row) {
+        if (row == 0) {
+            return List.of(Component.translatable("gui.spacebreaker.assembler.row.payload"));
+        }
+        return List.of(Component.translatable("gui.spacebreaker.assembler.row.stage", row),
+                Component.translatable("gui.spacebreaker.assembler.row." + (row == 1 ? "first" : "later")).withStyle(net.minecraft.ChatFormatting.GRAY));
     }
 
     @Override
@@ -130,6 +157,19 @@ public class RocketAssemblerScreen extends AbstractContainerScreen<RocketAssembl
         renderTooltip(g, mouseX, mouseY);
         if (layout != null && isHovering(PREVIEW_X, PREVIEW_Y, PREVIEW_W, PREVIEW_H, mouseX, mouseY)) {
             g.renderComponentTooltip(font, stageLines(), mouseX, mouseY);
+        } else if (layout != null && !layout.stages().isEmpty() && build.problems().isEmpty()
+                && isHovering(STATS_X - 2, STATS_Y - 2, STATS_W + 4, STATS_H, mouseX, mouseY)) {
+            g.renderComponentTooltip(font, statLines(), mouseX, mouseY);
+        } else {
+            if (isHovering(ROW_ICON_X, RocketAssemblerMenu.PAYLOAD_Y, ROW_ICON_W, 16, mouseX, mouseY)) {
+                g.renderComponentTooltip(font, rowLines(0), mouseX, mouseY);
+            }
+            for (int s = 0; s < AssemblerSlots.STAGES; s++) {
+                int y = RocketAssemblerMenu.STAGE_Y0 + (AssemblerSlots.STAGES - 1 - s) * RocketAssemblerMenu.ROW_GAP;
+                if (isHovering(ROW_ICON_X, y, ROW_ICON_W, 16, mouseX, mouseY)) {
+                    g.renderComponentTooltip(font, rowLines(s + 1), mouseX, mouseY);
+                }
+            }
         }
     }
 
@@ -137,6 +177,8 @@ public class RocketAssemblerScreen extends AbstractContainerScreen<RocketAssembl
         List<Component> out = new ArrayList<>();
         double[] fuel = layout.fullFuel();
         double g0 = Environment.gravity(minecraft.level);
+        double heightBlocks = Math.max(1, RocketGeometry.ofActive(layout, 0).height() / 16.0);
+        out.add(Component.translatable("gui.spacebreaker.assembler.height", String.format(Locale.ROOT, "%.1f m", heightBlocks)));
         for (int i = 0; i < layout.stages().size(); i++) {
             RocketLayout.Stage s = layout.stages().get(i);
             double dv = RocketMath.stageDeltaV(layout, i, fuel, i == 0 ? RocketMath.ASCENT_ATMOSPHERE : 0);
@@ -174,8 +216,6 @@ public class RocketAssemblerScreen extends AbstractContainerScreen<RocketAssembl
         Lighting.setupFor3DItems();
         g.disableScissor();
         pose.popPose();
-        String h = String.format(Locale.ROOT, "%.1f m", heightBlocks);
-        g.drawString(font, h, leftPos + PREVIEW_X + 3, topPos + PREVIEW_Y + 3, 0x8FB0D0, false);
         String nuclear = com.pizzaparker07.spacebreaker.content.rocketry.entity.NuclearExhaust.designWarning(layout);
         if (nuclear != null) {
             // a short tag on the preview; hovering it shows the full warning

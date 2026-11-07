@@ -51,6 +51,7 @@ public final class RocketryClient {
     static void screens(RegisterMenuScreensEvent event) {
         event.register(RocketryModule.ASSEMBLER_MENU.get(), RocketAssemblerScreen::new);
         event.register(RocketryModule.LAUNCH_CONSOLE_MENU.get(), LaunchConsoleScreen::new);
+        event.register(RocketryModule.STATION_CORE_MENU.get(), StationCoreScreen::new);
     }
 
     @SubscribeEvent
@@ -61,6 +62,7 @@ public final class RocketryClient {
                 mc.setScreen(new ShipyardScreen(pos, be.design()));
             }
         };
+        com.pizzaparker07.spacebreaker.content.rocketry.net.RocketToastPayload.onClient = RocketToast::show;
         com.pizzaparker07.spacebreaker.content.rocketry.item.Fmt.localDots = () -> {
             var mc = net.minecraft.client.Minecraft.getInstance();
             return mc != null && mc.getLanguageManager() != null && mc.getLanguageManager().getSelected().startsWith("tr");

@@ -417,6 +417,7 @@ public class StarMapScreen extends Screen {
 
     @Override
     public boolean mouseDragged(double mx, double my, int button, double dx, double dy) {
+        controlsLearned = true;
         if (dragging && !starsView) {
             if (Math.hypot(mx - dragFromX, my - dragFromY) > 3) {
                 dragged = true;
@@ -450,6 +451,7 @@ public class StarMapScreen extends Screen {
 
     @Override
     public boolean mouseScrolled(double mx, double my, double sxAmount, double syAmount) {
+        controlsLearned = true;
         if (starsView || mx >= panelX || syAmount == 0) {
             return super.mouseScrolled(mx, my, sxAmount, syAmount);
         }
@@ -705,10 +707,13 @@ public class StarMapScreen extends Screen {
 
     private void drawHeader(GuiGraphics g) {
         g.drawString(font, title.copy().withStyle(ChatFormatting.BOLD), 8, 8, INK, false);
-        if (!starsView) {
+        if (!starsView && !controlsLearned) {
             g.drawString(font, Component.translatable("gui.spacebreaker.star_map.controls"), 8, 19, 0xFF5A6674, false);
         }
     }
+
+    /** The controls line shows until the player first zooms or drags the map (once per game session). */
+    private static boolean controlsLearned;
 
     // ------------------------------------------------------------------ panel
 
