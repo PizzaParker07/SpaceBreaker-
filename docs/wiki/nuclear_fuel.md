@@ -22,7 +22,7 @@ Uraninit cevherinden nükleer termal roketin yakıtına giden yol.
 Tek bir santrifüj yavaştır. Gerçek tesislerde binlercesi art arda çalışır. Burada aynı seviyede yanına konan ve **çalışan her santrifüj yarım kademe hız** ekler; en çok dört komşu, yani en fazla **3 kat**. Santrifüjleri bir sıra ya da artı biçiminde diz.
 
 > [!TIP]
-> Her zenginleştirmede büyük bir yığın **Tükenmiş Uranyum** çıkar: zenginleştirmenin doğal yan ürünüdür. Çok yoğundur: preste levha kalıbıyla **Tükenmiş Uranyum Levhası** olur ve tungsten levhayla birlikte **radyasyon kalkanı** malzemesi sayılır (*Radyasyon Kalkanı*).
+> Her zenginleştirmede büyük bir yığın **Tükenmiş Uranyum** çıkar: zenginleştirmenin doğal yan ürünüdür. Çok yoğundur: preste levha kalıbıyla **Tükenmiş Uranyum Levhası** olur ve tungsten levhayla birlikte **radyasyon kalkanı** malzemesi sayılır (*Radyasyon Kalkanı*). Fisyon güç ünitesinin ve nükleer termal motorun tarifinde kullanılır.
 
 | Girdi | Makine | Çıktı |
 |---|---|---|
@@ -31,6 +31,24 @@ Tek bir santrifüj yavaştır. Gerçek tesislerde binlercesi art arda çalışı
 | Girdi | Makine | Çıktı |
 |---|---|---|
 | Zenginleştirilmiş Uranyum ×2<br>Kömür Tozu ×2<br>Tungsten Çubuk ×2 | Elektrik Ark Fırını<br>120 FE/t · 20 sn | Nükleer Yakıt Elemanı |
+
+<a id="fission"></a>
+### Fisyon güç ünitesi
+
+**Fisyon Yüzey Güç Ünitesi**
+
+**Fisyon Yüzey Güç Ünitesi**, kilovat sınıfı bir fisyon yüzey güç ünitesidir. İçine bir **Nükleer Yakıt Elemanı** koy: gece gündüz, nerede olursan ol **320 FE/t** verir. Bir eleman **10 oyun günü** dayanır ve yakıt yalnız güç çekilirken yanar.
+
+|   |   |   |
+|---|---|---|
+| Alüminyum Levha | Alüminyum Levha | Alüminyum Levha |
+| Tükenmiş Uranyum Levhası | Gelişmiş Devre Kartı | Tükenmiş Uranyum Levhası |
+| Çelik Levha | Tungsten Levha | Çelik Levha |
+
+→ **Fisyon Yüzey Güç Ünitesi** (Çalışma Masası)
+
+> [!WARNING]
+> Çalışan çekirdek radyasyon yayar: bir blok uzakta günde yaklaşık **50 Sv**, uzaklığın karesiyle azalır. Aradaki her katı blok yalnız **%30**'unu geçirir; üç blok regolit bunu yaklaşık **%3**'e indirir. Üniteyi göm ya da çevresine regolitten bir set yap, üssünü de onun doğrudan görüş hattından uzak tut.
 
 ### RTG peleti
 [RTG Yakıt Peleti](power) artık **sinterleme fırınında 4 sarı pastadan** yapılır. → [Enerji](power)
@@ -70,7 +88,7 @@ The road from uraninite ore to the fuel of a nuclear thermal rocket.
 One centrifuge alone is slow. Real plants run thousands one after another. Here **every working centrifuge** placed beside one on the same level adds **half a stage of speed**; up to four neighbours, so at most **3×**. Line them up in a row or a plus shape.
 
 > [!TIP]
-> Every enrichment leaves a big pile of **Depleted Uranium**: the natural by-product of enrichment. It is very dense: the press with a plate die turns it into **Depleted Uranium Plate**, which counts as **radiation shielding** material alongside tungsten plate (*Radiation Shielding*).
+> Every enrichment leaves a big pile of **Depleted Uranium**: the natural by-product of enrichment. It is very dense: the press with a plate die turns it into **Depleted Uranium Plate**, which counts as **radiation shielding** material alongside tungsten plate (*Radiation Shielding*). It goes into the recipes of the fission power unit and the nuclear thermal engine.
 
 | Input | Machine | Output |
 |---|---|---|
@@ -79,6 +97,24 @@ One centrifuge alone is slow. Real plants run thousands one after another. Here 
 | Input | Machine | Output |
 |---|---|---|
 | Enriched Uranium ×2<br>Coal Dust ×2<br>Tungsten Rod ×2 | Electric Arc Furnace<br>120 FE/t · 20 s | Nuclear Fuel Element |
+
+<a id="fission"></a>
+### Fission power unit
+
+**Fission Surface Power Unit**
+
+The **Fission Surface Power Unit** is a kilowatt-class fission surface power unit. Load a **Nuclear Fuel Element** and it gives **320 FE/t**, day and night, wherever you are. One element lasts **10 game days**, and fuel only burns while power is drawn.
+
+|   |   |   |
+|---|---|---|
+| Aluminum Plate | Aluminum Plate | Aluminum Plate |
+| Depleted Uranium Plate | Advanced Circuit | Depleted Uranium Plate |
+| Steel Plate | Tungsten Plate | Steel Plate |
+
+→ **Fission Surface Power Unit** (Crafting Table)
+
+> [!WARNING]
+> A running core is radioactive: about **50 Sv/day** one block away, falling with the square of the distance. Every solid block in between lets only **30 %** through, so three blocks of regolith cut it to about **3 %**. Bury the unit or build a regolith berm round it, and keep your base out of its line of sight.
 
 ### RTG pellet
 The [RTG Fuel Pellet](power) is now made from **4 yellowcake in the sintering furnace**. → [Power](power)

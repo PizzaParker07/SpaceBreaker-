@@ -54,17 +54,26 @@ Her kademede altta **bir motor**, üstünde **yakıt tankları** olur. Tanklar, 
 > [!WARNING]
 > Yanarken bir **radyasyon kaynağıdır**: doz uzaklığın karesiyle azalır, motorun üstündeki gölge kalkanı mürettebatı korur. Soğukken (taze yakıtla) güvenlidir. Egzozu neredeyse görünmez: soluk, mavimsi-mor bir ışıma.
 
-Tarifinde bir nükleer yakıt elemanı, gölge kalkanı için tungsten levha, nikel süperalaşım, titanyum levha ve bir hidroloks vakum motoru var. → [Nükleer Yakıt](nuclear_fuel)
+Tarifinde bir nükleer yakıt elemanı, gölge kalkanı için radyasyon kalkanı levhası (tükenmiş uranyum ya da tungsten), nikel süperalaşım, titanyum levha ve bir hidroloks vakum motoru var. → [Nükleer Yakıt](nuclear_fuel)
 
 |   |   |   |
 |---|---|---|
-| Tungsten Levha | Nükleer Yakıt Elemanı | Tungsten Levha |
+| Tükenmiş Uranyum Levhası | Nükleer Yakıt Elemanı | Tükenmiş Uranyum Levhası |
 | Nikel Süper Alaşımı Külçe | Hidroloks Motoru (Vakum) | Nikel Süper Alaşımı Külçe |
 | Titanyum Levha | Titanyum Levha | Titanyum Levha |
 
 → **Nükleer Termal Motor (Vakum)** (Çalışma Masası)
 
 Montaj tezgâhı her kademenin yakıt türünü ve Δv'sini gösterir.
+
+<a id="boil_off"></a>
+### Buharlaşma
+Kriyojenik yakıt uzun yolculuklarda ve roket yörüngede beklerken ısınıp kaçar; rampada asla, çünkü göbek bağlantısı tankları doldurmaya devam eder. Günde: sıvı hidrojen **%0,1**, sıvı oksijen ve metan **%0,02**, kerosen hiç. Bir kademe en hızlı kaynayan sıvısının oranıyla kaybeder. Gerçekçilik ayarı bunu ölçekler: **Dengeli** beşte bir, **Kolay** onda bir.
+- Parçanın ipucunda günlük oran yazar; yıldız haritası yolculuğa "Yolda buharlaşma kaybı" satırını ekler, bu kayıp gereken yakıta zaten dahildir.
+- **Yalıtımlı** yakıt tankları buharlaşmayı **%75** azaltır.
+
+> [!TIP]
+> Mars ve ötesi için hidrojenli kademelerde yedek yakıt bırak, yalıtımlı tank tak ya da kerosen veya metan seç.
 
 ### Ayırıcılar
 
@@ -144,17 +153,26 @@ The **Nuclear Thermal Engine (Vacuum)** (*Nuclear Thermal Propulsion*) burns no 
 > [!WARNING]
 > While it burns it is a **radiation source**: the dose falls with the square of the distance, and the shadow shield above the engine protects the crew. Cold (with fresh fuel), it is safe. Its exhaust is almost invisible: a faint bluish-violet glow.
 
-Its recipe takes a nuclear fuel element, tungsten plate for the shadow shield, nickel superalloy, titanium plate and a hydrolox vacuum engine. → [Nuclear Fuel](nuclear_fuel)
+Its recipe takes a nuclear fuel element, radiation shielding plate for the shadow shield (depleted uranium or tungsten), nickel superalloy, titanium plate and a hydrolox vacuum engine. → [Nuclear Fuel](nuclear_fuel)
 
 |   |   |   |
 |---|---|---|
-| Tungsten Plate | Nuclear Fuel Element | Tungsten Plate |
+| Depleted Uranium Plate | Nuclear Fuel Element | Depleted Uranium Plate |
 | Nickel Superalloy Ingot | Hydrolox Engine (Vacuum) | Nickel Superalloy Ingot |
 | Titanium Plate | Titanium Plate | Titanium Plate |
 
 → **Nuclear Thermal Engine (Vacuum)** (Crafting Table)
 
 The assembler shows each stage's fuel type and Δv.
+
+<a id="boil_off"></a>
+### Boil-off
+Cryogenic fuel warms up and escapes on long trips and while a rocket waits in orbit; never on the pad, where the umbilical keeps topping it up. Per day: liquid hydrogen **0.1 %**, liquid oxygen and methane **0.02 %**, kerosene nothing. A stage loses at the rate of its fastest-boiling liquid. The realism setting scales it: **Balanced** a fifth, **Easy** a tenth.
+- The part tooltip shows the daily rate; the star map adds a "Boil-off on the way" line to the trip, already counted in the fuel needed.
+- **Insulated** fuel tanks cut boil-off by **75 %**.
+
+> [!TIP]
+> For Mars and beyond, leave spare fuel in hydrogen stages, fit insulated tanks, or choose kerosene or methane.
 
 ### Separators
 

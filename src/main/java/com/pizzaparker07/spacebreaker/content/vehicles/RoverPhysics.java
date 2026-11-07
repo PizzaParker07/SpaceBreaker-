@@ -4,7 +4,7 @@ import net.minecraft.util.Mth;
 
 /**
  * Pure driving rules for the rover, kept free of game state so GameTests can check them directly.
- * Speeds are blocks per tick (0.45 b/t = 9 m/s, about the top speed of the Apollo rover with a tail wind).
+ * Speeds are blocks per tick (0.45 b/t = 9 m/s, about the top speed of a crewed lunar rover with a tail wind).
  */
 public final class RoverPhysics {
     public static final double MAX_SPEED = 0.45;

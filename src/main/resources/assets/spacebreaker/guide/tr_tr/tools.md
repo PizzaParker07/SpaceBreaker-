@@ -22,5 +22,5 @@ Demirle elmas arasında: **1100 kullanım**, hız 7, demir düzeyinde kazar ve d
 {item spacebreaker:environment_sensor}'nü kullan: on saniyelik bir kartta basınç, havanın bileşimi, sıcaklık (güneşte ya da gölgede), radyasyon doz hızı, yerçekimi ve ayağının altındaki zemin görünür. Yeni bir dünyaya indiğinde ilk iş bunu kullan.
 
 ### Eve dönüş
-Sensöre {key key.sneak} basılıyken {key key.use} yap ve bir hedef seç: kendi roketin, kendi iniş işaretin ya da basınçlı bir üs. Kask göstergesinde ona doğru bir ok ve uzaklık görünür. Gösterge, yürüyerek dönüşü kalan oksijenle karşılaştırır: oksijen azalırken sarı **DÖN**, yetmeyecekse kırmızı **GERİ DÖNMEYE O2 YETMİYOR** yazar. Çok oyunculuda yalnızca kendi roketin ve işaretlerin seçilebilir.
+Sensöre {key key.sneak} basılıyken {key key.use} yap ve bir hedef seç: kendi roketin, kendi iniş işaretin ya da basınçlı bir üs. Kask göstergesinde ona doğru bir ok ve uzaklık görünür. Gösterge, yürüyerek dönüşü kalan oksijenle karşılaştırır: oksijen azalırken sarı **DÖN: DÖNÜŞ İÇİN O2 AZALIYOR**, yetmeyecekse kırmızı **GERİ DÖNMEYE O2 YETMİYOR** yazar. Çok oyunculuda yalnızca kendi roketin ve işaretlerin seçilebilir.
 {recipe spacebreaker:environment_sensor}
