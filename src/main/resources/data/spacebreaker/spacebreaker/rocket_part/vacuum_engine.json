@@ -3,7 +3,7 @@
   "mass_kg": 520,
   "thrust_kn": 190,
   "isp_sea_level_s": 200,
-  "isp_vacuum_s": 345,
+  "isp_vacuum_s": 348,
   "height": 28,
   "model": "spacebreaker:vacuum_engine",
   "nozzle": 13

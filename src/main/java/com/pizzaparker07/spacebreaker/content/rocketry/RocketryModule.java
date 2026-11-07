@@ -293,8 +293,9 @@ public final class RocketryModule implements SbModule {
             new com.pizzaparker07.spacebreaker.content.rocketry.design.RocketDesign(java.util.List.of(
                     Spacebreaker.id("kerosene_engine"), Spacebreaker.id("fuel_tank_large"), Spacebreaker.id("fuel_tank_large"),
                     Spacebreaker.id("fuel_tank_large"), Spacebreaker.id("fins"), Spacebreaker.id("interstage"),
-                    Spacebreaker.id("vacuum_engine"), Spacebreaker.id("fuel_tank_large"), Spacebreaker.id("decoupler"),
-                    Spacebreaker.id("vacuum_engine"), Spacebreaker.id("fuel_tank_small"), Spacebreaker.id("landing_legs"),
+                    Spacebreaker.id("vacuum_engine"), Spacebreaker.id("fuel_tank_large"), Spacebreaker.id("fuel_tank_large"),
+                    Spacebreaker.id("decoupler"),
+                    Spacebreaker.id("vacuum_engine"), Spacebreaker.id("fuel_tank_medium"), Spacebreaker.id("landing_legs"),
                     Spacebreaker.id("heat_shield"), Spacebreaker.id("crew_capsule"), Spacebreaker.id("parachute")));
 
     /**

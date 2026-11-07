@@ -176,6 +176,10 @@ final class RocketryLang {
         l.item(RocketryModule.EMERGENCY_BEACON, "Emergency Return Beacon", "Acil Dönüş İşareti");
         l.add("entity.spacebreaker.rocket", "Rocket", "Roket");
         l.add("entity.spacebreaker.spent_stage", "Spent Stage", "Ayrılmış Kademe");
+        l.add("entity.spacebreaker.satellite", "Satellite", "Uydu");
+        l.add("dimension.spacebreaker.earth_orbit", "Earth Orbit", "Dünya Yörüngesi");
+        l.add("dimension.spacebreaker.moon_orbit", "Moon Orbit", "Ay Yörüngesi");
+        l.add("dimension.spacebreaker.orbit", "Orbit", "Yörünge");
         l.add("container.spacebreaker.rocket_assembler", "Rocket Assembler", "Roket Montaj Tezgâhı");
         l.add("container.spacebreaker.launch_console", "Launch Control", "Fırlatma Kontrolü");
         l.add("key.categories.spacebreaker.spaceflight", "Spacebreaker: Spaceflight", "Spacebreaker: Uzay Uçuşu");

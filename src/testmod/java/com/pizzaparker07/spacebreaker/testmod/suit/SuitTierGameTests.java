@@ -323,4 +323,20 @@ public final class SuitTierGameTests {
                 "the same oxygen is enough walking but means turn back after a sprint");
         helper.succeed();
     }
+
+    /** Realistic sound: the air around decides how loud and how dull the world sounds. */
+    @GameTest(template = "empty")
+    public static void soundCarriesByTheAir(GameTestHelper helper) {
+        var earth = com.pizzaparker07.spacebreaker.content.suit.SoundMuffling.outside(101.325, true);
+        helper.assertTrue(earth.none(), "Earth: normal");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.SoundMuffling.outside(147, false).none(), "Titan's thick air: normal");
+        var mars = com.pizzaparker07.spacebreaker.content.suit.SoundMuffling.outside(0.6, false);
+        helper.assertTrue(mars.gain() >= 0.8F && mars.highGain() >= 0.6F, "Mars: only a touch quieter and softer, got " + mars);
+        var moon = com.pizzaparker07.spacebreaker.content.suit.SoundMuffling.outside(0.0, false);
+        helper.assertTrue(moon.gain() >= 0.5F && moon.highGain() >= 0.4F && !moon.none(), "vacuum: quieter, never silent, got " + moon);
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.SoundMuffling.outside(0.0, true).none(), "a pressurised room: normal");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.SoundMuffling.contact(0.0, false).none(), "own steps and tools: normal");
+        helper.assertFalse(com.pizzaparker07.spacebreaker.client.hud.HudConfig.REALISTIC_SOUND.getDefault(), "the option is off by default");
+        helper.succeed();
+    }
 }

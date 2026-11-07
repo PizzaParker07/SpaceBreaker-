@@ -159,6 +159,7 @@ public final class MarsModule implements SbModule {
         com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.eggs().forEach(SbTabs.PLANETS::add);
         MarsData.register(modBus);
         MarsClimate.register();
+        InnerArrivals.register();
         modBus.addListener(RegisterPayloadHandlersEvent.class, e -> e.registrar("1")
                 .playToClient(MarsWeather.Payload.TYPE, MarsWeather.Payload.STREAM_CODEC, (payload, ctx) -> MarsWeather.receive(payload))
                 .playToClient(MarsSeasons.Payload.TYPE, MarsSeasons.Payload.STREAM_CODEC, (payload, ctx) -> MarsSeasons.receive(payload)));
@@ -277,6 +278,7 @@ public final class MarsModule implements SbModule {
         lang.add("commands.spacebreaker.season.none", "Seasons are only modelled on Mars", "Mevsimler yalnızca Mars'ta modellenir");
         lang.add("commands.spacebreaker.duststorm.none", "This world has no dust storms", "Bu dünyada toz fırtınası olmaz");
         MarsData.translations(lang);
+        InnerArrivals.translations(lang);
         com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.translations(lang);
     }
 

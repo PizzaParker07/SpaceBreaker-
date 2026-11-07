@@ -37,5 +37,8 @@ Bir uydudan bakınca gezegeni zaman zaman Güneş'in önünden geçer. Güneş k
 
 > Tutulma sırasında paneller karardığı için bataryan dolu olsun. → [Gece ve enerji](power#night)
 
+## Gece göğü
+Yakın yüzde Ay gecesini Dünya aydınlatır: dolunay evresindeki Dünya'nın altında zemin soluk mavimsi-beyaz parlar, hilal evresinde neredeyse karanlıktır. Uzak yüzde Dünya hiç doğmaz. Arada bir, gün batımından hemen sonra ya da doğumundan hemen önce, gizli Güneş'in üstünde ufka yapışık ince parlak bir şerit belirir: statik yükle havalanan toz; nadir ve kısa sürer.
+
 ## Volkanik kubbeler
 Bazı yerlerde açık renkli anortozitten dik, düzgün kubbeler yükselir: 45–95 blok genişliğinde, 28 bloğa kadar yüksek, tepesinde küçük bir çukur.

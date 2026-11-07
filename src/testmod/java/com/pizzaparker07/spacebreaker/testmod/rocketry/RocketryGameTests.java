@@ -87,9 +87,9 @@ public final class RocketryGameTests {
         double got = RocketMath.stageDeltaV(l, 2, fuel, 0);
         helper.assertTrue(Math.abs(got - expected) < 1e-6, "stage 3 Δv " + got + " != " + expected);
         double total = RocketMath.totalDeltaV(l, 0, fuel, RocketMath.ASCENT_ATMOSPHERE);
-        helper.assertTrue(total > 6000 && total < 7000, "moon rocket total Δv ~6.4 km/s, got " + total);
+        helper.assertTrue(total > 7000 && total < 9000, "moon rocket total Δv ~8 km/s, got " + total);
         double twr = RocketMath.twr(l, 0, fuel, 9.80665);
-        helper.assertTrue(twr > 1.2 && twr < 1.5, "launch TWR ~1.3, got " + twr);
+        helper.assertTrue(twr > 1.2 && twr < 2.0, "launch TWR ~1.5, got " + twr);
         double moonTwr = RocketMath.twr(l, 2, fuel, 1.62);
         helper.assertTrue(moonTwr > 2, "the lander lifts off the Moon easily: " + moonTwr);
         helper.succeed();
@@ -210,9 +210,10 @@ public final class RocketryGameTests {
         slots.put(AssemblerSlots.stageSlot(0, AssemblerSlots.SEPARATOR), new ItemStack(RocketryModule.INTERSTAGE.get()));
         slots.put(AssemblerSlots.stageSlot(1, AssemblerSlots.ENGINE), new ItemStack(RocketryModule.VACUUM_ENGINE.get()));
         slots.put(AssemblerSlots.stageSlot(1, AssemblerSlots.TANK_A), new ItemStack(RocketryModule.FUEL_TANK_LARGE.get()));
+        slots.put(AssemblerSlots.stageSlot(1, AssemblerSlots.TANK_B), new ItemStack(RocketryModule.FUEL_TANK_LARGE.get()));
         slots.put(AssemblerSlots.stageSlot(1, AssemblerSlots.SEPARATOR), new ItemStack(RocketryModule.DECOUPLER.get()));
         slots.put(AssemblerSlots.stageSlot(2, AssemblerSlots.ENGINE), new ItemStack(RocketryModule.VACUUM_ENGINE.get()));
-        slots.put(AssemblerSlots.stageSlot(2, AssemblerSlots.TANK_A), new ItemStack(RocketryModule.FUEL_TANK_SMALL.get()));
+        slots.put(AssemblerSlots.stageSlot(2, AssemblerSlots.TANK_A), new ItemStack(RocketryModule.FUEL_TANK_MEDIUM.get()));
         slots.put(AssemblerSlots.stageSlot(2, AssemblerSlots.RADIAL), new ItemStack(RocketryModule.LANDING_LEGS.get()));
         slots.put(AssemblerSlots.HEAT_SHIELD, new ItemStack(RocketryModule.HEAT_SHIELD.get()));
         slots.put(AssemblerSlots.CAPSULE, new ItemStack(RocketryModule.CREW_CAPSULE.get()));
@@ -232,8 +233,8 @@ public final class RocketryGameTests {
     public static void stackGeometry(GameTestHelper helper) {
         RocketLayout l = moonRocket(helper);
         RocketGeometry g = RocketGeometry.ofActive(l, 0);
-        // engine 20 + 3 x 32 tanks + 28 interstage (the vacuum engine sits inside it) + 32 + 3 + 28 + 16 + 3 + 26 + 6
-        helper.assertTrue(Math.abs(g.height() - 258) < 1e-6, "stack height px, got " + g.height());
+        // engine 20 + 3 x 32 tanks + 28 interstage (the vacuum engine sits inside it) + 2 x 32 + 3 + 28 + 24 + 3 + 26 + 6
+        helper.assertTrue(Math.abs(g.height() - 298) < 1e-6, "stack height px, got " + g.height());
         RocketGeometry upper = RocketGeometry.ofActive(l, 1);
         helper.assertTrue(upper.height() < g.height(), "dropping a stage makes the rocket shorter");
         long fins = g.placements().stream().filter(p -> l.parts().get(p.part()).type() == PartType.FINS).count();
@@ -487,6 +488,16 @@ public final class RocketryGameTests {
             var c = Spacebreaker.id(id);
             helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.CometRoutes.route(c).isPresent()
                     && !com.pizzaparker07.spacebreaker.content.rocketry.nav.CometRoutes.needsNuclear(c), id + " stays within chemical reach");
+        }
+        // home: straight into Earth's air, with a braking burn where it would come in too fast (Halley)
+        var home = com.pizzaparker07.spacebreaker.content.rocketry.nav.CometRoutes.of(halley).orElseThrow().home().orElseThrow();
+        helper.assertTrue(home.brakeDv() > 0 && home.entrySpeed() <= com.pizzaparker07.spacebreaker.content.rocketry.nav.CometRoutes.MAX_ENTRY_SPEED + 1,
+                "Halley's return brakes to a safe entry: " + (int) home.burnDv() + " + " + (int) home.brakeDv() + " m/s");
+        helper.assertTrue(within(com.pizzaparker07.spacebreaker.content.rocketry.nav.Transfers.real(halleyOrbit, Location.EARTH_SURFACE).orElse(0),
+                home.totalDv(), 1), "the flight home uses the return search");
+        for (String id : List.of("churyumov_gerasimenko", "encke", "tempel_1")) {
+            helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.CometRoutes.of(Spacebreaker.id(id)).orElseThrow().home().isPresent(),
+                    id + " has a flight home");
         }
         var haleBopp = Spacebreaker.id("hale_bopp");
         helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.CometRoutes.observationOnly(haleBopp), "Hale-Bopp is for watching");

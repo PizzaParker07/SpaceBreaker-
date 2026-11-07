@@ -13,6 +13,8 @@ research: spacebreaker:oxygen_storage
 
 Giysinin sırt çantasına iki tüp takılır (Ek Oksijen modülüyle üç). Tam dolu iki büyük tüple yarım saat dışarıda kalabilirsin.
 
+> Bu süreler yürüyüşe göredir. Koşarken **1,5 kat**, kazarken ya da dövüşürken **1,25 kat** hava harcarsın, dururken yalnız **0,8 kat**; termal, ısıtmalı ve radyasyon giysileri **1,1 kat** harcar. HUD'daki süre ve geri dönüş uyarısı son birkaç saniyenin ortalamasını kullanır; koşarsan kalan süre kısalır.
+
 {recipe spacebreaker:oxygen_tank}
 
 ## Tüpleri doldurmak

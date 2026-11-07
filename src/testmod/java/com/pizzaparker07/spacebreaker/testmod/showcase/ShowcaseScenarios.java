@@ -43,6 +43,9 @@ public final class ShowcaseScenarios {
         ALL.put("mercury_sunrise", new MercurySunriseScenario());
         ALL.put("mars_clouds", new MarsCloudsScenario());
         ALL.put("mars_earth", new MarsEarthScenario());
+        ALL.put("daycycle_mars", new InnerDayCycleScenario(com.pizzaparker07.spacebreaker.content.mars.MarsModule.MARS, "mars", Double.NaN));
+        ALL.put("daycycle_venus", new InnerDayCycleScenario(com.pizzaparker07.spacebreaker.content.venus.VenusModule.VENUS, "venus_clouds", 222));
+        ALL.put("daycycle_mercury", new InnerDayCycleScenario(com.pizzaparker07.spacebreaker.content.mercury.MercuryModule.MERCURY, "mercury", Double.NaN));
         ALL.put("phobos", new MarsMoonScenario(false));
         ALL.put("deimos", new MarsMoonScenario(true));
         ALL.put("venus", new VenusScenario());
@@ -82,6 +85,7 @@ public final class ShowcaseScenarios {
         ALL.put("proteus", new TinyMoonScenario(com.pizzaparker07.spacebreaker.content.neptune.Proteus.PROTEUS, "pharos_basin",
                 com.pizzaparker07.spacebreaker.content.neptune.Proteus.pharos().x(), com.pizzaparker07.spacebreaker.content.neptune.Proteus.pharos().latitude()));
         ALL.put("perf_outer", new OuterPerfScenario());
+        ALL.put("scan_outer", new OuterScanScenario());
         ALL.put("triton", new TritonScenario());
         ALL.put("pluto", new PlutoScenario(false));
         ALL.put("charon", new PlutoScenario(true));

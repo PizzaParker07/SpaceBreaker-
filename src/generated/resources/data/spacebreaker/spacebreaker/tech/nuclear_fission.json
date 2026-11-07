@@ -13,6 +13,7 @@
     "spacebreaker:gas_centrifuge",
     "spacebreaker:yellowcake",
     "spacebreaker:enriched_uranium",
-    "spacebreaker:nuclear_fuel_element"
+    "spacebreaker:nuclear_fuel_element",
+    "spacebreaker:fission_reactor"
   ]
 }
