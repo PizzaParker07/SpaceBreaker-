@@ -68,6 +68,9 @@ public final class Columns {
      * heightmap instead of far above it skips a long scan through empty air in every column.
      */
     public static int top(WorldGenLevel level, int x, int z) {
+        if (LEGACY_TOP) {
+            return legacyTop(level, x, z);
+        }
         int max = level.getMaxBuildHeight() - 1;
         int min = level.getMinBuildHeight();
         int start = Math.min(max, level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, x, z) + 1);
@@ -78,6 +81,23 @@ public final class Columns {
             }
             return level.getBlockState(p).isAir() ? p.getY() - 1 : p.getY();
         }
+        while (p.getY() > min && level.getBlockState(p).isAir()) {
+            p.move(0, -1, 0);
+        }
+        return p.getY();
+    }
+
+    /**
+     * Development check only (system property {@code spacebreaker.legacyColumnsTop}): the old way, scanning down from 24
+     * blocks above the heightmap and finding the top again in every call, so a scan can compare the blocks generated
+     * both ways. Never set in play.
+     */
+    private static final boolean LEGACY_TOP = Boolean.getBoolean("spacebreaker.legacyColumnsTop");
+
+    private static int legacyTop(WorldGenLevel level, int x, int z) {
+        int start = Math.min(level.getMaxBuildHeight() - 1, level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, x, z) + 24);
+        BlockPos.MutableBlockPos p = new BlockPos.MutableBlockPos(x, start, z);
+        int min = level.getMinBuildHeight();
         while (p.getY() > min && level.getBlockState(p).isAir()) {
             p.move(0, -1, 0);
         }
@@ -96,6 +116,9 @@ public final class Columns {
 
     /** {@link #shift(WorldGenLevel, int, int, int, BlockState)} for a column whose top {@code y} is already known. */
     public static int shift(WorldGenLevel level, int x, int y, int z, int dy, BlockState fill) {
+        if (LEGACY_TOP) {
+            y = legacyTop(level, x, z);
+        }
         if (dy == 0 || y <= level.getMinBuildHeight() + CARRY + 2) {
             return y;
         }
@@ -128,6 +151,9 @@ public final class Columns {
 
     /** Replaces the top {@code depth} solid blocks of a column whose top is already known (as {@link #shift} returns it). */
     public static void paint(WorldGenLevel level, int x, int y, int z, int depth, BlockState block) {
+        if (LEGACY_TOP) {
+            y = legacyTop(level, x, z);
+        }
         BlockPos.MutableBlockPos p = new BlockPos.MutableBlockPos();
         for (int i = 0; i < depth; i++) {
             p.set(x, y - i, z);

@@ -57,6 +57,25 @@ final class OuterScanScenario implements ShowcaseScenario {
                 level.getChunk(cx0 + cx, cz0 + cz);
             }
         }
+        if (System.getenv("SCAN_HASH") != null) {
+            // one hash of every block state per scanned chunk, to compare two generations of the same chunks
+            for (int cx = -R; cx <= R; cx++) {
+                for (int cz = -R; cz <= R; cz++) {
+                    var chunk = level.getChunk(cx0 + cx, cz0 + cz);
+                    long hash = 1125899906842597L;
+                    for (var section : chunk.getSections()) {
+                        for (int y = 0; y < 16; y++) {
+                            for (int z = 0; z < 16; z++) {
+                                for (int x = 0; x < 16; x++) {
+                                    hash = 31 * hash + net.minecraft.world.level.block.Block.getId(section.getBlockState(x, y, z));
+                                }
+                            }
+                        }
+                    }
+                    ShowcaseDriver.log("[hash] " + world + " " + (cx0 + cx) + " " + (cz0 + cz) + " " + Long.toHexString(hash));
+                }
+            }
+        }
         int minX = (cx0 - R) << 4;
         int minZ = (cz0 - R) << 4;
         int size = (2 * R + 1) << 4;
