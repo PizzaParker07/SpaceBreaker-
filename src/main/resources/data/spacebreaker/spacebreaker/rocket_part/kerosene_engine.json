@@ -1,7 +1,7 @@
 {
   "type": "engine",
-  "mass_kg": 650,
-  "thrust_kn": 560,
+  "mass_kg": 470,
+  "thrust_kn": 845,
   "isp_sea_level_s": 282,
   "isp_vacuum_s": 311,
   "height": 20,
