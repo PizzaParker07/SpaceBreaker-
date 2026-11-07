@@ -63,6 +63,18 @@ public final class ShowcaseDriver {
      */
     record Shot(String name, long time, double x, double y, double z, float yaw, float pitch, boolean hideGui,
                 CameraType camera, int minTicks, Consumer<ServerPlayer> serverSetup, Runnable clientSetup) {
+        /**
+         * A shot that leaves the player where they are (no teleport, no camera hold): for sequences where the player
+         * rides something that moves, which a teleport would throw them out of.
+         */
+        static Shot stay(String name, long time, boolean hideGui, CameraType camera, int minTicks,
+                         Consumer<ServerPlayer> serverSetup, Runnable clientSetup) {
+            return new Shot(name, time, Double.NaN, Double.NaN, Double.NaN, 0F, 0F, hideGui, camera, minTicks, serverSetup, clientSetup);
+        }
+
+        boolean stays() {
+            return Double.isNaN(x);
+        }
     }
 
     private ShowcaseDriver() {
@@ -161,6 +173,12 @@ public final class ShowcaseDriver {
                 ServerLevel level = server.getLevel(dimension) != null ? server.getLevel(dimension) : server.overworld();
                 level.setDayTime(shot.time());
                 level.setWeatherParameters(12000, 0, false, false);
+                if (shot.stays()) {
+                    if (shot.serverSetup() != null) {
+                        shot.serverSetup().accept(player);
+                    }
+                    return;
+                }
                 player.getAbilities().flying = true;
                 player.onUpdateAbilities();
                 // hold the camera still until the terrain around it is loaded and drawn: without this the player
@@ -186,7 +204,7 @@ public final class ShowcaseDriver {
             return;
         }
         ticks++;
-        if (mc.player != null && !mc.player.isPassenger()) {
+        if (mc.player != null && !mc.player.isPassenger() && !shot.stays()) {
             // client side of the hold: no drift while the server's teleport and the chunks arrive
             mc.player.setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);
         }

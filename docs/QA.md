@@ -319,6 +319,35 @@ flight between dimensions, rovers being driven, and client-side frame time.
   area; a freshly added entity can be missing from the area query for a tick). The failure message names the kind that
   changed. Two full runs green.
 
+## Station as a player plays it (`qa_station_play`, 2026-11-07, 1.21.1 @ 12326e4b + rocketry 0eb4f3ad locally)
+
+Client scenario `./gradlew runShowcase -Pscenario=qa_station_play` (Earth orbit, everything through the player-facing
+code; log lines "[showcase] qa_station: …"; contact sheet `docs/screenshots/qa/qa_station_play.jpg`):
+- the core module item used in open space unfolds the core 7 blocks ahead, roof port on top ✅ (shot 01);
+- an uncrewed rocket carrying a docking module flies in to the roof port, docks and puts the module in the console ✅
+  (shots 02–03, ~20 s);
+- docking module, living quarters and airlock attach to three mouths with a right click; inside the core the
+  station is one sealed room of 270 blocks ✅ (04–05);
+- out through the airlock and back (inner shut behind you, outer open, back in, both shut): the station stays sealed
+  throughout ✅ (06–08) — clicked in the right order; the doors themselves do not interlock (QA-27);
+- a hole in the quarters' wall (an LED panel removed) vents the station; put back, sealed again at 270 ✅ (09–10);
+- solar wings on the last mouth: the battery in the mouth holds 96,240 FE about 20 s later ✅ (11);
+- the star map's side panel lists "Station · 5 modules · 2 ports" for Earth ✅ (12);
+- the crewed docking approach could not be filmed at first: the showcase driver moved the player for every shot and
+  the rocket stayed at its start point. A GameTest with a player in the seat (`qa/CrewedDockingTests`) docks normally
+  (0.00 blocks to go after 700 ticks).
+
+Re-run on 1.21.1 @ 6f693898 (rocketry 545c2d05 in): 01–12 as above (the station room is 299 blocks with the supply
+lockers). The driver now has `Shot.stay(...)`: the player stays where they are (no teleport, no camera hold), so
+13–15 are filmed from the seat:
+- 13: the approach starts at tick 2472, 32 blocks out; at tick 2494 the HUD's top line reads "→ Earth station ·
+  docking" ✅;
+- 14–15: docked by tick 2894, 0.00 blocks from the dock point, player still seated, the chat line "Docked: you can
+  step out into the station" ✅.
+- 07 now clicks the doors carelessly (inner, then outer). With the old doors both open and the station vents (tick
+  1464: outer open, inner open, room not sealed). The interlocked sliding doors (rocketry, QA-27) are not in 1.21.1
+  yet; this is checked again once they are.
+
 ## Sky visual regression (2026-11-07)
 
 `tools/qa/visual_regression.py` runs `sky_planets`, `sky_planets_mars` and `blocky_lod`, shrinks each shot to
@@ -873,10 +902,10 @@ None.
 | spacebreaker:io/orbit | round_trip | 12133 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 13615 m/s vacuum Δv |
 | spacebreaker:europa/surface | round_trip | 12666 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 13615 m/s vacuum Δv |
 | spacebreaker:europa/orbit | round_trip | 11226 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 11624 m/s vacuum Δv |
-| spacebreaker:ganymede/surface | round_trip | 12192 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 13615 m/s vacuum Δv |
-| spacebreaker:ganymede/orbit | round_trip | 10230 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 11624 m/s vacuum Δv |
 | spacebreaker:callisto/surface | round_trip | 11430 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 13615 m/s vacuum Δv |
 | spacebreaker:callisto/orbit | round_trip | 9672 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 11624 m/s vacuum Δv |
+| spacebreaker:ganymede/surface | round_trip | 12192 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 13615 m/s vacuum Δv |
+| spacebreaker:ganymede/orbit | round_trip | 10230 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 2× fuel_tank_large, heat_shield, crew_capsule], 11624 m/s vacuum Δv |
 | spacebreaker:saturn/orbit | round_trip | 11726 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large, heat_shield, crew_capsule], 13615 m/s vacuum Δv |
 | spacebreaker:enceladus/surface | round_trip | 11960 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 13276 m/s vacuum Δv |
 | spacebreaker:enceladus/orbit | round_trip | 11799 | 2-stage [hydrolox_engine, fuel_tank_large / decoupler / nuclear_thermal_engine, 3× fuel_tank_large_insulated, heat_shield, crew_capsule], 13276 m/s vacuum Δv |
