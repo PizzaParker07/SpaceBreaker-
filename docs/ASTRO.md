@@ -79,7 +79,19 @@ double dv = RocketMath.totalDeltaV(stack, payloadKg);
 Real NASA/JPL values (planetary fact sheets; J2000 mean elements for the planets). New optional
 fields, all with defaults: `albedo` (Bond, default 0.3), `rings` (`inner_radius_km`,
 `outer_radius_km`), and orbit angles `longitude_ascending_node_deg`, `argument_periapsis_deg`,
-`mean_anomaly_deg` (J2000, default 0).
+`mean_anomaly_deg` (J2000, default 0), and secular rates `node_rate_deg_per_year`,
+`periapsis_rate_deg_per_year` (default 0, a fixed orbit).
+
+**Secular precession.** With rates, Ω(t) = Ω₀ + Ω̇t and ω(t) = ω₀ + ω̇t, and the mean anomaly
+advances at n − Ω̇ − ω̇, so the mean longitude keeps the sidereal rate set by `period_days`. Only the
+Moon uses it: Ω̇ = −19.341°/y (the nodes regress once in 18.61 years) and ω̇ = +60.032°/y (the line of
+apsides, Ω + ω, advances once in 8.85 years), with Meeus's J2000 mean elements (Ω₀ 125.0445°,
+ω₀ 318.3087°, M₀ 134.9634°, sidereal month 27.321662 d). Without it the eclipse seasons drift by about
+19° a year away from J2000. `LunarEclipseTest` finds seven real total lunar eclipses (2000-01-21,
+2010-12-21, 2015-09-28, 2022-05-16, 2022-11-08, 2025-03-14, 2025-09-07). In each the Moon passes
+0.23–0.37° from the shadow axis, inside the umbra, within 3 hours of the observed time. The
+remaining error is the Moon's periodic perturbations (evection, variation), which are not modelled.
+The full moon of 2022-08-12, between those seasons, passes 5.1° away and is not eclipsed.
 
 Landable bodies use the dimension `spacebreaker:<name>` (Earth is the overworld): Mercury, Venus, Mars,
 Phobos, Deimos, Ceres, Vesta, Io, Europa, Ganymede, Callisto, Titan, Enceladus, Miranda, Triton, Pluto,

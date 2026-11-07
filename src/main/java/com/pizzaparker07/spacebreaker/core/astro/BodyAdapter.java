@@ -23,12 +23,16 @@ public final class BodyAdapter {
 
     public static AstroBody of(ResourceLocation id, CelestialBody b) {
         CelestialBody.Orbit o = b.orbit();
-        return AstroBody.fromDataUnits(id.toString(), b.parent().map(ResourceLocation::toString).orElse(null),
+        AstroBody body = AstroBody.fromDataUnits(id.toString(), b.parent().map(ResourceLocation::toString).orElse(null),
                 AstroBody.Kind.byName(b.type().getSerializedName()), b.physical().massKg(), b.physical().radiusKm(),
                 o.semiMajorAxisKm(), o.eccentricity(), o.inclinationDeg(), o.longitudeAscendingNodeDeg(),
                 o.argumentPeriapsisDeg(), o.meanAnomalyDeg(), o.periodDays(), b.rotation().dayLengthHours(),
                 b.rotation().tidallyLocked(), b.atmosphere().pressureKpa(), b.atmosphere().composition(),
                 b.climate().dayTempC(), b.climate().nightTempC(), b.albedo(), b.landable(), b.geometricAlbedo());
+        if (body.orbit() != null && (o.nodeRateDegPerYear() != 0 || o.periapsisArgRateDegPerYear() != 0)) {
+            body = body.withOrbit(body.orbit().withSecularRates(o.nodeRateDegPerYear(), o.periapsisArgRateDegPerYear()));
+        }
+        return body;
     }
 
     /** Simulated orbital time (s since J2000) of a level, from its game time and the server's time scale. */
@@ -78,7 +82,8 @@ public final class BodyAdapter {
         CelestialBody.Orbit orbit = o == null ? CelestialBody.Orbit.NONE : new CelestialBody.Orbit(
                 o.semiMajorAxis() / 1000.0, o.eccentricity(), Math.toDegrees(o.inclination()), o.period() / AstroConstants.DAY,
                 Math.toDegrees(o.longitudeAscendingNode()), Math.toDegrees(o.argumentOfPeriapsis()),
-                Math.toDegrees(o.meanAnomalyAtEpoch()));
+                Math.toDegrees(o.meanAnomalyAtEpoch()), Math.toDegrees(o.nodeRate()) * AstroConstants.YEAR,
+                Math.toDegrees(o.periapsisArgRate()) * AstroConstants.YEAR);
         double irradiance = d == null ? 0 : d.irradiance();
         return new CelestialBody(BodyType.valueOf(b.kind().name()),
                 Optional.ofNullable(b.parent()).map(ResourceLocation::parse), dimension, Optional.empty(),

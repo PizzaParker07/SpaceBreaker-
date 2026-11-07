@@ -142,12 +142,13 @@ public final class Kepler {
         double k = Math.sqrt(mu / p);
         double vxp = -k * Math.sin(nu);
         double vyp = k * (e + Math.cos(nu));
-        return new StateVector(perifocalToInertial(xp, yp, el), perifocalToInertial(vxp, vyp, el));
+        double node = el.longitudeAscendingNode(t), arg = el.argumentOfPeriapsis(t);
+        return new StateVector(perifocalToInertial(xp, yp, node, arg, el), perifocalToInertial(vxp, vyp, node, arg, el));
     }
 
-    private static Vec3 perifocalToInertial(double x, double y, OrbitalElements el) {
-        double cO = Math.cos(el.longitudeAscendingNode()), sO = Math.sin(el.longitudeAscendingNode());
-        double cw = Math.cos(el.argumentOfPeriapsis()), sw = Math.sin(el.argumentOfPeriapsis());
+    private static Vec3 perifocalToInertial(double x, double y, double node, double arg, OrbitalElements el) {
+        double cO = Math.cos(node), sO = Math.sin(node);
+        double cw = Math.cos(arg), sw = Math.sin(arg);
         double ci = Math.cos(el.inclination()), si = Math.sin(el.inclination());
         double r11 = cO * cw - sO * sw * ci, r12 = -cO * sw - sO * cw * ci;
         double r21 = sO * cw + cO * sw * ci, r22 = -sO * sw + cO * cw * ci;
