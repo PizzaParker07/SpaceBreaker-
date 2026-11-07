@@ -152,6 +152,62 @@ public final class CometTrails {
         }
     }
 
+    /**
+     * A soft glow on the sky sphere around {@code centre} (unit vector), out to {@code radius} radians, brightest in the
+     * middle; additive, for the coma seen from inside it.
+     */
+    public static void skyGlow(PoseStack pose, Vector3f centre, float radius, float intensity, float red, float green, float blue) {
+        if (intensity <= 0.002F) {
+            return;
+        }
+        RenderSystem.enableBlend();
+        RenderSystem.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
+        RenderSystem.disableCull();
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        Matrix4f m = pose.last().pose();
+        Vector3f c = new Vector3f(centre).normalize();
+        Vector3f u = Math.abs(c.y) < 0.9F ? new Vector3f(0, 1, 0).cross(c).normalize() : new Vector3f(1, 0, 0).cross(c).normalize();
+        Vector3f v = new Vector3f(c).cross(u).normalize();
+        BufferBuilder bb = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        int rings = 8;
+        int sectors = 24;
+        for (int i = 0; i < rings; i++) {
+            float a0 = radius * i / rings;
+            float a1 = radius * (i + 1) / rings;
+            float k0 = intensity * falloff(i / (float) rings);
+            float k1 = intensity * falloff((i + 1) / (float) rings);
+            for (int j = 0; j < sectors; j++) {
+                double p0 = j * Math.PI * 2 / sectors;
+                double p1 = (j + 1) * Math.PI * 2 / sectors;
+                Vector3f q00 = onSphere(c, u, v, a0, p0);
+                Vector3f q01 = onSphere(c, u, v, a0, p1);
+                Vector3f q11 = onSphere(c, u, v, a1, p1);
+                Vector3f q10 = onSphere(c, u, v, a1, p0);
+                bb.addVertex(m, q00.x, q00.y, q00.z).setColor(red * k0, green * k0, blue * k0, 1F);
+                bb.addVertex(m, q01.x, q01.y, q01.z).setColor(red * k0, green * k0, blue * k0, 1F);
+                bb.addVertex(m, q11.x, q11.y, q11.z).setColor(red * k1, green * k1, blue * k1, 1F);
+                bb.addVertex(m, q10.x, q10.y, q10.z).setColor(red * k1, green * k1, blue * k1, 1F);
+            }
+        }
+        var mesh = bb.build();
+        if (mesh != null) {
+            BufferUploader.drawWithShader(mesh);
+        }
+        RenderSystem.enableCull();
+        RenderSystem.defaultBlendFunc();
+    }
+
+    private static float falloff(float t) {
+        float s = 1 - t;
+        return s * s * s;
+    }
+
+    private static Vector3f onSphere(Vector3f c, Vector3f u, Vector3f v, float angle, double phi) {
+        float sa = (float) Math.sin(angle);
+        return new Vector3f(c).mul((float) Math.cos(angle))
+                .add(new Vector3f(u).mul(sa * (float) Math.cos(phi))).add(new Vector3f(v).mul(sa * (float) Math.sin(phi))).mul(100F);
+    }
+
     private static void refresh(ClientLevel level, String observer) {
         long tick = level.getGameTime() / 100;
         if (level.registryAccess() != cachedAccess) {
