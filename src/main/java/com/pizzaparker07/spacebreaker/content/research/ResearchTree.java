@@ -263,7 +263,7 @@ public final class ResearchTree {
                 .samples(MARS)
                 .en("Sabatier Process", "Carbon dioxide plus hydrogen over a nickel catalyst gives methane and water.")
                 .tr("Sabatier Süreci", "Nikel katalizör üzerinde karbondioksit ve hidrojen: metan ve su.");
-        t("isru", INDUSTRY, 2).req("electrolysis", "lunar_surveying").icon("spacebreaker:regolith_heater").unlocks("regolith_heater", "ice_melter", "regolith_excavator")
+        t("isru", INDUSTRY, 2).req("electrolysis", "lunar_surveying").icon("spacebreaker:regolith_heater").unlocks("regolith_heater", "ice_melter", "regolith_excavator", "item_duct")
                 .samples(MOON)
                 .en("In-Situ Resources", "Live off the land: oxygen from ilmenite, water from polar ice.")
                 .tr("Yerinde Kaynak Kullanımı", "Ne gerekiyorsa indiğin yerde üret: ilmenitten oksijen, kutup buzundan su.");

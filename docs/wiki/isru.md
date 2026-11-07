@@ -90,6 +90,26 @@ Bir katı ve iki sıvıyı birleştirir; örneğin kükürt, su ve oksijenden **
 > [!TIP]
 > Kazıcıyı fırının yanına koy: kazdığı regolit doğrudan fırına girer ve yapı bloğu kendiliğinden birikir.
 
+### Eşya kanalı
+
+**Eşya Kanalı**
+
+**Eşya Kanalı** eşyaları envanterler arasında taşır: makineler, sandıklar, huniler.
+- Bir ucuna `Shift` basılıyken **boş elle** `Sağ Tık` yap: o uç bağlı envanterden **çeker**. Çeken her uç saniyede **16 eşya** taşır.
+- Elinde bir eşyayla `Shift` + `Sağ Tık`: o uç **yalnızca o eşyayı** geçirir.
+- Bir huni ya da makinenin çıktısı kanala doğrudan besleyebilir; eşyalar uçlardaki envanterlere gider. Kanalı besleyen huniye geri bir şey gönderilmez, böylece eşyalar döngüye girmez.
+
+|   |   |   |
+|---|---|---|
+| Demir Levha | Demir Levha | Demir Levha |
+|   | Huni |   |
+| Demir Levha | Demir Levha | Demir Levha |
+
+→ **Eşya Kanalı ×8** (Çalışma Masası)
+
+> [!TIP]
+> Kazıcıdan fırına, fırından sandığa: kanalla tam otomatik bir üretim hattı kurarsın.
+
 <details>
 <summary>English: In-Situ Resources (ISRU)</summary>
 
@@ -180,5 +200,25 @@ The **Sintering Furnace** heats any planet's regolith with electricity and fuses
 
 > [!TIP]
 > Put the excavator next to the furnace: the regolith it digs goes straight in and building blocks pile up on their own.
+
+### Item duct
+
+**Item Duct**
+
+The **Item Duct** moves items between inventories: machines, chests, hoppers.
+- `Right Click` one end with an **empty hand** while holding `Shift`: that end **pulls** from the inventory it touches. Each pulling end moves **16 items** a second.
+- `Shift` + `Right Click` with an item in hand: that end passes **only that item**.
+- A hopper or a machine's output can feed the duct directly; the items go on to the inventories at its ends. Nothing is sent back into a hopper feeding the duct, so items never go round in a loop.
+
+|   |   |   |
+|---|---|---|
+| Iron Plate | Iron Plate | Iron Plate |
+|   | Hopper |   |
+| Iron Plate | Iron Plate | Iron Plate |
+
+→ **Item Duct ×8** (Crafting Table)
+
+> [!TIP]
+> Excavator to furnace, furnace to chest: with ducts you build a fully automatic production line.
 
 </details>
