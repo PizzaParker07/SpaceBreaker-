@@ -10,7 +10,9 @@
   "client": [
     "iris.PackAmbientMixin",
     "iris.SkipPackSkyMixin",
-    "iris.PackCloudsMixin"
+    "iris.PackCloudsMixin",
+    "iris.PackSunMixin",
+    "iris.PackWorldTimeMixin"
   ],
   "injectors": {
     "defaultRequire": 1
