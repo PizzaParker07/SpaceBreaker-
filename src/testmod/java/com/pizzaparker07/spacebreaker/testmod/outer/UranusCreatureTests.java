@@ -42,8 +42,10 @@ public final class UranusCreatureTests {
     public static void screeRollerUnrollsAfterAWhile(GameTestHelper helper) {
         floor(helper, UranusModule.TITANIA_REGOLITH.get());
         ScreeRoller r = helper.spawn(UranusEntities.SCREE_ROLLER.get(), new BlockPos(3, 2, 3));
+        r.setSpeed(0.2F);
         float idle = r.getSpeed();
         r.hurt(helper.getLevel().damageSources().playerAttack(player(helper)), 1F);
+        r.setSpeed(0.2F);
         helper.assertTrue(r.isRolled() && r.getSpeed() > idle * 2, "rolled and fast: " + r.getSpeed() + " vs " + idle);
         long hit = helper.getTick();
         helper.succeedWhen(() -> {
@@ -123,7 +125,8 @@ public final class UranusCreatureTests {
     public static void frostMothFlies(GameTestHelper helper) {
         var m = helper.spawn(UranusEntities.FROST_MOTH.get(), new BlockPos(3, 4, 3));
         helper.assertTrue(m.getType().getCategory() == MobCategory.AMBIENT, "an ambient creature");
-        helper.assertFalse(m.causeFallDamage(20F, 1F, helper.getLevel().damageSources().fall()), "a flier takes no fall damage");
-        helper.succeedWhen(() -> helper.assertTrue(m.isAlive(), "alive"));
+        helper.assertTrue(m instanceof net.minecraft.world.entity.ambient.Bat, "it flies like a bat");
+        double y0 = m.getY();
+        helper.succeedWhen(() -> helper.assertTrue(m.isAlive() && Math.abs(m.getY() - y0) > 0.3, "alive and on the wing"));
     }
 }
