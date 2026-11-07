@@ -61,4 +61,26 @@ public final class ZeroG {
                     0.06F, 1.9F + level.random.nextFloat() * 0.2F);
         }
     }
+
+    /** Climb speed the unit holds while jump is held, and the gentlest descent it holds while sneaking (blocks/tick). */
+    public static final double CLIMB_SPEED = 0.25, GLIDE_SPEED = -0.1;
+    /** Most the unit can change the vertical speed in one tick (cold gas is weak: on Earth it only softens a fall). */
+    public static final double MAX_LIFT = 0.06;
+
+    /**
+     * New vertical speed with the Maneuvering Unit in gravity: jump climbs towards {@link #CLIMB_SPEED}, sneak
+     * brakes a fall to a glide at {@link #GLIDE_SPEED}; the unit never pushes harder than {@link #MAX_LIFT} per
+     * tick (times the booster), so on the Moon it hovers and glides, on Earth it only softens a fall.
+     * Returns {@code vy} unchanged when the unit does nothing.
+     */
+    public static double lift(double vy, boolean up, boolean down, double boost) {
+        double max = MAX_LIFT * boost;
+        if (up && vy < CLIMB_SPEED * boost) {
+            return vy + Math.min(max, CLIMB_SPEED * boost - vy);
+        }
+        if (down && !up && vy < GLIDE_SPEED) {
+            return vy + Math.min(max, GLIDE_SPEED - vy);
+        }
+        return vy;
+    }
 }

@@ -222,6 +222,8 @@ public final class HelmetHud {
             warning = Component.translatable("hud.spacebreaker.warn.radiation");
         } else if (s.integrity() < 20) {
             warning = Component.translatable("hud.spacebreaker.warn.damaged");
+        } else if (s.has(SuitStatusPayload.MMU) && s.mmuFuel() * 10 < com.pizzaparker07.spacebreaker.content.suit.ManeuveringUnitItem.CAPACITY) {
+            warning = Component.translatable("hud.spacebreaker.warn.mmu_low");
         }
         if (warning != null && blink) {
             int ww = font.width(warning);

@@ -44,8 +44,7 @@ public final class SuitEvents {
         }
         data.wasMagnetised = magnetised;
         if (player.tickCount % 10 == 0) {
-            boolean pressurised = com.pizzaparker07.spacebreaker.content.suit.block.SealedRooms.providesOxygen(player.level(),
-                    BlockPos.containing(player.getEyePosition()));
+            boolean pressurised = pressurisedAt(player);
             if (pressurised && !data.wasPressurised) {
                 // stepping into a station module or base: the helmet may come off here
                 player.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.spacebreaker.suit.pressurised")
@@ -70,6 +69,12 @@ public final class SuitEvents {
 
     private static double lastRate(ServerPlayer player) {
         return RATES.getOrDefault(player, 0.0);
+    }
+
+    /** Is the player's head inside a room pressurised by an oxygen distributor (station module, base)? */
+    public static boolean pressurisedAt(Player player) {
+        return com.pizzaparker07.spacebreaker.content.suit.block.SealedRooms.providesOxygen(player.level(),
+                BlockPos.containing(player.getEyePosition()));
     }
 
     /** Tells the wearer when the suit seals (all four pieces on) or opens again. */
