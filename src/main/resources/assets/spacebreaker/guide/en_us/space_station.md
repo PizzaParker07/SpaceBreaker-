@@ -1,7 +1,7 @@
 ---
 title: Space Station
 icon: spacebreaker:docking_port
-items: [spacebreaker:station_kit, spacebreaker:habitat_kit, spacebreaker:station_hull, spacebreaker:station_window, spacebreaker:docking_port, spacebreaker:station_bunk, spacebreaker:fuel_depot, spacebreaker:solar_array, spacebreaker:crew_capsule_large, spacebreaker:cargo_module, spacebreaker:station_core_module, spacebreaker:docking_module, spacebreaker:habitation_module, spacebreaker:airlock_module, spacebreaker:solar_wings, spacebreaker:station_hatch]
+items: [spacebreaker:station_kit, spacebreaker:habitat_kit, spacebreaker:station_hull, spacebreaker:station_window, spacebreaker:docking_port, spacebreaker:station_bunk, spacebreaker:fuel_depot, spacebreaker:solar_array, spacebreaker:crew_capsule_large, spacebreaker:cargo_module, spacebreaker:station_core_module, spacebreaker:docking_module, spacebreaker:habitation_module, spacebreaker:airlock_module, spacebreaker:solar_wings, spacebreaker:shipyard_module, spacebreaker:shipyard_console, spacebreaker:station_hatch]
 research: spacebreaker:space_stations
 ---
 A home, workshop and fuel depot in orbit. You no longer have to fuel your rocket from the ground every time.
@@ -36,6 +36,16 @@ They are attached and delivered like the core and the docking module.
 {recipe spacebreaker:rocketry/habitation_module}
 {recipe spacebreaker:rocketry/airlock_module}
 {recipe spacebreaker:rocketry/solar_wings}
+
+## Shipyard (draft) {#shipyard}
+{items spacebreaker:shipyard_module}
+The {item spacebreaker:shipyard_module} attaches to a mouth like the other modules, but it is built outside the hull: an open **15 × 15 × 31** frame with a berth for one spacecraft (up to **13 × 13 × 29**), a docking port in the mouth, a fuel depot and floodlights. Its {item spacebreaker:shipyard_console} opens the design screen.
+- Add sections nose to tail: **cockpit** (with the nose docking port), cabin, cargo bay, small or large tank, and a **methane** or **nuclear** engine last. Count the RCS clusters and solar wing pairs.
+- Side and top views show the craft inside the berth; the panel shows its size, mass, propellant, thrust, Isp, Δv with full tanks and acceleration.
+- Anything that stops it is listed in plain words: the cockpit must come first and only once, an engine last, at least one tank and two RCS clusters, and it must fit the berth. When all is well it says **Ready to build ✔**. Press **Save design** to keep it on the console.
+
+> For now the shipyard only designs and saves a craft; building and flying it come in a later version.
+{recipe spacebreaker:rocketry/shipyard_module}
 
 ## Habitat module kit
 {items spacebreaker:habitat_kit}
