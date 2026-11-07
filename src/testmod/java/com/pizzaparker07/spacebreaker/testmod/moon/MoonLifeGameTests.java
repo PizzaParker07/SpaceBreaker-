@@ -120,19 +120,11 @@ public final class MoonLifeGameTests {
     @GameTest(template = EMPTY, timeoutTicks = 200)
     public static void outpostHasAirlockLootAndGuards(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
-        // far from the other tests, on the flat test world
+        // far from the other tests, on the flat test world; ground height read only once the chunk is loaded
         BlockPos base = helper.absolutePos(BlockPos.ZERO).offset(4000, 0, 4000);
-        int y = level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.WORLD_SURFACE, base.getX(), base.getZ());
-        OutpostPiece piece = new OutpostPiece(99L, base.getX(), y, base.getZ(), Direction.SOUTH);
+        OutpostPiece piece = new OutpostPiece(99L, base.getX(), surface(level, base), base.getZ(), Direction.SOUTH);
         BoundingBox bb = piece.getBoundingBox();
-        for (int cx = bb.minX() >> 4; cx <= bb.maxX() >> 4; cx++) {
-            for (int cz = bb.minZ() >> 4; cz <= bb.maxZ() >> 4; cz++) {
-                level.getChunk(cx, cz);
-                BoundingBox cb = new BoundingBox(cx << 4, level.getMinBuildHeight(), cz << 4, (cx << 4) + 15, level.getMaxBuildHeight(), (cz << 4) + 15);
-                piece.postProcess(level, level.structureManager(), level.getChunkSource().getGenerator(), RandomSource.create(cx * 31L + cz),
-                        cb, new ChunkPos(cx, cz), bb.getCenter());
-            }
-        }
+        build(level, piece);
         int chests = 0;
         int spawners = 0;
         int doors = 0;
@@ -208,22 +200,9 @@ public final class MoonLifeGameTests {
         Direction[] dirs = {Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST};
         for (int i = 0; i < dirs.length; i++) {
             BlockPos base = helper.absolutePos(BlockPos.ZERO).offset(-4000 - i * 64, 0, 4000);
-            int y = level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.WORLD_SURFACE, base.getX(), base.getZ());
-            OutpostPiece piece = new OutpostPiece(98L, base.getX(), y, base.getZ(), dirs[i]);
+            OutpostPiece piece = new OutpostPiece(98L, base.getX(), surface(level, base), base.getZ(), dirs[i]);
             BoundingBox bb = piece.getBoundingBox();
-            // load every chunk first, then build chunk by chunk like world generation does
-            for (int cx = bb.minX() >> 4; cx <= bb.maxX() >> 4; cx++) {
-                for (int cz = bb.minZ() >> 4; cz <= bb.maxZ() >> 4; cz++) {
-                    level.getChunk(cx, cz);
-                }
-            }
-            for (int cx = bb.minX() >> 4; cx <= bb.maxX() >> 4; cx++) {
-                for (int cz = bb.minZ() >> 4; cz <= bb.maxZ() >> 4; cz++) {
-                    BoundingBox cb = new BoundingBox(cx << 4, level.getMinBuildHeight(), cz << 4, (cx << 4) + 15, level.getMaxBuildHeight(), (cz << 4) + 15);
-                    piece.postProcess(level, level.structureManager(), level.getChunkSource().getGenerator(), RandomSource.create(1),
-                            cb, new ChunkPos(cx, cz), bb.getCenter());
-                }
-            }
+            build(level, piece);
             String o = " (" + dirs[i] + ")";
             // local (22, F+1, 5) with F = 4
             BlockPos door = piece.localToWorld(22, 5, 5);
@@ -358,22 +337,9 @@ public final class MoonLifeGameTests {
         List<BoundingBox> boxes = new java.util.ArrayList<>();
         for (int i = 0; i < dirs.length; i++) {
             BlockPos base = helper.absolutePos(BlockPos.ZERO).offset(3000 + i * 48, 0, -3000);
-            level.getChunk(base);
-            int y = level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.WORLD_SURFACE, base.getX(), base.getZ());
-            var piece = new com.pizzaparker07.spacebreaker.content.moon.dungeon.IceDrillPiece(7L + i, base.getX(), y, base.getZ(), dirs[i]);
+            var piece = new com.pizzaparker07.spacebreaker.content.moon.dungeon.IceDrillPiece(7L + i, base.getX(), surface(level, base), base.getZ(), dirs[i]);
             BoundingBox bb = piece.getBoundingBox();
-            for (int cx = bb.minX() >> 4; cx <= bb.maxX() >> 4; cx++) {
-                for (int cz = bb.minZ() >> 4; cz <= bb.maxZ() >> 4; cz++) {
-                    level.getChunk(cx, cz);
-                }
-            }
-            for (int cx = bb.minX() >> 4; cx <= bb.maxX() >> 4; cx++) {
-                for (int cz = bb.minZ() >> 4; cz <= bb.maxZ() >> 4; cz++) {
-                    BoundingBox cb = new BoundingBox(cx << 4, level.getMinBuildHeight(), cz << 4, (cx << 4) + 15, level.getMaxBuildHeight(), (cz << 4) + 15);
-                    piece.postProcess(level, level.structureManager(), level.getChunkSource().getGenerator(), RandomSource.create(1),
-                            cb, new ChunkPos(cx, cz), bb.getCenter());
-                }
-            }
+            build(level, piece);
             String o = " (" + dirs[i] + ")";
             BlockPos rtg = piece.localToWorld(1, 4, 1);
             helper.assertTrue(level.getBlockEntity(rtg) instanceof com.pizzaparker07.spacebreaker.content.machines.base.MachineBlockEntity be
@@ -406,6 +372,33 @@ public final class MoonLifeGameTests {
                 helper.assertTrue(siphons >= 2, "heat siphons haunt the station, found " + siphons);
             }
         });
+    }
+
+    /** Ground height at a far-away test spot, with its chunk loaded first (an unloaded chunk reads as the world floor). */
+    private static int surface(ServerLevel level, BlockPos pos) {
+        level.getChunk(pos);
+        return level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.WORLD_SURFACE, pos.getX(), pos.getZ());
+    }
+
+    /**
+     * Builds a structure piece in the live test level like world generation: every chunk force-loaded first (so the
+     * guards placed in it stay loaded and ticking), then the piece chunk by chunk.
+     */
+    private static void build(ServerLevel level, net.minecraft.world.level.levelgen.structure.StructurePiece piece) {
+        BoundingBox bb = piece.getBoundingBox();
+        for (int cx = bb.minX() >> 4; cx <= bb.maxX() >> 4; cx++) {
+            for (int cz = bb.minZ() >> 4; cz <= bb.maxZ() >> 4; cz++) {
+                level.setChunkForced(cx, cz, true);
+                level.getChunk(cx, cz);
+            }
+        }
+        for (int cx = bb.minX() >> 4; cx <= bb.maxX() >> 4; cx++) {
+            for (int cz = bb.minZ() >> 4; cz <= bb.maxZ() >> 4; cz++) {
+                BoundingBox cb = new BoundingBox(cx << 4, level.getMinBuildHeight(), cz << 4, (cx << 4) + 15, level.getMaxBuildHeight(), (cz << 4) + 15);
+                piece.postProcess(level, level.structureManager(), level.getChunkSource().getGenerator(), RandomSource.create(cx * 31L + cz),
+                        cb, new ChunkPos(cx, cz), bb.getCenter());
+            }
+        }
     }
 
     private MoonLifeGameTests() {

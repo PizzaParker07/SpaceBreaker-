@@ -72,6 +72,7 @@
 - [Titan](titan)
 - [Enceladus](enceladus)
 - [Miranda](miranda)
+- [Ariel](ariel)
 - [Triton](triton)
 - [Plüton](pluto)
 - [Charon](charon)

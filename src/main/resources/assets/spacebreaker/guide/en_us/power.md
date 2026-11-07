@@ -1,7 +1,7 @@
 ---
 title: Power
 icon: spacebreaker:combustion_generator
-items: [spacebreaker:combustion_generator, spacebreaker:solar_panel, spacebreaker:battery_bank, spacebreaker:copper_cable, spacebreaker:hv_cable, spacebreaker:rtg, spacebreaker:rtg_fuel_pellet]
+items: [spacebreaker:combustion_generator, spacebreaker:solar_panel, spacebreaker:battery_bank, spacebreaker:copper_cable, spacebreaker:hv_cable, spacebreaker:rtg, spacebreaker:rtg_fuel_pellet, spacebreaker:power_monitor]
 ---
 Every machine runs on **FE** (energy). Production and use are measured in "FE/t": per game tick (20 ticks per second).
 
@@ -24,6 +24,10 @@ Every machine runs on **FE** (energy). Production and use are measured in "FE/t"
 > The solar panel gives power out of every side except the top. Placing it right next to the lab is enough.
 
 {page}
+## Power monitor
+{items spacebreaker:power_monitor}
+Place a {item spacebreaker:power_monitor} against a battery bank (or any block that stores energy): its screen shows the charge, the net flow and the time until full or empty. Its comparator output follows the charge, so redstone can start a generator when the charge runs low.
+
 ## Night and power {#night}
 For a steady 10 FE/t load (a panel gives at most 20 FE/t at noon, a battery bank holds 1,000,000 FE):
 

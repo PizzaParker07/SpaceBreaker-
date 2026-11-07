@@ -65,6 +65,7 @@ public class SampleItem extends Item {
             case "ganymede", "callisto" -> 0x7E7266;
             case "titan" -> 0xA87A3A;      // tholin orange
             case "pluto", "charon" -> 0xC9A98E;
+            case "miranda", "ariel" -> 0xB4BCC2; // grey ice
             case "suborbital_flight" -> 0x6FA0D8;
             case "orbital_flight" -> 0x3E5FA8;
             case "orbital_survey" -> 0x4F8A8B;

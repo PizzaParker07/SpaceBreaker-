@@ -160,4 +160,17 @@ public final class TetherGameTests {
                 "no gas is spent while already gliding slowly");
         helper.succeed();
     }
+
+    @GameTest(template = EMPTY)
+    public static void helmetRadioRecognisesMissionControlLines(GameTestHelper helper) {
+        var en = com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line.ORBIT_REACHED.event(false).getLocation();
+        var tr = com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line.OXYGEN_LOW.event(true).getLocation();
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.HelmetRadioLines.lineOf(en)
+                == com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line.ORBIT_REACHED, "English line recognised: " + en);
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.HelmetRadioLines.lineOf(tr)
+                == com.pizzaparker07.spacebreaker.content.audio.SbSounds.Line.OXYGEN_LOW, "Turkish line recognised: " + tr);
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.HelmetRadioLines.lineOf(
+                com.pizzaparker07.spacebreaker.content.audio.SbSounds.RADIO_IN.get().getLocation()) == null, "radio tones are not lines");
+        helper.succeed();
+    }
 }

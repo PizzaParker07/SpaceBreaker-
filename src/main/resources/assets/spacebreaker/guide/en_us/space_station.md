@@ -37,7 +37,7 @@ The {item spacebreaker:fuel_depot} stores fuel and liquid oxygen and pumps them 
 
 ## Solar array
 {items spacebreaker:solar_array}
-The {item spacebreaker:solar_array} carries three panels on a one-block footprint and makes up to **60 FE/t**. The sun never sets in orbit, so the array runs at full power around the clock.
+The {item spacebreaker:solar_array} carries three panels on a one-block footprint and makes up to **60 FE/t**. Orbit has nights too: each orbit lasts about **12000 ticks** and close to a third of it is spent in the planet's shadow. Add a {item spacebreaker:battery_bank} for the night. → [Night and power](power#night)
 
 ## Docking
 - A crewed rocket arriving in an orbit with a station starts **36 blocks** out from the nearest docking port. It closes in quickly, then creeps the last stretch on thruster puffs and locks on with a clunk: **"Docked"**. Nobody can step off on the way in.

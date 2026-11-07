@@ -11,7 +11,13 @@ Hava yok ve güneş evdekinden neredeyse **üç kat** büyük.
 | Gece | −180 °C |
 | Kutup kraterlerinin tabanı | yaklaşık −240 °C |
 
->! Hiçbir giysi bu aralığın tamamına dayanmaz: termal giysi −170 / 500 °C, ısıtmalı giysi −250 / 80 °C. → [EVA Giysisi](eva_suit)
+>! Gündüzle geceye **termal giysi** (−190 / 500 °C) dayanır, ama kutup kraterlerindeki soğuk tuzaklara dayanmaz; oraya **ısıtmalı giysi** (−250 / 80 °C) gerekir. → [EVA Giysisi](eva_suit)
+
+## Gölge {#shade}
+Hava olmadığı için güneşin göremediği yer öğlen bile soğuktur. Güneşle arana katı bir blok girerse (sarplık, krater kenarı ya da kurduğun bir çatı; cam ve saydam bloklar sayılmaz) sıcaklık 430 °C yerine **−60 °C** olur: temel giysiyle dayanırsın. Gölgeye girip çıkarken aksiyon çubuğu yazar: **Gölgedesin / Güneştesin: X °C**.
+- Terminatöre yakın, güneş alçakken gölgeler uzundur: gündüz tarafını **gölgeden gölgeye** geç.
+- Öğlen gölge azdır: bir çatı kur.
+- Kutup kraterlerinin soğuk tuzakları ayrıdır ve çok daha soğuktur.
 
 > Buz için kraterlere ısıtmalı giysiyle in, gündüz ovalarına termal giysiyle çık; ikisinin arasında gündüzle geceyi ayıran **terminatör** kuşağında dolaş.
 
@@ -24,7 +30,7 @@ Hava yok ve güneş evdekinden neredeyse **üç kat** büyük.
 
 {page}
 {items spacebreaker:graphite_ore spacebreaker:graphite}
-Kutup kraterlerinin tabanı hiç güneş görmez: yaklaşık −240 °C'lik bir **soğuk tuzak** olup {item spacebreaker:mercury_ice} saklar. Termal giysi yalnızca −170 °C'ye dayanır (her termal regülatör modülü bunu 15 °C genişletir); orada ısıtmalı giysi giy. Eritince su, sudan hidrojen ve oksijen elde edersin.
+Kutup kraterlerinin tabanı hiç güneş görmez: yaklaşık −240 °C'lik bir **soğuk tuzak** olup {item spacebreaker:mercury_ice} saklar. Termal giysi yalnızca −190 °C'ye dayanır (her termal regülatör modülü bunu 15 °C genişletir); orada ısıtmalı giysi giy. Eritince su, sudan hidrojen ve oksijen elde edersin.
 
 > **Merkür'de yakıt:** grafit + oksijen → CO₂ (kimyasal reaktör); CO₂ + hidrojen → metan (Sabatier reaktörü). Böylece metaloks yakıtını yerinde tamamlarsın. → [Yerinde Üretim](isru)
 

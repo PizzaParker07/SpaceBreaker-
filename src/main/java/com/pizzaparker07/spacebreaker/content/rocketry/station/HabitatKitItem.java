@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * Habitat module kit: unfolds a sealed 7 × 5 × 7 room of station hull in front of the player, with a band of
  * windows, an airlock door facing the player, a docking port on the far wall, an oxygen distributor and a
- * bunk inside, and a solar array on the roof. Slot an oxygen tank into the distributor (or pipe
+ * bunk inside, and a solar array over a battery bank in the roof. Slot an oxygen tank into the distributor (or pipe
  * oxygen in) and the room fills with air.
  */
 public class HabitatKitItem extends Item {
@@ -49,6 +49,11 @@ public class HabitatKitItem extends Item {
     /** Where the bunk ends up. */
     public static BlockPos bunk(BlockPos centre, Direction forward) {
         return at(centre, forward, -2, 1, 2);
+    }
+
+    /** Where the battery bank ends up: in the middle of the roof, under the solar array. */
+    public static BlockPos battery(BlockPos centre) {
+        return centre.above(HEIGHT - 1);
     }
 
     /** Where the docking port ends up (middle of the far wall). */
@@ -94,8 +99,15 @@ public class HabitatKitItem extends Item {
         level.setBlock(distributor(centre), SuitModule.OXYGEN_DISTRIBUTOR.get().defaultBlockState(), 3);
         level.setBlock(bunk(centre, forward), RocketryModule.STATION_BUNK.get().defaultBlockState()
                 .setValue(HorizontalDirectionalBlock.FACING, forward.getClockWise()), 3);
-        // one solar array on the roof: its wings fold out north and south, over open roof
+        // one solar array on the roof (its wings fold out north and south, over open roof), charging a battery
+        // bank set into the roof below it, so the station keeps its power through the night side of the orbit
+        level.setBlock(battery(centre), MachinesModule.BATTERY_BANK.block().get().defaultBlockState()
+                .setValue(com.pizzaparker07.spacebreaker.content.machines.base.MachineBlock.FACING, forward), 3);
         level.setBlock(centre.above(HEIGHT), MachinesModule.SOLAR_ARRAY.get().defaultBlockState(), 3);
+        // a cable end hanging from the ceiling under the battery: machines in the room plug in there
+        BlockPos cable = battery(centre).below();
+        level.setBlock(cable, net.minecraft.world.level.block.Block.updateFromNeighbourShapes(
+                MachinesModule.COPPER_CABLE.get().defaultBlockState(), level, cable), 3);
         return true;
     }
 

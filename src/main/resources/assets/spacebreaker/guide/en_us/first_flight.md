@@ -6,7 +6,7 @@ research: spacebreaker:basic_rocketry
 From the pad to orbit and back home, step by step.
 
 ## 1. Get ready
-- Wear the four-piece [EVA suit](eva_suit) with two full tanks.
+- Wear the four-piece [EVA suit](eva_suit) with two full tanks. The capsule is pressurised: seated, you breathe even without a suit, but the moment you step out you are back in vacuum.
 - Take spare tanks and an {item spacebreaker:emergency_beacon}.
 - Build your [launch pad](launch_pad) and check it at the console.
 

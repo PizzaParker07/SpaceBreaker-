@@ -37,7 +37,7 @@ Dünya dışında yatak çalışmaz. {item spacebreaker:station_bunk} kullanınc
 
 ## Güneş paneli dizisi
 {items spacebreaker:solar_array}
-{item spacebreaker:solar_array} tek blokluk tabanda üç panel taşır ve en fazla **60 FE/t** üretir. Yörüngede güneş hiç batmaz: dizi gece gündüz tam güçte çalışır.
+{item spacebreaker:solar_array} tek blokluk tabanda üç panel taşır ve en fazla **60 FE/t** üretir. Yörüngede de gece olur: her tur yaklaşık **12000 tick** sürer ve bunun üçte birine yakını gezegenin gölgesinde geçer. Gece için bir {item spacebreaker:battery_bank} kur. → [Gece ve enerji](power#night)
 
 ## Yanaşma
 - İstasyonu olan bir yörüngeye varan mürettebatlı roket en yakın yanaşma portunun **36 blok** uzağında belirir. Hızla yaklaşır, son metreleri manevra iticileriyle ağır ağır alır ve bir tık sesiyle kilitlenir: **"Yanaşıldı"**. Yaklaşma sırasında kimse inemez.

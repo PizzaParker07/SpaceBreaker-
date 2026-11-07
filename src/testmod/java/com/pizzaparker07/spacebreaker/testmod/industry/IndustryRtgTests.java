@@ -249,6 +249,107 @@ public final class IndustryRtgTests {
         });
     }
 
+    /**
+     * Station power through the orbit's shadow: the habitat kit's single solar array (with its own buffer) and the fuel
+     * depot's buffer, a big stage docking right as the station enters shadow, every lap for three laps. The pumps
+     * must never stall long; the array must spend about a third of each lap dark.
+     */
+    @GameTest(template = "empty", batch = "industry_power")
+    public static void stationArrayCarriesTheDepotThroughShadow(GameTestHelper h) {
+        var sys = com.pizzaparker07.spacebreaker.content.rocketry.nav.OrbitDaylight.system(h.getLevel().registryAccess());
+        var earth = Spacebreaker.id("earth");
+        int lap = (int) com.pizzaparker07.spacebreaker.content.rocketry.nav.OrbitDaylight.ORBIT_TICKS;
+        double lit = 0;
+        int firstDark = -1;
+        for (int t = 0; t < lap; t++) {
+            double s = com.pizzaparker07.spacebreaker.content.rocketry.nav.OrbitDaylight.sunlit(sys, earth, t);
+            lit += s;
+            if (firstDark < 0 && s < 0.01) {
+                firstDark = t;
+            }
+        }
+        lit /= lap;
+        h.assertTrue(lit > 0.5 && lit < 0.8, "sunlit share of a lap " + lit);
+        h.assertTrue(firstDark >= 0, "a low orbit has a shadow");
+        int arrayCap = com.pizzaparker07.spacebreaker.content.machines.SolarArrayBlock.PEAK_OUTPUT * 400;
+        int depotCap = com.pizzaparker07.spacebreaker.content.rocketry.station.FuelDepotBlockEntity.ENERGY_CAPACITY;
+        int maxIn = com.pizzaparker07.spacebreaker.content.rocketry.station.FuelDepotBlockEntity.MAX_INPUT;
+        int pumpCost = com.pizzaparker07.spacebreaker.content.rocketry.station.FuelDepotBlockEntity.PUMP_FE_PER_TICK;
+        int mbPerTick = com.pizzaparker07.spacebreaker.content.rocketry.station.FuelDepotBlockEntity.PUMP_MB
+                / com.pizzaparker07.spacebreaker.content.rocketry.station.FuelDepotBlockEntity.PUMP_INTERVAL;
+        double array = 0, depot = 0;
+        int stalled = 0;
+        for (int t = 0; t < 4 * lap; t++) {
+            double sun = com.pizzaparker07.spacebreaker.content.rocketry.nav.OrbitDaylight.sunlit(sys, earth, t);
+            array = Math.min(arrayCap, array + com.pizzaparker07.spacebreaker.content.machines.SolarArrayBlock.PEAK_OUTPUT * sun);
+            double move = Math.min(Math.min(maxIn, array), depotCap - depot);
+            array -= move;
+            depot += move;
+            // from the second lap on, a 100 000 mB stage docks as the station goes dark and is pumped full
+            int inLap = t % lap;
+            boolean pumping = t >= lap && inLap >= firstDark && inLap < firstDark + 100_000 / mbPerTick;
+            if (pumping) {
+                if (depot >= pumpCost) {
+                    depot -= pumpCost;
+                } else {
+                    stalled++;
+                }
+            }
+        }
+        h.assertTrue(stalled == 0, "the depot ran dry for " + stalled + " ticks of pumping in the dark");
+        h.succeed();
+    }
+
+    /**
+     * Habitat roof: solar array on the roof, a ceiling-mounted battery bank in the roof under it (output facing down),
+     * and whatever hangs below in the room gets power - here a second bank standing in for the room's machines.
+     */
+    @GameTest(template = "empty", timeoutTicks = 200, batch = "industry_power")
+    public static void roofBatteryChargesFromTheArrayAndPowersTheRoom(GameTestHelper h) {
+        h.getLevel().setDayTime(6000);
+        BlockPos room = new BlockPos(2, 1, 2);
+        BlockPos roof = room.above();
+        h.setBlock(room, MachinesModule.BATTERY_BANK.block().get().defaultBlockState().setValue(MachineBlock.FACING, Direction.NORTH));
+        h.setBlock(roof, MachinesModule.BATTERY_BANK.block().get().defaultBlockState().setValue(MachineBlock.FACING, Direction.NORTH)
+                .setValue(com.pizzaparker07.spacebreaker.content.machines.machine.BatteryBankBlock.OUTPUT_DOWN, true));
+        h.setBlock(roof.above(), MachinesModule.SOLAR_ARRAY.get());
+        MachineBlockEntity roofBank = h.getBlockEntity(roof);
+        MachineBlockEntity roomBank = h.getBlockEntity(room);
+        roofBank.energy().generate(10_000);
+        h.assertTrue(roofBank.energyCapability(Direction.UP).canReceive(), "the roof bank takes power from the array above");
+        h.assertTrue(roofBank.energyCapability(Direction.DOWN).canExtract(), "and gives it out downwards");
+        h.succeedWhen(() -> h.assertTrue(roomBank.energy().getEnergyStored() >= 5_000, "room got " + roomBank.energy().getEnergyStored()));
+    }
+
+    private static volatile BlockPos halfLight;
+    private static boolean modifierAdded;
+
+    /**
+     * Sunlight modifiers (dust storms, the orbit's shadow) reach a panel exactly once, through Environment.solarFactor:
+     * a test modifier that halves the light at one panel halves its output, not more.
+     */
+    @GameTest(template = "empty", timeoutTicks = 100, batch = "industry_power")
+    public static void sunlightModifiersApplyOnce(GameTestHelper h) {
+        if (!modifierAdded) {
+            modifierAdded = true;
+            Environment.addSunlightModifier((level, pos) -> pos.equals(halfLight) ? 0.5 : 1.0);
+        }
+        h.getLevel().setDayTime(6000);
+        BlockPos plain = new BlockPos(1, 1, 2);
+        BlockPos dimmed = new BlockPos(4, 1, 2);
+        halfLight = h.absolutePos(dimmed);
+        h.setBlock(plain, MachinesModule.SOLAR_PANEL.get());
+        h.setBlock(dimmed, MachinesModule.SOLAR_PANEL.get());
+        h.succeedWhen(() -> {
+            com.pizzaparker07.spacebreaker.content.machines.SolarPanelBlockEntity a = h.getBlockEntity(plain);
+            com.pizzaparker07.spacebreaker.content.machines.SolarPanelBlockEntity b = h.getBlockEntity(dimmed);
+            h.assertTrue(a.getExactOutput() > 0, "the plain panel sees the sun");
+            double ratio = b.getExactOutput() / a.getExactOutput();
+            h.assertTrue(Math.abs(ratio - 0.5) < 0.01, "half the light should give half the power, got " + ratio);
+            halfLight = null;
+        });
+    }
+
     private IndustryRtgTests() {
     }
 }

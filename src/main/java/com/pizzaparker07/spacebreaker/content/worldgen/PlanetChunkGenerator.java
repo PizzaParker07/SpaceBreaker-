@@ -73,14 +73,35 @@ public class PlanetChunkGenerator extends ChunkGenerator {
         return t;
     }
 
+    private volatile com.pizzaparker07.spacebreaker.core.astro.PolarIllumination polar;
+
+    /**
+     * Binds the body's polar light data (astro library) when the world loads: whether water ice survives in its
+     * shadowed polar craters and how cold they are. Without it (e.g. a generator decoded on its own) ice is kept.
+     */
+    public void bindPolar(@org.jetbrains.annotations.Nullable com.pizzaparker07.spacebreaker.core.astro.PolarIllumination polar) {
+        this.polar = polar;
+    }
+
+    /** The bound polar light data, or null. */
+    public @org.jetbrains.annotations.Nullable com.pizzaparker07.spacebreaker.core.astro.PolarIllumination polar() {
+        return polar;
+    }
+
+    /** True if shadowed polar crater floors hold ice on this world (stable ice per the astro data, or no data). */
+    public boolean polarIce() {
+        var p = polar;
+        return p == null || p.iceStable();
+    }
+
     /**
      * Surface height of a permanently shadowed polar crater floor at this column (where ice forms), or
-     * {@code Integer.MIN_VALUE} if the column is not in such a crater, the profile has no polar soil or its
-     * {@code poles.cold_traps} flag is off.
+     * {@code Integer.MIN_VALUE} if the column is not in such a crater, the profile has no polar soil, ice is not
+     * stable there (astro data: air or too warm) or the profile's {@code poles.cold_traps} flag is off.
      */
     public int coldTrapFloor(int x, int z) {
         PlanetTerrain t = terrain();
-        if (t.profile().materials().polarSoil().isEmpty() || !t.profile().poles().coldTraps()) {
+        if (t.profile().materials().polarSoil().isEmpty() || !t.profile().poles().coldTraps() || !polarIce()) {
             return Integer.MIN_VALUE;
         }
         PlanetTerrain.Column c = t.column(x, z);
@@ -161,7 +182,7 @@ public class PlanetChunkGenerator extends ChunkGenerator {
         long h = PlanetTerrain.mix(t.seed() ^ 0xC0FFEEL, PlanetTerrain.mix(wx, wz));
         double jitter = (PlanetTerrain.unit(h, 0) - 0.5) * 0.18;
         boolean lowland = c.lowland + jitter > 0.5;
-        boolean shadowed = c.shadowed(p) && mat.polarSoil().isPresent();
+        boolean shadowed = c.shadowed(p) && mat.polarSoil().isPresent() && polarIce();
         boolean wall = c.anyCraterS > 0.5 && c.anyCraterS < 1.08 && slope >= 2;
 
         BlockState soil;

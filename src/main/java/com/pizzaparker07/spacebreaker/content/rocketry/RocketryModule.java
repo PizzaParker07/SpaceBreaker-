@@ -225,6 +225,12 @@ public final class RocketryModule implements SbModule {
         NeoForge.EVENT_BUS.addListener(RocketryModule::onMount);
         // the crew capsule is pressurised: seated crew breathe without a suit (in orbit and on the way)
         com.pizzaparker07.spacebreaker.core.env.Environment.addOxygenSource(RocketEntity::cabinAir);
+        // night in orbit: stations pass through their planet's shadow; every Environment.solarFactor user (solar
+        // panels, arrays, rovers) feels it. This is the single source: machines must not multiply by it again.
+        com.pizzaparker07.spacebreaker.core.env.Environment.addSunlightModifier(
+                com.pizzaparker07.spacebreaker.content.rocketry.nav.OrbitDaylight::sunlit);
+        // ...and its HUD shows a pressurised cabin (no visor frost)
+        com.pizzaparker07.spacebreaker.content.suit.SuitEvents.addPressureSource(p -> p.getVehicle() instanceof RocketEntity r && r.hasCabin());
         NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent e) -> {
             if (e.getEntity() instanceof net.minecraft.server.level.ServerPlayer sp) {
                 var data = com.pizzaparker07.spacebreaker.content.rocketry.mission.SatelliteData.get(sp.server);

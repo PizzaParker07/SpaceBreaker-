@@ -7,7 +7,7 @@
 Ekvator boyunca uzanan bir kanyon kuşağıyla yarılmış gri su buzu, Plüton'dan kaçan gazla koyu kızıla boyanmış kutup ve gökte hiç kıpırdamayan, yedi derece genişliğinde Plüton.
 
 > [!TIP]
-> **Amonyak Kristali** gübre yapımında kullanılır.
+> [Amonyak Kristali](ariel) gübre yapımında kullanılır.
 
 **Canlı:** Kırağı Kaplumbağası
 
@@ -26,7 +26,7 @@ Düşmüş bir iniş aracı şunu öğretir: *Kuiper Kuşağı Seyrüseferi*.
 Grey water ice split by a belt of chasms along the equator, the pole stained dark red by gas escaping from Pluto, and Pluto itself, seven degrees wide, never moving in the sky.
 
 > [!TIP]
-> **Ammonia Crystal** makes a fertiliser.
+> [Ammonia Crystal](ariel) makes a fertiliser.
 
 **Creature:** Frost Tortoise
 

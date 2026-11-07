@@ -33,8 +33,8 @@ final class RocketryLang {
         l.item(RocketryModule.HABITAT_KIT, "Habitat Module Kit", "Yaşam Modülü Kiti");
         l.block(RocketryModule.STATION_BUNK, "Station Bunk", "İstasyon Ranzası");
         l.block(RocketryModule.FUEL_DEPOT, "Fuel Depot", "Yakıt Deposu");
-        l.add("tooltip.spacebreaker.habitat_kit", "Use in empty space: unfolds a sealed 7×5×7 room with an airlock, windows, docking port, bunk and a solar array",
-                "Boşlukta kullan: hava kilidi, pencereler, yanaşma portu, ranza ve güneş paneli dizisiyle kapalı 7×5×7 bir oda açar");
+        l.add("tooltip.spacebreaker.habitat_kit", "Use in empty space: unfolds a sealed 7×5×7 room with an airlock, windows, docking port, bunk, a solar array and a battery bank",
+                "Boşlukta kullan: hava kilidi, pencereler, yanaşma portu, ranza, güneş paneli dizisi ve batarya bankasıyla kapalı 7×5×7 bir oda açar");
         l.add("tooltip.spacebreaker.habitat_kit.air", "Put an oxygen tank in the distributor to fill it with air",
                 "Havayla doldurmak için dağıtıcıya bir oksijen tüpü tak");
         l.add("message.spacebreaker.station_bunk.set", "Respawn point set", "Yeniden doğma noktası ayarlandı");
