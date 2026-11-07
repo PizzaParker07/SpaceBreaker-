@@ -199,6 +199,12 @@ public class MachineBlock extends BaseEntityBlock {
                     com.pizzaparker07.spacebreaker.content.machines.machine.CombustionGeneratorBlockEntity.OUTPUT)
                     .withStyle(net.minecraft.ChatFormatting.GRAY));
         }
+        if (this == com.pizzaparker07.spacebreaker.content.machines.MachinesModule.FISSION_REACTOR.block().get()) {
+            tooltip.add(net.minecraft.network.chat.Component.translatable("tooltip.spacebreaker.fission_reactor",
+                    com.pizzaparker07.spacebreaker.content.machines.machine.FissionReactorBlockEntity.OUTPUT).withStyle(net.minecraft.ChatFormatting.GRAY));
+            tooltip.add(net.minecraft.network.chat.Component.translatable("tooltip.spacebreaker.fission_reactor.radiation")
+                    .withStyle(net.minecraft.ChatFormatting.GOLD));
+        }
         if (this == com.pizzaparker07.spacebreaker.content.machines.MachinesModule.RTG.block().get()) {
             tooltip.add(net.minecraft.network.chat.Component.translatable("tooltip.spacebreaker.rtg",
                     com.pizzaparker07.spacebreaker.content.machines.machine.RtgBlockEntity.OUTPUT).withStyle(net.minecraft.ChatFormatting.GRAY));

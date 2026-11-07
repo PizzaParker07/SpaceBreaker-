@@ -393,3 +393,47 @@ def export(save):  # noqa: F811
     from sbtex.shapes import plate
     from sbtex import palettes as PP
     save(plate(PP.URANIUM, seed=23), 'item', 'depleted_uranium_plate')
+
+
+def reactor_side():
+    """Kilopower-style core vessel: dark steel drum with a yellow-black hazard band and heat-pipe ribs."""
+    cv = casing(97, seam=False)
+    # the model shows rows 7..15 of this texture on the 9 px drum
+    for x in range(16):
+        for y in (8, 9):
+            cv[x, y] = (214, 170, 44) if (x // 2 + y) % 2 == 0 else S[0]
+    for x in (3, 8, 12):
+        for y in range(11, 15):
+            cv[x, y] = S[5]
+    return cv
+
+
+def reactor_front():
+    """Front of the core: the same drum with a small status window."""
+    cv = reactor_side()
+    for y in range(11, 14):
+        for x in range(5, 11):
+            cv[x, y] = S[0] if (x in (5, 10) or y in (11, 13)) else (214, 170, 44)
+    return cv
+
+
+def reactor_fin():
+    """Radiator panel: dark emissive coating with the heat pipes running up it."""
+    cv = Canvas()
+    dark = [(38, 40, 46), (50, 53, 60), (64, 68, 76)]
+    for y in range(16):
+        for x in range(16):
+            cv[x, y] = dark[1] if x % 4 else dark[2]
+            if y in (0, 15):
+                cv[x, y] = dark[0]
+    return cv
+
+
+_export_isru_reactor = export
+
+
+def export(save):  # noqa: F811
+    _export_isru_reactor(save)
+    save(reactor_side(), 'block', 'fission_reactor_side', (150, 230, 0, None))
+    save(reactor_front(), 'block', 'fission_reactor_front', (150, 230, 0, None))
+    save(reactor_fin(), 'block', 'fission_reactor_fin', (60, 10, 0, None))

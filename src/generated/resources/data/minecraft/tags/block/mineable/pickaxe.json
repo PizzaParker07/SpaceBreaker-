@@ -55,6 +55,7 @@
     "spacebreaker:power_monitor",
     "spacebreaker:combustion_generator",
     "spacebreaker:rtg",
+    "spacebreaker:fission_reactor",
     "spacebreaker:battery_bank",
     "spacebreaker:crusher",
     "spacebreaker:arc_furnace",
