@@ -34,7 +34,6 @@ public class MachineLoopSound extends AbstractTickableSoundInstance {
         this.looping = true;
         this.delay = 0;
         this.volume = 0.01F;
-        this.pitch = block.loopPitch();
         this.x = pos.getX() + 0.5;
         this.y = pos.getY() + 0.5;
         this.z = pos.getZ() + 0.5;
@@ -51,6 +50,15 @@ public class MachineLoopSound extends AbstractTickableSoundInstance {
             return;
         }
         if (level.getBlockState(pos).getBlock() instanceof MachineBlock mb && mb.loopSound() != null) {
+            int share = mb.loopShareRadius();
+            if (share > 0) {
+                // one loop per cascade: stay quiet while a neighbour of the same kind is already playing
+                for (MachineLoopSound other : PLAYING.values()) {
+                    if (other.block == mb && other.level == level && !other.isStopped() && other.pos.distSqr(pos) <= share * share) {
+                        return;
+                    }
+                }
+            }
             MachineLoopSound s = new MachineLoopSound(level, pos, mb);
             PLAYING.put(s.pos, s);
             mc.getSoundManager().play(s);
