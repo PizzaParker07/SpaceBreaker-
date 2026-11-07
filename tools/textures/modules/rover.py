@@ -330,13 +330,14 @@ def cabin_roof(face, x, y, fw, fh):
 
 
 def cabin_side(face, x, y, fw, fh):
-    # long side wall: two windows (holes) with a frame, an orange stripe below them
+    # long side wall: two tall windows (holes) with a thin frame, the front one wrapping round from the windscreen;
+    # an orange stripe below them
     if face in ('left', 'right'):
-        if 3 <= y <= 9 and (3 <= x <= 13 or 17 <= x <= 28):
-            if y in (3, 9) or x in (3, 13, 17, 28):
+        if 0 <= y <= 11 and (1 <= x <= 14 or 17 <= x <= 30):
+            if y == 11 or x in (1, 14, 17, 30):
                 return DARK[1]
             return None
-        if y == 12:
+        if y == 16:
             return ORANGE
         if y >= fh - 2:
             return WHITE[1]
@@ -345,14 +346,37 @@ def cabin_side(face, x, y, fw, fh):
 
 
 def cabin_front(face, x, y, fw, fh):
-    # wide windscreen in the upper half
+    # panoramic windscreen: open from the roof down to the dashboard (rows 0..8), thin corner pillars only
     if face in ('front', 'back'):
-        if 2 <= y <= 11 and 2 <= x <= fw - 3:
-            if y in (2, 11) or x in (2, fw - 3):
+        if y <= 8:
+            if x in (0, fw - 1):
                 return DARK[1]
             return None
+        if y == 9:
+            return DARK[1]
         return WHITE[3] if y < fh - 2 else WHITE[1]
     return WHITE[2]
+
+
+def dashboard(face, x, y, fw, fh):
+    # low dashboard under the windscreen: dark top with a small screen and lamp sockets, white sides
+    if face == 'top':
+        if 7 <= x <= 12 and 0 <= y <= 1:
+            return (18, 40, 34)
+        return DARK[1] if (x + y) % 5 else DARK[0]
+    return WHITE[2] if face != 'bottom' else DARK[1]
+
+
+def dash_lamp(colour):
+    def fn(face, x, y, fw, fh):
+        return (60, 60, 64)
+    return fn
+
+
+def dash_lamp_glow(colour):
+    def fn(face, x, y, fw, fh):
+        return colour
+    return fn
 
 
 def cabin_rear(face, x, y, fw, fh):
@@ -403,6 +427,9 @@ def sheet(glow=False, sprint=False, cabin=False, floats=False):
             paint(cv, 110, 140, 1, 23, 32, cabin_side)
             paint(cv, 180, 140, 20, 23, 1, cabin_front)
             paint(cv, 180, 170, 20, 23, 1, cabin_rear)
+            paint(cv, 130, 200, 20, 2, 3, dashboard)
+            for i in range(3):
+                paint(cv, 160 + i * 4, 210, 1, 1, 1, dash_lamp(None))
         return cv
     finally:
         WHITE, FABRIC = saved
@@ -413,6 +440,10 @@ def _sheet(glow=False):
     if glow:
         paint(cv, 240, 0, 3, 2, 1, headlight_glow)
         paint(cv, 184, 20, 10, 4, 3, console_glow)
+        # cabin dashboard lamps (green, amber, blue) and the screen; the renderer blinks them
+        for i, c in enumerate(((120, 240, 120), (250, 190, 70), (110, 200, 250))):
+            paint(cv, 160 + i * 4, 210, 1, 1, 1, dash_lamp_glow(c))
+        paint(cv, 130, 200, 20, 2, 3, lambda face, x, y, fw, fh: (90, 220, 170) if face == 'top' and 8 <= x <= 11 and y == 1 else None)
         return cv
     paint(cv, 0, 0, 22, 2, 36, frame)
     paint(cv, 120, 0, 20, 2, 12, deck)
