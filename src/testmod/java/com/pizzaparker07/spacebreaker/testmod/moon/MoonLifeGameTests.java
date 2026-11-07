@@ -26,7 +26,6 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
@@ -130,7 +129,8 @@ public final class MoonLifeGameTests {
         int doors = 0;
         for (BlockPos p : BlockPos.betweenClosed(bb.minX(), bb.minY(), bb.minZ(), bb.maxX(), bb.maxY(), bb.maxZ())) {
             var state = level.getBlockState(p);
-            if (state.is(Blocks.CHEST) && level.getBlockEntity(p) instanceof ChestBlockEntity chest && chest.getLootTable() != null) {
+            if (level.getBlockEntity(p) instanceof com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlockEntity chest
+                    && chest.getLootTable() != null) {
                 chests++;
             }
             if (state.is(Blocks.SPAWNER) && level.getBlockEntity(p) instanceof SpawnerBlockEntity) {
@@ -345,11 +345,11 @@ public final class MoonLifeGameTests {
             helper.assertTrue(level.getBlockEntity(rtg) instanceof com.pizzaparker07.spacebreaker.content.machines.base.MachineBlockEntity be
                     && be.items().getStackInSlot(0).is(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.RTG_FUEL_PELLET.get()),
                     "the RTG still holds its pellet" + o);
-            helper.assertTrue(level.getBlockEntity(piece.localToWorld(2, 4, 1)) instanceof ChestBlockEntity chest
+            helper.assertTrue(level.getBlockEntity(piece.localToWorld(2, 4, 1)) instanceof com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlockEntity chest
                     && MoonLoot.ICE_DRILL_CONTROL.equals(chest.getLootTable()), "station data chest" + o);
             int racks = 0;
             for (int z = 9; z <= 10; z++) {
-                if (level.getBlockEntity(piece.localToWorld(12, 4, z)) instanceof net.minecraft.world.level.block.entity.BarrelBlockEntity barrel
+                if (level.getBlockEntity(piece.localToWorld(12, 4, z)) instanceof com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlockEntity barrel
                         && MoonLoot.ICE_DRILL_CORES.equals(barrel.getLootTable())) {
                     racks++;
                 }

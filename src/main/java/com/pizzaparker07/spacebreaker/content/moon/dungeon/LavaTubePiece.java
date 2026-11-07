@@ -14,7 +14,6 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -230,8 +229,10 @@ public class LavaTubePiece extends StructurePiece {
         place(level, box, x, fy, z - 2, Blocks.CHAIN.defaultBlockState());
         BlockPos chest = new BlockPos(x - 1, fy, z - 1);
         if (box.isInside(chest)) {
-            level.setBlock(chest, Blocks.CHEST.defaultBlockState(), 2);
-            if (level.getBlockEntity(chest) instanceof ChestBlockEntity c) {
+            // the probe's store: the shared supply locker
+            level.setBlock(chest, com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.BLOCK.get().defaultBlockState()
+                    .setValue(com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlock.FACING, net.minecraft.core.Direction.SOUTH), 2);
+            if (level.getBlockEntity(chest) instanceof com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlockEntity c) {
                 c.setLootTable(MoonLoot.LAVA_TUBE_PROBE, seed ^ 0x9E3779B9L);
             }
         }
