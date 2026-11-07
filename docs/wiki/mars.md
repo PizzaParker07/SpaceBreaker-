@@ -16,8 +16,18 @@ Kuzey alçak ve düz bir ovadır, güney eski ve kraterli yaylalar. Dev volkanla
 
 ### Tozlu paneller ve toz hortumları
 - Mars'ta gökyüzünü gören güneş panellerine yavaş yavaş toz çöker: temizden tam kaplıya yaklaşık **üç Mars günü**, fırtınada altı kat hızlı. Tam kaplı bir panel gücünün yalnızca **%60**'ını verir.
-- Panele `Shift` basılıyken `Sağ Tık` yap: tozu siler.
-- Sakin öğleden sonraları ovalarda ve kumullarda **toz hortumları** dolaşır. Gevşek eşyaları ve yürüyenleri kenara iter, ama üstünden geçtikleri panelleri de temizler.
+- Panele `Shift` basılıyken boş elle `Sağ Tık` yap ya da bir **fırçayla** kullan: tozu siler. Gezicinin tavan paneli de tozlanır.
+- [Çevre Sensörü](tools) tozun birikme hızını gösterir.
+- Sakin öğleden sonraları ovalarda ve kumullarda **toz hortumları** dolaşır. Gevşek eşyaları ve yürüyenleri kenara iter, ama hasar vermez ve üstünden geçtikleri panelleri temizler. Fırtınadaki saldırgan toz şeytanlarından farklıdır.
+
+> [!TIP]
+> Panel tarlanı hortumların sık geçtiği açık bir ovaya kur.
+
+### Mevsimler
+Mars da Dünya gibi yaklaşık **25°** eğiktir; yarıküreler sırayla kışa girer. Gerçekte 669 sol süren Mars yılı oyunda **24 sola** sıkıştırılmıştır.
+- Kış yarıküresinde havanın bir kısmı donup yere yağar: kutup başlığı ekvatora doğru yaklaşık **52° enleme** kadar yayılır.
+- Açık gecelerde bunun yaklaşık 12° ötesinde ince bir **Mevsimsel CO₂ Kırağısı** oluşur. İlkbaharda doğrudan gaza döner; altındaki toprak olduğu gibi kalır.
+- Mevsim değişince bir mesaj gelir. Yöneticiler **/spacebreaker season <Ls>** ile mevsimi seçebilir (0 kuzeyde ilkbahar, 90 yaz, 180 sonbahar, 270 kış).
 
 ### Toz fırtınaları
 Fırtınalar günlerce bütün gezegeni sarabilir.
@@ -51,8 +61,18 @@ The north is a low, smooth plain; the south is old cratered highland. Look for t
 
 ### Dusty panels and dust whirls
 - On Mars, dust slowly settles on solar panels that see the sky: about **three Mars days** from clean to covered, six times faster in a storm. A fully covered panel gives only **60%** of its power.
-- `Right Click` a panel while holding `Shift` to wipe the dust off.
-- On calm afternoons **dust whirls** wander over the plains and dunes. They push loose items and walkers aside, but also sweep clean the panels they pass.
+- `Right Click` a panel with an empty hand while holding `Shift`, or use a **brush** on it, to wipe the dust off. The rover's roof panel gathers dust too.
+- The [Environment Sensor](tools) shows how fast dust is settling.
+- On calm afternoons **dust whirls** wander over the plains and dunes. They push loose items and walkers aside, but do no harm and sweep clean the panels they pass. They are not the aggressive dust devils of a storm.
+
+> [!TIP]
+> Build your solar farm on an open plain where whirls often pass.
+
+### Seasons
+Like Earth, Mars is tilted about **25°**, so its hemispheres take turns at winter. The Martian year, 669 sols in reality, is squeezed into **24 sols** in the game.
+- In the winter hemisphere part of the air freezes onto the ground: the polar cap spreads toward the equator as far as about **52° latitude**.
+- On clear nights a thin **Seasonal CO₂ Frost** forms about 12° beyond that. In spring it turns straight back into gas; the soil underneath stays as it was.
+- A message tells you when the season changes. Operators can pick one with **/spacebreaker season <Ls>** (0 northern spring, 90 summer, 180 autumn, 270 winter).
 
 ### Dust storms
 Storms can wrap the whole planet for days.

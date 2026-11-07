@@ -39,6 +39,25 @@ Kask takmadan dolaşabileceğin bir üs için kapalı bir oda, bir dağıtıcı 
 > [!TIP]
 > Bir blok kırıldığında ya da konduğunda dağıtıcı odayı yeniden kontrol eder. Pencere için cam kullanabilirsin; kapı ise sıradan bir kapı olursa hava kaçar.
 
+### Üs blokları
+
+**Alüminyum Panel** · **Titanyum Levha** · **Basınçlı Cam** · **Lombar** · **Uyarı Şeridi** · **Kablo Kanalı Kapağı**
+
+Üssünü **Alüminyum Panel**, **Titanyum Levha**, **Basınçlı Cam** ve **Lombar** ile kur. **Tam bloklar, basınçlı cam ve lombarlar havayı tutar**; uyarı şeritleri ve kanal kapakları da tam bloktur.
+
+> [!WARNING]
+> **Izgara Zemin**, ızgara platform, korkuluk, çelik merdiven, projektör ve basamaklar havayı geçirir. Bunları basınçlı odanın duvarına koyma.
+
+**LED Panel Lamba** · **Projektör** · **Uyarı Işığı**
+
+Aydınlatma için **LED Panel Lamba** ve **Projektör**; dönen ışıklı bir **Uyarı Işığı** tehlikeli yerleri işaretler.
+
+### Kayar kapılar ve hava kilidi
+
+**Kayar Kapı**
+
+Karşılıklı, en fazla **4 blok** arayla iki **Kayar Kapı** bir **hava kilidi** olur: ikisi asla aynı anda açık kalmaz. Birini açmak istediğinde öbürü kapanır, hava kilidi döngüsü çalar ve kapı 40 tik sonra açılır. Elle ya da kızıltaşla aynı kural geçerlidir.
+
 <details>
 <summary>English: Air for the Base</summary>
 
@@ -80,5 +99,24 @@ Example: a 100-block room first needs 400 breath ticks (200 mB of oxygen gas), t
 
 > [!TIP]
 > The distributor checks the room again when a block is broken or placed. Glass works for windows; an ordinary door lets the air out.
+
+### Base blocks
+
+**Aluminium Panel** · **Titanium Deck Plate** · **Pressure Glass** · **Porthole** · **Hazard Stripe** · **Cable Duct Cover**
+
+Build your base from **Aluminium Panel**, **Titanium Deck Plate**, **Pressure Glass** and **Porthole**. **Full blocks, pressure glass and portholes hold air**; hazard stripes and duct covers are full blocks too.
+
+> [!WARNING]
+> The **Grate Floor**, grate platform, railing, steel ladder, floodlight and slabs let air through. Keep them out of the walls of a pressurised room.
+
+**LED Panel Light** · **Floodlight** · **Warning Light**
+
+Light it with **LED Panel Light** and **Floodlight**s; a **Warning Light** with a turning beam marks the dangerous spots.
+
+### Sliding doors and airlocks
+
+**Sliding Door**
+
+Two **Sliding Door**s facing each other up to **4 blocks** apart become an **airlock**: they never stand open together. Asking one to open shuts the other, plays the airlock cycle and opens it 40 ticks later. Hand and redstone follow the same rule.
 
 </details>

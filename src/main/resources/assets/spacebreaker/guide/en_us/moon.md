@@ -30,3 +30,12 @@ Bake regolith in a furnace: **sintered regolith** is the first building block of
 
 > [!TIP]
 > Build your base on the rim of a polar crater: light for solar panels, ice inside.
+
+{page}
+## Eclipses
+Seen from a moon, its planet passes in front of the Sun now and then. The Sun dims, and the planet's dark side is ringed by a thin red-orange band of all its sunrises and sunsets at once. Light and solar panel output drop, and the day's warmth fades slowly toward the night temperature. Mission control warns you about a minute ahead. **/spacebreaker eclipse** tells you when the next one comes.
+
+> Panels go dark during an eclipse, so keep your batteries full. → [Night and power](power#night)
+
+## Volcanic domes
+In places steep, smooth domes of light anorthosite rise from the plains: 45–95 blocks across, up to 28 high, with a tiny pit on top.
