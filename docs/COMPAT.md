@@ -218,6 +218,9 @@ Complementary the tint is weaker (the pack re-lights translucent entities) but t
 - **Mars clouds, canyon fog, seasonal frost:** clouds are part of our sky; the canyon morning fog is the world's fog,
   applied by the haze pass; frost blocks render as in vanilla (`mars_clouds_fog_frost_vanilla_vs_iris.jpg`). The
   ground looks browner than vanilla's grey basalt under the pack's warm sunlight.
+- **Blocky planets (`BlockyBodyRenderer`, voxel ball or cube):** drawn in the sky, so the sky pass carries them over to
+  the pack unchanged: Earth over the Moon by day and night looks the same with and without Complementary in both styles
+  (`blocky_earth_vanilla_vs_iris.jpg`; rows: voxel vanilla/pack ×2, cube vanilla/pack ×2).
 - **Docking jolt:** a camera roll/pitch from `ViewportEvent.ComputeCameraAngles`; Iris builds its matrices from the
   same camera, so the shake is the same with a pack (at most about 2°, too small to tell apart in a still frame).
 - **Inside a closed module the pack's ambient fill is blue:** the airless sky colour handed to the pack
