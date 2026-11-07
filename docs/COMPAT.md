@@ -342,7 +342,8 @@ environment; the plugins compile against both APIs and the line itself is covere
 
 - **Dedicated server:** the GameTest server runs on the dedicated-server side with every module (all tests pass).
   Client classes are only referenced from client packages, from compat plugins that only the client-side mods load,
-  from mixins in the client list, and from `playToClient` handler lambdas (never run on a server).
+  and from mixins in the client list. Play-to-client payload handlers in common code go through hooks the client
+  fills in at setup (`SuitNetwork.onSuitStatus` and friends, `MachineBlock.CLIENT_LOOP`): no client class is named.
 - **Optional mods:** Iris, Sodium, JEI, EMI, Jade and WTHIT are `optional` dependencies with minimum versions in
   `neoforge.mods.toml` (an older one is refused with a message, not a crash); Distant Horizons and Voxy are only read by
   reflection and need no entry. Without any of them the mod runs unchanged.
