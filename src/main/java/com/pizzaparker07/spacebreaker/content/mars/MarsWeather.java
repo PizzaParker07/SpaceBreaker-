@@ -28,6 +28,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class MarsWeather {
     /** Average calm time between storms, in ticks (about five sols). */
     public static final int MEAN_CALM_TICKS = 5 * 24000;
+    /** How long before a natural storm arrives the players on Mars are warned (two minutes). */
+    public static final int WARNING_TICKS = 2400;
     private static final Map<ResourceKey<Level>, Float> CLIENT = new ConcurrentHashMap<>();
     private static final Map<ResourceKey<Level>, Float> CLIENT_SHOWN = new ConcurrentHashMap<>();
 
@@ -68,10 +70,29 @@ public final class MarsWeather {
     public static void force(ServerLevel level, float strength, int durationTicks) {
         Data d = data(level);
         d.target = Mth.clamp(strength, 0F, 1F);
+        d.warning = 0;
         d.remaining = strength > 0 ? durationTicks : 0;
         d.strength = d.target;
         d.setDirty();
         sync(level, d);
+    }
+
+    /**
+     * Announces a storm that arrives after {@code warnTicks}: the dust on the horizon is seen long before it hits,
+     * like orbiters watching a storm grow, so players get time to get under cover and bring in the rover.
+     */
+    public static void forecast(ServerLevel level, float strength, int durationTicks, int warnTicks) {
+        if (!dusty(level)) {
+            return;
+        }
+        Data d = data(level);
+        d.forecast(strength, durationTicks, warnTicks);
+        announce(level, "warning");
+    }
+
+    /** Ticks until a forecast storm arrives, 0 when none is coming. */
+    public static int warningTicks(ServerLevel level) {
+        return dusty(level) ? data(level).warning : 0;
     }
 
     static void tick(ServerLevel level) {
@@ -79,14 +100,12 @@ public final class MarsWeather {
             return;
         }
         Data d = data(level);
-        if (d.remaining > 0) {
-            d.remaining--;
-            if (d.remaining == 0) {
-                d.target = 0;
-            }
-        } else if (d.target == 0 && level.random.nextInt(MEAN_CALM_TICKS) == 0) {
-            d.target = 0.55F + 0.45F * level.random.nextFloat();
-            d.remaining = 14000 + level.random.nextInt(24000);
+        String event = d.step();
+        if (event != null) {
+            announce(level, event);
+        }
+        if (d.target == 0 && d.remaining == 0 && d.warning == 0 && level.random.nextInt(MEAN_CALM_TICKS) == 0) {
+            forecast(level, 0.55F + 0.45F * level.random.nextFloat(), 14000 + level.random.nextInt(24000), WARNING_TICKS);
         }
         float before = d.strength;
         d.strength += Mth.clamp(d.target - d.strength, -1F / 2400F, 1F / 1600F);
@@ -95,6 +114,13 @@ public final class MarsWeather {
         }
         if (before != d.strength && level.getGameTime() % 200 == 0) {
             d.setDirty();
+        }
+    }
+
+    private static void announce(ServerLevel level, String what) {
+        net.minecraft.network.chat.Component msg = net.minecraft.network.chat.Component.translatable("message.spacebreaker.duststorm." + what);
+        for (ServerPlayer p : level.players()) {
+            p.displayClientMessage(msg, false);
         }
     }
 
@@ -132,17 +158,59 @@ public final class MarsWeather {
         return level.getDataStorage().computeIfAbsent(new SavedData.Factory<>(Data::new, Data::load), "spacebreaker_dust_storm");
     }
 
-    static final class Data extends SavedData {
+    /** Storm state of one world; public so its warning → storm → calm cycle can be tested without the world. */
+    public static final class Data extends SavedData {
         float strength;
         float target;
         int remaining;
+        int warning;
+        float pendingStrength;
+        int pendingDuration;
         float synced = -1;
+
+        public Data() {
+        }
+
+        /** Schedules a storm of this strength and length after {@code warnTicks}. */
+        public void forecast(float strength, int durationTicks, int warnTicks) {
+            pendingStrength = Mth.clamp(strength, 0.05F, 1F);
+            pendingDuration = durationTicks;
+            warning = Math.max(1, warnTicks);
+            setDirty();
+        }
+
+        /** One tick of the schedule; returns "arrive" or "clear" when the storm starts or ends, otherwise null. */
+        public String step() {
+            if (warning > 0) {
+                if (--warning == 0) {
+                    target = pendingStrength;
+                    remaining = pendingDuration;
+                    setDirty();
+                    return "arrive";
+                }
+            } else if (remaining > 0 && --remaining == 0) {
+                target = 0;
+                return "clear";
+            }
+            return null;
+        }
+
+        public int warning() {
+            return warning;
+        }
+
+        public float target() {
+            return target;
+        }
 
         static Data load(CompoundTag tag, HolderLookup.Provider registries) {
             Data d = new Data();
             d.strength = tag.getFloat("strength");
             d.target = tag.getFloat("target");
             d.remaining = tag.getInt("remaining");
+            d.warning = tag.getInt("warning");
+            d.pendingStrength = tag.getFloat("pending_strength");
+            d.pendingDuration = tag.getInt("pending_duration");
             return d;
         }
 
@@ -151,6 +219,9 @@ public final class MarsWeather {
             tag.putFloat("strength", strength);
             tag.putFloat("target", target);
             tag.putInt("remaining", remaining);
+            tag.putInt("warning", warning);
+            tag.putFloat("pending_strength", pendingStrength);
+            tag.putInt("pending_duration", pendingDuration);
             return tag;
         }
     }

@@ -181,6 +181,14 @@ public final class MarsModule implements SbModule {
                 .then(Commands.literal("start").executes(ctx -> storm(ctx.getSource(), 1F))
                         .then(Commands.argument("strength", FloatArgumentType.floatArg(0.05F, 1F))
                                 .executes(ctx -> storm(ctx.getSource(), FloatArgumentType.getFloat(ctx, "strength")))))
+                .then(Commands.literal("forecast").executes(ctx -> {
+                    if (!MarsWeather.dusty(ctx.getSource().getLevel())) {
+                        ctx.getSource().sendFailure(Component.translatable("commands.spacebreaker.duststorm.none"));
+                        return 0;
+                    }
+                    MarsWeather.forecast(ctx.getSource().getLevel(), 1F, 24000, MarsWeather.WARNING_TICKS);
+                    return 1;
+                }))
                 .then(Commands.literal("stop").executes(ctx -> storm(ctx.getSource(), 0F)))));
     }
 
@@ -229,6 +237,11 @@ public final class MarsModule implements SbModule {
         lang.item(PERCHLORATE_SALT, "Perchlorate Salt", "Perklorat Tuzu");
         lang.add("commands.spacebreaker.duststorm.start", "A dust storm sweeps across Mars", "Mars'ta bir toz fırtınası başladı");
         lang.add("commands.spacebreaker.duststorm.stop", "The dust settles", "Toz yatıştı");
+        lang.add("message.spacebreaker.duststorm.warning", "A wall of dust is rising on the horizon: a storm will reach you in about two minutes. Get under cover; solar power will fail.",
+                "Ufukta bir toz duvarı yükseliyor: fırtına yaklaşık iki dakika içinde gelecek. Bir sığınağa gir; güneş enerjisi düşecek.");
+        lang.add("message.spacebreaker.duststorm.arrive", "The dust storm has arrived: the Sun is dimmed and tracks are being erased.",
+                "Toz fırtınası geldi: Güneş karardı, izler siliniyor.");
+        lang.add("message.spacebreaker.duststorm.clear", "The storm is dying down; the sky will clear.", "Fırtına diniyor; gökyüzü açılacak.");
         lang.add("commands.spacebreaker.duststorm.none", "This world has no dust storms", "Bu dünyada toz fırtınası olmaz");
         MarsData.translations(lang);
         com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.translations(lang);
