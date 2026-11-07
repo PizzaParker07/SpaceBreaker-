@@ -673,3 +673,22 @@ first: kind, discovered, mass and radius in Earth units, a, period, equilibrium 
 flag, landable, moons, rings, colour family). `BodyAdapter.toCelestialBodies(system, dims)` turns any system
 into `CelestialBody` records without registering them; a GameTest converts every catalogued system and
 round-trips it through the data-pack codec.
+
+## Eclipses in orbit (`Eclipses`)
+
+For solar arrays in orbit dimensions and satellites:
+
+```java
+Eclipses.Sunlight s = Eclipses.station(sys, "spacebreaker:earth", 400_000, BodyAdapter.simTime(level));
+s.sunlit();           // 0 in the umbra .. 1 in full sun (smooth across the penumbra)
+s.irradiance();       // W/m² on a panel facing the star, already × sunlit (Earth ≈ 1361, Mars 490–720)
+s.eclipseFraction();  // share of every orbit in shadow (400 km: 0.39 ≈ 36 of 92 minutes)
+s.orbitPeriod(); s.phase(); s.inShadow();
+Eclipses.eclipseFraction(planetRadius, orbitRadius, beta);   // orbit average for any β angle
+Eclipses.sunlitFraction(pos, starPos, planetRadius, starRadius);   // any point, with penumbra
+```
+
+The station orbit lies in the system plane (β ≈ 0: the worst case, longest nights) unless an inclination is
+given, and starts on the day side at J2000. Checked: ISS-like orbit 36 min of darkness, geostationary
+≈ 70 min at equinox and none when β > 8.7°, low lunar orbit ≈ 47 of 118 minutes. For an energy average
+over time, multiply peak output by `1 − eclipseFraction()`.
