@@ -2066,6 +2066,37 @@ def fuel_depot_top():
     return cv
 
 
+def landing_beacon_top():
+    """Landing pad marker seen from above: dark plate, yellow ring and a white H, red lights at the corners."""
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            d = math.hypot(x - 7.5, y - 7.5)
+            c = CARBON[2] if (x + y) % 3 else CARBON[3]
+            if 5.6 < d < 7.0:
+                c = HAZARD[3]
+            cv[x, y] = c
+    for y in range(4, 12):
+        cv[5, y] = HULL[5]
+        cv[10, y] = HULL[5]
+    for x in range(6, 10):
+        cv[x, 7] = HULL[5]
+        cv[x, 8] = HULL[4]
+    for x, y in ((0, 0), (15, 0), (0, 15), (15, 15)):
+        cv[x, y] = (230, 60, 50)
+    return cv
+
+
+def landing_beacon_side():
+    cv = station_hull()
+    for x in range(16):
+        cv[x, 0] = HAZARD[3] if x % 4 < 2 else CARBON[2]
+        cv[x, 1] = HAZARD[2] if x % 4 < 2 else CARBON[1]
+    cv[7, 4] = (230, 60, 50)
+    cv[8, 4] = (230, 60, 50)
+    return cv
+
+
 def habitat_kit_icon():
     cv = Canvas()
     rows = [
@@ -2107,6 +2138,8 @@ def export_facility(save):
     save(limit_colours(docking_port_side()), 'block', 'docking_port_side', (180, 30, 0, None))
     save(station_kit_icon(), 'item', 'station_kit')
     save(habitat_kit_icon(), 'item', 'habitat_kit')
+    save(limit_colours(landing_beacon_top()), 'block', 'landing_beacon_top', (180, 30, 0, None))
+    save(limit_colours(landing_beacon_side()), 'block', 'landing_beacon_side', (180, 30, 0, None))
     save(limit_colours(station_bunk_top()), 'block', 'station_bunk_top', (180, 30, 0, None))
     save(station_bunk_side(), 'block', 'station_bunk_side', (180, 30, 0, None))
     save(limit_colours(fuel_depot_side()), 'block', 'fuel_depot_side', (180, 30, 0, None))

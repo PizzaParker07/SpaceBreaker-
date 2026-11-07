@@ -395,6 +395,9 @@ public class StarMapScreen extends Screen {
             if (!com.pizzaparker07.spacebreaker.content.rocketry.station.Stations.around(n.body).isEmpty()) {
                 stationIcon(g, n.x + n.r + 1, n.y - n.r - 5);
             }
+            if (!com.pizzaparker07.spacebreaker.content.rocketry.station.Stations.basesOn(n.body).isEmpty()) {
+                baseIcon(g, n.x + n.r + 1, n.y + n.r - 2);
+            }
             if (focus == null) {
                 int moons = StarMapData.moons(n.body).size();
                 for (int i = 0; i < Math.min(moons, 8); i++) {
@@ -411,6 +414,15 @@ public class StarMapScreen extends Screen {
         g.fill(x + 6, y + 1, x + 9, y + 4, 0xFF4A6AA8);
         g.fill(x + 3, y + 2, x + 6, y + 3, 0xFF8A96A4);
         g.fill(x + 3, y, x + 6, y + 5, 0xFFEEF0F2);
+    }
+
+    /** A tiny surface base: a landing pad with a yellow ring and a little dome. */
+    private static void baseIcon(GuiGraphics g, int x, int y) {
+        g.fill(x - 1, y - 1, x + 10, y + 6, 0xFF101418);
+        g.fill(x, y + 3, x + 9, y + 5, 0xFFCFA823);
+        g.fill(x + 1, y + 4, x + 8, y + 5, 0xFF2D2F33);
+        g.fill(x + 3, y, x + 6, y + 3, 0xFFEEF0F2);
+        g.fill(x + 2, y + 1, x + 7, y + 3, 0xFFEEF0F2);
     }
 
     private void drawHere(GuiGraphics g, float time) {
@@ -517,6 +529,16 @@ public class StarMapScreen extends Screen {
         if (!com.pizzaparker07.spacebreaker.content.rocketry.mission.Coverage.hasSignal(body)) {
             for (FormattedCharSequence line : font.split(Component.translatable("gui.spacebreaker.star_map.no_signal"), w)) {
                 g.drawString(font, line, x, y, 0xFFB0A070, false);
+                y += 9;
+            }
+        }
+        for (var st : com.pizzaparker07.spacebreaker.content.rocketry.station.Stations.basesOn(body)) {
+            Component line = st.owner().isEmpty()
+                    ? Component.translatable("gui.spacebreaker.star_map.base", st.ports())
+                    : Component.translatable("gui.spacebreaker.star_map.base_owner", st.owner(), st.ports());
+            baseIcon(g, x, y);
+            for (FormattedCharSequence l : font.split(line, w - 14)) {
+                g.drawString(font, l, x + 14, y, 0xFFE1E3E6, false);
                 y += 9;
             }
         }

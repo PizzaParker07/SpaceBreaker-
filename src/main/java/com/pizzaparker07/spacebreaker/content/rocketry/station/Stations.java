@@ -27,12 +27,20 @@ public final class Stations {
     /** Ports this close belong to the same station. */
     public static final int CLUSTER = 48;
 
-    /** One station: the body it circles, who built it (first known builder) and how many docking ports it has. */
-    public record Station(ResourceLocation body, String owner, int ports) {
+    /**
+     * One station in orbit (or, with {@code surface}, one base on the ground): the body, who built it (first known
+     * builder) and how many docking ports (landing beacons for a base) it has.
+     */
+    public record Station(ResourceLocation body, String owner, int ports, boolean surface) {
+        public Station(ResourceLocation body, String owner, int ports) {
+            this(body, owner, ports, false);
+        }
+
         public static final StreamCodec<ByteBuf, Station> STREAM_CODEC = StreamCodec.composite(
                 ResourceLocation.STREAM_CODEC, Station::body,
                 ByteBufCodecs.STRING_UTF8, Station::owner,
                 ByteBufCodecs.VAR_INT, Station::ports,
+                ByteBufCodecs.BOOL, Station::surface,
                 Station::new);
     }
 
@@ -50,6 +58,10 @@ public final class Stations {
     public static List<Station> of(MinecraftServer server) {
         List<Station> out = new ArrayList<>();
         for (ServerLevel level : server.getAllLevels()) {
+            LandingBeacons beacons = LandingBeacons.get(level);
+            if (beacons.size() > 0) {
+                out.addAll(bases(beacons.all(), pos -> Locations.at(level.dimension(), null)));
+            }
             DockingPorts ports = DockingPorts.get(level);
             if (ports.size() == 0) {
                 continue;
@@ -62,8 +74,21 @@ public final class Stations {
         return out;
     }
 
-    /** Groups ports into stations (pure, for tests): {@code where} tells the place of a port; only orbits count. */
-    public static List<Station> group(java.util.Collection<DockingPorts.Port> ports, java.util.function.Function<BlockPos, java.util.Optional<Location>> where) {
+    /** Groups landing beacons into surface bases (pure, for tests): only surfaces count. */
+    public static List<Station> bases(java.util.Collection<DockingPorts.Port> beacons, java.util.function.Function<BlockPos, java.util.Optional<Location>> where) {
+        List<Station> out = new ArrayList<>();
+        for (List<DockingPorts.Port> g : clusters(beacons)) {
+            Location loc = where.apply(g.get(0).pos()).orElse(null);
+            if (loc == null || loc.orbit()) {
+                continue;
+            }
+            String owner = g.stream().map(DockingPorts.Port::owner).filter(o -> !o.isEmpty()).findFirst().orElse("");
+            out.add(new Station(loc.body(), owner, g.size(), true));
+        }
+        return out;
+    }
+
+    private static List<List<DockingPorts.Port>> clusters(java.util.Collection<DockingPorts.Port> ports) {
         List<List<DockingPorts.Port>> groups = new ArrayList<>();
         for (DockingPorts.Port p : ports) {
             List<DockingPorts.Port> home = null;
@@ -79,6 +104,12 @@ public final class Stations {
             }
             home.add(p);
         }
+        return groups;
+    }
+
+    /** Groups ports into stations (pure, for tests): {@code where} tells the place of a port; only orbits count. */
+    public static List<Station> group(java.util.Collection<DockingPorts.Port> ports, java.util.function.Function<BlockPos, java.util.Optional<Location>> where) {
+        List<List<DockingPorts.Port>> groups = clusters(ports);
         List<Station> out = new ArrayList<>();
         for (List<DockingPorts.Port> g : groups) {
             Location loc = where.apply(g.get(0).pos()).orElse(null);
@@ -98,7 +129,12 @@ public final class Stations {
 
     /** Client: the stations around this body. */
     public static List<Station> around(ResourceLocation body) {
-        return received.stream().filter(s -> s.body().equals(body)).toList();
+        return received.stream().filter(s -> s.body().equals(body) && !s.surface()).toList();
+    }
+
+    /** Client: the bases on this body. */
+    public static List<Station> basesOn(ResourceLocation body) {
+        return received.stream().filter(s -> s.body().equals(body) && s.surface()).toList();
     }
 
     /** Server tick: tell everyone when the stations changed. */

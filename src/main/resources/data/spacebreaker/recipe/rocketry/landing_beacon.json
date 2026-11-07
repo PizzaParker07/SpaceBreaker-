@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": ["YGY", "HRH"],
+  "key": {"Y": {"item": "minecraft:yellow_dye"}, "G": {"item": "minecraft:glowstone_dust"}, "H": {"item": "spacebreaker:station_hull"},
+          "R": {"item": "minecraft:redstone"}},
+  "result": {"id": "spacebreaker:landing_beacon", "count": 1}
+}

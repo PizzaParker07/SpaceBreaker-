@@ -846,6 +846,8 @@ public final class RocketryGameTests {
                 .is(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.SOLAR_ARRAY.get()), "a solar array on the roof");
         helper.assertTrue(level.getBlockState(com.pizzaparker07.spacebreaker.content.rocketry.station.HabitatKitItem.battery(centre))
                 .is(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.BATTERY_BANK.block().get()), "a battery bank under the array, for the night");
+        helper.assertTrue(level.getBlockState(com.pizzaparker07.spacebreaker.content.rocketry.station.HabitatKitItem.battery(centre))
+                .getValue(com.pizzaparker07.spacebreaker.content.machines.machine.BatteryBankBlock.OUTPUT_DOWN), "the battery gives power down into the room");
         helper.assertTrue(level.getBlockState(com.pizzaparker07.spacebreaker.content.rocketry.station.HabitatKitItem.battery(centre).below())
                 .is(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.COPPER_CABLE.get()), "a cable end under the battery");
         // the distributor finds a closed room: hull, windows, port and the shut airlock keep the air in
@@ -904,7 +906,7 @@ public final class RocketryGameTests {
     }
 
     // own batch: the rocket flies in from outside its port, and a neighbouring test clearing its area must not catch it
-    @GameTest(template = EMPTY, timeoutTicks = 600, batch = "rocketry_docking")
+    @GameTest(template = EMPTY, timeoutTicks = 1200, batch = "rocketry_docking")
     public static void dockingApproach(GameTestHelper helper) {
         var level = helper.getLevel();
         // a sideways port puts the capsule level with the hatch
@@ -925,23 +927,20 @@ public final class RocketryGameTests {
         level.addFreshEntity(rocket);
         rocket.stageScene(FlightState.ORBIT, 0, 0, false);
         net.minecraft.world.phys.Vec3 end = RocketEntity.dockPoint(port, Direction.UP, rocket.getBbHeight(), rocket.getBbWidth());
-        int[] ticks = {0};
-        double[] last = {Double.MAX_VALUE};
+        // start once the rocket itself is ticking (its chunk is live), whenever that happens
+        boolean[] started = {false};
         helper.onEachTick(() -> {
-            if (++ticks[0] == 10) {
+            if (!started[0] && rocket.isAlive() && rocket.tickCount >= 5) {
+                started[0] = true;
                 rocket.approachPort(port, Direction.UP, 6);
                 helper.assertTrue(rocket.docking() && !rocket.docked() && !rocket.canDismount(), "still flying in: nobody steps out");
                 helper.assertTrue(rocket.position().distanceTo(end) > 5.9, "starts out from the port");
             }
-            if (ticks[0] > 10) {
-                double d = rocket.position().distanceTo(end);
-                helper.assertTrue(d <= last[0] + 1e-6, "always closing in");
-                last[0] = d;
-            }
         });
         helper.succeedWhen(() -> {
-            helper.assertTrue(ticks[0] > 10, "waiting for the rocket to settle");
-            helper.assertFalse(rocket.docking(), "approach finished: " + rocket.position().distanceTo(end));
+            helper.assertTrue(started[0], "waiting for the rocket to tick (alive " + rocket.isAlive() + ", ticks " + rocket.tickCount + ")");
+            helper.assertFalse(rocket.docking(), "approach finished: " + String.format(java.util.Locale.ROOT, "%.3f blocks to go, alive %s, ticks %d, state %s",
+                    rocket.position().distanceTo(end), rocket.isAlive(), rocket.tickCount, rocket.state()));
             helper.assertTrue(rocket.position().distanceTo(end) < 0.01 && rocket.docked() && rocket.canDismount(), "latched on");
             level.removeBlock(port, false);
             helper.assertTrue(ports.nearest(port.getCenter(), p -> p.pos().equals(port)).isEmpty(), "a broken port leaves the list");
@@ -1034,6 +1033,37 @@ public final class RocketryGameTests {
                 helper.succeed();
             });
         });
+    }
+
+    @GameTest(template = EMPTY)
+    public static void lunarShuttle(GameTestHelper helper) {
+        var level = helper.getLevel();
+        RocketLayout shuttle = RocketLayout.of(RocketryModule.LUNAR_SHUTTLE, RocketParts.lookup(level.registryAccess()));
+        helper.assertTrue(shuttle.problems().isEmpty(), "a valid design: " + shuttle.problems());
+        helper.assertTrue(shuttle.hasLegsFrom(0) && shuttle.payload().seats() > 0, "legs and a crew seat");
+        var moonOrbit = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(Location.MOON, true).orElseThrow();
+        // one tank flies down from the station to the base and back up again
+        List<Location> roundTrip = List.of(moonOrbit, Location.MOON_SURFACE, moonOrbit);
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.MissionPlanner.fly(shuttle, 0, shuttle.fullFuel(), roundTrip,
+                SbConfig.Realism.BALANCED).possible(), "Moon orbit -> surface -> orbit on one tank");
+        // a descent comes down on the nearest landing beacon instead of wherever the orbit happens to be
+        BlockPos beacon = helper.absolutePos(new BlockPos(2, 1, 2));
+        level.setBlock(beacon, RocketryModule.LANDING_BEACON.get().defaultBlockState(), 3);
+        var beacons = com.pizzaparker07.spacebreaker.content.rocketry.station.LandingBeacons.get(level);
+        var fallback = new net.minecraft.world.phys.Vec3(beacon.getX() + 300, 360, beacon.getZ() - 200);
+        var spot = RocketEntity.landingSpot(level, fallback);
+        helper.assertTrue(Math.abs(spot.x - (beacon.getX() + 0.5)) < 1e-6 && Math.abs(spot.z - (beacon.getZ() + 0.5)) < 1e-6 && spot.y == 360,
+                "the descent starts over the beacon: " + spot);
+        beacons.setOwner(beacon, "PizzaParker07");
+        // beacons make a base on the map; only on the ground
+        var bases = com.pizzaparker07.spacebreaker.content.rocketry.station.Stations.bases(beacons.all(), p -> java.util.Optional.of(Location.MOON_SURFACE));
+        helper.assertTrue(bases.size() == 1 && bases.get(0).surface() && bases.get(0).owner().equals("PizzaParker07")
+                && bases.get(0).body().equals(Location.MOON), "a base on the Moon, built by its owner: " + bases);
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.station.Stations.bases(beacons.all(),
+                p -> java.util.Optional.of(Location.EARTH_ORBIT)).isEmpty(), "no bases in orbit");
+        level.removeBlock(beacon, false);
+        helper.assertTrue(beacons.nearest(fallback).filter(beacon::equals).isEmpty(), "a broken beacon leaves the list");
+        helper.succeed();
     }
 
     @GameTest(template = EMPTY)

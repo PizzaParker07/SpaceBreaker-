@@ -431,6 +431,18 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         return false;
     }
 
+    /**
+     * Where a descent from orbit starts: straight above the nearest landing beacon of that world if it has one
+     * (a base to come home to), otherwise {@code fallback}. The height of {@code fallback} is kept.
+     */
+    /** How far winds can carry a descent through air off its landing beacon, blocks (airless descents are exact). */
+    public static final double LANDING_DRIFT = 6;
+
+    public static Vec3 landingSpot(ServerLevel level, Vec3 fallback) {
+        return com.pizzaparker07.spacebreaker.content.rocketry.station.LandingBeacons.get(level).nearest(fallback)
+                .map(b -> new Vec3(b.getX() + 0.5, fallback.y, b.getZ() + 0.5)).orElse(fallback);
+    }
+
     /** Flying in towards a docking port. */
     public boolean docking() {
         return entityData.get(DATA_DOCKING);
@@ -1066,12 +1078,17 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
             pos = new Vec3(x, ORBIT_Y, getZ());
             next = FlightState.ORBIT;
         } else if (!to.atmosphere()) {
-            pos = new Vec3(getX() % 30000.0, target.getMaxBuildHeight() + 40, getZ() % 30000.0);
+            pos = landingSpot(target, new Vec3(getX() % 30000.0, target.getMaxBuildHeight() + 40, getZ() % 30000.0));
             next = FlightState.DESCENT;
             speed = new Vec3(0, -2.5, 0);
         } else if (!to.isEarth()) {
             // entry into another world's air: aerobrake behind the shield, chutes, then a short retro-burn
-            pos = new Vec3(getX() % 30000.0, Math.max(target.getMaxBuildHeight() + 200, 500), getZ() % 30000.0);
+            pos = landingSpot(target, new Vec3(getX() % 30000.0, Math.max(target.getMaxBuildHeight() + 200, 500), getZ() % 30000.0));
+            if (LANDING_DRIFT > 0 && !pos.equals(new Vec3(getX() % 30000.0, pos.y, getZ() % 30000.0))) {
+                // winds carry a parachute descent a little off the beacon
+                double a = random.nextDouble() * Math.PI * 2, d = random.nextDouble() * LANDING_DRIFT;
+                pos = pos.add(Math.cos(a) * d, 0, Math.sin(a) * d);
+            }
             next = FlightState.REENTRY;
             speed = new Vec3(0, -3.2, 0);
         } else {
@@ -1105,6 +1122,10 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
     }
 
     private void onArrived(Location to) {
+        if (!to.orbit() && !to.isEarth() && level() instanceof ServerLevel here
+                && com.pizzaparker07.spacebreaker.content.rocketry.station.LandingBeacons.get(here).size() > 0) {
+            notifyCrew(Component.translatable("message.spacebreaker.landing_beacon.guided"));
+        }
         if (!to.body().equals(Location.EARTH_SURFACE.body())) {
             beenAway = true;
         }

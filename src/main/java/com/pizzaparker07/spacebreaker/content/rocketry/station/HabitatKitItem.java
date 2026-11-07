@@ -102,7 +102,8 @@ public class HabitatKitItem extends Item {
         // one solar array on the roof (its wings fold out north and south, over open roof), charging a battery
         // bank set into the roof below it, so the station keeps its power through the night side of the orbit
         level.setBlock(battery(centre), MachinesModule.BATTERY_BANK.block().get().defaultBlockState()
-                .setValue(com.pizzaparker07.spacebreaker.content.machines.base.MachineBlock.FACING, forward), 3);
+                .setValue(com.pizzaparker07.spacebreaker.content.machines.base.MachineBlock.FACING, forward)
+                .setValue(com.pizzaparker07.spacebreaker.content.machines.machine.BatteryBankBlock.OUTPUT_DOWN, true), 3); // feeds the room below
         level.setBlock(centre.above(HEIGHT), MachinesModule.SOLAR_ARRAY.get().defaultBlockState(), 3);
         // a cable end hanging from the ceiling under the battery: machines in the room plug in there
         BlockPos cable = battery(centre).below();

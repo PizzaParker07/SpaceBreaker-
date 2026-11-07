@@ -583,6 +583,10 @@ def station_blocks():
     write('models/item/docking_port.json', {'parent': b('docking_port')})
     generated_item('station_kit')
     generated_item('habitat_kit')
+    write('models/block/landing_beacon.json', {'parent': 'minecraft:block/cube_bottom_top', 'textures': {
+        'top': b('landing_beacon_top'), 'side': b('landing_beacon_side'), 'bottom': b('station_hull')}})
+    write('blockstates/landing_beacon.json', {'variants': {'': {'model': b('landing_beacon')}}})
+    write('models/item/landing_beacon.json', {'parent': b('landing_beacon')})
     write('models/block/fuel_depot.json', {'parent': 'minecraft:block/cube_bottom_top', 'textures': {
         'top': b('fuel_depot_top'), 'side': b('fuel_depot_side'), 'bottom': b('fuel_depot_top')}})
     write('blockstates/fuel_depot.json', {'variants': {'': {'model': b('fuel_depot')}}})

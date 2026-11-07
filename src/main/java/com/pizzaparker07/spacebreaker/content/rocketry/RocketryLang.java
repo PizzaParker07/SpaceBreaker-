@@ -33,6 +33,8 @@ final class RocketryLang {
         l.item(RocketryModule.HABITAT_KIT, "Habitat Module Kit", "Yaşam Modülü Kiti");
         l.block(RocketryModule.STATION_BUNK, "Station Bunk", "İstasyon Ranzası");
         l.block(RocketryModule.FUEL_DEPOT, "Fuel Depot", "Yakıt Deposu");
+        l.block(RocketryModule.LANDING_BEACON, "Landing Beacon", "İniş İşareti");
+        l.add("message.spacebreaker.landing_beacon.guided", "Landing beacon in range: coming down on the base", "İniş işareti alındı: üsse iniliyor");
         l.add("tooltip.spacebreaker.habitat_kit", "Use in empty space: unfolds a sealed 7×5×7 room with an airlock, windows, docking port, bunk, a solar array and a battery bank",
                 "Boşlukta kullan: hava kilidi, pencereler, yanaşma portu, ranza, güneş paneli dizisi ve batarya bankasıyla kapalı 7×5×7 bir oda açar");
         l.add("tooltip.spacebreaker.habitat_kit.air", "Put an oxygen tank in the distributor to fill it with air",
@@ -239,6 +241,8 @@ final class RocketryLang {
         l.add("gui.spacebreaker.star_map.star_kind.black_hole", "A black hole: not even light escapes it", "Kara delik: ışık bile kaçamaz");
         l.add("gui.spacebreaker.star_map.star_distance", "Distance: %s light years", "Uzaklık: %s ışık yılı");
         l.add("gui.spacebreaker.star_map.star_planets", "Planets: %s", "Gezegen sayısı: %s");
+        l.add("gui.spacebreaker.star_map.base", "Base on the surface · landing beacons: %s", "Yüzeyde üs · %s iniş işareti");
+        l.add("gui.spacebreaker.star_map.base_owner", "%s's base on the surface · landing beacons: %s", "Yüzeyde üs (kuran: %s) · %s iniş işareti");
         l.add("gui.spacebreaker.star_map.station", "Space station in orbit · docking ports: %s", "Yörüngede uzay istasyonu · %s yanaşma portu");
         l.add("gui.spacebreaker.star_map.station_owner", "%s's space station in orbit · docking ports: %s", "Yörüngede uzay istasyonu (kuran: %s) · %s yanaşma portu");
         l.add("gui.spacebreaker.star_map.star_habitable", "In the habitable zone: %s", "Yaşanabilir bölgede: %s");

@@ -473,6 +473,38 @@ final class RocketryScenario implements ShowcaseScenario {
                 }, null));
         s.add(new Shot("37_orbit_night", 6000, 0, 0, 0, 0F, 0F, true, fp, 160, p -> orbitPanelShot(p, true), null));
         s.add(new Shot("38_orbit_day", 6000, 0, 0, 0, 0F, 0F, true, fp, 160, p -> orbitPanelShot(p, false), null));
+        s.add(new Shot("39_lunar_shuttle", 6000, 0, 0, 0, 0F, 0F, true, fp, 140,
+                p -> {
+                    clearScene(p);
+                    ServerLevel moon = p.server.getLevel(Location.MOON_SURFACE.dimension());
+                    int gx = 40, gz = 40;
+                    moon.getChunk(gx >> 4, gz >> 4);
+                    int gy = moon.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, gx, gz);
+                    // a small base pad: hull floor with the landing beacon in the middle
+                    for (int dx = -2; dx <= 2; dx++) {
+                        for (int dz = -2; dz <= 2; dz++) {
+                            moon.setBlock(new BlockPos(gx + dx, gy - 1, gz + dz), RocketryModule.STATION_HULL.get().defaultBlockState(), 3);
+                            for (int up = 0; up < 3; up++) {
+                                moon.setBlock(new BlockPos(gx + dx, gy + up, gz + dz), net.minecraft.world.level.block.Blocks.AIR.defaultBlockState(), 3);
+                            }
+                        }
+                    }
+                    moon.setBlock(new BlockPos(gx, gy - 1, gz), RocketryModule.LANDING_BEACON.get().defaultBlockState(), 3);
+                    RocketEntity r = RocketEntity.create(moon, RocketryModule.LUNAR_SHUTTLE, new Vec3(gx + 0.5, gy, gz + 0.5), 30F);
+                    r.fillCompletely();
+                    moon.addFreshEntity(r);
+                    scene.add(r);
+                    toDimension(p, Location.MOON_SURFACE, gx + 7.5, gy + 3.5, gz + 7.5, 135F, 12F);
+                }, null));
+        s.add(new Shot("40_map_base", 6000, 0, 0, 0, 0F, 0F, false, fp, 120,
+                p -> {
+                    ServerLevel moon = p.server.getLevel(Location.MOON_SURFACE.dimension());
+                    moon.getChunk(40 >> 4, 40 >> 4);
+                    BlockPos b = new BlockPos(40, moon.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, 40, 40) - 1, 40);
+                    moon.setBlock(b, RocketryModule.LANDING_BEACON.get().defaultBlockState(), 3);
+                    com.pizzaparker07.spacebreaker.content.rocketry.station.LandingBeacons.get(moon).setOwner(b, "PizzaParker07");
+                    mapShot(p, Location.MOON, false);
+                }, null));
         s.add(new Shot("31_nearby_stars", 6000, 0, 0, 0, 0F, 0F, false, fp, 120,
                 p -> {
                     RocketryShowcaseClient.star = "Alpha Centauri";

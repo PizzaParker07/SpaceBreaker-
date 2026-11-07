@@ -148,6 +148,10 @@ public final class RocketryModule implements SbModule {
             BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).strength(0.8F).sound(SoundType.WOOL).noOcclusion());
     public static final DeferredBlock<com.pizzaparker07.spacebreaker.content.rocketry.station.FuelDepotBlock> FUEL_DEPOT = BLOCKS.registerBlock(
             "fuel_depot", com.pizzaparker07.spacebreaker.content.rocketry.station.FuelDepotBlock::new, hull());
+    /** Marks a base's landing spot: descents from orbit come down on the nearest one. */
+    public static final DeferredBlock<com.pizzaparker07.spacebreaker.content.rocketry.station.LandingBeaconBlock> LANDING_BEACON = BLOCKS.registerBlock(
+            "landing_beacon", com.pizzaparker07.spacebreaker.content.rocketry.station.LandingBeaconBlock::new, hull().lightLevel(s -> 12));
+    public static final DeferredItem<BlockItem> LANDING_BEACON_ITEM = ITEMS.registerSimpleBlockItem(LANDING_BEACON);
     public static final DeferredItem<BlockItem> STATION_BUNK_ITEM = ITEMS.registerSimpleBlockItem(STATION_BUNK);
     public static final DeferredItem<BlockItem> FUEL_DEPOT_ITEM = ITEMS.registerSimpleBlockItem(FUEL_DEPOT);
     public static final DeferredItem<com.pizzaparker07.spacebreaker.content.rocketry.station.HabitatKitItem> HABITAT_KIT = ITEMS.registerItem(
@@ -251,8 +255,9 @@ public final class RocketryModule implements SbModule {
                 .add(CREW_ARM_ITEM).add(FUEL_UMBILICAL_ITEM).add(LAUNCH_CONSOLE_ITEM);
         PARTS.forEach(SbTabs.SPACEFLIGHT::add);
         SbTabs.SPACEFLIGHT.add(STATION_KIT).add(HABITAT_KIT).add(STATION_HULL_ITEM).add(STATION_WINDOW_ITEM).add(DOCKING_PORT_ITEM)
-                .add(STATION_BUNK_ITEM).add(FUEL_DEPOT_ITEM);
+                .add(STATION_BUNK_ITEM).add(FUEL_DEPOT_ITEM).add(LANDING_BEACON_ITEM);
         SbTabs.SPACEFLIGHT.addStack(RocketryModule::exampleRocket);
+        SbTabs.SPACEFLIGHT.addStack(() -> com.pizzaparker07.spacebreaker.content.rocketry.item.RocketItem.of(LUNAR_SHUTTLE));
         SbTabs.SPACEFLIGHT.add(PROPELLANT_CARTRIDGE).add(EMERGENCY_BEACON);
     }
 
@@ -264,6 +269,15 @@ public final class RocketryModule implements SbModule {
                     Spacebreaker.id("vacuum_engine"), Spacebreaker.id("fuel_tank_large"), Spacebreaker.id("decoupler"),
                     Spacebreaker.id("vacuum_engine"), Spacebreaker.id("fuel_tank_small"), Spacebreaker.id("landing_legs"),
                     Spacebreaker.id("heat_shield"), Spacebreaker.id("crew_capsule"), Spacebreaker.id("parachute")));
+
+    /**
+     * Lunar shuttle: one reusable stage that flies between Moon orbit (a station's docking port and fuel depot)
+     * and the Moon's surface (a base's landing beacon): vacuum engine, tank, legs, capsule and attitude thrusters.
+     */
+    public static final com.pizzaparker07.spacebreaker.content.rocketry.design.RocketDesign LUNAR_SHUTTLE =
+            new com.pizzaparker07.spacebreaker.content.rocketry.design.RocketDesign(java.util.List.of(
+                    Spacebreaker.id("vacuum_engine"), Spacebreaker.id("fuel_tank_medium"), Spacebreaker.id("landing_legs"),
+                    Spacebreaker.id("crew_capsule"), Spacebreaker.id("rcs_thrusters")));
 
     private static net.minecraft.world.item.ItemStack exampleRocket() {
         return com.pizzaparker07.spacebreaker.content.rocketry.item.RocketItem.of(MOON_ROCKET);
@@ -318,12 +332,13 @@ public final class RocketryModule implements SbModule {
         loot.self(DOCKING_PORT.get());
         loot.self(STATION_BUNK.get());
         loot.self(FUEL_DEPOT.get());
+        loot.self(LANDING_BEACON.get());
     }
 
     @Override
     public void addTags(SbTags tags) {
         tags.block(BlockTags.MINEABLE_WITH_PICKAXE, ROCKET_ASSEMBLER.get(), LAUNCH_PAD.get(), FLAME_TRENCH.get(), SERVICE_TOWER.get(),
-                CREW_ARM.get(), FUEL_UMBILICAL.get(), LAUNCH_CONSOLE.get(), STATION_HULL.get(), STATION_WINDOW.get(), DOCKING_PORT.get(), FUEL_DEPOT.get());
+                CREW_ARM.get(), FUEL_UMBILICAL.get(), LAUNCH_CONSOLE.get(), STATION_HULL.get(), STATION_WINDOW.get(), DOCKING_PORT.get(), FUEL_DEPOT.get(), LANDING_BEACON.get());
         tags.block(BlockTags.NEEDS_STONE_TOOL, LAUNCH_PAD.get(), FLAME_TRENCH.get(), SERVICE_TOWER.get());
     }
 
