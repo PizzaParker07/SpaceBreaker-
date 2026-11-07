@@ -1290,6 +1290,63 @@ public final class RocketryGameTests {
         });
     }
 
+    @GameTest(template = EMPTY, timeoutTicks = 200)
+    public static void slidingDoorWideAirlock(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var block = com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.SLIDING_DOOR.get();
+        var OPEN = com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock.OPEN;
+        // a two-door-wide airlock: inner pair on one wall, outer pair three blocks further along z
+        BlockPos innerL = helper.absolutePos(new BlockPos(2, 2, 1)), innerR = innerL.east();
+        BlockPos outerL = innerL.south(3), outerR = innerR.south(3);
+        for (BlockPos d : List.of(innerL, innerR, outerL, outerR)) {
+            com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock.place(level, d, block.defaultBlockState());
+        }
+        java.util.function.Predicate<BlockPos> open = d -> level.getBlockState(d).getValue(OPEN);
+        helper.assertTrue(block.group(level, innerL, level.getBlockState(innerL)).containsAll(List.of(innerL, innerR)), "side by side they are one door");
+        block.request(level, innerL, level.getBlockState(innerL), true);
+        helper.assertTrue(open.test(innerL) && open.test(innerR), "both inner leaves open together");
+        // asking one outer leaf to open shuts both inner leaves, not just the one in line with it
+        block.request(level, outerL, level.getBlockState(outerL), true);
+        helper.assertFalse(open.test(innerL) || open.test(innerR), "every inner leaf shuts before the outer side opens");
+        helper.assertFalse(open.test(outerL) || open.test(outerR), "the outer side waits for the cycle");
+        helper.succeedWhen(() -> {
+            helper.assertTrue(open.test(outerL) && open.test(outerR), "after the cycle the whole outer door opens");
+            helper.assertFalse(open.test(innerL) || open.test(innerR), "and the inner side stays shut");
+        });
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 200)
+    public static void slidingDoorCycleCancels(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var block = com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.SLIDING_DOOR.get();
+        var OPEN = com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock.OPEN;
+        int cycle = com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock.CYCLE_TICKS;
+        // two airlocks side by side: one cancelled by a second press, one by its redstone signal dropping
+        BlockPos innerA = helper.absolutePos(new BlockPos(1, 2, 1)), outerA = innerA.south(3);
+        BlockPos innerB = helper.absolutePos(new BlockPos(5, 2, 1)), outerB = innerB.south(3);
+        for (BlockPos d : List.of(innerA, outerA, innerB, outerB)) {
+            com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock.place(level, d, block.defaultBlockState());
+        }
+        block.request(level, innerA, level.getBlockState(innerA), true);
+        block.request(level, innerB, level.getBlockState(innerB), true);
+        // A: ask the outer door, then press it again while it cycles
+        block.request(level, outerA, level.getBlockState(outerA), true);
+        helper.assertTrue(block.cycling(level, outerA), "the outer door is cycling");
+        ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        level.getBlockState(outerA).useWithoutItem(level, player, new net.minecraft.world.phys.BlockHitResult(outerA.getCenter(), Direction.NORTH, outerA, false));
+        helper.assertFalse(block.cycling(level, outerA), "a second press calls it off");
+        // B: a redstone signal asks, then drops during the cycle
+        level.setBlock(outerB.west(), net.minecraft.world.level.block.Blocks.REDSTONE_BLOCK.defaultBlockState(), 3);
+        helper.assertTrue(block.cycling(level, outerB), "redstone starts the cycle");
+        level.removeBlock(outerB.west(), false);
+        helper.assertFalse(block.cycling(level, outerB), "the signal dropping calls it off");
+        helper.runAfterDelay(cycle + 20, () -> {
+            helper.assertFalse(level.getBlockState(outerA).getValue(OPEN), "cancelled by hand: the outer door stays shut");
+            helper.assertFalse(level.getBlockState(outerB).getValue(OPEN), "cancelled by redstone: the outer door stays shut");
+            helper.succeed();
+        });
+    }
+
     @GameTest(template = EMPTY)
     public static void baseFittings(GameTestHelper helper) {
         var level = helper.getLevel();
