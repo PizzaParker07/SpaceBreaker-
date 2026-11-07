@@ -137,6 +137,7 @@ def generate():
         on_glow=[lit_glow([1, 1, 0.99], [15, 3, 0.99], 'north', 'glow', [1, 13, 15, 15])])
 
     battery_bank()
+    group_one()
 
 
 def battery_bank():
@@ -202,3 +203,119 @@ def excavator_wheel():
     write('models/block/regolith_excavator_wheel.json', {'parent': 'minecraft:block/block', 'render_type': 'minecraft:cutout',
                                                          'textures': t, 'elements': els})
     return t, els
+
+
+PANEL_UV = [5, 4, 11, 10]
+OUT = {'east': (0.01, 0, 0), 'west': (-0.01, 0, 0), 'north': (0, 0, -0.01), 'south': (0, 0, 0.01)}
+
+
+def panel(face, fr, to):
+    """A control box (6x6 face showing the panel) and the glow quad for its lamps while running."""
+    el = box(fr, to, sides('steel', **{face: 'panel'}, up='steel', down='steel'), uv={face: PANEL_UV})
+    dx, dy, dz = OUT[face]
+    a, b_ = list(fr), list(to)
+    if face == 'east':
+        a[0] = b_[0]
+    elif face == 'west':
+        b_[0] = a[0]
+    elif face == 'north':
+        b_[2] = a[2]
+    else:
+        a[2] = b_[2]
+    g = lit_glow([a[0] + dx, a[1], a[2] + dz], [b_[0] + dx, b_[1], b_[2] + dz], face, 'panel_glow', PANEL_UV)
+    return el, g
+
+
+def parts_tex(t):
+    return t | PARTS | {'steel': b('press_steel'), 'panel_glow': b('machine_side_panel_glow')}
+
+
+def group_one():
+    """Electrolyzer, cryogenic liquefier, chemical reactor, arc furnace, gas centrifuge and fission unit in the same
+    language as the first six: feet, a recessed front behind a proud frame, their own side parts, lamps that run."""
+    # electrolyzer: two glass cells between frame posts on a coil plinth, rear casing, gas take-off pipes on the lid
+    t = parts_tex(casing_tex('machine_casing')) | {'cell': b('electrolyzer_cell')}
+    pnl, pglow = panel('east', [15, 5, 9], [17, 11, 15])
+    polished('electrolyzer', t, legs(1, 1, 15, 15, h=1) + [
+        box([1, 1, 1], [15, 3, 15], sides('side', up='bottom', down='bottom'), uv={f: [1, 13, 15, 15] for f in SIDES}),
+        box([2, 3, 3], [7, 13, 9], 'cell'), box([9, 3, 3], [14, 13, 9], 'cell'),
+        box([1, 3, 2], [2, 13, 3], STEEL6), box([14, 3, 2], [15, 13, 3], STEEL6), box([7, 3, 2], [9, 13, 3], STEEL6),
+        box([1, 3, 10], [15, 13, 15], sides('side')),
+        box([1, 13, 2], [15, 15, 15], sides('side', north='steel', up='top', down='steel')),
+        box([3.5, 15, 5], [5, 18, 6.5], 'pipe'), box([3.5, 18, 5], [5, 19.5, 13], 'pipe'),
+        box([11, 15, 5], [12.5, 17, 6.5], 'pipe'), box([11, 17, 5], [12.5, 18.5, 13], 'pipe'),
+        box([-0.5, 1, 7.5], [0.5, 9, 8.5], 'cable'), box([-1, 8, 6], [1, 10, 10], STEEL6),
+        pnl,
+    ], on_textures={'cell': b('electrolyzer_cell_on')}, on_glow=[pglow])
+
+    # cryogenic liquefier: finned cold box on feet, recessed front, compressor fan plenum on top, LOX line on the left,
+    # controls on the right; the fan turns while it runs
+    t = parts_tex(casing_tex('cryogenic_liquefier_front', top='machine_fan', side='machine_fins'))
+    pnl, pglow = panel('west', [-1, 4, 5], [1, 10, 11])
+    polished('cryogenic_liquefier', t, legs(1, 1, 15, 15) + front_frame(1, 15, 2, 13) + [
+        box([1, 2, 2], [15, 13, 15], sides('side', north='front', up='bottom', down='bottom'), uv={'north': [1, 3, 15, 14]}),
+        box([2, 13, 2], [14, 16, 14], sides('steel', up='top'), uv={'up': [2, 2, 14, 14]}),
+        box([15, 3, 4], [16.5, 4.5, 13], 'pipe'), box([15, 4.5, 11.5], [16.5, 12, 13], 'pipe'),
+        box([14, 11, 11.5], [15, 12, 13], 'pipe'),
+        pnl,
+    ], on_textures={'top': b('machine_fan_on')}, on_glow=[pglow])
+
+    # chemical reactor: low base on feet with a recessed gauge front, enamelled vessel, agitator drive on the lid, acid
+    # feed pipe climbing the left side into the vessel, controls on the right
+    t = parts_tex(casing_tex('chemical_reactor_front')) | {'vessel': b('chemical_reactor_vessel')}
+    pnl, pglow = panel('west', [-1, 2, 5], [1, 8, 11])
+    polished('chemical_reactor', t, legs(1, 1, 15, 15) + front_frame(1, 15, 2, 9) + [
+        box([1, 2, 2], [15, 9, 15], sides('side', north='front', up='top', down='bottom'), uv={'north': [1, 8, 15, 15]}),
+        box([2, 9, 2], [14, 16, 14], sides('vessel', up='steel', down='steel'), uv={f: [2, 0, 14, 7] for f in SIDES}),
+        box([3, 16, 3], [13, 17, 13], STEEL6),
+        box([6, 17, 6], [10, 21, 10], STEEL6), box([7, 21, 7], [9, 22, 9], 'cable'),
+        box([12, 13, 0], [14, 15, 2], STEEL6),
+        box([15, 3, 4], [16.5, 4.5, 11], 'pipe'), box([15, 4.5, 9.5], [16.5, 14, 11], 'pipe'),
+        box([14, 12.5, 9.5], [15, 14, 11], 'pipe'),
+        pnl,
+    ], on_glow=[pglow])
+
+    # arc furnace: brick-doored body on feet behind a frame, roof with three electrodes on a clamp bar, the transformer
+    # on the left feeding a heavy cable up to the clamps
+    t = parts_tex(casing_tex('arc_furnace_front', top='arc_furnace_top')) | {'electrode': b('arc_furnace_electrode'),
+                                                                           'glow': b('arc_furnace_glow')}
+    els = legs(1, 1, 15, 15) + front_frame(1, 15, 2, 13) + [
+        box([1, 2, 2], [15, 13, 15], sides('side', north='front', up='top', down='bottom'), uv={'north': [1, 2, 15, 13]}),
+        box([1, 13, 1], [15, 14, 15], sides('steel', up='top')),
+    ]
+    for cx in (4, 8, 12):
+        els.append(box([cx - 1, 14, 7], [cx + 1, 21, 9], 'electrode', uv={f: [0, 0, 2, 7] for f in SIDES} | {'up': [0, 2, 2, 4]}))
+    els += [box([1, 18, 6], [15, 19, 10], 'side'),
+            box([15, 2, 3], [17, 10, 13], sides('steel', east='panel', up='steel'), uv={'east': [3, 3, 13, 11]}),
+            box([15.5, 10, 7.5], [16.5, 19, 8.5], 'cable'), box([15, 18, 7.5], [15.5, 19, 8.5], 'cable')]
+    polished('arc_furnace', t, els, on_glow=[lit_glow([1, 2, 1.99], [15, 13, 1.99], 'north', 'glow', [1, 2, 15, 13]),
+                                             lit_glow([17.01, 2, 3], [17.01, 10, 13], 'east', 'panel_glow', [3, 3, 13, 11])])
+
+    # gas centrifuge: control casing on feet with a recessed lamp panel, four rotor tubes, a feed/product header
+    # across the tube tops and the feed line down the left side; the stage lamps walk while it spins
+    t = parts_tex(casing_tex('gas_centrifuge_front', top='machine_top')) | {'tube': b('gas_centrifuge_tube'),
+                                                                           'lamps': b('gas_centrifuge_lamps')}
+    els = legs(1, 1, 15, 15, h=1) + front_frame(1, 15, 1, 7) + [
+        box([1, 1, 2], [15, 7, 15], sides('side', north='front', up='top', down='bottom'), uv={'north': [1, 9, 15, 15]}),
+    ]
+    for x, z in ((2, 2), (10, 2), (2, 10), (10, 10)):
+        els.append(box([x, 7, z], [x + 4, 16, z + 4], {f: 'tube' for f in SIDES} | {'up': 'top'}, uv={f: [x, 0, x + 4, 9] for f in SIDES}))
+    els += [box([3.5, 16, 7.5], [12.5, 17, 8.5], 'pipe'), box([7.5, 16, 3.5], [8.5, 17, 12.5], 'pipe'),
+            box([15, 2, 6], [16.5, 3.5, 10], 'pipe'), box([15, 3.5, 8.5], [16.5, 17, 10], 'pipe'),
+            box([12.5, 16, 8.5], [16.5, 17, 10], 'pipe')]
+    polished('gas_centrifuge', t, els, on_glow=[lit_glow([1, 1, 1.99], [15, 7, 1.99], 'north', 'lamps', [1, 9, 15, 15])])
+
+    # fission surface power unit: core drum on four feet, crossed radiator panels, coolant loop pipes from the drum
+    # to the panel roots and a shielded instrument box on the left; the status window glows while it runs
+    t = parts_tex(casing_tex('fission_reactor_front', top='machine_top', side='fission_reactor_side')) | {
+        'fin': b('fission_reactor_fin'), 'window': b('fission_reactor_window')}
+    pnl, pglow = panel('west', [0, 3, 5], [2, 9, 11])
+    polished('fission_reactor', t, legs(2, 2, 14, 14) + [
+        box([2, 2, 2], [14, 10, 14], sides('side', north='front', up='top', down='bottom'), uv={f: [2, 7, 14, 15] for f in SIDES}),
+        box([0, 10, 7.5], [16, 16, 8.5], 'fin', uv={f: [0, 0, 16, 6] for f in ('north', 'south', 'up', 'down', 'east', 'west')}),
+        box([7.5, 10, 0], [8.5, 16, 16], 'fin', uv={f: [0, 0, 16, 6] for f in ('east', 'west', 'north', 'south', 'up', 'down')}),
+        box([7, 10, 7], [9, 17, 9], 'side'),
+        box([14, 5, 3.5], [15.5, 6.5, 6], 'pipe'), box([14, 6.5, 3.5], [15.5, 11, 5], 'pipe'),
+        box([14, 5, 10], [15.5, 6.5, 12.5], 'pipe'), box([14, 6.5, 11], [15.5, 11, 12.5], 'pipe'),
+        pnl,
+    ], on_glow=[pglow, lit_glow([2, 2, 1.99], [14, 10, 1.99], 'north', 'window', [2, 7, 14, 15])])

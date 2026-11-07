@@ -87,10 +87,9 @@ final class MachineLineupScenario implements ShowcaseScenario {
             s.add(new ShowcaseDriver.Shot("lineup_row" + r + "b", 6000, X0 + 8.5, gy + 1.6, Z0 - r * 3 + 2.6, 180F, 16F, true,
                     CameraType.FIRST_PERSON, 40, null, null));
         }
-        // three-quarter close-ups (front and right-hand side) of the six reworked models
+        // three-quarter close-ups (front and right-hand side) of every machine, all from the same angle
         List<MachineEntry<?, ?>> list = singles();
-        for (MachineEntry<?, ?> e : List.of(MachinesModule.CRUSHER, MachinesModule.BATTERY_BANK, MachinesModule.REGOLITH_HEATER,
-                MachinesModule.SINTERING_FURNACE, MachinesModule.REGOLITH_EXCAVATOR, MachinesModule.ICE_MELTER)) {
+        for (MachineEntry<?, ?> e : list) {
             int i = list.indexOf(e);
             double bx = X0 + (i % 6) * 2 + 0.5, bz = Z0 - (i / 6) * 3 + 0.5;
             s.add(new ShowcaseDriver.Shot("polish_" + e.block().getId().getPath(), 6000, bx + 1.25, gy + 1.35, bz + 1.65, 143F, 24F, true,

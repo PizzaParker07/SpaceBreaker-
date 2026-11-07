@@ -444,3 +444,69 @@ def export(save):  # noqa: F811
     save(copper_pipe(), 'block', 'machine_copper_pipe', metal)
     save(side_panel(), 'block', 'machine_side_panel', metal)
     save(cable(), 'block', 'machine_cable', (60, 10, 0, None))
+
+
+# ----------------------------------------------------------------------------- group 2: running lights and fans
+
+def panel_glow():
+    """Lamps of the side control box while the machine runs: green steady, amber blinking."""
+    cv = strip(4)
+    for f in range(4):
+        def draw(c, f=f):
+            rect(c, 5, 5, 6, 6, (120, 240, 120))
+            if f % 2 == 0:
+                rect(c, 9, 5, 10, 6, (250, 200, 80))
+        frame(cv, f, draw)
+    return cv
+
+
+def fan(frames=1):
+    """Compressor fan seen from above: a dark shroud with six blades (turning when animated)."""
+    cv = strip(frames)
+    for f in range(frames):
+        def draw(c, f=f):
+            c.paste(casing(20, rivets=False, seam=False))
+            for y in range(2, 14):
+                for x in range(2, 14):
+                    if math.hypot(x + 0.5 - 8, y + 0.5 - 8) < 5.8:
+                        c[x, y] = S[0]
+            wheel(c, 8, 8, 5.2, 6, f * math.pi / 12, S[0], S[3], S[5])
+        frame(cv, f, draw)
+    return cv
+
+
+def centrifuge_lamps():
+    """Stage lamps of a running cascade: a light walks along the row."""
+    cv = strip(4)
+    for f in range(4):
+        def draw(c, f=f):
+            for k, x in enumerate((4, 5, 6, 7)):
+                c[x, 11] = (150, 240, 160) if k == f else (90, 200, 110)
+            c[10, 11] = (150, 240, 160)
+            c[12, 11] = (150, 240, 160) if f % 2 else (90, 200, 110)
+        frame(cv, f, draw)
+    return cv
+
+
+def reactor_window():
+    """Status window of the running core: a warm amber that slowly breathes."""
+    cv = strip(2)
+    for f in range(2):
+        frame(cv, f, lambda c, f=f: rect(c, 6, 12, 9, 12, (250, 200, 80) if f else (230, 160, 50)))
+    return cv
+
+
+_export_group1 = export
+
+
+def export(save):  # noqa: F811
+    _export_group1(save)
+    save(panel_glow(), 'block', 'machine_side_panel_glow')
+    mcmeta('machine_side_panel_glow', 10)
+    save(fan(), 'block', 'machine_fan', (150, 230, 0, None))
+    save(fan(4), 'block', 'machine_fan_on')
+    mcmeta('machine_fan_on', 1)
+    save(centrifuge_lamps(), 'block', 'gas_centrifuge_lamps')
+    mcmeta('gas_centrifuge_lamps', 4)
+    save(reactor_window(), 'block', 'fission_reactor_window')
+    mcmeta('fission_reactor_window', 30, True)
