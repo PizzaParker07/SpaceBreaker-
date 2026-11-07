@@ -169,7 +169,9 @@ public final class BlueprintClient {
 
     static void materials(GuiGraphics g, DeltaTracker delta) {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.player == null || mc.options.hideGui || CACHE.key() == null || CACHE.def() == null || held(mc.player) == null) {
+        // hidden while the blueprint screen is open (it lists the same things)
+        if (mc.player == null || mc.options.hideGui || mc.screen instanceof BlueprintScreen || CACHE.key() == null || CACHE.def() == null
+                || held(mc.player) == null) {
             return;
         }
         var font = mc.font;
