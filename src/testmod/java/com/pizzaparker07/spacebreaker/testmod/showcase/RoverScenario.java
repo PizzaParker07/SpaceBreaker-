@@ -140,10 +140,50 @@ final class RoverScenario implements ShowcaseScenario {
                 at(0.3, p -> { }), null));
         // the rover leans with the ground under its wheels
         s.add(new ShowcaseDriver.Shot(w + "_07_slope", 0, X0 - 1.5, gy + 1.4, Z0 + 10.3, 90F, 8F, true, fp, 60, at(0.3, p -> { }), null));
-        // two seats taken (helmeted stand-ins for the crew, sitting like players do), side view: the roof panel must clear their heads
+        // two seats taken (suited stand-ins for the crew, sitting like players do), side view: the roof panel must clear their heads
         s.add(new ShowcaseDriver.Shot(w + "_06_two_seats", 0, px + 3.7, gy + 1.6, pz + 2.6, MoonScenario.yaw(-3.7, -2.6), 8F, true, fp, 60,
                 at(0.3, p -> crew(p.serverLevel())), null));
+        // what the crew see: first person from the driver's and the passenger's seat, and from the cabin rover's seat
+        s.add(new ShowcaseDriver.Shot(w + "_10_driver_fp", 0, px, gy + 2, pz, 35F, 6F, false, fp, 60,
+                at(0.3, p -> seat(p, parked, 0)), null));
+        s.add(new ShowcaseDriver.Shot(w + "_11_passenger_fp", 0, px, gy + 2, pz, 35F, 6F, false, fp, 60,
+                at(0.3, p -> seat(p, parked, 1)), null));
+        s.add(new ShowcaseDriver.Shot(w + "_12_cabin_driver_fp", 0, X0 - 4.5, gy + 2, Z0 + 20.5, 35F, 6F, false, fp, 60,
+                at(0.3, p -> seat(p, cabin, 0)), null));
         return s;
+    }
+
+    /** Puts the player in seat 0 (driver) or 1 (passenger, with a stand-in driving) of the rover, facing ahead. */
+    private void seat(ServerPlayer p, RoverEntity target, int index) {
+        p.stopRiding();
+        for (net.minecraft.world.entity.Entity e : new ArrayList<>(target.getPassengers())) {
+            e.stopRiding();
+            if (!(e instanceof ServerPlayer)) {
+                e.discard();
+            }
+        }
+        if (index == 1) {
+            p.serverLevel().getServer().setDifficulty(net.minecraft.world.Difficulty.EASY, true);
+            net.minecraft.world.entity.monster.Skeleton stand = net.minecraft.world.entity.EntityType.SKELETON.create(p.serverLevel());
+            stand.setNoAi(true);
+            stand.setPersistenceRequired();
+            stand.moveTo(target.getX(), target.getY(), target.getZ());
+            suitUp(stand);
+            p.serverLevel().addFreshEntity(stand);
+            stand.startRiding(target, true);
+        }
+        p.startRiding(target, true);
+        p.setYRot(target.getYRot());
+        p.setYHeadRot(target.getYRot());
+        p.connection.teleport(p.getX(), p.getY(), p.getZ(), target.getYRot(), 6F);
+    }
+
+    /** Dresses a crew stand-in in a full EVA suit, so it reads as an astronaut (the thermal helmet's gold visor hides the face). */
+    private static void suitUp(net.minecraft.world.entity.LivingEntity stand) {
+        stand.setItemSlot(net.minecraft.world.entity.EquipmentSlot.HEAD, new ItemStack(com.pizzaparker07.spacebreaker.content.suit.SuitModule.THERMAL_HELMET.get()));
+        stand.setItemSlot(net.minecraft.world.entity.EquipmentSlot.CHEST, new ItemStack(com.pizzaparker07.spacebreaker.content.suit.SuitModule.EVA_CHESTPLATE.get()));
+        stand.setItemSlot(net.minecraft.world.entity.EquipmentSlot.LEGS, new ItemStack(com.pizzaparker07.spacebreaker.content.suit.SuitModule.EVA_LEGGINGS.get()));
+        stand.setItemSlot(net.minecraft.world.entity.EquipmentSlot.FEET, new ItemStack(com.pizzaparker07.spacebreaker.content.suit.SuitModule.EVA_BOOTS.get()));
     }
 
     private void crew(ServerLevel level) {
@@ -154,15 +194,14 @@ final class RoverScenario implements ShowcaseScenario {
         if (target.getPassengers().size() >= 2) {
             return;
         }
-        // peaceful removes zombies; the stand-ins have no AI and wear helmets, so nothing happens to the scene
+        // peaceful removes monsters; the stand-ins (skeletons: arms at rest) have no AI and wear full suits, so nothing happens to the scene
         level.getServer().setDifficulty(net.minecraft.world.Difficulty.EASY, true);
         for (int i = 0; i < 2; i++) {
-            net.minecraft.world.entity.monster.Zombie stand = net.minecraft.world.entity.EntityType.ZOMBIE.create(level);
+            net.minecraft.world.entity.monster.Skeleton stand = net.minecraft.world.entity.EntityType.SKELETON.create(level);
             stand.setNoAi(true);
             stand.setPersistenceRequired();
             stand.moveTo(target.getX(), target.getY(), target.getZ());
-            stand.setItemSlot(net.minecraft.world.entity.EquipmentSlot.HEAD, new ItemStack(Items.IRON_HELMET));
-            stand.setItemSlot(net.minecraft.world.entity.EquipmentSlot.CHEST, new ItemStack(Items.IRON_CHESTPLATE));
+            suitUp(stand);
             level.addFreshEntity(stand);
             stand.startRiding(target, true);
         }

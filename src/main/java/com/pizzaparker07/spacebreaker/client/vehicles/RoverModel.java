@@ -97,6 +97,40 @@ public class RoverModel extends EntityModel<RoverEntity> {
             wheels[i].xScale = wheels[i].yScale = wheels[i].zScale = style.wheelScale();
         }
         this.propeller = style.floats() ? body.getChild("propeller") : null;
+        if (style.cabin()) {
+            this.dash = body.getChild("dash");
+            for (int i = 0; i < 3; i++) {
+                dashLamps[i] = body.getChild("dash_lamp" + i);
+            }
+        } else {
+            this.dash = null;
+        }
+    }
+
+    private final ModelPart dash;
+    private final ModelPart[] dashLamps = new ModelPart[3];
+
+    /**
+     * The cabin dashboard's lights (with the lights texture, full bright): the screen glows steadily, the three lamps
+     * blink in their own rhythms. Nothing for open rovers.
+     */
+    public void renderDashLights(PoseStack pose, VertexConsumer vc, float ageInTicks) {
+        if (dash == null) {
+            return;
+        }
+        pose.pushPose();
+        body.translateAndRotate(pose);
+        dash.render(pose, vc, net.minecraft.client.renderer.LightTexture.FULL_BRIGHT, net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY);
+        int t = (int) ageInTicks;
+        boolean[] on = {true, (t / 10) % 2 == 0, (t / 23) % 3 != 0};
+        for (int i = 0; i < 3; i++) {
+            if (on[i]) {
+                dashLamps[i].visible = true;
+                dashLamps[i].render(pose, vc, net.minecraft.client.renderer.LightTexture.FULL_BRIGHT, net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY);
+                dashLamps[i].visible = false;
+            }
+        }
+        pose.popPose();
     }
 
     private static void seat(CubeListBuilder b, float z0) {
@@ -170,6 +204,12 @@ public class RoverModel extends EntityModel<RoverEntity> {
                     .texOffs(180, 140).addBox(-hw + 1, -10F, -16F, 2 * hw - 2, 23F, 1F)    // windscreen wall
                     .texOffs(180, 170).addBox(-hw + 1, -10F, 15F, 2 * hw - 2, 23F, 1F),    // rear wall
                     PartPose.ZERO);
+            // low dashboard across the cabin under the windscreen, below the crew's eye line, with three lamps on it
+            body.addOrReplaceChild("dash", CubeListBuilder.create().texOffs(130, 200).addBox(-hw + 1, -1F, -15F, 2 * hw - 2, 2F, 3F), PartPose.ZERO);
+            for (int i = 0; i < 3; i++) {
+                body.addOrReplaceChild("dash_lamp" + i, CubeListBuilder.create().texOffs(160 + i * 4, 210)
+                        .addBox(-hw + 3.2F + i * 1.6F, -1.5F, -14.2F, 0.6F, 0.5F, 0.6F), PartPose.ZERO);
+            }
         }
         if (st.floats()) {
             // sealed floats along both sides, outside the wheels, and a propeller at the stern
@@ -225,6 +265,12 @@ public class RoverModel extends EntityModel<RoverEntity> {
             propeller.zRot = spin * 3F;
         }
         rtg.visible = rover.hasRtg();
+        // the dashboard lamps only draw in their own lit pass (renderDashLights), never with the body
+        for (ModelPart lamp : dashLamps) {
+            if (lamp != null) {
+                lamp.visible = false;
+            }
+        }
     }
 
     @Override
