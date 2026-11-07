@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-07T21:58:58.78390194	spacebreaker tech tree
+// 1.21.1	2026-11-07T22:10:43.103108291	spacebreaker tech tree
 eb99e6fc2778efcc16dc23f020327813f7f85164 data/spacebreaker/spacebreaker/tech/advanced_electronics.json
 37b86031d2662acffe53c51b4ca65ba988094711 data/spacebreaker/spacebreaker/tech/airlocks.json
 537f359ae0acefa3a0666d917ea3d66c22a9f910 data/spacebreaker/spacebreaker/tech/aluminium_smelting.json
@@ -46,7 +46,7 @@ e50e69207bb549568fbd4fadb2a10dde21beb565 data/spacebreaker/spacebreaker/tech/rad
 546e297b196e21f618258e99c627f161550880ee data/spacebreaker/spacebreaker/tech/radio_communication.json
 254162caa0dc01d78ddb8f206f09552035122fc4 data/spacebreaker/spacebreaker/tech/radioisotope_power.json
 fb0b46a7a029632f046238a08ae8ad492f01808c data/spacebreaker/spacebreaker/tech/regolith_sintering.json
-ba3d335b2ae0111591a3b27c2f289799a8ac1bd0 data/spacebreaker/spacebreaker/tech/rovers.json
+b16af20f4549d8efe8379e15480e928c30a8b3fc data/spacebreaker/spacebreaker/tech/rovers.json
 b518966fa219e2d1064195fd08d0fe6113b7a96d data/spacebreaker/spacebreaker/tech/sabatier_process.json
 b4384d3ac885877f4c5a9a61b385c5e668d38f32 data/spacebreaker/spacebreaker/tech/satellites.json
 cd6bf187f1d9e1d4fc8064d956249df2ec5fb2b9 data/spacebreaker/spacebreaker/tech/solar_power.json

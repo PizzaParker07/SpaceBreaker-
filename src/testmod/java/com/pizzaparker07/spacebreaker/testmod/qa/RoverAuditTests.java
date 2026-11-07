@@ -44,7 +44,7 @@ public final class RoverAuditTests {
                 level.setBlock(h.absolutePos(new BlockPos(x, 0, z)), Blocks.STONE.defaultBlockState(), 3);
             }
         }
-        for (var type : List.of(VehiclesModule.ROVER, VehiclesModule.SPRINT_ROVER, VehiclesModule.PRESSURIZED_ROVER)) {
+        for (var type : List.of(VehiclesModule.ROVER, VehiclesModule.SPRINT_ROVER, VehiclesModule.PRESSURIZED_ROVER, VehiclesModule.AMPHIBIOUS_ROVER)) {
         RoverEntity rover = type.get().create(level);
         out.add("### " + type.getId().getPath());
         Vec3 at = h.absoluteVec(new Vec3(4, 1, 4));
@@ -105,6 +105,43 @@ public final class RoverAuditTests {
         }
         ProgressionReport.write("rover.md", "## Rover sweep (`qa/RoverAuditTests`)\n\n" + String.join("\n", out) + "\n");
         h.succeed();
+    }
+
+    /**
+     * Water: the amphibious rover floats at its waterline, a land rover goes to the bottom. A 5 × 5 pool four blocks
+     * deep; both are dropped in at the surface and measured 80 ticks later.
+     */
+    @GameTest(template = "empty", timeoutTicks = 200)
+    public static void amphibiousRoverFloats(GameTestHelper h) {
+        var level = h.getLevel();
+        for (int x = 0; x <= 12; x++) {
+            for (int z = 0; z <= 6; z++) {
+                for (int y = 0; y <= 4; y++) {
+                    boolean wall = x == 0 || x == 6 || x == 12 || z == 0 || z == 6 || y == 0;
+                    level.setBlock(h.absolutePos(new BlockPos(x, y, z)),
+                            wall ? Blocks.STONE.defaultBlockState() : Blocks.WATER.defaultBlockState(), 3);
+                }
+            }
+        }
+        double surface = h.absolutePos(new BlockPos(0, 5, 0)).getY();
+        RoverEntity boat = VehiclesModule.AMPHIBIOUS_ROVER.get().create(level);
+        RoverEntity car = VehiclesModule.ROVER.get().create(level);
+        Vec3 a = h.absoluteVec(new Vec3(3.5, 5, 3.5));
+        Vec3 b = h.absoluteVec(new Vec3(9.5, 5, 3.5));
+        boat.moveTo(a.x, a.y, a.z, 0F, 0F);
+        car.moveTo(b.x, b.y, b.z, 0F, 0F);
+        level.addFreshEntity(boat);
+        level.addFreshEntity(car);
+        h.runAtTickTime(80, () -> {
+            String line = String.format(Locale.ROOT, "- water: amphibious rover sits %.2f below the surface (afloat: %s); land rover %.2f below",
+                    surface - boat.getY(), boat.afloat(), surface - car.getY());
+            ProgressionReport.write("rover_water.md", "## Rover in water\n\n" + line + "\n");
+            h.assertTrue(surface - boat.getY() < 1.0, "the amphibious rover floats: " + line);
+            h.assertTrue(surface - car.getY() > 2.0, "a land rover sinks: " + line);
+            boat.discard();
+            car.discard();
+            h.succeed();
+        });
     }
 
     private RoverAuditTests() {

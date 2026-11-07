@@ -153,6 +153,7 @@ public final class MarsModule implements SbModule {
         com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.register(modBus, KIT.items);
         com.pizzaparker07.spacebreaker.content.mars.dungeon.MarsStructures.register(modBus);
         MarsParticles.register(modBus);
+        com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.register(modBus);
         KIT.blocks.register(modBus);
         KIT.items.register(modBus);
         KIT.tab.forEach(SbTabs.PLANETS::add);
@@ -266,6 +267,8 @@ public final class MarsModule implements SbModule {
         lang.add("message.spacebreaker.duststorm.clear", "The storm is dying down; the sky will clear.", "Fırtına diniyor; gökyüzü açılacak.");
         lang.add("message.spacebreaker.panel_brushed", "You brush the dust off the panel", "Paneldeki tozu fırçayla temizledin");
         lang.block(CO2_FROST_LAYER, "Seasonal CO₂ Frost", "Mevsimsel CO₂ Kırağısı");
+        lang.block(com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.BLOCK, "Supply Locker", "Malzeme Dolabı");
+        lang.add("container.spacebreaker.supply_locker", "Supply Locker", "Malzeme Dolabı");
         lang.add("message.spacebreaker.mars_season.0", "Spring in the north: the northern frost turns back to gas, the southern cap begins to grow",
                 "Kuzeyde ilkbahar: kuzeydeki kırağı yeniden gaza dönüşüyor, güney başlığı büyümeye başlıyor");
         lang.add("message.spacebreaker.mars_season.1", "Summer in the north, winter in the south: the southern polar cap spreads toward the equator",
@@ -295,6 +298,7 @@ public final class MarsModule implements SbModule {
         loot.self(GYPSUM_BLOCK.get());
         loot.self(MARTIAN_ICE.get());
         loot.self(DUSTY_ICE.get());
+        loot.self(com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.BLOCK.get());
         loot.custom(CO2_FROST_LAYER.get(), b -> net.minecraft.world.level.storage.loot.LootTable.lootTable()); // sublimates
         loot.custom(DRY_ICE.get(), b -> net.minecraft.world.level.storage.loot.LootTable.lootTable()); // sublimates: needs silk touch
         loot.ore(HEMATITE_ORE.get(), RAW_HEMATITE.get());
@@ -304,7 +308,7 @@ public final class MarsModule implements SbModule {
     @Override
     public void addTags(SbTags tags) {
         List<Block> pick = new ArrayList<>(List.of(CARBONACEOUS_CHONDRITE.get(), MARTIAN_MUDSTONE.get(), GYPSUM_BLOCK.get(), MARTIAN_ICE.get(), DUSTY_ICE.get(),
-                DRY_ICE.get(), HEMATITE_ORE.get(), GYPSUM_ORE.get()));
+                DRY_ICE.get(), HEMATITE_ORE.get(), GYPSUM_ORE.get(), com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.BLOCK.get()));
         for (BlockKit.Family f : KIT.families()) {
             f.all().forEach(b -> pick.add(b.get()));
             tags.block(BlockTags.STAIRS, f.stairs().get());

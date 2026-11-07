@@ -8,7 +8,12 @@
     "motor": "spacebreaker:block/pumpjack_motor",
     "well": "spacebreaker:block/pumpjack_wellhead",
     "steel": "spacebreaker:block/press_steel",
-    "particle": "spacebreaker:block/pumpjack_paint"
+    "particle": "spacebreaker:block/pumpjack_paint",
+    "pipe": "spacebreaker:block/machine_copper_pipe",
+    "panel": "spacebreaker:block/machine_panel_buttons",
+    "cable": "spacebreaker:block/machine_cable",
+    "panel_glow": "spacebreaker:block/machine_panel_buttons_glow",
+    "wheel": "spacebreaker:block/machine_panel_valve"
   },
   "elements": [
     {
@@ -791,6 +796,210 @@
             3,
             13,
             13
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        14,
+        0,
+        9
+      ],
+      "to": [
+        17,
+        8,
+        15
+      ],
+      "faces": {
+        "north": {
+          "texture": "#steel",
+          "uv": [
+            13,
+            8,
+            16,
+            16
+          ]
+        },
+        "south": {
+          "texture": "#steel",
+          "uv": [
+            13,
+            8,
+            16,
+            16
+          ]
+        },
+        "east": {
+          "texture": "#panel",
+          "uv": [
+            5,
+            4,
+            11,
+            10
+          ]
+        },
+        "west": {
+          "texture": "#steel",
+          "uv": [
+            9,
+            8,
+            15,
+            16
+          ]
+        },
+        "up": {
+          "texture": "#steel",
+          "uv": [
+            13,
+            9,
+            16,
+            15
+          ]
+        },
+        "down": {
+          "texture": "#steel",
+          "uv": [
+            13,
+            1,
+            16,
+            7
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        14,
+        8,
+        8.5
+      ],
+      "to": [
+        17.5,
+        8.5,
+        15.5
+      ],
+      "faces": {
+        "north": {
+          "texture": "#steel",
+          "uv": [
+            12.5,
+            7.5,
+            16.0,
+            8.0
+          ]
+        },
+        "south": {
+          "texture": "#steel",
+          "uv": [
+            12.5,
+            7.5,
+            16.0,
+            8.0
+          ]
+        },
+        "east": {
+          "texture": "#steel",
+          "uv": [
+            0.5,
+            7.5,
+            7.5,
+            8.0
+          ]
+        },
+        "west": {
+          "texture": "#steel",
+          "uv": [
+            8.5,
+            7.5,
+            15.5,
+            8.0
+          ]
+        },
+        "up": {
+          "texture": "#steel",
+          "uv": [
+            12.5,
+            8.5,
+            16.0,
+            15.5
+          ]
+        },
+        "down": {
+          "texture": "#steel",
+          "uv": [
+            12.5,
+            0.5,
+            16.0,
+            7.5
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        15,
+        0,
+        15
+      ],
+      "to": [
+        16,
+        1,
+        30
+      ],
+      "faces": {
+        "north": {
+          "texture": "#cable",
+          "uv": [
+            0,
+            15,
+            1,
+            16
+          ]
+        },
+        "south": {
+          "texture": "#cable",
+          "uv": [
+            15,
+            15,
+            16,
+            16
+          ]
+        },
+        "east": {
+          "texture": "#cable",
+          "uv": [
+            1,
+            15,
+            16,
+            16
+          ]
+        },
+        "west": {
+          "texture": "#cable",
+          "uv": [
+            1,
+            15,
+            16,
+            16
+          ]
+        },
+        "up": {
+          "texture": "#cable",
+          "uv": [
+            15,
+            1,
+            16,
+            16
+          ]
+        },
+        "down": {
+          "texture": "#cable",
+          "uv": [
+            15,
+            1,
+            16,
+            16
           ]
         }
       }

@@ -13,6 +13,7 @@
   "unlocks": [
     "spacebreaker:rover",
     "spacebreaker:sprint_rover",
-    "spacebreaker:pressurized_rover"
+    "spacebreaker:pressurized_rover",
+    "spacebreaker:amphibious_rover"
   ]
 }

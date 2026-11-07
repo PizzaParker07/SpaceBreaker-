@@ -23,6 +23,43 @@ import net.minecraft.network.chat.Component;
 public record CockpitReadout(Component target, double relSpeed, double distance, boolean altitude, double dv, double dvMax,
                              boolean assist, double periapsis, double apoapsis, Component event, double eventIn,
                              double nodeDv, double nodeIn) {
+    /**
+     * From what a craft syncs ({@link com.pizzaparker07.spacebreaker.core.astro.flight.FlightReadout}): the target's
+     * name, and periapsis/apoapsis (as altitudes above the body) and the event ending the first conic of the path.
+     */
+    public static CockpitReadout of(com.pizzaparker07.spacebreaker.core.astro.flight.FlightReadout r) {
+        double pe = Double.NaN, ap = Double.NaN, eventIn = Double.NaN;
+        Component event = null;
+        if (!r.path().isEmpty()) {
+            var seg = r.path().get(0);
+            double radius = seg.body().radius();
+            pe = seg.periapsis() - radius;
+            double apo = seg.apoapsis();
+            ap = Double.isNaN(apo) || apo < 0 || Double.isInfinite(apo) ? Double.POSITIVE_INFINITY : apo - radius;
+            event = switch (seg.endEvent()) {
+                case ENTER_SOI -> seg.next() == null ? null
+                        : Component.translatable("hud.spacebreaker.cockpit.event.soi_enter", name(seg.next().id()));
+                case LEAVE_SOI -> Component.translatable("hud.spacebreaker.cockpit.event.soi_exit");
+                case IMPACT -> Component.translatable("hud.spacebreaker.cockpit.event.impact");
+                case NONE -> null;
+            };
+            eventIn = event == null ? Double.NaN : seg.end() - seg.start();
+        }
+        return new CockpitReadout(name(r.targetId()), r.relSpeed(), r.distance(), r.distanceIsAltitude(), r.dv(), r.dvMax(),
+                r.assist(), pe, ap, event, eventIn, r.hasNode() ? r.nodeDv() : Double.NaN, r.nodeInSeconds());
+    }
+
+    /** A body id ("spacebreaker:moon" or "moon") as its translated name; anything else as written. */
+    public static Component name(String id) {
+        if (id == null || id.isEmpty()) {
+            return Component.empty();
+        }
+        String path = id.contains(":") ? id.substring(id.indexOf(':') + 1) : id;
+        String ns = id.contains(":") ? id.substring(0, id.indexOf(':')) : "spacebreaker";
+        String key = "body." + ns + "." + path;
+        return net.minecraft.locale.Language.getInstance().has(key) ? Component.translatable(key) : Component.literal(id);
+    }
+
     /** Share of the Δv left, 0..1. */
     public float dvFraction() {
         return dvMax > 0 ? (float) Math.max(0, Math.min(1, dv / dvMax)) : 0F;

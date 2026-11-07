@@ -103,6 +103,15 @@ final class JovianScenario extends OuterShowcase {
         ProbePiece probe = new ProbePiece(41L, px, py, pz, Direction.NORTH);
         MarsScenario.placePiece(level, probe);
         shot("08_probe_lander", px + 24.5, py + 9, pz + 26.5, MoonScenario.yaw(-14, -16), 24F, 160, at(0.14), null);
+        // the drilling camp up close (derrick and habitat), and inside the habitat at the lab
+        BlockPos side = probe.surfacePos(18, 4, 18);
+        BlockPos derrick = probe.surfacePos(9, 3, 12);
+        shot("08b_probe_camp", side.getX() + 0.5, side.getY(), side.getZ() + 0.5, MoonScenario.yaw(derrick.getX() - side.getX(), derrick.getZ() - side.getZ()),
+                MoonScenario.pitch(derrick.getX() - side.getX(), derrick.getY() - side.getY(), derrick.getZ() - side.getZ()), 140, at(0.14), null);
+        BlockPos in = probe.surfacePos(ProbePiece.HAB_X1 - 1, 1, ProbePiece.HAB_Z);
+        BlockPos lab = probe.surfacePos(3, 1, ProbePiece.HAB_Z);
+        shot("08c_probe_habitat", in.getX() + 0.5, in.getY() + 1.4, in.getZ() + 0.5, MoonScenario.yaw(lab.getX() - in.getX(), lab.getZ() - in.getZ()),
+                22F, 100, at(0.14), null);
         BlockPos eye = probe.world(15, 5, 10);
         BlockPos pool = probe.world(5, 2, 11);
         shot("09_brine_cave", eye.getX() + 0.5, eye.getY() + 0.6, eye.getZ() + 0.5, MoonScenario.yaw(pool.getX() - eye.getX(), pool.getZ() - eye.getZ()),
@@ -152,8 +161,18 @@ final class JovianScenario extends OuterShowcase {
         int ox = SX + 40;
         int oz = SZ - 36;
         int oy = (int) ground(level, ox + 8, oz + 8);
-        MarsScenario.placePiece(level, new ObservatoryPiece(51L, ox, oy, oz, Direction.NORTH));
+        ObservatoryPiece obs = new ObservatoryPiece(51L, ox, oy, oz, Direction.NORTH);
+        MarsScenario.placePiece(level, obs);
         shot("08_volcano_observatory", ox + 26.5, oy + 9, oz + 26.5, MoonScenario.yaw(-18, -18), 22F, 160, at(0.1), null);
+        // close, from the south-east by the steps: the stilts, fins, door and dome; inside, from the door to the archive
+        BlockPos near = obs.world(16, ObservatoryPiece.DECK + 4, 18);
+        BlockPos dome = obs.world(ObservatoryPiece.C, ObservatoryPiece.DECK + 5, ObservatoryPiece.C);
+        shot("08b_observatory_close", near.getX() + 0.5, near.getY(), near.getZ() + 0.5, MoonScenario.yaw(dome.getX() - near.getX(), dome.getZ() - near.getZ()),
+                MoonScenario.pitch(dome.getX() - near.getX(), dome.getY() - near.getY(), dome.getZ() - near.getZ()), 140, at(0.1), null);
+        BlockPos in = obs.world(ObservatoryPiece.C, ObservatoryPiece.DECK + 1, 11);
+        BlockPos archive = obs.world(6, ObservatoryPiece.DECK + 1, 5);
+        shot("08c_observatory_inside", in.getX() + 0.5, in.getY() + 1.4, in.getZ() + 0.5, MoonScenario.yaw(archive.getX() - in.getX(), archive.getZ() - in.getZ()),
+                20F, 100, at(0.1), null);
     }
 
     private void ganymede(ServerLevel level, PlanetTerrain t) {

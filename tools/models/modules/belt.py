@@ -36,6 +36,12 @@ def generate():
     soil('comet_dust')
     simple_block('comet_ice')
     simple_block('comet_jet')
+    simple_block('gold_foil_cladding')
+    # the spent engine reuses the rocket engine's 3D model; the model points its nozzle down (facing=down)
+    write('models/block/spent_engine.json', {'parent': 'spacebreaker:item/kerosene_engine_3d', 'render_type': 'minecraft:cutout'})
+    rot = {'down': {}, 'up': {'x': 180}, 'north': {'x': 270}, 'south': {'x': 90}, 'west': {'x': 90, 'y': 90}, 'east': {'x': 90, 'y': 270}}
+    write('blockstates/spent_engine.json', {'variants': {f'facing={f}': dict({'model': b('spent_engine')}, **v) for f, v in rot.items()}})
+    write('models/item/spent_engine.json', {'parent': b('spent_engine')})
     for w in ('encke', 'halley', 'tempel'):
         soil(w + '_dust')
         simple_block(w + '_ice')

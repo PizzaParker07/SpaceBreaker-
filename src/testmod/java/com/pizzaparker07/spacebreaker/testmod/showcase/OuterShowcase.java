@@ -137,6 +137,19 @@ abstract class OuterShowcase implements ShowcaseScenario {
         BlockPos target = piece.world(6, 5, 14);
         shot(name, eye.getX() + 0.5, eye.getY(), eye.getZ() + 0.5, MoonScenario.yaw(target.getX() - eye.getX(), target.getZ() - eye.getZ()),
                 MoonScenario.pitch(target.getX() - eye.getX(), target.getY() - eye.getY(), target.getZ() - eye.getZ()), 160, at(dayFraction), null);
+        if (System.getenv("LANDER_DETAIL") != null) {
+            // close: from beside the wreck, the descent stage, foil band, engine and cabin; inside: the seats and console
+            int ax = com.pizzaparker07.spacebreaker.content.belt.dungeon.LanderPiece.AX;
+            BlockPos side = piece.world(ax - 9, 9, 13);
+            BlockPos mid = piece.world(ax, 7, 19);
+            shot(name + "_close", side.getX() + 0.5, side.getY(), side.getZ() + 0.5, MoonScenario.yaw(mid.getX() - side.getX(), mid.getZ() - side.getZ()),
+                    MoonScenario.pitch(mid.getX() - side.getX(), mid.getY() - side.getY(), mid.getZ() - side.getZ()), 120, at(dayFraction), null);
+            // from just inside the airlock door, looking forward over the seats at the console
+            BlockPos door = piece.world(ax, 6, com.pizzaparker07.spacebreaker.content.belt.dungeon.LanderPiece.CABIN1 - 1);
+            BlockPos console = piece.world(ax, 6, com.pizzaparker07.spacebreaker.content.belt.dungeon.LanderPiece.CABIN0 + 1);
+            shot(name + "_inside", door.getX() + 0.5, door.getY() + 1.4, door.getZ() + 0.5, MoonScenario.yaw(console.getX() - door.getX(), console.getZ() - door.getZ()),
+                    28F, 100, at(dayFraction), null);
+        }
     }
 
     /** Topmost block of a kind within a radius of (x, z), or null. */

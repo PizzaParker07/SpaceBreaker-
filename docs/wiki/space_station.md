@@ -12,6 +12,35 @@ Yörüngede bir ev, atölye ve yakıt deposu. Roketini her seferinde yerden dold
 3. İçine bir [Oksijen Dağıtıcı](base_air) koy: kapalı oda basınçlanır, kask çıkarabilirsin. → [Üssün Havası](base_air)
 4. Dışarıya bir **Yanaşma Portu** tak.
 
+<a id="modules"></a>
+### İstasyon modülleri
+
+**İstasyon Çekirdek Modülü** · **Kenetlenme Modülü**
+
+Hazır modüller standart **ağızlardan** birleşir: yürüme yüksekliğinde 3 × 3'lük bir açıklık; bir şey bağlı değilken dokuz **İstasyon Kapağı** ile kapalıdır (ortadaki işaretlidir).
+- ****İstasyon Çekirdek Modülü**** (7 × 7 × 7): istasyonun kalbi; **İstasyon Çekirdek Konsolu**, oksijen dağıtıcı, tavan ışıkları, çatıda bir kenetlenme portu ve üstünde birer pencere olan dört yan ağız.
+- ****Kenetlenme Modülü**** (5 × 5 × 7): ucunda kenetlenme portu olan kısa bir tünel.
+
+**Elle:** modülü bir ağzın kapağına kullan. Duvara dayanarak kurulur ve iki duvar kısa bir geçide açılır; iki modül tek bir hava odası olur. Yörüngede boşlukta kullanılan bir çekirdek yeni bir istasyon kurar (başka yerde "İstasyon çekirdeği yalnızca yörüngede açılabilir" der). Elinde modül varken bir ağza bakarsan nereye geleceğinin taslağı görünür: yer varsa yeşil, yolda bir şey varsa kırmızı.
+
+**Roketle:** modüller kapsül yuvasına takılır. Modül taşıyan roket yörüngesindeki istasyona kenetlenir ve modülü çekirdek konsolunda bekletir; almak için konsolu aç. 512 blok içinde istasyon yoksa çekirdek modülü roketin önünde yeni bir istasyon açar, roket de onun çatısına kenetlenir.
+
+|   |   |   |
+|---|---|---|
+| İstasyon Gövdesi | Yanaşma Portu | İstasyon Gövdesi |
+| İstasyon Penceresi | Oksijen Dağıtıcı | İstasyon Penceresi |
+| İstasyon Gövdesi | İstasyon Gövdesi | İstasyon Gövdesi |
+
+→ **İstasyon Çekirdek Modülü** (Çalışma Masası)
+
+|   |   |   |
+|---|---|---|
+| İstasyon Gövdesi | Yanaşma Portu | İstasyon Gövdesi |
+| İstasyon Penceresi |   | İstasyon Penceresi |
+| İstasyon Gövdesi | İstasyon Gövdesi | İstasyon Gövdesi |
+
+→ **Kenetlenme Modülü** (Çalışma Masası)
+
 ### Yaşam modülü kiti
 
 **Yaşam Modülü Kiti**
@@ -100,6 +129,35 @@ A home, workshop and fuel depot in orbit. You no longer have to fuel your rocket
 2. Build walls and a roof with **Station Hull** and **Station Window**.
 3. Put an [Oxygen Distributor](base_air) inside: the closed room is pressurised and you can take off your helmet. → [Air for the Base](base_air)
 4. Fit a **Docking Port** on the outside.
+
+<a id="modules"></a>
+### Station modules
+
+**Station Core Module** · **Docking Module**
+
+Ready-made modules join through standard **mouths**: a 3 × 3 opening at walking height, closed by nine **Station Hatch** blocks (the middle one is marked) while nothing is attached.
+- ****Station Core Module**** (7 × 7 × 7): the heart of a station, with the **Station Core Console** console, an oxygen distributor, roof lights, a docking port on the roof and four side mouths, each with a window above it.
+- ****Docking Module**** (5 × 5 × 7): a short tunnel with a docking port at its far end.
+
+**By hand:** use a module on a mouth's hatch. It is built against the wall and both walls open into a short passage, so the two modules share one room of air. A core used in open space in orbit starts a new station ("A station core can only be unfolded in orbit" anywhere else). While you hold a module and look at a mouth, an outline shows where it goes: green when there is room, red when something is in the way.
+
+**By rocket:** modules fit the capsule slot. A module rocket docks at the station in its orbit and leaves the module waiting in the core console; open the console to take it. With no station within 512 blocks, a core module unfolds a new station ahead of the rocket, which docks on its roof.
+
+|   |   |   |
+|---|---|---|
+| Station Hull | Docking Port | Station Hull |
+| Station Window | Oxygen Distributor | Station Window |
+| Station Hull | Station Hull | Station Hull |
+
+→ **Station Core Module** (Crafting Table)
+
+|   |   |   |
+|---|---|---|
+| Station Hull | Docking Port | Station Hull |
+| Station Window |   | Station Window |
+| Station Hull | Station Hull | Station Hull |
+
+→ **Docking Module** (Crafting Table)
 
 ### Habitat module kit
 

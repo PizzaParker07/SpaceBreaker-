@@ -30,7 +30,7 @@ A comet is a dirty snowball: water ice under a crust of dust darker than charcoa
 > **Hale–Bopp** is in the catalogue too, but has no world to land on: it shows only in the sky and on the star map. At perihelion it is a great comet.
 
 ## Getting there {#route}
-On the star map all comets share one node, **Comets**, beside the planets. Open it: the Sun sits in the middle and each comet has its own stretched orbit. The tail always points away from the Sun and is long only while the comet is awake. Pick a comet to see its card: distance from the Sun, next closest pass (date and AU), one orbit in years, and activity.
+On the star map the comets are small dots on their long, stretched orbits; zoom in and point at one to see its name. Choose it and the panel shows its distance from the Sun, its activity, the Δv and the trip time.
 
 > **Halley** orbits backwards: the star map says it is only reached with a nuclear thermal engine, and insulated tanks for the years on the way. **Hale–Bopp** is for watching only. → [Boil-off](rocket_parts#boil_off)
 

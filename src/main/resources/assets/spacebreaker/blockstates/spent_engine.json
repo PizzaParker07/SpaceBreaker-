@@ -1,0 +1,29 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "spacebreaker:block/spent_engine"
+    },
+    "facing=up": {
+      "model": "spacebreaker:block/spent_engine",
+      "x": 180
+    },
+    "facing=north": {
+      "model": "spacebreaker:block/spent_engine",
+      "x": 270
+    },
+    "facing=south": {
+      "model": "spacebreaker:block/spent_engine",
+      "x": 90
+    },
+    "facing=west": {
+      "model": "spacebreaker:block/spent_engine",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east": {
+      "model": "spacebreaker:block/spent_engine",
+      "x": 90,
+      "y": 270
+    }
+  }
+}
