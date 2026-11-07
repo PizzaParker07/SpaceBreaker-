@@ -43,11 +43,20 @@ public class RocketPartItem extends Item {
                     com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant.HYDROLOX.loxMillibuckets(p.propellantKg())).withStyle(grey));
             tooltip.add(Component.translatable("tooltip.spacebreaker.part.propellant_nuclear",
                     com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant.NUCLEAR.fuelMillibuckets(p.propellantKg())).withStyle(grey));
+            if (p.insulated()) {
+                tooltip.add(Component.translatable("tooltip.spacebreaker.part.insulated",
+                        Math.round(com.pizzaparker07.spacebreaker.content.rocketry.design.BoilOff.INSULATION * 100)).withStyle(ChatFormatting.GOLD));
+            }
+            tooltip.add(Component.translatable("tooltip.spacebreaker.part.hydrogen_note").withStyle(ChatFormatting.DARK_GRAY));
         }
         if (p.isEngine()) {
             tooltip.add(Component.translatable("tooltip.spacebreaker.part.thrust", Fmt.num(p.thrustKn())).withStyle(grey));
             tooltip.add(Component.translatable("tooltip.spacebreaker.part.isp", Fmt.num(p.ispSeaLevel()), Fmt.num(p.ispVacuum())).withStyle(grey));
             tooltip.add(Component.translatable("tooltip.spacebreaker.part.burns", p.propellant().displayName()).withStyle(grey));
+            if (p.propellant().boilOffPerDay() > 0) {
+                tooltip.add(Component.translatable("tooltip.spacebreaker.part.boil_off",
+                        String.format(java.util.Locale.ROOT, "%.2f", p.propellant().boilOffPerDay() * 100)).withStyle(grey));
+            }
             if (p.propellant() == com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant.NUCLEAR) {
                 tooltip.add(Component.translatable("tooltip.spacebreaker.part.nuclear").withStyle(ChatFormatting.GOLD));
             }

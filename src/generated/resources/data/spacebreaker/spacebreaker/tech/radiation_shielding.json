@@ -10,5 +10,8 @@
     "spacebreaker:europa",
     "spacebreaker:ganymede"
   ],
-  "tier": 3
+  "tier": 3,
+  "unlocks": [
+    "spacebreaker:depleted_uranium_plate"
+  ]
 }

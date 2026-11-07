@@ -100,6 +100,11 @@ final class MachinesLang {
         lang.block(MachinesModule.GAS_CENTRIFUGE.block(), "Gas Centrifuge", "Gaz Santrifüjü");
         lang.add("tooltip.spacebreaker.gas_centrifuge", "Enriches uranium slowly; each working centrifuge beside it adds half a stage of speed (up to 3x)",
                 "Uranyumu yavaşça zenginleştirir; yanındaki her çalışan santrifüj yarım kademe hız ekler (en çok 3 kat)");
+        lang.block(MachinesModule.FISSION_REACTOR.block(), "Fission Surface Power Unit", "Fisyon Yüzey Güç Ünitesi");
+        lang.add("tooltip.spacebreaker.fission_reactor", "%s FE/t from a nuclear fuel element, 10 days per element; fuel only burns while power is drawn",
+                "Nükleer yakıt elemanından %s FE/t, eleman başına 10 gün; yakıt yalnız güç çekilirken yanar");
+        lang.add("tooltip.spacebreaker.fission_reactor.radiation", "Radiates while running: bury it or bank regolith around it",
+                "Çalışırken radyasyon yayar: göm ya da çevresine regolit yığ");
         lang.item(MachinesModule.NUCLEAR_FUEL_ELEMENT, "Nuclear Fuel Element", "Nükleer Yakıt Elemanı");
         lang.add("tooltip.spacebreaker.nuclear_fuel_element", "Enriched uranium carbide in a tungsten clad: heats a nuclear thermal rocket's hydrogen",
                 "Tungsten kılıflı zenginleştirilmiş uranyum karbür: nükleer termal roketin hidrojenini ısıtır");

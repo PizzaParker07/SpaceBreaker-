@@ -208,6 +208,16 @@ Complementary the tint is weaker (the pack re-lights translucent entities) but t
 - **Base blocks (pressurised glass, porthole, LED panels, sliding door, warning light):** the glass is see-through and
   tinted under the pack, the LED panels light the corridor at night as in vanilla, door and warning light render
   (`base_blocks_vanilla_vs_iris.jpg`). The rotating warning-light beam was not caught in a still frame.
+- **Glows without depth (rocket plumes, beams) in front of the sky:** emissive translucent render types
+  (`entityTranslucentEmissive`, `eyes`) write no depth, so the sky pass, which copies our sky wherever the depth is
+  still far, painted over them (the NTR plume vanished under the pack). `compat/client/LateEffects.drawOrDefer(pose,
+  buffers, (p, b) -> ...)` draws such an effect at once without a pack, and with the sky pass active queues it and
+  draws it after our sky and haze, tested against the scene depth (`ntr_plume_late_effects.jpg`: vanilla, pack before,
+  pack with the deferral). Effects that do write depth (glass, water, ice) get our sky blended in behind them; that
+  blend now only covers translucent blocks (depth after AFTER_TRANSLUCENT_BLOCKS), not translucent entities.
+- **Mars clouds, canyon fog, seasonal frost:** clouds are part of our sky; the canyon morning fog is the world's fog,
+  applied by the haze pass; frost blocks render as in vanilla (`mars_clouds_fog_frost_vanilla_vs_iris.jpg`). The
+  ground looks browner than vanilla's grey basalt under the pack's warm sunlight.
 - **Docking jolt:** a camera roll/pitch from `ViewportEvent.ComputeCameraAngles`; Iris builds its matrices from the
   same camera, so the shake is the same with a pack (at most about 2°, too small to tell apart in a still frame).
 - **Inside a closed module the pack's ambient fill is blue:** the airless sky colour handed to the pack

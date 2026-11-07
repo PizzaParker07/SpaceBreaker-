@@ -22,9 +22,10 @@ public final class CometPoints {
      * @param tip     end of the straight blue ion (gas) tail, exactly away from the sun
      * @param dustMid control point of the curved dust tail (it lags behind along the orbit)
      * @param dustTip end of the dust tail
+     * @param magnitude apparent total magnitude ({@link CometActivity#apparentMagnitude}); 6 or less is naked-eye
      */
     public record Sighting(String id, String nameEn, String nameTr, Vector3f head, Vector3f tip, Vector3f dustMid, Vector3f dustTip,
-                           float headSize, float alpha, CometActivity.Level level) {
+                           float headSize, float alpha, CometActivity.Level level, double magnitude) {
         public boolean great() {
             return level == CometActivity.Level.GREAT;
         }
@@ -44,6 +45,11 @@ public final class CometPoints {
         // water molecules per second: 1e24 (barely) .. 1e29 (great comet) -> 0 .. 1 on a log scale
         double x = (Math.log10(Math.max(1, a.waterPerSecond())) - 24) / 5;
         return (float) Mth.clamp(0.04 + 0.32 * x, 0.04, 0.36);
+    }
+
+    /** Sky brightness (0.12..1) of a comet of apparent magnitude {@code mag}. */
+    public static double alphaFor(double mag) {
+        return Mth.clamp((7.5 - mag) / 6.5, 0.12, 1.0);
     }
 
     /** The comets visible from an observer body at time t. */
@@ -82,9 +88,11 @@ public final class CometPoints {
             Vector3f dustTip = b.local(dustTipPos.sub(obs));
             // apparent coma radius at the 100-block sky sphere: a clear halo for great comets, a small smudge otherwise
             float size = (float) Mth.clamp(100 * a.comaRadiusKm() * 1000 / d, great ? 1.3 : 0.45, great ? 4.0 : 1.5);
-            double au = d / 1.495978707e11;
-            float alpha = (float) Mth.clamp((great ? 0.95 : 0.4) * Math.min(1.0, 1.2 / Math.max(0.05, au)), 0.12, 1.0);
-            out.add(new Sighting(c.id(), c.nameEn(), c.nameTr(), head, tip, dustMid, dustTip, size, alpha, a.level()));
+            // brightness from the comet's real apparent magnitude: full at about 1 and brighter (Hale-Bopp, -0.7),
+            // half near 4 (Halley 1986), a faint smudge for telescopic comets (67P at 11) so they can still be found
+            double mag = CometActivity.apparentMagnitude(c, pos, obs);
+            float alpha = (float) alphaFor(mag);
+            out.add(new Sighting(c.id(), c.nameEn(), c.nameTr(), head, tip, dustMid, dustTip, size, alpha, a.level(), mag));
         }
         return out;
     }

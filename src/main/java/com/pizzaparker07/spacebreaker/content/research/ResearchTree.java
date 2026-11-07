@@ -168,7 +168,8 @@ public final class ResearchTree {
                 .samples(METEORITE)
                 .en("Ion Propulsion", "A whisper of thrust for months on end: electric fields accelerate xenon ions to huge speeds.")
                 .tr("İyon İtkisi", "Fısıltı kadar zayıf ama aylarca süren itki: elektrik alanı ksenon iyonlarını çok büyük hızlara çıkarır.");
-        t("nuclear_thermal_propulsion", PROPULSION, 3).req("hydrogen_engines", "nuclear_fission").icon("minecraft:glowstone_dust")
+        t("nuclear_thermal_propulsion", PROPULSION, 3).req("hydrogen_engines", "nuclear_fission").icon("spacebreaker:nuclear_thermal_engine")
+                .unlocks("nuclear_thermal_engine")
                 .samples(MARS)
                 .en("Nuclear Thermal Propulsion", "A reactor heats hydrogen directly: twice the efficiency of any chemical engine.")
                 .tr("Nükleer Termal İtki", "Bir reaktör hidrojeni doğrudan ısıtır: her kimyasal motorun iki katı verim.");
@@ -217,6 +218,7 @@ public final class ResearchTree {
                 .en("Water Recycling", "Recover more than nine litres of every ten: humidity, wash water and the rest.")
                 .tr("Su Geri Kazanımı", "Her on litrenin dokuzundan fazlasını geri kazan: nem, yıkama suyu ve geri kalanı.");
         t("radiation_shielding", LIFE_SUPPORT, 3).req("suit_mk2", "nuclear_fission").icon("minecraft:netherite_scrap")
+                .unlocks("depleted_uranium_plate")
                 .samples(IO, EUROPA, GANYMEDE)
                 .en("Radiation Shielding", "Layers of water, polyethylene and lead against solar storms and cosmic rays.")
                 .tr("Radyasyon Kalkanı", "Güneş fırtınalarına ve kozmik ışınlara karşı su, polietilen ve kurşun katmanları.");

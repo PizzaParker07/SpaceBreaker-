@@ -54,6 +54,29 @@ public final class ShaderSkyPass {
         glass = shader;
     }
 
+    private static final DepthCopy BLOCKS_DEPTH = new DepthCopy();
+    private static boolean blocksDepthCaptured;
+
+    /**
+     * Called at AFTER_TRANSLUCENT_BLOCKS: the depth with glass and water but without translucent entities and
+     * effects (rocket plumes, glows), which Iris draws later. Only translucent blocks get the sky blended behind them.
+     */
+    public static void captureTranslucentBlocksDepth() {
+        blocksDepthCaptured = false;
+        if (glass == null || !active()) {
+            return;
+        }
+        try {
+            BLOCKS_DEPTH.copyFrom(Minecraft.getInstance().getMainRenderTarget());
+            blocksDepthCaptured = true;
+        } catch (RuntimeException e) {
+            if (!warned) {
+                warned = true;
+                Spacebreaker.LOGGER.error("Space sky over the shader pack: depth copy failed", e);
+            }
+        }
+    }
+
     private static boolean warned;
     private static final PassTimer TIMER = new PassTimer("sky pass");
 
@@ -179,7 +202,8 @@ public final class ShaderSkyPass {
             b.addVertex(-1F, 1F, 0F).setUv(0F, 1F);
             BufferUploader.drawWithShader(b.buildOrThrow());
         }
-        int opaqueDepth = glass == null ? 0 : ShaderState.opaqueDepthTexture();
+        int opaqueDepth = glass == null || !blocksDepthCaptured ? 0 : ShaderState.opaqueDepthTexture();
+        blocksDepthCaptured = false;
         if (opaqueDepth > 0) {
             // 3) behind translucent surfaces: where only glass/water covers the sky (Glass and water write depth;
             // the pack's depth from just before its translucent pass tells them apart from terrain and entities.)
@@ -190,6 +214,7 @@ public final class ShaderSkyPass {
             RenderSystem.setShader(() -> glass);
             RenderSystem.setShaderTexture(0, target.getColorTextureId());
             RenderSystem.setShaderTexture(1, opaqueDepth);
+            RenderSystem.setShaderTexture(2, BLOCKS_DEPTH.texture());
             BufferBuilder b = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
             b.addVertex(-1F, -1F, 0F);
             b.addVertex(1F, -1F, 0F);
@@ -215,6 +240,8 @@ public final class ShaderSkyPass {
             target.destroyBuffers();
             target = null;
         }
+        BLOCKS_DEPTH.release();
+        blocksDepthCaptured = false;
     }
 
     /**
