@@ -168,6 +168,12 @@ Reviewed: no missing textures (purple/black), no untranslated keys, no invisible
   milestone only.
 - Suit HUD: two filled tanks show 10:00 of oxygen on the Moon. Not yet compared with real flight + EVA times (next round).
 
+- QA-12, QA-13 **fixed** (research bac61e9b): status line "Missing prerequisites" / "Ön koşul eksik" with a full-text tooltip;
+  "Welcome Home" now needs the Moon + a soft capsule landing on Earth. Leftover (rocketry, low): the two criteria are
+  unordered; awarding SAFE_RETURN only for flights coming from another body would make it strict.
+- QA-14 (inner, low): `aerostatFloatsWithLootAndGuards` failed once ("acid ray guardians, found 0") in a research run and
+  passed on retry — same pattern as QA-11 (entities counted right after spawning). Reported by research to inner.
+
 ## Localization (round 1)
 - Key parity en_us/tr_tr is complete (1305 each), placeholders and colour codes match, no broken characters.
 - Turkish reads naturally overall. Small suggestions (research keeps docs/GLOSSARY.md):
