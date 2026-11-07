@@ -350,6 +350,36 @@ public final class IndustryRtgTests {
         });
     }
 
+    /** Dust on the cells cuts output to a fifth when fully covered; wiping (or a dust devil) brings it back. */
+    @GameTest(template = "empty", timeoutTicks = 100, batch = "industry_power")
+    public static void dustyPanelLosesOutputUntilCleaned(GameTestHelper h) {
+        h.getLevel().setDayTime(6000);
+        BlockPos cleanAt = new BlockPos(1, 1, 2);
+        BlockPos dustyAt = new BlockPos(4, 1, 2);
+        h.setBlock(cleanAt, MachinesModule.SOLAR_PANEL.get());
+        h.setBlock(dustyAt, MachinesModule.SOLAR_PANEL.get());
+        com.pizzaparker07.spacebreaker.content.machines.SolarPanelBlockEntity dusty = h.getBlockEntity(dustyAt);
+        dusty.setDust(1F);
+        h.assertTrue(com.pizzaparker07.spacebreaker.core.env.Environment.dustRate(h.getLevel(), h.absolutePos(dustyAt)) == 0,
+                "no dust settles on Earth");
+        var tag = dusty.saveWithoutMetadata(h.getLevel().registryAccess());
+        h.assertTrue(Math.abs(tag.getFloat("dust") - 1F) < 1e-6, "dust is saved");
+        h.runAfterDelay(3, () -> {
+            com.pizzaparker07.spacebreaker.content.machines.SolarPanelBlockEntity clean = h.getBlockEntity(cleanAt);
+            h.assertTrue(clean.getExactOutput() > 0, "the clean panel sees the sun");
+            double ratio = dusty.getExactOutput() / clean.getExactOutput();
+            h.assertTrue(Math.abs(ratio - 0.2) < 0.01, "covered / clean = " + ratio);
+            float removed = dusty.clean(0.5F);
+            h.assertTrue(Math.abs(removed - 0.5F) < 1e-6 && Math.abs(dusty.dust() - 0.5F) < 1e-6, "half wiped: " + dusty.dust());
+            dusty.clean(1F);
+            h.runAfterDelay(2, () -> {
+                double after = dusty.getExactOutput() / clean.getExactOutput();
+                h.assertTrue(Math.abs(after - 1) < 0.01, "wiped / clean = " + after);
+                h.succeed();
+            });
+        });
+    }
+
     private IndustryRtgTests() {
     }
 }

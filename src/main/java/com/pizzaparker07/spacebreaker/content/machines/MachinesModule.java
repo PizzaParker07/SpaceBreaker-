@@ -421,6 +421,9 @@ public final class MachinesModule implements SbModule {
                 "Burada güneş ışığı: Dünya'nın %%%s'i (öğle tepe değeri %s FE/t)");
         lang.add("message.spacebreaker.solar_panel", "Sunlight here: %s%% of Earth's - making %s FE/t now",
                 "Burada güneş ışığı: Dünya'nın %%%s'i - şu an %s FE/t üretiyor");
+        lang.add("message.spacebreaker.solar_panel.dusty", "Cells %s%% covered in dust - making %s FE/t. Sneak-use to wipe them",
+                "Hücrelerin %%%s'i tozlu - %s FE/t üretiyor. Silmek için eğilip kullan");
+        lang.add("message.spacebreaker.solar_panel.wiped", "Wiped the dust off the cells", "Hücrelerdeki toz silindi");
         MachinesLang.add(lang);
     }
 

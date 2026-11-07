@@ -21,6 +21,7 @@ public final class Environment {
     private static final List<OxygenSource> OXYGEN_SOURCES = new CopyOnWriteArrayList<>();
     private static final List<TemperatureModifier> TEMPERATURE_MODIFIERS = new CopyOnWriteArrayList<>();
     private static final List<SunlightModifier> SUNLIGHT_MODIFIERS = new CopyOnWriteArrayList<>();
+    private static final List<DustSource> DUST_SOURCES = new CopyOnWriteArrayList<>();
     private static final List<PressureModifier> PRESSURE_MODIFIERS = new CopyOnWriteArrayList<>();
     private static final List<RadiationSource> RADIATION_SOURCES = new CopyOnWriteArrayList<>();
 
@@ -67,6 +68,28 @@ public final class Environment {
 
     public static void addSunlightModifier(SunlightModifier modifier) {
         SUNLIGHT_MODIFIERS.add(modifier);
+    }
+
+    /**
+     * Dust settling on exposed surfaces such as solar cells, as a fraction of full cover per tick
+     * (e.g. Martian dust, faster in a storm). Solar panels add {@link #dustRate} each second while they see the sky.
+     */
+    @FunctionalInterface
+    public interface DustSource {
+        double perTick(Level level, BlockPos pos);
+    }
+
+    public static void addDustSource(DustSource source) {
+        DUST_SOURCES.add(source);
+    }
+
+    /** Sum of all dust sources at a position, fraction of full cover per tick; 0 where nothing settles. */
+    public static double dustRate(Level level, BlockPos pos) {
+        double rate = 0;
+        for (DustSource source : DUST_SOURCES) {
+            rate += Math.max(0, source.perTick(level, pos));
+        }
+        return rate;
     }
 
     public static void addOxygenSource(OxygenSource source) {

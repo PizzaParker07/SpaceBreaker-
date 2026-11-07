@@ -1287,6 +1287,8 @@
   "message.spacebreaker.sample_taken": "Saha numunesi alındı (%s)",
   "message.spacebreaker.satellite.deployed": "%s, %s içine bırakıldı",
   "message.spacebreaker.solar_panel": "Burada güneş ışığı: Dünya'nın %%%s'i - şu an %s FE/t üretiyor",
+  "message.spacebreaker.solar_panel.dusty": "Hücrelerin %%%s'i tozlu - %s FE/t üretiyor. Silmek için eğilip kullan",
+  "message.spacebreaker.solar_panel.wiped": "Hücrelerdeki toz silindi",
   "message.spacebreaker.station_bunk.set": "Yeniden doğma noktası ayarlandı",
   "message.spacebreaker.station_kit.blocked": "Önünde bir şey var",
   "message.spacebreaker.suit.micro_g": "Mikro yerçekimi: ip ya da manyetik bot kullan, yoksa tek adım seni uzaya savurur",
