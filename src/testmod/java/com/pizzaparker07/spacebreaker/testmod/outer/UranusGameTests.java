@@ -184,6 +184,20 @@ public final class UranusGameTests {
         var floors = com.pizzaparker07.spacebreaker.content.uranus.Oberon.darkFloors();
         helper.assertTrue(floors.block().is(com.pizzaparker07.spacebreaker.content.uranus.Oberon.DARK_FLOOR.get()) && floors.chance() >= 0.5
                 && floors.extent() >= 0.5, "dark fill covers most of the floor in most larger craters");
+        // the real feature on the chunk at the centre of a nearby large crater that holds dark fill
+        var gen = WorldTests.generator(helper, "oberon", 3L);
+        var host = gen.terrain().cratersNear(-600, -600, 600, 600).stream()
+                .filter(c -> com.pizzaparker07.spacebreaker.content.belt.world.CraterFloorFeature.holds(c, floors)).findFirst()
+                .orElseThrow(() -> new AssertionError("no dark-floored crater near the landing site"));
+        var level = helper.getLevel();
+        int hx = (int) Math.floor(host.x());
+        int hz = (int) Math.floor(host.z());
+        level.getChunk(hx >> 4, hz >> 4);
+        new com.pizzaparker07.spacebreaker.content.belt.world.CraterFloorFeature().place(new net.minecraft.world.level.levelgen.feature.FeaturePlaceContext<>(
+                java.util.Optional.empty(), level, gen, net.minecraft.util.RandomSource.create(1), new BlockPos(hx & ~15, 0, hz & ~15), floors));
+        var top = level.getBlockState(new BlockPos(hx, com.pizzaparker07.spacebreaker.content.belt.world.Columns.top(level, hx, hz), hz));
+        helper.assertTrue(top.is(com.pizzaparker07.spacebreaker.content.uranus.Oberon.DARK_FLOOR.get()),
+                "dark fill on the floor of the crater at " + hx + "," + hz + " (r " + host.radius() + "): " + top);
         var cfg = com.pizzaparker07.spacebreaker.content.uranus.Oberon.chasma();
         var g = cfg.grabens().getFirst();
         double[] floor = new double[1];

@@ -1,6 +1,7 @@
 package com.pizzaparker07.spacebreaker.testmod.showcase;
 
 import com.pizzaparker07.spacebreaker.content.belt.dungeon.LanderPiece;
+import com.pizzaparker07.spacebreaker.content.belt.world.CraterFloorFeature;
 import com.pizzaparker07.spacebreaker.content.uranus.Oberon;
 import com.pizzaparker07.spacebreaker.content.uranus.entity.UranusEntities;
 import com.pizzaparker07.spacebreaker.content.worldgen.PlanetTerrain;
@@ -18,10 +19,15 @@ final class OberonScenario extends OuterShowcase {
 
     @Override
     protected void build(ServerLevel level, PlanetTerrain t) {
-        parent(level, t, "01_uranus_over_oberon", 0, 0, 0.62, 12);
-        look(level, "02_great_mountain", Oberon.MOUNTAIN_X + 260, Oberon.MOUNTAIN_Z + 40, 6, Oberon.MOUNTAIN_X, Oberon.MOUNTAIN_Z, at(0.1), 240,
+        parent(level, t, "01_uranus_over_oberon", 150, -150, 0.62, 12);
+        look(level, "02_great_mountain", Oberon.MOUNTAIN_X + 150, Oberon.MOUNTAIN_Z + 30, 6, Oberon.MOUNTAIN_X + 30, Oberon.MOUNTAIN_Z, at(0.1), 240,
                 MoonScenario::farView);
-        look(level, "03_dark_floored_craters", 60, -60, 70, 220, -220, at(0.12), 240, MoonScenario::farView);
+        // the nearest large crater with a dark floor, seen from just inside its rim
+        var floors = Oberon.darkFloors();
+        var host = t.cratersNear(-500, -500, 500, 500).stream().filter(c -> c.radius() >= 24 && CraterFloorFeature.holds(c, floors))
+                .min(java.util.Comparator.comparingDouble(c -> Math.hypot(c.x(), c.z()))).orElseThrow();
+        look(level, "03_dark_floored_crater", host.x() + host.radius() * 0.95, host.z() + host.radius() * 0.3, 14, host.x(), host.z(), at(0.12), 240,
+                MoonScenario::farView);
         var g = Oberon.chasma().grabens().getFirst();
         double cz = -g.latitude() / 90.0 * t.profile().poleDistance();
         double a = Math.toRadians(g.angleDeg());
