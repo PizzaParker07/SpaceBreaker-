@@ -91,6 +91,7 @@ public final class BeltModule implements SbModule {
     @Override
     public void register(IEventBus modBus) {
         NearEarthAsteroids.load();
+        OuterArrivals.register();
         BeltEntities.register(modBus, KIT.items);
         BeltStructures.register(modBus);
         KIT.blocks.register(modBus);
@@ -102,6 +103,7 @@ public final class BeltModule implements SbModule {
     @Override
     public void addTranslations(Lang lang) {
         NearEarthAsteroids.translations(lang);
+        OuterArrivals.translations(lang);
         lang.add("body.spacebreaker.ceres", "Ceres", "Ceres");
         lang.add("body.spacebreaker.vesta", "Vesta", "Vesta");
         lang.add("dimension.spacebreaker.ceres", "Ceres", "Ceres");
