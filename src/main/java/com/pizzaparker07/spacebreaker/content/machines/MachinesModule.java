@@ -74,6 +74,10 @@ public final class MachinesModule implements SbModule {
     public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(Registries.RECIPE_TYPE, Spacebreaker.MOD_ID);
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(Registries.RECIPE_SERIALIZER, Spacebreaker.MOD_ID);
     public static final DeferredRegister.DataComponents COMPONENTS = DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, Spacebreaker.MOD_ID);
+    /** Burn left in a partly used nuclear fuel element (ticks of full reactor power); absent on fresh elements. */
+    public static final DeferredHolder<net.minecraft.core.component.DataComponentType<?>, net.minecraft.core.component.DataComponentType<Integer>> FUEL_BURN_LEFT =
+            COMPONENTS.registerComponentType("fuel_burn_left", b -> b.persistent(com.mojang.serialization.Codec.INT)
+                    .networkSynchronized(net.minecraft.network.codec.ByteBufCodecs.VAR_INT));
     /** Game time an RTG pellet started decaying. */
     public static final DeferredHolder<net.minecraft.core.component.DataComponentType<?>, net.minecraft.core.component.DataComponentType<Long>> DECAY_START =
             COMPONENTS.registerComponentType("decay_start", b -> b.persistent(com.mojang.serialization.Codec.LONG)

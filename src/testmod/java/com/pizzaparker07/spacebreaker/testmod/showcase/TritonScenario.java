@@ -72,5 +72,8 @@ final class TritonScenario extends OuterShowcase {
         BlockPos door = station.world(7, 3, 2);
         shot("09_geyser_station_inside", door.getX() + 0.5, door.getY() + 1.6, door.getZ() + 0.5,
                 MoonScenario.yaw(centre.getX() - door.getX(), centre.getZ() - door.getZ()), 15F, 100, erupting(station.world(7, 2, 7), 0.12, false), null);
+        BlockPos high = station.world(7, 8, 3);
+        shot("09b_geyser_station_floor", high.getX() + 0.5, high.getY(), high.getZ() + 0.5,
+                MoonScenario.yaw(centre.getX() - high.getX(), centre.getZ() - high.getZ()), 52F, 100, erupting(station.world(7, 2, 7), 0.12, false), null);
     }
 }

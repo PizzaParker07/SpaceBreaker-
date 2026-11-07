@@ -214,7 +214,11 @@ public final class BlockyBodyRenderer {
      * use alpha), so a transparent pixel shows its stored colour, often black: fill or pull in soft edges first.
      */
     public static ColorMap texture(ResourceLocation id) {
-        return MAPS.computeIfAbsent(id, BlockyBodyRenderer::textureMap);
+        return MAPS.computeIfAbsent(id, k -> {
+            ColorMap m = textureMap(k);
+            PIXEL_MAPS.put(m, new PixelMap(k, null, 0.5F));
+            return m;
+        });
     }
 
     private static ColorMap textureMap(ResourceLocation id) {
@@ -344,7 +348,11 @@ public final class BlockyBodyRenderer {
         RenderSystem.defaultBlendFunc();
         RenderSystem.disableCull();
         int level = n > 0 ? n : 0;
-        if (n == APPROACH && drawPatch(pose, style, map, body, sun, night, tint, alpha)) {
+        PixelMap pixels = style == BlockyBodyMesh.Style.VOXEL ? pixelMap(map) : null;
+        float blend = pixels == null ? 0F : pixelBlend(body);
+        if (blend >= 1F) {
+            // close up: only the pixel sphere
+        } else if (n == APPROACH && drawPatch(pose, style, map, body, sun, night, tint, alpha)) {
             level = LEVELS[LEVELS.length - 1];
         } else if (n <= 0) {
             Lod lod = lod(map, style, body, n == APPROACH ? LEVELS[LEVELS.length - 1] : SKY_MAX);
@@ -362,12 +370,17 @@ public final class BlockyBodyRenderer {
             cached(pose, style, level, map, body, sun, night, tint, alpha);
         }
         if (ring != null) {
-            immediate(pose, style, level, map, body, sun, night, tint, alpha, ring, null, false);
+            immediate(pose, style, Math.max(level, LEVELS[0]), map, body, sun, night, tint, alpha, ring, null, false);
         }
         RenderSystem.enableCull();
         RenderSystem.clear(org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX); // while the mask is still open
         RenderSystem.depthMask(false);
         RenderSystem.disableDepthTest();
+        if (blend > 0F) {
+            // fading from the ball of blocks into the pixel sphere as the body grows
+            drawPixelSphere(pose, pixels, body, sun, night, tint, alpha * blend);
+            RenderSystem.disableCull();
+        }
         timing(System.nanoTime() - t0, false);
     }
 
@@ -823,16 +836,116 @@ public final class BlockyBodyRenderer {
      */
     public static ColorMap surface(String body) {
         return switch (body) {
-            case "earth" -> SURFACES.computeIfAbsent(body, k -> withClouds(texture(Spacebreaker.id("textures/environment/orbit_earth.png")),
-                    texture(Spacebreaker.id("textures/environment/orbit_earth_clouds.png"))));
-            case "moon" -> SURFACES.computeIfAbsent(body, k -> texture(Spacebreaker.id("textures/environment/orbit_moon.png")));
+            case "earth" -> SURFACES.computeIfAbsent(body, k -> {
+                ColorMap m = withClouds(texture(Spacebreaker.id("textures/environment/orbit_earth.png")),
+                        texture(Spacebreaker.id("textures/environment/orbit_earth_clouds.png")));
+                PIXEL_MAPS.put(m, new PixelMap(Spacebreaker.id("textures/environment/orbit_earth.png"),
+                        Spacebreaker.id("textures/environment/orbit_earth_clouds.png"), 0.5F));
+                return m;
+            });
+            case "moon" -> SURFACES.computeIfAbsent(body, k -> {
+                ColorMap m = texture(Spacebreaker.id("textures/environment/orbit_moon.png"));
+                return m;
+            });
             // these maps start at longitude 0 on the left edge
             case "mars", "venus", "mercury" -> SURFACES.computeIfAbsent(body, k -> {
                 ColorMap m = texture(Spacebreaker.id("textures/environment/orbit_" + k + ".png"));
-                return (lon, lat) -> m.argb(lon + Math.PI, lat);
+                ColorMap shifted = (lon, lat) -> m.argb(lon + Math.PI, lat);
+                PIXEL_MAPS.put(shifted, new PixelMap(Spacebreaker.id("textures/environment/orbit_" + k + ".png"), null, 1F));
+                return shifted;
             });
             default -> null;
         };
+    }
+
+    // ------------------------------------------------------------------ pixel sphere (close views)
+
+    /**
+     * A surface map as a texture for the close-up pixel sphere: equirectangular, longitude 0 at {@code uOffset} across it.
+     *
+     * @param clouds optional cloud layer (alpha = cover), drawn a little above the ground
+     */
+    public record PixelMap(ResourceLocation surface, ResourceLocation clouds, float uOffset) {
+    }
+
+    private static final Map<ColorMap, PixelMap> PIXEL_MAPS = new ConcurrentHashMap<>();
+
+    /** Angular radius (radians) where a body starts turning from a ball of blocks into a pixel sphere, and where it is one. */
+    static final float PIXEL_FROM = 0.55F;
+    static final float PIXEL_FULL = 0.68F;
+
+    /** The texture behind a colour map made by {@link #texture} or {@link #surface}, for the pixel sphere; null if none. */
+    static PixelMap pixelMap(ColorMap map) {
+        // only when chosen in the client settings (planetStyle = PIXEL), or for side-by-side checks (-Dspacebreaker.pixelSphere=true);
+        // the default keeps balls of blocks at every size, with the fine surface patch close up
+        boolean on = SkyConfig.planetStyle() == SkyConfig.PlanetStyle.PIXEL || Boolean.getBoolean("spacebreaker.pixelSphere");
+        return on ? PIXEL_MAPS.get(map) : null;
+    }
+
+    /**
+     * How far a body is into the pixel-sphere look (0 = ball of blocks, 1 = pixel sphere): when it fills much of the view
+     * (seen from orbit), stepped blocks the size of houses would show, so it becomes a smooth sphere wrapped in its pixel-art
+     * map (sharp texels, nearest filtering): the Minecraft feel comes from the pixels then, not from the steps.
+     */
+    static float pixelBlend(Pose body) {
+        float ang = (float) Math.asin(Math.min(1F, body.radius() / Math.max(1e-3F, body.center().length())));
+        float t = Mth.clamp((ang - PIXEL_FROM) / (PIXEL_FULL - PIXEL_FROM), 0F, 1F);
+        return t * t * (3 - 2 * t);
+    }
+
+    /**
+     * A smooth sphere wrapped in a pixel texture (nearest filtering), lit in hard steps like the blocky bodies, with an
+     * optional cloud layer just above it. Back faces are culled (a sphere is convex), so it needs no depth.
+     */
+    public static void drawPixelSphere(Matrix4f pose, PixelMap tex, Pose body, Vector3f sun, float night, float tint, float alpha) {
+        Matrix3f rot = body.rotation();
+        Vector3f s = new Vector3f(sun).normalize();
+        sphere(pose, tex.surface(), tex.uOffset(), rot, body.center(), body.radius(), s, night, tint, alpha, false);
+        if (tex.clouds() != null) {
+            sphere(pose, tex.clouds(), tex.uOffset(), rot, body.center(), body.radius() * 1.006F, s, night, tint, alpha, true);
+        }
+    }
+
+    private static void sphere(Matrix4f pose, ResourceLocation texture, float uOffset, Matrix3f rot, Vector3f centre, float radius, Vector3f sun,
+                               float night, float tint, float alpha, boolean clouds) {
+        int lon = 192;
+        int lat = 96;
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.enableCull();
+        RenderSystem.depthMask(false);
+        RenderSystem.disableDepthTest();
+        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+        RenderSystem.setShaderTexture(0, texture);
+        BufferBuilder bb = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+        Vector3f p = new Vector3f();
+        for (int j = 0; j < lat; j++) {
+            for (int i = 0; i < lon; i++) {
+                // one light per quad, in hard steps (the day/night line steps like the blocky bodies)
+                double mlon = Math.PI * 2 * (i + 0.5) / lon - Math.PI;
+                double mlat = Math.PI / 2 - Math.PI * (j + 0.5) / lat;
+                Vector3f mid = rot.transform(dir(mlon, mlat, new Vector3f()));
+                float light = BlockyBodyMesh.light(mid, mid, sun, clouds ? night * 0.6F : night) * tint;
+                int c = (int) (Mth.clamp(light, 0, 1) * 255);
+                int a = (int) (Mth.clamp(alpha, 0, 1) * 255);
+                // counter-clockwise seen from outside: down, right, up
+                int[][] corners = {{i, j}, {i, j + 1}, {i + 1, j + 1}, {i + 1, j}};
+                for (int[] k : corners) {
+                    double vl = Math.PI * 2 * k[0] / lon - Math.PI;
+                    double vb = Math.PI / 2 - Math.PI * k[1] / lat;
+                    rot.transform(dir(vl, vb, p)).mul(radius).add(centre);
+                    float u = (float) k[0] / lon - 0.5F + uOffset;
+                    bb.addVertex(pose, p.x, p.y, p.z).setUv(u, (float) k[1] / lat).setColor(c, c, c, a);
+                }
+            }
+        }
+        BufferUploader.drawWithShader(bb.buildOrThrow());
+        RenderSystem.disableCull();
+    }
+
+    /** Body-space direction of a longitude and latitude (pole +Y, longitude 0 +Z, east +X). */
+    private static Vector3f dir(double lon, double lat, Vector3f out) {
+        return out.set((float) (Math.cos(lat) * Math.sin(lon)), (float) Math.sin(lat), (float) (Math.cos(lat) * Math.cos(lon)));
     }
 
     /** Forgets loaded textures, colours and buffers (resource reload, leaving a world). */

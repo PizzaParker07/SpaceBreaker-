@@ -52,6 +52,9 @@ public final class SpaceWorlds {
         if (Level.OVERWORLD.equals(dimension) || Level.NETHER.equals(dimension) || Level.END.equals(dimension)) {
             return Kind.VANILLA;
         }
+        if (com.pizzaparker07.spacebreaker.content.rocketry.nav.Location.Orbits.SHARED.equals(dimension)) {
+            return Kind.ORBIT; // the orbit space shared by every body without an orbit world of its own (Mars, ...)
+        }
         Optional<CelestialBody> body = Bodies.forDimension(access, dimension);
         return body.map(b -> classify(b, dimension)).orElse(Kind.VANILLA);
     }

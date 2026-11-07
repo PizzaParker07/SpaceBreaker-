@@ -19,10 +19,27 @@ import net.minecraft.network.chat.Component;
  * @param eventIn    seconds until that event
  * @param nodeDv     Δv of the planned manoeuvre node, m/s (NaN when none)
  * @param nodeIn     seconds until the node
+ * @param targetPos  where the target's centre is in the world, blocks (for the on-screen marker), null for none
+ * @param targetSize its drawn radius, blocks
  */
 public record CockpitReadout(Component target, double relSpeed, double distance, boolean altitude, double dv, double dvMax,
                              boolean assist, double periapsis, double apoapsis, Component event, double eventIn,
-                             double nodeDv, double nodeIn) {
+                             double nodeDv, double nodeIn, net.minecraft.world.phys.Vec3 targetPos, double targetSize) {
+    public CockpitReadout(Component target, double relSpeed, double distance, boolean altitude, double dv, double dvMax,
+                          boolean assist, double periapsis, double apoapsis, Component event, double eventIn,
+                          double nodeDv, double nodeIn) {
+        this(target, relSpeed, distance, altitude, dv, dvMax, assist, periapsis, apoapsis, event, eventIn, nodeDv, nodeIn, null, 0);
+    }
+
+    /**
+     * The same readout with the target marked on screen: its centre in world blocks (for a scene body, its
+     * SpaceSceneLayout centre) and its drawn radius.
+     */
+    public CockpitReadout withTarget(net.minecraft.world.phys.Vec3 pos, double radius) {
+        return new CockpitReadout(target, relSpeed, distance, altitude, dv, dvMax, assist, periapsis, apoapsis, event, eventIn,
+                nodeDv, nodeIn, pos, radius);
+    }
+
     /**
      * From what a craft syncs ({@link com.pizzaparker07.spacebreaker.core.astro.flight.FlightReadout}): the target's
      * name, and periapsis/apoapsis (as altitudes above the body) and the event ending the first conic of the path.
