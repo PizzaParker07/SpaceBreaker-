@@ -815,6 +815,7 @@
   "hud.spacebreaker.warn.no_oxygen": "OKSİJEN BİTTİ",
   "hud.spacebreaker.warn.radiation": "YÜKSEK RADYASYON",
   "hud.spacebreaker.warn.rating": "GİYSİ DAYANIMI AŞILDI",
+  "hud.spacebreaker.warn.strain": "%s BAR: GİYSİ ZORLANIYOR",
   "hud.spacebreaker.warn.unsealed": "GİYSİ SIZDIRMAZ DEĞİL",
   "item.spacebreaker.ablative_shield_plate": "Ablatif Kalkan Levhası",
   "item.spacebreaker.acid_coating": "Floropolimer Kaplama",

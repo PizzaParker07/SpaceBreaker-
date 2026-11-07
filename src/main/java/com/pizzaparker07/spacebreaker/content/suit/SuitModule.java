@@ -285,6 +285,7 @@ public final class SuitModule implements SbModule {
         lang.add("tooltip.spacebreaker.safety_tether.hint", "Use on a block to clip on, use again to unclip",
                 "Takmak için bir bloğa kullan, çözmek için yeniden kullan");
         lang.add("hud.spacebreaker.mag", "MAG", "MANYETİK");
+        lang.add("hud.spacebreaker.warn.strain", "%s BAR: SUIT UNDER STRAIN", "%s BAR: GİYSİ ZORLANIYOR");
         lang.add("key.spacebreaker.helmet_lamp", "Helmet lamps: wide / long beam", "Kask lambaları: geniş / uzun huzme");
         lang.add("message.spacebreaker.lamp.long", "Helmet lamps: long beam", "Kask lambaları: uzun huzme");
         lang.add("message.spacebreaker.lamp.wide", "Helmet lamps: wide beam", "Kask lambaları: geniş huzme");
