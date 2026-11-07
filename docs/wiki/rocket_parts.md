@@ -37,8 +37,19 @@ Her kademede altta **bir motor**, üstünde **yakıt tankları** olur. Tanklar, 
 | Metaloks (vakum) | 220 kN | 380 s | metan + LOX (1 : 3,6) |
 | Hidroloks (deniz) | 650 kN | 366 / 452 s | hidrojen + LOX (1 : 6) |
 | Hidroloks (vakum) | 110 kN | 465 s | hidrojen + LOX (1 : 6) |
+| Nükleer termal (vakum) | 150 kN | 880 s | yalnız sıvı hidrojen |
 
 **Hidroloks motorları** *Hidrojen Motorları* ile açılır. Sıvı hidrojen en verimli yakıttır ama çok **hacimlidir** (yoğunluğu suyun on dörtte biri): aynı kütle için çok daha büyük tank gerekir.
+
+<a id="ntr"></a>
+### Nükleer termal motor
+
+**Nükleer Termal Motor (Vakum)**
+
+**Nükleer Termal Motor (Vakum)** (*Nükleer Termal İtki*) oksitleyici yakmaz: bir fisyon reaktörü sıvı hidrojeni ısıtır. Vakumda **880 s** özgül itki, her kimyasal motorun yaklaşık iki katı. Ama 150 kN itki ve 3,4 t kütleyle yerden kalkamayacak kadar zayıftır: üst kademe motorudur. Kademesi hidroloks kademeleri gibi aynı hidrojen hattından yalnız sıvı hidrojen alır.
+
+> [!WARNING]
+> Yanarken bir **radyasyon kaynağıdır**: doz uzaklığın karesiyle azalır, motorun üstündeki gölge kalkanı mürettebatı korur. Soğukken güvenlidir. Yakıtı: → [Nükleer Yakıt](nuclear_fuel)
 
 Montaj tezgâhı her kademenin yakıt türünü ve Δv'sini gösterir.
 
@@ -103,8 +114,19 @@ Each stage has **one engine** at the bottom and **fuel tanks** above it. The tan
 | Methalox (vacuum) | 220 kN | 380 s | methane + LOX (1 : 3.6) |
 | Hydrolox (sea level) | 650 kN | 366 / 452 s | hydrogen + LOX (1 : 6) |
 | Hydrolox (vacuum) | 110 kN | 465 s | hydrogen + LOX (1 : 6) |
+| Nuclear thermal (vacuum) | 150 kN | 880 s | liquid hydrogen only |
 
 **Hydrolox engines** are unlocked by *Hydrogen Engines*. Liquid hydrogen is the most efficient fuel but very **bulky** (a fourteenth of water's density): the same mass needs far bigger tanks.
+
+<a id="ntr"></a>
+### Nuclear thermal engine
+
+**Nuclear Thermal Engine (Vacuum)**
+
+The **Nuclear Thermal Engine (Vacuum)** (*Nuclear Thermal Propulsion*) burns no oxidiser: a fission reactor heats liquid hydrogen. **880 s** of specific impulse in vacuum, about twice any chemical engine. But at 150 kN and 3.4 t it is too weak to leave the ground: it is an upper-stage engine. Its stage takes liquid hydrogen alone through the same hydrogen line as hydrolox stages.
+
+> [!WARNING]
+> While it burns it is a **radiation source**: the dose falls with the square of the distance, and the shadow shield above the engine protects the crew. Cold, it is safe. Its fuel: → [Nuclear Fuel](nuclear_fuel)
 
 The assembler shows each stage's fuel type and Δv.
 

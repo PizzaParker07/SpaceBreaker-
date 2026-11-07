@@ -1,7 +1,7 @@
 ---
 title: Rocket Parts
 icon: spacebreaker:kerosene_engine
-items: [spacebreaker:nose_cone, spacebreaker:crew_capsule, spacebreaker:heat_shield, spacebreaker:parachute, spacebreaker:fuel_tank_small, spacebreaker:fuel_tank_medium, spacebreaker:fuel_tank_large, spacebreaker:kerosene_engine, spacebreaker:vacuum_engine, spacebreaker:methalox_engine, spacebreaker:methalox_vacuum_engine, spacebreaker:hydrolox_engine, spacebreaker:hydrolox_vacuum_engine, spacebreaker:decoupler, spacebreaker:interstage, spacebreaker:fins, spacebreaker:grid_fins, spacebreaker:landing_legs, spacebreaker:rcs_thrusters]
+items: [spacebreaker:nose_cone, spacebreaker:crew_capsule, spacebreaker:heat_shield, spacebreaker:parachute, spacebreaker:fuel_tank_small, spacebreaker:fuel_tank_medium, spacebreaker:fuel_tank_large, spacebreaker:kerosene_engine, spacebreaker:vacuum_engine, spacebreaker:methalox_engine, spacebreaker:methalox_vacuum_engine, spacebreaker:hydrolox_engine, spacebreaker:hydrolox_vacuum_engine, spacebreaker:nuclear_thermal_engine, spacebreaker:decoupler, spacebreaker:interstage, spacebreaker:fins, spacebreaker:grid_fins, spacebreaker:landing_legs, spacebreaker:rcs_thrusters]
 research: spacebreaker:basic_rocketry
 ---
 A rocket is a stack of **stages** with the **payload** on top.
@@ -31,8 +31,15 @@ Each stage has **one engine** at the bottom and **fuel tanks** above it. The tan
 | Methalox (vacuum) | 220 kN | 380 s | methane + LOX (1 : 3.6) |
 | Hydrolox (sea level) | 650 kN | 366 / 452 s | hydrogen + LOX (1 : 6) |
 | Hydrolox (vacuum) | 110 kN | 465 s | hydrogen + LOX (1 : 6) |
+| Nuclear thermal (vacuum) | 150 kN | 880 s | liquid hydrogen only |
 
 **Hydrolox engines** are unlocked by {tech spacebreaker:hydrogen_engines}. Liquid hydrogen is the most efficient fuel but very **bulky** (a fourteenth of water's density): the same mass needs far bigger tanks.
+
+## Nuclear thermal engine {#ntr}
+{items spacebreaker:nuclear_thermal_engine}
+The {item spacebreaker:nuclear_thermal_engine} ({tech spacebreaker:nuclear_thermal_propulsion}) burns no oxidiser: a fission reactor heats liquid hydrogen. **880 s** of specific impulse in vacuum, about twice any chemical engine. But at 150 kN and 3.4 t it is too weak to leave the ground: it is an upper-stage engine. Its stage takes liquid hydrogen alone through the same hydrogen line as hydrolox stages.
+
+>! While it burns it is a **radiation source**: the dose falls with the square of the distance, and the shadow shield above the engine protects the crew. Cold, it is safe. Its fuel: → [Nuclear Fuel](nuclear_fuel)
 
 The assembler shows each stage's fuel type and Δv.
 

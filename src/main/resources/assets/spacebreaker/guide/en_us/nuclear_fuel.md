@@ -28,4 +28,4 @@ The {item spacebreaker:rtg_fuel_pellet} is now made from **4 yellowcake in the s
 
 >! The pellet itself does give off radiation: carrying it gives you a dose. Put it in the RTG and keep your distance.
 
-> **Fresh uranium fuel is not dangerous:** uranium has low activity, and you can pick it up and carry it. The real radiation comes when the fuel element **burns in a nuclear thermal rocket engine**. → [Rocket Parts](rocket_parts)
+> **Fresh uranium fuel is not dangerous:** uranium has low activity, and you can pick it up and carry it. The real radiation comes when the fuel element **burns in a nuclear thermal rocket engine**. → [Rocket Parts](rocket_parts#ntr)

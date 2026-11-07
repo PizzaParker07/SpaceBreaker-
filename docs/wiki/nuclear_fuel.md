@@ -39,7 +39,7 @@ Tek bir santrifüj yavaştır. Gerçek tesislerde binlercesi art arda çalışı
 > Peletin kendisi ise ışınım yayar: üstünde taşırken doz alırsın. RTG'ye tak ve uzak dur.
 
 > [!TIP]
-> **Taze uranyum yakıtı tehlikeli değildir:** uranyumun etkinliği düşüktür, eline alıp taşıyabilirsin. Asıl radyasyon, yakıt elemanı **nükleer termal roket motorunda yanarken** çıkar. → [Roket Parçaları](rocket_parts)
+> **Taze uranyum yakıtı tehlikeli değildir:** uranyumun etkinliği düşüktür, eline alıp taşıyabilirsin. Asıl radyasyon, yakıt elemanı **nükleer termal roket motorunda yanarken** çıkar. → [Roket Parçaları](rocket_parts#ntr)
 
 <details>
 <summary>English: Nuclear Fuel</summary>
@@ -83,6 +83,6 @@ The [RTG Fuel Pellet](power) is now made from **4 yellowcake in the sintering fu
 > The pellet itself does give off radiation: carrying it gives you a dose. Put it in the RTG and keep your distance.
 
 > [!TIP]
-> **Fresh uranium fuel is not dangerous:** uranium has low activity, and you can pick it up and carry it. The real radiation comes when the fuel element **burns in a nuclear thermal rocket engine**. → [Rocket Parts](rocket_parts)
+> **Fresh uranium fuel is not dangerous:** uranium has low activity, and you can pick it up and carry it. The real radiation comes when the fuel element **burns in a nuclear thermal rocket engine**. → [Rocket Parts](rocket_parts#ntr)
 
 </details>
