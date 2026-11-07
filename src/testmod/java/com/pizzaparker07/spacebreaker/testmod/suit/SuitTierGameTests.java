@@ -256,4 +256,27 @@ public final class SuitTierGameTests {
         helper.assertTrue(recipe.isPresent(), "the pickaxe has a recipe");
         helper.succeed();
     }
+
+    /** Radiation suits and the shield module take any radiation shielding plate: tungsten or depleted uranium. */
+    @GameTest(template = "empty")
+    public static void radiationSuitsTakeEitherShieldingPlate(GameTestHelper helper) {
+        var manager = helper.getLevel().getRecipeManager();
+        ItemStack uranium = new ItemStack(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.DEPLETED_URANIUM_PLATE.get());
+        var tungsten = net.minecraft.core.registries.BuiltInRegistries.ITEM.getTag(
+                net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.ITEM, net.minecraft.resources.ResourceLocation.parse("c:plates/tungsten")));
+        helper.assertTrue(tungsten.isPresent() && tungsten.get().size() > 0, "there is a tungsten plate");
+        ItemStack tungstenPlate = new ItemStack(tungsten.get().get(0));
+        for (String id : new String[]{"radiation_helmet", "radiation_chestplate", "radiation_leggings", "radiation_boots", "radiation_shield_module"}) {
+            var holder = manager.byKey(com.pizzaparker07.spacebreaker.Spacebreaker.id(id));
+            helper.assertTrue(holder.isPresent(), id + " has a recipe");
+            boolean takesUranium = false, takesTungsten = false;
+            for (var ing : holder.get().value().getIngredients()) {
+                takesUranium |= ing.test(uranium);
+                takesTungsten |= ing.test(tungstenPlate);
+            }
+            helper.assertTrue(takesUranium, id + " takes a depleted uranium plate");
+            helper.assertTrue(takesTungsten, id + " still takes a tungsten plate");
+        }
+        helper.succeed();
+    }
 }
