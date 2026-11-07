@@ -27,7 +27,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 ### Paket ② Enerji ve makineler
 | Durum | İçerik | Not |
 |---|---|---|
-| 🎨 | Güneş Takipli Panel | doğu-batı takip, gece düz yatar; 20 FE/t tepe, hava ve güneş açısına bağlı |
+| 🎨 | Güneş Takipli Panel | doğu-batı takip, gece düz yatar; 20 FE/t tepe, hava ve güneş açısına bağlı; tozlu dünyalarda hücreler tozlanır (üstte pas rengi katman, tam tozda %60 üretim), eğilip boş elle kullanınca silinir, toz şeytanı geçince temizlenir (`Environment.addDustSource`) |
 | 🎨 | Oksijen Dolum İstasyonu | tüpü beşiğe koy; FE ile, gezegenin doğal solunabilir havasından (Dünya) ya da borudan gelen oksijen gazı / sıvı oksijenden doldurur (Manevra Ünitesi gazı da). Dağıtıcının oda havası sayılmaz |
 | 🎨 | Oksijen Dağıtıcı | kapalı odayı tick'lere yayılmış taşkın dolumla bulur (en çok 4096 blok), tüpten ya da borudan gelen oksijenle önce odayı basınçlandırır (blok başına oksijen), sonra hacme göre tüketir; sızıntıda hava boşalır; blok değişince yeniden kontrol |
 | 🎨 | Hava Kilidi Kapısı | 2 blok, kayar kanatlar (animasyonlu); kapalıyken hava geçirmez; el ya da kızıltaşla açılır |

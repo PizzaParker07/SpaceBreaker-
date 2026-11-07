@@ -350,7 +350,7 @@ public final class IndustryRtgTests {
         });
     }
 
-    /** Dust on the cells cuts output to a fifth when fully covered; wiping (or a dust devil) brings it back. */
+    /** Dust on the cells cuts output to 60% when fully covered; wiping (or a dust devil) brings it back. */
     @GameTest(template = "empty", timeoutTicks = 100, batch = "industry_power")
     public static void dustyPanelLosesOutputUntilCleaned(GameTestHelper h) {
         h.getLevel().setDayTime(6000);
@@ -368,7 +368,7 @@ public final class IndustryRtgTests {
             com.pizzaparker07.spacebreaker.content.machines.SolarPanelBlockEntity clean = h.getBlockEntity(cleanAt);
             h.assertTrue(clean.getExactOutput() > 0, "the clean panel sees the sun");
             double ratio = dusty.getExactOutput() / clean.getExactOutput();
-            h.assertTrue(Math.abs(ratio - 0.2) < 0.01, "covered / clean = " + ratio);
+            h.assertTrue(Math.abs(ratio - 0.6) < 0.01, "covered / clean = " + ratio);
             float removed = dusty.clean(0.5F);
             h.assertTrue(Math.abs(removed - 0.5F) < 1e-6 && Math.abs(dusty.dust() - 0.5F) < 1e-6, "half wiped: " + dusty.dust());
             dusty.clean(1F);

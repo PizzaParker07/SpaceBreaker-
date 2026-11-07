@@ -22,7 +22,7 @@ public class SolarPanelBlockEntity extends BlockEntity {
     public static final double MAX_SOLAR_FACTOR = 3.0;
     private static final float SLEW_PER_TICK = (float) Math.toRadians(0.6);
     /** Output lost when the cells are fully covered in dust (some light still scatters through). */
-    public static final float MAX_DUST_LOSS = 0.8F;
+    public static final float MAX_DUST_LOSS = 0.4F;
     /** How often settling dust is added, ticks. */
     public static final int DUST_INTERVAL = 20;
 
@@ -74,9 +74,11 @@ public class SolarPanelBlockEntity extends BlockEntity {
     public void setDust(float value) {
         float next = Mth.clamp(value, 0F, 1F);
         if (next != dust) {
+            // clients only need the cover in 5% steps (and the moment it is wiped clean)
+            boolean visible = next == 0F || (int) (next * 20) != (int) (dust * 20);
             dust = next;
             setChanged();
-            if (level != null && !level.isClientSide) {
+            if (visible && level != null && !level.isClientSide) {
                 level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
             }
         }
