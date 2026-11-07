@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-07T03:59:47.984503754	Loot Tables
+// 1.21.1	2026-11-07T04:07:40.327698367	Loot Tables
 c48f71ca60600cd6230f77a2e146a3df572494ae data/spacebreaker/loot_table/blocks/aerogel.json
 e37973997ec83c5b040a31bf9fcda1757b53fc00 data/spacebreaker/loot_table/blocks/airlock_door.json
 c511e60fe01f6dddc2d2b0e516ca81c11bf4ca91 data/spacebreaker/loot_table/blocks/aluminum_block.json
@@ -30,6 +30,7 @@ a561db74ad7f20829626cec77c3bd759bdb69851 data/spacebreaker/loot_table/blocks/cal
 b337aa06559db27c44a1d0e6fb2375f9d8910626 data/spacebreaker/loot_table/blocks/callistan_rock_stairs.json
 3e90439cbb636fe6d57aeb1ec4f382f9a8496cf4 data/spacebreaker/loot_table/blocks/callistan_rock_wall.json
 45131f960ed61c6a70e268cb1d2d2178a7732a3d data/spacebreaker/loot_table/blocks/callisto_regolith.json
+b3a03360dcf797f5750ad1d7409f5eecdf0fe4a6 data/spacebreaker/loot_table/blocks/canyon_wall_ice.json
 42d8fe26a2f0fa0a1c04ba0bd32ba41f4d95009a data/spacebreaker/loot_table/blocks/carbonaceous_chondrite.json
 c9493ce4bd174560099a08905669bd17fc994b3a data/spacebreaker/loot_table/blocks/carbonate_crust.json
 5f298a8ff1d3c93c0ecdba5ce24886384c684e02 data/spacebreaker/loot_table/blocks/cerean_ice.json
@@ -226,6 +227,12 @@ bb3a568ecdfddfa7ad99184e82afe36bf61d9b55 data/spacebreaker/loot_table/blocks/tho
 ce1668612c957921c6ede2a9ad4378f01cdc0c24 data/spacebreaker/loot_table/blocks/titan_ice_slab.json
 f68d5dbec89de9979d386022632a098405571a66 data/spacebreaker/loot_table/blocks/titan_ice_stairs.json
 a9d9a180771ca31c6b6c25a849a8786364367407 data/spacebreaker/loot_table/blocks/titan_ice_wall.json
+418638b225e12654a9c641a7db9ff38dd92b5cda data/spacebreaker/loot_table/blocks/titania_carbon_ore.json
+284b13502f57600947843c8cbfde359266d277fe data/spacebreaker/loot_table/blocks/titania_ice.json
+5b2c23d4a95042028078e4bc333203722e757ccc data/spacebreaker/loot_table/blocks/titania_ice_slab.json
+2045c880f879903dea2a263e2c5ced525a69d73c data/spacebreaker/loot_table/blocks/titania_ice_stairs.json
+e451903ce60fc0042df75302b97a007067d53fa5 data/spacebreaker/loot_table/blocks/titania_ice_wall.json
+9d27a7a63868ab262e630dda256f155ae006672d data/spacebreaker/loot_table/blocks/titania_regolith.json
 12690d8bd65c9304e79979fdcf804f790000ab60 data/spacebreaker/loot_table/blocks/titanium_block.json
 a6dd201706933c090a23739d74a6b357877b89dd data/spacebreaker/loot_table/blocks/triton_frost.json
 7e811e8550bbf1d668674247fcdd9c5e87b1956e data/spacebreaker/loot_table/blocks/triton_ice.json

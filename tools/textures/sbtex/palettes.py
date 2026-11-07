@@ -224,3 +224,9 @@ ARIEL_ICE = ramp('#6f6b66', '#807c76', '#8e8a84', '#9e9993', '#aea9a1', '#bfbab2
 GRABEN_FLOOR = ramp('#7f7a74', '#8c8781', '#9a958e', '#a7a29b', '#b4afa8', '#c2bdb6')
 CO2_FROST = ramp('#b9bcbf', '#c7cacd', '#d1d4d7', '#dadde0', '#e3e5e7', '#eeeff0')
 MOTH = ramp('#7a7d80', '#9a9da0', '#b9bcbf', '#d3d5d7', '#e7e8e9', '#f4f5f5')
+
+# --------------------------------------------------------------------------- Titania (ramps from docs/ASTRO.md)
+TITANIA_SOIL = ramp('#4c4844', '#5c5853', '#6c6862', '#7d7871', '#8c867f', '#9c968e')
+TITANIA_ICE = ramp('#56524d', '#66625c', '#76716b', '#867f78', '#958f87', '#a49e96')
+CANYON_WALL = ramp('#8d8880', '#9c968e', '#a9a39b', '#b5b0a8', '#c2bdb5', '#cfcac2')
+ROLLER = ramp('#2f2c29', '#3f3b37', '#514c47', '#655f58', '#7b746c', '#928a81')

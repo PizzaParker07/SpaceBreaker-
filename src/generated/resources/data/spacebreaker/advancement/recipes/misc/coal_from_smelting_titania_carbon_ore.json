@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "spacebreaker:coal_from_smelting_titania_carbon_ore"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_titania_carbon_ore": {
+      "conditions": {
+        "items": [
+          {
+            "items": "spacebreaker:titania_carbon_ore"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_titania_carbon_ore"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "spacebreaker:coal_from_smelting_titania_carbon_ore"
+    ]
+  }
+}

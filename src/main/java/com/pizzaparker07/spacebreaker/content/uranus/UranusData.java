@@ -46,6 +46,10 @@ public final class UranusData {
     public static final ResourceKey<Biome> ARIEL_CRATER = OuterWorlds.biome("ariel_crater");
     public static final ResourceKey<Biome> ARIEL_POLAR = OuterWorlds.biome("ariel_polar");
     public static final List<ResourceKey<Biome>> ARIEL_BIOMES = List.of(ARIEL_PLAINS, ARIEL_CRATER, ARIEL_POLAR);
+    public static final ResourceKey<Biome> TITANIA_UPLANDS = OuterWorlds.biome("titania_uplands");
+    public static final ResourceKey<Biome> TITANIA_CRATER = OuterWorlds.biome("titania_crater");
+    public static final ResourceKey<Biome> TITANIA_POLAR = OuterWorlds.biome("titania_polar");
+    public static final List<ResourceKey<Biome>> TITANIA_BIOMES = List.of(TITANIA_UPLANDS, TITANIA_CRATER, TITANIA_POLAR);
 
     private UranusData() {
     }
@@ -65,6 +69,13 @@ public final class UranusData {
         lang.add("tech.spacebreaker.ice_shell_tectonics.desc",
                 "Ariel's crust was pulled apart until long strips dropped between parallel faults, then icy lava flooded their floors: read the faults and you know where the warm ice once rose.",
                 "Ariel'in kabuğu çekilip gerildi, paralel faylar arasında uzun şeritler çöktü, sonra tabanlarını buzlu lav doldurdu: fayları okuyan, sıcak buzun bir zamanlar nereden yükseldiğini bilir.");
+        lang.add("biome.spacebreaker.titania_uplands", "Titanian Uplands", "Titania Yaylaları");
+        lang.add("biome.spacebreaker.titania_crater", "Titanian Crater", "Titania Krateri");
+        lang.add("biome.spacebreaker.titania_polar", "Titanian Pole", "Titania Kutbu");
+        lang.add("tech.spacebreaker.tectonic_mapping", "Tectonic Mapping", "Tektonik Haritalama");
+        lang.add("tech.spacebreaker.tectonic_mapping.desc",
+                "Titania's canyons run straight for hundreds of kilometres, the cracks of a moon that swelled as its insides froze: map them and you can read its whole history from the walls.",
+                "Titania'nın kanyonları yüzlerce kilometre dümdüz uzanır; içi donarken şişen bir uydunun çatlaklarıdır: onları haritalayan, uydunun bütün geçmişini duvarlarından okur.");
         lang.add("tech.spacebreaker.vertical_exploration", "Vertical Exploration", "Dikey Keşif");
         lang.add("tech.spacebreaker.vertical_exploration.desc",
                 "Rope anchors in ice, slow controlled descents and the patience to fall for minutes: how to get down Miranda's great cliff and back up again.",
@@ -112,12 +123,35 @@ public final class UranusData {
                 9, 4, s(GRABEN_FLOOR_ICE), s(ARIEL_ICE.base()));
     }
 
+    public static TerrainProfile titaniaProfile() {
+        var m = new SmallBodyTerrain.Materials(s(TITANIA_REGOLITH), s(TITANIA_ICE.base()), s(TITANIA_ICE.base()), s(TITANIA_REGOLITH),
+                Optional.of(s(com.pizzaparker07.spacebreaker.content.mars.MarsModule.CO2_FROST)), Optional.of(s(TITANIA_ICE.base())));
+        return SmallBodyTerrain.of(Spacebreaker.id("titania"), 788.9).baseHeight(78).roughness(0.9).craters(0.8).age(0.55)
+                .iceLatitude(78).materials(m).build();
+    }
+
+    /** Titania's great canyons: much wider and deeper than Ariel's valleys, crossing the uplands near the landing site. */
+    public static com.pizzaparker07.spacebreaker.content.belt.world.GrabenFeature.Config canyons() {
+        return new com.pizzaparker07.spacebreaker.content.belt.world.GrabenFeature.Config(List.of(
+                new com.pizzaparker07.spacebreaker.content.belt.world.GrabenFeature.Graben(250, -4, 3200, 90, 64, 20),
+                new com.pizzaparker07.spacebreaker.content.belt.world.GrabenFeature.Graben(-600, 18, 2400, 70, 52, 35),
+                new com.pizzaparker07.spacebreaker.content.belt.world.GrabenFeature.Graben(1100, -28, 2000, 60, 48, 10)),
+                14, 0, s(TITANIA_REGOLITH), s(CANYON_WALL_ICE));
+    }
+
+    /** The great old crater basin, with a central peak. */
+    public static com.pizzaparker07.spacebreaker.content.belt.world.BasinFeature.Config greatCrater() {
+        return new com.pizzaparker07.spacebreaker.content.belt.world.BasinFeature.Config(-900, -40, 420, 28, 12, 30, 0.14, 3, 0.18, 1.2,
+                s(TITANIA_ICE.base()), Optional.of(s(TITANIA_REGOLITH)), Optional.of(s(CANYON_WALL_ICE)));
+    }
+
     // ------------------------------------------------------------------ datagen
 
     static void datapack(SbDatapack dp) {
         dp.add(TerrainProfile.REGISTRY, ctx -> {
             ctx.register(terrain("miranda"), mirandaProfile());
             ctx.register(terrain("ariel"), arielProfile());
+            ctx.register(terrain("titania"), titaniaProfile());
         });
         dp.add(Registries.CONFIGURED_FEATURE, UranusData::configured);
         dp.add(Registries.PLACED_FEATURE, UranusData::placed);
@@ -133,12 +167,17 @@ public final class UranusData {
         ctx.register(cf("ariel_ammonia"), new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(new TagMatchTest(ARIEL_STONE),
                 s(ARIEL_AMMONIA_ORE), 8)));
         ctx.register(cf("ariel_block"), OuterWorlds.boulder(0.6F, 1.5F, 0.5F, s(ARIEL_ICE.base()), 3, s(com.pizzaparker07.spacebreaker.content.mars.MarsModule.CO2_FROST), 1));
+        ctx.register(cf("titania_canyons"), new ConfiguredFeature<>(OuterWorlds.GRABENS.get(), canyons()));
+        ctx.register(cf("titania_crater"), new ConfiguredFeature<>(OuterWorlds.BASIN.get(), greatCrater()));
+        ctx.register(cf("titania_carbon"), new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(new TagMatchTest(TITANIA_STONE),
+                s(TITANIA_CARBON_ORE), 10)));
+        ctx.register(cf("titania_block"), OuterWorlds.boulder(0.6F, 1.8F, 0.5F, s(TITANIA_ICE.base()), 3, s(CANYON_WALL_ICE), 1));
         ctx.register(cf("miranda_block"), OuterWorlds.boulder(0.6F, 1.8F, 0.5F, s(MIRANDAN_ICE.base()), 3, s(DARK_BAND_ICE), 1));
     }
 
     private static void placed(BootstrapContext<PlacedFeature> ctx) {
         var cf = ctx.lookup(Registries.CONFIGURED_FEATURE);
-        for (String whole : new String[]{"miranda_coronae", "miranda_cliff", "ariel_chasmata"}) {
+        for (String whole : new String[]{"miranda_coronae", "miranda_cliff", "ariel_chasmata", "titania_canyons", "titania_crater"}) {
             PlacementUtils.register(ctx, pf(whole), cf.getOrThrow(cf(whole)), BiomeFilter.biome());
         }
         PlacementUtils.register(ctx, pf("miranda_carbon"), cf.getOrThrow(cf("miranda_carbon")), CountPlacement.of(10), InSquarePlacement.spread(),
@@ -146,6 +185,10 @@ public final class UranusData {
         PlacementUtils.register(ctx, pf("ariel_ammonia"), cf.getOrThrow(cf("ariel_ammonia")), CountPlacement.of(8), InSquarePlacement.spread(),
                 HeightRangePlacement.uniform(VerticalAnchor.absolute(-40), VerticalAnchor.absolute(100)), BiomeFilter.biome());
         PlacementUtils.register(ctx, pf("ariel_block"), cf.getOrThrow(cf("ariel_block")), RarityFilter.onAverageOnceEvery(6),
+                InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_TOP_SOLID, BiomeFilter.biome());
+        PlacementUtils.register(ctx, pf("titania_carbon"), cf.getOrThrow(cf("titania_carbon")), CountPlacement.of(10), InSquarePlacement.spread(),
+                HeightRangePlacement.uniform(VerticalAnchor.absolute(-40), VerticalAnchor.absolute(100)), BiomeFilter.biome());
+        PlacementUtils.register(ctx, pf("titania_block"), cf.getOrThrow(cf("titania_block")), RarityFilter.onAverageOnceEvery(4),
                 InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_TOP_SOLID, BiomeFilter.biome());
         PlacementUtils.register(ctx, pf("miranda_block"), cf.getOrThrow(cf("miranda_block")), RarityFilter.onAverageOnceEvery(4),
                 InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_TOP_SOLID, BiomeFilter.biome());
@@ -164,6 +207,10 @@ public final class UranusData {
         for (ResourceKey<Biome> key : ARIEL_BIOMES) {
             ctx.register(key, OuterWorlds.biome(pf, carvers, key, -2.0F, OuterWorlds.Look.airless(0xB3AEA6),
                     raw, "ariel_chasmata", ores, "ariel_ammonia", local, "ariel_block"));
+        }
+        for (ResourceKey<Biome> key : TITANIA_BIOMES) {
+            ctx.register(key, OuterWorlds.biome(pf, carvers, key, -2.0F, OuterWorlds.Look.airless(0x7D7871),
+                    raw, "titania_crater", raw, "titania_canyons", ores, "titania_carbon", local, "titania_block"));
         }
     }
 }

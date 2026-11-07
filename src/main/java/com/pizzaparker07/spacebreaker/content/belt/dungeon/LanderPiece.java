@@ -31,14 +31,14 @@ import java.util.Locale;
  * A supply lander that came down hard: a skid trench ploughed through the local soil and thrown up in a ridge, the
  * lander on its side at the end of it with one leg folded under, a solar wing torn off and lying flat, scattered debris -
  * and the survey team's cargo hold, buried beside it with a hatch and a ladder. One piece, dressed in each world's own
- * ground: Vesta, Ganymede, Callisto, Enceladus, Miranda, Ariel, Triton, Pluto and Charon each have their own cargo and technology.
+ * ground: Vesta, Ganymede, Callisto, Enceladus, Miranda, Ariel, Titania, Triton, Pluto and Charon each have their own cargo and technology.
  */
 public class LanderPiece extends StructurePiece {
     /** The worlds a lander can lie on, with the ground it digs into. */
     public enum Variant {
         VESTA, GANYMEDE, CALLISTO, ENCELADUS, MIRANDA, TRITON, PLUTO, CHARON,
         // new worlds go last: the order sets each world's structure-set salt
-        ARIEL;
+        ARIEL, TITANIA;
 
         public String id() {
             return name().toLowerCase(Locale.ROOT);
@@ -52,6 +52,7 @@ public class LanderPiece extends StructurePiece {
                 case ENCELADUS -> SaturnModule.ENCELADUS_SNOW.get().defaultBlockState();
                 case MIRANDA -> com.pizzaparker07.spacebreaker.content.uranus.UranusModule.MIRANDAN_REGOLITH.get().defaultBlockState();
                 case ARIEL -> com.pizzaparker07.spacebreaker.content.uranus.UranusModule.ARIEL_REGOLITH.get().defaultBlockState();
+                case TITANIA -> com.pizzaparker07.spacebreaker.content.uranus.UranusModule.TITANIA_REGOLITH.get().defaultBlockState();
                 case TRITON -> com.pizzaparker07.spacebreaker.content.neptune.NeptuneModule.TRITON_FROST.get().defaultBlockState();
                 case PLUTO -> com.pizzaparker07.spacebreaker.content.pluto.PlutoModule.PLUTONIAN_FROST.get().defaultBlockState();
                 case CHARON -> com.pizzaparker07.spacebreaker.content.pluto.PlutoModule.CHARON_REGOLITH.get().defaultBlockState();
@@ -66,6 +67,7 @@ public class LanderPiece extends StructurePiece {
                 case ENCELADUS -> SaturnModule.ENCELADUS_ICE.get().defaultBlockState();
                 case MIRANDA -> com.pizzaparker07.spacebreaker.content.uranus.UranusModule.MIRANDAN_ICE.base().get().defaultBlockState();
                 case ARIEL -> com.pizzaparker07.spacebreaker.content.uranus.UranusModule.ARIEL_ICE.base().get().defaultBlockState();
+                case TITANIA -> com.pizzaparker07.spacebreaker.content.uranus.UranusModule.TITANIA_ICE.base().get().defaultBlockState();
                 case TRITON -> com.pizzaparker07.spacebreaker.content.neptune.NeptuneModule.TRITON_ICE.base().get().defaultBlockState();
                 case PLUTO -> com.pizzaparker07.spacebreaker.content.pluto.PlutoModule.PLUTONIAN_ICE.base().get().defaultBlockState();
                 case CHARON -> com.pizzaparker07.spacebreaker.content.pluto.PlutoModule.CHARON_ICE.get().defaultBlockState();

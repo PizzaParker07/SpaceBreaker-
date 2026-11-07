@@ -119,6 +119,59 @@ def frost_moth():
     return cv
 
 
+# --------------------------------------------------------------------------- Titania
+
+def titania_regolith(v=0):
+    return dust(P.TITANIA_SOIL, 16101 + v * 19)
+
+
+def titania_ice():
+    return _rock(P.TITANIA_ICE, 16201)
+
+
+def canyon_wall_ice():
+    """Pale canyon-wall ice: layered in thin horizontal bands, like the faces of the great canyons."""
+    r = P.CANYON_WALL
+    cv = _rock(r, 16301)
+    for y in (3, 4, 10):
+        for x in range(16):
+            if (x * 7 + y) % 5:
+                cv[x, y] = r[1] if y != 4 else r[4]
+    return cv
+
+
+def scree_roller():
+    """64x32 sheet for ScreeRollerModel: banded grey-brown plates with pale edges, soft darker body, pale snout."""
+    cv = Canvas(64, 32)
+    r = P.ROLLER
+    n = clustered(64, 64, 16401, passes=1)
+
+    def plate(face, x, y, fw, fh):
+        if face == 'bottom':
+            return r[1]
+        if face == 'top':
+            return r[5] if y in (0, fh - 1) else noise_pick(r, 3, n, x, y)
+        return r[4] if y == 0 else noise_pick(r, 2, n, x + 20, y)
+
+    paint(cv, 0, 0, 8, 5, 4, plate)
+    paint(cv, 0, 9, 9, 6, 3, plate)
+    paint(cv, 0, 18, 8, 5, 4, plate)
+
+    def ball(face, x, y, fw, fh):
+        return r[5] if (x + y) % 5 == 0 else noise_pick(r, 3, n, x + 30, y + 10)
+
+    paint(cv, 28, 0, 7, 7, 7, ball)
+
+    def head(face, x, y, fw, fh):
+        if face == 'front' and y == 0 and x in (0, 2):
+            return hexc('#141210')
+        return r[4] if face == 'front' else noise_pick(r, 3, n, x + 50, y)
+
+    paint(cv, 28, 14, 3, 3, 4, head)
+    paint(cv, 42, 14, 2, 3, 2, lambda f, x, y, fw, fh: r[1])
+    return cv
+
+
 def uranus_disc(size=256):
     """Uranus: an almost featureless pale cyan disc, a slightly brighter polar cap and a few very faint bands."""
     from PIL import Image
@@ -180,6 +233,14 @@ def export(save):
     save(ariel_ice(), 'block', 'ariel_ice', (40, 12, 20, None))
     save(graben_floor_ice(), 'block', 'graben_floor_ice', (100, 16, 0, None))
     save(frost_moth(), 'entity', 'uranus/frost_moth')
+    base = titania_regolith(0)
+    save(base, 'block', 'titania_regolith', dust_spec)
+    save(titania_regolith(1), 'block', 'titania_regolith_1', dust_spec)
+    for side in ('left', 'right'):
+        save(footprint(base, prints(P.TITANIA_SOIL), side), 'block', f'titania_regolith_footprint_{side}', (22, 8, 64, None))
+    save(titania_ice(), 'block', 'titania_ice', (40, 12, 20, None))
+    save(canyon_wall_ice(), 'block', 'canyon_wall_ice', (40, 12, 20, None))
+    save(scree_roller(), 'entity', 'uranus/scree_roller')
     import os
     out = os.path.join(os.path.dirname(__file__), '..', '..', '..', 'src', 'main', 'resources', 'assets', 'spacebreaker', 'textures',
                        'environment')

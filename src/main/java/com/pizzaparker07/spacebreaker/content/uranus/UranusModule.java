@@ -44,6 +44,7 @@ import java.util.List;
  * tallest cliff known, a fault scarp so high that in the feeble gravity a fall from its top takes minutes. Uranus hangs
  * pale cyan in the sky with its thin dark rings. Ariel, the youngest-looking of the large moons: bright ice cut by long,
  * straight, flat-floored rift valleys, fresh craters with bright rays, and carbon dioxide frost on the trailing side.
+ * Titania, the largest: grey uplands crossed by enormous straight canyons with pale walls, and one great old crater basin.
  */
 public final class UranusModule implements SbModule {
     public static final BlockKit KIT = new BlockKit();
@@ -66,6 +67,16 @@ public final class UranusModule implements SbModule {
             .mapColor(MapColor.TERRACOTTA_LIGHT_GRAY).strength(1.2F).friction(0.9F).sound(SoundType.GLASS));
     public static final DeferredBlock<DropExperienceBlock> ARIEL_AMMONIA_ORE = KIT.block("ariel_ammonia_ore",
             p -> new DropExperienceBlock(UniformInt.of(1, 3), p), BlockKit.rockProps(MapColor.TERRACOTTA_LIGHT_GRAY, SoundType.STONE, 2.2F));
+
+    // ---- Titania
+    public static final ResourceKey<Level> TITANIA = ResourceKey.create(Registries.DIMENSION, Spacebreaker.id("titania"));
+    public static final DeferredBlock<LunarRegolithBlock> TITANIA_REGOLITH = KIT.block("titania_regolith", LunarRegolithBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GRAY).strength(0.5F).sound(SoundType.SAND));
+    public static final BlockKit.Family TITANIA_ICE = KIT.family("titania_ice", MapColor.COLOR_GRAY, SoundType.STONE, 1.7F, true);
+    public static final DeferredBlock<Block> CANYON_WALL_ICE = KIT.rock("canyon_wall_ice", MapColor.TERRACOTTA_WHITE, SoundType.STONE, 1.5F);
+    public static final DeferredBlock<DropExperienceBlock> TITANIA_CARBON_ORE = KIT.block("titania_carbon_ore",
+            p -> new DropExperienceBlock(UniformInt.of(0, 2), p), BlockKit.rockProps(MapColor.COLOR_GRAY, SoundType.STONE, 2.0F));
+    public static final TagKey<Block> TITANIA_STONE = SbTagKeys.modBlock("titania_stone");
 
     public static final TagKey<Block> ARIEL_STONE = SbTagKeys.modBlock("ariel_stone");
     public static final TagKey<Block> MIRANDA_STONE = SbTagKeys.modBlock("miranda_stone");
@@ -95,6 +106,11 @@ public final class UranusModule implements SbModule {
         lang.block(DARK_BAND_ICE, "Dark Band Ice", "Koyu Bant Buzu");
         lang.block(CARBON_ORE, "Mirandan Carbon Deposit", "Miranda Karbon Yatağı");
         lang.add("dimension.spacebreaker.ariel", "Ariel", "Ariel");
+        lang.add("dimension.spacebreaker.titania", "Titania", "Titania");
+        lang.block(TITANIA_REGOLITH, "Titanian Regolith", "Titania Regoliti");
+        BlockKit.familyNames(lang, TITANIA_ICE, "Titanian Bedrock Ice", "Titania Ana Kaya Buzu");
+        lang.block(CANYON_WALL_ICE, "Canyon Wall Ice", "Kanyon Duvarı Buzu");
+        lang.block(TITANIA_CARBON_ORE, "Titanian Carbon Deposit", "Titania Karbon Yatağı");
         lang.block(ARIEL_REGOLITH, "Arielian Regolith", "Ariel Regoliti");
         BlockKit.familyNames(lang, ARIEL_ICE, "Arielian Bedrock Ice", "Ariel Ana Kaya Buzu");
         lang.block(GRABEN_FLOOR_ICE, "Graben Floor Ice", "Graben Tabanı Buzu");
@@ -105,10 +121,11 @@ public final class UranusModule implements SbModule {
 
     @Override
     public void addBlockLoot(SbBlockLoot loot) {
-        for (DeferredBlock<? extends Block> b : List.of(MIRANDAN_REGOLITH, BRIGHT_RIDGE_ICE, DARK_BAND_ICE, ARIEL_REGOLITH, GRABEN_FLOOR_ICE)) {
+        for (DeferredBlock<? extends Block> b : List.of(MIRANDAN_REGOLITH, BRIGHT_RIDGE_ICE, DARK_BAND_ICE, ARIEL_REGOLITH, GRABEN_FLOOR_ICE, TITANIA_REGOLITH, CANYON_WALL_ICE)) {
             loot.self(b.get());
         }
         loot.ore(CARBON_ORE.get(), Items.COAL);
+        loot.ore(TITANIA_CARBON_ORE.get(), Items.COAL);
         loot.ore(ARIEL_AMMONIA_ORE.get(), com.pizzaparker07.spacebreaker.content.pluto.PlutoModule.AMMONIA_CRYSTAL.get());
         KIT.familyLoot(loot);
     }
@@ -117,11 +134,17 @@ public final class UranusModule implements SbModule {
     public void addTags(SbTags tags) {
         // water ice for the ice melter: water, then hydrogen and oxygen for rocket fuel
         tags.item(com.pizzaparker07.spacebreaker.content.machines.IsruRecipes.WATER_ICES, MIRANDAN_ICE.base().get().asItem(), BRIGHT_RIDGE_ICE.get().asItem(),
-                ARIEL_ICE.base().get().asItem(), GRABEN_FLOOR_ICE.get().asItem());
+                ARIEL_ICE.base().get().asItem(), GRABEN_FLOOR_ICE.get().asItem(), TITANIA_ICE.base().get().asItem(), CANYON_WALL_ICE.get().asItem());
         tags.block(BlockTags.MINEABLE_WITH_SHOVEL, MIRANDAN_REGOLITH.get(), ARIEL_REGOLITH.get());
         tags.block(BlockTags.MINEABLE_WITH_PICKAXE, GRABEN_FLOOR_ICE.get(), ARIEL_AMMONIA_ORE.get());
         tags.block(BlockTags.NEEDS_STONE_TOOL, ARIEL_AMMONIA_ORE.get());
         tags.block(ARIEL_STONE, ARIEL_ICE.base().get());
+        tags.block(TITANIA_STONE, TITANIA_ICE.base().get());
+        tags.block(BlockTags.MINEABLE_WITH_SHOVEL, TITANIA_REGOLITH.get());
+        tags.block(BlockTags.MINEABLE_WITH_PICKAXE, CANYON_WALL_ICE.get(), TITANIA_CARBON_ORE.get());
+        tags.block(BlockTags.NEEDS_STONE_TOOL, TITANIA_CARBON_ORE.get());
+        tags.block(BlockTags.COAL_ORES, TITANIA_CARBON_ORE.get());
+        tags.block(MIRANDAN_GROUND, TITANIA_REGOLITH.get(), TITANIA_ICE.base().get(), CANYON_WALL_ICE.get());
         tags.block(MIRANDAN_GROUND, ARIEL_REGOLITH.get(), ARIEL_ICE.base().get(), GRABEN_FLOOR_ICE.get(),
                 com.pizzaparker07.spacebreaker.content.mars.MarsModule.CO2_FROST.get());
         tags.block(com.pizzaparker07.spacebreaker.content.pluto.PlutoModule.ORES_AMMONIA, ARIEL_AMMONIA_ORE.get());
@@ -156,6 +179,9 @@ public final class UranusModule implements SbModule {
             SingleItemRecipeBuilder.stonecutting(Ingredient.of(base), RecipeCategory.BUILDING_BLOCKS, f.slab().get(), 2).unlockedBy(has, crit)
                     .save(out, Spacebreaker.id(path(f.slab().get()) + "_from_" + path(base) + "_stonecutting"));
         }
+        SimpleCookingRecipeBuilder.smelting(Ingredient.of(TITANIA_CARBON_ORE.get()), RecipeCategory.MISC, Items.COAL, 0.1F, 200)
+                .unlockedBy("has_titania_carbon_ore", InventoryChangeTrigger.TriggerInstance.hasItems(TITANIA_CARBON_ORE.get()))
+                .save(out, Spacebreaker.id("coal_from_smelting_titania_carbon_ore"));
         SimpleCookingRecipeBuilder.smelting(Ingredient.of(CARBON_ORE.get()), RecipeCategory.MISC, Items.COAL, 0.1F, 200)
                 .unlockedBy("has_mirandan_carbon_ore", InventoryChangeTrigger.TriggerInstance.hasItems(CARBON_ORE.get()))
                 .save(out, Spacebreaker.id("coal_from_smelting_mirandan_carbon_ore"));

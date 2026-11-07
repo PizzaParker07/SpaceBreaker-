@@ -1,5 +1,8 @@
 {
   "values": [
+    "spacebreaker:titania_regolith",
+    "spacebreaker:titania_ice",
+    "spacebreaker:canyon_wall_ice",
     "spacebreaker:ariel_regolith",
     "spacebreaker:ariel_ice",
     "spacebreaker:graben_floor_ice",

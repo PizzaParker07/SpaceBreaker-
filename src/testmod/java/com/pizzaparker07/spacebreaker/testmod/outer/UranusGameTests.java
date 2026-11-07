@@ -101,4 +101,34 @@ public final class UranusGameTests {
         helper.assertTrue(node != null && node.tier() == 4, "ice shell tectonics is a tier-4 tech");
         helper.succeed();
     }
+
+    @GameTest(template = WorldTests.EMPTY, timeoutTicks = 200)
+    public static void titaniaHasGreatCanyonsAndACraterBasin(GameTestHelper helper) {
+        helper.assertTrue(WorldTests.stem(helper, "titania").generator() instanceof PlanetChunkGenerator, "Titania uses the planet engine");
+        PlanetTerrain t = WorldTests.generator(helper, "titania", 5L).terrain();
+        var cfg = UranusData.canyons();
+        var g = cfg.grabens().getFirst();
+        double cz = -g.latitude() / 90.0 * t.profile().poleDistance();
+        double[] floor = new double[1];
+        double centre = com.pizzaparker07.spacebreaker.content.belt.world.GrabenFeature.offset(t, cfg, g.x(), cz, floor);
+        helper.assertTrue(floor[0] > 0 && centre < -50, "a canyon more than 50 blocks deep: " + centre);
+        var ariel = UranusData.chasmata().grabens().getFirst();
+        helper.assertTrue(g.width() > ariel.width() && g.depth() > ariel.depth(), "wider and deeper than Ariel's valleys");
+        var basin = UranusData.greatCrater();
+        double bz = com.pizzaparker07.spacebreaker.content.belt.world.BasinFeature.centreZ(t, basin);
+        double peak = com.pizzaparker07.spacebreaker.content.belt.world.BasinFeature.offset(t, basin, basin.x(), bz);
+        double bfloor = com.pizzaparker07.spacebreaker.content.belt.world.BasinFeature.offset(t, basin, basin.x() + basin.radius() * 0.5, bz);
+        helper.assertTrue(bfloor < -15 && peak > bfloor + 20, "a great crater with a central peak: " + bfloor + " / " + peak);
+        var roller = helper.spawn(UranusEntities.SCREE_ROLLER.get(), new BlockPos(2, 2, 2));
+        var player = helper.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        roller.hurt(helper.getLevel().damageSources().playerAttack(player), 2F);
+        helper.assertTrue(roller.isRolled(), "a hit curls it into a ball");
+        float before = roller.getHealth();
+        roller.invulnerableTime = 0;
+        roller.hurt(helper.getLevel().damageSources().playerAttack(player), 10F);
+        helper.assertTrue(before - roller.getHealth() < 4F, "curled, it takes a fraction of the damage");
+        var node = Tech.all(helper.getLevel().registryAccess()).get(Spacebreaker.id("tectonic_mapping"));
+        helper.assertTrue(node != null && node.tier() == 5, "tectonic mapping is a tier-5 tech");
+        helper.succeed();
+    }
 }

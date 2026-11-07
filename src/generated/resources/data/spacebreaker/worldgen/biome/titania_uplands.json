@@ -1,0 +1,55 @@
+{
+  "carvers": {},
+  "creature_spawn_probability": 0.04,
+  "downfall": 0.0,
+  "effects": {
+    "fog_color": 0,
+    "foliage_color": 8222833,
+    "grass_color": 8222833,
+    "music": {
+      "max_delay": 12000,
+      "min_delay": 3600,
+      "replace_current_music": false,
+      "sound": "spacebreaker:music.ice_giants"
+    },
+    "sky_color": 0,
+    "water_color": 4159204,
+    "water_fog_color": 329011
+  },
+  "features": [
+    [
+      "spacebreaker:titania_crater",
+      "spacebreaker:titania_canyons"
+    ],
+    [],
+    [
+      "spacebreaker:titania_block"
+    ],
+    [],
+    [],
+    [],
+    [
+      "spacebreaker:titania_carbon"
+    ]
+  ],
+  "has_precipitation": false,
+  "spawn_costs": {},
+  "spawners": {
+    "ambient": [],
+    "axolotls": [],
+    "creature": [
+      {
+        "type": "spacebreaker:scree_roller",
+        "maxCount": 4,
+        "minCount": 2,
+        "weight": 10
+      }
+    ],
+    "misc": [],
+    "monster": [],
+    "underground_water_creature": [],
+    "water_ambient": [],
+    "water_creature": []
+  },
+  "temperature": -2.0
+}

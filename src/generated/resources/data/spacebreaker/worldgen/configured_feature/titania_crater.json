@@ -1,0 +1,28 @@
+{
+  "type": "spacebreaker:impact_basin",
+  "config": {
+    "band": {
+      "Name": "spacebreaker:canyon_wall_ice"
+    },
+    "depth": 28.0,
+    "floor_soil": {
+      "Name": "spacebreaker:titania_regolith",
+      "Properties": {
+        "facing": "north",
+        "print": "none"
+      }
+    },
+    "latitude": -40.0,
+    "peak": 30.0,
+    "peak_radius": 0.14,
+    "radius": 420.0,
+    "rim": 12.0,
+    "rings": 1.2,
+    "rock": {
+      "Name": "spacebreaker:titania_ice"
+    },
+    "terraces": 3,
+    "wall": 0.18,
+    "x": -900.0
+  }
+}

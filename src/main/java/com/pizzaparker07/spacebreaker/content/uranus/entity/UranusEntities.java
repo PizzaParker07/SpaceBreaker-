@@ -30,9 +30,13 @@ public final class UranusEntities {
     public static final DeferredHolder<EntityType<?>, EntityType<FrostMoth>> FROST_MOTH = ENTITIES.register("frost_moth",
             () -> EntityType.Builder.of(FrostMoth::new, MobCategory.AMBIENT).sized(0.6F, 0.5F).eyeHeight(0.3F).clientTrackingRange(8)
                     .build("frost_moth"));
+    public static final DeferredHolder<EntityType<?>, EntityType<ScreeRoller>> SCREE_ROLLER = ENTITIES.register("scree_roller",
+            () -> EntityType.Builder.of(ScreeRoller::new, MobCategory.CREATURE).sized(0.8F, 0.6F).eyeHeight(0.4F).clientTrackingRange(10)
+                    .build("scree_roller"));
     private static final List<DeferredItem<DeferredSpawnEggItem>> EGGS = new ArrayList<>();
     private static DeferredItem<DeferredSpawnEggItem> clingerEgg;
     private static DeferredItem<DeferredSpawnEggItem> mothEgg;
+    private static DeferredItem<DeferredSpawnEggItem> rollerEgg;
 
     private UranusEntities() {
     }
@@ -41,20 +45,29 @@ public final class UranusEntities {
         clingerEgg = items.register("cliff_clinger_spawn_egg", () -> new DeferredSpawnEggItem(CLIFF_CLINGER, 0x5C5A57, 0xD6D8DA, new Item.Properties()));
         mothEgg = items.register("frost_moth_spawn_egg", () -> new DeferredSpawnEggItem(FROST_MOTH, 0xDADDE0, 0x8E8A84, new Item.Properties()));
         EGGS.add(clingerEgg);
+        rollerEgg = items.register("scree_roller_spawn_egg", () -> new DeferredSpawnEggItem(SCREE_ROLLER, 0x5C5853, 0xB5B0A8, new Item.Properties()));
         EGGS.add(mothEgg);
+        EGGS.add(rollerEgg);
         ENTITIES.register(modBus);
         modBus.addListener(EntityAttributeCreationEvent.class, e -> {
             e.put(CLIFF_CLINGER.get(), CliffClinger.attributes().build());
             e.put(FROST_MOTH.get(), FrostMoth.attributes().build());
+            e.put(SCREE_ROLLER.get(), ScreeRoller.attributes().build());
         });
-        modBus.addListener(RegisterSpawnPlacementsEvent.class, e -> e.register(FROST_MOTH.get(), SpawnPlacementTypes.NO_RESTRICTIONS,
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, FrostMoth::checkSpawn, RegisterSpawnPlacementsEvent.Operation.REPLACE));
+        modBus.addListener(RegisterSpawnPlacementsEvent.class, e -> {
+            e.register(FROST_MOTH.get(), SpawnPlacementTypes.NO_RESTRICTIONS, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, FrostMoth::checkSpawn,
+                    RegisterSpawnPlacementsEvent.Operation.REPLACE);
+            e.register(SCREE_ROLLER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, ScreeRoller::checkSpawn,
+                    RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        });
         modBus.addListener(RegisterSpawnPlacementsEvent.class, e -> e.register(CLIFF_CLINGER.get(), SpawnPlacementTypes.ON_GROUND,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, CliffClinger::checkSpawn, RegisterSpawnPlacementsEvent.Operation.REPLACE));
         OuterWorlds.SPAWNS.add(new OuterWorlds.Spawn(UranusData.MIRANDA_PLAINS, CLIFF_CLINGER, MobCategory.CREATURE, 10, 2, 4));
         OuterWorlds.SPAWNS.add(new OuterWorlds.Spawn(UranusData.MIRANDA_CRATER, CLIFF_CLINGER, MobCategory.CREATURE, 6, 1, 3));
         OuterWorlds.SPAWNS.add(new OuterWorlds.Spawn(UranusData.ARIEL_PLAINS, FROST_MOTH, MobCategory.AMBIENT, 10, 2, 5));
         OuterWorlds.SPAWNS.add(new OuterWorlds.Spawn(UranusData.ARIEL_CRATER, FROST_MOTH, MobCategory.AMBIENT, 6, 1, 3));
+        OuterWorlds.SPAWNS.add(new OuterWorlds.Spawn(UranusData.TITANIA_UPLANDS, SCREE_ROLLER, MobCategory.CREATURE, 10, 2, 4));
+        OuterWorlds.SPAWNS.add(new OuterWorlds.Spawn(UranusData.TITANIA_CRATER, SCREE_ROLLER, MobCategory.CREATURE, 6, 1, 3));
     }
 
     public static List<DeferredItem<DeferredSpawnEggItem>> eggs() {
@@ -66,5 +79,7 @@ public final class UranusEntities {
         lang.item(clingerEgg, "Cliff Clinger Spawn Egg", "Uçurum Yapışkanı Çağırma Yumurtası");
         lang.add("entity.spacebreaker.frost_moth", "Frost Moth", "Kırağı Güvesi");
         lang.item(mothEgg, "Frost Moth Spawn Egg", "Kırağı Güvesi Çağırma Yumurtası");
+        lang.add("entity.spacebreaker.scree_roller", "Scree Roller", "Moloz Yuvarlakçası");
+        lang.item(rollerEgg, "Scree Roller Spawn Egg", "Moloz Yuvarlakçası Çağırma Yumurtası");
     }
 }
