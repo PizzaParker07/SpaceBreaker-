@@ -77,6 +77,11 @@ final class SuitEvaScenario implements ShowcaseScenario {
                 }
             }
         }
+        // a suit maintenance station, its front towards the camera side, with the oxygen filler beside it
+        level.setBlock(new BlockPos(-7, y, 4), com.pizzaparker07.spacebreaker.content.suit.SuitModule.SUIT_STATION.get().defaultBlockState()
+                .setValue(com.pizzaparker07.spacebreaker.content.suit.block.GasMachineBlock.FACING, net.minecraft.core.Direction.SOUTH), Block.UPDATE_CLIENTS);
+        level.setBlock(new BlockPos(-8, y, 4), com.pizzaparker07.spacebreaker.content.suit.SuitModule.OXYGEN_FILLER.get().defaultBlockState()
+                .setValue(com.pizzaparker07.spacebreaker.content.suit.block.GasMachineBlock.FACING, net.minecraft.core.Direction.SOUTH), Block.UPDATE_CLIENTS);
         // a handrail post to clip the tether to
         level.setBlock(new BlockPos(6, y, 3), Blocks.IRON_BARS.defaultBlockState(), Block.UPDATE_CLIENTS);
         level.setBlock(new BlockPos(6, y + 1, 3), Blocks.IRON_BLOCK.defaultBlockState(), Block.UPDATE_CLIENTS);
@@ -169,6 +174,7 @@ final class SuitEvaScenario implements ShowcaseScenario {
             p.getItemBySlot(EquipmentSlot.HEAD).set(SuitModule.LONG_BEAM.get(), true);
         }), null));
         s.add(new Shot(prefix + "_14_wide_beam", 0, 0.5, g + 1.62, 9.5, 180F, 12F, true, fp, 60, at(true, SuitEvaScenario::astronaut), null));
+        s.add(new Shot(prefix + "_15_suit_station", 0, -6.0, g + 1.9, 7.0, 160F, 22F, true, fp, 40, at(false, null), null));
         return s;
     }
 }

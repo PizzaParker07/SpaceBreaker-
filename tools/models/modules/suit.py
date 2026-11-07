@@ -68,6 +68,7 @@ def generate():
         generated_item(name)
     oxygen_tank()
     oxygen_filler()
+    suit_station()
     oxygen_distributor()
     airlock_door()
 
@@ -126,6 +127,26 @@ def oxygen_filler():
                                                             'textures': tex, 'elements': els})
     machine_states('oxygen_filler', 'oxygen_filler', 'oxygen_filler_on')
     write('models/item/oxygen_filler.json', {'parent': b('oxygen_filler'), 'display': MACHINE_DISPLAY})
+
+
+def suit_station():
+    """Full block: plinth, casing with the service front, standing grate on top, a hose reel on the east side."""
+    for suffix, front in (('', 'suit_station_front'), ('_on', 'suit_station_front_on')):
+        tex = {'casing': b('life_support_casing'), 'plinth': b('life_support_plinth'), 'top': b('suit_station_top'),
+               'steel': b('life_support_top'), 'ring': b('life_support_ring'), 'front': b(front), 'particle': b('life_support_casing')}
+        els = [
+            cube([0, 0, 0], [16, 2, 16], {'up': 'steel', 'down': 'steel', **{s: 'plinth' for s in SIDES}}, per_face=uv_box([0, 0, 0], [16, 2, 16]) | {s: [0, 14, 16, 16] for s in SIDES}),
+            cube([1, 2, 1], [15, 15, 15], {'north': 'front', 'south': 'casing', 'east': 'casing', 'west': 'casing', 'up': 'steel', 'down': 'steel'},
+                 per_face={'north': [1, 1, 15, 14], 'south': [1, 1, 15, 14], 'east': [1, 1, 15, 14], 'west': [1, 1, 15, 14], 'up': [1, 1, 15, 15], 'down': [1, 1, 15, 15]}),
+            cube([0, 15, 0], [16, 16, 16], {'up': 'top', 'down': 'steel', **{s: 'plinth' for s in SIDES}}, per_face={'up': [0, 0, 16, 16], 'down': [0, 0, 16, 16], **{s: [0, 0, 16, 1] for s in SIDES}}),
+            # hose reel on the east side
+            cube([15, 5, 5], [16, 11, 11], {'east': 'ring', **{s: 'steel' for s in ('north', 'south', 'west')}, 'up': 'steel', 'down': 'steel'},
+                 per_face={'east': [5, 5, 11, 11], 'north': [0, 0, 1, 6], 'south': [0, 0, 1, 6], 'west': [0, 0, 6, 6], 'up': [0, 0, 1, 6], 'down': [0, 0, 1, 6]}),
+        ]
+        write(f'models/block/suit_station{suffix}.json', {'parent': 'minecraft:block/block', 'render_type': 'minecraft:cutout',
+                                                           'textures': tex, 'elements': els})
+    machine_states('suit_station', 'suit_station', 'suit_station_on')
+    write('models/item/suit_station.json', {'parent': b('suit_station'), 'display': MACHINE_DISPLAY})
 
 
 def oxygen_distributor():

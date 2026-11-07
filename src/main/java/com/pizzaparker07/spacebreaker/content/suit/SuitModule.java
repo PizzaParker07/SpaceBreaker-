@@ -193,7 +193,11 @@ public final class SuitModule implements SbModule {
     public static final DeferredBlock<AirlockDoorBlock> AIRLOCK_DOOR = BLOCKS.registerBlock("airlock_door", AirlockDoorBlock::new,
             BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 12.0F).sound(SoundType.METAL).noOcclusion()
                     .requiresCorrectToolForDrops().pushReaction(PushReaction.BLOCK));
+    public static final DeferredBlock<com.pizzaparker07.spacebreaker.content.suit.block.SuitStationBlock> SUIT_STATION = BLOCKS.registerBlock("suit_station",
+            com.pizzaparker07.spacebreaker.content.suit.block.SuitStationBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.0F, 6.0F).sound(SoundType.METAL).requiresCorrectToolForDrops());
     public static final DeferredItem<BlockItem> OXYGEN_FILLER_ITEM = ITEMS.registerSimpleBlockItem(OXYGEN_FILLER);
+    public static final DeferredItem<BlockItem> SUIT_STATION_ITEM = ITEMS.registerSimpleBlockItem(SUIT_STATION);
     public static final DeferredItem<BlockItem> OXYGEN_DISTRIBUTOR_ITEM = ITEMS.registerSimpleBlockItem(OXYGEN_DISTRIBUTOR);
     public static final DeferredItem<DoubleHighBlockItem> AIRLOCK_DOOR_ITEM = ITEMS.registerItem("airlock_door",
             p -> new DoubleHighBlockItem(AIRLOCK_DOOR.get(), p));
@@ -201,6 +205,10 @@ public final class SuitModule implements SbModule {
     @SuppressWarnings("DataFlowIssue")
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<OxygenFillerBlockEntity>> OXYGEN_FILLER_BE =
             BLOCK_ENTITIES.register("oxygen_filler", () -> BlockEntityType.Builder.of(OxygenFillerBlockEntity::new, OXYGEN_FILLER.get()).build(null));
+    @SuppressWarnings("DataFlowIssue")
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.pizzaparker07.spacebreaker.content.suit.block.SuitStationBlockEntity>> SUIT_STATION_BE =
+            BLOCK_ENTITIES.register("suit_station", () -> BlockEntityType.Builder.of(
+                    com.pizzaparker07.spacebreaker.content.suit.block.SuitStationBlockEntity::new, SUIT_STATION.get()).build(null));
     @SuppressWarnings("DataFlowIssue")
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<OxygenDistributorBlockEntity>> OXYGEN_DISTRIBUTOR_BE =
             BLOCK_ENTITIES.register("oxygen_distributor", () -> BlockEntityType.Builder.of(OxygenDistributorBlockEntity::new, OXYGEN_DISTRIBUTOR.get()).build(null));
@@ -238,15 +246,16 @@ public final class SuitModule implements SbModule {
                 .addStack(() -> OxygenTankItem.filled(OXYGEN_TANK.get()))
                 .addStack(() -> OxygenTankItem.filled(LARGE_OXYGEN_TANK.get()))
                 .addStack(() -> ManeuveringUnitItem.filled(MANEUVERING_UNIT.get())).add(SAFETY_TETHER)
-                .add(OXYGEN_FILLER_ITEM).add(OXYGEN_DISTRIBUTOR_ITEM).add(AIRLOCK_DOOR_ITEM);
+                .add(OXYGEN_FILLER_ITEM).add(SUIT_STATION_ITEM).add(OXYGEN_DISTRIBUTOR_ITEM).add(AIRLOCK_DOOR_ITEM);
     }
 
     private static void capabilities(RegisterCapabilitiesEvent event) {
-        for (var type : List.of(OXYGEN_FILLER_BE.get(), OXYGEN_DISTRIBUTOR_BE.get())) {
+        for (var type : List.of(OXYGEN_FILLER_BE.get(), OXYGEN_DISTRIBUTOR_BE.get(), SUIT_STATION_BE.get())) {
             event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, type, (be, side) -> be.getItems());
         }
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, OXYGEN_FILLER_BE.get(), (be, side) -> be.getEnergy());
-        for (var type : List.of(OXYGEN_FILLER_BE.get(), OXYGEN_DISTRIBUTOR_BE.get())) {
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, SUIT_STATION_BE.get(), (be, side) -> be.getEnergy());
+        for (var type : List.of(OXYGEN_FILLER_BE.get(), OXYGEN_DISTRIBUTOR_BE.get(), SUIT_STATION_BE.get())) {
             event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, type, (be, side) -> be.getOxygenInput());
         }
     }
@@ -256,6 +265,9 @@ public final class SuitModule implements SbModule {
         lang.add("itemGroup.spacebreaker.equipment", "Spacebreaker: Equipment", "Spacebreaker: Ekipman");
         lang.item(OXYGEN_TANK, "Oxygen Tank", "Oksijen Tüpü");
         lang.block(OXYGEN_FILLER, "Oxygen Filler", "Oksijen Dolum İstasyonu");
+        lang.block(SUIT_STATION, "Suit Maintenance Station", "Giysi Bakım İstasyonu");
+        lang.add("tooltip.spacebreaker.suit_station", "Stand on or beside it in a suit: tops up tanks and the Maneuvering Unit, slowly mends wear. Needs FE",
+                "Giysiyle üstünde ya da yanında dur: tüpleri ve Manevra Ünitesini doldurur, aşınmayı yavaşça onarır. FE gerekir");
         lang.block(OXYGEN_DISTRIBUTOR, "Oxygen Distributor", "Oksijen Dağıtıcı");
         lang.block(AIRLOCK_DOOR, "Airlock Door", "Hava Kilidi Kapısı");
         lang.add("message.spacebreaker.machine.empty", "No tank inserted · %s / %s FE · piped oxygen %s",
@@ -377,7 +389,7 @@ public final class SuitModule implements SbModule {
 
     @Override
     public void addTags(SbTags tags) {
-        tags.block(BlockTags.MINEABLE_WITH_PICKAXE, OXYGEN_FILLER.get(), OXYGEN_DISTRIBUTOR.get(), AIRLOCK_DOOR.get());
+        tags.block(BlockTags.MINEABLE_WITH_PICKAXE, SUIT_STATION.get(), OXYGEN_FILLER.get(), OXYGEN_DISTRIBUTOR.get(), AIRLOCK_DOOR.get());
         // station modules (rocketry): hull, windows and docking ports always hold air
         tags.block(AIRTIGHT, Blocks.IRON_TRAPDOOR, Blocks.IRON_DOOR,
                 com.pizzaparker07.spacebreaker.content.rocketry.RocketryModule.STATION_HULL.get(),
@@ -397,6 +409,7 @@ public final class SuitModule implements SbModule {
     @Override
     public void addBlockLoot(SbBlockLoot loot) {
         loot.self(OXYGEN_FILLER.get());
+        loot.self(SUIT_STATION.get());
         loot.self(OXYGEN_DISTRIBUTOR.get());
         loot.custom(AIRLOCK_DOOR.get(), b -> LootTable.lootTable().withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1))
                 .add(LootItem.lootTableItem(b).when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(b)
