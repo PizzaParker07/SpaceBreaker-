@@ -140,26 +140,43 @@ public final class UncrewedMissions {
         CoveragePayload.sendToAll(server);
     }
 
-    /** How far from the port or beacon the cargo looks for chests (and other item storage), blocks. */
+    /** How far from the port or beacon the cargo looks for chests, barrels and shulker boxes, blocks. */
     public static final int UNLOAD_REACH = 4;
 
     /**
-     * Unloads a cargo rocket's hold into the chests, barrels and other item storage within {@link #UNLOAD_REACH}
+     * Unloads a cargo rocket's hold into the chests, barrels and shulker boxes within {@link #UNLOAD_REACH}
      * blocks of {@code anchor} (its docking port or landing beacon). What does not fit stays in the hold. Returns
      * how many items moved.
      */
+    /**
+     * Storage within reach of {@code anchor}, nearest first: chests, barrels and shulker boxes only, so cargo never
+     * ends up in a machine (coal in a generator, regolith in a heater).
+     */
+    public static java.util.List<net.minecraft.core.BlockPos> storageNear(ServerLevel level, net.minecraft.core.BlockPos anchor) {
+        java.util.List<net.minecraft.core.BlockPos> out = new java.util.ArrayList<>();
+        for (net.minecraft.core.BlockPos pos : net.minecraft.core.BlockPos.betweenClosed(anchor.offset(-UNLOAD_REACH, -UNLOAD_REACH, -UNLOAD_REACH),
+                anchor.offset(UNLOAD_REACH, UNLOAD_REACH, UNLOAD_REACH))) {
+            var state = level.getBlockState(pos);
+            if (state.is(net.neoforged.neoforge.common.Tags.Blocks.CHESTS) || state.is(net.neoforged.neoforge.common.Tags.Blocks.BARRELS)
+                    || state.is(net.minecraft.tags.BlockTags.SHULKER_BOXES)) {
+                out.add(pos.immutable());
+            }
+        }
+        out.sort(java.util.Comparator.comparingDouble(p -> p.distSqr(anchor)));
+        return out;
+    }
+
     public static int unloadCargo(RocketEntity rocket, net.minecraft.core.BlockPos anchor, Location at) {
         if (!(rocket.level() instanceof ServerLevel level)) {
             return 0;
         }
         var hold = rocket.cargo();
         int moved = 0;
-        for (net.minecraft.core.BlockPos pos : net.minecraft.core.BlockPos.betweenClosed(anchor.offset(-UNLOAD_REACH, -UNLOAD_REACH, -UNLOAD_REACH),
-                anchor.offset(UNLOAD_REACH, UNLOAD_REACH, UNLOAD_REACH))) {
+        for (net.minecraft.core.BlockPos pos : storageNear(level, anchor)) {
             if (hold.isEmpty()) {
                 break;
             }
-            var target = level.getCapability(net.neoforged.neoforge.capabilities.Capabilities.ItemHandler.BLOCK, pos.immutable(), null);
+            var target = level.getCapability(net.neoforged.neoforge.capabilities.Capabilities.ItemHandler.BLOCK, pos, null);
             if (target == null) {
                 continue;
             }

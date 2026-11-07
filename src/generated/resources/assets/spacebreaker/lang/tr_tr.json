@@ -1598,6 +1598,7 @@
   "tooltip.spacebreaker.oxygen_filler": "Tüpleri gezegenin solunabilir havasından ya da borudan gelen oksijen / sıvı oksijenden doldurur. FE gerekir",
   "tooltip.spacebreaker.part.burns": "Yakıt: %s",
   "tooltip.spacebreaker.part.capsule": "Mürettebat bölümü: ısı kalkanının üstüne oturur",
+  "tooltip.spacebreaker.part.cargo": "İnsansız kargo: kapsül yuvasına takılır; istasyona yanaşır ya da iniş işaretine iner ve en yakın sandıklara boşaltır",
   "tooltip.spacebreaker.part.decoupler": "Yakıtı biten alt kademeyi bırakır",
   "tooltip.spacebreaker.part.engine": "Her kademeye bir tane, en alta",
   "tooltip.spacebreaker.part.fins": "Yanal: kalkışta yönlendirme kaybını azaltır",

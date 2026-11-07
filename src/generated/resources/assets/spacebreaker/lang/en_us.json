@@ -1598,6 +1598,7 @@
   "tooltip.spacebreaker.oxygen_filler": "Refills tanks from a planet's breathable air, or from piped oxygen / liquid oxygen. Needs FE",
   "tooltip.spacebreaker.part.burns": "Burns %s",
   "tooltip.spacebreaker.part.capsule": "Crew section: sits on the heat shield",
+  "tooltip.spacebreaker.part.cargo": "Uncrewed cargo: goes in the capsule slot; docks at the station or lands on the beacon and unloads into the nearest chests",
   "tooltip.spacebreaker.part.decoupler": "Drops the stage below when it runs dry",
   "tooltip.spacebreaker.part.engine": "One per stage, at the bottom",
   "tooltip.spacebreaker.part.fins": "Radial: less steering loss on ascent",

@@ -70,6 +70,8 @@ final class RocketryLang {
         l.add("gui.spacebreaker.star_map.mapped", "Mapped from orbit ✔", "Yörüngeden haritalandı ✔");
         l.add("gui.spacebreaker.star_map.mapped_fuel", "Mapped from orbit ✔ · propellant can be made here", "Yörüngeden haritalandı ✔ · burada yakıt üretilebilir");
         l.add("hud.spacebreaker.no_signal", "No signal (no relay satellite)", "Sinyal yok (röle uydusu yok)");
+        l.add("tooltip.spacebreaker.part.cargo", "Uncrewed cargo: goes in the capsule slot; docks at the station or lands on the beacon and unloads into the nearest chests",
+                "İnsansız kargo: kapsül yuvasına takılır; istasyona yanaşır ya da iniş işaretine iner ve en yakın sandıklara boşaltır");
         l.add("tooltip.spacebreaker.part.probe", "Uncrewed probe: goes in the capsule slot; launch it from the console", "İnsansız sonda: kapsül yuvasına takılır; konsoldan fırlatılır");
         l.item(RocketryModule.HYDROLOX_ENGINE, "Hydrolox Engine (Sea Level)", "Hidroloks Motoru (Deniz Seviyesi)");
         l.item(RocketryModule.HYDROLOX_VACUUM_ENGINE, "Hydrolox Engine (Vacuum)", "Hidroloks Motoru (Vakum)");

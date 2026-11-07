@@ -1108,6 +1108,9 @@ public final class RocketryGameTests {
         BlockPos chest = port.east(2);
         level.setBlock(port, RocketryModule.DOCKING_PORT.get().defaultBlockState(), 3);
         level.setBlock(chest, net.minecraft.world.level.block.Blocks.CHEST.defaultBlockState(), 3);
+        // a machine with an inventory right next to the port gets nothing (a furnace stands in for one)
+        BlockPos furnace = port.north();
+        level.setBlock(furnace, net.minecraft.world.level.block.Blocks.FURNACE.defaultBlockState(), 3);
         RocketEntity rocket = RocketEntity.create(level, uncrewed("cargo_module"), helper.absoluteVec(new net.minecraft.world.phys.Vec3(4.5, 2, 4.5)), 0F);
         level.addFreshEntity(rocket);
         helper.assertTrue(rocket.hasCargoHold() && rocket.cargo().getContainerSize() == 27, "a 27-slot hold");
@@ -1127,6 +1130,8 @@ public final class RocketryGameTests {
             iron += box.getItem(i).is(net.minecraft.world.item.Items.IRON_INGOT) ? box.getItem(i).getCount() : 0;
         }
         helper.assertTrue(iron == 64, "the iron is in the chest: " + iron);
+        var oven = (net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity) level.getBlockEntity(furnace);
+        helper.assertTrue(oven.isEmpty(), "nothing went into the machine next to the port");
         // a crewed rocket has no hold
         helper.assertFalse(RocketEntity.create(level, RocketryModule.MOON_ROCKET, rocket.position(), 0F).hasCargoHold(), "a crew rocket has no hold");
         rocket.discard();
