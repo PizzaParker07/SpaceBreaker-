@@ -39,6 +39,51 @@ Kask takmadan dolaşabileceğin bir üs için kapalı bir oda, bir dağıtıcı 
 > [!TIP]
 > Bir blok kırıldığında ya da konduğunda dağıtıcı odayı yeniden kontrol eder. Pencere için cam kullanabilirsin; kapı ise sıradan bir kapı olursa hava kaçar.
 
+### Üs blokları
+
+**Alüminyum Panel** · **Titanyum Levha** · **Basınçlı Cam** · **Lombar** · **Uyarı Şeridi** · **Kablo Kanalı Kapağı**
+
+Üssünü **Alüminyum Panel**, **Titanyum Levha**, **Basınçlı Cam** ve **Lombar** ile kur. **Tam bloklar, basınçlı cam ve lombarlar havayı tutar**; uyarı şeritleri, kanal kapakları ve LED paneller de tam bloktur. Kapalı bir kayar kapı da havayı tutar.
+
+|   |   |
+|---|---|
+| Alüminyum Levha | Alüminyum Levha |
+| Alüminyum Levha | Alüminyum Levha |
+
+→ **Alüminyum Panel ×4** (Çalışma Masası)
+
+> [!WARNING]
+> **Izgara Zemin**, ızgara platform, korkuluk, çelik merdiven, projektör basamaklar ve açık bir kayar kapı havayı geçirir. Dağıtıcı odayı düzenli aralıkla taradığı için kapı açılıp kapanınca durum kendiliğinden güncellenir. Bunları basınçlı odanın duvarına koyma.
+
+**LED Panel Lamba** · **Projektör** · **Uyarı Işığı**
+
+Aydınlatma için **LED Panel Lamba** ve **Projektör**; ikisi de en parlak ışığı (15) verir; projektör konduğu yüze döner. Dönen amber **Uyarı Işığı** kızıltaşla ya da kendiliğinden yanar: 32 blok içinde bir roket yakıt alırken, geri sayımda, kalkışta ya da yanaşırken.
+
+|   |   |   |
+|---|---|---|
+|   | Turuncu Boyalı Cam |   |
+| Işık Taşı Tozu | Redstone Tozu | Işık Taşı Tozu |
+| Demir Külçesi | Demir Külçesi | Demir Külçesi |
+
+→ **Uyarı Işığı ×2** (Çalışma Masası)
+
+### Kayar kapılar ve hava kilidi
+
+**Kayar Kapı**
+
+Karşılıklı, en fazla **4 blok** arayla iki **Kayar Kapı** bir **hava kilidi** olur: ikisi asla aynı anda açık kalmaz. Birini açmak istediğinde öbürü kapanır, hava kilidi döngüsü çalar ve kapı 40 tik sonra açılır. Elle ya da kızıltaşla aynı kural geçerlidir. Kapı 2 blok yüksektir ve kanatları yana açılır.
+
+> [!TIP]
+> Tipik kurulum: iki kapı arasında 2–3 blokluk küçük bir oda.
+
+|   |   |
+|---|---|
+| Alüminyum Panel | Alüminyum Panel |
+| Alüminyum Panel | Piston |
+| Alüminyum Panel | Alüminyum Panel |
+
+→ **Kayar Kapı** (Çalışma Masası)
+
 <details>
 <summary>English: Air for the Base</summary>
 
@@ -80,5 +125,50 @@ Example: a 100-block room first needs 400 breath ticks (200 mB of oxygen gas), t
 
 > [!TIP]
 > The distributor checks the room again when a block is broken or placed. Glass works for windows; an ordinary door lets the air out.
+
+### Base blocks
+
+**Aluminium Panel** · **Titanium Deck Plate** · **Pressure Glass** · **Porthole** · **Hazard Stripe** · **Cable Duct Cover**
+
+Build your base from **Aluminium Panel**, **Titanium Deck Plate**, **Pressure Glass** and **Porthole**. **Full blocks, pressure glass and portholes hold air**; hazard stripes, duct covers and LED panels are full blocks too. A closed sliding door holds air as well.
+
+|   |   |
+|---|---|
+| Aluminum Plate | Aluminum Plate |
+| Aluminum Plate | Aluminum Plate |
+
+→ **Aluminium Panel ×4** (Crafting Table)
+
+> [!WARNING]
+> The **Grate Floor**, grate platform, railing, steel ladder, floodlight slabs and an open sliding door let air through. The distributor rescans the room regularly, so opening and closing a door updates it on its own. Keep them out of the walls of a pressurised room.
+
+**LED Panel Light** · **Floodlight** · **Warning Light**
+
+Light it with **LED Panel Light** and **Floodlight**s; both give full light (15), and the floodlight turns to face the side it is placed on. The amber **Warning Light** with its turning beam lights up from redstone or on its own: while a rocket within 32 blocks is fuelling, counting down, launching or docking.
+
+|   |   |   |
+|---|---|---|
+|   | Orange Stained Glass |   |
+| Glowstone Dust | Redstone Dust | Glowstone Dust |
+| Iron Ingot | Iron Ingot | Iron Ingot |
+
+→ **Warning Light ×2** (Crafting Table)
+
+### Sliding doors and airlocks
+
+**Sliding Door**
+
+Two **Sliding Door**s facing each other up to **4 blocks** apart become an **airlock**: they never stand open together. Asking one to open shuts the other, plays the airlock cycle and opens it 40 ticks later. Hand and redstone follow the same rule. The door is 2 blocks tall and its leaves slide sideways.
+
+> [!TIP]
+> A typical setup: a small room 2–3 blocks long between the two doors.
+
+|   |   |
+|---|---|
+| Aluminium Panel | Aluminium Panel |
+| Aluminium Panel | Piston |
+| Aluminium Panel | Aluminium Panel |
+
+→ **Sliding Door** (Crafting Table)
 
 </details>

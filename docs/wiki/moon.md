@@ -35,6 +35,15 @@ Ay Regoliti → **Sinterlenmiş Regolit** (Ocak)
 > [!TIP]
 > Üssünü bir kutup kraterinin kenarına kur: güneş panelleri için ışık, içeride buz.
 
+### Tutulmalar
+Bir uydudan bakınca gezegeni zaman zaman Güneş'in önünden geçer. Güneş kararır, gezegenin karanlık yüzünü bütün gün doğumu ve batımlarından oluşan ince, kızıl-turuncu bir halka çevreler. Işık ve güneş paneli üretimi düşer, günün sıcaklığı yavaşça gece sıcaklığına iner. Görev kontrol yaklaşık bir dakika önceden uyarır. Sıradaki tutulmayı **/spacebreaker eclipse** söyler.
+
+> [!TIP]
+> Tutulma sırasında paneller karardığı için bataryan dolu olsun. → [Gece ve enerji](power#night)
+
+### Volkanik kubbeler
+Bazı yerlerde açık renkli anortozitten dik, düzgün kubbeler yükselir: 45–95 blok genişliğinde, 28 bloğa kadar yüksek, tepesinde küçük bir çukur.
+
 <details>
 <summary>English: The Moon</summary>
 
@@ -72,5 +81,14 @@ Lunar Regolith → **Sintered Regolith** (Furnace)
 
 > [!TIP]
 > Build your base on the rim of a polar crater: light for solar panels, ice inside.
+
+### Eclipses
+Seen from a moon, its planet passes in front of the Sun now and then. The Sun dims, and the planet's dark side is ringed by a thin red-orange band of all its sunrises and sunsets at once. Light and solar panel output drop, and the day's warmth fades slowly toward the night temperature. Mission control warns you about a minute ahead. **/spacebreaker eclipse** tells you when the next one comes.
+
+> [!TIP]
+> Panels go dark during an eclipse, so keep your batteries full. → [Night and power](power#night)
+
+### Volcanic domes
+In places steep, smooth domes of light anorthosite rise from the plains: 45–95 blocks across, up to 28 high, with a tiny pit on top.
 
 </details>

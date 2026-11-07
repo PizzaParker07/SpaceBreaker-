@@ -28,11 +28,25 @@ Demirle elmas arasında: **1100 kullanım**, hız 7, demir düzeyinde kazar ve d
 
 → **Elektrikli Matkap** (Çalışma Masası)
 
+> [!TIP]
+> Demirci masasında Giysi Yükseltme Şablonu + Elektrikli Matkap + **Geniş Kazı Matkap Başlığı**: matkap **3 × 3** kazar (tek blok için eğil); her blok ayrı şarj harcar.
+
+|   |   |   |
+|---|---|---|
+| Titanyum Külçe |   | Titanyum Külçe |
+| Titanyum Külçe | Redstone Bloğu | Titanyum Külçe |
+|   | Titanyum Külçe |   |
+
+→ **Geniş Kazı Matkap Başlığı** (Çalışma Masası)
+
 ### Çevre Sensörü
 
 **Çevre Sensörü**
 
 **Çevre Sensörü**'nü kullan: on saniyelik bir kartta basınç, havanın bileşimi, sıcaklık (güneşte ya da gölgede), radyasyon doz hızı, yerçekimi ve ayağının altındaki zemin görünür. Yeni bir dünyaya indiğinde ilk iş bunu kullan.
+
+#### Eve dönüş
+Sensöre `Shift` basılıyken `Sağ Tık` yap ve bir hedef seç: kendi roketin, kendi iniş işaretin ya da basınçlı bir üs. Kask göstergesinde ona doğru bir ok ve uzaklık görünür. Gösterge, yürüyerek dönüşü kalan oksijenle karşılaştırır: oksijen azalırken sarı **DÖN**, yetmeyecekse kırmızı **GERİ DÖNMEYE O2 YETMİYOR** yazar. Çok oyunculuda yalnızca kendi roketin ve işaretlerin seçilebilir.
 
 |   |   |   |
 |---|---|---|
@@ -73,11 +87,25 @@ While charged, the **Electric Drill** digs stone and soil faster than a diamond 
 
 → **Electric Drill** (Crafting Table)
 
+> [!TIP]
+> At a smithing table, Suit Upgrade Template + Electric Drill + **Wide-Bore Drill Head**: the drill digs **3 × 3** (sneak for a single block); every block costs its own charge.
+
+|   |   |   |
+|---|---|---|
+| Titanium Ingot |   | Titanium Ingot |
+| Titanium Ingot | Block of Redstone | Titanium Ingot |
+|   | Titanium Ingot |   |
+
+→ **Wide-Bore Drill Head** (Crafting Table)
+
 ### Environment sensor
 
 **Environment Sensor**
 
 Use the **Environment Sensor**: a ten-second card shows pressure, air composition, temperature (in sun or shade), radiation dose rate, gravity and the ground underfoot. Use it first whenever you land on a new world.
+
+#### Way home
+`Right Click` the sensor while holding `Shift` to pick a target: your own rocket, your own landing beacon or a pressurised base. The helmet display shows an arrow and the distance to it. It compares the walk back with the oxygen you have left: yellow **TURN BACK** when it is getting tight, red when you cannot make it. In multiplayer only your own rocket and beacons count.
 
 |   |   |   |
 |---|---|---|
