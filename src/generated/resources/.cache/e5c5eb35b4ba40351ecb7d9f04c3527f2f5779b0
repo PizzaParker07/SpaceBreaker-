@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-06T17:08:37.88338067	Advancements
+// 1.21.1	2026-11-07T02:18:30.178944713	Advancements
 db5b108fdaf0839567d864164409c3704ae9f1bb data/spacebreaker/advancement/main/basic_rocketry.json
 ddbc1c91681c8f940a0d8b2591f70825ea7601fb data/spacebreaker/advancement/main/deep_breath.json
 bbe79d161e6ece61472f76bba663cde76be7d29f data/spacebreaker/advancement/main/dungeon_found.json
@@ -21,7 +21,7 @@ f1941f018b548b51a267a96083830240ff021923 data/spacebreaker/advancement/main/read
 449a7ed5415bc00e3675ba5b6bef92ce0fd7a0f4 data/spacebreaker/advancement/main/research_lab.json
 28cd796ec8f188272c2bef28f6abb4713d5cb991 data/spacebreaker/advancement/main/root.json
 cceea88670a1f2144e7c37a351df1d233060e4f4 data/spacebreaker/advancement/main/rp1.json
-45f8b99324e2ed751a7c321004ae6c84befa70da data/spacebreaker/advancement/main/safe_return.json
+5c18ae8297e46e32ff314aba11ac8e11f3d95bd3 data/spacebreaker/advancement/main/safe_return.json
 cd4c81c148d6044aa64ac00ad6437439581c7357 data/spacebreaker/advancement/main/solar_power.json
 77cd6acee1fe8caa06990009cd300d044b9a825a data/spacebreaker/advancement/main/steel.json
 e4b3a801e031be2484ef498fc0cc19357ec60b81 data/spacebreaker/advancement/main/suit_up.json

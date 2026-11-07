@@ -64,7 +64,7 @@ final class ResearchLang {
         l.add("gui.spacebreaker.lab.status.6", "Researcher is offline", "Araştırmacı çevrimdışı");
         l.add("gui.spacebreaker.lab.status.7", "Learned: %s", "Öğrenildi: %s");
         l.add("gui.spacebreaker.lab.status.8", "Already known: %s", "Zaten biliniyor: %s");
-        l.add("gui.spacebreaker.lab.status.9", "Learn the prerequisites first", "Önce ön koşulları öğren");
+        l.add("gui.spacebreaker.lab.status.9", "Missing prerequisites", "Ön koşul eksik");
         l.add("gui.spacebreaker.lab.energy", "%s / %s FE", "%s / %s FE");
         l.add("gui.spacebreaker.lab.draw", "Uses %s FE/t", "%s FE/t harcar");
         l.add("gui.spacebreaker.lab.time", "%s s left", "%s sn kaldı");

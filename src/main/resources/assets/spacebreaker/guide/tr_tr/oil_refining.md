@@ -11,6 +11,8 @@ RP-1 roket yakıtının yolu:
 3. Petrolü {item spacebreaker:fluid_pipe} ile {item spacebreaker:refinery}'ye götür.
 4. Rafinerinin çıktısını bir {item spacebreaker:fluid_tank}'ta topla.
 
+> Tanklar kırılınca içeriğini korur: yakıtı tankla taşıyabilirsin.
+
 {recipe spacebreaker:refining/crude_oil}
 
 > [!TIP]

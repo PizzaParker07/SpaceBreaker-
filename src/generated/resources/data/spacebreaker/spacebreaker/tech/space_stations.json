@@ -11,6 +11,10 @@
   "tier": 2,
   "unlocks": [
     "spacebreaker:station_kit",
-    "spacebreaker:docking_port"
+    "spacebreaker:docking_port",
+    "spacebreaker:habitat_kit",
+    "spacebreaker:station_bunk",
+    "spacebreaker:fuel_depot",
+    "spacebreaker:solar_array"
   ]
 }

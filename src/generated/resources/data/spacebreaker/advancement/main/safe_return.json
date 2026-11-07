@@ -1,16 +1,15 @@
 {
   "parent": "spacebreaker:main/moon_landing",
   "criteria": {
-    "a": {
+    "landed": {
       "conditions": {
         "milestone": "safe_return"
       },
       "trigger": "spacebreaker:milestone"
     },
-    "b": {
+    "moon": {
       "conditions": {
-        "from": "spacebreaker:earth_orbit",
-        "to": "minecraft:overworld"
+        "to": "spacebreaker:moon"
       },
       "trigger": "minecraft:changed_dimension"
     }
@@ -30,8 +29,10 @@
   },
   "requirements": [
     [
-      "a",
-      "b"
+      "moon"
+    ],
+    [
+      "landed"
     ]
   ],
   "sends_telemetry_event": true

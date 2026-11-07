@@ -1,7 +1,7 @@
 ---
 title: Ay'da Yaşam
 icon: spacebreaker:regolith_tick_spawn_egg
-items: [spacebreaker:regolith_tick_spawn_egg, spacebreaker:elder_regolith_tick_spawn_egg, spacebreaker:dust_swimmer_spawn_egg, spacebreaker:survey_drone_spawn_egg]
+items: [spacebreaker:regolith_tick_spawn_egg, spacebreaker:elder_regolith_tick_spawn_egg, spacebreaker:dust_swimmer_spawn_egg, spacebreaker:survey_drone_spawn_egg, spacebreaker:heat_siphon_spawn_egg]
 research: spacebreaker:basic_rocketry
 ---
 {entity spacebreaker:regolith_tick}
@@ -19,3 +19,10 @@ Yüzeyin hemen altında zararsızca süzülür. Ona dokunmazsan o da sana dokunm
 {entity spacebreaker:survey_drone}
 ## Keşif Dronu
 Eski bir makine. Hâlâ karakolunu korur ve davetsiz misafirlere şok atışı yapar.
+
+{page}
+{entity spacebreaker:heat_siphon}
+## Isı Emici
+İki hafta süren Ay gecesinin buz kristalli yaratığı. Sıcaklığın peşindedir: dokunuşu seni iliklerine kadar dondurur, akülere ve jeneratörlere yapışıp depolanan enerjiyi emer ve doldukça daha parlak ışır.
+
+>! Güneş ışığına dayanamaz, şafakta buharlaşır. Lambanın aydınlattığı yerde hiç doğmaz: güneş panellerin karardığında üssünü ve batarya odanı aydınlık tut.

@@ -11,6 +11,8 @@ Rocket engines burn their fuel with **liquid oxygen**. You get it from water:
 3. The {item spacebreaker:cryogenic_liquefier} liquefies oxygen at **−183 °C** and hydrogen at **−253 °C**.
 4. Keep the liquids in a {item spacebreaker:cryogenic_tank} or a {item spacebreaker:cryogenic_canister}.
 
+> Tanks keep their contents when broken: you can carry fuel and liquid oxygen in a tank, for example to a station's fuel depot. → [Space Station](space_station)
+
 {recipe spacebreaker:electrolysis/water}
 {recipe spacebreaker:liquefaction/oxygen}
 

@@ -1,7 +1,7 @@
 ---
 title: Life on the Moon
 icon: spacebreaker:regolith_tick_spawn_egg
-items: [spacebreaker:regolith_tick_spawn_egg, spacebreaker:elder_regolith_tick_spawn_egg, spacebreaker:dust_swimmer_spawn_egg, spacebreaker:survey_drone_spawn_egg]
+items: [spacebreaker:regolith_tick_spawn_egg, spacebreaker:elder_regolith_tick_spawn_egg, spacebreaker:dust_swimmer_spawn_egg, spacebreaker:survey_drone_spawn_egg, spacebreaker:heat_siphon_spawn_egg]
 research: spacebreaker:basic_rocketry
 ---
 {entity spacebreaker:regolith_tick}
@@ -19,3 +19,10 @@ Glides harmlessly just under the surface. Leave it alone and it leaves you alone
 {entity spacebreaker:survey_drone}
 ## Survey Drone
 An old machine. It still guards its outpost and fires stun bolts at intruders.
+
+{page}
+{entity spacebreaker:heat_siphon}
+## Heat Siphon
+A frost-crystal creature of the two-week lunar night. It hunts warmth: its touch chills you to the bone, and it latches onto batteries and generators to drink their stored charge, glowing brighter as it fills.
+
+>! It cannot stand sunlight and sublimates at dawn. It never appears where a lamp shines: when your solar panels go dark, keep your base and battery room lit.

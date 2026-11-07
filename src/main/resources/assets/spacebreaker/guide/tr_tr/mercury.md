@@ -9,10 +9,11 @@ Hava yok ve güneş evdekinden neredeyse **üç kat** büyük.
 |---|---|
 | Gündüz | 430 °C'ye kadar |
 | Gece | −180 °C |
+| Kutup kraterlerinin tabanı | yaklaşık −240 °C |
 
 >! Hiçbir giysi bu aralığın tamamına dayanmaz: termal giysi −170 / 500 °C, ısıtmalı giysi −250 / 80 °C. → [EVA Giysisi](eva_suit)
 
-> Gündüz ile geceyi ayıran **terminatör** kuşağında dolaş. Gölgeli kraterlere ısıtmalı giysiyle, gündüz ovalarına termal giysiyle gir.
+> Buz için kraterlere ısıtmalı giysiyle in, gündüz ovalarına termal giysiyle çık; ikisinin arasında gündüzle geceyi ayıran **terminatör** kuşağında dolaş.
 
 {items spacebreaker:mercury_regolith spacebreaker:mercurian_crust spacebreaker:low_reflectance_rock spacebreaker:hollow_deposit}
 - **Lobat sarplıklar**: gezegen soğuyup büzülürken oluşan uzun yarlar.
@@ -23,7 +24,7 @@ Hava yok ve güneş evdekinden neredeyse **üç kat** büyük.
 
 {page}
 {items spacebreaker:graphite_ore spacebreaker:graphite}
-Kutuplara yakın kraterler güneşi hiç görmez ve {item spacebreaker:mercury_ice} saklar. Eritince su, sudan hidrojen ve oksijen elde edersin.
+Kutup kraterlerinin tabanı hiç güneş görmez: yaklaşık −240 °C'lik bir **soğuk tuzak** olup {item spacebreaker:mercury_ice} saklar. Termal giysi, termal modüllerle bile orada yetmez; ısıtmalı giysi giy. Eritince su, sudan hidrojen ve oksijen elde edersin.
 
 > **Merkür'de yakıt:** grafit + oksijen → CO₂ (kimyasal reaktör); CO₂ + hidrojen → metan (Sabatier reaktörü). Böylece metaloks yakıtını yerinde tamamlarsın. → [Yerinde Üretim](isru)
 

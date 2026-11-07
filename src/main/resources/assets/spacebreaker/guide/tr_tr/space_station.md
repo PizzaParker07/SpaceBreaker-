@@ -1,7 +1,7 @@
 ---
 title: Uzay İstasyonu
 icon: spacebreaker:docking_port
-items: [spacebreaker:station_kit, spacebreaker:station_hull, spacebreaker:station_window, spacebreaker:docking_port, spacebreaker:crew_capsule_large]
+items: [spacebreaker:station_kit, spacebreaker:habitat_kit, spacebreaker:station_hull, spacebreaker:station_window, spacebreaker:docking_port, spacebreaker:station_bunk, spacebreaker:fuel_depot, spacebreaker:solar_array, spacebreaker:crew_capsule_large]
 research: spacebreaker:space_stations
 ---
 Yörüngede bir ev, atölye ve yakıt deposu. Roketini her seferinde yerden doldurmak zorunda kalmazsın.
@@ -13,6 +13,31 @@ Yörüngede bir ev, atölye ve yakıt deposu. Roketini her seferinde yerden dold
 2. {item spacebreaker:station_hull} ve {item spacebreaker:station_window} ile duvarları ve tavanı ör.
 3. İçine bir {item spacebreaker:oxygen_distributor} koy: kapalı oda basınçlanır, kask çıkarabilirsin. → [Üssün Havası](base_air)
 4. Dışarıya bir {item spacebreaker:docking_port} tak.
+
+## Yaşam modülü kiti
+{items spacebreaker:habitat_kit}
+Elle duvar örmekle uğraşmak istemiyorsan yörüngede bir {item spacebreaker:habitat_kit} kullan. Önünde **7×5×7** sızdırmaz bir oda açılır:
+- pencere şeridi olan gövde duvarları ve sana bakan bir hava kilidi kapısı,
+- karşı duvarda bir {item spacebreaker:docking_port},
+- ortada bir {item spacebreaker:oxygen_distributor} ve bir köşede bir {item spacebreaker:station_bunk},
+- çatıda bir sıra güneş paneli.
+
+> Dağıtıcıya bir oksijen tüpü tak ya da oksijen borula: oda havayla dolar. Önündeki alan boş değilse kit açılmaz.
+
+{page}
+## Ranza
+{items spacebreaker:station_bunk}
+Dünya dışında yatak çalışmaz. {item spacebreaker:station_bunk} kullanınca **yeniden doğma noktan** ranzanın üstü olur; istasyonda, Ay'da ya da herhangi bir dünyada.
+
+## Yakıt deposu
+{items spacebreaker:fuel_depot}
+{item spacebreaker:fuel_depot} yakıtı ve sıvı oksijeni saklar ve **8 blok** içindeki yanaşma portlarına bağlı roketlere pompalar. Pompa çalışırken **40 FE/t** harcar; güneş panellerinden kabloyla besle.
+
+> Yakıtı istasyona tankla taşı: tanklar kırılınca içeriğini korur. → [Kriyojenik](cryogenics)
+
+## Güneş paneli dizisi
+{items spacebreaker:solar_array}
+{item spacebreaker:solar_array} tek blokluk tabanda üç panel taşır ve en fazla **60 FE/t** üretir. Yörüngede güneş hiç batmaz: dizi gece gündüz tam güçte çalışır.
 
 ## Yanaşma
 - Portun **12 blok** yakınındaki yörüngedeki bir roketten mürettebat istasyona iner ve geri biner.

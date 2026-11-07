@@ -74,13 +74,17 @@ public class ResearchLabScreen extends AbstractContainerScreen<ResearchLabMenu> 
         }
     }
 
+    /** True when the status line did not fit and was cut; hovering it then shows the whole line. */
+    private boolean statusCut;
+
     @Override
     protected void renderLabels(GuiGraphics g, int mouseX, int mouseY) {
         super.renderLabels(g, mouseX, mouseY);
         Component status = statusLine();
         int maxW = 120;
         String text = status.getString();
-        if (font.width(text) > maxW) {
+        statusCut = font.width(text) > maxW;
+        if (statusCut) {
             text = font.plainSubstrByWidth(text, maxW - font.width("...")) + "...";
         }
         g.drawString(font, text, 28 + (maxW - font.width(text)) / 2, 58, 0x404040, false);
@@ -113,6 +117,8 @@ public class ResearchLabScreen extends AbstractContainerScreen<ResearchLabMenu> 
                 lines.add(Component.translatable("gui.spacebreaker.lab.draw", menu.draw()).withStyle(ChatFormatting.GRAY));
             }
             g.renderComponentTooltip(font, lines, mouseX, mouseY);
+        } else if (statusCut && rx >= 28 && rx < 148 && ry >= 57 && ry < 67) {
+            g.renderTooltip(font, statusLine(), mouseX, mouseY);
         } else if (rx >= 79 && rx < 105 && ry >= 34 && ry < 52 && menu.total() > 0) {
             int left = Math.max(0, menu.total() - menu.progress()) / 20;
             List<Component> lines = new ArrayList<>();

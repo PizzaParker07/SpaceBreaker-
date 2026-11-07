@@ -7,12 +7,13 @@ Hava yok ve güneş evdekinden neredeyse **üç kat** büyük.
 |---|---|
 | Gündüz | 430 °C'ye kadar |
 | Gece | −180 °C |
+| Kutup kraterlerinin tabanı | yaklaşık −240 °C |
 
 > [!WARNING]
 > Hiçbir giysi bu aralığın tamamına dayanmaz: termal giysi −170 / 500 °C, ısıtmalı giysi −250 / 80 °C. → [EVA Giysisi](eva_suit)
 
 > [!TIP]
-> Gündüz ile geceyi ayıran **terminatör** kuşağında dolaş. Gölgeli kraterlere ısıtmalı giysiyle, gündüz ovalarına termal giysiyle gir.
+> Buz için kraterlere ısıtmalı giysiyle in, gündüz ovalarına termal giysiyle çık; ikisinin arasında gündüzle geceyi ayıran **terminatör** kuşağında dolaş.
 
 **Merkür Regoliti** · **Merkür Kabuğu** · **Düşük Yansıtmalı Kaya** · **Oyuk Tortusu**
 
@@ -25,7 +26,7 @@ Hava yok ve güneş evdekinden neredeyse **üç kat** büyük.
 
 **Grafit Cevheri** · **Grafit**
 
-Kutuplara yakın kraterler güneşi hiç görmez ve **Merkür Kutup Buzu** saklar. Eritince su, sudan hidrojen ve oksijen elde edersin.
+Kutup kraterlerinin tabanı hiç güneş görmez: yaklaşık −240 °C'lik bir **soğuk tuzak** olup **Merkür Kutup Buzu** saklar. Termal giysi, termal modüllerle bile orada yetmez; ısıtmalı giysi giy. Eritince su, sudan hidrojen ve oksijen elde edersin.
 
 > [!TIP]
 > **Merkür'de yakıt:** grafit + oksijen → CO₂ (kimyasal reaktör); CO₂ + hidrojen → metan (Sabatier reaktörü). Böylece metaloks yakıtını yerinde tamamlarsın. → [Yerinde Üretim](isru)
@@ -48,12 +49,13 @@ No air, and a sun almost **three times** as wide as at home.
 |---|---|
 | Day | up to 430 °C |
 | Night | −180 °C |
+| Polar crater floors | about −240 °C |
 
 > [!WARNING]
 > No single suit covers that whole range: the thermal suit is rated −170 / 500 °C, the heated suit −250 / 80 °C. → [EVA Suit](eva_suit)
 
 > [!TIP]
-> Travel along the **terminator**, the band between day and night. Go into shadowed craters in a heated suit and onto the daylit plains in a thermal suit.
+> Go down into the craters for ice in a heated suit, out onto the daylit plains in a thermal suit, and travel between them along the **terminator**, the band between day and night.
 
 **Mercurian Regolith** · **Mercurian Crust** · **Low-Reflectance Rock** · **Hollow Deposit**
 
@@ -66,7 +68,7 @@ No air, and a sun almost **three times** as wide as at home.
 
 **Graphite Ore** · **Graphite**
 
-Craters near the poles never see the sun and keep **Mercurian Polar Ice**. Melt it for water, then split the water into hydrogen and oxygen.
+The floors of the polar craters lie in permanent shadow: a **cold trap** at about −240 °C that keeps **Mercurian Polar Ice**. A thermal suit, even with thermal modules, is not enough down there; wear the heated suit. Melt it for water, then split the water into hydrogen and oxygen.
 
 > [!TIP]
 > **Fuel on Mercury:** graphite + oxygen → CO₂ (chemical reactor); CO₂ + hydrogen → methane (Sabatier reactor). That tops up methalox fuel on the spot. → [In-Situ Resources](isru)

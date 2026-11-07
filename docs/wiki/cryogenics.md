@@ -9,6 +9,9 @@ Roket motorları yakıtı **sıvı oksijenle** yakar. Onu sudan elde edersin:
 3. **Kriyojenik Sıvılaştırıcı** oksijeni **−183 °C**'de, hidrojeni **−253 °C**'de sıvılaştırır.
 4. Sıvıları **Kriyojenik Tank** ya da **Kriyojenik Kap** içinde sakla.
 
+> [!TIP]
+> Tanklar kırılınca içeriğini korur: yakıtı ve sıvı oksijeni tankla taşıyabilirsin, örneğin istasyonun yakıt deposuna. → [Uzay İstasyonu](space_station)
+
 | Girdi | Makine | Çıktı |
 |---|---|---|
 | water (500 mB) | Elektroliz Ünitesi<br>120 FE/t · 2 sn | Hidrojen (1000 mB)<br>Oksijen (500 mB) |
@@ -31,6 +34,9 @@ Rocket engines burn their fuel with **liquid oxygen**. You get it from water:
 2. Pipe the gases with a **Gas Pipe** into a **Pressurized Gas Tank** or straight into the liquefier.
 3. The **Cryogenic Liquefier** liquefies oxygen at **−183 °C** and hydrogen at **−253 °C**.
 4. Keep the liquids in a **Cryogenic Tank** or a **Cryogenic Canister**.
+
+> [!TIP]
+> Tanks keep their contents when broken: you can carry fuel and liquid oxygen in a tank, for example to a station's fuel depot. → [Space Station](space_station)
 
 | Input | Machine | Output |
 |---|---|---|

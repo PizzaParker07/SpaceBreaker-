@@ -9,6 +9,9 @@ RP-1 roket yakıtının yolu:
 3. Petrolü **Sıvı Borusu** ile **Rafineri**'ye götür.
 4. Rafinerinin çıktısını bir **Sıvı Tankı**'ta topla.
 
+> [!TIP]
+> Tanklar kırılınca içeriğini korur: yakıtı tankla taşıyabilirsin.
+
 | Girdi | Makine | Çıktı |
 |---|---|---|
 | crude oil (1000 mB) | Rafineri<br>60 FE/t · 5 sn | Plastik Levha<br>RP-1 Kerosen (500 mB)<br>Metan (250 mB) |
@@ -27,6 +30,9 @@ The road to RP-1 rocket fuel:
 2. Power the pump; crude oil starts flowing.
 3. Pipe the oil to the **Refinery** with a **Fluid Pipe**.
 4. Collect the refinery's output in a **Fluid Tank**.
+
+> [!TIP]
+> Tanks keep their contents when broken: you can carry fuel in a tank.
 
 | Input | Machine | Output |
 |---|---|---|

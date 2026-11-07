@@ -11,6 +11,8 @@ Roket motorları yakıtı **sıvı oksijenle** yakar. Onu sudan elde edersin:
 3. {item spacebreaker:cryogenic_liquefier} oksijeni **−183 °C**'de, hidrojeni **−253 °C**'de sıvılaştırır.
 4. Sıvıları {item spacebreaker:cryogenic_tank} ya da {item spacebreaker:cryogenic_canister} içinde sakla.
 
+> Tanklar kırılınca içeriğini korur: yakıtı ve sıvı oksijeni tankla taşıyabilirsin, örneğin istasyonun yakıt deposuna. → [Uzay İstasyonu](space_station)
+
 {recipe spacebreaker:electrolysis/water}
 {recipe spacebreaker:liquefaction/oxygen}
 

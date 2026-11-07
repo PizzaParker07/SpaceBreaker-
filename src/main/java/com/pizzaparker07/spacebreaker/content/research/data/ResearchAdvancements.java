@@ -104,8 +104,14 @@ public final class ResearchAdvancements implements AdvancementSubProvider {
                 .addCriterion("dimension", ChangeDimensionTrigger.TriggerInstance.changedDimensionTo(MOON))
                 .requirements(AdvancementRequirements.Strategy.OR)
                 .save(out, id("moon_landing"));
-        anyOf(out, moon, "safe_return", new ItemStack(Items.GRASS_BLOCK), AdvancementType.CHALLENGE, milestone(Milestones.SAFE_RETURN),
-                ChangeDimensionTrigger.TriggerInstance.changedDimension(EARTH_ORBIT, Level.OVERWORLD));
+        // a soft capsule landing on Earth after having been on the Moon (any Earth return alone, from a first orbit or by
+        // beacon, does not count)
+        Advancement.Builder.advancement().parent(moon)
+                .display(new ItemStack(Items.GRASS_BLOCK), title("safe_return"), desc("safe_return"), null, AdvancementType.CHALLENGE, true, true, false)
+                .addCriterion("moon", ChangeDimensionTrigger.TriggerInstance.changedDimensionTo(MOON))
+                .addCriterion("landed", milestone(Milestones.SAFE_RETURN))
+                .requirements(AdvancementRequirements.Strategy.AND)
+                .save(out, id("safe_return"));
         task(out, orbit, "moon_orbit", new ItemStack(Items.ENDER_PEARL), ChangeDimensionTrigger.TriggerInstance.changedDimensionTo(
                 ResourceKey.create(Registries.DIMENSION, Spacebreaker.id("moon_orbit"))));
         task(out, moon, "moon_dungeon", Research.disk(ResearchTree.id("lunar_surveying")),
@@ -188,7 +194,7 @@ public final class ResearchAdvancements implements AdvancementSubProvider {
         a(l, "launch", "Strapped In", "Climb aboard a rocket on the pad", "Kemerler Bağlandı", "Rampadaki bir rokete bin");
         a(l, "orbit", "Falling Around the World", "Reach orbit", "Yörüngedesin!", "Yörüngeye ulaş: Dünya'nın etrafında düşüyorsun ama yere hiç çarpmıyorsun");
         a(l, "moon_landing", "One Small Step", "Land on the Moon", "Küçük Bir Adım", "Ay'a in");
-        a(l, "safe_return", "Welcome Home", "Come back to Earth safely", "Eve Hoş Geldin", "Dünya'ya sağ salim dön");
+        a(l, "safe_return", "Welcome Home", "Come back from the Moon and land softly on Earth", "Eve Hoş Geldin", "Ay'dan dön ve Dünya'ya yumuşak iniş yap");
         a(l, "steel", "Forged in the Arc", "Make steel in an electric arc furnace", "Ark Ateşinde Çelik", "Elektrik ark fırınında çelik yap");
         a(l, "fabricator", "Workshop", "Get a fabricator", "Atölye", "Bir Parça Üretim Tezgâhı edin");
         a(l, "rp1", "Black Gold", "Refine crude oil into RP-1 kerosene", "Kara Altın", "Ham petrolü RP-1 kerosenine arıt");

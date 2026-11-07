@@ -11,6 +11,8 @@ The road to RP-1 rocket fuel:
 3. Pipe the oil to the {item spacebreaker:refinery} with a {item spacebreaker:fluid_pipe}.
 4. Collect the refinery's output in a {item spacebreaker:fluid_tank}.
 
+> Tanks keep their contents when broken: you can carry fuel in a tank.
+
 {recipe spacebreaker:refining/crude_oil}
 
 > [!TIP]

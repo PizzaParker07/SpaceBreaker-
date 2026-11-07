@@ -339,7 +339,7 @@ public final class ResearchTree {
                 .samples(ORBIT)
                 .en("Heavy Launch", "Reinforced pads and bigger towers for super-heavy, three-stage rockets.")
                 .tr("Ağır Fırlatma", "Süper ağır, üç kademeli roketler için güçlendirilmiş rampalar ve daha büyük kuleler.");
-        t("space_stations", CONSTRUCTION, 2).req("pressurised_modules", "orbital_mechanics").icon("spacebreaker:docking_port").unlocks("station_kit", "docking_port")
+        t("space_stations", CONSTRUCTION, 2).req("pressurised_modules", "orbital_mechanics").icon("spacebreaker:docking_port").unlocks("station_kit", "docking_port", "habitat_kit", "station_bunk", "fuel_depot", "solar_array")
                 .samples(ORBIT)
                 .en("Space Stations", "Dock modules together in orbit: a home, a workshop and a fuel depot above the sky.")
                 .tr("Uzay İstasyonları", "Modülleri yörüngede birleştir: gökyüzünün üstünde bir ev, atölye ve yakıt deposu.");
