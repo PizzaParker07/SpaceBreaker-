@@ -41,6 +41,12 @@ public final class BodyAdapter {
         return SbConfig.SERVER_SPEC.isLoaded() ? SbConfig.TIME_SCALE.get() : 1.0;
     }
 
+    /** Polar light and cold traps of a data-pack body (uses its axial tilt). */
+    public static Optional<PolarIllumination> polarIllumination(RegistryAccess access, String id) {
+        return Bodies.registry(access).flatMap(reg -> reg.getOptional(ResourceLocation.parse(id))).flatMap(c ->
+                system(access).map(sys -> PolarIllumination.of(sys, id, c.rotation().axialTiltDeg())));
+    }
+
     /** All bodies of the registry as one system (several trees if a data pack adds other stars). */
     public static BodySystem system(Registry<CelestialBody> registry) {
         List<AstroBody> list = new ArrayList<>();

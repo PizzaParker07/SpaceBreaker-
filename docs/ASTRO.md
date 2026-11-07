@@ -692,3 +692,22 @@ The station orbit lies in the system plane (β ≈ 0: the worst case, longest ni
 given, and starts on the day side at J2000. Checked: ISS-like orbit 36 min of darkness, geostationary
 ≈ 70 min at equinox and none when β > 8.7°, low lunar orbit ≈ 47 of 118 minutes. For an energy average
 over time, multiply peak output by `1 − eclipseFraction()`.
+
+## Polar light and cold traps (`PolarIllumination`)
+
+```java
+PolarIllumination p = BodyAdapter.polarIllumination(level.registryAccess(), "spacebreaker:moon").orElseThrow();
+p.psrLatitudeDeg();    // permanently shadowed crater floors from here to the pole (Moon ≈ 80.5°, 90 = none)
+p.psrAreaFraction();   // share of the surface in permanent shadow (Moon ≈ 0.08 %)
+p.coldTrapTempK();     // floor temperature (Moon ≈ 40 K, Mercury ≈ 60 K)
+p.iceStable();         // water ice survives there (airless and below 110 K)
+p.maxPoleSunElevationDeg(); p.effectiveObliquityDeg(); p.polarDayNight();
+PolarIllumination.permanentlyShadowed(latitude, axialTilt, depthRatio, sunRadiusDeg);   // one crater
+```
+
+Model: at a pole the star never climbs higher than the (folded) axial tilt; a crater floor stays dark when
+its rim angle atan(2·depth/diameter) — 11.3° for a typical degraded polar crater (depth/diameter 0.1) —
+is higher than the star's top elevation plus its radius. Floors are warmed only by scattered light
+(10⁻⁴ of the starlight) and internal heat (0.02 W/m²). Results: Moon, Mercury and Ceres keep ice in polar
+cold traps (as LRO, MESSENGER and Dawn found); Mars, Earth and Pluto (large tilts) and bodies with air have
+none. For the planet engine: use `psrLatitudeDeg()` as the latitude above which deep crater floors hold ice.
