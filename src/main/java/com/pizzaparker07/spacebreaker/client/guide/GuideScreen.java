@@ -114,7 +114,7 @@ public class GuideScreen extends Screen {
         scale = 1F;
         ox = (width - W) / 2;
         oy = (height - H) / 2 + 11;
-        int barY = oy - 22;
+        int barY = oy - 20;
         backButton = addRenderableWidget(Button.builder(Component.literal("◀"), b -> goBack()).bounds(ox, barY, 20, 18)
                 .tooltip(Tooltip.create(Component.translatable("gui.spacebreaker.guide.back"))).build());
         forwardButton = addRenderableWidget(Button.builder(Component.literal("▶"), b -> goForward()).bounds(ox + 22, barY, 20, 18)
@@ -218,6 +218,9 @@ public class GuideScreen extends Screen {
     // ================================================================== layout
 
     private void rebuild() {
+        if (last != null && last.mode() == Mode.CONTENTS && place.mode() != Mode.CONTENTS) {
+            introShown = true;
+        }
         last = place;
         Layout l = new Layout(font);
         switch (place.mode()) {
@@ -247,12 +250,18 @@ public class GuideScreen extends Screen {
             l.text(Component.literal(sub).withStyle(Style.EMPTY.withColor(SUBTITLE).withItalic(true)), 0, null, 0);
             l.space(3);
         }
-        String intro = GuideBook.INSTANCE.intro();
-        l.text((intro.isEmpty() ? Component.translatable("gui.spacebreaker.guide.intro") : Component.literal(intro))
-                .withStyle(Style.EMPTY.withColor(INK_SOFT)), 0, null, 0);
-        l.space(4);
+        if (!introShown) {
+            String intro = GuideBook.INSTANCE.intro();
+            l.text((intro.isEmpty() ? Component.translatable("gui.spacebreaker.guide.intro") : Component.literal(intro))
+                    .withStyle(Style.EMPTY.withColor(INK_SOFT)), 0, null, 0);
+            l.space(4);
+        }
         for (GuideBook.Category c : GuideBook.INSTANCE.categories()) {
-            l.add(new CategoryHeader(c));
+            boolean open = OPEN_CATEGORIES.contains(c.id());
+            l.add(new CategoryHeader(c, open));
+            if (!open) {
+                continue;
+            }
             for (ResourceLocation id : c.chapters()) {
                 GuideMarkdown.Chapter ch = GuideBook.INSTANCE.chapter(id);
                 if (ch != null) {
@@ -455,9 +464,25 @@ public class GuideScreen extends Screen {
     }
 
     @Override
+    public void removed() {
+        introShown = true;
+        super.removed();
+    }
+
+    @Override
     public void renderBackground(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
         super.renderBackground(g, mouseX, mouseY, partialTick);
+        // one strip along the book's top edge, the width of the book, holding the buttons and the search box
+        int x0 = ox, x1 = ox + (int) (W * scale), y0 = oy - 22, y1 = oy;
+        g.fill(x0 + 2, y0, x1 - 2, y1, 0xFF0F1830);
+        g.fill(x0 + 3, y0 + 1, x1 - 3, y1, 0xFF22336B);
     }
+
+    /** Categories opened on the contents page (the contents list only the category names until one is clicked). */
+    private static final java.util.Set<String> OPEN_CATEGORIES = new java.util.HashSet<>();
+    /** The "how to use this book" paragraph shows on the first contents page of a play session only. */
+    private static boolean introShown;
+    private static final String LINK_CATEGORY = "category:";
 
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
@@ -622,6 +647,14 @@ public class GuideScreen extends Screen {
     }
 
     private void follow(String link) {
+        if (link.startsWith(LINK_CATEGORY)) {
+            String id = link.substring(LINK_CATEGORY.length());
+            if (!OPEN_CATEGORIES.remove(id)) {
+                OPEN_CATEGORIES.add(id);
+            }
+            rebuild();
+            return;
+        }
         if (link.startsWith(LINK_HOLOGRAM)) {
             ResourceLocation id = ResourceLocation.tryParse(link.substring(LINK_HOLOGRAM.length()));
             if (id != null) {
@@ -1025,8 +1058,15 @@ public class GuideScreen extends Screen {
     private final class CategoryHeader extends Elem {
         final GuideBook.Category cat;
 
+        final boolean open;
+
         CategoryHeader(GuideBook.Category cat) {
+            this(cat, true);
+        }
+
+        CategoryHeader(GuideBook.Category cat, boolean open) {
             this.cat = cat;
+            this.open = open;
         }
 
         @Override
@@ -1041,9 +1081,21 @@ public class GuideScreen extends Screen {
 
         @Override
         void render(Ctx c, int x, int y) {
-            c.g.drawString(font, Component.literal(GuideBook.INSTANCE.categoryName(cat.id())).withStyle(ChatFormatting.BOLD),
-                    x, y + 2, darken(cat.color()), false);
+            boolean hot = place.mode() == Mode.CONTENTS && c.over(x, y, PAGE_W, height() - 1);
+            String marker = place.mode() == Mode.CONTENTS ? (open ? "▼ " : "▶ ") : "";
+            c.g.drawString(font, Component.literal(marker + GuideBook.INSTANCE.categoryName(cat.id())).withStyle(ChatFormatting.BOLD),
+                    x, y + 2, hot ? LINK : darken(cat.color()), false);
+            if (place.mode() == Mode.CONTENTS && !open) {
+                String n = String.valueOf(cat.chapters().size());
+                c.g.drawString(font, n, x + PAGE_W - font.width(n), y + 2, INK_SOFT, false);
+            }
             c.g.fill(x, y + 12, x + PAGE_W, y + 13, 0xFF000000 | cat.color());
+        }
+
+        @Override
+        @Nullable String click(int x, int y, double mx, double my) {
+            return place.mode() == Mode.CONTENTS && mx >= x && mx < x + PAGE_W && my >= y && my < y + height() - 1
+                    ? LINK_CATEGORY + cat.id() : null;
         }
     }
 
