@@ -133,10 +133,10 @@ public class HangarPiece extends StructurePiece {
         // workshop (west wall) and lab (east wall)
         placeBlock(level, s(Blocks.SMITHING_TABLE), 3, F, 17, box);
         placeBlock(level, s(Blocks.ANVIL), 3, F, 16, box);
-        createChest(level, box, RandomSource.create(seed + 1), 3, F, 18, WORKSHOP);
+        com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.place(level, this, 3, F, 18, Direction.EAST, WORKSHOP, seed + 1, box);
         placeBlock(level, s(Blocks.BREWING_STAND), 13, F, 17, box);
         placeBlock(level, s(Blocks.CARTOGRAPHY_TABLE), 13, F, 16, box);
-        createChest(level, box, RandomSource.create(seed + 2), 13, F, 18, LAB);
+        com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.place(level, this, 13, F, 18, Direction.WEST, LAB, seed + 2, box);
         // methane fuel store: cryogenic tanks against the back wall
         for (int x = 6; x <= 10; x += 2) {
             placeBlock(level, s(Blocks.WHITE_CONCRETE), x, F, 19, box);
@@ -145,6 +145,67 @@ public class HangarPiece extends StructurePiece {
         }
         for (int z = 5; z <= 17; z += 6) {
             placeBlock(level, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), cx, F + 7, z, box);
+        }
+        // outside: a deck apron before the open front with landing lights and a hazard edge, floodlights on posts at the
+        // door, buttresses at the foot of every rib, a cable run along the west flank, a ridge walkway and a radio mast on
+        // the roof, and the methane tanks behind the hall piped in through the back wall
+        BlockState deck = s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.TITANIUM_DECK.base().get());
+        BlockState hazard = s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.HAZARD_STRIPE.base().get());
+        BlockState led = s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.LED_PANEL.get());
+        BlockState strut = s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.ALUMINUM_PANEL.wall().get());
+        BlockState panel = s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.ALUMINUM_PANEL.base().get());
+        BlockState cable = s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.CABLE_DUCT.get());
+        BlockState pipe = s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.PIPE_DUCT.get());
+        BlockState walk = s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.GRATE_PLATFORM.get());
+        for (int x = 2; x <= 14; x++) {
+            for (int z = 0; z <= 1; z++) {
+                placeBlock(level, z == 1 ? hazard : (x % 4 == 0 ? led : deck), x, F - 1, z, box);
+            }
+        }
+        for (int x : new int[]{1, 15}) {
+            for (int y = F; y <= F + 3; y++) {
+                placeBlock(level, strut, x, y, 1, box);
+            }
+            com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this,
+                    s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.FLOODLIGHT.get())
+                            .setValue(net.minecraft.world.level.block.DirectionalBlock.FACING, Direction.NORTH), x, F + 4, 1, box);
+        }
+        for (int z = 4; z <= 20; z += 4) {
+            for (int x : new int[]{0, 16}) {
+                placeBlock(level, panel, x, F - 1, z, box);
+                placeBlock(level, strut, x, F, z, box);
+                placeBlock(level, strut, x, F + 1, z, box);
+            }
+        }
+        for (int z = 3; z <= 19; z++) {
+            if (z % 4 != 0) {
+                placeBlock(level, cable, 0, F, z, box);
+            }
+        }
+        for (int z = 3; z <= 19; z++) {
+            placeBlock(level, walk, cx, F + 7, z, box);
+        }
+        for (int y = F + 7; y <= F + 10; y++) {
+            placeBlock(level, s(Blocks.IRON_BARS), cx, y, 18, box);
+        }
+        placeBlock(level, s(Blocks.WAXED_COPPER_BULB), cx, F + 11, 18, box);
+        placeBlock(level, s(Blocks.LIGHTNING_ROD), cx, F + 12, 18, box);
+        for (int x = cx - 1; x <= cx + 1; x += 2) {
+            placeBlock(level, s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.GRATE.get()), x, F + 9, 18, box);
+        }
+        for (int x = 4; x <= 12; x += 4) {
+            for (int z = 22; z <= 23; z++) {
+                placeBlock(level, deck, x, F - 1, z, box);
+                for (int y = F; y <= F + 2; y++) {
+                    placeBlock(level, y == F + 2 ? s(Blocks.LIGHT_BLUE_CONCRETE) : s(Blocks.WHITE_CONCRETE), x, y, z, box);
+                }
+            }
+            placeBlock(level, pipe, x, F, 21, box);
+        }
+        for (int x = 4; x <= 12; x++) {
+            if (x % 4 != 0) {
+                placeBlock(level, pipe, x, F, 21, box);
+            }
         }
         // tholin dust blown in through the open front
         for (int x = 2; x <= 14; x++) {

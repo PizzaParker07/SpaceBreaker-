@@ -216,12 +216,13 @@ public class IceMinePiece extends StructurePiece {
             put(level, box, 12, y, 19, wall);
         }
         // the lattice: four posts with braces every three blocks
-        BlockState post = s(Blocks.SMOOTH_QUARTZ); // pale, so the frame reads against the dark crater floor
+        // steel posts (titanium deck plate, a cool mid grey that still reads against the dark crater floor)
+        BlockState post = base(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.TITANIUM_DECK.base());
         for (int y = G + 1; y <= G + 8; y++) {
             for (int[] c : new int[][]{{10, 18}, {14, 18}, {10, 22}, {14, 22}}) {
                 put(level, box, c[0], y, c[1], post);
             }
-            if ((y - G) % 3 == 0) {
+            if ((y - G) % 2 == 0) {
                 for (int i = 11; i <= 13; i++) {
                     put(level, box, i, y, 18, s(Blocks.IRON_BARS).setValue(net.minecraft.world.level.block.IronBarsBlock.EAST, true).setValue(net.minecraft.world.level.block.IronBarsBlock.WEST, true));
                     put(level, box, i, y, 22, s(Blocks.IRON_BARS).setValue(net.minecraft.world.level.block.IronBarsBlock.EAST, true).setValue(net.minecraft.world.level.block.IronBarsBlock.WEST, true));
@@ -231,7 +232,7 @@ public class IceMinePiece extends StructurePiece {
             }
         }
         for (int x = 10; x <= 14; x++) {
-            put(level, box, x, G + 9, 20, RIB);
+            put(level, box, x, G + 9, 20, post);
         }
         put(level, box, 12, G + 10, 20, s(Blocks.GRINDSTONE)); // the sheave
         for (int y = G + 2; y <= G + 8; y++) {

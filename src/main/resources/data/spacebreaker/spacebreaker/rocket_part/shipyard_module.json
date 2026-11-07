@@ -1,0 +1,6 @@
+{
+  "type": "station_module",
+  "mass_kg": 6000,
+  "height": 32,
+  "model": "spacebreaker:shipyard_module"
+}

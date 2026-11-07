@@ -36,6 +36,8 @@ import java.util.Map;
 public class BlueprintScreen extends Screen {
     private static final int ROW = 20;
     private static final int LIST_W = 150;
+    /** The title row inside the panel, above the list and the details. */
+    private static final int HEADER = 16;
     private List<Map.Entry<ResourceLocation, MultiblockDefinition>> entries = List.of();
     private int scroll;
     private int selected;
@@ -61,8 +63,12 @@ public class BlueprintScreen extends Screen {
         return height - 30;
     }
 
+    private int listTop() {
+        return top() + HEADER + 2;
+    }
+
     private int visibleRows() {
-        return Math.max(1, (bottom() - top() - 4) / ROW);
+        return Math.max(1, (bottom() - listTop()) / ROW);
     }
 
     @Override
@@ -84,8 +90,8 @@ public class BlueprintScreen extends Screen {
     @Override
     public boolean mouseClicked(double mx, double my, int button) {
         int x = left() + 4;
-        if (mx >= x && mx < x + LIST_W - 8 && my >= top() + 4) {
-            int i = scroll + (int) ((my - top() - 4) / ROW);
+        if (mx >= x && mx < x + LIST_W - 8 && my >= listTop()) {
+            int i = scroll + (int) ((my - listTop()) / ROW);
             if (i < entries.size() && i < scroll + visibleRows()) {
                 if (i == selected && button == 0) {
                     confirm(); // second click on the same entry projects it
@@ -111,16 +117,18 @@ public class BlueprintScreen extends Screen {
         int x0 = left();
         int y0 = top();
         int w = panelW();
-        g.drawCenteredString(font, title, width / 2, 12, 0x9FE3EA);
         g.fill(x0, y0, x0 + w, bottom(), 0xA0101418);
         g.fill(x0, y0, x0 + w, y0 + 1, 0xFF7FD8E8);
-        g.fill(x0 + LIST_W, y0 + 4, x0 + LIST_W + 1, bottom() - 4, 0x407FD8E8);
+        // the title inside the panel, top left, like the other screens
+        g.drawString(font, title, x0 + 6, y0 + 5, 0x9FE3EA, true);
+        g.fill(x0 + 4, y0 + HEADER, x0 + w - 4, y0 + HEADER + 1, 0x407FD8E8);
+        g.fill(x0 + LIST_W, y0 + HEADER + 4, x0 + LIST_W + 1, bottom() - 4, 0x407FD8E8);
         if (entries.isEmpty()) {
             g.drawCenteredString(font, Component.translatable("gui.spacebreaker.blueprints.empty"), width / 2, y0 + 20, 0xAAAAAA);
             return;
         }
         // list
-        int y = y0 + 4;
+        int y = listTop();
         for (int i = scroll; i < Math.min(entries.size(), scroll + visibleRows()); i++) {
             var e = entries.get(i);
             boolean sel = i == selected;
@@ -138,7 +146,9 @@ public class BlueprintScreen extends Screen {
         MultiblockDefinition d = e.getValue();
         int dx = x0 + LIST_W + 8;
         int dw = w - LIST_W - 12;
-        g.drawString(font, Component.translatable(d.nameKey(e.getKey())), dx, y0 + 6, 0x9FE3EA, true);
+        int dy0 = y0 + HEADER + 2;
+        Component dname = Component.translatable(d.nameKey(e.getKey()));
+        g.drawString(font, dname, dx, dy0 + 4, 0x9FE3EA, true);
         int rows = d.layers().get(0).size();
         int cols = d.layers().get(0).get(0).length();
         Map<Item, Integer> totals = new LinkedHashMap<>();
@@ -149,10 +159,21 @@ public class BlueprintScreen extends Screen {
             }
         }
         int blocks = totals.values().stream().mapToInt(Integer::intValue).sum();
-        g.drawString(font, Component.translatable("gui.spacebreaker.blueprints.size", cols, d.height(), rows, blocks), dx, y0 + 17, 0xAAAAAA, true);
+        // research: a small warning mark beside the name when not known yet, the words in its tooltip
+        List<Component> techTip = d.tech().filter(tech -> !Tech.knows(minecraft.player, tech))
+                .map(tech -> List.<Component>of(
+                        Component.translatable("gui.spacebreaker.blueprints.tech", Component.translatable(TechNode.nameKey(tech))),
+                        Component.translatable("gui.spacebreaker.blueprints.tech_unknown")))
+                .orElse(null);
+        int markX = dx + font.width(dname) + 5, markY = dy0 + 3;
+        if (techTip != null) {
+            g.fill(markX, markY, markX + 9, markY + 9, 0xC0D8B050);
+            g.drawString(font, "!", markX + 3, markY + 1, 0xFF101418, false);
+        }
         int previewH = Math.max(60, (bottom() - y0) / 2 - 20);
-        renderPreview(g, d, dx + dw / 2, y0 + 30 + previewH / 2, Math.min(dw, previewH), partialTick);
-        int ly = y0 + 34 + previewH;
+        int pcx = dx + dw / 2, pcy = dy0 + 18 + previewH / 2, psize = Math.min(dw, previewH);
+        renderPreview(g, d, pcx, pcy, psize, partialTick);
+        int ly = dy0 + 22 + previewH;
         g.drawString(font, Component.translatable("gui.spacebreaker.blueprints.materials"), dx, ly, 0x9FE3EA, true);
         ly += 11;
         int col = 0;
@@ -170,15 +191,14 @@ public class BlueprintScreen extends Screen {
             }
         }
         if (d.selfAssembling()) {
-            g.drawString(font, Component.translatable("hud.spacebreaker.materials.self_assembling"), dx, bottom() - 58, 0x9FE3EA, true);
+            g.drawString(font, Component.translatable("hud.spacebreaker.materials.self_assembling"), dx, bottom() - 36, 0x9FE3EA, true);
         }
-        d.tech().ifPresent(tech -> {
-            boolean known = Tech.knows(minecraft.player, tech);
-            g.drawString(font, Component.translatable("gui.spacebreaker.blueprints.tech", Component.translatable(TechNode.nameKey(tech))),
-                    dx, bottom() - 46, 0xC8C8C8, true);
-            g.drawString(font, Component.translatable(known ? "gui.spacebreaker.blueprints.tech_known" : "gui.spacebreaker.blueprints.tech_unknown"),
-                    dx, bottom() - 36, known ? 0x7CD36A : 0xD8B050, true);
-        });
+        // tooltips: the research mark, and the size and block count on the preview
+        if (techTip != null && mouseX >= markX && mouseX < markX + 9 && mouseY >= markY && mouseY < markY + 9) {
+            g.renderComponentTooltip(font, techTip, mouseX, mouseY);
+        } else if (Math.abs(mouseX - pcx) < psize / 2 && Math.abs(mouseY - pcy) < psize / 2) {
+            g.renderTooltip(font, Component.translatable("gui.spacebreaker.blueprints.size", cols, d.height(), rows, blocks), mouseX, mouseY);
+        }
     }
 
     /** The whole structure as real block models, turning slowly. */

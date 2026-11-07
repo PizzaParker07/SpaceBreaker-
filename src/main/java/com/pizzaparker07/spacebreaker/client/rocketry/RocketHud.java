@@ -204,7 +204,9 @@ public final class RocketHud {
         int x = 6, y = 6;
         Location to = s == FlightState.ASCENT || s == FlightState.TRANSFER || s == FlightState.BURN ? rocket.destination() : null;
         Component top;
-        if (to != null) {
+        if (rocket.docking()) {
+            top = Component.translatable("hud.spacebreaker.docking_line", Location.bodyName(here.body()));
+        } else if (to != null) {
             String time;
             if (s == FlightState.ASCENT) {
                 // remaining burn, from the share of the climb's Δv already delivered

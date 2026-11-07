@@ -119,7 +119,7 @@ public final class NeptuneGameTests {
         int glass = 0;
         for (BlockPos p : BlockPos.betweenClosed(bb.minX(), bb.minY(), bb.minZ(), bb.maxX(), bb.maxY(), bb.maxZ())) {
             var st = level.getBlockState(p);
-            if (st.is(net.minecraft.world.level.block.Blocks.CHEST) && level.getBlockEntity(p) instanceof net.minecraft.world.level.block.entity.ChestBlockEntity ch
+            if (level.getBlockEntity(p) instanceof com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlockEntity ch
                     && ch.getLootTable() != null) {
                 chests++;
             }

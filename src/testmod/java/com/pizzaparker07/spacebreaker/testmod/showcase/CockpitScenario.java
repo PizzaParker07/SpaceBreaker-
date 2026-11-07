@@ -61,6 +61,11 @@ final class CockpitScenario implements ShowcaseScenario {
         };
     }
 
+    /** A point {@code dist} blocks from the eye in the direction of yaw/pitch (degrees, Minecraft convention). */
+    private static Vec3 ahead(double eyeY, float yaw, float pitch, double dist) {
+        return new Vec3(0.5, eyeY, 0.5).add(Vec3.directionFromRotation(pitch, yaw).scale(dist));
+    }
+
     @Override
     public List<Shot> shots() {
         CameraType fp = CameraType.FIRST_PERSON;
@@ -68,6 +73,11 @@ final class CockpitScenario implements ShowcaseScenario {
         return List.of(
                 new Shot("cockpit_01_transfer", 6000, 0.5, y, 0.5, 30F, 20F, false, fp, 160, CockpitScenario::seated, show(TRANSFER, false)),
                 new Shot("cockpit_02_transfer_detailed", 6000, 0.5, y, 0.5, 30F, 20F, false, fp, 60, CockpitScenario::seated, show(TRANSFER, true)),
-                new Shot("cockpit_03_docking", 6000, 0.5, y, 0.5, 30F, 20F, false, fp, 60, CockpitScenario::seated, show(DOCKING, false)));
+                new Shot("cockpit_03_docking", 6000, 0.5, y, 0.5, 30F, 20F, false, fp, 60, CockpitScenario::seated, show(DOCKING, false)),
+                // the target marked on screen: brackets around it when in view, an edge arrow when behind
+                new Shot("cockpit_04_target_marker", 6000, 0.5, y, 0.5, 30F, 20F, false, fp, 60, CockpitScenario::seated,
+                        show(TRANSFER.withTarget(ahead(y, 30F, 14F, 300), 24), false)),
+                new Shot("cockpit_05_target_behind", 6000, 0.5, y, 0.5, 30F, 20F, false, fp, 60, CockpitScenario::seated,
+                        show(TRANSFER.withTarget(ahead(y, 30F + 140F, 0F, 300), 24), false)));
     }
 }

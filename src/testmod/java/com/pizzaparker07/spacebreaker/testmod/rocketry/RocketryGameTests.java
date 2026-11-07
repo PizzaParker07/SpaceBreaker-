@@ -1082,7 +1082,7 @@ public final class RocketryGameTests {
     @GameTest(template = EMPTY, timeoutTicks = 600, batch = "rocketry_station_stage2")
     public static void stationLivingAirlockAndWings(GameTestHelper helper) {
         var level = helper.getLevel();
-        BlockPos centre = helper.absolutePos(new BlockPos(4, 24, 4));
+        BlockPos centre = helper.absolutePos(new BlockPos(4, 70, 4));
         Direction forward = Direction.SOUTH;
         helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.buildCore(level, centre, forward, "tester"), "the core unfolds");
         BlockPos front = centre.relative(forward, 3).above(2);
@@ -1124,6 +1124,104 @@ public final class RocketryGameTests {
             int v = be.room().volume();
             helper.assertTrue(v >= 215 && v <= 240, "core + passages + quarters, less ducts and fittings: " + v);
         });
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 200, batch = "rocketry_station_shipyard")
+    public static void shipyardBerthDocksACraft(GameTestHelper helper) {
+        var level = helper.getLevel();
+        BlockPos centre = helper.absolutePos(new BlockPos(4, 110, 4));
+        Direction forward = Direction.SOUTH;
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.buildCore(level, centre, forward, "tester"), "the core unfolds");
+        var core = com.pizzaparker07.spacebreaker.content.rocketry.station.StationCoreBlockEntity.near(level, centre.above(2));
+        BlockPos mouth = centre.relative(forward, 3).above(2);
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.SHIPYARD.attach(level, mouth, "tester"), "the shipyard attaches");
+        helper.assertTrue(level.getBlockState(mouth).is(RocketryModule.DOCKING_PORT.get())
+                && level.getBlockState(mouth).getValue(com.pizzaparker07.spacebreaker.content.rocketry.station.DockingPortBlock.FACING) == forward,
+                "the berth's docking port is in the mouth, facing out");
+        helper.assertTrue(level.getBlockState(mouth.above()).is(RocketryModule.STATION_HATCH.get()), "the rest of the mouth stays sealed");
+        helper.assertTrue(level.getBlockEntity(mouth.relative(forward).below().relative(forward.getClockWise(), -2))
+                instanceof com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipyardConsoleBlockEntity, "a shipyard console at the root");
+        var berth = com.pizzaparker07.spacebreaker.content.rocketry.station.Berths.find(level, mouth.relative(forward, 10)).orElse(null);
+        helper.assertTrue(berth != null && berth.portPos().equals(mouth) && berth.portFacing() == forward, "the berth is found from inside the frame");
+        helper.assertTrue(berth.bounds().getXsize() == 13 && berth.bounds().getYsize() == 13 && berth.bounds().getZsize() == 29,
+                "a 13 x 13 x 29 berth: " + berth.bounds());
+        helper.assertTrue(core != null && berth.stationId().equals(core.stationId()), "the berth belongs to this station");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.station.Stations.orbit(core.stationId()).altitudeKm() == 400, "a station orbit for the space scene");
+        // a craft docks and undocks
+        var ship = net.minecraft.world.entity.EntityType.ARMOR_STAND.create(level);
+        ship.moveTo(net.minecraft.world.phys.Vec3.atCenterOf(mouth.relative(forward, 12)));
+        level.addFreshEntity(ship);
+        com.pizzaparker07.spacebreaker.content.rocketry.station.Berths.dock(ship, berth);
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.station.Berths.isDocked(ship)
+                && ship.position().distanceTo(net.minecraft.world.phys.Vec3.atCenterOf(mouth.relative(forward))) < 0.01, "docked nose to the port");
+        com.pizzaparker07.spacebreaker.content.rocketry.station.Berths.undock(ship);
+        helper.assertFalse(com.pizzaparker07.spacebreaker.content.rocketry.station.Berths.isDocked(ship), "and released");
+        // taking the port away removes the berth
+        level.removeBlock(mouth, false);
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.station.Berths.find(level, mouth.relative(forward, 10)).isEmpty(), "no port, no berth");
+        ship.discard();
+        helper.succeed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 400, batch = "rocketry_station_delivery")
+    public static void moduleRocketDeliversToTheConsole(GameTestHelper helper) {
+        var level = helper.getLevel();
+        BlockPos centre = helper.absolutePos(new BlockPos(4, 160, 4));
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.buildCore(level, centre, Direction.SOUTH, "tester"), "the core unfolds");
+        BlockPos port = com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.corePort(centre);
+        var design = new com.pizzaparker07.spacebreaker.content.rocketry.design.RocketDesign(java.util.List.of(
+                com.pizzaparker07.spacebreaker.Spacebreaker.id("vacuum_engine"), com.pizzaparker07.spacebreaker.Spacebreaker.id("fuel_tank_small"),
+                com.pizzaparker07.spacebreaker.Spacebreaker.id("docking_module")));
+        RocketEntity rocket = RocketEntity.create(level, design, net.minecraft.world.phys.Vec3.atBottomCenterOf(port.above(12)), 0F);
+        level.addFreshEntity(rocket);
+        rocket.stageScene(FlightState.ORBIT, 0, 0, false);
+        helper.assertTrue(rocket.carriedModule().orElse(null) == com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.DOCKING,
+                "the rocket carries a docking module");
+        rocket.approachPort(port, Direction.UP, 6);
+        var core = com.pizzaparker07.spacebreaker.content.rocketry.station.StationCoreBlockEntity.near(level, port);
+        helper.assertTrue(core != null, "the station has a console");
+        int[] parts = com.pizzaparker07.spacebreaker.content.rocketry.station.StationParts.get(level).near(port, com.pizzaparker07.spacebreaker.content.rocketry.station.Stations.CLUSTER);
+        helper.assertTrue(parts[0] >= 1 && parts[1] == 0, "the map counts the core, no shipyard: " + parts[0]);
+        helper.succeedWhen(() -> {
+            helper.assertTrue(!rocket.docking(), "still flying in");
+            boolean stored = false;
+            for (int i = 0; i < core.getContainerSize(); i++) {
+                stored |= core.getItem(i).is(RocketryModule.DOCKING_MODULE.get());
+            }
+            helper.assertTrue(stored, "the module waits in the console");
+            helper.assertTrue(rocket.carriedModule().isEmpty(), "and is not delivered twice");
+            rocket.discard();
+        });
+    }
+
+    @GameTest(template = EMPTY)
+    public static void shipDesignNumbersAndLimits(GameTestHelper helper) {
+        var d = com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipDesign.EMPTY
+                .with(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipPart.COCKPIT)
+                .with(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipPart.CABIN)
+                .with(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipPart.TANK_LARGE)
+                .with(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipPart.ENGINE_CHEMICAL)
+                .withRcs(4);
+        helper.assertTrue(d.problems().isEmpty(), "a complete small craft: " + d.problems());
+        helper.assertTrue(d.length() == 15 && d.width() == 7 && d.height() == 7, "15 x 7 x 7: " + d.length() + " " + d.width() + " " + d.height());
+        double dv = 380 * 9.80665 * Math.log(d.wetMassKg() / d.dryMassKg());
+        helper.assertTrue(Math.abs(d.deltaV() - dv) < 1e-6 && d.deltaV() > 3000 && d.deltaV() < 5000, "rocket equation: " + d.deltaV());
+        var mixed = d.withoutLast().with(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipPart.ENGINE_NUCLEAR)
+                .with(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipPart.ENGINE_CHEMICAL);
+        helper.assertTrue(mixed.isp() > 380 && mixed.isp() < 900, "engines together: a thrust-weighted Isp: " + mixed.isp());
+        var big = d;
+        for (int i = 0; i < 4; i++) {
+            big = big.withoutLast().with(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipPart.TANK_LARGE)
+                    .with(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipPart.ENGINE_CHEMICAL);
+        }
+        helper.assertTrue(big.length() > com.pizzaparker07.spacebreaker.content.rocketry.station.Berths.MAX_LENGTH
+                && big.problems().contains("ship.spacebreaker.problem.too_big"), "longer than the berth is refused");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipDesign.EMPTY.problems().contains("ship.spacebreaker.problem.cockpit_front"),
+                "an empty design needs a cockpit");
+        // the design survives saving
+        var tag = com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipDesign.CODEC.encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, d).getOrThrow();
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipDesign.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, tag).getOrThrow().equals(d), "saved and loaded");
+        helper.succeed();
     }
 
     @GameTest(template = EMPTY)

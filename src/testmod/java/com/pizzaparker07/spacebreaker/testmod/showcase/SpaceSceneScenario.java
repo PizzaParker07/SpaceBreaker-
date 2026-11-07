@@ -43,12 +43,13 @@ final class SpaceSceneScenario implements ShowcaseScenario {
     @Override
     public List<ShowcaseDriver.Shot> shots() {
         List<ShowcaseDriver.Shot> s = new ArrayList<>();
-        // 1: low orbit over the day side, looking along the horizon
+        // 1: low orbit over the morning side, looking toward the sunlit horizon
         s.add(shot("01_low_earth_orbit", (e, er, m, mr, sun) -> {
-            Vector3d up = new Vector3d(sun).add(0, 0.5, 0).normalize();
-            Vector3d side = new Vector3d(up).cross(0, 1, 0).normalize();
+            Vector3d side = new Vector3d(sun).cross(0, 1, 0).normalize();
+            Vector3d up = new Vector3d(sun).mul(0.45).add(new Vector3d(side).mul(0.9)).normalize();
             Vector3d cam = new Vector3d(up).mul(er + 15).add(e);
-            return new Vector3d[]{cam, new Vector3d(side).mul(er * 1.3).add(new Vector3d(up).mul(er * 0.55)).add(e)};
+            Vector3d target = new Vector3d(sun).mul(0.75).add(new Vector3d(up).mul(0.66)).normalize().mul(er).add(e);
+            return new Vector3d[]{cam, target};
         }));
         // 2: leaving Earth: the whole globe, half lit
         s.add(shot("02_leaving_earth", (e, er, m, mr, sun) -> {
@@ -78,12 +79,20 @@ final class SpaceSceneScenario implements ShowcaseScenario {
     }
 
     private static ShowcaseDriver.Shot shot(String name, Framing framing) {
-        return new ShowcaseDriver.Shot(name, 0, 0.5, 200, 0.5, 0F, 0F, true, CameraType.FIRST_PERSON, 160, p -> aim(p, framing, false), () -> System.setProperty("spacebreaker.blockyTiming", "true"));
+        return new ShowcaseDriver.Shot(name, 0, 0.5, 200, 0.5, 0F, 0F, true, CameraType.FIRST_PERSON, 160, p -> aim(p, framing, false), () -> {
+            System.setProperty("spacebreaker.blockyTiming", "true");
+            // -PshotPrefix=pixel: the optional pixel sphere (planetStyle = PIXEL), for side-by-side checks
+            System.setProperty("spacebreaker.pixelSphere", Boolean.toString("pixel".equals(System.getProperty("spacebreaker.shotPrefix"))));
+        });
     }
 
     /** A frame whose camera rides with the Moon (it moves tens of blocks while a frame waits). */
     private static ShowcaseDriver.Shot nearMoon(String name, Framing framing) {
-        return new ShowcaseDriver.Shot(name, 0, 0.5, 200, 0.5, 0F, 0F, true, CameraType.FIRST_PERSON, 160, p -> aim(p, framing, true), () -> System.setProperty("spacebreaker.blockyTiming", "true"));
+        return new ShowcaseDriver.Shot(name, 0, 0.5, 200, 0.5, 0F, 0F, true, CameraType.FIRST_PERSON, 160, p -> aim(p, framing, true), () -> {
+            System.setProperty("spacebreaker.blockyTiming", "true");
+            // -PshotPrefix=pixel: the optional pixel sphere (planetStyle = PIXEL), for side-by-side checks
+            System.setProperty("spacebreaker.pixelSphere", Boolean.toString("pixel".equals(System.getProperty("spacebreaker.shotPrefix"))));
+        });
     }
 
     /** Sets the clock to a waxing gibbous Moon (lit side toward Earth, terminator in view), once. */
