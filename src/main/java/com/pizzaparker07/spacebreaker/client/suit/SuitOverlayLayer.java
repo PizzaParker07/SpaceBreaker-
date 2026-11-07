@@ -56,11 +56,14 @@ public class SuitOverlayLayer<T extends LivingEntity, M extends HumanoidModel<T>
             }
             lamps.render(pose, buffers.getBuffer(RenderType.eyes(TEXTURE)), light, OverlayTexture.NO_OVERLAY);
             if (HelmetLamps.lampsOn(entity)) {
-                // short faint beams from both lamps (the light pool itself is drawn by HelmetLamps)
-                var beam = buffers.getBuffer(RenderType.entityTranslucentEmissive(HelmetLamps.BEAM));
+                // short soft beams from both lamps (the light itself comes from client/light); they write no depth, so
+                // under a shader pack's sky pass they are drawn after the sky (LateEffects), and fainter there
                 boolean longBeam = com.pizzaparker07.spacebreaker.content.suit.HelmetLamp.longBeam(helmet);
-                HelmetLamps.beam(pose, beam, -5.5F, -7F, -3.05F, longBeam);
-                HelmetLamps.beam(pose, beam, 5.5F, -7F, -3.05F, longBeam);
+                com.pizzaparker07.spacebreaker.compat.client.LateEffects.drawOrDefer(pose, buffers, (p, b) -> {
+                    var beam = b.getBuffer(RenderType.entityTranslucentEmissive(HelmetLamps.BEAM));
+                    HelmetLamps.beam(p, beam, -5.5F, -7F, -3.05F, longBeam);
+                    HelmetLamps.beam(p, beam, 5.5F, -7F, -3.05F, longBeam);
+                });
             }
             pose.popPose();
         }

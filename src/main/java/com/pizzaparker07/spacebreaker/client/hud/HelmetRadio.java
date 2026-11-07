@@ -14,7 +14,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.sound.PlaySoundEvent;
-import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 
 /**
  * The helmet radio: while mission control speaks (any {@code mission_control.en/tr.*} line, however it was
@@ -49,7 +48,12 @@ public final class HelmetRadio {
 
     @SubscribeEvent
     static void register(RegisterGuiLayersEvent event) {
-        event.registerAbove(VanillaGuiLayers.BOSS_OVERLAY, Spacebreaker.id("helmet_radio"), HelmetRadio::render);
+        event.registerBelowAll(Spacebreaker.id("helmet_radio"), HelmetRadio::render);
+    }
+
+    /** Whether the radio caption is on screen (the sensor card then moves down below it). */
+    static boolean showing() {
+        return line != null;
     }
 
     static void render(GuiGraphics g, DeltaTracker delta) {
@@ -70,8 +74,9 @@ public final class HelmetRadio {
         var font = mc.font;
         int textW = font.width(text);
         int w = textW + 22;
-        int x = (g.guiWidth() - w) / 2;
-        int y = 26;
+        // top left, never the top centre (block-info mods show their tooltip there)
+        int x = 6;
+        int y = 6;
         g.fill(x, y, x + w, y + 13, argb(0x000000, 0.45F * alpha));
         // pulsing wave: five bars like a radio level meter, lively while the line plays
         float t = (mc.level.getGameTime() + delta.getGameTimeDeltaPartialTick(false)) * 0.6F;
