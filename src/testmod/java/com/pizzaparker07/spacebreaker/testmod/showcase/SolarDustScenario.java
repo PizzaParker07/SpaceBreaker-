@@ -55,6 +55,14 @@ final class SolarDustScenario implements ShowcaseScenario {
             level.setBlock(pos, MachinesModule.SOLAR_PANEL.get().defaultBlockState(), 3);
         }
         dust(level);
+        // two rovers further along: a clean roof panel and one after a few sols without a whirl
+        for (int i = 0; i < 2; i++) {
+            com.pizzaparker07.spacebreaker.content.vehicles.RoverEntity r = com.pizzaparker07.spacebreaker.content.vehicles.VehiclesModule.ROVER.get().create(level);
+            r.moveTo(X0 - 2.5, gy, Z0 + 0.5 + i * 4.5, 90F, 0F);
+            r.installSolar();
+            r.setDust(i == 0 ? 1F : 0F);
+            level.addFreshEntity(r);
+        }
     }
 
     private void dust(ServerLevel level) {
@@ -79,6 +87,9 @@ final class SolarDustScenario implements ShowcaseScenario {
         List<ShowcaseDriver.Shot> s = new ArrayList<>();
         // from the east in the morning, cells turned towards the camera; clean on the right, fully covered on the left
         s.add(new ShowcaseDriver.Shot("solar_dust_01_row", 0, X0 + 4.2, gy + 2.6, Z0 + 2.5, 90F, 28F, true,
+                CameraType.FIRST_PERSON, 80, at(0.14), null));
+        // the rovers from above: dusty roof panel at the front, clean behind
+        s.add(new ShowcaseDriver.Shot("solar_dust_02_rovers", 0, X0 - 2.5, gy + 4.6, Z0 - 3.0, 0F, 48F, true,
                 CameraType.FIRST_PERSON, 80, at(0.14), null));
         return s;
     }

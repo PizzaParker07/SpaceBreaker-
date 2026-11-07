@@ -79,8 +79,12 @@ public final class VehiclesClient {
         g.drawString(mc.font, line, x, y - 11, 0xFFFFFFFF, true);
         int ix = x + barW + 4;
         if (rover.hasSolar()) {
-            g.drawString(mc.font, Component.translatable("hud.spacebreaker.rover.solar"), ix, y - 2, 0xFF8FB8F0, true);
-            ix += mc.font.width(Component.translatable("hud.spacebreaker.rover.solar")) + 4;
+            // a dusty roof panel reads in rust instead of blue, with how much of it is covered
+            int dust = Math.round(rover.dust() * 100);
+            Component solar = dust >= 5 ? Component.translatable("hud.spacebreaker.rover.solar_dusty", dust)
+                    : Component.translatable("hud.spacebreaker.rover.solar");
+            g.drawString(mc.font, solar, ix, y - 2, dust >= 5 ? 0xFFC8854A : 0xFF8FB8F0, true);
+            ix += mc.font.width(solar) + 4;
         }
         if (rover.hasRtg()) {
             g.drawString(mc.font, Component.translatable("hud.spacebreaker.rover.rtg"), ix, y - 2, rover.hasPellet() ? 0xFFF0C040 : 0xFF808080, true);

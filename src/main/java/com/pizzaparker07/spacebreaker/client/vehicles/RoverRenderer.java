@@ -2,6 +2,7 @@ package com.pizzaparker07.spacebreaker.client.vehicles;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.Minecraft;
 import com.mojang.math.Axis;
 import com.pizzaparker07.spacebreaker.Spacebreaker;
 import com.pizzaparker07.spacebreaker.content.vehicles.RoverEntity;
@@ -58,6 +59,11 @@ public class RoverRenderer extends EntityRenderer<RoverEntity> {
         pose.scale(-1F, -1F, 1F);
         model.setupAnim(rover, 0, 0, rover.tickCount + partialTick, 0, 0);
         model.renderToBuffer(pose, buffers.getBuffer(model.renderType(TEXTURE)), light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);
+        float dust = rover.hasSolar() ? rover.dust() : 0F;
+        if (dust > 0.05F) {
+            roofDust(pose, buffers.getBuffer(RenderType.entityTranslucent(net.minecraft.client.renderer.texture.TextureAtlas.LOCATION_BLOCKS)),
+                    dust, model.bodyY(), light);
+        }
         boolean on = lightsOn(rover);
         if (on) {
             model.renderToBuffer(pose, buffers.getBuffer(RenderType.eyes(LIGHTS)), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);
@@ -65,6 +71,41 @@ public class RoverRenderer extends EntityRenderer<RoverEntity> {
         }
         pose.popPose();
         super.render(rover, yaw, partialTick, pose, buffers, light);
+    }
+
+    /** The same dust film as on a solar tracker, laid over the roof panel (model space, y down: its top is y = 2). */
+    private static void roofDust(PoseStack pose, VertexConsumer vc, float dust, float bodyY, int light) {
+        net.minecraft.client.renderer.texture.TextureAtlasSprite sprite = Minecraft.getInstance()
+                .getTextureAtlas(net.minecraft.client.renderer.texture.TextureAtlas.LOCATION_BLOCKS)
+                .apply(com.pizzaparker07.spacebreaker.Spacebreaker.id("block/solar_dust"));
+        // the roof cells are small and dark: a thinner film keeps them readable at full cover
+        int alpha = Math.round(com.pizzaparker07.spacebreaker.client.machines.SolarPanelRenderer.dustAlpha(dust) * 0.7F * 255);
+        PoseStack.Pose last = pose.last();
+        float y = (bodyY + 1.95F) / 16F;
+        float x0 = -12F / 16F;
+        float x1 = 12F / 16F;
+        // the 24 x 16 panel takes the 16 px dust tile one and a half times across so the grain keeps its size
+        float zs = 2F / 16F;
+        float ze = 18F / 16F;
+        for (int i = 0; i < 2; i++) {
+            float a = i == 0 ? x0 : 0F;
+            float b = i == 0 ? 0F : x1;
+            float u0 = sprite.getU0();
+            float u1 = sprite.getU(0.75F);
+            dustVertex(vc, last, a, y, zs, u0, sprite.getV0(), alpha, light);
+            dustVertex(vc, last, a, y, ze, u0, sprite.getV1(), alpha, light);
+            dustVertex(vc, last, b, y, ze, u1, sprite.getV1(), alpha, light);
+            dustVertex(vc, last, b, y, zs, u1, sprite.getV0(), alpha, light);
+            dustVertex(vc, last, b, y, zs, u1, sprite.getV0(), alpha, light);
+            dustVertex(vc, last, b, y, ze, u1, sprite.getV1(), alpha, light);
+            dustVertex(vc, last, a, y, ze, u0, sprite.getV1(), alpha, light);
+            dustVertex(vc, last, a, y, zs, u0, sprite.getV0(), alpha, light);
+        }
+    }
+
+    private static void dustVertex(VertexConsumer vc, PoseStack.Pose pose, float x, float y, float z, float u, float v, int alpha, int light) {
+        vc.addVertex(pose, x, y, z).setColor(255, 255, 255, alpha).setUv(u, v).setOverlay(OverlayTexture.NO_OVERLAY)
+                .setLight(light).setNormal(pose, 0F, -1F, 0F);
     }
 
     /** Two cones of light ahead of the lamps (model space: front is -Z, y grows downward). */

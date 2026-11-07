@@ -57,6 +57,8 @@ public class RoverEntity extends Entity {
     private static final EntityDataAccessor<Byte> UPGRADES = SynchedEntityData.defineId(RoverEntity.class, EntityDataSerializers.BYTE);
     private static final EntityDataAccessor<Float> DAMAGE = SynchedEntityData.defineId(RoverEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> HURT = SynchedEntityData.defineId(RoverEntity.class, EntityDataSerializers.INT);
+    /** Dust on the roof panel, 0 = clean, 1 = fully covered (same loss as a solar tracker). */
+    private static final EntityDataAccessor<Float> DUST = SynchedEntityData.defineId(RoverEntity.class, EntityDataSerializers.FLOAT);
     private static final byte SOLAR = 1;
     private static final byte RTG = 2;
     private static final byte PELLET = 4;
@@ -96,7 +98,7 @@ public class RoverEntity extends Entity {
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        builder.define(ENERGY, 0).define(UPGRADES, (byte) 0).define(DAMAGE, 0F).define(HURT, 0);
+        builder.define(ENERGY, 0).define(UPGRADES, (byte) 0).define(DAMAGE, 0F).define(HURT, 0).define(DUST, 0F);
     }
 
     public int energy() {
@@ -123,6 +125,14 @@ public class RoverEntity extends Entity {
 
     public boolean hasSolar() {
         return flag(SOLAR);
+    }
+
+    public float dust() {
+        return entityData.get(DUST);
+    }
+
+    public void setDust(float dust) {
+        entityData.set(DUST, Mth.clamp(dust, 0F, 1F));
     }
 
     public boolean hasRtg() {
@@ -226,6 +236,19 @@ public class RoverEntity extends Entity {
             if (!level().isClientSide) {
                 player.openMenu(new SimpleMenuProvider((id, inv, p) -> ChestMenu.threeRows(id, inv, cargo),
                         Component.translatable("container.spacebreaker.rover")));
+            }
+            return InteractionResult.sidedSuccess(level().isClientSide);
+        }
+        if (held.is(net.minecraft.world.item.Items.BRUSH) && hasSolar() && dust() > 0.01F) {
+            if (level() instanceof net.minecraft.server.level.ServerLevel server) {
+                setDust(0F);
+                server.sendParticles(new net.minecraft.core.particles.BlockParticleOption(net.minecraft.core.particles.ParticleTypes.BLOCK,
+                                level().getBlockState(getBlockPosBelowThatAffectsMyMovement())),
+                        getX(), getY() + getBbHeight(), getZ(), 14, 0.5, 0.05, 0.5, 0.02);
+                playSound(SoundEvents.BRUSH_GENERIC, 0.8F, 1.1F);
+                held.hurtAndBreak(1, player, hand == InteractionHand.MAIN_HAND
+                        ? net.minecraft.world.entity.EquipmentSlot.MAINHAND : net.minecraft.world.entity.EquipmentSlot.OFFHAND);
+                player.displayClientMessage(Component.translatable("message.spacebreaker.panel_brushed"), true);
             }
             return InteractionResult.sidedSuccess(level().isClientSide);
         }
@@ -371,7 +394,20 @@ public class RoverEntity extends Entity {
         if (hasSolar() && level().canSeeSky(blockPosition().above())) {
             float sun = SolarPanelBlockEntity.irradiance(SolarPanelBlockEntity.sunAngle(level(), 1F), Environment.isVacuum(level()));
             gain += SOLAR_PEAK * sun * Math.min(SolarPanelBlockEntity.MAX_SOLAR_FACTOR, Environment.solarFactor(level(), blockPosition()))
-                    * SolarPanelBlockEntity.weatherFactor(level(), blockPosition());
+                    * SolarPanelBlockEntity.weatherFactor(level(), blockPosition())
+                    * SolarPanelBlockEntity.dustFactor(dust());
+            if (tickCount % SolarPanelBlockEntity.DUST_INTERVAL == 0) {
+                double rate = Environment.dustRate(level(), blockPosition());
+                if (rate > 0) {
+                    setDust(dust() + (float) (rate * SolarPanelBlockEntity.DUST_INTERVAL));
+                }
+            }
+        }
+        if (hasSolar() && tickCount % 10 == 0 && dust() > 0 && !level().getEntitiesOfClass(
+                com.pizzaparker07.spacebreaker.content.mars.entity.DustWhirl.class,
+                getBoundingBox().inflate(com.pizzaparker07.spacebreaker.content.mars.entity.DustWhirl.REACH, 3, com.pizzaparker07.spacebreaker.content.mars.entity.DustWhirl.REACH)).isEmpty()) {
+            // a passing dust whirl scours the roof panel clean, as it does a parked tracker
+            setDust(0F);
         }
         if (hasRtg() && !pellet.isEmpty()) {
             gain += RTG_OUTPUT * RtgFuelPelletItem.activity(pellet, level().getGameTime());
@@ -553,12 +589,14 @@ public class RoverEntity extends Entity {
         }
         pellet = ItemStack.parseOptional(registryAccess(), tag.getCompound("pellet"));
         setFlag(PELLET, !pellet.isEmpty());
+        setDust(tag.getFloat("dust"));
     }
 
     @Override
     protected void addAdditionalSaveData(CompoundTag tag) {
         tag.putInt("energy", energyServer);
         tag.putByte("upgrades", entityData.get(UPGRADES));
+        tag.putFloat("dust", dust());
         tag.put("cargo", net.minecraft.world.ContainerHelper.saveAllItems(new CompoundTag(), cargo.getItems(), registryAccess()));
         if (!pellet.isEmpty()) {
             tag.put("pellet", pellet.save(registryAccess()));

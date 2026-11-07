@@ -73,6 +73,11 @@ public class RoverModel extends EntityModel<RoverEntity> {
         return LayerDefinition.create(mesh, 128, 128);
     }
 
+    /** Body bounce from the suspension (model units, y down), so overlays can follow the roof panel. */
+    public float bodyY() {
+        return body.y;
+    }
+
     @Override
     public void setupAnim(RoverEntity rover, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         float pt = ageInTicks - rover.tickCount;

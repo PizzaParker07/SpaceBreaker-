@@ -61,7 +61,7 @@ public class SolarPanelRenderer implements BlockEntityRenderer<SolarPanelBlockEn
     }
 
     /** Film opacity for a dust cover: cells clear at 30%, faint but still visible when fully covered. */
-    static float dustAlpha(float dust) {
+    public static float dustAlpha(float dust) {
         return 0.65F * (float) Math.pow(Math.max(0F, Math.min(1F, dust)), 1.2);
     }
 

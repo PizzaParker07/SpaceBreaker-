@@ -961,6 +961,7 @@
   "hud.spacebreaker.rover.empty": "Akü boş",
   "hud.spacebreaker.rover.rtg": "RTG",
   "hud.spacebreaker.rover.solar": "Güneş",
+  "hud.spacebreaker.rover.solar_dusty": "Güneş (toz %%%s)",
   "hud.spacebreaker.rover.speed": "%s m/s",
   "hud.spacebreaker.speed": "Hız: %s",
   "hud.spacebreaker.stage": "Kademe %s / %s",

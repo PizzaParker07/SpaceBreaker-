@@ -961,6 +961,7 @@
   "hud.spacebreaker.rover.empty": "Battery empty",
   "hud.spacebreaker.rover.rtg": "RTG",
   "hud.spacebreaker.rover.solar": "Solar",
+  "hud.spacebreaker.rover.solar_dusty": "Solar (dust %s%%)",
   "hud.spacebreaker.rover.speed": "%s m/s",
   "hud.spacebreaker.speed": "Speed: %s",
   "hud.spacebreaker.stage": "Stage %s / %s",
