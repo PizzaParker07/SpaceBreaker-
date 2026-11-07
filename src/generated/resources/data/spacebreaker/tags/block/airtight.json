@@ -7,6 +7,7 @@
     "spacebreaker:docking_port",
     "spacebreaker:station_hatch",
     "spacebreaker:station_core",
+    "spacebreaker:shipyard_console",
     "spacebreaker:sliding_door"
   ]
 }

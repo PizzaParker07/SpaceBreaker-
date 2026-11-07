@@ -85,6 +85,36 @@ public class GeyserStationPiece extends StructurePiece {
                 placeBlock(level, d <= R ? floor : frost, x, F - 1, z, box);
             }
         }
+        // the floor inside: titanium deck plates, a hazard ring kept clear round the vent, grates under the collar so the
+        // vent can breathe, a grate walkway in from the door, pipes sunk in the floor out to the bench and the store,
+        // and four light panels set flush at the diagonals
+        BlockState deck = s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.TITANIUM_DECK.base().get());
+        BlockState hazard = s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.HAZARD_STRIPE.base().get());
+        BlockState grate = s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.GRATE.get());
+        BlockState pipe = s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.PIPE_DUCT.get());
+        BlockState led = s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.LED_PANEL.get());
+        BlockState panel = s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.ALUMINUM_PANEL.base().get());
+        for (int x = C - R; x <= C + R; x++) {
+            for (int z = C - R; z <= C + R; z++) {
+                double d = Math.hypot(x - C, z - C);
+                if (d > R - 0.5) {
+                    continue;
+                }
+                BlockState b = d > R - 1.5 ? panel : deck;
+                if (d >= 1.9 && d < 2.9) {
+                    b = hazard;
+                } else if (d > 0.5 && d < 1.9) {
+                    b = grate;
+                } else if (x == C && z < C - 2) {
+                    b = grate;
+                } else if (z == C && Math.abs(x - C) >= 3 && Math.abs(x - C) <= 4) {
+                    b = pipe;
+                } else if (Math.abs(x - C) == 3 && Math.abs(z - C) == 3) {
+                    b = led;
+                }
+                placeBlock(level, b, x, F - 1, z, box);
+            }
+        }
         // the dome: a hemisphere shell, steel ribs on the eight compass lines, glass between
         for (int x = C - R; x <= C + R; x++) {
             for (int z = C - R; z <= C + R; z++) {
@@ -119,9 +149,10 @@ public class GeyserStationPiece extends StructurePiece {
         // plume sampling bench (west) and the store (east)
         placeBlock(level, s(Blocks.BREWING_STAND), C - 4, F, C + 1, box);
         placeBlock(level, s(Blocks.CARTOGRAPHY_TABLE), C - 4, F, C + 2, box);
-        createChest(level, box, RandomSource.create(seed + 1), C - 4, F, C, LAB);
-        placeBlock(level, s(Blocks.BARREL), C + 4, F, C + 2, box);
-        createChest(level, box, RandomSource.create(seed + 2), C + 4, F, C, STORE);
+        com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.place(level, this, C - 4, F, C, Direction.EAST, LAB, seed + 1, box);
+        com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.BLOCK.get().defaultBlockState()
+                .setValue(com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlock.FACING, Direction.WEST), C + 4, F, C + 2, box);
+        com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.place(level, this, C + 4, F, C, Direction.WEST, STORE, seed + 2, box);
         placeBlock(level, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), C, F + R - 2, C - 2, box);
         // pink frost drifted in through the open door
         for (int x = C - 3; x <= C + 3; x++) {

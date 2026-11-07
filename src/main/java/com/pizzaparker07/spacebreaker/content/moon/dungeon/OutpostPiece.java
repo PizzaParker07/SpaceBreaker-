@@ -19,7 +19,6 @@ import net.minecraft.world.level.block.ButtonBlock;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.LanternBlock;
 import net.minecraft.world.level.block.StairBlock;
-import net.minecraft.world.level.block.entity.BarrelBlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
@@ -420,19 +419,11 @@ public class OutpostPiece extends StructurePiece {
 
     private void container(WorldGenLevel level, BoundingBox box, @javax.annotation.Nullable RandomSource layout, int x, int y, int z,
                            ResourceKey<LootTable> loot, boolean chest) {
-        // loot seeds come from the position, so the shared layout random is consumed the same way in every chunk
+        // loot seeds come from the position, so the shared layout random is consumed the same way in every chunk.
+        // Every store is the shared supply locker (it was a chest or a barrel), doors turned toward the middle.
         RandomSource r = RandomSource.create(seed ^ (x * 341873128712L + y * 132897987541L + z));
-        if (chest) {
-            createChest(level, box, r, x, y, z, loot);
-            return;
-        }
-        BlockPos pos = getWorldPos(x, y, z);
-        if (box.isInside(pos)) {
-            placeBlock(level, s(Blocks.BARREL), x, y, z, box);
-            if (level.getBlockEntity(pos) instanceof BarrelBlockEntity barrel) {
-                barrel.setLootTable(loot, r.nextLong());
-            }
-        }
+        com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.place(level, this, x, y, z, IceDrillPiece.inward(x, z, SIZE), loot,
+                r.nextLong(), box);
     }
 
     private void guard(WorldGenLevel level, BoundingBox box, EntityType<? extends Mob> type, int x, int y, int z) {

@@ -86,6 +86,7 @@ public class DockingPortBlock extends BaseEntityBlock {
                 DockingPorts.get(server).add(pos, newState.getValue(FACING));
             } else {
                 DockingPorts.get(server).remove(pos);
+                Berths.get(server).removePort(pos); // a shipyard without its port has no berth
             }
         }
         super.onRemove(state, level, pos, newState, moved);

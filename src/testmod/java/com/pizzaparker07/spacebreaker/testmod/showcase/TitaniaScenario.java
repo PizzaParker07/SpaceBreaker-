@@ -74,6 +74,11 @@ final class TitaniaScenario extends OuterShowcase {
             double floorY = ground(level, below.getX() + 0.5, below.getZ() + 0.5) + 2.5;
             shot("08_canyon_outpost_from_below", below.getX() + 0.5, floorY, below.getZ() + 0.5,
                     MoonScenario.yaw(tip.getX() - below.getX(), tip.getZ() - below.getZ()), -38F, 200, at(0.1), MoonScenario::farView);
+            // inside, from the back door: the bench, the store, the chairs at the long window
+            var door = outpost.world(mid, f, 1);
+            var win = outpost.world(mid, f, 8);
+            shot("09_canyon_outpost_inside", door.getX() + 0.5, door.getY() + 1.6, door.getZ() + 0.5,
+                    MoonScenario.yaw(win.getX() - door.getX(), win.getZ() - door.getZ()), 14F, 200, at(0.1), null);
             break;
         }
     }

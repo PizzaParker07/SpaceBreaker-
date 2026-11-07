@@ -37,7 +37,13 @@ public enum StationModule {
      * Solar wings, outside the hull: a cable truss out from the mouth carrying three solar arrays, feeding a battery
      * bank set into the mouth's middle (its output into the station). The mouth stays sealed.
      */
-    SOLAR_WINGS("solar_wings", 1, 1, 2, 6);
+    SOLAR_WINGS("solar_wings", 1, 1, 2, 6),
+    /**
+     * Shipyard: an open frame 15 x 15 x 31 outside the hull, a berth for one spacecraft (hull up to 13 x 13 x 29). The
+     * mouth's middle hatch becomes the berth's docking port; a fuel depot stands at the root, floodlights hang from
+     * the top beams.
+     */
+    SHIPYARD("shipyard_module", 7, 7, 7, 30);
 
     private final String part;
     private final int halfWidth, down, up, length;
@@ -69,7 +75,7 @@ public enum StationModule {
 
     /** Blocks of rails, fins and antennas outside the hull (sides and top), part of the room a module needs. */
     private int margin() {
-        return this == SOLAR_WINGS ? 0 : 1;
+        return this == SOLAR_WINGS || this == SHIPYARD ? 0 : 1;
     }
 
     /** The blocks the module would take (for the clearance check and the preview outline). */
@@ -122,9 +128,14 @@ public enum StationModule {
         if (!fits(level, wall, facing)) {
             return false;
         }
+        StationParts.get(level).add(wall, this);
         if (this == SOLAR_WINGS) {
             buildWings(level, mouth, facing);
             return true; // outside the hull: the mouth stays sealed
+        }
+        if (this == SHIPYARD) {
+            buildShipyard(level, mouth, facing, owner);
+            return true;
         }
         build(level, wall, facing, true, owner);
         // open the old wall too: a two-block passage
@@ -149,6 +160,7 @@ public enum StationModule {
             return false;
         }
         CORE.build(level, wall, forward, false, owner);
+        StationParts.get(level).add(wall, CORE);
         return true;
     }
 
@@ -178,6 +190,13 @@ public enum StationModule {
 
     private static BlockState stripe() {
         return com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.HAZARD_STRIPE.base().get().defaultBlockState();
+    }
+
+    /** A supply locker (the shared one from the dungeons kit), its doors facing {@code facing}. */
+    private static BlockState locker(Direction facing) {
+        Direction f = facing.getAxis().isVertical() ? Direction.NORTH : facing;
+        return com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.BLOCK.get().defaultBlockState()
+                .setValue(com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlock.FACING, f);
     }
 
     private static BlockState light() {
@@ -216,8 +235,7 @@ public enum StationModule {
                     .defaultBlockState(), 3);
             level.setBlock(at(wall, forward, -2, -down + 1, 1), SuitModule.OXYGEN_DISTRIBUTOR.get().defaultBlockState(), 3);
             for (int[] c : new int[][]{{2, length - 1}, {-2, length - 1}}) {
-                level.setBlock(at(wall, forward, c[0], -down + 1, c[1]), Blocks.BARREL.defaultBlockState()
-                        .setValue(net.minecraft.world.level.block.BarrelBlock.FACING, forward.getOpposite()), 3);
+                level.setBlock(at(wall, forward, c[0], -down + 1, c[1]), locker(forward.getOpposite()), 3);
             }
         } else if (this == HABITATION) {
             // three sleeping pods along the left wall: a bunk in an alcove between grey partitions, a light above
@@ -231,10 +249,8 @@ public enum StationModule {
                 }
                 level.setBlock(at(wall, forward, -halfWidth, 0, f), light(), 3);
             }
-            level.setBlock(at(wall, forward, 2, -down + 1, length - 2), Blocks.BARREL.defaultBlockState()
-                    .setValue(net.minecraft.world.level.block.BarrelBlock.FACING, right.getOpposite()), 3);
-            level.setBlock(at(wall, forward, 2, -down + 1, length - 3), Blocks.BARREL.defaultBlockState()
-                    .setValue(net.minecraft.world.level.block.BarrelBlock.FACING, right.getOpposite()), 3);
+            level.setBlock(at(wall, forward, 2, -down + 1, length - 2), locker(right.getOpposite()), 3);
+            level.setBlock(at(wall, forward, 2, -down + 1, length - 3), locker(right.getOpposite()), 3);
             level.setBlock(at(wall, forward, 2, -down + 1, 2), com.pizzaparker07.spacebreaker.content.machines.MachinesModule.POWER_MONITOR.get()
                     .defaultBlockState(), 3);
             mouth(level, at(wall, forward, 0, 0, length), forward, right, false);
@@ -441,6 +457,45 @@ public enum StationModule {
             BlockPos p = mouth.relative(facing, k);
             level.setBlock(p, Block.updateFromNeighbourShapes(level.getBlockState(p), level, p), 3);
         }
+    }
+
+    /** The shipyard frame at a mouth, its berth registered (see {@link Berths}). */
+    private static void buildShipyard(ServerLevel level, BlockPos mouth, Direction facing, String owner) {
+        BlockPos wall = wallAt(mouth, facing);
+        int h = SHIPYARD.halfWidth, len = SHIPYARD.length;
+        BlockState beam = trim();
+        BlockState lattice = com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.GRATE.get().defaultBlockState();
+        for (int f = 0; f <= len; f++) {
+            boolean ring = f % 6 == 0;
+            for (int r = -h; r <= h; r++) {
+                for (int u = -h; u <= h; u++) {
+                    boolean edgeR = Math.abs(r) == h, edgeU = Math.abs(u) == h;
+                    if (edgeR && edgeU) {
+                        level.setBlock(at(wall, facing, r, u, f), ring ? stripe() : beam, 3);   // the four long beams
+                    } else if (ring && (edgeR || edgeU)) {
+                        level.setBlock(at(wall, facing, r, u, f), lattice, 3);                  // cross frames
+                    }
+                }
+            }
+            if (ring && f > 0) {
+                // floodlights under the top beams, shining down into the berth
+                for (int sgn : new int[]{-1, 1}) {
+                    level.setBlock(at(wall, facing, sgn * (h - 1), h - 1, f), com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.FLOODLIGHT.get()
+                            .defaultBlockState().setValue(net.minecraft.world.level.block.DirectionalBlock.FACING, Direction.DOWN), 3);
+                }
+            }
+        }
+        // the berth's docking port in the mouth, a fuel depot beside it
+        level.setBlock(mouth, RocketryModule.DOCKING_PORT.get().defaultBlockState().setValue(DockingPortBlock.FACING, facing), 3);
+        DockingPorts.get(level).setOwner(mouth, owner);
+        level.setBlock(at(wall, facing, 2, -1, 0), RocketryModule.FUEL_DEPOT.get().defaultBlockState(), 3);
+        level.setBlock(at(wall, facing, -2, -1, 0), RocketryModule.SHIPYARD_CONSOLE.get().defaultBlockState()
+                .setValue(HorizontalDirectionalBlock.FACING, facing.getClockWise()), 3);
+        BlockPos a = at(wall, facing, -(h - 1), -(h - 1), 1), b = at(wall, facing, h - 1, h - 1, len - 1);
+        AABB berth = new AABB(Math.min(a.getX(), b.getX()), Math.min(a.getY(), b.getY()), Math.min(a.getZ(), b.getZ()),
+                Math.max(a.getX(), b.getX()) + 1, Math.max(a.getY(), b.getY()) + 1, Math.max(a.getZ(), b.getZ()) + 1);
+        StationCoreBlockEntity core = StationCoreBlockEntity.near(level, mouth);
+        Berths.get(level).add(new Berths.Berth(berth, mouth.immutable(), facing, core != null ? core.stationId() : java.util.UUID.randomUUID()));
     }
 
     /** A 3 × 3 mouth in a wall: air (open) or nine hatches facing {@code out}, the middle one marked. */

@@ -187,4 +187,20 @@ class FlightCoreTest {
         assertEquals(2900, xz[0]);
         assertEquals(-4100, xz[1]);
     }
+
+    @Test
+    void stationRendezvous() {
+        var orbit = com.pizzaparker07.spacebreaker.core.astro.flight.StationRendezvous.orbit(EARTH, 400e3, 0, 1.0);
+        StateVector st = orbit.stateAt(5000);
+        assertEquals(EARTH.radius() + 400e3, st.position().length(), 1e-3);
+        assertEquals(92.6, orbit.period() / 60, 0.5, "a 400 km orbit takes ≈ 92.6 minutes");
+        // a craft 2 km behind moving 10 m/s faster: returns; 200 m/s faster or 100 km away: does not
+        Vec3 along = st.velocity().normalize();
+        var near = new StateVector(st.position().sub(along.scale(2000)), st.velocity().add(along.scale(10)));
+        assertTrue(com.pizzaparker07.spacebreaker.core.astro.flight.StationRendezvous.returnsToPocket(near, orbit, 5000));
+        var fast = new StateVector(near.position(), st.velocity().add(along.scale(200)));
+        assertFalse(com.pizzaparker07.spacebreaker.core.astro.flight.StationRendezvous.returnsToPocket(fast, orbit, 5000));
+        var far = new StateVector(st.position().sub(along.scale(100_000)), st.velocity());
+        assertFalse(com.pizzaparker07.spacebreaker.core.astro.flight.StationRendezvous.returnsToPocket(far, orbit, 5000));
+    }
 }
