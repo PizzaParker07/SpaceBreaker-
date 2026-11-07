@@ -72,6 +72,9 @@ public final class ProgressionAuditTests {
         h.assertTrue(m.rules.size() > 100, "recipes were read: " + m.rules.size());
         h.assertTrue(m.worlds.size() > 2, "worlds were scanned: " + m.worlds.size());
         h.assertTrue(m.has("item:spacebreaker:research_lab"), "the research lab is buildable from a fresh world");
+        // a new machine recipe type the model does not know would silently hide everything made with it
+        h.assertTrue(m.unmappedRecipeTypes.isEmpty(), "recipe types the progression model does not map to a machine "
+                + "(add them to ProgressionModel.MACHINE_FOR_KIND): " + m.unmappedRecipeTypes);
         h.succeed();
     }
 
