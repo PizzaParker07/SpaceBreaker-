@@ -1139,6 +1139,8 @@ public final class RocketryGameTests {
                 && level.getBlockState(mouth).getValue(com.pizzaparker07.spacebreaker.content.rocketry.station.DockingPortBlock.FACING) == forward,
                 "the berth's docking port is in the mouth, facing out");
         helper.assertTrue(level.getBlockState(mouth.above()).is(RocketryModule.STATION_HATCH.get()), "the rest of the mouth stays sealed");
+        helper.assertTrue(level.getBlockEntity(mouth.relative(forward).below().relative(forward.getClockWise(), -2))
+                instanceof com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipyardConsoleBlockEntity, "a shipyard console at the root");
         var berth = com.pizzaparker07.spacebreaker.content.rocketry.station.Berths.find(level, mouth.relative(forward, 10)).orElse(null);
         helper.assertTrue(berth != null && berth.portPos().equals(mouth) && berth.portFacing() == forward, "the berth is found from inside the frame");
         helper.assertTrue(berth.bounds().getXsize() == 13 && berth.bounds().getYsize() == 13 && berth.bounds().getZsize() == 29,
@@ -1190,6 +1192,36 @@ public final class RocketryGameTests {
             helper.assertTrue(rocket.carriedModule().isEmpty(), "and is not delivered twice");
             rocket.discard();
         });
+    }
+
+    @GameTest(template = EMPTY)
+    public static void shipDesignNumbersAndLimits(GameTestHelper helper) {
+        var d = com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipDesign.EMPTY
+                .with(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipPart.COCKPIT)
+                .with(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipPart.CABIN)
+                .with(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipPart.TANK_LARGE)
+                .with(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipPart.ENGINE_CHEMICAL)
+                .withRcs(4);
+        helper.assertTrue(d.problems().isEmpty(), "a complete small craft: " + d.problems());
+        helper.assertTrue(d.length() == 15 && d.width() == 7 && d.height() == 7, "15 x 7 x 7: " + d.length() + " " + d.width() + " " + d.height());
+        double dv = 380 * 9.80665 * Math.log(d.wetMassKg() / d.dryMassKg());
+        helper.assertTrue(Math.abs(d.deltaV() - dv) < 1e-6 && d.deltaV() > 3000 && d.deltaV() < 5000, "rocket equation: " + d.deltaV());
+        var mixed = d.withoutLast().with(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipPart.ENGINE_NUCLEAR)
+                .with(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipPart.ENGINE_CHEMICAL);
+        helper.assertTrue(mixed.isp() > 380 && mixed.isp() < 900, "engines together: a thrust-weighted Isp: " + mixed.isp());
+        var big = d;
+        for (int i = 0; i < 4; i++) {
+            big = big.withoutLast().with(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipPart.TANK_LARGE)
+                    .with(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipPart.ENGINE_CHEMICAL);
+        }
+        helper.assertTrue(big.length() > com.pizzaparker07.spacebreaker.content.rocketry.station.Berths.MAX_LENGTH
+                && big.problems().contains("ship.spacebreaker.problem.too_big"), "longer than the berth is refused");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipDesign.EMPTY.problems().contains("ship.spacebreaker.problem.cockpit_front"),
+                "an empty design needs a cockpit");
+        // the design survives saving
+        var tag = com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipDesign.CODEC.encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, d).getOrThrow();
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipDesign.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, tag).getOrThrow().equals(d), "saved and loaded");
+        helper.succeed();
     }
 
     @GameTest(template = EMPTY)

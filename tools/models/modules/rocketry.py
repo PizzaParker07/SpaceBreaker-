@@ -724,6 +724,11 @@ def station_blocks():
     write('blockstates/station_core.json', {'variants': {f'facing={f}': dict({'model': b('station_core')}, **({'y': y} if y else {}))
                                                          for f, y in (('north', 0), ('east', 90), ('south', 180), ('west', 270))}})
     write('models/item/station_core.json', {'parent': b('station_core')})
+    write('models/block/shipyard_console.json', {'parent': 'minecraft:block/orientable', 'textures': {
+        'front': b('shipyard_console_front'), 'side': b('station_hull'), 'top': b('station_core_top')}})
+    write('blockstates/shipyard_console.json', {'variants': {f'facing={f}': dict({'model': b('shipyard_console')}, **({'y': y} if y else {}))
+                                                             for f, y in (('north', 0), ('east', 90), ('south', 180), ('west', 270))}})
+    write('models/item/shipyard_console.json', {'parent': b('shipyard_console')})
     generated_item('station_kit')
     generated_item('habitat_kit')
     # base blocks: panel and plate families, glass and porthole (opaque frame + translucent pane), open grate

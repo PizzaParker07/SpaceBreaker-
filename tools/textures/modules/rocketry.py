@@ -2468,6 +2468,25 @@ def station_core_front():
     return cv
 
 
+def shipyard_console_front():
+    """The shipyard console: a blueprint-blue screen with a craft drawn in outline, hazard ticks below."""
+    cv = station_hull()
+    for y in range(3, 11):
+        for x in range(2, 14):
+            cv[x, y] = BLUEPRINT[1] if (x in (2, 13) or y in (3, 10)) else BLUEPRINT[0]
+    for x in range(4, 12):
+        cv[x, 6] = BLUEPRINT[5]
+        cv[x, 7] = BLUEPRINT[4] if x % 3 else BLUEPRINT[5]
+    cv[3, 6] = BLUEPRINT[5]
+    cv[3, 7] = BLUEPRINT[5]
+    cv[12, 5] = BLUEPRINT[4]
+    cv[12, 8] = BLUEPRINT[4]
+    for x in range(3, 13, 3):
+        cv[x, 13] = HAZARD[3]
+        cv[x + 1, 13] = CARBON[2]
+    return cv
+
+
 def station_core_top():
     cv = station_hull()
     for x in range(3, 13):
@@ -2916,6 +2935,7 @@ def export_facility(save):
     save(limit_colours(station_hatch(True)), 'block', 'station_hatch_center', (180, 30, 0, None))
     save(limit_colours(station_core_front()), 'block', 'station_core_front', (180, 30, 0, None))
     save(limit_colours(station_core_top()), 'block', 'station_core_top', (180, 30, 0, None))
+    save(limit_colours(shipyard_console_front()), 'block', 'shipyard_console_front', (180, 30, 0, None))
     save(habitat_kit_icon(), 'item', 'habitat_kit')
     save(limit_colours(warning_light_base()), 'block', 'warning_light_base', (140, 230, 0, None))
     save(limit_colours(aluminum_panel()), 'block', 'aluminum_panel', (170, 230, 0, None))

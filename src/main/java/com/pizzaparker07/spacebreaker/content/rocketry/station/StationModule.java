@@ -489,6 +489,8 @@ public enum StationModule {
         level.setBlock(mouth, RocketryModule.DOCKING_PORT.get().defaultBlockState().setValue(DockingPortBlock.FACING, facing), 3);
         DockingPorts.get(level).setOwner(mouth, owner);
         level.setBlock(at(wall, facing, 2, -1, 0), RocketryModule.FUEL_DEPOT.get().defaultBlockState(), 3);
+        level.setBlock(at(wall, facing, -2, -1, 0), RocketryModule.SHIPYARD_CONSOLE.get().defaultBlockState()
+                .setValue(HorizontalDirectionalBlock.FACING, facing.getClockWise()), 3);
         BlockPos a = at(wall, facing, -(h - 1), -(h - 1), 1), b = at(wall, facing, h - 1, h - 1, len - 1);
         AABB berth = new AABB(Math.min(a.getX(), b.getX()), Math.min(a.getY(), b.getY()), Math.min(a.getZ(), b.getZ()),
                 Math.max(a.getX(), b.getX()) + 1, Math.max(a.getY(), b.getY()) + 1, Math.max(a.getZ(), b.getZ()) + 1);

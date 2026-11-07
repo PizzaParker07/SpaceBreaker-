@@ -212,6 +212,7 @@ final class RocketryScenario implements ShowcaseScenario {
         }
         scene.clear();
         RocketryShowcaseClient.openMapWhenRiding = false;
+        RocketryShowcaseClient.shipDesign = null;
     }
 
     private static RocketEntity spawn(ServerLevel level, Vec3 pos, float yaw, FlightState state, int timer, int stage, boolean burning) {
@@ -878,6 +879,20 @@ final class RocketryScenario implements ShowcaseScenario {
             com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.buildCore(orbit, c, east, "PizzaParker07");
             com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.HABITATION.attach(orbit, c.east(3).above(2), "PizzaParker07");
             toDimension(p, Location.EARTH_ORBIT, c.getX() + 9.5, c.getY() + 7.5, c.getZ() + 8.5, 160F, 24F);
+        }, null));
+        // the shipyard console's design screen, with a crewed nuclear transfer craft
+        s.add(new Shot("63_shipyard_design", 6000, 0, 0, 0, 0F, 0F, false, fp, 80, p -> {
+            clearScene(p);
+            toDimension(p, Location.EARTH_ORBIT, 1200.5, RocketEntity.ORBIT_Y + 2, 0.5, 0F, 0F);
+            // after clearScene (it closes the screen): a crewed nuclear transfer craft
+            RocketryShowcaseClient.shipDesign = com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipDesign.EMPTY
+                    .with(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipPart.COCKPIT)
+                    .with(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipPart.CABIN)
+                    .with(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipPart.CARGO_BAY)
+                    .with(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipPart.TANK_LARGE)
+                    .with(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipPart.TANK_LARGE)
+                    .with(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipPart.ENGINE_NUCLEAR)
+                    .withRcs(4).withWings(1);
         }, null));
         s.add(new Shot("31_nearby_stars", 6000, 0, 0, 0, 0F, 0F, false, fp, 120,
                 p -> {
