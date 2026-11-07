@@ -428,6 +428,41 @@ public final class RoverTests {
         });
     }
 
+    /**
+     * Life support reads the pressurised rover's cabin: a rider without a helmet has air at 21 °C, half the outside
+     * dose and normal pressure, breathing the cabin tank down; an empty tank or a plain rover is the outside again.
+     */
+    @GameTest(template = "empty", timeoutTicks = 40)
+    public static void cabinLetsTheCrewBreatheWithoutHelmets(GameTestHelper h) {
+        floor(h, Blocks.STONE.defaultBlockState());
+        for (var type : new net.minecraft.world.entity.EntityType<?>[]{VehiclesModule.PRESSURIZED_ROVER.get(), VehiclesModule.AMPHIBIOUS_ROVER.get()}) {
+            RoverEntity rover = (RoverEntity) h.spawn(type, Vec3.atBottomCenterOf(new BlockPos(2, 1, 2)));
+            rover.setEnergy(100_000);
+            rover.setCabinOxygen(1_000);
+            var crew = h.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+            h.assertTrue(crew.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.HEAD).isEmpty(), "no helmet");
+            h.assertTrue(crew.startRiding(rover, true), "boards");
+            var env = com.pizzaparker07.spacebreaker.content.suit.LifeSupport.Env.at(crew, 100.0);
+            h.assertTrue(env.breathable() && env.ambientC() == 21.0 && Math.abs(env.doseRateMsvDay() - 50.0) < 1e-9 && env.pressureKpa() > 100,
+                    "cabin air, 21 C, half the dose: " + env);
+            // a resting rider breathes a little under one tick's worth per tick: a few ticks use up whole units
+            for (int i = 0; i < 5; i++) {
+                com.pizzaparker07.spacebreaker.content.suit.LifeSupport.Env.at(crew, 100.0);
+            }
+            h.assertTrue(rover.cabinOxygen() < 1_000 && rover.cabinOxygen() >= 990, "breathing the cabin tank down: " + rover.cabinOxygen());
+            rover.setCabinOxygen(0);
+            h.assertTrue(com.pizzaparker07.spacebreaker.content.suit.LifeSupport.cabin(crew) == null, "an empty tank is the outside again");
+            crew.stopRiding();
+            rover.discard();
+        }
+        RoverEntity open = spawn(h, new BlockPos(2, 1, 2));
+        open.setEnergy(100_000);
+        var rider = h.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        rider.startRiding(open, true);
+        h.assertTrue(com.pizzaparker07.spacebreaker.content.suit.LifeSupport.cabin(rider) == null, "the open rover has no cabin");
+        h.succeed();
+    }
+
     /** A pool of a liquid, 7 x 9 and 3 deep, on a stone floor. */
     private static void pool(GameTestHelper h, BlockState liquid) {
         for (int x = 0; x < 7; x++) {

@@ -22,6 +22,12 @@ public final class VehiclesClient {
     private VehiclesClient() {
     }
 
+    /** Headlights as moving lights through the shared light helper (dynamic lights mod, or soft pools). */
+    @SubscribeEvent
+    static void clientSetup(net.neoforged.fml.event.lifecycle.FMLClientSetupEvent event) {
+        com.pizzaparker07.spacebreaker.client.light.LightBeams.register(RoverLights::collect);
+    }
+
     @SubscribeEvent
     static void layers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(RoverModel.LAYER, RoverModel::createLayer);
