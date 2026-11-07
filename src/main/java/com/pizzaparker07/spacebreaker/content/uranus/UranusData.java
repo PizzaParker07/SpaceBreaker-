@@ -152,6 +152,7 @@ public final class UranusData {
             ctx.register(terrain("miranda"), mirandaProfile());
             ctx.register(terrain("ariel"), arielProfile());
             ctx.register(terrain("titania"), titaniaProfile());
+            ctx.register(terrain("umbriel"), Umbriel.profile());
         });
         dp.add(Registries.CONFIGURED_FEATURE, UranusData::configured);
         dp.add(Registries.PLACED_FEATURE, UranusData::placed);
@@ -161,37 +162,27 @@ public final class UranusData {
     private static void configured(BootstrapContext<ConfiguredFeature<?, ?>> ctx) {
         ctx.register(cf("miranda_coronae"), new ConfiguredFeature<>(OuterWorlds.CORONAE.get(), coronae()));
         ctx.register(cf("miranda_cliff"), new ConfiguredFeature<>(OuterWorlds.RUPES.get(), cliff()));
-        ctx.register(cf("miranda_carbon"), new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(new TagMatchTest(MIRANDA_STONE),
-                s(CARBON_ORE), 10)));
+        OuterWorlds.ore(ctx, "miranda_carbon", MIRANDA_STONE, s(CARBON_ORE), 10);
         ctx.register(cf("ariel_chasmata"), new ConfiguredFeature<>(OuterWorlds.GRABENS.get(), chasmata()));
-        ctx.register(cf("ariel_ammonia"), new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(new TagMatchTest(ARIEL_STONE),
-                s(ARIEL_AMMONIA_ORE), 8)));
+        OuterWorlds.ore(ctx, "ariel_ammonia", ARIEL_STONE, s(ARIEL_AMMONIA_ORE), 8);
         ctx.register(cf("ariel_block"), OuterWorlds.boulder(0.6F, 1.5F, 0.5F, s(ARIEL_ICE.base()), 3, s(com.pizzaparker07.spacebreaker.content.mars.MarsModule.CO2_FROST), 1));
         ctx.register(cf("titania_canyons"), new ConfiguredFeature<>(OuterWorlds.GRABENS.get(), canyons()));
         ctx.register(cf("titania_crater"), new ConfiguredFeature<>(OuterWorlds.BASIN.get(), greatCrater()));
-        ctx.register(cf("titania_carbon"), new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(new TagMatchTest(TITANIA_STONE),
-                s(TITANIA_CARBON_ORE), 10)));
+        OuterWorlds.ore(ctx, "titania_carbon", TITANIA_STONE, s(TITANIA_CARBON_ORE), 10);
         ctx.register(cf("titania_block"), OuterWorlds.boulder(0.6F, 1.8F, 0.5F, s(TITANIA_ICE.base()), 3, s(CANYON_WALL_ICE), 1));
         ctx.register(cf("miranda_block"), OuterWorlds.boulder(0.6F, 1.8F, 0.5F, s(MIRANDAN_ICE.base()), 3, s(DARK_BAND_ICE), 1));
+        Umbriel.configured(ctx);
     }
 
     private static void placed(BootstrapContext<PlacedFeature> ctx) {
-        var cf = ctx.lookup(Registries.CONFIGURED_FEATURE);
-        for (String whole : new String[]{"miranda_coronae", "miranda_cliff", "ariel_chasmata", "titania_canyons", "titania_crater"}) {
-            PlacementUtils.register(ctx, pf(whole), cf.getOrThrow(cf(whole)), BiomeFilter.biome());
-        }
-        PlacementUtils.register(ctx, pf("miranda_carbon"), cf.getOrThrow(cf("miranda_carbon")), CountPlacement.of(10), InSquarePlacement.spread(),
-                HeightRangePlacement.uniform(VerticalAnchor.absolute(-40), VerticalAnchor.absolute(100)), BiomeFilter.biome());
-        PlacementUtils.register(ctx, pf("ariel_ammonia"), cf.getOrThrow(cf("ariel_ammonia")), CountPlacement.of(8), InSquarePlacement.spread(),
-                HeightRangePlacement.uniform(VerticalAnchor.absolute(-40), VerticalAnchor.absolute(100)), BiomeFilter.biome());
-        PlacementUtils.register(ctx, pf("ariel_block"), cf.getOrThrow(cf("ariel_block")), RarityFilter.onAverageOnceEvery(6),
-                InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_TOP_SOLID, BiomeFilter.biome());
-        PlacementUtils.register(ctx, pf("titania_carbon"), cf.getOrThrow(cf("titania_carbon")), CountPlacement.of(10), InSquarePlacement.spread(),
-                HeightRangePlacement.uniform(VerticalAnchor.absolute(-40), VerticalAnchor.absolute(100)), BiomeFilter.biome());
-        PlacementUtils.register(ctx, pf("titania_block"), cf.getOrThrow(cf("titania_block")), RarityFilter.onAverageOnceEvery(4),
-                InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_TOP_SOLID, BiomeFilter.biome());
-        PlacementUtils.register(ctx, pf("miranda_block"), cf.getOrThrow(cf("miranda_block")), RarityFilter.onAverageOnceEvery(4),
-                InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_TOP_SOLID, BiomeFilter.biome());
+        OuterWorlds.placedWhole(ctx, "miranda_coronae", "miranda_cliff", "ariel_chasmata", "titania_canyons", "titania_crater");
+        OuterWorlds.placedOre(ctx, "miranda_carbon", 10);
+        OuterWorlds.placedOre(ctx, "ariel_ammonia", 8);
+        OuterWorlds.placedOre(ctx, "titania_carbon", 10);
+        OuterWorlds.placedBoulder(ctx, "ariel_block", 6);
+        OuterWorlds.placedBoulder(ctx, "titania_block", 4);
+        OuterWorlds.placedBoulder(ctx, "miranda_block", 4);
+        Umbriel.placed(ctx);
     }
 
     private static void biomes(BootstrapContext<Biome> ctx) {
@@ -212,5 +203,6 @@ public final class UranusData {
             ctx.register(key, OuterWorlds.biome(pf, carvers, key, -2.0F, OuterWorlds.Look.airless(0x7D7871),
                     raw, "titania_crater", raw, "titania_canyons", ores, "titania_carbon", local, "titania_block"));
         }
+        Umbriel.biomes(ctx, pf, carvers);
     }
 }

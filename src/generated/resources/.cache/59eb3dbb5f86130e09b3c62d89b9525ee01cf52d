@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-07T04:07:40.327698367	Loot Tables
+// 1.21.1	2026-11-07T04:18:40.364175691	Loot Tables
 c48f71ca60600cd6230f77a2e146a3df572494ae data/spacebreaker/loot_table/blocks/aerogel.json
 e37973997ec83c5b040a31bf9fcda1757b53fc00 data/spacebreaker/loot_table/blocks/airlock_door.json
 c511e60fe01f6dddc2d2b0e516ca81c11bf4ca91 data/spacebreaker/loot_table/blocks/aluminum_block.json
@@ -207,6 +207,7 @@ a1f950a153d5aacd4c568b0b9a376546069ced2f data/spacebreaker/loot_table/blocks/sin
 1d8a0aa8c8e83b08f66f828993cd533b7f26a324 data/spacebreaker/loot_table/blocks/so2_frost.json
 b48dfc6f8ba222b666ce1144b7e0d69e63d08c4a data/spacebreaker/loot_table/blocks/solar_array.json
 c09ba019815f2fcf7845fff827fdd1cde3490e07 data/spacebreaker/loot_table/blocks/solar_panel.json
+2206a7b0900c544f0eba2a2f0dba0fe0d9baf15d data/spacebreaker/loot_table/blocks/sooty_ice.json
 0fe2f7c38f2e379de0da53b52dbace7e8cbaa20f data/spacebreaker/loot_table/blocks/spodumene_ore.json
 ffa9b85dea0733d27c3cfcb05899011c14689c3a data/spacebreaker/loot_table/blocks/stained_ice.json
 6e7d9631614bb89ebd2de6734606d66aabe30d17 data/spacebreaker/loot_table/blocks/stained_nitrogen_ice.json
@@ -240,6 +241,11 @@ c9386418656b522bb005cef725c09e97f8fcbbc8 data/spacebreaker/loot_table/blocks/tri
 ed14e909adb68b3bd5c0d462e3123918087bcb13 data/spacebreaker/loot_table/blocks/triton_ice_stairs.json
 c6e75c594a9f9fbe4f9b57a25a9cd0e611b5e61c data/spacebreaker/loot_table/blocks/triton_ice_wall.json
 c1612ce671ef7572f11e9edd22797aa552f9279d data/spacebreaker/loot_table/blocks/tungsten_block.json
+61b5ceb28e0cbc460ce72e10ee062e53d1dad73e data/spacebreaker/loot_table/blocks/umbriel_ice.json
+20b652d26f4c54576097d90ee7331400f078eace data/spacebreaker/loot_table/blocks/umbriel_ice_slab.json
+279cdc5142bb7cd7db9f07afed8c731861b7efd2 data/spacebreaker/loot_table/blocks/umbriel_ice_stairs.json
+f93d22d05fd06a68d7393fbf5483eb282274242b data/spacebreaker/loot_table/blocks/umbriel_ice_wall.json
+b13439955e21b429ae0acf894f004f975391eb30 data/spacebreaker/loot_table/blocks/umbriel_regolith.json
 eb0695e8dc00b0548eee3038a568e253fef8d12d data/spacebreaker/loot_table/blocks/uraninite_ore.json
 f1cbb2d06a721e81505b7ced2062f7aa61e00a9a data/spacebreaker/loot_table/blocks/uranium_block.json
 e50e4332530037c806a08cacba8e69de0eda5cfb data/spacebreaker/loot_table/blocks/venus_basalt.json

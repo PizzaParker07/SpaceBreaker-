@@ -81,6 +81,7 @@ public final class BeltStructures {
             case MIRANDA -> java.util.List.of(com.pizzaparker07.spacebreaker.content.uranus.UranusData.MIRANDA_PLAINS);
             case ARIEL -> java.util.List.of(com.pizzaparker07.spacebreaker.content.uranus.UranusData.ARIEL_PLAINS);
             case TITANIA -> java.util.List.of(com.pizzaparker07.spacebreaker.content.uranus.UranusData.TITANIA_UPLANDS);
+            case UMBRIEL -> java.util.List.of(com.pizzaparker07.spacebreaker.content.uranus.Umbriel.PLAINS);
             case TRITON -> java.util.List.of(com.pizzaparker07.spacebreaker.content.neptune.NeptuneData.TRITON_CANTALOUPE,
                     com.pizzaparker07.spacebreaker.content.neptune.NeptuneData.TRITON_POLAR);
             case PLUTO -> java.util.List.of(com.pizzaparker07.spacebreaker.content.pluto.PlutoData.PLUTO_PLAINS);

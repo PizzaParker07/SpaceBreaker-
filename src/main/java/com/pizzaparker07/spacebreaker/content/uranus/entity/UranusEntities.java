@@ -33,10 +33,14 @@ public final class UranusEntities {
     public static final DeferredHolder<EntityType<?>, EntityType<ScreeRoller>> SCREE_ROLLER = ENTITIES.register("scree_roller",
             () -> EntityType.Builder.of(ScreeRoller::new, MobCategory.CREATURE).sized(0.8F, 0.6F).eyeHeight(0.4F).clientTrackingRange(10)
                     .build("scree_roller"));
+    public static final DeferredHolder<EntityType<?>, EntityType<GloamHopper>> GLOAM_HOPPER = ENTITIES.register("gloam_hopper",
+            () -> EntityType.Builder.of(GloamHopper::new, MobCategory.CREATURE).sized(0.6F, 0.7F).eyeHeight(0.5F).clientTrackingRange(10)
+                    .build("gloam_hopper"));
     private static final List<DeferredItem<DeferredSpawnEggItem>> EGGS = new ArrayList<>();
     private static DeferredItem<DeferredSpawnEggItem> clingerEgg;
     private static DeferredItem<DeferredSpawnEggItem> mothEgg;
     private static DeferredItem<DeferredSpawnEggItem> rollerEgg;
+    private static DeferredItem<DeferredSpawnEggItem> hopperEgg;
 
     private UranusEntities() {
     }
@@ -48,16 +52,21 @@ public final class UranusEntities {
         rollerEgg = items.register("scree_roller_spawn_egg", () -> new DeferredSpawnEggItem(SCREE_ROLLER, 0x5C5853, 0xB5B0A8, new Item.Properties()));
         EGGS.add(mothEgg);
         EGGS.add(rollerEgg);
+        hopperEgg = items.register("gloam_hopper_spawn_egg", () -> new DeferredSpawnEggItem(GLOAM_HOPPER, 0x2E2C2B, 0xC9CED2, new Item.Properties()));
+        EGGS.add(hopperEgg);
         ENTITIES.register(modBus);
         modBus.addListener(EntityAttributeCreationEvent.class, e -> {
             e.put(CLIFF_CLINGER.get(), CliffClinger.attributes().build());
             e.put(FROST_MOTH.get(), FrostMoth.attributes().build());
             e.put(SCREE_ROLLER.get(), ScreeRoller.attributes().build());
+            e.put(GLOAM_HOPPER.get(), GloamHopper.attributes().build());
         });
         modBus.addListener(RegisterSpawnPlacementsEvent.class, e -> {
             e.register(FROST_MOTH.get(), SpawnPlacementTypes.NO_RESTRICTIONS, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, FrostMoth::checkSpawn,
                     RegisterSpawnPlacementsEvent.Operation.REPLACE);
             e.register(SCREE_ROLLER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, ScreeRoller::checkSpawn,
+                    RegisterSpawnPlacementsEvent.Operation.REPLACE);
+            e.register(GLOAM_HOPPER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, GloamHopper::checkSpawn,
                     RegisterSpawnPlacementsEvent.Operation.REPLACE);
         });
         modBus.addListener(RegisterSpawnPlacementsEvent.class, e -> e.register(CLIFF_CLINGER.get(), SpawnPlacementTypes.ON_GROUND,
@@ -68,6 +77,8 @@ public final class UranusEntities {
         OuterWorlds.SPAWNS.add(new OuterWorlds.Spawn(UranusData.ARIEL_CRATER, FROST_MOTH, MobCategory.AMBIENT, 6, 1, 3));
         OuterWorlds.SPAWNS.add(new OuterWorlds.Spawn(UranusData.TITANIA_UPLANDS, SCREE_ROLLER, MobCategory.CREATURE, 10, 2, 4));
         OuterWorlds.SPAWNS.add(new OuterWorlds.Spawn(UranusData.TITANIA_CRATER, SCREE_ROLLER, MobCategory.CREATURE, 6, 1, 3));
+        OuterWorlds.SPAWNS.add(new OuterWorlds.Spawn(com.pizzaparker07.spacebreaker.content.uranus.Umbriel.PLAINS, GLOAM_HOPPER, MobCategory.CREATURE, 10, 2, 4));
+        OuterWorlds.SPAWNS.add(new OuterWorlds.Spawn(com.pizzaparker07.spacebreaker.content.uranus.Umbriel.CRATER, GLOAM_HOPPER, MobCategory.CREATURE, 6, 1, 3));
     }
 
     public static List<DeferredItem<DeferredSpawnEggItem>> eggs() {
@@ -81,5 +92,7 @@ public final class UranusEntities {
         lang.item(mothEgg, "Frost Moth Spawn Egg", "Kırağı Güvesi Çağırma Yumurtası");
         lang.add("entity.spacebreaker.scree_roller", "Scree Roller", "Moloz Yuvarlakçası");
         lang.item(rollerEgg, "Scree Roller Spawn Egg", "Moloz Yuvarlakçası Çağırma Yumurtası");
+        lang.add("entity.spacebreaker.gloam_hopper", "Gloam Hopper", "Alacakaranlık Sıçrayanı");
+        lang.item(hopperEgg, "Gloam Hopper Spawn Egg", "Alacakaranlık Sıçrayanı Çağırma Yumurtası");
     }
 }

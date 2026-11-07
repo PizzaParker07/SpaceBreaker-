@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/inner_stairs",
+  "textures": {
+    "bottom": "spacebreaker:block/umbriel_ice",
+    "side": "spacebreaker:block/umbriel_ice",
+    "top": "spacebreaker:block/umbriel_ice"
+  }
+}

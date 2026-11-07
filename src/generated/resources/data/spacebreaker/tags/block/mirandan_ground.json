@@ -10,6 +10,9 @@
     "spacebreaker:mirandan_regolith",
     "spacebreaker:mirandan_ice",
     "spacebreaker:bright_ridge_ice",
-    "spacebreaker:dark_band_ice"
+    "spacebreaker:dark_band_ice",
+    "spacebreaker:umbriel_regolith",
+    "spacebreaker:umbriel_ice",
+    "spacebreaker:sooty_ice"
   ]
 }

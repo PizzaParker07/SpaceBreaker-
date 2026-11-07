@@ -13,8 +13,9 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterDimensionSpecialEffectsEvent;
 
 /**
- * Client side of Miranda, Ariel and Titania: Uranus, pale cyan with its thin dark rings, hanging still in the sky (22° wide from
- * Miranda, 15° from Ariel, 7° from Titania); the cliff clinger, the frost moth and the scree roller.
+ * Client side of Miranda, Ariel, Titania and Umbriel: Uranus, pale cyan with its thin dark rings, hanging still in the sky (22° wide from
+ * Miranda, 15° from Ariel, 7° from Titania, 11° from Umbriel); the cliff clinger, the frost moth,
+ * the scree roller and the gloam hopper.
  */
 @EventBusSubscriber(modid = Spacebreaker.MOD_ID, value = Dist.CLIENT)
 public final class UranusClient {
@@ -32,6 +33,8 @@ public final class UranusClient {
                 new GiantPlanetSkyEffects.Parent(URANUS_DISC, URANUS_RINGS, 1.5, 2.02, 4.0, 1F)));
         event.register(Spacebreaker.id("titania"), new GiantPlanetSkyEffects(Bodies.key("titania"),
                 new GiantPlanetSkyEffects.Parent(URANUS_DISC, URANUS_RINGS, 1.5, 2.02, 3.0, 1F)));
+        event.register(Spacebreaker.id("umbriel"), new GiantPlanetSkyEffects(Bodies.key("umbriel"),
+                new GiantPlanetSkyEffects.Parent(URANUS_DISC, URANUS_RINGS, 1.5, 2.02, 3.5, 1F)));
     }
 
     @SubscribeEvent
@@ -39,6 +42,7 @@ public final class UranusClient {
         event.registerLayerDefinition(CliffClingerModel.LAYER, CliffClingerModel::createLayer);
         event.registerLayerDefinition(FrostMothModel.LAYER, FrostMothModel::createLayer);
         event.registerLayerDefinition(ScreeRollerModel.LAYER, ScreeRollerModel::createLayer);
+        event.registerLayerDefinition(GloamHopperModel.LAYER, GloamHopperModel::createLayer);
     }
 
     @SubscribeEvent
@@ -50,6 +54,9 @@ public final class UranusClient {
                 new FrostMothModel(ctx.bakeLayer(FrostMothModel.LAYER)), Spacebreaker.id("textures/entity/uranus/frost_moth.png"), 1.0F, 0.2F, false));
         event.registerEntityRenderer(UranusEntities.SCREE_ROLLER.get(), ctx -> new SimpleMobRenderer<>(ctx,
                 new ScreeRollerModel(ctx.bakeLayer(ScreeRollerModel.LAYER)), Spacebreaker.id("textures/entity/uranus/scree_roller.png"), 1.0F, 0.45F,
+                false));
+        event.registerEntityRenderer(UranusEntities.GLOAM_HOPPER.get(), ctx -> new SimpleMobRenderer<>(ctx,
+                new GloamHopperModel(ctx.bakeLayer(GloamHopperModel.LAYER)), Spacebreaker.id("textures/entity/uranus/gloam_hopper.png"), 1.0F, 0.35F,
                 false));
     }
 }

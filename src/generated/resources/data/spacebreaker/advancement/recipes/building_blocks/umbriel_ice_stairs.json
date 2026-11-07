@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "spacebreaker:umbriel_ice_stairs"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_umbriel_ice": {
+      "conditions": {
+        "items": [
+          {
+            "items": "spacebreaker:umbriel_ice"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_umbriel_ice"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "spacebreaker:umbriel_ice_stairs"
+    ]
+  }
+}

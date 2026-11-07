@@ -1,5 +1,16 @@
 package com.pizzaparker07.spacebreaker.content.belt;
 
+import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.data.worldgen.placement.PlacementUtils;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.levelgen.VerticalAnchor;
+import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
+import net.minecraft.world.level.levelgen.placement.BiomeFilter;
+import net.minecraft.world.level.levelgen.placement.CountPlacement;
+import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
+import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
+import net.minecraft.world.level.levelgen.placement.RarityFilter;
+import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 import com.pizzaparker07.spacebreaker.Spacebreaker;
 import com.pizzaparker07.spacebreaker.content.belt.world.BasinFeature;
 import com.pizzaparker07.spacebreaker.content.belt.world.CraterFloorFeature;
@@ -61,6 +72,8 @@ public final class OuterWorlds implements SbModule {
             FEATURES.register("coronae", com.pizzaparker07.spacebreaker.content.belt.world.CoronaFeature::new);
     public static final DeferredHolder<Feature<?>, com.pizzaparker07.spacebreaker.content.belt.world.GrabenFeature> GRABENS =
             FEATURES.register("grabens", com.pizzaparker07.spacebreaker.content.belt.world.GrabenFeature::new);
+    public static final DeferredHolder<Feature<?>, com.pizzaparker07.spacebreaker.content.belt.world.RingFeature> MARKS =
+            FEATURES.register("ground_marks", com.pizzaparker07.spacebreaker.content.belt.world.RingFeature::new);
     public static final DeferredRegister<net.minecraft.world.level.block.entity.BlockEntityType<?>> BLOCK_ENTITIES =
             DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, Spacebreaker.MOD_ID);
     /** Vent blocks of every outer world (added by the region modules before registration). */
@@ -115,6 +128,31 @@ public final class OuterWorlds implements SbModule {
         }
         return new ConfiguredFeature<>(WorldgenModule.BOULDER.get(), new BoulderFeature.Config(new WeightedStateProvider(list),
                 UniformFloat.of(min, max), buried));
+    }
+
+    /** An ore vein of the given size in a world's bedrock (configured feature {@code name}). */
+    public static void ore(BootstrapContext<ConfiguredFeature<?, ?>> ctx, String name, TagKey<Block> stone, BlockState ore, int size) {
+        ctx.register(cf(name), new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(new TagMatchTest(stone), ore, size)));
+    }
+
+    /** Places ore veins {@code count} times per chunk between y -40 and 100. */
+    public static void placedOre(BootstrapContext<PlacedFeature> ctx, String name, int count) {
+        PlacementUtils.register(ctx, pf(name), ctx.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(cf(name)), CountPlacement.of(count),
+                InSquarePlacement.spread(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-40), VerticalAnchor.absolute(100)), BiomeFilter.biome());
+    }
+
+    /** Places boulders on the surface, on average once every {@code rarity} chunks. */
+    public static void placedBoulder(BootstrapContext<PlacedFeature> ctx, String name, int rarity) {
+        PlacementUtils.register(ctx, pf(name), ctx.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(cf(name)), RarityFilter.onAverageOnceEvery(rarity),
+                InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_TOP_SOLID, BiomeFilter.biome());
+    }
+
+    /** Places whole-world features (they shape every chunk themselves) once per chunk. */
+    public static void placedWhole(BootstrapContext<PlacedFeature> ctx, String... names) {
+        var cfs = ctx.lookup(Registries.CONFIGURED_FEATURE);
+        for (String name : names) {
+            PlacementUtils.register(ctx, pf(name), cfs.getOrThrow(cf(name)), BiomeFilter.biome());
+        }
     }
 
     /** Creature spawns registered for a biome. */
@@ -174,7 +212,7 @@ public final class OuterWorlds implements SbModule {
             case "titan" -> com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_TITAN;
             case "io", "europa", "ganymede", "callisto" -> com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_JOVIAN;
             case "ceres", "vesta" -> com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_BELT;
-            case "miranda", "ariel", "titania", "triton", "pluto", "charon" -> com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_ICE_GIANTS;
+            case "miranda", "ariel", "titania", "umbriel", "oberon", "triton", "pluto", "charon" -> com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_ICE_GIANTS;
             default -> look.sky() == 0 && look.fog() == 0 ? com.pizzaparker07.spacebreaker.content.audio.SbSounds.MUSIC_MOON : null;
         };
     }

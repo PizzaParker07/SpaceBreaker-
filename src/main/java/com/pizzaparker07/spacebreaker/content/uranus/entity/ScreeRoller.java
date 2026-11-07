@@ -6,26 +6,15 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.BreedGoal;
-import net.minecraft.world.entity.ai.goal.FollowParentGoal;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.PanicGoal;
-import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
-import net.minecraft.world.entity.ai.goal.TemptGoal;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 
@@ -34,7 +23,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
  * the scree, taking a fraction of the damage while curled; after a while it unrolls. Fed coal (the carbon film it scrapes
  * off the ice), two rollers breed.
  */
-public class ScreeRoller extends Animal {
+public class ScreeRoller extends com.pizzaparker07.spacebreaker.content.belt.entity.OuterGrazer {
     private static final EntityDataAccessor<Integer> ROLLED = SynchedEntityData.defineId(ScreeRoller.class, EntityDataSerializers.INT);
     /** Ticks it stays curled after a hit. */
     public static final int ROLL_TIME = 80;
@@ -53,7 +42,7 @@ public class ScreeRoller extends Animal {
     }
 
     public static boolean checkSpawn(EntityType<? extends Animal> type, ServerLevelAccessor level, MobSpawnType reason, BlockPos pos, RandomSource random) {
-        return level.getBlockState(pos.below()).is(UranusModule.MIRANDAN_GROUND) || reason != MobSpawnType.NATURAL;
+        return onGround(UranusModule.MIRANDAN_GROUND, level, reason, pos, random);
     }
 
     @Override
@@ -72,13 +61,13 @@ public class ScreeRoller extends Animal {
     }
 
     @Override
-    protected void registerGoals() {
-        goalSelector.addGoal(1, new PanicGoal(this, 1.6));
-        goalSelector.addGoal(2, new BreedGoal(this, 1.0));
-        goalSelector.addGoal(3, new TemptGoal(this, 1.1, Ingredient.of(Items.COAL), false));
-        goalSelector.addGoal(4, new FollowParentGoal(this, 1.1));
-        goalSelector.addGoal(5, new RandomStrollGoal(this, 0.8));
-        goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 6F));
+    protected net.minecraft.world.item.Item food() {
+        return Items.COAL;
+    }
+
+    @Override
+    protected java.util.function.Supplier<? extends EntityType<? extends com.pizzaparker07.spacebreaker.content.belt.entity.OuterGrazer>> ownType() {
+        return UranusEntities.SCREE_ROLLER;
     }
 
     @Override
@@ -100,16 +89,6 @@ public class ScreeRoller extends Animal {
             entityData.set(ROLLED, ROLL_TIME);
         }
         return hit;
-    }
-
-    @Override
-    public boolean isFood(ItemStack stack) {
-        return stack.is(Items.COAL);
-    }
-
-    @Override
-    public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob other) {
-        return UranusEntities.SCREE_ROLLER.get().create(level);
     }
 
     @Override

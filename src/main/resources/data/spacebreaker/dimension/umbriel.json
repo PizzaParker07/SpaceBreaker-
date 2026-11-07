@@ -1,0 +1,13 @@
+{
+  "type": "spacebreaker:umbriel",
+  "generator": {
+    "type": "spacebreaker:planet",
+    "terrain": "spacebreaker:umbriel",
+    "biome_source": {
+      "type": "spacebreaker:planet",
+      "highlands": "spacebreaker:umbriel_plains",
+      "crater": "spacebreaker:umbriel_crater",
+      "polar": "spacebreaker:umbriel_polar"
+    }
+  }
+}

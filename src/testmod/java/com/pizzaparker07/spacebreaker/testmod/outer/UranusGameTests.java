@@ -131,4 +131,42 @@ public final class UranusGameTests {
         helper.assertTrue(node != null && node.tier() == 5, "tectonic mapping is a tier-5 tech");
         helper.succeed();
     }
+
+    @GameTest(template = WorldTests.EMPTY)
+    public static void umbrielIsDarkWithABrightRingInWunda(GameTestHelper helper) {
+        helper.assertTrue(WorldTests.stem(helper, "umbriel").generator() instanceof PlanetChunkGenerator, "Umbriel uses the planet engine");
+        PlanetTerrain t = WorldTests.generator(helper, "umbriel", 7L).terrain();
+        helper.assertTrue(WorldTests.profile(helper, "umbriel").poleDistance() < WorldTests.profile(helper, "titania").poleDistance(),
+                "smaller than Titania");
+        var wunda = com.pizzaparker07.spacebreaker.content.uranus.Umbriel.wunda();
+        double wz = com.pizzaparker07.spacebreaker.content.belt.world.BasinFeature.centreZ(t, wunda);
+        double floor = com.pizzaparker07.spacebreaker.content.belt.world.BasinFeature.offset(t, wunda, wunda.x(), wz);
+        double far = com.pizzaparker07.spacebreaker.content.belt.world.BasinFeature.offset(t, wunda, wunda.x() + wunda.radius() * 3, wz);
+        helper.assertTrue(floor < -10 && far == 0, "Wunda is a sunken crater floor: " + floor);
+        var ring = com.pizzaparker07.spacebreaker.content.uranus.Umbriel.ring();
+        var mark = ring.marks().getFirst();
+        helper.assertTrue(mark.radius() < wunda.radius(), "the ring lies on the crater floor");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.belt.world.RingFeature.markAt(t, ring, mark.x() + mark.radius(), wz) != null,
+                "frost on the ring");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.belt.world.RingFeature.markAt(t, ring, mark.x(), wz) == null,
+                "dark in the ring's middle");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.belt.world.RingFeature.markAt(t, ring, mark.x() + mark.radius() * 2, wz) == null,
+                "dark outside it");
+        helper.succeed();
+    }
+
+    @GameTest(template = WorldTests.EMPTY, timeoutTicks = 100)
+    public static void gloamHopperBlindsWhatHitsIt(GameTestHelper helper) {
+        var hopper = helper.spawn(UranusEntities.GLOAM_HOPPER.get(), new BlockPos(2, 2, 2));
+        var near = helper.spawn(UranusEntities.SCREE_ROLLER.get(), new BlockPos(4, 2, 2));
+        var other = helper.spawn(UranusEntities.GLOAM_HOPPER.get(), new BlockPos(2, 2, 4));
+        var player = helper.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        helper.assertTrue(hopper.cloudReady(), "ready to kick up dust");
+        hopper.hurt(helper.getLevel().damageSources().playerAttack(player), 1F);
+        helper.assertTrue(near.hasEffect(net.minecraft.world.effect.MobEffects.BLINDNESS), "the dust cloud blinds what is close");
+        helper.assertFalse(other.hasEffect(net.minecraft.world.effect.MobEffects.BLINDNESS), "but not other hoppers");
+        helper.assertFalse(hopper.cloudReady(), "then it needs a while before the next cloud");
+        helper.assertTrue(hopper.isFood(new ItemStack(Items.COAL)), "breeds on coal");
+        helper.succeed();
+    }
 }

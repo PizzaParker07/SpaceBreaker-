@@ -1,0 +1,8 @@
+{
+  "feature": "spacebreaker:umbriel_wunda_ring",
+  "placement": [
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}
