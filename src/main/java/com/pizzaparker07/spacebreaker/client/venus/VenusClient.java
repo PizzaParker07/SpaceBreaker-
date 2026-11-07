@@ -35,6 +35,7 @@ public final class VenusClient {
 
     @SubscribeEvent
     static void renderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerEntityRenderer(VenusEntities.DESCENT_PROBE.get(), ctx -> new net.minecraft.client.renderer.entity.ThrownItemRenderer<>(ctx, 1.6F, true));
         event.registerEntityRenderer(VenusEntities.ACID_RAY.get(), ctx -> new SimpleMobRenderer<>(ctx, new AcidRayModel(ctx.bakeLayer(AcidRayModel.LAYER)),
                 Spacebreaker.id("textures/entity/venus/acid_ray.png"), 1.6F, 0.6F, false));
         event.registerEntityRenderer(VenusEntities.CLOUD_JELLY.get(), ctx -> new SimpleMobRenderer<>(ctx,

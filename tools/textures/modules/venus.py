@@ -232,6 +232,35 @@ def aerostat_kit():
     return cv
 
 
+def descent_probe():
+    """A squat heat-hardened lander: a grey tungsten sphere on a ring, a dark heat shield, a cream parachute pack on top."""
+    rows = [
+        "................",
+        "......FFFF......",
+        ".....FffffF.....",
+        "......SSSS......",
+        ".....TTTTTT.....",
+        "....TtttttTT....",
+        "...TttWWtttTT...",
+        "...TttWWtttTT...",
+        "...TtttttttTT...",
+        "....TtttttTT....",
+        "..RRRRRRRRRRRR..",
+        "...DDDDDDDDDD...",
+        ".....DDDDDD.....",
+        "................",
+        "................",
+        "................",
+    ]
+    tone = {'F': COMPOSITE[2], 'f': COMPOSITE[4], 'S': WEAVE[0], 'T': WEAVE[0], 't': COMPOSITE[1], 'W': SULFUR[4], 'R': COMPOSITE[3], 'D': BASALT[1]}
+    cv = Canvas()
+    for y, row in enumerate(rows):
+        for x, ch in enumerate(row):
+            if ch in tone:
+                cv[x, y] = tone[ch]
+    return cv
+
+
 def lift_gas_sac():
     """A Cloud Jelly's gas bladder: a pale, translucent-looking lilac balloon with a tied neck and a soft highlight."""
     m = mask_from(parse_mask([
@@ -282,6 +311,7 @@ def export(save):
     save(acid_coating_item(), 'item', 'acid_coating')
     save(lift_gas_sac(), 'item', 'lift_gas_sac')
     save(aerostat_kit(), 'item', 'aerostat_kit')
+    save(descent_probe(), 'item', 'descent_probe')
     export_more(save)
 
 

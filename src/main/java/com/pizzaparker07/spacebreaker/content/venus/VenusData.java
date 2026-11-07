@@ -136,5 +136,13 @@ public final class VenusData {
                 .pattern("FGF").pattern("PCP").pattern("FGF")
                 .unlockedBy("has_gas_sac", net.minecraft.advancements.critereon.InventoryChangeTrigger.TriggerInstance.hasItems(VenusModule.LIFT_GAS_SAC.get()))
                 .save(out, Spacebreaker.id("aerostat_kit"));
+        // a heat-hardened lander: aerogel insulation, a tungsten pressure shell, electronics and a parachute of envelope fabric
+        ShapedRecipeBuilder.shaped(RecipeCategory.TRANSPORTATION, VenusModule.DESCENT_PROBE.get())
+                .define('F', VenusModule.ENVELOPE_FABRIC.get()).define('A', VenusModule.AEROGEL.get())
+                .define('T', net.minecraft.tags.ItemTags.create(net.minecraft.resources.ResourceLocation.parse("c:ingots/tungsten")))
+                .define('C', com.pizzaparker07.spacebreaker.content.earth.EarthModule.BASIC_CIRCUIT.get())
+                .pattern(" F ").pattern("ACA").pattern("TTT")
+                .unlockedBy("has_aerogel", net.minecraft.advancements.critereon.InventoryChangeTrigger.TriggerInstance.hasItems(VenusModule.AEROGEL.get()))
+                .save(out, Spacebreaker.id("descent_probe"));
     }
 }

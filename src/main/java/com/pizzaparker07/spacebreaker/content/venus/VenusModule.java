@@ -76,6 +76,7 @@ public final class VenusModule implements SbModule {
 
     public static final DeferredItem<Item> SULFUR = KIT.item("sulfur");
     public static final DeferredItem<Item> ACID_COATING = KIT.item("acid_coating");
+    public static final DeferredItem<DescentProbeItem> DESCENT_PROBE = KIT.item("descent_probe", () -> new DescentProbeItem(new Item.Properties().stacksTo(4)));
     public static final DeferredItem<AerostatKitItem> AEROSTAT_KIT = KIT.item("aerostat_kit", () -> new AerostatKitItem(new Item.Properties().stacksTo(4)));
     public static final DeferredItem<LiftGasSacItem> LIFT_GAS_SAC = KIT.item("lift_gas_sac", () -> new LiftGasSacItem(new Item.Properties().stacksTo(16)));
 
@@ -129,6 +130,14 @@ public final class VenusModule implements SbModule {
         lang.item(SULFUR, "Sulfur", "Kükürt");
         lang.item(LIFT_GAS_SAC, "Lift Gas Sac", "Kaldırma Gazı Kesesi");
         lang.item(AEROSTAT_KIT, "Aerostat Platform Kit", "Aerostat Platform Kiti");
+        lang.item(DESCENT_PROBE, "Venus Descent Probe", "Venüs İniş Sondası");
+        lang.add("item.spacebreaker.descent_probe.desc", "Release in the clouds: it parachutes to the surface and sends samples home",
+                "Bulutlarda bırak: paraşütle yüzeye iner, numuneleri sana gönderir");
+        lang.add("message.spacebreaker.descent_probe.where", "Release it from Venus's cloud deck", "Venüs'ün bulut katmanından bırak");
+        lang.add("message.spacebreaker.descent_probe.released", "Probe away: descending to the surface", "Sonda bırakıldı: yüzeye iniyor");
+        lang.add("message.spacebreaker.descent_probe.landed", "Descent probe on the surface of Venus: samples and data received",
+                "İniş sondası Venüs yüzeyinde: numuneler ve veri alındı");
+        lang.add(com.pizzaparker07.spacebreaker.content.venus.entity.VenusEntities.DESCENT_PROBE.get().getDescriptionId(), "Venus Descent Probe", "Venüs İniş Sondası");
         lang.add("item.spacebreaker.aerostat_kit.desc", "Use inside Venus's habitable cloud band to inflate a floating base",
                 "Venüs'ün yaşanabilir bulut kuşağında kullan: yüzen bir üs şişirir");
         lang.add("message.spacebreaker.aerostat_kit.band", "The envelope only lifts inside Venus's cloud band",

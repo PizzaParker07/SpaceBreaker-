@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-07T02:02:05.254151097	Spacebreaker inner planets recipes
+// 1.21.1	2026-11-07T05:05:23.686111254	Spacebreaker inner planets recipes
 ea6a05797061b01256ddc22d4b818ba0c3c92238 data/spacebreaker/advancement/recipes/building_blocks/aerogel.json
 9b7cff5c72a5ba7dc92a04601c1af32f7d61c349 data/spacebreaker/advancement/recipes/building_blocks/composite_panel.json
 f46d66f4e27e5564e14498f719b0e24f696fe219 data/spacebreaker/advancement/recipes/building_blocks/envelope_fabric.json
@@ -37,6 +37,7 @@ d97b530d2077cf9a20cab7db2932c43d4ade4132 data/spacebreaker/advancement/recipes/m
 252e49a0e4591cc13219b284e62f48dd8f3871a9 data/spacebreaker/advancement/recipes/misc/iron_ingot_from_raw_hematite_blasting.json
 64a2e247ee70d61fc6de7deba4905a7cf82386b4 data/spacebreaker/advancement/recipes/misc/iron_ingot_from_raw_hematite_smelting.json
 a9b29629d66834e56d899e13b1d02f537f1c3b03 data/spacebreaker/advancement/recipes/transportation/aerostat_kit.json
+83dee42c76b33dcbbdadf71beec43a5dc93e5a97 data/spacebreaker/advancement/recipes/transportation/descent_probe.json
 e40575726b0ec158c002cb66f9f4aa60f30fb778 data/spacebreaker/recipe/acid_coating.json
 170de7ea8520121a6aba0d890d73704ae4637976 data/spacebreaker/recipe/aerogel.json
 f1af7c12b67af69f662aaafd2e15a1465fd0ba7b data/spacebreaker/recipe/aerostat_kit.json
@@ -49,6 +50,7 @@ bc5404dd1d5bf1ee1d5705e240a972bf3a57fdb4 data/spacebreaker/recipe/crushing/mercu
 ff1b4e4aef6d320cdd14c3ce6e57c8984812e798 data/spacebreaker/recipe/crushing/perchlorate_soil.json
 36cee3cbd5433c93786d4f7b81827fb1a8433a9b data/spacebreaker/recipe/crushing/polar_crater_ice.json
 b3897cb6a7157b9df7ec1e518aef400de815f852 data/spacebreaker/recipe/crushing/sulfur_crust.json
+d176443d96caaff999c242faca821980608df9e1 data/spacebreaker/recipe/descent_probe.json
 82d43c5413f63dd5fc04ca849f72c816543277f5 data/spacebreaker/recipe/envelope_fabric.json
 b2506867554732b2f7775cb1c78d04913dbfae6b data/spacebreaker/recipe/gypsum_block.json
 cf46433ddad9804f4cad85fd7b1cfc5392f7146e data/spacebreaker/recipe/iron_ingot_from_hematite_ore_blasting.json
