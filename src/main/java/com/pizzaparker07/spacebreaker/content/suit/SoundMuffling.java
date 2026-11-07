@@ -1,11 +1,10 @@
 package com.pizzaparker07.spacebreaker.content.suit;
 
 /**
- * How the air around the listener carries sound ("realistic sound"). Sound needs a medium: in thin air (Mars,
- * 0.6 kPa) the world sounds faint and dull, high tones fade first; in vacuum nothing outside carries at all. What the
- * suit touches still reaches the ear through the suit: one's own footsteps, the tool in hand, the block being mined,
- * the machine underfoot, all dull. Sounds inside the helmet (radio, mission control, alarms, breathing) and anything
- * heard in breathable air or a pressurised room stay as they are.
+ * How the air around the listener colours sound ("realistic sound", an option, off by default). Kept deliberately
+ * light so the game never sounds broken: in thin air (Mars) the world is a touch quieter and softer, in vacuum a bit
+ * more so; what the suit touches (one's own steps, the tool in hand) sounds normal. Sounds inside the helmet (radio,
+ * mission control, alarms) and anything heard in breathable air or a pressurised room stay as they are.
  *
  * <p>A {@link Muffle} is a gain for the whole sound and a gain for its high frequencies (a low-pass filter); the
  * client applies it once when a sound starts.
@@ -15,10 +14,10 @@ public final class SoundMuffling {
     public static final double FULL_AIR_KPA = 50.0;
     /** Below this it is vacuum for sound. */
     public static final double VACUUM_KPA = 0.1;
-    /** Outside sounds in vacuum: all but gone. */
-    public static final Muffle VACUUM = new Muffle(0.03F, 0.05F);
-    /** Sound carried through the suit from what it touches: quieter and dull. */
-    public static final Muffle THROUGH_SUIT = new Muffle(0.45F, 0.15F);
+    /** Outside sounds in vacuum: quieter and softer, never silent. */
+    public static final Muffle VACUUM = new Muffle(0.5F, 0.4F);
+    /** Thin air just above vacuum: the gentlest muffle, blending to none at {@link #FULL_AIR_KPA}. */
+    public static final Muffle THIN_AIR = new Muffle(0.8F, 0.6F);
 
     /** {@code gain}: volume factor; {@code highGain}: extra factor for high frequencies (1 = no filter). */
     public record Muffle(float gain, float highGain) {
@@ -43,14 +42,13 @@ public final class SoundMuffling {
         if (pressureKpa < VACUUM_KPA) {
             return VACUUM;
         }
-        // thin air: loudness falls with the square root of the pressure, the highs fall faster
-        double t = pressureKpa / FULL_AIR_KPA;
-        return new Muffle((float) (0.3 + 0.7 * Math.sqrt(t)), (float) (0.1 + 0.9 * t));
+        // thin air: from a light muffle up to none at full air
+        double t = Math.sqrt(pressureKpa / FULL_AIR_KPA);
+        return new Muffle((float) (THIN_AIR.gain() + (1 - THIN_AIR.gain()) * t), (float) (THIN_AIR.highGain() + (1 - THIN_AIR.highGain()) * t));
     }
 
-    /** A sound from something the suit touches: carried through the suit, or through the air if that is better. */
+    /** A sound from something the suit touches (own steps, the tool in hand): heard normally. */
     public static Muffle contact(double pressureKpa, boolean airAround) {
-        Muffle air = outside(pressureKpa, airAround);
-        return air.gain() >= THROUGH_SUIT.gain() ? air : THROUGH_SUIT;
+        return Muffle.NONE;
     }
 }
