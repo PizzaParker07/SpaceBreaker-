@@ -43,6 +43,16 @@ public final class SuitEvents {
                     net.minecraft.sounds.SoundSource.PLAYERS, 0.35F, 1.7F);
         }
         data.wasMagnetised = magnetised;
+        if (player.tickCount % 10 == 0) {
+            boolean pressurised = com.pizzaparker07.spacebreaker.content.suit.block.SealedRooms.providesOxygen(player.level(),
+                    BlockPos.containing(player.getEyePosition()));
+            if (pressurised && !data.wasPressurised) {
+                // stepping into a station module or base: the helmet may come off here
+                player.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.spacebreaker.suit.pressurised")
+                        .withStyle(net.minecraft.ChatFormatting.AQUA), true);
+            }
+            data.wasPressurised = pressurised;
+        }
         if (player.tickCount % 5 == 0) {
             sendStatus(sp, data);
         }
@@ -100,6 +110,9 @@ public final class SuitEvents {
         }
         if (data.wasMagnetised) {
             flags |= SuitStatusPayload.MAGNETISED;
+        }
+        if (data.wasPressurised) {
+            flags |= SuitStatusPayload.PRESSURISED;
         }
         if (Tether.anchor(player).isPresent()) {
             flags |= SuitStatusPayload.TETHERED;

@@ -1,6 +1,9 @@
 {
   "values": [
     "minecraft:iron_trapdoor",
-    "minecraft:iron_door"
+    "minecraft:iron_door",
+    "spacebreaker:station_hull",
+    "spacebreaker:station_window",
+    "spacebreaker:docking_port"
   ]
 }

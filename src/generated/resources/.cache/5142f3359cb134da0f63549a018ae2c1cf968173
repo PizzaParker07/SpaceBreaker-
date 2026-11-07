@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-07T00:01:41.833887416	Tags for minecraft:block mod id spacebreaker
+// 1.21.1	2026-11-07T00:15:17.601285256	Tags for minecraft:block mod id spacebreaker
 baa792afbbd764742ba879704d1a1ac2c34c5a78 data/c/tags/block/ore_rates/singular.json
 203c174f339db62a8ff7248872ae78b4b8ac7b1e data/c/tags/block/ores.json
 f9bb0edf7816cfeb62e0fe8f059db745e1f01707 data/c/tags/block/ores/ammonia.json
@@ -49,7 +49,7 @@ da11356f50380c274564c8d4dc10925d3ddfb5cf data/minecraft/tags/block/slabs.json
 2dce56fc0924badb5af2211c330d362f4cf1b5a4 data/minecraft/tags/block/stairs.json
 ac387f94a714d7f44dec89dd72f262e051f6e8a9 data/minecraft/tags/block/walls.json
 2cf3064f119cd0e4fc9fe1821de34e6166897553 data/minecraft/tags/block/wool.json
-f5b0ec35249c11810aaa21a5c27270aaf31d4d51 data/spacebreaker/tags/block/airtight.json
+0ac3e007f0bdd7939ada338f1af0f00e31a62f39 data/spacebreaker/tags/block/airtight.json
 3b5fbb1840c423949990e13b51d7a53878f9a57e data/spacebreaker/tags/block/belt_stone.json
 baa3bd05bea7c8f0745984048aacb51b0a5caf29 data/spacebreaker/tags/block/ceres_ground.json
 5b703a515cbb2d14bcf6e3e4dc8c0ca00c496de3 data/spacebreaker/tags/block/charon_stone.json
