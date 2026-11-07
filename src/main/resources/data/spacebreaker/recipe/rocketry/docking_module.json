@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "HPH",
+    "W W",
+    "HHH"
+  ],
+  "key": {
+    "H": {"item": "spacebreaker:station_hull"},
+    "P": {"item": "spacebreaker:docking_port"},
+    "W": {"item": "spacebreaker:station_window"}
+  },
+  "result": {"id": "spacebreaker:docking_module", "count": 1}
+}

@@ -74,7 +74,7 @@ public final class RocketryModule implements SbModule {
             COMPONENTS.registerComponentType("rocket_design", b -> b.persistent(RocketDesign.CODEC).networkSynchronized(RocketDesign.STREAM_CODEC));
 
     /** Every part item in creative-tab order. */
-    public static final List<DeferredItem<RocketPartItem>> PARTS = new ArrayList<>();
+    public static final List<DeferredItem<? extends RocketPartItem>> PARTS = new ArrayList<>();
 
     public static final DeferredItem<RocketPartItem> NOSE_CONE = part("nose_cone");
     public static final DeferredItem<RocketPartItem> CREW_CAPSULE = part("crew_capsule");
@@ -102,6 +102,9 @@ public final class RocketryModule implements SbModule {
     public static final DeferredItem<RocketPartItem> OBSERVATION_SATELLITE = part("observation_satellite");
     public static final DeferredItem<RocketPartItem> SPACE_PROBE = part("space_probe");
     public static final DeferredItem<RocketPartItem> CARGO_MODULE = part("cargo_module");
+    /** Station modules: rocket payloads and, in hand, the kits that build them (see station/StationModule). */
+    public static final DeferredItem<com.pizzaparker07.spacebreaker.content.rocketry.station.StationModuleItem> STATION_CORE_MODULE = modulePart("station_core_module");
+    public static final DeferredItem<com.pizzaparker07.spacebreaker.content.rocketry.station.StationModuleItem> DOCKING_MODULE = modulePart("docking_module");
     public static final DeferredItem<RocketPartItem> DECOUPLER = part("decoupler");
     public static final DeferredItem<RocketPartItem> INTERSTAGE = part("interstage");
     public static final DeferredItem<RocketPartItem> FINS = part("fins");
@@ -152,6 +155,14 @@ public final class RocketryModule implements SbModule {
             net.minecraft.world.level.block.TransparentBlock::new, hull().noOcclusion().isViewBlocking((s, l, p) -> false).isSuffocating((s, l, p) -> false));
     public static final DeferredBlock<com.pizzaparker07.spacebreaker.content.rocketry.station.DockingPortBlock> DOCKING_PORT = BLOCKS.registerBlock(
             "docking_port", com.pizzaparker07.spacebreaker.content.rocketry.station.DockingPortBlock::new, hull().lightLevel(s -> 3));
+    /** A sealed hatch panel: nine close a module's connection mouth. */
+    public static final DeferredBlock<com.pizzaparker07.spacebreaker.content.rocketry.station.StationHatchBlock> STATION_HATCH = BLOCKS.registerBlock(
+            "station_hatch", com.pizzaparker07.spacebreaker.content.rocketry.station.StationHatchBlock::new, hull());
+    /** The station core's console, where delivered modules wait. */
+    public static final DeferredBlock<com.pizzaparker07.spacebreaker.content.rocketry.station.StationCoreBlock> STATION_CORE = BLOCKS.registerBlock(
+            "station_core", com.pizzaparker07.spacebreaker.content.rocketry.station.StationCoreBlock::new, hull().lightLevel(s -> 6));
+    public static final DeferredItem<BlockItem> STATION_HATCH_ITEM = ITEMS.registerSimpleBlockItem(STATION_HATCH);
+    public static final DeferredItem<BlockItem> STATION_CORE_ITEM = ITEMS.registerSimpleBlockItem(STATION_CORE);
     public static final DeferredItem<BlockItem> STATION_HULL_ITEM = ITEMS.registerSimpleBlockItem(STATION_HULL);
     public static final DeferredItem<BlockItem> STATION_WINDOW_ITEM = ITEMS.registerSimpleBlockItem(STATION_WINDOW);
     public static final DeferredItem<BlockItem> DOCKING_PORT_ITEM = ITEMS.registerSimpleBlockItem(DOCKING_PORT);
@@ -172,6 +183,9 @@ public final class RocketryModule implements SbModule {
     public static final DeferredItem<com.pizzaparker07.spacebreaker.content.rocketry.station.HabitatKitItem> HABITAT_KIT = ITEMS.registerItem(
             "habitat_kit", com.pizzaparker07.spacebreaker.content.rocketry.station.HabitatKitItem::new, new Item.Properties().stacksTo(4));
     @SuppressWarnings("DataFlowIssue")
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.pizzaparker07.spacebreaker.content.rocketry.station.StationCoreBlockEntity>> STATION_CORE_BE =
+            BLOCK_ENTITIES.register("station_core", () -> BlockEntityType.Builder.of(
+                    com.pizzaparker07.spacebreaker.content.rocketry.station.StationCoreBlockEntity::new, STATION_CORE.get()).build(null));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.pizzaparker07.spacebreaker.content.rocketry.station.FuelDepotBlockEntity>> FUEL_DEPOT_BE =
             BLOCK_ENTITIES.register("fuel_depot", () -> BlockEntityType.Builder.of(
                     com.pizzaparker07.spacebreaker.content.rocketry.station.FuelDepotBlockEntity::new, FUEL_DEPOT.get()).build(null));
@@ -221,6 +235,12 @@ public final class RocketryModule implements SbModule {
             () -> IMenuTypeExtension.create(RocketAssemblerMenu::new));
     public static final DeferredHolder<MenuType<?>, MenuType<LaunchConsoleMenu>> LAUNCH_CONSOLE_MENU = MENUS.register("launch_control_console",
             () -> IMenuTypeExtension.create(LaunchConsoleMenu::new));
+
+    private static DeferredItem<com.pizzaparker07.spacebreaker.content.rocketry.station.StationModuleItem> modulePart(String name) {
+        var item = ITEMS.registerItem(name, com.pizzaparker07.spacebreaker.content.rocketry.station.StationModuleItem::new, new Item.Properties().stacksTo(4));
+        PARTS.add(item);
+        return item;
+    }
 
     private static DeferredItem<RocketPartItem> part(String name) {
         DeferredItem<RocketPartItem> item = ITEMS.registerItem(name, RocketPartItem::new, new Item.Properties().stacksTo(16));
@@ -281,7 +301,7 @@ public final class RocketryModule implements SbModule {
                 .add(CREW_ARM_ITEM).add(FUEL_UMBILICAL_ITEM).add(LAUNCH_CONSOLE_ITEM);
         PARTS.forEach(SbTabs.SPACEFLIGHT::add);
         SbTabs.SPACEFLIGHT.add(MULTI_LAYER_INSULATION);
-        SbTabs.SPACEFLIGHT.add(STATION_KIT).add(HABITAT_KIT).add(STATION_HULL_ITEM).add(STATION_WINDOW_ITEM).add(DOCKING_PORT_ITEM)
+        SbTabs.SPACEFLIGHT.add(STATION_KIT).add(HABITAT_KIT).add(STATION_HULL_ITEM).add(STATION_WINDOW_ITEM).add(DOCKING_PORT_ITEM).add(STATION_HATCH_ITEM).add(STATION_CORE_ITEM)
                 .add(STATION_BUNK_ITEM).add(FUEL_DEPOT_ITEM).add(LANDING_BEACON_ITEM);
         SbTabs.SPACEFLIGHT.addStack(RocketryModule::exampleRocket);
         SbTabs.SPACEFLIGHT.addStack(() -> com.pizzaparker07.spacebreaker.content.rocketry.item.RocketItem.of(LUNAR_SHUTTLE));
@@ -369,6 +389,8 @@ public final class RocketryModule implements SbModule {
         loot.self(STATION_HULL.get());
         loot.self(STATION_WINDOW.get());
         loot.self(DOCKING_PORT.get());
+        loot.self(STATION_HATCH.get());
+        loot.self(STATION_CORE.get());
         loot.self(STATION_BUNK.get());
         loot.self(FUEL_DEPOT.get());
         loot.self(LANDING_BEACON.get());
@@ -395,7 +417,9 @@ public final class RocketryModule implements SbModule {
     @Override
     public void addTags(SbTags tags) {
         tags.block(BlockTags.MINEABLE_WITH_PICKAXE, ROCKET_ASSEMBLER.get(), LAUNCH_PAD.get(), FLAME_TRENCH.get(), SERVICE_TOWER.get(),
-                CREW_ARM.get(), FUEL_UMBILICAL.get(), LAUNCH_CONSOLE.get(), STATION_HULL.get(), STATION_WINDOW.get(), DOCKING_PORT.get(), FUEL_DEPOT.get(), LANDING_BEACON.get(), WARNING_LIGHT.get());
+                CREW_ARM.get(), FUEL_UMBILICAL.get(), LAUNCH_CONSOLE.get(), STATION_HULL.get(), STATION_WINDOW.get(), DOCKING_PORT.get(), FUEL_DEPOT.get(), LANDING_BEACON.get(), WARNING_LIGHT.get(),
+                STATION_HATCH.get(), STATION_CORE.get());
+        tags.block(com.pizzaparker07.spacebreaker.content.suit.SuitModule.AIRTIGHT, STATION_HATCH.get(), STATION_CORE.get());
         tags.block(BlockTags.NEEDS_STONE_TOOL, LAUNCH_PAD.get(), FLAME_TRENCH.get(), SERVICE_TOWER.get());
         // base blocks: mined with a pickaxe; stairs, slabs and walls tagged as such; the grate lets air through
         tags.block(BlockTags.MINEABLE_WITH_PICKAXE, com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.all());

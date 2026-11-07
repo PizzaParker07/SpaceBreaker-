@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "spacebreaker:block/station_hatch",
+    "side": "spacebreaker:block/station_hull",
+    "bottom": "spacebreaker:block/station_hull"
+  }
+}

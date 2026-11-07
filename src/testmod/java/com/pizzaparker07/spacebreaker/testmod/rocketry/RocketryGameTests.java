@@ -1036,6 +1036,49 @@ public final class RocketryGameTests {
         });
     }
 
+    @GameTest(template = EMPTY, timeoutTicks = 400, batch = "rocketry_station_modules")
+    public static void stationModulesJoinAndHoldAir(GameTestHelper helper) {
+        var level = helper.getLevel();
+        // high above the test's small enclosure: a station needs room
+        BlockPos centre = helper.absolutePos(new BlockPos(4, 24, 4));
+        Direction forward = Direction.SOUTH;
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.buildCore(level, centre, forward, "tester"), "the core unfolds");
+        helper.assertFalse(com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.buildCore(level, centre, forward, "tester"), "not over existing blocks");
+        BlockPos roof = com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.corePort(centre);
+        helper.assertTrue(level.getBlockState(roof).is(RocketryModule.DOCKING_PORT.get())
+                && level.getBlockState(roof).getValue(com.pizzaparker07.spacebreaker.content.rocketry.station.DockingPortBlock.FACING) == Direction.UP,
+                "a docking port on the roof, facing up");
+        var core = com.pizzaparker07.spacebreaker.content.rocketry.station.StationCoreBlockEntity.near(level, roof);
+        helper.assertTrue(core != null && "tester".equals(core.owner()), "the console knows its owner");
+        // the front mouth: nine hatches, the middle one marked, facing out
+        BlockPos mouth = centre.relative(forward, 3).above(2);
+        var hatch = level.getBlockState(mouth);
+        helper.assertTrue(hatch.is(RocketryModule.STATION_HATCH.get()) && hatch.getValue(com.pizzaparker07.spacebreaker.content.rocketry.station.StationHatchBlock.CENTER)
+                && hatch.getValue(com.pizzaparker07.spacebreaker.content.rocketry.station.StationHatchBlock.FACING) == forward, "a sealed mouth on the front wall");
+        helper.assertTrue(mouth.equals(com.pizzaparker07.spacebreaker.content.rocketry.station.StationHatchBlock.mouthCenter(level, mouth.east().below())),
+                "any hatch of the mouth leads to its middle");
+        // attach a docking module there: both walls open into a passage, a port at the far end
+        var docking = com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.DOCKING;
+        helper.assertTrue(docking.attach(level, mouth, "tester"), "the docking module attaches");
+        helper.assertFalse(docking.attach(level, mouth, "tester"), "a mouth takes one module");
+        helper.assertTrue(level.getBlockState(mouth).isAir() && level.getBlockState(mouth.relative(forward)).isAir()
+                && level.getBlockState(mouth.below()).isAir() && level.getBlockState(mouth.above().east()).isAir(), "a 3x3 passage through both walls");
+        BlockPos far = mouth.relative(forward, 7);
+        helper.assertTrue(level.getBlockState(far).is(RocketryModule.DOCKING_PORT.get())
+                && level.getBlockState(far).getValue(com.pizzaparker07.spacebreaker.content.rocketry.station.DockingPortBlock.FACING) == forward,
+                "a docking port at the end of the tunnel");
+        // a module delivered by rocket waits in the console
+        helper.assertTrue(core.store(new net.minecraft.world.item.ItemStack(RocketryModule.DOCKING_MODULE.get())), "a delivered module goes into the console");
+        // the core and the tunnel make one sealed room around the core's oxygen distributor
+        BlockPos dist = centre.relative(forward.getOpposite(), 2).relative(forward.getClockWise(), -2).above();
+        helper.succeedWhen(() -> {
+            var be = (com.pizzaparker07.spacebreaker.content.suit.block.OxygenDistributorBlockEntity) level.getBlockEntity(dist);
+            helper.assertTrue(be != null && be.room().sealed(), "core and tunnel are sealed");
+            int v = be.room().volume();
+            helper.assertTrue(v >= 170 && v <= 190, "core (5x5x5) + passage (3x3x2) + tunnel (3x3x5), less the console: " + v);
+        });
+    }
+
     @GameTest(template = EMPTY)
     public static void stationBunkSetsRespawn(GameTestHelper helper) {
         BlockPos bunk = helper.absolutePos(new BlockPos(1, 2, 1));

@@ -5,6 +5,8 @@
     "spacebreaker:station_hull",
     "spacebreaker:station_window",
     "spacebreaker:docking_port",
+    "spacebreaker:station_hatch",
+    "spacebreaker:station_core",
     "spacebreaker:sliding_door"
   ]
 }
