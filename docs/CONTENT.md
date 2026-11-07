@@ -234,7 +234,10 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Miranda blokları | Miranda Regoliti (kalıcı ayak izi), Miranda Ana Kaya Buzu (+ merdiven, basamak, duvar), Parlak Sırt Buzu, Koyu Bant Buzu, Miranda Karbon Yatağı (→ kömür) |
 | 🎨 | Zindan | Düşmüş İkmal İniş Aracı (Miranda) |
 | 🎨 | Teknoloji | Dikey Keşif (4) |
-| 🎨 | Ortak yüzey özellikleri | fay uçurumu (`fault_cliff`), taç yapıları (`coronae`) |
+| 🎨 | Ariel `spacebreaker:ariel` | büyük uyduların en genci: parlak buz ovaları, CO₂ kırağısı, az krater; ovaları kesen dört uzun, dik duvarlı, düz tabanlı rift vadisi (taban buzlu lavla dolmuş, ortasında alçak sırt); gökte 15° genişliğinde halkalı Uranüs |
+| 🎨 | Ariel blokları | Ariel Regoliti (kalıcı ayak izi), Ariel Ana Kaya Buzu (+ merdiven, basamak, duvar), Graben Tabanı Buzu, Ariel Amonyak Yatağı (→ Amonyak Kristali); Mars'ın CO₂ kırağısı |
+| 🎨 | Zindan ve teknoloji | Düşmüş İkmal İniş Aracı (Ariel) → Buz Kabuğu Tektoniği (4) |
+| 🎨 | Ortak yüzey özellikleri | fay uçurumu (`fault_cliff`), taç yapıları (`coronae`), rift vadileri (`grabens`) |
 
 ### Neptün sistemi
 | Durum | İçerik | Not |
@@ -290,6 +293,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | Kallisto 🎨 | Krater Sıçrayıcısı (ürkek, düşük yerçekiminde uzun sıçrayışlarla kaçar) |
 | Titan 🎨 | Metan Kayıcısı (metan göllerinin üstünde yürür) · Tolin Solucanı (kumul denizlerinde halkalı, ürkek kazıcı: yaklaşınca kuma gömülür, sessizlikte çıkar, kumu eleyip ara sıra tolin bırakır; tolin kumuyla çoğalır) |
 | Enceladus 🎨 | Gayzer Süzülücüsü (gayzer bulutlarında süzülen parlak çan) |
+| Ariel 🎨 | Kırağı Güvesi (soluk, geniş kanatlı; vadi çıkıntılarının altında tüner, karanlıkta uçar) |
 | Miranda 🎨 | Uçurum Yapışkanı (beş kollu, yassı otlayıcı; duvarlara tırmanır, düşme hasarı almaz; kömürle çoğalır) |
 | Triton 🎨 | Gayzer Böceği (gayzer tozuyla beslenir, gayzer fırlatınca kanat kınlarını açıp süzülerek iner, düşme hasarı almaz; gayzer tozuyla çoğalır) |
 | Plüton 🎨 | Azot Kaydırıcısı (azot buzunda karnı üstünde iki kat hızlı kayar, tolinle çoğalır) |
