@@ -1293,7 +1293,7 @@
   "message.spacebreaker.cargo.route_off": "Automatic cargo route off",
   "message.spacebreaker.cargo.route_on": "Automatic cargo route on",
   "message.spacebreaker.cargo.waiting": "Cargo rocket at %s: %s items wait in its hold (no chests by the port or beacon)",
-  "message.spacebreaker.cold_trap.enter": "Permanently shadowed crater: %s °C, the sun never reaches here",
+  "message.spacebreaker.cold_trap.enter": "Permanently shadowed crater: %s °C, the sun never reaches here. Ice lies on the floor; the heated suit keeps you warm",
   "message.spacebreaker.cold_trap.leave": "Out of the cold trap",
   "message.spacebreaker.console.no_rocket": "No rocket on the pad",
   "message.spacebreaker.descent_probe.landed": "Descent probe on the surface of Venus: samples and data received",
