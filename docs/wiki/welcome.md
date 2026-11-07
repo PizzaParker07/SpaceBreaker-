@@ -7,7 +7,7 @@ Bu kitap yanından ayrılmasın. Kaybedersen bir kitap ve bir [Ham Boksit](ores)
 Kitap, Ham Boksit → **Spacebreaker Saha Rehberi** (Çalışma Masası, şekilsiz)
 
 ### Kitabı kullanmak
-- Bir bölümü açmak için **İçindekiler**'de adına tıkla.
+- **İçindekiler** konuları listeler: bölümlerini görmek için birine, sonra açmak için bölüm adına tıkla.
 - Sayfaları kitabın altındaki oklarla, klavyedeki ok tuşlarıyla ya da fare tekerleğiyle çevir.
 - Sağdaki renkli şeritler seni doğrudan bir konuya götürür.
 - Mavi yazılar bağlantıdır: eşya adlarının üstüne gelince bilgisini görürsün, tıklayınca o eşyanın sayfası açılır.
@@ -28,7 +28,7 @@ Keep this book with you. If you lose it, make a new one from a book and some [Ra
 Book, Raw Bauxite → **Spacebreaker Field Guide** (Crafting Table, shapeless)
 
 ### Using the book
-- Click a chapter name in the **Contents** to open it.
+- The **Contents** lists the topics: click one to open its chapters, then click a chapter name.
 - Turn pages with the arrows under the book, the arrow keys or the mouse wheel.
 - The coloured ribbons on the right take you straight to a topic.
 - Blue text is a link: hover an item name to see it, click it to open that item's page.

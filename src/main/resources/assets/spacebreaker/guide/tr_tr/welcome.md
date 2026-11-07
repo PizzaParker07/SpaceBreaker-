@@ -10,7 +10,7 @@ Bu kitap yanından ayrılmasın. Kaybedersen bir kitap ve bir {item spacebreaker
 {recipe spacebreaker:guide_book}
 
 ## Kitabı kullanmak
-- Bir bölümü açmak için **İçindekiler**'de adına tıkla.
+- **İçindekiler** konuları listeler: bölümlerini görmek için birine, sonra açmak için bölüm adına tıkla.
 - Sayfaları kitabın altındaki oklarla, klavyedeki ok tuşlarıyla ya da fare tekerleğiyle çevir.
 - Sağdaki renkli şeritler seni doğrudan bir konuya götürür.
 - {color #1E5A9A}Mavi{/color} yazılar bağlantıdır: eşya adlarının üstüne gelince bilgisini görürsün, tıklayınca o eşyanın sayfası açılır.
