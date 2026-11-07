@@ -102,6 +102,107 @@ public final class BlockyBodyRenderer {
     private BlockyBodyRenderer() {
     }
 
+    /**
+     * A thin shell of air around a body: one layer of see-through blocks that shows only toward the rim (where the line of
+     * sight grazes it), fading to nothing over the face of the planet, so the surface below stays sharp and opaque.
+     */
+    public static void drawAirShell(Matrix4f pose, BlockyBodyMesh.Style style, int n, int rgb, Pose body, Vector3f sun, float alpha) {
+        Matrix3f rot = body.rotation(style);
+        Vector3f s = new Vector3f(sun).normalize();
+        Vector3f look = new Vector3f(body.center()).normalize();
+        List<BlockyBodyMesh.Face> faces = BlockyBodyMesh.body(style, n);
+        List<Quad> quads = new ArrayList<>();
+        for (BlockyBodyMesh.Face f : faces) {
+            Vector3f normal = rot.transform(new Vector3f(f.normal()));
+            Vector3f centre = rot.transform(new Vector3f(f.center())).mul(body.radius()).add(body.center());
+            if (facesAway(normal, centre, look, depthKept(body) < 0.5F)) {
+                continue;
+            }
+            Vector3f surface = rot.transform(new Vector3f(f.surface()));
+            Vector3f toEye = new Vector3f(centre).negate().normalize();
+            float facing = Math.abs(surface.dot(toEye));
+            float rim = Mth.clamp((0.45F - facing) / 0.3F, 0F, 1F);
+            if (rim <= 0) {
+                continue;
+            }
+            float day = Mth.clamp(surface.dot(s) * 3F + 0.3F, 0.08F, 1F);
+            quads.add(quad(f, rot, body, rgb, day, alpha * rim, null, look));
+        }
+        if (quads.isEmpty()) {
+            return;
+        }
+        quads.sort((a, b) -> Float.compare(b.depth(), a.depth()));
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.disableCull();
+        RenderSystem.depthMask(false);
+        RenderSystem.disableDepthTest();
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        BufferBuilder bb = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        for (Quad q : quads) {
+            put(bb, pose, q);
+        }
+        BufferUploader.drawWithShader(bb.buildOrThrow());
+        RenderSystem.enableCull();
+    }
+
+    /**
+     * The air of a planet as a thin band hugging its outline (the limb), from the edge of the planet out to the edge of a
+     * slightly bigger sphere, in a few hard steps; never over the planet's face, so the surface stays sharp. Lit on the
+     * day side, faint on the night side. Works from far away and from low orbit (where the limb is the horizon).
+     *
+     * @param thickness air height as a fraction of the radius
+     */
+    public static void drawLimb(Matrix4f pose, Pose body, Vector3f sun, int rgb, float alpha, float thickness) {
+        Vector3f c = body.center();
+        float d = c.length();
+        float r = body.radius();
+        float ra = r * (1 + thickness);
+        if (d <= ra * 1.0005F) {
+            return; // inside the air
+        }
+        Vector3f u = new Vector3f(c).div(d);
+        // the outline of a sphere seen from the camera: a circle in the plane square to the line of sight
+        float inner = r * (float) Math.sqrt(1 - (r * r) / (d * d));
+        float outer = ra * (float) Math.sqrt(1 - (ra * ra) / (d * d));
+        Vector3f ci = new Vector3f(u).mul(d - r * r / d);
+        Vector3f co = new Vector3f(u).mul(d - ra * ra / d);
+        Vector3f a = Math.abs(u.y) < 0.9F ? new Vector3f(0, 1, 0) : new Vector3f(1, 0, 0);
+        Vector3f e1 = new Vector3f(a).sub(new Vector3f(u).mul(u.dot(a))).normalize();
+        Vector3f e2 = new Vector3f(u).cross(e1).normalize();
+        Vector3f s = new Vector3f(sun).normalize();
+        int segs = 160;
+        int steps = 3;
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.disableCull();
+        RenderSystem.depthMask(false);
+        RenderSystem.disableDepthTest();
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        BufferBuilder bb = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        int cr = rgb >> 16 & 255, cg = rgb >> 8 & 255, cb = rgb & 255;
+        for (int i = 0; i < segs; i++) {
+            double t0 = Math.PI * 2 * i / segs;
+            double t1 = Math.PI * 2 * (i + 1) / segs;
+            Vector3f dir = new Vector3f(e1).mul((float) Math.cos((t0 + t1) / 2)).add(new Vector3f(e2).mul((float) Math.sin((t0 + t1) / 2)));
+            float day = Mth.clamp(dir.dot(s) * 2F + 0.5F, 0.12F, 1F);
+            for (int k = 0; k < steps; k++) {
+                float f0 = (float) k / steps;
+                float f1 = (float) (k + 1) / steps;
+                // hard steps: each ring of the band one shade, thinning outward
+                int al = (int) (Mth.clamp(alpha * (1 - f0) * day, 0, 1) * 255);
+                for (float[] v : new float[][]{{f0, (float) t0}, {f1, (float) t0}, {f1, (float) t1}, {f0, (float) t1}}) {
+                    float rad = Mth.lerp(v[0], inner, outer);
+                    Vector3f cen = new Vector3f(ci).lerp(co, v[0]);
+                    Vector3f p = new Vector3f(e1).mul(rad * (float) Math.cos(v[1])).add(new Vector3f(e2).mul(rad * (float) Math.sin(v[1]))).add(cen);
+                    bb.addVertex(pose, p.x, p.y, p.z).setColor(cr, cg, cb, al);
+                }
+            }
+        }
+        BufferUploader.drawWithShader(bb.buildOrThrow());
+        RenderSystem.enableCull();
+    }
+
     /** Blocks across a body for a style: a voxel ball needs a few more than a cube face. */
     public static int resolution(BlockyBodyMesh.Style style, boolean small) {
         return style == BlockyBodyMesh.Style.VOXEL ? (small ? 10 : 16) : (small ? 6 : 10);
@@ -206,6 +307,7 @@ public final class BlockyBodyRenderer {
 
     private static final class Cached {
         com.mojang.blaze3d.vertex.VertexBuffer buffer;
+        List<BlockyBodyMesh.Face> faces;
         float[] signature;
         boolean empty;
     }
@@ -216,7 +318,7 @@ public final class BlockyBodyRenderer {
         long since;
     }
 
-    private static final Map<CacheKey, Cached> BUFFERS = new java.util.HashMap<>();
+    private static final Map<Object, Cached> BUFFERS = new java.util.HashMap<>();
     private static final Map<CacheKey, Lod> LODS = new java.util.HashMap<>();
     private static long rebuildNanos;
     private static int rebuilds;
@@ -242,7 +344,9 @@ public final class BlockyBodyRenderer {
         RenderSystem.defaultBlendFunc();
         RenderSystem.disableCull();
         int level = n > 0 ? n : 0;
-        if (n <= 0) {
+        if (n == APPROACH && drawPatch(pose, style, map, body, sun, night, tint, alpha)) {
+            level = LEVELS[LEVELS.length - 1];
+        } else if (n <= 0) {
             Lod lod = lod(map, style, body, n == APPROACH ? LEVELS[LEVELS.length - 1] : SKY_MAX);
             float t = lod.previous == 0 ? 1F : Mth.clamp((net.minecraft.Util.getMillis() - lod.since) / (float) FADE_MS, 0F, 1F);
             if (t < 1F) {
@@ -267,12 +371,97 @@ public final class BlockyBodyRenderer {
         timing(System.nanoTime() - t0, false);
     }
 
+    /** Finest surface patch, blocks across the whole body (only the visible cap is built). */
+    static final int PATCH_MAX = 1024;
+
+    private record PatchKey(ColorMap map, int n, int qx, int qy, int qz) {
+    }
+
+    private static final class Patch {
+        final float halfAngle;
+        volatile List<BlockyBodyMesh.Face> faces;
+        volatile int[] colours;
+
+        Patch(float halfAngle) {
+            this.halfAngle = halfAngle;
+        }
+    }
+
+    private static final Map<PatchKey, Patch> PATCHES = new java.util.LinkedHashMap<>(16, 0.75F, true) {
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<PatchKey, Patch> e) {
+            return size() > 6;
+        }
+    };
+    private static final Map<ColorMap, PatchKey> LAST_PATCH = new java.util.HashMap<>();
+
+    /**
+     * Very close to a body (low orbit): the whole ball even at its finest level has blocks far bigger than intended, so only
+     * the cap of surface in view is built, finer, in the background, and drawn instead. Returns false while there is no
+     * patch to draw yet (or none is needed), and the caller draws the usual ball.
+     */
+    private static boolean drawPatch(Matrix4f pose, BlockyBodyMesh.Style style, ColorMap map, Pose body, Vector3f sun, float night,
+                                     float tint, float alpha) {
+        if (style != BlockyBodyMesh.Style.VOXEL) {
+            return false;
+        }
+        float dist = body.center().length();
+        float near = dist - body.radius();
+        if (near > body.radius() * 0.6F || near <= 0) {
+            return false;
+        }
+        Minecraft mc = Minecraft.getInstance();
+        double fov = Math.toRadians(mc.options.fov().get());
+        double want = 2 * body.radius() / Math.max(near, body.radius() * 0.02) / (2 * Math.tan(fov / 2)) * mc.getWindow().getHeight() / BLOCK_PX;
+        if (want <= LEVELS[LEVELS.length - 1] * 1.25) {
+            return false;
+        }
+        int n = 256;
+        while (n * 2 <= Math.min(PATCH_MAX, want)) {
+            n *= 2;
+        }
+        Matrix3f rot = body.rotation(style);
+        // the camera's direction from the body's centre, in the body's own frame
+        Vector3f toward = new Matrix3f(rot).transpose().transform(new Vector3f(body.center()).negate().normalize());
+        float horizon = (float) Math.acos(Math.min(1F, body.radius() / dist));
+        float half = horizon + 4F / n + 0.03F;
+        float q = 8F / half;
+        PatchKey key = new PatchKey(map, n, Math.round(toward.x * q), Math.round(toward.y * q), Math.round(toward.z * q));
+        Patch patch = PATCHES.get(key);
+        if (patch == null) {
+            Patch p = new Patch(half * 1.2F);
+            PATCHES.put(key, p);
+            patch = p;
+            Vector3f centre = new Vector3f(key.qx(), key.qy(), key.qz()).div(q).normalize();
+            int size = n;
+            java.util.concurrent.CompletableFuture.runAsync(() -> {
+                List<BlockyBodyMesh.Face> faces = BlockyBodyMesh.patch(size, centre, p.halfAngle);
+                p.colours = computeColours(map, faces, false);
+                p.faces = faces;
+            });
+        }
+        if (patch.faces == null) {
+            // still building: keep showing the last finished patch if there is one
+            PatchKey last = LAST_PATCH.get(map);
+            patch = last == null ? null : PATCHES.get(last);
+            if (patch == null || patch.faces == null) {
+                return false;
+            }
+            key = last;
+        }
+        LAST_PATCH.put(map, key);
+        drawFaces(pose, key, patch.faces, patch.colours, key.n(), body, rot, sun, night, tint, alpha);
+        return true;
+    }
+
     /** The resolution to draw a body at, stepping up as it grows on screen and fading between steps. */
     private static Lod lod(ColorMap map, BlockyBodyMesh.Style style, Pose body, int max) {
         Minecraft mc = Minecraft.getInstance();
-        double distance = Math.max(1e-3, body.center().length());
+        // blocks are judged where they are biggest on screen: at the nearest point of the surface (for a far body that is
+        // its distance; from low orbit only the height above it)
+        double near = Math.max(body.radius() * 0.02, body.center().length() - body.radius());
         double fov = Math.toRadians(mc.options.fov().get());
-        double pixels = 2 * body.radius() / distance / (2 * Math.tan(fov / 2)) * mc.getWindow().getHeight();
+        double pixels = 2 * body.radius() / near / (2 * Math.tan(fov / 2)) * mc.getWindow().getHeight();
         double want = pixels / BLOCK_PX;
         Lod lod = LODS.computeIfAbsent(new CacheKey(map, style, 0), k -> {
             Lod l = new Lod();
@@ -287,14 +476,16 @@ public final class BlockyBodyRenderer {
         if (lod.previous != 0) {
             return lod; // finish the running fade first
         }
-        int index = java.util.Arrays.binarySearch(LEVELS, lod.current);
+        // the level that fits now (with some slack either way so it does not flicker), reached in one fade even if it is
+        // several steps away (a body that suddenly fills the view should not linger coarse)
         int next = lod.current;
-        if (lod.current > max) {
-            next = LEVELS[index - 1];
-        } else if (want > lod.current * 1.25 && index + 1 < LEVELS.length && LEVELS[index + 1] <= max) {
-            next = LEVELS[index + 1];
-        } else if (want < lod.current / 2.0 * 0.8 && index > 0) {
-            next = LEVELS[index - 1];
+        if (lod.current > max || want > lod.current * 1.25 || want < lod.current / 2.0 * 0.8) {
+            next = LEVELS[0];
+            for (int l : LEVELS) {
+                if (l <= max && l <= want * 1.25) {
+                    next = l;
+                }
+            }
         }
         if (next != lod.current && coloursReady(map, style, next)) {
             lod.previous = lod.current;
@@ -314,15 +505,20 @@ public final class BlockyBodyRenderer {
             BlockyBodyMesh.prepare(style, n);
             n = LEVELS[0];
         }
-        CacheKey key = new CacheKey(map, style, n);
+        List<BlockyBodyMesh.Face> faces = BlockyBodyMesh.body(style, n);
+        drawFaces(pose, new CacheKey(map, style, n), faces, colours(map, faces, false), n, body, body.rotation(style), sun, night, tint, alpha);
+    }
+
+    /** Draws faces from a vertex buffer kept under {@code key}, rebuilt only when what it shows changes. */
+    private static void drawFaces(Matrix4f pose, Object key, List<BlockyBodyMesh.Face> faces, int[] colours, int n, Pose body, Matrix3f rot,
+                                  Vector3f sun, float night, float tint, float alpha) {
         Cached c = BUFFERS.computeIfAbsent(key, k -> new Cached());
-        Matrix3f rot = body.rotation(style);
         float[] sig = {rot.m00, rot.m01, rot.m02, rot.m10, rot.m11, rot.m12, rot.m20, rot.m21, rot.m22, sun.x, sun.y, sun.z,
                 body.center().x, body.center().y, body.center().z, body.radius(), night, tint, alpha};
-        if (c.buffer == null || !same(sig, c.signature, n)) {
+        if (c.buffer == null || c.faces != faces || !same(sig, c.signature, n)) {
             long t0 = System.nanoTime();
             BufferBuilder bb = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-            int count = emitBody(bb, style, n, map, body, rot, sun, night, tint, alpha);
+            int count = emitBody(bb, faces, colours, body, rot, sun, night, tint, alpha);
             var mesh = bb.build();
             if (c.buffer == null) {
                 c.buffer = new com.mojang.blaze3d.vertex.VertexBuffer(com.mojang.blaze3d.vertex.VertexBuffer.Usage.DYNAMIC);
@@ -336,6 +532,7 @@ public final class BlockyBodyRenderer {
                 mesh.close();
             }
             c.signature = sig;
+            c.faces = faces;
             timing(System.nanoTime() - t0, true);
         }
         if (c.empty) {
@@ -346,11 +543,6 @@ public final class BlockyBodyRenderer {
         com.mojang.blaze3d.vertex.VertexBuffer.unbind();
     }
 
-    /**
-     * Whether a cached build still shows the body closely enough: the turn and the sunlight may drift by about a quarter
-     * of a block before the buffer is rebuilt (so the body turns in small block steps, as Minecraft things do), position
-     * and size by a thousandth, brightness by a hundredth.
-     */
     private static boolean same(float[] a, float[] b, int n) {
         if (b == null || a.length != b.length) {
             return false;
@@ -366,7 +558,7 @@ public final class BlockyBodyRenderer {
     }
 
     /** The body's faces toward the viewer into {@code bb}, in the camera-centred frame (the pose matrix is applied when drawing). */
-    private static int emitBody(BufferBuilder bb, BlockyBodyMesh.Style style, int n, ColorMap map, Pose body, Matrix3f rot,
+    private static int emitBody(BufferBuilder bb, List<BlockyBodyMesh.Face> faces, int[] colours, Pose body, Matrix3f rot,
                                 Vector3f sun, float night, float tint, float alpha) {
         Vector3f s = new Vector3f(sun).normalize();
         Vector3f look = new Vector3f(body.center()).normalize();
@@ -377,8 +569,6 @@ public final class BlockyBodyRenderer {
         }
         screenUp.normalize();
         Vector3f screenRight = new Vector3f(look).cross(screenUp).normalize();
-        List<BlockyBodyMesh.Face> faces = BlockyBodyMesh.body(style, n);
-        int[] colours = colours(map, faces, false);
         boolean flat = depthKept(body) < 0.5F;
         int count = 0;
         for (int i = 0; i < faces.size(); i++) {
@@ -657,6 +847,8 @@ public final class BlockyBodyRenderer {
         BUFFERS.clear();
         LODS.clear();
         COLOURING.clear();
+        PATCHES.clear();
+        LAST_PATCH.clear();
         synchronized (COLOURS) {
             COLOURS.clear();
         }

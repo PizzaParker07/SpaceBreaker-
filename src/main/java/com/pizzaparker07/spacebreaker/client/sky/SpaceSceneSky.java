@@ -46,7 +46,6 @@ public class SpaceSceneSky extends DimensionSpecialEffects {
     public static final List<String> BODIES = List.of("spacebreaker:earth", "spacebreaker:moon");
     private static final ResourceLocation SUN = Spacebreaker.id("textures/environment/sun_vacuum.png");
     private static final float SUN_DISC_FRACTION = 12F / 32F;
-    private static final BlockyBodyRenderer.ColorMap AIR = BlockyBodyRenderer.flat(0x6FA8FF);
 
     private final SceneScale scale;
 
@@ -193,9 +192,8 @@ public class SpaceSceneSky extends DimensionSpecialEffects {
         BlockyBodyRenderer.draw(modelView, style, n, map, new BlockyBodyRenderer.Pose(centre, radius, pole, meridian, 0F), sun, 0.05F, 1F, 1F,
                 null);
         if (path.equals("earth")) {
-            // a thin shell of air: one layer of pale blue, see-through
-            BlockyBodyRenderer.draw(modelView, style, 32, AIR,
-                    new BlockyBodyRenderer.Pose(centre, radius * 1.03F, pole, meridian, 0F), sun, 0.15F, 1F, 0.22F, null);
+            // the air: a thin bright band along the outline (the horizon from low orbit), never over the surface
+            BlockyBodyRenderer.drawLimb(modelView, new BlockyBodyRenderer.Pose(centre, radius, pole, meridian, 0F), sun, 0x7FB4FF, 0.85F, 0.025F);
         }
     }
 }

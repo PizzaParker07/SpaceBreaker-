@@ -78,12 +78,12 @@ final class SpaceSceneScenario implements ShowcaseScenario {
     }
 
     private static ShowcaseDriver.Shot shot(String name, Framing framing) {
-        return new ShowcaseDriver.Shot(name, 0, 0.5, 200, 0.5, 0F, 0F, true, CameraType.FIRST_PERSON, 80, p -> aim(p, framing, false), null);
+        return new ShowcaseDriver.Shot(name, 0, 0.5, 200, 0.5, 0F, 0F, true, CameraType.FIRST_PERSON, 160, p -> aim(p, framing, false), () -> System.setProperty("spacebreaker.blockyTiming", "true"));
     }
 
     /** A frame whose camera rides with the Moon (it moves tens of blocks while a frame waits). */
     private static ShowcaseDriver.Shot nearMoon(String name, Framing framing) {
-        return new ShowcaseDriver.Shot(name, 0, 0.5, 200, 0.5, 0F, 0F, true, CameraType.FIRST_PERSON, 80, p -> aim(p, framing, true), null);
+        return new ShowcaseDriver.Shot(name, 0, 0.5, 200, 0.5, 0F, 0F, true, CameraType.FIRST_PERSON, 160, p -> aim(p, framing, true), () -> System.setProperty("spacebreaker.blockyTiming", "true"));
     }
 
     /** Sets the clock to a waxing gibbous Moon (lit side toward Earth, terminator in view), once. */
