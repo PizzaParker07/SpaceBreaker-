@@ -184,6 +184,11 @@ Complementary the tint is weaker (the pack re-lights translucent entities) but t
   As on the Moon, the pack's ground is brighter and a little warmer than vanilla (`umbriel_habitat_night_vanilla_vs_iris`,
   `oberon_vanilla_vs_iris`). The habitat module at night (lamp inside) looks as without shaders, with the night
   sky in the windows (last row of the Umbriel sheet).
+- **Lunar shuttle on a landing beacon pad, Venus descent probes, regolith excavator:** same as without shaders
+  (`shuttle_probe_excavator_vanilla_vs_iris.jpg`); the probes under their parachutes take Venus' daylight tint and
+  haze like the ground around them. Showcase note: `server.tell(new TickTask(t, ...))` does not wait for tick `t`
+  (it only defers under load); delayed showcase actions use `RocketryScenario.later`. With a pack the client is
+  much slower than the server, so moving things are released continuously rather than timed to the frame.
 - **Docking jolt:** a camera roll/pitch from `ViewportEvent.ComputeCameraAngles`; Iris builds its matrices from the
   same camera, so the shake is the same with a pack (at most about 2°, too small to tell apart in a still frame).
 - **Inside a closed module the pack's ambient fill is blue:** the airless sky colour handed to the pack

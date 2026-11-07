@@ -225,6 +225,14 @@ final class CompatScenario implements ShowcaseScenario {
                     ((ServerLevel) p.level()).setBlock(BlockPos.containing(40.5, hy, 0.5).offset(-2, 1, 2),
                             Blocks.SEA_LANTERN.defaultBlockState(), 3);
                 }), null));
+        // Venus descent probe under its parachute, released just before the frame (it sinks half a block per tick)
+        s.add(new ShowcaseDriver.Shot("20_descent_probe", 0, 0, 0, 0, 0F, 0F, true, fp, 80,
+                p -> descentProbe(p, 80), null));
+        // regolith excavator at work (dig particles, lit machine)
+        double ey = ground(t, 70.5, 6.5);
+        double cy = Math.max(ey, ground(t, 70.5, 12.5)) + 3.5;
+        s.add(new ShowcaseDriver.Shot("21_excavator", 0, 0, 0, 0, 0F, 0F, true, fp, 160,
+                go(moonDim, 70.5, cy, 12.5, 180F, 25F, 0.15, p -> excavator(p, ey)), null));
         // docking jolt (ViewportEvent.ComputeCameraAngles roll/pitch) seen through the pack: horizon tilts in both
         s.add(new ShowcaseDriver.Shot("17_docking_jolt", 0, 0, 0, 0, 0F, 0F, false, fp, 80,
                 go(moonDim, 60.5, ground(t, 60.5, 0.5) + 2, 0.5, 0F, 0F, 0.15, p -> board(p, ground(t, 60.5, 0.5))),
@@ -300,5 +308,38 @@ final class CompatScenario implements ShowcaseScenario {
             }
         }
         Spacebreaker.LOGGER.warn("showcase: no cold trap crater found");
+    }
+
+    private static void descentProbe(ServerPlayer p, int wait) {
+        ServerLevel venus = p.server.getLevel(com.pizzaparker07.spacebreaker.content.venus.VenusModule.VENUS);
+        if (venus == null) {
+            return;
+        }
+        venus.getChunk(0, 0);
+        int gy = venus.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, 0, 0);
+        PlanetTime.setDayFraction(venus, 0.25);
+        p.teleportTo(venus, 0.5, gy + 20, 0.5, 180F, 8F);
+        var server = p.server;
+        // one every 5 ticks for the whole shot, so a column is in the air whenever the frame is taken (slow pack frames)
+        for (int k = 0; k < 160; k++) {
+            RocketryScenario.later(server, k * 5, () -> venus.addFreshEntity(
+                    com.pizzaparker07.spacebreaker.content.venus.entity.DescentProbe.release(venus,
+                            new net.minecraft.world.phys.Vec3(0.5, gy + 20 + 1.62 + 10, -9.5), null)));
+        }
+    }
+
+    /** An excavator on the regolith, kept powered for the length of the shot. */
+    private static void excavator(ServerPlayer p, double groundY) {
+        ServerLevel level = (ServerLevel) p.level();
+        BlockPos at = BlockPos.containing(70.5, groundY, 6.5);
+        level.setBlock(at, MachinesModule.REGOLITH_EXCAVATOR.block().get().defaultBlockState(), 3);
+        var server = p.server;
+        for (int t = 0; t < 200; t += 10) {
+            RocketryScenario.later(server, t, () -> {
+                if (level.getBlockEntity(at) instanceof com.pizzaparker07.spacebreaker.content.machines.base.MachineBlockEntity m) {
+                    m.energy().generate(2_000);
+                }
+            });
+        }
     }
 }

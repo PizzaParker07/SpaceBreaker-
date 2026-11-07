@@ -187,7 +187,7 @@ final class RocketryScenario implements ShowcaseScenario {
     private static boolean laterHooked;
 
     /** Runs a server task this many ticks from now. */
-    private static void later(net.minecraft.server.MinecraftServer server, int ticks, Runnable task) {
+    static void later(net.minecraft.server.MinecraftServer server, int ticks, Runnable task) {
         if (!laterHooked) {
             laterHooked = true;
             net.neoforged.neoforge.common.NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.tick.ServerTickEvent.Post e) -> {
