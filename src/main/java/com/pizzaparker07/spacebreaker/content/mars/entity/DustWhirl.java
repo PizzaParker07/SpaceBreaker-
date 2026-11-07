@@ -125,15 +125,13 @@ public class DustWhirl extends Entity {
 
     private void clientParticles() {
         Level level = level();
-        // a narrow, slowly widening column of spiralling dust
-        for (int i = 0; i < 4; i++) {
-            double h = random.nextDouble() * HEIGHT;
-            double r = 0.25 + h * 0.06;
-            double a = (tickCount * 0.35 + h * 0.9 + random.nextDouble() * 0.6);
-            double x = getX() + Math.cos(a) * r;
-            double z = getZ() + Math.sin(a) * r;
-            level.addParticle(MarsParticles.DUST_MOTE.get(), x, getY() + h, z,
-                    -Math.sin(a) * 0.12, 0.03 + random.nextDouble() * 0.03, Math.cos(a) * 0.12);
+        // dust spiralling up the column: the particle itself circles the axis, so the column holds together
+        for (int i = 0; i < 9; i++) {
+            double h = random.nextDouble() * random.nextDouble() * HEIGHT;
+            double a = random.nextDouble() * Math.PI * 2;
+            double r = 0.35 + h * 0.07;
+            level.addParticle(MarsParticles.WHIRL_DUST.get(), getX() + Math.cos(a) * r, getY() + h, getZ() + Math.sin(a) * r,
+                    getX(), 0.06 + random.nextDouble() * 0.05, getZ());
         }
         // a skirt of dust kicked up at its foot
         if (tickCount % 2 == 0) {

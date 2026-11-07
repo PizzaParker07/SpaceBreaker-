@@ -14,6 +14,9 @@ public final class MarsParticles {
     /** A grain of wind-blown dust: drifts with the wind, faintly lit. */
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> DUST_MOTE = TYPES.register("dust_mote", () -> new SimpleParticleType(false));
 
+    /** Dust spiralling up a dust whirl; spawned with (centre x, rise speed, centre z) as its "velocity". */
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> WHIRL_DUST = TYPES.register("whirl_dust", () -> new SimpleParticleType(false));
+
     private MarsParticles() {
     }
 

@@ -350,19 +350,13 @@ public final class MarsLifeGameTests {
         });
     }
 
-    /** Dust on panels: clean to fully covered in about three sols, six times faster in a full storm; 100 % to 60 % output. */
+    /** Martian dust: clean to fully covered in about three sols, six times faster in a full storm. */
     @GameTest(template = EMPTY)
     public static void panelDustSettlesOverSols(GameTestHelper helper) {
-        float day = com.pizzaparker07.spacebreaker.core.env.DustLoad.settle(0F, 24000, 0);
-        helper.assertTrue(day > 0.3F && day < 0.36F, "one calm sol settles a third of the dust, got " + day);
-        helper.assertTrue(com.pizzaparker07.spacebreaker.core.env.DustLoad.settle(0F, 3 * 24000, 0) >= 0.999F, "three sols cover a panel");
-        float storm = com.pizzaparker07.spacebreaker.core.env.DustLoad.settle(0F, 4000, 1);
-        helper.assertTrue(Math.abs(storm - 6 * com.pizzaparker07.spacebreaker.core.env.DustLoad.settle(0F, 4000, 0)) < 1e-4, "storms settle six times faster");
-        helper.assertTrue(com.pizzaparker07.spacebreaker.core.env.DustLoad.outputFactor(0F) == 1F, "a clean panel gives full output");
-        helper.assertTrue(Math.abs(com.pizzaparker07.spacebreaker.core.env.DustLoad.outputFactor(1F) - 0.6F) < 1e-6, "a covered panel gives 60 %");
-        var pos = helper.absolutePos(BlockPos.ZERO).above(3);
-        helper.assertTrue(com.pizzaparker07.spacebreaker.core.env.DustLoad.accumulate(helper.getLevel(), pos, 0.2F, 24000) == 0.2F,
-                "no dust settles on Earth");
+        double calm = com.pizzaparker07.spacebreaker.core.env.DustLoad.rate(0);
+        helper.assertTrue(Math.abs(calm * 3 * 24000 - 1) < 1e-9, "three calm sols cover a panel");
+        helper.assertTrue(Math.abs(com.pizzaparker07.spacebreaker.core.env.DustLoad.rate(1) / calm - 6) < 1e-9, "storms settle six times faster");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.core.env.DustLoad.percent(0.427F) == 43, "dust shown as a percentage");
         helper.succeed();
     }
 

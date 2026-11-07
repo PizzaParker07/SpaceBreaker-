@@ -93,6 +93,7 @@ public final class MarsClient {
     @SubscribeEvent
     static void particles(RegisterParticleProvidersEvent event) {
         event.registerSpriteSet(MarsParticles.DUST_MOTE.get(), DustMoteParticle.Provider::new);
+        event.registerSpriteSet(MarsParticles.WHIRL_DUST.get(), WhirlDustParticle.Provider::new);
     }
 
     @SubscribeEvent

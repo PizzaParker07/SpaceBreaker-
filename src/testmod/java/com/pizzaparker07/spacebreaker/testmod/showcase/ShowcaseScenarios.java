@@ -30,6 +30,7 @@ public final class ShowcaseScenarios {
         ALL.put("sky_planets_mars", new SkyPlanetsScenario(true));
         ALL.put("research", new ResearchScenario());
         ALL.put("mars", new MarsScenario());
+        ALL.put("mars_dust", new MarsDustScenario());
         ALL.put("phobos", new MarsMoonScenario(false));
         ALL.put("deimos", new MarsMoonScenario(true));
         ALL.put("venus", new VenusScenario());
