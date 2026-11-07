@@ -163,6 +163,11 @@ public final class ShowcaseDriver {
                 level.setWeatherParameters(12000, 0, false, false);
                 player.getAbilities().flying = true;
                 player.onUpdateAbilities();
+                // hold the camera still until the terrain around it is loaded and drawn: without this the player
+                // falls during the first frames after a teleport (chunks not there yet, flying not synced yet)
+                player.setNoGravity(true);
+                player.setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);
+                player.fallDistance = 0F;
                 if (player.level() != level) {
                     player.teleportTo(level, shot.x(), shot.y() - player.getEyeHeight(), shot.z(), shot.yaw(), shot.pitch());
                 } else {
@@ -181,13 +186,39 @@ public final class ShowcaseDriver {
             return;
         }
         ticks++;
-        boolean ready = ticks >= shot.minTicks() && mc.levelRenderer.hasRenderedAllSections();
+        if (mc.player != null && !mc.player.isPassenger()) {
+            // client side of the hold: no drift while the server's teleport and the chunks arrive
+            mc.player.setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);
+        }
+        boolean ready = ticks >= shot.minTicks() && mc.levelRenderer.hasRenderedAllSections() && terrainLoaded(mc);
         if (ready || ticks > shot.minTicks() + 400) {
             String file = PREFIX + "_" + shot.name() + ".png";
             Screenshot.grab(mc.gameDirectory, file, mc.getMainRenderTarget(), msg -> log("saved " + file));
+            var server = mc.getSingleplayerServer();
+            server.execute(() -> server.getPlayerList().getPlayers().get(0).setNoGravity(false));
             shotIndex++;
             shotApplied = false;
         }
+    }
+
+    /**
+     * The chunks around the camera are loaded on the client. Checked where the player is now, not at the shot's spot:
+     * a shot's setup may move the player (into a vehicle, to another world).
+     */
+    private static boolean terrainLoaded(Minecraft mc) {
+        if (mc.player == null || mc.level == null) {
+            return false;
+        }
+        int cx = net.minecraft.core.SectionPos.blockToSectionCoord(mc.player.getX());
+        int cz = net.minecraft.core.SectionPos.blockToSectionCoord(mc.player.getZ());
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dz = -1; dz <= 1; dz++) {
+                if (!mc.level.getChunkSource().hasChunk(cx + dx, cz + dz)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /** Opens the creative inventory on the Spacebreaker tab (dev-only reflection into a private method). */
