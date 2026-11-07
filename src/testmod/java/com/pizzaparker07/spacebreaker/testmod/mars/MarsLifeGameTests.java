@@ -340,8 +340,8 @@ public final class MarsLifeGameTests {
         }
         BlockPos summit = piece.summit();
         helper.assertTrue(summit.getY() - stacks.get(stacks.size() - 1).getY() == rise, "the summit is one hop above the last stack");
-        helper.assertTrue(lootChests(level, piece.getBoundingBox()) == 1, "the relay cache on the summit");
-        helper.assertTrue(level.getBlockState(summit).is(Blocks.CHEST), "the cache sits on the summit");
+        helper.assertTrue(level.getBlockEntity(summit) instanceof com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlockEntity l
+                && l.getLootTable() != null, "the relay cache (a supply locker) sits on the summit");
         helper.succeed();
     }
 
