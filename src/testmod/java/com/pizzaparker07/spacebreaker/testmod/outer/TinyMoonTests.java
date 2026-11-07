@@ -33,7 +33,7 @@ public final class TinyMoonTests {
     private static final List<TinyWorld> WORLDS = List.of(PlutoMoonlets.NIX, PlutoMoonlets.HYDRA, Proteus.PROTEUS,
             com.pizzaparker07.spacebreaker.content.neptune.Nereid.NEREID, com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.BENNU,
             com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.RYUGU, com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.EROS,
-            com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.ITOKAWA);
+            com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.ITOKAWA, com.pizzaparker07.spacebreaker.content.belt.Comets.CHURYUMOV);
 
     @GameTest(template = WorldTests.EMPTY, timeoutTicks = 200)
     public static void tinyMoonsAreWorlds(GameTestHelper helper) {
@@ -59,7 +59,8 @@ public final class TinyMoonTests {
                     BeltStructures.landerKey(LanderPiece.Variant.valueOf(w.name.toUpperCase(java.util.Locale.ROOT)))), w.name + " has a lander");
             var holder = Bodies.registry(access).orElseThrow().getHolder(ResourceKey.create(Bodies.REGISTRY, Spacebreaker.id(w.name))).orElseThrow();
             boolean refuels = holder.is(refuel);
-            boolean water = w == PlutoMoonlets.NIX || w == PlutoMoonlets.HYDRA || w == com.pizzaparker07.spacebreaker.content.neptune.Nereid.NEREID;
+            boolean water = w == PlutoMoonlets.NIX || w == PlutoMoonlets.HYDRA || w == com.pizzaparker07.spacebreaker.content.neptune.Nereid.NEREID
+                    || w == com.pizzaparker07.spacebreaker.content.belt.Comets.CHURYUMOV;
             helper.assertTrue(refuels == water, w.name + (refuels ? " refuels" : " does not refuel"));
         }
         // Proteus: Pharos scoops out its west side
