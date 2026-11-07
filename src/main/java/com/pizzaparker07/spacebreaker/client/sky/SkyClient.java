@@ -75,8 +75,16 @@ public final class SkyClient {
             MeteorStreaks.render(level, sky, pt);
             com.mojang.blaze3d.systems.RenderSystem.depthMask(true);
         }
-        if (level.effects() instanceof PlanetSkyEffects
-                || level.effects().skyType() == net.minecraft.client.renderer.DimensionSpecialEffects.SkyType.END) {
+        if (level.effects() instanceof PlanetSkyEffects airless) {
+            com.mojang.blaze3d.vertex.PoseStack sky = new com.mojang.blaze3d.vertex.PoseStack();
+            sky.mulPose(event.getModelViewMatrix());
+            com.mojang.blaze3d.systems.RenderSystem.depthMask(false);
+            net.minecraft.client.renderer.FogRenderer.setupNoFog();
+            airless.renderHorizonGlow(level, sky);
+            com.mojang.blaze3d.systems.RenderSystem.depthMask(true);
+            return;
+        }
+        if (level.effects().skyType() == net.minecraft.client.renderer.DimensionSpecialEffects.SkyType.END) {
             return;
         }
         float visibility = Math.min(1F, level.getStarBrightness(pt) * 2F) * (1F - level.getRainLevel(pt));

@@ -88,13 +88,86 @@ public final class SkyGameTests {
     }
 
     /**
+     * Lunar horizon glow: only in the first degrees of twilight (none by day or deep in the night), brightest a few
+     * degrees after sunset, and only on about a third of sunsets and sunrises, the same on every client.
+     */
+    @GameTest(template = "empty")
+    public static void horizonGlowIsRareAndBrief(GameTestHelper helper) {
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.worldgen.HorizonGlow.strength(5) == 0, "none by day");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.worldgen.HorizonGlow.strength(-13) == 0, "none deep in the night");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.worldgen.HorizonGlow.strength(-5) > 0.99, "brightest 5 degrees after sunset");
+        double mid = com.pizzaparker07.spacebreaker.content.worldgen.HorizonGlow.strength(-8.5);
+        helper.assertTrue(mid > 0.1 && mid < 0.9, "fading out: " + mid);
+        int shown = 0;
+        int n = 3000;
+        for (int day = 0; day < n; day++) {
+            if (com.pizzaparker07.spacebreaker.content.worldgen.HorizonGlow.shows(42, day, true)) {
+                shown++;
+            }
+        }
+        helper.assertTrue(shown > n / 4 && shown < n * 2 / 5, "about one sunset in three: " + shown + "/" + n);
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.worldgen.HorizonGlow.shows(42, 17, true)
+                == com.pizzaparker07.spacebreaker.content.worldgen.HorizonGlow.shows(42, 17, true), "deterministic");
+        // over whole days on a 24000-tick clock, the glow appears only in twilight
+        var clock = new com.pizzaparker07.spacebreaker.content.worldgen.PlanetTime.Clock(24000, 0);
+        int lit = 0;
+        for (long t = 0; t < 24000L * 30; t += 20) {
+            double b = com.pizzaparker07.spacebreaker.content.worldgen.HorizonGlow.at(clock, t, 0, 42);
+            if (b > 0) {
+                lit++;
+                double el = com.pizzaparker07.spacebreaker.content.worldgen.SkyMath.sunElevation(clock.timeOfDay(t), 0);
+                helper.assertTrue(el < 0 && el > -12, "glow only in twilight, sun at " + el);
+            }
+        }
+        helper.assertTrue(lit > 0 && lit < 24000L * 30 / 20 / 20, "rare and brief: " + lit);
+        helper.succeed();
+    }
+
+    /**
+     * Earthshine: under a full Earth overhead the lunar night is clearly lit, under a quarter Earth much less, under a
+     * crescent Earth low in the sky almost not at all, and on the far side, where Earth never rises, not at all.
+     */
+    @GameTest(template = "empty")
+    public static void earthshineFollowsThePhase(GameTestHelper helper) {
+        double sub = com.pizzaparker07.spacebreaker.content.worldgen.SkyMath.SUB_PARENT_LONGITUDE;
+        java.util.function.DoubleBinaryOperator at = (lon, tod) ->
+                com.pizzaparker07.spacebreaker.content.worldgen.Earthshine.brightness(0, lon, tod, 0);
+        double full = at.applyAsDouble(sub, 0.5); // local midnight: the Sun behind us, Earth full overhead
+        double quarter = at.applyAsDouble(sub, 0.25);
+        double max = com.pizzaparker07.spacebreaker.content.worldgen.Earthshine.MAX;
+        helper.assertTrue(full > 0.9 * max, "full Earth overhead: " + full);
+        helper.assertTrue(quarter > 0.2 * full && quarter < 0.45 * full, "quarter Earth gives a third or so: " + quarter / full);
+        helper.assertTrue(at.applyAsDouble(sub, 0) < 0.001 * max, "new Earth at noon gives nothing");
+        // near the limb, Earth low in the sky: the darkest night is under a thin crescent
+        double darkest = Double.MAX_VALUE;
+        for (double tod = 0; tod < 1; tod += 0.005) {
+            if (com.pizzaparker07.spacebreaker.content.worldgen.SkyMath.sunDirection(tod, 0).y < -0.05) {
+                darkest = Math.min(darkest, at.applyAsDouble(sub + 75, tod));
+            }
+        }
+        helper.assertTrue(darkest < 0.05 * full, "crescent Earth: almost dark " + darkest / full);
+        for (double tod = 0; tod < 1; tod += 0.05) {
+            helper.assertTrue(at.applyAsDouble(sub + 180, tod) == 0, "no earthshine on the far side");
+            helper.assertTrue(at.applyAsDouble(sub + 120, tod) == 0, "none where Earth is below the horizon");
+        }
+        helper.succeed();
+    }
+
+    /**
      * Eclipses from the Moon: the total lunar eclipse of 2000-01-21 (greatest at 04:44 UTC) is, seen from the Moon, a
-     * total eclipse of the Sun by Earth; it is found by the search and its middle lies within a few hours of the real one.
+     * total eclipse of the Sun by Earth, and so is the one of 2022-11-08; each is found by the search and its middle lies within a few hours of the real one.
      */
     @GameTest(template = "empty", timeoutTicks = 400)
     public static void earthEclipsesTheSunFromTheMoon(GameTestHelper helper) {
         var sys = BodyAdapter.system(helper.getLevel().registryAccess()).orElseThrow();
-        double greatest = 1701776.0; // 2000-01-21 04:44 UTC in seconds after J2000 (TT)
+        // 2000-01-21 04:44 UTC and 2022-11-08 10:59 UTC, in seconds after J2000 (TT); the second needs the
+        // Moon's nodal precession to line up 23 years later
+        assertEclipse(helper, sys, 1701776.0, "2000-01-21");
+        assertEclipse(helper, sys, 721177220.0, "2022-11-08");
+        helper.succeed();
+    }
+
+    private static void assertEclipse(GameTestHelper helper, com.pizzaparker07.spacebreaker.core.astro.BodySystem sys, double greatest, String label) {
         double best = 0;
         double bestT = 0;
         for (double dt = -12 * 3600; dt <= 12 * 3600; dt += 300) {
@@ -104,14 +177,13 @@ public final class SkyGameTests {
                 bestT = dt;
             }
         }
-        helper.assertTrue(best > 0.99, "Earth fully hides the Sun from the Moon: " + best);
-        helper.assertTrue(Math.abs(bestT) < 4 * 3600, "within a few hours of the real eclipse: " + bestT / 3600 + " h");
+        helper.assertTrue(best > 0.99, label + ": Earth fully hides the Sun from the Moon: " + best);
+        helper.assertTrue(Math.abs(bestT) < 4 * 3600, label + ": within a few hours of the real eclipse: " + bestT / 3600 + " h");
         double start = com.pizzaparker07.spacebreaker.content.worldgen.Eclipses.next(sys, "spacebreaker:moon", "spacebreaker:earth",
                 greatest - 5 * 86400, 10 * 86400, 1800);
-        helper.assertTrue(!Double.isNaN(start) && Math.abs(start - greatest) < 6 * 3600, "the search finds it: " + (start - greatest) / 3600 + " h");
+        helper.assertTrue(!Double.isNaN(start) && Math.abs(start - greatest) < 6 * 3600, label + ": the search finds it: " + (start - greatest) / 3600 + " h");
         helper.assertTrue(com.pizzaparker07.spacebreaker.content.worldgen.Eclipses.coverage(sys, "spacebreaker:moon", "spacebreaker:earth",
-                greatest + 7 * 86400) == 0, "a week later the Sun is clear");
-        helper.succeed();
+                greatest + 7 * 86400) == 0, label + ": a week later the Sun is clear");
     }
 
     /**

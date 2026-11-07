@@ -22,6 +22,8 @@ import java.util.WeakHashMap;
 public final class EclipseState {
     /** Real seconds of warning before an eclipse. */
     static final int WARN_SECONDS = 60;
+    /** How far ahead (simulated seconds, about a year) an eclipse search looks. */
+    static final double SEARCH_HORIZON = 3.2e7;
     private static final Map<Level, Entry> STATES = new WeakHashMap<>();
 
     static final class Entry {
@@ -35,6 +37,10 @@ public final class EclipseState {
         double nextStart = Double.NaN;
         Eclipses.Event event;
         long searchedAt = Long.MIN_VALUE;
+        /** After an empty search: simulation time until which no eclipse needs looking for, and its time scale. */
+        double quietUntil = Double.NaN;
+        double quietFrom = Double.NaN;
+        double quietScale = Double.NaN;
         double announced = Double.NaN;
         boolean warned;
     }
@@ -99,18 +105,30 @@ public final class EclipseState {
     /** The current or next eclipse of this level (cached until its presentation window has passed). */
     static Eclipses.Event event(Level level, Entry e, BodySystem sys, double t) {
         double spr = simPerReal();
-        if (e.event == null || Eclipses.shownTo(e.event, spr) < t || e.event.start() > t + 3.2e7) {
+        if (e.event == null || Eclipses.shownTo(e.event, spr) < t || e.event.start() > t + SEARCH_HORIZON) {
             if (e.searchedAt != Long.MIN_VALUE && level.getGameTime() - e.searchedAt < 100 && e.event == null) {
+                return null;
+            }
+            // an empty search covered a year ahead: skip until halfway through it (unless time jumped back or
+            // the time scale changed). Most moons of the outer planets have no eclipse for years.
+            if (e.event == null && !Double.isNaN(e.quietUntil) && t >= e.quietFrom && t < e.quietUntil && spr == e.quietScale) {
                 return null;
             }
             e.searchedAt = level.getGameTime();
             try {
-                Eclipses.Event ev = Eclipses.event(sys, e.observer, e.parent, t, Eclipses.MIN_SHOWN_SECONDS * spr, 3.2e7, 3 * 3600);
+                Eclipses.Event ev = Eclipses.event(sys, e.observer, e.parent, t, Eclipses.MIN_SHOWN_SECONDS * spr, SEARCH_HORIZON, 3 * 3600);
                 if (ev != null && Eclipses.shownTo(ev, spr) < t) {
                     // that one is already over: the next after it
-                    ev = Eclipses.event(sys, e.observer, e.parent, ev.end() + 60, 0, 3.2e7, 3 * 3600);
+                    ev = Eclipses.event(sys, e.observer, e.parent, ev.end() + 60, 0, SEARCH_HORIZON, 3 * 3600);
                 }
                 e.event = ev;
+                if (ev == null) {
+                    e.quietFrom = t;
+                    e.quietUntil = t + SEARCH_HORIZON / 2;
+                    e.quietScale = spr;
+                } else {
+                    e.quietUntil = Double.NaN;
+                }
             } catch (RuntimeException ex) {
                 e.event = null;
             }
