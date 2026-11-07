@@ -244,7 +244,14 @@ public final class MarsLifeGameTests {
         helper.assertTrue(piece.getBoundingBox().maxY() >= top, "the sinkhole reaches the surface");
         place(level, piece);
         helper.assertTrue(level.getBlockState(piece.chamber()).isAir(), "the chamber is open");
-        helper.assertTrue(lootChests(level, piece.getBoundingBox()) >= 1, "the probe wreck holds its data vault");
+        int vaults = 0;
+        BoundingBox cb = piece.getBoundingBox();
+        for (BlockPos p : BlockPos.betweenClosed(cb.minX(), cb.minY(), cb.minZ(), cb.maxX(), cb.maxY(), cb.maxZ())) {
+            if (level.getBlockEntity(p) instanceof com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlockEntity l && l.getLootTable() != null) {
+                vaults++;
+            }
+        }
+        helper.assertTrue(vaults >= 1, "the probe wreck holds its data vault, a supply locker");
         helper.succeed();
     }
 

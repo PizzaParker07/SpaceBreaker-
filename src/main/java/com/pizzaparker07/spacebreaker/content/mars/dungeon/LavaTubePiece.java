@@ -155,6 +155,51 @@ public class LavaTubePiece extends StructurePiece {
                 skylight(level, box, r, i);
             }
         }
+        surveyGear(level, box);
+    }
+
+    /**
+     * An earlier survey's gear, left behind: tripod floodlights every few nodes along the floor with the cable laid
+     * between them, and a rope of chain hanging down the first skylight, the way they came in.
+     */
+    private void surveyGear(WorldGenLevel level, BoundingBox box) {
+        BlockPos.MutableBlockPos p = new BlockPos.MutableBlockPos();
+        int n = nodeCount();
+        for (int i = 2; i < n; i += 4) {
+            int x = nodes[i * 4] + 1;
+            int z = nodes[i * 4 + 2] + 1;
+            int fy = floor(i);
+            p.set(x, fy, z);
+            if (!box.isInside(p) || !level.getBlockState(p).isAir() || level.getBlockState(p.below()).isAir()) {
+                continue;
+            }
+            level.setBlock(p, s(Blocks.IRON_BARS), Block.UPDATE_CLIENTS);
+            p.set(x, fy + 1, z);
+            level.setBlock(p, s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.FLOODLIGHT.get())
+                    .setValue(net.minecraft.world.level.block.DirectionalBlock.FACING, net.minecraft.core.Direction.UP), Block.UPDATE_CLIENTS);
+            // the cable back along the floor toward the previous light
+            if (i >= 4) {
+                int px = nodes[(i - 2) * 4] + 1;
+                int pz = nodes[(i - 2) * 4 + 2] + 1;
+                p.set(px, floor(i - 2), pz);
+                if (box.isInside(p) && level.getBlockState(p).isAir() && !level.getBlockState(p.below()).isAir()) {
+                    level.setBlock(p, s(Blocks.CHAIN).setValue(net.minecraft.world.level.block.ChainBlock.AXIS, net.minecraft.core.Direction.Axis.X), Block.UPDATE_CLIENTS);
+                }
+            }
+        }
+        for (int i = 0; i < n; i++) {
+            if (skylight(i)) {
+                int x = nodes[i * 4] + 2;
+                int z = nodes[i * 4 + 2];
+                for (int y = floor(i) + 3; y <= nodes[i * 4 + 3]; y++) {
+                    p.set(x, y, z);
+                    if (box.isInside(p) && level.getBlockState(p).isAir()) {
+                        level.setBlock(p, s(Blocks.CHAIN), Block.UPDATE_CLIENTS);
+                    }
+                }
+                break;
+            }
+        }
     }
 
     /** A collapsed patch of roof: an open shaft to the surface and a cone of rubble and dust below it. */
