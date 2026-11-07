@@ -202,6 +202,9 @@ Complementary the tint is weaker (the pack re-lights translucent entities) but t
   frame, reported to the planet engine area). Dark Bennu and bright Hydra keep their contrast under the pack's
   exposure: Bennu's rubble stays dark but readable, Hydra's ice is bright without blowing out
   (`meteor_bennu_hydra_vanilla_vs_iris.jpg`).
+- **Comets:** in space worlds the comet tails are part of our sky. On the Overworld the pack keeps its own sky
+  and clouds: Halley in 2061 is drawn, its dust tail partly hidden behind the pack's blocky night clouds (they are in
+  front of it, as clouds are). 67P's surface and jets look as without shaders (`comets_vanilla_vs_iris.jpg`).
 - **Docking jolt:** a camera roll/pitch from `ViewportEvent.ComputeCameraAngles`; Iris builds its matrices from the
   same camera, so the shake is the same with a pack (at most about 2°, too small to tell apart in a still frame).
 - **Inside a closed module the pack's ambient fill is blue:** the airless sky colour handed to the pack
@@ -295,7 +298,8 @@ aerostat platform kit, Venus descent probe and solar array (`jei_emi_night_addit
 their recipe tags are named, so EMI reports no untranslated tags. The Sintering category (industry) shows with the sintering furnace as icon and catalyst
 (`jei_emi_sintering.jpg`). Asteroid mining (`jei_emi_asteroid_mining.jpg`, uses of Bennu and Eros regolith): carbonaceous rubble
 in Regolith Heating (water, CO2, coal dust), stony rubble in Crushing (iron, nickel dust); the `c:regoliths/*` tags
-are named. JEI opens a uses view on its own Block Tags tab; our categories are the other tabs. The Mars lander, like every rocket, is assembled,
+are named. JEI opens a uses view on its own Block Tags tab; our categories are the other tabs. Comet ice melts in Ice Melting (it is in `c:ices/water`);
+comet dust has no recipe use yet (`jei_emi_comet_blocks.jpg`). The Mars lander, like every rocket, is assembled,
 not crafted: the Rocket Assembler information page covers it.
 
 Screenshots: `jei_*` and `emi_*`. Test: `./gradlew runShowcase -Pscenario=jei -PwithJei=true` or
