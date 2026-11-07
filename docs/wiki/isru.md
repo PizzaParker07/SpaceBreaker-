@@ -59,7 +59,7 @@ Karbondioksit ile hidrojeni **metan ve suya** çevirir. Su, elektroliz ünitesin
 
 | Girdi | Makine | Çıktı |
 |---|---|---|
-| carbon dioxide (500 mB)<br>hydrogen (2000 mB) | Sabatier Reaktörü<br>60 FE/t · 4 sn | Metan (500 mB)<br>Su (250 mB) |
+| Karbondioksit (500 mB)<br>Hidrojen (2000 mB) | Sabatier Reaktörü<br>60 FE/t · 4 sn | Metan (500 mB)<br>Su (250 mB) |
 
 > [!TIP]
 > **Mars'ta oksijen ve metan:** buz eritici → su → elektroliz ünitesi → oksijen + hidrojen; oksijen → kriyojenik sıvılaştırıcı → sıvı oksijen. Hidrojen ve atmosfer işlemcisinden gelen CO₂ Sabatier reaktörüne gider. Çıkan su yine elektroliz ünitesine gider.
@@ -69,7 +69,7 @@ Bir katı ve iki sıvıyı birleştirir; örneğin kükürt, su ve oksijenden **
 
 | Girdi | Makine | Çıktı |
 |---|---|---|
-| Kükürt<br>water (250 mB)<br>oxygen (750 mB) | Kimyasal Reaktör<br>60 FE/t · 5 sn | Sülfürik Asit (250 mB) |
+| Kükürt<br>water (250 mB)<br>Oksijen (750 mB) | Kimyasal Reaktör<br>60 FE/t · 5 sn | Sülfürik Asit (250 mB) |
 
 ### Sinterleme Fırını
 
@@ -170,7 +170,7 @@ Turns carbon dioxide and hydrogen into **methane and water**. The water goes bac
 
 | Input | Machine | Output |
 |---|---|---|
-| carbon dioxide (500 mB)<br>hydrogen (2000 mB) | Sabatier Reactor<br>60 FE/t · 4 s | Methane (500 mB)<br>Water (250 mB) |
+| Carbon Dioxide (500 mB)<br>Hydrogen (2000 mB) | Sabatier Reactor<br>60 FE/t · 4 s | Methane (500 mB)<br>Water (250 mB) |
 
 > [!TIP]
 > **Oxygen and methane on Mars:** ice melter → water → electrolyser → oxygen + hydrogen; oxygen → cryogenic liquefier → liquid oxygen. Hydrogen and CO₂ from the atmosphere processor go into the Sabatier reactor. The water it gives goes back to the electrolyser.
@@ -180,7 +180,7 @@ Combines one solid and two fluids; for example sulfur, water and oxygen make **s
 
 | Input | Machine | Output |
 |---|---|---|
-| Sulfur<br>water (250 mB)<br>oxygen (750 mB) | Chemical Reactor<br>60 FE/t · 5 s | Sulfuric Acid (250 mB) |
+| Sulfur<br>water (250 mB)<br>Oxygen (750 mB) | Chemical Reactor<br>60 FE/t · 5 s | Sulfuric Acid (250 mB) |
 
 ### Sintering furnace
 

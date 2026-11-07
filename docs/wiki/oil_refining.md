@@ -15,7 +15,7 @@ RP-1 roket yakıtının yolu:
 
 | Girdi | Makine | Çıktı |
 |---|---|---|
-| crude oil (1000 mB) | Rafineri<br>60 FE/t · 5 sn | Plastik Levha<br>RP-1 Kerosen (500 mB)<br>Metan (250 mB) |
+| Ham Petrol (1000 mB) | Rafineri<br>60 FE/t · 5 sn | Plastik Levha<br>RP-1 Kerosen (500 mB)<br>Metan (250 mB) |
 
 > [!TIP]
 > Bir borunun bir bloğa bakan ucuna `Shift` basılıyken `Sağ Tık` yaparsan, boru o bloktan **çekmeye** başlar. Tanktan makineye akış böyle kurulur.
@@ -39,7 +39,7 @@ The road to RP-1 rocket fuel:
 
 | Input | Machine | Output |
 |---|---|---|
-| crude oil (1000 mB) | Refinery<br>60 FE/t · 5 s | Plastic Sheet<br>RP-1 Kerosene (500 mB)<br>Methane (250 mB) |
+| Crude Oil (1000 mB) | Refinery<br>60 FE/t · 5 s | Plastic Sheet<br>RP-1 Kerosene (500 mB)<br>Methane (250 mB) |
 
 > [!TIP]
 > Hold `Shift` and `Right Click` the end of a pipe that faces a block: the pipe starts **pulling** from it. That is how you feed a machine from a tank.

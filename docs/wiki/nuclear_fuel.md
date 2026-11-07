@@ -12,7 +12,7 @@ Uraninit cevherinden nükleer termal roketin yakıtına giden yol.
 
 | Girdi | Makine | Çıktı |
 |---|---|---|
-| Uranyum Tozu<br>sulfuric acid (125 mB) | Kimyasal Reaktör<br>60 FE/t · 4 sn | Sarı Pasta |
+| Uranyum Tozu<br>Sülfürik Asit (125 mB) | Kimyasal Reaktör<br>60 FE/t · 4 sn | Sarı Pasta |
 
 | Girdi | Makine | Çıktı |
 |---|---|---|
@@ -56,7 +56,7 @@ The road from uraninite ore to the fuel of a nuclear thermal rocket.
 
 | Input | Machine | Output |
 |---|---|---|
-| Uranium Dust<br>sulfuric acid (125 mB) | Chemical Reactor<br>60 FE/t · 4 s | Yellowcake |
+| Uranium Dust<br>Sulfuric Acid (125 mB) | Chemical Reactor<br>60 FE/t · 4 s | Yellowcake |
 
 | Input | Machine | Output |
 |---|---|---|

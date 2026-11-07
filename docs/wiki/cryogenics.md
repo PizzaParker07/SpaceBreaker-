@@ -18,7 +18,7 @@ Roket motorları yakıtı **sıvı oksijenle** yakar. Onu sudan elde edersin:
 
 | Girdi | Makine | Çıktı |
 |---|---|---|
-| oxygen (1000 mB) | Kriyojenik Sıvılaştırıcı<br>100 FE/t · 3 sn | Sıvı Oksijen (500 mB) |
+| Oksijen (1000 mB) | Kriyojenik Sıvılaştırıcı<br>100 FE/t · 3 sn | Sıvı Oksijen (500 mB) |
 
 > [!WARNING]
 > Kriyojenik sıvıları açığa dökme: kaynayıp uçarlar. Kova yalnızca taşımak için.
@@ -44,7 +44,7 @@ Rocket engines burn their fuel with **liquid oxygen**. You get it from water:
 
 | Input | Machine | Output |
 |---|---|---|
-| oxygen (1000 mB) | Cryogenic Liquefier<br>100 FE/t · 3 s | Liquid Oxygen (500 mB) |
+| Oxygen (1000 mB) | Cryogenic Liquefier<br>100 FE/t · 3 s | Liquid Oxygen (500 mB) |
 
 > [!WARNING]
 > Never pour cryogenic liquids out in the open: they boil away. Buckets are only for carrying.

@@ -158,7 +158,9 @@ def fluid(lang, f):
     amount = f.get('amount', 0)
     name = f.get('id') or f.get('fluid') or ('#' + f['tag'] if 'tag' in f else '?')
     if name.startswith('#'):
-        label = name[1:].split(':')[-1].replace('_', ' ')
+        tns, tpath = name[1:].split(':', 1)
+        label = (tr(lang, f'tag.fluid.{tns}.{tpath.replace("/", ".")}') or tr(lang, f'fluid_type.spacebreaker.{tpath}')
+                 or tpath.replace('_', ' '))
     else:
         ns, path = name.split(':', 1)
         label = tr(lang, f'fluid_type.{ns}.{path}') or tr(lang, f'block.{ns}.{path}') or path.replace('_', ' ')
