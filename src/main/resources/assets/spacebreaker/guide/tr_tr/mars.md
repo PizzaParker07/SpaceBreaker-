@@ -24,7 +24,7 @@ Fırtınalar günlerce bütün gezegeni sarabilir.
 - Fırtına **yaklaşık iki dakika önceden** sohbette uyarılır: "Ufukta bir toz duvarı yükseliyor…". Gelince ve dinerken de mesaj alırsın.
 
 > [!TIP]
-> Fırtına sezonunda güneşe güvenme: yanında yakıtlı bir jeneratör ya da dolu bir batarya bulundur. Uyarıyı görünce bir sığınağa gir ve geziciyi topla.
+> Fırtına sezonunda güneşe güvenme: yanında yakıtlı bir jeneratör ya da dolu bir batarya bulundur. Uyarıyı görünce bir sığınağa gir ve geziciyi topla. Fırtınada geri sayım başlatırsan görev kontrolü seni uyarır; paraşütle iniş tam fırtınada iniş işaretinden dört kata kadar daha uzağa savrulur.
 
 ## Mavi gün batımı
 İnce toz kırmızı ışığı yana saçar, maviyi dümdüz geçirir. Bu yüzden alçak güneşin çevresinde gök **maviye** döner: Dünya'nın tam tersi.

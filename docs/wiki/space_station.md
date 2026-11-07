@@ -56,8 +56,9 @@ Dünya dışında yatak çalışmaz. **İstasyon Ranzası** kullanınca **yenide
 **Kargo Modülü**
 
 Malzemeyi kendin taşımak zorunda değilsin. Montaj tezgâhında kapsül yerine bir **Kargo Modülü** tak: **27 yuvalı** bir ambar olur ve roket insansız uçar.
-- **Yörünge hedefi:** istasyona yanaşır ve ambarı portun **4 blok** yakınındaki sandık, varil ve depolara boşaltır. Yörüngede istasyon yoksa bekler.
-- **Yüzey hedefi:** en yakın [İniş İşareti](navigation)'ne iner ve ambarı işaretin 4 blok yakınındaki depolara boşaltır.
+- **Yörünge hedefi:** istasyona yanaşır. **Yüzey hedefi:** en yakın [İniş İşareti](navigation)'ne iner.
+- Varınca ambarı portun ya da işaretin **4 blok** yakınındaki **sandıklara ve shulker kutularına** boşaltır, en yakından başlayarak. Makinelere hiçbir şey koymaz.
+- **Variller giden kutusudur:** oraya koyduğun eşyalar bir sonraki seferde yüklenir.
 
 |   |   |   |
 |---|---|---|
@@ -66,6 +67,12 @@ Malzemeyi kendin taşımak zorunda değilsin. Montaj tezgâhında kapsül yerine
 |   | Alüminyum Levha |   |
 
 → **Kargo Modülü** (Çalışma Masası)
+
+#### Otomatik sefer
+Dünya yüzeyi dışındaki bir hedefe fırlatılan kargo roketi, kalktığı yerle hedef arasında kendi kendine gidip gelir (örneğin Ay üssü ↔ Ay yörüngesindeki istasyon). Her uçta: sandıklara boşaltır → varillerden yükler → **200 tick** bekler (yakıt deposu onu doldurur) → öbür uca uçar. Ambar boşsa ya da yakıt yetmezse bekler ve sana bir kez haber verir.
+
+> [!TIP]
+> Seferi açıp kapatmak için rokete `Shift` basılıyken boş elle `Sağ Tık` yap.
 
 > [!TIP]
 > Sığmayan eşyalar ambarda kalır; sohbete kaç eşyanın beklediği yazılır. Portun ya da işaretin yanına yeterince sandık koy.
@@ -135,8 +142,9 @@ The **Solar Array** carries three panels on a one-block footprint and makes up t
 **Cargo Module**
 
 You do not have to carry supplies yourself. In the rocket assembler, fit a **Cargo Module** in place of the capsule: it is a **27-slot** hold and the rocket flies uncrewed.
-- **Orbit target:** it docks at the station and unloads the hold into the chests, barrels and other storage within **4 blocks** of the port. With no station in that orbit it waits.
-- **Surface target:** it lands on the nearest [Landing Beacon](navigation) and unloads into the storage within 4 blocks of the beacon.
+- **Orbit target:** it docks at the station. **Surface target:** it lands on the nearest [Landing Beacon](navigation).
+- On arrival it unloads the hold into the **chests and shulker boxes** within **4 blocks** of the port or beacon, nearest first. It never puts anything into machines.
+- **Barrels are the outbox:** whatever you put in them is loaded for the next trip.
 
 |   |   |   |
 |---|---|---|
@@ -145,6 +153,12 @@ You do not have to carry supplies yourself. In the rocket assembler, fit a **Car
 |   | Aluminum Plate |   |
 
 → **Cargo Module** (Crafting Table)
+
+#### Automatic route
+A cargo rocket launched to a target other than Earth's surface keeps shuttling between where it took off and its target (a Moon base ↔ a station in Moon orbit, for example). At each end it unloads into the chests → loads from the barrels → waits **200 ticks** (the fuel depot refuels it) → flies to the other end. With an empty hold or not enough fuel it waits, and tells you once.
+
+> [!TIP]
+> To switch the route on or off, `Right Click` the rocket with an empty hand while holding `Shift`.
 
 > [!TIP]
 > What does not fit stays in the hold, and chat tells you how many items are waiting. Put enough chests next to the port or beacon.
