@@ -184,7 +184,15 @@ public final class MarsLifeGameTests {
                 spawners++;
             }
         }
-        helper.assertTrue(lootChests(level, bb) >= 4, "station needs loot chests, found " + lootChests(level, bb));
+        int lockers = 0;
+        for (BlockPos p : BlockPos.betweenClosed(bb.minX(), bb.minY(), bb.minZ(), bb.maxX(), bb.maxY(), bb.maxZ())) {
+            if (level.getBlockEntity(p) instanceof com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlockEntity l
+                    && l.getLootTable() != null) {
+                lockers++;
+            }
+        }
+        helper.assertTrue(lockers >= 4, "station needs loot in its supply lockers, found " + lockers);
+        helper.assertTrue(lootChests(level, bb) == 0, "no vanilla chests in the station");
         helper.assertTrue(doors == 4, "airlock with two airlock doors, found " + doors);
         helper.assertTrue(spawners == 1, "rust beetle nest in the garage");
         int traps = 0;
@@ -517,5 +525,28 @@ public final class MarsLifeGameTests {
     }
 
     private MarsLifeGameTests() {
+    }
+
+    /** The supply locker holds its loot table until opened, then shows its doors open and fills from the table. */
+    @GameTest(template = EMPTY)
+    public static void supplyLockerFillsAndOpens(GameTestHelper helper) {
+        BlockPos rel = new BlockPos(1, 2, 1);
+        helper.setBlock(rel, com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.BLOCK.get().defaultBlockState());
+        BlockPos pos = helper.absolutePos(rel);
+        var locker = (com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlockEntity) helper.getLevel().getBlockEntity(pos);
+        helper.assertTrue(locker != null, "the locker has its block entity");
+        locker.setLootTable(com.pizzaparker07.spacebreaker.content.mars.dungeon.MarsLoot.STATION_STORAGE, 7L);
+        var player = helper.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        player.moveTo(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() - 1.5);
+        locker.unpackLootTable(player);
+        helper.assertTrue(locker.getLootTable() == null, "opening rolls the loot table once");
+        helper.assertFalse(locker.isEmpty(), "the storage loot table put something in it");
+        locker.startOpen(player);
+        helper.assertTrue(helper.getLevel().getBlockState(pos).getValue(com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlock.OPEN),
+                "its doors stand open while in use");
+        locker.stopOpen(player);
+        helper.assertFalse(helper.getLevel().getBlockState(pos).getValue(com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlock.OPEN),
+                "and close again");
+        helper.succeed();
     }
 }
