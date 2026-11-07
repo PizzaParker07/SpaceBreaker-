@@ -83,11 +83,3 @@ side = "CLIENT"
 # Access transformer (see the file for what it opens and why)
 [[accessTransformers]]
 file="META-INF/accesstransformer.cfg"
-
-# Optional dynamic lights (suit lamp, rover headlights; client side only)
-[[dependencies.${mod_id}]]
-modId = "lambdynlights"
-type = "optional"
-versionRange = "[4.0,)"
-ordering = "NONE"
-side = "CLIENT"
