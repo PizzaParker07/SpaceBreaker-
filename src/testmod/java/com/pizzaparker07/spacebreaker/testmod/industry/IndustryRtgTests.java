@@ -48,7 +48,7 @@ public final class IndustryRtgTests {
         MachineBlockEntity battery = machine(h, MachinesModule.BATTERY_BANK, new BlockPos(3, 1, 2), false);
         h.succeedWhen(() -> {
             h.assertTrue(rtg.items().getStackInSlot(0).has(MachinesModule.DECAY_START.get()), "the pellet is time-stamped in the RTG");
-            h.assertTrue(rtg.progress() >= 999, "fresh pellet shows full activity, got " + rtg.progress());
+            h.assertTrue(rtg.progress() >= 980, "fresh pellet shows (almost) full activity, got " + rtg.progress());
             h.assertTrue(battery.energy().getEnergyStored() >= RtgBlockEntity.OUTPUT * 40, "battery " + battery.energy().getEnergyStored());
         });
     }

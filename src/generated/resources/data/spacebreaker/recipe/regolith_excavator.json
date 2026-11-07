@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "spacebreaker:advanced_circuit"
+    },
+    "M": {
+      "item": "spacebreaker:electric_motor"
+    },
+    "S": {
+      "tag": "c:plates/steel"
+    },
+    "T": {
+      "tag": "c:rods/tungsten"
+    }
+  },
+  "pattern": [
+    "SMS",
+    "TCT",
+    "T T"
+  ],
+  "result": {
+    "count": 1,
+    "id": "spacebreaker:regolith_excavator"
+  }
+}

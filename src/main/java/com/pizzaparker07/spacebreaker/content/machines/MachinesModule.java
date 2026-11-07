@@ -166,7 +166,9 @@ public final class MachinesModule implements SbModule {
             com.pizzaparker07.spacebreaker.content.machines.machine.ElectrolyzerBlockEntity::new);
     public static final MachineEntry<MachineBlock, ProcessingMachineBlockEntity> LIQUEFIER = processing("cryogenic_liquefier", () -> LIQUEFACTION,
             new MachineLayout().energy(10, 17).tank(50, 17).progress(78, 35, MachineLayout.Progress.ARROW).tank(110, 17),
-            60_000, List.of(TankSpec.in(8_000, f -> f.getFluidType().isLighterThanAir()), TankSpec.out(8_000)), 0);
+            // only gases it can liquefy: a stray gas (helium-3 from a regolith heater) must not jam the input tank
+            60_000, List.of(TankSpec.in(8_000, f -> f.is(FluidsModule.TAG_OXYGEN) || f.is(FluidsModule.TAG_HYDROGEN) || f.is(FluidsModule.TAG_METHANE)),
+                    TankSpec.out(8_000)), 0);
 
     // ------------------------------------------------------------------ multiblocks
     public static final DeferredBlock<PartBlock> PART = BLOCKS.registerBlock("machine_part", PartBlock::new,
@@ -209,6 +211,9 @@ public final class MachinesModule implements SbModule {
             new MachineLayout().energy(10, 17).slot(40, 34, MachineLayout.Role.INPUT).progress(64, 35, MachineLayout.Progress.ARROW)
                     .slot(94, 34, MachineLayout.Role.OUTPUT).tank(120, 17).tank(142, 17),
             60_000, List.of(TankSpec.out(8_000), TankSpec.out(8_000)), 12);
+    /** Digs the ground below and feeds the machines beside it: the start of an automatic ISRU line. */
+    public static final MachineEntry<MachineBlock, com.pizzaparker07.spacebreaker.content.machines.machine.RegolithExcavatorBlockEntity> REGOLITH_EXCAVATOR =
+            machine("regolith_excavator", com.pizzaparker07.spacebreaker.content.machines.machine.RegolithExcavatorBlockEntity::new, null, 0);
     public static final MachineEntry<MachineBlock, ProcessingMachineBlockEntity> ICE_MELTER = processing("ice_melter", () -> MELTING,
             new MachineLayout().energy(10, 17).slot(52, 34, MachineLayout.Role.INPUT).progress(78, 35, MachineLayout.Progress.ARROW)
                     .tank(110, 17).tank(132, 17),

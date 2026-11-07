@@ -21,7 +21,11 @@ import java.util.Set;
  * tier's rate per tick. Networks are built lazily on first use and dropped whenever a member or neighbour changes.
  */
 public final class ConduitNetwork {
-    public record Endpoint(BlockPos pos, Direction face, boolean extract) {
+    /** @param filter only this fluid passes through this end (null = anything) */
+    public record Endpoint(BlockPos pos, Direction face, boolean extract, @org.jetbrains.annotations.Nullable net.minecraft.world.level.material.Fluid filter) {
+        public boolean passes(FluidStack stack) {
+            return filter == null || stack.getFluid().isSame(filter);
+        }
     }
 
     public static final int MAX_SIZE = 4096;
@@ -52,8 +56,9 @@ public final class ConduitNetwork {
             if (!(state.getBlock() instanceof ConduitBlock conduit) || conduit.type != type) {
                 continue;
             }
-            if (level.getBlockEntity(pos) instanceof ConduitBlockEntity be) {
-                be.network = net;
+            ConduitBlockEntity here = level.getBlockEntity(pos) instanceof ConduitBlockEntity be ? be : null;
+            if (here != null) {
+                here.network = net;
             }
             for (Direction dir : Direction.values()) {
                 ConduitSide side = state.getValue(ConduitBlock.SIDES.get(dir));
@@ -67,7 +72,8 @@ public final class ConduitNetwork {
                         queue.add(next.immutable());
                     }
                 } else {
-                    net.endpoints.add(new Endpoint(next.immutable(), dir.getOpposite(), side == ConduitSide.EXTRACT));
+                    net.endpoints.add(new Endpoint(next.immutable(), dir.getOpposite(), side == ConduitSide.EXTRACT,
+                            here == null ? null : here.filter(dir)));
                 }
             }
         }
@@ -156,7 +162,7 @@ public final class ConduitNetwork {
         try {
             List<IFluidHandler> targets = new ArrayList<>();
             for (Endpoint e : endpoints) {
-                if (e.extract() || e.pos().equals(source) || !level.isLoaded(e.pos())) {
+                if (e.extract() || e.pos().equals(source) || !level.isLoaded(e.pos()) || !e.passes(stack)) {
                     continue;
                 }
                 IFluidHandler t = level.getCapability(Capabilities.FluidHandler.BLOCK, e.pos(), e.face());
@@ -203,7 +209,7 @@ public final class ConduitNetwork {
 
     private void pumpWell(Endpoint e) {
         FluidStack water = new FluidStack(net.minecraft.world.level.material.Fluids.WATER, Math.min(WELL_RATE, Math.min(type.rate, budget())));
-        if (water.isEmpty() || !type.accepts(water) || !isWaterWell(level, e.pos())) {
+        if (water.isEmpty() || !type.accepts(water) || !e.passes(water) || !isWaterWell(level, e.pos())) {
             return;
         }
         int accepted = distributeFluid(water, IFluidHandler.FluidAction.SIMULATE, e.pos());
@@ -228,7 +234,10 @@ public final class ConduitNetwork {
                 pumpWell(e);
                 continue;
             }
-            FluidStack offer = from.drain(Math.min(type.rate, budget()), IFluidHandler.FluidAction.SIMULATE);
+            int want = Math.min(type.rate, budget());
+            // a filtered pulling end only takes its fluid out of a mixed tank
+            FluidStack offer = e.filter() == null ? from.drain(want, IFluidHandler.FluidAction.SIMULATE)
+                    : from.drain(new FluidStack(e.filter(), want), IFluidHandler.FluidAction.SIMULATE);
             if (offer.isEmpty() || !type.accepts(offer)) {
                 continue;
             }

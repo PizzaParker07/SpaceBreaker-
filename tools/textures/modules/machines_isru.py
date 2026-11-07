@@ -246,3 +246,27 @@ def export(save):  # noqa: F811
     save(rtg_front(), 'block', 'rtg_front', metal)
     save(rtg_top(), 'block', 'rtg_top', metal)
     save(rtg_pellet(), 'item', 'rtg_fuel_pellet')
+
+
+def excavator_front():
+    """A bucket wheel behind a steel frame: dark buckets on a tungsten rim, hazard stripe at the bottom."""
+    import math
+    cv = casing(71, seam=False)
+    for y in range(2, 13):
+        for x in range(2, 14):
+            d = math.hypot(x - 7.5, y - 7.0)
+            if d < 5.6:
+                ang = math.atan2(y - 7.0, x - 7.5)
+                bucket = int((ang + math.pi) / (2 * math.pi) * 8) % 2 == 0
+                cv[x, y] = S[2] if d > 3.8 and bucket else (S[3] if d > 3.8 else (S[2] if d > 1.2 else S[5]))
+    for x in range(1, 15):
+        cv[x, 14] = TREFOIL_Y if (x // 2) % 2 == 0 else S[2]
+    return cv
+
+
+_export_excavator = export
+
+
+def export(save):  # noqa: F811
+    _export_excavator(save)
+    save(excavator_front(), 'block', 'regolith_excavator_front', (150, 230, 0, None))

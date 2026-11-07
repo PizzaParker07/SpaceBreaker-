@@ -83,3 +83,18 @@ def generate():  # noqa: F811
         box([3, 14, 3], [13, 16, 13], {'north': 'steel', 'south': 'steel', 'east': 'steel', 'west': 'steel', 'up': 'top', 'down': 'bottom'}),
     ])
     write('models/item/rtg_fuel_pellet.json', {'parent': 'minecraft:item/generated', 'textures': {'layer0': i('rtg_fuel_pellet')}})
+
+
+_generate_excavator = generate
+
+
+def generate():  # noqa: F811
+    _generate_excavator()
+    # regolith excavator: casing with the bucket wheel in front and a drill string below
+    t = casing_tex('regolith_excavator_front', top='crusher_top')
+    t['steel'] = b('press_steel')
+    machine('regolith_excavator', t, [
+        body(14, top='top'),
+        box([1, 14, 1], [15, 16, 15], {'north': 'side', 'south': 'side', 'east': 'side', 'west': 'side', 'up': 'top', 'down': 'bottom'},
+            uv={f: [1, 0, 15, 2] for f in ('north', 'south', 'east', 'west')}),
+    ])

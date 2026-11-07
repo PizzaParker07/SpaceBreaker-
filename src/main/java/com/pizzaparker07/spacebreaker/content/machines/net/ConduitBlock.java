@@ -170,6 +170,40 @@ public class ConduitBlock extends BaseEntityBlock implements SimpleWaterloggedBl
 
     // ------------------------------------------------------------------ extraction toggle
 
+    /**
+     * Sneak-use a pipe end holding something with fluid in it (bucket, canister, a filled tank): that end now only
+     * passes that fluid. An empty container clears the filter.
+     */
+    @Override
+    protected net.minecraft.world.ItemInteractionResult useItemOn(net.minecraft.world.item.ItemStack stack, BlockState state, Level level, BlockPos pos,
+                                                                  Player player, net.minecraft.world.InteractionHand hand, BlockHitResult hit) {
+        if (type.energy || !player.isShiftKeyDown()) {
+            return net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        }
+        var held = net.neoforged.neoforge.fluids.FluidUtil.getFluidHandler(stack);
+        var contents = stack.get(com.pizzaparker07.spacebreaker.content.fluids.FluidsModule.FLUID_CONTENT.get());
+        if (held.isEmpty() && contents == null) {
+            return net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        }
+        Direction dir = armAt(hit.getLocation().subtract(Vec3.atLowerCornerWithOffset(pos, 0, 0, 0)), hit.getDirection());
+        if (!state.getValue(SIDES.get(dir)).connected() || level.getBlockState(pos.relative(dir)).getBlock() instanceof ConduitBlock) {
+            return net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        }
+        net.neoforged.neoforge.fluids.FluidStack fluid = contents != null ? contents.copy()
+                : held.map(h -> h.getTanks() > 0 ? h.getFluidInTank(0) : net.neoforged.neoforge.fluids.FluidStack.EMPTY)
+                .orElse(net.neoforged.neoforge.fluids.FluidStack.EMPTY);
+        if (!fluid.isEmpty() && !type.accepts(fluid)) {
+            return net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        }
+        if (!level.isClientSide && level.getBlockEntity(pos) instanceof ConduitBlockEntity be) {
+            be.setFilter(dir, fluid.isEmpty() ? null : fluid.getFluid());
+            level.playSound(null, pos, SoundEvents.ITEM_FRAME_ADD_ITEM, SoundSource.BLOCKS, 0.6F, 1.2F);
+            player.displayClientMessage(fluid.isEmpty() ? Component.translatable("message.spacebreaker.pipe_filter_off")
+                    : Component.translatable("message.spacebreaker.pipe_filter_on", fluid.getHoverName()), true);
+        }
+        return net.minecraft.world.ItemInteractionResult.sidedSuccess(level.isClientSide);
+    }
+
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (type.energy || !player.isShiftKeyDown()) {

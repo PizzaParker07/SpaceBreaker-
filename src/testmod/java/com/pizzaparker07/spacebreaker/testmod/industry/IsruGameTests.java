@@ -219,6 +219,9 @@ public final class IsruGameTests {
         var plain = h.getLevel().getRecipeManager().getAllRecipesFor(MachinesModule.REGOLITH_PROCESSING.type().get()).stream()
                 .filter(r -> r.id().getPath().endsWith("/regolith")).findFirst().orElseThrow();
         h.assertTrue(plain.value().priority == 0, "plain regolith keeps the default priority");
+        // the Moon's and Mercury's soil still gives oxygen (the first thing a base needs), plus a little helium-3
+        h.assertTrue(holder.value().fluidResults.stream().anyMatch(f -> f.is(FluidsModule.TAG_OXYGEN))
+                && holder.value().fluidResults.stream().anyMatch(f -> f.is(FluidsModule.TAG_HELIUM_3)), "solar-wind regolith: oxygen + helium-3");
         h.succeed();
     }
 

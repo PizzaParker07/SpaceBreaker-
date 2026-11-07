@@ -52,6 +52,16 @@ public class MachineMenu extends AbstractContainerMenu {
         return new MachineMenu(id, inventory, machine, new SimpleContainerData(MachineBlockEntity.dataCount(machine.tanks().size())));
     }
 
+    /** Button 0 (sent by vanilla's container button packet): cycle the redstone mode. */
+    @Override
+    public boolean clickMenuButton(Player player, int id) {
+        if (id == 0) {
+            machine.cycleRedstoneMode();
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public boolean stillValid(Player player) {
         return !machine.isRemoved() && player.distanceToSqr(machine.getBlockPos().getCenter()) < 64;

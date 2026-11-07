@@ -49,6 +49,8 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
     protected int maxProgress;
     /** Free status code shown by the screen (0 = ok); see {@link #statusKey}. */
     protected int status;
+    /** 0 = ignore redstone, 1 = run only with a signal, 2 = run only without one. */
+    protected int redstoneMode;
     private boolean syncPending;
     /** Who placed the machine; research gating follows this player's known technologies. */
     @Nullable private java.util.UUID owner;
@@ -124,6 +126,7 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
             case 6 -> "gui.spacebreaker.status.incomplete";
             case 7 -> "gui.spacebreaker.status.locked";
             case 8 -> "gui.spacebreaker.status.no_atmosphere";
+            case 9 -> "gui.spacebreaker.status.redstone";
             default -> null;
         };
     }
@@ -216,6 +219,11 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
             be.updateLit(level, pos, state, false);
             return;
         }
+        if (!be.redstoneAllows(level, pos)) {
+            be.status = 9;
+            be.updateLit(level, pos, state, false);
+            return;
+        }
         boolean working = be.tickServer(level, pos, state);
         state = level.getBlockState(pos);
         be.updateLit(level, pos, state, working);
@@ -223,6 +231,29 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
             be.syncPending = false;
             level.sendBlockUpdated(pos, state, state, Block.UPDATE_CLIENTS);
         }
+    }
+
+    public int redstoneMode() {
+        return redstoneMode;
+    }
+
+    public void setRedstoneMode(int mode) {
+        redstoneMode = Math.floorMod(mode, 3);
+        setChanged();
+    }
+
+    /** Next mode: ignore, with signal, without signal. */
+    public void cycleRedstoneMode() {
+        setRedstoneMode(redstoneMode + 1);
+    }
+
+    /** Whether the redstone mode lets the machine run here and now. */
+    public boolean redstoneAllows(Level level, BlockPos pos) {
+        return allows(redstoneMode, level.hasNeighborSignal(pos));
+    }
+
+    public static boolean allows(int mode, boolean powered) {
+        return mode == 0 || (mode == 1) == powered;
     }
 
     /** @return whether the machine is actively working this tick (drives the LIT state). */
@@ -433,6 +464,9 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
                 case 5: return energy.getMaxEnergyStored() >>> 16;
                 case 6: return status;
                 default:
+                    if (i == 7 + tanks.size() * 3) {
+                        return redstoneMode;
+                    }
                     int t = (i - 7) / 3;
                     int k = (i - 7) % 3;
                     FluidStack f = tanks.get(t).getFluid();
@@ -450,11 +484,16 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
 
         @Override
         public int getCount() {
-            return 7 + tanks.size() * 3;
+            return 8 + tanks.size() * 3;
         }
     };
 
+    /** Values: 7 fixed, 3 per tank, then the redstone mode last. */
     public static int dataCount(int tanks) {
+        return 8 + tanks * 3;
+    }
+
+    public static int redstoneIndex(int tanks) {
         return 7 + tanks * 3;
     }
 
@@ -502,6 +541,7 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
             tag.putUUID("owner", owner);
         }
         tag.putBoolean("locked", locked);
+        tag.putInt("redstone", redstoneMode);
     }
 
     @Override
@@ -521,6 +561,7 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         }
         owner = tag.hasUUID("owner") ? tag.getUUID("owner") : null;
         locked = tag.getBoolean("locked");
+        redstoneMode = Math.floorMod(tag.getInt("redstone"), 3);
         contentsChanged = true;
     }
 

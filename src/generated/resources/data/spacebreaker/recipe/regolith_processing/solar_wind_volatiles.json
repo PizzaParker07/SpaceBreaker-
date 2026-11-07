@@ -3,8 +3,8 @@
   "energy": 120,
   "fluid_results": [
     {
-      "amount": 200,
-      "id": "spacebreaker:hydrogen"
+      "amount": 250,
+      "id": "spacebreaker:oxygen"
     },
     {
       "amount": 20,

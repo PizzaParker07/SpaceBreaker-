@@ -78,7 +78,8 @@ public final class IsruRecipes {
         ProcessingRecipeBuilder.of(REGOLITH_PROCESSING).in(PERCHLORATE_DUSTS).fluidOut(FluidsModule.OXYGEN.get(), 750)
                 .time(80).energy(80).save(out, "perchlorate_salt");
         // solar-wind volatiles baked out of the grains: mostly hydrogen, a trace of helium-3
-        ProcessingRecipeBuilder.of(REGOLITH_PROCESSING).in(SOLAR_WIND_REGOLITHS).fluidOut(FluidsModule.HYDROGEN.get(), 200)
+        // airless worlds' soil: oxygen bound in the minerals plus a trace of solar-wind helium-3 (hydrogen comes from their ice)
+        ProcessingRecipeBuilder.of(REGOLITH_PROCESSING).in(SOLAR_WIND_REGOLITHS).fluidOut(FluidsModule.OXYGEN.get(), 250)
                 .fluidOut(FluidsModule.HELIUM_3.get(), 20).time(160).energy(120).priority(1).save(out, "solar_wind_volatiles");
         // wet sulfuric acid process: S + O2 + H2O (via SO2/SO3) -> H2SO4
         ProcessingRecipeBuilder.of(CHEMICAL_REACTION).in(SULFUR).fluidIn(net.neoforged.neoforge.common.Tags.Fluids.WATER, 250)
@@ -98,6 +99,10 @@ public final class IsruRecipes {
         shaped(out, CHEMICAL_REACTOR.item().get(), 1, has(EarthModule.STEEL.plateTag), "SGS", "PCP", "SMS",
                 'S', EarthModule.STEEL.plateTag, 'G', Tags.Items.GLASS_BLOCKS_COLORLESS, 'P', FLUID_PIPE.get(),
                 'C', EarthModule.ADVANCED_CIRCUIT.get(), 'M', EarthModule.ELECTRIC_MOTOR.get());
+        // excavator: tungsten-toothed bucket wheel on a motor, steel frame
+        shaped(out, REGOLITH_EXCAVATOR.item().get(), 1, has(EarthModule.TUNGSTEN.rodTag), "SMS", "TCT", "T T",
+                'S', EarthModule.STEEL.plateTag, 'M', EarthModule.ELECTRIC_MOTOR.get(), 'T', EarthModule.TUNGSTEN.rodTag,
+                'C', EarthModule.ADVANCED_CIRCUIT.get());
         // RTG: shielded heat-source cavity (tungsten), silicon thermocouples, aluminium radiator fins
         shaped(out, RTG.item().get(), 1, has(EarthModule.TUNGSTEN.plateTag), "ATA", "SCS", "ATA",
                 'A', EarthModule.ALUMINUM.plateTag, 'T', EarthModule.TUNGSTEN.plateTag, 'S', EarthModule.SILICON_WAFER.get(),

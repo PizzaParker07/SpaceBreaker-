@@ -23,6 +23,9 @@ final class MachinesLang {
         name(lang, MachinesModule.REGOLITH_HEATER, "Regolith Heater", "Regolit Isıtıcı");
         name(lang, MachinesModule.ICE_MELTER, "Ice Melter", "Buz Eritici");
         name(lang, MachinesModule.CHEMICAL_REACTOR, "Chemical Reactor", "Kimyasal Reaktör");
+        name(lang, MachinesModule.REGOLITH_EXCAVATOR, "Regolith Excavator", "Regolit Kazıcı");
+        lang.add("tooltip.spacebreaker.regolith_excavator", "Digs a 5x5 patch below, 16 deep, and feeds the machines beside it",
+                "Altındaki 5x5 alanı 16 blok derine kazar, yanındaki makinelere verir");
         lang.add("tooltip.spacebreaker.chemical_reactor", "One solid and two fluids in; e.g. sulfur + water + oxygen → sulfuric acid",
                 "Bir katı ve iki sıvı girer; örn. kükürt + su + oksijen → sülfürik asit");
         lang.add("gui.spacebreaker.status.no_atmosphere", "No usable atmosphere", "Kullanılabilir atmosfer yok");
@@ -60,13 +63,19 @@ final class MachinesLang {
         lang.add("gui.spacebreaker.status.no_oil", "No crude oil below", "Altında ham petrol yok");
         lang.add("gui.spacebreaker.status.no_fuel", "No fuel", "Yakıt yok");
         lang.add("gui.spacebreaker.status.locked", "Needs research", "Araştırma gerekli");
+        lang.add("gui.spacebreaker.status.redstone", "Stopped by redstone", "Kızıltaşla durduruldu");
+        lang.add("gui.spacebreaker.redstone.0", "Redstone: ignored", "Kızıltaş: yok sayılır");
+        lang.add("gui.spacebreaker.redstone.1", "Redstone: runs with a signal", "Kızıltaş: sinyal varken çalışır");
+        lang.add("gui.spacebreaker.redstone.2", "Redstone: runs without a signal", "Kızıltaş: sinyal yokken çalışır");
         lang.add("gui.spacebreaker.requires", "Requires: %s", "Gerekli: %s");
         lang.add("gui.spacebreaker.status.incomplete", "Structure blocked", "Yapı engellenmiş");
         lang.add("message.spacebreaker.pipe_extract_on", "Pipe now pulls from this side", "Boru artık bu taraftan çekiyor");
+        lang.add("message.spacebreaker.pipe_filter_on", "This end now only passes %s", "Bu uç artık yalnız %s geçirir");
+        lang.add("message.spacebreaker.pipe_filter_off", "Filter cleared", "Filtre kaldırıldı");
         lang.add("message.spacebreaker.pipe_extract_off", "Pipe no longer pulls from this side", "Boru artık bu taraftan çekmiyor");
         lang.add("tooltip.spacebreaker.cable", "Carries up to %s FE/t", "En fazla %s FE/t taşır");
-        lang.add("tooltip.spacebreaker.pipe", "Carries up to %s mB/t. Sneak-use an end to pull from a block or an endless water source",
-                "En fazla %s mB/t taşır. Bir bloktan ya da sonsuz su kaynağından çekmek için eğilip ucuna tıkla");
+        lang.add("tooltip.spacebreaker.pipe", "Carries up to %s mB/t. Sneak-use an end: pull from a block or an endless water source; with a filled container: let only that fluid through",
+                "En fazla %s mB/t taşır. Eğilip ucuna tıkla: bloktan ya da sonsuz su kaynağından çeker; dolu bir kapla: yalnız o sıvıyı geçirir");
         lang.add("tooltip.spacebreaker.electrolyzer", "Hydrogen leaves on the left, oxygen on the right (seen from the front)",
                 "Hidrojen soldan, oksijen sağdan çıkar (önden bakınca)");
         lang.add("tooltip.spacebreaker.generator", "%s FE/t. Needs breathable air", "%s FE/t. Solunabilir hava gerekir");

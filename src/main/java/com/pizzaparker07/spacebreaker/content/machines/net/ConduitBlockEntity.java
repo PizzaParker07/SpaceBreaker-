@@ -23,6 +23,62 @@ public class ConduitBlockEntity extends BlockEntity {
         super(MachinesModule.CONDUIT_BE.get(), pos, state);
     }
 
+    private final Map<Direction, net.minecraft.world.level.material.Fluid> filters = new EnumMap<>(Direction.class);
+
+    /** Fluid allowed through the end on this side, or null for any. */
+    public @Nullable net.minecraft.world.level.material.Fluid filter(Direction side) {
+        return filters.get(side);
+    }
+
+    public void setFilter(Direction side, @Nullable net.minecraft.world.level.material.Fluid fluid) {
+        if (fluid == null || fluid == net.minecraft.world.level.material.Fluids.EMPTY) {
+            filters.remove(side);
+        } else {
+            filters.put(side, fluid);
+        }
+        setChanged();
+        invalidateNetwork();
+        if (level != null) {
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), net.minecraft.world.level.block.Block.UPDATE_CLIENTS);
+        }
+    }
+
+    @Override
+    protected void saveAdditional(net.minecraft.nbt.CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        if (!filters.isEmpty()) {
+            net.minecraft.nbt.CompoundTag f = new net.minecraft.nbt.CompoundTag();
+            filters.forEach((d, fluid) -> f.putString(d.getSerializedName(),
+                    net.minecraft.core.registries.BuiltInRegistries.FLUID.getKey(fluid).toString()));
+            tag.put("filters", f);
+        }
+    }
+
+    @Override
+    protected void loadAdditional(net.minecraft.nbt.CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        filters.clear();
+        net.minecraft.nbt.CompoundTag f = tag.getCompound("filters");
+        for (Direction d : Direction.values()) {
+            if (f.contains(d.getSerializedName())) {
+                var fluid = net.minecraft.core.registries.BuiltInRegistries.FLUID.get(net.minecraft.resources.ResourceLocation.parse(f.getString(d.getSerializedName())));
+                if (fluid != net.minecraft.world.level.material.Fluids.EMPTY) {
+                    filters.put(d, fluid);
+                }
+            }
+        }
+    }
+
+    @Override
+    public net.minecraft.nbt.CompoundTag getUpdateTag(net.minecraft.core.HolderLookup.Provider registries) {
+        return saveWithoutMetadata(registries);
+    }
+
+    @Override
+    public @Nullable net.minecraft.network.protocol.Packet<net.minecraft.network.protocol.game.ClientGamePacketListener> getUpdatePacket() {
+        return net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket.create(this);
+    }
+
     public ConduitType type() {
         return ((ConduitBlock) getBlockState().getBlock()).type;
     }

@@ -37,8 +37,32 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
         return menu.machine.layout();
     }
 
+    private net.minecraft.client.gui.components.Button redstoneButton;
+
+    @Override
+    protected void init() {
+        super.init();
+        // redstone mode: cycles ignore / with signal / without signal (vanilla's container button packet)
+        redstoneButton = addRenderableWidget(net.minecraft.client.gui.components.Button.builder(Component.empty(), b -> {
+            if (minecraft != null && minecraft.gameMode != null) {
+                minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 0);
+            }
+        }).bounds(leftPos + imageWidth - 22, topPos + inventoryLabelY - 3, 14, 12).build());
+    }
+
+    private int redstoneMode() {
+        int i = com.pizzaparker07.spacebreaker.content.machines.base.MachineBlockEntity.redstoneIndex(menu.machine.tanks().size());
+        return i < menu.data.getCount() ? Math.floorMod(menu.data.get(i), 3) : 0;
+    }
+
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
+        if (redstoneButton != null) {
+            int mode = redstoneMode();
+            redstoneButton.setMessage(Component.literal(mode == 0 ? "-" : mode == 1 ? "\u25B2" : "\u25BC")
+                    .withStyle(mode == 0 ? net.minecraft.ChatFormatting.GRAY : net.minecraft.ChatFormatting.RED));
+            redstoneButton.setTooltip(net.minecraft.client.gui.components.Tooltip.create(Component.translatable("gui.spacebreaker.redstone." + mode)));
+        }
         super.render(g, mouseX, mouseY, partialTick);
         renderTooltip(g, mouseX, mouseY);
         renderGaugeTooltips(g, mouseX, mouseY);
