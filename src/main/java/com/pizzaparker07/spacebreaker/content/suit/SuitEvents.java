@@ -107,8 +107,7 @@ public final class SuitEvents {
      * distributor rooms, a crew capsule, ...) or a registered pressure source?
      */
     public static boolean pressurisedAt(Player player) {
-        if (PressurizedCabin.holding(player).isPresent()
-                || Environment.suppliedOxygen(player.level(), BlockPos.containing(player.getEyePosition()))) {
+        if (Environment.suppliedOxygen(player.level(), BlockPos.containing(player.getEyePosition()))) {
             return true;
         }
         for (var source : PRESSURE_SOURCES) {
