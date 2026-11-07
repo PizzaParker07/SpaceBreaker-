@@ -1,0 +1,6 @@
+{
+  "type": "spacebreaker:titania_canyon_outpost",
+  "biomes": "spacebreaker:titania_uplands",
+  "spawn_overrides": {},
+  "step": "surface_structures"
+}
