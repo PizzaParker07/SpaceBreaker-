@@ -58,6 +58,8 @@ public final class UranusData {
     }
 
     static void translations(Lang lang) {
+        lang.add("dungeon.spacebreaker.titania_canyon_outpost", "Canyon Rim Outpost", "Kanyon Kenarı Karakolu");
+        lang.add("structure.spacebreaker.titania_canyon_outpost", "Canyon Rim Outpost", "Kanyon Kenarı Karakolu");
         lang.add("biome.spacebreaker.miranda_plains", "Patchwork Plains", "Yamalı Ovalar");
         lang.add("biome.spacebreaker.miranda_crater", "Mirandan Crater", "Miranda Krateri");
         lang.add("biome.spacebreaker.miranda_polar", "Mirandan Pole", "Miranda Kutbu");
@@ -162,6 +164,8 @@ public final class UranusData {
         dp.add(Registries.CONFIGURED_FEATURE, UranusData::configured);
         dp.add(Registries.PLACED_FEATURE, UranusData::placed);
         dp.add(Registries.BIOME, UranusData::biomes);
+        dp.add(Registries.STRUCTURE, com.pizzaparker07.spacebreaker.content.uranus.dungeon.UranusStructures::structures);
+        dp.add(Registries.STRUCTURE_SET, com.pizzaparker07.spacebreaker.content.uranus.dungeon.UranusStructures::sets);
     }
 
     private static void configured(BootstrapContext<ConfiguredFeature<?, ?>> ctx) {

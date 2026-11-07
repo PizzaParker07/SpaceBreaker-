@@ -18,8 +18,8 @@ import java.util.List;
  * baseline. Results go to the log as "[perf] ...". Run with -Pscenario=perf_outer.
  */
 final class OuterPerfScenario implements ShowcaseScenario {
-    private static final String[] WORLDS = {"moon", "ceres", "io", "europa", "ganymede", "titan", "enceladus", "miranda", "ariel", "titania",
-            "umbriel", "oberon", "triton", "pluto", "charon"};
+    private static final String[] WORLDS = {"moon", "churyumov_gerasimenko", "encke", "halley", "tempel_1", "ceres", "io", "europa",
+            "ganymede", "titan", "enceladus", "miranda", "ariel", "titania", "umbriel", "oberon", "triton", "pluto", "charon", "nix", "hydra", "proteus", "nereid", "bennu", "ryugu", "eros", "itokawa"};
     private static final int RADIUS = 4; // 9 x 9 chunks
 
     @Override
@@ -102,6 +102,10 @@ final class OuterPerfScenario implements ShowcaseScenario {
                     String.valueOf(com.pizzaparker07.spacebreaker.content.pluto.PlutoData.HEART_LATITUDE), "nitrogen heart cells"},
             {"io", "0", "0", "lava lakes"},
             {"vesta", "0", "-80", "Rheasilvia basin"},
+            {"proteus", String.valueOf(com.pizzaparker07.spacebreaker.content.neptune.Proteus.pharos().x()), String.valueOf(com.pizzaparker07.spacebreaker.content.neptune.Proteus.pharos().latitude()), "Pharos basin"},
+            {"ryugu", "0", "0", "equatorial ridge"},
+            {"itokawa", String.valueOf(com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.musesSea().x()), String.valueOf(com.pizzaparker07.spacebreaker.content.belt.NearEarthAsteroids.musesSea().latitude()), "Muses Sea"},
+            {"tempel_1", String.valueOf(com.pizzaparker07.spacebreaker.content.belt.Comets.tempelPlain().x()), String.valueOf(com.pizzaparker07.spacebreaker.content.belt.Comets.tempelPlain().latitude()), "smooth plain"},
     };
 
 }
