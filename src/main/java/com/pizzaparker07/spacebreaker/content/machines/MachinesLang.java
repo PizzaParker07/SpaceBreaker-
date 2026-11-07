@@ -108,6 +108,17 @@ final class MachinesLang {
         lang.item(MachinesModule.NUCLEAR_FUEL_ELEMENT, "Nuclear Fuel Element", "Nükleer Yakıt Elemanı");
         lang.add("tooltip.spacebreaker.nuclear_fuel_element", "Enriched uranium carbide in a tungsten clad: heats a nuclear thermal rocket's hydrogen",
                 "Tungsten kılıflı zenginleştirilmiş uranyum karbür: nükleer termal roketin hidrojenini ısıtır");
+        // short screen names, used only when the full name does not fit the screen's title row
+        String[][] shortNames = {
+                {"rtg", "RTG", "RTG"}, {"fission_reactor", "Fission Unit", "Fisyon Ünitesi"},
+                {"arc_furnace", "Arc Furnace", "Ark Fırını"}, {"fabricator", "Fabricator", "Üretim Tezgâhı"},
+                {"cryogenic_liquefier", "Liquefier", "Sıvılaştırıcı"}, {"combustion_generator", "Generator", "Jeneratör"},
+                {"atmosphere_processor", "Atmosphere Unit", "Atmosfer Ünitesi"}, {"electrolyzer", "Electrolyzer", "Elektroliz"},
+                {"sintering_furnace", "Sinter Furnace", "Sinter Fırını"}, {"regolith_excavator", "Excavator", "Kazıcı"},
+        };
+        for (String[] n : shortNames) {
+            lang.add("gui.spacebreaker.short." + n[0], n[1], n[2]);
+        }
         lang.add("tooltip.spacebreaker.nuclear_fuel_element.left", "Partly burnt: %s%% left", "Kısmen yanmış: %%%s kaldı");
         com.pizzaparker07.spacebreaker.content.earth.EarthModule.tag(lang, IsruRecipes.REACTOR_FUEL, "Reactor Fuel", "Reaktör Yakıtı");
         lang.add("tooltip.spacebreaker.rtg_fuel_pellet.activity", "Activity: %s%% (%s FE/t in an RTG)", "Etkinlik: %%%s (RTG'de %s FE/t)");

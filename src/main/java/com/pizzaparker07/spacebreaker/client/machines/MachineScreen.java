@@ -68,7 +68,7 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
         renderGaugeTooltips(g, mouseX, mouseY);
         Component status = statusLine();
         int sx = leftPos + imageWidth - 33;
-        if (font.width(title) > imageWidth - 36 - titleLabelX && mouseX >= leftPos + 8 && mouseX < sx && mouseY >= topPos + 3 && mouseY < topPos + 14) {
+        if (!shownTitle().equals(title.getString()) && mouseX >= leftPos + 8 && mouseX < sx && mouseY >= topPos + 3 && mouseY < topPos + 14) {
             g.renderTooltip(font, title, mouseX, mouseY);
         }
         if (status != null && mouseX >= sx && mouseX < sx + 10 && mouseY >= topPos + 3 && mouseY < topPos + 14) {
@@ -153,14 +153,32 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
      * explanation comes up on hover. */
     @Override
     protected void renderLabels(GuiGraphics g, int mouseX, int mouseY) {
-        int room = imageWidth - 36 - titleLabelX;
-        String name = font.width(title) > room ? font.plainSubstrByWidth(title.getString(), room - font.width("…")) + "…" : title.getString();
+        String name = shownTitle();
         g.drawString(font, name, titleLabelX, titleLabelY, 0x404040, false);
         if (statusLine() != null) {
             int x = imageWidth - 33, y = 4;
             g.fill(x + 3, y, x + 6, y + 6, 0xFFB02E26);
             g.fill(x + 3, y + 7, x + 6, y + 9, 0xFFB02E26);
         }
+    }
+
+    /** The machine's name, or its short screen name when the full one does not fit beside the buttons
+     * ({@code gui.spacebreaker.short.<id>}); the full name then shows on hover. */
+    private String shownTitle() {
+        int room = imageWidth - 36 - titleLabelX;
+        String full = title.getString();
+        if (font.width(full) <= room) {
+            return full;
+        }
+        String key = "gui.spacebreaker.short." + net.minecraft.core.registries.BuiltInRegistries.BLOCK
+                .getKey(menu.machine.getBlockState().getBlock()).getPath();
+        if (net.minecraft.client.resources.language.I18n.exists(key)) {
+            String shortName = net.minecraft.client.resources.language.I18n.get(key);
+            if (font.width(shortName) <= room) {
+                return shortName;
+            }
+        }
+        return font.plainSubstrByWidth(full, room - font.width("…")) + "…";
     }
 
     private Component statusLine() {
