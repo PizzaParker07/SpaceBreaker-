@@ -24,6 +24,7 @@ public final class MarsClimate {
     static void register() {
         Environment.addTemperatureModifier(MarsClimate::temperatureOffset);
         Environment.addSunlightModifier((level, pos) -> 1 - 0.85 * MarsWeather.stormStrength(level));
+        PanelDust.register();
     }
 
     /** Pole-to-equator distance of the level's terrain profile, or NaN without one. */

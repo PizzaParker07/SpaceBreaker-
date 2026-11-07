@@ -242,6 +242,7 @@ public final class MarsModule implements SbModule {
         lang.add("message.spacebreaker.duststorm.arrive", "The dust storm has arrived: the Sun is dimmed and tracks are being erased.",
                 "Toz fırtınası geldi: Güneş karardı, izler siliniyor.");
         lang.add("message.spacebreaker.duststorm.clear", "The storm is dying down; the sky will clear.", "Fırtına diniyor; gökyüzü açılacak.");
+        lang.add("message.spacebreaker.panel_brushed", "You brush the dust off the panel", "Paneldeki tozu fırçayla temizledin");
         lang.add("commands.spacebreaker.duststorm.none", "This world has no dust storms", "Bu dünyada toz fırtınası olmaz");
         MarsData.translations(lang);
         com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.translations(lang);

@@ -52,6 +52,14 @@ public final class MarsEntities {
     public static final DeferredHolder<EntityType<?>, EntityType<TetherSpinner>> TETHER_SPINNER = ENTITIES.register("tether_spinner",
             () -> EntityType.Builder.of(TetherSpinner::new, MobCategory.CREATURE).sized(0.8F, 0.5F).eyeHeight(0.35F).clientTrackingRange(8)
                     .build("tether_spinner"));
+    public static final DeferredHolder<EntityType<?>, EntityType<DustWhirl>> DUST_WHIRL = ENTITIES.register("dust_whirl",
+            () -> EntityType.Builder.<DustWhirl>of(DustWhirl::new, MobCategory.MISC).sized(1.2F, 6F).clientTrackingRange(10).updateInterval(4)
+                    .noSummon().build("dust_whirl"));
+    /** Afternoon window for fair-weather whirls: sun angle after noon (radians), when the ground is hottest. */
+    public static final float WHIRL_FROM = 0.12F;
+    public static final float WHIRL_TO = 1.15F;
+    /** At most this many whirls around one player. */
+    public static final int WHIRLS_NEAR = 2;
 
     private MarsEntities() {
     }
@@ -85,6 +93,7 @@ public final class MarsEntities {
         NeoForge.EVENT_BUS.addListener(LevelTickEvent.Post.class, e -> {
             if (e.getLevel() instanceof ServerLevel level) {
                 stormSpawns(level);
+                whirlSpawns(level);
             }
         });
         spawns();
@@ -124,6 +133,55 @@ public final class MarsEntities {
         }
         s.add(new MarsData.BiomeSpawns(MarsData.ICE_CAP, b ->
                 b.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(POLAR_WORM.get(), 14, 1, 3))));
+    }
+
+    /** True on a calm Martian afternoon, when the warm ground lifts dust whirls. */
+    public static boolean whirlWeather(ServerLevel level) {
+        if (!MarsWeather.dusty(level) || MarsWeather.stormStrength(level) > 0.05F) {
+            return false;
+        }
+        float angle = net.minecraft.util.Mth.wrapDegrees(level.getSunAngle(1F) * net.minecraft.util.Mth.RAD_TO_DEG) * net.minecraft.util.Mth.DEG_TO_RAD;
+        return angle > WHIRL_FROM && angle < WHIRL_TO;
+    }
+
+    /** Whether whirls form over this ground: the open plains and dune fields. */
+    public static boolean whirlGround(ServerLevel level, BlockPos pos) {
+        var biome = level.getBiome(pos);
+        return biome.is(MarsData.PLAINS) || biome.is(MarsData.DUNES);
+    }
+
+    /** Fair-weather dust whirls: now and then one forms on the plains near a player on a calm afternoon. */
+    static void whirlSpawns(ServerLevel level) {
+        if (level.getGameTime() % 200 != 0 || !whirlWeather(level)) {
+            return;
+        }
+        for (ServerPlayer player : level.players()) {
+            if (player.isSpectator() || level.random.nextInt(3) != 0) {
+                continue;
+            }
+            if (level.getEntities(DUST_WHIRL.get(), player.getBoundingBox().inflate(64), e -> true).size() >= WHIRLS_NEAR) {
+                continue;
+            }
+            double a = level.random.nextDouble() * Math.PI * 2;
+            double d = 20 + level.random.nextDouble() * 24;
+            int x = (int) (player.getX() + Math.cos(a) * d);
+            int z = (int) (player.getZ() + Math.sin(a) * d);
+            int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
+            BlockPos pos = new BlockPos(x, y, z);
+            if (level.isLoaded(pos) && level.canSeeSky(pos) && whirlGround(level, pos)) {
+                spawnWhirl(level, pos);
+            }
+        }
+    }
+
+    /** Starts a whirl at a ground position. */
+    public static DustWhirl spawnWhirl(ServerLevel level, BlockPos pos) {
+        DustWhirl whirl = DUST_WHIRL.get().create(level);
+        if (whirl != null) {
+            whirl.moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, 0F, 0F);
+            level.addFreshEntity(whirl);
+        }
+        return whirl;
     }
 
     /** Dust devils form around players caught outside in a strong storm. */
@@ -173,6 +231,7 @@ public final class MarsEntities {
         lang.add(STONEGRAZER.get().getDescriptionId(), "Stonegrazer", "Taş Otlayan");
         lang.add(POLAR_WORM.get().getDescriptionId(), "Polar Worm", "Kutup Kurtçuğu");
         lang.add(TETHER_SPINNER.get().getDescriptionId(), "Tether Spinner", "Çapa Örücüsü");
+        lang.add(DUST_WHIRL.get().getDescriptionId(), "Dust Whirl", "Toz Hortumu");
         String[][] eggs = {{"Rust Beetle", "Pas Böceği"}, {"Dust Devil", "Toz Şeytanı"}, {"Canyon Lurker", "Kanyon Pusucusu"},
                 {"Stonegrazer", "Taş Otlayan"}, {"Polar Worm", "Kutup Kurtçuğu"}, {"Tether Spinner", "Çapa Örücüsü"}};
         for (int i = 0; i < eggs.length; i++) {

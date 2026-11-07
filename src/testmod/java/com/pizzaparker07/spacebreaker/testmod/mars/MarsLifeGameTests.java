@@ -350,6 +350,40 @@ public final class MarsLifeGameTests {
         });
     }
 
+    /** Martian dust: clean to fully covered in about three sols, six times faster in a full storm. */
+    @GameTest(template = EMPTY)
+    public static void panelDustSettlesOverSols(GameTestHelper helper) {
+        double calm = com.pizzaparker07.spacebreaker.core.env.DustLoad.rate(0);
+        helper.assertTrue(Math.abs(calm * 3 * 24000 - 1) < 1e-9, "three calm sols cover a panel");
+        helper.assertTrue(Math.abs(com.pizzaparker07.spacebreaker.core.env.DustLoad.rate(1) / calm - 6) < 1e-9, "storms settle six times faster");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.core.env.DustLoad.percent(0.427F) == 43, "dust shown as a percentage");
+        helper.succeed();
+    }
+
+    /** A dust whirl swirls loose items aside, and fades away when nobody is near to see it. */
+    @GameTest(template = EMPTY, timeoutTicks = 100)
+    public static void dustWhirlNudgesThingsAndFadesUnseen(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos at = helper.absolutePos(new BlockPos(1, 1, 1));
+        var whirl = com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities.spawnWhirl(level, at);
+        helper.assertTrue(whirl != null, "a whirl forms");
+        whirl.setHeading(0F);
+        var item = new net.minecraft.world.entity.item.ItemEntity(level, whirl.getX() + 1.0, whirl.getY() + 0.2, whirl.getZ(),
+                new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.STICK));
+        item.setNoGravity(true);
+        level.addFreshEntity(item);
+        net.minecraft.world.phys.Vec3 start = item.position();
+        helper.runAfterDelay(12, () -> {
+            helper.assertTrue(item.position().distanceTo(start) > 0.05, "the whirl swirls the item aside");
+        });
+        helper.runAfterDelay(45, () -> {
+            helper.assertTrue(whirl.isRemoved(), "with no player within sight the whirl fades away");
+            helper.assertFalse(whirl.shouldBeSaved(), "whirls are weather: never saved");
+            item.discard();
+            helper.succeed();
+        });
+    }
+
     private MarsLifeGameTests() {
     }
 }

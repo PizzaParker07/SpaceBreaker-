@@ -504,8 +504,26 @@ def dust_mote(i):
     return cv
 
 
+def whirl_puff(i):
+    """A soft puff of whirled dust (tinted in game): a round blob, dense core, ragged translucent rim; three variants."""
+    import random as _r
+    rng = _r.Random(5301 + i)
+    cv = Canvas(8, 8)
+    for y in range(8):
+        for x in range(8):
+            d = ((x - 3.5) ** 2 + (y - 3.5) ** 2) ** 0.5 + rng.uniform(-0.5, 0.5)
+            if d < 1.8:
+                cv[x, y] = (232, 216, 198, 200)
+            elif d < 2.9:
+                cv[x, y] = (214, 196, 176, 120)
+            elif d < 3.6:
+                cv[x, y] = (200, 180, 160, 55)
+    return cv
+
+
 def export_sky(save):
     save(phobos(), 'environment', 'phobos')
     save(deimos(), 'environment', 'deimos')
     for i in range(3):
         save(dust_mote(i), 'particle', f'dust_mote_{i}')
+        save(whirl_puff(i), 'particle', f'whirl_dust_{i}')
