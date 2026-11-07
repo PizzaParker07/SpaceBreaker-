@@ -356,6 +356,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Güç Göstergesi (`spacebreaker:power_monitor`) | batarya bankasının (ya da enerji depolayan herhangi bir bloğun) önüne/arkasına dayanır; ekranında doluluk %, net FE/t ve dolma/boşalma süresi; sağ tıkta özet, karşılaştırıcı çıkışı doluluğa göre |
 | 🎨 | Çalışma sesleri | gezici motoru (hızla incelir, akü boşken susar, vakumda yalnız binenler duyar), elektrolizör uğultusu, kırıcı öğütmesi |
 | 🎨 | Güneş paneli: "burada güneş ışığı %…" | ipucunda gezegene göre yüzde ve öğle tepe değeri, sağ tıkta anlık üretim; 1 FE/t altındaki üretim yuvarlanıp kaybolmaz, birikir |
+| 🎨 | Makine modelleri, 2. geçiş (kırıcı, batarya bankası, regolit ısıtıcı, sinter fırını, regolit kazıcı, buz eritici) | okunur silüet: huni + yan volan, kutup başlı hücre yığını, besleme hunisi + baca, kemerli kapı + baca, kovalı çark + konveyör, buz hunisi; çalışırken: çene ve volan döner, fırın akkorları titrer, bacadan kor parlar, çark ve bant döner, tankta buz yüzer ve kabarcık çıkar; batarya güç akarken alt şeritte yeşil akış ışığı (öncesi/sonrası: `docs/screenshots/industry/25_machine_polish_before_after.jpg`) |
 
 ### Araçlar (Endüstri)
 | Durum | İçerik | Not |
