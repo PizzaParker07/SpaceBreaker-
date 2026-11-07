@@ -907,28 +907,41 @@ final class ProgressionModel {
             add(fact, "solar panels", List.of(item(solar), landed(w)));
             return fact;
         }
-        Item rtg = BuiltInRegistries.ITEM.get(Spacebreaker.id("rtg"));
-        Item pellet = BuiltInRegistries.ITEM.get(Spacebreaker.id("rtg_fuel_pellet"));
-        if (rtg != net.minecraft.world.item.Items.AIR && hasItem(rtg) && hasItem(pellet)) {
-            List<String> deps = new ArrayList<>(List.of(item(rtg), item(pellet), landed(w)));
-            ResourceLocation id = BuiltInRegistries.ITEM.getKey(rtg);
-            if (machinesThatEnforce.contains(id)) {
-                String known = null;
-                for (ResourceLocation t : TechRequirement.forUnlock(server.registryAccess(), id).techs()) {
-                    if (has(tech(t))) {
-                        known = tech(t);
-                        break;
-                    }
-                }
-                if (known == null) {
-                    return null;
-                }
-                deps.add(known);
+        // nuclear sources need neither air nor sky: an RTG with a pellet, or a fission unit with a fuel element
+        for (String[] source : new String[][]{{"rtg", "rtg_fuel_pellet", "RTG + fuel pellet"},
+                {"fission_reactor", "nuclear_fuel_element", "fission reactor + fuel element"}}) {
+            List<String> deps = nuclearSource(w, source[0], source[1]);
+            if (deps != null) {
+                add(fact, source[2], deps);
+                return fact;
             }
-            add(fact, "RTG + fuel pellet", deps);
-            return fact;
         }
         return null;
+    }
+
+    /** Dependencies of running {@code machine} on {@code fuel} in {@code w}, or null (not buildable, no fuel, tech missing). */
+    private List<String> nuclearSource(ResourceKey<Level> w, String machine, String fuel) {
+        Item m = BuiltInRegistries.ITEM.get(Spacebreaker.id(machine));
+        Item f = BuiltInRegistries.ITEM.get(Spacebreaker.id(fuel));
+        if (m == net.minecraft.world.item.Items.AIR || f == net.minecraft.world.item.Items.AIR || !hasItem(m) || !hasItem(f)) {
+            return null;
+        }
+        List<String> deps = new ArrayList<>(List.of(item(m), item(f), landed(w)));
+        ResourceLocation id = BuiltInRegistries.ITEM.getKey(m);
+        if (machinesThatEnforce.contains(id)) {
+            String known = null;
+            for (ResourceLocation t : TechRequirement.forUnlock(server.registryAccess(), id).techs()) {
+                if (has(tech(t))) {
+                    known = tech(t);
+                    break;
+                }
+            }
+            if (known == null) {
+                return null;
+            }
+            deps.add(known);
+        }
+        return deps;
     }
 
     private boolean produce() {
