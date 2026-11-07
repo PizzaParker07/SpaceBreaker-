@@ -494,5 +494,59 @@
         "stream": true
       }
     ]
+  },
+  "rocket.satellite_release": {
+    "subtitle": "subtitles.spacebreaker.rocket.satellite_release",
+    "sounds": [
+      {
+        "name": "spacebreaker:rocket/satellite_release",
+        "stream": false
+      }
+    ]
+  },
+  "rocket.probe_landing": {
+    "subtitle": "subtitles.spacebreaker.rocket.probe_landing",
+    "sounds": [
+      {
+        "name": "spacebreaker:rocket/probe_landing",
+        "stream": false
+      }
+    ]
+  },
+  "station.airlock_cycle": {
+    "subtitle": "subtitles.spacebreaker.station.airlock_cycle",
+    "sounds": [
+      {
+        "name": "spacebreaker:station/airlock_cycle",
+        "stream": false
+      }
+    ]
+  },
+  "vehicle.rover_motor_loop": {
+    "subtitle": "subtitles.spacebreaker.vehicle.rover_motor",
+    "sounds": [
+      {
+        "name": "spacebreaker:vehicle/rover_motor_loop",
+        "stream": false
+      }
+    ]
+  },
+  "machine.electrolyzer_loop": {
+    "subtitle": "subtitles.spacebreaker.machine.electrolyzer",
+    "sounds": [
+      {
+        "name": "spacebreaker:machine/electrolyzer_loop",
+        "stream": false
+      }
+    ]
+  },
+  "machine.drill_loop": {
+    "subtitle": "subtitles.spacebreaker.machine.drill",
+    "sounds": [
+      {
+        "name": "spacebreaker:machine/drill_loop",
+        "stream": false
+      }
+    ]
   }
 }

@@ -26,8 +26,23 @@ public final class SbSounds {
     /** Roar of atmospheric entry heard inside the capsule; loop it while the plasma shows. */
     public static final DeferredHolder<SoundEvent, SoundEvent> ROCKET_REENTRY_LOOP = event("rocket.reentry_loop");
 
-    // --- suit -----------------------------------------------------------------------------------
+    /** Clamp release, spring push and solar panels unfolding as a satellite leaves the rocket. */
+    public static final DeferredHolder<SoundEvent, SoundEvent> ROCKET_SATELLITE_RELEASE = event("rocket.satellite_release");
+    /** Retro thruster bursts, a landing-leg thump and chirps as a probe lands. */
+    public static final DeferredHolder<SoundEvent, SoundEvent> ROCKET_PROBE_LANDING = event("rocket.probe_landing");
+
+    // --- suit and station -----------------------------------------------------------------------
     public static final DeferredHolder<SoundEvent, SoundEvent> SUIT_OXYGEN_ALARM = event("suit.oxygen_alarm");
+    /** Hatch clunk, latch and the rush of air as an airlock cycles (5 s). */
+    public static final DeferredHolder<SoundEvent, SoundEvent> AIRLOCK_CYCLE = event("station.airlock_cycle");
+
+    // --- vehicles and machines (seamless 5 s loops; replay from a tickable sound) ----------------
+    /** Electric wheel motors and gravel; scale pitch and volume with speed. */
+    public static final DeferredHolder<SoundEvent, SoundEvent> ROVER_MOTOR_LOOP = event("vehicle.rover_motor_loop");
+    /** Transformer hum and bubbling for the electrolyzer while it runs. */
+    public static final DeferredHolder<SoundEvent, SoundEvent> ELECTROLYZER_LOOP = event("machine.electrolyzer_loop");
+    /** Motor drone and rock grinding for drills and excavators while they run. */
+    public static final DeferredHolder<SoundEvent, SoundEvent> DRILL_LOOP = event("machine.drill_loop");
 
     // --- music (streamed; use in a biome's "music" field) ----------------------------------------
     /** Calm piano and synth pads for drifting in orbit. */
