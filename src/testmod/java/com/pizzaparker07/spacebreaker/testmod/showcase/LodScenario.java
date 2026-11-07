@@ -28,6 +28,7 @@ final class LodScenario implements ShowcaseScenario {
                     if (level == null) {
                         return;
                     }
+                    level.getChunk(0, 0); // generate it first: an unloaded chunk reports the world's floor as its height
                     int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING, 0, 0) + 30;
                     p.teleportTo(level, 0.5, y, 0.5, yaw, pitch);
                     PlanetTime.setDayFraction(level, dayFraction);
