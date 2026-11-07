@@ -6,6 +6,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
+import snownee.jade.api.IServerDataProvider;
+import snownee.jade.api.IWailaCommonRegistration;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.IWailaClientRegistration;
 import snownee.jade.api.IWailaPlugin;
@@ -16,11 +18,18 @@ import snownee.jade.api.config.IPluginConfig;
 @WailaPlugin
 public final class SpacebreakerJadePlugin implements IWailaPlugin {
     @Override
+    public void register(IWailaCommonRegistration registration) {
+        // values the client does not have (the oxygen piped into a gas machine), sent only for those machines
+        registration.registerBlockDataProvider(Lines.INSTANCE,
+                com.pizzaparker07.spacebreaker.content.suit.block.GasMachineBlockEntity.class);
+    }
+
+    @Override
     public void registerClient(IWailaClientRegistration registration) {
         registration.registerBlockComponent(Lines.INSTANCE, Block.class);
     }
 
-    enum Lines implements IBlockComponentProvider {
+    enum Lines implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
         INSTANCE;
 
         private static final ResourceLocation UID = Spacebreaker.id("info_lines");
@@ -28,8 +37,18 @@ public final class SpacebreakerJadePlugin implements IWailaPlugin {
         @Override
         public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
             if (accessor.getBlockEntity() != null) {
-                BlockInfoLines.lines(accessor.getBlockEntity()).forEach(tooltip::add);
+                BlockInfoLines.lines(accessor.getBlockEntity(), accessor.getServerData()).forEach(tooltip::add);
             }
+        }
+
+        @Override
+        public void appendServerData(net.minecraft.nbt.CompoundTag data, BlockAccessor accessor) {
+            BlockInfoLines.serverData(accessor.getBlockEntity(), data);
+        }
+
+        @Override
+        public boolean shouldRequestData(BlockAccessor accessor) {
+            return accessor.getBlockEntity() != null && BlockInfoLines.wantsServerData(accessor.getBlockEntity());
         }
 
         @Override

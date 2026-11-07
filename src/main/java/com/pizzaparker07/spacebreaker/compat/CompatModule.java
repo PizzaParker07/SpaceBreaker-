@@ -52,6 +52,10 @@ public final class CompatModule implements SbModule {
         // Jade lists every plugin component in its settings and asserts that each has a name
         lang.add("config.jade.plugin_spacebreaker.info_lines", "Spacebreaker details", "Spacebreaker ayrıntıları");
         lang.add(com.pizzaparker07.spacebreaker.compat.info.BlockInfoLines.KEY_SOLAR_DUST, "Dust: %s%%, output: %s%%", "Toz: %%%s, verim: %%%s");
+        lang.add(com.pizzaparker07.spacebreaker.compat.info.BlockInfoLines.KEY_GAS_TANK, "Tank: %s / %s (%s%%)", "Tüp: %s / %s (%%%s)");
+        lang.add(com.pizzaparker07.spacebreaker.compat.info.BlockInfoLines.KEY_GAS_HOLDING, "Holding: %s", "Takılı: %s");
+        lang.add(com.pizzaparker07.spacebreaker.compat.info.BlockInfoLines.KEY_GAS_EMPTY, "Nothing inserted", "Takılı bir şey yok");
+        lang.add(com.pizzaparker07.spacebreaker.compat.info.BlockInfoLines.KEY_GAS_PIPED, "Piped oxygen: %s / %s", "Borudan gelen oksijen: %s / %s");
         lang.add(RecipeViewerData.KEY_INFO_ASSEMBLER,
                 "Rockets are not crafted. Place parts (engines, tanks, capsule, fins, parachutes...) in the Rocket Assembler, "
                         + "check the design's delta-v and thrust-to-weight on its screen, then assemble the rocket onto a launch pad. "

@@ -33,6 +33,41 @@ public final class BlockInfoGameTests {
         helper.succeed();
     }
 
+    /** Oxygen Filler: what is in the slot (tank fill, or nothing) and, from server data, the oxygen piped in. */
+    @GameTest(template = "empty")
+    public static void gasMachineShowsTankAndPipedOxygen(GameTestHelper helper) {
+        BlockPos pos = new BlockPos(1, 2, 1);
+        helper.setBlock(pos, com.pizzaparker07.spacebreaker.content.suit.SuitModule.OXYGEN_FILLER.get());
+        com.pizzaparker07.spacebreaker.content.suit.block.GasMachineBlockEntity gas = helper.getBlockEntity(pos);
+        helper.assertTrue(BlockInfoLines.wantsServerData(gas), "gas machines ask for server data");
+        var empty = BlockInfoLines.lines(gas);
+        helper.assertTrue(empty.size() == 1 && key(empty.get(0)).equals(BlockInfoLines.KEY_GAS_EMPTY), "empty slot line: " + empty);
+
+        var tank = new net.minecraft.world.item.ItemStack(com.pizzaparker07.spacebreaker.content.suit.SuitModule.OXYGEN_TANK.get());
+        int cap = com.pizzaparker07.spacebreaker.content.suit.OxygenTankItem.capacityOf(tank);
+        com.pizzaparker07.spacebreaker.content.suit.OxygenTankItem.fill(tank, cap / 2);
+        gas.setStack(tank);
+        gas.getOxygenInput().fill(new net.neoforged.neoforge.fluids.FluidStack(
+                com.pizzaparker07.spacebreaker.content.fluids.FluidsModule.OXYGEN.get(), 600),
+                net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE);
+        net.minecraft.nbt.CompoundTag data = new net.minecraft.nbt.CompoundTag();
+        BlockInfoLines.serverData(gas, data);
+        helper.assertTrue(data.getInt(BlockInfoLines.DATA_PIPED_OXYGEN) == gas.storedOxygen() && gas.storedOxygen() > 0,
+                "server data carries the piped oxygen: " + data);
+        var lines = BlockInfoLines.lines(gas, data);
+        helper.assertTrue(lines.size() == 2, "tank and piped lines, got " + lines);
+        helper.assertTrue(key(lines.get(0)).equals(BlockInfoLines.KEY_GAS_TANK), "tank line: " + lines.get(0));
+        Object[] args = ((TranslatableContents) lines.get(0).getContents()).getArgs();
+        helper.assertTrue(Integer.valueOf(50).equals(args[2]), "half-full tank shows 50 %: " + java.util.Arrays.toString(args));
+        helper.assertTrue(key(lines.get(1)).equals(BlockInfoLines.KEY_GAS_PIPED), "piped line: " + lines.get(1));
+        helper.assertTrue(BlockInfoLines.lines(gas).size() == 1, "no piped line without server data");
+        helper.succeed();
+    }
+
+    private static String key(net.minecraft.network.chat.Component line) {
+        return line.getContents() instanceof TranslatableContents t ? t.getKey() : "";
+    }
+
     /** Jade asserts (and fails resource loading) when a plugin component has no config name. */
     @GameTest(template = "empty")
     public static void jadeComponentHasAConfigName(GameTestHelper helper) throws java.io.IOException {
