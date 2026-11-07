@@ -16,6 +16,11 @@ Karamel renkli bir göğün altında soğuk bir çöl.
 Kuzey alçak ve düz bir ovadır, güney eski ve kraterli yaylalar. Dev volkanları, uzun kanyonları, kum denizlerini ve kutup buz başlıklarını ara.
 
 {page}
+## Tozlu paneller ve toz hortumları
+- Mars'ta gökyüzünü gören güneş panellerine yavaş yavaş toz çöker: temizden tam kaplıya yaklaşık **üç Mars günü**, fırtınada altı kat hızlı. Tam kaplı bir panel gücünün yalnızca **%60**'ını verir.
+- Panele {key key.sneak} basılıyken {key key.use} yap: tozu siler.
+- Sakin öğleden sonraları ovalarda ve kumullarda **toz hortumları** dolaşır. Gevşek eşyaları ve yürüyenleri kenara iter, ama üstünden geçtikleri panelleri de temizler.
+
 ## Toz fırtınaları
 Fırtınalar günlerce bütün gezegeni sarabilir.
 - Güneşi karartır: **güneş panelleri çok daha az güç verir.**

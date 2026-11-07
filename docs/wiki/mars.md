@@ -14,6 +14,11 @@ Karamel renkli bir göğün altında soğuk bir çöl.
 
 Kuzey alçak ve düz bir ovadır, güney eski ve kraterli yaylalar. Dev volkanları, uzun kanyonları, kum denizlerini ve kutup buz başlıklarını ara.
 
+### Tozlu paneller ve toz hortumları
+- Mars'ta gökyüzünü gören güneş panellerine yavaş yavaş toz çöker: temizden tam kaplıya yaklaşık **üç Mars günü**, fırtınada altı kat hızlı. Tam kaplı bir panel gücünün yalnızca **%60**'ını verir.
+- Panele `Shift` basılıyken `Sağ Tık` yap: tozu siler.
+- Sakin öğleden sonraları ovalarda ve kumullarda **toz hortumları** dolaşır. Gevşek eşyaları ve yürüyenleri kenara iter, ama üstünden geçtikleri panelleri de temizler.
+
 ### Toz fırtınaları
 Fırtınalar günlerce bütün gezegeni sarabilir.
 - Güneşi karartır: **güneş panelleri çok daha az güç verir.**
@@ -43,6 +48,11 @@ A cold desert under a butterscotch sky.
 **Martian Regolith** · **Martian Sand** · **Martian Basalt** · **Layered Sandstone**
 
 The north is a low, smooth plain; the south is old cratered highland. Look for the great volcanoes, the long canyons, the dune seas and the polar ice caps.
+
+### Dusty panels and dust whirls
+- On Mars, dust slowly settles on solar panels that see the sky: about **three Mars days** from clean to covered, six times faster in a storm. A fully covered panel gives only **60%** of its power.
+- `Right Click` a panel while holding `Shift` to wipe the dust off.
+- On calm afternoons **dust whirls** wander over the plains and dunes. They push loose items and walkers aside, but also sweep clean the panels they pass.
 
 ### Dust storms
 Storms can wrap the whole planet for days.

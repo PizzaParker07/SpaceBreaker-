@@ -68,7 +68,7 @@ Tüpler gövdenin içinde kalır ve gövde sıradan bir zırh gibi düşer: geri
 
 **Giysi Bakım İstasyonu**
 
-Giysiyle bir **Giysi Bakım İstasyonu**'nun üstünde ya da yanında dur: tüplerini ve Manevra Ünitesini doldurur, giysi parçalarındaki aşınmayı yavaşça onarır. Yuvasına konan bir parçayı da onarır. Havası solunabilir bir dünyada havayı, değilse borulanan oksijeni kullanır; enerjiyle (FE) çalışır.
+Giysiyle bir **Giysi Bakım İstasyonu**'nun üstünde ya da yanında dur: tüplerini ve Manevra Ünitesini doldurur, giysi parçalarındaki aşınmayı yavaşça onarır. Yuvasına konan bir parçayı da onarır; [Elektrikli Matkap](tools)'ı da şarj eder. → [Aletler](tools) Havası solunabilir bir dünyada havayı, değilse borulanan oksijeni kullanır; enerjiyle (FE) çalışır.
 
 |   |   |   |
 |---|---|---|
@@ -164,7 +164,7 @@ The tanks stay inside the body piece, which drops like any armour: pick it up an
 
 **Suit Maintenance Station**
 
-Stand on or next to a **Suit Maintenance Station** in your suit: it tops up your tanks and Maneuvering Unit and slowly mends wear on your suit pieces. A piece placed in its slot is mended too. It uses the planet's breathable air, or piped oxygen where there is none, and runs on FE.
+Stand on or next to a **Suit Maintenance Station** in your suit: it tops up your tanks and Maneuvering Unit and slowly mends wear on your suit pieces. A piece placed in its slot is mended too, and it charges the [Electric Drill](tools). → [Tools](tools) It uses the planet's breathable air, or piped oxygen where there is none, and runs on FE.
 
 |   |   |   |
 |---|---|---|

@@ -36,6 +36,7 @@
 - [Oksijen](oxygen)
 - [Üssün Havası](base_air)
 - [Düşük Yerçekiminde Hareket](eva_mobility)
+- [Aletler](tools)
 - [Tehlikeler](hazards)
 - [Gezici](rover)
 

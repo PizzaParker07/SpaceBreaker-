@@ -26,6 +26,12 @@ Kuyruklu yıldız, kirli bir kartopudur: kömürden koyu bir toz kabuğunun alt�
 > Güneş ufkun üstündeyken ve üstü açıkken **Kuyruklu Yıldız Jeti** bloklarından ince gaz ve toz sütunları yükselir. Bunlar **yalnızca görseldir**, sana zarar vermez.
 
 ### Yakıt
+Kuyruklu yıldız tozu da işe yarar: regolit ısıtıcıda bir blok **300 mB su** ve **100 mB CO₂** verir, %15 şansla da bir topak [Tolin](titan). → [Asteroit madenciliği](near_earth_asteroids#mining)
+
+| Girdi | Makine | Çıktı |
+|---|---|---|
+| Kuyruklu Yıldız Tozu | Çalışma Masası<br>100 FE/t · 8 sn | Tolin (%15 şansla)<br>Su (300 mB)<br>Karbondioksit (100 mB) |
+
 Üçünün de buzu su buzudur: **Kuyruklu Yıldız Buzu**, **Encke Buzu** ve **Halley Buzu** buz eriticide suya döner. Elektrolizle yakıt yap: kuyruklu yıldızlar birer **yakıt durağıdır**. → [Yerinde Üretim](isru)
 
 > [!WARNING]
@@ -66,6 +72,12 @@ A comet is a dirty snowball: water ice under a crust of dust darker than charcoa
 > While the Sun is above the horizon, thin columns of gas and dust rise from open **Comet Jet** blocks. They are **visual only** and cannot hurt you.
 
 ### Fuel
+Comet dust is useful too: in the regolith heater one block gives **300 mB of water** and **100 mB of CO₂**, plus a lump of [Tholin](titan) 15% of the time. → [Asteroid mining](near_earth_asteroids#mining)
+
+| Input | Machine | Output |
+|---|---|---|
+| Comet Dust | Crafting Table<br>100 FE/t · 8 s | Tholin (15% chance)<br>Water (300 mB)<br>Carbon Dioxide (100 mB) |
+
 All three have water ice: **Comet Ice**, **Encke Ice** and **Halley Ice** melt to water in an ice melter. Split it into fuel by electrolysis: comets are **refuelling stops**. → [In-Situ Resources](isru)
 
 > [!WARNING]

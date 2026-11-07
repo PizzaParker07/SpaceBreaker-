@@ -24,6 +24,8 @@ Bütün makineler **FE** (enerji) ile çalışır. Üretim ve tüketim "FE/t" il
 > Güneş paneli enerjiyi üst yüzü hariç her yöne verir. Laboratuvarın hemen yanına koymak yeter.
 
 {page}
+> Mars'ta paneller tozlanır ve gücünün %60'ına kadar düşer; eğilip kullanarak sil. → [Mars](mars)
+
 ## Güç göstergesi
 {items spacebreaker:power_monitor}
 Bir {item spacebreaker:power_monitor}'ü batarya bankasına (ya da enerji depolayan herhangi bir bloğa) daya: ekranında doluluk, net akış ve dolma ya da boşalma süresi görünür. Karşılaştırıcı çıkışı doluluğu izler; düşük şarjda bir jeneratörü kızıltaşla açabilirsin.
