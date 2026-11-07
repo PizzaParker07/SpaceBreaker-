@@ -29,6 +29,11 @@ A comet is a dirty snowball: water ice under a crust of dust darker than charcoa
 
 > **Hale–Bopp** is in the catalogue too, but has no world to land on: it shows only in the sky and on the star map. At perihelion it is a great comet.
 
+## Getting there {#route}
+On the star map all comets share one node, **Comets**, beside the planets. Open it: the Sun sits in the middle and each comet has its own stretched orbit. The tail always points away from the Sun and is long only while the comet is awake. Pick a comet to see its card: distance from the Sun, next closest pass (date and AU), one orbit in years, and activity.
+
+> **Halley** takes about 75 years per orbit and swings out past Neptune, to about 35 AU from the Sun. Melt its ice and make fuel there before you head home.
+
 ## Fuel
 Comet dust is useful too: in the regolith heater one block gives **300 mB of water** and **100 mB of CO₂**, plus a lump of {item spacebreaker:tholin} 15% of the time. → [Asteroid mining](near_earth_asteroids#mining)
 {recipe spacebreaker:regolith_processing/comet_dust}
