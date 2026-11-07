@@ -19,11 +19,12 @@ The north is a low, smooth plain; the south is old cratered highland. Look for t
 ## Dust storms
 Storms can wrap the whole planet for days.
 - They dim the sun: **solar panels give much less power.**
-- You cannot see beyond a few blocks.
+- Visibility drops to about **22 blocks**, tracks are wiped out and dust devils appear.
 - Dust-proof seals keep your machines and suit running.
+- A storm is announced in chat **about two minutes ahead**: "A wall of dust is rising on the horizon…". You also get a message when it arrives and when it clears.
 
 > [!TIP]
-> Don't rely on the sun in storm season: keep a fuelled generator or a full battery nearby.
+> Don't rely on the sun in storm season: keep a fuelled generator or a full battery nearby. When you see the warning, get into a shelter and bring the rover in.
 
 ## Blue sunsets
 Fine dust scatters red light to the sides and lets blue pass straight on. Around a low sun the sky turns **blue**: the opposite of Earth.

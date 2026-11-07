@@ -5,7 +5,7 @@ items: [spacebreaker:ariel_regolith, spacebreaker:ariel_ice, spacebreaker:graben
 research: spacebreaker:interplanetary_transfers
 ---
 {items spacebreaker:ariel_regolith spacebreaker:ariel_ice spacebreaker:graben_floor_ice spacebreaker:co2_frost spacebreaker:ariel_ammonia_ore}
-Uranüs'ün büyük uydularının en genç görüneni: karbondioksit kırağılı parlak buz ovaları, az krater ve dik duvarlı, buzlu lavla düzleşmiş tabanlı, ortasında alçak bir sırt olan uzun düz **rift vadileri**. Gökte ince halkalarıyla Uranüs asılı durur.
+Uranüs'ün büyük uydularının en genç ve en parlak görüneni: hafif mavi-beyaz, karbondioksit kırağılı buz ovaları, az krater ve dik duvarlı, buzlu lavla düzleşmiş tabanlı, ortasında alçak bir sırt olan uzun düz **rift vadileri**. Gökte ince halkalarıyla Uranüs asılı durur.
 
 > Vadi tabanı {item spacebreaker:graben_floor_ice}'dur: bir zamanlar fayların arasından yükselip donan buzlu lav. {item spacebreaker:ariel_ammonia_ore} kazınca {item spacebreaker:ammonia_crystal} verir.
 

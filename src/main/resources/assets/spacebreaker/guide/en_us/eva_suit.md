@@ -1,7 +1,7 @@
 ---
 title: EVA Suit
 icon: spacebreaker:eva_chestplate
-items: [spacebreaker:eva_helmet, spacebreaker:eva_chestplate, spacebreaker:eva_leggings, spacebreaker:eva_boots, spacebreaker:heated_helmet, spacebreaker:heated_chestplate, spacebreaker:heated_leggings, spacebreaker:heated_boots, spacebreaker:thermal_helmet, spacebreaker:thermal_chestplate, spacebreaker:thermal_leggings, spacebreaker:thermal_boots, spacebreaker:radiation_helmet, spacebreaker:radiation_chestplate, spacebreaker:radiation_leggings, spacebreaker:radiation_boots]
+items: [spacebreaker:eva_helmet, spacebreaker:eva_chestplate, spacebreaker:eva_leggings, spacebreaker:eva_boots, spacebreaker:heated_helmet, spacebreaker:heated_chestplate, spacebreaker:heated_leggings, spacebreaker:heated_boots, spacebreaker:thermal_helmet, spacebreaker:thermal_chestplate, spacebreaker:thermal_leggings, spacebreaker:thermal_boots, spacebreaker:radiation_helmet, spacebreaker:radiation_chestplate, spacebreaker:radiation_leggings, spacebreaker:radiation_boots, spacebreaker:suit_station]
 research: spacebreaker:pressure_suits
 ---
 In space, your suit is your personal spacecraft. You make the first one before leaving Earth, from ordinary materials.
@@ -40,6 +40,11 @@ The helmet display shows oxygen, suit state, body and outside temperature, radia
 
 ## When you die
 The tanks stay inside the body piece, which drops like any armour: pick it up and the tanks come back with it. Breath, body temperature and radiation dose reset.
+
+## Suit maintenance station
+{items spacebreaker:suit_station}
+Stand on or next to a {item spacebreaker:suit_station} in your suit: it tops up your tanks and Maneuvering Unit and slowly mends wear on your suit pieces. A piece placed in its slot is mended too. It uses the planet's breathable air, or piped oxygen where there is none, and runs on FE.
+{recipe spacebreaker:suit_station}
 
 ## Suit tiers
 | Suit | Temperature | Radiation shielding |

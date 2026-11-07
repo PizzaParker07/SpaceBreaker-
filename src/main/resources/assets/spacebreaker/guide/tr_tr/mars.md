@@ -19,11 +19,12 @@ Kuzey alçak ve düz bir ovadır, güney eski ve kraterli yaylalar. Dev volkanla
 ## Toz fırtınaları
 Fırtınalar günlerce bütün gezegeni sarabilir.
 - Güneşi karartır: **güneş panelleri çok daha az güç verir.**
-- Birkaç bloktan ötesini göremezsin.
+- Görüş yaklaşık **22 bloğa** düşer, izler silinir, toz şeytanları çıkar.
 - Toz geçirmez contalar makinelerini ve giysini çalışır tutar.
+- Fırtına **yaklaşık iki dakika önceden** sohbette uyarılır: "Ufukta bir toz duvarı yükseliyor…". Gelince ve dinerken de mesaj alırsın.
 
 > [!TIP]
-> Fırtına sezonunda güneşe güvenme: yanında yakıtlı bir jeneratör ya da dolu bir batarya bulundur.
+> Fırtına sezonunda güneşe güvenme: yanında yakıtlı bir jeneratör ya da dolu bir batarya bulundur. Uyarıyı görünce bir sığınağa gir ve geziciyi topla.
 
 ## Mavi gün batımı
 İnce toz kırmızı ışığı yana saçar, maviyi dümdüz geçirir. Bu yüzden alçak güneşin çevresinde gök **maviye** döner: Dünya'nın tam tersi.

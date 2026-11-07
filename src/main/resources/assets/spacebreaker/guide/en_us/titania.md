@@ -5,7 +5,7 @@ items: [spacebreaker:titania_regolith, spacebreaker:titania_ice, spacebreaker:ca
 research: spacebreaker:interplanetary_transfers
 ---
 {items spacebreaker:titania_regolith spacebreaker:titania_ice spacebreaker:canyon_wall_ice spacebreaker:titania_carbon_ore}
-Uranus' largest moon: grey cratered uplands crossed by enormous straight canyons with pale layered walls, and a great old crater basin with a central peak.
+Uranus' largest moon: coarse-grained, dark warm-grey cratered uplands crossed by enormous straight canyons with pale layered walls, and a great old crater basin with a central peak.
 
 > {item spacebreaker:titania_carbon_ore} gives coal. The ices melt to water in an ice melter: water for your fuel.
 

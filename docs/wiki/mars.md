@@ -17,11 +17,12 @@ Kuzey alçak ve düz bir ovadır, güney eski ve kraterli yaylalar. Dev volkanla
 ### Toz fırtınaları
 Fırtınalar günlerce bütün gezegeni sarabilir.
 - Güneşi karartır: **güneş panelleri çok daha az güç verir.**
-- Birkaç bloktan ötesini göremezsin.
+- Görüş yaklaşık **22 bloğa** düşer, izler silinir, toz şeytanları çıkar.
 - Toz geçirmez contalar makinelerini ve giysini çalışır tutar.
+- Fırtına **yaklaşık iki dakika önceden** sohbette uyarılır: "Ufukta bir toz duvarı yükseliyor…". Gelince ve dinerken de mesaj alırsın.
 
 > [!TIP]
-> Fırtına sezonunda güneşe güvenme: yanında yakıtlı bir jeneratör ya da dolu bir batarya bulundur.
+> Fırtına sezonunda güneşe güvenme: yanında yakıtlı bir jeneratör ya da dolu bir batarya bulundur. Uyarıyı görünce bir sığınağa gir ve geziciyi topla.
 
 ### Mavi gün batımı
 İnce toz kırmızı ışığı yana saçar, maviyi dümdüz geçirir. Bu yüzden alçak güneşin çevresinde gök **maviye** döner: Dünya'nın tam tersi.
@@ -46,11 +47,12 @@ The north is a low, smooth plain; the south is old cratered highland. Look for t
 ### Dust storms
 Storms can wrap the whole planet for days.
 - They dim the sun: **solar panels give much less power.**
-- You cannot see beyond a few blocks.
+- Visibility drops to about **22 blocks**, tracks are wiped out and dust devils appear.
 - Dust-proof seals keep your machines and suit running.
+- A storm is announced in chat **about two minutes ahead**: "A wall of dust is rising on the horizon…". You also get a message when it arrives and when it clears.
 
 > [!TIP]
-> Don't rely on the sun in storm season: keep a fuelled generator or a full battery nearby.
+> Don't rely on the sun in storm season: keep a fuelled generator or a full battery nearby. When you see the warning, get into a shelter and bring the rover in.
 
 ### Blue sunsets
 Fine dust scatters red light to the sides and lets blue pass straight on. Around a low sun the sky turns **blue**: the opposite of Earth.

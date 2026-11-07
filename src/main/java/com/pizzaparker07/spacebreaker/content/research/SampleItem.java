@@ -65,9 +65,11 @@ public class SampleItem extends Item {
             case "ganymede", "callisto" -> 0x7E7266;
             case "titan" -> 0xA87A3A;      // tholin orange
             case "pluto", "charon" -> 0xC9A98E;
-            case "miranda", "ariel", "titania" -> 0xB4BCC2; // grey ice
+            case "miranda" -> 0x8E9AA6;    // cool blue-grey
+            case "ariel" -> 0xD8E2EA;      // bright blue-white frost
+            case "titania" -> 0x7A726A;    // dark warm grey
             case "umbriel" -> 0x3E3B3A;    // soot-dark carbon
-            case "oberon" -> 0x8E7A72;     // reddish-grey ice
+            case "oberon" -> 0x8A7268;     // reddish brown-grey
             case "suborbital_flight" -> 0x6FA0D8;
             case "orbital_flight" -> 0x3E5FA8;
             case "orbital_survey" -> 0x4F8A8B;

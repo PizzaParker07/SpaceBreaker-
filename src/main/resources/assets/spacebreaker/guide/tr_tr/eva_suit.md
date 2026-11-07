@@ -1,7 +1,7 @@
 ---
 title: EVA Giysisi
 icon: spacebreaker:eva_chestplate
-items: [spacebreaker:eva_helmet, spacebreaker:eva_chestplate, spacebreaker:eva_leggings, spacebreaker:eva_boots, spacebreaker:heated_helmet, spacebreaker:heated_chestplate, spacebreaker:heated_leggings, spacebreaker:heated_boots, spacebreaker:thermal_helmet, spacebreaker:thermal_chestplate, spacebreaker:thermal_leggings, spacebreaker:thermal_boots, spacebreaker:radiation_helmet, spacebreaker:radiation_chestplate, spacebreaker:radiation_leggings, spacebreaker:radiation_boots]
+items: [spacebreaker:eva_helmet, spacebreaker:eva_chestplate, spacebreaker:eva_leggings, spacebreaker:eva_boots, spacebreaker:heated_helmet, spacebreaker:heated_chestplate, spacebreaker:heated_leggings, spacebreaker:heated_boots, spacebreaker:thermal_helmet, spacebreaker:thermal_chestplate, spacebreaker:thermal_leggings, spacebreaker:thermal_boots, spacebreaker:radiation_helmet, spacebreaker:radiation_chestplate, spacebreaker:radiation_leggings, spacebreaker:radiation_boots, spacebreaker:suit_station]
 research: spacebreaker:pressure_suits
 ---
 Uzayda giysin, kişisel uzay aracındır. İlk giysiyi Dünya'dan çıkmadan, sıradan malzemelerle yaparsın.
@@ -40,6 +40,11 @@ Kask göstergesi oksijeni, giysinin durumunu, vücut ve dış sıcaklığı, rad
 
 ## Ölünce
 Tüpler gövdenin içinde kalır ve gövde sıradan bir zırh gibi düşer: geri aldığında tüpler de geri gelir. Nefes, vücut ısısı ve radyasyon dozu sıfırlanır.
+
+## Giysi Bakım İstasyonu
+{items spacebreaker:suit_station}
+Giysiyle bir {item spacebreaker:suit_station}'nun üstünde ya da yanında dur: tüplerini ve Manevra Ünitesini doldurur, giysi parçalarındaki aşınmayı yavaşça onarır. Yuvasına konan bir parçayı da onarır. Havası solunabilir bir dünyada havayı, değilse borulanan oksijeni kullanır; enerjiyle (FE) çalışır.
+{recipe spacebreaker:suit_station}
 
 ## Giysi kademeleri
 | Giysi | Sıcaklık | Radyasyon kalkanı |

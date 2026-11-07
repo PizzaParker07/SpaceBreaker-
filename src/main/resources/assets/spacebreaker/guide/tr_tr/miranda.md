@@ -5,7 +5,7 @@ items: [spacebreaker:mirandan_regolith, spacebreaker:mirandan_ice, spacebreaker:
 research: spacebreaker:interplanetary_transfers
 ---
 {items spacebreaker:mirandan_regolith spacebreaker:mirandan_ice spacebreaker:bright_ridge_ice spacebreaker:dark_band_ice spacebreaker:mirandan_carbon_ore}
-Kırılıp yeniden yapıştırılmış gibi yamalı bir dünya: eski, kraterli gri ovalar, parlak ve koyu sırtlardan üç dev taç yapısı ve iniş alanına yakın, yaklaşık **95 blok** yüksekliğinde, yüzü katmanlı çıplak buz olan dev bir fay uçurumu.
+Kırılıp yeniden yapıştırılmış gibi yamalı bir dünya: eski, kraterli soğuk mavi-gri ovalar, parlak ve koyu sırtlardan üç dev taç yapısı ve iniş alanına yakın, yaklaşık **95 blok** yüksekliğinde, yüzü katmanlı çıplak buz olan dev bir fay uçurumu.
 
 > Yerçekimi o kadar zayıf ki tepeden düşüş uzun sürer.
 
