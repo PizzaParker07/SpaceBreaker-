@@ -1,0 +1,16 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": {
+    "type": "neoforge:or",
+    "values": [
+      "#c:is_plains",
+      "#c:is_forest",
+      "#c:is_taiga",
+      "#c:is_swamp",
+      "#c:is_jungle",
+      "#c:is_snowy"
+    ]
+  },
+  "features": "spacebreaker:oil_deposit_sparse",
+  "step": "lakes"
+}

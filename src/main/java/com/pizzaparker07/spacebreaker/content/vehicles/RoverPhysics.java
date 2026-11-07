@@ -30,6 +30,24 @@ public final class RoverPhysics {
         return Mth.clamp(Math.sqrt(Math.max(0, gravityFactor)), 0.25, 1.0);
     }
 
+    /**
+     * How well the tyres hold on a surface, from the block's slipperiness (vanilla friction: 0.6 normal ground,
+     * 0.98 ice, 0.99 Pluto's nitrogen ice): 1 on rock and soil, a few percent on ice.
+     */
+    public static double grip(float blockFriction) {
+        // rounded to 1/1000 so the float friction values give clean numbers (0.6F is not exactly 0.6)
+        return Mth.clamp(Math.round((1.0 - blockFriction) / 0.4 * 1000) / 1000.0, 0.02, 1.0);
+    }
+
+    /**
+     * Ground velocity after one tick: the tyres pull it towards where the wheels point, as hard as the grip allows.
+     * On rock that is at once; on ice the rover keeps sliding the way it was going.
+     */
+    public static double[] slide(double vx, double vz, double wantX, double wantZ, double grip) {
+        double k = Mth.clamp(grip, 0.0, 1.0);
+        return new double[]{vx + (wantX - vx) * k, vz + (wantZ - vz) * k};
+    }
+
     /** Speed after one tick. throttle -1..1 (forward positive); airborne wheels neither push nor brake. */
     public static double speed(double speed, double throttle, boolean onGround, double traction) {
         if (onGround) {
@@ -52,8 +70,13 @@ public final class RoverPhysics {
 
     /** Change of heading in degrees for a steering input (-1 right .. 1 left, the player's strafe axis). */
     public static float yawChange(double speed, float steer) {
-        float grip = (float) Math.min(1.0, Math.abs(speed) / 0.08);
-        return -steer * TURN_RATE * grip * (speed < 0 ? -1 : 1);
+        return yawChange(speed, steer, 1.0);
+    }
+
+    /** As above on a surface with the given grip: on ice the front wheels barely turn the rover. */
+    public static float yawChange(double speed, float steer, double grip) {
+        float rolling = (float) Math.min(1.0, Math.abs(speed) / 0.08);
+        return (float) (-steer * TURN_RATE * rolling * Math.max(0.15, grip) * (speed < 0 ? -1 : 1));
     }
 
     /** Vertical speed after gravity and a little drag; vanilla Earth gravity is 0.08 b/t². */

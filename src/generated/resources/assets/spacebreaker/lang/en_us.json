@@ -1494,7 +1494,7 @@
   "tooltip.spacebreaker.part.seats": "Crew seats: %s",
   "tooltip.spacebreaker.part.tank": "Holds RP-1 kerosene and liquid oxygen",
   "tooltip.spacebreaker.part.thrust": "Thrust: %s kN",
-  "tooltip.spacebreaker.pipe": "Carries up to %s mB/t. Sneak-use an end to pull from a block",
+  "tooltip.spacebreaker.pipe": "Carries up to %s mB/t. Sneak-use an end to pull from a block or an endless water source",
   "tooltip.spacebreaker.press_die": "Used in the Press; not consumed",
   "tooltip.spacebreaker.propellant_cartridge": "Use on a rocket to fill every tank",
   "tooltip.spacebreaker.regolith_heater": "Molten regolith electrolysis: oxygen from rock",

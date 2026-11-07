@@ -181,6 +181,37 @@ public final class ConduitNetwork {
         return moved;
     }
 
+    /** Water drawn per tick from an endless water source (like filling a bucket over and over). */
+    public static final int WELL_RATE = 100;
+
+    /**
+     * An endless water source: a still water block with at least two water sources beside it, the same rule that lets
+     * a bucket refill from it forever. A fluid pipe can pull from one without using it up.
+     */
+    public static boolean isWaterWell(net.minecraft.world.level.LevelReader level, BlockPos pos) {
+        if (!level.getFluidState(pos).isSourceOfType(net.minecraft.world.level.material.Fluids.WATER)) {
+            return false;
+        }
+        int sources = 0;
+        for (Direction d : Direction.Plane.HORIZONTAL) {
+            if (level.getFluidState(pos.relative(d)).isSourceOfType(net.minecraft.world.level.material.Fluids.WATER)) {
+                sources++;
+            }
+        }
+        return sources >= 2;
+    }
+
+    private void pumpWell(Endpoint e) {
+        FluidStack water = new FluidStack(net.minecraft.world.level.material.Fluids.WATER, Math.min(WELL_RATE, Math.min(type.rate, budget())));
+        if (water.isEmpty() || !type.accepts(water) || !isWaterWell(level, e.pos())) {
+            return;
+        }
+        int accepted = distributeFluid(water, IFluidHandler.FluidAction.SIMULATE, e.pos());
+        if (accepted > 0) {
+            distributeFluid(water.copyWithAmount(accepted), IFluidHandler.FluidAction.EXECUTE, e.pos());
+        }
+    }
+
     /** Runs once per tick per network: pulls fluid from blocks attached on EXTRACT sides. */
     public void tick() {
         long now = level.getGameTime();
@@ -194,6 +225,7 @@ public final class ConduitNetwork {
             }
             IFluidHandler from = level.getCapability(Capabilities.FluidHandler.BLOCK, e.pos(), e.face());
             if (from == null) {
+                pumpWell(e);
                 continue;
             }
             FluidStack offer = from.drain(Math.min(type.rate, budget()), IFluidHandler.FluidAction.SIMULATE);

@@ -30,6 +30,10 @@ public final class IndustryWorldTests {
             helper.assertTrue(access.registryOrThrow(NeoForgeRegistries.Keys.BIOME_MODIFIERS).containsKey(v.modifier()), "missing biome modifier " + v.modifier());
         }
         helper.assertTrue(access.registryOrThrow(Registries.PLACED_FEATURE).containsKey(EarthWorldgen.OIL_PLACED), "missing oil deposit");
+        // early-game balance: oil is not only a desert thing, a wet start still has fields within a few hundred blocks
+        helper.assertTrue(access.registryOrThrow(Registries.PLACED_FEATURE).containsKey(EarthWorldgen.OIL_PLACED_SPARSE), "missing sparse oil deposit");
+        helper.assertTrue(access.registryOrThrow(net.neoforged.neoforge.registries.NeoForgeRegistries.Keys.BIOME_MODIFIERS)
+                .containsKey(EarthWorldgen.OIL_MODIFIER_SPARSE), "sparse oil is not added to wet biomes");
         helper.succeed();
     }
 

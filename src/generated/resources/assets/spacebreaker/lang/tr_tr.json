@@ -1494,7 +1494,7 @@
   "tooltip.spacebreaker.part.seats": "Mürettebat koltuğu: %s",
   "tooltip.spacebreaker.part.tank": "RP-1 kerosen ve sıvı oksijen taşır",
   "tooltip.spacebreaker.part.thrust": "İtki: %s kN",
-  "tooltip.spacebreaker.pipe": "En fazla %s mB/t taşır. Bir bloktan çekmek için eğilip ucuna tıkla",
+  "tooltip.spacebreaker.pipe": "En fazla %s mB/t taşır. Bir bloktan ya da sonsuz su kaynağından çekmek için eğilip ucuna tıkla",
   "tooltip.spacebreaker.press_die": "Preste kullanılır; tükenmez",
   "tooltip.spacebreaker.propellant_cartridge": "Tüm tankları doldurmak için rokete kullan",
   "tooltip.spacebreaker.regolith_heater": "Erimiş regolit elektrolizi: kayadan oksijen",

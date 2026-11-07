@@ -100,7 +100,9 @@ public class ConduitBlock extends BaseEntityBlock implements SimpleWaterloggedBl
         if (type.energy) {
             return level.getCapability(Capabilities.EnergyStorage.BLOCK, np, ns, null, dir.getOpposite()) != null;
         }
-        return level.getCapability(Capabilities.FluidHandler.BLOCK, np, ns, null, dir.getOpposite()) != null;
+        return level.getCapability(Capabilities.FluidHandler.BLOCK, np, ns, null, dir.getOpposite()) != null
+                || (type.accepts(new net.neoforged.neoforge.fluids.FluidStack(net.minecraft.world.level.material.Fluids.WATER, 1))
+                && ConduitNetwork.isWaterWell(level, np));
     }
 
     private BlockState withSide(BlockState state, LevelAccessor level, BlockPos pos, Direction dir) {

@@ -20,7 +20,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Boksit → Alüminyum (cevher ×2, ham, ham blok, külçe, parça, blok, levha, toz, tel) | sıcak biyomlarda, yüzeye yakın |
 | 🎨 | Rutil → Titanyum, Pentlandit → Nikel, Spodümen → Lityum, Wolframit → Tungsten | her biri: cevher ×2, ham, ham blok, külçe, parça, blok, levha, toz (+ tel/çubuk); rutil derin ve nadir, pentlandit orta derinlik, spodümen dağlarda, wolframit derin |
 | 🎨 | Demir / bakır / altın için levha, toz, tel, çubuk | |
-| 🎨 | Ham petrol cepleri + yüzey sızıntıları (Petrol Sızıntısı bloğu) | ceplerin tam üstünde katran lekeli zemin |
+| 🎨 | Ham petrol cepleri + yüzey sızıntıları (Petrol Sızıntısı bloğu) | ceplerin tam üstünde katran lekeli zemin; kuru biyomlarda sık (28 yığında 1), ova/orman/tayga/bataklık/orman-yağmur/karlı biyomlarda seyrek (72 yığında 1) |
 | 🎨 | Çelik, Al-Li alaşımı, nikel süper alaşımı, plastik levha, silisyum, silisyum plaka, güneş hücresi, temel/gelişmiş devre kartı, elektrik motoru, ablatif kalkan levhası, altın folyo, turuncu köpük, silikon conta, levha/tel/çubuk pres kalıpları, kömür tozu | |
 | 🎨 | Sıvılar: ham petrol, RP-1, sıvı oksijen, sıvı hidrojen, sıvı metan, oksijen, hidrojen, metan | `c:` etiketleri, kovalar, Kriyojenik Kap; kriyojenik sıvılar açıkta kaynayıp uçar |
 
@@ -33,7 +33,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Hava Kilidi Kapısı | 2 blok, kayar kanatlar (animasyonlu); kapalıyken hava geçirmez; el ya da kızıltaşla açılır |
 | 🎨 | Yanmalı Jeneratör, Batarya Bankası, Bakır / Yüksek Gerilim Kablosu | jeneratör yalnız oksijenli havada yanar; batarya önden verir, şarj göstergesi |
 | 🎨 | Kırıcı, Elektrik Ark Fırını, Pres (hareketli koç), Petrol Pompası (çok bloklu, animasyonlu), Rafineri (çok bloklu damıtma kulesi) | |
-| 🎨 | Elektroliz Ünitesi, Kriyojenik Sıvılaştırıcı, Sıvı / Basınçlı Gaz / Kriyojenik Tank (dolum görünür; kırınca içerik eşyada kalır, yerleştirince geri gelir), sıvı/gaz borusu (uçtan çekme modu) | |
+| 🎨 | Elektroliz Ünitesi, Kriyojenik Sıvılaştırıcı, Sıvı / Basınçlı Gaz / Kriyojenik Tank (dolum görünür; kırınca içerik eşyada kalır, yerleştirince geri gelir), sıvı/gaz borusu (uçtan çekme modu; sıvı borusu sonsuz su kaynağından 100 mB/t su çeker) | |
 | 🎨 | Parça Üretim Tezgâhı | `spacebreaker:fabricating` tarifi; Roket ve Giysi alanları kendi tariflerini ekler |
 | 🎨 | Yerinde üretim (ISRU): Atmosfer İşlemcisi, Sabatier Reaktörü, Regolit Isıtıcı, Buz Eritici | atmosferden gaz (Mars/Venüs CO₂, Dünya O₂, Titan CH₄); CO₂ + H₂ → metan + su; regolit ve perklorattan O₂; buzdan su, kuru buzdan CO₂; `c:regoliths`, `c:ices`, `c:dry_ices`, `c:perchlorate_soils` etiketleriyle beslenir |
 | 🎨 | Karbondioksit gazı (`c:carbon_dioxide`); güneş paneli verimi gezegenin güneşe uzaklığına göre (en fazla 3×) | |
@@ -266,7 +266,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 ### Araçlar (Endüstri)
 | Durum | İçerik | Not |
 |---|---|---|
-| 🎨 | Gezegen Gezicisi (`spacebreaker:rover`) | iki kişilik, akülü (400 kFE, blok başına 50 FE → ~8000 blok); düşük yerçekiminde az tutuş ve uzun sıçrayışlar, sert inişte yaylanır; toz parçacıkları, gevşek zeminde (Ay regoliti, Mars toprağı) tekerlek izi; karanlıkta kendiliğinden yanan farlar; 27 yuvalı kargo (eğilip tıkla); güneş paneli ve RTG (+ pelet) yükseltmesi; batarya bankası ya da kablonun yanına park edince şarj; sürücüye akü/hız göstergesi |
+| 🎨 | Gezegen Gezicisi (`spacebreaker:rover`) | iki kişilik, akülü (400 kFE, blok başına 50 FE → ~8000 blok); düşük yerçekiminde az tutuş ve uzun sıçrayışlar, buzda (blok sürtünmesi) zor fren, zayıf direksiyon ve kayma — Plüton azot buzunda en kaygan, sert inişte yaylanır; toz parçacıkları, gevşek zeminde (Ay regoliti, Mars toprağı) tekerlek izi; karanlıkta kendiliğinden yanan farlar; 27 yuvalı kargo (eğilip tıkla); güneş paneli ve RTG (+ pelet) yükseltmesi; batarya bankası ya da kablonun yanına park edince şarj; sürücüye akü/hız göstergesi |
 
 ## Ses
 | Durum | İçerik | Not |

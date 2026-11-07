@@ -335,14 +335,18 @@ public class RoverEntity extends Entity {
             throttle = Mth.clamp(driver.zza, -1F, 1F);
             steer = Mth.clamp(driver.xxa, -1F, 1F);
         }
-        speed = RoverPhysics.speed(speed, throttle, onGround(), RoverPhysics.traction(g));
-        deltaYaw = RoverPhysics.yawChange(speed, steer);
+        BlockPos under = getBlockPosBelowThatAffectsMyMovement();
+        double grip = onGround() ? RoverPhysics.grip(level().getBlockState(under).getFriction(level(), under, this)) : 0;
+        speed = RoverPhysics.speed(speed, throttle, onGround(), RoverPhysics.traction(g) * Math.max(grip, 0.02));
+        deltaYaw = RoverPhysics.yawChange(speed, steer, onGround() ? grip : 0);
         setYRot(getYRot() + deltaYaw);
         Vec3 v = getDeltaMovement();
         double vy = onGround() && v.y <= 0 ? 0 : v.y;
         vy = RoverPhysics.fall(vy, g);
         float yaw = getYRot() * Mth.DEG_TO_RAD;
-        setDeltaMovement(-Mth.sin(yaw) * speed, vy, Mth.cos(yaw) * speed);
+        // the tyres steer the ground velocity towards the heading as far as the surface lets them; airborne, it keeps going
+        double[] h = RoverPhysics.slide(v.x, v.z, -Mth.sin(yaw) * speed, Mth.cos(yaw) * speed, grip);
+        setDeltaMovement(h[0], vy, h[1]);
         double before = getDeltaMovement().y;
         move(MoverType.SELF, getDeltaMovement());
         if (onGround() && before < 0) {
@@ -568,5 +572,7 @@ public class RoverEntity extends Entity {
     /** For the showcase and tests: set the drive state directly. */
     public void setSpeed(double speed) {
         this.speed = speed;
+        float yaw = getYRot() * Mth.DEG_TO_RAD;
+        setDeltaMovement(-Mth.sin(yaw) * speed, getDeltaMovement().y, Mth.cos(yaw) * speed);
     }
 }

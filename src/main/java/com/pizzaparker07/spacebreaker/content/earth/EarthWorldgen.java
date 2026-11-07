@@ -40,7 +40,8 @@ import java.util.List;
  *   <li>Spodumene: lithium pegmatites high up in mountains.</li>
  *   <li>Wolframite: deep greisen veins.</li>
  *   <li>Uraninite: small pitchblende pods, deepest and rarest.</li>
- *   <li>Crude oil: reservoirs trapped underground, marked by surface seeps.</li>
+ *   <li>Crude oil: reservoirs trapped underground, marked by surface seeps; common under dry land, rarer under
+ *       plains, forests, taiga, swamps, jungles and snow.</li>
  * </ul>
  */
 public final class EarthWorldgen {
@@ -75,6 +76,11 @@ public final class EarthWorldgen {
     public static final ResourceKey<ConfiguredFeature<?, ?>> OIL_CONFIGURED = ResourceKey.create(Registries.CONFIGURED_FEATURE, Spacebreaker.id("oil_deposit"));
     public static final ResourceKey<PlacedFeature> OIL_PLACED = ResourceKey.create(Registries.PLACED_FEATURE, Spacebreaker.id("oil_deposit"));
     public static final ResourceKey<BiomeModifier> OIL_MODIFIER = ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS, Spacebreaker.id("add_oil_deposit"));
+    /** Rarer fields under wetter land too, so a player who starts far from a desert still finds oil within reach. */
+    public static final ResourceKey<PlacedFeature> OIL_PLACED_SPARSE = ResourceKey.create(Registries.PLACED_FEATURE, Spacebreaker.id("oil_deposit_sparse"));
+    public static final ResourceKey<BiomeModifier> OIL_MODIFIER_SPARSE = ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS, Spacebreaker.id("add_oil_deposit_sparse"));
+    public static final int OIL_RARITY = 28;
+    public static final int OIL_RARITY_SPARSE = 72;
 
     static void bootstrap(SbDatapack dp) {
         dp.add(Registries.CONFIGURED_FEATURE, ctx -> {
@@ -96,7 +102,9 @@ public final class EarthWorldgen {
                 ctx.register(v.placed(), new PlacedFeature(configured.getOrThrow(v.configured()), mods));
             }
             ctx.register(OIL_PLACED, new PlacedFeature(configured.getOrThrow(OIL_CONFIGURED),
-                    List.of(RarityFilter.onAverageOnceEvery(28), InSquarePlacement.spread(), BiomeFilter.biome())));
+                    List.of(RarityFilter.onAverageOnceEvery(OIL_RARITY), InSquarePlacement.spread(), BiomeFilter.biome())));
+            ctx.register(OIL_PLACED_SPARSE, new PlacedFeature(configured.getOrThrow(OIL_CONFIGURED),
+                    List.of(RarityFilter.onAverageOnceEvery(OIL_RARITY_SPARSE), InSquarePlacement.spread(), BiomeFilter.biome())));
         });
         dp.add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, ctx -> {
             HolderGetter<Biome> biomes = ctx.lookup(Registries.BIOME);
@@ -107,6 +115,11 @@ public final class EarthWorldgen {
             }
             ctx.register(OIL_MODIFIER, new BiomeModifiers.AddFeaturesBiomeModifier(biomes.getOrThrow(Tags.Biomes.IS_DRY_OVERWORLD),
                     HolderSet.direct(placed.getOrThrow(OIL_PLACED)), GenerationStep.Decoration.LAKES));
+            HolderSet<Biome> wetLand = new net.neoforged.neoforge.registries.holdersets.OrHolderSet<>(List.of(
+                    biomes.getOrThrow(Tags.Biomes.IS_PLAINS), biomes.getOrThrow(Tags.Biomes.IS_FOREST), biomes.getOrThrow(Tags.Biomes.IS_TAIGA),
+                    biomes.getOrThrow(Tags.Biomes.IS_SWAMP), biomes.getOrThrow(Tags.Biomes.IS_JUNGLE), biomes.getOrThrow(Tags.Biomes.IS_SNOWY)));
+            ctx.register(OIL_MODIFIER_SPARSE, new BiomeModifiers.AddFeaturesBiomeModifier(wetLand,
+                    HolderSet.direct(placed.getOrThrow(OIL_PLACED_SPARSE)), GenerationStep.Decoration.LAKES));
         });
     }
 

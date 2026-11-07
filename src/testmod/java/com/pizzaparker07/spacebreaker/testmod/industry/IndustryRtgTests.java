@@ -196,6 +196,32 @@ public final class IndustryRtgTests {
         });
     }
 
+    /** A fluid pipe pulling from an endless water source feeds an electrolyser without anyone carrying buckets. */
+    @GameTest(template = "empty", timeoutTicks = 200)
+    public static void pipeDrawsFromAnEndlessWaterSource(GameTestHelper h) {
+        for (int x = 0; x < 3; x++) {
+            for (int z = 0; z < 2; z++) {
+                h.setBlock(new BlockPos(x, 0, z), net.minecraft.world.level.block.Blocks.STONE);
+                h.setBlock(new BlockPos(x, 1, z), net.minecraft.world.level.block.Blocks.WATER);
+            }
+        }
+        h.setBlock(new BlockPos(1, 0, 2), net.minecraft.world.level.block.Blocks.STONE);
+        h.setBlock(new BlockPos(1, 1, 2), MachinesModule.FLUID_PIPE.get());
+        MachineBlockEntity cell = machine(h, MachinesModule.ELECTROLYZER, new BlockPos(1, 1, 3), false);
+        h.runAfterDelay(2, () -> {
+            BlockPos pipe = h.absolutePos(new BlockPos(1, 1, 2));
+            var state = h.getLevel().getBlockState(pipe);
+            h.assertTrue(state.getValue(com.pizzaparker07.spacebreaker.content.machines.net.ConduitBlock.SIDES.get(Direction.NORTH)).connected(),
+                    "pipe should connect to the water: " + state);
+            h.getLevel().setBlock(pipe, state.setValue(com.pizzaparker07.spacebreaker.content.machines.net.ConduitBlock.SIDES.get(Direction.NORTH),
+                    com.pizzaparker07.spacebreaker.content.machines.net.ConduitSide.EXTRACT), 3);
+        });
+        h.succeedWhen(() -> {
+            h.assertTrue(cell.tank(0).getFluidAmount() >= 1000, "water in the electrolyser " + cell.tank(0).getFluidAmount());
+            h.assertTrue(h.getLevel().getFluidState(h.absolutePos(new BlockPos(1, 1, 1))).isSource(), "the source is not used up");
+        });
+    }
+
     private IndustryRtgTests() {
     }
 }

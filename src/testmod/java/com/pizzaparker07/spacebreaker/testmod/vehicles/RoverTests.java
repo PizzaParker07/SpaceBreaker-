@@ -186,6 +186,65 @@ public final class RoverTests {
         });
     }
 
+    /** Pluto's nitrogen ice (friction 0.99): the rover barely brakes, barely turns, and slides on the way it was going. */
+    @GameTest(template = "empty")
+    public static void nitrogenIceIsSlippery(GameTestHelper h) {
+        double rock = RoverPhysics.grip(0.6F);
+        double ice = RoverPhysics.grip(0.98F);
+        double n2 = RoverPhysics.grip(0.99F);
+        h.assertTrue(rock == 1.0 && ice < 0.1 && n2 < ice, "grip rock " + rock + " ice " + ice + " nitrogen " + n2);
+        int stopRock = brakeTicks(RoverPhysics.traction(0.06) * rock);
+        int stopN2 = brakeTicks(RoverPhysics.traction(0.06) * n2);
+        h.assertTrue(stopN2 > stopRock * 5, "braking on nitrogen ice " + stopN2 + " vs rock " + stopRock + " ticks");
+        h.assertTrue(Math.abs(RoverPhysics.yawChange(0.3, 1F, n2)) < Math.abs(RoverPhysics.yawChange(0.3, 1F, 1.0)) / 4, "weak steering on ice");
+        // heading turned a quarter: on ice most of the old velocity remains after 10 ticks
+        double vx = 0, vz = 0.3;
+        for (int i = 0; i < 10; i++) {
+            double[] v = RoverPhysics.slide(vx, vz, 0.3, 0, n2);
+            vx = v[0];
+            vz = v[1];
+        }
+        h.assertTrue(vz > 0.2, "still sliding forward: vz " + vz);
+        double[] grippy = RoverPhysics.slide(0, 0.3, 0.3, 0, rock);
+        h.assertTrue(grippy[1] == 0 && grippy[0] == 0.3, "on rock the rover goes where it points");
+        h.succeed();
+    }
+
+    private static int brakeTicks(double traction) {
+        int t = 0;
+        for (double s = 0.4; s > 0 && t < 100_000; t++) {
+            s = RoverPhysics.speed(s, -1, true, traction);
+        }
+        return t;
+    }
+
+    @GameTest(template = "empty", timeoutTicks = 200)
+    public static void roverCoastsFurtherOnNitrogenIce(GameTestHelper h) {
+        var n2 = BuiltInRegistries.BLOCK.get(Spacebreaker.id("nitrogen_ice"));
+        h.assertTrue(n2 != Blocks.AIR, "nitrogen ice missing");
+        for (int z = 0; z < 32; z++) {
+            for (int x = 0; x < 9; x++) {
+                h.setBlock(new BlockPos(x, 0, z), x < 4 ? Blocks.STONE : n2);
+            }
+        }
+        RoverEntity onRock = spawn(h, new BlockPos(1, 1, 0));
+        RoverEntity onIce = spawn(h, new BlockPos(6, 1, 0));
+        onRock.setEnergy(50_000);
+        onIce.setEnergy(50_000);
+        Vec3 a = onRock.position();
+        Vec3 b = onIce.position();
+        h.runAfterDelay(5, () -> {
+            onRock.setSpeed(0.2);
+            onIce.setSpeed(0.2);
+        });
+        h.runAtTickTime(45, () -> {
+            double rock = onRock.position().distanceTo(a);
+            double ice = onIce.position().distanceTo(b);
+            h.assertTrue(ice > rock * 1.5, "coasting: rock " + rock + " ice " + ice);
+            h.succeed();
+        });
+    }
+
     private static void floor(GameTestHelper h, BlockState state) {
         for (int z = 0; z < 5; z++) {
             for (int x = 0; x < 5; x++) {
