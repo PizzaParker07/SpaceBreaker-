@@ -71,11 +71,21 @@ def tessera():
 
 
 def sulfur_crust():
-    """Yellow sulfur precipitate over dark rock: crusty clumps, dark gaps."""
+    """Sulfur precipitate crusted over dark rock: irregular ochre scabs in a dark matrix, each lit on its upper edge
+    and shadowed under its lower one, so it reads as a lumpy crust rather than a soft, even sponge."""
     r = SULFUR
-    f = blend((clustered(16, 16, 5301, passes=1), 0.6), (white(5302), 0.4))
-    cv, idx = quant(f, [BASALT[2], r[1], r[2], r[3], r[4], r[5]], [10, 14, 24, 26, 18, 8])
-    return cv
+    f = blend((clustered(16, 16, 5301, passes=3), 0.7), (white(5302), 0.3))
+    cv, idx = quant(f, [BASALT[1], BASALT[3], r[0], r[1], r[2], r[4]], [24, 18, 18, 20, 14, 6])
+    out = cv.copy()
+    for x in range(16):
+        for y in range(16):
+            above = idx[(y - 1) % 16][x]
+            below = idx[(y + 1) % 16][x]
+            if idx[y][x] >= 3 and above <= 1:
+                out[x, y] = r[4]  # lit top edge of a scab
+            elif idx[y][x] >= 2 and below <= 1:
+                out[x, y] = BASALT[1]  # its shadowed underside
+    return out
 
 
 def metal_frost():

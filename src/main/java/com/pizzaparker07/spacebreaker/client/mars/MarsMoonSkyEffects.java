@@ -36,8 +36,6 @@ import org.joml.Vector3d;
 public class MarsMoonSkyEffects extends PlanetSkyEffects {
     private static final ResourceLocation SUN = Spacebreaker.id("textures/environment/sun_vacuum.png");
     private static final ResourceLocation MARS = Spacebreaker.id("textures/environment/mars_disc.png");
-    private static final com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.ColorMap AIR =
-            com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.flat(0xD8D2E6);
     private static final int GRID = 40;
     private static final int RING = 128;
     private final String bodyName;
@@ -146,9 +144,8 @@ public class MarsMoonSkyEffects extends PlanetSkyEffects {
             org.joml.Vector3f sunDir = new org.joml.Vector3f((float) s.x, (float) s.y, (float) s.z);
             com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.draw(m, blocky, 0,
                     com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.surface("mars"), pose, sunDir, 0.03F, 1F, 1F, null);
-            // the thin pale air: one translucent shell of blocks just outside the ground
-            var shell = new com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.Pose(pose.center(), half * 1.04F, pose.pole(), pose.facing(), 0F);
-            com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.draw(m, blocky, 16, AIR, shell, sunDir, 0F, 1F, 0.22F, null);
+            // the thin pale air: a faint line along the limb
+            com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.drawLimb(m, pose, sunDir, 0xE8B48A, 0.6F, 0.02F);
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
             RenderSystem.defaultBlendFunc();
             return;
