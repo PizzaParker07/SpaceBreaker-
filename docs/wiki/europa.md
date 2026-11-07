@@ -14,7 +14,7 @@ Gizli bir okyanusun üstünde genç bir buz kabuğu; lekeli çatlaklar (lineae) 
 **Buzaltı Işık Yılanları** aşağıdaki tuzlu suda yüzer.
 
 ### Harabe
-Bir kriyobot sondası alanı şunu öğretir: *Kriyobot Sondajı*.
+Bir buz sondaj kampı şunu öğretir: *Kriyobot Sondajı*. Deliğin üstünde dört ayaklı bir sondaj kulesi var; vinç zinciri kaybolan kriyobotun peşinden kuyuya iner. Yanında Araştırma Laboratuvarlı mürettebat yaşam alanı ve son kayıt durur ("Kablo 22 m'de koptu. Sinyal var. İniyoruz.").
 
 <details>
 <summary>English: Europa</summary>
@@ -33,6 +33,6 @@ A young ice shell over a hidden ocean, criss-crossed by stained cracks (lineae) 
 **Glow serpents** swim in the brine below.
 
 ### Ruins
-A cryobot probe site teaches *Cryobot Drilling*.
+An ice-drilling camp teaches *Cryobot Drilling*: a four-legged drill derrick over the bore, its winch chain running down the shaft after the lost cryobot, and the crew habitat beside it with a Research Lab and the last log ("Tether cut at 22 m. Still pinging. Going.").
 
 </details>
