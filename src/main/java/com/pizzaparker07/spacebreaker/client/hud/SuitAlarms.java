@@ -34,7 +34,12 @@ public final class SuitAlarms {
     @SubscribeEvent
     static void tick(ClientTickEvent.Post event) {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.player == null || mc.level == null || mc.isPaused() || !SpaceSuitItem.wearsHelmet(mc.player)) {
+        if (mc.player == null || mc.level == null || mc.isPaused()) {
+            return;
+        }
+        boolean helmet = SpaceSuitItem.wearsHelmet(mc.player);
+        HelmetHud.tickFrost(helmet ? ClientSuitState.get(mc.level.getGameTime()) : null);
+        if (!helmet) {
             return;
         }
         SuitStatusPayload s = ClientSuitState.get(mc.level.getGameTime());

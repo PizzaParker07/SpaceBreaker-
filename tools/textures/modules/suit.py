@@ -1092,8 +1092,61 @@ def lamp_beam() -> Canvas:
     return cv
 
 
+# ----------------------------------------------------------------------------- visor frost (HUD)
+def visor_frost() -> Canvas:
+    """Rime creeping in from the visor rim, drawn over the whole screen when the suit is beyond its cold rating.
+    160 x 90 so it scales up to the screen in big, vanilla-looking pixels; ice crystals grow in from the edges
+    (more at the corners), a few feathery spikes reach further in. 4 colours, 3 alpha steps."""
+    rnd = random.Random(907)
+    w, h = 160, 90
+    cv = Canvas(w, h)
+    ice = [(236, 246, 252), (212, 232, 246), (186, 214, 236), (160, 196, 226)]
+    # coarse value noise for a ragged edge
+    grid = [[rnd.random() for _ in range(w // 4 + 2)] for _ in range(h // 4 + 2)]
+
+    def noise(x, y):
+        gx, gy = x / 4, y / 4
+        x0, y0 = int(gx), int(gy)
+        fx, fy = gx - x0, gy - y0
+        a = grid[y0][x0] * (1 - fx) + grid[y0][x0 + 1] * fx
+        b = grid[y0 + 1][x0] * (1 - fx) + grid[y0 + 1][x0 + 1] * fx
+        return a * (1 - fy) + b * fy
+
+    for y in range(h):
+        for x in range(w):
+            ex = min(x, w - 1 - x) / (w / 2)
+            ey = min(y, h - 1 - y) / (h / 2)
+            d = min(ex * 1.3, ey) - (1 - ex) ** 3 * (1 - ey) ** 3 * 0.5  # corners frost deeper
+            v = noise(x, y) * 0.09 + rnd.random() * 0.02
+            depth = 0.04 + v - d
+            if depth > 0:
+                step = 2 if depth > 0.12 else (1 if depth > 0.05 else 0)
+                alpha = (110, 170, 215)[step]
+                cv[x, y] = (*ice[min(3, int(rnd.random() * 2) + (2 - step))], alpha)
+    # feathery spikes growing inwards from the rim
+    for _ in range(46):
+        side = rnd.choice('tblr')
+        if side in 'tb':
+            x, y = rnd.randrange(w), (2 if side == 't' else h - 3)
+            dx, dy = rnd.choice((-1, 0, 1)), (1 if side == 't' else -1)
+        else:
+            x, y = (2 if side == 'l' else w - 3), rnd.randrange(h)
+            dx, dy = (1 if side == 'l' else -1), rnd.choice((-1, 0, 1))
+        for i in range(rnd.randrange(5, 14)):
+            if cv.inside(x, y):
+                cv[x, y] = (*ice[0], 200)
+                if i % 3 == 1:
+                    for bx, by in ((x + dy, y + dx), (x - dy, y - dx)):
+                        if cv.inside(bx, by):
+                            cv[bx, by] = (*ice[1], 150)
+            x += dx if rnd.random() < 0.8 else 0
+            y += dy if rnd.random() < 0.8 else 0
+    return cv
+
+
 def export(save):
     save(hud_icons(), 'gui', 'hud_icons')
+    save(visor_frost(), 'gui', 'visor_frost')
     export_blocks(save)
     save(icon_small_tank(), 'item', 'oxygen_tank')
     save(oxygen_tank_model(), 'item', 'oxygen_tank_model')

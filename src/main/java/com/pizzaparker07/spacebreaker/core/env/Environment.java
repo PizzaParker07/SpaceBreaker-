@@ -116,6 +116,19 @@ public final class Environment {
         return false;
     }
 
+    /**
+     * Whether a registered oxygen source (pressurised room, crew cabin, ...) supplies air here; ignores the planet's
+     * own atmosphere. The suit uses it to tell a pressurised cabin from open air.
+     */
+    public static boolean suppliedOxygen(Level level, BlockPos pos) {
+        for (OxygenSource source : OXYGEN_SOURCES) {
+            if (source.providesOxygen(level, pos)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /** Ambient pressure in kPa. */
     public static double pressureKpa(Level level, BlockPos pos) {
         if (Bodies.isOrbit(level)) {

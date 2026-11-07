@@ -71,10 +71,31 @@ public final class SuitEvents {
         return RATES.getOrDefault(player, 0.0);
     }
 
-    /** Is the player's head inside a room pressurised by an oxygen distributor (station module, base)? */
+    private static final java.util.List<java.util.function.Predicate<Player>> PRESSURE_SOURCES = new java.util.concurrent.CopyOnWriteArrayList<>();
+
+    /**
+     * Lets other modules say "this player is in a pressurised cabin" (e.g. rocketry: a crew capsule). The suit then
+     * reports a pressurised environment (HUD row, entry message, no visor frost). Breathing itself still follows
+     * {@code Environment} oxygen sources; register one there too. Server side, called every 10 ticks per player.
+     */
+    public static void addPressureSource(java.util.function.Predicate<Player> source) {
+        PRESSURE_SOURCES.add(source);
+    }
+
+    /**
+     * Is the player inside a pressurised space: any registered Environment oxygen source at the head (oxygen
+     * distributor rooms, a crew capsule, ...) or a registered pressure source?
+     */
     public static boolean pressurisedAt(Player player) {
-        return com.pizzaparker07.spacebreaker.content.suit.block.SealedRooms.providesOxygen(player.level(),
-                BlockPos.containing(player.getEyePosition()));
+        if (Environment.suppliedOxygen(player.level(), BlockPos.containing(player.getEyePosition()))) {
+            return true;
+        }
+        for (var source : PRESSURE_SOURCES) {
+            if (source.test(player)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /** Tells the wearer when the suit seals (all four pieces on) or opens again. */
@@ -118,6 +139,9 @@ public final class SuitEvents {
         }
         if (data.wasPressurised) {
             flags |= SuitStatusPayload.PRESSURISED;
+        }
+        if (com.pizzaparker07.spacebreaker.content.worldgen.ColdTraps.inColdTrap(player.level(), player.blockPosition())) {
+            flags |= SuitStatusPayload.COLD_TRAP;
         }
         if (Tether.anchor(player).isPresent()) {
             flags |= SuitStatusPayload.TETHERED;
