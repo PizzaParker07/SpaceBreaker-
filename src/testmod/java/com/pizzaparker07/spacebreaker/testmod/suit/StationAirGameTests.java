@@ -116,4 +116,15 @@ public final class StationAirGameTests {
                 })
                 .thenSucceed();
     }
+
+    @GameTest(template = "empty")
+    public static void registeredCabinCountsAsPressurised(GameTestHelper helper) {
+        Player p = helper.makeMockPlayer(GameType.SURVIVAL);
+        helper.assertFalse(com.pizzaparker07.spacebreaker.content.suit.SuitEvents.pressurisedAt(p), "nothing pressurised here yet");
+        String tag = "spacebreaker_test_cabin";
+        com.pizzaparker07.spacebreaker.content.suit.SuitEvents.addPressureSource(pl -> pl.getTags().contains(tag));
+        p.addTag(tag);
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.suit.SuitEvents.pressurisedAt(p), "a registered cabin is pressurised");
+        helper.succeed();
+    }
 }
