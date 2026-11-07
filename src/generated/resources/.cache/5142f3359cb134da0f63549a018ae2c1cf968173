@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-07T12:25:06.641281209	Tags for minecraft:block mod id spacebreaker
+// 1.21.1	2026-11-07T13:20:54.497823914	Tags for minecraft:block mod id spacebreaker
 baa792afbbd764742ba879704d1a1ac2c34c5a78 data/c/tags/block/ore_rates/singular.json
 203c174f339db62a8ff7248872ae78b4b8ac7b1e data/c/tags/block/ores.json
 614424eab6df954a625b0fb41ae902f31f485d64 data/c/tags/block/ores/ammonia.json
@@ -69,6 +69,7 @@ a4e8097fff07f9a74259d6b5dd583f3437ff28a2 data/spacebreaker/tags/block/leaky.json
 afb8415bcdce0603de7cf58212b2d8c11a30e053 data/spacebreaker/tags/block/mars_soils.json
 970028c21f102ea541f27978c131fc4101c9c779 data/spacebreaker/tags/block/mars_stone.json
 fa4817a4b31eb3b99c938dcf1a4b5f6ec4d57eef data/spacebreaker/tags/block/mercury_stone.json
+c2f6fb7224bd1e2fdb87249751113c4d66dbc21f data/spacebreaker/tags/block/mineable/drill.json
 231177d534c2548d8743e904695c4ffc62fe0ef4 data/spacebreaker/tags/block/miranda_stone.json
 696e44fec8955ed65de944ded387d34fa944812f data/spacebreaker/tags/block/mirandan_ground.json
 3fdd2a67f181088985225042c5dc62b5b4a84539 data/spacebreaker/tags/block/moon_stone.json

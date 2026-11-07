@@ -1310,6 +1310,34 @@ def tool_icon(name) -> Canvas:
     return _icon(TOOL_ICONS[name], pal)
 
 
+# Electric Drill: white body with a battery pack, cyan charge window, a steel chuck and a titanium bit
+ICON_DRILL = [
+    "................",
+    "................",
+    "....oooooooo....",
+    "...oHWWWWWWwoooo",
+    "...oWWWWWWWwossb",
+    "...oWCcWWWWwoSSt",
+    "...oWWWWWWwwoooo",
+    "....oowwwoooo...",
+    "......oKko......",
+    "......oKko......",
+    ".....oKKko......",
+    ".....oBBbo......",
+    ".....oBCbo......",
+    ".....oBBbo......",
+    "......oooo......",
+    "................",
+]
+
+
+def icon_drill() -> Canvas:
+    T = P.TITANIUM
+    pal = {'o': S[1], 'W': W[6], 'H': W[7], 'w': W[4], 'C': C[5], 'c': C[5], 'K': S[2], 'k': S[1],
+           'B': S[3], 'b': S[2], 's': S[5], 'S': S[3], 't': T[6]}
+    return _icon(ICON_DRILL, pal)
+
+
 def export(save):
     save(hud_icons(), 'gui', 'hud_icons')
     save(visor_frost(), 'gui', 'visor_frost')
@@ -1321,6 +1349,7 @@ def export(save):
     save(icon_mmu(), 'item', 'maneuvering_unit')
     save(icon_tether(), 'item', 'safety_tether')
     save(icon_sensor(), 'item', 'environment_sensor')
+    save(icon_drill(), 'item', 'electric_drill')
     for name in TOOL_ICONS:
         save(tool_icon(name), 'item', name)
     export_tiers(save)

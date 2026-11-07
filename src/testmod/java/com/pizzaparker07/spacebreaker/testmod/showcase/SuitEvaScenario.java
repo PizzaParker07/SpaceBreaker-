@@ -181,6 +181,19 @@ final class SuitEvaScenario implements ShowcaseScenario {
             net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(p,
                     com.pizzaparker07.spacebreaker.content.suit.EnvironmentSensorItem.read(p.serverLevel(), p.blockPosition()));
         }), null));
+        // the prospecting kit in the hotbar, the charged drill in hand
+        s.add(new Shot(prefix + "_17_tools", 0, 0.5, g + 1.62, 8.5, 180F, 25F, false, fp, 60, at(false, p -> {
+            astronaut(p);
+            ItemStack drill = new ItemStack(SuitModule.ELECTRIC_DRILL.get());
+            com.pizzaparker07.spacebreaker.content.suit.ElectricDrillItem.setEnergy(drill, 70000);
+            p.getInventory().setItem(0, drill);
+            p.getInventory().setItem(1, new ItemStack(SuitModule.ENVIRONMENT_SENSOR.get()));
+            int slot = 2;
+            for (var tool : com.pizzaparker07.spacebreaker.content.suit.TitaniumTools.all()) {
+                p.getInventory().setItem(slot++, new ItemStack(tool.get()));
+            }
+            p.getInventory().selected = 0;
+        }), null));
         return s;
     }
 }
