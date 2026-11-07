@@ -13,6 +13,11 @@ final class EmiScreens {
                 .ifPresentOrElse(EmiApi::displayRecipeCategory, () -> ShowcaseDriver.log("no EMI category " + uid));
     }
 
+    /** Recipes that use the item with this id. */
+    static void showUsesOf(ResourceLocation itemId) {
+        EmiApi.displayUses(dev.emi.emi.api.stack.EmiStack.of(net.minecraft.core.registries.BuiltInRegistries.ITEM.get(itemId)));
+    }
+
     /** Recipes that make the item with this id. */
     static void showRecipesFor(ResourceLocation itemId) {
         EmiApi.displayRecipes(dev.emi.emi.api.stack.EmiStack.of(net.minecraft.core.registries.BuiltInRegistries.ITEM.get(itemId)));
