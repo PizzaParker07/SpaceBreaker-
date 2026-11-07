@@ -21,7 +21,7 @@ import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Fission surface power unit, after NASA's Kilopower: a small uranium reactor whose heat pipes drive Stirling
+ * Kilowatt-class fission surface power unit: a small uranium reactor whose heat pipes drive Stirling
  * engines, with radiator fins on top. Many times an RTG's output for a big outpost, day and night anywhere.
  * It follows the load: fuel only burns while the power is taken. While running it is a strong radiation source;
  * every solid block between the core and a player cuts the dose, so bury it or bank regolith around it.

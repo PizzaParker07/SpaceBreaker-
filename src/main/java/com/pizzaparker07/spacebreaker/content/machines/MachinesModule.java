@@ -140,7 +140,7 @@ public final class MachinesModule implements SbModule {
     public static final MachineEntry<MachineBlock, com.pizzaparker07.spacebreaker.content.machines.machine.RtgBlockEntity> RTG =
             machine("rtg", com.pizzaparker07.spacebreaker.content.machines.machine.RtgBlockEntity::new,
                     net.minecraft.world.phys.shapes.Shapes.or(Block.box(0, 0, 0, 16, 2, 16), Block.box(1, 2, 1, 15, 14, 15), Block.box(3, 14, 3, 13, 16, 13)), 0);
-    /** Fission surface power: a buried Kilopower-style reactor for big outposts; radiates while it runs. */
+    /** Fission surface power: a buried kilowatt-class fission reactor for big outposts; radiates while it runs. */
     public static final MachineEntry<MachineBlock, com.pizzaparker07.spacebreaker.content.machines.machine.FissionReactorBlockEntity> FISSION_REACTOR =
             machine("fission_reactor", com.pizzaparker07.spacebreaker.content.machines.machine.FissionReactorBlockEntity::new,
                     net.minecraft.world.phys.shapes.Shapes.or(Block.box(2, 0, 2, 14, 9, 14), Block.box(0, 9, 7, 16, 16, 9), Block.box(7, 9, 0, 9, 16, 16)), 0);

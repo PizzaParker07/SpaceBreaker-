@@ -298,7 +298,7 @@ def export(save):  # noqa: F811
 
 
 def nuclear_fuel_element():
-    """A NERVA-style hexagonal fuel element lying diagonally: tungsten-clad rod with spacer rings, its top end face
+    """A hexagonal nuclear-thermal fuel element lying diagonally: tungsten-clad rod with spacer rings, its top end face
     pierced by the hydrogen channels that run through the uranium carbide."""
     from sbtex import palettes as PP
     T = PP.TUNGSTEN
@@ -396,7 +396,7 @@ def export(save):  # noqa: F811
 
 
 def reactor_side():
-    """Kilopower-style core vessel: dark steel drum with a yellow-black hazard band and heat-pipe ribs."""
+    """Kilowatt-class fission core vessel: dark steel drum with a yellow-black hazard band and heat-pipe ribs."""
     cv = casing(97, seam=False)
     # the model shows rows 7..15 of this texture on the 9 px drum
     for x in range(16):
