@@ -10,14 +10,21 @@ import java.util.Optional;
 /**
  * Optional large-scale landforms of a {@link TerrainProfile}, beyond highlands, lowlands and craters:
  * wind-blown dunes, a great rift canyon, shield volcanoes, ancient river valleys with deltas, layered strata,
- * polar ice caps, soil patches, thrust-fault scarps, groove chains and tessera ridges. Every part is optional,
+ * polar ice caps, soil patches, thrust-fault scarps, groove chains, tessera ridges and giant fault cliffs. Every part is optional,
  * so worlds without it (the Moon) generate exactly as before. All lengths are in blocks.
  */
 public record Landforms(Optional<Dunes> dunes, Optional<Rift> rift, Optional<Volcanoes> volcanoes, Optional<Valleys> valleys,
                         Optional<Strata> strata, Optional<IceCap> iceCap, List<SoilPatch> patches, Optional<Scarps> scarps,
-                        Optional<Grooves> grooves, Optional<Tesserae> tesserae, Optional<Peaks> peaks) {
+                        Optional<Grooves> grooves, Optional<Tesserae> tesserae, Optional<Peaks> peaks, List<Rupes> rupes) {
     public static final Landforms NONE = new Landforms(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
-            Optional.empty(), Optional.empty(), List.of(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+            Optional.empty(), Optional.empty(), List.of(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), List.of());
+
+    /** The earlier form without giant cliffs. */
+    public Landforms(Optional<Dunes> dunes, Optional<Rift> rift, Optional<Volcanoes> volcanoes, Optional<Valleys> valleys,
+                     Optional<Strata> strata, Optional<IceCap> iceCap, List<SoilPatch> patches, Optional<Scarps> scarps,
+                     Optional<Grooves> grooves, Optional<Tesserae> tesserae, Optional<Peaks> peaks) {
+        this(dunes, rift, volcanoes, valleys, strata, iceCap, patches, scarps, grooves, tesserae, peaks, List.of());
+    }
 
     public static final Codec<Landforms> CODEC = RecordCodecBuilder.create(i -> i.group(
             Dunes.CODEC.optionalFieldOf("dunes").forGetter(Landforms::dunes),
@@ -30,8 +37,37 @@ public record Landforms(Optional<Dunes> dunes, Optional<Rift> rift, Optional<Vol
             Scarps.CODEC.optionalFieldOf("scarps").forGetter(Landforms::scarps),
             Grooves.CODEC.optionalFieldOf("grooves").forGetter(Landforms::grooves),
             Tesserae.CODEC.optionalFieldOf("tesserae").forGetter(Landforms::tesserae),
-            Peaks.CODEC.optionalFieldOf("peaks").forGetter(Landforms::peaks)
+            Peaks.CODEC.optionalFieldOf("peaks").forGetter(Landforms::peaks),
+            Rupes.CODEC.listOf().optionalFieldOf("rupes", List.of()).forGetter(Landforms::rupes)
     ).apply(i, Landforms::new));
+
+    /**
+     * A giant fault cliff (rupes), like Miranda's: along a straight, slightly wavering line the ground on one side
+     * drops by a great height in a near-vertical, layered rock wall that fades out toward the ends. Built straight
+     * into the terrain (see {@link RupesShape}).
+     *
+     * @param x        centre of the cliff (block x)
+     * @param latitude centre of the cliff (latitude)
+     * @param length   length of the cliff
+     * @param angleDeg direction of the cliff line (0 = along x)
+     * @param height   drop at the middle of the cliff
+     * @param wall     horizontal width over which the ground falls (smaller = steeper)
+     * @param rock     rock of the cliff face
+     * @param band     optional second rock in layers across the face
+     */
+    public record Rupes(double x, double latitude, double length, double angleDeg, double height, double wall, BlockState rock,
+                        Optional<BlockState> band) {
+        public static final Codec<Rupes> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Codec.DOUBLE.optionalFieldOf("x", 0.0).forGetter(Rupes::x),
+                Codec.DOUBLE.optionalFieldOf("latitude", 0.0).forGetter(Rupes::latitude),
+                Codec.DOUBLE.optionalFieldOf("length", 800.0).forGetter(Rupes::length),
+                Codec.DOUBLE.optionalFieldOf("angle", 0.0).forGetter(Rupes::angleDeg),
+                Codec.DOUBLE.optionalFieldOf("height", 80.0).forGetter(Rupes::height),
+                Codec.DOUBLE.optionalFieldOf("wall", 8.0).forGetter(Rupes::wall),
+                BlockState.CODEC.fieldOf("rock").forGetter(Rupes::rock),
+                BlockState.CODEC.optionalFieldOf("band").forGetter(Rupes::band)
+        ).apply(i, Rupes::new));
+    }
 
     /**
      * A different surface on the highest ground, like snow lines (e.g. Venus' metallic frost on its mountain tops).

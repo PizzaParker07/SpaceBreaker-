@@ -53,6 +53,11 @@ public final class PlanetTerrain {
         return profile;
     }
 
+    /** The profile's giant cliffs, built into the terrain. */
+    public RupesShape[] rupes() {
+        return landforms.rupes();
+    }
+
     public long seed() {
         return seed;
     }
@@ -117,6 +122,9 @@ public final class PlanetTerrain {
         public int patch = -1;
         /** Tessera share 0..1. */
         public double tessera;
+        /** Index of the giant cliff whose face this column is on, or -1; {@link #rupesU} is the position along it. */
+        public int rupes = -1;
+        public double rupesU;
 
         public Zone zone(TerrainProfile p) {
             if (cap >= 1) {
