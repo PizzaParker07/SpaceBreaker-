@@ -1893,6 +1893,7 @@
   "tooltip.spacebreaker.sample.hint": "Analyse in a Research Lab: may reveal a technology",
   "tooltip.spacebreaker.sample_kit": "Use on natural ground to take a field sample",
   "tooltip.spacebreaker.sintering_furnace": "Fuses regolith into building blocks with electric heat, no air needed",
+  "tooltip.spacebreaker.sliding_door": "Two facing each other up to 4 blocks apart make an airlock: one opens only once the other has shut",
   "tooltip.spacebreaker.solar_panel": "Follows the sun. Peak output: %s FE/t",
   "tooltip.spacebreaker.solar_panel.here": "Sunlight here: %s%% of Earth's (noon peak %s FE/t)",
   "tooltip.spacebreaker.station_kit": "Use in empty space: unfolds a 5×5 hull floor in front of you",

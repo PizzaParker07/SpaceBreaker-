@@ -43,6 +43,8 @@ final class RocketryLang {
         l.block(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.PORTHOLE, "Porthole", "Lombar");
         l.block(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.GRATE, "Grate Floor", "Izgara Zemin");
         l.block(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.SLIDING_DOOR, "Sliding Door", "Kayar Kapı");
+        l.add("tooltip.spacebreaker.sliding_door", "Two facing each other up to 4 blocks apart make an airlock: one opens only once the other has shut",
+                "Karşılıklı en fazla 4 blok arayla iki kapı hava kilidi olur: biri ancak diğeri kapandıktan sonra açılır");
         com.pizzaparker07.spacebreaker.content.mars.BlockKit.familyNames(l, com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.HAZARD_STRIPE,
                 "Hazard Stripe", "Uyarı Şeridi");
         l.block(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.LED_PANEL, "LED Panel Light", "LED Panel Lamba");

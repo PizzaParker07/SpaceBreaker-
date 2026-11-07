@@ -1266,6 +1266,30 @@ public final class RocketryGameTests {
         helper.succeed();
     }
 
+    @GameTest(template = EMPTY, timeoutTicks = 200)
+    public static void slidingDoorAirlock(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var block = com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.SLIDING_DOOR.get();
+        var OPEN = com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock.OPEN;
+        // an inner and an outer door three blocks apart along z: a small airlock
+        BlockPos inner = helper.absolutePos(new BlockPos(2, 2, 1)), outer = inner.south(3);
+        com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock.place(level, inner, block.defaultBlockState());
+        com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock.place(level, outer, block.defaultBlockState());
+        helper.assertTrue(block.partners(level, inner, level.getBlockState(inner)).contains(outer), "the two doors pair up");
+        block.request(level, inner, level.getBlockState(inner), true);
+        helper.assertTrue(level.getBlockState(inner).getValue(OPEN), "with the outer door shut, the inner one opens at once");
+        // asking the outer door to open shuts the inner one first and holds the outer one for the cycle
+        block.request(level, outer, level.getBlockState(outer), true);
+        helper.assertFalse(level.getBlockState(inner).getValue(OPEN), "the inner door shuts");
+        helper.assertFalse(level.getBlockState(outer).getValue(OPEN), "the outer door waits for the cycle");
+        helper.runAtTickTime(com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock.CYCLE_TICKS / 2, () ->
+                helper.assertFalse(level.getBlockState(outer).getValue(OPEN), "still cycling"));
+        helper.succeedWhen(() -> {
+            helper.assertTrue(level.getBlockState(outer).getValue(OPEN), "after the cycle the outer door opens");
+            helper.assertFalse(level.getBlockState(inner).getValue(OPEN), "and never both at once");
+        });
+    }
+
     @GameTest(template = EMPTY)
     public static void baseFittings(GameTestHelper helper) {
         var level = helper.getLevel();

@@ -1893,6 +1893,7 @@
   "tooltip.spacebreaker.sample.hint": "Araştırma Laboratuvarı'nda incele: bir teknolojiyi ortaya çıkarabilir",
   "tooltip.spacebreaker.sample_kit": "Saha numunesi almak için doğal zemine kullan",
   "tooltip.spacebreaker.sintering_furnace": "Regoliti elektrikle ısıtıp yapı bloğuna kaynaştırır, hava gerekmez",
+  "tooltip.spacebreaker.sliding_door": "Karşılıklı en fazla 4 blok arayla iki kapı hava kilidi olur: biri ancak diğeri kapandıktan sonra açılır",
   "tooltip.spacebreaker.solar_panel": "Güneşi takip eder. En yüksek üretim: %s FE/t",
   "tooltip.spacebreaker.solar_panel.here": "Burada güneş ışığı: Dünya'nın %%%s'i (öğle tepe değeri %s FE/t)",
   "tooltip.spacebreaker.station_kit": "Boşlukta kullan: önüne 5×5 gövde zemini açar",
