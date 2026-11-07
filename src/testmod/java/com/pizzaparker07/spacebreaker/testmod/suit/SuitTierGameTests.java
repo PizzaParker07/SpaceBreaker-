@@ -239,4 +239,21 @@ public final class SuitTierGameTests {
         helper.assertFalse(SpaceSuitItem.isSealed(p), "a worn-out piece leaks");
         helper.succeed();
     }
+
+    @GameTest(template = EMPTY)
+    public static void titaniumToolsSitBetweenIronAndDiamond(GameTestHelper helper) {
+        var ti = com.pizzaparker07.spacebreaker.content.suit.TitaniumTools.TITANIUM;
+        var iron = net.minecraft.world.item.Tiers.IRON;
+        var diamond = net.minecraft.world.item.Tiers.DIAMOND;
+        helper.assertTrue(ti.getUses() > iron.getUses() * 4 && ti.getUses() < diamond.getUses(), "tougher than iron, below diamond");
+        helper.assertTrue(ti.getSpeed() > iron.getSpeed() && ti.getSpeed() < diamond.getSpeed(), "digs between iron and diamond");
+        ItemStack pick = new ItemStack(com.pizzaparker07.spacebreaker.content.suit.TitaniumTools.all().get(0).get());
+        helper.assertTrue(pick.isCorrectToolForDrops(net.minecraft.world.level.block.Blocks.DIAMOND_ORE.defaultBlockState()), "mines diamond ore");
+        helper.assertFalse(pick.isCorrectToolForDrops(net.minecraft.world.level.block.Blocks.OBSIDIAN.defaultBlockState()), "but not obsidian");
+        helper.assertTrue(ti.getRepairIngredient().test(new ItemStack(com.pizzaparker07.spacebreaker.content.earth.EarthModule.TITANIUM.ingot.get())),
+                "repaired with titanium ingots");
+        var recipe = helper.getLevel().getRecipeManager().byKey(com.pizzaparker07.spacebreaker.Spacebreaker.id("titanium_pickaxe"));
+        helper.assertTrue(recipe.isPresent(), "the pickaxe has a recipe");
+        helper.succeed();
+    }
 }

@@ -66,6 +66,8 @@ def generate():
     for name in ('maneuvering_unit', 'safety_tether', 'environment_sensor', 'suit_upgrade_template', 'thermal_regulator_module', 'radiation_shield_module',
                  'extra_oxygen_module', 'jetpack_booster_module'):
         generated_item(name)
+    for tool in ('pickaxe', 'axe', 'shovel', 'hoe', 'sword'):
+        write(f'models/item/titanium_{tool}.json', {'parent': 'minecraft:item/handheld', 'textures': {'layer0': i(f'titanium_{tool}')}})
     oxygen_tank()
     oxygen_filler()
     suit_station()

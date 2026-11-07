@@ -1208,6 +1208,108 @@ def icon_sensor() -> Canvas:
     return _icon(ICON_SENSOR, pal)
 
 
+# ----------------------------------------------------------------------------- titanium tools
+# Titanium heads (cool grey-violet ramp) on dark composite handles with a cyan grip band.
+TOOL_ICONS = {
+    'titanium_pickaxe': [
+        "................",
+        ".....ooooo......",
+        "...ooHHTTToo....",
+        "..oHToooooTTo...",
+        ".oHto...oKotTo..",
+        ".oTo...oKko.oTo.",
+        ".oto..oKko...oo.",
+        ".oo..oKko.......",
+        "....oKko........",
+        "...oCco.........",
+        "..oKko..........",
+        ".oKko...........",
+        "oKko............",
+        "oko.............",
+        ".o..............",
+        "................",
+    ],
+    'titanium_axe': [
+        "................",
+        "...ooooo........",
+        "..oHHTTTo...oo..",
+        ".oHTTTTTTo.oKo..",
+        ".oTTTTTTTtoKko..",
+        ".otTTTTTtoKko...",
+        "..ottttooKko....",
+        "...oooooKko.....",
+        "......oKko......",
+        ".....oCco.......",
+        "....oKko........",
+        "...oKko.........",
+        "..oKko..........",
+        ".oKko...........",
+        ".oo.............",
+        "................",
+    ],
+    'titanium_shovel': [
+        "................",
+        "...........ooo..",
+        "..........oHTto.",
+        ".........oHTTto.",
+        "........oHTTtto.",
+        ".........otttoo.",
+        "........oKkoo...",
+        ".......oKko.....",
+        "......oKko......",
+        ".....oCco.......",
+        "....oKko........",
+        "...oKko.........",
+        "..oKko..........",
+        ".oKko...........",
+        ".oo.............",
+        "................",
+    ],
+    'titanium_hoe': [
+        "................",
+        ".....oooooo.....",
+        "....oHTTTTto....",
+        ".....ooooKtoo...",
+        "........oKko....",
+        ".......oKko.....",
+        "......oKko......",
+        ".....oKko.......",
+        "....oCco........",
+        "...oKko.........",
+        "..oKko..........",
+        ".oKko...........",
+        "oKko............",
+        "oko.............",
+        ".o..............",
+        "................",
+    ],
+    'titanium_sword': [
+        "............ooo.",
+        "...........oHTo.",
+        "..........oHTto.",
+        ".........oHTto..",
+        "........oHTto...",
+        ".......oHTto....",
+        "......oHTto.....",
+        ".oo..oHTto......",
+        ".oTooHTto.......",
+        "..oTTtto........",
+        "...oTto.........",
+        "..oCcoTo........",
+        ".oKko.oo........",
+        "oKko............",
+        ".oo.............",
+        "................",
+    ],
+}
+
+
+def tool_icon(name) -> Canvas:
+    T = P.TITANIUM
+    pal = {'o': T[0], 'H': T[7], 'T': T[5], 't': T[3], 'K': S[2], 'k': S[1], 'C': C[5], 'c': C[3]}
+    return _icon(TOOL_ICONS[name], pal)
+
+
 def export(save):
     save(hud_icons(), 'gui', 'hud_icons')
     save(visor_frost(), 'gui', 'visor_frost')
@@ -1219,6 +1321,8 @@ def export(save):
     save(icon_mmu(), 'item', 'maneuvering_unit')
     save(icon_tether(), 'item', 'safety_tether')
     save(icon_sensor(), 'item', 'environment_sensor')
+    for name in TOOL_ICONS:
+        save(tool_icon(name), 'item', name)
     export_tiers(save)
     save(eva_suit_overlay(), 'models/armor', 'eva_suit_overlay')
     save(lamp_beam(), 'misc', 'helmet_lamp_beam')

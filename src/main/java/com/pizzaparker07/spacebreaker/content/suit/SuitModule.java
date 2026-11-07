@@ -176,6 +176,10 @@ public final class SuitModule implements SbModule {
     }
     public static final DeferredItem<ManeuveringUnitItem> MANEUVERING_UNIT = ITEMS.registerItem("maneuvering_unit",
             ManeuveringUnitItem::new, new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON));
+    static {
+        TitaniumTools.register(ITEMS);
+    }
+
     public static final DeferredItem<EnvironmentSensorItem> ENVIRONMENT_SENSOR = ITEMS.registerItem("environment_sensor",
             EnvironmentSensorItem::new, new Item.Properties().stacksTo(1));
     public static final DeferredItem<SafetyTetherItem> SAFETY_TETHER = ITEMS.registerItem("safety_tether",
@@ -248,6 +252,7 @@ public final class SuitModule implements SbModule {
                 .addStack(() -> OxygenTankItem.filled(OXYGEN_TANK.get()))
                 .addStack(() -> OxygenTankItem.filled(LARGE_OXYGEN_TANK.get()))
                 .addStack(() -> ManeuveringUnitItem.filled(MANEUVERING_UNIT.get())).add(SAFETY_TETHER).add(ENVIRONMENT_SENSOR)
+                .add(TitaniumTools.PICKAXE).add(TitaniumTools.AXE).add(TitaniumTools.SHOVEL).add(TitaniumTools.HOE).add(TitaniumTools.SWORD)
                 .add(OXYGEN_FILLER_ITEM).add(SUIT_STATION_ITEM).add(OXYGEN_DISTRIBUTOR_ITEM).add(AIRLOCK_DOOR_ITEM);
     }
 
@@ -295,6 +300,11 @@ public final class SuitModule implements SbModule {
         lang.item(MANEUVERING_UNIT, "Maneuvering Unit", "Manevra Ünitesi");
         lang.item(SAFETY_TETHER, "Safety Tether", "Güvenlik Halatı");
         lang.item(ENVIRONMENT_SENSOR, "Environment Sensor", "Çevre Sensörü");
+        lang.item(TitaniumTools.PICKAXE, "Titanium Pickaxe", "Titanyum Kazma");
+        lang.item(TitaniumTools.AXE, "Titanium Axe", "Titanyum Balta");
+        lang.item(TitaniumTools.SHOVEL, "Titanium Shovel", "Titanyum Kürek");
+        lang.item(TitaniumTools.HOE, "Titanium Hoe", "Titanyum Çapa");
+        lang.item(TitaniumTools.SWORD, "Titanium Sword", "Titanyum Kılıç");
         lang.add("tooltip.spacebreaker.environment_sensor", "Use to read pressure, air, temperature, radiation, gravity and ground",
                 "Basınç, hava, sıcaklık, radyasyon, yerçekimi ve zemini okumak için kullan");
         lang.add("sensor.spacebreaker.title", "Environment reading", "Çevre ölçümü");
@@ -416,6 +426,11 @@ public final class SuitModule implements SbModule {
                 com.pizzaparker07.spacebreaker.content.rocketry.RocketryModule.STATION_WINDOW.get(),
                 com.pizzaparker07.spacebreaker.content.rocketry.RocketryModule.DOCKING_PORT.get());
         tags.blockTag(LEAKY, BlockTags.LEAVES);
+        tags.item(ItemTags.PICKAXES, TitaniumTools.PICKAXE.get());
+        tags.item(ItemTags.AXES, TitaniumTools.AXE.get());
+        tags.item(ItemTags.SHOVELS, TitaniumTools.SHOVEL.get());
+        tags.item(ItemTags.HOES, TitaniumTools.HOE.get());
+        tags.item(ItemTags.SWORDS, TitaniumTools.SWORD.get());
         tags.item(ItemTags.HEAD_ARMOR, EVA_HELMET.get());
         tags.item(ItemTags.CHEST_ARMOR, EVA_CHESTPLATE.get());
         tags.item(ItemTags.LEG_ARMOR, EVA_LEGGINGS.get());
