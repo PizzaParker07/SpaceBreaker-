@@ -398,7 +398,43 @@ def comet_jet():
     return cv
 
 
+def encke_dust(v=0):
+    return dust(P.ENCKE_DUST, 20301 + v * 29)
+
+
+def encke_ice():
+    r = P.ENCKE_ICE
+    f = blend((clustered(16, 16, 20401, passes=1), 0.55), (white(20401 + 1), 0.3), (fbm(16, 16, 20401 + 2, [(8, 1.0)]), 0.15))
+    cv, _ = quant(f, [r[0], r[1], r[2], r[3], r[4], r[5]], [14, 30, 30, 14, 8, 4])
+    return cv
+
+
+def halley_dust(v=0):
+    return dust(P.HALLEY_DUST, 20501 + v * 29)
+
+
+def halley_ice():
+    r = P.HALLEY_ICE
+    f = blend((clustered(16, 16, 20601, passes=1), 0.55), (white(20601 + 1), 0.3), (fbm(16, 16, 20601 + 2, [(8, 1.0)]), 0.15))
+    cv, _ = quant(f, [r[0], r[1], r[2], r[3], r[4], r[5]], [14, 30, 30, 14, 8, 4])
+    return cv
+
+
 def export(save):
+    for name, fn, r in (('encke_dust', encke_dust, P.ENCKE_DUST),):
+        base = fn(0)
+        save(base, 'block', name, (18, 8, 64, None))
+        save(fn(1), 'block', name + '_1', (18, 8, 64, None))
+        for side in ('left', 'right'):
+            save(footprint(base, prints(r), side), 'block', f'{name}_footprint_{side}', (22, 8, 64, None))
+    save(encke_ice(), 'block', 'encke_ice', (60, 14, 10, None))
+    for name, fn, r in (('halley_dust', halley_dust, P.HALLEY_DUST),):
+        base = fn(0)
+        save(base, 'block', name, (18, 8, 64, None))
+        save(fn(1), 'block', name + '_1', (18, 8, 64, None))
+        for side in ('left', 'right'):
+            save(footprint(base, prints(r), side), 'block', f'{name}_footprint_{side}', (22, 8, 64, None))
+    save(halley_ice(), 'block', 'halley_ice', (60, 14, 10, None))
     for name, fn, r in (('comet_dust', comet_dust, P.COMET_DUST),):
         base = fn(0)
         save(base, 'block', name, (18, 8, 64, None))

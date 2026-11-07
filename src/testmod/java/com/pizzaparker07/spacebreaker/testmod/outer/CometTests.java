@@ -38,6 +38,19 @@ public final class CometTests {
             dust += top.is(Comets.CHURYUMOV.soil.get()) || top.is(Comets.CHURYUMOV.rock.get()) ? 1 : 0;
         }
         helper.assertTrue(dust >= 8, "covered in comet dust over ice: " + dust + "/16");
+        for (var c : new com.pizzaparker07.spacebreaker.content.belt.TinyWorld[]{Comets.ENCKE, Comets.HALLEY}) {
+            PlanetChunkGenerator g = WorldTests.generator(helper, c.name, 6L);
+            int own = 0;
+            for (int i = 0; i < 16; i++) {
+                int x = i * 29 - 200;
+                int z = i * 17 - 120;
+                var top = g.getBaseColumn(x, z, height, null).getBlock(g.surfaceY(x, z, height));
+                own += top.is(c.soil.get()) || top.is(c.rock.get()) ? 1 : 0;
+            }
+            helper.assertTrue(own >= 8, c.name + " is covered in its own dust and ice: " + own + "/16");
+        }
+        helper.assertTrue(WorldTests.profile(helper, "halley").poleDistance() > WorldTests.profile(helper, "encke").poleDistance(),
+                "Halley is the bigger nucleus");
         helper.succeed();
     }
 }

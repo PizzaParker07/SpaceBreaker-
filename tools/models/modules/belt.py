@@ -36,3 +36,6 @@ def generate():
     soil('comet_dust')
     simple_block('comet_ice')
     simple_block('comet_jet')
+    for w in ('encke', 'halley'):
+        soil(w + '_dust')
+        simple_block(w + '_ice')

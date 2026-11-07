@@ -21,6 +21,8 @@
     "spacebreaker:nix",
     "spacebreaker:hydra",
     "spacebreaker:nereid",
-    "spacebreaker:churyumov_gerasimenko"
+    "spacebreaker:churyumov_gerasimenko",
+    "spacebreaker:encke",
+    "spacebreaker:halley"
   ]
 }

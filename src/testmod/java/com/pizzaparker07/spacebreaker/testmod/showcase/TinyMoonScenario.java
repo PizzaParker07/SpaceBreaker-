@@ -37,7 +37,7 @@ final class TinyMoonScenario extends OuterShowcase {
             double z = -extraLatitude / 90.0 * t.profile().poleDistance();
             look(level, "03_" + extra, extraX + 200, z + 60, 20, extraX, z, at(0.12), 240, MoonScenario::farView);
         }
-        if (world == com.pizzaparker07.spacebreaker.content.belt.Comets.CHURYUMOV) {
+        if (com.pizzaparker07.spacebreaker.content.belt.Comets.all().contains(world)) {
             // a cluster of jets in noon sunlight, seen from a few blocks away
             int gx = 60;
             int gz = -40;

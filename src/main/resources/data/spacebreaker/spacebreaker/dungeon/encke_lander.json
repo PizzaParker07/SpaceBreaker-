@@ -1,0 +1,9 @@
+{
+  "structure": "spacebreaker:encke_lander",
+  "world": "spacebreaker:encke",
+  "guardians": [],
+  "loot_tables": [
+    "spacebreaker:dungeons/encke/lander_cabin",
+    "spacebreaker:dungeons/encke/lander_cargo"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "structure": "spacebreaker:halley_lander",
+  "world": "spacebreaker:halley",
+  "guardians": [],
+  "loot_tables": [
+    "spacebreaker:dungeons/halley/lander_cabin",
+    "spacebreaker:dungeons/halley/lander_cargo"
+  ]
+}

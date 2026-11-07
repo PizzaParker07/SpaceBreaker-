@@ -24,7 +24,7 @@ public final class BeltClient {
     static void effects(RegisterDimensionSpecialEffectsEvent event) {
         event.register(Spacebreaker.id("ceres"), new PlanetSkyEffects(Bodies.key("ceres")));
         event.register(Spacebreaker.id("vesta"), new PlanetSkyEffects(Bodies.key("vesta")));
-        for (String asteroid : new String[]{"bennu", "ryugu", "eros", "itokawa", "churyumov_gerasimenko"}) {
+        for (String asteroid : new String[]{"bennu", "ryugu", "eros", "itokawa", "churyumov_gerasimenko", "encke", "halley"}) {
             event.register(Spacebreaker.id(asteroid), new PlanetSkyEffects(Bodies.key(asteroid)));
         }
     }

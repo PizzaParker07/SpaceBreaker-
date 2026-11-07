@@ -9,6 +9,10 @@
     "spacebreaker:itokawa_gravel",
     "spacebreaker:itokawa_rock",
     "spacebreaker:comet_dust",
-    "spacebreaker:comet_ice"
+    "spacebreaker:comet_ice",
+    "spacebreaker:encke_dust",
+    "spacebreaker:encke_ice",
+    "spacebreaker:halley_dust",
+    "spacebreaker:halley_ice"
   ]
 }

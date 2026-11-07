@@ -1,0 +1,13 @@
+{
+  "type": "spacebreaker:encke",
+  "generator": {
+    "type": "spacebreaker:planet",
+    "terrain": "spacebreaker:encke",
+    "biome_source": {
+      "type": "spacebreaker:planet",
+      "highlands": "spacebreaker:encke_plains",
+      "crater": "spacebreaker:encke_crater",
+      "polar": "spacebreaker:encke_polar"
+    }
+  }
+}
