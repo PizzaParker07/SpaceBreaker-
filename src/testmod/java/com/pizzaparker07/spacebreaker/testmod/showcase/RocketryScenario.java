@@ -560,6 +560,8 @@ final class RocketryScenario implements ShowcaseScenario {
                     scene.add(r);
                     toDimension(p, marsSurface, gx + 8.5, gy + 4.5, gz + 8.5, 135F, 14F);
                 }, null));
+        s.add(new Shot("43_map_asteroids", 6000, 0, 0, 0, 0F, 0F, false, fp, 120, p -> mapShot(p, Spacebreaker.id("bennu"), false), null));
+        s.add(new Shot("44_map_system_asteroids", 6000, 0, 0, 0, 0F, 0F, false, fp, 120, p -> mapShot(p, Spacebreaker.id("mars"), true), null));
         s.add(new Shot("31_nearby_stars", 6000, 0, 0, 0, 0F, 0F, false, fp, 120,
                 p -> {
                     RocketryShowcaseClient.star = "Alpha Centauri";

@@ -1093,6 +1093,35 @@ public final class RocketryGameTests {
     }
 
     @GameTest(template = EMPTY)
+    public static void nearEarthAsteroids(GameTestHelper helper) {
+        var planets = StarMapData.planets();
+        helper.assertTrue(planets.contains(StarMapData.NEAR_EARTH_ASTEROIDS), "one group for the near-Earth asteroids: " + planets);
+        helper.assertTrue(planets.indexOf(StarMapData.NEAR_EARTH_ASTEROIDS) == planets.indexOf(Location.EARTH) + 1, "right after Earth");
+        var group = StarMapData.moons(StarMapData.NEAR_EARTH_ASTEROIDS);
+        for (String n : List.of("bennu", "ryugu", "itokawa", "eros")) {
+            var id = Spacebreaker.id(n);
+            helper.assertTrue(group.contains(id) && !planets.contains(id), n + " is in the group, not on its own");
+            helper.assertTrue(StarMapData.system(id).equals(StarMapData.NEAR_EARTH_ASTEROIDS), n + " belongs to the group");
+            var orbit = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(id, true).orElseThrow();
+            var surface = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(id, false).orElseThrow();
+            double real = Transfers.real(Location.EARTH_ORBIT, orbit).orElse(-1);
+            helper.assertTrue(real > 3000 && real < 8000, n + ": a few km/s from Earth orbit (rendezvous): " + (int) real);
+            double land = Transfers.cost(orbit, surface, SbConfig.Realism.BALANCED).orElse(-1);
+            helper.assertTrue(land >= 0 && land < 10, n + ": landing takes almost nothing: " + land);
+            if (Transfers.model() instanceof com.pizzaparker07.spacebreaker.content.rocketry.nav.AstroTransferModel astro) {
+                double days = astro.transferSeconds(Location.EARTH_ORBIT, orbit).orElse(0) / 86400;
+                helper.assertTrue(days > 60 && days < 600, n + ": months to get there: " + (int) days + " days");
+            }
+        }
+        helper.assertFalse(StarMapData.nearEarthAsteroid(Spacebreaker.id("vesta")), "Vesta stays in the main belt");
+        // even where the climb to orbit is a nudge, the rocket is seen to lift off
+        helper.assertFalse(RocketEntity.ascentDone(0.05, 0.02, 1), "not done on the first tick");
+        helper.assertTrue(RocketEntity.ascentDone(0.05, 0.02, RocketEntity.MIN_ASCENT_TICKS), "done after a short climb");
+        helper.assertFalse(RocketEntity.ascentDone(100, 1000, 500), "not before the burn is delivered");
+        helper.succeed();
+    }
+
+    @GameTest(template = EMPTY)
     public static void cargoRocket(GameTestHelper helper) {
         var level = helper.getLevel();
         var lookup = RocketParts.lookup(level.registryAccess());

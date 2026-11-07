@@ -182,12 +182,27 @@ public final class StarMapData {
         return new Trip(to, next, route(here, to), needed, have, enough, home, Locations.canRefuel(to.body()), shield, shieldOk, legs, block);
     }
 
-    /** Planets in order from the sun, each followed by nothing: moons are listed by {@link #moons}. */
+    /** The map's group of near-Earth asteroids (not a real body): one node on the solar system view. */
+    public static final ResourceLocation NEAR_EARTH_ASTEROIDS = ResourceLocation.fromNamespaceAndPath("spacebreaker", "near_earth_asteroids");
+    /** A near-Earth asteroid comes closer to the Sun than 1.3 AU (the usual definition). */
+    public static final double NEA_PERIHELION_KM = 1.3 * 149_597_870.7;
+
+    /** An asteroid circling the Sun whose perihelion is inside 1.3 AU (Bennu, Ryugu, Itokawa, Eros; not Vesta). */
+    public static boolean nearEarthAsteroid(ResourceLocation body) {
+        return Locations.parentPlanet(body).isEmpty() && Locations.body(body).filter(b -> b.type() == com.pizzaparker07.spacebreaker.core.body.BodyType.ASTEROID)
+                .map(b -> b.orbit().semiMajorAxisKm() * (1 - b.orbit().eccentricity()) < NEA_PERIHELION_KM).orElse(false);
+    }
+
+    /**
+     * Planets (and dwarf planets, big asteroids) in order from the sun; the near-Earth asteroids show as one group
+     * where the first of them would be. Moons, and the members of the group, are listed by {@link #moons}.
+     */
     public static List<ResourceLocation> planets() {
         List<ResourceLocation> out = new ArrayList<>();
         for (Location l : Locations.all()) {
-            if (Locations.parentPlanet(l.body()).isEmpty() && !out.contains(l.body())) {
-                out.add(l.body());
+            ResourceLocation b = nearEarthAsteroid(l.body()) ? NEAR_EARTH_ASTEROIDS : l.body();
+            if (Locations.parentPlanet(l.body()).isEmpty() && !out.contains(b)) {
+                out.add(b);
             }
         }
         return out;
@@ -195,6 +210,14 @@ public final class StarMapData {
 
     public static List<ResourceLocation> moons(ResourceLocation planet) {
         List<ResourceLocation> out = new ArrayList<>();
+        if (NEAR_EARTH_ASTEROIDS.equals(planet)) {
+            for (Location l : Locations.all()) {
+                if (nearEarthAsteroid(l.body()) && !out.contains(l.body())) {
+                    out.add(l.body());
+                }
+            }
+            return out;
+        }
         for (Location l : Locations.all()) {
             if (Locations.parentPlanet(l.body()).filter(planet::equals).isPresent() && !out.contains(l.body())) {
                 out.add(l.body());
@@ -205,6 +228,6 @@ public final class StarMapData {
 
     /** The planet a body belongs to (itself for planets): the map focuses on this system. */
     public static ResourceLocation system(ResourceLocation body) {
-        return Locations.parentPlanet(body).orElse(body);
+        return nearEarthAsteroid(body) ? NEAR_EARTH_ASTEROIDS : Locations.parentPlanet(body).orElse(body);
     }
 }
