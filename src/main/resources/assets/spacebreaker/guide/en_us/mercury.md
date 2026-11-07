@@ -40,3 +40,12 @@ An abandoned ice mine lies in one of these craters. Its store is **sealed with i
 {entity spacebreaker:terminator_crawler}
 ## Terminator Crawler
 Roams while the sun is low and digs in when it climbs. Drops **graphite**.
+
+{page}
+## The double sunrise
+Mercury spins **three times** for every **two** orbits (a 3:2 spin–orbit resonance), so one solar day lasts two Mercurian years, about **176 Earth days**; the game compresses the day.
+- Its orbit is very eccentric (e = 0.206). Near perihelion Mercury races round the Sun faster than it spins: the Sun stops in the sky and **moves backwards** for a while.
+- This world sits at a "warm pole" longitude, where perihelion falls at sunrise. The Sun peeks halfway over the horizon, **sinks back** and **rises a second time**. The backward step is small, about half a degree: watch it against a crater rim on the horizon.
+- Near perihelion the Sun is clearly bigger and brighter: about 1.5 times as wide and 2.3 times as much light as at aphelion. Light, temperature and shadows all follow the same Sun.
+
+> Because the game's day is longer than its night, there is no double sunset in the evening: the Sun only stalls low in the west for a while.
