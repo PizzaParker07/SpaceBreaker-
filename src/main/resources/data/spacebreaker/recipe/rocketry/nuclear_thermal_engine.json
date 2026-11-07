@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "TFT",
+    "SHS",
+    "NNN"
+  ],
+  "key": {
+    "T": {
+      "tag": "c:plates/tungsten"
+    },
+    "F": {
+      "tag": "spacebreaker:reactor_fuel"
+    },
+    "H": {
+      "item": "spacebreaker:hydrolox_vacuum_engine"
+    },
+    "S": {
+      "item": "spacebreaker:nickel_superalloy_ingot"
+    },
+    "N": {
+      "item": "spacebreaker:titanium_plate"
+    }
+  },
+  "result": {
+    "id": "spacebreaker:nuclear_thermal_engine",
+    "count": 1
+  }
+}

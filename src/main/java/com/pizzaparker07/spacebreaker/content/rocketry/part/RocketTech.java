@@ -34,6 +34,7 @@ public final class RocketTech {
             Map.entry("methalox_vacuum_engine", "methane_engines"),
             Map.entry("hydrolox_engine", "hydrogen_engines"),
             Map.entry("hydrolox_vacuum_engine", "hydrogen_engines"),
+            Map.entry("nuclear_thermal_engine", "nuclear_thermal_propulsion"),
             Map.entry("crew_capsule_large", "heavy_launch"),
             Map.entry("comm_satellite", "satellites"),
             Map.entry("observation_satellite", "satellites"),

@@ -353,6 +353,48 @@ def hydrolox_vacuum_engine():
     return cv
 
 
+NTR_BELL = [(y, y + 1, r) for y, r in enumerate([11, 10, 9, 8, 8, 7, 6, 6, 5, 5, 4, 4])]
+
+
+def nuclear_thermal_engine():
+    cv = new_sheet()
+    radius = {y: r for y0, y1, r in NTR_BELL for y in range(y0, y1)}
+    thrust_structure(cv, 28, 32, 171)
+    bell(cv, 24, 28, lambda y: 13, CARBON, 1, 4, 172)                    # thick tungsten shadow shield
+    ring(cv, SIDE, 27, 13, STEEL, 3, 6)                                  # bright rim on its top edge
+    for c in range(1, 32, 4):
+        put_side(cv, SIDE, c, 25, STEEL[4])                              # bolts round the shield
+    bell(cv, 14, 24, lambda y: 8, STEEL, 2, 6, 173)                      # reactor pressure vessel
+    for y in (15, 23):
+        ring(cv, SIDE, y, 8, STEEL, 1, 3)
+    for y in (18, 19):                                                   # one plain warning stripe
+        ring(cv, SIDE, y, 8, HAZARD, 2, 4)
+    bell(cv, 12, 14, lambda y: 4, STEEL, 1, 4, 174)                      # throat
+    bell(cv, 0, 12, lambda y: radius[y], COPPER, 3, 5, 175, lip=COPPER)  # regeneratively cooled bell
+    for y in range(1, 12):
+        r = radius[y]
+        for c in range(16 - r, 16 + r):
+            if (c - (16 - r)) % 4 == 0:
+                put_side(cv, SIDE, c, y, COPPER[3])                      # faint coolant tube seams
+    # aux view: the coolant pipes, polished steel with flanges
+    for y in range(32):
+        for c in range(32):
+            put_side(cv, AUX, c, y, STEEL[5] if c % 4 == 1 else STEEL[3])
+    for y in (13, 23):
+        for c in range(32):
+            put_side(cv, AUX, c, y, STEEL[1])
+    # top view: hidden under the mount, except the bell's ledges, so it is painted as the copper bell seen from above
+    def top(dx, dz, d):
+        if d > 16.2:
+            return None
+        if d > 12:
+            return CARBON[3]
+        return COPPER[4]                       # same tone as the bell's side, so the ledges blend into one surface
+    top_view(cv, TOP, top)
+    nozzle_exit(cv, BOTTOM, 11, 4)
+    return cv
+
+
 PANEL = ramp('#0b1430', '#13214a', '#1c3166', '#2a4682', '#4a6aa8', '#8aa6d8')
 
 
@@ -1186,6 +1228,25 @@ def icons():
         ".....oFFffo.....",
     ], {'o': w[0], 'W': w[7], 'w': w[5], 'g': w[3], 'K': k[4], 'k': k[2], 'V': k[2], 'A': w[5], 'a': w[3],
         'S': w[3], 's': k[2], 'C': COPPER[5], 'c': k[2], 'F': (232, 170, 70), 'f': (204, 106, 44)})
+    out['nuclear_thermal_engine'] = grid_icon([
+        "..oooooooooooo..",
+        ".oKKKKKKKKKKkko.",
+        "..oNNNNNNNNNno..",
+        "....oWWWWwwo....",
+        "....oWWWWwwo....",
+        "....oYkYkYko....",
+        "....oWWWWwwo....",
+        "......oSso......",
+        "......nNno......",
+        ".....nNNnno.....",
+        ".....NNnnno.....",
+        "....nNNnnnno....",
+        "...nNNnnnnnno...",
+        "...NNnnnnnnnno..",
+        "......cCcc......",
+        "................",
+    ], {'o': k[0], 'K': k[4], 'k': k[2], 'N': NIOBIUM[5], 'n': NIOBIUM[3], 'W': w[6], 'w': w[4], 'Y': HAZARD[3],
+        'S': NIOBIUM[5], 's': NIOBIUM[3], 'c': k[2], 'C': (150, 200, 255)})
     return out
 
 
@@ -1199,6 +1260,7 @@ SHEETS = {
     'methalox_vacuum_engine': methalox_vacuum_engine,
     'hydrolox_engine': hydrolox_engine,
     'hydrolox_vacuum_engine': hydrolox_vacuum_engine,
+    'nuclear_thermal_engine': nuclear_thermal_engine,
     'comm_satellite': comm_satellite,
     'observation_satellite': observation_satellite,
     'space_probe': space_probe,
@@ -1767,6 +1829,24 @@ def rocket_plume():
             # shock diamonds
             if t < 0.6 and int(y) % 12 in (4, 5) and c < 0.3:
                 col = (255, 255, 240)
+            cv[x, y] = (*col, a)
+    return cv
+
+
+def rocket_plume_nuclear():
+    """Nuclear thermal exhaust (16x64): hot hydrogen, almost invisible, a faint blue-violet core that fades fast."""
+    cv = Canvas(16, 64)
+    for y in range(64):
+        t = y / 63
+        for x in range(16):
+            c = abs(x + 0.5 - 8) / 8
+            core = max(0.0, 1 - c * (1.8 + t))
+            if core <= 0:
+                continue
+            a = int(200 * min(1, core * 1.2) * (1 - t) ** 1.8)
+            if a < 6:
+                continue
+            col = (225, 230, 255) if t < 0.15 and c < 0.3 else (170, 175, 255) if c < 0.5 else (150, 130, 240)
             cv[x, y] = (*col, a)
     return cv
 
@@ -2518,6 +2598,7 @@ def export_facility(save):
     save(disc(earth_map, 2048, 1024, limb=(110, 170, 240, 120)), 'environment', 'orbit_earth_disc')
     save(disc(moon_map, 512, 256), 'environment', 'orbit_moon_disc')
     save(rocket_plume(), 'entity', 'rocket_plume')
+    save(rocket_plume_nuclear(), 'entity', 'rocket_plume_nuclear')
     save(gui_assembler(), 'gui', 'rocket_assembler')
     save(gui_console(), 'gui', 'launch_console')
 

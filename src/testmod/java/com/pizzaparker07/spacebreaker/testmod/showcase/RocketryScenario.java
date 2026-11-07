@@ -738,6 +738,20 @@ final class RocketryScenario implements ShowcaseScenario {
             moon.setBlock(new BlockPos(gx - 1, gy + 3, gz + 1), net.minecraft.world.level.block.Blocks.REDSTONE_BLOCK.defaultBlockState(), 3);
             toDimension(p, Location.MOON_SURFACE, gx + 0.5, gy + 0.9, gz - 1.2, 0F, 4F);
         }, null));
+        s.add(new Shot("52_nuclear_thermal", 6000, 0, 0, 0, 0F, 0F, true, fp, 120, p -> {
+            clearScene(p);
+            ServerLevel orbit = p.server.getLevel(Location.EARTH_ORBIT.dimension());
+            // a nuclear thermal transfer stage under a crew capsule, burning out of Earth orbit
+            var design = new com.pizzaparker07.spacebreaker.content.rocketry.design.RocketDesign(java.util.List.of(
+                    Spacebreaker.id("nuclear_thermal_engine"), Spacebreaker.id("fuel_tank_large"), Spacebreaker.id("fuel_tank_large"),
+                    Spacebreaker.id("heat_shield"), Spacebreaker.id("crew_capsule"), Spacebreaker.id("parachute")));
+            RocketEntity r = RocketEntity.create(orbit, design, new Vec3(0.5, RocketEntity.ORBIT_Y, 0.5), 0F);
+            r.fillCompletely();
+            orbit.addFreshEntity(r);
+            r.stageScene(FlightState.ORBIT, 0, 0, true);
+            scene.add(r);
+            toDimension(p, Location.EARTH_ORBIT, 4.2, RocketEntity.ORBIT_Y + 1.5, 1.6, 107F, 14F);
+        }, null));
         s.add(new Shot("31_nearby_stars", 6000, 0, 0, 0, 0F, 0F, false, fp, 120,
                 p -> {
                     RocketryShowcaseClient.star = "Alpha Centauri";

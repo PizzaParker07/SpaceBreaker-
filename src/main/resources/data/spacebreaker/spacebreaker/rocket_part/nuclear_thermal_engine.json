@@ -1,0 +1,11 @@
+{
+  "type": "engine",
+  "mass_kg": 3400,
+  "thrust_kn": 150,
+  "isp_sea_level_s": 380,
+  "isp_vacuum_s": 880,
+  "height": 32,
+  "model": "spacebreaker:nuclear_thermal_engine",
+  "nozzle": 12,
+  "propellant": "nuclear"
+}

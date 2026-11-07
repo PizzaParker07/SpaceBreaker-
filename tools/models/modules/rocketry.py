@@ -214,6 +214,31 @@ def hydrolox_vacuum_engine():
     return els
 
 
+# the nuclear thermal engine's bell, (from y, to y, radius) from the exit up to the throat
+NTR_BELL = [(y, y + 1, r) for y, r in enumerate([11, 10, 9, 8, 8, 7, 6, 6, 5, 5, 4, 4])]   # flares towards the exit
+
+
+def nuclear_thermal_engine():
+    """Nuclear thermal engine: thick shadow shield, cylindrical reactor with coolant pipes, a smooth bell."""
+    els = []
+    els += prism(28, 32, 16)                              # mount ring
+    els += prism(24, 28, 13, top=False)                   # tungsten shadow shield
+    els += prism(14, 24, 8, top=False, bottom=False)      # reactor vessel
+    els += prism(12, 14, 4, top=False, bottom=False)      # nozzle throat
+    for y0, y1, r in NTR_BELL:                            # regeneratively cooled bell: an even octagon per row, so the
+        k = round(r * 0.42, 1)                            # facets line up from throat to exit; ledges in copper (top view)
+        faces = SIDES + ('up',) + (('down',) if y0 == 0 else ())
+        els.append(box([8 - r, y0, 8 - k], [8 + r, y1, 8 + k], faces))
+        els.append(box([8 - k, y0, 8 - r], [8 + k, y1, 8 + r], faces))
+        d = round(r * 0.71, 1)
+        els.append(box([8 - d, y0, 8 - d], [8 + d, y1, 8 + d], faces))
+    # four hydrogen coolant pipes running down the outside of the vessel
+    for fr, to in (([7.5, 12, -1], [8.5, 24, 0]), ([7.5, 12, 16], [8.5, 24, 17]),
+                   ([-1, 12, 7.5], [0, 24, 8.5]), ([16, 12, 7.5], [17, 24, 8.5])):
+        els.append(box(fr, to, region='aux'))
+    return els
+
+
 def _wings(y0, y1):
     """Two solar panel wings on short booms (aux view), spanning the full two-block width."""
     return [
@@ -378,6 +403,7 @@ PARTS = {
     'methalox_vacuum_engine': (methalox_vacuum_engine, False),
     'hydrolox_engine': (hydrolox_engine, False),
     'hydrolox_vacuum_engine': (hydrolox_vacuum_engine, False),
+    'nuclear_thermal_engine': (nuclear_thermal_engine, False),
     'comm_satellite': (comm_satellite, False),
     'observation_satellite': (observation_satellite, False),
     'space_probe': (space_probe, False),

@@ -22,7 +22,12 @@ public enum Propellant implements StringRepresentable {
     /** Liquid methane, mixture ratio O/F 3.6 (made on Mars by the Sabatier process). */
     METHALOX(1.0 / 4.6, 0.422, "liquid_methane"),
     /** Liquid hydrogen, mixture ratio O/F 6: the highest specific impulse, but very bulky and very cold. */
-    HYDROLOX(1.0 / 7.0, 0.071, "liquid_hydrogen");
+    HYDROLOX(1.0 / 7.0, 0.071, "liquid_hydrogen"),
+    /**
+     * Liquid hydrogen alone, heated by a fission reactor in a nuclear thermal engine: no oxidiser at all, so the
+     * whole propellant mass is hydrogen. It shares the hydrogen supply with hydrolox stages.
+     */
+    NUCLEAR(1.0, 0.071, "liquid_hydrogen");
 
     public static final Codec<Propellant> CODEC = StringRepresentable.fromEnum(Propellant::values);
     /** Liquid oxygen, the oxidiser of every propellant. */
@@ -51,6 +56,16 @@ public enum Propellant implements StringRepresentable {
 
     public TagKey<Fluid> fuelTag() {
         return fuelTag;
+    }
+
+    /** Whether stages of this propellant take {@code fuel} (the same fuel liquid, e.g. hydrogen for hydrolox and nuclear). */
+    public boolean takes(Propellant fuel) {
+        return fuelTag.equals(fuel.fuelTag);
+    }
+
+    /** Whether this propellant needs liquid oxygen at all. */
+    public boolean needsOxygen() {
+        return fuelFraction < 1.0;
     }
 
     /** Litres (mB) of fuel in this much propellant. */

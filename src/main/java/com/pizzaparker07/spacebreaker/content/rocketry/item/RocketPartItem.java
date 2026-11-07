@@ -41,11 +41,16 @@ public class RocketPartItem extends Item {
             tooltip.add(Component.translatable("tooltip.spacebreaker.part.propellant_hydrolox",
                     com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant.HYDROLOX.fuelMillibuckets(p.propellantKg()),
                     com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant.HYDROLOX.loxMillibuckets(p.propellantKg())).withStyle(grey));
+            tooltip.add(Component.translatable("tooltip.spacebreaker.part.propellant_nuclear",
+                    com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant.NUCLEAR.fuelMillibuckets(p.propellantKg())).withStyle(grey));
         }
         if (p.isEngine()) {
             tooltip.add(Component.translatable("tooltip.spacebreaker.part.thrust", Fmt.num(p.thrustKn())).withStyle(grey));
             tooltip.add(Component.translatable("tooltip.spacebreaker.part.isp", Fmt.num(p.ispSeaLevel()), Fmt.num(p.ispVacuum())).withStyle(grey));
             tooltip.add(Component.translatable("tooltip.spacebreaker.part.burns", p.propellant().displayName()).withStyle(grey));
+            if (p.propellant() == com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant.NUCLEAR) {
+                tooltip.add(Component.translatable("tooltip.spacebreaker.part.nuclear").withStyle(ChatFormatting.GOLD));
+            }
         }
         if (p.heatShield() > 0) {
             tooltip.add(Component.translatable("tooltip.spacebreaker.part.heat_shield." + Math.min(2, p.heatShield())).withStyle(grey));
