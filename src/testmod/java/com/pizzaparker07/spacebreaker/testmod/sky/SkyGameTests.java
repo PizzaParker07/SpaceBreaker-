@@ -88,6 +88,42 @@ public final class SkyGameTests {
     }
 
     /**
+     * Lunar horizon glow: only in the first degrees of twilight (none by day or deep in the night), brightest a few
+     * degrees after sunset, and only on about a third of sunsets and sunrises, the same on every client.
+     */
+    @GameTest(template = "empty")
+    public static void horizonGlowIsRareAndBrief(GameTestHelper helper) {
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.worldgen.HorizonGlow.strength(5) == 0, "none by day");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.worldgen.HorizonGlow.strength(-13) == 0, "none deep in the night");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.worldgen.HorizonGlow.strength(-5) > 0.99, "brightest 5 degrees after sunset");
+        double mid = com.pizzaparker07.spacebreaker.content.worldgen.HorizonGlow.strength(-8.5);
+        helper.assertTrue(mid > 0.1 && mid < 0.9, "fading out: " + mid);
+        int shown = 0;
+        int n = 3000;
+        for (int day = 0; day < n; day++) {
+            if (com.pizzaparker07.spacebreaker.content.worldgen.HorizonGlow.shows(42, day, true)) {
+                shown++;
+            }
+        }
+        helper.assertTrue(shown > n / 4 && shown < n * 2 / 5, "about one sunset in three: " + shown + "/" + n);
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.worldgen.HorizonGlow.shows(42, 17, true)
+                == com.pizzaparker07.spacebreaker.content.worldgen.HorizonGlow.shows(42, 17, true), "deterministic");
+        // over whole days on a 24000-tick clock, the glow appears only in twilight
+        var clock = new com.pizzaparker07.spacebreaker.content.worldgen.PlanetTime.Clock(24000, 0);
+        int lit = 0;
+        for (long t = 0; t < 24000L * 30; t += 20) {
+            double b = com.pizzaparker07.spacebreaker.content.worldgen.HorizonGlow.at(clock, t, 0, 42);
+            if (b > 0) {
+                lit++;
+                double el = com.pizzaparker07.spacebreaker.content.worldgen.SkyMath.sunElevation(clock.timeOfDay(t), 0);
+                helper.assertTrue(el < 0 && el > -12, "glow only in twilight, sun at " + el);
+            }
+        }
+        helper.assertTrue(lit > 0 && lit < 24000L * 30 / 20 / 20, "rare and brief: " + lit);
+        helper.succeed();
+    }
+
+    /**
      * Earthshine: under a full Earth overhead the lunar night is clearly lit, under a quarter Earth much less, under a
      * crescent Earth low in the sky almost not at all, and on the far side, where Earth never rises, not at all.
      */

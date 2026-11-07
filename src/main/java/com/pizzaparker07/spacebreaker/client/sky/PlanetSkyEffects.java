@@ -102,6 +102,66 @@ public class PlanetSkyEffects extends DimensionSpecialEffects {
         colors.lerp(new org.joml.Vector3f(0.75F, 0.75F, 0.75F), 0.04F);
     }
 
+    /**
+     * The rare horizon glow after sunset or before sunrise: a thin warm band hugging the horizon above the hidden Sun.
+     * Additive quads in the camera-rotated world frame ({@code pose}), so it shows with or without shader packs.
+     */
+    public void renderHorizonGlow(ClientLevel level, PoseStack pose) {
+        refresh(level);
+        var clock = PlanetTime.clock(level);
+        if (clock.isEmpty()) {
+            return;
+        }
+        Vec3 cam = net.minecraft.client.Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+        double lat = PlanetTerrain.latitude(cam.z, poleDistance);
+        float glow = (float) com.pizzaparker07.spacebreaker.content.worldgen.HorizonGlow.at(clock.get(), level.getDayTime(), lat,
+                level.dimension().location().hashCode());
+        if (glow <= 0.002F) {
+            return;
+        }
+        Vector3d sun = SkyMath.sunDirection(clock.get().timeOfDay(level.getDayTime()), lat);
+        double az = Math.atan2(sun.z, sun.x);
+        RenderSystem.enableBlend();
+        RenderSystem.blendFunc(com.mojang.blaze3d.platform.GlStateManager.SourceFactor.ONE, com.mojang.blaze3d.platform.GlStateManager.DestFactor.ONE);
+        RenderSystem.disableCull();
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        Matrix4f m = pose.last().pose();
+        BufferBuilder bb = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        int n = 32;
+        double half = Math.toRadians(40);
+        double r = 100;
+        for (int i = 0; i < n; i++) {
+            double u0 = -1 + 2.0 * i / n;
+            double u1 = -1 + 2.0 * (i + 1) / n;
+            float b0 = glow * 0.42F * (float) (1 - u0 * u0) * (float) (1 - u0 * u0);
+            float b1 = glow * 0.42F * (float) (1 - u1 * u1) * (float) (1 - u1 * u1);
+            double top0 = Math.toRadians(0.4 + 1.6 * (1 - u0 * u0));
+            double top1 = Math.toRadians(0.4 + 1.6 * (1 - u1 * u1));
+            double a0 = az + u0 * half;
+            double a1 = az + u1 * half;
+            double low = Math.toRadians(-4);
+            // bright from below the horizon (hidden by any terrain in front) fading to nothing a degree or two up
+            vertex(bb, m, r, a0, low, b0);
+            vertex(bb, m, r, a1, low, b1);
+            vertex(bb, m, r, a1, top1, 0);
+            vertex(bb, m, r, a0, top0, 0);
+        }
+        var mesh = bb.build();
+        if (mesh != null) {
+            BufferUploader.drawWithShader(mesh);
+        }
+        RenderSystem.enableCull();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.disableBlend();
+    }
+
+    private static void vertex(BufferBuilder bb, Matrix4f m, double r, double az, double el, float b) {
+        float x = (float) (r * Math.cos(el) * Math.cos(az));
+        float y = (float) (r * Math.sin(el));
+        float z = (float) (r * Math.cos(el) * Math.sin(az));
+        bb.addVertex(m, x, y, z).setColor(b, 0.93F * b, 0.8F * b, 1F);
+    }
+
     private static double smooth(double t) {
         t = Math.max(0, Math.min(1, t));
         return t * t * (3 - 2 * t);
