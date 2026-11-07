@@ -351,7 +351,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 |---|---|---|
 | 🎨 | Görev kontrol anonsları (Türkçe + İngilizce, oyun diline göre) | geri sayım 10→1, ateşleme, kalkış, kademe ayrılması, yörünge, atmosfere giriş, paraşüt, iniş, yakıt/oksijen uyarısı, geri sayım durdu; telsiz filtresi + sinyal sesleri; istemci ayarı `missionControlVoice` |
 | 🎨 | Roket sesleri | motor döngüsü, ateşleme, kademe ayrılması, paraşüt, atmosfere giriş gürültüsü, uydu bırakma, sonda inişi |
-| 🎨 | İstasyon, araç ve makine sesleri | hava kilidi döngüsü; gezici motoru, elektroliz ünitesi ve matkap için kesintisiz 5 sn döngüler (`SbSounds`) |
+| 🎨 | İstasyon, araç ve makine sesleri | hava kilidi döngüsü; gezici motoru, elektroliz ünitesi, matkap, gaz santrifüjü (yüksek rotor vızıltısı) ve fisyon reaktörü (alçak uğultu) için kesintisiz 5 sn döngüler (`SbSounds`) |
 | 🎨 | Giysi | oksijen alarmı |
 | 🎨 | Müzik | sekiz özgün ortam parçası (sözsüz): Yörünge (yumuşak piyano + sentezleyici), Ay (alçak uğultular, cam çan sesleri), Mars (sıcak pad'ler, uzak tek melodi), Venüs (havadar cam tınılar, derin org uğultusu), Titan (amber pus, yumuşak düşen notalar), Jüpiter uyduları (kabaran pad'ler, buz çanları), Buz devleri — Uranüs, Neptün, Plüton ve uyduları (seyrek derin uğultular, uzak tek çanlar), Asteroit kuşağı (yumuşak arpej, uzak metal tınılar); biyomların `music` alanından çalar |
 
