@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /** Sanity checks on every shipped celestial_body JSON file against basic physics. */
 class SolarSystemDataTest {
     private static final Set<String> EXPECTED = Set.of("sun", "mercury", "venus", "earth", "moon", "mars", "phobos",
-            "deimos", "ceres", "vesta", "bennu", "ryugu", "eros", "itokawa", "jupiter", "io", "europa", "ganymede", "callisto", "saturn", "titan",
+            "deimos", "ceres", "vesta", "bennu", "ryugu", "eros", "itokawa", "churyumov_gerasimenko", "halley", "encke", "jupiter", "io", "europa", "ganymede", "callisto", "saturn", "titan",
             "enceladus", "uranus", "miranda", "ariel", "umbriel", "titania", "oberon", "neptune", "proteus", "triton", "nereid", "pluto", "charon", "nix", "hydra");
 
     @Test
@@ -75,6 +75,8 @@ class SolarSystemDataTest {
             // landable bodies use spacebreaker:<name> (Earth is the overworld); giants are never landable
             if (b.kind().isGiant()) {
                 assertFalse(b.landable(), id + ": gas and ice giants are not landable");
+            } else if (b.kind() == AstroBody.Kind.COMET) {
+                assertNull(j.get("dimension"), id + ": comets are sky and map objects only");
             } else if (!name.equals("earth")) {
                 assertEquals("spacebreaker:" + name, j.get("dimension"), id + ": dimension id");
             }

@@ -39,7 +39,7 @@ import java.util.Optional;
 @PrefixGameTestTemplate(false)
 public final class AstroGameTests {
     private static final List<String> BODIES = List.of("sun", "mercury", "venus", "earth", "moon", "mars", "phobos",
-            "deimos", "ceres", "vesta", "bennu", "ryugu", "eros", "itokawa", "jupiter", "io", "europa", "ganymede", "callisto", "saturn", "titan",
+            "deimos", "ceres", "vesta", "bennu", "ryugu", "eros", "itokawa", "churyumov_gerasimenko", "halley", "encke", "jupiter", "io", "europa", "ganymede", "callisto", "saturn", "titan",
             "enceladus", "uranus", "miranda", "ariel", "umbriel", "titania", "oberon", "neptune", "proteus", "triton", "nereid", "pluto", "charon", "nix", "hydra");
 
     @GameTest(template = "empty")
@@ -52,7 +52,9 @@ public final class AstroGameTests {
             b.parent().ifPresent(p -> helper.assertTrue(reg.containsKey(p), name + " has unknown parent " + p));
             helper.assertTrue(b.type() == BodyType.STAR || b.orbit().periodDays() > 0, name + " has no orbit");
             boolean giant = b.type() == BodyType.GAS_GIANT || b.type() == BodyType.ICE_GIANT;
-            helper.assertTrue(giant != b.landable() || b.type() == BodyType.STAR, name + " landable flag wrong");
+            boolean skyOnly = b.type() == BodyType.STAR || b.type() == BodyType.COMET;
+            helper.assertTrue(giant != b.landable() || skyOnly, name + " landable flag wrong");
+            helper.assertTrue(b.type() != BodyType.COMET || b.dimension().isEmpty(), name + ": comets have no dimension");
             if (b.landable() && !name.equals("earth")) {
                 ResourceKey<net.minecraft.world.level.Level> dim = ResourceKey.create(Registries.DIMENSION, Spacebreaker.id(name));
                 helper.assertTrue(b.dimension().orElseThrow().equals(dim), name + " should use dimension spacebreaker:" + name);

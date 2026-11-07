@@ -41,7 +41,7 @@ public record AstroBody(String id, String parent, Kind kind, double mass, double
     }
 
     public enum Kind {
-        STAR, TERRESTRIAL, GAS_GIANT, ICE_GIANT, DWARF, MOON, ASTEROID, STATION;
+        STAR, TERRESTRIAL, GAS_GIANT, ICE_GIANT, DWARF, MOON, ASTEROID, STATION, COMET;
 
         public static Kind byName(String name) {
             return valueOf(name.toUpperCase(java.util.Locale.ROOT));
