@@ -204,7 +204,7 @@ public class MachineBlock extends BaseEntityBlock {
                     com.pizzaparker07.spacebreaker.content.machines.machine.RtgBlockEntity.OUTPUT).withStyle(net.minecraft.ChatFormatting.GRAY));
         }
         var id = net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(this).getPath();
-        if (java.util.Set.of("atmosphere_processor", "sabatier_reactor", "regolith_heater", "ice_melter", "chemical_reactor", "regolith_excavator", "sintering_furnace").contains(id)) {
+        if (java.util.Set.of("atmosphere_processor", "sabatier_reactor", "regolith_heater", "ice_melter", "chemical_reactor", "regolith_excavator", "sintering_furnace", "gas_centrifuge").contains(id)) {
             tooltip.add(net.minecraft.network.chat.Component.translatable("tooltip.spacebreaker." + id).withStyle(net.minecraft.ChatFormatting.GRAY));
         }
         if (this == com.pizzaparker07.spacebreaker.content.machines.MachinesModule.ELECTROLYZER.block().get()) {

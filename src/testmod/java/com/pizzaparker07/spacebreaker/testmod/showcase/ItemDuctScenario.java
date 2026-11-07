@@ -73,6 +73,16 @@ final class ItemDuctScenario implements ShowcaseScenario {
         if (level.getBlockEntity(new BlockPos(X0 + 3, gy, Z0 + 1)) instanceof ConduitBlockEntity be) {
             be.setItemFilter(Direction.SOUTH, Items.COBBLESTONE);
         }
+        // an enrichment cascade further along: three gas centrifuges side by side, spinning yellowcake
+        for (int i = 0; i < 3; i++) {
+            BlockPos p = new BlockPos(X0 - 4 + i, gy, Z0 + 3);
+            level.setBlock(p, MachinesModule.GAS_CENTRIFUGE.block().get().defaultBlockState()
+                    .setValue(com.pizzaparker07.spacebreaker.content.machines.base.MachineBlock.FACING, Direction.NORTH), 3);
+            if (level.getBlockEntity(p) instanceof com.pizzaparker07.spacebreaker.content.machines.base.MachineBlockEntity m) {
+                m.energy().generate(m.energy().getMaxEnergyStored());
+                m.items().setStackInSlot(0, new ItemStack(MachinesModule.YELLOWCAKE.get(), 64));
+            }
+        }
     }
 
     @Override
@@ -81,6 +91,8 @@ final class ItemDuctScenario implements ShowcaseScenario {
         gy = ground(level);
         List<ShowcaseDriver.Shot> s = new ArrayList<>();
         s.add(new ShowcaseDriver.Shot("item_duct_01_line", 0, X0 + 2.5, gy + 3.2, Z0 - 3.2, 0F, 38F, true,
+                CameraType.FIRST_PERSON, 60, p -> PlanetTime.setDayFraction(p.serverLevel(), 0.3), null));
+        s.add(new ShowcaseDriver.Shot("item_duct_02_centrifuges", 0, X0 - 2.5, gy + 2.2, Z0 + 0.2, 0F, 22F, true,
                 CameraType.FIRST_PERSON, 60, p -> PlanetTime.setDayFraction(p.serverLevel(), 0.3), null));
         return s;
     }

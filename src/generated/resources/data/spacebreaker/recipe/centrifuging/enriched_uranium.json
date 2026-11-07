@@ -1,0 +1,21 @@
+{
+  "type": "spacebreaker:centrifuging",
+  "energy": 160,
+  "ingredients": [
+    {
+      "count": 4,
+      "item": "spacebreaker:yellowcake"
+    }
+  ],
+  "results": [
+    {
+      "count": 1,
+      "id": "spacebreaker:enriched_uranium"
+    },
+    {
+      "count": 3,
+      "id": "spacebreaker:depleted_uranium"
+    }
+  ],
+  "time": 800
+}

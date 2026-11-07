@@ -19,7 +19,8 @@ public final class CompatModule implements SbModule {
             java.util.Map.entry("regolith_processing", new String[]{"Regolith Heating", "Regolit Isıtma"}),
             java.util.Map.entry("melting", new String[]{"Ice Melting", "Buz Eritme"}),
             java.util.Map.entry("chemical_reaction", new String[]{"Chemical Reaction", "Kimyasal Tepkime"}),
-            java.util.Map.entry("sintering", new String[]{"Sintering", "Sinterleme"})));
+            java.util.Map.entry("sintering", new String[]{"Sintering", "Sinterleme"}),
+            java.util.Map.entry("centrifuging", new String[]{"Uranium Enrichment", "Uranyum Zenginleştirme"})));
 
     /** True when every recipe viewer category has a title (checked by a GameTest). */
     public static boolean hasTitle(String categoryId) {

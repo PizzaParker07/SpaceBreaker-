@@ -109,3 +109,20 @@ def generate():  # noqa: F811
     t = casing_tex('sintering_furnace_front', top='crusher_top')
     t['glow'] = b('sintering_furnace_glow')
     machine('sintering_furnace', t, [body(16, top='top')], [glow([0, 0, -0.01], [16, 16, 0], 'north', 'glow')])
+
+
+_generate_centrifuge = generate
+
+
+def generate():  # noqa: F811
+    _generate_centrifuge()
+    # gas centrifuge: a low control casing with four tall rotor tubes standing on it
+    t = casing_tex('gas_centrifuge_front', top='machine_top')
+    t['tube'] = b('gas_centrifuge_tube')
+    tubes = []
+    for x, z in ((2, 2), (10, 2), (2, 10), (10, 10)):
+        tubes.append(box([x, 6, z], [x + 4, 16, z + 4], {'north': 'tube', 'south': 'tube', 'east': 'tube', 'west': 'tube', 'up': 'top'},
+                         uv={f: [x, 0, x + 4, 10] for f in ('north', 'south', 'east', 'west')}))
+    machine('gas_centrifuge', t, [body(6, top='top')] + tubes)
+    for name in ('yellowcake', 'enriched_uranium', 'depleted_uranium'):
+        write(f'models/item/{name}.json', {'parent': 'minecraft:item/generated', 'textures': {'layer0': i(name)}})

@@ -85,7 +85,7 @@ public final class IndustryRtgTests {
         h.succeed();
     }
 
-    /** Uraninite ore -> crusher -> uranium dust; dust + sulfuric acid -> chemical reactor -> pellet. */
+    /** Uraninite ore -> crusher -> uranium dust; dust + sulfuric acid -> yellowcake; 4 yellowcake -> sintering furnace -> pellet. */
     @GameTest(template = "empty", timeoutTicks = 1200)
     public static void uraniniteBecomesRtgFuel(GameTestHelper h) {
         h.assertTrue(EarthWorldgen.VEINS.stream().anyMatch(v -> v.metal() == EarthModule.URANIUM && v.maxY() <= 0),
@@ -95,27 +95,69 @@ public final class IndustryRtgTests {
         crusher.items().setStackInSlot(0, new ItemStack(EarthModule.URANIUM.oreItem.get(), 2));
         MachineBlockEntity reactor = machine(h, MachinesModule.CHEMICAL_REACTOR, new BlockPos(3, 1, 1), true);
         reactor.tank(0).fill(new FluidStack(FluidsModule.SULFURIC_ACID.get(), 1000), net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE);
+        MachineBlockEntity sinter = machine(h, MachinesModule.SINTERING_FURNACE, new BlockPos(5, 1, 1), true);
         h.succeedWhen(() -> {
-            int dust = 0;
+            // uraninite -> crusher dust -> leached yellowcake -> sintered pellet, moving each step by hand
             for (int i = 1; i < crusher.items().getSlots(); i++) {
                 ItemStack s = crusher.items().getStackInSlot(i);
                 if (s.is(EarthModule.URANIUM.dust.get())) {
-                    dust += s.getCount();
+                    ItemStack in = reactor.items().getStackInSlot(0);
+                    if (in.isEmpty() || in.is(s.getItem())) {
+                        reactor.items().setStackInSlot(0, s.copyWithCount(in.getCount() + s.getCount()));
+                        crusher.items().setStackInSlot(i, ItemStack.EMPTY);
+                    }
                 }
             }
-            if (dust >= 4 && reactor.items().getStackInSlot(0).isEmpty()) {
-                reactor.items().setStackInSlot(0, new ItemStack(EarthModule.URANIUM.dust.get(), 4));
+            ItemStack cake = reactor.items().getStackInSlot(1);
+            if (cake.is(MachinesModule.YELLOWCAKE.get()) && cake.getCount() >= 4 && sinter.items().getStackInSlot(0).isEmpty()) {
+                sinter.items().setStackInSlot(0, cake.copyWithCount(4));
+                reactor.items().setStackInSlot(1, cake.copyWithCount(cake.getCount() - 4));
             }
-            h.assertTrue(reactor.items().getStackInSlot(1).is(MachinesModule.RTG_FUEL_PELLET.get()), "no pellet yet; crusher dust " + dust);
+            h.assertTrue(sinter.items().getStackInSlot(1).is(MachinesModule.RTG_FUEL_PELLET.get()), "no pellet yet; yellowcake " + cake.getCount());
         });
     }
 
+    /**
+     * The nuclear chain: uranium dust is leached to yellowcake, yellowcake is sintered into RTG pellets or spun in
+     * the gas centrifuge into enriched and depleted uranium, and only enriched uranium makes reactor fuel.
+     */
     @GameTest(template = "empty")
-    public static void pelletRecipeIsAChemicalReaction(GameTestHelper h) {
-        boolean found = h.getLevel().getRecipeManager().getAllRecipesFor(MachinesModule.CHEMICAL_REACTION.type().get()).stream()
-                .anyMatch(r -> r.value().results.stream().anyMatch(s -> s.is(MachinesModule.RTG_FUEL_PELLET.get())));
-        h.assertTrue(found, "no chemical reaction makes RTG pellets");
+    public static void nuclearChainRecipesFitTogether(GameTestHelper h) {
+        var rm = h.getLevel().getRecipeManager();
+        h.assertTrue(rm.getAllRecipesFor(MachinesModule.CHEMICAL_REACTION.type().get()).stream()
+                .anyMatch(r -> r.value().results.stream().anyMatch(s -> s.is(MachinesModule.YELLOWCAKE.get()))), "a chemical reaction makes yellowcake");
+        h.assertTrue(rm.getAllRecipesFor(MachinesModule.SINTERING.type().get()).stream()
+                .anyMatch(r -> r.value().results.stream().anyMatch(s -> s.is(MachinesModule.RTG_FUEL_PELLET.get()))), "sintering makes RTG pellets");
+        var spin = rm.getAllRecipesFor(MachinesModule.CENTRIFUGING.type().get());
+        h.assertTrue(spin.stream().anyMatch(r -> r.value().results.stream().anyMatch(s -> s.is(MachinesModule.ENRICHED_URANIUM.get()))
+                && r.value().results.stream().anyMatch(s -> s.is(MachinesModule.DEPLETED_URANIUM.get()))), "the centrifuge gives enriched and depleted uranium");
+        var fuel = rm.byKey(Spacebreaker.id("arc_smelting/nuclear_fuel_element")).orElseThrow(() -> new AssertionError("fuel element recipe"));
+        h.assertTrue(fuel.value().getIngredients().stream().anyMatch(i -> i.test(new ItemStack(MachinesModule.ENRICHED_URANIUM.get()))), "fuel needs enriched uranium");
+        h.assertTrue(fuel.value().getIngredients().stream().noneMatch(i -> i.test(new ItemStack(EarthModule.URANIUM.dust.get()))), "raw uranium dust is not enough");
         h.succeed();
+    }
+
+    /** One centrifuge alone is slow; the middle of a three-machine cascade runs twice as fast. */
+    @GameTest(template = "empty", timeoutTicks = 700)
+    public static void centrifugeCascadeIsFaster(GameTestHelper h) {
+        h.assertTrue(com.pizzaparker07.spacebreaker.content.machines.machine.GasCentrifugeBlockEntity.speed(0) == 1
+                && com.pizzaparker07.spacebreaker.content.machines.machine.GasCentrifugeBlockEntity.speed(2) == 2, "half a stage per neighbour");
+        MachineBlockEntity lone = machine(h, MachinesModule.GAS_CENTRIFUGE, new BlockPos(0, 1, 4), true);
+        MachineBlockEntity[] row = new MachineBlockEntity[3];
+        for (int i = 0; i < 3; i++) {
+            row[i] = machine(h, MachinesModule.GAS_CENTRIFUGE, new BlockPos(2 + i, 1, 1), true);
+        }
+        for (MachineBlockEntity m : new MachineBlockEntity[]{lone, row[0], row[1], row[2]}) {
+            m.items().setStackInSlot(0, new ItemStack(MachinesModule.YELLOWCAKE.get(), 4));
+        }
+        h.succeedWhen(() -> {
+            for (MachineBlockEntity m : new MachineBlockEntity[]{lone, row[0], row[1], row[2]}) {
+                m.energy().generate(1_000);
+            }
+            h.assertTrue(row[1].items().getStackInSlot(1).is(MachinesModule.ENRICHED_URANIUM.get()), "the middle stage finishes first");
+            h.assertTrue(row[1].items().getStackInSlot(2).getCount() == 3, "with three depleted uranium");
+            h.assertTrue(lone.items().getStackInSlot(1).isEmpty(), "the lone centrifuge is still spinning (" + lone.progress() + ")");
+        });
     }
 
     /** The panel tells the player how much sunlight there is: about 4 % of Earth's at Jupiter. */

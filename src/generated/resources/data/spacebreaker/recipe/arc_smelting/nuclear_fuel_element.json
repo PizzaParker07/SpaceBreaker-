@@ -3,8 +3,8 @@
   "energy": 120,
   "ingredients": [
     {
-      "count": 4,
-      "tag": "c:dusts/uranium"
+      "count": 2,
+      "item": "spacebreaker:enriched_uranium"
     },
     {
       "count": 2,

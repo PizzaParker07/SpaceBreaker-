@@ -99,6 +99,7 @@ public final class MachinesModule implements SbModule {
     public static final ProcessingRecipe.Kind CHEMICAL_REACTION = kind("chemical_reaction");
     /** Regolith fused into ceramic building blocks (no air needed, unlike a furnace's fire). */
     public static final ProcessingRecipe.Kind SINTERING = kind("sintering");
+    public static final ProcessingRecipe.Kind CENTRIFUGING = kind("centrifuging");
 
     public static final DeferredHolder<MenuType<?>, MenuType<MachineMenu>> MACHINE_MENU =
             MENUS.register("machine", () -> IMenuTypeExtension.create(MachineMenu::client));
@@ -139,6 +140,13 @@ public final class MachinesModule implements SbModule {
     public static final MachineEntry<MachineBlock, com.pizzaparker07.spacebreaker.content.machines.machine.RtgBlockEntity> RTG =
             machine("rtg", com.pizzaparker07.spacebreaker.content.machines.machine.RtgBlockEntity::new,
                     net.minecraft.world.phys.shapes.Shapes.or(Block.box(0, 0, 0, 16, 2, 16), Block.box(1, 2, 1, 15, 14, 15), Block.box(3, 14, 3, 13, 16, 13)), 0);
+    /** Uranium oxide concentrate leached from crushed uraninite: the feed for enrichment and for RTG pellets. */
+    public static final DeferredItem<net.minecraft.world.item.Item> YELLOWCAKE = ITEMS.registerSimpleItem("yellowcake");
+    /** Uranium with more of the fissile isotope: reactor fuel needs it. */
+    public static final DeferredItem<net.minecraft.world.item.Item> ENRICHED_URANIUM = ITEMS.registerSimpleItem("enriched_uranium",
+            new net.minecraft.world.item.Item.Properties().rarity(net.minecraft.world.item.Rarity.UNCOMMON));
+    /** What the centrifuge leaves behind: dense, barely radioactive (armour, ballast). */
+    public static final DeferredItem<net.minecraft.world.item.Item> DEPLETED_URANIUM = ITEMS.registerSimpleItem("depleted_uranium");
     /** Fuel for a nuclear thermal rocket engine (rocketry); listed in {@link IsruRecipes#REACTOR_FUEL}. */
     public static final DeferredItem<NuclearFuelElementItem> NUCLEAR_FUEL_ELEMENT = ITEMS.registerItem("nuclear_fuel_element", NuclearFuelElementItem::new,
             new net.minecraft.world.item.Item.Properties().stacksTo(4).rarity(net.minecraft.world.item.Rarity.RARE));
@@ -220,6 +228,11 @@ public final class MachinesModule implements SbModule {
             new MachineLayout().energy(10, 17).slot(52, 34, MachineLayout.Role.INPUT).progress(78, 35, MachineLayout.Progress.FLAME)
                     .slot(110, 34, MachineLayout.Role.OUTPUT),
             30_000, List.of(), 13);
+    /** Uranium enrichment: yellowcake in, a little enriched and a lot of depleted uranium out; faster in a cascade. */
+    public static final MachineEntry<MachineBlock, ProcessingMachineBlockEntity> GAS_CENTRIFUGE = processingWith("gas_centrifuge", () -> CENTRIFUGING,
+            new MachineLayout().energy(10, 17).slot(52, 34, MachineLayout.Role.INPUT).progress(78, 35, MachineLayout.Progress.ARROW)
+                    .slot(110, 34, MachineLayout.Role.OUTPUT).slot(132, 34, MachineLayout.Role.OUTPUT),
+            120_000, List.of(), 0, com.pizzaparker07.spacebreaker.content.machines.machine.GasCentrifugeBlockEntity::new);
     /** Digs the ground below and feeds the machines beside it: the start of an automatic ISRU line. */
     public static final MachineEntry<MachineBlock, com.pizzaparker07.spacebreaker.content.machines.machine.RegolithExcavatorBlockEntity> REGOLITH_EXCAVATOR =
             machine("regolith_excavator", com.pizzaparker07.spacebreaker.content.machines.machine.RegolithExcavatorBlockEntity::new, null, 0);
@@ -372,6 +385,9 @@ public final class MachinesModule implements SbModule {
         for (MachineEntry<?, ?> m : MACHINES) {
             tab.add(m.item());
         }
+        tab.add(YELLOWCAKE);
+        tab.add(ENRICHED_URANIUM);
+        tab.add(DEPLETED_URANIUM);
         tab.add(RTG_FUEL_PELLET);
         tab.add(NUCLEAR_FUEL_ELEMENT);
         TANK_ITEMS.forEach(tab::add);

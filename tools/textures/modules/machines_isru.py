@@ -330,3 +330,63 @@ _export_isru_fuel = export
 def export(save):  # noqa: F811
     _export_isru_fuel(save)
     save(nuclear_fuel_element(), 'item', 'nuclear_fuel_element')
+
+
+def centrifuge_front():
+    """Control panel of a centrifuge cascade: a small rpm readout and a row of stage lamps."""
+    cv = casing(91, seam=False)
+    # the casing is only 6 px tall in the model: everything sits in the bottom rows (10..15)
+    for y in range(10, 13):
+        for x in range(3, 9):
+            cv[x, y] = S[0] if (x in (3, 8) or y in (10, 12)) else (60, 120, 80)
+    for x in (10, 12):
+        cv[x, 11] = (60, 120, 80)
+        cv[x + 1, 11] = S[0]
+    return cv
+
+
+def centrifuge_tube():
+    """Tall aluminium rotor casing: rounded shading across, a flange band near each end."""
+    from sbtex import palettes as PP
+    A = PP.ALUMINIUM
+    cv = Canvas()
+    across = [A[2], A[4], A[5], A[6], A[5], A[4], A[3], A[2]]
+    for y in range(16):
+        for x in range(16):
+            cv[x, y] = across[x % 8]
+            if y in (1, 14):
+                cv[x, y] = A[1] if x % 8 in (0, 7) else A[3]
+    return cv
+
+
+def yellowcake():
+    """Uranium oxide concentrate: a heap of yellow-orange powder."""
+    from modules.industry_shapes import dust
+    cake = [(98, 70, 18), (128, 94, 24), (160, 120, 30), (190, 148, 40), (214, 172, 52), (232, 196, 80), (244, 216, 120), (250, 232, 160)]
+    return dust(cake, seed=17)
+
+
+def enriched_uranium():
+    """Enriched uranium: a dark metal ingot with a faint green sheen."""
+    from sbtex.shapes import ingot
+    green = [(24, 32, 24), (36, 50, 34), (50, 70, 46), (66, 92, 58), (84, 116, 70), (104, 140, 84), (130, 166, 104), (168, 196, 140)]
+    return ingot(green)
+
+
+def depleted_uranium():
+    """Depleted uranium: a dull, very dense grey ingot."""
+    from sbtex.shapes import ingot
+    from sbtex import palettes as PP
+    return ingot(PP.URANIUM, glint=False)
+
+
+_export_isru_centrifuge = export
+
+
+def export(save):  # noqa: F811
+    _export_isru_centrifuge(save)
+    save(centrifuge_front(), 'block', 'gas_centrifuge_front', (150, 230, 0, None))
+    save(centrifuge_tube(), 'block', 'gas_centrifuge_tube', (170, 232, 0, None))
+    save(yellowcake(), 'item', 'yellowcake')
+    save(enriched_uranium(), 'item', 'enriched_uranium')
+    save(depleted_uranium(), 'item', 'depleted_uranium')
