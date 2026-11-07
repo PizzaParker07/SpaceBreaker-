@@ -192,6 +192,8 @@ Reviewed: no missing textures (purple/black), no untranslated keys, no invisible
   as sources), so a player without a sealed suit suffocates while sitting in the capsule in orbit or in transit (seen in the
   playthrough: "OKSİJEN BİTTİ" in the capsule in Earth orbit). If the capsule should be pressurised, register it as an
   `Environment.OxygenSource` for its passengers; otherwise say so in the guide and the launch checklist ("crew in sealed suits").
+  **Fixed** on dev/rocketry (the capsule is a pressurised cabin, registered as an oxygen source for seated passengers;
+  leaving it still needs a suit or a sealed room). To verify on 1.21.1 with `qa_playthrough` once merged.
 
 ## Localization (round 1)
 - Key parity en_us/tr_tr is complete (1305 each), placeholders and colour codes match, no broken characters.
