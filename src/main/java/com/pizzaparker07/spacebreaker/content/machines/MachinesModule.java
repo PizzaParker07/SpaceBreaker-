@@ -97,6 +97,8 @@ public final class MachinesModule implements SbModule {
     public static final ProcessingRecipe.Kind MELTING = kind("melting");
     /** General chemistry: one item and up to two fluids in. Planet areas add their own recipes of this type. */
     public static final ProcessingRecipe.Kind CHEMICAL_REACTION = kind("chemical_reaction");
+    /** Regolith fused into ceramic building blocks (no air needed, unlike a furnace's fire). */
+    public static final ProcessingRecipe.Kind SINTERING = kind("sintering");
 
     public static final DeferredHolder<MenuType<?>, MenuType<MachineMenu>> MACHINE_MENU =
             MENUS.register("machine", () -> IMenuTypeExtension.create(MachineMenu::client));
@@ -211,6 +213,10 @@ public final class MachinesModule implements SbModule {
             new MachineLayout().energy(10, 17).slot(40, 34, MachineLayout.Role.INPUT).progress(64, 35, MachineLayout.Progress.ARROW)
                     .slot(94, 34, MachineLayout.Role.OUTPUT).tank(120, 17).tank(142, 17),
             60_000, List.of(TankSpec.out(8_000), TankSpec.out(8_000)), 12);
+    public static final MachineEntry<MachineBlock, ProcessingMachineBlockEntity> SINTERING_FURNACE = processing("sintering_furnace", () -> SINTERING,
+            new MachineLayout().energy(10, 17).slot(52, 34, MachineLayout.Role.INPUT).progress(78, 35, MachineLayout.Progress.FLAME)
+                    .slot(110, 34, MachineLayout.Role.OUTPUT),
+            30_000, List.of(), 13);
     /** Digs the ground below and feeds the machines beside it: the start of an automatic ISRU line. */
     public static final MachineEntry<MachineBlock, com.pizzaparker07.spacebreaker.content.machines.machine.RegolithExcavatorBlockEntity> REGOLITH_EXCAVATOR =
             machine("regolith_excavator", com.pizzaparker07.spacebreaker.content.machines.machine.RegolithExcavatorBlockEntity::new, null, 0);

@@ -1,0 +1,17 @@
+{
+  "type": "spacebreaker:sintering",
+  "energy": 60,
+  "ingredients": [
+    {
+      "count": 1,
+      "tag": "c:regoliths"
+    }
+  ],
+  "results": [
+    {
+      "count": 1,
+      "id": "spacebreaker:sintered_regolith"
+    }
+  ],
+  "time": 100
+}

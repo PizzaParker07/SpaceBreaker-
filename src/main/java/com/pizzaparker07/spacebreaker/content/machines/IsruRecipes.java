@@ -99,6 +99,14 @@ public final class IsruRecipes {
         shaped(out, CHEMICAL_REACTOR.item().get(), 1, has(EarthModule.STEEL.plateTag), "SGS", "PCP", "SMS",
                 'S', EarthModule.STEEL.plateTag, 'G', Tags.Items.GLASS_BLOCKS_COLORLESS, 'P', FLUID_PIPE.get(),
                 'C', EarthModule.ADVANCED_CIRCUIT.get(), 'M', EarthModule.ELECTRIC_MOTOR.get());
+        // sintering: any planet's regolith (the Moon's, Mars', Mercury's...) fused into a ceramic block for base walls
+        ProcessingRecipeBuilder.of(SINTERING).in(REGOLITHS).out(com.pizzaparker07.spacebreaker.content.moon.MoonModule.SINTERED_REGOLITH.get())
+                .time(100).energy(60).save(out, "regolith");
+        ProcessingRecipeBuilder.of(SINTERING).in(SOLAR_WIND_REGOLITHS).out(com.pizzaparker07.spacebreaker.content.moon.MoonModule.SINTERED_REGOLITH.get())
+                .time(100).energy(60).save(out, "solar_wind_regolith");
+        shaped(out, SINTERING_FURNACE.item().get(), 1, has(EarthModule.TUNGSTEN.rodTag), "BWB", "BCB", "SPS",
+                'B', Items.BRICKS, 'W', EarthModule.TUNGSTEN.wireTag, 'C', EarthModule.BASIC_CIRCUIT.get(), 'S', EarthModule.STEEL.plateTag,
+                'P', EarthModule.STEEL.plateTag);
         // excavator: tungsten-toothed bucket wheel on a motor, steel frame
         shaped(out, REGOLITH_EXCAVATOR.item().get(), 1, has(EarthModule.TUNGSTEN.rodTag), "SMS", "TCT", "T T",
                 'S', EarthModule.STEEL.plateTag, 'M', EarthModule.ELECTRIC_MOTOR.get(), 'T', EarthModule.TUNGSTEN.rodTag,

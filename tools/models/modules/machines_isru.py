@@ -98,3 +98,13 @@ def generate():  # noqa: F811
         box([1, 14, 1], [15, 16, 15], {'north': 'side', 'south': 'side', 'east': 'side', 'west': 'side', 'up': 'top', 'down': 'bottom'},
             uv={f: [1, 0, 15, 2] for f in ('north', 'south', 'east', 'west')}),
     ])
+
+
+_generate_sinter = generate
+
+
+def generate():  # noqa: F811
+    _generate_sinter()
+    t = casing_tex('sintering_furnace_front', top='crusher_top')
+    t['glow'] = b('sintering_furnace_glow')
+    machine('sintering_furnace', t, [body(16, top='top')], [glow([0, 0, -0.01], [16, 16, 0], 'north', 'glow')])
