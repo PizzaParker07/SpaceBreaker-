@@ -27,6 +27,8 @@ final class RocketryLang {
         l.add("propellant.spacebreaker.hydrolox", "Hydrogen/LOX", "Hidrojen/LOX");
         l.add("propellant.spacebreaker.nuclear", "Hydrogen (nuclear thermal)", "Hidrojen (nükleer termal)");
         l.item(RocketryModule.NUCLEAR_THERMAL_ENGINE, "Nuclear Thermal Engine (Vacuum)", "Nükleer Termal Motor (Vakum)");
+        l.add("tooltip.spacebreaker.part.boil_off", "Cryogenic: %s%% of its propellant boils off per day on long trips and in orbit",
+                "Kriyojenik: uzun yolculukta ve yörüngede yakıtının günde %%%s'i buharlaşır");
         l.add("tooltip.spacebreaker.part.hydrogen_note", "Real liquid hydrogen is very bulky; in the game a tank's capacity counts as mass, whatever it holds",
                 "Gerçekte sıvı hidrojen çok hacimlidir; oyunda tank kapasitesi, içinde ne olursa olsun kütle olarak sayılır");
         l.add("tooltip.spacebreaker.part.propellant_nuclear", "In a nuclear thermal stage: LH2 %s mB, no LOX", "Nükleer termal kademede: LH2 %s mB, LOX yok");
@@ -320,6 +322,8 @@ final class RocketryLang {
         l.add("gui.spacebreaker.star_map.trip_to", "Trip to %s", "%s yolculuğu");
         l.add("gui.spacebreaker.star_map.fuel_line", "Fuel needed %s · on board %s", "Gereken yakıt %s · roketinde %s");
         l.add("gui.spacebreaker.star_map.enough", "Enough ✔", "Yeter ✔");
+        l.add("gui.spacebreaker.star_map.boil_off", "Boil-off on the way: %s%% of the propellant on board (counted above)",
+                "Yolda buharlaşma kaybı: roketteki yakıtın %%%s'i (yukarıdaki hesaba dahil)");
         l.add("gui.spacebreaker.star_map.short", "%s short ✘", "%s eksik ✘");
         l.add("gui.spacebreaker.star_map.return_yes", "Fuel to come home: enough ✔", "Geri dönüş yakıtı: yeter ✔");
         l.add("gui.spacebreaker.star_map.return_refuel", "Fuel to come home: make it there ⛽ (fuel can be produced on this world)", "Geri dönüş yakıtı: orada üret ⛽ (bu dünyada yakıt üretilebilir)");

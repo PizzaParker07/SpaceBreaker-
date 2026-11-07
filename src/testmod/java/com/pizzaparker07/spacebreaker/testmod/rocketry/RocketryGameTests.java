@@ -407,6 +407,51 @@ public final class RocketryGameTests {
         helper.succeed();
     }
 
+    @GameTest(template = EMPTY, timeoutTicks = 1600)
+    public static void cryogenicBoilOff(GameTestHelper helper) {
+        var KEROLOX = com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant.KEROLOX;
+        var HYDROLOX = com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant.HYDROLOX;
+        var NUCLEAR = com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant.NUCLEAR;
+        helper.assertTrue(HYDROLOX.boilOffPerDay() == 0.001 && NUCLEAR.boilOffPerDay() == 0.001, "liquid hydrogen boils off 0.1 %/day");
+        helper.assertTrue(KEROLOX.boilOffPerDay() < HYDROLOX.boilOffPerDay() / 4, "kerolox only loses a little oxygen");
+        var lookup = RocketParts.lookup(helper.getLevel().registryAccess());
+        RocketLayout h2 = RocketLayout.of(nuclearRocket("hydrolox_vacuum_engine"), lookup);
+        double[] fuel = h2.fullFuel();
+        double before = fuel[1];
+        double lost = com.pizzaparker07.spacebreaker.content.rocketry.design.BoilOff.apply(h2, 1, fuel, 100, SbConfig.Realism.REALISTIC);
+        helper.assertTrue(within(fuel[1], before * Math.pow(0.999, 100), 1) && within(lost, before - fuel[1], 1),
+                "100 days cost a hydrolox stage about 9.5 %: " + (int) lost + " kg");
+        // the planner counts it on a long coast: Earth orbit to Mars orbit
+        var marsOrbit = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(Spacebreaker.id("mars"), true).orElseThrow();
+        double days = com.pizzaparker07.spacebreaker.content.rocketry.nav.Transfers.coastSeconds(Location.EARTH_ORBIT, marsOrbit) / 86400;
+        helper.assertTrue(days > 100, "the coast to Mars takes months: " + (int) days + " days");
+        var plan = com.pizzaparker07.spacebreaker.content.rocketry.nav.MissionPlanner.fly(h2, 1, h2.fullFuel(),
+                List.of(Location.EARTH_ORBIT, marsOrbit), SbConfig.Realism.BALANCED);
+        helper.assertTrue(plan.boilOffKg() > 0, "the planner counts boil-off on the way to Mars");
+        var moonPlan = com.pizzaparker07.spacebreaker.content.rocketry.nav.MissionPlanner.fly(h2, 1, h2.fullFuel(),
+                List.of(Location.EARTH_ORBIT, Location.MOON_ORBIT), SbConfig.Realism.BALANCED);
+        helper.assertTrue(moonPlan.boilOffKg() < plan.boilOffKg() / 10, "a few days to the Moon cost far less");
+        // on the pad nothing boils off; waiting in orbit it does
+        RocketEntity pad = RocketEntity.create(helper.getLevel(), nuclearRocket("hydrolox_vacuum_engine"),
+                helper.absoluteVec(new net.minecraft.world.phys.Vec3(1.5, 2, 1.5)), 0F);
+        RocketEntity orbit = RocketEntity.create(helper.getLevel(), nuclearRocket("hydrolox_vacuum_engine"),
+                helper.absoluteVec(new net.minecraft.world.phys.Vec3(6.5, 2, 6.5)), 0F);
+        for (RocketEntity r : List.of(pad, orbit)) {
+            r.fillCompletely();
+            r.setNoGravity(true);
+            helper.getLevel().addFreshEntity(r);
+        }
+        orbit.stageScene(FlightState.ORBIT, 0, 0, false);
+        double padFuel = pad.fuel()[0], orbitFuel = orbit.fuel()[0];
+        helper.runAfterDelay(RocketEntity.BOIL_OFF_TICKS + 20, () -> {
+            helper.assertTrue(pad.fuel()[0] == padFuel, "nothing boils off on the pad");
+            helper.assertTrue(orbit.fuel()[0] < orbitFuel, "waiting in orbit, hydrogen boils off");
+            pad.discard();
+            orbit.discard();
+            helper.succeed();
+        });
+    }
+
     @GameTest(template = EMPTY)
     public static void nuclearEngineRadiation(GameTestHelper helper) {
         var level = helper.getLevel();

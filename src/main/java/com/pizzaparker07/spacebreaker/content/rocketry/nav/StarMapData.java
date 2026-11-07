@@ -53,7 +53,7 @@ public final class StarMapData {
      */
     public record Trip(Location to, Location next, List<Location> route, double needed, double have, boolean enough, boolean returnHome,
                        boolean refuelThere,
-                       int heatShield, boolean shieldOk, boolean legsMissing, Block block) {
+                       int heatShield, boolean shieldOk, boolean legsMissing, Block block, double boilOff) {
         public double shortBy() {
             return Math.max(0, needed - have);
         }
@@ -158,7 +158,14 @@ public final class StarMapData {
             shield = Math.max(shield, Transfers.reentryRating(path.get(i), path.get(i + 1)));
         }
         // fuel alone; the heat shield is its own reason below
-        boolean enough = routed && MissionPlanner.fly(layout, active, fuel, path, realism, false).possible();
+        MissionPlanner.Plan plan = routed ? MissionPlanner.fly(layout, active, fuel, path, realism, false) : null;
+        boolean enough = plan != null && plan.possible();
+        // share of the propellant on board that boils off on the coasts there (cryogenic propellant only)
+        double onBoard = 0;
+        for (int i = Math.max(0, active); i < fuel.length; i++) {
+            onBoard += fuel[i];
+        }
+        double boilOff = plan == null || onBoard <= 0 ? 0 : plan.boilOffKg() / onBoard;
         boolean shieldOk = layout.payload().heatShield() >= shield;
         boolean home = enough && shieldOk && MissionPlanner.canReturnAfter(layout, active, fuel, here, to, realism);
         boolean legs = !to.orbit() && !to.isEarth() && !to.atmosphere() && !layout.hasLegsFrom(active);
@@ -179,7 +186,7 @@ public final class StarMapData {
             block = Block.NONE;
         }
         Location next = path.size() > 1 ? path.get(1) : to;
-        return new Trip(to, next, route(here, to), needed, have, enough, home, Locations.canRefuel(to.body()), shield, shieldOk, legs, block);
+        return new Trip(to, next, route(here, to), needed, have, enough, home, Locations.canRefuel(to.body()), shield, shieldOk, legs, block, boilOff);
     }
 
     /** The map's group of near-Earth asteroids (not a real body): one node on the solar system view. */
