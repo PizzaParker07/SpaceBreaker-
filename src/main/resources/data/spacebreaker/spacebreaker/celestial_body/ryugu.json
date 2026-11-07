@@ -1,0 +1,13 @@
+{
+  "type": "asteroid",
+  "parent": "spacebreaker:sun",
+  "dimension": "spacebreaker:ryugu",
+  "physical": { "mass_kg": 4.50e11, "radius_km": 0.448 },
+  "orbit": { "semi_major_axis_km": 177961627, "eccentricity": 0.1902, "inclination_deg": 5.866, "period_days": 473.9, "longitude_ascending_node_deg": 251.6, "argument_periapsis_deg": 211.4, "mean_anomaly_deg": 0.0 },
+  "rotation": { "day_length_hours": 7.627, "axial_tilt_deg": 0.0 },
+  "climate": { "day_temp_c": 50, "night_temp_c": -70 },
+  "radiation_msv_per_day": 1.4,
+  "solar_irradiance": 961.7,
+  "albedo": 0.018,
+  "geometric_albedo": 0.045
+}

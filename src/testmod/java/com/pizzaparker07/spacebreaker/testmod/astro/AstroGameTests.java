@@ -39,7 +39,7 @@ import java.util.Optional;
 @PrefixGameTestTemplate(false)
 public final class AstroGameTests {
     private static final List<String> BODIES = List.of("sun", "mercury", "venus", "earth", "moon", "mars", "phobos",
-            "deimos", "ceres", "vesta", "jupiter", "io", "europa", "ganymede", "callisto", "saturn", "titan",
+            "deimos", "ceres", "vesta", "bennu", "ryugu", "eros", "itokawa", "jupiter", "io", "europa", "ganymede", "callisto", "saturn", "titan",
             "enceladus", "uranus", "miranda", "ariel", "umbriel", "titania", "oberon", "neptune", "proteus", "triton", "nereid", "pluto", "charon", "nix", "hydra");
 
     @GameTest(template = "empty")
