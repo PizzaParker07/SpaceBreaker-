@@ -116,9 +116,9 @@ public class RoverRenderer extends EntityRenderer<RoverEntity> {
     private static void beams(PoseStack pose, VertexConsumer vc) {
         Matrix4f m = pose.last().pose();
         for (int side = -1; side <= 1; side += 2) {
-            float x = side * 6F / 16F;
-            float y = 13.5F / 16F;
-            float z = -19.2F / 16F;
+            float x = side * 6.5F / 16F;
+            float y = 14F / 16F;
+            float z = -21.6F / 16F;
             float len = 5F;
             float r0 = 0.08F;
             float r1 = 1.1F;

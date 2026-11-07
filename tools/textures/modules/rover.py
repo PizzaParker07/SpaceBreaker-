@@ -11,6 +11,7 @@ ST = P.STEEL
 GOLD = P.GOLD
 CELL = P.CELL
 W = P.TUNGSTEN
+RUBBER = ramp('#141518', '#1f2125', '#2b2e33', '#3a3e45')
 FABRIC = ramp('#14202c', '#1d3042', '#284258', '#35556f', '#456a86', '#5a819c')
 WHITE = ramp('#7e848c', '#a3a9b0', '#c6cbd1', '#e2e5e8', '#f4f5f6')
 LENS = ramp('#2a2d32', '#5e646c', '#a8aeb5', '#dfe3e8')
@@ -188,35 +189,169 @@ def bumper(face, x, y, fw, fh):
     return shade(ST, face, 2)
 
 
+ORANGE = (226, 120, 36)
+DARK = ST
+
+
+def frame(face, x, y, fw, fh):
+    # dark grey chassis frame: ribbed top, lightening holes along the sides
+    if face == 'top':
+        return DARK[2] if (x in (0, fw - 1) or y % 6 == 0) else DARK[3]
+    if face == 'bottom':
+        return DARK[1]
+    return DARK[1] if (x % 6 == 3 and y == 1) else DARK[2]
+
+
+def deck(face, x, y, fw, fh):
+    if face == 'top':
+        return AL[4] if (x + y) % 5 else AL[3]
+    return DARK[2]
+
+
+def side_panel(face, x, y, fw, fh):
+    # white panel with one orange warning stripe along the middle
+    if face in ('left', 'right'):
+        if y == fh - 1:
+            return WHITE[0]
+        if y == 2 and 2 <= x < fw - 2:
+            return ORANGE
+        return WHITE[3] if y else WHITE[4]
+    return WHITE[2]
+
+
+def nose(face, x, y, fw, fh):
+    if face == 'top':
+        if y == 0:
+            return WHITE[1]
+        return WHITE[4] if 0 < x < fw - 1 else WHITE[2]
+    return WHITE[1]
+
+
+def headlight(face, x, y, fw, fh):
+    if face == 'front':
+        return LENS[3] if x == 1 else LENS[2]
+    return DARK[2]
+
+
+def headlight_glow(face, x, y, fw, fh):
+    return LAMP[2] if face == 'front' else None
+
+
+def bumper(face, x, y, fw, fh):
+    if face == 'front':
+        return ORANGE if (x // 2) % 2 == 0 else DARK[1]
+    return DARK[2]
+
+
+def console(face, x, y, fw, fh):
+    if face == 'back':                      # faces the driver
+        if y == 0 or y == fh - 1 or x in (0, fw - 1):
+            return DARK[1]
+        if y == 1 and 1 <= x <= 5:
+            return (60, 130, 170)           # screen
+        if y == 2 and 1 <= x <= 5:
+            return (40, 96, 130)
+        if y in (1, 2) and x == 7:
+            return (88, 200, 90)
+        if y in (1, 2) and x == 8:
+            return (230, 170, 50)
+        return DARK[3]
+    if face == 'top':
+        return WHITE[2]
+    return WHITE[1]
+
+
+def console_glow(face, x, y, fw, fh):
+    if face == 'back' and 1 <= y <= 2 and (1 <= x <= 5 or x == 7):
+        return (120, 210, 255) if x <= 5 else (120, 240, 120)
+    return None
+
+
+def stick(face, x, y, fw, fh):
+    return DARK[0] if y == 0 else DARK[2]
+
+
+def seat(face, x, y, fw, fh):
+    if face == 'top' and 0 < x < fw - 1:
+        return FABRIC[3] if (x + y) % 3 else FABRIC[2]
+    if face == 'bottom':
+        return DARK[1]
+    return DARK[2] if y >= 2 else FABRIC[2]
+
+
+def seat_back(face, x, y, fw, fh):
+    if face in ('front', 'back') and 0 < x < fw - 1 and 0 < y < fh - 1:
+        return FABRIC[4] if (x * 2 + y) % 5 else FABRIC[2]
+    return FABRIC[1]
+
+
+def bolster(face, x, y, fw, fh):
+    return FABRIC[3] if face in ('top', 'left', 'right') and y < fh - 1 else FABRIC[1]
+
+
+def headrest(face, x, y, fw, fh):
+    return FABRIC[4] if face in ('front', 'back', 'top') else FABRIC[2]
+
+
+def fender(face, x, y, fw, fh):
+    if face == 'top':
+        return WHITE[3] if 0 < x < fw - 1 else WHITE[1]
+    if face == 'bottom':
+        return DARK[1]
+    return WHITE[2]
+
+
+def strut(face, x, y, fw, fh):
+    return AL[5] if y % 2 == 0 else DARK[2]
+
+
+def wheel_rim(face, x, y, fw, fh):
+    # tread on the rolling faces: rubber with a chevron pattern; sidewalls: dark rim ring
+    if face in ('left', 'right'):
+        return DARK[1] if (x in (0, fw - 1) or y in (0, fh - 1)) else DARK[2]
+    if (y + abs(x - (fw - 1) / 2)) % 3 < 1:
+        return RUBBER[3]
+    return RUBBER[1] if (x + y) % 2 else RUBBER[2]
+
+
+def wheel_hub(face, x, y, fw, fh):
+    # hub sticking out of both sides: bright cap with bolts
+    if face in ('left', 'right'):
+        return AL[6] if (x, y) == (1, 1) else AL[4]
+    return AL[3]
+
+
 def sheet(glow=False):
-    cv = Canvas(128, 128)
+    cv = Canvas(256, 256)
     if glow:
-        paint(cv, 32, 49, 18, 3, 2, lamp_glow)
-        # console lamps stay lit too
-        def lamps(face, x, y, fw, fh):
-            if face == 'back' and 1 <= y <= 2 and x in (2, 3):
-                return (120, 240, 120)
-            return None
-        paint(cv, 32, 40, 14, 5, 3, lamps)
+        paint(cv, 240, 0, 3, 2, 1, headlight_glow)
+        paint(cv, 184, 20, 10, 4, 3, console_glow)
         return cv
-    paint(cv, 0, 0, 22, 3, 36, chassis)
-    paint(cv, 0, 40, 8, 2, 7, seat)
-    paint(cv, 0, 50, 8, 8, 1, seat_back)
-    paint(cv, 32, 40, 14, 5, 3, console)
-    paint(cv, 32, 49, 18, 3, 2, lamp_bar)
-    paint(cv, 0, 60, 4, 10, 10, wheel)
-    paint(cv, 30, 60, 6, 1, 14, fender)
-    paint(cv, 72, 40, 1, 14, 1, mast)
-    paint(cv, 78, 40, 8, 8, 1, dish)
-    paint(cv, 72, 56, 14, 5, 5, cargo)
-    paint(cv, 0, 82, 24, 1, 16, solar)
-    paint(cv, 82, 82, 5, 8, 5, rtg)
-    paint(cv, 0, 100, 20, 2, 12, chassis)       # rear deck
-    paint(cv, 66, 100, 1, 8, 1, mast)           # solar panel posts
-    paint(cv, 72, 100, 1, 4, 4, hub)
-    paint(cv, 84, 100, 1, 4, 1, strut)
-    paint(cv, 90, 100, 1, 2, 7, seat)           # armrests
-    paint(cv, 0, 114, 20, 2, 2, bumper)
+    paint(cv, 0, 0, 22, 2, 36, frame)
+    paint(cv, 120, 0, 20, 2, 12, deck)
+    paint(cv, 120, 16, 1, 4, 28, side_panel)
+    paint(cv, 184, 0, 18, 1, 8, nose)
+    paint(cv, 240, 0, 3, 2, 1, headlight)
+    paint(cv, 184, 12, 20, 2, 2, bumper)
+    paint(cv, 184, 20, 10, 4, 3, console)
+    paint(cv, 212, 20, 1, 3, 1, stick)
+    paint(cv, 0, 40, 8, 3, 7, seat)
+    paint(cv, 32, 40, 8, 10, 2, seat_back)
+    paint(cv, 54, 40, 1, 4, 7, bolster)
+    paint(cv, 72, 40, 6, 3, 1, headrest)
+    paint(cv, 180, 40, 6, 1, 14, fender)
+    paint(cv, 184, 30, 6, 3, 1, fender)
+    paint(cv, 220, 20, 1, 5, 1, strut)
+    paint(cv, 0, 56, 14, 5, 5, cargo)
+    paint(cv, 40, 56, 5, 8, 5, rtg)
+    paint(cv, 62, 56, 1, 8, 1, mast)
+    paint(cv, 68, 56, 1, 12, 1, mast)
+    paint(cv, 74, 56, 6, 6, 1, dish)
+    paint(cv, 0, 72, 24, 1, 16, solar)
+    paint(cv, 0, 100, 4, 10, 6, wheel_rim)
+    paint(cv, 24, 100, 4, 6, 10, wheel_rim)
+    paint(cv, 56, 100, 4, 8, 8, wheel_rim)
+    paint(cv, 84, 100, 6, 3, 3, wheel_hub)
     return cv
 
 
