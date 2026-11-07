@@ -238,6 +238,59 @@ public final class CometRendezvous {
         return best;
     }
 
+    /**
+     * The trip home: leave the comet (a burn from its velocity onto a Lambert arc) and fly straight into Earth's
+     * atmosphere, with no capture burn at Earth.
+     *
+     * @param burnDv        burn at the comet, m/s
+     * @param entrySpeed    speed at the top of Earth's atmosphere, m/s (√(v∞² + v_esc²))
+     * @param departureTime simulated time of leaving the comet (s from J2000)
+     * @param arrivalTime   simulated time of entry
+     * @param departureAu   comet's distance from the Sun at departure
+     */
+    public record Return(String cometId, double burnDv, double entrySpeed, double flightSeconds, double departureTime,
+                         double arrivalTime, double departureAu) {
+        public double flightYears() {
+            return flightSeconds / AstroConstants.YEAR;
+        }
+    }
+
+    /**
+     * Cheapest return from a comet to Earth entry: leave at or after {@code after} (e.g. the rendezvous arrival, plus
+     * any stay), fly at most {@code maxYears}, and arrive no faster than {@code maxEntrySpeed} (m/s; use
+     * {@code Double.POSITIVE_INFINITY} for no limit; Apollo returned at ≈ 11 km/s, Stardust at 12.9 km/s).
+     */
+    public static Optional<Return> returnTrip(BodySystem sys, Comet comet, double after, double maxYears, double maxEntrySpeed) {
+        AstroBody earth = sys.require("spacebreaker:earth");
+        double years = Math.min(maxYears, MAX_FLIGHT_YEARS);
+        double maxTof = years * AstroConstants.YEAR, minTof = 30 * AstroConstants.DAY;
+        double span = Math.min(comet.periodSeconds(), HORIZON_YEARS * AstroConstants.YEAR);
+        double vEsc2 = 2 * earth.mu() / (earth.radius() + 100e3);
+        Return best = null;
+        int n = 360, tofSteps = 80;
+        for (int i = 0; i < n; i++) {
+            double tDep = after + span * i / (n - 1.0);
+            StateVector cs = Kepler.stateFromElements(comet.elements(), tDep);
+            for (int it = 0; it < tofSteps; it++) {
+                double tof = minTof * Math.pow(MAX_FLIGHT_YEARS * AstroConstants.YEAR / minTof, it / (tofSteps - 1.0));
+                if (tof > maxTof * (1 + 1e-12)) break;
+                double tArr = tDep + tof;
+                Vec3 rE = sys.position(earth, tArr), vE = sys.velocity(earth, tArr);
+                for (boolean prograde : new boolean[]{true, false}) {
+                    Optional<Lambert.Solution> s = Lambert.solve(cs.position(), rE, tof, AstroConstants.MU_SUN, prograde);
+                    if (s.isEmpty()) continue;
+                    double burn = s.get().v1().sub(cs.velocity()).length();
+                    double vInf = s.get().v2().sub(vE).length();
+                    double entry = Math.sqrt(vInf * vInf + vEsc2);
+                    if (entry <= maxEntrySpeed && (best == null || burn < best.burnDv())) {
+                        best = new Return(comet.id(), burn, entry, tof, tDep, tArr, cs.position().length() / AstroConstants.AU);
+                    }
+                }
+            }
+        }
+        return Optional.ofNullable(best);
+    }
+
     /** The cheaper of the perihelion and aphelion rendezvous. */
     public static Optional<Result> best(BodySystem sys, Comet comet, double after) {
         Optional<Result> p = estimate(sys, comet, Point.PERIHELION, after), a = estimate(sys, comet, Point.APHELION, after);

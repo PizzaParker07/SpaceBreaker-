@@ -883,6 +883,23 @@ That is beyond chemical stages but within a nuclear thermal stack (Isp 880 s). H
 chemical, Halley is nuclear and Hale–Bopp is observation only. The actual limits come from rocketry's
 designs (QA's progression model). Long flights still need rocketry's boil-off model.
 
+**Going home.** `returnTrip(sys, comet, after, maxYears, maxEntrySpeed)` returns the cheapest burn from the
+comet onto a Lambert arc that ends in Earth's atmosphere. There is no capture burn at Earth; the entry
+speed is √(v∞² + v_esc²), capped by `maxEntrySpeed` (Stardust re-entered at 12.9 km/s). Departure is at or
+after `after` (the rendezvous arrival plus any stay). Each round trip below takes the cheapest rendezvous
+within 10 years and then the cheapest return within 10 years, with entry at most 15 km/s:
+
+| Comet | Rendezvous (≤ 10 y) | Return burn (≤ 10 y, entry ≤ 15 km/s) | Entry | Round trip |
+|---|---:|---:|---:|---:|
+| 67P/Churyumov–Gerasimenko | 7.9 km/s, 2.8 y | 0.8 km/s, 3.0 y from 5.7 AU | 15.0 km/s | 8.7 km/s |
+| 1P/Halley | 19.5 km/s, 8.3 y | 37.4 km/s, 0.9 y from 2.2 AU | 13.3 km/s | 56.8 km/s |
+| 2P/Encke | 9.7 km/s, 1.6 y | 3.4 km/s, 2.0 y from 4.1 AU | 14.9 km/s | 13.2 km/s |
+| C/1995 O1 (Hale–Bopp) | 43.4 km/s | none | | |
+| 9P/Tempel 1 | 8.1 km/s, 2.4 y | 1.6 km/s, 2.0 y from 4.6 AU | 14.9 km/s | 9.7 km/s |
+
+Leaving a comet from far out is cheap, because it is slow there. 67P, Tempel 1 and Encke return for 1–3 km/s,
+much less than their arrival match. Halley within 10 years needs a 37 km/s burn near the inner Solar System.
+
 
 ## Gravity assists (`GravityAssist`, `TransferPlanner.planWithAssists`)
 

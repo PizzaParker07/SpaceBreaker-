@@ -106,4 +106,29 @@ class CometRendezvousTest {
         Files.createDirectories(Path.of("build/astro"));
         Files.writeString(Path.of("build/astro/comet_rendezvous_anywhere.md"), sb.toString());
     }
+
+    @Test
+    void returnTrips() throws IOException {
+        StringBuilder sb = new StringBuilder("| Comet | Rendezvous (≤ 10 y) | Return burn (≤ 10 y, entry ≤ 15 km/s) | Entry | Round trip |\n|---|---:|---:|---:|---:|\n");
+        for (Comet c : Comet.CATALOGUE) {
+            CometRendezvous.Result out = CometRendezvous.cheapestWithin(SYS, c, 0, 10).orElseThrow();
+            var back = CometRendezvous.returnTrip(SYS, c, out.arrivalTime(), 10, 15e3);
+            if (back.isEmpty()) {
+                sb.append(String.format(Locale.ROOT, "| %s | %.1f km/s | none | | |\n", c.nameEn(), out.totalDv() / 1000));
+                continue;
+            }
+            var r = back.get();
+            assertTrue(r.departureTime() >= out.arrivalTime() && r.entrySpeed() <= 15e3 && r.flightYears() <= 10 + 1e-9);
+            sb.append(String.format(Locale.ROOT, "| %s | %.1f km/s, %.1f y | %.1f km/s, %.1f y from %.1f AU | %.1f km/s | %.1f km/s |\n", c.nameEn(),
+                    out.totalDv() / 1000, out.flightYears(), r.burnDv() / 1000, r.flightYears(), r.departureAu(), r.entrySpeed() / 1000,
+                    (out.totalDv() + r.burnDv()) / 1000));
+        }
+        // a return is never cheaper with tighter limits
+        var loose = CometRendezvous.returnTrip(SYS, Comet.ENCKE, 0, 10, Double.POSITIVE_INFINITY).orElseThrow();
+        CometRendezvous.returnTrip(SYS, Comet.ENCKE, 0, 10, 13e3).ifPresent(tight -> assertTrue(loose.burnDv() <= tight.burnDv() + 1));
+        // entry is never slower than Earth's escape speed
+        assertTrue(loose.entrySpeed() > 11e3);
+        Files.createDirectories(Path.of("build/astro"));
+        Files.writeString(Path.of("build/astro/comet_returns.md"), sb.toString());
+    }
 }
