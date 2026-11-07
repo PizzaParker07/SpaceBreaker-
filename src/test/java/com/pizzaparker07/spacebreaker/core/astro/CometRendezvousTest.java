@@ -109,26 +109,29 @@ class CometRendezvousTest {
 
     @Test
     void returnTrips() throws IOException {
-        StringBuilder sb = new StringBuilder("| Comet | Rendezvous (≤ 10 y) | Return burn (≤ 10 y, entry ≤ 15 km/s) | Entry | Round trip |\n|---|---:|---:|---:|---:|\n");
+        StringBuilder sb = new StringBuilder("| Comet | Rendezvous (≤ 10 y) | Return ≤ 10 y | Return ≤ 40 y | Round trip (≤ 10 y + ≤ 40 y) |\n|---|---:|---:|---:|---:|\n");
         for (Comet c : Comet.CATALOGUE) {
             CometRendezvous.Result out = CometRendezvous.cheapestWithin(SYS, c, 0, 10).orElseThrow();
-            var back = CometRendezvous.returnTrip(SYS, c, out.arrivalTime(), 10, 15e3);
-            if (back.isEmpty()) {
-                sb.append(String.format(Locale.ROOT, "| %s | %.1f km/s | none | | |\n", c.nameEn(), out.totalDv() / 1000));
-                continue;
+            var r10 = CometRendezvous.returnTrip(SYS, c, out.arrivalTime(), 10, 15e3).orElseThrow();
+            var r40 = CometRendezvous.returnTrip(SYS, c, out.arrivalTime(), 40, 15e3).orElseThrow();
+            for (var r : new CometRendezvous.Return[]{r10, r40}) {
+                assertTrue(r.departureTime() >= out.arrivalTime() && r.entrySpeed() <= 15e3 + 1, c.id() + " entry " + r.entrySpeed());
+                assertEquals(r.burnDv() + r.brakeDv(), r.totalDv(), 1e-9);
             }
-            var r = back.get();
-            assertTrue(r.departureTime() >= out.arrivalTime() && r.entrySpeed() <= 15e3 && r.flightYears() <= 10 + 1e-9);
-            sb.append(String.format(Locale.ROOT, "| %s | %.1f km/s, %.1f y | %.1f km/s, %.1f y from %.1f AU | %.1f km/s | %.1f km/s |\n", c.nameEn(),
-                    out.totalDv() / 1000, out.flightYears(), r.burnDv() / 1000, r.flightYears(), r.departureAu(), r.entrySpeed() / 1000,
-                    (out.totalDv() + r.burnDv()) / 1000));
+            assertTrue(r40.totalDv() <= r10.totalDv() + 1, c.id() + ": more time never costs more");
+            sb.append(String.format(Locale.ROOT, "| %s | %.1f km/s, %.1f y | %s | %s | %.1f km/s |\n", c.nameEn(),
+                    out.totalDv() / 1000, out.flightYears(), cell(r10), cell(r40), (out.totalDv() + r40.totalDv()) / 1000));
         }
-        // a return is never cheaper with tighter limits
-        var loose = CometRendezvous.returnTrip(SYS, Comet.ENCKE, 0, 10, Double.POSITIVE_INFINITY).orElseThrow();
-        CometRendezvous.returnTrip(SYS, Comet.ENCKE, 0, 10, 13e3).ifPresent(tight -> assertTrue(loose.burnDv() <= tight.burnDv() + 1));
-        // entry is never slower than Earth's escape speed
-        assertTrue(loose.entrySpeed() > 11e3);
+        // with no entry limit the trip home is the comet's own fall: almost free, but very fast
+        var free = CometRendezvous.returnTrip(SYS, Comet.HALLEY, 0, 40, Double.POSITIVE_INFINITY).orElseThrow();
+        assertEquals(0, free.brakeDv());
+        assertTrue(free.burnDv() < 1e3 && free.entrySpeed() > 40e3, "Halley free fall home " + free);
         Files.createDirectories(Path.of("build/astro"));
         Files.writeString(Path.of("build/astro/comet_returns.md"), sb.toString());
+    }
+
+    private static String cell(CometRendezvous.Return r) {
+        return String.format(Locale.ROOT, "%.1f km/s (%.1f + %.1f brake), %.1f y from %.1f AU", r.totalDv() / 1000, r.burnDv() / 1000,
+                r.brakeDv() / 1000, r.flightYears(), r.departureAu());
     }
 }

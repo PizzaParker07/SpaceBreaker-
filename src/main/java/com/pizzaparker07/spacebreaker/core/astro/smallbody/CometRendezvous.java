@@ -239,17 +239,22 @@ public final class CometRendezvous {
     }
 
     /**
-     * The trip home: leave the comet (a burn from its velocity onto a Lambert arc) and fly straight into Earth's
-     * atmosphere, with no capture burn at Earth.
+     * The trip home: leave the comet (a burn from its velocity onto a Lambert arc) and fly into Earth's atmosphere,
+     * braking just above it only as much as the entry-speed limit requires.
      *
      * @param burnDv        burn at the comet, m/s
-     * @param entrySpeed    speed at the top of Earth's atmosphere, m/s (√(v∞² + v_esc²))
+     * @param brakeDv       braking burn just above Earth's atmosphere to bring the entry speed down to the limit, m/s
+     * @param entrySpeed    speed at the top of Earth's atmosphere after braking, m/s (√(v∞² + v_esc²) − brakeDv)
      * @param departureTime simulated time of leaving the comet (s from J2000)
      * @param arrivalTime   simulated time of entry
      * @param departureAu   comet's distance from the Sun at departure
      */
-    public record Return(String cometId, double burnDv, double entrySpeed, double flightSeconds, double departureTime,
-                         double arrivalTime, double departureAu) {
+    public record Return(String cometId, double burnDv, double brakeDv, double entrySpeed, double flightSeconds,
+                         double departureTime, double arrivalTime, double departureAu) {
+        public double totalDv() {
+            return burnDv + brakeDv;
+        }
+
         public double flightYears() {
             return flightSeconds / AstroConstants.YEAR;
         }
@@ -257,8 +262,10 @@ public final class CometRendezvous {
 
     /**
      * Cheapest return from a comet to Earth entry: leave at or after {@code after} (e.g. the rendezvous arrival, plus
-     * any stay), fly at most {@code maxYears}, and arrive no faster than {@code maxEntrySpeed} (m/s; use
-     * {@code Double.POSITIVE_INFINITY} for no limit; Apollo returned at ≈ 11 km/s, Stardust at 12.9 km/s).
+     * any stay), fly at most {@code maxYears}, and enter no faster than {@code maxEntrySpeed} (m/s; use
+     * {@code Double.POSITIVE_INFINITY} for no limit; Apollo returned at ≈ 11 km/s, Stardust at 12.9 km/s). A faster
+     * arrival pays the difference as a braking burn, so the cheapest total wins. Riding a retrograde comet home
+     * costs almost nothing but arrives at ≈ 68 km/s, so the brake matters.
      */
     public static Optional<Return> returnTrip(BodySystem sys, Comet comet, double after, double maxYears, double maxEntrySpeed) {
         AstroBody earth = sys.require("spacebreaker:earth");
@@ -267,6 +274,7 @@ public final class CometRendezvous {
         double span = Math.min(comet.periodSeconds(), HORIZON_YEARS * AstroConstants.YEAR);
         double vEsc2 = 2 * earth.mu() / (earth.radius() + 100e3);
         Return best = null;
+        java.util.List<Return> candidates = new java.util.ArrayList<>();
         int n = 360, tofSteps = 80;
         for (int i = 0; i < n; i++) {
             double tDep = after + span * i / (n - 1.0);
@@ -282,13 +290,62 @@ public final class CometRendezvous {
                     double burn = s.get().v1().sub(cs.velocity()).length();
                     double vInf = s.get().v2().sub(vE).length();
                     double entry = Math.sqrt(vInf * vInf + vEsc2);
-                    if (entry <= maxEntrySpeed && (best == null || burn < best.burnDv())) {
-                        best = new Return(comet.id(), burn, entry, tof, tDep, tArr, cs.position().length() / AstroConstants.AU);
+                    double brake = Math.max(0, entry - maxEntrySpeed);
+                    Return r = new Return(comet.id(), burn, brake, entry - brake, tof, tDep, tArr, cs.position().length() / AstroConstants.AU);
+                    candidates.add(r);
+                    if (best == null || burn + brake < best.totalDv()) {
+                        best = r;
                     }
                 }
             }
         }
-        return Optional.ofNullable(best);
+        if (best == null) return Optional.empty();
+        // refine the cheapest grid cells (several starts: the cost surface has many local minima)
+        candidates.sort(java.util.Comparator.comparingDouble(Return::totalDv));
+        Return result = best;
+        int starts = 0;
+        for (Return start : candidates) {
+            if (starts >= REFINE_STARTS) break;
+            starts++;
+            Return cur = start;
+            double dDep = span / (n - 1.0), dTof = start.flightSeconds() * 0.08;
+            for (int iter = 0; iter < 60 && (dDep > 3600 || dTof > 3600); iter++) {
+                Return next = cur;
+                for (double[] step : new double[][]{{dDep, 0}, {-dDep, 0}, {0, dTof}, {0, -dTof}, {dDep, dTof}, {-dDep, -dTof}, {dDep, -dTof}, {-dDep, dTof}}) {
+                    double tDep = cur.departureTime() + step[0], tof = cur.flightSeconds() + step[1];
+                    if (tDep < after || tof < minTof || tof > maxTof * (1 + 1e-12)) continue;
+                    Return r = returnAt(sys, earth, comet, tDep, tof, vEsc2, maxEntrySpeed);
+                    if (r != null && r.totalDv() < next.totalDv()) next = r;
+                }
+                if (next == cur) {
+                    dDep /= 2;
+                    dTof /= 2;
+                }
+                cur = next;
+            }
+            if (cur.totalDv() < result.totalDv()) result = cur;
+        }
+        return Optional.of(result);
+    }
+
+    private static final int REFINE_STARTS = 40;
+
+    private static Return returnAt(BodySystem sys, AstroBody earth, Comet comet, double tDep, double tof, double vEsc2, double maxEntry) {
+        StateVector cs = Kepler.stateFromElements(comet.elements(), tDep);
+        double tArr = tDep + tof;
+        Vec3 rE = sys.position(earth, tArr), vE = sys.velocity(earth, tArr);
+        Return best = null;
+        for (boolean prograde : new boolean[]{true, false}) {
+            Optional<Lambert.Solution> s = Lambert.solve(cs.position(), rE, tof, AstroConstants.MU_SUN, prograde);
+            if (s.isEmpty()) continue;
+            double burn = s.get().v1().sub(cs.velocity()).length();
+            double vInf = s.get().v2().sub(vE).length();
+            double entry = Math.sqrt(vInf * vInf + vEsc2), brake = Math.max(0, entry - maxEntry);
+            if (best == null || burn + brake < best.totalDv()) {
+                best = new Return(comet.id(), burn, brake, entry - brake, tof, tDep, tArr, cs.position().length() / AstroConstants.AU);
+            }
+        }
+        return best;
     }
 
     /** The cheaper of the perihelion and aphelion rendezvous. */
