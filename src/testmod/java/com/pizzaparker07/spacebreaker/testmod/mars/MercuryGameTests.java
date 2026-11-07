@@ -162,6 +162,43 @@ public final class MercuryGameTests {
         helper.succeed();
     }
 
+    /**
+     * The 3:2 resonance at this world's (warm-pole) longitude: near perihelion the sun peeks over the horizon, sinks
+     * back below it and rises a second time; the sun moves backwards there, forwards the rest of the day, and the day
+     * keeps its length. Measured through the warped clock, the same one the sky, light and temperature read.
+     */
+    @GameTest(template = WorldTests.EMPTY)
+    public static void mercurySunRisesTwice(GameTestHelper helper) {
+        long day = 24000;
+        var clock = new com.pizzaparker07.spacebreaker.content.worldgen.PlanetTime.Clock(day, 0,
+                com.pizzaparker07.spacebreaker.content.mercury.MercuryDay::trueFraction);
+        java.util.function.DoubleUnaryOperator elevation = mean -> com.pizzaparker07.spacebreaker.content.worldgen.SkyMath.sunElevation(
+                clock.timeOfDay(Math.round(mean * day)), 0);
+        double p = com.pizzaparker07.spacebreaker.content.mercury.MercuryDay.PERIHELION;
+        double before = elevation.applyAsDouble(p - 0.045);
+        double peek = elevation.applyAsDouble(p - 0.023);
+        double dip = elevation.applyAsDouble(p + 0.023);
+        double again = elevation.applyAsDouble(p + 0.06);
+        helper.assertTrue(before < 0, "night before the first sunrise, sun at " + before);
+        helper.assertTrue(peek > 0.3, "first sunrise: the sun peeks over the horizon, at " + peek);
+        helper.assertTrue(dip < -0.3, "then it sinks back below it, at " + dip);
+        helper.assertTrue(again > 0.5, "and rises a second time, at " + again);
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.mercury.MercuryDay.trueFraction(p + 0.01)
+                < com.pizzaparker07.spacebreaker.content.mercury.MercuryDay.trueFraction(p), "at perihelion the sun moves backwards");
+        for (double f = p + 0.06; f < p + 0.44; f += 0.01) {
+            helper.assertTrue(com.pizzaparker07.spacebreaker.content.mercury.MercuryDay.trueFraction(f + 0.01)
+                    > com.pizzaparker07.spacebreaker.content.mercury.MercuryDay.trueFraction(f), "forwards away from perihelion, at " + f);
+        }
+        helper.assertTrue(Math.abs(com.pizzaparker07.spacebreaker.content.mercury.MercuryDay.trueFraction(p + 0.5) - (p + 0.5)) < 1e-9
+                && Math.abs(com.pizzaparker07.spacebreaker.content.mercury.MercuryDay.trueFraction(p + 1) - (p + 1)) < 1e-9, "the day keeps its length: " + com.pizzaparker07.spacebreaker.content.mercury.MercuryDay.trueFraction(p + 0.5) + " vs " + (p + 0.5) + ", " + com.pizzaparker07.spacebreaker.content.mercury.MercuryDay.trueFraction(p + 1) + " vs " + (p + 1));
+        double peri = com.pizzaparker07.spacebreaker.content.mercury.MercuryDay.distance(p);
+        double aph = com.pizzaparker07.spacebreaker.content.mercury.MercuryDay.distance(p + 0.25);
+        helper.assertTrue(Math.abs(aph / peri - 1.518) < 0.01, "the sun looks 1.5 times wider at perihelion, ratio " + aph / peri);
+        var plain = new com.pizzaparker07.spacebreaker.content.worldgen.PlanetTime.Clock(day, 0);
+        helper.assertTrue(plain.fraction(1234) == plain.meanFraction(1234), "other worlds keep an even day");
+        helper.succeed();
+    }
+
     private MercuryGameTests() {
     }
 }

@@ -158,6 +158,16 @@ public class PlanetSkyEffects extends DimensionSpecialEffects {
     private float coma;
     private double sunRadiusKm = 695700;
 
+    /** Size of the sun disc relative to its mean size (eccentric orbits: larger near perihelion). */
+    protected double sunScale(ClientLevel level) {
+        return 1.0;
+    }
+
+    /** Extra glow around the sun (0 = none), for worlds that pass close to it. */
+    protected float sunGlow(ClientLevel level) {
+        return 0F;
+    }
+
     /** Coma glow of the comet this sky belongs to (0 if it is not a comet or dormant), recomputed every 100 ticks. */
     private float comaGlow(ClientLevel level) {
         long tick = level.getGameTime() / 100;
@@ -209,7 +219,7 @@ public class PlanetSkyEffects extends DimensionSpecialEffects {
         VertexBuffer.unbind();
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 
-        float sunHalf = (float) (100 * Math.tan(Math.toRadians(sunSize * scale / 2)) / SUN_DISC_FRACTION);
+        float sunHalf = (float) (100 * Math.tan(Math.toRadians(sunSize * scale * sunScale(level) / 2)) / SUN_DISC_FRACTION);
         // eclipse: the planet slides over the sun's disc
         float eclipse = (float) com.pizzaparker07.spacebreaker.content.worldgen.EclipseState.coverage(level);
         RenderSystem.setShaderColor(1F - eclipse, 1F - eclipse, 1F - eclipse, 1F);
@@ -223,6 +233,10 @@ public class PlanetSkyEffects extends DimensionSpecialEffects {
         bb.addVertex(m, -sunHalf, 100F, sunHalf).setUv(0F, 1F);
         BufferUploader.drawWithShader(bb.buildOrThrow());
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+        float glow = sunGlow(level);
+        if (glow > 0) {
+            CometTrails.skyGlow(ps, new Vector3f(0, 1, 0), 0.55F, glow, 1F, 0.97F, 0.9F);
+        }
         // standing on an active comet: its own coma glows around the sun and, fainter, along the tail away from it
         if (coma > 0) {
             CometTrails.skyGlow(ps, new Vector3f(0, 1, 0), 1.2F, coma, 0.75F, 0.85F, 1F);
