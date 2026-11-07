@@ -392,6 +392,9 @@ final class RocketryLang {
         l.add("gui.spacebreaker.star_map.no_surface_short", "No ground", "Yüzey yok");
         l.add("gui.spacebreaker.star_map.pick_short", "Pick a world on the map.", "Haritadan bir dünya seç.");
         l.add("gui.spacebreaker.star_map.station_short", "Station · %s ports", "İstasyon · %s port");
+        l.add("gui.spacebreaker.star_map.station_modules", "Station · %s modules · %s ports", "İstasyon · %s modül · %s port");
+        l.add("gui.spacebreaker.star_map.station_yard", "Station · %s modules · %s ports · shipyard", "İstasyon · %s modül · %s port · tersane");
+        l.add("hud.spacebreaker.docking_line", "→ %s station · docking", "→ %s istasyonu · kenetleniyor");
         l.add("gui.spacebreaker.star_map.base_short", "Base · %s beacons", "Üs · %s işaret");
         l.add("gui.spacebreaker.star_map.refuel_short", "⛽ Fuel can be made here", "⛽ Burada yakıt üretilebilir");
         l.add("gui.spacebreaker.star_map.comet_short", "%s AU from the Sun · %s", "Güneş'e %s AU · %s");

@@ -128,6 +128,7 @@ public enum StationModule {
         if (!fits(level, wall, facing)) {
             return false;
         }
+        StationParts.get(level).add(wall, this);
         if (this == SOLAR_WINGS) {
             buildWings(level, mouth, facing);
             return true; // outside the hull: the mouth stays sealed
@@ -159,6 +160,7 @@ public enum StationModule {
             return false;
         }
         CORE.build(level, wall, forward, false, owner);
+        StationParts.get(level).add(wall, CORE);
         return true;
     }
 

@@ -31,9 +31,13 @@ public final class Stations {
      * One station in orbit (or, with {@code surface}, one base on the ground): the body, who built it (first known
      * builder) and how many docking ports (landing beacons for a base) it has.
      */
-    public record Station(ResourceLocation body, String owner, int ports, boolean surface) {
+    public record Station(ResourceLocation body, String owner, int ports, boolean surface, int modules, boolean shipyard) {
         public Station(ResourceLocation body, String owner, int ports) {
             this(body, owner, ports, false);
+        }
+
+        public Station(ResourceLocation body, String owner, int ports, boolean surface) {
+            this(body, owner, ports, surface, 0, false);
         }
 
         public static final StreamCodec<ByteBuf, Station> STREAM_CODEC = StreamCodec.composite(
@@ -41,6 +45,8 @@ public final class Stations {
                 ByteBufCodecs.STRING_UTF8, Station::owner,
                 ByteBufCodecs.VAR_INT, Station::ports,
                 ByteBufCodecs.BOOL, Station::surface,
+                ByteBufCodecs.VAR_INT, Station::modules,
+                ByteBufCodecs.BOOL, Station::shipyard,
                 Station::new);
     }
 
@@ -66,10 +72,11 @@ public final class Stations {
             if (ports.size() == 0) {
                 continue;
             }
+            StationParts parts = StationParts.get(level);
             out.addAll(group(ports.all(), pos -> {
                 ResourceLocation shared = Location.Orbits.SHARED.equals(level.dimension()) ? Locations.bodyForSharedX(pos.getX()).orElse(null) : null;
                 return Locations.at(level.dimension(), shared);
-            }));
+            }, pos -> parts.near(pos, CLUSTER)));
         }
         return out;
     }
@@ -109,6 +116,12 @@ public final class Stations {
 
     /** Groups ports into stations (pure, for tests): {@code where} tells the place of a port; only orbits count. */
     public static List<Station> group(java.util.Collection<DockingPorts.Port> ports, java.util.function.Function<BlockPos, java.util.Optional<Location>> where) {
+        return group(ports, where, pos -> new int[]{0, 0});
+    }
+
+    /** As {@link #group(java.util.Collection, java.util.function.Function)}, with the modules near a port (count, shipyard 0/1). */
+    public static List<Station> group(java.util.Collection<DockingPorts.Port> ports, java.util.function.Function<BlockPos, java.util.Optional<Location>> where,
+                                      java.util.function.Function<BlockPos, int[]> modules) {
         List<List<DockingPorts.Port>> groups = clusters(ports);
         List<Station> out = new ArrayList<>();
         for (List<DockingPorts.Port> g : groups) {
@@ -117,7 +130,8 @@ public final class Stations {
                 continue;
             }
             String owner = g.stream().map(DockingPorts.Port::owner).filter(o -> !o.isEmpty()).findFirst().orElse("");
-            out.add(new Station(loc.body(), owner, g.size()));
+            int[] m = modules.apply(g.get(0).pos());
+            out.add(new Station(loc.body(), owner, g.size(), false, m[0], m[1] > 0));
         }
         return out;
     }

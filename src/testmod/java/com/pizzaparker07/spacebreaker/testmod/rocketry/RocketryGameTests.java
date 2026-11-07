@@ -1161,6 +1161,37 @@ public final class RocketryGameTests {
         helper.succeed();
     }
 
+    @GameTest(template = EMPTY, timeoutTicks = 400, batch = "rocketry_station_delivery")
+    public static void moduleRocketDeliversToTheConsole(GameTestHelper helper) {
+        var level = helper.getLevel();
+        BlockPos centre = helper.absolutePos(new BlockPos(4, 30, 4));
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.buildCore(level, centre, Direction.SOUTH, "tester"), "the core unfolds");
+        BlockPos port = com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.corePort(centre);
+        var design = new com.pizzaparker07.spacebreaker.content.rocketry.design.RocketDesign(java.util.List.of(
+                com.pizzaparker07.spacebreaker.Spacebreaker.id("vacuum_engine"), com.pizzaparker07.spacebreaker.Spacebreaker.id("fuel_tank_small"),
+                com.pizzaparker07.spacebreaker.Spacebreaker.id("docking_module")));
+        RocketEntity rocket = RocketEntity.create(level, design, net.minecraft.world.phys.Vec3.atBottomCenterOf(port.above(12)), 0F);
+        level.addFreshEntity(rocket);
+        rocket.stageScene(FlightState.ORBIT, 0, 0, false);
+        helper.assertTrue(rocket.carriedModule().orElse(null) == com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.DOCKING,
+                "the rocket carries a docking module");
+        rocket.approachPort(port, Direction.UP, 6);
+        var core = com.pizzaparker07.spacebreaker.content.rocketry.station.StationCoreBlockEntity.near(level, port);
+        helper.assertTrue(core != null, "the station has a console");
+        int[] parts = com.pizzaparker07.spacebreaker.content.rocketry.station.StationParts.get(level).near(port, com.pizzaparker07.spacebreaker.content.rocketry.station.Stations.CLUSTER);
+        helper.assertTrue(parts[0] >= 1 && parts[1] == 0, "the map counts the core, no shipyard: " + parts[0]);
+        helper.succeedWhen(() -> {
+            helper.assertTrue(!rocket.docking(), "still flying in");
+            boolean stored = false;
+            for (int i = 0; i < core.getContainerSize(); i++) {
+                stored |= core.getItem(i).is(RocketryModule.DOCKING_MODULE.get());
+            }
+            helper.assertTrue(stored, "the module waits in the console");
+            helper.assertTrue(rocket.carriedModule().isEmpty(), "and is not delivered twice");
+            rocket.discard();
+        });
+    }
+
     @GameTest(template = EMPTY)
     public static void stationBunkSetsRespawn(GameTestHelper helper) {
         BlockPos bunk = helper.absolutePos(new BlockPos(1, 2, 1));
