@@ -91,7 +91,10 @@ public final class NeptuneData {
     // ------------------------------------------------------------------ datagen
 
     static void datapack(SbDatapack dp) {
-        dp.add(TerrainProfile.REGISTRY, ctx -> ctx.register(terrain("triton"), tritonProfile()));
+        dp.add(TerrainProfile.REGISTRY, ctx -> {
+            ctx.register(terrain("triton"), tritonProfile());
+            Proteus.terrain(ctx);
+        });
         dp.add(Registries.CONFIGURED_FEATURE, NeptuneData::configured);
         dp.add(Registries.PLACED_FEATURE, NeptuneData::placed);
         dp.add(Registries.BIOME, NeptuneData::biomes);
@@ -100,6 +103,7 @@ public final class NeptuneData {
     }
 
     private static void configured(BootstrapContext<ConfiguredFeature<?, ?>> ctx) {
+        Proteus.configured(ctx);
         ctx.register(cf("triton_cantaloupe"), new ConfiguredFeature<>(OuterWorlds.CELLS.get(), cantaloupe()));
         ctx.register(cf("triton_geysers"), new ConfiguredFeature<>(OuterWorlds.VENTS.get(), geysers()));
         ctx.register(cf("triton_clathrate"), new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(new TagMatchTest(TRITON_STONE),
@@ -108,6 +112,7 @@ public final class NeptuneData {
     }
 
     private static void placed(BootstrapContext<PlacedFeature> ctx) {
+        Proteus.placed(ctx);
         var cf = ctx.lookup(Registries.CONFIGURED_FEATURE);
         for (String whole : new String[]{"triton_cantaloupe", "triton_geysers"}) {
             PlacementUtils.register(ctx, pf(whole), cf.getOrThrow(cf(whole)), BiomeFilter.biome());
@@ -121,6 +126,7 @@ public final class NeptuneData {
     private static void biomes(BootstrapContext<Biome> ctx) {
         HolderGetter<PlacedFeature> pf = ctx.lookup(Registries.PLACED_FEATURE);
         HolderGetter<ConfiguredWorldCarver<?>> carvers = ctx.lookup(Registries.CONFIGURED_CARVER);
+        Proteus.biomes(ctx, pf, carvers);
         var raw = GenerationStep.Decoration.RAW_GENERATION;
         var ores = GenerationStep.Decoration.UNDERGROUND_ORES;
         var local = GenerationStep.Decoration.LOCAL_MODIFICATIONS;

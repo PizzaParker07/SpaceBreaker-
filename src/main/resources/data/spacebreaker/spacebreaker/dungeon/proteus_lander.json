@@ -1,0 +1,9 @@
+{
+  "structure": "spacebreaker:proteus_lander",
+  "world": "spacebreaker:proteus",
+  "guardians": [],
+  "loot_tables": [
+    "spacebreaker:dungeons/proteus/lander_cabin",
+    "spacebreaker:dungeons/proteus/lander_cargo"
+  ]
+}

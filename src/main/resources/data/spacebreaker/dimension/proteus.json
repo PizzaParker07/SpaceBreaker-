@@ -1,0 +1,13 @@
+{
+  "type": "spacebreaker:proteus",
+  "generator": {
+    "type": "spacebreaker:planet",
+    "terrain": "spacebreaker:proteus",
+    "biome_source": {
+      "type": "spacebreaker:planet",
+      "highlands": "spacebreaker:proteus_plains",
+      "crater": "spacebreaker:proteus_crater",
+      "polar": "spacebreaker:proteus_polar"
+    }
+  }
+}

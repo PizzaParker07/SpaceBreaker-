@@ -1,5 +1,7 @@
 {
   "values": [
+    "spacebreaker:proteus_regolith",
+    "spacebreaker:proteus_crust",
     "spacebreaker:triton_frost",
     "spacebreaker:pink_nitrogen_frost",
     "spacebreaker:plume_dust",

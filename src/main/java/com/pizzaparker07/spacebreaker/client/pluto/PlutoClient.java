@@ -30,6 +30,11 @@ public final class PlutoClient {
         event.register(Spacebreaker.id("pluto"), new PlutoSkyEffects(Bodies.key("pluto"), GiantPlanetSkyEffects.Parent.plain(CHARON_DISC),
                 Bodies.key("charon")));
         event.register(Spacebreaker.id("charon"), new GiantPlanetSkyEffects(Bodies.key("charon"), GiantPlanetSkyEffects.Parent.plain(PLUTO_DISC)));
+        // from the little outer moons Pluto is a small disc, with Charon beside it
+        for (String moonlet : new String[]{"nix", "hydra"}) {
+            event.register(Spacebreaker.id(moonlet), new GiantPlanetSkyEffects(Bodies.key(moonlet), GiantPlanetSkyEffects.Parent.plain(PLUTO_DISC),
+                    Bodies.key("charon")));
+        }
     }
 
     @SubscribeEvent

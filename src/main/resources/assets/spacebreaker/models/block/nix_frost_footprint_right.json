@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "spacebreaker:block/nix_frost",
+    "up": "spacebreaker:block/nix_frost_footprint_right",
+    "down": "spacebreaker:block/nix_frost",
+    "north": "spacebreaker:block/nix_frost",
+    "south": "spacebreaker:block/nix_frost",
+    "east": "spacebreaker:block/nix_frost",
+    "west": "spacebreaker:block/nix_frost"
+  }
+}

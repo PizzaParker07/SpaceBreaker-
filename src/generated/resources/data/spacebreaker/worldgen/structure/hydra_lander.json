@@ -1,0 +1,7 @@
+{
+  "type": "spacebreaker:supply_lander",
+  "biomes": "spacebreaker:hydra_plains",
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "variant": "hydra"
+}

@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-07T06:04:26.424315015	Loot Tables
+// 1.21.1	2026-11-07T10:06:46.025800078	Loot Tables
 c48f71ca60600cd6230f77a2e146a3df572494ae data/spacebreaker/loot_table/blocks/aerogel.json
 e37973997ec83c5b040a31bf9fcda1757b53fc00 data/spacebreaker/loot_table/blocks/airlock_door.json
 c511e60fe01f6dddc2d2b0e516ca81c11bf4ca91 data/spacebreaker/loot_table/blocks/aluminum_block.json
@@ -102,6 +102,8 @@ cac18213849f6e2cca9f0c9e6d81afc04bf306a5 data/spacebreaker/loot_table/blocks/gro
 948dffa5db668d326a9091923f037fb106ee0a59 data/spacebreaker/loot_table/blocks/hematite_soil.json
 0398f89219b0b4b368053d0cc10441f72e932a41 data/spacebreaker/loot_table/blocks/hollow_deposit.json
 0cef40e1cad5eed1387482250c8199d482dba2fc data/spacebreaker/loot_table/blocks/hv_cable.json
+5b53a2a3d326254e9b1f5a4229f15a67246435b8 data/spacebreaker/loot_table/blocks/hydra_frost.json
+f59f46e4411ac6f9faee799cb540da55d789537a data/spacebreaker/loot_table/blocks/hydra_ice.json
 8426be532f59c94a900cafefb123dca37e7f6392 data/spacebreaker/loot_table/blocks/ice_cobbles.json
 f17e6f58f078d8ff21c6e327a82e5f02c830cdca data/spacebreaker/loot_table/blocks/ice_geyser.json
 12351b5f9f65daf5dd55ba5d8bef5a78943ccccc data/spacebreaker/loot_table/blocks/ice_melter.json
@@ -158,6 +160,8 @@ b8fe448e460a856c91ca266d144604b5af5d305a data/spacebreaker/loot_table/blocks/mir
 d304bbe2262da1607312d6a822a8ac6111a49e28 data/spacebreaker/loot_table/blocks/nickel_superalloy_block.json
 1c0103da9c1647e82ff41b508454f7446f2ebb71 data/spacebreaker/loot_table/blocks/nitrogen_geyser.json
 0474747677ce254762bc72e401f13a058dee2eb6 data/spacebreaker/loot_table/blocks/nitrogen_ice.json
+86061e1e838fe680d19ca5b8ddd197d33593e02a data/spacebreaker/loot_table/blocks/nix_frost.json
+34f3f2cd002767a8bd6496edf86ef4f896936649 data/spacebreaker/loot_table/blocks/nix_ice.json
 00d708c6854076dd69fcc13c2e37120ea2ae6d94 data/spacebreaker/loot_table/blocks/oberon_ice.json
 360d86865e5d9fca54ecd8a6030580a1847f5010 data/spacebreaker/loot_table/blocks/oberon_ice_slab.json
 d7dda11bea74fe923615e175ce198aa5dbdcdd19 data/spacebreaker/loot_table/blocks/oberon_ice_stairs.json
@@ -187,6 +191,8 @@ ab4ac8cc9d8b9565e4a8c41c8ce0d0f6753a5934 data/spacebreaker/loot_table/blocks/pol
 17e8e8f676a903ff8ae569f7dab7c0debaacde95 data/spacebreaker/loot_table/blocks/power_monitor.json
 abc3bbb6c896a84e643b45bdceea57dd4340c598 data/spacebreaker/loot_table/blocks/press.json
 6d4297786d59c45f5ec6c501fc681a95d44cbf85 data/spacebreaker/loot_table/blocks/pressurized_tank.json
+25e5e6cacea18ce9a522a26a2e08a813a54aa996 data/spacebreaker/loot_table/blocks/proteus_crust.json
+b26cb63793bf70a1bb203ca2d9c47fb2046415f2 data/spacebreaker/loot_table/blocks/proteus_regolith.json
 aa95170403734b3ec90806329bfd015813e8f29d data/spacebreaker/loot_table/blocks/pumpjack.json
 184ae3a2abf30c9f56f0c1c0bebec75679056d33 data/spacebreaker/loot_table/blocks/raw_bauxite_block.json
 e5930b8eeae731c049f579d02d53c7d964086116 data/spacebreaker/loot_table/blocks/raw_pentlandite_block.json
