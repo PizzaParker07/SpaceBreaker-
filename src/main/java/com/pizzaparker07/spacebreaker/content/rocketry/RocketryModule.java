@@ -259,6 +259,7 @@ public final class RocketryModule implements SbModule {
                 .add(STATION_BUNK_ITEM).add(FUEL_DEPOT_ITEM).add(LANDING_BEACON_ITEM);
         SbTabs.SPACEFLIGHT.addStack(RocketryModule::exampleRocket);
         SbTabs.SPACEFLIGHT.addStack(() -> com.pizzaparker07.spacebreaker.content.rocketry.item.RocketItem.of(LUNAR_SHUTTLE));
+        SbTabs.SPACEFLIGHT.addStack(() -> com.pizzaparker07.spacebreaker.content.rocketry.item.RocketItem.of(MARS_LANDER));
         SbTabs.SPACEFLIGHT.add(PROPELLANT_CARTRIDGE).add(EMERGENCY_BEACON);
     }
 
@@ -279,6 +280,16 @@ public final class RocketryModule implements SbModule {
             new com.pizzaparker07.spacebreaker.content.rocketry.design.RocketDesign(java.util.List.of(
                     Spacebreaker.id("vacuum_engine"), Spacebreaker.id("fuel_tank_medium"), Spacebreaker.id("landing_legs"),
                     Spacebreaker.id("crew_capsule"), Spacebreaker.id("rcs_thrusters")));
+
+    /**
+     * Mars lander: one reusable methalox stage between Mars orbit and the surface. Heat shield and parachute for
+     * the entry through the thin air, then a powered touchdown on its legs; refuelled with methane and oxygen
+     * made on Mars (Sabatier reactor) for the climb back to orbit.
+     */
+    public static final com.pizzaparker07.spacebreaker.content.rocketry.design.RocketDesign MARS_LANDER =
+            new com.pizzaparker07.spacebreaker.content.rocketry.design.RocketDesign(java.util.List.of(
+                    Spacebreaker.id("methalox_vacuum_engine"), Spacebreaker.id("fuel_tank_large"), Spacebreaker.id("landing_legs"),
+                    Spacebreaker.id("heat_shield"), Spacebreaker.id("crew_capsule"), Spacebreaker.id("parachute"), Spacebreaker.id("rcs_thrusters")));
 
     private static net.minecraft.world.item.ItemStack exampleRocket() {
         return com.pizzaparker07.spacebreaker.content.rocketry.item.RocketItem.of(MOON_ROCKET);

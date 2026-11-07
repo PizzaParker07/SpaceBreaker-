@@ -1074,6 +1074,25 @@ public final class RocketryGameTests {
     }
 
     @GameTest(template = EMPTY)
+    public static void marsLander(GameTestHelper helper) {
+        var level = helper.getLevel();
+        RocketLayout lander = RocketLayout.of(RocketryModule.MARS_LANDER, RocketParts.lookup(level.registryAccess()));
+        helper.assertTrue(lander.problems().isEmpty(), "a valid design: " + lander.problems());
+        helper.assertTrue(lander.hasLegsFrom(0) && lander.payload().seats() > 0 && lander.payload().parachute(), "legs, a seat and a parachute");
+        helper.assertTrue(lander.stages().stream().allMatch(s -> s.propellant() == com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant.METHALOX),
+                "burns methane, which is made on Mars");
+        var mars = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(Spacebreaker.id("mars"), false).orElseThrow();
+        var marsOrbit = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(Spacebreaker.id("mars"), true).orElseThrow();
+        helper.assertTrue(Transfers.reentryRating(marsOrbit, mars) <= lander.payload().heatShield(), "its shield takes the entry");
+        var balanced = SbConfig.Realism.BALANCED;
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.MissionPlanner.fly(lander, 0, lander.fullFuel(), List.of(marsOrbit, mars), balanced).possible(),
+                "down from Mars orbit");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.nav.MissionPlanner.fly(lander, 0, lander.fullFuel(), List.of(mars, marsOrbit), balanced).possible(),
+                "and, refuelled on Mars, back up to orbit");
+        helper.succeed();
+    }
+
+    @GameTest(template = EMPTY)
     public static void cargoRocket(GameTestHelper helper) {
         var level = helper.getLevel();
         var lookup = RocketParts.lookup(level.registryAccess());
@@ -1089,6 +1108,9 @@ public final class RocketryGameTests {
         BlockPos chest = port.east(2);
         level.setBlock(port, RocketryModule.DOCKING_PORT.get().defaultBlockState(), 3);
         level.setBlock(chest, net.minecraft.world.level.block.Blocks.CHEST.defaultBlockState(), 3);
+        // a machine with an inventory right next to the port gets nothing (a furnace stands in for one)
+        BlockPos furnace = port.north();
+        level.setBlock(furnace, net.minecraft.world.level.block.Blocks.FURNACE.defaultBlockState(), 3);
         RocketEntity rocket = RocketEntity.create(level, uncrewed("cargo_module"), helper.absoluteVec(new net.minecraft.world.phys.Vec3(4.5, 2, 4.5)), 0F);
         level.addFreshEntity(rocket);
         helper.assertTrue(rocket.hasCargoHold() && rocket.cargo().getContainerSize() == 27, "a 27-slot hold");
@@ -1108,6 +1130,25 @@ public final class RocketryGameTests {
             iron += box.getItem(i).is(net.minecraft.world.item.Items.IRON_INGOT) ? box.getItem(i).getCount() : 0;
         }
         helper.assertTrue(iron == 64, "the iron is in the chest: " + iron);
+        var oven = (net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity) level.getBlockEntity(furnace);
+        helper.assertTrue(oven.isEmpty(), "nothing went into the machine next to the port");
+        // the automatic route: between two places away from Earth's surface
+        var moonOrbit = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(Location.MOON, true).orElseThrow();
+        helper.assertFalse(com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.routeAllowed(Location.EARTH_SURFACE, Location.EARTH_ORBIT),
+                "no route from Earth's surface (no beacon landing there)");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.routeAllowed(Location.MOON_SURFACE, moonOrbit), "Moon base <-> station");
+        rocket.startRoute(Location.MOON_SURFACE, moonOrbit);
+        helper.assertTrue(rocket.routeOn(), "the route runs");
+        // at the station: a barrel by the port holds what goes down to the base
+        BlockPos barrel = port.south(2);
+        level.setBlock(barrel, net.minecraft.world.level.block.Blocks.BARREL.defaultBlockState(), 3);
+        var out = (net.minecraft.world.level.block.entity.BarrelBlockEntity) level.getBlockEntity(barrel);
+        out.setItem(0, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.COBBLESTONE, 10));
+        com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.routeArrived(rocket, port, moonOrbit);
+        helper.assertTrue(rocket.missionTarget().filter(Location.MOON_SURFACE::equals).isPresent(), "next stop: the base");
+        helper.assertTrue(out.isEmpty() && rocket.cargo().countItem(net.minecraft.world.item.Items.COBBLESTONE) == 10, "the barrel's load came aboard");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.storageNear(level, port).stream().noneMatch(barrel::equals),
+                "barrels are the outbox: deliveries go to chests");
         // a crewed rocket has no hold
         helper.assertFalse(RocketEntity.create(level, RocketryModule.MOON_ROCKET, rocket.position(), 0F).hasCargoHold(), "a crew rocket has no hold");
         rocket.discard();

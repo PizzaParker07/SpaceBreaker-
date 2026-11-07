@@ -505,6 +505,32 @@ final class RocketryScenario implements ShowcaseScenario {
                     com.pizzaparker07.spacebreaker.content.rocketry.station.LandingBeacons.get(moon).setOwner(b, "PizzaParker07");
                     mapShot(p, Location.MOON, false);
                 }, null));
+        s.add(new Shot("41_mars_lander", 6000, 0, 0, 0, 0F, 0F, true, fp, 140,
+                p -> {
+                    clearScene(p);
+                    var marsSurface = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(Spacebreaker.id("mars"), false).orElseThrow();
+                    ServerLevel level = p.server.getLevel(marsSurface.dimension());
+                    if (level == null) {
+                        return;
+                    }
+                    int gx = 60, gz = 60;
+                    level.getChunk(gx >> 4, gz >> 4);
+                    int gy = level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, gx, gz);
+                    for (int dx = -2; dx <= 2; dx++) {
+                        for (int dz = -2; dz <= 2; dz++) {
+                            level.setBlock(new BlockPos(gx + dx, gy - 1, gz + dz), RocketryModule.STATION_HULL.get().defaultBlockState(), 3);
+                            for (int up = 0; up < 4; up++) {
+                                level.setBlock(new BlockPos(gx + dx, gy + up, gz + dz), net.minecraft.world.level.block.Blocks.AIR.defaultBlockState(), 3);
+                            }
+                        }
+                    }
+                    level.setBlock(new BlockPos(gx, gy - 1, gz), RocketryModule.LANDING_BEACON.get().defaultBlockState(), 3);
+                    RocketEntity r = RocketEntity.create(level, RocketryModule.MARS_LANDER, new Vec3(gx + 0.5, gy, gz + 0.5), 30F);
+                    r.fillCompletely();
+                    level.addFreshEntity(r);
+                    scene.add(r);
+                    toDimension(p, marsSurface, gx + 8.5, gy + 4.5, gz + 8.5, 135F, 14F);
+                }, null));
         s.add(new Shot("31_nearby_stars", 6000, 0, 0, 0, 0F, 0F, false, fp, 120,
                 p -> {
                     RocketryShowcaseClient.star = "Alpha Centauri";
