@@ -114,6 +114,11 @@ Landable bodies use the dimension `spacebreaker:<name>` (Earth is the overworld)
 Phobos, Deimos, Ceres, Vesta, Io, Europa, Ganymede, Callisto, Titan, Enceladus, Miranda, Triton, Pluto,
 Charon, the Moon. Jupiter, Saturn, Uranus and Neptune are not landable.
 
+Galilean moons: the J2000 phases (`mean_anomaly_deg`, measured from Jupiter's equatorial node on the
+ecliptic at 337.8°) and the periods come from Meeus's mean longitudes and mean motions (*Astronomical
+Algorithms*, ch. 44), so the moons stand where the real ones did. `GalileanMoonsTest` checks the Laplace
+resonance λ_Io − 3λ_Europa + 2λ_Ganymede = 180° (±0.5°) from 2000 to 2100.
+
 Surface radiation doses are real where measured (Moon 1.37 mSv/day, Mars 0.67, Jovian moons from
 NASA estimates: Io ≈ 36 Sv/day, Europa ≈ 5.4 Sv/day, Ganymede ≈ 80 mSv/day, Callisto ≈ 0.1 mSv/day)
 and estimates elsewhere. Ceres and Vesta mean anomalies are approximate.
