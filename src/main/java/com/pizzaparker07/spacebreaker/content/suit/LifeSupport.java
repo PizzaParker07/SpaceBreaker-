@@ -32,11 +32,26 @@ public final class LifeSupport {
     /** What the environment is like at a player's head. */
     public record Env(boolean breathable, double ambientC, double doseRateMsvDay, double pressureKpa) {
         public static Env at(Player player, double cachedDoseRate) {
+            com.pizzaparker07.spacebreaker.core.env.PressurizedVehicle cabin = cabin(player);
+            if (cabin != null && cabin.breathe(player, OxygenUse.rate(player))) {
+                // a shirt-sleeve cabin breathes for its rider this tick: its air, temperature and shielding
+                return new Env(true, cabin.cabinTemperatureC(), cachedDoseRate * cabin.radiationFactor(), 101.325);
+            }
             Level level = player.level();
             BlockPos eyes = BlockPos.containing(player.getEyePosition());
             return new Env(Environment.canBreathe(level, eyes), Environment.temperatureC(level, eyes), cachedDoseRate,
                     Environment.pressureKpa(level, eyes));
         }
+    }
+
+    /** The pressurised cabin (rover, ...) the player rides in, while it holds air; null otherwise. */
+    public static com.pizzaparker07.spacebreaker.core.env.PressurizedVehicle cabin(Player player) {
+        for (net.minecraft.world.entity.Entity v = player.getVehicle(); v != null; v = v.getVehicle()) {
+            if (v instanceof com.pizzaparker07.spacebreaker.core.env.PressurizedVehicle cabin && cabin.cabinPressurized()) {
+                return cabin;
+            }
+        }
+        return null;
     }
 
     public static SurvivalData data(Player player) {
