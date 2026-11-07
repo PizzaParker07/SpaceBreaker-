@@ -78,6 +78,8 @@ public final class HelmetLamps {
      */
     static void beam(PoseStack pose, VertexConsumer vc, float lampX, float lampY, float lampZ, boolean longBeam) {
         PoseStack.Pose p = pose.last();
+        // shader packs add bloom to emissive glows: keep the cone fainter there
+        int color = com.pizzaparker07.spacebreaker.compat.client.ShaderState.shaderPackInUse() ? 0x38FFFFFF : 0x70FFFFFF;
         // long beam: a narrow cone twice as long
         float len = (longBeam ? 24F : 12F) / 16F, r0 = 0.6F / 16F, r1 = (longBeam ? 1.4F : 3.0F) / 16F;
         float x = lampX / 16F, y = lampY / 16F, z = lampZ / 16F;
@@ -89,7 +91,7 @@ public final class HelmetLamps {
             for (int side = 0; side < 2; side++) {
                 for (int i = 0; i < 4; i++) {
                     float[] k = v[side == 0 ? i : 3 - i];
-                    vc.addVertex(p, k[0], k[1], k[2]).setColor(0x70FFFFFF).setUv(k[3], k[4]).setOverlay(OverlayTexture.NO_OVERLAY)
+                    vc.addVertex(p, k[0], k[1], k[2]).setColor(color).setUv(k[3], k[4]).setOverlay(OverlayTexture.NO_OVERLAY)
                             .setLight(LightTexture.FULL_BRIGHT).setNormal(p, 0, 1, 0);
                 }
             }
