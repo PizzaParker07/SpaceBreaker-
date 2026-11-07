@@ -33,6 +33,7 @@ Uçarken göstergede **Kalan yakıt (Δv)** satırını izle.
 - Ay yörüngesinden yüzeye yaklaşık **1870 m/s** gerekir. Dönüş için de bir o kadar.
 - **İniş bacakları** olmadan inemezsin.
 - Sert inişte roket hasar görür; manevra iticileri inişi yumuşatır.
+- Uzun yolculuklarda kriyojenik yakıt buharlaşır; yolculuk kartı ne kadarını gösterir. → [Buharlaşma](rocket_parts#boil_off)
 - Üssüne bir **İniş İşareti** koy: yörüngeden inen roketler en yakın işarete iner ("İniş işareti alındı: üsse iniliyor"). Havası olan dünyalarda rüzgâr inişi altı bloğa kadar kaydırabilir. Yıldız haritası üsleri ve iniş işareti sayılarını istasyonların yanında gösterir.
 - **Ay mekiği:** tek kademeli, yeniden kullanılır bir roket (vakum motoru, orta tank, iniş bacakları, kapsül, manevra iticileri). Ay yörüngesindeki istasyon ile yüzeydeki üs arasında tek tankla gidip gelir, porta yanaşıp yakıt deposundan dolar. → [Uzay İstasyonu](space_station)
 - **Mars iniş aracı:** metaloks vakum motoru, büyük tank, iniş bacakları, ısı kalkanı, kapsül, paraşüt ve manevra iticileri. Mars yörüngesinden yüzeye iner; Mars'ta üretilen metan ve oksijenle doldurunca yörüngeye geri döner. → [Yerinde Üretim](isru)
@@ -80,6 +81,7 @@ While flying, watch the **Fuel left (Δv)** line on the display.
 - Lunar orbit to the surface takes about **1,870 m/s**. The way back takes as much.
 - You cannot land without **landing legs**.
 - A hard landing damages the rocket; RCS thrusters soften it.
+- On long trips cryogenic fuel boils off; the trip card shows how much. → [Boil-off](rocket_parts#boil_off)
 - Put a **Landing Beacon** at your base: rockets descending from orbit land on the nearest one ("Landing beacon in range: coming down on the base"). On worlds with air the wind can drift the touchdown up to six blocks. The star map shows surface bases and their beacon count beside stations.
 - **Lunar shuttle:** a single reusable stage (vacuum engine, medium tank, landing legs, capsule, RCS thrusters). It flies between a station in Moon orbit and a surface base on one tank, docks at a port and refuels from the depot. → [Space Station](space_station)
 - **Mars lander:** methalox vacuum engine, large tank, landing legs, heat shield, capsule, parachute and RCS thrusters. It flies from Mars orbit to the surface and, refuelled with methane and oxygen made on Mars, back to orbit. → [In-Situ Resources](isru)

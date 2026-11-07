@@ -32,6 +32,8 @@ Kuyruklu yıldız, kirli bir kartopudur: kömürden koyu bir toz kabuğunun alt�
 ## Oraya gitmek {#route}
 Yıldız haritasında bütün kuyruklu yıldızlar gezegenlerin yanında tek bir düğümde durur: **Kuyruklu yıldızlar**. Onu aç: ortada Güneş, her kuyruklu yıldızın da kendi uzun, basık yörüngesi var. Kuyruk her zaman Güneş'in tersini gösterir ve yalnız kuyruklu yıldız uyanıkken uzundur. Bir kuyruklu yıldızı seçince kartını görürsün: Güneş'e uzaklık, Güneş'e en yakın geçiş (tarih ve AU), bir turun kaç yıl sürdüğü ve etkinlik.
 
+> **Halley** ters yönde dolanır: yıldız haritası ona ancak nükleer termal motorla ulaşılacağını, yoldaki yıllar için yalıtımlı tank da gerektiğini söyler. **Hale–Bopp** yalnız gözlem içindir. → [Buharlaşma](rocket_parts#boil_off)
+
 > **Halley** bir turunu yaklaşık 75 yılda tamamlar ve Neptün'ün ötesine, Güneş'ten yaklaşık 35 AU uzağa kadar savrulur. Dönüş yolundan önce buzunu erit ve yakıtını orada üret.
 
 ## Yakıt

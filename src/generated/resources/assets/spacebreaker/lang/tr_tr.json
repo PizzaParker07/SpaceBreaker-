@@ -1809,7 +1809,7 @@
   "tech.spacebreaker.oxygen_distribution": "Oksijen Dağıtımı",
   "tech.spacebreaker.oxygen_distribution.desc": "Kapalı odaları solunabilir havayla doldur ve havayı orada tut.",
   "tech.spacebreaker.oxygen_storage": "Oksijen Depolama",
-  "tech.spacebreaker.oxygen_storage.desc": "Yüksek basınçlı alüminyum tüpler ve dolum istasyonu: tüp başına beş dakika hava.",
+  "tech.spacebreaker.oxygen_storage.desc": "Yüksek basınçlı alüminyum tüpler ve dolum istasyonu: yürürken tüp başına yaklaşık beş dakika hava; koşmak ve ağır iş daha çok harcar.",
   "tech.spacebreaker.phobos_survey": "Phobos Araştırması",
   "tech.spacebreaker.phobos_survey.desc": "Yakalanmış bir asteroit mi, yoksa Mars'tan kopmuş bir parça mı? Oluklu, tozlu ve üstünden zıplayıp kaçabileceğin kadar küçük.",
   "tech.spacebreaker.plume_sampling": "Gayzer Örneklemesi",
