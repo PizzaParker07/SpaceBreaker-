@@ -64,4 +64,18 @@ public final class NuclearExhaust {
         }
         return total;
     }
+
+    /**
+     * The assembler's warning about nuclear stages, as a lang key under {@code gui.spacebreaker.assembler.}, or null:
+     * {@code nuclear_first} when the first stage is nuclear (it cannot lift off and would irradiate the pad),
+     * {@code nuclear} for a nuclear upper stage (radioactive while it burns).
+     */
+    @org.jetbrains.annotations.Nullable
+    public static String designWarning(RocketLayout layout) {
+        java.util.List<RocketLayout.Stage> stages = layout.stages();
+        if (!stages.isEmpty() && stages.get(0).propellant() == Propellant.NUCLEAR) {
+            return "nuclear_first";
+        }
+        return stages.stream().anyMatch(s -> s.propellant() == Propellant.NUCLEAR) ? "nuclear" : null;
+    }
 }

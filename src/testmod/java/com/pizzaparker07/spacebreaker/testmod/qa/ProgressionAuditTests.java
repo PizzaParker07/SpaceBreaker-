@@ -129,8 +129,19 @@ public final class ProgressionAuditTests {
     @GameTest(template = "empty", timeoutTicks = 400)
     public static void grandTourIsCompletable(GameTestHelper h) {
         ProgressionModel m = model(h);
-        var holder = h.getLevel().getServer().getAdvancements().get(Spacebreaker.id("main/grand_tour"));
-        h.assertTrue(holder != null, "advancement spacebreaker:main/grand_tour exists");
+        h.assertTrue(h.getLevel().getServer().getAdvancements().get(Spacebreaker.id("main/grand_tour")) != null,
+                "advancement spacebreaker:main/grand_tour exists");
+        List<String> impossible = grandTourGaps(h.getLevel().getServer(), m);
+        h.assertTrue(impossible.isEmpty(), "grand_tour groups with no reachable world: " + impossible);
+        h.succeed();
+    }
+
+    /** Requirement groups of grand_tour with no world the model reaches and returns from. */
+    static List<String> grandTourGaps(net.minecraft.server.MinecraftServer server, ProgressionModel m) {
+        var holder = server.getAdvancements().get(Spacebreaker.id("main/grand_tour"));
+        if (holder == null) {
+            return List.of("advancement missing");
+        }
         var adv = holder.value();
         List<String> impossible = new ArrayList<>();
         for (List<String> group : adv.requirements().requirements()) {
@@ -148,8 +159,7 @@ public final class ProgressionAuditTests {
                 impossible.add(group.toString());
             }
         }
-        h.assertTrue(impossible.isEmpty(), "grand_tour groups with no reachable world: " + impossible);
-        h.succeed();
+        return impossible;
     }
 
     private ProgressionAuditTests() {

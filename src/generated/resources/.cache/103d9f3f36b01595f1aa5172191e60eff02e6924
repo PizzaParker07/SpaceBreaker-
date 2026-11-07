@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-07T16:15:50.9782147	Registries
+// 1.21.1	2026-11-07T17:26:44.578932435	Registries
 a38072ba4c640199737ebfbbc034c7ff4c262ce1 data/spacebreaker/neoforge/biome_modifier/add_oil_deposit.json
 359e688a8c7c731c92b480293ac4de3414233fdb data/spacebreaker/neoforge/biome_modifier/add_oil_deposit_sparse.json
 09748e9f324cff73a2a33cba57c1dd08e29a4564 data/spacebreaker/neoforge/biome_modifier/add_ore_bauxite.json
@@ -319,6 +319,7 @@ d890b9e682ac69d1d67e1c9d95d18a44ae1c4f39 data/spacebreaker/worldgen/structure/ob
 206fb2f9fdd082fbeaec8d34e6c1cc188c1ef257 data/spacebreaker/worldgen/structure/ryugu_lander.json
 6c4a829a5585a46458279ce3c5f091b4e5b2c460 data/spacebreaker/worldgen/structure/tempel_1_lander.json
 d0513577bf178712f9dd987c4a71d30637cc1040 data/spacebreaker/worldgen/structure/titan_hangar.json
+51438aa02a7b4d077ce0b4ee78a17a5376b7e91c data/spacebreaker/worldgen/structure/titania_canyon_outpost.json
 4f895de360389e801fcd504fa837b22760de25ac data/spacebreaker/worldgen/structure/titania_lander.json
 c4f7c2f5de7be535bd6aa271c9fad71dfcd2442a data/spacebreaker/worldgen/structure/triton_geyser_station.json
 b1c67c875462b9f81b043812870a52d28b2c88dc data/spacebreaker/worldgen/structure/triton_lander.json
@@ -348,6 +349,7 @@ d0fec376e6e56cfbeb895dd40a18f24b7c6364f4 data/spacebreaker/worldgen/structure_se
 a1887eb469fffc830bd1f53b05d35d791b641df7 data/spacebreaker/worldgen/structure_set/ryugu_landers.json
 18682f8afb4d1d698d76229c8e5b72303285f8be data/spacebreaker/worldgen/structure_set/tempel_1_landers.json
 bdfb17230b05d316364a488ad6ec9088f8d6fb59 data/spacebreaker/worldgen/structure_set/titan_hangars.json
+94d27e37c51f6c33cbedce5cf7bcbd27103dadb2 data/spacebreaker/worldgen/structure_set/titania_canyon_outposts.json
 149dbfda2c0a4127b4378567fbcddc8a19814f0c data/spacebreaker/worldgen/structure_set/titania_landers.json
 1430c03aef1d6f7b5f123d7eda021739feb5fb99 data/spacebreaker/worldgen/structure_set/triton_geyser_stations.json
 5b37ff28a7b8faa178cfb3db336d44584fd472ee data/spacebreaker/worldgen/structure_set/triton_landers.json

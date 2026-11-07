@@ -86,9 +86,11 @@ public final class LifeSupport {
         boolean sealed = SpaceSuitItem.isSealed(player);
         boolean needsSuit = !breathable || underwater;
         boolean supplied = false;
+        double rate = OxygenUse.rate(player);
+        data.oxygenRate = OxygenUse.follow(data.oxygenRate, rate);
         if (needsSuit && sealed && !immune) {
             ItemStack torso = SuitTanks.wornTorso(player);
-            supplied = SuitTanks.drain(torso, 1) > 0;
+            supplied = OxygenUse.breathe(torso, data, rate);
         } else if (needsSuit && sealed) {
             supplied = SuitTanks.oxygen(SuitTanks.wornTorso(player)) > 0 || immune;
         }

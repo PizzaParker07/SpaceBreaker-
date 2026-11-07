@@ -73,6 +73,20 @@ final class ItemDuctScenario implements ShowcaseScenario {
         if (level.getBlockEntity(new BlockPos(X0 + 3, gy, Z0 + 1)) instanceof ConduitBlockEntity be) {
             be.setItemFilter(Direction.SOUTH, Items.COBBLESTONE);
         }
+        // a fission surface power unit set into a regolith bank (open towards the camera for the photo)
+        BlockPos core = new BlockPos(X0 + 6, gy, Z0 + 3);
+        for (int dx = -2; dx <= 2; dx++) {
+            for (int dz = 0; dz <= 2; dz++) {
+                if (Math.abs(dx) == 2 || dz == 2) {
+                    level.setBlock(core.offset(dx, 0, dz), floor.isAir() ? Blocks.STONE.defaultBlockState() : floor, 3);
+                }
+            }
+        }
+        level.setBlock(core, MachinesModule.FISSION_REACTOR.block().get().defaultBlockState()
+                .setValue(com.pizzaparker07.spacebreaker.content.machines.base.MachineBlock.FACING, Direction.NORTH), 3);
+        if (level.getBlockEntity(core) instanceof com.pizzaparker07.spacebreaker.content.machines.base.MachineBlockEntity r) {
+            r.items().setStackInSlot(0, new ItemStack(MachinesModule.NUCLEAR_FUEL_ELEMENT.get(), 2));
+        }
         // an enrichment cascade further along: three gas centrifuges side by side, spinning yellowcake
         for (int i = 0; i < 3; i++) {
             BlockPos p = new BlockPos(X0 - 4 + i, gy, Z0 + 3);
@@ -93,6 +107,8 @@ final class ItemDuctScenario implements ShowcaseScenario {
         s.add(new ShowcaseDriver.Shot("item_duct_01_line", 0, X0 + 2.5, gy + 3.2, Z0 - 3.2, 0F, 38F, true,
                 CameraType.FIRST_PERSON, 60, p -> PlanetTime.setDayFraction(p.serverLevel(), 0.3), null));
         s.add(new ShowcaseDriver.Shot("item_duct_02_centrifuges", 0, X0 - 2.5, gy + 2.2, Z0 + 0.2, 0F, 22F, true,
+                CameraType.FIRST_PERSON, 60, p -> PlanetTime.setDayFraction(p.serverLevel(), 0.3), null));
+        s.add(new ShowcaseDriver.Shot("item_duct_03_reactor", 0, X0 + 6.5, gy + 1.5, Z0 + 1.7, 0F, 22F, true,
                 CameraType.FIRST_PERSON, 60, p -> PlanetTime.setDayFraction(p.serverLevel(), 0.3), null));
         return s;
     }

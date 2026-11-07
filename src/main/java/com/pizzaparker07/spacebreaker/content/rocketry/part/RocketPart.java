@@ -20,10 +20,11 @@ import net.minecraft.resources.ResourceLocation;
  * @param model         item whose 3D model draws the part on a rocket
  * @param nozzle        engine nozzle exit radius in model pixels (exhaust plume size)
  * @param propellant    what the engine burns (kerolox or methalox); tanks take their stage engine's propellant
+ * @param insulated     a tank wrapped in multi-layer insulation: its cryogenic propellant boils off far more slowly
  */
 public record RocketPart(PartType type, double massKg, double propellantKg, double thrustKn, double ispSeaLevel,
                          double ispVacuum, int heatShield, int seats, int height, ResourceLocation model, int nozzle,
-                         Propellant propellant) {
+                         Propellant propellant, boolean insulated) {
     /** Standard gravity, used by the rocket equation. */
     public static final double G0 = 9.80665;
     /** RP-1 : LOX mass mixture ratio is 1 : 2.56. */
@@ -44,7 +45,8 @@ public record RocketPart(PartType type, double massKg, double propellantKg, doub
             Codec.INT.optionalFieldOf("height", 16).forGetter(RocketPart::height),
             ResourceLocation.CODEC.fieldOf("model").forGetter(RocketPart::model),
             Codec.INT.optionalFieldOf("nozzle", 8).forGetter(RocketPart::nozzle),
-            Propellant.CODEC.optionalFieldOf("propellant", Propellant.KEROLOX).forGetter(RocketPart::propellant)
+            Propellant.CODEC.optionalFieldOf("propellant", Propellant.KEROLOX).forGetter(RocketPart::propellant),
+            Codec.BOOL.optionalFieldOf("insulated", false).forGetter(RocketPart::insulated)
     ).apply(i, RocketPart::new));
 
     public boolean isEngine() {
