@@ -20,7 +20,7 @@ public class RocketAssemblerMenu extends AbstractContainerMenu {
     public static final int PAYLOAD_Y = 24;
     public static final int STAGE_Y0 = 50;   // stage 3 row; stage 2 and 1 follow 22 px apart
     public static final int ROW_GAP = 22;
-    public static final int OUTPUT_X = 152, OUTPUT_Y = 112;
+    public static final int OUTPUT_X = 160, OUTPUT_Y = 94;    // on the stage-1 line, after the assemble arrow
     public static final int INV_Y = 140;
 
     @Nullable

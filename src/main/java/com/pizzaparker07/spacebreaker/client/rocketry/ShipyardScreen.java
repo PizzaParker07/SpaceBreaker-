@@ -13,6 +13,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -84,7 +85,6 @@ public class ShipyardScreen extends Screen {
     public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
         renderBackground(g, mouseX, mouseY, partialTick);
         g.drawString(font, title.copy().withStyle(ChatFormatting.BOLD), 8, 8, INK, false);
-        g.drawString(font, Component.translatable("ship.spacebreaker.berth", Berths.MAX_WIDTH, Berths.MAX_HEIGHT, Berths.MAX_LENGTH), 8, 18, DIM, false);
         int ry = rcsRowY();
         g.drawCenteredString(font, Component.translatable("ship.spacebreaker.rcs", design.rcs()), 60, ry + 4, INK);
         g.drawCenteredString(font, Component.translatable("ship.spacebreaker.wings", design.solarWings()), 60, ry + 22, INK);
@@ -93,6 +93,34 @@ public class ShipyardScreen extends Screen {
         for (var r : renderables) {
             r.render(g, mouseX, mouseY, partialTick);
         }
+        // the numbers live in tooltips: the delta-v figure, and the berth's size on its frame
+        if (in(dvBox, mouseX, mouseY)) {
+            g.renderComponentTooltip(font, statLines(), mouseX, mouseY);
+        } else if (in(sideBox, mouseX, mouseY) || in(topBox, mouseX, mouseY)) {
+            g.renderComponentTooltip(font, List.of(Component.translatable("ship.spacebreaker.berth", Berths.MAX_WIDTH, Berths.MAX_HEIGHT, Berths.MAX_LENGTH)), mouseX, mouseY);
+        }
+    }
+
+    private int[] dvBox = new int[4], sideBox = new int[4], topBox = new int[4];
+
+    private static boolean in(int[] r, int mx, int my) {
+        return mx >= r[0] && my >= r[1] && mx < r[0] + r[2] && my < r[1] + r[3];
+    }
+
+    private List<Component> statLines() {
+        List<Component> out = new java.util.ArrayList<>();
+        out.add(stat("size", design.length() + " × " + design.width() + " × " + design.height()));
+        out.add(stat("mass", String.format(Locale.ROOT, "%,.1f t → %,.1f t", design.wetMassKg() / 1000, design.dryMassKg() / 1000)));
+        out.add(stat("propellant", String.format(Locale.ROOT, "%,.1f t", design.propellantKg() / 1000)));
+        out.add(stat("thrust", String.format(Locale.ROOT, "%,.0f kN", design.thrustKn())));
+        out.add(stat("isp", String.format(Locale.ROOT, "%,.0f s", design.isp())));
+        out.add(stat("accel", String.format(Locale.ROOT, "%.1f m/s²", design.acceleration())));
+        return out;
+    }
+
+    private static Component stat(String key, String value) {
+        return Component.translatable("ship.spacebreaker.stat_" + key).withStyle(ChatFormatting.GRAY)
+                .append(Component.literal("  " + value).withStyle(ChatFormatting.WHITE));
     }
 
     /** Side and top views of the craft, nose on the left, inside the berth's outline. */
@@ -105,6 +133,8 @@ public class ShipyardScreen extends Screen {
         g.drawString(font, Component.translatable("ship.spacebreaker.view_top"), x0, topY - 10, DIM, false);
         frame(g, x0, sideY, Berths.MAX_LENGTH * scale, Berths.MAX_HEIGHT * scale);
         frame(g, x0, topY, Berths.MAX_LENGTH * scale, Berths.MAX_WIDTH * scale);
+        sideBox = new int[]{x0, sideY, Berths.MAX_LENGTH * scale, Berths.MAX_HEIGHT * scale};
+        topBox = new int[]{x0, topY, Berths.MAX_LENGTH * scale, Berths.MAX_WIDTH * scale};
         int midSide = sideY + Berths.MAX_HEIGHT * scale / 2, midTop = topY + Berths.MAX_WIDTH * scale / 2;
         int x = x0;
         for (ShipPart p : design.stack()) {
@@ -175,32 +205,29 @@ public class ShipyardScreen extends Screen {
         g.pose().scale(1.5F, 1.5F, 1F);
         g.drawString(font, String.format(Locale.ROOT, "%,.0f m/s", design.deltaV()), 0, 0, design.problems().isEmpty() ? 0xFFFFFFFF : RED, false);
         g.pose().popPose();
-        y += 18;
-        y = stat(g, x, y, "size", design.length() + " × " + design.width() + " × " + design.height());
-        y = stat(g, x, y, "mass", String.format(Locale.ROOT, "%,.1f t → %,.1f t", design.wetMassKg() / 1000, design.dryMassKg() / 1000));
-        y = stat(g, x, y, "propellant", String.format(Locale.ROOT, "%,.1f t", design.propellantKg() / 1000));
-        y = stat(g, x, y, "thrust", String.format(Locale.ROOT, "%,.0f kN", design.thrustKn()));
-        y = stat(g, x, y, "isp", String.format(Locale.ROOT, "%,.0f s", design.isp()));
-        y = stat(g, x, y, "accel", String.format(Locale.ROOT, "%.1f m/s²", design.acceleration()));
+        String dv = String.format(Locale.ROOT, "%,.0f m/s", design.deltaV());
+        dvBox = new int[]{x, y - 10, Math.max(w, (int) (font.width(dv) * 1.5F)), 24};
+        y += 20;
+        // only what is wrong; with nothing wrong, one "ready" line
         boolean port = !design.stack().isEmpty() && design.stack().get(0) == ShipPart.COCKPIT;
-        g.drawString(font, Component.translatable(port ? "ship.spacebreaker.port_yes" : "ship.spacebreaker.port_no"), x, y, port ? GREEN : RED, false);
-        y += 14;
+        boolean bad = false;
+        if (!port && !design.problems().contains("ship.spacebreaker.problem.cockpit_front")) {
+            g.drawString(font, Component.translatable("ship.spacebreaker.port_no"), x, y, RED, false);
+            y += 12;
+            bad = true;
+        }
         for (String problem : design.problems()) {
-            for (FormattedCharSequence line : font.split(Component.translatable(problem), w)) {
+            List<FormattedCharSequence> lines = font.split(Component.literal("\u2716 ").append(Component.translatable(problem)), w);
+            for (FormattedCharSequence line : lines) {
                 g.drawString(font, line, x, y, RED, false);
                 y += 9;
             }
-            y += 2;
+            y += 3;
+            bad = true;
         }
-        if (design.problems().isEmpty()) {
+        if (!bad) {
             g.drawString(font, Component.translatable("ship.spacebreaker.ready"), x, y, GREEN, false);
         }
-    }
-
-    private int stat(GuiGraphics g, int x, int y, String key, String value) {
-        g.drawString(font, Component.translatable("ship.spacebreaker.stat_" + key), x, y, DIM, false);
-        g.drawString(font, value, x + 134 - font.width(value), y, INK, false);
-        return y + 11;
     }
 
     @Override
