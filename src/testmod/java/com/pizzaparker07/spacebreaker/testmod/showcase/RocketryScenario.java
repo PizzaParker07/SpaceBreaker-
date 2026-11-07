@@ -427,6 +427,35 @@ final class RocketryScenario implements ShowcaseScenario {
                         }
                     });
                 }, null));
+        s.add(new Shot("42_cargo_route_console", 6000, 5.5, G + 1.6, 8.5, 180F, 20F, false, fp, 80,
+                p -> {
+                    clearScene(p);
+                    if (padRocket != null) {
+                        padRocket.discard();
+                    }
+                    RocketEntity cargo = RocketEntity.create(p.serverLevel(), new com.pizzaparker07.spacebreaker.content.rocketry.design.RocketDesign(List.of(
+                            Spacebreaker.id("kerosene_engine"), Spacebreaker.id("fuel_tank_large"), Spacebreaker.id("interstage"),
+                            Spacebreaker.id("vacuum_engine"), Spacebreaker.id("fuel_tank_medium"), Spacebreaker.id("cargo_module"),
+                            Spacebreaker.id("nose_cone"))), Vec3.atBottomCenterOf(PAD.above()), -90F);
+                    cargo.fillCompletely();
+                    cargo.setOwner(p.getUUID());
+                    var moonOrbit = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.get(Location.MOON, true).orElseThrow();
+                    // a route between a Moon base and a station (shown here on the pad), loading for the next leg
+                    cargo.startRoute(Location.MOON_SURFACE, moonOrbit);
+                    cargo.setMissionTarget(moonOrbit);
+                    cargo.cargo().setItem(0, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.IRON_INGOT, 64));
+                    cargo.cargo().setItem(1, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.BREAD, 32));
+                    cargo.cargo().setItem(2, new net.minecraft.world.item.ItemStack(com.pizzaparker07.spacebreaker.content.suit.SuitModule.OXYGEN_TANK.get()));
+                    cargo.scheduleRoute(6000, PAD);
+                    p.serverLevel().addFreshEntity(cargo);
+                    scene.add(cargo);
+                    p.getServer().execute(() -> {
+                        if (p.serverLevel().getBlockEntity(CONSOLE) instanceof LaunchConsoleBlockEntity be) {
+                            be.refresh();
+                            p.openMenu(be, CONSOLE);
+                        }
+                    });
+                }, null));
         s.add(new Shot("34_station", 6000, 0, 0, 0, 0F, 0F, true, fp, 140,
                 p -> {
                     clearScene(p);

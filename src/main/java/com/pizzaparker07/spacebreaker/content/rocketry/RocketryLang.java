@@ -62,12 +62,12 @@ final class RocketryLang {
         l.add("message.spacebreaker.probe.landed", "The probe landed on %s: samples and data are on their way to you", "Sonda %s yüzeyine indi: numuneler ve veriler sana gönderiliyor");
         l.add("gui.spacebreaker.console.mission_target", "Target...", "Hedef...");
         l.add("gui.spacebreaker.console.one_way", "One-way trip (uncrewed)", "Tek yön (insansız)");
-        l.add("gui.spacebreaker.console.route", "Route → %s · hold %s/27 · %s", "Sefer → %s · ambar %s/27 · %s");
-        l.add("gui.spacebreaker.console.route.off", "off", "kapalı");
-        l.add("gui.spacebreaker.console.route.loading", "loading", "yükleniyor");
-        l.add("gui.spacebreaker.console.route.wait_cargo", "waiting for cargo", "yük bekleniyor");
-        l.add("gui.spacebreaker.console.route.wait_fuel", "waiting for fuel", "yakıt bekleniyor");
-        l.add("gui.spacebreaker.console.route.flying", "under way", "yolda");
+        l.add("gui.spacebreaker.console.route", "Route → %s · %s/27", "Sefer → %s · %s/27");
+        l.add("gui.spacebreaker.console.route.off", "Route off", "Sefer kapalı");
+        l.add("gui.spacebreaker.console.route.loading", "Route: loading", "Sefer: yükleniyor");
+        l.add("gui.spacebreaker.console.route.wait_cargo", "Route: waiting for cargo", "Sefer: yük bekleniyor");
+        l.add("gui.spacebreaker.console.route.wait_fuel", "Route: waiting for fuel", "Sefer: yakıt bekleniyor");
+        l.add("gui.spacebreaker.console.route.flying", "Route: under way", "Sefer: yolda");
         l.add("gui.spacebreaker.console.mission", "Uncrewed mission: %s", "İnsansız görev: %s");
         l.add("gui.spacebreaker.console.mission_none", "Uncrewed: release in Earth orbit", "İnsansız: Dünya yörüngesinde bırak");
         l.add("gui.spacebreaker.star_map.planning", "Mission Planning", "Görev Planlama");
