@@ -65,7 +65,7 @@ public final class PlanetDots {
         for (PlanetPoints.Dot d : dots) {
             Vector3f center = new Vector3f(d.local()).mul(100F);
             Quaternionf q = new Quaternionf().rotateTo(new Vector3f(0, 0, -1), d.local());
-            float a = d.alpha() * visibility;
+            float a = d.shown(visibility);
             float s = d.size();
             for (float[] c : new float[][]{{s, -s}, {s, s}, {-s, s}, {-s, -s}}) {
                 Vector3f p = new Vector3f(c[0], c[1], 0).rotate(q).add(center);

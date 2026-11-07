@@ -88,6 +88,45 @@ public final class SkyGameTests {
     }
 
     /**
+     * From Mars: Phobos and Deimos are not planet points (Mars' sky draws them as discs), and the Moon never hides in
+     * Earth's point but shows beside it on its true side; Earth, when brighter than magnitude -1, shows earlier at dusk.
+     */
+    @GameTest(template = "empty")
+    public static void marsSkyPointsAreClean(GameTestHelper helper) {
+        var sys = BodyAdapter.system(helper.getLevel().registryAccess()).orElseThrow();
+        int pairs = 0;
+        int boosted = 0;
+        for (int day = 0; day <= 750; day += 15) {
+            List<PlanetPoints.Dot> dots = PlanetPoints.compute(sys, "spacebreaker:mars", day * 86400.0);
+            helper.assertTrue(find(dots, "spacebreaker:phobos") == null && find(dots, "spacebreaker:deimos") == null,
+                    "no Phobos or Deimos points from Mars (day " + day + ")");
+            PlanetPoints.Dot earth = find(dots, "spacebreaker:earth");
+            PlanetPoints.Dot moon = find(dots, "spacebreaker:moon");
+            if (earth != null && moon != null) {
+                pairs++;
+                double sep = Math.acos(Math.min(1, earth.local().dot(moon.local()))) * 100;
+                helper.assertTrue(sep >= earth.size() + moon.size() + PlanetPoints.PAIR_GAP - 1e-3,
+                        "the Moon clears Earth's point (day " + day + "): " + sep);
+            }
+            if (earth != null && earth.twilight() > 1F) {
+                boosted++;
+                helper.assertTrue(earth.shown(0.5F) > earth.alpha() * 0.5F, "boosted in twilight");
+            }
+        }
+        helper.assertTrue(pairs > 0, "Earth and the Moon are seen together from Mars at some point");
+        helper.assertTrue(boosted > 0, "near opposition Earth (brighter than -1) shows early at dusk");
+        // the push keeps the true side: a moon just east (+x) of its planet stays east
+        List<PlanetPoints.Dot> two = new java.util.ArrayList<>(List.of(
+                new PlanetPoints.Dot("spacebreaker:earth", new org.joml.Vector3f(0, 1, 0), 0.6F, 1, 1, 1, 1, 1),
+                new PlanetPoints.Dot("spacebreaker:moon", new org.joml.Vector3f(0.001F, 1, 0).normalize(), 0.25F, 1, 1, 1, 1, 1)));
+        PlanetPoints.separatePairs(sys, two);
+        org.joml.Vector3f m = two.get(1).local();
+        helper.assertTrue(m.x > 0 && Math.abs(m.z) < 1e-4, "pushed along its true direction: " + m);
+        helper.assertTrue(Math.acos(m.y) * 100 >= 0.6 + 0.25 + PlanetPoints.PAIR_GAP - 1e-3, "and just clear: " + Math.acos(m.y) * 100);
+        helper.succeed();
+    }
+
+    /**
      * Lunar horizon glow: only in the first degrees of twilight (none by day or deep in the night), brightest a few
      * degrees after sunset, and only on about a third of sunsets and sunrises, the same on every client.
      */
