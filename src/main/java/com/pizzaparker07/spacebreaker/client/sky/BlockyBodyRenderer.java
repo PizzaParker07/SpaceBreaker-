@@ -270,7 +270,7 @@ public final class BlockyBodyRenderer {
         } else if (want < lod.current / 2.0 * 0.8 && index > 0) {
             next = LEVELS[index - 1];
         }
-        if (next != lod.current && BlockyBodyMesh.ready(style, next)) {
+        if (next != lod.current && coloursReady(map, style, next)) {
             lod.previous = lod.current;
             lod.current = next;
             lod.since = net.minecraft.Util.getMillis();
@@ -284,7 +284,7 @@ public final class BlockyBodyRenderer {
      */
     private static void cached(Matrix4f pose, BlockyBodyMesh.Style style, int n, ColorMap map, Pose body, Vector3f sun, float night,
                                float tint, float alpha) {
-        if (!BlockyBodyMesh.ready(style, n) && n > LEVELS[0]) {
+        if (n > LEVELS[0] && !coloursReady(map, style, n)) {
             BlockyBodyMesh.prepare(style, n);
             n = LEVELS[0];
         }
@@ -516,18 +516,98 @@ public final class BlockyBodyRenderer {
         return new Quad(depth, xyz, a << 24 | r << 16 | g << 8 | b);
     }
 
-    /** Map colours of every face, cached per map and mesh. */
+    /**
+     * Map colours of every face, cached per map and mesh. A body face takes the average colour over the patch of surface
+     * its block covers (a 3 x 3 sample), so a small ball of blocks shows the land and sea it really stands for instead
+     * of whichever single map pixel its centre happens to hit.
+     */
     private static int[] colours(ColorMap map, List<BlockyBodyMesh.Face> faces, boolean ring) {
+        int[] done = readyColours(map, faces);
+        if (done != null) {
+            return done;
+        }
+        int[] out = computeColours(map, faces, ring);
         synchronized (COLOURS) {
-            return COLOURS.computeIfAbsent(map, m -> new java.util.IdentityHashMap<>()).computeIfAbsent(faces, fs -> {
-                int[] out = new int[fs.size()];
-                for (int i = 0; i < fs.size(); i++) {
-                    Vector3f d = fs.get(i).surface();
-                    out[i] = ring ? map.argb(d.x, 0) : map.argb(BlockyBodyMesh.longitude(d), BlockyBodyMesh.latitude(d));
+            COLOURS.computeIfAbsent(map, m -> new java.util.IdentityHashMap<>()).put(faces, out);
+        }
+        return out;
+    }
+
+    private static int[] readyColours(ColorMap map, List<BlockyBodyMesh.Face> faces) {
+        synchronized (COLOURS) {
+            Map<List<BlockyBodyMesh.Face>, int[]> m = COLOURS.get(map);
+            return m == null ? null : m.get(faces);
+        }
+    }
+
+    private static final java.util.Set<Object> COLOURING = ConcurrentHashMap.newKeySet();
+
+    /** Whether a body size's colours are ready; if not, they are worked out in the background (big balls take a moment). */
+    private static boolean coloursReady(ColorMap map, BlockyBodyMesh.Style style, int n) {
+        if (!BlockyBodyMesh.ready(style, n)) {
+            return false;
+        }
+        List<BlockyBodyMesh.Face> faces = BlockyBodyMesh.body(style, n);
+        if (readyColours(map, faces) != null) {
+            return true;
+        }
+        if (COLOURING.add(List.of(map, faces))) {
+            java.util.concurrent.CompletableFuture.runAsync(() -> {
+                int[] out = computeColours(map, faces, false);
+                synchronized (COLOURS) {
+                    COLOURS.computeIfAbsent(map, m -> new java.util.IdentityHashMap<>()).put(faces, out);
                 }
-                return out;
             });
         }
+        return false;
+    }
+
+    private static int[] computeColours(ColorMap map, List<BlockyBodyMesh.Face> fs, boolean ring) {
+        int[] out = new int[fs.size()];
+        // block size as an angle on the unit sphere, from the face's half-edge
+        float footprint = fs.isEmpty() ? 0F : 2F * fs.get(0).u().length();
+        for (int i = 0; i < fs.size(); i++) {
+            Vector3f d = fs.get(i).surface();
+            out[i] = ring ? map.argb(d.x, 0) : average(map, BlockyBodyMesh.longitude(d), BlockyBodyMesh.latitude(d), footprint);
+        }
+        return out;
+    }
+
+    private static int average(ColorMap map, double lon, double lat, double size) {
+        double dLat = size / 3;
+        double dLon = dLat / Math.max(0.15, Math.cos(lat));
+        int r = 0, g = 0, b = 0;
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; j++) {
+                int c = map.argb(lon + i * dLon, Mth.clamp(lat + j * dLat, -Math.PI / 2, Math.PI / 2));
+                r += c >> 16 & 255;
+                g += c >> 8 & 255;
+                b += c & 255;
+            }
+        }
+        return 0xFF000000 | (r / 9) << 16 | (g / 9) << 8 | b / 9;
+    }
+
+    private static final Map<String, ColorMap> SURFACES = new ConcurrentHashMap<>();
+
+    /**
+     * The detailed surface map of a body for close views (orbit, approach): Earth with its clouds, the Moon, Mars, Venus
+     * and Mercury, drawn by code at 512-2048 pixels around. Null for bodies without one (use their sky disc colours).
+     *
+     * @param body body id path, e.g. "earth"
+     */
+    public static ColorMap surface(String body) {
+        return switch (body) {
+            case "earth" -> SURFACES.computeIfAbsent(body, k -> withClouds(texture(Spacebreaker.id("textures/environment/orbit_earth.png")),
+                    texture(Spacebreaker.id("textures/environment/orbit_earth_clouds.png"))));
+            case "moon" -> SURFACES.computeIfAbsent(body, k -> texture(Spacebreaker.id("textures/environment/orbit_moon.png")));
+            // these maps start at longitude 0 on the left edge
+            case "mars", "venus", "mercury" -> SURFACES.computeIfAbsent(body, k -> {
+                ColorMap m = texture(Spacebreaker.id("textures/environment/orbit_" + k + ".png"));
+                return (lon, lat) -> m.argb(lon + Math.PI, lat);
+            });
+            default -> null;
+        };
     }
 
     /** Forgets loaded textures, colours and buffers (resource reload, leaving a world). */
@@ -541,6 +621,7 @@ public final class BlockyBodyRenderer {
         });
         BUFFERS.clear();
         LODS.clear();
+        COLOURING.clear();
         synchronized (COLOURS) {
             COLOURS.clear();
         }
