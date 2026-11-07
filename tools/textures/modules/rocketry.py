@@ -483,6 +483,50 @@ def cargo_module():
     return cv
 
 
+def station_core_part():
+    """The folded station core: white hull, grey frame bands, four yellow-edged mouth hatches, a radiator stripe."""
+    cv = new_sheet()
+    for y in range(0, 31):
+        for c in range(32):
+            col = STEEL[2 + (c % 3 == 0)] if y < 2 else WHITE[5] if (c + y) % 9 else WHITE[4]
+            if y >= 28:
+                col = STEEL[4]
+            elif y in (7, 21):
+                col = STEEL[3]
+            put_side(cv, SIDE, c, y, col)
+    for hx in (1, 9, 17, 25):
+        for y in range(10, 18):
+            for c in range(hx, hx + 6):
+                edge = y in (10, 17) or c in (hx, hx + 5)
+                put_side(cv, SIDE, c, y, (HAZARD[3] if (y + c) % 2 else CARBON[2]) if edge else WHITE[6])
+        put_side(cv, SIDE, hx + 2, 13, STEEL[5])
+        put_side(cv, SIDE, hx + 3, 14, STEEL[5])
+    for c in range(32):
+        put_side(cv, SIDE, c, 24, GOLD[3] if c % 2 else GOLD[2])               # radiator foil band
+    top_view(cv, TOP, lambda dx, dz, d: None if d > 16 else (CARBON[3] if d < 2 else STEEL[4] if d < 4 else STEEL[3] if d < 8.5 else WHITE[5]))
+    top_view(cv, BOTTOM, lambda dx, dz, d: None if d > 16 else (CARBON[2] if d < 6 else STEEL[3] if d < 10.5 else WHITE[4]))
+    return cv
+
+
+def docking_module_part():
+    """The folded docking module: a white tunnel can with a window band and the docking ring on its nose."""
+    cv = new_sheet()
+    for y in range(0, 23):
+        for c in range(32):
+            col = STEEL[2 + (c % 3 == 0)] if y < 2 else WHITE[5] if (c + y) % 7 else WHITE[4]
+            if y >= 20:
+                col = STEEL[4]
+            put_side(cv, SIDE, c, y, col)
+    for c in range(32):
+        put_side(cv, SIDE, c, 3, HAZARD[3] if c % 4 < 2 else CARBON[2])
+        if c % 8 in (2, 3, 4, 5):
+            for y in (11, 12):
+                put_side(cv, SIDE, c, y, GLASS[3] if y == 11 else GLASS[2])  # window band
+    top_view(cv, TOP, lambda dx, dz, d: None if d > 16 else (CARBON[3] if d < 2 else STEEL[5] if d < 4 else STEEL[3] if d < 7.5 else WHITE[5]))
+    top_view(cv, BOTTOM, lambda dx, dz, d: None if d > 16 else (CARBON[2] if d < 6 else STEEL[3] if d < 10.5 else WHITE[4]))
+    return cv
+
+
 def observation_satellite():
     cv = new_sheet()
     for y in range(0, 10):
@@ -1015,6 +1059,42 @@ def icons():
         "................",
     ], {'o': k[0], 'K': k[5], 'k': k[3], 'S': s[6], 's': s[4], 'p': s[4], 'P': s[6],
         'C': c[6], 'c': c[4], 'G': GOLD[5], 'g': GOLD[3], 'D': k[0]})
+    out['station_core_module'] = grid_icon([
+        "................",
+        "......oooo......",
+        ".....oKkkKo.....",
+        "...oooooooooo...",
+        "..oWWWWWWWWWWo..",
+        "..owwwwwwwwwwo..",
+        "..oWYYWWWWYYWo..",
+        "..oWYkYWWYkYWo..",
+        "..oWYYWWWWYYWo..",
+        "..oWWWWWWWWWWo..",
+        "..oGgGgGgGgGgo..",
+        "..oWWWWWWWWWWo..",
+        "..owwwwwwwwwwo..",
+        "...oooooooooo...",
+        ".....oKKKKo.....",
+        "................",
+    ], {'o': CARBON[0], 'K': STEEL[5], 'k': STEEL[3], 'W': WHITE[6], 'w': WHITE[4], 'Y': HAZARD[3], 'G': GOLD[4], 'g': GOLD[2]})
+    out['docking_module'] = grid_icon([
+        "................",
+        "................",
+        "......oooo......",
+        ".....oKkkKo.....",
+        "....oooooooo....",
+        "...oWWWWWWWWo...",
+        "...oYkYkYkYko...",
+        "...oWWWWWWWWo...",
+        "...oWBBWWBBWo...",
+        "...oWWWWWWWWo...",
+        "...owwwwwwwwo...",
+        "....oooooooo....",
+        ".....oKKKKo.....",
+        "................",
+        "................",
+        "................",
+    ], {'o': CARBON[0], 'K': STEEL[5], 'k': STEEL[3], 'W': WHITE[6], 'w': WHITE[4], 'Y': HAZARD[3], 'B': GLASS[3]})
     g_, s_, k_, w_ = GOLD, STEEL, CARBON, WHITE
     out['cargo_module'] = grid_icon([
         "................",
@@ -1307,6 +1387,8 @@ SHEETS = {
     'observation_satellite': observation_satellite,
     'space_probe': space_probe,
     'cargo_module': cargo_module,
+    'station_core_module': station_core_part,
+    'docking_module': docking_module_part,
     'decoupler': decoupler,
     'interstage': interstage,
     'heat_shield': heat_shield,
@@ -2190,6 +2272,51 @@ def docking_port_side():
     return cv
 
 
+def station_hatch(center):
+    """A mouth hatch panel: white plate with a hazard-striped rim on the outer edges; the middle one has the round
+    hatch with its handwheel."""
+    cv = station_hull()
+    for y in range(16):
+        for x in range(16):
+            if x in (0, 15) or y in (0, 15):
+                cv[x, y] = HAZARD[3] if (x + y) // 2 % 2 else CARBON[2]
+    if center:
+        for y in range(16):
+            for x in range(16):
+                d = math.hypot(x - 7.5, y - 7.5)
+                if 4.6 < d <= 6.1:
+                    cv[x, y] = STEEL[4]
+                elif d <= 4.6:
+                    cv[x, y] = STEEL[2] if d > 3.2 else HULL[4]
+        for x, y in ((7, 5), (8, 5), (5, 7), (5, 8), (10, 7), (10, 8), (7, 10), (8, 10), (7, 7), (8, 8), (7, 8), (8, 7)):
+            cv[x, y] = CARBON[3]
+    return cv
+
+
+def station_core_front():
+    """The core console: hull frame around a green status screen showing the station's modules."""
+    cv = station_hull()
+    for y in range(3, 11):
+        for x in range(2, 14):
+            cv[x, y] = SCREEN[1] if (x in (2, 13) or y in (3, 10)) else SCREEN[0]
+    for x, y in ((5, 6), (6, 6), (7, 6), (8, 6), (9, 6), (7, 5), (7, 7), (4, 6), (10, 6)):
+        cv[x, y] = SCREEN[5]
+    for x in (4, 7, 10):
+        cv[x, 8] = SCREEN[3]
+    for x in range(3, 13, 3):
+        cv[x, 13] = HAZARD[3]
+        cv[x + 1, 13] = CARBON[2]
+    return cv
+
+
+def station_core_top():
+    cv = station_hull()
+    for x in range(3, 13):
+        cv[x, 7] = CARBON[2]
+        cv[x, 8] = CARBON[3]
+    return cv
+
+
 def station_kit_icon():
     cv = Canvas()
     rows = [
@@ -2626,6 +2753,10 @@ def export_facility(save):
     save(limit_colours(docking_port_top()), 'block', 'docking_port_top', (180, 30, 0, None))
     save(limit_colours(docking_port_side()), 'block', 'docking_port_side', (180, 30, 0, None))
     save(station_kit_icon(), 'item', 'station_kit')
+    save(limit_colours(station_hatch(False)), 'block', 'station_hatch', (180, 30, 0, None))
+    save(limit_colours(station_hatch(True)), 'block', 'station_hatch_center', (180, 30, 0, None))
+    save(limit_colours(station_core_front()), 'block', 'station_core_front', (180, 30, 0, None))
+    save(limit_colours(station_core_top()), 'block', 'station_core_top', (180, 30, 0, None))
     save(habitat_kit_icon(), 'item', 'habitat_kit')
     save(limit_colours(warning_light_base()), 'block', 'warning_light_base', (140, 230, 0, None))
     save(limit_colours(aluminum_panel()), 'block', 'aluminum_panel', (170, 230, 0, None))

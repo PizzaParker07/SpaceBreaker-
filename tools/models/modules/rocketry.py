@@ -298,6 +298,24 @@ def cargo_module():
     return els
 
 
+def station_core_part():
+    """Station core module, folded for launch: adapter, a tall pressurised can, the roof docking ring on top."""
+    els = []
+    els += prism(0, 2, 10)                                 # launch adapter
+    els += prism(2, 28, 16)                                # the folded core
+    els += prism(28, 31, 8)                                # docking ring
+    return els
+
+
+def docking_module_part():
+    """Docking module, folded for launch: adapter, tunnel can, the docking ring on its nose."""
+    els = []
+    els += prism(0, 2, 10)
+    els += prism(2, 20, 14)
+    els += prism(20, 23, 8)
+    return els
+
+
 def decoupler():
     return prism(0, 3, 16)
 
@@ -411,6 +429,8 @@ PARTS = {
     'observation_satellite': (observation_satellite, False),
     'space_probe': (space_probe, False),
     'cargo_module': (cargo_module, False),
+    'station_core_module': (station_core_part, False),
+    'docking_module': (docking_module_part, False),
     'decoupler': (decoupler, False),
     'interstage': (interstage, False),
     'heat_shield': (heat_shield, False),
@@ -677,6 +697,19 @@ def station_blocks():
            'west': {'x': 90, 'y': 270}, 'east': {'x': 90, 'y': 90}}
     write('blockstates/docking_port.json', {'variants': {f'facing={f}': dict({'model': b('docking_port')}, **r) for f, r in rot.items()}})
     write('models/item/docking_port.json', {'parent': b('docking_port')})
+    # module mouth hatches (front = the face that points out of the module; the middle one is marked)
+    for name, front in (('station_hatch', 'station_hatch'), ('station_hatch_center', 'station_hatch_center')):
+        write(f'models/block/{name}.json', {'parent': 'minecraft:block/cube_bottom_top', 'textures': {
+            'top': b(front), 'side': b('station_hull'), 'bottom': b('station_hull')}})
+    write('blockstates/station_hatch.json', {'variants': {f'center={c},facing={f}': dict({'model': b('station_hatch_center' if c == 'true' else 'station_hatch')}, **r)
+                                                          for f, r in rot.items() for c in ('false', 'true')}})
+    write('models/item/station_hatch.json', {'parent': b('station_hatch_center')})
+    # station core console: a screen on the front
+    write('models/block/station_core.json', {'parent': 'minecraft:block/orientable', 'textures': {
+        'front': b('station_core_front'), 'side': b('station_hull'), 'top': b('station_core_top')}})
+    write('blockstates/station_core.json', {'variants': {f'facing={f}': dict({'model': b('station_core')}, **({'y': y} if y else {}))
+                                                         for f, y in (('north', 0), ('east', 90), ('south', 180), ('west', 270))}})
+    write('models/item/station_core.json', {'parent': b('station_core')})
     generated_item('station_kit')
     generated_item('habitat_kit')
     # base blocks: panel and plate families, glass and porthole (opaque frame + translucent pane), open grate

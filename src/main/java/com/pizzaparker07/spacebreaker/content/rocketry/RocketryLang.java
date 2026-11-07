@@ -93,6 +93,24 @@ final class RocketryLang {
         l.add("message.spacebreaker.cargo.delivered", "Cargo delivered at %s: %s items unloaded", "Kargo %s konumuna teslim edildi: %s eşya boşaltıldı");
         l.add("message.spacebreaker.cargo.waiting", "Cargo rocket at %s: %s items wait in its hold (no chests by the port or beacon)",
                 "Kargo roketi %s konumunda: %s eşya ambarda bekliyor (port ya da işaretin yanında sandık yok)");
+        l.item(RocketryModule.STATION_CORE_MODULE, "Station Core Module", "İstasyon Çekirdek Modülü");
+        l.item(RocketryModule.DOCKING_MODULE, "Docking Module", "Kenetlenme Modülü");
+        l.block(RocketryModule.STATION_HATCH, "Station Hatch", "İstasyon Kapağı");
+        l.block(RocketryModule.STATION_CORE, "Station Core Console", "İstasyon Çekirdek Konsolu");
+        l.add("container.spacebreaker.station_core", "Station core: modules waiting", "İstasyon çekirdeği: bekleyen modüller");
+        l.add("tooltip.spacebreaker.part.station_module", "Station module: goes in the capsule slot; docked at a station it waits in the core console",
+                "İstasyon modülü: kapsül yuvasına takılır; istasyona yanaşınca çekirdek konsolunda bekler");
+        l.add("tooltip.spacebreaker.station_module.core", "The heart of a station: console, air, lights, a docking port on the roof and four mouths",
+                "İstasyonun kalbi: konsol, hava, ışık, çatıda kenetlenme portu ve dört bağlantı ağzı");
+        l.add("tooltip.spacebreaker.station_module.docking", "A short tunnel with a docking port at its end",
+                "Ucunda kenetlenme portu olan kısa bir tünel");
+        l.add("tooltip.spacebreaker.station_module.use", "Use on a mouth's hatch to attach it; a core used in open space in orbit starts a new station",
+                "Bir ağzın kapağına kullanınca oraya bağlanır; yörüngede boşlukta kullanılan çekirdek yeni bir istasyon kurar");
+        l.add("message.spacebreaker.station_module.blocked", "Something is in the way of the module", "Modülün yolunda bir şey var");
+        l.add("message.spacebreaker.station_module.orbit_only", "A station core can only be unfolded in orbit", "İstasyon çekirdeği yalnızca yörüngede açılabilir");
+        l.add("message.spacebreaker.station_module.core_built", "The station core is up: a new station in orbit", "İstasyon çekirdeği kuruldu: yörüngede yeni bir istasyon");
+        l.add("message.spacebreaker.station_module.delivered", "%s delivered: it waits in the station core console", "%s teslim edildi: istasyon çekirdek konsolunda bekliyor");
+        l.add("message.spacebreaker.station_module.no_console", "%s delivered, but no core console in reach: it floats by the port", "%s teslim edildi ama yakında çekirdek konsolu yok: portun yanında süzülüyor");
         l.add("message.spacebreaker.cargo.no_station", "Cargo rocket in %s: no station to dock at, waiting in orbit", "Kargo roketi %s içinde: yanaşacak istasyon yok, yörüngede bekliyor");
         l.item(RocketryModule.OBSERVATION_SATELLITE, "Observation Satellite", "Gözlem Uydusu");
         l.item(RocketryModule.SPACE_PROBE, "Lander Probe", "İniş Sondası");

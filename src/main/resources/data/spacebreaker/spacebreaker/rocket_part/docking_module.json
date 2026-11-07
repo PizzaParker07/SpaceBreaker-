@@ -1,0 +1,6 @@
+{
+  "type": "station_module",
+  "mass_kg": 1800,
+  "height": 23,
+  "model": "spacebreaker:docking_module"
+}
