@@ -27,6 +27,7 @@ One centrifuge alone is slow. Real plants run thousands one after another. Here 
 {items spacebreaker:fission_reactor}
 The {item spacebreaker:fission_reactor} is a kilowatt-class fission surface power unit. Load a {item spacebreaker:nuclear_fuel_element} and it gives **320 FE/t**, day and night, wherever you are. One element lasts **10 game days**, and fuel only burns while power is drawn.
 {recipe spacebreaker:fission_reactor}
+The shielding slots take depleted uranium plate or tungsten plate.
 
 >! A running core is radioactive: about **50 Sv/day** one block away, falling with the square of the distance. Every solid block in between lets only **30 %** through, so three blocks of regolith cut it to about **3 %**. Bury the unit or build a regolith berm round it, and keep your base out of its line of sight.
 

@@ -132,7 +132,8 @@ public final class ShaderSkyPass {
                              float partialTick) {
         RenderTarget main = mc.getMainRenderTarget();
         if (target == null) {
-            target = new TextureTarget(main.width, main.height, false, Minecraft.ON_OSX);
+            // with a depth buffer: sky bodies drawn as blocks (voxel planets) can depth-test among themselves
+            target = new TextureTarget(main.width, main.height, true, Minecraft.ON_OSX);
         } else if (target.width != main.width || target.height != main.height) {
             target.resize(main.width, main.height, Minecraft.ON_OSX);
         }
