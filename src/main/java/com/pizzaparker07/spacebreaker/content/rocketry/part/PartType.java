@@ -16,7 +16,11 @@ public enum PartType implements StringRepresentable {
     FINS("fins", true),
     GRID_FINS("grid_fins", true),
     LANDING_LEGS("landing_legs", true),
-    RCS("rcs", true);
+    RCS("rcs", true),
+    /** An uncrewed satellite: released in the orbit the rocket flies it to. */
+    SATELLITE("satellite", false),
+    /** An uncrewed probe: flies to a world, lands and sends samples and data home. */
+    PROBE("probe", false);
 
     public static final Codec<PartType> CODEC = StringRepresentable.fromEnum(PartType::values);
     private final String name;
@@ -38,7 +42,12 @@ public enum PartType implements StringRepresentable {
 
     /** Parts that belong to the crew/payload section on top of the last stage. */
     public boolean payload() {
-        return this == NOSE_CONE || this == CAPSULE || this == HEAT_SHIELD || this == PARACHUTE;
+        return this == NOSE_CONE || this == CAPSULE || this == HEAT_SHIELD || this == PARACHUTE || this == SATELLITE || this == PROBE;
+    }
+
+    /** Uncrewed payloads that ride in the capsule slot. */
+    public boolean uncrewed() {
+        return this == SATELLITE || this == PROBE;
     }
 
     @Override

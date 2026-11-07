@@ -76,6 +76,13 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
     private static final EntityDataAccessor<String> DATA_ORBIT_BODY = SynchedEntityData.defineId(RocketEntity.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<Boolean> DATA_BURNING = SynchedEntityData.defineId(RocketEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Float> DATA_TILT = SynchedEntityData.defineId(RocketEntity.class, EntityDataSerializers.FLOAT);
+    /** Mission target of an uncrewed rocket (a location id, empty when none). */
+    private static final EntityDataAccessor<String> DATA_MISSION = SynchedEntityData.defineId(RocketEntity.class, EntityDataSerializers.STRING);
+    @Nullable
+    private java.util.UUID owner;
+    private int autoTravel;
+    private long dockCheckedAt = Long.MIN_VALUE;
+    private boolean dockedCache;
     /** Share of the current ascent burn already flown (0..1), so clients can start the transit view in time. */
     private static final EntityDataAccessor<Float> DATA_ASCENT = SynchedEntityData.defineId(RocketEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<CompoundTag> DATA_FUEL = SynchedEntityData.defineId(RocketEntity.class, EntityDataSerializers.COMPOUND_TAG);
@@ -85,6 +92,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
     /** RP-1 and LOX pumped in but not yet paired into propellant (kg). */
     private double rp1Kg;
     private double ch4Kg;
+    private double h2Kg;
     private double loxKg;
 
     // flight bookkeeping (server)
@@ -131,6 +139,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         builder.define(DATA_BURNING, false);
         builder.define(DATA_TILT, 0F);
         builder.define(DATA_ASCENT, 0F);
+        builder.define(DATA_MISSION, "");
         builder.define(DATA_FUEL, new CompoundTag());
     }
 
@@ -173,6 +182,35 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
     }
 
     /** Pitch of the gravity turn in degrees (towards +x). */
+    /** Who launched it (for uncrewed missions: who gets the probe's samples and the messages). */
+    @Nullable
+    public java.util.UUID owner() {
+        return owner;
+    }
+
+    public void setOwner(@Nullable java.util.UUID owner) {
+        this.owner = owner;
+    }
+
+    public java.util.Optional<Location> missionTarget() {
+        String id = entityData.get(DATA_MISSION);
+        return id.isEmpty() ? java.util.Optional.empty() : Location.parse(id);
+    }
+
+    public void setMissionTarget(@Nullable Location target) {
+        entityData.set(DATA_MISSION, target == null ? "" : target.id());
+    }
+
+    /** Uncrewed rockets carry a satellite or probe and are flown from the launch console. */
+    public boolean isUncrewed() {
+        return com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.payload(this).isPresent();
+    }
+
+    /** Burn on to the mission target after this many ticks in orbit. */
+    public void scheduleTravel(int ticks) {
+        autoTravel = Math.max(1, ticks);
+    }
+
     public float ascentProgress() {
         return entityData.get(DATA_ASCENT);
     }
@@ -208,6 +246,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         tag.put("stages", list);
         tag.putDouble("rp1", rp1Kg);
         tag.putDouble("ch4", ch4Kg);
+        tag.putDouble("h2", h2Kg);
         tag.putDouble("lox", loxKg);
     }
 
@@ -219,6 +258,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         }
         rp1Kg = tag.getDouble("rp1");
         ch4Kg = tag.getDouble("ch4");
+        h2Kg = tag.getDouble("h2");
         loxKg = tag.getDouble("lox");
     }
 
@@ -297,7 +337,12 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
     protected Vec3 getPassengerAttachmentPoint(Entity passenger, EntityDimensions dimensions, float partialTick) {
         double seat = (geometry().capsuleBottom() + 3) / 16.0;
         double tilt = Math.toRadians(tilt());
-        return new Vec3(Math.sin(tilt) * seat, Math.cos(tilt) * seat - 0.35, 0);
+        // crew of more than one sit side by side across the capsule
+        int seats = layout().payload().seats();
+        int index = Math.max(0, getPassengers().indexOf(passenger));
+        double side = seats > 1 ? (index - (Math.min(seats, getPassengers().size()) - 1) / 2.0) * 0.5 : 0;
+        Vec3 across = new Vec3(0, 0, side).yRot((float) Math.toRadians(-getYRot()));
+        return new Vec3(Math.sin(tilt) * seat + across.x, Math.cos(tilt) * seat - 0.35, across.z);
     }
 
     @Override
@@ -327,7 +372,22 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
 
     /** Whether the crew may climb out right now (never in flight: there is nothing to stand on). */
     public boolean canDismount() {
-        return teleporting || state() == FlightState.IDLE || state() == FlightState.COUNTDOWN && timer() > IGNITION_TICKS;
+        return teleporting || state() == FlightState.IDLE || state() == FlightState.COUNTDOWN && timer() > IGNITION_TICKS
+                || state() == FlightState.ORBIT && docked();
+    }
+
+    /** In orbit next to a station's docking port: the crew may step out into the station and back in. */
+    public boolean docked() {
+        if (state() != FlightState.ORBIT) {
+            return false;
+        }
+        long now = level().getGameTime();
+        if (now != dockCheckedAt) {
+            // a block scan around the rocket: cheap enough once a tick, and pipes may ask many times per tick
+            dockCheckedAt = now;
+            dockedCache = com.pizzaparker07.spacebreaker.content.rocketry.station.DockingPortBlockEntity.nearPort(this);
+        }
+        return dockedCache;
     }
 
     // ------------------------------------------------------------------ interaction
@@ -363,7 +423,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         if (player.isSecondaryUseActive() || player.getVehicle() == this) {
             return InteractionResult.PASS;
         }
-        if (state() != FlightState.IDLE && state() != FlightState.COUNTDOWN) {
+        if (state() != FlightState.IDLE && state() != FlightState.COUNTDOWN && !docked()) {
             return InteractionResult.PASS;
         }
         if (layout().payload().seats() <= 0) {
@@ -412,6 +472,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         }
         rp1Kg = 0;
         ch4Kg = 0;
+        h2Kg = 0;
         loxKg = 0;
         syncFuel();
     }
@@ -434,14 +495,18 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
     }
 
     private double buffer(Propellant p) {
-        return p == Propellant.METHALOX ? ch4Kg : rp1Kg;
+        return switch (p) {
+            case METHALOX -> ch4Kg;
+            case HYDROLOX -> h2Kg;
+            default -> rp1Kg;
+        };
     }
 
     private void addBuffer(Propellant p, double kg) {
-        if (p == Propellant.METHALOX) {
-            ch4Kg += kg;
-        } else {
-            rp1Kg += kg;
+        switch (p) {
+            case METHALOX -> ch4Kg += kg;
+            case HYDROLOX -> h2Kg += kg;
+            default -> rp1Kg += kg;
         }
     }
 
@@ -451,7 +516,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
      * stored from the lowest stage up. Returns the amount accepted.
      */
     public int fill(@Nullable Propellant fuel, int millibuckets, boolean simulate) {
-        if (state() != FlightState.IDLE && state() != FlightState.COUNTDOWN || millibuckets <= 0) {
+        if (state() != FlightState.IDLE && state() != FlightState.COUNTDOWN && !docked() || millibuckets <= 0) {
             return 0;
         }
         RocketLayout l = layout();
@@ -572,6 +637,9 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         if (!MissionPlanner.canReturnAfter(layout(), activeStage(), fuel, location(), launchTarget(location()), SbConfig.realism()) && by != null) {
             by.displayClientMessage(Component.translatable("message.spacebreaker.warn.no_return").withStyle(ChatFormatting.GOLD), false);
         }
+        if (by != null) {
+            owner = by.getUUID();
+        }
         setState(FlightState.COUNTDOWN);
         setTimer(location().equals(Location.EARTH_SURFACE) ? COUNTDOWN_TICKS : MOON_COUNTDOWN_TICKS);
         if (Double.isNaN(homeX) && location().equals(Location.EARTH_SURFACE)) {
@@ -593,30 +661,30 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
     }
 
     /** Validates and starts a transfer from an orbit (chosen on the star map). */
-    public boolean tryTravel(ServerPlayer by, Location to) {
+    public boolean tryTravel(@Nullable ServerPlayer by, Location to) {
         Location here = location();
         if (state() != FlightState.ORBIT) {
             return false;
         }
         OptionalDouble cost = Transfers.cost(here, to, layout(), activeStage(), SbConfig.realism());
         if (cost.isEmpty()) {
-            by.displayClientMessage(Component.translatable("message.spacebreaker.travel.no_route").withStyle(ChatFormatting.RED), false);
+            tell(by, Component.translatable("message.spacebreaker.travel.no_route").withStyle(ChatFormatting.RED));
             return false;
         }
-        if (to.dimension() != null && by.server.getLevel(to.dimension()) == null) {
-            by.displayClientMessage(Component.translatable("message.spacebreaker.travel.unavailable",
-                    to.name()).withStyle(ChatFormatting.RED), false);
+        if (to.dimension() != null && level().getServer().getLevel(to.dimension()) == null) {
+            tell(by, Component.translatable("message.spacebreaker.travel.unavailable",
+                    to.name()).withStyle(ChatFormatting.RED));
             return false;
         }
         int rating = Transfers.reentryRating(here, to);
         if (rating > layout().payload().heatShield()) {
-            by.displayClientMessage(Component.translatable("message.spacebreaker.warn.heat_shield").withStyle(ChatFormatting.GOLD), false);
+            tell(by, Component.translatable("message.spacebreaker.warn.heat_shield").withStyle(ChatFormatting.GOLD));
         }
         boolean reentry = to.isEarth() && !to.orbit();
         RocketMath.Burn burn = RocketMath.burn(layout(), activeStage(), fuel, cost.getAsDouble(), 0);
         if (!burn.complete()) {
-            by.displayClientMessage(Component.translatable("message.spacebreaker.travel.delta_v",
-                    String.format(java.util.Locale.ROOT, "%.0f", deltaV()), String.format(java.util.Locale.ROOT, "%.0f", cost.getAsDouble())).withStyle(ChatFormatting.RED), false);
+            tell(by, Component.translatable("message.spacebreaker.travel.delta_v",
+                    String.format(java.util.Locale.ROOT, "%.0f", deltaV()), String.format(java.util.Locale.ROOT, "%.0f", cost.getAsDouble())).withStyle(ChatFormatting.RED));
             return false;
         }
         burnStartStage = activeStage();
@@ -633,6 +701,15 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         setTimer(0);
         level().playSound(null, blockPosition(), com.pizzaparker07.spacebreaker.content.audio.SbSounds.ROCKET_IGNITION.get(), SoundSource.NEUTRAL, 2F, 1.1F);
         return true;
+    }
+
+    /** Message to whoever commands the rocket: the player who asked, otherwise the crew and the owner. */
+    private void tell(@Nullable ServerPlayer by, Component message) {
+        if (by != null) {
+            by.displayClientMessage(message, false);
+        } else {
+            notifyCrew(message);
+        }
     }
 
     // ------------------------------------------------------------------ ticking
@@ -658,7 +735,15 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
             case IDLE -> setDeltaMovement(Vec3.ZERO);
             case COUNTDOWN -> tickCountdown();
             case ASCENT -> tickAscent();
-            case ORBIT -> setDeltaMovement(Vec3.ZERO);
+            case ORBIT -> {
+                setDeltaMovement(Vec3.ZERO);
+                if (autoTravel > 0 && --autoTravel == 0) {
+                    Location target = missionTarget().orElse(null);
+                    if (target == null || !tryTravel(null, target)) {
+                        com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.deploy(this, location());
+                    }
+                }
+            }
             case BURN -> tickBurn();
             case TRANSFER -> tickTransfer();
             case DESCENT -> tickDescent();
@@ -886,12 +971,17 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
             award(com.pizzaparker07.spacebreaker.content.research.Milestones.ORBIT);
             notifyCrew(Component.translatable("message.spacebreaker.orbit.arrived", to.name()));
         }
+        if (isUncrewed()) {
+            com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.arrived(this, to);
+        }
     }
 
     @Override
     public void restoreFrom(Entity entity) {
         super.restoreFrom(entity);
         if (entity instanceof RocketEntity old) {
+            owner = old.owner;
+            autoTravel = old.autoTravel;
             teleporting = true; // passengers re-mount right after this
             homeX = old.homeX;
             homeZ = old.homeZ;
@@ -952,6 +1042,9 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         setBurning(false);
         setState(FlightState.IDLE);
         setTimer(0);
+        if (isUncrewed()) {
+            com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.landed(this, location());
+        }
         if (hard) {
             for (Entity p : getPassengers()) {
                 p.hurt(damageSources().fall(), 6F);
@@ -966,7 +1059,9 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
             notifyCrew(Component.translatable("message.spacebreaker.landing.ok", location().name()).withStyle(ChatFormatting.GREEN));
         }
         if (!location().equals(Location.EARTH_SURFACE) && !MissionPlanner.canReturnHome(layout(), activeStage(), fuel, location(), SbConfig.realism())) {
-            notifyCrew(Component.translatable("message.spacebreaker.warn.stranded").withStyle(ChatFormatting.GOLD));
+            boolean refuel = com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.canRefuel(location().body());
+            notifyCrew(Component.translatable(refuel ? "message.spacebreaker.refuel_here" : "message.spacebreaker.warn.stranded")
+                    .withStyle(refuel ? ChatFormatting.YELLOW : ChatFormatting.GOLD));
         }
     }
 
@@ -1064,6 +1159,12 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
                 player.displayClientMessage(message, false);
             }
         }
+        if (getPassengers().isEmpty() && owner != null && level().getServer() != null) {
+            ServerPlayer o = level().getServer().getPlayerList().getPlayer(owner);
+            if (o != null) {
+                o.displayClientMessage(message, false);
+            }
+        }
     }
 
     /** Used by the emergency return beacon: skip everything and bring the capsule home. */
@@ -1120,6 +1221,9 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         ascentFirstStage = tag.getInt("ascentFirst");
         coast = tag.getInt("coast");
         homeX = tag.contains("homeX") ? tag.getDouble("homeX") : Double.NaN;
+        entityData.set(DATA_MISSION, tag.getString("mission"));
+        autoTravel = tag.getInt("autoTravel");
+        owner = tag.hasUUID("owner") ? tag.getUUID("owner") : null;
         homeZ = tag.contains("homeZ") ? tag.getDouble("homeZ") : Double.NaN;
         requiredShield = tag.getInt("requiredShield");
         syncFuel();
@@ -1136,6 +1240,11 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         tag.putInt("stage", activeStage());
         tag.putInt("timer", timer());
         tag.putString("dest", entityData.get(DATA_DEST));
+        tag.putString("mission", entityData.get(DATA_MISSION));
+        tag.putInt("autoTravel", autoTravel);
+        if (owner != null) {
+            tag.putUUID("owner", owner);
+        }
         tag.putString("orbitBody", entityData.get(DATA_ORBIT_BODY));
         tag.putBoolean("burning", burning());
         tag.putFloat("tilt", tilt());

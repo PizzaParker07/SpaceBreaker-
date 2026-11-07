@@ -1,0 +1,7 @@
+{
+  "type": "capsule",
+  "mass_kg": 6200,
+  "seats": 3,
+  "height": 32,
+  "model": "spacebreaker:crew_capsule_large"
+}

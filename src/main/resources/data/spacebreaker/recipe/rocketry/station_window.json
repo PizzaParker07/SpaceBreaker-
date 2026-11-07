@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [" H ", "HGH", " H "],
+  "key": {"H": {"item": "spacebreaker:station_hull"}, "G": {"item": "minecraft:glass"}},
+  "result": {"id": "spacebreaker:station_window", "count": 4}
+}

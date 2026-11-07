@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "AGA",
+    "SCS",
+    "AAA"
+  ],
+  "key": {
+    "A": {"item": "spacebreaker:aluminum_plate"},
+    "G": {"item": "minecraft:glass_pane"},
+    "S": {"item": "minecraft:white_wool"},
+    "C": {"item": "spacebreaker:crew_capsule"}
+  },
+  "result": {"id": "spacebreaker:crew_capsule_large", "count": 1}
+}

@@ -110,7 +110,7 @@ public class LaunchConsoleBlockEntity extends BlockEntity implements MenuProvide
         if (r != null) {
             flags |= ROCKET;
             long crew = r.getPassengers().stream().filter(p -> p instanceof Player).count();
-            if (crew > 0) flags |= CREW;
+            if (crew > 0 || r.isUncrewed()) flags |= CREW; // satellites and probes fly without a crew
             if (r.fullyFuelled()) flags |= FUELLED;
             double g = Environment.gravity(level);
             double twr = RocketMath.twr(r.layout(), r.activeStage(), r.fuel(), g);

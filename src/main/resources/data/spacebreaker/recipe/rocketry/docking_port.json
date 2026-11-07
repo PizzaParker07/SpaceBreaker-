@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": ["HIH", "ICI", "HIH"],
+  "key": {"H": {"item": "spacebreaker:station_hull"}, "I": {"item": "minecraft:iron_ingot"}, "C": {"item": "minecraft:comparator"}},
+  "result": {"id": "spacebreaker:docking_port", "count": 1}
+}

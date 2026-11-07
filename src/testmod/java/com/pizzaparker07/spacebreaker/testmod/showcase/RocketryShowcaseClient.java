@@ -18,6 +18,8 @@ final class RocketryShowcaseClient {
     static volatile boolean preselectOrbit;
     /** Keep the cockpit (first-person) view while riding, overriding the rocket camera. */
     static volatile boolean cockpit;
+    /** Open the map's nearby-stars view with this star selected. */
+    static volatile String star;
 
     private RocketryShowcaseClient() {
     }
@@ -29,7 +31,9 @@ final class RocketryShowcaseClient {
             if (!(mc.screen instanceof StarMapScreen)) {
                 StarMapScreen map = new StarMapScreen(rocket);
                 mc.setScreen(map);
-                if (preselect != null) {
+                if (star != null) {
+                    map.showStar(star);
+                } else if (preselect != null) {
                     map.preselect(preselect, preselectOrbit);
                 }
             }

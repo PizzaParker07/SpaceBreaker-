@@ -36,6 +36,7 @@ final class MissionVoice {
         if (++check % 20 == 0) {
             Location here = rocket.location();
             canReturn = here.equals(Location.EARTH_SURFACE) || rocket.isCapsuleOnly()
+                    || !here.orbit() && com.pizzaparker07.spacebreaker.content.rocketry.nav.Locations.canRefuel(here.body())
                     || MissionPlanner.canReturnHome(rocket.layout(), rocket.activeStage(), rocket.fuel(), here, SbConfig.realism());
         }
         MissionCalls.Snapshot now = new MissionCalls.Snapshot(rocket.state(), rocket.timer(), rocket.activeStage(), canReturn);
@@ -46,7 +47,9 @@ final class MissionVoice {
             }
             warnedFuel = true;
         }
-        if (line != null && SbConfig.CLIENT_SPEC.isLoaded()) {
+        // beyond the reach of the relays mission control cannot be heard (the HUD says so)
+        boolean signal = com.pizzaparker07.spacebreaker.content.rocketry.mission.Coverage.hasSignal(rocket.location().body());
+        if (line != null && SbConfig.CLIENT_SPEC.isLoaded() && signal) {
             MissionControlVoice.say(line);
         }
         last = now;

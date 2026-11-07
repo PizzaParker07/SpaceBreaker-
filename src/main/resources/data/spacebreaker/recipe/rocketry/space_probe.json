@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "S D",
+    "ACA",
+    "R R"
+  ],
+  "key": {
+    "S": {"item": "minecraft:spyglass"},
+    "D": {"item": "minecraft:daylight_detector"},
+    "A": {"item": "spacebreaker:aluminum_plate"},
+    "C": {"item": "minecraft:comparator"},
+    "R": {"item": "minecraft:iron_bars"}
+  },
+  "result": {"id": "spacebreaker:space_probe", "count": 1}
+}

@@ -1,6 +1,6 @@
-// 1.21.1	2026-11-06T22:13:55.945731556	Tags for minecraft:block mod id spacebreaker
-baa792afbbd764742ba879704d1a1ac2c34c5a78 data/c/tags/block/ore_rates/singular.json
-203c174f339db62a8ff7248872ae78b4b8ac7b1e data/c/tags/block/ores.json
+// 1.21.1	2026-11-06T22:40:35.52528697	Tags for minecraft:block mod id spacebreaker
+a1311f0e75224aaa1a20d601adee0df982e21fb6 data/c/tags/block/ore_rates/singular.json
+6ddb566ac9000f5e6f205a1e505f80614dce2fcc data/c/tags/block/ores.json
 f9bb0edf7816cfeb62e0fe8f059db745e1f01707 data/c/tags/block/ores/ammonia.json
 2e53c12f1069a9431086af8c817e22054d435904 data/c/tags/block/ores/bauxite.json
 6782862eafa384e0cc8f1a2770bc5ab062cfbb5b data/c/tags/block/ores/chromite.json
@@ -17,11 +17,10 @@ e04da0b4f3f90123ff07d73fd83145c6d7099d42 data/c/tags/block/ores/salt.json
 4855c2782d3cfd4eacfb7f7eea2c8e4117be72a2 data/c/tags/block/ores/spodumene.json
 9c6ef292ec5f9b913322481613b6ee4179f966a9 data/c/tags/block/ores/sulfur.json
 8a715e2e7d33bd4064b569ceaf8da2d435f1367b data/c/tags/block/ores/tholin.json
-54a2d3331d2815c399e72a81a6f6628c1ba66cc5 data/c/tags/block/ores/uraninite.json
 0e2e4be0dccac5a97f8194a15aa36781edba362b data/c/tags/block/ores/wolframite.json
-56441e378f50eb701e9c0e936fe8b11b54a7dfd3 data/c/tags/block/ores_in_ground/deepslate.json
-388347a6af1b524e21d3e5334e898c4858798b49 data/c/tags/block/ores_in_ground/stone.json
-e25157e74f1aa55432f02f98aa9f66ccb4affae2 data/c/tags/block/storage_blocks.json
+5a61b18a3b7a1ea4e81526899a581d0a0938021f data/c/tags/block/ores_in_ground/deepslate.json
+ec696bf9b2a2ea6f79412fe615f14f4b3a5a35e8 data/c/tags/block/ores_in_ground/stone.json
+3e6b9b3d5362e301efc89cabbe6afb62b66c19ad data/c/tags/block/storage_blocks.json
 2fd85c1b9de607caae5a118a1ee4e2b6f5a266ed data/c/tags/block/storage_blocks/aluminum.json
 bbc009009e4c894ad6e5f463641d2030f8695a2f data/c/tags/block/storage_blocks/aluminum_lithium.json
 6b31b85c4065ff25f52187cb3698b813066bb059 data/c/tags/block/storage_blocks/lithium.json
@@ -31,18 +30,16 @@ d157cfc9d88a95c3fd2bc0144ad7e843280738a9 data/c/tags/block/storage_blocks/nickel
 c05402257d37dd67d863972a8cb23378cc578f8c data/c/tags/block/storage_blocks/raw_pentlandite.json
 e21077d057ed0923aae4f9d3cfd999103138de75 data/c/tags/block/storage_blocks/raw_rutile.json
 085a086ef735dc0fcea72f753dfb1f3c8a521e5b data/c/tags/block/storage_blocks/raw_spodumene.json
-2293efa724b98843684af423845449b500614eef data/c/tags/block/storage_blocks/raw_uraninite.json
 7add64f1ed2add281335c8308a62782df3cd0671 data/c/tags/block/storage_blocks/raw_wolframite.json
 1ec73496455ed411ef143e872fdfbb794db30637 data/c/tags/block/storage_blocks/steel.json
 64503b6cc370a3b323bd12f811f3b2ce7b528e7f data/c/tags/block/storage_blocks/titanium.json
 3a0314482d4f03811bfa706046ea7e26320ae256 data/c/tags/block/storage_blocks/tungsten.json
-83910a18108cc94801011f8bac77eb9816a000fc data/c/tags/block/storage_blocks/uranium.json
-49a8957c8b88dbafa3614439f907104f79c1ce9a data/minecraft/tags/block/beacon_base_blocks.json
+37162d797c2ad11e5928f1f300d1d1fd86b427ae data/minecraft/tags/block/beacon_base_blocks.json
 3290e64b0b8b6d577bf14a9cb67ba583b8931b16 data/minecraft/tags/block/ice.json
-7147938e12e75a0cff1479ca135b5136c2b3aed9 data/minecraft/tags/block/mineable/pickaxe.json
+14c6ae5eebd4d680584c3831f06016c2d71fe055 data/minecraft/tags/block/mineable/pickaxe.json
 d159e9bbc32fd935abdfdb2f419c08f12e8b64aa data/minecraft/tags/block/mineable/shovel.json
-3eeaa79ccb654e45913a65715e52154e8e733293 data/minecraft/tags/block/needs_iron_tool.json
-ae1a13adb96cf03cfe8b68e6931e2d6c071b0190 data/minecraft/tags/block/needs_stone_tool.json
+4ca714698e19297e5cb816e7848a66c21c0e9702 data/minecraft/tags/block/needs_iron_tool.json
+9b3b9b25bfd95ffb1c594c01c098bca2eacc2609 data/minecraft/tags/block/needs_stone_tool.json
 1137c1ba4d56080deb8301dbb264af90ec575b94 data/minecraft/tags/block/sand.json
 442b3dcafda20c7f9ac5bc3bb0ef8790b7ae7ad4 data/minecraft/tags/block/slabs.json
 ee48d8b21d549e91aea4a035da7cf561a08d3cd2 data/minecraft/tags/block/stairs.json

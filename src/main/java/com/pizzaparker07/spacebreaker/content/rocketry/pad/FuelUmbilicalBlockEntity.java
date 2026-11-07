@@ -21,7 +21,7 @@ public class FuelUmbilicalBlockEntity extends BlockEntity {
     private final IFluidHandler handler = new IFluidHandler() {
         @Override
         public int getTanks() {
-            return 3;
+            return 4;
         }
 
         @Override

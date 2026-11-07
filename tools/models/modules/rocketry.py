@@ -185,6 +185,85 @@ def methalox_vacuum_engine():
     return els
 
 
+def hydrolox_engine():
+    """Hydrogen sea-level engine: a large regeneratively cooled bell under a tall powerhead with two preburners."""
+    els = []
+    els += prism(18, 22, 16)                              # thrust structure
+    els += prism(15, 18, 6, top=False)                    # powerhead
+    els += prism(13, 15, 4, top=False, bottom=False)      # throat
+    els += prism(10, 13, 6, top=False, bottom=False)
+    els += prism(6, 10, 8, top=False, bottom=False)
+    els += prism(3, 6, 9, top=False, bottom=False)
+    els += prism(0, 3, 10, top=False)
+    els.append(box([13, 12, 5], [17, 18, 9], region='aux', top_region='top', bottom_region='bottom'))
+    els.append(box([-1, 12, 7], [3, 18, 11], region='aux', top_region='top', bottom_region='bottom'))
+    return els
+
+
+def hydrolox_vacuum_engine():
+    """Hydrogen vacuum engine: small and light, with a long slender gold-coloured nozzle extension."""
+    els = []
+    els += prism(26, 30, 16)                              # mount ring
+    els += prism(23, 26, 5, top=False)                    # pump and injector
+    els += prism(21, 23, 3, top=False, bottom=False)      # throat
+    els += prism(17, 21, 5, top=False, bottom=False)
+    els += prism(12, 17, 7, top=False, bottom=False)
+    els += prism(6, 12, 9, top=False, bottom=False)
+    els += prism(0, 6, 12, top=False)
+    els.append(box([12, 22, 6], [15, 26, 9], region='aux'))
+    return els
+
+
+def _wings(y0, y1):
+    """Two solar panel wings on short booms (aux view), spanning the full two-block width."""
+    return [
+        box([-8, y0, 7.5], [0, y1, 8.5], region='aux', top_region='aux', bottom_region='aux'),
+        box([16, y0, 7.5], [24, y1, 8.5], region='aux', top_region='aux', bottom_region='aux'),
+        box([0, (y0 + y1) / 2 - 0.5, 7.5], [2, (y0 + y1) / 2 + 0.5, 8.5]),
+        box([14, (y0 + y1) / 2 - 0.5, 7.5], [16, (y0 + y1) / 2 + 0.5, 8.5]),
+    ]
+
+
+def comm_satellite():
+    """Communications relay: gold-foil bus, a big dish on top and two solar wings."""
+    els = []
+    els += prism(0, 3, 7)                                  # launch adapter ring
+    els.append(box([2, 3, 2], [14, 17, 14]))               # bus
+    els += prism(17, 19, 9, bottom=True)                   # dish
+    els += prism(19, 20, 6, bottom=False)
+    els.append(box([7.5, 20, 7.5], [8.5, 24, 8.5]))         # feed horn mast
+    els.append(box([6.5, 23, 6.5], [9.5, 24, 9.5]))
+    els += _wings(6, 15)
+    return els
+
+
+def observation_satellite():
+    """Observation satellite: a telescope looking down out of the bottom, bus, wings and a small antenna."""
+    els = []
+    els += prism(0, 9, 5)                                  # telescope tube (aperture at the bottom)
+    els += prism(8, 10, 7)                                 # telescope collar
+    els.append(box([3, 10, 3], [13, 21, 13]))              # bus
+    els.append(box([7, 21, 7], [9, 24, 9]))                # antenna mast
+    els += prism(23, 24, 3, bottom=True)
+    els += _wings(12, 20)
+    return els
+
+
+def space_probe():
+    """Lander probe: round gold body on four legs, a dish and an instrument mast."""
+    els = []
+    els += prism(5, 12, 9)                                 # body
+    els += prism(12, 13, 7, bottom=False)                  # deck
+    els += prism(14, 15, 5)                                # dish
+    els.append(box([7.5, 13, 7.5], [8.5, 14, 8.5]))
+    els.append(box([12, 13, 3], [13, 20, 4]))              # instrument mast
+    els.append(box([11, 19, 2], [14, 20, 5]))              # camera head
+    for lx, lz in ((-2.5, 7.5), (17.5, 7.5), (7.5, -2.5), (7.5, 17.5)):   # legs and foot pads
+        els.append(box([lx, 1, lz], [lx + 1, 6, lz + 1]))
+        els.append(box([lx - 0.5, 0, lz - 0.5], [lx + 1.5, 1, lz + 1.5]))
+    return els
+
+
 def decoupler():
     return prism(0, 3, 16)
 
@@ -204,6 +283,21 @@ def crew_capsule():
     els = []
     for y0, y1, r in CAPSULE_PROFILE:
         # the front (north) side uses the aux view: hatch and window
+        for hx, hz in circle_boxes(r, 2 if r >= 12 else 1):
+            fr, to = [8 - hx, y0, 8 - hz], [8 + hx, y1, 8 + hz]
+            el = box(fr, to, ('south', 'east', 'west', 'up', 'down'))
+            el['faces']['north'] = {'texture': '#tex', 'uv': axial_uv('north', fr, to, region='aux')}
+            els.append(el)
+    return els
+
+
+LARGE_CAPSULE_PROFILE = [(0, 6, 16), (6, 12, 15), (12, 17, 14), (17, 22, 12), (22, 26, 10), (26, 29, 8), (29, 32, 6)]
+
+
+def crew_capsule_large():
+    """Three-seat capsule: taller, with three windows on the front (aux view) and a docking port on top."""
+    els = []
+    for y0, y1, r in LARGE_CAPSULE_PROFILE:
         for hx, hz in circle_boxes(r, 2 if r >= 12 else 1):
             fr, to = [8 - hx, y0, 8 - hz], [8 + hx, y1, 8 + hz]
             el = box(fr, to, ('south', 'east', 'west', 'up', 'down'))
@@ -273,10 +367,16 @@ PARTS = {
     'vacuum_engine': (vacuum_engine, False),
     'methalox_engine': (methalox_engine, False),
     'methalox_vacuum_engine': (methalox_vacuum_engine, False),
+    'hydrolox_engine': (hydrolox_engine, False),
+    'hydrolox_vacuum_engine': (hydrolox_vacuum_engine, False),
+    'comm_satellite': (comm_satellite, False),
+    'observation_satellite': (observation_satellite, False),
+    'space_probe': (space_probe, False),
     'decoupler': (decoupler, False),
     'interstage': (interstage, False),
     'heat_shield': (heat_shield, False),
     'crew_capsule': (crew_capsule, False),
+    'crew_capsule_large': (crew_capsule_large, False),
     'parachute': (parachute, False),
     'nose_cone': (nose_cone, False),
     'fins': (fins, True),
@@ -462,8 +562,26 @@ def extra_items():
 _old_generate = generate
 
 
+def station_blocks():
+    write('blockstates/station_hull.json', {'variants': {'': {'model': b('station_hull')}}})
+    write('models/block/station_hull.json', {'parent': 'minecraft:block/cube_all', 'textures': {'all': b('station_hull')}})
+    write('models/item/station_hull.json', {'parent': b('station_hull')})
+    write('blockstates/station_window.json', {'variants': {'': {'model': b('station_window')}}})
+    write('models/block/station_window.json', {'parent': 'minecraft:block/cube_all', 'render_type': 'minecraft:cutout',
+                                                 'textures': {'all': b('station_window')}})
+    write('models/item/station_window.json', {'parent': b('station_window')})
+    write('models/block/docking_port.json', {'parent': 'minecraft:block/cube_bottom_top', 'textures': {
+        'top': b('docking_port_top'), 'side': b('docking_port_side'), 'bottom': b('station_hull')}})
+    rot = {'up': {}, 'down': {'x': 180}, 'north': {'x': 90}, 'south': {'x': 90, 'y': 180},
+           'west': {'x': 90, 'y': 270}, 'east': {'x': 90, 'y': 90}}
+    write('blockstates/docking_port.json', {'variants': {f'facing={f}': dict({'model': b('docking_port')}, **r) for f, r in rot.items()}})
+    write('models/item/docking_port.json', {'parent': b('docking_port')})
+    generated_item('station_kit')
+
+
 def generate():  # noqa: F811
     _old_generate()
+    station_blocks()
     launch_facility()
     canopy()
     extra_items()

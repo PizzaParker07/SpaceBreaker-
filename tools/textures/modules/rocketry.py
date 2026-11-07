@@ -302,6 +302,193 @@ def methalox_vacuum_engine():
     return cv
 
 
+def hydrolox_engine():
+    cv = new_sheet()
+    thrust_structure(cv, 18, 22, 151)
+    ring(cv, SIDE, 20, 16, WHITE, 4, 6)                        # white insulation band: it is very cold up here
+    bell(cv, 15, 18, lambda y: 6, STEEL, 3, 6, 152)
+    bell(cv, 13, 15, lambda y: 4, STEEL, 1, 4, 153)
+    radii = {}
+    for y0, y1, r in [(10, 13, 6), (6, 10, 8), (3, 6, 9), (0, 3, 10)]:
+        for y in range(y0, y1):
+            radii[y] = r
+    bell(cv, 0, 13, lambda y: radii[y], COPPER, 2, 5, 154, lip=COPPER)       # hundreds of brazed coolant tubes
+    for y in range(1, 13):
+        for c in range(0, 32, 3):
+            put_side(cv, SIDE, c, y, COPPER[1])                             # tube seams
+    ring(cv, SIDE, 6, radii[6], STEEL, 2, 5)
+    turbopump(cv, (13, 17), 155)
+    engine_top(cv, TOP, 156)
+    nozzle_exit(cv, BOTTOM, 10, 4)
+    ox, oy = BOTTOM
+    for row in range(32):
+        for c in range(32):
+            d = math.hypot(c + 0.5 - 16, row + 0.5 - 16)
+            if 10.5 < d <= 16.2:
+                cv[ox + c, oy + row] = CARBON[1] if d < 15 else CARBON[3]
+    return cv
+
+
+def hydrolox_vacuum_engine():
+    cv = new_sheet()
+    thrust_structure(cv, 26, 30, 161)
+    bell(cv, 23, 26, lambda y: 5, STEEL, 3, 6, 162)
+    bell(cv, 21, 23, lambda y: 3, STEEL, 1, 4, 163)
+    radii = {}
+    for y0, y1, r in [(17, 21, 5), (12, 17, 7), (6, 12, 9), (0, 6, 12)]:
+        for y in range(y0, y1):
+            radii[y] = r
+    bell(cv, 12, 21, lambda y: radii[y], COPPER, 2, 5, 164)
+    bell(cv, 0, 12, lambda y: radii[y], GOLD, 1, 4, 165, lip=GOLD)       # thin extension in gold-coloured niobium alloy
+    ring(cv, SIDE, 12, radii[12], STEEL, 3, 6)
+    turbopump(cv, (24,), 166)
+    engine_top(cv, TOP, 167)
+    nozzle_exit(cv, BOTTOM, 12, 3)
+    ox, oy = BOTTOM
+    for row in range(32):
+        for c in range(32):
+            d = math.hypot(c + 0.5 - 16, row + 0.5 - 16)
+            if 12.5 < d <= 16.2:
+                cv[ox + c, oy + row] = CARBON[3]
+    return cv
+
+
+PANEL = ramp('#0b1430', '#13214a', '#1c3166', '#2a4682', '#4a6aa8', '#8aa6d8')
+
+
+def solar_panel(cv, region):
+    """A whole region of blue solar cells with a fine silver grid."""
+    ox, oy = region
+    for v in range(32):
+        for u in range(32):
+            grid = u % 4 == 0 or v % 4 == 0
+            shade = 2 + ((u // 4 + v // 4) % 2)
+            cv[ox + u, oy + v] = STEEL[4] if grid else PANEL[shade if (u + v) % 7 else shade + 1]
+
+
+def foil(cv, region, c0, c1, y0, y1, seed):
+    """Crinkled gold insulation foil on the side view between columns c0..c1 and heights y0..y1."""
+    n = clustered(32, 32, seed, passes=1)
+    for y in range(y0, y1):
+        for c in range(c0, c1):
+            v = n[y % 32][c % 32]
+            put_side(cv, region, c, y, GOLD[int(round(1 + 3 * v))])
+
+
+def comm_satellite():
+    cv = new_sheet()
+    for y in range(0, 3):
+        for c in range(1, 31):
+            put_side(cv, SIDE, c, y, STEEL[2 + (c % 3 == 0)])                 # adapter ring
+    foil(cv, SIDE, 0, 32, 3, 17, 171)
+    for c in range(10, 22):
+        put_side(cv, SIDE, c, 9, STEEL[5])                                    # equipment panel
+        put_side(cv, SIDE, c, 10, STEEL[3])
+    for y in range(17, 20):
+        for c in range(0, 32):
+            put_side(cv, SIDE, c, y, WHITE[6] if y == 19 else WHITE[4])        # dish rim
+    for y in range(20, 24):
+        for c in range(14, 18):
+            put_side(cv, SIDE, c, y, STEEL[5] if y < 23 else STEEL[3])
+    solar_panel(cv, AUX)
+    top_view(cv, TOP, lambda dx, dz, d: None if d > 16 else (STEEL[3] if d < 1.5 else WHITE[6 - int(d / 4) % 3] if d < 9.5 else GOLD[3]))
+    top_view(cv, BOTTOM, lambda dx, dz, d: None if d > 16 else (CARBON[2] if d < 6 else STEEL[3] if d < 7.5 else GOLD[2]))
+    return cv
+
+
+def observation_satellite():
+    cv = new_sheet()
+    for y in range(0, 10):
+        for c in range(3, 29):
+            put_side(cv, SIDE, c, y, WHITE[5] if y > 1 else CARBON[3])          # telescope tube, dark baffle at the mouth
+    for c in range(1, 31):
+        put_side(cv, SIDE, c, 8, STEEL[3])
+        put_side(cv, SIDE, c, 9, STEEL[4])
+    foil(cv, SIDE, 0, 32, 10, 21, 172)
+    for c in range(12, 20):
+        for y in range(14, 17):
+            put_side(cv, SIDE, c, y, CARBON[4] if y != 15 else STEEL[5])       # star tracker
+    for y in range(21, 24):
+        for c in range(13, 19):
+            put_side(cv, SIDE, c, y, STEEL[4])
+    solar_panel(cv, AUX)
+    top_view(cv, TOP, lambda dx, dz, d: None if d > 16 else (WHITE[6] if d < 3 else GOLD[3]))
+    top_view(cv, BOTTOM, lambda dx, dz, d: None if d > 16 else (CARBON[0] if d < 3.5 else CARBON[3] if d < 5 else STEEL[3] if d < 7.5 else GOLD[2]))
+    return cv
+
+
+def space_probe():
+    cv = new_sheet()
+    for y in range(0, 7):
+        for c in range(0, 32):
+            put_side(cv, SIDE, c, y, STEEL[3] if y else STEEL[1])               # legs and pads
+    foil(cv, SIDE, 0, 32, 5, 12, 173)
+    for c in range(4, 28):
+        put_side(cv, SIDE, c, 12, STEEL[5])
+    for y in range(13, 16):
+        for c in range(0, 32):
+            put_side(cv, SIDE, c, y, WHITE[5] if y == 14 else WHITE[3])
+    for y in range(16, 21):
+        for c in range(0, 32):
+            put_side(cv, SIDE, c, y, CARBON[3] if y >= 19 else STEEL[4])       # mast and camera head
+    for c in range(20, 23):
+        put_side(cv, SIDE, c, 19, (60, 140, 200, 255))                          # camera lens
+    top_view(cv, TOP, lambda dx, dz, d: None if d > 16 else (WHITE[6] if d < 5 else STEEL[4] if d < 7 else GOLD[3]))
+    top_view(cv, BOTTOM, lambda dx, dz, d: None if d > 16 else (CARBON[2] if d < 4 else GOLD[2]))
+    return cv
+
+
+LARGE_CAPSULE = [(0, 6, 16), (6, 12, 15), (12, 17, 14), (17, 22, 12), (22, 26, 10), (26, 29, 8), (29, 32, 6)]
+
+
+def large_capsule_radius(y):
+    for y0, y1, r in LARGE_CAPSULE:
+        if y0 <= y < y1:
+            return r
+    return 0
+
+
+def crew_capsule_large():
+    cv = new_sheet()
+    for region in (SIDE, AUX):
+        n = clustered(32, 32, 181, passes=1)
+        for y in range(32):
+            r = large_capsule_radius(y)
+            for c in range(32):
+                if not radius_at(c, r):
+                    continue
+                v = col_shade(c - (16 - r), 2 * r) + (n[y][c] - 0.5) * 0.1
+                put_side(cv, region, c, y, WHITE[int(round(2 + 5 * max(0, min(1, v))))])   # white thermal tiles
+        for y0, _, r in LARGE_CAPSULE[1:]:
+            ring(cv, region, y0, r, WHITE, 1, 3)                                         # panel seams
+        ring(cv, region, 0, 16, CARBON, 1, 3)                                            # heat shield interface
+        ring(cv, region, 31, 6, ALU, 3, 6)                                               # docking ring
+        for c in range(4, 28):
+            put_side(cv, region, c, 2, RED[3] if c % 4 else WHITE[1])                     # trunk stripe
+    # three windows on the front, one per seat
+    for wx in (7, 14, 21):
+        for y in range(15, 19):
+            for c in range(wx, wx + 4):
+                frame = y in (15, 18) or c in (wx, wx + 3)
+                put_side(cv, AUX, c, y, CARBON[1] if frame else (GLASS[5] if c == wx + 1 and y == 17 else GLASS[2]))
+    for y in range(5, 13):
+        for c in range(12, 20):
+            if y in (5, 12) or c in (12, 19):
+                put_side(cv, AUX, c, y, WHITE[1])                                         # side hatch outline
+    put_side(cv, AUX, 18, 8, STEEL[2])
+    def top(dx, dz, d):
+        if d > 16.2:
+            return None
+        if d < 3:
+            return CARBON[2]
+        if d < 6.2:
+            return ALU[5] if d < 5 else ALU[3]
+        return WHITE[5] if (dx + dz) < 0 else WHITE[4]
+    top_view(cv, TOP, top)
+    top_view(cv, BOTTOM, lambda dx, dz, d: None if d > 16.2 else CARBON[2])
+    return cv
+
+
 # --------------------------------------------------------------------------- separators
 
 def decoupler():
@@ -685,6 +872,117 @@ def icons():
         "................",
     ], {'o': k[0], 'K': k[5], 'k': k[3], 'S': s[6], 's': s[4], 'p': s[4], 'P': s[6],
         'W': s[6], 'w': s[4], 'N': k[5], 'n': k[3], 'D': k[0]})
+    out['hydrolox_engine'] = grid_icon([
+        "................",
+        "..oooooooooooo..",
+        ".oKKKKKKKKKKkko.",
+        ".oWWWWWWWWWWWwo.",
+        "..ooooSSSoooo...",
+        ".Pp...SsS...pP..",
+        ".pp...sss...pp..",
+        "......cCco......",
+        ".....cCccco.....",
+        ".....CcCcCdo....",
+        "....cCcCcCdo....",
+        "....CcCcCcCdo...",
+        "...cCcCcCcCdo...",
+        "...CcCcCcCcCdo..",
+        "...DDDDDDDDDDD..",
+        "................",
+    ], {'o': k[0], 'K': k[5], 'k': k[3], 'W': w[5], 'w': w[3], 'd': c[1], 'S': s[6], 's': s[4], 'p': s[4], 'P': s[6],
+        'C': c[6], 'c': c[4], 'D': k[1]})
+    out['hydrolox_vacuum_engine'] = grid_icon([
+        "..oooooooooooo..",
+        ".oKKKKKKKKKKkko.",
+        "..ooooSSSoooo...",
+        "......SsSP......",
+        "......cCcp......",
+        ".....cCcco......",
+        ".....cCcco......",
+        ".....gGggo......",
+        "....gGGgggo.....",
+        "....GGggggo.....",
+        "...gGGgggggo....",
+        "...GGgggggggo...",
+        "..gGGgggggggo...",
+        "..GGgggggggggo..",
+        ".DDDDDDDDDDDDD..",
+        "................",
+    ], {'o': k[0], 'K': k[5], 'k': k[3], 'S': s[6], 's': s[4], 'p': s[4], 'P': s[6],
+        'C': c[6], 'c': c[4], 'G': GOLD[5], 'g': GOLD[3], 'D': k[0]})
+    g_, s_, k_, w_ = GOLD, STEEL, CARBON, WHITE
+    out['comm_satellite'] = grid_icon([
+        "................",
+        ".......o........",
+        "......oWo.......",
+        "....oWWWWWo.....",
+        "...oWwwwwwWo....",
+        ".....ooooo......",
+        "bb...oGGGo...bb.",
+        "bBb..oGgGo..bBb.",
+        "bBbssoGGgossbBb.",
+        "bBb..oGgGo..bBb.",
+        "bb...oGGGo...bb.",
+        ".....ooooo......",
+        "......sss.......",
+        ".....sssss......",
+        "................",
+        "................",
+    ], {'o': k_[0], 'W': w_[6], 'w': w_[4], 'G': g_[4], 'g': g_[2], 's': s_[4], 'b': PANEL[1], 'B': PANEL[3]})
+    out['observation_satellite'] = grid_icon([
+        "................",
+        ".......s........",
+        "......sss.......",
+        ".....ooooo......",
+        "bb...oGGGo...bb.",
+        "bBb..oGgGo..bBb.",
+        "bBbssoGGgossbBb.",
+        "bBb..oGgGo..bBb.",
+        "bb...oGGGo...bb.",
+        ".....ooooo......",
+        "......oWWo......",
+        "......oWwo......",
+        "......oWwo......",
+        "......okko......",
+        ".......oo.......",
+        "................",
+    ], {'o': k_[0], 'W': w_[6], 'w': w_[4], 'k': k_[2], 'G': g_[4], 'g': g_[2], 's': s_[4], 'b': PANEL[1], 'B': PANEL[3]})
+    out['space_probe'] = grid_icon([
+        "................",
+        "..........kk....",
+        "..........ks....",
+        "......WWW.s.....",
+        ".....WwwwWs.....",
+        "......ooooo.....",
+        "....oGGGGGGo....",
+        "...oGGgGGgGGo...",
+        "...oGgGGgGGgo...",
+        "....oooooooo....",
+        "...s.s....s.s...",
+        "..s..s....s..s..",
+        ".s...s....s...s.",
+        "ss..ss....ss..ss",
+        "................",
+        "................",
+    ], {'o': k_[0], 'W': w_[6], 'w': w_[4], 'k': k_[2], 'G': g_[4], 'g': g_[2], 's': s_[4]})
+    out['crew_capsule_large'] = grid_icon([
+        "......oooo......",
+        ".....oAAAAo.....",
+        ".....oWWWWo.....",
+        "....oWWWWWWo....",
+        "....oWWWWWWo....",
+        "...oWWWWWWWWo...",
+        "...oWgWWgWWgo...",
+        "..oWWgWWgWWgWo..",
+        "..oWWWWWWWWWWo..",
+        "..oWWWWWWWWWWo..",
+        ".oWWWWWWWWWWWwo.",
+        ".oWWWWWWWWWWWwo.",
+        ".oRRRRRRRRRRRRo.",
+        ".okkkkkkkkkkkko.",
+        "..oooooooooooo..",
+        "................",
+    ], {'o': CARBON[0], 'A': ALU[4], 'W': WHITE[6], 'w': WHITE[3], 'g': GLASS[3], 'R': RED[3], 'k': CARBON[2]})
     out['decoupler'] = grid_icon([
         "................", "................", "................", "................",
         "................",
@@ -857,10 +1155,16 @@ SHEETS = {
     'vacuum_engine': vacuum_engine,
     'methalox_engine': methalox_engine,
     'methalox_vacuum_engine': methalox_vacuum_engine,
+    'hydrolox_engine': hydrolox_engine,
+    'hydrolox_vacuum_engine': hydrolox_vacuum_engine,
+    'comm_satellite': comm_satellite,
+    'observation_satellite': observation_satellite,
+    'space_probe': space_probe,
     'decoupler': decoupler,
     'interstage': interstage,
     'heat_shield': heat_shield,
     'crew_capsule': crew_capsule,
+    'crew_capsule_large': crew_capsule_large,
     'parachute': parachute,
     'nose_cone': nose_cone,
     'fins': fins,
@@ -1591,9 +1895,101 @@ def limit_colours(cv, n=6):
     return cv
 
 
+HULL = ramp('#8c9096', '#b4b8bd', '#cfd2d6', '#e1e3e6', '#eef0f2', '#f8f9fa')
+
+
+def station_hull():
+    """White insulated hull panel with a seam frame and four rivets."""
+    cv = block_noise(301, HULL, 3, 5, passes=1, grain=0.2)
+    for i in range(16):
+        cv[i, 0] = HULL[5]
+        cv[0, i] = HULL[5]
+        cv[i, 15] = HULL[1]
+        cv[15, i] = HULL[1]
+    for x, y in ((2, 2), (13, 2), (2, 13), (13, 13)):
+        cv[x, y] = HULL[0]
+    for x in range(5, 11):
+        cv[x, 8] = HULL[2]                                  # panel seam across the middle
+    return cv
+
+
+def station_window():
+    """Thick window frame around a glass pane (transparent pixels let the view through)."""
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            frame = x < 2 or y < 2 or x > 13 or y > 13
+            if frame:
+                cv[x, y] = HULL[4] if (x < 1 or y < 1) else HULL[1] if (x > 14 or y > 14) else HULL[3]
+            else:
+                glint = (x - y) in (4, 5) and x < 10
+                cv[x, y] = (230, 240, 255, 150) if glint else (120, 160, 200, 70)
+    return cv
+
+
+def docking_port_top():
+    """Looking at the port: grey docking ring, dark hatch and yellow alignment marks."""
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            d = math.hypot(x - 7.5, y - 7.5)
+            if d > 7.6:
+                c = HULL[3]
+            elif d > 6.1:
+                c = STEEL[5]
+            elif d > 4.6:
+                c = STEEL[3]
+            else:
+                c = CARBON[3] if d > 1.5 else CARBON[4]
+            cv[x, y] = c
+    for x, y in ((7, 0), (8, 0), (0, 7), (0, 8), (15, 7), (15, 8), (7, 15), (8, 15)):
+        cv[x, y] = HAZARD[3]
+    return cv
+
+
+def docking_port_side():
+    cv = station_hull()
+    for x in range(16):
+        cv[x, 1] = HAZARD[3] if x % 4 < 2 else CARBON[2]       # warning band below the ring
+    return cv
+
+
+def station_kit_icon():
+    cv = Canvas()
+    rows = [
+        "................",
+        "..oooooooooooo..",
+        ".oWWWWWWWWWWWWo.",
+        ".oWwwwwwwwwwwWo.",
+        ".oWwYYYYYYYYwWo.",
+        ".oWwYkkkkkkYwWo.",
+        ".oWwYkWWWWkYwWo.",
+        ".oWwYkWWWWkYwWo.",
+        ".oWwYkkkkkkYwWo.",
+        ".oWwYYYYYYYYwWo.",
+        ".oWwwwwwwwwwwWo.",
+        ".oWWWWWWWWWWWWo.",
+        "..oooooooooooo..",
+        "....ss....ss....",
+        "...ssss..ssss...",
+        "................",
+    ]
+    pal = {'o': CARBON[0], 'W': HULL[5], 'w': HULL[2], 'Y': HAZARD[3], 'k': CARBON[3], 's': STEEL[3]}
+    for y, row in enumerate(rows):
+        for x, ch in enumerate(row):
+            if ch in pal:
+                cv[x, y] = pal[ch]
+    return cv
+
+
 def export_facility(save):
     blk = (100, 30, 0, None)
     save(limit_colours(launch_pad_top()), 'block', 'launch_pad_top', blk)
+    save(limit_colours(station_hull()), 'block', 'station_hull', (180, 30, 0, None))
+    save(station_window(), 'block', 'station_window', (200, 20, 0, None))
+    save(limit_colours(docking_port_top()), 'block', 'docking_port_top', (180, 30, 0, None))
+    save(limit_colours(docking_port_side()), 'block', 'docking_port_side', (180, 30, 0, None))
+    save(station_kit_icon(), 'item', 'station_kit')
     save(limit_colours(launch_pad_side()), 'block', 'launch_pad_side', blk)
     save(flame_trench_top(), 'block', 'flame_trench_top', (140, 230, 0, None))
     save(flame_trench_side(), 'block', 'flame_trench_side', (140, 230, 0, None))

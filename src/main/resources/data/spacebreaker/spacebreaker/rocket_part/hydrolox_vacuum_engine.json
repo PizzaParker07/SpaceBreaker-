@@ -1,0 +1,11 @@
+{
+  "type": "engine",
+  "mass_kg": 320,
+  "thrust_kn": 110,
+  "isp_sea_level_s": 230,
+  "isp_vacuum_s": 465,
+  "height": 30,
+  "model": "spacebreaker:hydrolox_vacuum_engine",
+  "nozzle": 12,
+  "propellant": "hydrolox"
+}

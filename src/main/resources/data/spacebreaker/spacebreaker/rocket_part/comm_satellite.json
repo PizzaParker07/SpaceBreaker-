@@ -1,0 +1,6 @@
+{
+  "type": "satellite",
+  "mass_kg": 1200,
+  "height": 24,
+  "model": "spacebreaker:comm_satellite"
+}
