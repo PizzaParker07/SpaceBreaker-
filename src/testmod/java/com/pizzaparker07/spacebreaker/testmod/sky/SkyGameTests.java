@@ -32,6 +32,9 @@ public final class SkyGameTests {
             helper.assertTrue(Math.abs(venus.local().x) < 0.15, "planets stay near the ecliptic (Venus " + venus.local().x + ")");
             helper.assertTrue(find(dots, "spacebreaker:moon") == null, "the Moon is a disc, not a point");
             helper.assertTrue(find(dots, "spacebreaker:sun") == null, "the Sun is not a point");
+            // Venus (about -4) always outshines Jupiter (about -2): a bigger, brighter point
+            helper.assertTrue(venus.size() >= jupiter.size() && venus.alpha() >= jupiter.alpha(),
+                    "Venus outshines Jupiter (t=" + t + "): " + venus.size() + " vs " + jupiter.size());
         }
         helper.succeed();
     }
