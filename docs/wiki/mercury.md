@@ -26,7 +26,7 @@ Hava yok ve güneş evdekinden neredeyse **üç kat** büyük.
 
 **Grafit Cevheri** · **Grafit**
 
-Kutup kraterlerinin tabanı hiç güneş görmez: yaklaşık −240 °C'lik bir **soğuk tuzak** olup **Merkür Kutup Buzu** saklar. Termal giysi, termal modüllerle bile orada yetmez; ısıtmalı giysi giy. Eritince su, sudan hidrojen ve oksijen elde edersin.
+Kutup kraterlerinin tabanı hiç güneş görmez: yaklaşık −240 °C'lik bir **soğuk tuzak** olup **Merkür Kutup Buzu** saklar. Termal giysi yalnızca −170 °C'ye dayanır (her termal regülatör modülü bunu 15 °C genişletir); orada ısıtmalı giysi giy. Eritince su, sudan hidrojen ve oksijen elde edersin.
 
 > [!TIP]
 > **Merkür'de yakıt:** grafit + oksijen → CO₂ (kimyasal reaktör); CO₂ + hidrojen → metan (Sabatier reaktörü). Böylece metaloks yakıtını yerinde tamamlarsın. → [Yerinde Üretim](isru)
@@ -68,7 +68,7 @@ No air, and a sun almost **three times** as wide as at home.
 
 **Graphite Ore** · **Graphite**
 
-The floors of the polar craters lie in permanent shadow: a **cold trap** at about −240 °C that keeps **Mercurian Polar Ice**. A thermal suit, even with thermal modules, is not enough down there; wear the heated suit. Melt it for water, then split the water into hydrogen and oxygen.
+The floors of the polar craters lie in permanent shadow: a **cold trap** at about −240 °C that keeps **Mercurian Polar Ice**. The thermal suit is rated only to −170 °C (each thermal regulator module widens that by 15 °C), so wear the heated suit down there. Melt it for water, then split the water into hydrogen and oxygen.
 
 > [!TIP]
 > **Fuel on Mercury:** graphite + oxygen → CO₂ (chemical reactor); CO₂ + hydrogen → methane (Sabatier reactor). That tops up methalox fuel on the spot. → [In-Situ Resources](isru)

@@ -40,6 +40,7 @@ The {item spacebreaker:fuel_depot} stores fuel and liquid oxygen and pumps them 
 The {item spacebreaker:solar_array} carries three panels on a one-block footprint and makes up to **60 FE/t**. The sun never sets in orbit, so the array runs at full power around the clock.
 
 ## Docking
+- A crewed rocket arriving in an orbit with a station starts **36 blocks** out from the nearest docking port. It closes in quickly, then creeps the last stretch on thruster puffs and locks on with a clunk: **"Docked"**. Nobody can step off on the way in.
 - The crew of a rocket in orbit within **12 blocks** of the port can step off into the station and back on.
 - Fuel and liquid oxygen piped into the port flow into the docked rocket: the station becomes a **fuel depot**.
 

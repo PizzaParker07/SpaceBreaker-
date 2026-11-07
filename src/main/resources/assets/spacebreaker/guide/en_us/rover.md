@@ -20,6 +20,7 @@ An electric vehicle for reaching distant craters, ice fields and ruins from your
 - Get in: {key key.use}. Get out: {key key.sneak}.
 - **Cargo:** click the rover while holding {key key.sneak}.
 - Grip depends on gravity: in low gravity you slide easily, so turn slowly.
+- Grip also depends on the ground. On **ice**, and on Pluto's nitrogen ice most of all, the rover speeds up and brakes weakly, steers poorly and keeps sliding the way it was going. Brake early.
 
 ## Charging
 - Next to a {item spacebreaker:battery_bank} or a cable it charges at **200 FE/t**.

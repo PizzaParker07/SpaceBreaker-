@@ -24,6 +24,8 @@ Roket **yörüngedeyken** {key key.spacebreaker.star_map} haritayı açar. Yüze
    - **Fırlatma penceresi:** şu an uygun, ya da en iyisi biraz sonra (şimdi gitmek daha çok yakıt ister)
 5. Rota haritada numaralı adımlarla çizilir. Büyük **Git** düğmesine bas. Düğme pasifse nedenini yazar.
 
+Bir gezegenin yanındaki küçük **istasyon simgesi**, yörüngesinde bir uzay istasyonu olduğunu gösterir; yan panel onu kimin kurduğunu ve kaç yanaşma portu olduğunu yazar. → [Uzay İstasyonu](space_station)
+
 Uçarken göstergede **Kalan yakıt (Δv)** satırını izle.
 
 > **Δv**, roketinin hızını ne kadar değiştirebileceğidir; kısaca: yakıtın.

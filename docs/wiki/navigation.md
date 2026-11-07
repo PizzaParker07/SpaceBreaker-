@@ -22,6 +22,8 @@ Roket **yörüngedeyken** `M` haritayı açar. Yüzeyden önce rampadan fırlatm
    - **Fırlatma penceresi:** şu an uygun, ya da en iyisi biraz sonra (şimdi gitmek daha çok yakıt ister)
 5. Rota haritada numaralı adımlarla çizilir. Büyük **Git** düğmesine bas. Düğme pasifse nedenini yazar.
 
+Bir gezegenin yanındaki küçük **istasyon simgesi**, yörüngesinde bir uzay istasyonu olduğunu gösterir; yan panel onu kimin kurduğunu ve kaç yanaşma portu olduğunu yazar. → [Uzay İstasyonu](space_station)
+
 Uçarken göstergede **Kalan yakıt (Δv)** satırını izle.
 
 > [!TIP]
@@ -63,6 +65,8 @@ With the rocket **in orbit**, `M` opens the map. Launch from a pad first.
    - **Trip time:** X days
    - **Launch window:** now is fine, or the best one is a little later (going now costs more fuel)
 5. The route is drawn on the map in numbered steps. Press the big **Go** button. If it is greyed out, it tells you why.
+
+A small **station icon** beside a planet means there is a space station in its orbit; the side panel shows who built it and how many docking ports it has. → [Space Station](space_station)
 
 While flying, watch the **Fuel left (Δv)** line on the display.
 

@@ -13,6 +13,8 @@ Neptün'ün çevresinde ters yönde dönen, yakalanmış bir cüce gezegen; öl�
 
 **Gayzer Böcekleri** gayzerle fırlar, süzülerek iner.
 
+Bir gayzer fışkırırken çevresine, ağzından birkaç blok öteye **Gayzer Tozu** yağar. Topla: Gayzer Böceklerinin yiyeceğidir ve hep yenilenir (yerde aynı anda yalnızca bir avuç birikir).
+
 ### Harabe
 Düşmüş bir iniş aracı şunu öğretir: *Kriyovolkanizma*.
 
@@ -31,6 +33,8 @@ A captured dwarf planet orbiting Neptune backwards, the coldest surface ever mea
 **Creature:** Plume Beetle
 
 **Plume beetles** ride the geysers and glide down.
+
+While a geyser erupts, **Plume Dust** rains down around it, a few blocks from the vent. Pick it up: it is the plume beetles' food, and it keeps coming back (only a handful lies around at once).
 
 ### Ruins
 A crashed lander teaches *Cryovolcanism*.

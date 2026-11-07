@@ -1,7 +1,7 @@
 ---
 title: Bulutlarda Yaşam ve Harabeler
 icon: spacebreaker:cloud_jelly_spawn_egg
-items: [spacebreaker:cloud_jelly_spawn_egg, spacebreaker:acid_ray_spawn_egg, spacebreaker:aerogel, spacebreaker:envelope_fabric, spacebreaker:acid_coating, spacebreaker:composite_panel, spacebreaker:lift_gas_sac]
+items: [spacebreaker:cloud_jelly_spawn_egg, spacebreaker:acid_ray_spawn_egg, spacebreaker:aerogel, spacebreaker:envelope_fabric, spacebreaker:acid_coating, spacebreaker:composite_panel, spacebreaker:lift_gas_sac, spacebreaker:aerostat_kit]
 research: spacebreaker:interplanetary_transfers
 ---
 {entity spacebreaker:cloud_jelly}
@@ -20,6 +20,16 @@ Herhangi bir zırh parçasını ve bir {item spacebreaker:acid_coating} öğesin
 {items spacebreaker:composite_panel spacebreaker:aerogel spacebreaker:envelope_fabric}
 Hafif kompozit paneller ve aerojel, solunabilir hava katmanında yüzen platformlar kurmanı sağlar.
 {recipe spacebreaker:composite_panel}
+
+## Aerostat platform kiti
+{items spacebreaker:aerostat_kit}
+Bulutlarda bir eve en kısa yol. {item spacebreaker:aerostat_kit}'ni **yaşanabilir bulut kuşağında** (yaklaşık 1 bar ve oda sıcaklığı; bulut tabanından bulut tepelerinin ~30 blok üstüne kadar) kullan: yüzen bir üs şişer. **9×9** kompozit güverte, kapılı korkuluk, halatlar, bir fener ve tepede kaldırma gazı zarfı.
+
+{recipe spacebreaker:aerostat_kit}
+
+>! Yalnızca boş havaya yerleşir. Kuşağın altında zarf pişer, üstünde ise kaldırmaz: orada çalışmaz.
+
+> Bulut Medüzlerini kaldırma gazı keseleri için avla, kiti üret ve üssünü bulutlarda kur. Asit kaplamalı zırh giy.
 
 > [!NOTE]
 > Bulut tepelerinin üstünde terk edilmiş bir araştırma balonu süzülür. Laboratuvarında hâlâ teknoloji diskleri var; Asit Vatozları onları korur.

@@ -10,6 +10,7 @@
   "tier": 2,
   "unlocks": [
     "spacebreaker:composite_panel",
-    "spacebreaker:aerogel"
+    "spacebreaker:aerogel",
+    "spacebreaker:aerostat_kit"
   ]
 }

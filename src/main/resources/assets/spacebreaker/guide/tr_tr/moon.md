@@ -23,7 +23,8 @@ Regoliti fırında pişir: **sinterlenmiş regolit**, Ay üssünün ilk yapı ta
 {page}
 ## Kaynaklar
 {items spacebreaker:icy_regolith spacebreaker:lunar_ice spacebreaker:kreep_ore spacebreaker:meteoric_iron}
-- **Buz** kutup kraterlerinin hiç güneş görmeyen tabanlarında saklanır. Eriterek su elde edersin. → [Yerinde Kaynak Kullanımı](isru)
+- **Buz** kutup kraterlerinin hiç güneş görmeyen tabanlarında saklanır. Eriterek su elde edersin.
+- Bu tabanlar gece gündüz yaklaşık **−233 °C**'lik **soğuk tuzaklardır**. Mk1 giysi orada dayanamaz: ısıtmalı giysi giy. İçeri girip çıkarken bir mesaj seni uyarır. → [Yerinde Kaynak Kullanımı](isru)
 - **KREEP** nadir toprak elementleri ve toryum içerir.
 - **Meteor demiri** eski çarpmalardan kalır ve ham demir verir.
 

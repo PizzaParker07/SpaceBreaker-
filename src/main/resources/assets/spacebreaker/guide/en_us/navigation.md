@@ -24,6 +24,8 @@ With the rocket **in orbit**, {key key.spacebreaker.star_map} opens the map. Lau
    - **Launch window:** now is fine, or the best one is a little later (going now costs more fuel)
 5. The route is drawn on the map in numbered steps. Press the big **Go** button. If it is greyed out, it tells you why.
 
+A small **station icon** beside a planet means there is a space station in its orbit; the side panel shows who built it and how many docking ports it has. → [Space Station](space_station)
+
 While flying, watch the **Fuel left (Δv)** line on the display.
 
 > **Δv** is how much your rocket can change its speed; in short: your fuel.

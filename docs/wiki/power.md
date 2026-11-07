@@ -6,7 +6,7 @@ Bütün makineler **FE** (enerji) ile çalışır. Üretim ve tüketim "FE/t" il
 
 | Blok | Ne yapar? |
 |---|---|
-| **Yanmalı Jeneratör** | Yakıt yakar, **40 FE/t** verir. Yalnızca solunabilir havada çalışır. |
+| [Yanmalı Jeneratör](first_hours) | Yakıt yakar, **40 FE/t** verir. Yalnızca solunabilir havada çalışır. |
 | **Güneş Takipli Panel** | Güneşi takip eder; açık öğlede **20 FE/t**. Yağmurda ve gece azalır. |
 | **Batarya Bankası** | **1 000 000 FE** saklar, önünden 2048 FE/t verir. |
 | **Bakır Kablo** | Enerjiyi taşır; az güç için. |
@@ -62,7 +62,7 @@ Every machine runs on **FE** (energy). Production and use are measured in "FE/t"
 
 | Block | What it does |
 |---|---|
-| **Combustion Generator** | Burns fuel for **40 FE/t**. Only works in breathable air. |
+| [Combustion Generator](first_hours) | Burns fuel for **40 FE/t**. Only works in breathable air. |
 | **Solar Tracker** | Follows the sun; **20 FE/t** at a clear noon. Less in rain, none at night. |
 | **Battery Bank** | Stores **1,000,000 FE**, gives 2,048 FE/t out of its front. |
 | **Copper Cable** | Carries power; for small loads. |

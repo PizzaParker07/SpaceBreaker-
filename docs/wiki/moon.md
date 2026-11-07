@@ -27,7 +27,8 @@ Ay Regoliti → **Sinterlenmiş Regolit** (Ocak)
 
 **Buzlu Regolit** · **Ay Buzu** · **KREEP Cevheri** · **Meteor Demiri**
 
-- **Buz** kutup kraterlerinin hiç güneş görmeyen tabanlarında saklanır. Eriterek su elde edersin. → [Yerinde Kaynak Kullanımı](isru)
+- **Buz** kutup kraterlerinin hiç güneş görmeyen tabanlarında saklanır. Eriterek su elde edersin.
+- Bu tabanlar gece gündüz yaklaşık **−233 °C**'lik **soğuk tuzaklardır**. Mk1 giysi orada dayanamaz: ısıtmalı giysi giy. İçeri girip çıkarken bir mesaj seni uyarır. → [Yerinde Kaynak Kullanımı](isru)
 - **KREEP** nadir toprak elementleri ve toryum içerir.
 - **Meteor demiri** eski çarpmalardan kalır ve ham demir verir.
 
@@ -64,7 +65,8 @@ Lunar Regolith → **Sintered Regolith** (Furnace)
 
 **Icy Regolith** · **Lunar Ice** · **KREEP Ore** · **Meteoric Iron**
 
-- **Ice** hides in the permanently dark floors of polar craters. Melt it for water. → [In-Situ Resources](isru)
+- **Ice** hides in the permanently dark floors of polar craters. Melt it for water.
+- Those floors are **cold traps** at about **−233 °C**, day and night. The Mk1 suit cannot cope there: wear the heated suit. A message tells you when you step in and out. → [In-Situ Resources](isru)
 - **KREEP** holds rare earths and thorium.
 - **Meteoric iron** is left from old impacts and gives raw iron.
 

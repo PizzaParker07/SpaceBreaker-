@@ -6,6 +6,7 @@ Bu wiki, oyun içindeki **Saha Rehberi**nin metinlerinden otomatik üretilir.
 
 - [Hoş Geldin](welcome) · *Welcome*
 - [İlerleme Yolu](progression) · *The Road Ahead*
+- [İlk İki Saat](first_hours) · *The First Two Hours*
 - [Tuşlar ve Kontroller](controls) · *Keys and Controls*
 - [Hologram Projektörü](hologram_projector) · *Hologram Projector*
 

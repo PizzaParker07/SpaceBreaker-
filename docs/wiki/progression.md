@@ -15,7 +15,7 @@ Kızıl-kahve [Boksit Cevheri](ores) her yerde seyrek, sıcak tepelerde bol bulu
 → **Alüminyum Levha** (Çalışma Masası)
 
 ### 2. İlk enerji
-Laboratuvar enerjiyle çalışır. İlk enerjin [Yanmalı Jeneratör](power): kömür ya da odun yakar.
+Laboratuvar enerjiyle çalışır. İlk enerjin [Yanmalı Jeneratör](first_hours): kömür ya da odun yakar.
 1. İki bakır külçesini üst üste koy: **bakır levha**.
 2. Levha ve bir **makasla** bakır tel yap. Makas tükenmez.
 3. Tel, kızıltaş ve demir levhayla bir [Temel Devre Kartı](components) yap.
@@ -117,7 +117,7 @@ Red-brown [Bauxite Ore](ores) is thin everywhere and rich in warm hills. Smelt r
 → **Aluminum Plate** (Crafting Table)
 
 ### 2. First power
-The lab runs on energy. Your first power is the [Combustion Generator](power): it burns coal or wood.
+The lab runs on energy. Your first power is the [Combustion Generator](first_hours): it burns coal or wood.
 1. Stack two copper ingots: a **copper plate**.
 2. A plate and **shears** make copper wire. The shears are not used up.
 3. Wire, redstone and an iron plate make a [Basic Circuit](components).

@@ -343,7 +343,7 @@ public final class ResearchTree {
                 .samples(ORBIT)
                 .en("Space Stations", "Dock modules together in orbit: a home, a workshop and a fuel depot above the sky.")
                 .tr("Uzay İstasyonları", "Modülleri yörüngede birleştir: gökyüzünün üstünde bir ev, atölye ve yakıt deposu.");
-        t("cloud_platforms", CONSTRUCTION, 2).req("space_stations").icon("spacebreaker:composite_panel").unlocks("composite_panel", "aerogel")
+        t("cloud_platforms", CONSTRUCTION, 2).req("space_stations").icon("spacebreaker:composite_panel").unlocks("composite_panel", "aerogel", "aerostat_kit")
                 .samples(VENUS)
                 .en("Cloud Platforms", "Breathable air is a lifting gas on Venus: float a base 50 km above the furnace.")
                 .tr("Bulut Platformları", "Venüs'te solunabilir hava bir kaldırma gazıdır: üssü fırının 50 km üstünde yüzdür.");

@@ -12,5 +12,7 @@ A captured dwarf planet orbiting Neptune backwards, the coldest surface ever mea
 {entity spacebreaker:plume_beetle}
 **Plume beetles** ride the geysers and glide down.
 
+While a geyser erupts, {item spacebreaker:plume_dust} rains down around it, a few blocks from the vent. Pick it up: it is the plume beetles' food, and it keeps coming back (only a handful lies around at once).
+
 ## Ruins
 A crashed lander teaches {tech spacebreaker:cryovolcanism}.

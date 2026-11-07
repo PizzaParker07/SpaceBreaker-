@@ -4,9 +4,10 @@
 
 RP-1 roket yakıtının yolu:
 
-1. Bir [Petrol Sızıntısı](crude_oil) bul ve **Petrol Pompası**'u tam üstüne kur. Çevresinde boş alan ister.
+1. Bir [Petrol Sızıntısı](crude_oil) bul ve [Petrol Pompası](first_hours)'u tam üstüne kur. Çevresinde boş alan ister.
+   Daha büyük yataklar kurak biyomların (çöl, savan, kızıl çorak arazi) altındadır; ovaların, ormanların, taygaların, bataklıkların, cangılların ve karlı biyomların altında da küçük, seyrek yataklar vardır. Yüzeydeki sızıntıyı ara.
 2. Pompaya enerji ver; ham petrol çıkmaya başlar.
-3. Petrolü **Sıvı Borusu** ile **Rafineri**'ye götür.
+3. Petrolü **Sıvı Borusu** ile [Rafineri](first_hours)'ye götür.
 4. Rafinerinin çıktısını bir **Sıvı Tankı**'ta topla.
 
 > [!TIP]
@@ -26,9 +27,10 @@ RP-1 roket yakıtının yolu:
 
 The road to RP-1 rocket fuel:
 
-1. Find an [Oil Seep](crude_oil) and build the **Pumpjack** right on top of it. It needs free space around it.
+1. Find an [Oil Seep](crude_oil) and build the [Pumpjack](first_hours) right on top of it. It needs free space around it.
+   Bigger fields lie under dry biomes (deserts, savannas, badlands); smaller, sparse ones under plains, forests, taiga, swamps, jungles and snowy biomes too, so a wet start is not stuck. Look for the seep at the surface.
 2. Power the pump; crude oil starts flowing.
-3. Pipe the oil to the **Refinery** with a **Fluid Pipe**.
+3. Pipe the oil to the [Refinery](first_hours) with a **Fluid Pipe**.
 4. Collect the refinery's output in a **Fluid Tank**.
 
 > [!TIP]

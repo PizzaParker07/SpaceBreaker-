@@ -12,5 +12,7 @@ Neptün'ün çevresinde ters yönde dönen, yakalanmış bir cüce gezegen; öl�
 {entity spacebreaker:plume_beetle}
 **Gayzer Böcekleri** gayzerle fırlar, süzülerek iner.
 
+Bir gayzer fışkırırken çevresine, ağzından birkaç blok öteye {item spacebreaker:plume_dust} yağar. Topla: Gayzer Böceklerinin yiyeceğidir ve hep yenilenir (yerde aynı anda yalnızca bir avuç birikir).
+
 ## Harabe
 Düşmüş bir iniş aracı şunu öğretir: {tech spacebreaker:cryovolcanism}.

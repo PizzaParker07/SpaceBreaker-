@@ -7,6 +7,7 @@ research: spacebreaker:fuel_refining
 The road to RP-1 rocket fuel:
 
 1. Find an {item spacebreaker:oil_seep} and build the {item spacebreaker:pumpjack} right on top of it. It needs free space around it.
+   Bigger fields lie under dry biomes (deserts, savannas, badlands); smaller, sparse ones under plains, forests, taiga, swamps, jungles and snowy biomes too, so a wet start is not stuck. Look for the seep at the surface.
 2. Power the pump; crude oil starts flowing.
 3. Pipe the oil to the {item spacebreaker:refinery} with a {item spacebreaker:fluid_pipe}.
 4. Collect the refinery's output in a {item spacebreaker:fluid_tank}.

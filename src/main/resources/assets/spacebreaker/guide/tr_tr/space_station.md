@@ -40,6 +40,7 @@ Dünya dışında yatak çalışmaz. {item spacebreaker:station_bunk} kullanınc
 {item spacebreaker:solar_array} tek blokluk tabanda üç panel taşır ve en fazla **60 FE/t** üretir. Yörüngede güneş hiç batmaz: dizi gece gündüz tam güçte çalışır.
 
 ## Yanaşma
+- İstasyonu olan bir yörüngeye varan mürettebatlı roket en yakın yanaşma portunun **36 blok** uzağında belirir. Hızla yaklaşır, son metreleri manevra iticileriyle ağır ağır alır ve bir tık sesiyle kilitlenir: **"Yanaşıldı"**. Yaklaşma sırasında kimse inemez.
 - Portun **12 blok** yakınındaki yörüngedeki bir roketten mürettebat istasyona iner ve geri biner.
 - Porta borulanan yakıt ve sıvı oksijen yanaşan rokete akar: istasyon bir **yakıt deposu** olur.
 

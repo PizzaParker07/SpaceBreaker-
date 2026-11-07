@@ -4,9 +4,9 @@
 
 Roket motorları yakıtı **sıvı oksijenle** yakar. Onu sudan elde edersin:
 
-1. **Elektroliz Ünitesi** suyu **oksijen** ve **hidrojen** gazına ayırır.
+1. [Elektroliz Ünitesi](first_hours) suyu **oksijen** ve **hidrojen** gazına ayırır. Onu **sonsuz bir su kaynağından** çekme kipindeki bir [Sıvı Borusu](oil_refining) ile besle (ucuna `Shift` + `Sağ Tık`): **100 mB/t**, kovayla taşımaya gerek yok.
 2. Gazları **Gaz Borusu** ile **Basınçlı Gaz Tankı**'a ya da doğrudan sıvılaştırıcıya götür.
-3. **Kriyojenik Sıvılaştırıcı** oksijeni **−183 °C**'de, hidrojeni **−253 °C**'de sıvılaştırır.
+3. [Kriyojenik Sıvılaştırıcı](first_hours) oksijeni **−183 °C**'de, hidrojeni **−253 °C**'de sıvılaştırır.
 4. Sıvıları **Kriyojenik Tank** ya da **Kriyojenik Kap** içinde sakla.
 
 > [!TIP]
@@ -30,9 +30,9 @@ Roket motorları yakıtı **sıvı oksijenle** yakar. Onu sudan elde edersin:
 
 Rocket engines burn their fuel with **liquid oxygen**. You get it from water:
 
-1. The **Electrolyzer** splits water into **oxygen** and **hydrogen** gas.
+1. The [Electrolyzer](first_hours) splits water into **oxygen** and **hydrogen** gas. Feed it with a [Fluid Pipe](oil_refining) in pull mode (`Shift` + `Right Click` on its end) from an **endless water source**: **100 mB/t**, no bucket runs.
 2. Pipe the gases with a **Gas Pipe** into a **Pressurized Gas Tank** or straight into the liquefier.
-3. The **Cryogenic Liquefier** liquefies oxygen at **−183 °C** and hydrogen at **−253 °C**.
+3. The [Cryogenic Liquefier](first_hours) liquefies oxygen at **−183 °C** and hydrogen at **−253 °C**.
 4. Keep the liquids in a **Cryogenic Tank** or a **Cryogenic Canister**.
 
 > [!TIP]

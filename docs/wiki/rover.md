@@ -24,6 +24,7 @@
 - Bin: `Sağ Tık`. İn: `Shift`.
 - **Kargo:** `Shift` basılıyken geziciye tıkla.
 - Tutuş yerçekimine bağlıdır: düşük yerçekiminde kolay kayarsın, yavaş dön.
+- Tutuş zemine de bağlıdır. **Buzda**, en çok da Plüton'un azot buzunda, gezici zor hızlanır, zor durur, zor döner ve gittiği yönde kaymaya devam eder. Erken fren yap.
 
 ### Şarj
 - Bir [Batarya Bankası](power) ya da kablonun yanında **200 FE/t** ile dolar.
@@ -56,6 +57,7 @@ An electric vehicle for reaching distant craters, ice fields and ruins from your
 - Get in: `Right Click`. Get out: `Shift`.
 - **Cargo:** click the rover while holding `Shift`.
 - Grip depends on gravity: in low gravity you slide easily, so turn slowly.
+- Grip also depends on the ground. On **ice**, and on Pluto's nitrogen ice most of all, the rover speeds up and brakes weakly, steers poorly and keeps sliding the way it was going. Brake early.
 
 ### Charging
 - Next to a [Battery Bank](power) or a cable it charges at **200 FE/t**.

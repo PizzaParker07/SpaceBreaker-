@@ -11,7 +11,7 @@ Numuneleri, diskleri ve deney kayıtlarını inceleyip sana teknoloji öğreten 
 → **Araştırma Laboratuvarı** (Çalışma Masası)
 
 ### Kullanımı
-1. Laboratuvarı yerleştir ve yanına enerji ver: başlangıçta bir [Yanmalı Jeneratör](power) yeter.
+1. Laboratuvarı yerleştir ve yanına enerji ver: başlangıçta bir [Yanmalı Jeneratör](first_hours) yeter.
 2. `Sağ Tık` ile aç. **Araştırmacı**, laboratuvarı en son açan oyuncudur.
 3. Sol yuvaya bir disk, numune ya da deney kaydı koy.
 4. Ok dolunca teknolojiyi öğrenirsin. Ekranda bir bildirim çıkar.
@@ -49,7 +49,7 @@ A bench that analyses samples, disks and experiment records and teaches you tech
 → **Research Lab** (Crafting Table)
 
 ### How to use it
-1. Place the lab and give it power: a [Combustion Generator](power) is enough at first.
+1. Place the lab and give it power: a [Combustion Generator](first_hours) is enough at first.
 2. Open it with `Right Click`. The **researcher** is whoever opened the lab last.
 3. Put a disk, sample or experiment record in the left slot.
 4. When the arrow fills up you learn the technology. A notification pops up.

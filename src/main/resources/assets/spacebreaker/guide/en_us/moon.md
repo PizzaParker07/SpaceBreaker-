@@ -23,7 +23,8 @@ Bake regolith in a furnace: **sintered regolith** is the first building block of
 {page}
 ## Resources
 {items spacebreaker:icy_regolith spacebreaker:lunar_ice spacebreaker:kreep_ore spacebreaker:meteoric_iron}
-- **Ice** hides in the permanently dark floors of polar craters. Melt it for water. → [In-Situ Resources](isru)
+- **Ice** hides in the permanently dark floors of polar craters. Melt it for water.
+- Those floors are **cold traps** at about **−233 °C**, day and night. The Mk1 suit cannot cope there: wear the heated suit. A message tells you when you step in and out. → [In-Situ Resources](isru)
 - **KREEP** holds rare earths and thorium.
 - **Meteoric iron** is left from old impacts and gives raw iron.
 

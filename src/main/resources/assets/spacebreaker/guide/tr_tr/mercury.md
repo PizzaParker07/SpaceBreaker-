@@ -24,7 +24,7 @@ Hava yok ve güneş evdekinden neredeyse **üç kat** büyük.
 
 {page}
 {items spacebreaker:graphite_ore spacebreaker:graphite}
-Kutup kraterlerinin tabanı hiç güneş görmez: yaklaşık −240 °C'lik bir **soğuk tuzak** olup {item spacebreaker:mercury_ice} saklar. Termal giysi, termal modüllerle bile orada yetmez; ısıtmalı giysi giy. Eritince su, sudan hidrojen ve oksijen elde edersin.
+Kutup kraterlerinin tabanı hiç güneş görmez: yaklaşık −240 °C'lik bir **soğuk tuzak** olup {item spacebreaker:mercury_ice} saklar. Termal giysi yalnızca −170 °C'ye dayanır (her termal regülatör modülü bunu 15 °C genişletir); orada ısıtmalı giysi giy. Eritince su, sudan hidrojen ve oksijen elde edersin.
 
 > **Merkür'de yakıt:** grafit + oksijen → CO₂ (kimyasal reaktör); CO₂ + hidrojen → metan (Sabatier reaktörü). Böylece metaloks yakıtını yerinde tamamlarsın. → [Yerinde Üretim](isru)
 

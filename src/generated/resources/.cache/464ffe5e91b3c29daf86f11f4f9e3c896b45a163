@@ -1,11 +1,11 @@
-// 1.21.1	2026-11-07T02:01:45.189974837	spacebreaker tech tree
+// 1.21.1	2026-11-07T03:05:47.903553309	spacebreaker tech tree
 eb99e6fc2778efcc16dc23f020327813f7f85164 data/spacebreaker/spacebreaker/tech/advanced_electronics.json
 37b86031d2662acffe53c51b4ca65ba988094711 data/spacebreaker/spacebreaker/tech/airlocks.json
 537f359ae0acefa3a0666d917ea3d66c22a9f910 data/spacebreaker/spacebreaker/tech/aluminium_smelting.json
 669fa0bd4c74d3ec2fd08ebb49feecff38b5a2f6 data/spacebreaker/spacebreaker/tech/asteroid_mining.json
 f50289ae1a2b79cad41d9f1cd6e90acadf130498 data/spacebreaker/spacebreaker/tech/astrobiology.json
 943c5cfa96981304b0c1abb7f0a910c1f32b2dd1 data/spacebreaker/spacebreaker/tech/basic_rocketry.json
-182667aece766eae72b3d001a997fb0a06e15c1b data/spacebreaker/spacebreaker/tech/cloud_platforms.json
+ee43107be71a1d02c23ba3ee76cb4299be7b13f1 data/spacebreaker/spacebreaker/tech/cloud_platforms.json
 e6f9a3fd32b1329f555716d5d162275b9a004cc4 data/spacebreaker/spacebreaker/tech/cryogenics.json
 8941195a0641f71fa7e271cf804663493280b8c0 data/spacebreaker/spacebreaker/tech/deep_space_network.json
 d4c49998d337a30c7f0f7e0ff138f2277a3581cd data/spacebreaker/spacebreaker/tech/electrolysis.json

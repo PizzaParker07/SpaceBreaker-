@@ -11,7 +11,7 @@ Dünya'dan fırlatılan her kilogram pahalıdır. Bu yüzden indiğin yerde yapa
 |---|---|
 | Buz → su | **Buz Eritici** |
 | Kuru buz → CO₂ | **Buz Eritici** |
-| Su → O₂ + H₂ | [Elektroliz Ünitesi](cryogenics) |
+| Su → O₂ + H₂ | [Elektroliz Ünitesi](first_hours) |
 | Yerel hava → CO₂ (Mars) | **Atmosfer İşlemcisi** |
 | CO₂ + H₂ → metan + su | **Sabatier Reaktörü** |
 | Regolit → O₂ | **Regolit Isıtıcı** |
@@ -62,7 +62,7 @@ Every kilogram launched from Earth is expensive. So make what you can **where yo
 |---|---|
 | Ice → water | **Ice Melter** |
 | Dry ice → CO₂ | **Ice Melter** |
-| Water → O₂ + H₂ | [Electrolyzer](cryogenics) |
+| Water → O₂ + H₂ | [Electrolyzer](first_hours) |
 | Local air → CO₂ (Mars) | **Atmosphere Processor** |
 | CO₂ + H₂ → methane + water | **Sabatier Reactor** |
 | Regolith → O₂ | **Regolith Heater** |

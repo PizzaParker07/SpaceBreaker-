@@ -4,6 +4,7 @@
 
 - [Hoş Geldin](welcome)
 - [İlerleme Yolu](progression)
+- [İlk İki Saat](first_hours)
 - [Tuşlar ve Kontroller](controls)
 - [Hologram Projektörü](hologram_projector)
 

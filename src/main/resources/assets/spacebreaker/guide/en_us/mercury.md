@@ -24,7 +24,7 @@ No air, and a sun almost **three times** as wide as at home.
 
 {page}
 {items spacebreaker:graphite_ore spacebreaker:graphite}
-The floors of the polar craters lie in permanent shadow: a **cold trap** at about −240 °C that keeps {item spacebreaker:mercury_ice}. A thermal suit, even with thermal modules, is not enough down there; wear the heated suit. Melt it for water, then split the water into hydrogen and oxygen.
+The floors of the polar craters lie in permanent shadow: a **cold trap** at about −240 °C that keeps {item spacebreaker:mercury_ice}. The thermal suit is rated only to −170 °C (each thermal regulator module widens that by 15 °C), so wear the heated suit down there. Melt it for water, then split the water into hydrogen and oxygen.
 
 > **Fuel on Mercury:** graphite + oxygen → CO₂ (chemical reactor); CO₂ + hydrogen → methane (Sabatier reactor). That tops up methalox fuel on the spot. → [In-Situ Resources](isru)
 
