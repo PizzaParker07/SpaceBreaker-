@@ -51,6 +51,76 @@ public final class Eclipses {
         return a + b - c;
     }
 
+    /** One eclipse: geometric start and end (simulation seconds) and the largest covered share. */
+    public record Event(double start, double end, double peak) {
+        public double middle() {
+            return (start + end) / 2;
+        }
+    }
+
+    /** Shortest time an eclipse is shown to players, in real seconds, and its fade in / out. */
+    public static final double MIN_SHOWN_SECONDS = 60;
+    public static final double FADE_SECONDS = 10;
+
+    /**
+     * The eclipse that is happening at t or comes next (ending after t), searching {@code horizon} seconds ahead, or
+     * null. {@code before} widens the search backwards so an eclipse whose presentation window already began is kept.
+     */
+    public static Event event(BodySystem sys, String observer, String parent, double t, double before, double horizon, double step) {
+        double from = t - before;
+        double start = coverage(sys, observer, parent, from) > 0 ? from : next(sys, observer, parent, from, horizon + before, step);
+        if (Double.isNaN(start)) {
+            return null;
+        }
+        double end = start;
+        double peak = 0;
+        for (double x = start; x <= start + 2 * 86400; x += 120) {
+            double c = coverage(sys, observer, parent, x);
+            if (c <= 0) {
+                break;
+            }
+            peak = Math.max(peak, c);
+            end = x;
+        }
+        return new Event(start, end + 60, peak);
+    }
+
+    /**
+     * How strongly an eclipse shows at simulation time t (0..1 times its peak): real eclipses can pass in seconds at the
+     * default time scale, so the effect is stretched to at least {@link #MIN_SHOWN_SECONDS} real seconds around the
+     * eclipse's middle, fading in and out over {@link #FADE_SECONDS}; longer eclipses keep their real length.
+     *
+     * @param simPerReal simulated seconds per real second
+     */
+    public static double presentation(Event e, double t, double simPerReal) {
+        if (e == null || e.peak() <= 0) {
+            return 0;
+        }
+        double realLength = (e.end() - e.start()) / simPerReal;
+        double shown = Math.max(MIN_SHOWN_SECONDS, realLength);
+        double half = shown / 2 * simPerReal;
+        double from = e.middle() - half;
+        double to = e.middle() + half;
+        if (t <= from || t >= to) {
+            return 0;
+        }
+        double fade = FADE_SECONDS * simPerReal;
+        double k = Math.min(1, Math.min(t - from, to - t) / fade);
+        return e.peak() * k * k * (3 - 2 * k);
+    }
+
+    /** Start of an eclipse's presentation window (simulation seconds). */
+    public static double shownFrom(Event e, double simPerReal) {
+        double shown = Math.max(MIN_SHOWN_SECONDS, (e.end() - e.start()) / simPerReal);
+        return e.middle() - shown / 2 * simPerReal;
+    }
+
+    /** End of an eclipse's presentation window (simulation seconds). */
+    public static double shownTo(Event e, double simPerReal) {
+        double shown = Math.max(MIN_SHOWN_SECONDS, (e.end() - e.start()) / simPerReal);
+        return e.middle() + shown / 2 * simPerReal;
+    }
+
     /**
      * The start of the next eclipse after t (simulation seconds), searching up to {@code horizon} seconds ahead in
      * {@code step} steps and refining to about a minute; NaN if none.

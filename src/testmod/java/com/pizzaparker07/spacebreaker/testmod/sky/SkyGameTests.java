@@ -114,6 +114,29 @@ public final class SkyGameTests {
         helper.succeed();
     }
 
+    /**
+     * The eclipse presentation window: a short eclipse (minutes at the default time scale) is shown for a minute of real
+     * time around its middle, fading in and out over ten seconds; a long one keeps its real length.
+     */
+    @GameTest(template = "empty")
+    public static void eclipsesShowForAtLeastAMinute(GameTestHelper helper) {
+        double spr = 3600; // default: one simulated hour per real second
+        var e = new com.pizzaparker07.spacebreaker.content.worldgen.Eclipses.Event(0, 3 * 3600, 1.0);
+        double mid = e.middle();
+        java.util.function.DoubleUnaryOperator at = real -> com.pizzaparker07.spacebreaker.content.worldgen.Eclipses.presentation(e, mid + real * spr, spr);
+        helper.assertTrue(Math.abs(at.applyAsDouble(0) - 1) < 1e-9, "full at the middle");
+        helper.assertTrue(Math.abs(at.applyAsDouble(19) - 1) < 1e-9 && Math.abs(at.applyAsDouble(-19) - 1) < 1e-9, "full for 40 s");
+        double fade = at.applyAsDouble(25);
+        helper.assertTrue(fade > 0.1 && fade < 0.9, "fading 25 s from the middle: " + fade);
+        helper.assertTrue(at.applyAsDouble(31) == 0 && at.applyAsDouble(-31) == 0, "over after a minute");
+        // slow time scale: a 3-hour eclipse takes 3 hours of real time and is shown all along
+        double slow = 1;
+        double mid2 = com.pizzaparker07.spacebreaker.content.worldgen.Eclipses.presentation(e, e.middle(), slow);
+        double edge = com.pizzaparker07.spacebreaker.content.worldgen.Eclipses.presentation(e, e.start() + 60, slow);
+        helper.assertTrue(mid2 == 1 && edge > 0, "a long eclipse keeps its real length");
+        helper.succeed();
+    }
+
     private SkyGameTests() {
     }
 }

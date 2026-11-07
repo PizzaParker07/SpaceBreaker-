@@ -33,6 +33,8 @@ public final class EclipseState {
         double coverage;
         double smoothed;
         double nextStart = Double.NaN;
+        Eclipses.Event event;
+        long searchedAt = Long.MIN_VALUE;
         double announced = Double.NaN;
         boolean warned;
     }
@@ -89,7 +91,38 @@ public final class EclipseState {
         return BodyAdapter.system(level.registryAccess()).orElse(null);
     }
 
-    /** Share of the sun hidden by the planet right now (0 when not on a moon). */
+    /** Simulated seconds per real second at the server's time scale. */
+    static double simPerReal() {
+        return com.pizzaparker07.spacebreaker.core.astro.GameClock.simSecondsPerTick(BodyAdapter.timeScale()) * 20.0;
+    }
+
+    /** The current or next eclipse of this level (cached until its presentation window has passed). */
+    static Eclipses.Event event(Level level, Entry e, BodySystem sys, double t) {
+        double spr = simPerReal();
+        if (e.event == null || Eclipses.shownTo(e.event, spr) < t || e.event.start() > t + 3.2e7) {
+            if (e.searchedAt != Long.MIN_VALUE && level.getGameTime() - e.searchedAt < 100 && e.event == null) {
+                return null;
+            }
+            e.searchedAt = level.getGameTime();
+            try {
+                Eclipses.Event ev = Eclipses.event(sys, e.observer, e.parent, t, Eclipses.MIN_SHOWN_SECONDS * spr, 3.2e7, 3 * 3600);
+                if (ev != null && Eclipses.shownTo(ev, spr) < t) {
+                    // that one is already over: the next after it
+                    ev = Eclipses.event(sys, e.observer, e.parent, ev.end() + 60, 0, 3.2e7, 3 * 3600);
+                }
+                e.event = ev;
+            } catch (RuntimeException ex) {
+                e.event = null;
+            }
+        }
+        return e.event;
+    }
+
+    /**
+     * Share of the sun hidden by the planet as shown right now (0 when not on a moon). Follows the geometry, but each
+     * eclipse is shown for at least a minute of real time (see {@link Eclipses#presentation}); server and client
+     * compute the same window from the same simulation time.
+     */
     public static double coverage(Level level) {
         Entry e = entry(level);
         if (e.none) {
@@ -100,11 +133,8 @@ public final class EclipseState {
             BodySystem sys = system(level);
             double c = 0;
             if (sys != null) {
-                try {
-                    c = Eclipses.coverage(sys, e.observer, e.parent, BodyAdapter.simTime(level));
-                } catch (RuntimeException ex) {
-                    c = 0;
-                }
+                double t = BodyAdapter.simTime(level);
+                c = Eclipses.presentation(event(level, e, sys, t), t, simPerReal());
             }
             long gap = e.tick == Long.MIN_VALUE ? 1 : Math.max(1, tick - e.tick);
             // warmth fades and returns over about ten seconds
@@ -121,7 +151,7 @@ public final class EclipseState {
         return entry(level).smoothed;
     }
 
-    /** Real seconds until the next eclipse on this level (searching about a year of simulation ahead), or NaN. */
+    /** Real seconds until the next eclipse is shown on this level (0 while one is showing), or NaN. */
     public static double secondsToNext(ServerLevel level) {
         Entry e = entry(level);
         BodySystem sys = system(level);
@@ -129,14 +159,12 @@ public final class EclipseState {
             return Double.NaN;
         }
         double t = BodyAdapter.simTime(level);
-        if (Double.isNaN(e.nextStart) || e.nextStart < t - 6 * 3600) {
-            e.nextStart = Eclipses.next(sys, e.observer, e.parent, t, 3.2e7, 3 * 3600);
-        }
-        if (Double.isNaN(e.nextStart)) {
+        Eclipses.Event ev = event(level, e, sys, t);
+        if (ev == null) {
             return Double.NaN;
         }
-        double perTick = com.pizzaparker07.spacebreaker.core.astro.GameClock.simSecondsPerTick(BodyAdapter.timeScale());
-        return (e.nextStart - t) / perTick / 20.0;
+        e.nextStart = ev.start();
+        return Math.max(0, (Eclipses.shownFrom(ev, simPerReal()) - t) / simPerReal());
     }
 
     private static void announce(ServerLevel level) {
