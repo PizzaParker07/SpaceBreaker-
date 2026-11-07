@@ -406,6 +406,31 @@ public final class MoonGameTests {
     }
 
     /**
+     * Gruithuisen-type domes: steep, smooth volcanic domes of light rock rise here and there on the Moon, a few dozen
+     * blocks high and wide, with a tiny summit pit; none near the poles is required, just that they exist and stand up.
+     */
+    @GameTest(template = EMPTY)
+    public static void moonHasVolcanicDomes(GameTestHelper helper) {
+        TerrainProfile profile = moonProfile(helper);
+        helper.assertTrue(profile.landforms().volcanoes().isPresent(), "the Moon profile has domes");
+        PlanetTerrain t = new PlanetTerrain(profile, 20261106L);
+        int found = 0;
+        for (int gx = -6000; gx <= 6000 && found < 3; gx += 24) {
+            for (int gz = -3000; gz <= 3000 && found < 3; gz += 24) {
+                PlanetTerrain.Column c = t.column(gx, gz);
+                if (c.volcanoS < 0.25 && c.volcanoRadius > 0) {
+                    double r = c.volcanoRadius;
+                    double rise = c.height - (t.column(gx + r * 1.6, gz).height + t.column(gx - r * 1.6, gz).height) / 2;
+                    helper.assertTrue(rise > 8, "a dome stands above its surroundings: " + rise + " at " + gx + ", " + gz);
+                    found++;
+                }
+            }
+        }
+        helper.assertTrue(found > 0, "domes on the Moon");
+        helper.succeed();
+    }
+
+    /**
      * Performance budget of the planet engine: terrain + biomes for fresh chunks, measured on real proto-chunks.
      * Vanilla noise chunks take roughly 5-15 ms each on one core; the Moon must stay well inside that.
      */

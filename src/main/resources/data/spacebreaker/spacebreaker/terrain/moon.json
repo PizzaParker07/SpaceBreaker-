@@ -95,5 +95,23 @@
     },
     "soil_depth": 4,
     "lowland_rock_depth": 18
+  },
+  "landforms": {
+    "volcanoes": {
+      "cell": 2400,
+      "chance": 0.3,
+      "min_radius": 45.0,
+      "max_radius": 95.0,
+      "height_ratio": 0.32,
+      "max_height": 28.0,
+      "caldera": 0.025,
+      "escarpment": 0.0,
+      "rock": {
+        "Name": "spacebreaker:anorthosite"
+      },
+      "soil": {
+        "Name": "spacebreaker:lunar_regolith"
+      }
+    }
   }
 }
