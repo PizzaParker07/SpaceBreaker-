@@ -27,6 +27,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.joml.Vector3d;
 
 import java.util.Optional;
@@ -141,6 +142,7 @@ public class PlanetSkyEffects extends DimensionSpecialEffects {
             if (p.isPresent() && p.get().type() == BodyType.STAR) {
                 sunDistance = b.get().orbit().semiMajorAxisKm();
                 double sunRadius = p.get().physical().radiusKm();
+                sunRadiusKm = sunRadius;
                 sunSize = SkyMath.angularDiameter(sunRadius, Math.max(sunDistance, sunRadius * 2));
                 break;
             }
@@ -151,10 +153,33 @@ public class PlanetSkyEffects extends DimensionSpecialEffects {
         EarthDisc.reset();
     }
 
+    private long comaTick = Long.MIN_VALUE;
+    private float coma;
+    private double sunRadiusKm = 695700;
+
+    /** Coma glow of the comet this sky belongs to (0 if it is not a comet or dormant), recomputed every 100 ticks. */
+    private float comaGlow(ClientLevel level) {
+        long tick = level.getGameTime() / 100;
+        if (tick != comaTick) {
+            comaTick = tick;
+            var comet = com.pizzaparker07.spacebreaker.core.astro.smallbody.Comet.byId(bodyKey.location().getPath());
+            coma = 0F;
+            if (comet.isPresent()) {
+                var activity = com.pizzaparker07.spacebreaker.core.astro.smallbody.CometActivity.at(comet.get(),
+                        com.pizzaparker07.spacebreaker.core.astro.BodyAdapter.simTime(level));
+                coma = com.pizzaparker07.spacebreaker.content.worldgen.CometPoints.comaGlow(activity);
+                // on an eccentric comet orbit the sun swells and shrinks: use the true distance, not the mean
+                sunSize = SkyMath.angularDiameter(sunRadiusKm, Math.max(activity.distanceAu() * 1.495978707e8, sunRadiusKm * 2));
+            }
+        }
+        return coma;
+    }
+
     @Override
     public boolean renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix,
                              boolean isFoggy, Runnable setupFog) {
         refresh(level);
+        float coma = comaGlow(level);
         Vec3 cam = camera.getPosition();
         double lat = PlanetTerrain.latitude(cam.z, poleDistance);
         double lon = 90 * cam.x / poleDistance;
@@ -193,6 +218,11 @@ public class PlanetSkyEffects extends DimensionSpecialEffects {
         bb.addVertex(m, sunHalf, 100F, sunHalf).setUv(1F, 1F);
         bb.addVertex(m, -sunHalf, 100F, sunHalf).setUv(0F, 1F);
         BufferUploader.drawWithShader(bb.buildOrThrow());
+        // standing on an active comet: its own coma glows around the sun and, fainter, along the tail away from it
+        if (coma > 0) {
+            CometTrails.skyGlow(ps, new Vector3f(0, 1, 0), 1.2F, coma, 0.75F, 0.85F, 1F);
+            CometTrails.skyGlow(ps, new Vector3f(0, -1, 0), 0.7F, coma * 0.45F, 0.7F, 0.8F, 1F);
+        }
         // planets at their real positions along the sun's arc (no air: visible by day too)
         PlanetDots.render(level, ps, projectionMatrix, starBrightness);
         RenderSystem.blendFunc(com.mojang.blaze3d.platform.GlStateManager.SourceFactor.ONE, com.mojang.blaze3d.platform.GlStateManager.DestFactor.ONE);

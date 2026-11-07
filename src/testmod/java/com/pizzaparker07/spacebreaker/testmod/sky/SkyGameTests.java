@@ -68,6 +68,22 @@ public final class SkyGameTests {
         helper.succeed();
     }
 
+    /** On 67P the coma glows in the sky near perihelion and not at all far out, where the comet sleeps. */
+    @GameTest(template = "empty")
+    public static void comaGlowsOnAnActiveComet(GameTestHelper helper) {
+        var c = com.pizzaparker07.spacebreaker.core.astro.smallbody.Comet.CHURYUMOV_GERASIMENKO;
+        double peri = c.nextPerihelion(0);
+        float near = com.pizzaparker07.spacebreaker.content.worldgen.CometPoints.comaGlow(
+                com.pizzaparker07.spacebreaker.core.astro.smallbody.CometActivity.at(c, peri));
+        float far = com.pizzaparker07.spacebreaker.content.worldgen.CometPoints.comaGlow(
+                com.pizzaparker07.spacebreaker.core.astro.smallbody.CometActivity.at(c, peri + c.periodSeconds() / 2));
+        helper.assertTrue(near > 0.05F && near <= 0.36F, "a faint coma glow near perihelion: " + near);
+        helper.assertTrue(far == 0F, "no glow at aphelion: " + far);
+        helper.assertTrue(com.pizzaparker07.spacebreaker.core.astro.smallbody.Comet.byId("churyumov_gerasimenko").isPresent(),
+                "the 67P world's body id finds its comet");
+        helper.succeed();
+    }
+
     private SkyGameTests() {
     }
 }

@@ -28,6 +28,7 @@ public final class ShowcaseScenarios {
         ALL.put("moon", new MoonScenario());
         ALL.put("sky_planets", new SkyPlanetsScenario(false));
         ALL.put("sky_planets_mars", new SkyPlanetsScenario(true));
+        ALL.put("coma_sky", new ComaSkyScenario());
         ALL.put("research", new ResearchScenario());
         ALL.put("mars", new MarsScenario());
         ALL.put("phobos", new MarsMoonScenario(false));

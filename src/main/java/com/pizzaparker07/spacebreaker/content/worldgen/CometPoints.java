@@ -33,6 +33,19 @@ public final class CometPoints {
     private CometPoints() {
     }
 
+    /**
+     * Brightness (0..1) of the coma glow in the sky seen from a comet's own surface: none while dormant, a faint haze
+     * when weakly active, a clear glow near perihelion, scaling with the gas output.
+     */
+    public static float comaGlow(CometActivity.Activity a) {
+        if (a == null || !a.active()) {
+            return 0F;
+        }
+        // water molecules per second: 1e24 (barely) .. 1e29 (great comet) -> 0 .. 1 on a log scale
+        double x = (Math.log10(Math.max(1, a.waterPerSecond())) - 24) / 5;
+        return (float) Mth.clamp(0.04 + 0.32 * x, 0.04, 0.36);
+    }
+
     /** The comets visible from an observer body at time t. */
     public static List<Sighting> compute(BodySystem sys, String observer, double t) {
         List<Sighting> out = new ArrayList<>();
