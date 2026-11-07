@@ -666,6 +666,30 @@ def station_blocks():
             'textures': {'particle': b(name)}})
         write(f'blockstates/{name}.json', {'variants': {'': {'model': b(name)}}})
         write(f'models/item/{name}.json', {'parent': b(name)})
+    # sliding door: two leaves meeting in the middle; open, they hide in the frame at the sides
+    def leaf(x0, x1, u0, u1):
+        f = {'north': {'uv': [u0, 0, u1, 16], 'texture': '#face'}, 'south': {'uv': [16 - u1, 0, 16 - u0, 16], 'texture': '#face'}}
+        for d in ('east', 'west', 'up', 'down'):
+            f[d] = {'uv': [0, 0, 4, 16] if d in ('east', 'west') else [x0, 6, x1, 10], 'texture': '#frame'}
+        return {'from': [x0, 0, 6], 'to': [x1, 16, 10], 'faces': f}
+    for half in ('lower', 'upper'):
+        tex = {'face': b(f'sliding_door_{half}'), 'frame': b('sliding_door_frame'), 'particle': b('sliding_door_frame')}
+        write(f'models/block/sliding_door_{half}.json', {'parent': 'minecraft:block/block', 'textures': tex,
+                                                        'elements': [leaf(0, 8, 0, 8), leaf(8, 16, 8, 16)]})
+        write(f'models/block/sliding_door_{half}_open.json', {'parent': 'minecraft:block/block', 'textures': tex,
+                                                             'elements': [leaf(0, 2, 6, 8), leaf(14, 16, 8, 10)]})
+    door_rot = {'north': 0, 'east': 90, 'south': 180, 'west': 270}
+    dv = {}
+    for facing, y in door_rot.items():
+        for half in ('lower', 'upper'):
+            for opened in ('false', 'true'):
+                for powered in ('false', 'true'):
+                    v = {'model': b(f'sliding_door_{half}' + ('_open' if opened == 'true' else ''))}
+                    if y:
+                        v['y'] = y
+                    dv[f'facing={facing},half={half},open={opened},powered={powered}'] = v
+    write('blockstates/sliding_door.json', {'variants': dv})
+    generated_item('sliding_door')
     write('models/block/grate.json', {'parent': 'minecraft:block/cube_all', 'render_type': 'minecraft:cutout', 'textures': {'all': b('grate')}})
     write('blockstates/grate.json', {'variants': {'': {'model': b('grate')}}})
     write('models/item/grate.json', {'parent': b('grate')})

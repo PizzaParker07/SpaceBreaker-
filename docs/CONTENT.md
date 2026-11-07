@@ -105,8 +105,8 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Antik Lav Tüpü | çökmüş tavan girişi, kıvrımlı tünel, düşmüş eski sonda enkazı (sandık), Yaşlı Regolit Kenesi yuvası |
 | 🎨 | Eski Buz Sondaj İstasyonu | yalnız kutup kraterlerinin kalıcı gölgeli tabanında (soğuk tuzak, ısıtmalı giysi gerekir): sondaj kulesi ve buza inen sondaj dizisi, hâlâ çalışan RTG'li kontrol kulübesi, çekirdek rafları; ödül: **Buz Çekirdeği Numunesi** (→ 4 Ay buzu), RTG yakıt peleti şansı, araştırma diski; muhafız: Isı Emiciler (soğuk tuzakta sürekli yaşar, RTG'nin enerjisini emer) |
 | 🎨 | Ganimet | `chests/moon/tech_data` araştırma diskleri için kanca tablosu (Araştırma alanı `spacebreaker:tech_disk` ekler) |
-| 🎨 | Üs blokları (1. kısım): alüminyum panel (+merdiven, basamak, duvar), titanyum güverte levhası (+merdiven, basamak), basınçlı cam, lombar, ızgara zemin | tam bloklar, basınçlı cam ve lombar hava tutar (oksijen dağıtıcısı); ızgara ve basamaklar havayı geçirir; cam ve lombar: opak çerçeve + yarı saydam cam (shader güvenli); taş kesicide de yapılır |
-| ⬜ | Üs blokları (2. kısım): kayar kapı, uyarı şeridi, LED/panel lamba/projektör, kablo ve boru kanalları, merdiven/korkuluk/platform | |
+| 🎨 | Üs blokları (1. kısım): alüminyum panel (+merdiven, basamak, duvar), titanyum güverte levhası (+merdiven, basamak), basınçlı cam, lombar, ızgara zemin, kayar kapı | tam bloklar, basınçlı cam, lombar ve kapalı kayar kapı hava tutar (oksijen dağıtıcısı); ızgara, basamaklar ve açık kapı havayı geçirir; kayar kapı 2 blok yüksek, kanatları yana kayar, el ya da redstone ile açılır; cam ve lombar: opak çerçeve + yarı saydam cam (shader güvenli); taş kesicide de yapılır |
+| ⬜ | Üs blokları (2. kısım): uyarı şeridi, LED/panel lamba/projektör, kablo ve boru kanalları, merdiven/korkuluk/platform | |
 
 ### Paket ④ Araştırma, zindanlar ve rehber
 | Durum | İçerik | Not |

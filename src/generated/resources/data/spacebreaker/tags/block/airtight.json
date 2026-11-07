@@ -4,6 +4,7 @@
     "minecraft:iron_door",
     "spacebreaker:station_hull",
     "spacebreaker:station_window",
-    "spacebreaker:docking_port"
+    "spacebreaker:docking_port",
+    "spacebreaker:sliding_door"
   ]
 }

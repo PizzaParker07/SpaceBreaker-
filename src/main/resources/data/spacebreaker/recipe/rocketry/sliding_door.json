@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": ["PP", "PR", "PP"],
+  "key": {"P": {"item": "spacebreaker:aluminum_panel"}, "R": {"item": "minecraft:piston"}},
+  "result": {"id": "spacebreaker:sliding_door", "count": 1}
+}

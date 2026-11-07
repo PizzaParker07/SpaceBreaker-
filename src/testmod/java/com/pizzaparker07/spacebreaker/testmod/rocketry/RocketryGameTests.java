@@ -1267,6 +1267,36 @@ public final class RocketryGameTests {
     }
 
     @GameTest(template = EMPTY)
+    public static void slidingDoor(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var door = com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.SLIDING_DOOR.get();
+        var OPEN = com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock.OPEN;
+        BlockPos lower = helper.absolutePos(new BlockPos(2, 2, 2));
+        com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock.place(level, lower, door.defaultBlockState());
+        java.util.function.Predicate<BlockPos> airtight = p -> com.pizzaparker07.spacebreaker.content.suit.block.SealedRoom.airtight(level, p, level.getBlockState(p));
+        helper.assertTrue(level.getBlockState(lower.above()).is(door), "two blocks tall");
+        helper.assertTrue(airtight.test(lower) && airtight.test(lower.above()), "shut, it holds air");
+        // a hand opens it, both halves together
+        ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        level.getBlockState(lower.above()).useWithoutItem(level, player, new net.minecraft.world.phys.BlockHitResult(lower.above().getCenter(), Direction.NORTH, lower.above(), false));
+        helper.assertTrue(level.getBlockState(lower).getValue(OPEN) && level.getBlockState(lower.above()).getValue(OPEN), "opens as one");
+        helper.assertFalse(airtight.test(lower) || airtight.test(lower.above()), "open, air flows through");
+        helper.assertTrue(level.getBlockState(lower).getCollisionShape(level, lower).toAabbs().stream().noneMatch(a -> a.contains(0.5, 0.5, 0.5)),
+                "and you can walk through the middle");
+        // redstone opens and shuts it
+        level.getBlockState(lower).useWithoutItem(level, player, new net.minecraft.world.phys.BlockHitResult(lower.getCenter(), Direction.NORTH, lower, false));
+        helper.assertFalse(level.getBlockState(lower).getValue(OPEN), "shut again");
+        level.setBlock(lower.west(), net.minecraft.world.level.block.Blocks.REDSTONE_BLOCK.defaultBlockState(), 3);
+        helper.assertTrue(level.getBlockState(lower.above()).getValue(OPEN), "redstone opens it");
+        level.removeBlock(lower.west(), false);
+        helper.assertFalse(level.getBlockState(lower).getValue(OPEN), "and closes it when the signal goes");
+        // breaking one half takes the other
+        level.destroyBlock(lower.above(), false);
+        helper.assertFalse(level.getBlockState(lower).is(door), "no half door left behind");
+        helper.succeed();
+    }
+
+    @GameTest(template = EMPTY)
     public static void fuelFromFluidContainers(GameTestHelper helper) {
         RocketEntity rocket = RocketEntity.create(helper.getLevel(), RocketryModule.MOON_ROCKET, helper.absoluteVec(new net.minecraft.world.phys.Vec3(1.5, 2, 1.5)), 0F);
         helper.getLevel().addFreshEntity(rocket);

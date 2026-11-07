@@ -42,6 +42,7 @@ final class RocketryLang {
         l.block(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.PRESSURE_GLASS, "Pressure Glass", "Basınçlı Cam");
         l.block(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.PORTHOLE, "Porthole", "Lombar");
         l.block(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.GRATE, "Grate Floor", "Izgara Zemin");
+        l.block(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.SLIDING_DOOR, "Sliding Door", "Kayar Kapı");
         l.add("message.spacebreaker.warn.dust_storm_launch", "Dust storm over the pad: poor visibility and gusts. Launch at your own risk, or wait it out",
                 "Rampanın üstünde toz fırtınası: görüş kötü, rüzgâr sert. Kalkış senin sorumluluğunda; istersen fırtınanın geçmesini bekle");
         l.add("message.spacebreaker.landing_beacon.guided", "Landing beacon in range: coming down on the base", "İniş işareti alındı: üsse iniliyor");

@@ -361,6 +361,12 @@ public final class RocketryModule implements SbModule {
         loot.self(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.PRESSURE_GLASS.get());
         loot.self(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.PORTHOLE.get());
         loot.self(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.GRATE.get());
+        loot.custom(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.SLIDING_DOOR.get(), b -> net.minecraft.world.level.storage.loot.LootTable.lootTable()
+                .withPool(net.minecraft.world.level.storage.loot.LootPool.lootPool().add(net.minecraft.world.level.storage.loot.entries.LootItem.lootTableItem(b)
+                        .when(net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition.hasBlockStateProperties(b)
+                                .setProperties(net.minecraft.advancements.critereon.StatePropertiesPredicate.Builder.properties()
+                                        .hasProperty(com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock.HALF,
+                                                net.minecraft.world.level.block.state.properties.DoubleBlockHalf.LOWER))))));
     }
 
     @Override
@@ -378,6 +384,8 @@ public final class RocketryModule implements SbModule {
             }
         }
         tags.block(com.pizzaparker07.spacebreaker.content.suit.SuitModule.LEAKY, com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.GRATE.get());
+        // the sliding door holds air while shut (the airtight tag honours its OPEN property)
+        tags.block(com.pizzaparker07.spacebreaker.content.suit.SuitModule.AIRTIGHT, com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.SLIDING_DOOR.get());
     }
 
     @Override

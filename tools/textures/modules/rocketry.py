@@ -2260,6 +2260,45 @@ def grate():
     return cv
 
 
+def sliding_door(upper):
+    """One half of a two-leaf sliding door: aluminium leaves meeting in the middle, a hazard band at the foot,
+    a small window in the upper half."""
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            c = ALPANEL[3] if (x * 3 + y * 7) % 9 else ALPANEL[2]
+            if x in (7, 8):
+                c = STEEL[1] if x == 7 else STEEL[3]          # where the leaves meet
+            if x in (0, 15):
+                c = STEEL[2]
+            cv[x, y] = c
+    if upper:
+        for y in range(3, 9):
+            for x in range(3, 13):
+                if x in (7, 8):
+                    continue
+                edge = y in (3, 8) or x in (3, 12)
+                cv[x, y] = STEEL[2] if edge else (120, 165, 195) if (x - y) % 5 else (190, 220, 240)
+        for x in range(1, 15):
+            cv[x, 0] = STEEL[1]
+    else:
+        for y in range(11, 15):
+            for x in range(1, 15):
+                if x not in (7, 8):
+                    cv[x, y] = HAZARD[3] if ((x + y) // 2) % 2 else CARBON[2]   # yellow-black chevrons at the foot
+        for x in range(1, 15):
+            cv[x, 15] = STEEL[1]
+    return cv
+
+
+def door_frame():
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            cv[x, y] = STEEL[3] if (x + y) % 4 else STEEL[2]
+    return cv
+
+
 def habitat_kit_icon():
     cv = Canvas()
     rows = [
@@ -2309,6 +2348,16 @@ def export_facility(save):
         save(window_part(fn(), True), 'block', name + '_frame', (200, 20, 0, None))
         save(window_part(fn(), False), 'block', name + '_pane', (200, 20, 0, None))
     save(grate(), 'block', 'grate', (140, 230, 0, None))
+    save(limit_colours(sliding_door(False)), 'block', 'sliding_door_lower', (170, 230, 0, None))
+    save(limit_colours(sliding_door(True)), 'block', 'sliding_door_upper', (170, 230, 0, None))
+    save(limit_colours(door_frame()), 'block', 'sliding_door_frame', (140, 230, 0, None))
+    icon = Canvas()
+    lower, upper = sliding_door(False), sliding_door(True)
+    for y in range(16):
+        for x in range(4, 12):
+            src = upper if y < 8 else lower
+            icon[x, y] = src[(x - 4) * 2, (y % 8) * 2]
+    save(icon, 'item', 'sliding_door')
     save(limit_colours(warning_light_lens()), 'block', 'warning_light_lens', (200, 20, 0, None))
     # lit lens: 8 frames of a beam sweeping round the dome
     frames = Canvas(16, 128)

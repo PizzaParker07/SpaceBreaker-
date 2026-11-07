@@ -631,6 +631,12 @@ final class RocketryScenario implements ShowcaseScenario {
                 }
                 moon.setBlock(new BlockPos(gx + dx, gy + 3, gz - 2), panel.slab().get().defaultBlockState(), 3);
             }
+            // two sliding doors in the wall: one shut, one open
+            var door = com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.SLIDING_DOOR.get().defaultBlockState()
+                    .setValue(com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock.FACING, net.minecraft.core.Direction.SOUTH);
+            com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock.place(moon, new BlockPos(gx, gy, gz - 2), door);
+            com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock.place(moon, new BlockPos(gx + 6, gy, gz - 2),
+                    door.setValue(com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock.OPEN, true));
             moon.setBlock(new BlockPos(gx + 6, gy, gz + 2), panel.wall().get().defaultBlockState(), 3);
             moon.setBlock(new BlockPos(gx + 7, gy, gz + 2), deck.stairs().get().defaultBlockState(), 3);
             moon.setBlock(new BlockPos(gx + 1, gy, gz - 1), RocketryModule.WARNING_LIGHT.get().defaultBlockState(), 3);

@@ -36,6 +36,16 @@ public final class BaseBlocks {
     public static final DeferredBlock<TransparentBlock> GRATE = KIT.block("grate", TransparentBlock::new,
             metal(MapColor.METAL).noOcclusion().isViewBlocking((s, l, p) -> false));
 
+    /** Two-high sliding door: holds air when shut. */
+    public static final DeferredBlock<SlidingDoorBlock> SLIDING_DOOR = KIT.blocks.registerBlock("sliding_door", SlidingDoorBlock::new,
+            metal(MapColor.METAL).noOcclusion());
+    public static final net.neoforged.neoforge.registries.DeferredItem<net.minecraft.world.item.DoubleHighBlockItem> SLIDING_DOOR_ITEM =
+            KIT.items.register("sliding_door", () -> new net.minecraft.world.item.DoubleHighBlockItem(SLIDING_DOOR.get(), new net.minecraft.world.item.Item.Properties()));
+
+    static {
+        KIT.tab.add(SLIDING_DOOR_ITEM);
+    }
+
     private BaseBlocks() {
     }
 
@@ -51,6 +61,7 @@ public final class BaseBlocks {
         out.add(PRESSURE_GLASS.get());
         out.add(PORTHOLE.get());
         out.add(GRATE.get());
+        out.add(SLIDING_DOOR.get());
         return out.toArray(Block[]::new);
     }
 }
