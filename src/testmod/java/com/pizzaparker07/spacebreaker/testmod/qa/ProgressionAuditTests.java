@@ -119,6 +119,36 @@ public final class ProgressionAuditTests {
         h.succeed();
     }
 
+    /**
+     * Every "visit one world of each group" advancement (grand_tour) can be completed: each requirement group has at least
+     * one dimension the model can fly to and back from.
+     */
+    @GameTest(template = "empty", timeoutTicks = 400)
+    public static void grandTourIsCompletable(GameTestHelper h) {
+        ProgressionModel m = model(h);
+        var holder = h.getLevel().getServer().getAdvancements().get(Spacebreaker.id("main/grand_tour"));
+        h.assertTrue(holder != null, "advancement spacebreaker:main/grand_tour exists");
+        var adv = holder.value();
+        List<String> impossible = new ArrayList<>();
+        for (List<String> group : adv.requirements().requirements()) {
+            boolean ok = false;
+            for (String key : group) {
+                var criterion = adv.criteria().get(key);
+                if (criterion != null && criterion.triggerInstance()
+                        instanceof net.minecraft.advancements.critereon.ChangeDimensionTrigger.TriggerInstance t
+                        && t.to().map(d -> m.has(ProgressionModel.world(d))).orElse(false)) {
+                    ok = true;
+                    break;
+                }
+            }
+            if (!ok) {
+                impossible.add(group.toString());
+            }
+        }
+        h.assertTrue(impossible.isEmpty(), "grand_tour groups with no reachable world: " + impossible);
+        h.succeed();
+    }
+
     private ProgressionAuditTests() {
     }
 }
