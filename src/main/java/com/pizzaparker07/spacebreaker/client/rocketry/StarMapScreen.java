@@ -445,7 +445,16 @@ public class StarMapScreen extends Screen {
             if (sel || n == hover) {
                 ring(g, n.x, n.y, n.r + 4, sel ? 0xC0FFD34A : 0x80FFFFFF);
             }
-            planet(g, n.body, n.x, n.y, n.r);
+            if (StarMapData.COMETS.equals(focus) && StarMapData.comet(n.body)) {
+                // the tail points away from the Sun, and only an awake comet has much of one
+                int sx = mapW / 2, sy = height / 2 + 6;
+                double dx = n.x - sx, dy = n.y - sy, d = Math.max(1, Math.hypot(dx, dy));
+                boolean awake = StarMapData.cometInfo(n.body, com.pizzaparker07.spacebreaker.core.astro.BodyAdapter.simTime(minecraft.level))
+                        .map(i -> i.level() != com.pizzaparker07.spacebreaker.core.astro.smallbody.CometActivity.Level.DORMANT).orElse(false);
+                comet(g, n.x, n.y, n.r, dx / d, dy / d, awake ? 1.0 : 0.25);
+            } else {
+                planet(g, n.body, n.x, n.y, n.r);
+            }
             // the asteroid group gets a short label so it never runs into its neighbours
             Component name = StarMapData.NEAR_EARTH_ASTEROIDS.equals(n.body)
                     ? Component.translatable("body.spacebreaker.near_earth_asteroids.short") : Location.bodyName(n.body);
@@ -992,12 +1001,7 @@ public class StarMapScreen extends Screen {
 
     private static void planet(GuiGraphics g, ResourceLocation body, int cx, int cy, int r) {
         if (StarMapData.COMETS.equals(body) || StarMapData.comet(body)) {
-            // a bright little nucleus with its tail streaming away to the upper right
-            for (int i = r * 2; i > 0; i--) {
-                int a = 0x10 + 0xA0 * (r * 2 - i) / (r * 2);
-                disc(g, cx + i * 2 / 3, cy - i / 2, Math.max(1, r / 3 + i / 5), (a << 24) | 0xB8D8F0);
-            }
-            disc(g, cx, cy, Math.max(2, r / 3), 0xFFEEF4FA);
+            comet(g, cx, cy, r, 0.8, -0.6, 1.0);   // a picture: tail to the upper right
             return;
         }
         if (StarMapData.NEAR_EARTH_ASTEROIDS.equals(body)) {
@@ -1011,6 +1015,17 @@ public class StarMapScreen extends Screen {
         }
         ResourceLocation tex = Location.MOON.equals(body) ? OrbitSkyEffects.MOON_DISC : OrbitSkyEffects.disc(body);
         g.blit(tex, cx - r, cy - r, r * 2, r * 2, 0F, 0F, 1, 1, 1, 1);
+    }
+
+    /** A comet: bright nucleus and a fading tail along (ux, uy), {@code length} 1 for an active comet. */
+    private static void comet(GuiGraphics g, int cx, int cy, int r, double ux, double uy, double length) {
+        int n = Math.max(1, (int) Math.round(r * 2 * length));
+        for (int i = n; i > 0; i--) {
+            int a = 0x10 + 0xA0 * (n - i) / n;
+            double t = i * 0.85;
+            disc(g, cx + (int) Math.round(ux * t), cy + (int) Math.round(uy * t), Math.max(1, r / 3 + i / 5), (a << 24) | 0xB8D8F0);
+        }
+        disc(g, cx, cy, Math.max(2, r / 3), 0xFFEEF4FA);
     }
 
     private static void disc(GuiGraphics g, int cx, int cy, int r, int colour) {
