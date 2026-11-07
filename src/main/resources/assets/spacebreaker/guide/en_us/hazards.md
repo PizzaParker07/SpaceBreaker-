@@ -16,6 +16,11 @@ Your suit balances a range (Mk1: −190 °C to 130 °C). Even outside that range
 
 > When the cold is beyond your suit's rating, **rime creeps in from the visor rim** and the HUD warns you. It thaws once you are back in range or inside a pressurised module. The **cold traps** in polar craters exist only on airless worlds where ice stays stable: the Moon (≈ −233 °C), Mercury (≈ −213 °C) and Ceres. Mars and Pluto have none. Go down in a heated suit or with enough thermal modules.
 
+> **Underground is shelter:** on airless worlds, at least **4 blocks** below the surface and out of sight of the sky, the temperature stays at the day-night average (about −26 °C on the Moon). That makes lava tubes natural shelters. Cold traps are the exception.
+
+## Pressure
+Above **10 bar** (Venus's surface is 92 bar) a sealed suit loses 1 durability per piece every 10 seconds, but never below **75%**: it never leaks, it only wears. The HUD warns you: "92 BAR: SUIT UNDER STRAIN".
+
 ## Radiation
 Outside an atmosphere and a magnetic field, radiation dose builds up. Watch it on the helmet display. The dose slowly goes down over time; take breaks on long Moon missions.
 

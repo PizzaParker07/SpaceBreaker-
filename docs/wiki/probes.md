@@ -12,6 +12,9 @@ Bir dünyayı araştırmak için oraya kendin gitmen gerekmez. İnsansız bir ro
 | **İletişim Rölesi Uydusu** | O gezegen sisteminde **görev kontrolü** sinyalini açar. |
 | **İniş Sondası** | Hedefe iner; sana o dünyanın **2 numunesini** ve **Sonda İnişi** verisini gönderir. |
 
+> [!TIP]
+> Venüs yüzeyi için ayrı bir sonda var: bulutlardan bırakılan [Venüs İniş Sondası](venus_clouds).
+
 ### Görevi kur
 1. [Montaj tezgâhında](rocket_assembler) kapsül yuvasına uydu ya da sondayı koy.
 2. Konsolda **Hedef...** düğmesine bas.
@@ -38,6 +41,9 @@ You do not have to go to a world yourself to study it. An uncrewed rocket carrie
 | **Observation Satellite** | When released, sends you **Orbital Survey** data. |
 | **Communications Relay Satellite** | Opens the **mission control** signal in that planet's system. |
 | **Lander Probe** | Lands on the target and sends you **2 samples** of that world and **Probe Landing** data. |
+
+> [!TIP]
+> Venus's surface has its own probe: the [Venus Descent Probe](venus_clouds), released from the clouds.
 
 ### Setting up a mission
 1. In the [assembler](rocket_assembler), put the satellite or probe in the capsule slot.

@@ -6,6 +6,9 @@
 
 Üç makine ham madeni roket malzemesine çevirir.
 
+> [!TIP]
+> **Kızıltaş kontrolü:** her makinenin ekranındaki düğmeyle üç kip arasında geçersin: kızıltaş yok sayılır, sinyal varken çalışır ya da sinyal yokken çalışır.
+
 ### Kırıcı
 Ham madeni toza öğütür: bir toz ve **%50 şansla bir tane daha**.
 
@@ -38,6 +41,9 @@ Külçeleri **levha**, **tel** ve **çubuğa** çevirir. Ne çıkacağına için
 *Related research: Metal Pressing*
 
 Three machines turn raw materials into rocket material.
+
+> [!TIP]
+> **Redstone control:** the button on every machine's screen switches between three modes: ignore redstone, run with a signal, or run without one.
 
 ### Crusher
 Grinds raw ore into dust: one dust and a **50% chance of a second**.

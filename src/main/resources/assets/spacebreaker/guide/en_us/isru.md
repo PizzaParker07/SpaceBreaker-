@@ -1,7 +1,7 @@
 ---
 title: In-Situ Resources (ISRU)
 icon: spacebreaker:sabatier_reactor
-items: [spacebreaker:atmosphere_processor, spacebreaker:sabatier_reactor, spacebreaker:regolith_heater, spacebreaker:ice_melter, spacebreaker:chemical_reactor]
+items: [spacebreaker:atmosphere_processor, spacebreaker:sabatier_reactor, spacebreaker:regolith_heater, spacebreaker:ice_melter, spacebreaker:chemical_reactor, spacebreaker:regolith_excavator]
 research: spacebreaker:isru
 ---
 Every kilogram launched from Earth is expensive. So make what you can **where you land**. This is called in-situ resource utilisation (ISRU).
@@ -25,8 +25,16 @@ Turns ice into clean water and dry ice into carbon dioxide.
 Separates the most useful gas from the local air: **carbon dioxide** on Mars. It needs **open air** above it; it does not work in a closed room.
 
 ## Regolith heater
-Melts rock and splits it with electricity: **oxygen from rock**.
+Melts rock and splits it with electricity: **oxygen from rock**. One regolith gives **250 mB of oxygen**. Moon and Mercury regolith, soaked by the solar wind, also gives **20 mB of helium-3**. Hydrogen comes from ice.
 {recipe spacebreaker:regolith_processing/regolith}
+{recipe spacebreaker:regolith_processing/solar_wind_volatiles}
+
+## Regolith excavator
+{items spacebreaker:regolith_excavator}
+The {item spacebreaker:regolith_excavator} digs the **5×5** patch below it layer by layer, down to **16 blocks**, and hands what it digs to the machines or chests beside it. It uses **30 FE/t**.
+{recipe spacebreaker:regolith_excavator}
+
+> **Fully automatic LOX on a Moon base:** excavator → regolith heater → cryogenic liquefier → cryogenic tank. Pipe and cable them together and liquid oxygen piles up even while you are away.
 
 {page}
 ## Sabatier reactor

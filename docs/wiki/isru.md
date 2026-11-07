@@ -27,11 +27,32 @@ Buzu temiz suya, kuru buzu karbondioksite çevirir.
 Bulunduğun yerin havasından en yararlı gazı ayırır: Mars'ta **karbondioksit**. Üstünde **açık hava** olmalı; kapalı bir odada çalışmaz.
 
 ### Regolit ısıtıcı
-Kayayı eritip elektrikle ayrıştırır: **kayadan oksijen**.
+Kayayı eritip elektrikle ayrıştırır: **kayadan oksijen**. Bir regolit **250 mB oksijen** verir. Güneş rüzgârı yemiş Ay ve Merkür regoliti bunun yanında **20 mB helyum-3** de verir. Hidrojeni buzdan alırsın.
 
 | Girdi | Makine | Çıktı |
 |---|---|---|
 | Ay Regoliti | Çalışma Masası<br>120 FE/t · 8 sn | Demir Tozu (%20 şansla)<br>Oksijen (250 mB) |
+
+| Girdi | Makine | Çıktı |
+|---|---|---|
+| Merkür Regoliti | Çalışma Masası<br>120 FE/t · 8 sn | Oksijen (250 mB)<br>Helyum-3 (20 mB) |
+
+### Regolit Kazıcı
+
+**Regolit Kazıcı**
+
+**Regolit Kazıcı** altındaki **5×5** alanı kat kat, **16 blok** derine kadar kazar ve kazdığını yanındaki makinelere ya da sandıklara verir. **30 FE/t** harcar.
+
+|   |   |   |
+|---|---|---|
+| Çelik Levha | Elektrik Motoru | Çelik Levha |
+| Tungsten Çubuk | Gelişmiş Devre Kartı | Tungsten Çubuk |
+| Tungsten Çubuk |   | Tungsten Çubuk |
+
+→ **Regolit Kazıcı** (Çalışma Masası)
+
+> [!TIP]
+> **Ay üssünde tam otomatik sıvı oksijen:** kazıcı → regolit ısıtıcı → kriyojenik sıvılaştırıcı → kriyojenik tank. Hepsini borula ve kabla: sen yokken de sıvı oksijen birikir.
 
 ### Sabatier reaktörü
 Karbondioksit ile hidrojeni **metan ve suya** çevirir. Su, elektroliz ünitesine geri döner. Metanı [Kriyojenik](cryogenics) sıvılaştırıcıyla **sıvı metana** çevir: sıvı oksijenle birlikte **metaloks motorlarının** yakıtıdır. Roketi yakıt hattıyla, boruyla ya da kova / kriyojenik kapla sağ tıklayarak doldur. → [Roket Parçaları](rocket_parts)
@@ -78,11 +99,32 @@ Turns ice into clean water and dry ice into carbon dioxide.
 Separates the most useful gas from the local air: **carbon dioxide** on Mars. It needs **open air** above it; it does not work in a closed room.
 
 ### Regolith heater
-Melts rock and splits it with electricity: **oxygen from rock**.
+Melts rock and splits it with electricity: **oxygen from rock**. One regolith gives **250 mB of oxygen**. Moon and Mercury regolith, soaked by the solar wind, also gives **20 mB of helium-3**. Hydrogen comes from ice.
 
 | Input | Machine | Output |
 |---|---|---|
 | Lunar Regolith | Crafting Table<br>120 FE/t · 8 s | Iron Dust (20% chance)<br>Oxygen (250 mB) |
+
+| Input | Machine | Output |
+|---|---|---|
+| Mercurian Regolith | Crafting Table<br>120 FE/t · 8 s | Oxygen (250 mB)<br>Helium-3 (20 mB) |
+
+### Regolith excavator
+
+**Regolith Excavator**
+
+The **Regolith Excavator** digs the **5×5** patch below it layer by layer, down to **16 blocks**, and hands what it digs to the machines or chests beside it. It uses **30 FE/t**.
+
+|   |   |   |
+|---|---|---|
+| Steel Plate | Electric Motor | Steel Plate |
+| Tungsten Rod | Advanced Circuit | Tungsten Rod |
+| Tungsten Rod |   | Tungsten Rod |
+
+→ **Regolith Excavator** (Crafting Table)
+
+> [!TIP]
+> **Fully automatic LOX on a Moon base:** excavator → regolith heater → cryogenic liquefier → cryogenic tank. Pipe and cable them together and liquid oxygen piles up even while you are away.
 
 ### Sabatier reactor
 Turns carbon dioxide and hydrogen into **methane and water**. The water goes back to the electrolyser. Turn the methane into **liquid methane** with the [Cryogenics](cryogenics) liquefier: with liquid oxygen it fuels the **methalox engines**. Fill the rocket through the fuel umbilical, a pipe, or by right-clicking with a bucket or cryogenic canister. → [Rocket Parts](rocket_parts)

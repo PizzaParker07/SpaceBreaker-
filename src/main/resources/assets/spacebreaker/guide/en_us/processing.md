@@ -6,6 +6,8 @@ research: spacebreaker:metal_pressing
 ---
 Three machines turn raw materials into rocket material.
 
+> **Redstone control:** the button on every machine's screen switches between three modes: ignore redstone, run with a signal, or run without one.
+
 ## Crusher
 Grinds raw ore into dust: one dust and a **50% chance of a second**.
 

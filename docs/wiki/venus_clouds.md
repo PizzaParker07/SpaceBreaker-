@@ -49,6 +49,26 @@ Bulutlarda bir eve en kısa yol. **Aerostat Platform Kiti**'ni **yaşanabilir bu
 > [!TIP]
 > Bulut Medüzlerini kaldırma gazı keseleri için avla, kiti üret ve üssünü bulutlarda kur. Asit kaplamalı zırh giy.
 
+### Venüs İniş Sondası
+
+**Venüs İniş Sondası**
+
+Yüzey (464 °C, 92 bar) insana kapalıdır. **Venüs İniş Sondası**'nı bulut katmanından, örneğin aerostat üssünden bırak: paraşütle iner, yüzeye değince sana **2 Venüs numunesi** ve **Sonda İnişi** verisi gönderir, sonra yaklaşık bir dakika içinde ısıdan susar.
+
+|   |   |   |
+|---|---|---|
+|   | Balon Kumaşı |   |
+| Aerojel | Temel Devre Kartı | Aerojel |
+| Tungsten Külçe | Tungsten Külçe | Tungsten Külçe |
+
+→ **Venüs İniş Sondası** (Çalışma Masası)
+
+> [!WARNING]
+> Yalnızca Venüs'te ve bulut katmanından (y ≥ 175) bırakılır; daha alçakta ya da başka yerde harcanmaz. Numuneler envanterine gelir, doluysa ayağının dibine düşer. Sonda indiğinde oyunda değilsen numuneler gelmez.
+
+> [!TIP]
+> Bulut Medüzü → aerostat kiti → bulutta üs → iniş sondası → Venüs numuneleri → Venüs teknolojileri.
+
 > [!NOTE]
 > Bulut tepelerinin üstünde terk edilmiş bir araştırma balonu süzülür. Laboratuvarında hâlâ teknoloji diskleri var; Asit Vatozları onları korur.
 
@@ -107,6 +127,26 @@ The quickest way to a home in the clouds. Use an **Aerostat Platform Kit** in th
 
 > [!TIP]
 > Hunt cloud jellies for their lift gas sacs, craft the kit and set up your base in the clouds. Wear acid-coated armour.
+
+### Venus descent probe
+
+**Venus Descent Probe**
+
+The surface (464 °C, 92 bar) is closed to people. Release a **Venus Descent Probe** from the cloud deck, an aerostat base for example: it sinks under its parachute, and at touchdown it sends you **2 Venus samples** and **Probe Landing** data, then falls silent from the heat within about a minute.
+
+|   |   |   |
+|---|---|---|
+|   | Envelope Fabric |   |
+| Aerogel | Basic Circuit | Aerogel |
+| Tungsten Ingot | Tungsten Ingot | Tungsten Ingot |
+
+→ **Venus Descent Probe** (Crafting Table)
+
+> [!WARNING]
+> It can only be released on Venus from the cloud deck (y ≥ 175); lower down or anywhere else it is not used up. The samples go into your inventory, or drop at your feet when it is full. If you are offline when the probe lands, they do not arrive.
+
+> [!TIP]
+> Cloud jelly → aerostat kit → base in the clouds → descent probe → Venus samples → Venus technologies.
 
 > [!NOTE]
 > A derelict research balloon floats above the cloud tops. Its lab still holds tech disks, guarded by acid rays.

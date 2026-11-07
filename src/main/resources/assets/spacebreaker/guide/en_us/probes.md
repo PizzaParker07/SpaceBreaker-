@@ -14,6 +14,8 @@ You do not have to go to a world yourself to study it. An uncrewed rocket carrie
 | {item spacebreaker:comm_satellite} | Opens the **mission control** signal in that planet's system. |
 | {item spacebreaker:space_probe} | Lands on the target and sends you **2 samples** of that world and **Probe Landing** data. |
 
+> Venus's surface has its own probe: the [Venus Descent Probe](venus_clouds), released from the clouds.
+
 ## Setting up a mission
 1. In the [assembler](rocket_assembler), put the satellite or probe in the capsule slot.
 2. Press **Target...** on the console.

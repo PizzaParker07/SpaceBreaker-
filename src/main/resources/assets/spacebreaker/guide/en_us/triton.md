@@ -16,3 +16,7 @@ While a geyser erupts, {item spacebreaker:plume_dust} rains down around it, a fe
 
 ## Ruins
 A crashed lander teaches {tech spacebreaker:cryovolcanism}.
+
+**Geyser Watch Station:** on the southern polar cap, a low glass dome on steel ribs built right over a live nitrogen geyser. The vent is ringed by bars in the middle of the floor; an instrument mast with a light rises through the dome's crown. The plume sampling lab holds a {tech spacebreaker:cryovolcanism} disk, the store holds supplies. Two plume beetles guard it.
+
+>! Mind the geyser: it throws you up when it erupts.

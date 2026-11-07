@@ -12,6 +12,7 @@ Aşağıdaki tuşlar **senin** ayarlarındaki tuşlardır; değiştirdiğinde bu
 | Yıldız haritası (yörüngede) | {key key.spacebreaker.star_map} |
 | Manevra ünitesiyle yüksel | {key key.jump} |
 | Manevra ünitesiyle alçal | {key key.sneak} |
+| Kask lambaları: geniş / uzun huzme (40 blok, lav tüpleri ve soğuk tuzaklar için) | {key key.spacebreaker.helmet_lamp} |
 
 ## Roketteyken
 | Ne yapar | Tuş |

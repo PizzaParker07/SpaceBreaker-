@@ -6,6 +6,8 @@ research: spacebreaker:metal_pressing
 ---
 Üç makine ham madeni roket malzemesine çevirir.
 
+> **Kızıltaş kontrolü:** her makinenin ekranındaki düğmeyle üç kip arasında geçersin: kızıltaş yok sayılır, sinyal varken çalışır ya da sinyal yokken çalışır.
+
 ## Kırıcı
 Ham madeni toza öğütür: bir toz ve **%50 şansla bir tane daha**.
 

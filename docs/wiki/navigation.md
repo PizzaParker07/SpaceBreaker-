@@ -33,6 +33,8 @@ Uçarken göstergede **Kalan yakıt (Δv)** satırını izle.
 - Ay yörüngesinden yüzeye yaklaşık **1870 m/s** gerekir. Dönüş için de bir o kadar.
 - **İniş bacakları** olmadan inemezsin.
 - Sert inişte roket hasar görür; manevra iticileri inişi yumuşatır.
+- Üssüne bir **İniş İşareti** koy: yörüngeden inen roketler en yakın işarete iner ("İniş işareti alındı"). Havası olan dünyalarda rüzgâr inişi altı bloğa kadar kaydırabilir. Yıldız haritası üsleri ve iniş işareti sayılarını istasyonların yanında gösterir.
+- **Ay mekiği:** tek kademeli, yeniden kullanılır bir roket (vakum motoru, orta tank, iniş bacakları, kapsül, manevra iticileri). Ay yörüngesindeki istasyon ile yüzeydeki üs arasında tek tankla gidip gelir, porta yanaşıp yakıt deposundan dolar. → [Uzay İstasyonu](space_station)
 
 ### Atmosfere giriş
 Isı kalkanının kademesi önemlidir: biri **alçak yörüngeden** dönüşe, daha iyisi **Ay'dan** doğrudan dönüşe dayanır. İpucu satırında yazar.
@@ -77,6 +79,8 @@ While flying, watch the **Fuel left (Δv)** line on the display.
 - Lunar orbit to the surface takes about **1,870 m/s**. The way back takes as much.
 - You cannot land without **landing legs**.
 - A hard landing damages the rocket; RCS thrusters soften it.
+- Put a **Landing Beacon** at your base: rockets descending from orbit land on the nearest one ("Landing beacon acquired"). On worlds with air the wind can drift the touchdown up to six blocks. The star map shows surface bases and their beacon count beside stations.
+- **Lunar shuttle:** a single reusable stage (vacuum engine, medium tank, landing legs, capsule, RCS thrusters). It flies between a station in Moon orbit and a surface base on one tank, docks at a port and refuels from the depot. → [Space Station](space_station)
 
 ### Reentry
 The heat shield's rating matters: one survives a return from **low orbit**, a better one a direct return **from the Moon**. Its tooltip tells you which.

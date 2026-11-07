@@ -15,8 +15,13 @@ Neptün'ün çevresinde ters yönde dönen, yakalanmış bir cüce gezegen; öl�
 
 Bir gayzer fışkırırken çevresine, ağzından birkaç blok öteye **Gayzer Tozu** yağar. Topla: Gayzer Böceklerinin yiyeceğidir ve hep yenilenir (yerde aynı anda yalnızca bir avuç birikir).
 
-### Harabe
+### Harabeler
 Düşmüş bir iniş aracı şunu öğretir: *Kriyovolkanizma*.
+
+**Gayzer Gözlem İstasyonu:** güney kutup başlığında, canlı bir azot gayzerinin tam üstüne kurulmuş, çelik kaburgalı alçak bir cam kubbe. Gayzer zeminin ortasında çubuklarla çevrilidir; kubbenin tepesinden ışıklı bir alet direği yükselir. Numune laboratuvarında *Kriyovolkanizma* diski, depoda malzeme bulursun. İki Gayzer Böceği bekçilik eder.
+
+> [!WARNING]
+> Gayzere dikkat: püskürdüğünde seni havaya fırlatır.
 
 <details>
 <summary>English: Triton</summary>
@@ -38,5 +43,10 @@ While a geyser erupts, **Plume Dust** rains down around it, a few blocks from th
 
 ### Ruins
 A crashed lander teaches *Cryovolcanism*.
+
+**Geyser Watch Station:** on the southern polar cap, a low glass dome on steel ribs built right over a live nitrogen geyser. The vent is ringed by bars in the middle of the floor; an instrument mast with a light rises through the dome's crown. The plume sampling lab holds a *Cryovolcanism* disk, the store holds supplies. Two plume beetles guard it.
+
+> [!WARNING]
+> Mind the geyser: it throws you up when it erupts.
 
 </details>

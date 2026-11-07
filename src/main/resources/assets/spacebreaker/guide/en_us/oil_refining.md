@@ -18,3 +18,4 @@ The road to RP-1 rocket fuel:
 
 > [!TIP]
 > Hold {key key.sneak} and {key key.use} the end of a pipe that faces a block: the pipe starts **pulling** from it. That is how you feed a machine from a tank.
+> Do {key key.sneak} + {key key.use} on a pipe end with a **filled container** and that end passes only that fluid, also when it pulls from a mixed tank.

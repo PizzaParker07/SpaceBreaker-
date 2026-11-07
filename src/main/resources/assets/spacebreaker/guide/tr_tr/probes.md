@@ -14,6 +14,8 @@ Bir dünyayı araştırmak için oraya kendin gitmen gerekmez. İnsansız bir ro
 | {item spacebreaker:comm_satellite} | O gezegen sisteminde **görev kontrolü** sinyalini açar. |
 | {item spacebreaker:space_probe} | Hedefe iner; sana o dünyanın **2 numunesini** ve **Sonda İnişi** verisini gönderir. |
 
+> Venüs yüzeyi için ayrı bir sonda var: bulutlardan bırakılan [Venüs İniş Sondası](venus_clouds).
+
 ## Görevi kur
 1. [Montaj tezgâhında](rocket_assembler) kapsül yuvasına uydu ya da sondayı koy.
 2. Konsolda **Hedef...** düğmesine bas.

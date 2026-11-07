@@ -12,6 +12,7 @@ The keys below are **your** keys; change them in the options and this page follo
 | Star map (in orbit) | {key key.spacebreaker.star_map} |
 | Maneuvering unit: up | {key key.jump} |
 | Maneuvering unit: down | {key key.sneak} |
+| Helmet lamps: wide / long beam (40 blocks, for lava tubes and cold traps) | {key key.spacebreaker.helmet_lamp} |
 
 ## Aboard a rocket
 | What it does | Key |

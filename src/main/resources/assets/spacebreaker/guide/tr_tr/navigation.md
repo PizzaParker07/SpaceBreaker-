@@ -1,7 +1,7 @@
 ---
 title: Uçuş ve Yön Bulma
 icon: spacebreaker:emergency_beacon
-items: [spacebreaker:emergency_beacon]
+items: [spacebreaker:emergency_beacon, spacebreaker:landing_beacon]
 research: spacebreaker:orbital_mechanics
 ---
 ## Roketteyken kamera
@@ -34,6 +34,8 @@ Uçarken göstergede **Kalan yakıt (Δv)** satırını izle.
 - Ay yörüngesinden yüzeye yaklaşık **1870 m/s** gerekir. Dönüş için de bir o kadar.
 - **İniş bacakları** olmadan inemezsin.
 - Sert inişte roket hasar görür; manevra iticileri inişi yumuşatır.
+- Üssüne bir {item spacebreaker:landing_beacon} koy: yörüngeden inen roketler en yakın işarete iner ("İniş işareti alındı"). Havası olan dünyalarda rüzgâr inişi altı bloğa kadar kaydırabilir. Yıldız haritası üsleri ve iniş işareti sayılarını istasyonların yanında gösterir.
+- **Ay mekiği:** tek kademeli, yeniden kullanılır bir roket (vakum motoru, orta tank, iniş bacakları, kapsül, manevra iticileri). Ay yörüngesindeki istasyon ile yüzeydeki üs arasında tek tankla gidip gelir, porta yanaşıp yakıt deposundan dolar. → [Uzay İstasyonu](space_station)
 
 ## Atmosfere giriş
 Isı kalkanının kademesi önemlidir: biri **alçak yörüngeden** dönüşe, daha iyisi **Ay'dan** doğrudan dönüşe dayanır. İpucu satırında yazar.

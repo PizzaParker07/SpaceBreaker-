@@ -10,6 +10,7 @@ Aşağıdaki tuşlar **senin** ayarlarındaki tuşlardır; değiştirdiğinde bu
 | Yıldız haritası (yörüngede) | `M` |
 | Manevra ünitesiyle yüksel | `Boşluk` |
 | Manevra ünitesiyle alçal | `Shift` |
+| Kask lambaları: geniş / uzun huzme (40 blok, lav tüpleri ve soğuk tuzaklar için) | `key.spacebreaker.helmet_lamp` |
 
 ### Roketteyken
 | Ne yapar | Tuş |
@@ -51,6 +52,7 @@ The keys below are **your** keys; change them in the options and this page follo
 | Star map (in orbit) | `M` |
 | Maneuvering unit: up | `Space` |
 | Maneuvering unit: down | `Shift` |
+| Helmet lamps: wide / long beam (40 blocks, for lava tubes and cold traps) | `key.spacebreaker.helmet_lamp` |
 
 ### Aboard a rocket
 | What it does | Key |

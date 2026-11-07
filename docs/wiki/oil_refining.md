@@ -19,6 +19,7 @@ RP-1 roket yakıtının yolu:
 
 > [!TIP]
 > Bir borunun bir bloğa bakan ucuna `Shift` basılıyken `Sağ Tık` yaparsan, boru o bloktan **çekmeye** başlar. Tanktan makineye akış böyle kurulur.
+> Boru ucuna **dolu bir kapla** `Shift` + `Sağ Tık` yaparsan uç yalnızca o sıvıyı geçirir; karışık bir tanktan çekerken de.
 
 <details>
 <summary>English: Oil Refining</summary>
@@ -42,5 +43,6 @@ The road to RP-1 rocket fuel:
 
 > [!TIP]
 > Hold `Shift` and `Right Click` the end of a pipe that faces a block: the pipe starts **pulling** from it. That is how you feed a machine from a tank.
+> Do `Shift` + `Right Click` on a pipe end with a **filled container** and that end passes only that fluid, also when it pulls from a mixed tank.
 
 </details>

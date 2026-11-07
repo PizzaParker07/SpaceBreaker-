@@ -16,6 +16,11 @@ Giysin belli bir aralığı dengeler (Mk1: −190 °C ile 130 °C). Bu aralığ�
 
 > Soğuk giysinin sınırını aşınca **vizörün kenarından kırağı** yayılır ve göstergede bir uyarı çıkar. Kırağı, giysinin aralığına ya da basınçlı bir modüle dönünce çözülür. Kutup kraterlerindeki **soğuk tuzaklar** yalnızca buzun kalıcı olduğu havasız dünyalarda vardır: Ay (≈ −233 °C), Merkür (≈ −213 °C) ve Ceres. Mars ve Plüton'da yoktur. Oraya ısıtmalı giysiyle ya da yeterince termal modülle in.
 
+> **Yer altı sığınaktır:** havasız dünyalarda yüzeyin en az **4 blok** altında ve gökyüzünü görmeyen yerde sıcaklık gece-gündüz ortalamasında sabit kalır (Ay'da yaklaşık −26 °C). Lav tüpleri bu yüzden doğal sığınaktır. Soğuk tuzaklar bunun dışındadır.
+
+## Basınç
+**10 bar** üstünde (Venüs yüzeyi 92 bar) sızdırmaz giysi her 10 saniyede parça başına 1 dayanıklılık kaybeder, ama **%75**'in altına inmez: sızdırmaz ama yıpranır. Gösterge uyarır: "92 BAR: GİYSİ ZORLANIYOR".
+
 ## Radyasyon
 Atmosferin ve manyetik alanın dışında radyasyon dozu birikir. Kask göstergesinde izle. Doz zamanla yavaşça düşer; uzun Ay görevlerinde dinlenme molaları ver.
 

@@ -1,7 +1,7 @@
 ---
 title: Yerinde Üretim (ISRU)
 icon: spacebreaker:sabatier_reactor
-items: [spacebreaker:atmosphere_processor, spacebreaker:sabatier_reactor, spacebreaker:regolith_heater, spacebreaker:ice_melter, spacebreaker:chemical_reactor]
+items: [spacebreaker:atmosphere_processor, spacebreaker:sabatier_reactor, spacebreaker:regolith_heater, spacebreaker:ice_melter, spacebreaker:chemical_reactor, spacebreaker:regolith_excavator]
 research: spacebreaker:isru
 ---
 Dünya'dan fırlatılan her kilogram pahalıdır. Bu yüzden indiğin yerde yapabildiğini **orada** yap. Buna yerinde kaynak kullanımı (ISRU) denir.
@@ -25,8 +25,16 @@ Buzu temiz suya, kuru buzu karbondioksite çevirir.
 Bulunduğun yerin havasından en yararlı gazı ayırır: Mars'ta **karbondioksit**. Üstünde **açık hava** olmalı; kapalı bir odada çalışmaz.
 
 ## Regolit ısıtıcı
-Kayayı eritip elektrikle ayrıştırır: **kayadan oksijen**.
+Kayayı eritip elektrikle ayrıştırır: **kayadan oksijen**. Bir regolit **250 mB oksijen** verir. Güneş rüzgârı yemiş Ay ve Merkür regoliti bunun yanında **20 mB helyum-3** de verir. Hidrojeni buzdan alırsın.
 {recipe spacebreaker:regolith_processing/regolith}
+{recipe spacebreaker:regolith_processing/solar_wind_volatiles}
+
+## Regolit Kazıcı
+{items spacebreaker:regolith_excavator}
+{item spacebreaker:regolith_excavator} altındaki **5×5** alanı kat kat, **16 blok** derine kadar kazar ve kazdığını yanındaki makinelere ya da sandıklara verir. **30 FE/t** harcar.
+{recipe spacebreaker:regolith_excavator}
+
+> **Ay üssünde tam otomatik sıvı oksijen:** kazıcı → regolit ısıtıcı → kriyojenik sıvılaştırıcı → kriyojenik tank. Hepsini borula ve kabla: sen yokken de sıvı oksijen birikir.
 
 {page}
 ## Sabatier reaktörü

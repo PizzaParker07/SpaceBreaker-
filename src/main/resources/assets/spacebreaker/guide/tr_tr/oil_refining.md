@@ -18,3 +18,4 @@ RP-1 roket yakıtının yolu:
 
 > [!TIP]
 > Bir borunun bir bloğa bakan ucuna {key key.sneak} basılıyken {key key.use} yaparsan, boru o bloktan **çekmeye** başlar. Tanktan makineye akış böyle kurulur.
+> Boru ucuna **dolu bir kapla** {key key.sneak} + {key key.use} yaparsan uç yalnızca o sıvıyı geçirir; karışık bir tanktan çekerken de.

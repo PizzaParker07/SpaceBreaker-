@@ -1,7 +1,7 @@
 ---
 title: Flight and Navigation
 icon: spacebreaker:emergency_beacon
-items: [spacebreaker:emergency_beacon]
+items: [spacebreaker:emergency_beacon, spacebreaker:landing_beacon]
 research: spacebreaker:orbital_mechanics
 ---
 ## The camera aboard
@@ -34,6 +34,8 @@ While flying, watch the **Fuel left (Δv)** line on the display.
 - Lunar orbit to the surface takes about **1,870 m/s**. The way back takes as much.
 - You cannot land without **landing legs**.
 - A hard landing damages the rocket; RCS thrusters soften it.
+- Put a {item spacebreaker:landing_beacon} at your base: rockets descending from orbit land on the nearest one ("Landing beacon acquired"). On worlds with air the wind can drift the touchdown up to six blocks. The star map shows surface bases and their beacon count beside stations.
+- **Lunar shuttle:** a single reusable stage (vacuum engine, medium tank, landing legs, capsule, RCS thrusters). It flies between a station in Moon orbit and a surface base on one tank, docks at a port and refuels from the depot. → [Space Station](space_station)
 
 ## Reentry
 The heat shield's rating matters: one survives a return from **low orbit**, a better one a direct return **from the Moon**. Its tooltip tells you which.
