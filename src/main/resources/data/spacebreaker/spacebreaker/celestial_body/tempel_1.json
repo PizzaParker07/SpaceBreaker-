@@ -1,6 +1,7 @@
 {
   "type": "comet",
   "parent": "spacebreaker:sun",
+  "dimension": "spacebreaker:tempel_1",
   "physical": { "mass_kg": 4.5e13, "radius_km": 2.83 },
   "orbit": { "semi_major_axis_km": 467044552, "eccentricity": 0.5175, "inclination_deg": 10.53, "period_days": 2014.87, "longitude_ascending_node_deg": 68.94, "argument_periapsis_deg": 178.84, "mean_anomaly_deg": 0.549138 },
   "rotation": { "day_length_hours": 40.7, "axial_tilt_deg": 0.0 },
