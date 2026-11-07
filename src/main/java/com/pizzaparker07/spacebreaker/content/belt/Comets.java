@@ -89,7 +89,25 @@ public final class Comets {
 
     static void tags(SbTags tags) {
         all().forEach(w -> w.tags(tags, NearEarthAsteroids.GROUND));
+        // comet dust is carbon-rich rubble too: the Regolith Heater's carbonaceous recipe accepts it (the richer own
+        // recipe below takes precedence)
+        all().forEach(w -> tags.item(com.pizzaparker07.spacebreaker.content.machines.IsruRecipes.CARBONACEOUS_REGOLITHS, w.soil.get().asItem()));
         tags.block(BlockTags.MINEABLE_WITH_SHOVEL, JET.get());
+    }
+
+    /**
+     * Regolith Heater: comet dust is richer than asteroid rubble - more water (ice grains inside the dust), more CO2
+     * and now and then a lump of the dark organic residue (tholin) that colours comet nuclei.
+     */
+    static void recipes(net.minecraft.data.recipes.RecipeOutput out) {
+        for (TinyWorld w : all()) {
+            com.pizzaparker07.spacebreaker.content.machines.recipe.ProcessingRecipeBuilder
+                    .of(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.REGOLITH_PROCESSING).in(w.soil.get())
+                    .fluidOut(net.minecraft.world.level.material.Fluids.WATER, 300)
+                    .fluidOut(com.pizzaparker07.spacebreaker.content.fluids.FluidsModule.CARBON_DIOXIDE.get(), 100)
+                    .bonus(com.pizzaparker07.spacebreaker.content.saturn.SaturnModule.THOLIN.get(), 1, 0.15F)
+                    .time(160).energy(100).priority(3).save(out, w.soil.getId().getPath());
+        }
     }
 
     static void terrain(BootstrapContext<TerrainProfile> ctx) {

@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-07T13:17:05.936667846	Tags for minecraft:item mod id spacebreaker
+// 1.21.1	2026-11-07T13:13:02.620632177	Tags for minecraft:item mod id spacebreaker
 7e8e995a94080524a7a2d6280b7b24b5bae0a66f data/c/tags/item/buckets.json
 2a38d13958b33895ff8da9a470c0eb27ca030dfb data/c/tags/item/dry_ices.json
 07fbd159d3e0d8a1a05acd85d71e5425c4011142 data/c/tags/item/dusts.json
@@ -81,7 +81,7 @@ d69c241b19f0918261eb73ca04f537e8093fa5ff data/c/tags/item/raw_materials/magnetit
 b8850ad78f83e817fe170204f5808e7f823bbd97 data/c/tags/item/raw_materials/uraninite.json
 20055c2564312e0545794c0b73f9d248ff7fe9bf data/c/tags/item/raw_materials/wolframite.json
 042d68f2931ac897ddd083e346dbca64a6c20115 data/c/tags/item/regoliths.json
-749e62159864f449daf0d28e24703d556da40bde data/c/tags/item/regoliths/carbonaceous.json
+f46d268e5aa5c006c8118e8586256088137a9300 data/c/tags/item/regoliths/carbonaceous.json
 5a1d4e66e545090f2718cc9aac1b10bea6a69b5c data/c/tags/item/regoliths/solar_wind.json
 ee8194fbfeefc822b906a6d6732d11713e643bec data/c/tags/item/regoliths/stony.json
 34e122b3c8afafcc5f38019d9eb2f3ab1d290951 data/c/tags/item/rods.json
@@ -111,20 +111,15 @@ c13a1fd6361eaef0ec8c5028873d11604c98fdc6 data/c/tags/item/wires/aluminum.json
 653c3f96257f55e4589fa1e1ef2e046b5d6c927c data/c/tags/item/wires/copper.json
 7b0ba7b54a31306667420f788d120024aa8a584c data/c/tags/item/wires/gold.json
 c53893040c86bcc09dd84910b2e0945d5107fb1f data/c/tags/item/wires/tungsten.json
-b82f10aae44ec6caebd0f40ce7df1580b3c9fbdb data/minecraft/tags/item/axes.json
 0c9b9ea610564cb730896f559fe5d1669a859c32 data/minecraft/tags/item/beacon_payment_items.json
 3f967db6146e848de6713b7e3184ce4cdcc4fb82 data/minecraft/tags/item/chest_armor.json
 378dd29cb2d952e609917dbca5a3df7954c75e82 data/minecraft/tags/item/dyeable.json
 137151cccd6170d769c4aa4ff44cb7c65dbc3d63 data/minecraft/tags/item/foot_armor.json
 cd7806a652087ef3237bc109bf884f6301b77963 data/minecraft/tags/item/head_armor.json
-fbdb662cb5f49acf080aedae7f8457f21cf8f288 data/minecraft/tags/item/hoes.json
 f0a0fbdf43cab8de673f6a2a995b934149b396e1 data/minecraft/tags/item/leg_armor.json
-50ebd923b85c3b8db2ab977eec240e37bd2577a6 data/minecraft/tags/item/pickaxes.json
 1137c1ba4d56080deb8301dbb264af90ec575b94 data/minecraft/tags/item/sand.json
-9091599a5b045ec2691874ef8a2583bf6cb02edd data/minecraft/tags/item/shovels.json
 685be256ea756cfe3eaaada2fc2b3e2259a8b442 data/minecraft/tags/item/slabs.json
 de62e77d970674708353aea70ef5f6a4a72c25c2 data/minecraft/tags/item/stairs.json
-7b45e70342f6317a77233b0a1772af7fb17fb7f3 data/minecraft/tags/item/swords.json
 fc930a2eca9de503c1ad5186478c931d85c46b63 data/minecraft/tags/item/walls.json
 8ce8de56c882fde6d0067f4d1a5eecfe4f54c662 data/spacebreaker/tags/item/press_dies.json
 694849f8ef7201ef082dd39d125bd84fe060a97b data/spacebreaker/tags/item/researchable.json

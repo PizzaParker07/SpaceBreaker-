@@ -1,0 +1,27 @@
+{
+  "type": "spacebreaker:regolith_processing",
+  "bonus": {
+    "count": 1,
+    "id": "spacebreaker:tholin"
+  },
+  "bonus_chance": 0.15,
+  "energy": 100,
+  "fluid_results": [
+    {
+      "amount": 300,
+      "id": "minecraft:water"
+    },
+    {
+      "amount": 100,
+      "id": "spacebreaker:carbon_dioxide"
+    }
+  ],
+  "ingredients": [
+    {
+      "count": 1,
+      "item": "spacebreaker:halley_dust"
+    }
+  ],
+  "priority": 3,
+  "time": 160
+}

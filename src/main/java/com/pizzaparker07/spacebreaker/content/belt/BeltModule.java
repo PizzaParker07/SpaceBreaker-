@@ -181,6 +181,7 @@ public final class BeltModule implements SbModule {
 
     @Override
     public void addRecipes(RecipeOutput out, HolderLookup.Provider registries) {
+        Comets.recipes(out);
         for (BlockKit.Family f : KIT.families()) {
             Block base = f.base().get();
             stairs(out, f.stairs().get(), base);

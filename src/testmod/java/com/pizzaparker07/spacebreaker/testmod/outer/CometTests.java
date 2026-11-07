@@ -53,4 +53,19 @@ public final class CometTests {
                 "Halley is the bigger nucleus");
         helper.succeed();
     }
+
+    @GameTest(template = WorldTests.EMPTY)
+    public static void cometDustFeedsTheRegolithHeater(GameTestHelper helper) {
+        var recipes = helper.getLevel().getRecipeManager();
+        for (var c : Comets.all()) {
+            helper.assertTrue(new net.minecraft.world.item.ItemStack(c.soil.get())
+                    .is(com.pizzaparker07.spacebreaker.content.machines.IsruRecipes.CARBONACEOUS_REGOLITHS), c.name + " dust is carbonaceous regolith");
+            var id = Spacebreaker.id(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.REGOLITH_PROCESSING.name() + "/"
+                    + c.soil.getId().getPath());
+            var holder = recipes.byKey(id).orElseThrow(() -> new AssertionError("no heater recipe " + id));
+            helper.assertTrue(holder.value() instanceof com.pizzaparker07.spacebreaker.content.machines.recipe.ProcessingRecipe,
+                    id + " is a processing recipe");
+        }
+        helper.succeed();
+    }
 }

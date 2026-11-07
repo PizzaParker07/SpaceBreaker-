@@ -67,6 +67,11 @@ public class TholinWorm extends Animal {
         return entityData.get(BURROWED);
     }
 
+    /** Ticks it has been calm while burrowed (it surfaces after 60). */
+    public int calmTicks() {
+        return calm;
+    }
+
     public void setBurrowed(boolean burrowed) {
         if (burrowed != isBurrowed()) {
             entityData.set(BURROWED, burrowed);
