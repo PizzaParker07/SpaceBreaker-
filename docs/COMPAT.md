@@ -416,7 +416,9 @@ environment; the plugins compile against both APIs and the line itself is covere
   LambDynamicLights 4.8.11, vanilla and Complementary (`dynlights_lamps_headlights.jpg`: columns no LDL, LDL, LDL +
   pack). Both give real block light along the beams; the fallback pools are off. With LDL the long beam lights the
   ground near the wearer much like the wide one (block light falls off over ~15 blocks), so the narrow far pool of
-  the fallback is not reproduced.
+  the fallback was not reproduced; since suit a7f048dc the long beam ends in a short brighter line light, which
+  gives a pool ahead (checked on 430789f9). Sensor card at 427x240 after suit d016748c: smaller text, height capped,
+  clear of the chat lines.
 - **Distant Horizons and the new structures:** not run here this time (starting the client with the downloaded DH
   jar was not permitted in this environment). The showcase has `-Pretreat=N` for it: after each shot a second one from
   N blocks back, looking at the same spot with a 6-chunk view distance (`<name>_far`), e.g.
@@ -463,8 +465,8 @@ environment; the plugins compile against both APIs and the line itself is covere
 ## 9. Known issues for players (release notes)
 
 English:
-- **LambDynamicLights:** the helmet lamp's long beam lights the ground near you much like the wide beam (dynamic
-  block light reaches about 15 blocks). Without LambDynamicLights the lamps draw a soft light pool instead.
+- **LambDynamicLights:** dynamic light is block light: shader packs tint it like torch light (warm), and it reaches
+  about 15 blocks around each light. Without LambDynamicLights the lamps draw a soft light pool instead.
 - **Shader packs (Iris):** right after joining a world or arriving at a new one, the pack may show only sky for a
   moment until it has built the terrain around you; this takes longer on weak graphics cards.
 - **Shader packs:** the ground on airless worlds is a little warmer or cooler than without shaders depending on the
@@ -478,8 +480,8 @@ English:
 - **WTHIT:** the extra block info lines are built for WTHIT as for Jade but were only checked in game with Jade.
 
 Türkçe:
-- **LambDynamicLights:** kask lambasının uzun hüzmesi de geniş hüzme gibi yakınını aydınlatır (dinamik blok ışığı
-  yaklaşık 15 bloğa ulaşır). LambDynamicLights yoksa lambalar bunun yerine yumuşak bir ışık lekesi çizer.
+- **LambDynamicLights:** dinamik ışık blok ışığıdır: shader paketleri onu meşale ışığı gibi sıcak renge boyar ve
+  her ışığın çevresinde yaklaşık 15 bloğa ulaşır. LambDynamicLights yoksa lambalar yumuşak bir ışık lekesi çizer.
 - **Shader paketleri (Iris):** bir dünyaya girince ya da başka bir dünyaya varınca paket çevredeki araziyi kurana kadar
   bir an yalnız gök görünebilir; zayıf ekran kartlarında bu daha uzun sürer.
 - **Shader paketleri:** havasız dünyalarda zemin pakete göre shader'sız halinden biraz daha sıcak ya da soğuk
