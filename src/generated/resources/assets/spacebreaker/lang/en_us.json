@@ -797,6 +797,7 @@
   "gui.spacebreaker.assembler.twr": "TWR %s",
   "gui.spacebreaker.blueprints": "Blueprints",
   "gui.spacebreaker.blueprints.empty": "No blueprints loaded",
+  "gui.spacebreaker.blueprints.have": "%s in your inventory, %s needed",
   "gui.spacebreaker.blueprints.materials": "Materials",
   "gui.spacebreaker.blueprints.project": "Project",
   "gui.spacebreaker.blueprints.size": "%s × %s × %s, %s blocks",

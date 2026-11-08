@@ -100,6 +100,7 @@ public final class BlueprintModule implements SbModule {
                 "Nasıl yapıldığını görmek için yanında bir Hologram Projektörü taşı");
         lang.add("gui.spacebreaker.blueprints", "Blueprints", "Planlar");
         lang.add("gui.spacebreaker.blueprints.size", "%s × %s × %s, %s blocks", "%s × %s × %s, %s blok");
+        lang.add("gui.spacebreaker.blueprints.have", "%s in your inventory, %s needed", "Envanterinde %s, gereken %s");
         lang.add("gui.spacebreaker.blueprints.empty", "No blueprints loaded", "Yüklü plan yok");
         lang.add("hud.spacebreaker.materials", "Materials", "Malzemeler");
         lang.add("hud.spacebreaker.materials.done", "%s / %s placed", "%s / %s yerleştirildi");
