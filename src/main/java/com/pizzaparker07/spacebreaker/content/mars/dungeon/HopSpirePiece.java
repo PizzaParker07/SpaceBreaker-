@@ -109,28 +109,53 @@ public class HopSpirePiece extends StructurePiece {
                 }
             }
         }
-        // the spire: a bare 3x3 needle, too high to climb on foot
+        // the spire: the relay's own lattice mast, light metal that stands out from the dark rock: four corner posts,
+        // braces every four blocks, a deck at the top; too smooth to climb on foot
         BlockPos sum = summit();
+        BlockState post = s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.ALUMINUM_PANEL.base().get());
         for (int dx = -1; dx <= 1; dx++) {
             for (int dz = -1; dz <= 1; dz++) {
-                column(level, box, sum.getX() + dx, sum.getZ() + dz, sum.getY() - 1, r);
+                int x = sum.getX() + dx;
+                int z = sum.getZ() + dz;
+                boolean corner = dx != 0 && dz != 0;
+                boolean face = (dx == 0) != (dz == 0);
+                for (int y = ground(level, x, z) - 2; y < sum.getY(); y++) {
+                    if (y == sum.getY() - 1 || y < ground(level, x, z)) {
+                        set(level, box, x, y, z, post); // the deck, and footings under the dust
+                    } else if (corner) {
+                        set(level, box, x, y, z, post);
+                    } else if (face && (y - baseY) % 4 == 0) {
+                        set(level, box, x, y, z, s(Blocks.IRON_BARS)
+                                .setValue(net.minecraft.world.level.block.IronBarsBlock.EAST, dz != 0)
+                                .setValue(net.minecraft.world.level.block.IronBarsBlock.WEST, dz != 0)
+                                .setValue(net.minecraft.world.level.block.IronBarsBlock.NORTH, dx != 0)
+                                .setValue(net.minecraft.world.level.block.IronBarsBlock.SOUTH, dx != 0));
+                    } else {
+                        set(level, box, x, y, z, s(Blocks.AIR));
+                    }
+                }
             }
         }
-        // the relay on the summit: a lattice mast with a dish and a beacon, a foil-wrapped transmitter, the data cache
+        // the relay on the summit: a mast carrying a wide dish turned to the sky and a red beacon over it
         int sy = sum.getY();
         int mx = sum.getX() - 1;
         int mz = sum.getZ() - 1;
-        set(level, box, mx, sy, mz, s(Blocks.POLISHED_ANDESITE));
-        for (int dy = 1; dy <= 6; dy++) {
-            set(level, box, mx, sy + dy, mz, dy % 3 == 0 ? s(Blocks.POLISHED_ANDESITE) : s(Blocks.IRON_BARS));
+        for (int dy = 0; dy <= 4; dy++) {
+            set(level, box, mx, sy + dy, mz, dy % 2 == 0 ? s(Blocks.POLISHED_ANDESITE) : s(Blocks.IRON_BARS));
         }
-        // the dish: a ring of slabs round a receiver, turned to the sky
-        set(level, box, mx, sy + 7, mz, s(Blocks.DAYLIGHT_DETECTOR));
-        for (int[] d : new int[][]{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}) {
-            set(level, box, mx + d[0], sy + 7, mz + d[1], s(Blocks.SMOOTH_QUARTZ_SLAB));
+        int dishY = sy + 5;
+        for (int dx = -2; dx <= 2; dx++) {
+            for (int dz = -2; dz <= 2; dz++) {
+                if (Math.abs(dx) == 2 && Math.abs(dz) == 2) {
+                    continue;
+                }
+                boolean rim = Math.abs(dx) == 2 || Math.abs(dz) == 2;
+                set(level, box, mx + dx, dishY + (rim ? 1 : 0), mz + dz, dx == 0 && dz == 0 ? s(Blocks.DAYLIGHT_DETECTOR) : s(Blocks.SMOOTH_QUARTZ_SLAB));
+            }
         }
-        set(level, box, mx, sy + 8, mz, s(Blocks.LIGHTNING_ROD));
-        set(level, box, mx, sy + 9, mz, s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.LED_PANEL.get()));
+        set(level, box, mx, dishY + 1, mz, s(Blocks.LIGHTNING_ROD));
+        set(level, box, mx, dishY + 2, mz, s(Blocks.POLISHED_ANDESITE));
+        set(level, box, mx, dishY + 3, mz, s(Blocks.REDSTONE_TORCH)); // the red beacon
         set(level, box, sum.getX() + 1, sy, sum.getZ() + 1, s(Blocks.SMOOTH_QUARTZ));
         set(level, box, sum.getX() + 1, sy + 1, sum.getZ() + 1, s(com.pizzaparker07.spacebreaker.content.belt.LanderBlocks.GOLD_FOIL_CLADDING.get()));
         BlockPos cache = new BlockPos(sum.getX(), sy, sum.getZ());
@@ -177,7 +202,11 @@ public class HopSpirePiece extends StructurePiece {
         }
         set(level, box, x0 + 2, gy, z0 + 1, s(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.POWER_MONITOR.get()));
         set(level, box, x0 + 1, gy + 4, z0 + 1, s(Blocks.DAYLIGHT_DETECTOR));
-        set(level, box, x0 + 3, gy + 4, z0 + 1, s(Blocks.LIGHTNING_ROD));
+        for (int y = gy + 4; y <= gy + 7; y++) {
+            set(level, box, x0 + 3, y, z0 + 1, s(Blocks.IRON_BARS));
+        }
+        set(level, box, x0 + 3, gy + 8, z0 + 1, s(Blocks.POLISHED_ANDESITE));
+        set(level, box, x0 + 3, gy + 9, z0 + 1, s(Blocks.REDSTONE_TORCH));
         set(level, box, x0 + 2, gy + 2, z0 + 3, s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.FLOODLIGHT.get())
                 .setValue(net.minecraft.world.level.block.DirectionalBlock.FACING, Direction.SOUTH));
     }
