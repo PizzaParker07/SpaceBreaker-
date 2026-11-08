@@ -68,6 +68,9 @@ final class InnerCreatureLineupScenario implements ShowcaseScenario {
             m.setNoAi(true);
             m.setNoGravity(true);
             m.setPersistenceRequired();
+            if (m instanceof com.pizzaparker07.spacebreaker.content.mars.entity.CanyonLurker lurker) {
+                lurker.setHidden(false); // shown unfolded; folded it is just a lump of rock
+            }
             level.addFreshEntity(m);
         }
         level.getServer().tickRateManager().setFrozen(true);
