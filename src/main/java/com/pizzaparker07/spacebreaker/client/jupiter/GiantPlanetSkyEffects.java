@@ -234,11 +234,49 @@ public class GiantPlanetSkyEffects extends PlanetSkyEffects {
     private static final java.util.Map<ResourceLocation, com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.ColorMap> RING_MAPS =
             new java.util.concurrent.ConcurrentHashMap<>();
 
-    /** Ring colours by radius from a ring texture (a radial strip, inner edge on the left), read along its middle row; one per texture. */
+    /** Samples across the ring strip, and how many of them one ring tile averages (about a tile's width of the rings). */
+    private static final int RING_SAMPLES = 256;
+    private static final int RING_WINDOW = 11;
+
+    /**
+     * Ring colours by radius from a ring texture (a radial strip, inner edge on the left), read along its middle row; one
+     * per texture. Each radius takes the average of the strip over about one ring tile's width (alpha-weighted colour,
+     * mean opacity), not a single texel: narrow dark rings like Uranus' then stay as faint as they are instead of a tile
+     * that happens to sample one of them turning solid, which showed edge-on as a flat grey bar above the horizon.
+     */
     static com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.ColorMap ringMap(ResourceLocation rings) {
         return RING_MAPS.computeIfAbsent(rings, id -> {
             var strip = com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.texture(id);
-            return (f, z) -> strip.argb((f - 0.5) * Math.PI * 2, 0);
+            int[] raw = new int[RING_SAMPLES];
+            for (int i = 0; i < RING_SAMPLES; i++) {
+                raw[i] = strip.argb(((i + 0.5) / RING_SAMPLES - 0.5) * Math.PI * 2, 0);
+            }
+            int[] avg = new int[RING_SAMPLES];
+            for (int i = 0; i < RING_SAMPLES; i++) {
+                double a = 0;
+                double r = 0;
+                double g = 0;
+                double b = 0;
+                int n = 0;
+                for (int k = i - RING_WINDOW / 2; k <= i + RING_WINDOW / 2; k++) {
+                    if (k < 0 || k >= RING_SAMPLES) {
+                        continue;
+                    }
+                    int c = raw[k];
+                    double ca = (c >>> 24) / 255.0;
+                    a += ca;
+                    r += ((c >> 16) & 255) * ca;
+                    g += ((c >> 8) & 255) * ca;
+                    b += (c & 255) * ca;
+                    n++;
+                }
+                double alpha = a / Math.max(1, n);
+                int ir = a > 0 ? (int) (r / a) : 0;
+                int ig = a > 0 ? (int) (g / a) : 0;
+                int ib = a > 0 ? (int) (b / a) : 0;
+                avg[i] = ((int) Math.round(alpha * 255) << 24) | (ir << 16) | (ig << 8) | ib;
+            }
+            return (f, z) -> avg[Math.max(0, Math.min(RING_SAMPLES - 1, (int) (f * RING_SAMPLES)))];
         });
     }
 
