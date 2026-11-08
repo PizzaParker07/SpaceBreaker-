@@ -18,7 +18,7 @@ Okuma notları:
 | Güneş paneli | 20 (tepe) | gezegene göre ışık yüzdesi, toz %40'a kadar düşürür |
 | Güneş paneli dizisi | 60 (tepe) | 3 takipçi |
 | RTG | 40 (taze pelet) | etkinlik 21 oyun gününde yarıya iner |
-| Fisyon ünitesi | 320 | eleman başına 240 000 tick (10 oyun günü) tam güç = 76,8 M FE |
+| Fisyon ünitesi | 240 | eleman başına 240 000 tick (10 oyun günü) tam güç = 57,6 M FE (önce 320 FE/t, 76,8 M) |
 | Pumpjack (tüketir) | −30 | 40 tickte 250 mB ham petrol |
 
 Kablolar: bakır 512 FE/t, yüksek gerilim 8192 FE/t.
@@ -235,3 +235,16 @@ Kabaca oyun süresi (Dengeli, tahmindir, ölçüm değildir):
 
 Yanlış alarm olmayanlar: kırıcı ve ark ocağı ile cevher ikiye katlama, pres, imalatçı, Sabatier, buz eritici ve
 sıvılaştırıcı süreleri birbirleriyle orantılı. Erken makinelerin işlemi 3–8 s, ileri makinelerinki 8–40 s sürüyor.
+
+## 5. Kararlar ve yapılanlar (2026-11-08)
+
+| # | Karar | Durum |
+|---|---|---|
+| 1 | Ablatif kalkan levhası ısı kalkanı tarifine girecek | roketçilik ekibinde (entegratör iletti), sanayi tarafında değişiklik yok |
+| 2 | Lityum levha batarya bankası tarifinde (2 lityum külçe yerine 2 lityum levha) | **yapıldı** 84a31ad0 |
+| 3 | Fisyon 320 → 240 FE/t, yanma süresi aynı | **yapıldı** 3ce94bd2 |
+| 4 | Regolit ısıtıcı 120 → 80 FE/t (regolit ve güneş rüzgârı uçucuları) | **yapıldı** 2fef59a5 |
+| 5 | Pumpjack: 2 çelik blok yerine 2 çelik levha (16 çelik külçe daha az) | **yapıldı** 8d36a92c |
+| 6 | Elle bakır tel: 1 levha → 3 tel | **yapıldı** f8d533fc |
+| 7 | RTG 40 FE/t kalıyor (sabit ve bakımsız olması avantajı yeterli) | değişiklik yok |
+| 10 | Elektroliz H₂ yan ürünü: hidrojen tankı doluyken makine su harcamadan duruyor, oksijen üretmiyor, "çıkış dolu" kırmızı işaretini gösteriyor, hidrojen çekilince devam ediyor | **doğrulandı** (GameTest `electrolyzerStopsWhenHydrogenHasNowhereToGo`, eefd8b8b); tıkanma yok, kod değişikliği gerekmedi |
