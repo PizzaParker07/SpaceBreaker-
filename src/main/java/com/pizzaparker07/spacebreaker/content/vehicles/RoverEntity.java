@@ -94,7 +94,8 @@ public class RoverEntity extends Entity implements com.pizzaparker07.spacebreake
     public float bodyPitchO;
     public float bodyRoll;
     public float bodyRollO;
-    /** Client: how far the leaning body sits above the rover's feet (the mean of the ground under the wheels). */
+    /** Client: how far the leaning body sits above the rover's feet (the mean of the ground under the wheels); below
+     * them for a few ticks after a step up, while it eases up the block. */
     public float bodyLift;
     public float bodyLiftO;
     private float suspensionVel;
@@ -272,7 +273,8 @@ public class RoverEntity extends Entity implements com.pizzaparker07.spacebreake
         int i = getPassengers().indexOf(passenger);
         double z = i <= 0 ? 0.25 : -0.55;
         // the seats are the same height in every model, whatever the cabin above them
-        return new Vec3(0, SEAT_HEIGHT, z).yRot(-getYRot() * Mth.DEG_TO_RAD);
+        // the seats ride with the body on the client: lifted over rough ground, easing up after a step
+        return new Vec3(0, SEAT_HEIGHT + bodyLift, z).yRot(-getYRot() * Mth.DEG_TO_RAD);
     }
 
     @Override
@@ -544,22 +546,26 @@ public class RoverEntity extends Entity implements com.pizzaparker07.spacebreake
         LivingEntity driver = getControllingPassenger();
         double throttle = 0;
         float steer = 0;
+        // the hand brake (jump key) works with an empty battery too: it is a mechanical lock on the wheels
+        boolean handBrake = driver != null && driver.jumping;
         if (driver != null && energy() > 0) {
             throttle = Mth.clamp(driver.zza, -1F, 1F);
             steer = Mth.clamp(driver.xxa, -1F, 1F);
         }
         BlockPos under = getBlockPosBelowThatAffectsMyMovement();
         double grip = onGround() ? Math.min(1.0, RoverPhysics.grip(level().getBlockState(under).getFriction(level(), under, this)) * roverType.grip()) : 0;
-        speed = RoverPhysics.speed(speed, throttle, onGround(), RoverPhysics.traction(g) * Math.max(grip, 0.02),
-                roverType.maxSpeed(), roverType.accel());
-        deltaYaw = RoverPhysics.yawChange(speed, steer, onGround() ? grip : 0);
+        speed = RoverPhysics.speed(speed, throttle, handBrake, onGround(), RoverPhysics.traction(g) * Math.max(grip, 0.02),
+                RoverPhysics.rollingDrag(g) * Math.max(grip, 0.02), roverType.maxSpeed(), roverType.accel());
+        deltaYaw = RoverPhysics.yawChange(speed, steer, onGround() ? grip : RoverPhysics.AIR_STEER);
         setYRot(getYRot() + deltaYaw);
         Vec3 v = getDeltaMovement();
         double vy = onGround() && v.y <= 0 ? 0 : v.y;
         vy = RoverPhysics.fall(vy, g);
         float yaw = getYRot() * Mth.DEG_TO_RAD;
-        // the tyres steer the ground velocity towards the heading as far as the surface lets them; airborne, it keeps going
-        double[] h = RoverPhysics.slide(v.x, v.z, -Mth.sin(yaw) * speed, Mth.cos(yaw) * speed, grip);
+        // the tyres steer the ground velocity towards the heading as far as the surface lets them; airborne, only a little
+        boolean parked = handBrake || speed == 0 && throttle == 0;
+        double side = !onGround() ? RoverPhysics.AIR_STEER : parked ? grip : RoverPhysics.lateralGrip(grip, g);
+        double[] h = RoverPhysics.tyres(v.x, v.z, -Mth.sin(yaw), Mth.cos(yaw), speed, onGround() ? grip : RoverPhysics.AIR_STEER, side);
         setDeltaMovement(h[0], vy, h[1]);
         double before = getDeltaMovement().y;
         move(MoverType.SELF, getDeltaMovement());
@@ -774,6 +780,9 @@ public class RoverEntity extends Entity implements com.pizzaparker07.spacebreake
         bodyPitchO = bodyPitch;
         bodyRollO = bodyRoll;
         bodyLiftO = bodyLift;
+        // a step up (the wheels climb a block in one tick): keep the body where it was and let it ease up over a few
+        // ticks, so the model and the riders' camera rise smoothly instead of popping up a block
+        bodyLift = RoverPhysics.afterStep(bodyLift, getY() - yo, onGround(), maxUpStep());
         float a = (180F - getYRot()) * Mth.DEG_TO_RAD;
         // the renderer's model space after its yaw turn: +X = (cos a, -sin a), front (-Z) = (-sin a, -cos a)
         double fx = -Mth.sin(a), fz = -Mth.cos(a);
@@ -793,7 +802,7 @@ public class RoverEntity extends Entity implements com.pizzaparker07.spacebreake
         }
         bodyPitch += (pitch - bodyPitch) * 0.3F;
         bodyRoll += (roll - bodyRoll) * 0.3F;
-        bodyLift += (lift - bodyLift) * 0.3F;
+        bodyLift = RoverPhysics.easeLift(bodyLift, lift);
     }
 
     private void clientEffects() {

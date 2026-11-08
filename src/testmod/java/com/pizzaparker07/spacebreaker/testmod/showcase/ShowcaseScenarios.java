@@ -94,6 +94,7 @@ public final class ShowcaseScenarios {
         ALL.put("perf_outer", new OuterPerfScenario());
         ALL.put("outer_creatures", new OuterCreaturesScenario());
         ALL.put("moon_creatures", new MoonCreaturesScenario());
+        ALL.put("moon_survey", new MoonSurveyScenario());
         ALL.put("outer_survey", new OuterSurveyScenario());
         ALL.put("scan_outer", new OuterScanScenario());
         ALL.put("triton", new TritonScenario());
@@ -102,6 +103,7 @@ public final class ShowcaseScenarios {
         ALL.put("qa_playthrough", new QaPlaythroughScenario(new RocketryScenario()));
         ALL.put("qa_launch", new QaLaunchScenario(new RocketryScenario()));
         ALL.put("qa_hud_overlay", new QaHudOverlayScenario());
+        ALL.put("qa_ui", new QaUiScenario());
         ALL.put("qa_station_play", new QaStationPlayScenario());
     }
 

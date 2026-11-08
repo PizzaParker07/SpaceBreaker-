@@ -6,7 +6,7 @@
 |---|---|
 | Mars | Terk edilmiş araştırma istasyonu: dört basınç tüplü (sera, laboratuvar ve ISRU kontrolü, fırtınanın delip geçtiği garaj, hava kilidi) kaburgalı bir kubbe merkezi; dışarıda yarı gömülü güneş paneli dizisi, yakıt tankları ve sondaj kulesi; garaj bağlantısında ok tuzağı ve bir tabelada son kayıt |
 | Mars | Gömülü eski nehir yatağı ve düşmüş bir sonda |
-| Mars | **Kayıp İniş Aracı**: açık duran bacaklar üstünde sekizgen bir araç; bir bacağı kırılmış, o köşesi çökmüş, bir güneş kanadı kopup toza düşmüş, seki izleri, yanında kenarı üstünde yarı gömülü ısı kalkanı ve toza serilmiş paraşüt. Seyrek (yaklaşık kilometrede bir); [gezici](rover) gerekir. Veri kaydedicisinde disk, deney verisi ve parçalar var. |
+| Mars | **Kayıp İniş Aracı**: açık duran bacaklar üstünde sekizgen bir araç; bir bacağı kırılmış, o köşesi çökmüş, bir güneş kanadı kopup toza düşmüş, seki izleri, yanında kenarı üstünde yarı gömülü ısı kalkanı ve toza serilmiş paraşüt. Seyrek (yaklaşık kilometrede bir); [gezici](rover) gerekir. Veri kaydedicisinde disk, deney kaydı ve parçalar var. |
 | Phobos | Düşmüş Numune Dönüş Sondası |
 | Deimos | Deimos Buz Deposu |
 | Venüs | Terk Edilmiş Araştırma Aerostatı → [Venüs bulutları](venus_clouds) |

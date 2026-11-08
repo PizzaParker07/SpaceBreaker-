@@ -111,7 +111,7 @@ final class MachineRecipes {
         ProcessingRecipeBuilder.of(LIQUEFACTION).fluidIn(FluidsModule.TAG_OXYGEN, 1000).fluidOut(FluidsModule.LIQUID_OXYGEN.get(), 500)
                 .time(60).energy(100).save(out, "oxygen");
         ProcessingRecipeBuilder.of(LIQUEFACTION).fluidIn(FluidsModule.TAG_HYDROGEN, 1000).fluidOut(FluidsModule.LIQUID_HYDROGEN.get(), 250)
-                .time(80).energy(160).save(out, "hydrogen");
+                .time(80).energy(100).save(out, "hydrogen");
         ProcessingRecipeBuilder.of(LIQUEFACTION).fluidIn(FluidsModule.TAG_METHANE, 1000).fluidOut(FluidsModule.LIQUID_METHANE.get(), 500)
                 .time(60).energy(100).save(out, "methane");
     }

@@ -17,13 +17,13 @@ On Phobos a small octagonal sample-return capsule lies nosed into its impact pit
 
 {page}
 ## Stickney crater
-Phobos' giant crater lies about **320 blocks east** of the landing site: a bowl **460 blocks** across and about 58 blocks deep. On its floor stands **Stickney's Anchored Lander**, the only one in the world. Phobos has about a two-thousandth of Earth's gravity, so a lander that touches down bounces off again. This one tied itself to the ground with three harpoons and a winch. Inside you find a {item spacebreaker:safety_tether} and tech disks.
+Phobos' giant crater lies about **320 blocks east** of the landing site: a bowl **460 blocks** across and about 58 blocks deep. On its floor stands **Stickney's Anchored Lander**, the only one in the world: a seven-block octagonal craft clad mostly in gold foil, listing on its tethers, with four legs splayed out to footpads and a dish on its deck. Phobos has about a two-thousandth of Earth's gravity, so a lander that touches down bounces off again. This one tied itself to the ground with three harpoons and a winch. Inside you find a {item spacebreaker:safety_tether} and tech disks.
 
 {items spacebreaker:safety_tether}
 > {item spacebreaker:safety_tether}: use it on a block and a line runs from your belt to that block, so you cannot wander off and drift away. Use it again to unclip.
 
 ## Deimos relay spire
-On top of a rock needle stands an old relay: a lattice mast with a sky-facing dish and an LED beacon, a foil-wrapped transmitter and the data cache in a supply locker. A cable runs down the needle to a small ground station with a dish and a floodlight. Around it spiral **12 rock stacks**, each 2 blocks higher and more than 4 blocks from the last. Out of reach on Earth, but on Deimos one jump lasts for seconds.
+An old relay stands on top of a rock needle: a light aluminium lattice mast with braces and a top deck, carrying a big sky-facing dish, a red beacon, a foil-wrapped transmitter and the data cache in a supply locker. A cable runs down to a small ground station with its own mast, beacon, dish and floodlight. Around it spiral **12 rock stacks**, each 2 blocks higher and more than 4 blocks from the last. Out of reach on Earth, but on Deimos one jump lasts for seconds.
 
 > One jump lasts for seconds: hop up the rocks and steer in mid-air.
 

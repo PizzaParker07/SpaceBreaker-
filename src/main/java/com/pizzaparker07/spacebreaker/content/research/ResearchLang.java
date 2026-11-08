@@ -73,7 +73,7 @@ final class ResearchLang {
         l.add("gui.spacebreaker.lab.analysing", "Analysing: %s", "İnceleniyor: %s");
         l.add("gui.spacebreaker.lab.status.0", "Insert a tech disk or sample", "Bir teknoloji diski ya da numune koy");
         l.add("gui.spacebreaker.lab.status.1", "Analysing...", "İnceleniyor...");
-        l.add("gui.spacebreaker.lab.status.2", "Not enough power", "Yetersiz enerji");
+        l.add("gui.spacebreaker.lab.status.2", "No power", "Enerji yok");
         l.add("gui.spacebreaker.lab.status.3", "Nothing new in this sample", "Bu numunede yeni bir şey yok");
         l.add("gui.spacebreaker.lab.status.4", "Take the result out first", "Önce sonucu dışarı al");
         l.add("gui.spacebreaker.lab.status.5", "Unreadable data", "Okunamayan veri");
@@ -84,6 +84,7 @@ final class ResearchLang {
         l.add("gui.spacebreaker.lab.energy", "%s / %s FE", "%s / %s FE");
         l.add("gui.spacebreaker.lab.draw", "Uses %s FE/t", "%s FE/t harcar");
         l.add("gui.spacebreaker.lab.time", "%s s left", "%s sn kaldı");
+        l.add("gui.spacebreaker.lab.paused", "Paused: no power", "Durdu: enerji yok");
         l.add("gui.spacebreaker.lab.share.on", "Team sharing: on", "Takımla paylaşım: açık");
         l.add("gui.spacebreaker.lab.share.off", "Team sharing: off", "Takımla paylaşım: kapalı");
         l.add("gui.spacebreaker.lab.share.tip", "When on, everyone in your scoreboard team learns what this lab finds.",

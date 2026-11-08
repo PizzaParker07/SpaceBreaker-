@@ -31,11 +31,11 @@ Kayayı eritip elektrikle ayrıştırır: **kayadan oksijen**. Bir regolit **250
 
 | Girdi | Makine | Çıktı |
 |---|---|---|
-| Ay Regoliti | Regolit Isıtıcı<br>120 FE/t · 8 sn | Demir Tozu (%20 şansla)<br>Oksijen (250 mB) |
+| Ay Regoliti | Regolit Isıtıcı<br>80 FE/t · 8 sn | Demir Tozu (%20 şansla)<br>Oksijen (250 mB) |
 
 | Girdi | Makine | Çıktı |
 |---|---|---|
-| Merkür Regoliti | Regolit Isıtıcı<br>120 FE/t · 8 sn | Oksijen (250 mB)<br>Helyum-3 (20 mB) |
+| Merkür Regoliti | Regolit Isıtıcı<br>80 FE/t · 8 sn | Oksijen (250 mB)<br>Helyum-3 (20 mB) |
 
 ### Regolit Kazıcı
 
@@ -142,11 +142,11 @@ Melts rock and splits it with electricity: **oxygen from rock**. One regolith gi
 
 | Input | Machine | Output |
 |---|---|---|
-| Lunar Regolith | Regolith Heater<br>120 FE/t · 8 s | Iron Dust (20% chance)<br>Oxygen (250 mB) |
+| Lunar Regolith | Regolith Heater<br>80 FE/t · 8 s | Iron Dust (20% chance)<br>Oxygen (250 mB) |
 
 | Input | Machine | Output |
 |---|---|---|
-| Mercurian Regolith | Regolith Heater<br>120 FE/t · 8 s | Oxygen (250 mB)<br>Helium-3 (20 mB) |
+| Mercurian Regolith | Regolith Heater<br>80 FE/t · 8 s | Oxygen (250 mB)<br>Helium-3 (20 mB) |
 
 ### Regolith excavator
 

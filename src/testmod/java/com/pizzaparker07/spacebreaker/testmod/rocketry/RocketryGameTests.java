@@ -1246,6 +1246,22 @@ public final class RocketryGameTests {
                 && big.problems().contains("ship.spacebreaker.problem.too_big"), "longer than the berth is refused");
         helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipDesign.EMPTY.problems().contains("ship.spacebreaker.problem.cockpit_front"),
                 "an empty design needs a cockpit");
+        // a nuclear craft carries liquid hydrogen: the same tanks hold half the mass; one fuel per craft
+        var nuclear = d.withoutLast().with(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipPart.ENGINE_NUCLEAR);
+        helper.assertTrue(nuclear.hydrogen() && Math.abs(nuclear.propellantKg() - d.propellantKg() * 0.5) < 1e-6, "hydrogen fills half: " + nuclear.propellantKg());
+        helper.assertTrue(mixed.problems().contains("ship.spacebreaker.problem.one_fuel"), "chemical and nuclear engines together are refused");
+        // every section has a bill of real items, and the bill of a design adds up its sections
+        for (var part : com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipPart.values()) {
+            for (var line : com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipCost.of(part)) {
+                helper.assertTrue(net.minecraft.core.registries.BuiltInRegistries.ITEM.containsKey(line.item()) && line.count() > 0,
+                        part + " needs a registered item: " + line.item());
+            }
+        }
+        int plates = com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipCost.of(d).stream()
+                .filter(l -> l.item().getPath().equals("aluminum_lithium_plate")).mapToInt(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipCost.Line::count).sum();
+        helper.assertTrue(plates == 12 + 10 + 20, "cockpit + cabin + large tank Al-Li plates: " + plates);
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipCost.kfe(d) == 175 + 70 + 160 + 225 + 4 * 42,
+                "energy of the bill: " + com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipCost.kfe(d));
         // the design survives saving
         var tag = com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipDesign.CODEC.encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, d).getOrThrow();
         helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipDesign.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, tag).getOrThrow().equals(d), "saved and loaded");

@@ -20,6 +20,8 @@ final class RocketryShowcaseClient {
     static volatile boolean cockpit;
     /** Keep the shipyard design screen open with this design (null: not shown). */
     static volatile com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipDesign shipDesign;
+    /** With {@link #shipDesign}: show the delta-v tooltip (stats and bill of materials). */
+    static volatile boolean shipStats;
     /** Open the map's nearby-stars view with this star selected. */
     static volatile String star;
 
@@ -47,7 +49,9 @@ final class RocketryShowcaseClient {
             mc.getToasts().clear(); // advancement pop-ups would cover the panel
         }
         if (shipDesign != null && mc.player != null && !(mc.screen instanceof com.pizzaparker07.spacebreaker.client.rocketry.ShipyardScreen)) {
-            mc.setScreen(new com.pizzaparker07.spacebreaker.client.rocketry.ShipyardScreen(net.minecraft.core.BlockPos.ZERO, shipDesign));
+            var yard = new com.pizzaparker07.spacebreaker.client.rocketry.ShipyardScreen(net.minecraft.core.BlockPos.ZERO, shipDesign);
+            yard.previewStats(shipStats);
+            mc.setScreen(yard);
             mc.getToasts().clear();
         } else if (shipDesign == null && mc.screen instanceof com.pizzaparker07.spacebreaker.client.rocketry.ShipyardScreen) {
             mc.setScreen(null);
