@@ -9,6 +9,7 @@ import com.pizzaparker07.spacebreaker.content.vehicles.RoverEntity;
 import com.pizzaparker07.spacebreaker.content.vehicles.RoverPhysics;
 import com.pizzaparker07.spacebreaker.content.vehicles.VehiclesModule;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTest;
@@ -93,6 +94,37 @@ public final class RoverTests {
         h.assertTrue(RoverPhysics.speed(0.2, 1, true, true, 1, 1, RoverPhysics.MAX_SPEED, RoverPhysics.ACCEL) < 0.2, "brake beats throttle");
         h.assertTrue(RoverPhysics.speed(-0.1, 0, true, true, 1, 1, RoverPhysics.MAX_SPEED, RoverPhysics.ACCEL) > -0.1, "brakes backwards");
         h.assertTrue(RoverPhysics.speed(0.2, 0, true, false, 1, 1, RoverPhysics.MAX_SPEED, RoverPhysics.ACCEL) > 0.19, "airborne wheels do not brake");
+        h.succeed();
+    }
+
+    /** Largest angle (degrees) between heading and velocity while turning at full lock from top speed, and the
+     * distance from the start after one full circle of heading. */
+    private static double[] fullLockTurn(double g) {
+        double speed = RoverPhysics.MAX_SPEED, yaw = 0, vx = 0, vz = speed, x = 0, z = 0, drift = 0;
+        double k = RoverPhysics.lateralGrip(1.0, g);
+        int ticks = Math.round(360F / RoverPhysics.TURN_RATE);
+        for (int t = 0; t < ticks; t++) {
+            yaw += Math.toRadians(RoverPhysics.yawChange(speed, 1F));
+            double[] v = RoverPhysics.slide(vx, vz, -Math.sin(yaw) * speed, Math.cos(yaw) * speed, k);
+            vx = v[0];
+            vz = v[1];
+            x += vx;
+            z += vz;
+            double heading = Math.atan2(-Math.sin(yaw), Math.cos(yaw)), moving = Math.atan2(vx, vz);
+            drift = Math.max(drift, Math.abs(Mth.wrapDegrees(Math.toDegrees(heading - moving))));
+        }
+        return new double[]{drift, Math.hypot(x, z)};
+    }
+
+    /** A hard turn at top speed: on Earth the rover goes where it points, on the Moon it drifts a little wide. */
+    @GameTest(template = "empty")
+    public static void lowGravityTurnsDriftALittle(GameTestHelper h) {
+        double[] earth = fullLockTurn(1.0);
+        double[] moon = fullLockTurn(MOON);
+        h.assertTrue(earth[0] < 0.5, "Earth drift " + earth[0] + " deg");
+        h.assertTrue(moon[0] > 3 && moon[0] < 12, "Moon drift " + moon[0] + " deg");
+        // still under control: after a full circle of heading the rover is back near where it started
+        h.assertTrue(moon[1] < 4, "Moon circle closes within " + moon[1] + " blocks");
         h.succeed();
     }
 

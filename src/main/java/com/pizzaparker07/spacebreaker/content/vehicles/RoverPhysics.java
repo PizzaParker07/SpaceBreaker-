@@ -40,6 +40,14 @@ public final class RoverPhysics {
     }
 
     /**
+     * Sideways hold of the tyres: the surface grip times the gravity's traction, as for driving and braking. In low
+     * gravity a hard turn at speed drifts a little wide (about 6 degrees on the Moon at full lock), never a spin.
+     */
+    public static double lateralGrip(double grip, double gravityFactor) {
+        return grip * traction(gravityFactor);
+    }
+
+    /**
      * Ground velocity after one tick: the tyres pull it towards where the wheels point, as hard as the grip allows.
      * On rock that is at once; on ice the rover keeps sliding the way it was going.
      */
