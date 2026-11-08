@@ -17,6 +17,7 @@
       "count": 1,
       "id": "minecraft:writable_book"
     },
+    "show_toast": false,
     "title": {
       "translate": "advancements.spacebreaker.ten_techs.title"
     }

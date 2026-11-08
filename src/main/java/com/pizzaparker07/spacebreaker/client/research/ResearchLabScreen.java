@@ -17,7 +17,11 @@ import net.minecraft.world.entity.player.Inventory;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Vanilla-style container screen of the Research Lab. */
+/**
+ * Container screen of the Research Lab, laid out like the industry machines: energy on the far left, input, arrow and
+ * output on one centre line, the buttons in the title row. Only the title is written on the screen; the numbers and
+ * the status sit in tooltips, and a problem shows as a small red mark beside the arrow.
+ */
 public class ResearchLabScreen extends AbstractContainerScreen<ResearchLabMenu> {
     private static final ResourceLocation BG = Spacebreaker.id("textures/gui/container/research_lab.png");
     private static final ResourceLocation ARROW = Spacebreaker.id("container/research_lab/progress");
@@ -27,7 +31,11 @@ public class ResearchLabScreen extends AbstractContainerScreen<ResearchLabMenu> 
     private static final ResourceLocation ICON_TEAM_ON = Spacebreaker.id("container/research_lab/icon_team_on");
     private static final ResourceLocation ICON_TEAM_OFF = Spacebreaker.id("container/research_lab/icon_team_off");
     /** Energy bar geometry (inside the background frame). */
-    private static final int EN_X = 153, EN_Y = 18, EN_W = 14, EN_H = 50;
+    private static final int EN_X = 8, EN_Y = 18, EN_W = 14, EN_H = 50;
+    /** Progress arrow and the small status display beside the output. */
+    private static final int ARROW_X = 73, ARROW_Y = 35, SCREEN_X = 132, SCREEN_Y = 37;
+    /** The problem mark: just above the arrow's tip. */
+    private static final int MARK_X = 92, MARK_Y = 24;
     private Button shareButton;
 
     public ResearchLabScreen(ResearchLabMenu menu, Inventory inventory, Component title) {
@@ -40,9 +48,9 @@ public class ResearchLabScreen extends AbstractContainerScreen<ResearchLabMenu> 
     @Override
     protected void init() {
         super.init();
-        addRenderableWidget(new IconButton(leftPos + 7, topPos + 17, ICON_TREE, b -> minecraft.setScreen(new ResearchScreen(this)),
+        addRenderableWidget(new IconButton(leftPos + 131, topPos + 3, ICON_TREE, b -> minecraft.setScreen(new ResearchScreen(this)),
                 Component.translatable("gui.spacebreaker.lab.tree")));
-        shareButton = addRenderableWidget(new IconButton(leftPos + 7, topPos + 37, ICON_TEAM_OFF, b ->
+        shareButton = addRenderableWidget(new IconButton(leftPos + 151, topPos + 3, ICON_TEAM_OFF, b ->
                 minecraft.gameMode.handleInventoryButtonClick(menu.containerId, ResearchLabMenu.BUTTON_TOGGLE_SHARE),
                 Component.translatable("gui.spacebreaker.lab.share.off")));
     }
@@ -62,7 +70,7 @@ public class ResearchLabScreen extends AbstractContainerScreen<ResearchLabMenu> 
         int total = menu.total();
         if (total > 0) {
             int w = Mth.ceil(24F * menu.progress() / total);
-            g.blitSprite(ARROW, 24, 16, 0, 0, leftPos + 80, topPos + 35, w, 16);
+            g.blitSprite(ARROW, 24, 16, 0, 0, leftPos + ARROW_X, topPos + ARROW_Y, w, 16);
         }
         int stored = menu.energy();
         int h = Mth.ceil((float) EN_H * stored / ResearchLabBlockEntity.CAPACITY);
@@ -70,24 +78,29 @@ public class ResearchLabScreen extends AbstractContainerScreen<ResearchLabMenu> 
             g.blitSprite(ENERGY, EN_W, EN_H, 0, EN_H - h, leftPos + EN_X, topPos + EN_Y + EN_H - h, EN_W, h);
         }
         if (menu.status() == ResearchLabBlockEntity.WORKING) {
-            g.blitSprite(SCREEN_ON, leftPos + 79, topPos + 18, 26, 12);
+            g.blitSprite(SCREEN_ON, leftPos + SCREEN_X, topPos + SCREEN_Y, 26, 12);
         }
     }
 
-    /** True when the status line did not fit and was cut; hovering it then shows the whole line. */
-    private boolean statusCut;
+    /** Statuses that need the player: shown as a small red mark with the reason in its tooltip. */
+    private boolean problem() {
+        return switch (menu.status()) {
+            case ResearchLabBlockEntity.NO_POWER, ResearchLabBlockEntity.NOTHING_NEW, ResearchLabBlockEntity.OUTPUT_FULL,
+                 ResearchLabBlockEntity.UNKNOWN_TECH, ResearchLabBlockEntity.NO_RESEARCHER, ResearchLabBlockEntity.MISSING_PREREQS -> true;
+            default -> false;
+        };
+    }
 
     @Override
     protected void renderLabels(GuiGraphics g, int mouseX, int mouseY) {
-        super.renderLabels(g, mouseX, mouseY);
-        Component status = statusLine();
-        int maxW = 120;
-        String text = status.getString();
-        statusCut = font.width(text) > maxW;
-        if (statusCut) {
-            text = font.plainSubstrByWidth(text, maxW - font.width("...")) + "...";
+        // only the title: no "Inventory" caption and no status sentence
+        g.drawString(font, title, titleLabelX, titleLabelY, 0x404040, false);
+        if (problem()) {
+            g.fill(MARK_X, MARK_Y, MARK_X + 7, MARK_Y + 9, 0xFFB02020);
+            g.drawString(font, "!", MARK_X + 2, MARK_Y + 1, 0xFFFFFFFF, false);
+        } else if (menu.status() == ResearchLabBlockEntity.DONE) {
+            g.drawString(font, "\u2714", MARK_X, MARK_Y + 1, 0xFF2E8B3A, false);
         }
-        g.drawString(font, text, 28 + (maxW - font.width(text)) / 2, 58, 0x404040, false);
     }
 
     private Component statusLine() {
@@ -117,13 +130,15 @@ public class ResearchLabScreen extends AbstractContainerScreen<ResearchLabMenu> 
                 lines.add(Component.translatable("gui.spacebreaker.lab.draw", menu.draw()).withStyle(ChatFormatting.GRAY));
             }
             g.renderComponentTooltip(font, lines, mouseX, mouseY);
-        } else if (statusCut && rx >= 28 && rx < 148 && ry >= 57 && ry < 67) {
+        } else if (rx >= MARK_X - 1 && rx < MARK_X + 8 && ry >= MARK_Y - 1 && ry < MARK_Y + 10 && (problem() || menu.status() == ResearchLabBlockEntity.DONE)) {
             g.renderTooltip(font, statusLine(), mouseX, mouseY);
-        } else if (rx >= 79 && rx < 105 && ry >= 34 && ry < 52 && menu.total() > 0) {
+        } else if (rx >= ARROW_X - 1 && rx < ARROW_X + 25 && ry >= ARROW_Y - 1 && ry < ARROW_Y + 17) {
             int left = Math.max(0, menu.total() - menu.progress()) / 20;
             List<Component> lines = new ArrayList<>();
             lines.add(statusLine());
-            lines.add(Component.translatable("gui.spacebreaker.lab.time", left).withStyle(ChatFormatting.GRAY));
+            if (menu.total() > 0) {
+                lines.add(Component.translatable("gui.spacebreaker.lab.time", left).withStyle(ChatFormatting.GRAY));
+            }
             ResearchLabBlockEntity lab = menu.lab();
             if (lab != null && !lab.researcherName().isEmpty()) {
                 lines.add(Component.translatable("gui.spacebreaker.lab.researcher", lab.researcherName()).withStyle(ChatFormatting.GRAY));

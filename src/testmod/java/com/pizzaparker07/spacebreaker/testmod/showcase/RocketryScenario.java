@@ -894,6 +894,32 @@ final class RocketryScenario implements ShowcaseScenario {
                     .with(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipPart.ENGINE_NUCLEAR)
                     .withRcs(4).withWings(1);
         }, null));
+        // the station core's console open (its nine-slot store), for the screen audit
+        s.add(new Shot("64_station_core_console", 6000, 0, 0, 0, 0F, 0F, false, fp, 200, p -> {
+            clearScene(p);
+            ServerLevel orbit = p.server.getLevel(Location.EARTH_ORBIT.dimension());
+            BlockPos c = BlockPos.containing(400, RocketEntity.ORBIT_Y - 6, 0);
+            com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.buildCore(orbit, c, net.minecraft.core.Direction.EAST, "PizzaParker07");
+            var core = com.pizzaparker07.spacebreaker.content.rocketry.station.StationCoreBlockEntity.near(orbit, c);
+            if (core != null) {
+                BlockPos at = core.getBlockPos();
+                toDimension(p, Location.EARTH_ORBIT, at.getX() - 1.5, at.getY() + 1.6, at.getZ() + 0.5, 270F, 25F);
+                later(p.server, 60, () -> p.openMenu(core, at));
+            }
+        }, null));
+        // reaching orbit: a short toast instead of two chat lines
+        s.add(new Shot("65_orbit_toast", 6000, 0, 0, 0, 0F, 0F, false, fp, 120, p -> {
+            clearScene(p);
+            ServerLevel orbit = p.server.getLevel(Location.EARTH_ORBIT.dimension());
+            RocketEntity r = spawn(orbit, new Vec3(0.5, RocketEntity.ORBIT_Y, 0.5), 0F, FlightState.ORBIT, 0, 1, false);
+            toDimension(p, Location.EARTH_ORBIT, 0.5, RocketEntity.ORBIT_Y + 1, 0.5, 30F, 35F);
+            p.startRiding(r, true);
+            later(p.server, 90, () -> {
+                net.minecraft.client.Minecraft.getInstance().execute(() -> net.minecraft.client.Minecraft.getInstance().getToasts().clear());
+                com.pizzaparker07.spacebreaker.content.rocketry.net.RocketToastPayload.send(p,
+                        net.minecraft.network.chat.Component.translatable("toast.spacebreaker.orbit.title"), Location.EARTH_ORBIT.name());
+            });
+        }, null));
         s.add(new Shot("31_nearby_stars", 6000, 0, 0, 0, 0F, 0F, false, fp, 120,
                 p -> {
                     RocketryShowcaseClient.star = "Alpha Centauri";

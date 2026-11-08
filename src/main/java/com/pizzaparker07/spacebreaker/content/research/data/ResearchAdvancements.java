@@ -192,10 +192,18 @@ public final class ResearchAdvancements implements AdvancementSubProvider {
         return build(out, parent, name, icon, AdvancementType.TASK, "done", c);
     }
 
+    /**
+     * Small steps that come at the same moment as something else on screen (a technology toast, the lab, the guide):
+     * they are still listed on the advancement screen but pop no toast of their own. Toasts are kept for the big
+     * milestones (first orbit, landings, new worlds).
+     */
+    private static final java.util.Set<String> QUIET = java.util.Set.of("read_guide", "field_sample", "research_lab",
+            "first_tech", "ten_techs", "thirty_techs", "basic_rocketry");
+
     private static AdvancementHolder build(Consumer<AdvancementHolder> out, AdvancementHolder parent, String name, ItemStack icon,
                                            AdvancementType type, String key, Criterion<?> c) {
         return Advancement.Builder.advancement().parent(parent)
-                .display(icon, title(name), desc(name), null, type, true, true, false)
+                .display(icon, title(name), desc(name), null, type, !QUIET.contains(name), true, false)
                 .addCriterion(key, c)
                 .save(out, id(name));
     }

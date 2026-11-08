@@ -1036,11 +1036,25 @@ public final class RocketryGameTests {
         });
     }
 
+    /**
+     * Station tests build above their small enclosure, where nothing is cleaned up between batches: clear the room
+     * first (blocks only; no drops, no neighbour updates).
+     */
+    private static void clearAbove(net.minecraft.server.level.ServerLevel level, BlockPos centre, int across, int along) {
+        for (BlockPos q : BlockPos.betweenClosed(centre.offset(-across, -3, -across), centre.offset(across, 12, along))) {
+            if (!level.getBlockState(q).isAir()) {
+                level.removeBlockEntity(q);
+                level.setBlock(q, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState(), 2 | 16);
+            }
+        }
+    }
+
     @GameTest(template = EMPTY, timeoutTicks = 400, batch = "rocketry_station_modules")
     public static void stationModulesJoinAndHoldAir(GameTestHelper helper) {
         var level = helper.getLevel();
         // high above the test's small enclosure: a station needs room
         BlockPos centre = helper.absolutePos(new BlockPos(4, 24, 4));
+        clearAbove(level, centre, 16, 24);
         Direction forward = Direction.SOUTH;
         helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.buildCore(level, centre, forward, "tester"), "the core unfolds");
         helper.assertFalse(com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.buildCore(level, centre, forward, "tester"), "not over existing blocks");
@@ -1083,6 +1097,7 @@ public final class RocketryGameTests {
     public static void stationLivingAirlockAndWings(GameTestHelper helper) {
         var level = helper.getLevel();
         BlockPos centre = helper.absolutePos(new BlockPos(4, 70, 4));
+        clearAbove(level, centre, 20, 24);
         Direction forward = Direction.SOUTH;
         helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.buildCore(level, centre, forward, "tester"), "the core unfolds");
         BlockPos front = centre.relative(forward, 3).above(2);
@@ -1103,9 +1118,20 @@ public final class RocketryGameTests {
         }
         helper.assertTrue(bunks == 3, "three bunks: " + bunks);
         // airlock: a door into the station, a door to space
-        helper.assertTrue(level.getBlockState(east.relative(Direction.WEST, 1).below()).getBlock() instanceof com.pizzaparker07.spacebreaker.content.suit.block.AirlockDoorBlock
-                && level.getBlockState(east.relative(Direction.WEST, 5).below()).getBlock() instanceof com.pizzaparker07.spacebreaker.content.suit.block.AirlockDoorBlock,
+        BlockPos inner = east.relative(Direction.WEST, 1).below(), outer = east.relative(Direction.WEST, 5).below();
+        helper.assertTrue(level.getBlockState(inner).getBlock() instanceof com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock
+                && level.getBlockState(outer).getBlock() instanceof com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock,
                 "inner and outer airlock doors");
+        // the doors are interlocked (QA-27): asking for the outer door while the inner one is open shuts the inner first
+        var slide = (com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock) level.getBlockState(inner).getBlock();
+        slide.request(level, inner, level.getBlockState(inner), true);
+        helper.assertTrue(level.getBlockState(inner).getValue(com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock.OPEN), "the inner door opens");
+        slide.request(level, outer, level.getBlockState(outer), true);
+        helper.assertFalse(level.getBlockState(inner).getValue(com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock.OPEN)
+                && level.getBlockState(outer).getValue(com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock.OPEN), "never both open");
+        helper.assertFalse(level.getBlockState(inner).getValue(com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock.OPEN), "the inner door shut for the cycle");
+        // back to shut for the air check below
+        slide.request(level, outer, level.getBlockState(outer), false);
         // wings: the mouth stays sealed, its middle is the battery bank, three arrays outside
         helper.assertTrue(level.getBlockState(west).is(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.BATTERY_BANK.block().get())
                 && level.getBlockState(west.above()).is(RocketryModule.STATION_HATCH.get()), "battery in the mouth, hatches around it");
@@ -1130,6 +1156,7 @@ public final class RocketryGameTests {
     public static void shipyardBerthDocksACraft(GameTestHelper helper) {
         var level = helper.getLevel();
         BlockPos centre = helper.absolutePos(new BlockPos(4, 110, 4));
+        clearAbove(level, centre, 12, 40);
         Direction forward = Direction.SOUTH;
         helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.buildCore(level, centre, forward, "tester"), "the core unfolds");
         var core = com.pizzaparker07.spacebreaker.content.rocketry.station.StationCoreBlockEntity.near(level, centre.above(2));
@@ -1167,6 +1194,7 @@ public final class RocketryGameTests {
     public static void moduleRocketDeliversToTheConsole(GameTestHelper helper) {
         var level = helper.getLevel();
         BlockPos centre = helper.absolutePos(new BlockPos(4, 160, 4));
+        clearAbove(level, centre, 10, 10);
         helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.buildCore(level, centre, Direction.SOUTH, "tester"), "the core unfolds");
         BlockPos port = com.pizzaparker07.spacebreaker.content.rocketry.station.StationModule.corePort(centre);
         var design = new com.pizzaparker07.spacebreaker.content.rocketry.design.RocketDesign(java.util.List.of(
@@ -1221,6 +1249,20 @@ public final class RocketryGameTests {
         // the design survives saving
         var tag = com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipDesign.CODEC.encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, d).getOrThrow();
         helper.assertTrue(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipDesign.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, tag).getOrThrow().equals(d), "saved and loaded");
+        helper.succeed();
+    }
+
+    @GameTest(template = EMPTY)
+    public static void ntrRecipeWantsAFreshFuelElement(GameTestHelper helper) {
+        var recipe = helper.getLevel().getRecipeManager().byKey(com.pizzaparker07.spacebreaker.Spacebreaker.id("rocketry/nuclear_thermal_engine")).orElse(null);
+        helper.assertTrue(recipe != null, "the recipe loads");
+        var fresh = new net.minecraft.world.item.ItemStack(net.minecraft.core.registries.BuiltInRegistries.ITEM.get(
+                com.pizzaparker07.spacebreaker.Spacebreaker.id("nuclear_fuel_element")));
+        var used = fresh.copy();
+        used.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(new net.minecraft.nbt.CompoundTag()));
+        boolean takesFresh = recipe.value().getIngredients().stream().anyMatch(i -> i.test(fresh));
+        boolean takesUsed = recipe.value().getIngredients().stream().anyMatch(i -> i.test(used));
+        helper.assertTrue(takesFresh && !takesUsed, "only a fresh fuel element (a partly burned one carries a component): fresh " + takesFresh + ", used " + takesUsed);
         helper.succeed();
     }
 

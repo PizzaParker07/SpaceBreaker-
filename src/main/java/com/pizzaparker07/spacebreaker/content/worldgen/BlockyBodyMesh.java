@@ -39,14 +39,26 @@ public final class BlockyBodyMesh {
 
     /** The faces of a body in {@code style} with {@code n} blocks across (cached; do not modify the list). */
     public static List<Face> body(Style style, int n) {
-        int size = Math.max(2, n);
-        return CACHE.computeIfAbsent(style + "/" + size, k -> style == Style.VOXEL ? voxels(size) : cube(size));
+        int size = Math.max(2, Math.min(MAX_SIZE, n));
+        List<Face> done = FAST[style.ordinal()][size];
+        if (done != null) {
+            return done; // the every-frame path: no key to build, nothing allocated
+        }
+        List<Face> built = CACHE.computeIfAbsent(style + "/" + size, k -> style == Style.VOXEL ? voxels(size) : cube(size));
+        FAST[style.ordinal()][size] = built;
+        return built;
     }
 
     /** Whether {@link #body} for this style and size is already built (so asking for it costs nothing). */
     public static boolean ready(Style style, int n) {
-        return CACHE.containsKey(style + "/" + Math.max(2, n));
+        int size = Math.max(2, Math.min(MAX_SIZE, n));
+        return FAST[style.ordinal()][size] != null || CACHE.containsKey(style + "/" + size);
     }
+
+    /** Largest whole-ball size kept (finer views use {@link #patch}). */
+    public static final int MAX_SIZE = 256;
+    @SuppressWarnings("unchecked")
+    private static final List<Face>[][] FAST = new List[Style.values().length][MAX_SIZE + 1];
 
     /** Builds a size in the background (big voxel balls take a moment), so the render thread never waits for it. */
     public static void prepare(Style style, int n) {
