@@ -15,6 +15,7 @@ LURKER_BELLY = ramp('#2e2220', '#3d2e2a', '#4c3a35')
 EYE = ramp('#6a3c0c', '#c47a1c', '#f5c040', '#fff0b0')
 WORM = ramp('#5e6772', '#7a8591', '#98a2ad', '#b4bdc6', '#ced5db', '#e6eaee')
 MAW = ramp('#2a1c20', '#45303a', '#6a4a56')
+ROCKS = ramp('#3d2a22', '#5a3e30', '#7a5a46', '#2e2624')
 DUST = ramp('#6b4630', '#8a5c3e', '#a8744e', '#c08c62', '#d4a57c')
 
 
@@ -271,24 +272,41 @@ def worm():
 
 
 def dust_devil():
-    """Dust Devil: translucent swirling dust, streaks slanted by the spin, denser at the core."""
-    cv = Canvas(64, 64)
+    """Dust Devil: translucent dust streaked on a slant by the spin. Rows 0-24 feed the funnel rings and fade from
+    dense (the narrow foot samples the upper rows) to thin (the wide top samples the lower ones); rows 32-47 are the
+    faint ground skirt, rows 48-63 the dense core; a few opaque pebbles sit at (100, 40)."""
+    cv = Canvas(128, 64)
     rng = random.Random(81)
     n = clustered(64, 64, 82, passes=1)
+
+    def streak_px(x, y, density):
+        k = (x + y * 3 + int(n[y % 64][x % 64] * 7)) % 11
+        if k in (0, 1):
+            c, a = DUST[3], 215
+        elif k in (2, 3, 4):
+            c, a = DUST[2], 160
+        elif k == 6:
+            c, a = DUST[1], 120
+        else:
+            c, a = DUST[0], 0 if n[y % 64][x % 64] < 0.5 else 60
+        if rng.random() < 0.03:
+            c, a = DUST[4], 235
+        return (c[0], c[1], c[2], int(a * density))
+
     for y in range(64):
-        for x in range(64):
-            streak = (x + y * 2 + int(n[y][x] * 6)) % 9
-            if streak in (0, 1):
-                c, a = DUST[3], 210
-            elif streak in (2, 3):
-                c, a = DUST[2], 150
-            elif streak == 5:
-                c, a = DUST[1], 110
+        for x in range(128):
+            if y < 32:
+                density = max(0.55, 1.05 - max(0, y - 3) * 0.028)
+            elif y < 48:
+                density = 0.45
             else:
-                c, a = DUST[0], 0 if n[y][x] < 0.45 else 70
-            if rng.random() < 0.04:
-                c, a = DUST[4], 230
-            cv[x, y] = (c[0], c[1], c[2], a)
+                density = 1.15
+            px = streak_px(x, y, density)
+            cv[x, y] = (px[0], px[1], px[2], min(255, px[3]))
+    for x in range(100, 112):
+        for y in range(40, 42):
+            c = ROCKS[(x * 7 + y * 3) % len(ROCKS)]
+            cv[x, y] = (c[0], c[1], c[2], 255)
     return cv
 
 
