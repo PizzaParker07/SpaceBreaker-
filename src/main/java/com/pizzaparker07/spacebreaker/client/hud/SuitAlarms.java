@@ -17,14 +17,16 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 /**
  * Audible suit alarms for the wearer (only they hear them, not positional): mission control says
  * "oxygen low" over the radio the first time the tanks drop below a quarter, the suit alarm repeats every
- * few seconds below a tenth and back to back when the oxygen is gone or the suit is open in airless
+ * eight seconds below a tenth and every three when the oxygen is gone or the suit is open in airless
  * surroundings. Matches the blinking HUD warnings.
  */
 @EventBusSubscriber(modid = Spacebreaker.MOD_ID, value = Dist.CLIENT)
 public final class SuitAlarms {
-    /** The alarm clip is two seconds long: back to back when empty, a pause in between below a tenth. */
-    private static final int EMPTY_PERIOD = 40;
-    private static final int LOW_PERIOD = 80;
+    /** The alarm clip is two seconds long: every three seconds when empty, every eight below a tenth. */
+    private static final int EMPTY_PERIOD = 60;
+    private static final int LOW_PERIOD = 160;
+    private static final float EMPTY_VOLUME = 0.5F;
+    private static final float LOW_VOLUME = 0.35F;
     private static boolean quarterWarned;
     private static SoundInstance alarm;
 
@@ -52,11 +54,11 @@ public final class SuitAlarms {
         boolean empty = !s.has(SuitStatusPayload.SEALED) || s.oxygen() == 0;
         if (empty) {
             if (t % EMPTY_PERIOD == 0) {
-                alarm(mc, 0.8F);
+                alarm(mc, EMPTY_VOLUME);
             }
         } else if (o2 <= 0.1F) {
             if (t % LOW_PERIOD == 0) {
-                alarm(mc, 0.6F);
+                alarm(mc, LOW_VOLUME);
             }
         } else if (o2 < 0.25F) {
             if (!quarterWarned) {
@@ -64,7 +66,7 @@ public final class SuitAlarms {
                 if (SbConfig.MISSION_CONTROL_VOICE.get()) {
                     MissionControlVoice.say(SbSounds.Line.OXYGEN_LOW);
                 } else {
-                    alarm(mc, 0.5F);
+                    alarm(mc, LOW_VOLUME);
                 }
             }
         } else {
