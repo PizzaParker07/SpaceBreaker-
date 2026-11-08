@@ -415,6 +415,12 @@ engine tooltip: "günde %0.02'i buharlaşır"), U2 ❌ still open (EN "84 s" / "
 burn"; TR "84 s" / "yanma"), U3 ✅ "6 blok", U4 ✅ red "Waiting/Bekliyor" and Launch greyed, U5 ✅ "Return not
 possible", U6 ✅ "No power" on the red mark and "Paused: no power" on the progress. U7 and U8 not in 1.21.1 yet.
 
+Final check on 1.21.1 @ 555ea85d (probe runs `qa_ui3_en` / `qa_ui3_tr`): U2 ✅ (each stage on its own lines, one
+tooltip wherever the mouse is: "Δv 3,447 m/s · TWR 2.56" / "23.4 t propellant · 84 s burn"), U1 leftover ✅
+("günde %0,02 kadarı buharlaşır"), U7 ✅ (empty rover battery: red icon and "0%" / "%0"), U8 ✅ (blueprint material
+icons: "Service Tower · 0 in your inventory, 6 needed" / "Servis Kulesi · Envanterinde 0, gereken 6"). All of U1–U8
+closed.
+
 ## Sky visual regression (2026-11-07)
 
 `tools/qa/visual_regression.py` runs `sky_planets`, `sky_planets_mars` and `blocky_lod`, shrinks each shot to
