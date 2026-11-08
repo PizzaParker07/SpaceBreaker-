@@ -240,7 +240,8 @@ public final class RoverTests {
         return rover;
     }
 
-    @GameTest(template = "empty", timeoutTicks = 200)
+    /** Driving tests run on the 10 x 8 x 34 "rover_strip" structure: their floors and the rover stay inside it. */
+    @GameTest(template = "rover_strip", timeoutTicks = 200)
     public static void drivingUsesBattery(GameTestHelper h) {
         for (int z = 0; z < 16; z++) {
             for (int x = 0; x < 5; x++) {
@@ -322,7 +323,7 @@ public final class RoverTests {
         h.succeed();
     }
 
-    @GameTest(template = "empty", timeoutTicks = 200)
+    @GameTest(template = "rover_strip", timeoutTicks = 200)
     public static void wheelsLeaveTracksInLunarRegolith(GameTestHelper h) {
         var regolith = BuiltInRegistries.BLOCK.get(Spacebreaker.id("lunar_regolith"));
         h.assertTrue(regolith != Blocks.AIR, "lunar regolith missing");
@@ -382,7 +383,7 @@ public final class RoverTests {
         return t;
     }
 
-    @GameTest(template = "empty", timeoutTicks = 200)
+    @GameTest(template = "rover_strip", timeoutTicks = 200)
     public static void roverCoastsFurtherOnNitrogenIce(GameTestHelper h) {
         var n2 = BuiltInRegistries.BLOCK.get(Spacebreaker.id("nitrogen_ice"));
         h.assertTrue(n2 != Blocks.AIR, "nitrogen ice missing");
@@ -500,7 +501,7 @@ public final class RoverTests {
     }
 
     /** One-block steps and slopes do not stop the rover: it climbs onto a raised floor. */
-    @GameTest(template = "empty", timeoutTicks = 120)
+    @GameTest(template = "rover_strip", timeoutTicks = 120)
     public static void roverClimbsAOneBlockStep(GameTestHelper h) {
         for (int z = 0; z < 12; z++) {
             for (int x = 0; x < 5; x++) {
