@@ -1,7 +1,7 @@
 ---
 title: Ay
 icon: spacebreaker:lunar_regolith
-items: [spacebreaker:lunar_regolith, spacebreaker:mare_basalt, spacebreaker:ilmenite_ore, spacebreaker:anorthosite, spacebreaker:sintered_regolith, spacebreaker:icy_regolith, spacebreaker:lunar_ice, spacebreaker:kreep_ore, spacebreaker:meteoric_iron]
+items: [spacebreaker:lunar_regolith, spacebreaker:fresh_regolith, spacebreaker:mare_basalt, spacebreaker:ilmenite_ore, spacebreaker:anorthosite, spacebreaker:sintered_regolith, spacebreaker:icy_regolith, spacebreaker:lunar_ice, spacebreaker:kreep_ore, spacebreaker:meteoric_iron]
 research: spacebreaker:basic_rocketry
 ---
 Havasız, sessiz ve gri. Yerçekimi Dünya'nın **altıda biri**: daha yükseğe zıplar, daha yavaş düşersin.
@@ -10,8 +10,9 @@ Havasız, sessiz ve gri. Yerçekimi Dünya'nın **altıda biri**: daha yükseğe
 > Ay'da **hava yoktur**. Giysisiz ya da tüpün boşken her saniye hasar alırsın. Yedek tüp taşı.
 
 ## Kayaçlar
-{items spacebreaker:lunar_regolith spacebreaker:mare_basalt spacebreaker:ilmenite_ore spacebreaker:anorthosite}
+{items spacebreaker:lunar_regolith spacebreaker:fresh_regolith spacebreaker:mare_basalt spacebreaker:ilmenite_ore spacebreaker:anorthosite}
 - **Regolit**: her ayak izini saklayan ince gri toz.
+- **Taze regolit**: genç kraterlerin çevresindeki parlak fırlatma örtüsü; Ay'daki ışınlar ve haleler bundandır. O da ayak izini saklar, kürekle kazılır, sinterleme fırınında ve ISRU makinelerinde regolit yerine geçer.
 - **Deniz bazaltı**: karanlık ovalar. İçindeki **ilmenit** titanyum ve oksijen verir.
 - **Anortozit**: parlak yaylalar. Taş kesicide kesilir.
 
