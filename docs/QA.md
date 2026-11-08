@@ -371,6 +371,9 @@ there); log lines "[showcase] lowg: …". Before = 8d43f6c2, after = 430789f9 (s
   towards 1 with the same factor.
 - Mars glide 24.8 blocks against ~40 expected (about 6 % of Earth's).
 - the softer landing sound cannot be heard here (no audio device: the sound engine does not start).
+- suit tuning 6daf8b47, measured on a local merge with dev/suit: Moon sprint jump 6.21 blocks (landing speed 0.19
+  b/t), back key 1.02; Mars glide 32.4 blocks in 90 ticks; Moon wings still closed. Both closer, both still a little
+  under the targets (6.6–7.1 and ~40).
 
 ## Simplified screens: usability (`qa_ui`, 2026-11-08, 1.21.1 @ 8d43f6c2)
 
@@ -405,6 +408,12 @@ last line. Findings:
 - U7 rover HUD: the battery bar looks empty, with no red mark or number; the suit and rover HUDs show bars only, with no
   way to read a value;
 - U8 blueprint choice: the material icons (× 6, × 16, …) have no tooltip, so the blocks cannot be named.
+
+Re-check on 1.21.1 @ 430789f9 (rocketry a39a2220, research 3abddd47), probe runs `qa_ui2_en` / `qa_ui2_tr` on the
+changed screens: U1 ✅ (TR "Boy 11,0 m", "Yakıt %0,0", shipyard "14,4 t", Δv "4.757 m/s"; one leftover in the
+engine tooltip: "günde %0.02'i buharlaşır"), U2 ❌ still open (EN "84 s" / "burn", "7,800 kg propellant," / "140 s
+burn"; TR "84 s" / "yanma"), U3 ✅ "6 blok", U4 ✅ red "Waiting/Bekliyor" and Launch greyed, U5 ✅ "Return not
+possible", U6 ✅ "No power" on the red mark and "Paused: no power" on the progress. U7 and U8 not in 1.21.1 yet.
 
 ## Sky visual regression (2026-11-07)
 
