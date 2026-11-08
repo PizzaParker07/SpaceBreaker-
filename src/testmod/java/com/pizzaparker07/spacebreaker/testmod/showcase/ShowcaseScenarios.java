@@ -92,6 +92,7 @@ public final class ShowcaseScenarios {
                 com.pizzaparker07.spacebreaker.content.neptune.Proteus.pharos().x(), com.pizzaparker07.spacebreaker.content.neptune.Proteus.pharos().latitude()));
         ALL.put("perf_outer", new OuterPerfScenario());
         ALL.put("outer_creatures", new OuterCreaturesScenario());
+        ALL.put("outer_survey", new OuterSurveyScenario());
         ALL.put("scan_outer", new OuterScanScenario());
         ALL.put("triton", new TritonScenario());
         ALL.put("pluto", new PlutoScenario(false));
