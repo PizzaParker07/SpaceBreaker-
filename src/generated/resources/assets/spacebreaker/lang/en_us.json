@@ -605,6 +605,7 @@
   "compat.spacebreaker.info.gas_piped": "Piped oxygen: %s / %s",
   "compat.spacebreaker.info.gas_tank": "Tank: %s / %s (%s%%)",
   "compat.spacebreaker.info.solar_dust": "Dust: %s%%, output: %s%%",
+  "config.jade.plugin_spacebreaker.gas_machine_fluid": "Spacebreaker: hide the empty fluid view of gas machines",
   "config.jade.plugin_spacebreaker.info_lines": "Spacebreaker details",
   "container.spacebreaker.cargo_hold": "Cargo Hold",
   "container.spacebreaker.launch_console": "Launch Control",
