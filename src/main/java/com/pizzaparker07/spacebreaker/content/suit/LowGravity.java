@@ -40,6 +40,18 @@ public final class LowGravity {
         return f >= 1.0 ? 0.0 : gravity * (1.0 - Math.max(0.0, f));
     }
 
+    /** Least share of air control left on the lightest worlds above microgravity. */
+    public static final double MIN_AIR_CONTROL = 0.35;
+
+    /**
+     * Share of the walking keys' push that still acts while airborne at gravity factor {@code f}: with little weight
+     * there is little to push against, so a long low-gravity hop mostly follows its take-off. Square root of the
+     * factor, never below {@link #MIN_AIR_CONTROL}; full control on Earth and heavier worlds.
+     */
+    public static double airControl(double f) {
+        return f >= 1.0 ? 1.0 : Math.max(MIN_AIR_CONTROL, Math.sqrt(Math.max(0.0, f)));
+    }
+
     /** The gravity factor of a level, looked up once per level and tick. */
     static double factor(Level level) {
         int side = level.isClientSide ? 1 : 0;

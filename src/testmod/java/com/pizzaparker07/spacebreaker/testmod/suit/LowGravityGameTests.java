@@ -59,4 +59,31 @@ public final class LowGravityGameTests {
         helper.assertTrue(Math.abs(moon - player * Math.sqrt(2)) < 4, "and keeps the same proportion to a falling player as on Earth");
         helper.succeed();
     }
+
+    /** Blocks covered by one sprint jump, vanilla style, with the air push scaled by {@code control}. */
+    static double sprintJump(double f, double control) {
+        double vy = 0.42 * Math.pow(f, 0.25), y = 0, vx = 0.28 + 0.2, x = 0;
+        for (int t = 0; t < 2000; t++) {
+            y += vy;
+            x += vx;
+            vy = (vy - 0.08 * f) * 0.98;
+            vx = (vx + 0.026 * control) * 0.91;
+            if (y <= 0) {
+                break;
+            }
+        }
+        return x;
+    }
+
+    @GameTest(template = EMPTY)
+    public static void lowGravityHopsMostlyKeepTheirTakeOff(GameTestHelper helper) {
+        helper.assertTrue(LowGravity.airControl(1.0) == 1.0 && LowGravity.airControl(2.5) == 1.0, "full control on Earth and heavier worlds");
+        helper.assertTrue(Math.abs(LowGravity.airControl(MOON_F) - Math.sqrt(MOON_F)) < 1e-9, "about half on the Moon");
+        double ceresF = Math.pow(0.0289, 0.75);
+        helper.assertTrue(LowGravity.airControl(ceresF) == LowGravity.MIN_AIR_CONTROL, "never below the floor on the lightest worlds");
+        double before = sprintJump(ceresF, 1.0), after = sprintJump(ceresF, LowGravity.airControl(ceresF));
+        helper.assertTrue(before > 18 && after < 12 && after > 9, "a Ceres sprint hop drops from about 20 to about 10 blocks (" + before + " -> " + after + ")");
+        helper.assertTrue(Math.abs(sprintJump(1.0, LowGravity.airControl(1.0)) - sprintJump(1.0, 1.0)) < 1e-9, "Earth jumps unchanged");
+        helper.succeed();
+    }
 }
