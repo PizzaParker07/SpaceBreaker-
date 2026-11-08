@@ -277,17 +277,39 @@ def glow_serpent():
     paint(cv, 0, 0, 4, 4, 5, skin(2))
     for u, v, w, h in ((18, 0, 4, 4), (36, 0, 3, 3), (18, 10, 3, 3), (36, 10, 2, 2)):
         paint(cv, u, v, w, h, 5, skin(1))
-    # barbels and fin: thin membranes
+    paint(cv, 40, 20, 1, 1, 4, skin(1))
+    # barbels: thin membranes
     for y in range(9, 14):
         for x in range(0, 6):
             cv[x, y] = r[3]
-    for y in range(16, 28):
-        for x in range(0, 12):
-            if (x + y) % 3 == 0:
-                cv[x, y] = r[4]
-            else:
-                cv[x, y] = r[2]
+    # fins: painted on one face only (the 'right' face of each plane), the other left transparent
+    for (fx, fy, fw, fh) in FIN_FACES:
+        for y in range(fh):
+            for x in range(fw):
+                if _fin_shape(x, y, fw, fh):
+                    cv[fx + x, fy + y] = r[4] if (x + y) % 3 == 0 else r[2]
     return cv
+
+
+# the tail fin (0x6x7 plane at (0, 16): its right face at (0, 23), 7 wide (along the body) x 6 tall) and the dorsal
+# fin (0x2x3 plane at (16, 22): right face at (16, 25), 3 x 2)
+FIN_FACES = [(0, 23, 7, 6), (16, 25, 3, 2)]
+
+
+def _fin_shape(x, y, fw, fh):
+    """A fin tapering to a point at the back. On a plane's 'right' face u runs from the back (+z) toward the front, so
+    the root is the last column (x = fw - 1) and the tip the first."""
+    x = fw - 1 - x
+    mid = (fh - 1) / 2
+    half = (fh / 2) * (1 - x / fw) + 0.5
+    return abs(y - mid) <= half
+
+
+def _fin_rim(x, y, fw, fh):
+    if not _fin_shape(x, y, fw, fh):
+        return False
+    return any(not _fin_shape(x + dx, y + dy, fw, fh) or not (0 <= x + dx < fw and 0 <= y + dy < fh)
+               for dx, dy in ((1, 0), (0, 1), (0, -1)))
 
 
 SERPENT_SPOTS = [
@@ -306,6 +328,12 @@ def glow_serpent_glow():
     g = P.SERPENT_GLOW
     for i, (x, y) in enumerate(SERPENT_SPOTS):
         cv[x, y] = g[2] if i < 2 else g[1]
+    # the tail fin's glowing rim
+    fx, fy, fw, fh = FIN_FACES[0]
+    for y in range(fh):
+        for x in range(fw):
+            if _fin_rim(x, y, fw, fh):
+                cv[fx + x, fy + y] = g[1]
     return cv
 
 
