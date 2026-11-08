@@ -3,13 +3,21 @@
 Owner's rule: **the mod must work with Sodium and with Iris shader packs.** Both are optional — the mod never
 needs them at compile time or at run time.
 
-| Setup | Status |
-|---|---|
-| Vanilla renderer | reference look |
-| Sodium 0.8 (no shaders) | works: terrain, block entity renderers (solar panel tracker, tanks, consoles), translucent glass/visor, emissive layers look the same as vanilla |
-| Sodium + Iris 1.8 + Complementary Reimagined r5.9.3 | works: black space sky, stars, Sun, Earth with phases from the Moon, planet below in orbit, Mars sky; terrain lit by the pack (sun shadows follow the world's own sun) |
-| Sodium + Iris + BSL v10.1.8 | works (same fixes, checked shot by shot) |
-| Sodium + Iris + MakeUp Ultra Fast 9.6 | works (same fixes; the ground is a little cooler/lavender than vanilla) |
+Tested with (state of 2026-11-08, Minecraft 1.21.1, NeoForge 21.1.265; all optional, none bundled):
+
+| Mod | Version tested | Status | Section |
+|---|---|---|---|
+| Vanilla renderer | – | reference look | – |
+| Sodium | 0.8.13 | works: terrain, block entity renderers, translucent glass/visor, emissive layers as in vanilla | 4 |
+| Iris + Complementary Reimagined | Iris 1.8.14-beta.1, r5.9.3 | works: our space sky, planets, haze, orbit day/night, glass, glows (fixes in section 2) | 2, 3 |
+| Iris + BSL / MakeUp Ultra Fast | v10.1.8 / 9.6 | works (same fixes; MakeUp's ground a little cooler) | 2, 3 |
+| Distant Horizons | 3.3.3 | works with Iris: LOD terrain kept under our sky, hazed on Venus/Titan; structures appear in LODs once visited | 3 |
+| Voxy | – | not supported by the sky pass (no depth API): `AUTO` leaves the pack's sky | 3 |
+| JEI | 19.70.0.469 | categories, recipes, uses and info pages for all our machines | 5 |
+| EMI | 1.1.24 | same as JEI | 5 |
+| Jade | 15.10.6 | extra lines (solar dust, gas machines), drawn above our HUDs; checked in game by the integrator | 6 |
+| WTHIT | 12.10.2 | same lines as Jade; compiled and covered by GameTests, not run in game here | 6 |
+| LambDynamicLights | 4.8.11 | helmet lamps and rover headlights give real light; fallback pools when absent | 8 |
 
 Per world with Complementary (vanilla reference shots live in each area's screenshot folder):
 
@@ -72,6 +80,12 @@ follow the Sun, which only the Overworld programs give. So we keep the Overworld
 | `mixin/ClientWeatherMixin` | client-side `getRainLevel` / `getThunderLevel` = 0 in space worlds (always, with or without Iris). Server-side weather is untouched. |
 | `CompatMixinPlugin` | the `iris.*` mixins are only applied when Iris (or Oculus) is installed: without it the game runs the exact vanilla code paths. |
 | `client/ShaderState` | Iris is reached only through its public API `net.irisshaders.iris.api.v0.IrisApi` (`isShaderPackInUse`) by reflection. |
+| glass pass (`compat_sky_glass`) | our sky blended in behind glass and water: where only translucent blocks cover the sky (Iris's `depthtex1` vs. our depth copy after the translucent blocks), the pack's glass colour is kept at 35 % (section 3, "Windows"). |
+| `client/LateEffects` | glows that write no depth (plumes, beams, lamp cones) are queued while the sky pass is active and drawn after our sky and haze, against the scene depth (`drawOrDefer`). |
+| `client/PackTime` + `iris.PackSunMixin` / `iris.PackWorldTimeMixin` | in orbit worlds the pack's sun angle and world time follow the orbit's own day and night. |
+| `client/InfoOverlayDepth` | with Jade or WTHIT installed, clears the GUI depth before their box is drawn, so it is never hidden behind our HUD layers. |
+| `client/ClippedLines` | outline boxes cut just in front of the camera: Iris's line programs stretch an edge that runs behind the camera across the view. |
+| `client/LodDepth` | Distant Horizons' depth texture through its API, so the sky and haze passes keep LOD terrain. |
 
 Full-screen effects and HUDs stay in the GUI layer (drawn on top of the pack's final frame) — unchanged.
 
@@ -115,8 +129,6 @@ Complementary the tint is weaker (the pack re-lights translucent entities) but t
 - **Low sun on airless worlds:** the dawn white balance removes most of the packs' orange; the result is a little
   cool and darker than vanilla right at the horizon. Packs that tint dawn much more or less than Complementary are
   only partly corrected.
-- **Sky seen through glass or water** is the pack's (translucent geometry writes depth before the sky pass). Looking
-  out of a glass window into space shows the pack's sky colour behind the glass.
 - **Pack bloom/lens flare** around the pack's own sun can bleed a little onto terrain silhouettes; the Sun disc
   itself is ours.
 - **Distant Horizons / Voxy:** their far terrain lives in its own depth buffer, not in Minecraft's.
@@ -280,6 +292,12 @@ LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s "-screen 0 1920x1080x24" ./gradlew runSho
 # a subset of shots
 ... -Pshots='0[1357]_.*'
 ```
+Showcase properties for compatibility runs: `-PwithCompat=true` (copies `run-mods/*.jar`: Sodium, Iris, DH),
+`-PwithJei`, `-PwithEmi`, `-PwithJade`, `-PwithWthit`, `-PwithDynLights` (from Maven/Modrinth), `-PshotWidth` /
+`-PshotHeight` (window), `-PguiScale` (0 = auto), `-Poffhand=<item id>`, `-Pretreat=N` (a second shot from N blocks
+back with a 6-chunk view, `<name>_far`, for LOD checks). With a pack, chunks build slowly: a shot taken right after a
+teleport can show only sky; give it a longer wait before calling it a bug.
+
 `./gradlew runGameTestServer` runs `testmod/compat/CompatGameTests` (classification of every body/dimension, no
 Overworld weather in space kinds, server weather untouched, Iris-only mixins gated, config defaults).
 
@@ -414,7 +432,7 @@ environment; the plugins compile against both APIs and the line itself is covere
   excavator with its bucket wheel; vanilla left, Complementary right). The station modules, the voxel Earth below,
   and the reworked and animated machines (`machine_lineup`) look the same under the pack apart from its lighting.
 
-## 8. Notes for 1.1
+## 8. Notes for 1.1, dynamic lights
 
 - **HUD layers vs. Jade / WTHIT:** vanilla stacks GUI layers 200 units apart in depth (`LayeredDraw.Z_SEPARATION`) and
   draws them with the depth test; Jade draws in `RenderGuiEvent.Post`, WTHIT from a `Gui` mixin, both after all layers
@@ -430,8 +448,40 @@ environment; the plugins compile against both APIs and the line itself is covere
   LambDynamicLights (`helmet_lamps_iris_dynlights.jpg`; rows shots 06, 07, 11, 13, 14; columns vanilla, pack,
   vanilla + LDL, pack + LDL). The fallback pool shows under the pack (a little dimmer and bluer); with LDL the pool is
   off and the light is real block light, which the pack warms to a reddish brown on grey regolith. The glow cones
-  (`entityTranslucentEmissive`, no depth write) are much stronger under the pack (bloom) and, like the NTR plume,
-  are painted over by the sky pass where only sky is behind them unless drawn through `LateEffects.drawOrDefer`.
+  (`entityTranslucentEmissive`, no depth write) were much stronger under the pack (bloom) and, like the NTR plume,
+  painted over by the sky pass where only sky was behind them; they are drawn through `LateEffects.drawOrDefer` now
+  and fainter while a pack is active, close to vanilla (suit 6d6e7379, alpha 0x58).
   `extractLambDynLightsApi` works from a clean Gradle home (`./gradlew build`, Modrinth reachable); the mod jar holds
   no LambDynamicLights classes.
 
+## 9. Known issues for players (release notes)
+
+English:
+- **LambDynamicLights:** the helmet lamp's long beam lights the ground near you much like the wide beam (dynamic
+  block light reaches about 15 blocks). Without LambDynamicLights the lamps draw a soft light pool instead.
+- **Shader packs (Iris):** right after joining a world or arriving at a new one, the pack may show only sky for a
+  moment until it has built the terrain around you; this takes longer on weak graphics cards.
+- **Shader packs:** the ground on airless worlds is a little warmer or cooler than without shaders depending on the
+  pack; closed modules lit only through windows look blue until a lamp is placed; terrain at the edge of the view
+  fades to pale blue instead of black.
+- **Distant Horizons:** outposts, mines and other structures appear in the far terrain only after their area has
+  been visited once (Distant Horizons does not place structures when it generates far terrain itself). Voxy is not
+  supported: with it the shader pack's own sky stays in space.
+- **Realistic sound (off by default):** muffled sound in thin air and vacuum needs a sound device with OpenAL EFX;
+  without it only the volume is lowered.
+- **WTHIT:** the extra block info lines are built for WTHIT as for Jade but were only checked in game with Jade.
+
+Türkçe:
+- **LambDynamicLights:** kask lambasının uzun hüzmesi de geniş hüzme gibi yakınını aydınlatır (dinamik blok ışığı
+  yaklaşık 15 bloğa ulaşır). LambDynamicLights yoksa lambalar bunun yerine yumuşak bir ışık lekesi çizer.
+- **Shader paketleri (Iris):** bir dünyaya girince ya da başka bir dünyaya varınca paket çevredeki araziyi kurana kadar
+  bir an yalnız gök görünebilir; zayıf ekran kartlarında bu daha uzun sürer.
+- **Shader paketleri:** havasız dünyalarda zemin pakete göre shader'sız halinden biraz daha sıcak ya da soğuk
+  görünür; yalnız pencereden ışık alan kapalı modüller lamba konana kadar mavimsi görünür; görüş sınırındaki arazi
+  siyaha değil açık maviye solar.
+- **Distant Horizons:** karakollar, madenler ve diğer yapılar uzak arazide ancak o bölge bir kez ziyaret edildikten
+  sonra görünür (Distant Horizons uzak araziyi kendi ürettiğinde yapı yerleştirmez). Voxy desteklenmez: onunla
+  uzayda shader paketinin kendi göğü kalır.
+- **Gerçekçi ses (varsayılan kapalı):** ince havada ve boşlukta boğuk ses OpenAL EFX destekli bir ses aygıtı ister;
+  yoksa yalnız ses seviyesi düşer.
+- **WTHIT:** ek blok bilgisi satırları WTHIT için de Jade'deki gibi hazır, ama oyun içinde yalnız Jade ile denendi.
