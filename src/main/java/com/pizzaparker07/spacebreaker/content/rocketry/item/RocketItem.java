@@ -83,7 +83,7 @@ public class RocketItem extends Item {
         tooltip.add(Component.translatable("tooltip.spacebreaker.rocket.delta_v",
                 Fmt.ms(RocketMath.totalDeltaV(layout, 0, fuel, RocketMath.ASCENT_ATMOSPHERE))).withStyle(grey));
         tooltip.add(Component.translatable("tooltip.spacebreaker.rocket.mass", Fmt.kg(RocketMath.mass(layout, 0, fuel))).withStyle(grey));
-        tooltip.add(Component.translatable("tooltip.spacebreaker.rocket.height", String.format(java.util.Locale.ROOT, "%.1f", layout.heightBlocks(0))).withStyle(grey));
+        tooltip.add(Component.translatable("tooltip.spacebreaker.rocket.height", Fmt.dec(layout.heightBlocks(0), 1)).withStyle(grey));
         tooltip.add(Component.translatable("tooltip.spacebreaker.rocket.hint").withStyle(ChatFormatting.DARK_GRAY));
     }
 }
