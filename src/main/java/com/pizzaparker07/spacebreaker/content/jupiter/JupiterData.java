@@ -130,7 +130,8 @@ public final class JupiterData {
     }
 
     public static LineaeFeature.Config europaLineae() {
-        return new LineaeFeature.Config(s(STAINED_ICE), Optional.of(s(EUROPAN_ICE)), 560, 0.03, 2.0, 2, Optional.of(s(REFROZEN_BRINE)),
+        // wider, more numerous reddish-brown lineae: Europa's signature, readable from up high
+        return new LineaeFeature.Config(s(STAINED_ICE), Optional.of(s(EUROPAN_ICE)), 560, 0.045, 2.0, 3, Optional.of(s(REFROZEN_BRINE)),
                 950, 0.62, 0, -70, "any");
     }
 
@@ -166,20 +167,25 @@ public final class JupiterData {
     }
 
     public static LineaeFeature.Config ganymedeGrooves() {
-        return new LineaeFeature.Config(s(GROOVED_ICE), Optional.of(s(BRIGHT_FROST)), 150, 0.07, 3.0, 2, Optional.empty(), 900, 0.6, 0, -70,
+        // the groove floors carry the bright frost, the ridge walls the layered grooved ice
+        return new LineaeFeature.Config(s(BRIGHT_FROST), Optional.of(s(GROOVED_ICE)), 150, 0.07, 3.0, 2, Optional.empty(), 900, 0.6, 0, -70,
                 "lowlands");
     }
 
     public static TerrainProfile callistoProfile() {
         var m = new SmallBodyTerrain.Materials(s(CALLISTO_REGOLITH), s(CALLISTAN_ROCK.base()), s(CALLISTAN_ROCK.base()), s(BRIGHT_FROST),
                 Optional.of(s(BRIGHT_FROST)), Optional.of(s(EUROPAN_ICE)));
+        // Callisto is one of the darkest icy moons: dark regolith, bright frost only on a few young ray craters, the knobs
+        // and the Valhalla plain (a lower fresh-ray share keeps the frost from speckling over the whole surface)
         return SmallBodyTerrain.of(Spacebreaker.id("callisto"), 2410.3).baseHeight(74).roughness(0.6).craters(1.35).age(1.0)
-                .iceLatitude(72).materials(m).build();
+                .freshRays(0.012).iceLatitude(72).materials(m).build();
     }
 
     /** Valhalla: a huge multi-ring basin, a bright central plain ringed by concentric troughs and ridges. */
     public static BasinFeature.Config valhalla() {
-        return new BasinFeature.Config(1400, 15, 1100, 5, 3, 0, 0.3, 0, 0.08, 4.5, s(CALLISTAN_ROCK.base()), Optional.of(s(BRIGHT_FROST)), Optional.empty());
+        // the bright plain is only the middle of the structure; the rings beyond it stay dark Callistan ground
+        return new BasinFeature.Config(1400, 15, 1100, 5, 3, 0, 0.01, 0, 0.08, 4.5, s(CALLISTAN_ROCK.base()), Optional.of(s(BRIGHT_FROST)), Optional.empty(),
+                0.32);
     }
 
     // ------------------------------------------------------------------ datagen
@@ -210,6 +216,10 @@ public final class JupiterData {
         ctx.register(cf("europa_block"), OuterWorlds.boulder(0.7F, 1.6F, 0.55F, s(EUROPAN_ICE), 4, s(STAINED_ICE), 1));
         ctx.register(cf("io_paterae"), new ConfiguredFeature<>(OuterWorlds.LAKES.get(), ioPaterae()));
         ctx.register(cf("io_plumes"), new ConfiguredFeature<>(OuterWorlds.VENTS.get(), ioPlumes()));
+        // dark basalt flows with red-sulfur margins wandering out from vents across the plains
+        ctx.register(cf("io_lava_flows"), new ConfiguredFeature<>(OuterWorlds.LAVA_FLOWS.get(),
+                new com.pizzaparker07.spacebreaker.content.belt.world.LavaFlowFeature.Config(240, 0.85, 4, 120, 280, 3.6,
+                        s(IONIAN_BASALT.base()), Optional.of(s(RED_SULFUR)))));
         ctx.register(cf("io_sulfur_ore"), new ConfiguredFeature<>(Feature.ORE,
                 new OreConfiguration(new TagMatchTest(IO_STONE), s(IONIAN_SULFUR_ORE), 10)));
         ctx.register(cf("io_boulder"), OuterWorlds.boulder(0.7F, 1.8F, 0.5F, s(IONIAN_BASALT.base()), 1));
@@ -223,7 +233,7 @@ public final class JupiterData {
 
     private static void placed(BootstrapContext<PlacedFeature> ctx) {
         var cf = ctx.lookup(Registries.CONFIGURED_FEATURE);
-        for (String whole : new String[]{"europa_lineae", "europa_ocean", "europa_geysers", "io_paterae", "io_plumes", "ganymede_grooves",
+        for (String whole : new String[]{"europa_lineae", "europa_ocean", "europa_geysers", "io_paterae", "io_plumes", "io_lava_flows", "ganymede_grooves",
                 "callisto_valhalla"}) {
             PlacementUtils.register(ctx, pf(whole), cf.getOrThrow(cf(whole)), BiomeFilter.biome());
         }
@@ -260,7 +270,7 @@ public final class JupiterData {
         }
         for (ResourceKey<Biome> key : IO_BIOMES) {
             ctx.register(key, OuterWorlds.biome(pf, carvers, key, -1.4F, OuterWorlds.Look.airless(0xB8A050),
-                    lakes, "io_paterae", ores, "io_sulfur_ore", local, "io_boulder", surface, "io_plumes"));
+                    raw, "io_lava_flows", lakes, "io_paterae", ores, "io_sulfur_ore", local, "io_boulder", surface, "io_plumes"));
         }
         for (ResourceKey<Biome> key : GANYMEDE_BIOMES) {
             ctx.register(key, OuterWorlds.biome(pf, carvers, key, -1.5F, OuterWorlds.Look.airless(0x8A847C),
