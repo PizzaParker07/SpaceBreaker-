@@ -798,6 +798,7 @@
   "gui.spacebreaker.assembler.twr": "İ/A %s",
   "gui.spacebreaker.blueprints": "Planlar",
   "gui.spacebreaker.blueprints.empty": "Yüklü plan yok",
+  "gui.spacebreaker.blueprints.have": "Envanterinde %s, gereken %s",
   "gui.spacebreaker.blueprints.materials": "Malzemeler",
   "gui.spacebreaker.blueprints.project": "Yansıt",
   "gui.spacebreaker.blueprints.size": "%s × %s × %s, %s blok",

@@ -87,6 +87,28 @@ final class BlueprintScenario implements ShowcaseScenario {
         s.add(new Shot("blueprint_05_hidden_gui", 6000, -3.5, G + 3.0, 5.5, 215F, 18F, true, fp, 40, projecting("launch_site", LAUNCH, -1), SuitShots.CLEAR_TOASTS));
         s.add(new Shot("blueprint_06_select", 6000, 0.5, G + 4.5, 9.5, 180F, 22F, false, fp, 30, projecting("launch_site", LAUNCH, -1),
                 SuitShots.clearToastsThen(() -> Minecraft.getInstance().setScreen(new BlueprintScreen()))));
+        // the pointer on the first material: its name and how many the player carries against how many it takes
+        s.add(new Shot("blueprint_07_material_tip", 6000, 0.5, G + 4.5, 9.5, 180F, 22F, false, fp, 30, projecting("launch_site", LAUNCH, -1),
+                SuitShots.clearToastsThen(() -> {
+                    Minecraft mc = Minecraft.getInstance();
+                    mc.setScreen(new BlueprintScreen());
+                    var win = mc.getWindow();
+                    int w = win.getGuiScaledWidth(), h = win.getGuiScaledHeight();
+                    // same layout as BlueprintScreen: panel 30 px from the top and bottom, list 150 px wide
+                    int panelW = Math.min(380, w - 20), left = (w - panelW) / 2;
+                    int dy0 = 30 + 16 + 2, previewH = Math.max(60, (h - 30 - 30) / 2 - 20);
+                    double gx = left + 150 + 8 + 8, gy = dy0 + 22 + previewH + 11 + 8;
+                    // the virtual window has no real pointer: place the game's own cursor (test code only)
+                    try {
+                        for (String name : new String[]{"xpos", "ypos"}) {
+                            var f = net.minecraft.client.MouseHandler.class.getDeclaredField(name);
+                            f.setAccessible(true);
+                            f.setDouble(mc.mouseHandler, (name.equals("xpos") ? gx : gy) * win.getGuiScale());
+                        }
+                    } catch (ReflectiveOperationException e) {
+                        throw new IllegalStateException(e);
+                    }
+                })));
         return s;
     }
 }
