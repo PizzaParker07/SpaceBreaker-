@@ -52,6 +52,23 @@ public final class LowGravity {
         return f >= 1.0 ? 1.0 : Math.max(MIN_AIR_CONTROL, Math.sqrt(Math.max(0.0, f)));
     }
 
+    /** Vanilla's horizontal air drag per tick. */
+    public static final double VANILLA_AIR_DRAG = 0.91;
+
+    /**
+     * Horizontal air drag per tick while airborne at gravity factor {@code f}: with less steering the vanilla drag
+     * would eat the take-off speed, so part of it is given back (half of what the steering lost), fading out on the
+     * lightest worlds (below a factor of 0.15) so their hops stay short. Vanilla on Earth-like worlds and in
+     * microgravity (own controls).
+     */
+    public static double airDrag(double f) {
+        if (f >= 1.0 || ZeroG.microGravity(f)) {
+            return VANILLA_AIR_DRAG;
+        }
+        double relief = Math.min(1.0, f / 0.15);
+        return VANILLA_AIR_DRAG + (1.0 - VANILLA_AIR_DRAG) * 0.5 * (1.0 - airControl(f)) * relief;
+    }
+
     /**
      * Mining speed multiplier on top of vanilla's "not on the ground: five times slower" while floating in
      * microgravity: the penalty becomes two times, and none at all on a tether (the line gives something to brace
@@ -111,14 +128,14 @@ public final class LowGravity {
     public static final double VACUUM_KPA = 0.05;
 
     /**
-     * Share of an elytra's lift at ambient pressure {@code kpa}: none in vacuum, the square root of the pressure
-     * against Earth's in thin air (Mars, 0.6 kPa: under a tenth), full in Earth-like or denser air.
+     * Share of an elytra's lift at ambient pressure {@code kpa}: none in vacuum, the pressure against Earth's to the
+     * power 0.4 in thin air (Mars, 0.6 kPa: about an eighth), full in Earth-like or denser air.
      */
     public static double elytraLift(double kpa) {
         if (kpa < VACUUM_KPA) {
             return 0.0;
         }
-        return Math.min(1.0, Math.sqrt(kpa / 101.325));
+        return Math.min(1.0, Math.pow(kpa / 101.325, 0.4));
     }
 
     /** The local player's speed before this tick's movement, to tell the wings' share from a plain fall. */

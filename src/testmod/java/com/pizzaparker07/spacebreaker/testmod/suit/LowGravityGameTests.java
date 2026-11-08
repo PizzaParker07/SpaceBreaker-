@@ -60,14 +60,14 @@ public final class LowGravityGameTests {
         helper.succeed();
     }
 
-    /** Blocks covered by one sprint jump, vanilla style, with the air push scaled by {@code control}. */
-    static double sprintJump(double f, double control) {
+    /** Blocks covered by one sprint jump, vanilla style, with the air push scaled by {@code control} and the given drag. */
+    static double sprintJump(double f, double control, double drag) {
         double vy = 0.42 * Math.pow(f, 0.25), y = 0, vx = 0.28 + 0.2, x = 0;
         for (int t = 0; t < 2000; t++) {
             y += vy;
             x += vx;
             vy = (vy - 0.08 * f) * 0.98;
-            vx = (vx + 0.026 * control) * 0.91;
+            vx = (vx + 0.026 * control) * drag;
             if (y <= 0) {
                 break;
             }
@@ -75,15 +75,29 @@ public final class LowGravityGameTests {
         return x;
     }
 
+    private static double before(double f) {
+        return sprintJump(f, 1.0, LowGravity.VANILLA_AIR_DRAG);
+    }
+
+    private static double after(double f) {
+        return sprintJump(f, LowGravity.airControl(f), LowGravity.airDrag(f));
+    }
+
     @GameTest(template = EMPTY)
     public static void lowGravityHopsMostlyKeepTheirTakeOff(GameTestHelper helper) {
         helper.assertTrue(LowGravity.airControl(1.0) == 1.0 && LowGravity.airControl(2.5) == 1.0, "full control on Earth and heavier worlds");
-        helper.assertTrue(Math.abs(LowGravity.airControl(MOON_F) - Math.sqrt(MOON_F)) < 1e-9, "about half on the Moon");
+        helper.assertTrue(LowGravity.airDrag(1.0) == LowGravity.VANILLA_AIR_DRAG && LowGravity.airDrag(0.0) == LowGravity.VANILLA_AIR_DRAG,
+                "vanilla drag on Earth and in microgravity");
+        helper.assertTrue(Math.abs(LowGravity.airControl(MOON_F) - Math.sqrt(MOON_F)) < 1e-9, "about half the steering on the Moon");
+        double moon = after(MOON_F) / before(MOON_F);
+        helper.assertTrue(moon > 0.85 && moon < 0.97, "a Moon sprint hop keeps about nine tenths of its length (" + moon + ")");
+        double moonReal = after(0.1652) / before(0.1652);
+        helper.assertTrue(moonReal > 0.8 && moonReal < 0.95, "also at realistic gravity (" + moonReal + ")");
         double ceresF = Math.pow(0.0289, 0.75);
         helper.assertTrue(LowGravity.airControl(ceresF) == LowGravity.MIN_AIR_CONTROL, "never below the floor on the lightest worlds");
-        double before = sprintJump(ceresF, 1.0), after = sprintJump(ceresF, LowGravity.airControl(ceresF));
-        helper.assertTrue(before > 18 && after < 12 && after > 9, "a Ceres sprint hop drops from about 20 to about 10 blocks (" + before + " -> " + after + ")");
-        helper.assertTrue(Math.abs(sprintJump(1.0, LowGravity.airControl(1.0)) - sprintJump(1.0, 1.0)) < 1e-9, "Earth jumps unchanged");
+        double ceres = after(ceresF) / before(ceresF);
+        helper.assertTrue(ceres > 0.5 && ceres < 0.7, "a Ceres hop gets clearly shorter (" + before(ceresF) + " -> " + after(ceresF) + ")");
+        helper.assertTrue(Math.abs(after(1.0) - before(1.0)) < 1e-9, "Earth jumps unchanged");
         helper.succeed();
     }
 
@@ -113,7 +127,7 @@ public final class LowGravityGameTests {
         helper.assertTrue(LowGravity.elytraLift(101.325) == 1.0 && LowGravity.elytraLift(9200) == 1.0, "full lift on Earth and in denser air");
         helper.assertTrue(LowGravity.elytraLift(146.7) == 1.0, "Titan's thick air carries wings fine");
         double mars = LowGravity.elytraLift(0.61);
-        helper.assertTrue(mars > 0.05 && mars < 0.1, "Mars's thin air gives under a tenth of the lift (" + mars + ")");
+        helper.assertTrue(mars > 0.11 && mars < 0.15, "Mars's thin air gives about an eighth of the lift (" + mars + ")");
         helper.succeed();
     }
 }
