@@ -9,9 +9,10 @@ Havasız, sessiz ve gri. Yerçekimi Dünya'nın **altıda biri**: daha yükseğe
 
 ### Kayaçlar
 
-**Ay Regoliti** · **Mare Bazaltı** · **İlmenit Cevheri** · **Anortozit**
+**Ay Regoliti** · **Taze Regolit** · **Mare Bazaltı** · **İlmenit Cevheri** · **Anortozit**
 
 - **Regolit**: her ayak izini saklayan ince gri toz.
+- **Taze regolit**: genç kraterlerin çevresindeki parlak fırlatma örtüsü; Ay'daki ışınlar ve haleler bundandır. O da ayak izini saklar, kürekle kazılır, sinterleme fırınında ve ISRU makinelerinde regolit yerine geçer.
 - **Deniz bazaltı**: karanlık ovalar. İçindeki **ilmenit** titanyum ve oksijen verir.
 - **Anortozit**: parlak yaylalar. Taş kesicide kesilir.
 
@@ -59,9 +60,10 @@ Airless, silent and grey. Gravity is **one sixth** of Earth's: you jump higher a
 
 ### Rocks
 
-**Lunar Regolith** · **Mare Basalt** · **Ilmenite Ore** · **Anorthosite**
+**Lunar Regolith** · **Fresh Regolith** · **Mare Basalt** · **Ilmenite Ore** · **Anorthosite**
 
 - **Regolith**: fine grey dust that keeps every boot print.
+- **Fresh regolith**: the bright ejecta blanket around young craters; the Moon's rays and halos are made of it. It keeps boot prints too, digs with a shovel and counts as regolith in the sintering furnace and the ISRU machines.
 - **Mare basalt**: the dark plains. Its **ilmenite** gives titanium and oxygen.
 - **Anorthosite**: the bright highlands. Cut it in a stonecutter.
 

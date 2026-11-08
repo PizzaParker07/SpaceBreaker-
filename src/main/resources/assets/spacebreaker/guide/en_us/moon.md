@@ -1,7 +1,7 @@
 ---
 title: The Moon
 icon: spacebreaker:lunar_regolith
-items: [spacebreaker:lunar_regolith, spacebreaker:mare_basalt, spacebreaker:ilmenite_ore, spacebreaker:anorthosite, spacebreaker:sintered_regolith, spacebreaker:icy_regolith, spacebreaker:lunar_ice, spacebreaker:kreep_ore, spacebreaker:meteoric_iron]
+items: [spacebreaker:lunar_regolith, spacebreaker:fresh_regolith, spacebreaker:mare_basalt, spacebreaker:ilmenite_ore, spacebreaker:anorthosite, spacebreaker:sintered_regolith, spacebreaker:icy_regolith, spacebreaker:lunar_ice, spacebreaker:kreep_ore, spacebreaker:meteoric_iron]
 research: spacebreaker:basic_rocketry
 ---
 Airless, silent and grey. Gravity is **one sixth** of Earth's: you jump higher and fall slower.
@@ -10,8 +10,9 @@ Airless, silent and grey. Gravity is **one sixth** of Earth's: you jump higher a
 > There is **no air** on the Moon. Without a suit, or with an empty tank, you take damage every second. Carry spare tanks.
 
 ## Rocks
-{items spacebreaker:lunar_regolith spacebreaker:mare_basalt spacebreaker:ilmenite_ore spacebreaker:anorthosite}
+{items spacebreaker:lunar_regolith spacebreaker:fresh_regolith spacebreaker:mare_basalt spacebreaker:ilmenite_ore spacebreaker:anorthosite}
 - **Regolith**: fine grey dust that keeps every boot print.
+- **Fresh regolith**: the bright ejecta blanket around young craters; the Moon's rays and halos are made of it. It keeps boot prints too, digs with a shovel and counts as regolith in the sintering furnace and the ISRU machines.
 - **Mare basalt**: the dark plains. Its **ilmenite** gives titanium and oxygen.
 - **Anorthosite**: the bright highlands. Cut it in a stonecutter.
 
