@@ -37,6 +37,25 @@ final class MoonCreaturesScenario extends OuterShowcase {
         return MoonModule.MOON;
     }
 
+    /** The first z south of {@code z0} (step 4) where the ground within 4 blocks is flat to a block. */
+    private static int flatSpot(ServerLevel level, int x, int z0) {
+        for (int z = z0; z < z0 + 120; z += 4) {
+            double lo = Double.MAX_VALUE;
+            double hi = -Double.MAX_VALUE;
+            for (int dx = -4; dx <= 4; dx += 2) {
+                for (int dz = -4; dz <= 4; dz += 2) {
+                    double g = ground(level, x + dx, z + dz);
+                    lo = Math.min(lo, g);
+                    hi = Math.max(hi, g);
+                }
+            }
+            if (hi - lo <= 1) {
+                return z;
+            }
+        }
+        return z0;
+    }
+
     @Override
     protected void build(ServerLevel level, PlanetTerrain t) {
         String only = System.getenv("CREATURES");
@@ -68,6 +87,18 @@ final class MoonCreaturesScenario extends OuterShowcase {
                     (float) Math.toDegrees(Math.atan2(ay - eye, d)), 60, at(0.25), null);
             double px = x + 0.5 + d;
             shot(c.name() + "_b", px, eye, SZ + 0.5, 90F, 0F, 40, at(0.25), null);
+            // in its world: the same creature on the real ground further south, low sun (night for the siphon)
+            int ez = flatSpot(level, x, SZ + 24);
+            double g = ground(level, x, ez);
+            Mob e = mob(level, c.type().get(), x, g + c.lift(), ez, 0F);
+            double eEye = g + c.lift() + (e == null ? 0.5 : e.getBbHeight() * 0.5);
+            double ed = d * 1.6;
+            double ex = x + 0.5 + ed * 0.8;
+            double ezz = ez + 0.5 + ed * 0.6;
+            double ey = Math.max(eEye + ed * 0.25, ground(level, ex, ezz) + 1.6);
+            boolean night = c.name().equals("heat_siphon") || c.name().equals("glimmer_beetle");
+            shot(c.name() + "_env", ex, ey, ezz, MoonScenario.yaw(x + 0.5 - ex, ez + 0.5 - ezz),
+                    (float) Math.toDegrees(Math.atan2(ey - eEye, ed)), 60, night ? dark(0.75) : at(0.12), null);
         }
     }
 }
