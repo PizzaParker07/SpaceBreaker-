@@ -96,6 +96,11 @@ public final class ShowcaseScenarios {
         ALL.put("moon_creatures", new MoonCreaturesScenario());
         ALL.put("moon_survey", new MoonSurveyScenario());
         ALL.put("outer_survey", new OuterSurveyScenario());
+        ALL.put("inner_survey_mars", InnerSurveyScenario.mars());
+        ALL.put("inner_survey_venus", InnerSurveyScenario.venus());
+        ALL.put("inner_survey_mercury", InnerSurveyScenario.mercury());
+        ALL.put("inner_survey_phobos", InnerSurveyScenario.phobos());
+        ALL.put("inner_survey_deimos", InnerSurveyScenario.deimos());
         ALL.put("scan_outer", new OuterScanScenario());
         ALL.put("triton", new TritonScenario());
         ALL.put("pluto", new PlutoScenario(false));

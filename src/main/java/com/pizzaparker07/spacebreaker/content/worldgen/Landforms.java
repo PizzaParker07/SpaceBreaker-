@@ -192,9 +192,17 @@ public record Landforms(Optional<Dunes> dunes, Optional<Rift> rift, Optional<Vol
      * @param anchors     volcanoes at fixed places
      * @param rock        flank rock (lava)
      * @param soil        dust on the gentle flanks
+     * @param flowSoil    bare lava on the crests of the radial flow ridges (none = the dust covers them too)
+     * @param summitSoil  dark ash or cinders on the upper slopes and around the caldera
      */
     public record Volcanoes(int cell, double chance, double minRadius, double maxRadius, double heightRatio, double maxHeight,
-                            double caldera, double escarpment, List<Anchor> anchors, BlockState rock, Optional<BlockState> soil) {
+                            double caldera, double escarpment, List<Anchor> anchors, BlockState rock, Optional<BlockState> soil,
+                            Optional<BlockState> flowSoil, Optional<BlockState> summitSoil) {
+        public Volcanoes(int cell, double chance, double minRadius, double maxRadius, double heightRatio, double maxHeight,
+                         double caldera, double escarpment, List<Anchor> anchors, BlockState rock, Optional<BlockState> soil) {
+            this(cell, chance, minRadius, maxRadius, heightRatio, maxHeight, caldera, escarpment, anchors, rock, soil, Optional.empty(), Optional.empty());
+        }
+
         public static final Codec<Volcanoes> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.INT.optionalFieldOf("cell", 3200).forGetter(Volcanoes::cell),
                 Codec.DOUBLE.optionalFieldOf("chance", 0.35).forGetter(Volcanoes::chance),
@@ -206,7 +214,9 @@ public record Landforms(Optional<Dunes> dunes, Optional<Rift> rift, Optional<Vol
                 Codec.DOUBLE.optionalFieldOf("escarpment", 0.0).forGetter(Volcanoes::escarpment),
                 Anchor.CODEC.listOf().optionalFieldOf("anchors", List.of()).forGetter(Volcanoes::anchors),
                 BlockState.CODEC.fieldOf("rock").forGetter(Volcanoes::rock),
-                BlockState.CODEC.optionalFieldOf("soil").forGetter(Volcanoes::soil)
+                BlockState.CODEC.optionalFieldOf("soil").forGetter(Volcanoes::soil),
+                BlockState.CODEC.optionalFieldOf("flow_soil").forGetter(Volcanoes::flowSoil),
+                BlockState.CODEC.optionalFieldOf("summit_soil").forGetter(Volcanoes::summitSoil)
         ).apply(i, Volcanoes::new));
     }
 
@@ -276,7 +286,8 @@ public record Landforms(Optional<Dunes> dunes, Optional<Rift> rift, Optional<Vol
      * @param soil      soil block
      * @param scale     patch size
      * @param threshold noise level (0..1) above which the patch shows
-     * @param where     "any", "lowlands" or "highlands"
+     * @param where     "any", "lowlands", "highlands" or "polar" (the plains within 10 degrees of the polar latitude and beyond,
+     *                  off any ice cap)
      */
     public record SoilPatch(BlockState soil, double scale, double threshold, String where) {
         public static final Codec<SoilPatch> CODEC = RecordCodecBuilder.create(i -> i.group(
