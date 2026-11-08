@@ -419,6 +419,39 @@ public final class RoverTests {
     }
 
     /**
+     * Getting in the way a player does, by using the rover with an empty hand: the first player takes the driver's
+     * seat, the second the passenger's, a third is turned away. On every open model (and the cabin one) with its
+     * deck fittings on, so no fitting swallows the click.
+     */
+    @GameTest(template = "empty", timeoutTicks = 60)
+    public static void playersBoardOpenRoversByUsingThem(GameTestHelper h) {
+        floor(h, Blocks.STONE.defaultBlockState());
+        var types = new java.util.ArrayList<net.minecraft.world.entity.EntityType<RoverEntity>>(java.util.List.of(
+                VehiclesModule.ROVER.get(), VehiclesModule.SPRINT_ROVER.get(), VehiclesModule.PRESSURIZED_ROVER.get()));
+        for (int i = 0; i < types.size(); i++) {
+            RoverEntity rover = types.get(i).create(h.getLevel());
+            Vec3 at = h.absoluteVec(Vec3.atBottomCenterOf(new BlockPos(1 + i * 3, 1, 2)));
+            rover.moveTo(at.x, at.y, at.z, 0F, 0F);
+            rover.installSolar();
+            rover.installRtg(new ItemStack(MachinesModule.RTG_FUEL_PELLET.get()));
+            rover.cargo().setItem(0, new ItemStack(net.minecraft.world.item.Items.CHEST));
+            h.getLevel().addFreshEntity(rover);
+            var driver = h.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+            var passenger = h.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+            var third = h.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+            String id = net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.getKey(types.get(i)).getPath();
+            h.assertTrue(rover.interact(driver, net.minecraft.world.InteractionHand.MAIN_HAND).consumesAction() && driver.getVehicle() == rover,
+                    id + ": the first player gets in");
+            h.assertTrue(rover.interact(passenger, net.minecraft.world.InteractionHand.MAIN_HAND).consumesAction() && passenger.getVehicle() == rover,
+                    id + ": the second player gets in");
+            rover.interact(third, net.minecraft.world.InteractionHand.MAIN_HAND);
+            h.assertTrue(third.getVehicle() == null, id + ": a third is turned away");
+            h.assertTrue(rover.getControllingPassenger() == driver, id + ": the first one drives");
+        }
+        h.succeed();
+    }
+
+    /**
      * Two riders: the driver in front, the passenger behind, both on their seats, and the deck solar panel well behind
      * the passenger's head (it used to stand over the rear seat). Getting off puts each rider beside the rover.
      */
