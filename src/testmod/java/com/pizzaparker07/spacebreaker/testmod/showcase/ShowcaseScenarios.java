@@ -35,6 +35,7 @@ public final class ShowcaseScenarios {
         ALL.put("amphibious_titan", new AmphibiousScenario(com.pizzaparker07.spacebreaker.content.saturn.SaturnModule.TITAN, true));
         ALL.put("solar_dust", new SolarDustScenario());
         ALL.put("machine_lineup", new MachineLineupScenario());
+        ALL.put("inner_creatures", new InnerCreatureLineupScenario());
         ALL.put("item_duct", new ItemDuctScenario());
         ALL.put("moon", new MoonScenario());
         ALL.put("sky_planets", new SkyPlanetsScenario(false));
