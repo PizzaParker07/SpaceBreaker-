@@ -72,6 +72,7 @@ Evren tohumu → Galaksi → Sektör → Yıldız → Gezegen/Uydu
 ## 8. Test ve teslim
 - **GameTest** (sunucu), **JUnit** (fizik), **gerçek istemci senaryoları** (`runShowcase`, Xvfb).
 - CI: her push'ta derleme + GameTest; `v*` etiketi → Actions jar'ı derleyip GitHub Release açar.
+- Beta: 1.21.1'e her yeşil push'tan sonra Actions `v<sürüm>-beta.N` ön sürümünü jar'la otomatik açar (`.github/workflows/beta.yml`); yalnız belge değişen push'lar beta açmaz.
 - Her faz sonunda jar + TR/EN sürüm notları.
 
 ## 9. Yol haritası

@@ -1,0 +1,101 @@
+name: Beta
+
+# After every green Build (build + GameTests) of a push to 1.21.1, publish a numbered pre-release
+# v<mod_version>-beta.N with the jar attached, so testers always have the latest checked build.
+# Pushes that change only docs do not make a new beta. The first beta of a version uses
+# docs/releases/v<mod_version>.md as its notes; later ones list the changes since the previous beta.
+on:
+  workflow_run:
+    workflows: [Build]
+    types: [completed]
+    branches: ['1.21.1']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: beta
+  cancel-in-progress: false
+
+jobs:
+  beta:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+          fetch-depth: 0
+      - name: Pick the beta number and write the notes
+        id: beta
+        run: |
+          set -euo pipefail
+          base=$(sed -n 's/^mod_version=//p' gradle.properties | tr -d '[:space:]')
+          last=$(git tag -l "v${base}-beta.*" | sed 's/.*-beta\.//' | grep -E '^[0-9]+$' | sort -n | tail -1 || true)
+          prev=""
+          if [ -n "$last" ]; then prev="v${base}-beta.${last}"; fi
+          skip=false
+          if git tag --points-at HEAD | grep -q -- '-beta\.'; then
+            echo "This commit already has a beta."; skip=true
+          elif [ -n "$prev" ] && git diff --quiet "$prev" HEAD -- . ':(exclude)docs' ':(exclude)*.md'; then
+            echo "Only docs changed since $prev."; skip=true
+          fi
+          n=$(( ${last:-0} + 1 ))
+          version="${base}-beta.${n}"
+          notes="$RUNNER_TEMP/notes.md"
+          {
+            echo "**Spacebreaker ${version}** — Minecraft 1.21.1 · NeoForge 21.1.265+"
+            echo
+            echo "**TR** Test sürümü (ön sürüm). Jar'ı \`mods\` klasörüne atman yeterli. Beta sürümlerde hata olabilir; oynamadan önce dünyanın yedeğini al."
+            echo
+            echo "**EN** Test build (pre-release). Drop the jar into your \`mods\` folder. Betas can have bugs; back up your world before playing."
+            echo
+            if [ -z "$prev" ] && [ -f "docs/releases/v${base}.md" ]; then
+              echo "---"
+              echo
+              cat "docs/releases/v${base}.md"
+            else
+              echo "### Değişiklikler / Changes"
+              echo
+              git log --no-merges --format='- %s' "${prev:+$prev..}HEAD" -n 300 | grep -v '^- Regenerate data' > "$RUNNER_TEMP/changes.txt" || true
+              total=$(wc -l < "$RUNNER_TEMP/changes.txt")
+              head -n 40 "$RUNNER_TEMP/changes.txt"
+              if [ "$total" -gt 40 ]; then echo "- … +$((total - 40))"; fi
+              echo
+              echo "---"
+              echo
+              echo "PizzaParker07 / Pizzacı Çocuk"
+            fi
+          } > "$notes"
+          {
+            echo "skip=$skip"
+            echo "version=$version"
+            echo "tag=v$version"
+            echo "sha=$(git rev-parse HEAD)"
+            echo "notes=$notes"
+          } >> "$GITHUB_OUTPUT"
+      - uses: actions/setup-java@v4
+        if: steps.beta.outputs.skip != 'true'
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+        if: steps.beta.outputs.skip != 'true'
+      - name: Build the jar
+        if: steps.beta.outputs.skip != 'true'
+        run: ./gradlew assemble -Pmod_version=${{ steps.beta.outputs.version }} --no-daemon
+      - name: Publish the beta
+        if: steps.beta.outputs.skip != 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.beta.outputs.tag }}
+          target_commitish: ${{ steps.beta.outputs.sha }}
+          name: Spacebreaker ${{ steps.beta.outputs.version }}
+          body_path: ${{ steps.beta.outputs.notes }}
+          files: build/libs/*-${{ steps.beta.outputs.version }}.jar
+          fail_on_unmatched_files: true
+          prerelease: true
+          make_latest: false
