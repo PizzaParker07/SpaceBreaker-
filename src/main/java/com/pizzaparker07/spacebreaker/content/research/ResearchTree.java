@@ -365,8 +365,8 @@ public final class ResearchTree {
                 .tr("Ay Araştırması", "Denizleri ve yaylaları haritala; ilmeniti, buzu ve en güvenli iniş yerlerini bul.");
         t("rovers", EXPLORATION, 2).req("lunar_surveying", "electronics").icon("spacebreaker:rover").unlocks("rover", "sprint_rover", "pressurized_rover", "amphibious_rover")
                 .samples(MOON, PROBE_LANDING)
-                .en("Rovers", "Electric vehicles with wire-mesh wheels for driving across dusty plains.")
-                .tr("Gezici Araçlar", "Tozlu ovalarda sürmek için tel örgü tekerlekli elektrikli araçlar.");
+                .en("Rovers", "Electric vehicles with wire-mesh wheels for driving across dusty plains. In low gravity they brake late: the jump key is the hand brake.")
+                .tr("Gezici Araçlar", "Tozlu ovalarda sürmek için tel örgü tekerlekli elektrikli araçlar. Düşük yerçekiminde geç durur: zıplama tuşu el frenidir.");
         t("martian_geology", EXPLORATION, 2).req("field_geology", "interplanetary_transfers").icon("minecraft:red_sand")
                 .samples(MARS)
                 .en("Martian Geology", "Ancient riverbeds, hematite spherules and perchlorate soils tell the story of Mars.")

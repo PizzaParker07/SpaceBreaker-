@@ -62,5 +62,6 @@ public class RoverItem extends Item {
                     String.format(java.util.Locale.ROOT, "%.0f", RoverType.SPRINT.maxSpeed() * 20)).withStyle(ChatFormatting.AQUA));
         }
         tooltip.add(Component.translatable("tooltip.spacebreaker.rover.charge").withStyle(ChatFormatting.DARK_GRAY));
+        tooltip.add(Component.translatable("tooltip.spacebreaker.rover.hand_brake", Component.keybind("key.jump")).withStyle(ChatFormatting.DARK_GRAY));
     }
 }
