@@ -31,6 +31,8 @@ final class MoonSurveyScenario extends OuterShowcase {
         int[] mare = find(level, MoonData.MARE);
         if (mare != null) {
             parent(level, t, "survey_earth", mare[0], mare[1], DAY, 8);
+            // lunar night: Earth nearly full over the near side
+            parent(level, t, "survey_earth_night", mare[0], mare[1], 0.75, 8);
         }
     }
 
