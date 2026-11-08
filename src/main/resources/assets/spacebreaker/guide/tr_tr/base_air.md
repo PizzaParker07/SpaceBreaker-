@@ -1,7 +1,7 @@
 ---
 title: Üssün Havası
 icon: spacebreaker:oxygen_distributor
-items: [spacebreaker:oxygen_distributor, spacebreaker:airlock_door, spacebreaker:aluminum_panel, spacebreaker:titanium_deck, spacebreaker:pressure_glass, spacebreaker:porthole, spacebreaker:hazard_stripe, spacebreaker:cable_duct, spacebreaker:pipe_duct, spacebreaker:grate, spacebreaker:grate_platform, spacebreaker:railing, spacebreaker:steel_ladder, spacebreaker:floodlight, spacebreaker:led_panel, spacebreaker:warning_light, spacebreaker:sliding_door]
+items: [spacebreaker:oxygen_distributor, spacebreaker:control_desk, spacebreaker:airlock_door, spacebreaker:aluminum_panel, spacebreaker:titanium_deck, spacebreaker:pressure_glass, spacebreaker:porthole, spacebreaker:hazard_stripe, spacebreaker:cable_duct, spacebreaker:pipe_duct, spacebreaker:grate, spacebreaker:grate_platform, spacebreaker:railing, spacebreaker:steel_ladder, spacebreaker:floodlight, spacebreaker:led_panel, spacebreaker:warning_light, spacebreaker:sliding_door]
 research: spacebreaker:oxygen_distribution
 ---
 Kask takmadan dolaşabileceğin bir üs için kapalı bir oda, bir dağıtıcı ve bir hava kilidi gerekir.
@@ -39,6 +39,10 @@ Kask takmadan dolaşabileceğin bir üs için kapalı bir oda, bir dağıtıcı 
 {items spacebreaker:led_panel spacebreaker:floodlight spacebreaker:warning_light}
 Aydınlatma için {item spacebreaker:led_panel} ve {item spacebreaker:floodlight}; ikisi de en parlak ışığı (15) verir; projektör konduğu yüze döner. Dönen amber {item spacebreaker:warning_light} kızıltaşla ya da kendiliğinden yanar: 32 blok içinde bir roket yakıt alırken, geri sayımda, kalkışta ya da yanaşırken.
 {recipe spacebreaker:rocketry/warning_light}
+
+{items spacebreaker:control_desk}
+{item spacebreaker:control_desk} süs amaçlı bir konsoldur: arkasında ekranı olan anahtar panelli bir tezgâh; koyduğun yöne bakar. Ay'daki karakollarda ve buz sondaj kulübelerinde görürsün.
+{recipe spacebreaker:control_desk}
 
 ## Kayar kapılar ve hava kilidi
 {items spacebreaker:sliding_door}
