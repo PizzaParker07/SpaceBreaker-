@@ -295,7 +295,7 @@ LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s "-screen 0 1920x1080x24" ./gradlew runSho
 Showcase properties for compatibility runs: `-PwithCompat=true` (copies `run-mods/*.jar`: Sodium, Iris, DH),
 `-PwithJei`, `-PwithEmi`, `-PwithJade`, `-PwithWthit`, `-PwithDynLights` (from Maven/Modrinth), `-PshotWidth` /
 `-PshotHeight` (window), `-PguiScale` (0 = auto), `-Poffhand=<item id>`, `-Pretreat=N` (a second shot from N blocks
-back with a 6-chunk view, `<name>_far`, for LOD checks). With a pack, chunks build slowly: a shot taken right after a
+back and N/5 up, looking at the same spot with a 6-chunk view, `<name>_far`, for LOD checks; `-PretreatTicks` = wait there, default 1500). With a pack, chunks build slowly: a shot taken right after a
 teleport can show only sky; give it a longer wait before calling it a bug.
 
 `./gradlew runGameTestServer` runs `testmod/compat/CompatGameTests` (classification of every body/dimension, no
@@ -421,7 +421,7 @@ environment; the plugins compile against both APIs and the line itself is covere
   clear of the chat lines.
 - **Distant Horizons and the new structures:** not run here this time (starting the client with the downloaded DH
   jar was not permitted in this environment). The showcase has `-Pretreat=N` for it: after each shot a second one from
-  N blocks back, looking at the same spot with a 6-chunk view distance (`<name>_far`), e.g.
+  N blocks back and N/5 up, looking at the same spot with a 6-chunk view distance (`<name>_far`), e.g.
   `-Pscenario=moon '-Pshots=30_.*' -Pretreat=300 -PwithCompat=true` with DH in `run-mods`. Expected: the outposts are
   StructurePieces, so DH shows them in LODs once their chunks have been generated (visited); DH's own far generation
   in its default FEATURES mode does not place structures.

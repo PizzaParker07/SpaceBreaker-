@@ -91,6 +91,7 @@ neoForge {
             systemProperty 'spacebreaker.guiScale', (project.findProperty('guiScale') ?: '-1').toString()
             systemProperty 'spacebreaker.offhand', (project.findProperty('offhand') ?: '').toString()
             systemProperty 'spacebreaker.retreat', (project.findProperty('retreat') ?: '0').toString()
+            systemProperty 'spacebreaker.retreatTicks', (project.findProperty('retreatTicks') ?: '1500').toString()
             systemProperty 'spacebreaker.mainHand', (project.findProperty('mainHand') ?: '').toString()
             systemProperty 'spacebreaker.attackIndicator', (project.findProperty('attackIndicator') ?: '').toString()
             jvmArguments.addAll '-Xmx3G'
