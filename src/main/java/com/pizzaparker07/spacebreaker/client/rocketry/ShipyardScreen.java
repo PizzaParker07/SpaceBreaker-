@@ -26,6 +26,8 @@ public class ShipyardScreen extends Screen {
     private final BlockPos console;
     private ShipDesign design;
     private int panelX;
+    /** Screen pixels (GUI units) per block of the craft drawing, at most. */
+    private static final int MAX_DRAW_SCALE = 10;
 
     public ShipyardScreen(BlockPos console, ShipDesign design) {
         super(Component.translatable("ship.spacebreaker.shipyard"));
@@ -143,7 +145,8 @@ public class ShipyardScreen extends Screen {
     /** Side and top views of the craft, nose on the left, inside the berth's outline. */
     private void drawCraft(GuiGraphics g) {
         int left = 124, right = panelX - 12;
-        int scale = Math.max(2, Math.min((right - left) / Berths.MAX_LENGTH, (height - 76) / (Berths.MAX_HEIGHT + Berths.MAX_WIDTH)));
+        // capped, so at a small GUI scale on a big screen the drawing keeps its size next to the buttons
+        int scale = Math.max(2, Math.min(MAX_DRAW_SCALE, Math.min((right - left) / Berths.MAX_LENGTH, (height - 76) / (Berths.MAX_HEIGHT + Berths.MAX_WIDTH))));
         int x0 = left + (right - left - Berths.MAX_LENGTH * scale) / 2;
         int sideY = 40, topY = sideY + Berths.MAX_HEIGHT * scale + 24;
         g.drawString(font, Component.translatable("ship.spacebreaker.view_side"), x0, sideY - 10, DIM, false);
