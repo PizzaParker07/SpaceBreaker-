@@ -17,10 +17,10 @@
     "volcanic_patch": 1.0
   },
   "craters": {
-    "density": 0.6,
+    "density": 0.9,
     "lowland_density": 1,
-    "depth_ratio": 0.12,
-    "rim_ratio": 0.03,
+    "depth_ratio": 0.17,
+    "rim_ratio": 0.045,
     "complex_radius": 40,
     "central_peak": 0.2,
     "fresh_chance": 0.0,
@@ -36,15 +36,22 @@
       {
         "min_radius": 7,
         "max_radius": 20,
-        "cell": 120,
-        "chance": 0.5,
+        "cell": 90,
+        "chance": 0.8,
         "per_cell": 1
       },
       {
         "min_radius": 20,
         "max_radius": 40,
-        "cell": 350,
-        "chance": 0.5,
+        "cell": 300,
+        "chance": 0.7,
+        "per_cell": 1
+      },
+      {
+        "min_radius": 40,
+        "max_radius": 65,
+        "cell": 520,
+        "chance": 0.55,
         "per_cell": 1
       }
     ]
