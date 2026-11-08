@@ -22,14 +22,21 @@ import org.joml.Matrix4f;
 
 /**
  * Titan's sky: a thick orange photochemical haze with no stars and no blue, darker brown-orange toward the zenith, the
- * sun only a soft pale smudge through it, and Saturn hidden entirely. The haze is drawn as a smooth colour dome (no
- * texture), fog is thick (the horizon fades into orange a few chunks away), and daylight is dim and warm.
+ * sun only a soft pale smudge through it, and Saturn no more than a very faint pale glow where it hangs behind the haze
+ * (no disc). The haze is drawn as a smooth colour dome (no texture), fog is thick (the horizon fades into orange a few
+ * chunks away), and daylight is dim and warm.
  */
 public class TitanSkyEffects extends DimensionSpecialEffects {
     private static final float[] HORIZON = rgb(SaturnData.TITAN_FOG);
     private static final float[] ZENITH = rgb(0x6E4422);
     private static final int BANDS = 12;
     private static final int SEGMENTS = 32;
+    /** Saturn's glow through the haze: pale gold, radius on the sky sphere (100 units out) and peak opacity. */
+    private static final float[] SATURN = rgb(0xE6D3A3);
+    private static final float SATURN_GLOW_RADIUS = 9F;
+    private static final float SATURN_GLOW_ALPHA = 0.09F;
+    private ClientLevel cachedLevel;
+    private double poleDistance = 6000;
 
     public TitanSkyEffects() {
         super(Float.NaN, true, SkyType.NONE, false, false);
@@ -118,6 +125,7 @@ public class TitanSkyEffects extends DimensionSpecialEffects {
             }
         }
         BufferUploader.drawWithShader(bb.buildOrThrow());
+        saturnGlow(level, camera, m, day);
         // the sun: a soft pale glow, no disc
         ps.pushPose();
         ps.mulPose(Axis.YP.rotationDegrees(-90F));
@@ -138,6 +146,42 @@ public class TitanSkyEffects extends DimensionSpecialEffects {
         RenderSystem.depthMask(true);
         setupFog.run();
         return true;
+    }
+
+    /**
+     * Saturn behind the haze: where it hangs (still, over the near side), a soft pale-gold glow that fades out to nothing,
+     * a little stronger in daylight when the haze is lit. Not a disc: the haze hides the planet itself.
+     */
+    private void saturnGlow(ClientLevel level, Camera camera, Matrix4f m, float day) {
+        if (level != cachedLevel) {
+            cachedLevel = level;
+            poleDistance = level.registryAccess().registry(com.pizzaparker07.spacebreaker.content.worldgen.TerrainProfile.REGISTRY)
+                    .flatMap(r -> r.stream().filter(t -> t.body().equals(com.pizzaparker07.spacebreaker.content.saturn.SaturnModule.TITAN.location())).findFirst())
+                    .map(com.pizzaparker07.spacebreaker.content.worldgen.TerrainProfile::poleDistance).orElse(6000.0);
+        }
+        Vec3 cam = camera.getPosition();
+        double lat = com.pizzaparker07.spacebreaker.content.worldgen.PlanetTerrain.latitude(cam.z, poleDistance);
+        double lon = 90 * cam.x / poleDistance;
+        org.joml.Vector3d e = SkyMath.parentDirection(lat, lon, com.pizzaparker07.spacebreaker.content.worldgen.PlanetTime.dayFraction(level));
+        if (e.y < -0.1) {
+            return;
+        }
+        org.joml.Vector3d worldUp = Math.abs(e.y) > 0.98 ? new org.joml.Vector3d(0, 0, -1) : new org.joml.Vector3d(0, 1, 0);
+        org.joml.Vector3d up = new org.joml.Vector3d(worldUp).sub(new org.joml.Vector3d(e).mul(worldUp.dot(e))).normalize();
+        org.joml.Vector3d right = new org.joml.Vector3d(e).cross(up).normalize();
+        float a = SATURN_GLOW_ALPHA * (0.35F + 0.65F * day);
+        RenderSystem.blendFunc(com.mojang.blaze3d.platform.GlStateManager.SourceFactor.SRC_ALPHA, com.mojang.blaze3d.platform.GlStateManager.DestFactor.ONE);
+        BufferBuilder glow = Tesselator.getInstance().begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
+        glow.addVertex(m, (float) (e.x * 100), (float) (e.y * 100), (float) (e.z * 100)).setColor(SATURN[0], SATURN[1], SATURN[2], a);
+        for (int k = 0; k <= 32; k++) {
+            double t = Math.PI * 2 * k / 32;
+            double rx = (right.x * Math.cos(t) + up.x * Math.sin(t)) * SATURN_GLOW_RADIUS;
+            double ry = (right.y * Math.cos(t) + up.y * Math.sin(t)) * SATURN_GLOW_RADIUS;
+            double rz = (right.z * Math.cos(t) + up.z * Math.sin(t)) * SATURN_GLOW_RADIUS;
+            glow.addVertex(m, (float) (e.x * 100 + rx), (float) (e.y * 100 + ry), (float) (e.z * 100 + rz)).setColor(SATURN[0], SATURN[1], SATURN[2], 0F);
+        }
+        BufferUploader.drawWithShader(glow.buildOrThrow());
+        RenderSystem.defaultBlendFunc();
     }
 
     private static void dome(BufferBuilder bb, Matrix4f m, double az, double el, float day) {
