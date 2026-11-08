@@ -223,59 +223,62 @@ def elder_eyes():
 # --------------------------------------------------------------------------- dust swimmer
 
 def dust_swimmer():
-    """Mottled dust-grey back (camouflage) with darker spots, a pale belly, eyes on short stalks."""
+    """Dust-grey back with dark spots and a dark spine, pale fin edges and belly, a pale sifting slit, eyes on stalks."""
     r = DUST
     cv = Canvas(64, 64)
     n = clustered(64, 64, 17, passes=1)
-    spots = {(1, 2), (5, 3), (2, 6), (6, 7), (3, 10), (1, 12), (6, 11), (4, 5)}
+    spots = {(1, 2), (6, 3), (1, 6), (6, 7), (1, 10), (6, 11), (2, 13), (5, 1)}
 
     def body(face, x, y, fw, fh):
         if face == 'top':
-            t = 4
+            t = 3
             if x in (0, fw - 1):
-                t = 3
-            if (x, y) in spots or (x - 1, y) in spots:
-                t = 1  # dark spots
-            if x in (3, 4) and y % 4 == 1:
-                t = 5  # pale spine scales
+                t = 6  # pale flank line
+            if (x, y) in spots:
+                t = 0  # dark spots
+            if x in (3, 4):
+                t = 1  # dark spine stripe under the ridge
             return noise_pick(r, t, n, x, y)
         if face == 'bottom':
             return r[6] if (x + y) % 4 else r[5]
-        t = 3 if y == 0 else (2 if y == 1 else 5)
+        t = 5 if y == 0 else (2 if y == 1 else 6)
         return noise_pick(r, t, n, x + 30, y + 40)
 
     paint(cv, 0, 0, 8, 3, 14, body)
 
     def head(face, x, y, fw, fh):
         if face == 'top':
-            return r[4] if y > 0 else r[5]
+            return r[6] if y == 0 else noise_pick(r, 3, n, x + 50, y)
         if face == 'front':
-            return r[1] if y == 1 and 1 <= x <= 4 else r[3]  # wide mouth slit for sifting dust
+            return r[6] if y == 1 and 1 <= x <= 5 else r[3]  # wide pale sifting slit
         return r[3] if face != 'bottom' else r[6]
 
-    paint(cv, 0, 17, 6, 2, 4, head)
-    paint(cv, 20, 17, 1, 2, 1, lambda f, x, y, fw, fh: (P.ILMENITE[1] if y == 0 else r[3]) if f != 'top' else P.ILMENITE[5])
+    paint(cv, 0, 17, 7, 2, 4, head)
+    paint(cv, 22, 17, 1, 3, 1, lambda f, x, y, fw, fh: (P.ILMENITE[1] if y == 0 else r[2]) if f != 'top' else P.ILMENITE[5])
 
     def fin(face, x, y, fw, fh):
         if face == 'top':
-            if y == fh - 1 or x == fw - 1:
-                return r[5]  # pale trailing edge
-            return r[2] if x % 2 == 0 else r[4]  # rays
+            if y == 0 or y == fh - 1 or x == fw - 1:
+                return r[6]  # pale edge all round
+            return r[1] if x % 2 == 0 else r[3]  # rays
         if face == 'bottom':
             return r[6]
-        return r[3]
+        return r[5]
 
-    paint(cv, 24, 17, 7, 1, 6, fin)
+    paint(cv, 0, 34, 7, 1, 8, fin)
+    paint(cv, 30, 34, 3, 1, 5, fin)
 
-    def dorsal(face, x, y, fw, fh):
+    def plate(face, x, y, fw, fh):
+        # dark ridge plates with a pale cutting edge on top and on the leading edge
+        if face == 'top' or (face in ('right', 'left') and y == 0):
+            return r[6]
         if face in ('right', 'left'):
-            if y == 0:
-                return r[5]
-            return r[2] if x % 2 == 0 else r[3]
-        return r[4]
+            return r[1] if x > 0 else r[3]
+        return r[1]
 
-    paint(cv, 44, 0, 1, 5, 3, dorsal)
-    paint(cv, 52, 0, 1, 3, 3, dorsal)
+    paint(cv, 44, 0, 1, 4, 3, plate)
+    paint(cv, 52, 0, 1, 3, 3, plate)
+    paint(cv, 44, 8, 1, 2, 3, plate)
 
     def tail(face, x, y, fw, fh):
         if face == 'top':
@@ -285,7 +288,7 @@ def dust_swimmer():
         return r[2]
 
     paint(cv, 0, 25, 3, 2, 7, tail)
-    paint(cv, 20, 25, 1, 4, 3, lambda f, x, y, fw, fh: r[5] if y == 0 else (r[3] if x % 2 else r[2]))
+    paint(cv, 20, 25, 1, 5, 4, lambda f, x, y, fw, fh: r[6] if y == 0 or x == fw - 1 else (r[2] if x % 2 else r[1]))
     return cv
 
 
