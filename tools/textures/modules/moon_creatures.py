@@ -471,34 +471,38 @@ CORE = ramp('#1d4f7a', '#3d86c4', '#7cc2f0', '#d2efff')
 
 
 def heat_siphon():
-    """Frost-crystal body: cold blue-grey facets with pale edges, a dark feeding mouth, translucent-looking shards."""
+    """Frost crystal: dark blue-grey inside, pale bright facet edges (reads as ice), a dark mouth, pale tendrils."""
     r = FROST
     c = CORE
-    cv = Canvas(64, 32)
-    rng = random.Random(41)
+    cv = Canvas(64, 64)
 
-    def body(face, x, y, fw, fh):
-        if face == 'top':
-            if x in (0, fw - 1) or y in (0, fh - 1):
-                return r[4]
-            # diagonal facets
-            return r[3] if (x + y) % 4 == 0 else (r[2] if (x - y) % 5 == 0 else r[1 + (rng.random() < 0.2)])
+    def crystal(face, x, y, fw, fh):
+        edge = x in (0, fw - 1) or y in (0, fh - 1)
         if face == 'bottom':
-            return c[0] if 2 <= x < fw - 2 and 3 <= y < fh - 3 else r[0]
-        if y == 0:
+            return c[0] if not edge else r[2]
+        if edge:
+            return r[5] if face == 'top' or y == 0 else r[4]
+        # inner facets: diagonal light streaks through dark ice
+        if (x + y) % 4 == 0:
             return r[4]
-        return r[2] if (x + y) % 3 == 0 else r[1]
+        if (x - y) % 5 == 0:
+            return r[3]
+        return r[1] if (x * 3 + y) % 7 else r[2]
+
+    paint(cv, 0, 0, 6, 5, 6, crystal)
+    paint(cv, 0, 11, 6, 4, 6, crystal)
+    paint(cv, 24, 0, 4, 2, 4, lambda f, x, y, fw, fh: c[1] if f == 'bottom' else (r[2] if y else r[3]))
 
     def head(face, x, y, fw, fh):
         if face == 'front':
-            if y == fh - 1 and 1 <= x < fw - 1:
-                return r[0]  # mouth slit
-            if y == 0 and x in (1, fw - 2):
-                return c[3]  # eye glints
-            return r[2]
-        if face == 'top':
-            return r[4] if y == 0 else r[3]
-        return r[1]
+            if y == 1 and x == 1:
+                return MOUTH[1]  # the feeding mouth, dark orange inside
+            if y == 1:
+                return r[0]
+            return r[3]
+        return r[4] if face == 'top' else r[2]
+
+    paint(cv, 40, 0, 3, 2, 2, head)
 
     def shard(face, x, y, fw, fh):
         if face in ('top', 'bottom'):
@@ -506,35 +510,38 @@ def heat_siphon():
         t = 5 if x == 0 else 4
         return r[t] if y < 2 else (c[1] if y == fh - 1 else r[t - 1])
 
-    def leg(face, x, y, fw, fh):
-        return r[3] if x % 2 == 0 else r[2]
-
-    paint(cv, 0, 0, 8, 4, 10, body)
-    paint(cv, 0, 14, 6, 3, 4, head)
-    paint(cv, 36, 0, 2, 7, 2, shard)
-    paint(cv, 44, 0, 2, 5, 2, shard)
-    paint(cv, 20, 14, 6, 1, 1, leg)
+    paint(cv, 48, 0, 2, 7, 2, shard)
+    paint(cv, 56, 0, 2, 5, 2, shard)
+    paint(cv, 0, 21, 1, 4, 1, lambda f, x, y, fw, fh: r[5] if y == 3 else (r[4] if y > 1 else r[3]))
     return cv
 
 
 def heat_siphon_glow():
-    """Glowing parts: the core seen through the belly, the shard tips, the eyes. Brightness is scaled by the renderer."""
+    """Glowing parts: the core seen through the belly and the facets, the shard tips, the eyes. Scaled by the renderer."""
     c = CORE
-    cv = Canvas(64, 32)
-    # belly (bottom face at (18, 0), 8 x 10)
-    for x in range(2, 6):
-        for y in range(3, 7):
-            cv[18 + x, y] = c[2] if (x + y) % 2 else c[1]
+    cv = Canvas(64, 64)
+    # belly (bottom of the core at (12, 0), 6 x 6) and the hanging core bulb under it
+    for x in range(1, 5):
+        for y in range(1, 5):
+            cv[12 + x, y] = c[2] if (x + y) % 2 else c[1]
+    for x in range(4):
+        for y in range(4):
+            cv[32 + x, y] = c[2]
+    # a cold light deep in each side facet
+    for u, v, w in ((0, 6, 6), (0, 17, 6)):
+        for side in range(4):
+            cv[u + side * 6 + 2, v + 2] = c[1]
+            cv[u + side * 6 + 3, v + 2] = c[2]
     # shard tips: side faces start at v + d
-    for u, h in ((36, 7), (44, 5)):
+    for u, h in ((48, 7), (56, 5)):
         for x in range(8):
-            cv[u + x, 2 + h - 1] = c[2]
-            cv[u + x, 2 + h - 2] = c[1]
+            cv.put(u + x, 2 + h - 1, c[2])
+            cv.put(u + x, 2 + h - 2, c[1])
         cv[u + 2, 0] = c[3]
         cv[u + 3, 0] = c[3]
-    # eyes on the head front (4, 18)
-    cv[5, 18] = c[3]
-    cv[8, 18] = c[3]
+    # eyes on the head front (42, 2), 3 x 2
+    cv[42, 2] = c[3]
+    cv[44, 2] = c[3]
     return cv
 
 
