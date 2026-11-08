@@ -138,7 +138,7 @@ public class EvaSuitModel extends HumanoidModel<LivingEntity> {
         PartDefinition root = mesh.getRoot();
         PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create()
                         .texOffs(0, 0).addBox(-4F, 0F, -2F, 8, 12, 4, new CubeDeformation(1.0F)) // upper torso
-                        .texOffs(24, 0).addBox(-3F, 3F, -5F, 6, 3, 2),      // chest control box
+                        .texOffs(24, 0).addBox(-2F, 3F, -4F, 4, 2, 1),      // chest control box
                 PartPose.ZERO);
         // the backpack hangs from the shoulders (pivot at its top edge) so it can sway a little
         PartDefinition pack = body.addOrReplaceChild("pack", CubeListBuilder.create()
@@ -266,7 +266,7 @@ public class EvaSuitModel extends HumanoidModel<LivingEntity> {
                 .texOffs(24, 0).addBox(-6F, -8F, -3.04F, 1, 2, 0)
                 .texOffs(26, 0).addBox(5F, -8F, -3.04F, 1, 2, 0), PartPose.ZERO);
         root.addOrReplaceChild("display", CubeListBuilder.create()
-                .texOffs(24, 4).addBox(-2F, 4F, -5.04F, 4, 1, 0)       // chest display
+                .texOffs(24, 4).addBox(-2F, 3F, -4.04F, 4, 1, 0)       // chest display
                 .texOffs(24, 6).addBox(-2F, -1.04F, 3.5F, 1, 0, 1),    // status light on the vent cap
                 PartPose.ZERO);
         return LayerDefinition.create(mesh, 64, 32);

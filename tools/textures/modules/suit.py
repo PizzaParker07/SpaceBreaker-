@@ -36,7 +36,7 @@ HELMET = {
 }
 TORSO = {
     'torso': (0, 0, 8, 12, 4),
-    'box': (24, 0, 6, 3, 2),
+    'box': (24, 0, 4, 2, 1),
     'plss': (0, 32, 8, 10, 2),
     'bottle_r': (24, 32, 2, 8, 2),
     'bottle_l': (32, 32, 2, 8, 2),
@@ -301,14 +301,10 @@ def eva_torso() -> Canvas:
     box(cv, TORSO['torso'], north=chest, south=back, west=flank, east=flank,
         top=lambda x, y, w, h: W[7] if 0 < y < h - 1 else W[6], bottom=solid(W[3]))
 
-    # chest control box: grey panel, display window, knobs and a row of switches
+    # chest control box: small grey panel, one thin display strip, a knob and a row of switches
     def panel(x, y, w, h):
         if y == 0:
-            return S[6]
-        if y == 1:
-            if 1 <= x <= 4:
-                return S[1]                      # display window (glows from the overlay)
-            return S[7] if x == 0 else S[3]      # knobs
+            return S[1] if x < 3 else S[7]          # display strip (lit from the overlay) and a knob
         return S[6] if x % 2 == 0 else S[3]      # switches
     box(cv, TORSO['box'], north=panel, top=solid(S[6]), bottom=solid(S[2]),
         west=solid(S[5]), east=solid(S[3]), south=solid(S[3]))
@@ -484,8 +480,10 @@ def eva_suit_overlay() -> Canvas:
     cv[24, 1] = L[3]
     cv[26, 0] = L[5]
     cv[26, 1] = L[3]
-    for x, c in enumerate((C[6], C[4], (98, 210, 120), C[4])):
-        cv[24 + x, 4] = c
+    # chest display: one dim, fading three-pixel strip (a single readout, never two "eyes")
+    cv[24, 4] = C[3]
+    cv[25, 4] = C[3]
+    cv[26, 4] = C[2]
     cv[25, 6] = (90, 220, 110)
     cv[26, 6] = (90, 220, 110)
     return cv
