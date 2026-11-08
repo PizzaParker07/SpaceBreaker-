@@ -425,20 +425,41 @@ public class OutpostPiece extends StructurePiece {
                 net.minecraft.world.level.block.state.properties.SlabType.TOP), x, F + 3, z, box);
     }
 
-    /** A greenhouse that lost its air: glass roof, dry hydroponic trays, dead plants, a seed store. */
+    /**
+     * A greenhouse that lost its air: a pressure-glass roof, two grow beds of dry soil with dead plants under light bars,
+     * the irrigation line along them, the water tank frozen solid, and the seed store.
+     */
     private void furnishGreenhouse(WorldGenLevel level, BoundingBox box) {
         for (int x = 23; x <= 28; x++) {
             for (int z = 12; z <= 18; z++) {
                 placeBlock(level, s(BaseBlocks.PRESSURE_GLASS.get()), x, F + 5, z, box); // glass roof
                 placeBlock(level, s(Blocks.AIR), x, F + 6, z, box);                      // no regolith shield on glass
-                if ((z == 13 || z == 17) && x >= 23 && x <= 27) {
-                    placeBlock(level, s(Blocks.COARSE_DIRT), x, F, z, box);
-                    placeBlock(level, x % 2 == 0 ? s(Blocks.POTTED_DEAD_BUSH) : s(Blocks.FLOWER_POT), x, F + 1, z, box);
-                }
             }
         }
-        placeBlock(level, s(Blocks.COMPOSTER), 28, F + 1, 12, box);
-        placeBlock(level, s(Blocks.REDSTONE_LAMP), 28, F + 4, 15, box);
+        for (int z : new int[]{13, 17}) {
+            for (int x = 23; x <= 28; x++) {
+                if (x <= 27) {
+                    // the bed: soil in a deck-edged trough, a dead plant in every other cell
+                    placeBlock(level, s(Blocks.COARSE_DIRT), x, F + 1, z, box);
+                    placeBlock(level, (x & 1) == 0 ? s(Blocks.DEAD_BUSH) : s(Blocks.AIR), x, F + 2, z, box);
+                }
+                // a light bar from wall to wall above the bed, a grow light every other block
+                placeBlock(level, (x & 1) == 1 ? s(BaseBlocks.LED_PANEL.get()) : s(BaseBlocks.CABLE_DUCT.get()), x, F + 4, z, box);
+            }
+            // the irrigation line along the outer side of the bed
+            int side = z == 13 ? 12 : 18;
+            for (int x = 23; x <= 27; x++) {
+                placeBlock(level, BaseBlocks.ALUMINUM_PANEL.slab().get().defaultBlockState(), x, F + 1, side, box);
+            }
+            placeBlock(level, s(BaseBlocks.PIPE_DUCT.get()), 28, F + 1, z, box);
+        }
+        // the water tank, frozen solid when the heating failed, piped into the beds
+        placeBlock(level, s(MoonModule.LUNAR_ICE.get()), 28, F + 1, 15, box);
+        placeBlock(level, s(MoonModule.LUNAR_ICE.get()), 28, F + 2, 15, box);
+        placeBlock(level, s(BaseBlocks.PRESSURE_GLASS.get()), 28, F + 3, 15, box);
+        for (int z : new int[]{14, 16}) {
+            placeBlock(level, s(BaseBlocks.PIPE_DUCT.get()), 28, F + 1, z, box);
+        }
         container(level, box, null, 28, F + 1, 18, MoonLoot.OUTPOST_GREENHOUSE, false);
         container(level, box, null, 23, F + 1, 15, MoonLoot.OUTPOST_GREENHOUSE, true);
     }
