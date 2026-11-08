@@ -365,10 +365,17 @@ def dark_crater_fill():
     return dust(P.DARK_FILL, 18301)
 
 
+# Rim burrower (Oberon): reddish-grey hide like the moon's dusky soil, darker bands on the spine ridge, pale bone shovel
+# and claws.
+BURROW_HIDE = [hexc(h) for h in ('#2a2420', '#3a322d', '#4a403a', '#5a4f48', '#6c5f56', '#7f7066', '#938377')]
+BURROW_BONE = [hexc(h) for h in ('#8f826f', '#b3a58f', '#d0c3ad', '#e6dbc7')]
+
+
 def rim_burrower():
-    """64x32 sheet for RimBurrowerModel: reddish-grey ridged back, darker sides, pale claws, small dark eyes."""
+    """64x32 sheet for RimBurrowerModel (box layout in moon_creatures.faces)."""
     cv = Canvas(64, 32)
-    r = P.BURROWER
+    r = BURROW_HIDE
+    b = BURROW_BONE
     n = clustered(64, 64, 18401, passes=1)
 
     def body(face, x, y, fw, fh):
@@ -376,19 +383,29 @@ def rim_burrower():
             return r[1]
         if face == 'top':
             return r[3] if x % 3 else r[4]
-        return r[3] if y == 0 else noise_pick(r, 2, n, x, y)
+        if y == fh - 1:
+            return r[2]
+        return noise_pick(r, 3, n, x, y)
 
-    paint(cv, 0, 0, 8, 4, 10, body)
-    paint(cv, 36, 0, 2, 1, 8, lambda f, x, y, fw, fh: r[4])
+    def hump(face, x, y, fw, fh):
+        if face == 'top':
+            return r[4] if (y % 2) else r[5]
+        return noise_pick(r, 4, n, x + 30, y)
 
     def head(face, x, y, fw, fh):
-        if face == 'front' and y == 0 and x in (1, 3):
-            return r[0]
-        return noise_pick(r, 3, n, x + 40, y + 10)
+        if face == 'top' and y == 0 and x in (0, fw - 1):
+            return hexc('#141010')  # small eyes on the top corners
+        return noise_pick(r, 4, n, x + 40, y + 10)
 
-    paint(cv, 0, 14, 5, 3, 4, head)
-    paint(cv, 20, 14, 3, 2, 3, lambda f, x, y, fw, fh: r[5] if f == 'front' else r[2])
-    paint(cv, 32, 14, 2, 2, 2, lambda f, x, y, fw, fh: r[1])
+    paint(cv, 0, 0, 7, 4, 8, body)
+    paint(cv, 30, 0, 5, 2, 5, hump)
+    paint(cv, 50, 0, 2, 1, 1, lambda f, x, y, fw, fh: r[1] if f != 'top' else r[2])
+    paint(cv, 0, 12, 6, 2, 4, head)
+    paint(cv, 20, 12, 6, 1, 2, lambda f, x, y, fw, fh: b[3] if f == 'top' else (b[1] if f == 'bottom' else b[2]))
+    paint(cv, 36, 12, 2, 3, 2, lambda f, x, y, fw, fh: noise_pick(r, 3, n, x + 5, y + 50))
+    paint(cv, 44, 12, 3, 1, 3, lambda f, x, y, fw, fh: b[2] if f == 'top' else b[1])
+    paint(cv, 56, 0, 1, 1, 2, lambda f, x, y, fw, fh: b[3] if f == 'front' else b[2])
+    paint(cv, 20, 16, 2, 2, 2, lambda f, x, y, fw, fh: r[2])
     return cv
 
 

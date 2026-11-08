@@ -401,7 +401,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | Enceladus 🎨 | Gayzer Süzülücüsü (gayzer bulutlarında süzülen parlak çan) |
 | Titania 🎨 | Moloz Yuvarlakçası (plakalı otlayıcı; vurulunca top olup hızla yuvarlanarak kaçar, top halindeyken hasarın bir kısmını alır; kömürle çoğalır) |
 | Umbriel 🎨 | Alacakaranlık Sıçrayanı (mor-gri, sırtı kaya plakalı, geniş yarasa kulaklı ve karanlıkta hafif ışıyan iri gözlü, püsküllü uzun kuyruklu, uzun ayaklı sıçrayıcı; konduğu yerde toz halkası; ovalarda yavaş, yüksek sıçrayışlarla gezer; vurulunca karbon tozu bulutu kaldırıp yakınındakileri kısa süre kör eder; kömürle çoğalır) |
-| Oberon 🎨 | Kenar Kazıcısı (geniş pençeli basık otlayıcı; gevşek zeminde vurulunca kendini toprağa gömer ve bir süre hasar almaz, sert buzda yalnızca kaçar; amonyak kristaliyle çoğalır) |
+| Oberon 🎨 | Kenar Kazıcısı (kalçası kambur, sırtında bantlı sırt sırtı, basık geniş başında açık renkli kürek burun ve üç tırnaklı iri kazıcı pençeli otlayıcı; yürürken pençeleriyle uzanıp çeker; gevşek zeminde vurulunca kendini toprağa gömer ve bir süre hasar almaz, sert buzda yalnızca kaçar; amonyak kristaliyle çoğalır) |
 | Ariel 🎨 | Kırağı Güvesi (tüylü gövde, tüy antenler; ayrık ön/arka buz kanatlarında kırağı damarları, göz benekleri ve tırtıklı kenar, arka çift biraz geriden çırpar; vadi çıkıntılarının altında kanatlarını çatı gibi kapatıp tüner, karanlıkta uçar) |
 | Miranda 🎨 | Uçurum Yapışkanı (beş kollu, yassı otlayıcı; duvarlara tırmanır, düşme hasarı almaz; kömürle çoğalır) |
 | Triton 🎨 | Gayzer Böceği (gayzer tozuyla beslenir, gayzer fırlatınca kanat kınlarını açıp süzülerek iner, düşme hasarı almaz; gayzer tozuyla çoğalır) |
