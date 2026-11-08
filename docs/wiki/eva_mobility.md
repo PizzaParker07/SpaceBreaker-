@@ -4,6 +4,13 @@
 
 **Manevra Ünitesi** · **Manyetik EVA Botları**
 
+<a id="low_gravity"></a>
+### Düşük yerçekimi
+- Dünya'dan zayıf yerçekiminde daha yükseğe zıplar, daha yavaş düşersin; başka her şey de öyle: yere bıraktığın eşyalar, oklar, düşen bloklar ve TNT yerel yerçekimiyle düşer.
+- Havadayken yönünü daha az değiştirebilirsin: Ay'da koşarak zıplayınca yaklaşık 7 blok, Ceres'te yaklaşık 10 blok gidersin. Yerde, suda ve yakıtı dolu manevra ünitesiyle hiçbir şey değişmez.
+- Düşüşten sonra yere değince biraz toz kalkar, yumuşak bir tok ses duyulur.
+- **Elytra hava ister:** vakumda kanatlar kapanır ve düşersin; Mars'ta süzülmenin onda birinden azı kalır.
+
 ### Manevra ünitesi
 Soğuk gazla uçan sırt ünitesi. [EVA Gövdesi](eva_suit)'e takılır (tüp gibi: giysiyi giy, üniteyle `Sağ Tık`).
 - `Boşluk`: yüksel · `Shift`: alçal.
@@ -34,6 +41,13 @@ Düşük ve sıfır yerçekiminde seni zemine yapıştırır. Bırakmak için `S
 *Related research: EVA Mobility*
 
 **Maneuvering Unit** · **Magnetic EVA Boots**
+
+<a id="low_gravity"></a>
+### Low gravity
+- Below Earth gravity you jump higher and fall slower, and so does everything else: dropped items, arrows, falling blocks and TNT fall at the local gravity.
+- In the air you can steer less: a sprint hop on the Moon carries about 7 blocks, on Ceres about 10. On the ground, in water and with a fuelled maneuvering unit nothing changes.
+- Landing after a fall kicks up a little dust with a soft thud.
+- **Elytra need air:** in vacuum they fold and you fall; on Mars less than a tenth of the glide is left.
 
 ### Maneuvering unit
 A cold-gas backpack. It fits onto an [EVA Torso](eva_suit) (like a tank: wear the suit and `Right Click` the unit).
