@@ -86,4 +86,14 @@ public final class LowGravityGameTests {
         helper.assertTrue(Math.abs(sprintJump(1.0, LowGravity.airControl(1.0)) - sprintJump(1.0, 1.0)) < 1e-9, "Earth jumps unchanged");
         helper.succeed();
     }
+
+    @GameTest(template = EMPTY)
+    public static void floatingMinersAreSlowedLessAndNotAtAllOnATether(GameTestHelper helper) {
+        helper.assertTrue(LowGravity.floatingMiningBoost(0.0, false, false) * 0.2F == 0.5F, "floating in orbit: two times slower, not five");
+        helper.assertTrue(LowGravity.floatingMiningBoost(0.0, false, true) * 0.2F == 1F, "on a tether: full speed");
+        helper.assertTrue(LowGravity.floatingMiningBoost(0.0, true, false) == 1F, "standing (magnetic boots): vanilla");
+        helper.assertTrue(LowGravity.floatingMiningBoost(MOON_F, false, true) == 1F, "a jump on the Moon keeps the vanilla penalty");
+        helper.assertTrue(LowGravity.floatingMiningBoost(1.0, false, false) == 1F, "Earth unchanged");
+        helper.succeed();
+    }
 }

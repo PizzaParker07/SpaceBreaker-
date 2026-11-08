@@ -52,6 +52,30 @@ public final class LowGravity {
         return f >= 1.0 ? 1.0 : Math.max(MIN_AIR_CONTROL, Math.sqrt(Math.max(0.0, f)));
     }
 
+    /**
+     * Mining speed multiplier on top of vanilla's "not on the ground: five times slower" while floating in
+     * microgravity: the penalty becomes two times, and none at all on a tether (the line gives something to brace
+     * against). Elsewhere, and when standing (magnetic boots), vanilla is kept.
+     */
+    public static float floatingMiningBoost(double f, boolean onGround, boolean tethered) {
+        if (onGround || !ZeroG.microGravity(f)) {
+            return 1F;
+        }
+        return tethered ? 5F : 2.5F;
+    }
+
+    @SubscribeEvent
+    static void onBreakSpeed(net.neoforged.neoforge.event.entity.player.PlayerEvent.BreakSpeed event) {
+        var p = event.getEntity();
+        if (p.onGround()) {
+            return;
+        }
+        float boost = floatingMiningBoost(Gravity.factorFor(p), false, Tether.isTethered(p));
+        if (boost != 1F) {
+            event.setNewSpeed(event.getNewSpeed() * boost);
+        }
+    }
+
     /** The gravity factor of a level, looked up once per level and tick. */
     static double factor(Level level) {
         int side = level.isClientSide ? 1 : 0;
