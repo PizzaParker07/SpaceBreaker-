@@ -167,7 +167,8 @@ public final class JupiterData {
     }
 
     public static LineaeFeature.Config ganymedeGrooves() {
-        return new LineaeFeature.Config(s(GROOVED_ICE), Optional.of(s(BRIGHT_FROST)), 150, 0.07, 3.0, 2, Optional.empty(), 900, 0.6, 0, -70,
+        // the groove floors carry the bright frost, the ridge walls the layered grooved ice
+        return new LineaeFeature.Config(s(BRIGHT_FROST), Optional.of(s(GROOVED_ICE)), 150, 0.07, 3.0, 2, Optional.empty(), 900, 0.6, 0, -70,
                 "lowlands");
     }
 

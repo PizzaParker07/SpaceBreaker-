@@ -216,15 +216,17 @@ def ganymede_regolith(v=0):
 
 
 def grooved_ice():
-    """Bright young ice with fine parallel furrows (the grooves seen up close): horizontal grain."""
+    """Bright young ice laid down in layers (the walls of the grooves): horizontal grain, a darker parting every few
+    rows and a pale bed under it, so a wall of it reads as strata, not as snow."""
     r = P.GROOVED_ICE
     f = blend((blur_dir(white(10301), 3, 1, 0), 0.6), (clustered(16, 16, 10302), 0.4))
     cv, _ = quant(f, [r[1], r[2], r[3], r[4], r[5]], [8, 24, 36, 24, 8])
-    for y in (4, 11):
+    for y in (2, 7, 12):
         for x in range(16):
-            if (x + y) % 5:
+            if (x * 3 + y) % 4:
                 cv[x, y] = r[1]
-                cv[x, y + 1] = r[5] if x % 3 else r[4]
+                if x % 2:
+                    cv[x, y + 1] = r[5]
     return cv
 
 
