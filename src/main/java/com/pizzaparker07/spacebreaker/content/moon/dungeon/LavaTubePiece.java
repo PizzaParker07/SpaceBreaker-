@@ -3,6 +3,8 @@ package com.pizzaparker07.spacebreaker.content.moon.dungeon;
 import com.pizzaparker07.spacebreaker.content.machines.MachinesModule;
 import com.pizzaparker07.spacebreaker.content.moon.MoonModule;
 import com.pizzaparker07.spacebreaker.content.moon.entity.MoonEntities;
+import com.pizzaparker07.spacebreaker.content.rocketry.RocketryModule;
+import com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
@@ -218,16 +220,45 @@ public class LavaTubePiece extends StructurePiece {
         if (fy == Integer.MIN_VALUE) {
             return;
         }
-        // crumpled bus, foil, a solar wing and a still-glowing beacon
-        place(level, box, x, fy, z, Blocks.IRON_BLOCK.defaultBlockState());
-        place(level, box, x + 1, fy, z, Blocks.WEATHERED_COPPER.defaultBlockState());
-        place(level, box, x, fy + 1, z, Blocks.EXPOSED_CUT_COPPER.defaultBlockState());
-        place(level, box, x - 1, fy, z + 1, Blocks.YELLOW_TERRACOTTA.defaultBlockState());
-        place(level, box, x + 1, fy + 1, z, Blocks.SEA_LANTERN.defaultBlockState());
-        place(level, box, x - 2, fy, z - 1, MachinesModule.SOLAR_PANEL.get().defaultBlockState());
-        place(level, box, x + 2, fy, z + 1, Blocks.IRON_BARS.defaultBlockState());
-        place(level, box, x, fy, z - 2, Blocks.CHAIN.defaultBlockState());
-        BlockPos chest = new BlockPos(x - 1, fy, z - 1);
+        // a robotic lander that came down hard: a gold-foiled descent stage on four splayed legs (the south-east one
+        // snapped, so the stage sags that way), its engine under it, an instrument deck with a still-lit beacon and an
+        // antenna on top, one solar wing still on and the other torn off nearby
+        BlockState foil = com.pizzaparker07.spacebreaker.content.belt.LanderBlocks.GOLD_FOIL_CLADDING.get().defaultBlockState();
+        BlockState pad = BaseBlocks.ALUMINUM_PANEL.slab().get().defaultBlockState();
+        BlockState leg = BaseBlocks.RAILING.get().defaultBlockState();
+        for (int dx = -2; dx <= 2; dx += 4) {
+            for (int dz = -2; dz <= 2; dz += 4) {
+                if (dx > 0 && dz > 0) {
+                    place(level, box, x + 3, fy, z + 3, pad); // the broken leg's foot, thrown clear
+                    continue;
+                }
+                place(level, box, x + dx, fy, z + dz, pad);
+                place(level, box, x + dx, fy + 1, z + dz, leg);
+            }
+        }
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dz = -1; dz <= 1; dz++) {
+                int sag = dx + dz >= 1 ? 1 : 0; // the side over the broken leg sits a block lower
+                place(level, box, x + dx, fy + 1 - sag, z + dz, foil);
+                place(level, box, x + dx, fy + 2 - sag, z + dz, Math.abs(dx) + Math.abs(dz) == 2 ? pad : foil);
+            }
+        }
+        place(level, box, x, fy, z, com.pizzaparker07.spacebreaker.content.belt.LanderBlocks.SPENT_ENGINE.get().defaultBlockState());
+        // instrument deck: hull box with the beacon, antenna and a small dish
+        place(level, box, x - 1, fy + 3, z, RocketryModule.STATION_HULL.get().defaultBlockState());
+        place(level, box, x, fy + 3, z, BaseBlocks.LED_PANEL.get().defaultBlockState());
+        place(level, box, x, fy + 3, z - 1, pad);
+        place(level, box, x, fy + 4, z, Blocks.LIGHTNING_ROD.defaultBlockState());
+        place(level, box, x, fy + 5, z, pad); // the dish on the antenna mast
+        // solar wings
+        place(level, box, x - 2, fy + 2, z, MachinesModule.SOLAR_PANEL.get().defaultBlockState());
+        place(level, box, x - 3, fy + 2, z, MachinesModule.SOLAR_PANEL.get().defaultBlockState());
+        place(level, box, x + 3, fy, z - 1, MachinesModule.SOLAR_PANEL.get().defaultBlockState());
+        place(level, box, x + 2, fy, z - 1, BaseBlocks.GRATE.get().defaultBlockState());
+        // scraps of foil scattered by the impact
+        place(level, box, x - 3, fy, z + 3, foil);
+        place(level, box, x + 1, fy, z + 3, BaseBlocks.CABLE_DUCT.get().defaultBlockState());
+        BlockPos chest = new BlockPos(x - 3, fy, z - 1);
         if (box.isInside(chest)) {
             // the probe's store: the shared supply locker
             level.setBlock(chest, com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.BLOCK.get().defaultBlockState()
@@ -238,7 +269,7 @@ public class LavaTubePiece extends StructurePiece {
         }
         guard(level, box, MoonEntities.REGOLITH_TICK.get(), x + 3, fy, z - 2);
         guard(level, box, MoonEntities.REGOLITH_TICK.get(), x - 3, fy, z + 2);
-        guard(level, box, MoonEntities.GLIMMER_BEETLE.get(), x + 1, fy, z + 3);
+        guard(level, box, MoonEntities.GLIMMER_BEETLE.get(), x + 1, fy + 1, z + 3);
         guard(level, box, MoonEntities.GLIMMER_BEETLE.get(), x - 2, fy, z - 3);
     }
 

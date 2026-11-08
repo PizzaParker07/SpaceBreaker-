@@ -2,12 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    "CBC",
+    "PPP",
     "BOB"
   ],
   "key": {
-    "C": {
-      "item": "minecraft:coal_block"
+    "P": {
+      "item": "spacebreaker:ablative_shield_plate"
     },
     "B": {
       "item": "minecraft:brick"

@@ -5,6 +5,8 @@ import com.pizzaparker07.spacebreaker.content.machines.MachinesModule;
 import com.pizzaparker07.spacebreaker.content.machines.base.MachineBlockEntity;
 import com.pizzaparker07.spacebreaker.content.moon.MoonModule;
 import com.pizzaparker07.spacebreaker.content.moon.entity.MoonEntities;
+import com.pizzaparker07.spacebreaker.content.rocketry.RocketryModule;
+import com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -18,6 +20,7 @@ import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ChainBlock;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.LanternBlock;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -134,7 +137,7 @@ public class IceDrillPiece extends StructurePiece {
                 placeBlock(level, post, c[0], y, c[1], box);
             }
         }
-        BlockState beam = s(Blocks.SMOOTH_STONE_SLAB);
+        BlockState beam = s(BaseBlocks.TITANIUM_DECK.slab().get());
         for (int dx = -2; dx <= 2; dx++) {
             for (int dz = -2; dz <= 2; dz++) {
                 if (Math.abs(dx) == 2 || Math.abs(dz) == 2) {
@@ -159,21 +162,41 @@ public class IceDrillPiece extends StructurePiece {
         placeBlock(level, s(MoonModule.LUNAR_ICE.get()), cx, F - 4, cz, box);
     }
 
-    /** The control hut on the south-west corner, with the still-running RTG, a lamp and the station data. */
+    /**
+     * The control hut on the south-west corner: a prefab cabin like the outpost modules (hull frame, aluminium panels,
+     * dark skirting, a blue band with the windows, a cable tray), shielded with regolith bricks on the roof. Inside: the
+     * still-running RTG, two control desks, the station data and ceiling lights. A cable runs out to the rig.
+     */
     private void hut(WorldGenLevel level, BoundingBox box, BlockState wall, BlockState roof) {
         int x0 = 0;
         int z0 = 0;
         int x1 = 5;
         int z1 = 5;
+        BlockState frame = s(RocketryModule.STATION_HULL.get());
+        BlockState panel = s(BaseBlocks.ALUMINUM_PANEL.base().get());
         for (int x = x0; x <= x1; x++) {
             for (int z = z0; z <= z1; z++) {
-                boolean edge = x == x0 || x == x1 || z == z0 || z == z1;
-                placeBlock(level, s(Blocks.SMOOTH_STONE), x, F, z, box);
+                boolean ex = x == x0 || x == x1;
+                boolean ez = z == z0 || z == z1;
+                boolean edge = ex || ez;
+                placeBlock(level, edge ? frame : s(BaseBlocks.TITANIUM_DECK.base().get()), x, F, z, box);
                 for (int y = F + 1; y <= F + 3; y++) {
-                    boolean window = y == F + 2 && edge && (x == 2 || z == 3) && !(x == x1 && z == 3);
-                    placeBlock(level, edge ? (window ? s(Blocks.LIGHT_GRAY_STAINED_GLASS) : wall) : s(Blocks.AIR), x, y, z, box);
+                    BlockState st;
+                    if (ex && ez) {
+                        st = frame;
+                    } else if (edge) {
+                        boolean window = y == F + 2 && (x == 2 || z == 3) && !(x == x1 && z == 3);
+                        st = window ? s(RocketryModule.STATION_WINDOW.get()) : y == F + 1 ? s(Blocks.GRAY_CONCRETE)
+                                : y == F + 2 ? s(Blocks.BLUE_CONCRETE) : s(BaseBlocks.CABLE_DUCT.get());
+                    } else {
+                        st = s(Blocks.AIR);
+                    }
+                    placeBlock(level, st, x, y, z, box);
                 }
-                placeBlock(level, roof, x, F + 4, z, box);
+                placeBlock(level, edge ? frame : panel, x, F + 4, z, box);
+                if (!edge) {
+                    placeBlock(level, roof, x, F + 5, z, box); // regolith shield
+                }
             }
         }
         // doorway toward the platform, and a short walkway
@@ -182,18 +205,24 @@ public class IceDrillPiece extends StructurePiece {
         for (int x = x1 + 1; x <= 9; x++) {
             placeBlock(level, s(MoonModule.SINTERED_REGOLITH_BRICKS.base().get()), x, F, x <= 8 ? 3 : 4, box);
         }
+        // the power cable from the hut to the rig, laid along the walkway
+        for (int x = x1 + 1; x <= 8; x++) {
+            placeBlock(level, s(BaseBlocks.CABLE_DUCT.get()), x, F, 2, box);
+        }
+        placeBlock(level, s(BaseBlocks.CABLE_DUCT.get()), 9, F, 2, box);
+        placeBlock(level, s(BaseBlocks.CABLE_DUCT.get()), 9, F, 3, box);
         // the RTG, still warm, with its pellet
         placeBlock(level, MachinesModule.RTG.block().get().defaultBlockState(), 1, F + 1, 1, box);
         BlockPos rtg = PieceOrientation.worldPos(this, 1, F + 1, 1);
         if (box.isInside(rtg) && level.getBlockEntity(rtg) instanceof MachineBlockEntity be) {
             be.items().setStackInSlot(0, new ItemStack(MachinesModule.RTG_FUEL_PELLET.get()));
         }
-        placeBlock(level, s(Blocks.REDSTONE_LAMP).setValue(net.minecraft.world.level.block.RedstoneLampBlock.LIT, true), 3, F + 3, 3, box);
-        placeBlock(level, s(Blocks.REDSTONE_BLOCK), 3, F + 4, 3, box);
-        placeBlock(level, s(Blocks.CARTOGRAPHY_TABLE), 4, F + 1, 1, box);
-        placeBlock(level, s(Blocks.LECTERN), 1, F + 1, 4, box);
+        // the drill controls on the north wall, the core log on the west wall
+        placeBlock(level, MoonModule.CONTROL_DESK.get().defaultBlockState().setValue(HorizontalDirectionalBlock.FACING, Direction.SOUTH), 4, F + 1, 1, box);
+        placeBlock(level, MoonModule.CONTROL_DESK.get().defaultBlockState().setValue(HorizontalDirectionalBlock.FACING, Direction.EAST), 1, F + 1, 4, box);
         container(level, box, 2, F + 1, 1, MoonLoot.ICE_DRILL_CONTROL, true);
-        placeBlock(level, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), 2, F + 3, 4, box);
+        placeBlock(level, s(BaseBlocks.LED_PANEL.get()), 2, F + 4, 2, box);
+        placeBlock(level, s(BaseBlocks.LED_PANEL.get()), 3, F + 4, 4, box);
     }
 
     /** Core racks beside the derrick: barrels of drilled ice cores. */

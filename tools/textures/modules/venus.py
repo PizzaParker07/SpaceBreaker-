@@ -366,36 +366,53 @@ def acid_ray():
     return cv
 
 
+CORE = ramp('#c8742c', '#e89a40', '#f8c868')
+
+
 def cloud_jelly():
-    """Cloud Jelly: a pale translucent gas sac with lilac veins and a frilled rim; long lilac tentacles."""
-    cv = Canvas(64, 64)
-    n = clustered(64, 64, 6101, passes=2)
+    """Cloud Jelly (128x64): a pale translucent bell with lilac radial veins in tiers, a darker frilled skirt with a
+    scalloped edge, a warm glowing core seen through it, lilac tentacles banded paler toward their tips."""
+    cv = Canvas(128, 64)
+    n = clustered(128, 64, 6101, passes=2)
 
-    def sac(face, x, y, fw, fh):
-        v = n[(y * 3) % 64][(x * 3) % 64]
+    def bell(alpha):
+        def f(face, x, y, fw, fh):
+            v = n[(y * 3) % 64][(x * 3) % 128]
+            if face == 'top':
+                c = VEIN[0] if (x == fw // 2 or y == fh // 2 or x == y or x == fw - 1 - y) else (SAC[3] if v > 0.5 else SAC[2])
+                return (c[0], c[1], c[2], alpha + 20)
+            if face == 'bottom':
+                return (SAC[1][0], SAC[1][1], SAC[1][2], alpha - 30)
+            if x % 3 == 1:
+                return (VEIN[0][0], VEIN[0][1], VEIN[0][2], alpha + 30)
+            c = SAC[4] if y == 0 else (SAC[2] if v > 0.4 else SAC[1])
+            return (c[0], c[1], c[2], alpha)
+        return f
+
+    paint(cv, 0, 0, 16, 4, 16, bell(150))
+    paint(cv, 64, 0, 13, 4, 13, bell(160))
+    paint(cv, 0, 20, 9, 3, 9, bell(170))
+    paint(cv, 36, 20, 5, 2, 5, bell(190))
+
+    def skirt(face, x, y, fw, fh):
         if face in ('top', 'bottom'):
-            c = SAC[3] if v > 0.5 else SAC[2]
-            if (x == fw // 2 or y == fh // 2) and face == 'top':
-                c = VEIN[0]
-            return (c[0], c[1], c[2], 200)
-        if x % 4 == 1 and y > 1:
-            return (VEIN[0][0], VEIN[0][1], VEIN[0][2], 210)
-        c = SAC[4] if y < 2 else (SAC[2] if v > 0.4 else SAC[1])
-        return (c[0], c[1], c[2], 170)
+            edge = x in (0, fw - 1) or y in (0, fh - 1)
+            if edge and (x + y) % 2 == 0:
+                return None  # scalloped edge
+            c = VEIN[1] if edge else (VEIN[0] if (x + y) % 4 == 0 else SAC[1])
+            return (c[0], c[1], c[2], 210)
+        return (VEIN[1][0], VEIN[1][1], VEIN[1][2], 220) if x % 2 == 0 else None
 
-    paint(cv, 0, 0, 14, 12, 14, sac)
-
-    def rim(face, x, y, fw, fh):
-        c = VEIN[1] if (x // 2) % 2 == 0 else SAC[1]
-        return (c[0], c[1], c[2], 220)
-
-    paint(cv, 0, 26, 16, 2, 16, rim)
+    paint(cv, 0, 36, 18, 1, 18, skirt)
+    paint(cv, 56, 20, 5, 5, 5, lambda f, x, y, fw, fh: CORE[2] if 1 <= x <= 3 and 1 <= y <= 3 else CORE[1])
 
     def tentacle(face, x, y, fw, fh):
         c = VEIN[0] if y % 3 else VEIN[2]
         return (c[0], c[1], c[2], 230)
 
-    paint(cv, 56, 0, 1, 14, 1, tentacle)
+    paint(cv, 76, 20, 1, 10, 1, tentacle)
+    paint(cv, 80, 20, 1, 10, 1, lambda f, x, y, fw, fh: (SAC[2][0], SAC[2][1], SAC[2][2], 200) if y > fh - 3 else (VEIN[0][0], VEIN[0][1], VEIN[0][2], 220))
+    paint(cv, 84, 20, 2, 8, 2, lambda f, x, y, fw, fh: (VEIN[1][0], VEIN[1][1], VEIN[1][2], 230) if (x + y) % 2 else (SAC[2][0], SAC[2][1], SAC[2][2], 220))
     return cv
 
 

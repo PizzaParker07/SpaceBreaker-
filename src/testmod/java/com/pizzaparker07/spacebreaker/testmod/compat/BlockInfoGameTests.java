@@ -75,7 +75,9 @@ public final class BlockInfoGameTests {
             try (var in = Spacebreaker.class.getResourceAsStream("/assets/spacebreaker/lang/" + lang + ".json")) {
                 helper.assertTrue(in != null, "no " + lang);
                 var json = com.google.gson.JsonParser.parseReader(new java.io.InputStreamReader(in, java.nio.charset.StandardCharsets.UTF_8)).getAsJsonObject();
-                helper.assertTrue(json.has("config.jade.plugin_spacebreaker.info_lines"), "Jade config name missing in " + lang);
+                for (String key : new String[]{"config.jade.plugin_spacebreaker.info_lines", "config.jade.plugin_spacebreaker.gas_machine_fluid"}) {
+                    helper.assertTrue(json.has(key), "Jade config name " + key + " missing in " + lang);
+                }
             }
         }
         helper.succeed();

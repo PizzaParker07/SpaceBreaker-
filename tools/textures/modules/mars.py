@@ -5,7 +5,7 @@ light from the top-left. Mars colours are muted butterscotch/rust, never saturat
 """
 import random
 
-from sbtex.core import Canvas, ramp, clustered, fbm, parse_mask, mask_from, dome_shade, edge_pixels, pick
+from sbtex.core import hexc, Canvas, ramp, clustered, fbm, parse_mask, mask_from, dome_shade, edge_pixels, pick
 from modules.moon import quant, white, blend, blur_dir, voronoi, footprint, bricks, overlay, RAW_CHUNK
 
 
@@ -331,7 +331,7 @@ def gypsum_overlay():
 # --------------------------------------------------------------------------- items
 
 def raw_hematite():
-    """Lumpy steel-grey chunk with a rusty streak on the lower faces and a few mirror-bright blades."""
+    """Lumpy steel-grey chunk crossed by red-brown veins (hematite's streak) and a few mirror-bright blades."""
     m = mask_from(parse_mask(RAW_CHUNK))
     sh = dome_shade(m, roundness=3.0)
     rng = random.Random(3301)
@@ -342,8 +342,15 @@ def raw_hematite():
             if m[y][x]:
                 v = 0.05 + 0.8 * sh[y][x] + (rng.random() - 0.5) * 0.15
                 cv[x, y] = pick([r[2], r[3], r[4], r[5]], v)
-    for x, y in [(4, 10), (5, 11), (9, 11), (10, 10), (11, 11)]:
-        cv[x, y] = SANDSTONE[2]
+    # red-brown veins: hematite's streak, so the chunk never reads as ilmenite or magnetite
+    vein_dark, vein = hexc('#6e2a1c'), hexc('#a5482b')
+    for x0, y0, n in [(3, 12, 9), (5, 8, 6)]:
+        for i in range(n):
+            x, y = x0 + i, y0 - i // 2
+            if 0 <= x < 16 and 0 <= y < 16 and m[y][x]:
+                cv[x, y] = vein
+                if y + 1 < 16 and m[y + 1][x]:
+                    cv[x, y + 1] = vein_dark
     for x, y, l in [(4, 3, 3), (9, 5, 2), (6, 7, 3)]:
         for i in range(l):
             cv[x + i, y] = r[6]

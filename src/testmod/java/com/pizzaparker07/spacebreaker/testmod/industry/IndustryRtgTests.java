@@ -460,14 +460,14 @@ public final class IndustryRtgTests {
             h.assertTrue(be.energy().getEnergyStored() > 0, "making power");
         });
         int[] idle = new int[1];
-        h.runAfterDelay(260, () -> {
+        h.runAfterDelay(300, () -> {
             h.assertTrue(be.energy().getEnergyStored() > be.energy().getMaxEnergyStored() - com.pizzaparker07.spacebreaker.content.machines.machine.FissionReactorBlockEntity.OUTPUT,
                     "buffer full with no load: " + be.energy().getEnergyStored());
             idle[0] = reactor.burnLeft();
         });
-        h.runAfterDelay(300, () -> {
+        h.runAfterDelay(340, () -> {
             h.assertTrue(reactor.burnLeft() == idle[0], "no burn while idle: " + idle[0] + " -> " + reactor.burnLeft());
-            h.assertTrue(idle[0] > com.pizzaparker07.spacebreaker.content.machines.machine.FissionReactorBlockEntity.BURN_TICKS - 300, "only the working ticks burned");
+            h.assertTrue(idle[0] > com.pizzaparker07.spacebreaker.content.machines.machine.FissionReactorBlockEntity.BURN_TICKS - 340, "only the working ticks burned");
             h.succeed();
         });
     }
@@ -581,6 +581,35 @@ public final class IndustryRtgTests {
             }
         }
         h.succeed();
+    }
+
+    /** Electrolysis with nowhere to put its hydrogen stops cleanly: no water used, no oxygen made, "output full" shown
+     * (the screen's red mark); once the hydrogen is drawn off it carries on. */
+    @GameTest(template = "empty", timeoutTicks = 200)
+    public static void electrolyzerStopsWhenHydrogenHasNowhereToGo(GameTestHelper h) {
+        MachineBlockEntity be = machine(h, MachinesModule.ELECTROLYZER, new BlockPos(2, 1, 2), true);
+        var tanks = be.tanks();
+        var water = tanks.stream().filter(t -> t.input).findFirst().orElseThrow();
+        var outs = tanks.stream().filter(t -> !t.input).toList();
+        var hydrogen = outs.get(0);
+        var oxygen = outs.get(1);
+        water.fillInternal(new net.neoforged.neoforge.fluids.FluidStack(net.minecraft.world.level.material.Fluids.WATER, water.getCapacity()),
+                net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE);
+        hydrogen.fillInternal(new net.neoforged.neoforge.fluids.FluidStack(com.pizzaparker07.spacebreaker.content.fluids.FluidsModule.HYDROGEN.get(),
+                hydrogen.getCapacity()), net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE);
+        int waterBefore = water.getFluidAmount();
+        h.runAfterDelay(80, () -> {
+            h.assertTrue(water.getFluidAmount() == waterBefore, "no water used while the hydrogen tank is full");
+            h.assertTrue(oxygen.getFluidAmount() == 0, "no oxygen made");
+            h.assertTrue(be.status() == 2, "shows output full, status " + be.status());
+            h.assertTrue(com.pizzaparker07.spacebreaker.content.machines.base.MachineBlockEntity.statusKey(2).endsWith("output_full"), "status key");
+            hydrogen.drain(hydrogen.getCapacity(), net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE);
+        });
+        h.runAfterDelay(160, () -> {
+            h.assertTrue(water.getFluidAmount() < waterBefore && oxygen.getFluidAmount() > 0, "runs again once the hydrogen is drawn off");
+            h.assertTrue(be.status() == 0, "status clear: " + be.status());
+            h.succeed();
+        });
     }
 
     private IndustryRtgTests() {

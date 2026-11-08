@@ -91,7 +91,7 @@ public final class IsruRecipes {
                 .fluidOut(FluidsModule.METHANE.get(), 500).fluidOut(Fluids.WATER, 250).time(80).energy(60).save(out, "methane");
         // molten regolith electrolysis; regolith is ~40 % oxygen by mass, metals stay behind
         ProcessingRecipeBuilder.of(REGOLITH_PROCESSING).in(REGOLITHS).fluidOut(FluidsModule.OXYGEN.get(), 250)
-                .bonus(EarthModule.IRON.dust.get(), 1, 0.2F).time(160).energy(120).save(out, "regolith");
+                .bonus(EarthModule.IRON.dust.get(), 1, 0.2F).time(160).energy(80).save(out, "regolith");
         // carbonaceous asteroids: heating drives water out of their clays (Bennu's rock is several % water) and burns
         // off a little carbon as CO2; the char left behind is carbon
         ProcessingRecipeBuilder.of(REGOLITH_PROCESSING).in(CARBONACEOUS_REGOLITHS).fluidOut(Fluids.WATER, 200)
@@ -109,7 +109,7 @@ public final class IsruRecipes {
         // solar-wind volatiles baked out of the grains: mostly hydrogen, a trace of helium-3
         // airless worlds' soil: oxygen bound in the minerals plus a trace of solar-wind helium-3 (hydrogen comes from their ice)
         ProcessingRecipeBuilder.of(REGOLITH_PROCESSING).in(SOLAR_WIND_REGOLITHS).fluidOut(FluidsModule.OXYGEN.get(), 250)
-                .fluidOut(FluidsModule.HELIUM_3.get(), 20).time(160).energy(120).priority(1).save(out, "solar_wind_volatiles");
+                .fluidOut(FluidsModule.HELIUM_3.get(), 20).time(160).energy(80).priority(1).save(out, "solar_wind_volatiles");
         // wet sulfuric acid process: S + O2 + H2O (via SO2/SO3) -> H2SO4
         ProcessingRecipeBuilder.of(CHEMICAL_REACTION).in(SULFUR).fluidIn(net.neoforged.neoforge.common.Tags.Fluids.WATER, 250)
                 .fluidIn(FluidsModule.TAG_OXYGEN, 750).fluidOut(FluidsModule.SULFURIC_ACID.get(), 250).time(100).energy(60).save(out, "sulfuric_acid");

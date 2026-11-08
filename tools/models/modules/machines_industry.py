@@ -204,7 +204,7 @@ def tanks():
 
 
 CONDUITS = {'copper_cable': (2, 'copper_cable_end', False), 'hv_cable': (3, 'hv_cable_end', False),
-            'fluid_pipe': (3, 'fluid_pipe_flange', True), 'gas_pipe': (2, 'gas_pipe_flange', True),
+            'fluid_pipe': (2, 'fluid_pipe_flange', True), 'gas_pipe': (2, 'gas_pipe_flange', True),
             'item_duct': (3, 'item_duct_end', True)}
 DIRS = {'north': (0, 0, -1), 'south': (0, 0, 1), 'east': (1, 0, 0), 'west': (-1, 0, 0), 'up': (0, 1, 0), 'down': (0, -1, 0)}
 
@@ -225,8 +225,8 @@ def conduits():
     for name, (r, end, pipe) in CONDUITS.items():
         t = {'body': b(name), 'end': b(end), 'particle': b(name), 'valve': b('pipe_valve')}
         lo, hi = 8 - r, 8 + r
-        write(f'models/block/{name}_core.json', {'parent': 'minecraft:block/block', 'textures': t,
-                                                'elements': [box([lo, lo, lo], [hi, hi, hi], 'body')]})
+        core = [box([lo, lo, lo], [hi, hi, hi], 'body')]
+        write(f'models/block/{name}_core.json', {'parent': 'minecraft:block/block', 'textures': t, 'elements': core})
         parts = [{'apply': {'model': b(f'{name}_core')}}]
         for d in DIRS:
             fr, to = arm(r, d)
