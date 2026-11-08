@@ -108,16 +108,19 @@ public final class RoverAuditTests {
     }
 
     /**
-     * Water: the amphibious rover floats at its waterline, a land rover goes to the bottom. A 5 × 5 pool four blocks
-     * deep; both are dropped in at the surface and measured 80 ticks later.
+     * Water: the amphibious rover floats at its waterline, a land rover goes to the bottom. Two pools four blocks
+     * deep side by side, both inside the 8 × 8 × 8 test structure (3 wide for the 2.3-block amphibious hull, 2 wide
+     * for the 1.9-block land rover): blocks set outside it share ground with the neighbouring tests, which is how
+     * the land rover once sat on a block at the surface ("0.00 below"). Both are dropped in at the surface and
+     * measured 80 ticks later.
      */
     @GameTest(template = "empty", timeoutTicks = 200)
     public static void amphibiousRoverFloats(GameTestHelper h) {
         var level = h.getLevel();
-        for (int x = 0; x <= 12; x++) {
-            for (int z = 0; z <= 6; z++) {
+        for (int x = 0; x <= 7; x++) {
+            for (int z = 0; z <= 7; z++) {
                 for (int y = 0; y <= 4; y++) {
-                    boolean wall = x == 0 || x == 6 || x == 12 || z == 0 || z == 6 || y == 0;
+                    boolean wall = x == 0 || x == 4 || x == 7 || z == 0 || z == 7 || y == 0;
                     level.setBlock(h.absolutePos(new BlockPos(x, y, z)),
                             wall ? Blocks.STONE.defaultBlockState() : Blocks.WATER.defaultBlockState(), 3);
                 }
@@ -126,8 +129,8 @@ public final class RoverAuditTests {
         double surface = h.absolutePos(new BlockPos(0, 5, 0)).getY();
         RoverEntity boat = VehiclesModule.AMPHIBIOUS_ROVER.get().create(level);
         RoverEntity car = VehiclesModule.ROVER.get().create(level);
-        Vec3 a = h.absoluteVec(new Vec3(3.5, 5, 3.5));
-        Vec3 b = h.absoluteVec(new Vec3(9.5, 5, 3.5));
+        Vec3 a = h.absoluteVec(new Vec3(2.5, 5, 4.0));
+        Vec3 b = h.absoluteVec(new Vec3(6.0, 5, 4.0));
         boat.moveTo(a.x, a.y, a.z, 0F, 0F);
         car.moveTo(b.x, b.y, b.z, 0F, 0F);
         level.addFreshEntity(boat);
