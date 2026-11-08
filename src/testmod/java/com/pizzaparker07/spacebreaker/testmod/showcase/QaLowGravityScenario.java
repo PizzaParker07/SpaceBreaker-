@@ -52,9 +52,26 @@ final class QaLowGravityScenario implements ShowcaseScenario {
     private static boolean airborne;
     private static Vec3 takeoff;
     private static double takeoffSpeed;
+    private static boolean sprintAtTakeoff;
     private static int takeoffTick;
     private static boolean done = true;
     private static final List<String> sounds = new ArrayList<>();
+    private static int maxParticles;
+
+    /** Server side: does the fall event fire for the landing, and with what distance? */
+    @EventBusSubscriber(modid = Spacebreaker.MOD_ID)
+    static final class ServerSide {
+        @SubscribeEvent
+        static void onFall(net.neoforged.neoforge.event.entity.living.LivingFallEvent event) {
+            if (event.getEntity() instanceof ServerPlayer p) {
+                ShowcaseDriver.log(String.format(Locale.ROOT, "lowg: server fall event in %s: distance %.2f, multiplier %.2f, tick %d",
+                        p.level().dimension().location(), event.getDistance(), event.getDamageMultiplier(), p.level().getGameTime()));
+            }
+        }
+
+        private ServerSide() {
+        }
+    }
 
     @Override
     public void build(ServerLevel level) {
@@ -190,6 +207,7 @@ final class QaLowGravityScenario implements ShowcaseScenario {
                     airborne = true;
                     takeoff = pl.position();
                     takeoffSpeed = pl.getDeltaMovement().horizontalDistance();
+                    sprintAtTakeoff = pl.isSprinting();
                     takeoffTick = tick;
                     if (kind == Kind.JUMP_BACK) {
                         o.keyUp.setDown(false);
@@ -201,8 +219,9 @@ final class QaLowGravityScenario implements ShowcaseScenario {
                     double dist = Math.hypot(land.x - takeoff.x, land.z - takeoff.z);
                     int air = tick - takeoffTick;
                     ShowcaseDriver.log(String.format(Locale.ROOT, "lowg: %s: took off at tick %d at %.2f b/t, landed at tick %d: %.2f blocks in %d ticks, "
-                                    + "landing speed %.2f b/t (%s)", label, takeoffTick, takeoffSpeed, tick, dist, air,
-                            pl.getDeltaMovement().horizontalDistance(), kind == Kind.JUMP_BACK ? "back key held in the air" : "forward held"));
+                                    + "landing speed %.2f b/t (%s), sprinting at take-off %s, at landing %s", label, takeoffTick, takeoffSpeed, tick, dist, air,
+                            pl.getDeltaMovement().horizontalDistance(), kind == Kind.JUMP_BACK ? "back key held in the air" : "forward held",
+                            sprintAtTakeoff, pl.isSprinting()));
                     finish();
                 } else if (t > 240) {
                     ShowcaseDriver.log("lowg: " + label + ": no jump/landing seen (airborne " + airborne + ", on ground " + pl.onGround() + ")");
@@ -216,6 +235,7 @@ final class QaLowGravityScenario implements ShowcaseScenario {
                     takeoffTick = tick;
                 } else if (airborne && pl.onGround() && takeoff != null) {
                     if (t < 1000) {
+                        maxParticles = 0;
                         ShowcaseDriver.log(String.format(Locale.ROOT, "lowg: %s: fell %.2f blocks, landed at tick %d after %d ticks, particles now %s",
                                 label, takeoff.y - pl.getY(), tick, tick - takeoffTick, mc.particleEngine.countParticles()));
                         t = 1000; // listen to the landing's sounds for a moment
@@ -224,7 +244,14 @@ final class QaLowGravityScenario implements ShowcaseScenario {
                     ShowcaseDriver.log("lowg: " + label + ": no landing seen");
                     finish();
                 }
+                if (t >= 1000) {
+                    try {
+                        maxParticles = Math.max(maxParticles, Integer.parseInt(mc.particleEngine.countParticles()));
+                    } catch (NumberFormatException ignored) {
+                    }
+                }
                 if (t >= 1010) {
+                    ShowcaseDriver.log("lowg: " + label + ": most particles in the 10 ticks after landing: " + maxParticles);
                     ShowcaseDriver.log("lowg: " + label + ": sounds around the landing: " + (sounds.isEmpty() ? "none" : String.join("; ", sounds)));
                     finish();
                 }

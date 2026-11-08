@@ -354,6 +354,24 @@ Shot 11 is now aimed at the station. **QA-27 closed**: `stationAirlockCycle` ass
 together on any tick and that the station is sealed at every step (both shut 119, inner open 148, outer asked open
 while the inner was open 119, and so on).
 
+## Low gravity with real key presses (`qa_low_gravity`, 2026-11-08)
+
+`./gradlew runShowcase -Pscenario=qa_low_gravity`: the keys are held down on the client (movement is worked out
+there); log lines "[showcase] lowg: …". Before = 8d43f6c2, after = 430789f9 (suit low-gravity changes in).
+
+| check | Earth | Moon before | Moon after | Mars after |
+|---|---|---|---|---|
+| sprint jump, forward held | 3.15 blocks, 11 ticks | 7.69 blocks, 27 ticks | **5.24** blocks, 27 ticks (speed 0.26 → 0.14 b/t in the air) | |
+| same, back key held in the air | 0.91 | 1.15 | 0.73 | |
+| elytra, 15° down, 60-block drop | 391 blocks | wings open (before) | wings do not open ✅ | **24.8** blocks (before 221) |
+| 3-block drop: fall event, dust | event 2.69, no dust ✅ | | event 2.80, dust ✅ (5 particles) | |
+
+- the hop is shorter instead of ~7 blocks: the air steering scales the keys' push by 0.41 but vanilla's air drag
+  (× 0.91 per tick) stays, so the speed dies off with forward held (sprinting stays on). Suggested: bring the drag
+  towards 1 with the same factor.
+- Mars glide 24.8 blocks against ~40 expected (about 6 % of Earth's).
+- the softer landing sound cannot be heard here (no audio device: the sound engine does not start).
+
 ## Simplified screens: usability (`qa_ui`, 2026-11-08, 1.21.1 @ 8d43f6c2)
 
 `./gradlew runShowcase -Pscenario=qa_ui -PshotPrefix=qa_ui_en` (and `qa_ui_tr`). With a `qa_ui*` prefix, `QaUiProbe`
