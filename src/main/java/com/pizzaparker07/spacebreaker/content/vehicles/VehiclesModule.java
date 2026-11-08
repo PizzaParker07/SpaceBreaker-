@@ -110,6 +110,7 @@ public final class VehiclesModule implements SbModule {
                 "Batarya bankası ya da kablonun yanına park edince şarj olur");
         lang.add("tooltip.spacebreaker.rover.hand_brake", "%s while driving: hand brake", "Sürerken %s: el freni");
         lang.add("hud.spacebreaker.rover.battery", "Battery %s%%", "Akü %%%s");
+        lang.add("hud.spacebreaker.rover.percent", "%s%%", "%%%s");
         lang.add("hud.spacebreaker.rover.speed", "%s m/s", "%s m/s");
         lang.add("hud.spacebreaker.rover.solar", "Solar", "Güneş");
         lang.add("message.spacebreaker.rover.whirl_cleaned", "A dust whirl swept the solar panel clean", "Bir toz hortumu güneş panelini temizledi");

@@ -193,6 +193,17 @@ public final class RoverTests {
         h.succeed();
     }
 
+    /** The HUD's battery percentage: hidden on a healthy battery, shown below 20 %, always in the detailed HUD. */
+    @GameTest(template = "empty")
+    public static void batteryPercentShowsWhenLow(GameTestHelper h) {
+        h.assertTrue(RoverEntity.shownPercent(0.8F, false) == -1 && RoverEntity.shownPercent(0.2F, false) == -1, "hidden when healthy");
+        h.assertTrue(RoverEntity.shownPercent(0.12F, false) == 12, "low: " + RoverEntity.shownPercent(0.12F, false));
+        h.assertTrue(RoverEntity.shownPercent(0F, false) == 0, "empty reads 0");
+        h.assertTrue(RoverEntity.shownPercent(0.001F, false) == 1, "a last drop is not 0");
+        h.assertTrue(RoverEntity.shownPercent(0.8F, true) == 80 && RoverEntity.shownPercent(1F, true) == 100, "detailed HUD always");
+        h.succeed();
+    }
+
     @GameTest(template = "empty")
     public static void lowGravityJumpsAreLongAndLandingsBounce(GameTestHelper h) {
         // airtime of a 0.3 b/t hop: about 6x longer on the Moon

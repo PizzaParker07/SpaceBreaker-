@@ -150,11 +150,25 @@ final class RoverScenario implements ShowcaseScenario {
                 at(0.3, p -> seat(p, parked, 1)), null));
         s.add(new ShowcaseDriver.Shot(w + "_12_cabin_driver_fp", 0, X0 - 4.5, gy + 2, Z0 + 20.5, 35F, 6F, false, fp, 60,
                 at(0.3, p -> seat(p, cabin, 0)), null));
+        // the HUD on a low and on an empty battery: the percentage beside the bar, the blinking red battery icon
+        s.add(new ShowcaseDriver.Shot(w + "_13_battery_low", 0, px, gy + 2, pz, 35F, 6F, false, fp, 60,
+                at(0.3, p -> {
+                    parked.setEnergy(parked.roverType().capacity() * 12 / 100);
+                    seat(p, parked, 0);
+                }), null));
+        // (the rover without a panel or an RTG: nothing tops it up while the shot waits)
+        s.add(new ShowcaseDriver.Shot(w + "_14_battery_empty", 0, X0 + 3.5, gy + 2, Z0 + 30.5, 180F, 6F, false, fp, 60,
+                at(0.3, p -> {
+                    driver.moveTo(X0 + 3.5, gy, Z0 + 30.5, 180F, 0F);
+                    driver.setSpeed(0);
+                    driver.setEnergy(0);
+                    seat(p, driver, 0);
+                }), null));
         // the driver-view shot leaves the player in the parked rover, where the driver's teleport cannot move them:
         // every shot that is not a seat view gets them out first and puts them at its own camera spot
         List<ShowcaseDriver.Shot> out = new ArrayList<>();
         for (ShowcaseDriver.Shot shot : s) {
-            boolean seated = shot.name().endsWith("_05_driver_view") || shot.name().matches(".*_1[0-2]_.*");
+            boolean seated = shot.name().endsWith("_05_driver_view") || shot.name().matches(".*_1[0-4]_.*");
             Consumer<ServerPlayer> setup = shot.serverSetup();
             out.add(seated ? shot : new ShowcaseDriver.Shot(shot.name(), shot.time(), shot.x(), shot.y(), shot.z(), shot.yaw(), shot.pitch(),
                     shot.hideGui(), shot.camera(), shot.minTicks(), p -> {

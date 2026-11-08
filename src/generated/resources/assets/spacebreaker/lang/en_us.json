@@ -1109,6 +1109,7 @@
   "hud.spacebreaker.rover.cabin": "Cabin O₂ %s%%",
   "hud.spacebreaker.rover.cabin_empty": "Cabin unpressurized",
   "hud.spacebreaker.rover.empty": "Battery empty",
+  "hud.spacebreaker.rover.percent": "%s%%",
   "hud.spacebreaker.rover.rtg": "RTG",
   "hud.spacebreaker.rover.solar": "Solar",
   "hud.spacebreaker.rover.solar_dusty": "Solar (dust %s%%)",

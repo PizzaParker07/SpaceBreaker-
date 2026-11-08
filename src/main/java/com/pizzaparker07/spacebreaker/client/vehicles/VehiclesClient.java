@@ -93,7 +93,12 @@ public final class VehiclesClient {
         int battColor = rover.energy() <= 0 ? (blink ? 0xFFD04030 : 0xFF601810) : f > 0.5F ? 0xFF58C048 : f > 0.2F ? 0xFFE0B030 : 0xFFD04030;
         int sources = (rover.hasSolar() ? 1 : 0) + (rover.hasRtg() ? 1 : 0);
         boolean cabin = rover.roverType().cabin();
-        int width = 11 + BAR_W + (speedText.isEmpty() ? 0 : 3 + mc.font.width(speedText)) + (sources > 0 ? 3 + sources * 10 - 1 : 0);
+        // the percentage beside the bar: always in the detailed HUD, otherwise once the battery runs low
+        int pct = RoverEntity.shownPercent(f, com.pizzaparker07.spacebreaker.client.hud.HudConfig.detailed());
+        String pctText = pct < 0 ? "" : net.minecraft.network.chat.Component.translatable("hud.spacebreaker.rover.percent", pct).getString();
+        int pctColor = rover.energy() <= 0 ? battColor : f < RoverEntity.LOW_BATTERY ? 0xFFE06048 : 0xFFE8E8E8;
+        int width = 11 + BAR_W + (pctText.isEmpty() ? 0 : 3 + mc.font.width(pctText))
+                + (speedText.isEmpty() ? 0 : 3 + mc.font.width(speedText)) + (sources > 0 ? 3 + sources * 10 - 1 : 0);
         int rows = cabin ? 2 : 1;
         int height = rows * ROW_H - 2;
         int pw = width + PAD * 2, ph = height + PAD * 2;
@@ -118,9 +123,22 @@ public final class VehiclesClient {
             bar(g, x + 11, y + 2, rover.cabinPressurized() ? o2 : 0F, c);
             y += ROW_H;
         }
-        g.blit(ICONS, x, y, 0, 0, 9, 9, 27, 9);
+        if (rover.energy() <= 0) {
+            // an empty bar has nothing to colour: the battery icon itself blinks, red empty cell and dimmed
+            if (!blink) {
+                g.setColor(0.5F, 0.5F, 0.5F, 1F);
+            }
+            g.blit(ICONS, x, y, 27, 0, 9, 9, 36, 9);
+            g.setColor(1F, 1F, 1F, 1F);
+        } else {
+            g.blit(ICONS, x, y, 0, 0, 9, 9, 36, 9);
+        }
         bar(g, x + 11, y + 2, f, battColor);
         int ix = x + 11 + BAR_W + 3;
+        if (!pctText.isEmpty()) {
+            g.drawString(mc.font, pctText, ix, y + 1, pctColor, false);
+            ix += mc.font.width(pctText) + 3;
+        }
         if (!speedText.isEmpty()) {
             g.drawString(mc.font, speedText, ix, y + 1, 0xFFE8E8E8, false);
             ix += mc.font.width(speedText) + 3;
@@ -129,7 +147,7 @@ public final class VehiclesClient {
             if (rover.dust() >= 0.05F) {
                 g.setColor(0.85F, 0.55F, 0.35F, 1F);
             }
-            g.blit(ICONS, ix, y, 9, 0, 9, 9, 27, 9);
+            g.blit(ICONS, ix, y, 9, 0, 9, 9, 36, 9);
             g.setColor(1F, 1F, 1F, 1F);
             ix += 10;
         }
@@ -137,7 +155,7 @@ public final class VehiclesClient {
             if (!rover.hasPellet()) {
                 g.setColor(0.45F, 0.45F, 0.45F, 1F);
             }
-            g.blit(ICONS, ix, y, 18, 0, 9, 9, 27, 9);
+            g.blit(ICONS, ix, y, 18, 0, 9, 9, 36, 9);
             g.setColor(1F, 1F, 1F, 1F);
         }
     }

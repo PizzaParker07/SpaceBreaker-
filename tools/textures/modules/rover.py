@@ -631,10 +631,10 @@ def export(save):  # noqa: F811
 
 def hud_icons():
     """9x9 HUD icons for the rover panel, in the suit HUD's style (dark outline, flat fill):
-    0 battery, 1 solar panel, 2 RTG pellet."""
+    0 battery, 1 solar panel, 2 RTG pellet, 3 empty battery (red outline, hollow, a red cross)."""
     from sbtex.core import Canvas
     K = (16, 16, 20)
-    cv = Canvas(27, 9)
+    cv = Canvas(36, 9)
     # battery: outlined cell with a terminal nub, green charge
     for x in range(1, 8):
         for y in range(2, 9):
@@ -658,6 +658,17 @@ def hud_icons():
             edge = x in (1, 7) or y in (1, 8)
             cv[o + x, y] = K if edge else ((120, 124, 132) if x % 2 else (90, 94, 102))
     cv[o + 4, 4] = (240, 192, 64); cv[o + 4, 5] = (240, 192, 64)
+    # empty battery: the same cell outlined in warning red, dark inside, a red cross where the charge was
+    o = 27
+    R = (224, 64, 48)
+    for x in range(1, 8):
+        for y in range(2, 9):
+            edge = x in (1, 7) or y in (2, 8)
+            cv[o + x, y] = R if edge else (40, 18, 18)
+    cv[o + 3, 1] = R; cv[o + 4, 1] = R; cv[o + 5, 1] = R
+    for d in range(3):
+        cv[o + 3 + d, 4 + d] = R
+        cv[o + 5 - d, 4 + d] = R
     return cv
 
 
