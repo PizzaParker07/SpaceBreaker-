@@ -198,17 +198,18 @@ public class RoverModel extends EntityModel<RoverEntity> {
         if (st.cabin()) {
             // closed cabin over both seats: thin walls whose windows are cut out of the texture, so the crew shows
             body.addOrReplaceChild("cabin", CubeListBuilder.create()
-                    .texOffs(0, 140).addBox(-hw, -11F, -16F, 2 * hw, 1F, 32F)              // roof
-                    .texOffs(110, 140).addBox(-hw, -10F, -16F, 1F, 23F, 32F)               // side walls
-                    .texOffs(110, 140).addBox(hw - 1, -10F, -16F, 1F, 23F, 32F)
-                    .texOffs(180, 140).addBox(-hw + 1, -10F, -16F, 2 * hw - 2, 23F, 1F)    // windscreen wall
-                    .texOffs(180, 170).addBox(-hw + 1, -10F, 15F, 2 * hw - 2, 23F, 1F),    // rear wall
+                    // the cabin sits 2 px forward of the seats' centre so a seated driver's boots stay inside the windscreen wall
+                    .texOffs(0, 140).addBox(-hw, -11F, -18F, 2 * hw, 1F, 32F)              // roof
+                    .texOffs(110, 140).addBox(-hw, -10F, -18F, 1F, 23F, 32F)               // side walls
+                    .texOffs(110, 140).addBox(hw - 1, -10F, -18F, 1F, 23F, 32F)
+                    .texOffs(180, 140).addBox(-hw + 1, -10F, -18F, 2 * hw - 2, 23F, 1F)    // windscreen wall
+                    .texOffs(180, 170).addBox(-hw + 1, -10F, 13F, 2 * hw - 2, 23F, 1F),    // rear wall
                     PartPose.ZERO);
             // low dashboard across the cabin under the windscreen, below the crew's eye line, with three lamps on it
-            body.addOrReplaceChild("dash", CubeListBuilder.create().texOffs(130, 200).addBox(-hw + 1, -1F, -15F, 2 * hw - 2, 2F, 3F), PartPose.ZERO);
+            body.addOrReplaceChild("dash", CubeListBuilder.create().texOffs(130, 200).addBox(-hw + 1, -1F, -17F, 2 * hw - 2, 2F, 3F), PartPose.ZERO);
             for (int i = 0; i < 3; i++) {
                 body.addOrReplaceChild("dash_lamp" + i, CubeListBuilder.create().texOffs(160 + i * 4, 210)
-                        .addBox(-hw + 3.2F + i * 1.6F, -1.5F, -14.2F, 0.6F, 0.5F, 0.6F), PartPose.ZERO);
+                        .addBox(-hw + 3.2F + i * 1.6F, -1.5F, -16.2F, 0.6F, 0.5F, 0.6F), PartPose.ZERO);
             }
         }
         if (st.floats()) {
