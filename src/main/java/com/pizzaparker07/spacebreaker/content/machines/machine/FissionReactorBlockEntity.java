@@ -28,7 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class FissionReactorBlockEntity extends MachineBlockEntity {
     /** FE/t at full power. */
-    public static final int OUTPUT = 320;
+    public static final int OUTPUT = 240;
     /** Ticks of full power one fuel element gives (ten in-game days). */
     public static final int BURN_TICKS = 24_000 * 10;
     /** Dose rate one block from the running core with nothing in between, mSv/day. */
