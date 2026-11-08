@@ -66,6 +66,36 @@ public final class RoverTests {
         h.succeed();
     }
 
+    /** Blocks rolled from top speed until stopped, with the given throttle and hand brake. */
+    private static double stoppingDistance(double g, double throttle, boolean handBrake) {
+        double push = RoverPhysics.traction(g), roll = RoverPhysics.rollingDrag(g);
+        double s = RoverPhysics.MAX_SPEED, d = 0;
+        for (int t = 0; s > 0.01 && t < 10_000; t++) {
+            s = RoverPhysics.speed(s, throttle, handBrake, true, push, roll, RoverPhysics.MAX_SPEED, RoverPhysics.ACCEL);
+            d += Math.max(s, 0);
+        }
+        return d;
+    }
+
+    /** Letting go of the throttle on the Moon: the rover rolls on about 8 blocks, not 18; the hand brake stops it short. */
+    @GameTest(template = "empty")
+    public static void moonCoastingAndTheHandBrake(GameTestHelper h) {
+        double earthCoast = stoppingDistance(1.0, 0, false);
+        double moonCoast = stoppingDistance(MOON, 0, false);
+        h.assertTrue(earthCoast > 6 && earthCoast < 8, "Earth coasting " + earthCoast);
+        h.assertTrue(moonCoast > 7 && moonCoast < 9, "Moon coasting " + moonCoast);
+        double moonReverse = stoppingDistance(MOON, -1, false);
+        double moonHand = stoppingDistance(MOON, 0, true);
+        double earthHand = stoppingDistance(1.0, 0, true);
+        h.assertTrue(moonHand < moonReverse * 0.75, "Moon hand brake " + moonHand + " vs reverse " + moonReverse);
+        h.assertTrue(moonHand > earthHand * 1.5 && moonHand < 5, "Moon hand brake " + moonHand + " Earth " + earthHand);
+        // the hand brake holds against the throttle and stops a reversing rover too
+        h.assertTrue(RoverPhysics.speed(0.2, 1, true, true, 1, 1, RoverPhysics.MAX_SPEED, RoverPhysics.ACCEL) < 0.2, "brake beats throttle");
+        h.assertTrue(RoverPhysics.speed(-0.1, 0, true, true, 1, 1, RoverPhysics.MAX_SPEED, RoverPhysics.ACCEL) > -0.1, "brakes backwards");
+        h.assertTrue(RoverPhysics.speed(0.2, 0, true, false, 1, 1, RoverPhysics.MAX_SPEED, RoverPhysics.ACCEL) > 0.19, "airborne wheels do not brake");
+        h.succeed();
+    }
+
     @GameTest(template = "empty")
     public static void lowGravityJumpsAreLongAndLandingsBounce(GameTestHelper h) {
         // airtime of a 0.3 b/t hop: about 6x longer on the Moon

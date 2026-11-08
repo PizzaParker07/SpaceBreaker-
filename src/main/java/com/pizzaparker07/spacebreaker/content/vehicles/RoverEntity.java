@@ -544,14 +544,16 @@ public class RoverEntity extends Entity implements com.pizzaparker07.spacebreake
         LivingEntity driver = getControllingPassenger();
         double throttle = 0;
         float steer = 0;
+        // the hand brake (jump key) works with an empty battery too: it is a mechanical lock on the wheels
+        boolean handBrake = driver != null && driver.jumping;
         if (driver != null && energy() > 0) {
             throttle = Mth.clamp(driver.zza, -1F, 1F);
             steer = Mth.clamp(driver.xxa, -1F, 1F);
         }
         BlockPos under = getBlockPosBelowThatAffectsMyMovement();
         double grip = onGround() ? Math.min(1.0, RoverPhysics.grip(level().getBlockState(under).getFriction(level(), under, this)) * roverType.grip()) : 0;
-        speed = RoverPhysics.speed(speed, throttle, onGround(), RoverPhysics.traction(g) * Math.max(grip, 0.02),
-                roverType.maxSpeed(), roverType.accel());
+        speed = RoverPhysics.speed(speed, throttle, handBrake, onGround(), RoverPhysics.traction(g) * Math.max(grip, 0.02),
+                RoverPhysics.rollingDrag(g) * Math.max(grip, 0.02), roverType.maxSpeed(), roverType.accel());
         deltaYaw = RoverPhysics.yawChange(speed, steer, onGround() ? grip : 0);
         setYRot(getYRot() + deltaYaw);
         Vec3 v = getDeltaMovement();

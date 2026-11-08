@@ -53,17 +53,45 @@ public final class RoverPhysics {
         return speed(speed, throttle, onGround, traction, MAX_SPEED, ACCEL);
     }
 
-    /** Speed after one tick. throttle -1..1 (forward positive); airborne wheels neither push nor brake. */
+    /** Speed after one tick; rolling drag taken to fall with the traction (tests of grip alone). */
     public static double speed(double speed, double throttle, boolean onGround, double traction, double maxSpeed, double accel) {
+        return speed(speed, throttle, false, onGround, traction, traction, maxSpeed, accel);
+    }
+
+    /**
+     * Rolling drag of the tyres on a body with the given gravity: it hardly eases off in low gravity (soft regolith
+     * drags as much as the lighter load saves), so the rover coasts about 8 blocks on the Moon, not 18.
+     */
+    public static double rollingDrag(double gravityFactor) {
+        return 0.9 + 0.1 * Mth.clamp(gravityFactor, 0, 1);
+    }
+
+    /** Hand brake: how hard it slows the rover per tick on full traction (twice the service brake). */
+    public static final double HAND_BRAKE = 0.06;
+
+    /**
+     * Speed after one tick. throttle -1..1 (forward positive); airborne wheels neither push nor brake.
+     * {@code push} = grip of the tyres for driving and braking (gravity and surface), {@code roll} = rolling drag
+     * when coasting (gravity and surface: ice still lets the rover run on). The hand brake locks the wheels: it
+     * overrides the throttle.
+     */
+    public static double speed(double speed, double throttle, boolean handBrake, boolean onGround, double push, double roll,
+                               double maxSpeed, double accel) {
         if (onGround) {
-            if (throttle != 0 && Math.signum(throttle) != Math.signum(speed) && Math.abs(speed) > 1e-4) {
-                double brake = BRAKE * traction * Math.abs(throttle);
+            // braking (hand brake or the opposite throttle) rolls with the full drag of a coasting rover, never less
+            boolean braking = handBrake || throttle != 0 && Math.signum(throttle) != Math.signum(speed) && Math.abs(speed) > 1e-4;
+            if (handBrake) {
+                double brake = HAND_BRAKE * push;
+                speed = Math.abs(speed) <= brake ? 0 : speed - Math.signum(speed) * brake;
+                throttle = 0;
+            } else if (throttle != 0 && Math.signum(throttle) != Math.signum(speed) && Math.abs(speed) > 1e-4) {
+                double brake = BRAKE * push * Math.abs(throttle);
                 speed = Math.abs(speed) <= brake ? 0 : speed - Math.signum(speed) * brake;
             } else {
-                speed += throttle * accel * traction;
+                speed += throttle * accel * push;
             }
             // rolling resistance grows with how hard the wheels press on the ground
-            speed *= throttle == 0 ? 1 - 0.06 * traction : 1 - 0.015 * traction;
+            speed *= throttle == 0 || braking ? 1 - 0.06 * roll : 1 - 0.015 * push;
         } else {
             speed *= 0.995;
         }
