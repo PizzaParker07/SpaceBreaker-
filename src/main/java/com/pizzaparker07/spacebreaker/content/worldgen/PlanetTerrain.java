@@ -216,14 +216,19 @@ public final class PlanetTerrain {
         double lowFloor = -low.depth() + low.ridgeHeight() * Math.pow(ridge, 6) * 2;
         double ds = 1.0 / relief.detailScale();
         double detail = relief.detailAmplitude() * fbm(detailNoise, x * ds, z * ds, 2);
+        double rough = 0;
         if (relief.roughness() > 0) {
             // ragged block-scale unevenness: breaks long smooth slopes into irregular steps instead of clean contour lines.
             // Nothing finer than about three blocks, or the ground fills with lone one-block pits and pillars.
-            detail += relief.roughness() * (0.65 * detailNoise.getValue(x / 6.1 + 91.1, z / 6.1 - 17.7) + 0.35 * detailNoise.getValue(x / 9.7 - 5.5, z / 9.7 + 44.4));
+            rough = relief.roughness() * (0.65 * detailNoise.getValue(x / 6.1 + 91.1, z / 6.1 - 17.7) + 0.35 * detailNoise.getValue(x / 9.7 - 5.5, z / 9.7 + 44.4));
         }
         if (relief.lowlandSmoothing() > 0) {
-            detail *= 1 - relief.lowlandSmoothing() * Mth.clamp(out.lowland, 0, 1);
+            // lowland floors: the ragged roughness goes, the broad, gentle swell of the detail mostly stays
+            double smooth = relief.lowlandSmoothing() * Mth.clamp(out.lowland, 0, 1);
+            rough *= 1 - smooth;
+            detail *= 1 - smooth * 0.45;
         }
+        detail += rough;
 
         double built = landforms.active() ? landforms.build(x, z, out) : 0;
         double craterSum = 0;
