@@ -40,6 +40,7 @@ public class MarsMoonSkyEffects extends PlanetSkyEffects {
     private static final int RING = 128;
     private final String bodyName;
     private final double marsSize;
+    private static final int MARS_AIR = 0xE8B48A;
     private ClientLevel cachedLevel;
     private double poleDistance = 900;
     private VertexBuffer stars;
@@ -126,13 +127,19 @@ public class MarsMoonSkyEffects extends PlanetSkyEffects {
             return;
         }
         Vector3d s = SkyMath.sunDirection(timeOfDay, lat);
-        Vector3d worldUp = Math.abs(e.y) > 0.98 ? new Vector3d(0, 0, -1) : new Vector3d(0, 1, 0);
-        Vector3d up = new Vector3d(worldUp).sub(new Vector3d(e).mul(worldUp.dot(e))).normalize();
+        // Phobos and Deimos circle Mars' equator, so Mars' pole lies along their own spin axis: north in the local
+        // frame (x east, y up, z south) is (0, sin lat, -cos lat). The polar caps then sit where they belong.
+        double phi = Math.toRadians(lat);
+        Vector3d axis = new Vector3d(0, Math.sin(phi), -Math.cos(phi));
+        if (Math.abs(axis.dot(e)) > 0.98) {
+            axis.set(0, 1, 0);
+        }
+        Vector3d up = new Vector3d(axis).sub(new Vector3d(e).mul(axis.dot(e))).normalize();
         Vector3d right = new Vector3d(e).cross(up).normalize();
         Vector3d toViewer = new Vector3d(e).negate();
         // the sun's direction in the disc frame: x right, y up, z toward the viewer
         Vector3d sun = new Vector3d(s.dot(right), s.dot(up), s.dot(toViewer));
-        float half = (float) (100 * Math.tan(Math.toRadians(Math.min(70, marsSize * SkyConfig.bodyScale()) / 2)));
+        float half = (float) (100 * Math.tan(Math.toRadians(SkyConfig.nearParentSize(marsSize) / 2)));
         Vector3d c = new Vector3d(e).mul(100);
         var blocky = SkyConfig.blockyStyle();
         if (blocky != null) {
@@ -143,9 +150,8 @@ public class MarsMoonSkyEffects extends PlanetSkyEffects {
                     new org.joml.Vector3f((float) toViewer.x, (float) toViewer.y, (float) toViewer.z), 0F);
             org.joml.Vector3f sunDir = new org.joml.Vector3f((float) s.x, (float) s.y, (float) s.z);
             com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.draw(m, blocky, 0,
-                    com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.surface("mars"), pose, sunDir, 0.03F, 1F, 1F, null);
-            // the thin pale air: a faint line along the limb
-            com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.drawLimb(m, pose, sunDir, 0xE8B48A, 0.6F, 0.02F);
+                    com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.surface("mars"), pose, sunDir, 0.03F, 1F, 1F, null,
+                    MARS_AIR); // the thin pale air: a shell of blocks along the stepped outline
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
             RenderSystem.defaultBlendFunc();
             return;

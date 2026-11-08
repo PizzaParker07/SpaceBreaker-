@@ -153,11 +153,12 @@ public record TerrainProfile(ResourceLocation body, int baseHeight, double poleD
      * @param rayLength      length of bright rays in crater radii
      */
     public record Craters(List<CraterClass> classes, double density, double lowlandDensity, double depthRatio, double rimRatio,
-                          double complexRadius, double centralPeak, double freshChance, double rayLength, double rayFill) {
+                          double complexRadius, double centralPeak, double freshChance, double rayLength, double rayFill,
+                          double rayMinRadius) {
         /** Without {@code rayFill}: rays speckled as they always were (1). */
         public Craters(List<CraterClass> classes, double density, double lowlandDensity, double depthRatio, double rimRatio,
                        double complexRadius, double centralPeak, double freshChance, double rayLength) {
-            this(classes, density, lowlandDensity, depthRatio, rimRatio, complexRadius, centralPeak, freshChance, rayLength, 1.0);
+            this(classes, density, lowlandDensity, depthRatio, rimRatio, complexRadius, centralPeak, freshChance, rayLength, 1.0, 0.0);
         }
 
         public static final Craters DEFAULT = new Craters(List.of(
@@ -165,7 +166,7 @@ public record TerrainProfile(ResourceLocation body, int baseHeight, double poleD
                 new CraterClass(7, 18, 110, 0.5, 2),
                 new CraterClass(18, 48, 300, 0.5, 1),
                 new CraterClass(48, 130, 900, 0.55, 1)),
-                1.0, 0.35, 0.2, 0.05, 36, 0.45, 0.22, 7);
+                1.0, 0.35, 0.2, 0.05, 36, 0.45, 0.22, 7, 1.0, 0.0);
         public static final Codec<Craters> CODEC = RecordCodecBuilder.create(i -> i.group(
                 CraterClass.CODEC.listOf().optionalFieldOf("classes", DEFAULT.classes).forGetter(Craters::classes),
                 Codec.DOUBLE.optionalFieldOf("density", DEFAULT.density).forGetter(Craters::density),
@@ -177,7 +178,9 @@ public record TerrainProfile(ResourceLocation body, int baseHeight, double poleD
                 Codec.DOUBLE.optionalFieldOf("fresh_chance", DEFAULT.freshChance).forGetter(Craters::freshChance),
                 Codec.DOUBLE.optionalFieldOf("ray_length", DEFAULT.rayLength).forGetter(Craters::rayLength),
                 // how densely ray soil fills a ray: 1 speckles it (the default); higher fills the strong inner part solid
-                Codec.DOUBLE.optionalFieldOf("ray_fill", DEFAULT.rayFill).forGetter(Craters::rayFill)
+                Codec.DOUBLE.optionalFieldOf("ray_fill", DEFAULT.rayFill).forGetter(Craters::rayFill),
+                // only fresh craters at least this big (blocks) throw rays and haloes; 0 (the default): every fresh crater
+                Codec.DOUBLE.optionalFieldOf("ray_min_radius", DEFAULT.rayMinRadius).forGetter(Craters::rayMinRadius)
         ).apply(i, Craters::new));
     }
 

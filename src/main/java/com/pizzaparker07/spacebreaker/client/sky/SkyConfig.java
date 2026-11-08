@@ -31,6 +31,16 @@ public final class SkyConfig {
         SPEC = b.build();
     }
 
+    /**
+     * Drawn angular diameter (degrees) of a giant parent hanging close over a small moon, from its real one: small bodies
+     * get the usual {@link #bodyScale()}, but big ones grow ever more slowly (as the real size to the power 0.65), so two
+     * moons at different distances still show their parent at clearly different sizes instead of both at the cap
+     * (Mars: about 57 degrees from Phobos, 31 from Deimos), and never past 70 degrees.
+     */
+    public static double nearParentSize(double realDegrees) {
+        return Math.min(70, Math.min(realDegrees * bodyScale(), 5.1 * Math.pow(realDegrees, 0.65)));
+    }
+
     public static double bodyScale() {
         // dev checks (showcase) may enlarge bodies past the setting's range to walk through every level of detail
         String dev = System.getProperty("spacebreaker.bodyScale");
