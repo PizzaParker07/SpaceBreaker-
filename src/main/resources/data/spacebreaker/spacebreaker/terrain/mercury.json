@@ -7,7 +7,8 @@
     "scale": 500,
     "detail_amplitude": 2.2,
     "detail_scale": 30,
-    "roughness": 0.8
+    "roughness": 0.8,
+    "lowland_smoothing": 0.6
   },
   "lowlands": {
     "threshold": 0.1,
@@ -96,9 +97,9 @@
   },
   "landforms": {
     "scarps": {
-      "cell": 1300,
-      "chance": 0.65,
-      "height": 20,
+      "cell": 900,
+      "chance": 0.85,
+      "height": 24,
       "front": 6,
       "back": 90
     },
@@ -107,16 +108,16 @@
         "soil": {
           "Name": "spacebreaker:hollow_deposit"
         },
-        "scale": 90,
-        "threshold": 0.88,
+        "scale": 60,
+        "threshold": 0.8,
         "where": "any"
       },
       {
         "soil": {
           "Name": "spacebreaker:low_reflectance_rock"
         },
-        "scale": 260,
-        "threshold": 0.7,
+        "scale": 160,
+        "threshold": 0.5,
         "where": "highlands"
       }
     ]
