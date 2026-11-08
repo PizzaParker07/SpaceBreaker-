@@ -99,6 +99,7 @@ public final class ShowcaseScenarios {
         ALL.put("qa_playthrough", new QaPlaythroughScenario(new RocketryScenario()));
         ALL.put("qa_launch", new QaLaunchScenario(new RocketryScenario()));
         ALL.put("qa_hud_overlay", new QaHudOverlayScenario());
+        ALL.put("qa_ui", new QaUiScenario());
         ALL.put("qa_station_play", new QaStationPlayScenario());
     }
 
