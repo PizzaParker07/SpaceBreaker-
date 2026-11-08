@@ -193,6 +193,17 @@ public final class RoverTests {
         h.succeed();
     }
 
+    /** The HUD's battery percentage: hidden on a healthy battery, shown below 20 %, always in the detailed HUD. */
+    @GameTest(template = "empty")
+    public static void batteryPercentShowsWhenLow(GameTestHelper h) {
+        h.assertTrue(RoverEntity.shownPercent(0.8F, false) == -1 && RoverEntity.shownPercent(0.2F, false) == -1, "hidden when healthy");
+        h.assertTrue(RoverEntity.shownPercent(0.12F, false) == 12, "low: " + RoverEntity.shownPercent(0.12F, false));
+        h.assertTrue(RoverEntity.shownPercent(0F, false) == 0, "empty reads 0");
+        h.assertTrue(RoverEntity.shownPercent(0.001F, false) == 1, "a last drop is not 0");
+        h.assertTrue(RoverEntity.shownPercent(0.8F, true) == 80 && RoverEntity.shownPercent(1F, true) == 100, "detailed HUD always");
+        h.succeed();
+    }
+
     @GameTest(template = "empty")
     public static void lowGravityJumpsAreLongAndLandingsBounce(GameTestHelper h) {
         // airtime of a 0.3 b/t hop: about 6x longer on the Moon
@@ -415,6 +426,39 @@ public final class RoverTests {
         h.assertTrue(centrifuge.loopSound() == com.pizzaparker07.spacebreaker.content.audio.SbSounds.CENTRIFUGE_LOOP.get(), "centrifuge whine");
         h.assertTrue(reactor.loopSound() == com.pizzaparker07.spacebreaker.content.audio.SbSounds.FISSION_REACTOR_LOOP.get(), "fission unit hum");
         h.assertTrue(centrifuge.loopShareRadius() > 0 && reactor.loopShareRadius() == 0, "a centrifuge cascade shares one loop");
+        h.succeed();
+    }
+
+    /**
+     * Getting in the way a player does, by using the rover with an empty hand: the first player takes the driver's
+     * seat, the second the passenger's, a third is turned away. On every open model (and the cabin one) with its
+     * deck fittings on, so no fitting swallows the click.
+     */
+    @GameTest(template = "empty", timeoutTicks = 60)
+    public static void playersBoardOpenRoversByUsingThem(GameTestHelper h) {
+        floor(h, Blocks.STONE.defaultBlockState());
+        var types = new java.util.ArrayList<net.minecraft.world.entity.EntityType<RoverEntity>>(java.util.List.of(
+                VehiclesModule.ROVER.get(), VehiclesModule.SPRINT_ROVER.get(), VehiclesModule.PRESSURIZED_ROVER.get()));
+        for (int i = 0; i < types.size(); i++) {
+            RoverEntity rover = types.get(i).create(h.getLevel());
+            Vec3 at = h.absoluteVec(Vec3.atBottomCenterOf(new BlockPos(1 + i * 3, 1, 2)));
+            rover.moveTo(at.x, at.y, at.z, 0F, 0F);
+            rover.installSolar();
+            rover.installRtg(new ItemStack(MachinesModule.RTG_FUEL_PELLET.get()));
+            rover.cargo().setItem(0, new ItemStack(net.minecraft.world.item.Items.CHEST));
+            h.getLevel().addFreshEntity(rover);
+            var driver = h.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+            var passenger = h.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+            var third = h.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+            String id = net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.getKey(types.get(i)).getPath();
+            h.assertTrue(rover.interact(driver, net.minecraft.world.InteractionHand.MAIN_HAND).consumesAction() && driver.getVehicle() == rover,
+                    id + ": the first player gets in");
+            h.assertTrue(rover.interact(passenger, net.minecraft.world.InteractionHand.MAIN_HAND).consumesAction() && passenger.getVehicle() == rover,
+                    id + ": the second player gets in");
+            rover.interact(third, net.minecraft.world.InteractionHand.MAIN_HAND);
+            h.assertTrue(third.getVehicle() == null, id + ": a third is turned away");
+            h.assertTrue(rover.getControllingPassenger() == driver, id + ": the first one drives");
+        }
         h.succeed();
     }
 

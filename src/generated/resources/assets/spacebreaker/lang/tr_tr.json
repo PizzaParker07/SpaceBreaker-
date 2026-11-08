@@ -1115,6 +1115,7 @@
   "hud.spacebreaker.rover.cabin": "Kabin O₂ %%%s",
   "hud.spacebreaker.rover.cabin_empty": "Kabin basınçsız",
   "hud.spacebreaker.rover.empty": "Akü boş",
+  "hud.spacebreaker.rover.percent": "%%%s",
   "hud.spacebreaker.rover.rtg": "RTG",
   "hud.spacebreaker.rover.solar": "Güneş",
   "hud.spacebreaker.rover.solar_dusty": "Güneş (toz %%%s)",
