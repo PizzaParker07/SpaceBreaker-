@@ -150,7 +150,24 @@ final class RoverScenario implements ShowcaseScenario {
                 at(0.3, p -> seat(p, parked, 1)), null));
         s.add(new ShowcaseDriver.Shot(w + "_12_cabin_driver_fp", 0, X0 - 4.5, gy + 2, Z0 + 20.5, 35F, 6F, false, fp, 60,
                 at(0.3, p -> seat(p, cabin, 0)), null));
-        return s;
+        // the driver-view shot leaves the player in the parked rover, where the driver's teleport cannot move them:
+        // every shot that is not a seat view gets them out first and puts them at its own camera spot
+        List<ShowcaseDriver.Shot> out = new ArrayList<>();
+        for (ShowcaseDriver.Shot shot : s) {
+            boolean seated = shot.name().endsWith("_05_driver_view") || shot.name().matches(".*_1[0-2]_.*");
+            Consumer<ServerPlayer> setup = shot.serverSetup();
+            out.add(seated ? shot : new ShowcaseDriver.Shot(shot.name(), shot.time(), shot.x(), shot.y(), shot.z(), shot.yaw(), shot.pitch(),
+                    shot.hideGui(), shot.camera(), shot.minTicks(), p -> {
+                if (p.isPassenger()) {
+                    p.stopRiding();
+                    p.connection.teleport(shot.x(), shot.y() - p.getEyeHeight(), shot.z(), shot.yaw(), shot.pitch());
+                }
+                if (setup != null) {
+                    setup.accept(p);
+                }
+            }, shot.clientSetup()));
+        }
+        return out;
     }
 
     /** Puts the player in seat 0 (driver) or 1 (passenger, with a stand-in driving) of the rover, facing ahead. */
