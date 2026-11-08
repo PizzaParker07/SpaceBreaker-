@@ -218,6 +218,9 @@ def scree_roller():
             return r[1]
         if face == 'top':
             return r[5] if y in (0, fh - 1) else noise_pick(r, 3, n, x, y)
+        # sides: a pale crest on top, a dark rim along the lower edge so each plate reads against the next
+        if y == fh - 1:
+            return r[0]
         return r[4] if y == 0 else noise_pick(r, 2, n, x + 20, y)
 
     paint(cv, 0, 0, 8, 5, 4, plate)
@@ -235,7 +238,9 @@ def scree_roller():
         return r[4] if face == 'front' else noise_pick(r, 3, n, x + 50, y)
 
     paint(cv, 28, 14, 3, 3, 4, head)
-    paint(cv, 42, 14, 2, 3, 2, lambda f, x, y, fw, fh: r[1])
+    paint(cv, 42, 14, 2, 3, 2, lambda f, x, y, fw, fh: r[0] if y == fh - 1 else (r[2] if f == 'top' else r[1]))
+    # feet: dark, with pale claw tips on the front
+    paint(cv, 52, 14, 2, 1, 1, lambda f, x, y, fw, fh: r[5] if f == 'front' else r[0])
     return cv
 
 
