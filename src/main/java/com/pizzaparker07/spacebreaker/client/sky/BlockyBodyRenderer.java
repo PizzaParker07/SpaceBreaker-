@@ -316,16 +316,12 @@ public final class BlockyBodyRenderer {
     public static final int NO_AIR = -1;
     /** Night side of a body with thick air (gas giants): lit faintly by its moons and its own air, never a black hole in the sky. */
     static final float AIR_NIGHT = 0.1F;
-    /** The air band along the outline of such a body: opacity on the day side (the night side keeps about an eighth). */
+    /** The air shell round such a body: opacity on the day side. */
     static final float AIR_LIMB_ALPHA = 0.55F;
-    static final float AIR_LIMB_THICKNESS = 0.02F;
+    /** How bright the air shell stays on the night side (it fades to this, never quite out). */
+    static final float AIR_SHELL_NIGHT = 0.15F;
+    private static final Map<Integer, ColorMap> AIR_MAPS = new java.util.HashMap<>();
 
-    /**
-     * As {@link #draw(Matrix4f, BlockyBodyMesh.Style, int, ColorMap, Pose, Vector3f, float, float, float, Ring)}, for a body
-     * with air of colour {@code air} (rgb; {@link #NO_AIR} for none): its night side gets a faint fill in its own colours
-     * (at least {@link #AIR_NIGHT}) and a thin band of air hugs the outline, bright on the day side and faint but still
-     * there on the night side, so a giant seen from its moons' day side reads as a planet, not as a black disc.
-     */
     /**
      * Air colour of a giant planet by its name or disc texture path ({@link #NO_AIR} for anything else): Jupiter cream,
      * Saturn pale gold, Uranus cyan, Neptune blue.
@@ -346,14 +342,26 @@ public final class BlockyBodyRenderer {
         return NO_AIR;
     }
 
+    /**
+     * As {@link #draw(Matrix4f, BlockyBodyMesh.Style, int, ColorMap, Pose, Vector3f, float, float, float, Ring)}, for a body
+     * with air of colour {@code air} (rgb; {@link #NO_AIR} for none): its night side gets a faint fill in its own colours
+     * (at least {@link #AIR_NIGHT}), and its air shows as a shell one block thick round it, built from the same blocks
+     * as the body (the same ball one cell bigger, in the air's colour, behind it), so the band follows the body's
+     * stepped outline instead of a smooth circle: bright on the day side, faint but still there on the night side.
+     */
     public static void draw(Matrix4f pose, BlockyBodyMesh.Style style, int n, ColorMap map, Pose body, Vector3f sun, float night,
                             float tint, float alpha, Ring ring, int air) {
         if (air == NO_AIR) {
             render(pose, style, n, map, body, sun, night, tint, alpha, ring, null);
             return;
         }
+        // the body's own block size, so the shell's steps line up with the body's
+        int level = n > 0 ? n : lod(map, style, body, n == APPROACH ? LEVELS[LEVELS.length - 1] : SKY_MAX).current;
+        ColorMap shell = AIR_MAPS.computeIfAbsent(air, BlockyBodyRenderer::flat);
+        float grow = 2.2F / level; // one cell (a cell is 2 radii / level across) and a hair, so the shell clears the body's corners
+        Pose halo = new Pose(body.center(), body.radius() * (1 + grow), body.pole(), body.facing(), body.spin());
+        render(pose, style, level, shell, halo, sun, AIR_SHELL_NIGHT, Math.min(1F, tint), alpha * AIR_LIMB_ALPHA, null, null);
         render(pose, style, n, map, body, sun, Math.max(night, AIR_NIGHT), tint, alpha, ring, null);
-        drawLimb(pose, body, sun, air, Math.min(1F, AIR_LIMB_ALPHA * alpha * tint), AIR_LIMB_THICKNESS);
     }
 
     /**

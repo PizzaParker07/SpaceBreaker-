@@ -234,7 +234,7 @@ public final class PlanetTerrain {
                 continue;
             }
             double s = cr.normalizedDistance(x, z);
-            if (cr.fresh()) {
+            if (cr.fresh() && cr.radius() >= profile.craters().rayMinRadius()) {
                 ray = Math.max(ray, cr.ray(x, z, s, profile.craters().rayLength()));
             }
             if (d2 > reach * reach) {

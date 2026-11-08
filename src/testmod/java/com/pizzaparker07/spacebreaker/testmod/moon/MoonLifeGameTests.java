@@ -58,6 +58,7 @@ public final class MoonLifeGameTests {
         for (var e : profiles.entrySet()) {
             if (!e.getKey().location().equals(Spacebreaker.id("moon"))) {
                 helper.assertTrue(e.getValue().craters().rayFill() == 1.0, e.getKey().location() + " keeps speckled rays");
+                helper.assertTrue(e.getValue().craters().rayMinRadius() == 0.0, e.getKey().location() + " keeps rays from every fresh crater");
                 others++;
             }
         }

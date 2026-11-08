@@ -78,6 +78,12 @@ public class LavaTubePiece extends StructurePiece {
             z1 = Math.max(z1, n[2] + rh);
         }
         y1 = Math.max(y1, shaftTop + 2);
+        // room round the skylight for the sagging ground and the fallen roof blocks
+        int[] s = path.get(0);
+        x0 = Math.min(x0, s[0] - RING);
+        x1 = Math.max(x1, s[0] + RING);
+        z0 = Math.min(z0, s[2] - RING);
+        z1 = Math.max(z1, s[2] + RING);
         return new BoundingBox(x0, y0, z0, x1, y1, z1);
     }
 
@@ -187,10 +193,42 @@ public class LavaTubePiece extends StructurePiece {
     }
 
     /** The collapsed roof at the entrance: a round shaft to the surface with a rubble cone below it. */
+    /** Reach of the sagging ground and fallen roof blocks round the skylight, blocks from its centre. */
+    private static final int RING = 10;
+
     private void skylight(WorldGenLevel level, BoundingBox box, BlockPos.MutableBlockPos p, BlockState rubble, BlockState floor) {
         int sx = nodes[0];
         int sy = nodes[1];
         int sz = nodes[2];
+        // first the surface round the hole: it sags toward the opening, and slabs of the fallen roof lie on it
+        for (int x = sx - RING; x <= sx + RING; x++) {
+            for (int z = sz - RING; z <= sz + RING; z++) {
+                if (!box.isInside(x, box.minY(), z)) {
+                    continue;
+                }
+                double d = Math.sqrt(sq(x - sx) + sq(z - sz));
+                double r = 3.6 + 0.6 * Math.sin((x * 3 + z * 7) * 0.7);
+                if (d <= r || d > RING) {
+                    continue;
+                }
+                int top = surface(level, p, x, z);
+                if (top == Integer.MIN_VALUE) {
+                    continue;
+                }
+                long h = mixPos(x, 0, z);
+                // a shallow ring of collapse: two blocks down at the lip, one block further out, ragged edge
+                int sag = d < r + 2 + (h & 1) ? 2 : d < r + 4.5 + ((h >>> 1) & 1) ? 1 : 0;
+                for (int k = 0; k < sag; k++) {
+                    p.set(x, top - k, z);
+                    level.setBlock(p, Blocks.AIR.defaultBlockState(), 2);
+                }
+                // roof blocks thrown out round the lip, thinning with distance
+                if (((h >>> 8) & 15) < Math.max(0, 9 - (int) (d - r) * 2)) {
+                    p.set(x, top - sag + 1, z);
+                    level.setBlock(p, (h >>> 12 & 1) == 0 ? rubble : MoonModule.MARE_BASALT.get().defaultBlockState(), 2);
+                }
+            }
+        }
         for (int x = sx - 5; x <= sx + 5; x++) {
             for (int z = sz - 5; z <= sz + 5; z++) {
                 if (!box.isInside(x, box.minY(), z)) {
@@ -213,6 +251,17 @@ public class LavaTubePiece extends StructurePiece {
                 }
             }
         }
+    }
+
+    /** Highest solid block of the column near the skylight's rim, or MIN_VALUE if none is found. */
+    private int surface(WorldGenLevel level, BlockPos.MutableBlockPos p, int x, int z) {
+        for (int y = shaftTop + 6; y > shaftTop - 8; y--) {
+            p.set(x, y, z);
+            if (!level.getBlockState(p).isAir()) {
+                return y;
+            }
+        }
+        return Integer.MIN_VALUE;
     }
 
     private void probe(WorldGenLevel level, BoundingBox box, RandomSource r, int x, int y, int z) {

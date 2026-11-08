@@ -25,7 +25,8 @@
     "central_peak": 0.95,
     "fresh_chance": 0.22,
     "ray_length": 7,
-    "ray_fill": 2.5,
+    "ray_fill": 1.8,
+    "ray_min_radius": 7,
     "classes": [
       {
         "min_radius": 2.5,
