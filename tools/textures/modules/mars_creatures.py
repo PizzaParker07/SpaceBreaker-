@@ -14,7 +14,9 @@ LURKER_BUFF = ramp('#86644a', '#a07e5c', '#b99670')
 LURKER_BELLY = ramp('#2e2220', '#3d2e2a', '#4c3a35')
 EYE = ramp('#6a3c0c', '#c47a1c', '#f5c040', '#fff0b0')
 WORM = ramp('#5e6772', '#7a8591', '#98a2ad', '#b4bdc6', '#ced5db', '#e6eaee')
-MAW = ramp('#2a1c20', '#45303a', '#6a4a56')
+ICE = ramp('#9cc4dc', '#bcdcec', '#d8eef8', '#f2fbff')
+ICE_CORE = ramp('#2c3846', '#3c4a5c', '#506276', '#66788c')
+GULLET = ramp('#5a2a0e', '#7a3a12', '#9a4e1a')
 ROCKS = ramp('#3d2a22', '#5a3e30', '#7a5a46', '#2e2624')
 DUST = ramp('#6b4630', '#8a5c3e', '#a8744e', '#c08c62', '#d4a57c')
 
@@ -237,37 +239,54 @@ def lurker_eyes():
 
 
 def worm():
-    """Polar Worm: pale, frost-bristled ringed body; a round maw ringed with ice-white teeth."""
-    cv = Canvas(64, 64)
+    """Polar Worm: clear ice rings (translucent shells with bright frosted rims) round a dark slate core, a blunt
+    frost-white head whose round maw is ringed with ice teeth around a dark orange gullet."""
+    cv = Canvas(128, 64)
     n = clustered(64, 64, 71, passes=1)
+
+    def clear(c, a):
+        return (c[0], c[1], c[2], a)
 
     def head(face, x, y, fw, fh):
         if face == 'front':
             cx, cy = (fw - 1) / 2, (fh - 1) / 2
-            d = max(abs(x - cx), abs(y - cy))
-            if d < 1:
-                return MAW[0]
-            if d < 1.6:
-                return MAW[2] if (x + y) % 2 == 0 else MAW[1]
+            d = ((x - cx) ** 2 + (y - cy) ** 2) ** 0.5
+            if d < 1.2:
+                return GULLET[1] if d < 0.8 else GULLET[0]
+            if d < 2.0:
+                return ICE_CORE[1]  # the dark lip the teeth stand on
             return WORM[4] if y == 0 else (WORM[2] if y == fh - 1 else WORM[3])
-        return noise_pick(WORM, 3 if face == 'top' else 2, n, x, y)
-
-    paint(cv, 0, 0, 6, 6, 6, head)
-
-    def seg(face, x, y, fw, fh):
-        if face in ('top', 'bottom'):
-            return noise_pick(WORM, 3 if face == 'top' else 1, n, x + 20, y)
-        if y == 0:
-            return WORM[4]  # ring edge lit
-        if y == fh - 1:
+        if face == 'top':
+            return noise_pick(WORM, 5 if y < fh - 1 else 4, n, x, y)
+        if face == 'bottom':
             return WORM[1]
-        if (x + y) % 4 == 0:
-            return WORM[5]  # frost bristle
-        return noise_pick(WORM, 3, n, x + 30, y + 20)
+        return noise_pick(WORM, 4 if y < 2 else 3, n, x + 9, y)
 
-    paint(cv, 0, 14, 5, 5, 5, seg)
-    paint(cv, 24, 14, 4, 4, 4, seg)
-    paint(cv, 44, 14, 3, 3, 3, seg)
+    paint(cv, 0, 0, 6, 5, 5, head)
+    paint(cv, 24, 0, 1, 1, 2, lambda f, x, y, fw, fh: ICE[3] if f == 'front' else (ICE[2] if f == 'top' else ICE[1]))
+    paint(cv, 70, 0, 1, 2, 2, lambda f, x, y, fw, fh: clear(ICE[3] if f == 'top' or y == 0 else ICE[2], 225))
+    paint(cv, 70, 12, 1, 1, 3, lambda f, x, y, fw, fh: clear(ICE[3] if f in ('back', 'top') else ICE[2], 235))
+
+    def shell(face, x, y, fw, fh):
+        frost = n[(y * 5 + x) % 64][(x * 3 + 17) % 64]
+        if face in ('front', 'back'):
+            # the ring's end faces: a bright frosted rim, clear in the middle
+            if x == 0 or y == 0 or x == fw - 1 or y == fh - 1:
+                return clear(ICE[3], 215)
+            return clear(ICE[1], 60)
+        # the long faces stay clear so the core shows; only a speck of frost here and there
+        if frost > 0.8:
+            return clear(ICE[3], 150)
+        return clear(ICE[2] if face == 'top' else ICE[1], 70)
+
+    for u, v, w, h in ((0, 12, 6, 5), (20, 12, 5, 4), (40, 12, 4, 3), (56, 12, 3, 2)):
+        paint(cv, u, v, w, h, 3, shell)
+
+    def core(face, x, y, fw, fh):
+        return noise_pick(ICE_CORE, 1 if face == 'top' else 0, n, x + 40, y + 13)
+
+    for u, v, w, h in ((0, 24, 4, 3), (20, 24, 3, 2), (40, 24, 2, 1), (56, 24, 1, 1)):
+        paint(cv, u, v, w, h, 4, core)
     return cv
 
 
