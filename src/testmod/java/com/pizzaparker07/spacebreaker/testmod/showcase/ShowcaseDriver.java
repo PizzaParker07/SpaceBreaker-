@@ -129,7 +129,7 @@ public final class ShowcaseDriver {
             return;
         }
         Minecraft mc = Minecraft.getInstance();
-        if (++totalTicks > TIMEOUT_TICKS) {
+        if (++totalTicks > TIMEOUT_TICKS * (QaUiProbe.active() ? 4 : 1)) {
             log("timed out, stopping");
             finish(mc);
             return;
@@ -257,7 +257,10 @@ public final class ShowcaseDriver {
             return;
         }
         boolean ready = ticks >= shot.minTicks() && mc.levelRenderer.hasRenderedAllSections() && terrainLoaded(mc);
-        if (ready || ticks > shot.minTicks() + 400) {
+        if (ready && !QaUiProbe.finished(mc, shot.name())) {
+            return; // QA screen probe: tooltips on this shot's screen first
+        }
+        if (ready || ticks > shot.minTicks() + (QaUiProbe.active() ? 12000 : 400)) {
             String file = PREFIX + "_" + shot.name() + ".png";
             Screenshot.grab(mc.gameDirectory, file, mc.getMainRenderTarget(), msg -> log("saved " + file));
             var server = mc.getSingleplayerServer();
