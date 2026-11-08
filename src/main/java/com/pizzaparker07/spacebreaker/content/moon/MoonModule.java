@@ -52,7 +52,7 @@ public final class MoonModule implements SbModule {
 
     public static final DeferredBlock<LunarRegolithBlock> LUNAR_REGOLITH = soil("lunar_regolith", MapColor.COLOR_LIGHT_GRAY, SoundType.SAND, 0.6F);
     public static final DeferredBlock<LunarRegolithBlock> MARE_REGOLITH = soil("mare_regolith", MapColor.COLOR_GRAY, SoundType.SAND, 0.6F);
-    public static final DeferredBlock<LunarRegolithBlock> VOLCANIC_GLASS_SOIL = soil("volcanic_glass_soil", MapColor.COLOR_ORANGE, SoundType.SAND, 0.6F);
+    public static final DeferredBlock<LunarRegolithBlock> VOLCANIC_GLASS_SOIL = soil("volcanic_glass_soil", MapColor.COLOR_BROWN, SoundType.SAND, 0.6F);
     public static final DeferredBlock<LunarRegolithBlock> ICY_REGOLITH = soil("icy_regolith", MapColor.ICE, SoundType.SNOW, 0.8F);
 
     // ------------------------------------------------------------------ rocks

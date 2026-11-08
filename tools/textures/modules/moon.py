@@ -118,10 +118,12 @@ def volcanic_glass_soil(variant=0):
     tones = [r[1], r[2], r[3], r[4], r[5]]
     f = blend((white(331 + variant), 0.6), (clustered(16, 16, 332 + variant, passes=1), 0.4))
     cv, _ = quant(f, tones, [12, 28, 34, 20, 6])
-    # black glass beads: single dark pixels scattered (~8 %)
+    # black glass beads: single dark pixels scattered (~8 %), and a few orange beads that catch the light
     rng = random.Random(333 + variant)
     for _ in range(20):
         cv[rng.randrange(16), rng.randrange(16)] = r[0]
+    for i in range(6):
+        cv[rng.randrange(16), rng.randrange(16)] = P.VOLCANIC_BEADS[i % 2]
     return cv
 
 

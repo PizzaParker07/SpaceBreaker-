@@ -13,7 +13,9 @@ MARE_REGOLITH = ramp('#353432', '#3f3e3c', '#494846', '#53524f', '#5e5c59', '#6a
 # Mare soil tones (bead, then five powder tones).
 MARE_SOIL = ramp('#2f2e2c', '#454441', '#4c4b48', '#53524f', '#5b5a56', '#64625e')
 # Orange volcanic glass soil (pyroclastic glass beads) + black beads.
-VOLCANIC_GLASS = ramp('#2e2723', '#6b4a35', '#7b563c', '#8a6344', '#98704d', '#a67e59')
+VOLCANIC_GLASS = ramp('#1d1a18', '#3f3832', '#4b423a', '#574c42', '#63564a', '#706152')
+# the orange and black glass beads of the pyroclastic soil: a few bright specks in the dark brown-grey ground
+VOLCANIC_BEADS = ramp('#9a5a2a', '#c2773a')
 # Frost on polar regolith.
 FROST = ramp('#a9bcc4', '#cfdde2', '#eef5f7')
 # Anorthosite: pale plagioclase rock of the highlands, cool light grey.
