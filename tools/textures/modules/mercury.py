@@ -153,40 +153,55 @@ SNAIL_BODY = ramp('#3e3a37', '#524c47', '#665f58', '#7a726a', '#8e857c')
 
 
 def snail():
-    """Hollow Snail: grey, finely wrinkled foot and head; a pale blue-white shell banded like the hollow crust."""
-    cv = Canvas(64, 32)
+    """Hollow Snail (64x64): a grey, finely wrinkled foot and neck; a pale blue-white shell banded like the hollow crust,
+    a dark spiral line coiling in on each side to a pale knob."""
+    import math
+    cv = Canvas(64, 64)
     n = clustered(64, 32, 7601, passes=1)
 
-    def foot(face, x, y, fw, fh):
+    def body(face, x, y, fw, fh, ox=0):
         if face == 'bottom':
             return SNAIL_BODY[0]
         if face == 'top':
-            return noise_pick(SNAIL_BODY, 3 if x in (1, fw - 2) else 2, n, x, y)
-        return noise_pick(SNAIL_BODY, 2 if y == 0 else 1, n, x + 20, y + 4)
+            return noise_pick(SNAIL_BODY, 3 if x in (1, fw - 2) else 2, n, x + ox, y)
+        return noise_pick(SNAIL_BODY, 2 if y == 0 else 1, n, x + 20 + ox, y + 4)
 
-    paint(cv, 0, 0, 5, 2, 11, foot)
+    paint(cv, 0, 0, 5, 2, 13, body)
+    paint(cv, 36, 0, 3, 1, 3, body)
+    paint(cv, 48, 0, 3, 4, 3, lambda f, x, y, fw, fh: body(f, x, y, fw, fh, 9) if (y + x) % 3 else SNAIL_BODY[1])
+
+    def spiral(x, y, fw, fh):
+        cx, cy = (fw - 1) / 2, (fh - 1) / 2
+        r = math.hypot(x - cx, y - cy)
+        a = (math.atan2(y - cy, x - cx) / (2 * math.pi)) % 1.0
+        # a line whose radius grows by 1.7 px per turn
+        return abs(((r / 1.7) - a) % 1.0 - 0.5) > 0.36
 
     def shell(face, x, y, fw, fh):
         if face == 'bottom':
             return SNAIL_BODY[1]
+        if face in ('left', 'right'):
+            if spiral(x, y, fw, fh):
+                return GRAPHITE[2]
+            turn = int(math.hypot(x - (fw - 1) / 2, y - (fh - 1) / 2) / 1.7)
+            return HOLLOW[5] if turn % 2 == 0 else HOLLOW[3]
         if face == 'top':
-            ring = max(abs(x - 3), abs(y - 3))
-            return HOLLOW[5 - ring] if ring < 3 else HOLLOW[2]
-        # growth bands down the sides, lit at the rim
-        if y == 0:
-            return HOLLOW[5]
+            return HOLLOW[5] if x in (1, 2, 3) else HOLLOW[4]
+        # the front and back of the coil: growth bands across the whorl
         return HOLLOW[4] if y % 2 else HOLLOW[2 if (x + y) % 5 else 1]
 
-    paint(cv, 0, 14, 7, 6, 7, shell)
-    paint(cv, 30, 14, 4, 2, 4, lambda f, x, y, fw, fh: HOLLOW[5] if f == 'top' else HOLLOW[3])
+    paint(cv, 0, 16, 5, 6, 8, shell)
+    paint(cv, 28, 16, 5, 8, 6, shell)
+    paint(cv, 50, 24, 1, 2, 2, lambda f, x, y, fw, fh: HOLLOW[5] if f in ('right', 'left', 'top') else HOLLOW[3])
 
     def head(face, x, y, fw, fh):
         if face == 'front' and y == fh - 1:
             return SNAIL_BODY[0]  # rasping mouth
         return noise_pick(SNAIL_BODY, 3 if face == 'top' else 2, n, x + 40, y + 10)
 
-    paint(cv, 34, 0, 3, 3, 2, head)
-    paint(cv, 46, 0, 1, 3, 1, lambda f, x, y, fw, fh: GRAPHITE[0] if y == 0 else SNAIL_BODY[2])
+    paint(cv, 48, 8, 3, 2, 3, head)
+    paint(cv, 36, 6, 1, 4, 1, lambda f, x, y, fw, fh: GRAPHITE[0] if y == 0 else SNAIL_BODY[2])
+    paint(cv, 36, 12, 1, 1, 2, lambda f, x, y, fw, fh: SNAIL_BODY[3] if f == 'front' else SNAIL_BODY[2])
     return cv
 
 
