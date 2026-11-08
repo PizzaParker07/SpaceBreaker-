@@ -18,11 +18,15 @@ public class GlimmerBeetleModel<T extends GlimmerBeetle> extends HierarchicalMod
     private static final String[] LEGS = {"right_leg_0", "right_leg_1", "right_leg_2", "left_leg_0", "left_leg_1", "left_leg_2"};
     private final ModelPart root;
     private final ModelPart head;
+    private final ModelPart leftAntenna;
+    private final ModelPart rightAntenna;
     private final ModelPart[] legs = new ModelPart[6];
 
     public GlimmerBeetleModel(ModelPart root) {
         this.root = root;
         this.head = root.getChild("head");
+        this.leftAntenna = head.getChild("left_antenna");
+        this.rightAntenna = head.getChild("right_antenna");
         for (int i = 0; i < 6; i++) {
             legs[i] = root.getChild(LEGS[i]);
         }
@@ -35,11 +39,13 @@ public class GlimmerBeetleModel<T extends GlimmerBeetle> extends HierarchicalMod
                 PartPose.offset(0F, 23F, 1F));
         root.addOrReplaceChild("thorax", CubeListBuilder.create().texOffs(0, 10).addBox(-2F, -2F, -2F, 4F, 2F, 3F),
                 PartPose.offset(0F, 22.5F, -2F));
+        // a low head tucked under the thorax line, with two long feelers sweeping forward and up
         PartDefinition head = root.addOrReplaceChild("head", CubeListBuilder.create().texOffs(14, 10).addBox(-1F, -1F, -2F, 2F, 2F, 2F),
-                PartPose.offset(0F, 22F, -4F));
-        head.addOrReplaceChild("antennae", CubeListBuilder.create()
-                .texOffs(22, 10).addBox(-1.5F, -3F, -2F, 1F, 2F, 1F)
-                .texOffs(22, 10).mirror().addBox(0.5F, -3F, -2F, 1F, 2F, 1F), PartPose.ZERO);
+                PartPose.offset(0F, 22.8F, -3.5F));
+        head.addOrReplaceChild("left_antenna", CubeListBuilder.create().texOffs(22, 10).addBox(-0.5F, -0.5F, -4F, 1F, 1F, 4F),
+                PartPose.offsetAndRotation(0.6F, -0.8F, -1.5F, -0.55F, -0.35F, 0F));
+        head.addOrReplaceChild("right_antenna", CubeListBuilder.create().texOffs(22, 10).mirror().addBox(-0.5F, -0.5F, -4F, 1F, 1F, 4F),
+                PartPose.offsetAndRotation(-0.6F, -0.8F, -1.5F, -0.55F, 0.35F, 0F));
         CubeListBuilder right = CubeListBuilder.create().texOffs(0, 16).addBox(-4F, 0F, -0.5F, 4F, 1F, 1F);
         CubeListBuilder left = CubeListBuilder.create().texOffs(0, 16).mirror().addBox(0F, 0F, -0.5F, 4F, 1F, 1F);
         float[] z = {-2.5F, -1F, 0.5F};
@@ -58,6 +64,9 @@ public class GlimmerBeetleModel<T extends GlimmerBeetle> extends HierarchicalMod
     @Override
     public void setupAnim(T beetle, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         head.yRot = netHeadYaw * Mth.DEG_TO_RAD * 0.4F;
+        // the feelers tap the air, out of step
+        leftAntenna.xRot = -0.55F + Mth.sin(ageInTicks * 0.2F) * 0.12F;
+        rightAntenna.xRot = -0.55F + Mth.sin(ageInTicks * 0.2F + 1.3F) * 0.12F;
         float[] spread = {-0.45F, 0F, 0.45F};
         for (int i = 0; i < 3; i++) {
             float swing = Mth.cos(limbSwing * 1.6F + i * 2.1F) * 0.5F * limbSwingAmount;

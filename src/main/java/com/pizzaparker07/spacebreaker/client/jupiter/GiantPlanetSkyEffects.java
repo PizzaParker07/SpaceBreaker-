@@ -224,7 +224,8 @@ public class GiantPlanetSkyEffects extends PlanetSkyEffects {
                     ringMap(look.rings()));
         }
         com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.draw(m, style, 0, faceMap(look.disc()), pose,
-                new Vector3f((float) sunWorld.x, (float) sunWorld.y, (float) sunWorld.z), 0.04F, look.haze(), 1F, ring);
+                new Vector3f((float) sunWorld.x, (float) sunWorld.y, (float) sunWorld.z), 0.04F, look.haze(), 1F, ring,
+                com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.giantAir(look.disc().getPath()));
     }
 
     private static final java.util.Map<ResourceLocation, com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.ColorMap> FACE_MAPS =

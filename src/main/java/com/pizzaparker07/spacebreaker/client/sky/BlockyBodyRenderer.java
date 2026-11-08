@@ -312,6 +312,50 @@ public final class BlockyBodyRenderer {
         render(pose, style, n, map, body, sun, night, tint, alpha, ring, null);
     }
 
+    /** No air: {@link #draw(Matrix4f, BlockyBodyMesh.Style, int, ColorMap, Pose, Vector3f, float, float, float, Ring, int)} without a limb. */
+    public static final int NO_AIR = -1;
+    /** Night side of a body with thick air (gas giants): lit faintly by its moons and its own air, never a black hole in the sky. */
+    static final float AIR_NIGHT = 0.1F;
+    /** The air band along the outline of such a body: opacity on the day side (the night side keeps about an eighth). */
+    static final float AIR_LIMB_ALPHA = 0.55F;
+    static final float AIR_LIMB_THICKNESS = 0.02F;
+
+    /**
+     * As {@link #draw(Matrix4f, BlockyBodyMesh.Style, int, ColorMap, Pose, Vector3f, float, float, float, Ring)}, for a body
+     * with air of colour {@code air} (rgb; {@link #NO_AIR} for none): its night side gets a faint fill in its own colours
+     * (at least {@link #AIR_NIGHT}) and a thin band of air hugs the outline, bright on the day side and faint but still
+     * there on the night side, so a giant seen from its moons' day side reads as a planet, not as a black disc.
+     */
+    /**
+     * Air colour of a giant planet by its name or disc texture path ({@link #NO_AIR} for anything else): Jupiter cream,
+     * Saturn pale gold, Uranus cyan, Neptune blue.
+     */
+    public static int giantAir(String path) {
+        if (path.contains("jupiter")) {
+            return 0xE8D9B8;
+        }
+        if (path.contains("saturn")) {
+            return 0xE6D3A3;
+        }
+        if (path.contains("uranus")) {
+            return 0x9FE3E8;
+        }
+        if (path.contains("neptune")) {
+            return 0x6F9BFF;
+        }
+        return NO_AIR;
+    }
+
+    public static void draw(Matrix4f pose, BlockyBodyMesh.Style style, int n, ColorMap map, Pose body, Vector3f sun, float night,
+                            float tint, float alpha, Ring ring, int air) {
+        if (air == NO_AIR) {
+            render(pose, style, n, map, body, sun, night, tint, alpha, ring, null);
+            return;
+        }
+        render(pose, style, n, map, body, sun, Math.max(night, AIR_NIGHT), tint, alpha, ring, null);
+        drawLimb(pose, body, sun, air, AIR_LIMB_ALPHA * alpha * tint, AIR_LIMB_THICKNESS);
+    }
+
     /**
      * Draws a body on a flat view looking down -Z (GUI screens: x right, y down). With {@code n} 0 the size is chosen from
      * the body's size in real screen pixels (GUI units times the GUI scale), a block every few pixels.
