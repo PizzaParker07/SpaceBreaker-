@@ -55,19 +55,27 @@ public record TerrainProfile(ResourceLocation body, int baseHeight, double poleD
      * @param detailAmplitude small bumps everywhere
      * @param detailScale     size of the small bumps
      * @param roughness       fine, block-scale unevenness that breaks smooth slopes into ragged, natural steps (0 = none)
+     * @param lowlandSmoothing share (0..1) of the fine detail and roughness taken away on lowland floors, so the plains
+     *                        lie smoother than the highlands (0 = the same everywhere)
      */
-    public record Relief(double amplitude, double scale, double detailAmplitude, double detailScale, double roughness) {
+    public record Relief(double amplitude, double scale, double detailAmplitude, double detailScale, double roughness,
+                         double lowlandSmoothing) {
         public static final Relief DEFAULT = new Relief(22, 520, 2.5, 36, 0);
 
         public Relief(double amplitude, double scale, double detailAmplitude, double detailScale) {
             this(amplitude, scale, detailAmplitude, detailScale, 0);
+        }
+
+        public Relief(double amplitude, double scale, double detailAmplitude, double detailScale, double roughness) {
+            this(amplitude, scale, detailAmplitude, detailScale, roughness, 0);
         }
         public static final Codec<Relief> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.DOUBLE.optionalFieldOf("amplitude", DEFAULT.amplitude).forGetter(Relief::amplitude),
                 Codec.DOUBLE.optionalFieldOf("scale", DEFAULT.scale).forGetter(Relief::scale),
                 Codec.DOUBLE.optionalFieldOf("detail_amplitude", DEFAULT.detailAmplitude).forGetter(Relief::detailAmplitude),
                 Codec.DOUBLE.optionalFieldOf("detail_scale", DEFAULT.detailScale).forGetter(Relief::detailScale),
-                Codec.DOUBLE.optionalFieldOf("roughness", 0.0).forGetter(Relief::roughness)
+                Codec.DOUBLE.optionalFieldOf("roughness", 0.0).forGetter(Relief::roughness),
+                Codec.DOUBLE.optionalFieldOf("lowland_smoothing", 0.0).forGetter(Relief::lowlandSmoothing)
         ).apply(i, Relief::new));
     }
 

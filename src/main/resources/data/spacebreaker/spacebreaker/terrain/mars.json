@@ -7,7 +7,8 @@
     "scale": 540,
     "detail_amplitude": 2.6,
     "detail_scale": 26,
-    "roughness": 1.1
+    "roughness": 1.1,
+    "lowland_smoothing": 0.7
   },
   "lowlands": {
     "threshold": 0.1,
@@ -24,7 +25,7 @@
     }
   },
   "craters": {
-    "density": 0.8,
+    "density": 1.15,
     "lowland_density": 0.33,
     "depth_ratio": 0.15,
     "rim_ratio": 0.04,
@@ -43,15 +44,15 @@
       {
         "min_radius": 7,
         "max_radius": 18,
-        "cell": 150,
-        "chance": 0.5,
+        "cell": 120,
+        "chance": 0.8,
         "per_cell": 1
       },
       {
         "min_radius": 18,
         "max_radius": 46,
         "cell": 380,
-        "chance": 0.5,
+        "chance": 0.7,
         "per_cell": 1
       },
       {
@@ -104,8 +105,8 @@
     "dunes": {
       "scale": 600,
       "threshold": 0.12,
-      "wavelength": 30,
-      "height": 7,
+      "wavelength": 38,
+      "height": 10,
       "wind_deg": 25,
       "lowland_only": true,
       "soil": {
@@ -147,6 +148,12 @@
       },
       "soil": {
         "Name": "spacebreaker:martian_regolith"
+      },
+      "flow_soil": {
+        "Name": "spacebreaker:martian_basalt"
+      },
+      "summit_soil": {
+        "Name": "spacebreaker:martian_sand"
       }
     },
     "valleys": {
@@ -202,6 +209,14 @@
     "patches": [
       {
         "soil": {
+          "Name": "spacebreaker:co2_frost"
+        },
+        "scale": 36,
+        "threshold": 0.6,
+        "where": "polar"
+      },
+      {
+        "soil": {
           "Name": "spacebreaker:hematite_soil"
         },
         "scale": 500,
@@ -220,8 +235,8 @@
         "soil": {
           "Name": "spacebreaker:martian_sandstone"
         },
-        "scale": 110,
-        "threshold": 0.77,
+        "scale": 60,
+        "threshold": 0.7,
         "where": "highlands"
       },
       {
@@ -239,6 +254,14 @@
         "scale": 70,
         "threshold": 0.8,
         "where": "any"
+      },
+      {
+        "soil": {
+          "Name": "spacebreaker:martian_sand"
+        },
+        "scale": 48,
+        "threshold": 0.66,
+        "where": "lowlands"
       }
     ]
   }

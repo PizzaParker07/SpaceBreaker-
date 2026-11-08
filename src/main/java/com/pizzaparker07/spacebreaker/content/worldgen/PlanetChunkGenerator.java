@@ -229,6 +229,12 @@ public class PlanetChunkGenerator extends ChunkGenerator {
             if (v.soil().isPresent() && !shadowed) {
                 soil = v.soil().get();
             }
+            if (!shadowed && v.summitSoil().isPresent() && c.volcanoS < 0.38 + jitter) {
+                soil = v.summitSoil().get(); // ash and cinders high on the cone
+            } else if (!shadowed && v.flowSoil().isPresent() && c.volcanoFlow > 0.55 + jitter) {
+                soil = v.flowSoil().get(); // bare lava along the flow crests
+                soilDepth = Math.min(soilDepth, 1);
+            }
             if (c.volcanoS < v.caldera() * 1.1) {
                 soilDepth = Math.min(soilDepth, 1);
             }

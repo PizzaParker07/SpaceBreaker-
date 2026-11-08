@@ -133,6 +133,8 @@ public final class PlanetTerrain {
         /** Normalized distance to the nearest shield volcano centre (radii), or 99. */
         public double volcanoS = 99;
         public double volcanoRadius;
+        /** Crest strength 0..1 of the radial lava-flow ridge under this column on a volcano flank (0 off the flows). */
+        public double volcanoFlow;
         /** Normalized distance from the rift centre line (1 = rim), or 99. */
         public double rift = 99;
         /** Ice cap thickness on top of the ground, trough depth, and whether the cap wears frost. */
@@ -218,6 +220,9 @@ public final class PlanetTerrain {
             // ragged block-scale unevenness: breaks long smooth slopes into irregular steps instead of clean contour lines.
             // Nothing finer than about three blocks, or the ground fills with lone one-block pits and pillars.
             detail += relief.roughness() * (0.65 * detailNoise.getValue(x / 6.1 + 91.1, z / 6.1 - 17.7) + 0.35 * detailNoise.getValue(x / 9.7 - 5.5, z / 9.7 + 44.4));
+        }
+        if (relief.lowlandSmoothing() > 0) {
+            detail *= 1 - relief.lowlandSmoothing() * Mth.clamp(out.lowland, 0, 1);
         }
 
         double built = landforms.active() ? landforms.build(x, z, out) : 0;

@@ -135,6 +135,7 @@ final class LandformSampler {
             boolean fits = switch (p.where()) {
                 case "lowlands" -> out.lowland > 0.5;
                 case "highlands" -> out.lowland <= 0.5;
+                case "polar" -> out.cap < 1 && Math.abs(out.latitude) >= profile.poles().polarLatitude() - 10;
                 default -> true;
             };
             if (fits && (fbm(patchNoise[i], x / p.scale(), z / p.scale(), 2) + 1) * 0.5 > p.threshold()) {
@@ -252,6 +253,9 @@ final class LandformSampler {
             double ridge = 1 - Math.abs(rn);
             double fadeIn = Crater.smooth((s - 0.15) / 0.3);
             h += (Math.min(5, H * 0.025) * (ridge * ridge - 0.4) * Math.sin(Math.PI * Mth.clamp(s, 0, 1)) + 1.2 * rn) * fadeIn;
+            if (s <= out.volcanoS + 1e-9) {
+                out.volcanoFlow = ridge * ridge * fadeIn;
+            }
         }
         // summit caldera: a flat-floored pit, with a second, younger pit nested off-centre
         double c = v.caldera();
