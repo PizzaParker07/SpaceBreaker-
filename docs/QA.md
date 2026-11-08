@@ -354,6 +354,27 @@ Shot 11 is now aimed at the station. **QA-27 closed**: `stationAirlockCycle` ass
 together on any tick and that the station is sealed at every step (both shut 119, inner open 148, outer asked open
 while the inner was open 119, and so on).
 
+## Low gravity with real key presses (`qa_low_gravity`, 2026-11-08)
+
+`./gradlew runShowcase -Pscenario=qa_low_gravity`: the keys are held down on the client (movement is worked out
+there); log lines "[showcase] lowg: …". Before = 8d43f6c2, after = 430789f9 (suit low-gravity changes in).
+
+| check | Earth | Moon before | Moon after | Mars after |
+|---|---|---|---|---|
+| sprint jump, forward held | 3.15 blocks, 11 ticks | 7.69 blocks, 27 ticks | **5.24** blocks, 27 ticks (speed 0.26 → 0.14 b/t in the air) | |
+| same, back key held in the air | 0.91 | 1.15 | 0.73 | |
+| elytra, 15° down, 60-block drop | 391 blocks | wings open (before) | wings do not open ✅ | **24.8** blocks (before 221) |
+| 3-block drop: fall event, dust | event 2.69, no dust ✅ | | event 2.80, dust ✅ (5 particles) | |
+
+- the hop is shorter instead of ~7 blocks: the air steering scales the keys' push by 0.41 but vanilla's air drag
+  (× 0.91 per tick) stays, so the speed dies off with forward held (sprinting stays on). Suggested: bring the drag
+  towards 1 with the same factor.
+- Mars glide 24.8 blocks against ~40 expected (about 6 % of Earth's).
+- the softer landing sound cannot be heard here (no audio device: the sound engine does not start).
+- suit tuning 6daf8b47, measured on a local merge with dev/suit: Moon sprint jump 6.21 blocks (landing speed 0.19
+  b/t), back key 1.02; Mars glide 32.4 blocks in 90 ticks; Moon wings still closed. Both closer, both still a little
+  under the targets (6.6–7.1 and ~40).
+
 ## Simplified screens: usability (`qa_ui`, 2026-11-08, 1.21.1 @ 8d43f6c2)
 
 `./gradlew runShowcase -Pscenario=qa_ui -PshotPrefix=qa_ui_en` (and `qa_ui_tr`). With a `qa_ui*` prefix, `QaUiProbe`
@@ -387,6 +408,12 @@ last line. Findings:
 - U7 rover HUD: the battery bar looks empty, with no red mark or number; the suit and rover HUDs show bars only, with no
   way to read a value;
 - U8 blueprint choice: the material icons (× 6, × 16, …) have no tooltip, so the blocks cannot be named.
+
+Re-check on 1.21.1 @ 430789f9 (rocketry a39a2220, research 3abddd47), probe runs `qa_ui2_en` / `qa_ui2_tr` on the
+changed screens: U1 ✅ (TR "Boy 11,0 m", "Yakıt %0,0", shipyard "14,4 t", Δv "4.757 m/s"; one leftover in the
+engine tooltip: "günde %0.02'i buharlaşır"), U2 ❌ still open (EN "84 s" / "burn", "7,800 kg propellant," / "140 s
+burn"; TR "84 s" / "yanma"), U3 ✅ "6 blok", U4 ✅ red "Waiting/Bekliyor" and Launch greyed, U5 ✅ "Return not
+possible", U6 ✅ "No power" on the red mark and "Paused: no power" on the progress. U7 and U8 not in 1.21.1 yet.
 
 ## Sky visual regression (2026-11-07)
 
