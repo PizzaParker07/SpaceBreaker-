@@ -1150,12 +1150,51 @@ public final class BlockyBodyRenderer {
             // these maps start at longitude 0 on the left edge
             case "mars", "venus", "mercury" -> SURFACES.computeIfAbsent(body, k -> {
                 ColorMap m = texture(Spacebreaker.id("textures/environment/orbit_" + k + ".png"));
-                ColorMap shifted = (lon, lat) -> m.argb(lon + Math.PI, lat);
+                ColorMap base = k.equals("mars") ? marsFeatures(m) : m;
+                ColorMap shifted = (lon, lat) -> base.argb(lon + Math.PI, lat);
                 PIXEL_MAPS.put(shifted, new PixelMap(Spacebreaker.id("textures/environment/orbit_" + k + ".png"), null, 1F));
                 return shifted;
             });
             default -> null;
         };
+    }
+
+    /**
+     * Mars as the blocks show it: the orbit map is fine-grained, and a ball of 16 to 64 blocks averages its details
+     * away into one big smudge. Here the features that make Mars recognisable are made bold enough to survive: wider
+     * white polar caps with ragged edges, Valles Marineris as a broad dark scar east of the Tharsis volcanoes, and more
+     * contrast between the dark regions (Syrtis Major, Acidalia) and the bright deserts. {@code map} uses the map's own
+     * longitude (0 at its left edge).
+     */
+    private static ColorMap marsFeatures(ColorMap map) {
+        return (lon, lat) -> {
+            double latDeg = Math.toDegrees(lat);
+            double lonDeg = Mth.positiveModulo(Math.toDegrees(lon), 360);
+            // polar caps out to the seasonal frost line (north to about 55 degrees, south 60), edges ragged: seen from
+            // Phobos and Deimos, which circle the equator, the poles sit right on the limb and a small cap would not show
+            double rag = 2.2 * Math.sin(Math.toRadians(lonDeg) * 5) + 1.3 * Math.sin(Math.toRadians(lonDeg) * 11 + 1.7);
+            if (latDeg > 55 + rag || latDeg < -60 + rag) {
+                return latDeg > 63 + rag || latDeg < -68 + rag ? 0xFFF4F1EA : 0xFFE2D8CC;
+            }
+            // Valles Marineris on the map: from (378, 138) to (452, 143) of the 512 x 256 picture
+            double x = lonDeg / 360 * 512;
+            double y = (90 - latDeg) / 180 * 256;
+            double t = Mth.clamp(((x - 378) * 74 + (y - 138) * 5) / (74.0 * 74 + 5 * 5), 0, 1);
+            double dx = x - (378 + 74 * t);
+            double dy = y - (138 + 5 * t);
+            double d = Math.sqrt(dx * dx + dy * dy);
+            if (d < 6.5) {
+                return d < 3.8 ? 0xFF3E1D12 : 0xFF5A2C1A;
+            }
+            // more contrast round a middle tone, so dark regions and bright deserts part
+            int c = map.argb(lon, lat);
+            int r = contrast(c >> 16 & 255), g = contrast(c >> 8 & 255), b = contrast(c & 255);
+            return c & 0xFF000000 | r << 16 | g << 8 | b;
+        };
+    }
+
+    private static int contrast(int v) {
+        return Mth.clamp((int) (128 + (v - 128) * 1.35), 0, 255);
     }
 
     // ------------------------------------------------------------------ pixel sphere (close views)
