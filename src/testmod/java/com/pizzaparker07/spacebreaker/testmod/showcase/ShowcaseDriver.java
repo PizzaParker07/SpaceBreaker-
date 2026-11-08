@@ -49,11 +49,12 @@ public final class ShowcaseDriver {
     /** -Poffhand=namespace:item: an item in the off hand for every shot (its slot sits left of the hotbar). */
     private static final String OFFHAND = System.getProperty("spacebreaker.offhand", "");
     /**
-     * -Pretreat=N: after each shot, a second one from N blocks further back along the view (and N/3 higher, looking at
-     * the same spot) with a 6-chunk view distance, saved as {@code <name>_far}: what was in the first shot is then
-     * drawn by an LOD mod (Distant Horizons) if one is installed.
+     * -Pretreat=N: after each shot, a second one from N blocks further back along the view (and N/5 higher, looking down
+     * at the same spot) with a 6-chunk view distance, saved as {@code <name>_far}: what was in the first shot is then
+     * drawn by an LOD mod (Distant Horizons) if one is installed. -PretreatTicks: how long to wait there (default 1500).
      */
     private static final int RETREAT = Integer.getInteger("spacebreaker.retreat", 0);
+    private static final int RETREAT_TICKS = Integer.getInteger("spacebreaker.retreatTicks", 1500);
     /** -PmainHand=left and -PattackIndicator=hotbar|crosshair|off: player options that move HUD elements. */
     private static final String MAIN_HAND = System.getProperty("spacebreaker.mainHand", "");
     private static final String ATTACK_INDICATOR = System.getProperty("spacebreaker.attackIndicator", "");
@@ -244,8 +245,12 @@ public final class ShowcaseDriver {
             mc.player.setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);
         }
         if (retreating) {
-            if (ticks >= 1500 && (mc.levelRenderer.hasRenderedAllSections() || ticks > 1900)) {
+            if (ticks >= RETREAT_TICKS && (mc.levelRenderer.hasRenderedAllSections() || ticks > RETREAT_TICKS + 400)) {
                 String file = PREFIX + "_" + shot.name() + "_far.png";
+                if (mc.player != null) {
+                    log("far shot at " + Math.round(mc.player.getX()) + " " + Math.round(mc.player.getEyeY()) + " " + Math.round(mc.player.getZ())
+                            + " yaw " + Math.round(mc.player.getYRot()) + " pitch " + Math.round(mc.player.getXRot()));
+                }
                 Screenshot.grab(mc.gameDirectory, file, mc.getMainRenderTarget(), msg -> log("saved " + file));
                 mc.options.renderDistance().set(savedRenderDistance);
                 retreating = false;
@@ -272,7 +277,7 @@ public final class ShowcaseDriver {
                         net.minecraft.world.level.ClipContext.Block.OUTLINE, net.minecraft.world.level.ClipContext.Fluid.NONE, mc.player));
                 var target = hit.getType() == net.minecraft.world.phys.HitResult.Type.MISS ? eye.add(look.scale(40)) : hit.getLocation();
                 double hx = look.x, hz = look.z, hl = Math.max(1.0E-4, Math.hypot(hx, hz));
-                double fx = target.x - hx / hl * RETREAT, fz = target.z - hz / hl * RETREAT, fy = target.y + RETREAT / 3.0;
+                double fx = target.x - hx / hl * RETREAT, fz = target.z - hz / hl * RETREAT, fy = target.y + RETREAT / 5.0;
                 float yaw = mc.player.getYRot();
                 float pitch = (float) Math.toDegrees(Math.atan2(fy - target.y, RETREAT));
                 savedRenderDistance = mc.options.renderDistance().get();
@@ -284,7 +289,8 @@ public final class ShowcaseDriver {
                 });
                 retreating = true;
                 ticks = 0;
-                log("shot " + shot.name() + " from " + RETREAT + " blocks back");
+                log("shot " + shot.name() + " from " + RETREAT + " blocks back: target " + Math.round(target.x) + " " + Math.round(target.y)
+                        + " " + Math.round(target.z) + ", camera " + Math.round(fx) + " " + Math.round(fy) + " " + Math.round(fz) + " pitch " + Math.round(pitch));
                 return;
             }
             server.execute(() -> server.getPlayerList().getPlayers().get(0).setNoGravity(false));
