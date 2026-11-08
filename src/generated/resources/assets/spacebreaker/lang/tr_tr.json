@@ -605,6 +605,7 @@
   "compat.spacebreaker.info.gas_piped": "Borudan gelen oksijen: %s / %s",
   "compat.spacebreaker.info.gas_tank": "Tüp: %s / %s (%%%s)",
   "compat.spacebreaker.info.solar_dust": "Toz: %%%s, verim: %%%s",
+  "config.jade.plugin_spacebreaker.gas_machine_fluid": "Spacebreaker: gaz makinelerinin boş sıvı görünümünü gizle",
   "config.jade.plugin_spacebreaker.info_lines": "Spacebreaker ayrıntıları",
   "container.spacebreaker.cargo_hold": "Kargo Ambarı",
   "container.spacebreaker.launch_console": "Fırlatma Kontrolü",
