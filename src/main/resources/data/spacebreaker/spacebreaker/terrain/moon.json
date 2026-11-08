@@ -22,7 +22,7 @@
     "depth_ratio": 0.24,
     "rim_ratio": 0.055,
     "complex_radius": 34,
-    "central_peak": 0.5,
+    "central_peak": 0.95,
     "fresh_chance": 0.22,
     "ray_length": 7,
     "ray_fill": 2.5,
