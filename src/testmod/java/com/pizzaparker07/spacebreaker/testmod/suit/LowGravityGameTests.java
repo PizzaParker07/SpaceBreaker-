@@ -96,4 +96,14 @@ public final class LowGravityGameTests {
         helper.assertTrue(LowGravity.floatingMiningBoost(1.0, false, false) == 1F, "Earth unchanged");
         helper.succeed();
     }
+
+    @GameTest(template = EMPTY)
+    public static void landingsKickUpALightPuffOnlyInLowGravity(GameTestHelper helper) {
+        helper.assertTrue(LowGravity.landingDust(1.0, 10) == 0, "nothing extra on Earth");
+        helper.assertTrue(LowGravity.landingDust(0.0, 10) == 0, "nor in microgravity (no landing to speak of)");
+        helper.assertTrue(LowGravity.landingDust(MOON_F, 1.0) == 0, "a step down raises nothing");
+        int hop = LowGravity.landingDust(MOON_F, 2.0), drop = LowGravity.landingDust(MOON_F, 30);
+        helper.assertTrue(hop > 0 && hop < drop && drop <= 10, "a hop raises a little dust, a long drop more, never a cloud");
+        helper.succeed();
+    }
 }

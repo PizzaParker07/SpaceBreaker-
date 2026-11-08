@@ -76,6 +76,37 @@ public final class LowGravity {
         }
     }
 
+    /**
+     * Dust grains kicked up by a player landing after a fall of {@code distance} blocks at gravity factor {@code f}:
+     * none on Earth-like worlds, for short steps or in microgravity; a light puff otherwise, at most ten.
+     */
+    public static int landingDust(double f, double distance) {
+        if (f >= 1.0 || ZeroG.microGravity(f) || distance < 1.5) {
+            return 0;
+        }
+        return (int) Math.min(10, 3 + distance);
+    }
+
+    @SubscribeEvent
+    static void onFall(net.neoforged.neoforge.event.entity.living.LivingFallEvent event) {
+        if (!(event.getEntity() instanceof net.minecraft.world.entity.player.Player p)
+                || !(p.level() instanceof net.minecraft.server.level.ServerLevel level)) {
+            return;
+        }
+        int grains = landingDust(Gravity.factorFor(p), event.getDistance());
+        net.minecraft.core.BlockPos below = p.getOnPos();
+        var state = level.getBlockState(below);
+        if (grains == 0 || state.isAir()) {
+            return;
+        }
+        // slow, low grains that spread out (no air to hold them up), and a soft thud of the ground underfoot
+        level.sendParticles(new net.minecraft.core.particles.BlockParticleOption(net.minecraft.core.particles.ParticleTypes.BLOCK, state),
+                p.getX(), p.getY() + 0.05, p.getZ(), grains, 0.35, 0.02, 0.35, 0.02);
+        var sound = state.getSoundType(level, below, p);
+        level.playSound(null, p.getX(), p.getY(), p.getZ(), sound.getStepSound(), net.minecraft.sounds.SoundSource.PLAYERS,
+                sound.getVolume() * 0.3F, sound.getPitch() * 0.7F);
+    }
+
     /** The gravity factor of a level, looked up once per level and tick. */
     static double factor(Level level) {
         int side = level.isClientSide ? 1 : 0;
