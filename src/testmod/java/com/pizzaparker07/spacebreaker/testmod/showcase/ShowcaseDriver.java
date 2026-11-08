@@ -54,6 +54,9 @@ public final class ShowcaseDriver {
      * drawn by an LOD mod (Distant Horizons) if one is installed.
      */
     private static final int RETREAT = Integer.getInteger("spacebreaker.retreat", 0);
+    /** -PmainHand=left and -PattackIndicator=hotbar|crosshair|off: player options that move HUD elements. */
+    private static final String MAIN_HAND = System.getProperty("spacebreaker.mainHand", "");
+    private static final String ATTACK_INDICATOR = System.getProperty("spacebreaker.attackIndicator", "");
     private static boolean retreating;
     private static int savedRenderDistance;
     private static final String WORLD = "sb_showcase";
@@ -177,6 +180,18 @@ public final class ShowcaseDriver {
         Shot shot = shots.get(shotIndex);
         if (!shotApplied) {
             mc.setScreen(null);
+            if (!MAIN_HAND.isEmpty()) {
+                mc.options.mainHand().set(MAIN_HAND.equalsIgnoreCase("left")
+                        ? net.minecraft.world.entity.HumanoidArm.LEFT : net.minecraft.world.entity.HumanoidArm.RIGHT);
+                mc.options.broadcastOptions();
+            }
+            if (!ATTACK_INDICATOR.isEmpty()) {
+                mc.options.attackIndicator().set(switch (ATTACK_INDICATOR.toLowerCase(java.util.Locale.ROOT)) {
+                    case "hotbar" -> net.minecraft.client.AttackIndicatorStatus.HOTBAR;
+                    case "off" -> net.minecraft.client.AttackIndicatorStatus.OFF;
+                    default -> net.minecraft.client.AttackIndicatorStatus.CROSSHAIR;
+                });
+            }
             if (GUI_SCALE >= 0 && mc.options.guiScale().get() != GUI_SCALE) {
                 mc.options.guiScale().set(GUI_SCALE);
                 mc.resizeDisplay();
