@@ -29,7 +29,7 @@ Hazır modüller standart **ağızlardan** birleşir: yürüme yüksekliğinde 3
 ### Yaşam, hava kilidi ve enerji {#stage2}
 {items spacebreaker:habitation_module spacebreaker:airlock_module spacebreaker:solar_wings}
 - **{item spacebreaker:habitation_module}** (7 × 5 × 9): uyku bölmelerinde üç ranza, iki fıçı dolap, iki pencere bandı, tavan ışıkları ve istasyonu büyütmek için uçta kapalı bir ağız.
-- **{item spacebreaker:airlock_module}** (5 × 5 × 5): istasyona açılan bir hava kilidi kapısı, uzaya açılan bir hava kilidi kapısı ve aralarında küçük bir oda. Dış kapıyı açmadan önce iç kapıyı kapat; sen dışarı çıkarken istasyon havasını korur.
+- **{item spacebreaker:airlock_module}** (5 × 5 × 5): istasyona açılan bir sürgülü kapı, uzaya açılan bir sürgülü kapı ve aralarında tehlike şeritleriyle çevrili küçük bir oda. İki kapı birbirine kilitlidir: biri açıkken ötekini istersen, önce açık olan kapanır ve döngüyü tamamlar. İkisi hiçbir zaman aynı anda açık olmaz; sen dışarı çıkarken istasyon havasını korur.
 - **{item spacebreaker:solar_wings}**: gövdenin dışına kurulur, ağız kapalı kalır; ortadaki kapak istasyonu besleyen bir batarya bankasına dönüşür. Döner bir eklemden ızgara ve bakır kablodan bir kol uzanır; üstünde her yanda ikişer olmak üzere **dört güneş paneli dizisi** ve ucunda bir anten vardır.
 
 Bunlar da çekirdek ve kenetlenme modülü gibi bağlanır ve teslim edilir.
