@@ -6,7 +6,7 @@ items: [spacebreaker:combustion_generator, spacebreaker:research_lab, spacebreak
 The shortest way from a new world to your first rocket. Follow the link in each step for the details. → [The Road Ahead](progression)
 
 ## 1. Power
-1. Combine a copper plate with shears to make **copper wire** by hand.
+1. Combine a copper plate with shears to make **three copper wires** by hand.
 2. Wire, redstone and an iron plate make a circuit; the circuit makes a {item spacebreaker:combustion_generator}. It burns coal or wood.
 {recipe spacebreaker:copper_wire_by_hand}
 

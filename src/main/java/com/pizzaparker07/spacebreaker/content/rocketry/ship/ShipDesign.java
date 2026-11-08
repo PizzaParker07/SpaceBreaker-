@@ -77,8 +77,21 @@ public record ShipDesign(List<ShipPart> stack, int rcs, int solarWings) {
         return stack.stream().mapToDouble(p -> p.massKg).sum() + rcs * ShipPart.RCS.massKg + solarWings * ShipPart.SOLAR_WINGS.massKg;
     }
 
+    /**
+     * Liquid hydrogen is bulky (a fifteenth of the density of methane and oxygen): a tank feeding a nuclear engine
+     * holds this share of its rated propellant mass. Kept at a half rather than the real sixth so a transfer craft
+     * still flies far, and so its hydrogen does not cost tens of millions of FE to liquefy (docs/BALANCE_SHIPYARD.md).
+     */
+    public static final double HYDROGEN_FILL = 0.5;
+
+    /** True when the main engines are nuclear thermal: the tanks then carry liquid hydrogen. */
+    public boolean hydrogen() {
+        return stack.contains(ShipPart.ENGINE_NUCLEAR);
+    }
+
     public double propellantKg() {
-        return stack.stream().mapToDouble(p -> p.propellantKg).sum();
+        double rated = stack.stream().mapToDouble(p -> p.propellantKg).sum();
+        return hydrogen() ? rated * HYDROGEN_FILL : rated;
     }
 
     public double wetMassKg() {
@@ -125,6 +138,9 @@ public record ShipDesign(List<ShipPart> stack, int rcs, int solarWings) {
         }
         if (stack.isEmpty() || stack.get(stack.size() - 1).kind != ShipPart.Kind.ENGINE) {
             out.add(k + "engine_tail");
+        }
+        if (hydrogen() && stack.contains(ShipPart.ENGINE_CHEMICAL)) {
+            out.add(k + "one_fuel");
         }
         if (stack.stream().noneMatch(p -> p.kind == ShipPart.Kind.TANK)) {
             out.add(k + "tank");

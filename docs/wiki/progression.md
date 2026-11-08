@@ -17,11 +17,11 @@ Kızıl-kahve [Boksit Cevheri](ores) her yerde seyrek, sıcak tepelerde bol bulu
 ### 2. İlk enerji
 Laboratuvar enerjiyle çalışır. İlk enerjin [Yanmalı Jeneratör](first_hours): kömür ya da odun yakar.
 1. İki bakır külçesini üst üste koy: **bakır levha**.
-2. Levha ve bir **makasla** bakır tel yap. Makas tükenmez.
+2. Levha ve bir **makasla** üç bakır tel yap. Makas tükenmez.
 3. Tel, kızıltaş ve demir levhayla bir [Temel Devre Kartı](components) yap.
 4. Devreyle jeneratörü kur.
 
-Bakır Levha, Makas → **Bakır Tel ×2** (Çalışma Masası, şekilsiz)
+Bakır Levha, Makas → **Bakır Tel ×3** (Çalışma Masası, şekilsiz)
 
 |   |   |   |
 |---|---|---|
@@ -92,7 +92,7 @@ Sırayla: *Fırlatma Altyapısı*, *Sıvı Yakıtlı Motorlar*, *Kademelendirme*
 
 ### 8. Yörünge ve Ay
 1. Yörüngeye çık: **Yörünge Uçuşu** verisi alırsın. Eve acil dönüş işaretiyle dön.
-2. Veriyle *İniş Sistemleri*: ısı kalkanı, paraşüt, iniş bacakları.
+2. Bu veri ve *Hassas İmalat* ile *İniş Sistemleri*: ısı kalkanı (ablatif kalkan levhalarından), paraşüt, iniş bacakları.
 3. Ay'a in, üs kur, harabelerdeki diskleri topla. → [Ay](moon), [Ay'daki Harabeler](moon_ruins)
 4. Ay numuneleri ve diskler seni Mars'a hazırlar. → [Mars](mars)
 
@@ -119,11 +119,11 @@ Red-brown [Bauxite Ore](ores) is thin everywhere and rich in warm hills. Smelt r
 ### 2. First power
 The lab runs on energy. Your first power is the [Combustion Generator](first_hours): it burns coal or wood.
 1. Stack two copper ingots: a **copper plate**.
-2. A plate and **shears** make copper wire. The shears are not used up.
+2. A plate and **shears** make three copper wires. The shears are not used up.
 3. Wire, redstone and an iron plate make a [Basic Circuit](components).
 4. Build the generator with the circuit.
 
-Copper Plate, Shears → **Copper Wire ×2** (Crafting Table, shapeless)
+Copper Plate, Shears → **Copper Wire ×3** (Crafting Table, shapeless)
 
 |   |   |   |
 |---|---|---|
@@ -194,7 +194,7 @@ In order: *Launch Infrastructure*, *Liquid-Fuel Engines*, *Staging*, *Vacuum Eng
 
 ### 8. Orbit and the Moon
 1. Reach orbit: you get **Orbital Flight** data. Come home with the emergency beacon.
-2. With that data, *Landing Systems*: heat shield, parachute, landing legs.
+2. With that data and *Precision Manufacturing*, *Landing Systems*: heat shield (from ablative shield plates), parachute, landing legs.
 3. Land on the Moon, build a base and collect the disks in its ruins. → [The Moon](moon), [Ruins on the Moon](moon_ruins)
 4. Moon samples and disks prepare you for Mars. → [Mars](mars)
 

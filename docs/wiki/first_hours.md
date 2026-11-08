@@ -3,10 +3,10 @@
 Yeni bir dünyadan ilk roketine en kısa yol. Ayrıntılar için her adımdaki bağlantıya bak. → [İlerleme Yolu](progression)
 
 ### 1. Enerji
-1. Bakır levhayı ve makası birleştirip elle **bakır tel** yap.
+1. Bakır levhayı ve makası birleştirip elle **üç bakır tel** yap.
 2. Tel, kızıltaş ve demir levhayla bir devre, devreyle bir **Yanmalı Jeneratör** yap. Kömür ya da odun yakar.
 
-Bakır Levha, Makas → **Bakır Tel ×2** (Çalışma Masası, şekilsiz)
+Bakır Levha, Makas → **Bakır Tel ×3** (Çalışma Masası, şekilsiz)
 
 ### 2. Araştırma
 Jeneratörün yanına bir **Araştırma Laboratuvarı** koy, numune kitiyle Dünya numuneleri topla. Önce *Metal Presleme*, *Elektroliz*, *Kriyojenik* ve *Yakıt Rafinasyonu*. → [Araştırma Nasıl İşler?](research_basics)
@@ -42,10 +42,10 @@ Gözlemevindeki **Temel Roketçilik** diskini al, parçaları üret ve rampayı 
 The shortest way from a new world to your first rocket. Follow the link in each step for the details. → [The Road Ahead](progression)
 
 ### 1. Power
-1. Combine a copper plate with shears to make **copper wire** by hand.
+1. Combine a copper plate with shears to make **three copper wires** by hand.
 2. Wire, redstone and an iron plate make a circuit; the circuit makes a **Combustion Generator**. It burns coal or wood.
 
-Copper Plate, Shears → **Copper Wire ×2** (Crafting Table, shapeless)
+Copper Plate, Shears → **Copper Wire ×3** (Crafting Table, shapeless)
 
 ### 2. Research
 Put a **Research Lab** next to the generator and collect Earth samples with a sample kit. Start with *Metal Pressing*, *Electrolysis*, *Cryogenics* and *Fuel Refining*. → [How Research Works](research_basics)

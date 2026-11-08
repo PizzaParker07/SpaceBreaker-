@@ -24,19 +24,32 @@ public final class Fmt {
         return b.toString();
     }
 
+    /** Between a number and its unit: a space that does not break a line ("84 s" stays together). */
+    public static final String NBSP = "\u00A0";
+
+    /** A number with {@code decimals} places and grouping, in the game's language. */
+    public static String dec(double v, int decimals) {
+        return local(String.format(Locale.ROOT, "%,." + decimals + "f", v));
+    }
+
+    /** A number and its unit, held together. */
+    public static String unit(double v, int decimals, String unit) {
+        return dec(v, decimals) + NBSP + unit;
+    }
+
     public static String num(double v) {
         return local(String.format(Locale.ROOT, "%,.0f", v));
     }
 
     public static String kg(double kg) {
         if (kg >= 10_000) {
-            return local(String.format(Locale.ROOT, "%.1f t", kg / 1000.0));
+            return unit(kg / 1000.0, 1, "t");
         }
-        return local(String.format(Locale.ROOT, "%,.0f kg", kg));
+        return unit(kg, 0, "kg");
     }
 
     public static String ms(double v) {
-        return local(String.format(Locale.ROOT, "%,.0f m/s", v));
+        return unit(v, 0, "m/s");
     }
 
     public static String twr(double v) {

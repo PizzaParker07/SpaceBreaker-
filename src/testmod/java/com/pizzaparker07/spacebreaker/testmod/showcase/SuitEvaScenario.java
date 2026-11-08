@@ -258,6 +258,17 @@ final class SuitEvaScenario implements ShowcaseScenario {
                 at(false, p -> beaconBehind(p, g, 0)), SuitShots.CLEAR_TOASTS));
         s.add(new Shot(prefix + "_19b_turn_back", 0, 0.5, g + 1.62, 8.5, 180F, 10F, false, fp, 60,
                 at(false, p -> beaconBehind(p, g, 1)), SuitShots.CLEAR_TOASTS));
+        // a row of items let go 10 blocks up a second ago: on Earth they would already lie on the ground
+        s.add(new Shot(prefix + "_24_dropped_items", 0, 0.5, g + 1.62, 10.5, 180F, -30F, false, fp, 20, at(false, p -> {
+            astronaut(p);
+            var stacks = new net.minecraft.world.item.Item[]{net.minecraft.world.item.Items.COBBLESTONE, net.minecraft.world.item.Items.IRON_INGOT,
+                    net.minecraft.world.item.Items.TORCH, net.minecraft.world.item.Items.APPLE, net.minecraft.world.item.Items.ARROW};
+            for (int i = 0; i < stacks.length; i++) {
+                var item = new net.minecraft.world.entity.item.ItemEntity(p.serverLevel(), -1.5 + i, g + 10, 4.5, new ItemStack(stacks[i]), 0, 0, 0);
+                item.setPickUpDelay(400);
+                p.serverLevel().addFreshEntity(item);
+            }
+        }), SuitShots.CLEAR_TOASTS));
         if (comet) {
             s.add(new Shot(prefix + "_20_tethered_eva", 0, -2.5, g + 1.62, 3.5, 0F, 8F, true, CameraType.THIRD_PERSON_FRONT, 80,
                     at(false, this::tethered), SuitShots.CLEAR_TOASTS));

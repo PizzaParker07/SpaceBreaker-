@@ -106,7 +106,7 @@ final class RocketryLang {
                 "Gövdenin dışında: döner eklem ve kafes kol üstünde dört güneş paneli dizisi, ağızda istasyona enerji (FE) veren batarya bankası");
         l.item(RocketryModule.SHIPYARD_MODULE, "Shipyard Module", "Tersane Modülü");
         l.add("tooltip.spacebreaker.station_module.shipyard", "An open 15 x 15 x 31 frame outside the hull: a berth for one spacecraft (up to 13 x 13 x 29), its docking port in the mouth, a fuel depot and floodlights",
-                "Gövdenin dışında açık 15 x 15 x 31 çerçeve: bir uzay aracı için yuva (en fazla 13 x 13 x 29), ağızda kenetlenme portu, yakıt deposu ve projektörler");
+                "Gövdenin dışında açık 15 x 15 x 31 çerçeve: bir uzay aracı için yuva (en fazla 13 x 13 x 29), ağızda yanaşma portu, yakıt deposu ve projektörler");
         l.block(RocketryModule.SHIPYARD_CONSOLE, "Shipyard Console", "Tersane Konsolu");
         l.add("ship.spacebreaker.shipyard", "Shipyard: spacecraft design", "Tersane: uzay aracı tasarımı");
         l.add("ship.spacebreaker.berth", "Berth %s × %s × %s blocks", "Yuva %s × %s × %s blok");
@@ -130,13 +130,17 @@ final class RocketryLang {
         l.add("ship.spacebreaker.stat_size", "Size", "Boyut");
         l.add("ship.spacebreaker.stat_mass", "Mass", "Kütle");
         l.add("ship.spacebreaker.stat_propellant", "Propellant", "Yakıt");
+        l.add("ship.spacebreaker.fuel_metalox", "methane + oxygen", "metan + oksijen");
+        l.add("ship.spacebreaker.fuel_hydrogen", "liquid hydrogen (bulky: tanks half full by mass)", "sıvı hidrojen (hacimli: tanklar kütlece yarı dolu)");
+        l.add("ship.spacebreaker.bill", "Materials (≈ %s to make)", "Malzeme (üretimi ≈ %s)");
+        l.add("ship.spacebreaker.problem.one_fuel", "Chemical and nuclear engines burn different propellants: use one kind", "Kimyasal ve nükleer motor farklı yakıt yakar: tek tür kullan");
         l.add("ship.spacebreaker.stat_thrust", "Thrust", "İtki");
         l.add("ship.spacebreaker.stat_isp", "Isp", "Isp");
         l.add("ship.spacebreaker.stat_accel", "Acceleration", "İvme");
-        l.add("ship.spacebreaker.port_yes", "Docking port on the nose ✔", "Burunda kenetlenme portu ✔");
-        l.add("ship.spacebreaker.port_no", "No docking port ✘", "Kenetlenme portu yok ✘");
+        l.add("ship.spacebreaker.port_yes", "Docking port on the nose ✔", "Burunda yanaşma portu ✔");
+        l.add("ship.spacebreaker.port_no", "No docking port ✘", "Yanaşma portu yok ✘");
         l.add("ship.spacebreaker.ready", "Ready to build ✔", "İnşaya hazır ✔");
-        l.add("ship.spacebreaker.problem.cockpit_front", "Start with the cockpit: it carries the docking port", "Kokpitle başla: kenetlenme portu onda");
+        l.add("ship.spacebreaker.problem.cockpit_front", "Start with the cockpit: it carries the docking port", "Kokpitle başla: yanaşma portu onda");
         l.add("ship.spacebreaker.problem.one_cockpit", "Only one cockpit", "Yalnızca bir kokpit");
         l.add("ship.spacebreaker.problem.engine_tail", "End with an engine", "Bir motorla bitir");
         l.add("ship.spacebreaker.problem.tank", "Needs a propellant tank", "Bir yakıt tankı gerekli");
@@ -148,9 +152,9 @@ final class RocketryLang {
         l.add("tooltip.spacebreaker.part.station_module", "Station module: goes in the capsule slot; docked at a station it waits in the core console",
                 "İstasyon modülü: kapsül yuvasına takılır; istasyona yanaşınca çekirdek konsolunda bekler");
         l.add("tooltip.spacebreaker.station_module.core", "The heart of a station: console, air, lights, a docking port on the roof and four mouths",
-                "İstasyonun kalbi: konsol, hava, ışık, çatıda kenetlenme portu ve dört bağlantı ağzı");
+                "İstasyonun kalbi: konsol, hava, ışık, çatıda yanaşma portu ve dört bağlantı ağzı");
         l.add("tooltip.spacebreaker.station_module.docking", "A short tunnel with a docking port at its end",
-                "Ucunda kenetlenme portu olan kısa bir tünel");
+                "Ucunda yanaşma portu olan kısa bir tünel");
         l.add("tooltip.spacebreaker.station_module.use", "Use on a mouth's hatch to attach it; a core used in open space in orbit starts a new station",
                 "Bir ağzın kapağına kullanınca oraya bağlanır; yörüngede boşlukta kullanılan çekirdek yeni bir istasyon kurar");
         l.add("message.spacebreaker.station_module.blocked", "Something is in the way of the module", "Modülün yolunda bir şey var");
@@ -336,7 +340,7 @@ final class RocketryLang {
         l.add("gui.spacebreaker.assembler.dv", "Δv %s", "Δv %s");
         l.add("gui.spacebreaker.assembler.twr", "TWR %s", "İ/A %s");
         l.add("gui.spacebreaker.assembler.mass", "Mass %s", "Kütle %s");
-        l.add("gui.spacebreaker.assembler.stage_line", "Stage %s (%s): Δv %s, TWR %s, %s propellant, %s s burn", "Kademe %s (%s): Δv %s, İ/A %s, %s yakıt, %s s yanma");
+        l.add("gui.spacebreaker.assembler.stage_line", "Stage %s (%s): Δv %s, TWR %s, %s propellant, %s burn", "Kademe %s (%s): Δv %s, İ/A %s, %s yakıt, %s yanma");
         l.add("gui.spacebreaker.assembler.payload", "Payload: %s, %s seat(s)", "Faydalı yük: %s, %s koltuk");
         l.add("gui.spacebreaker.assembler.height", "Height %s", "Boy %s");
         l.add("gui.spacebreaker.assembler.row.payload", "Payload: heat shield, capsule, parachute or nose", "Faydalı yük: ısı kalkanı, kapsül, paraşüt ya da burun");
@@ -369,15 +373,18 @@ final class RocketryLang {
         l.add("gui.spacebreaker.console.name.twr", "Thrust/weight", "İtki/ağırlık");
         l.add("gui.spacebreaker.console.name.dv", "Δv budget", "Δv bütçesi");
         l.add("gui.spacebreaker.console.pad", "Pad and trench (%s/25)", "Rampa ve kanal (%s/25)");
-        l.add("gui.spacebreaker.console.tower", "Service tower (%s high)", "Servis kulesi (%s yüksek)");
+        l.add("gui.spacebreaker.console.tower", "Service tower (%s blocks)", "Servis kulesi (%s blok)");
         l.add("gui.spacebreaker.console.arm", "Crew access arm", "Erişim kolu");
         l.add("gui.spacebreaker.console.umbilical", "Fuel umbilical", "Yakıt hattı");
         l.add("gui.spacebreaker.console.rocket", "Rocket on the pad", "Rampada roket");
         l.add("gui.spacebreaker.console.crew", "Crew aboard (%s)", "Mürettebat (%s)");
         l.add("gui.spacebreaker.console.fuel", "Propellant %s%%", "Yakıt %%%s");
         l.add("gui.spacebreaker.console.twr", "Thrust/weight %s", "İtki/ağırlık %s");
-        l.add("gui.spacebreaker.console.dv", "Δv %s / %s m/s", "Δv %s / %s m/s");
+        l.add("gui.spacebreaker.console.dv", "Δv %s / %s", "Δv %s / %s");
         l.add("gui.spacebreaker.console.return", "Return possible", "Dönüş mümkün");
+        l.add("gui.spacebreaker.console.return_no", "Return not possible", "Dönüş mümkün değil");
+        l.add("gui.spacebreaker.console.status.waiting", "Waiting", "Bekliyor");
+        l.add("ship.spacebreaker.blocks", "blocks", "blok");
         l.add("gui.spacebreaker.console.status.no_rocket", "No rocket", "Roket yok");
         l.add("gui.spacebreaker.star_map", "Star Map", "Yıldız Haritası");
         l.add("gui.spacebreaker.star_map.window_open", "Launch window: now is a good time", "Fırlatma penceresi: şu an uygun");

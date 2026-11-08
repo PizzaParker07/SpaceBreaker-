@@ -62,6 +62,8 @@ public final class OuterWorlds implements SbModule {
     public static final DeferredHolder<Feature<?>, LineaeFeature> LINEAE = FEATURES.register("lineae", LineaeFeature::new);
     public static final DeferredHolder<Feature<?>, LakeFeature> LAKES = FEATURES.register("surface_lakes", LakeFeature::new);
     public static final DeferredHolder<Feature<?>, VentFeature> VENTS = FEATURES.register("surface_vents", VentFeature::new);
+    public static final DeferredHolder<Feature<?>, com.pizzaparker07.spacebreaker.content.belt.world.LavaFlowFeature> LAVA_FLOWS =
+            FEATURES.register("lava_flows", com.pizzaparker07.spacebreaker.content.belt.world.LavaFlowFeature::new);
     public static final DeferredHolder<Feature<?>, com.pizzaparker07.spacebreaker.content.belt.world.LayerFeature> LAYER =
             FEATURES.register("buried_layer", com.pizzaparker07.spacebreaker.content.belt.world.LayerFeature::new);
     public static final DeferredHolder<Feature<?>, com.pizzaparker07.spacebreaker.content.belt.world.CellsFeature> CELLS =

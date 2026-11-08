@@ -47,85 +47,61 @@ def noise_pick(r, base, n, x, y, spread=1):
 
 # --------------------------------------------------------------------------- regolith tick
 
-def tick_sheet(r, crystals=False, seed=5):
+def tick_sheet(r, seed=5):
+    """Young tick: a dusty grey dome (pale crown, darker rim, pits), dark head, orange-dark mouth, pale leg joints."""
     cv = Canvas(64, 64)
     n = clustered(64, 64, seed, passes=1)
-    rng = random.Random(seed)
 
-    top = [
-        "1223322.",
-        "23344332",
-        "23465432",
-        "234440432",
-        "23344432",
-        "2304443 2",
-        "23446432",
-        "23344332",
-        "22333332",
-        "1222222.",
-    ]
+    def shell(base, ox, oy):
+        def fn(face, x, y, fw, fh):
+            if face == 'bottom':
+                return noise_pick(r, 1, n, x + ox, y + oy)
+            if face == 'top':
+                rim = x in (0, fw - 1) or y in (0, fh - 1)
+                pit = (x * 5 + y * 3 + ox) % 9 == 0
+                return r[1] if pit else noise_pick(r, base + (0 if rim else 1), n, x + ox, y + oy)
+            return noise_pick(r, base - (1 if y == fh - 1 else 0), n, x + ox, y + oy)
+        return fn
 
-    def body(face, x, y, fw, fh):
-        if face == 'top':
-            # leathery oval carapace: pale dusty centre, darker rim, a few pits and dust specks
-            ch = top[y][x] if x < len(top[y]) else '2'
-            t = 1 if ch in '. ' else int(ch)
-            return r[t] if t in (0, 6) else noise_pick(r, t, n, x + 10, y)
-        if face == 'bottom':
-            return noise_pick(r, 1, n, x + 20, y + 30)
-        # sides: top edge catches light, lower part in shadow
-        t = 3 if y == 0 else (2 if y == 1 else 1)
-        if face == 'back' and y == 1 and x % 2 == 1:
-            t = 0
-        return noise_pick(r, t, n, x + 3, y + 40)
-
-    paint(cv, 0, 0, 8, 3, 10, body)
-
-    def shield(face, x, y, fw, fh):
-        if face == 'top':
-            t = 5 if (x == 0 or y == 0) else (3 if (x == fw - 1 or y == fh - 1) else 4)
-            return r[t]
-        return r[3] if face != 'bottom' else r[2]
-
-    paint(cv, 0, 13, 6, 1, 5, shield)
+    paint(cv, 0, 0, 8, 2, 9, shell(2, 0, 0))
+    paint(cv, 0, 11, 6, 2, 7, shell(3, 7, 13))
+    paint(cv, 26, 11, 4, 1, 5, shell(5, 3, 21))
 
     def head(face, x, y, fw, fh):
         if face == 'top':
-            return r[4] if y == 0 else r[3]
+            return r[3] if y else r[4]
         if face == 'front':
-            return r[1] if y == 1 else r[2]
+            return r[1]
         return r[2] if y == 0 else r[1]
 
-    paint(cv, 22, 13, 4, 2, 3, head)
-    paint(cv, 36, 13, 1, 1, 2, lambda f, x, y, fw, fh: r[4] if f == 'front' else r[2])
+    paint(cv, 34, 0, 3, 2, 3, head)
+    paint(cv, 46, 0, 1, 1, 1, lambda f, x, y, fw, fh: MOUTH[2] if f == 'front' else MOUTH[1])
+    paint(cv, 50, 0, 1, 1, 2, lambda f, x, y, fw, fh: r[4] if f == 'front' else (r[3] if f == 'top' else r[2]))
 
-    def leg(face, x, y, fw, fh):
-        if face in ('top', 'front', 'back', 'bottom'):
-            # jointed: dark segments with pale joint rings, tip darkest
-            if x in (2, 5):
-                return r[4]
-            if face == 'top':
-                return r[1] if x < 1 else r[3]
-            return r[2]
-        return r[1]
+    def thigh(face, x, y, fw, fh):
+        if face == 'top':
+            return r[5] if x == 0 else r[3]
+        return r[2] if face != 'bottom' else r[1]
 
-    paint(cv, 0, 20, 8, 1, 1, leg)
+    paint(cv, 0, 20, 3, 1, 1, thigh)
 
-    if crystals:
-        # mineral crust on an old elder: KREEP crystals grown into the carapace
-        k = P.KREEP
-        for x, y in [(12, 3), (15, 6), (11, 8), (16, 2), (13, 10)]:
-            cv[x, y] = k[3]
-            cv[x + 1, y] = k[1]
-        cv[12, 3] = k[5]
+    def shin(face, x, y, fw, fh):
+        if face == 'top':
+            return r[5]
+        if face == 'bottom':
+            return r[0]
+        return r[4] if y == 0 else (r[2] if y < 3 else r[1])
+
+    paint(cv, 8, 20, 1, 4, 1, shin)
+    paint(cv, 12, 20, 2, 4, 1, shin)
     return cv
 
 
 def tick_eyes():
     cv = Canvas(64, 64)
-    # head front face starts at (25, 16), 4 x 2: two glinting eyes at the outer corners
-    cv[25, 16] = EYE[2]
-    cv[28, 16] = EYE[2]
+    # head front face starts at (37, 3), 3 x 2: two glinting eyes at the upper corners
+    cv[37, 3] = EYE[2]
+    cv[39, 3] = EYE[2]
     return cv
 
 
@@ -223,59 +199,62 @@ def elder_eyes():
 # --------------------------------------------------------------------------- dust swimmer
 
 def dust_swimmer():
-    """Mottled dust-grey back (camouflage) with darker spots, a pale belly, eyes on short stalks."""
+    """Dust-grey back with dark spots and a dark spine, pale fin edges and belly, a pale sifting slit, eyes on stalks."""
     r = DUST
     cv = Canvas(64, 64)
     n = clustered(64, 64, 17, passes=1)
-    spots = {(1, 2), (5, 3), (2, 6), (6, 7), (3, 10), (1, 12), (6, 11), (4, 5)}
+    spots = {(1, 2), (6, 3), (1, 6), (6, 7), (1, 10), (6, 11), (2, 13), (5, 1)}
 
     def body(face, x, y, fw, fh):
         if face == 'top':
-            t = 4
+            t = 3
             if x in (0, fw - 1):
-                t = 3
-            if (x, y) in spots or (x - 1, y) in spots:
-                t = 1  # dark spots
-            if x in (3, 4) and y % 4 == 1:
-                t = 5  # pale spine scales
+                t = 6  # pale flank line
+            if (x, y) in spots:
+                t = 0  # dark spots
+            if x in (3, 4):
+                t = 1  # dark spine stripe under the ridge
             return noise_pick(r, t, n, x, y)
         if face == 'bottom':
             return r[6] if (x + y) % 4 else r[5]
-        t = 3 if y == 0 else (2 if y == 1 else 5)
+        t = 5 if y == 0 else (2 if y == 1 else 6)
         return noise_pick(r, t, n, x + 30, y + 40)
 
     paint(cv, 0, 0, 8, 3, 14, body)
 
     def head(face, x, y, fw, fh):
         if face == 'top':
-            return r[4] if y > 0 else r[5]
+            return r[6] if y == 0 else noise_pick(r, 3, n, x + 50, y)
         if face == 'front':
-            return r[1] if y == 1 and 1 <= x <= 4 else r[3]  # wide mouth slit for sifting dust
+            return r[6] if y == 1 and 1 <= x <= 5 else r[3]  # wide pale sifting slit
         return r[3] if face != 'bottom' else r[6]
 
-    paint(cv, 0, 17, 6, 2, 4, head)
-    paint(cv, 20, 17, 1, 2, 1, lambda f, x, y, fw, fh: (P.ILMENITE[1] if y == 0 else r[3]) if f != 'top' else P.ILMENITE[5])
+    paint(cv, 0, 17, 7, 2, 4, head)
+    paint(cv, 22, 17, 1, 3, 1, lambda f, x, y, fw, fh: (P.ILMENITE[1] if y == 0 else r[2]) if f != 'top' else P.ILMENITE[5])
 
     def fin(face, x, y, fw, fh):
         if face == 'top':
-            if y == fh - 1 or x == fw - 1:
-                return r[5]  # pale trailing edge
-            return r[2] if x % 2 == 0 else r[4]  # rays
+            if y == 0 or y == fh - 1 or x == fw - 1:
+                return r[6]  # pale edge all round
+            return r[1] if x % 2 == 0 else r[3]  # rays
         if face == 'bottom':
             return r[6]
-        return r[3]
+        return r[5]
 
-    paint(cv, 24, 17, 7, 1, 6, fin)
+    paint(cv, 0, 34, 7, 1, 8, fin)
+    paint(cv, 30, 34, 3, 1, 5, fin)
 
-    def dorsal(face, x, y, fw, fh):
+    def plate(face, x, y, fw, fh):
+        # dark ridge plates with a pale cutting edge on top and on the leading edge
+        if face == 'top' or (face in ('right', 'left') and y == 0):
+            return r[6]
         if face in ('right', 'left'):
-            if y == 0:
-                return r[5]
-            return r[2] if x % 2 == 0 else r[3]
-        return r[4]
+            return r[1] if x > 0 else r[3]
+        return r[1]
 
-    paint(cv, 44, 0, 1, 5, 3, dorsal)
-    paint(cv, 52, 0, 1, 3, 3, dorsal)
+    paint(cv, 44, 0, 1, 4, 3, plate)
+    paint(cv, 52, 0, 1, 3, 3, plate)
+    paint(cv, 44, 8, 1, 2, 3, plate)
 
     def tail(face, x, y, fw, fh):
         if face == 'top':
@@ -285,7 +264,7 @@ def dust_swimmer():
         return r[2]
 
     paint(cv, 0, 25, 3, 2, 7, tail)
-    paint(cv, 20, 25, 1, 4, 3, lambda f, x, y, fw, fh: r[5] if y == 0 else (r[3] if x % 2 else r[2]))
+    paint(cv, 20, 25, 1, 5, 4, lambda f, x, y, fw, fh: r[6] if y == 0 or x == fw - 1 else (r[2] if x % 2 else r[1]))
     return cv
 
 
@@ -343,15 +322,19 @@ def survey_drone():
     def wing(face, x, y, fw, fh):
         if face == 'top':
             if x == 0 or y == 0 or x == fw - 1 or y == fh - 1:
-                return al[3]
+                return cell[0]  # dark frame, so the wing does not read as a grey slab
             if x % 3 == 0 or y == 3:
                 return cell[1]  # cell gaps
             return cell[5] if (x + y) % 5 == 0 else cell[3]
         if face == 'bottom':
-            return back[2] if (x + y) % 3 else back[1]
-        return al[3]
+            return cell[0] if (x + y) % 3 else cell[1]
+        return cell[0]  # thin dark panel edge, so the wing reads thin from the side
 
     paint(cv, 0, 16, 9, 1, 6, wing)
+    # sensor ring round the lens: bright machined aluminium with dark screw points
+    paint(cv, 32, 6, 6, 1, 1, lambda f, x, y, fw, fh: al[2] if f == 'front' and x in (0, 5) else (al[6] if f in ('front', 'top') else al[3]))
+    paint(cv, 48, 6, 1, 4, 1, lambda f, x, y, fw, fh: al[6] if f in ('front', 'top') else al[3])
+    paint(cv, 56, 0, 1, 1, 1, lambda f, x, y, fw, fh: P.STEEL[3])
 
     def nozzle(face, x, y, fw, fh):
         if face == 'bottom':
@@ -447,7 +430,8 @@ def glimmer_beetle():
     paint(cv, 0, 0, 6, 3, 7, abdomen)
     paint(cv, 0, 10, 4, 2, 3, lambda f, x, y, fw, fh: (r[4] if y == 0 else r[3]) if f == 'top' else r[1])
     paint(cv, 14, 10, 2, 2, 2, lambda f, x, y, fw, fh: (g[2] if y == 0 else r[1]) if f == 'front' else r[2])
-    paint(cv, 22, 10, 1, 2, 1, lambda f, x, y, fw, fh: r[3] if y == 0 else r[2])
+    # feelers 1 x 1 x 4: dark, pale ringed, a glowing bead at the tip (front face)
+    paint(cv, 22, 10, 1, 1, 4, lambda f, x, y, fw, fh: g[2] if f == 'front' else (r[4] if (f == 'top' and y % 2 == 0) or (f in ('right', 'left') and x % 2 == 0) else r[2]))
     paint(cv, 0, 16, 4, 1, 1, lambda f, x, y, fw, fh: r[3] if x == 1 else r[1])
     return cv
 
@@ -470,6 +454,8 @@ def glimmer_beetle_glow():
     for x in range(6):
         for y in range(4, 7):
             cv[13 + x, y] = g[1]
+    # feeler tips (front face of the 1 x 1 x 4 box at (26, 14))
+    cv[26, 14] = g[3]
     # eye spots on the head front (16, 12)
     cv[16, 12] = g[3]
     cv[17, 12] = g[3]
@@ -492,34 +478,38 @@ CORE = ramp('#1d4f7a', '#3d86c4', '#7cc2f0', '#d2efff')
 
 
 def heat_siphon():
-    """Frost-crystal body: cold blue-grey facets with pale edges, a dark feeding mouth, translucent-looking shards."""
+    """Frost crystal: dark blue-grey inside, pale bright facet edges (reads as ice), a dark mouth, pale tendrils."""
     r = FROST
     c = CORE
-    cv = Canvas(64, 32)
-    rng = random.Random(41)
+    cv = Canvas(64, 64)
 
-    def body(face, x, y, fw, fh):
-        if face == 'top':
-            if x in (0, fw - 1) or y in (0, fh - 1):
-                return r[4]
-            # diagonal facets
-            return r[3] if (x + y) % 4 == 0 else (r[2] if (x - y) % 5 == 0 else r[1 + (rng.random() < 0.2)])
+    def crystal(face, x, y, fw, fh):
+        edge = x in (0, fw - 1) or y in (0, fh - 1)
         if face == 'bottom':
-            return c[0] if 2 <= x < fw - 2 and 3 <= y < fh - 3 else r[0]
-        if y == 0:
+            return c[0] if not edge else r[2]
+        if edge:
+            return r[5] if face == 'top' or y == 0 else r[4]
+        # inner facets: diagonal light streaks through dark ice
+        if (x + y) % 4 == 0:
             return r[4]
-        return r[2] if (x + y) % 3 == 0 else r[1]
+        if (x - y) % 5 == 0:
+            return r[3]
+        return r[1] if (x * 3 + y) % 7 else r[2]
+
+    paint(cv, 0, 0, 6, 5, 6, crystal)
+    paint(cv, 0, 11, 6, 4, 6, crystal)
+    paint(cv, 24, 0, 4, 2, 4, lambda f, x, y, fw, fh: c[1] if f == 'bottom' else (r[2] if y else r[3]))
 
     def head(face, x, y, fw, fh):
         if face == 'front':
-            if y == fh - 1 and 1 <= x < fw - 1:
-                return r[0]  # mouth slit
-            if y == 0 and x in (1, fw - 2):
-                return c[3]  # eye glints
-            return r[2]
-        if face == 'top':
-            return r[4] if y == 0 else r[3]
-        return r[1]
+            if y == 1 and x == 1:
+                return MOUTH[1]  # the feeding mouth, dark orange inside
+            if y == 1:
+                return r[0]
+            return r[3]
+        return r[4] if face == 'top' else r[2]
+
+    paint(cv, 40, 0, 3, 2, 2, head)
 
     def shard(face, x, y, fw, fh):
         if face in ('top', 'bottom'):
@@ -527,35 +517,38 @@ def heat_siphon():
         t = 5 if x == 0 else 4
         return r[t] if y < 2 else (c[1] if y == fh - 1 else r[t - 1])
 
-    def leg(face, x, y, fw, fh):
-        return r[3] if x % 2 == 0 else r[2]
-
-    paint(cv, 0, 0, 8, 4, 10, body)
-    paint(cv, 0, 14, 6, 3, 4, head)
-    paint(cv, 36, 0, 2, 7, 2, shard)
-    paint(cv, 44, 0, 2, 5, 2, shard)
-    paint(cv, 20, 14, 6, 1, 1, leg)
+    paint(cv, 48, 0, 2, 7, 2, shard)
+    paint(cv, 56, 0, 2, 5, 2, shard)
+    paint(cv, 0, 21, 1, 4, 1, lambda f, x, y, fw, fh: r[5] if y == 3 else (r[4] if y > 1 else r[3]))
     return cv
 
 
 def heat_siphon_glow():
-    """Glowing parts: the core seen through the belly, the shard tips, the eyes. Brightness is scaled by the renderer."""
+    """Glowing parts: the core seen through the belly and the facets, the shard tips, the eyes. Scaled by the renderer."""
     c = CORE
-    cv = Canvas(64, 32)
-    # belly (bottom face at (18, 0), 8 x 10)
-    for x in range(2, 6):
-        for y in range(3, 7):
-            cv[18 + x, y] = c[2] if (x + y) % 2 else c[1]
+    cv = Canvas(64, 64)
+    # belly (bottom of the core at (12, 0), 6 x 6) and the hanging core bulb under it
+    for x in range(1, 5):
+        for y in range(1, 5):
+            cv[12 + x, y] = c[2] if (x + y) % 2 else c[1]
+    for x in range(4):
+        for y in range(4):
+            cv[32 + x, y] = c[2]
+    # a cold light deep in each side facet
+    for u, v, w in ((0, 6, 6), (0, 17, 6)):
+        for side in range(4):
+            cv[u + side * 6 + 2, v + 2] = c[1]
+            cv[u + side * 6 + 3, v + 2] = c[2]
     # shard tips: side faces start at v + d
-    for u, h in ((36, 7), (44, 5)):
+    for u, h in ((48, 7), (56, 5)):
         for x in range(8):
-            cv[u + x, 2 + h - 1] = c[2]
-            cv[u + x, 2 + h - 2] = c[1]
+            cv.put(u + x, 2 + h - 1, c[2])
+            cv.put(u + x, 2 + h - 2, c[1])
         cv[u + 2, 0] = c[3]
         cv[u + 3, 0] = c[3]
-    # eyes on the head front (4, 18)
-    cv[5, 18] = c[3]
-    cv[8, 18] = c[3]
+    # eyes on the head front (42, 2), 3 x 2
+    cv[42, 2] = c[3]
+    cv[44, 2] = c[3]
     return cv
 
 

@@ -2,6 +2,7 @@
   "type": "spacebreaker:impact_basin",
   "config": {
     "depth": 5.0,
+    "floor_extent": 0.32,
     "floor_soil": {
       "Name": "spacebreaker:bright_frost",
       "Properties": {
@@ -11,7 +12,7 @@
     },
     "latitude": 15.0,
     "peak": 0.0,
-    "peak_radius": 0.3,
+    "peak_radius": 0.01,
     "radius": 1100.0,
     "rim": 3.0,
     "rings": 4.5,

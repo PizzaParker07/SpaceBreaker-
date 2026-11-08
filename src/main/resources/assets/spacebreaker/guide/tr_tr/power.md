@@ -47,6 +47,6 @@ Bir {item spacebreaker:power_monitor}'ü batarya bankasına (ya da enerji depola
 
 >! Europa ve ötesinde güneş paneli pratik değildir: Güneş çok uzaktır. Oralarda bir {item spacebreaker:rtg} kullan ({tech spacebreaker:radioisotope_power}); tek bir RTG dört tane 10 FE/t'lik yükü taşır ve {item spacebreaker:rtg_fuel_pellet} ile çalışır. Pelet, sinterleme fırınında sarı pastadan yapılır. → [Nükleer Yakıt](nuclear_fuel)
 
-> Büyük bir üs için {item spacebreaker:fission_reactor} tek yakıt elemanıyla 10 gün boyunca 320 FE/t verir, ama gömülmeli ya da kalkanlanmalıdır. → [Fisyon güç ünitesi](nuclear_fuel#fission)
+> Büyük bir üs için {item spacebreaker:fission_reactor} tek yakıt elemanıyla 10 gün boyunca 240 FE/t verir, ama gömülmeli ya da kalkanlanmalıdır. → [Fisyon güç ünitesi](nuclear_fuel#fission)
 
 {recipe? spacebreaker:rtg}

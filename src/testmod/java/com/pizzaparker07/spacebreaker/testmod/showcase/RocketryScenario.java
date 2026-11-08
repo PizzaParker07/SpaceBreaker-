@@ -884,6 +884,7 @@ final class RocketryScenario implements ShowcaseScenario {
         s.add(new Shot("63_shipyard_design", 6000, 0, 0, 0, 0F, 0F, false, fp, 80, p -> {
             clearScene(p);
             toDimension(p, Location.EARTH_ORBIT, 1200.5, RocketEntity.ORBIT_Y + 2, 0.5, 0F, 0F);
+            RocketryShowcaseClient.shipStats = false;
             // after clearScene (it closes the screen): a crewed nuclear transfer craft
             RocketryShowcaseClient.shipDesign = com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipDesign.EMPTY
                     .with(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipPart.COCKPIT)
@@ -893,6 +894,20 @@ final class RocketryScenario implements ShowcaseScenario {
                     .with(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipPart.TANK_LARGE)
                     .with(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipPart.ENGINE_NUCLEAR)
                     .withRcs(4).withWings(1);
+        }, null));
+        s.add(new Shot("66_shipyard_bill", 6000, 0, 0, 0, 0F, 0F, false, fp, 80, p -> {
+            clearScene(p);
+            toDimension(p, Location.EARTH_ORBIT, 1200.5, RocketEntity.ORBIT_Y + 2, 0.5, 0F, 0F);
+            // after clearScene (it closes the screen): a crewed nuclear transfer craft
+            RocketryShowcaseClient.shipDesign = com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipDesign.EMPTY
+                    .with(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipPart.COCKPIT)
+                    .with(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipPart.CABIN)
+                    .with(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipPart.CARGO_BAY)
+                    .with(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipPart.TANK_LARGE)
+                    .with(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipPart.TANK_LARGE)
+                    .with(com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipPart.ENGINE_NUCLEAR)
+                    .withRcs(4).withWings(1);
+            RocketryShowcaseClient.shipStats = true;
         }, null));
         // the station core's console open (its nine-slot store), for the screen audit
         s.add(new Shot("64_station_core_console", 6000, 0, 0, 0, 0F, 0F, false, fp, 200, p -> {
