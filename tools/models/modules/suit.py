@@ -162,10 +162,13 @@ def oxygen_distributor():
                'steel': b('life_support_top'), 'ring': b('life_support_ring'), 'front': b(front), 'particle': b('life_support_casing')}
         els = [
             cube([1, 0, 1], [15, 2, 15], {'up': 'steel', 'down': 'steel', **{s: 'plinth' for s in SIDES}}, per_face=uv_box([1, 0, 1], [15, 2, 15]) | {s: [1, 14, 15, 16] for s in SIDES}),
-            cube([2, 2, 2], [14, 13, 14], {'north': 'front', 'south': 'casing', 'east': 'casing', 'west': 'casing', 'up': 'steel', 'down': 'steel'},
-                 per_face={s: [2, 2, 14, 13] for s in SIDES} | {'up': [2, 2, 14, 14], 'down': [2, 2, 14, 14]}),
-            cube([3, 13, 3], [13, 15, 13], {'up': 'steel', 'down': 'steel', **{s: 'plinth' for s in SIDES}},
+            cube([2, 2, 2], [14, 11, 14], {'north': 'front', 'south': 'casing', 'east': 'casing', 'west': 'casing', 'up': 'steel', 'down': 'steel'},
+                 per_face={s: [2, 3, 14, 12] for s in SIDES} | {'up': [2, 2, 14, 14], 'down': [2, 2, 14, 14]}),
+            cube([3, 11, 3], [13, 13, 13], {'up': 'steel', 'down': 'steel', **{s: 'plinth' for s in SIDES}},
                  per_face={'up': [3, 3, 13, 13], 'down': [3, 3, 13, 13], **{s: [3, 0, 13, 2] for s in SIDES}}),
+            # small air outlet on top
+            cube([6, 13, 6], [10, 15, 10], {'up': 'plinth', 'down': 'steel', **{s: 'plinth' for s in SIDES}},
+                 per_face={'up': [6, 14, 10, 16], 'down': [6, 6, 10, 10], **{s: [6, 0, 10, 2] for s in SIDES}}),
             # tank port on the south side
             cube([6, 5, 14], [10, 9, 15], {'south': 'ring', **{s: 'steel' for s in ('north', 'east', 'west')}, 'up': 'steel', 'down': 'steel'},
                  per_face={'south': [6, 6, 10, 10], 'north': [6, 6, 10, 10], 'east': [0, 0, 1, 4], 'west': [0, 0, 1, 4], 'up': [6, 0, 10, 1], 'down': [6, 0, 10, 1]}),

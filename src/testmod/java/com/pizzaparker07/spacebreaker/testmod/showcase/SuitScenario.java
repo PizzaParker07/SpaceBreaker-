@@ -91,8 +91,9 @@ final class SuitScenario implements ShowcaseScenario {
             be.setStack(new ItemStack(SuitModule.OXYGEN_TANK.get()));
             be.getEnergy().receiveEnergy(16000, false);
         }
-        BlockPos f2 = new BlockPos(9, FLOOR + 1, 12);
-        level.setBlock(f2, SuitModule.OXYGEN_FILLER.get().defaultBlockState().setValue(GasMachineBlock.FACING, Direction.SOUTH), Block.UPDATE_ALL);
+        // a distributor beside the filler, so the two machines can be told apart side by side
+        BlockPos d2 = new BlockPos(9, FLOOR + 1, 12);
+        level.setBlock(d2, SuitModule.OXYGEN_DISTRIBUTOR.get().defaultBlockState().setValue(GasMachineBlock.FACING, Direction.SOUTH), Block.UPDATE_ALL);
         // a second airlock, open, on the side
         BlockPos side = new BlockPos(x1, FLOOR + 1, 8);
         var sideLower = SuitModule.AIRLOCK_DOOR.get().defaultBlockState().setValue(AirlockDoorBlock.FACING, Direction.EAST)
