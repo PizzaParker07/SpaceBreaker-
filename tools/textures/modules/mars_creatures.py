@@ -95,7 +95,8 @@ def grazer():
             t -= 1  # skin folds
         return noise_pick(HIDE, t, n, x + 7, y + 22)
 
-    paint(cv, 0, 0, 16, 8, 22, body)
+    paint(cv, 0, 0, 18, 9, 10, body)
+    paint(cv, 56, 0, 14, 7, 12, body)
 
     def plates(face, x, y, fw, fh):
         if face == 'top':
@@ -110,7 +111,7 @@ def grazer():
             return ROCK[4]
         return RUST[1] if (x + y) % 5 == 0 else ROCK[2]
 
-    paint(cv, 0, 32, 17, 2, 5, plates)
+    paint(cv, 0, 20, 20, 2, 5, plates)
 
     def head(face, x, y, fw, fh):
         if face == 'front':
@@ -123,7 +124,7 @@ def grazer():
             return ROCK[3] if y % 2 == 0 else ROCK[2]
         return noise_pick(HIDE, 2, n, x + 60, y + 40)
 
-    paint(cv, 80, 0, 10, 6, 6, head)
+    paint(cv, 0, 28, 10, 6, 6, head)
 
     def jaw(face, x, y, fw, fh):
         if face == 'top':
@@ -132,15 +133,16 @@ def grazer():
             return ROCK[5] if y == 0 else ROCK[1]
         return ROCK[1] if y else ROCK[2]
 
-    paint(cv, 80, 14, 12, 2, 5, jaw)
-    paint(cv, 80, 24, 4, 3, 5, lambda f, x, y, fw, fh: ROCK[3] if f == 'top' else noise_pick(HIDE, 2, n, x + 110, y + 50))
+    paint(cv, 32, 28, 12, 2, 5, jaw)
+    paint(cv, 66, 28, 4, 3, 5, lambda f, x, y, fw, fh: ROCK[3] if f == 'top' else noise_pick(HIDE, 2, n, x + 110, y + 50))
+    paint(cv, 104, 28, 6, 5, 4, lambda f, x, y, fw, fh: noise_pick(HIDE, 2 if f != 'top' else 3, n, x + 70, y + 30))  # neck
 
     def leg(face, x, y, fw, fh):
         if y >= fh - 1:
             return ROCK[1]  # horny foot rim
         return noise_pick(HIDE, 3 if face in ('front', 'left') else 2, n, x + 100, y + 10)
 
-    paint(cv, 100, 24, 5, 6, 5, leg)
+    paint(cv, 84, 28, 5, 7, 5, leg)
     return cv
 
 
