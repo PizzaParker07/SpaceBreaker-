@@ -132,7 +132,7 @@ final class RocketryLang {
         l.add("ship.spacebreaker.stat_propellant", "Propellant", "Yakıt");
         l.add("ship.spacebreaker.fuel_metalox", "methane + oxygen", "metan + oksijen");
         l.add("ship.spacebreaker.fuel_hydrogen", "liquid hydrogen (bulky: tanks half full by mass)", "sıvı hidrojen (hacimli: tanklar kütlece yarı dolu)");
-        l.add("ship.spacebreaker.bill", "Materials (≈ %s k FE to make)", "Malzeme (üretimi ≈ %s k FE)");
+        l.add("ship.spacebreaker.bill", "Materials (≈ %s to make)", "Malzeme (üretimi ≈ %s)");
         l.add("ship.spacebreaker.problem.one_fuel", "Chemical and nuclear engines burn different propellants: use one kind", "Kimyasal ve nükleer motor farklı yakıt yakar: tek tür kullan");
         l.add("ship.spacebreaker.stat_thrust", "Thrust", "İtki");
         l.add("ship.spacebreaker.stat_isp", "Isp", "Isp");
@@ -340,7 +340,7 @@ final class RocketryLang {
         l.add("gui.spacebreaker.assembler.dv", "Δv %s", "Δv %s");
         l.add("gui.spacebreaker.assembler.twr", "TWR %s", "İ/A %s");
         l.add("gui.spacebreaker.assembler.mass", "Mass %s", "Kütle %s");
-        l.add("gui.spacebreaker.assembler.stage_line", "Stage %s (%s): Δv %s, TWR %s, %s propellant, %s s burn", "Kademe %s (%s): Δv %s, İ/A %s, %s yakıt, %s s yanma");
+        l.add("gui.spacebreaker.assembler.stage_line", "Stage %s (%s): Δv %s, TWR %s, %s propellant, %s burn", "Kademe %s (%s): Δv %s, İ/A %s, %s yakıt, %s yanma");
         l.add("gui.spacebreaker.assembler.payload", "Payload: %s, %s seat(s)", "Faydalı yük: %s, %s koltuk");
         l.add("gui.spacebreaker.assembler.height", "Height %s", "Boy %s");
         l.add("gui.spacebreaker.assembler.row.payload", "Payload: heat shield, capsule, parachute or nose", "Faydalı yük: ısı kalkanı, kapsül, paraşüt ya da burun");
@@ -373,15 +373,18 @@ final class RocketryLang {
         l.add("gui.spacebreaker.console.name.twr", "Thrust/weight", "İtki/ağırlık");
         l.add("gui.spacebreaker.console.name.dv", "Δv budget", "Δv bütçesi");
         l.add("gui.spacebreaker.console.pad", "Pad and trench (%s/25)", "Rampa ve kanal (%s/25)");
-        l.add("gui.spacebreaker.console.tower", "Service tower (%s high)", "Servis kulesi (%s yüksek)");
+        l.add("gui.spacebreaker.console.tower", "Service tower (%s blocks)", "Servis kulesi (%s blok)");
         l.add("gui.spacebreaker.console.arm", "Crew access arm", "Erişim kolu");
         l.add("gui.spacebreaker.console.umbilical", "Fuel umbilical", "Yakıt hattı");
         l.add("gui.spacebreaker.console.rocket", "Rocket on the pad", "Rampada roket");
         l.add("gui.spacebreaker.console.crew", "Crew aboard (%s)", "Mürettebat (%s)");
         l.add("gui.spacebreaker.console.fuel", "Propellant %s%%", "Yakıt %%%s");
         l.add("gui.spacebreaker.console.twr", "Thrust/weight %s", "İtki/ağırlık %s");
-        l.add("gui.spacebreaker.console.dv", "Δv %s / %s m/s", "Δv %s / %s m/s");
+        l.add("gui.spacebreaker.console.dv", "Δv %s / %s", "Δv %s / %s");
         l.add("gui.spacebreaker.console.return", "Return possible", "Dönüş mümkün");
+        l.add("gui.spacebreaker.console.return_no", "Return not possible", "Dönüş mümkün değil");
+        l.add("gui.spacebreaker.console.status.waiting", "Waiting", "Bekliyor");
+        l.add("ship.spacebreaker.blocks", "blocks", "blok");
         l.add("gui.spacebreaker.console.status.no_rocket", "No rocket", "Roket yok");
         l.add("gui.spacebreaker.star_map", "Star Map", "Yıldız Haritası");
         l.add("gui.spacebreaker.star_map.window_open", "Launch window: now is a good time", "Fırlatma penceresi: şu an uygun");

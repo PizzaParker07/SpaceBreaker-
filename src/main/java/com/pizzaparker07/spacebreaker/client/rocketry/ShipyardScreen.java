@@ -14,7 +14,6 @@ import net.minecraft.util.FormattedCharSequence;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.List;
-import java.util.Locale;
 
 /**
  * The shipyard console: put a spacecraft together section by section, nose to tail, and see at once what it weighs,
@@ -113,21 +112,22 @@ public class ShipyardScreen extends Screen {
 
     private List<Component> statLines() {
         List<Component> out = new java.util.ArrayList<>();
-        out.add(stat("size", design.length() + " × " + design.width() + " × " + design.height()));
-        out.add(stat("mass", String.format(Locale.ROOT, "%,.1f t → %,.1f t", design.wetMassKg() / 1000, design.dryMassKg() / 1000)));
-        out.add(stat("propellant", String.format(Locale.ROOT, "%,.1f t", design.propellantKg() / 1000)));
+        out.add(stat("size", design.length() + " × " + design.width() + " × " + design.height() + com.pizzaparker07.spacebreaker.content.rocketry.item.Fmt.NBSP + net.minecraft.network.chat.Component.translatable("ship.spacebreaker.blocks").getString()));
+        out.add(stat("mass", com.pizzaparker07.spacebreaker.content.rocketry.item.Fmt.unit(design.wetMassKg() / 1000, 1, "t") + " → " + com.pizzaparker07.spacebreaker.content.rocketry.item.Fmt.unit(design.dryMassKg() / 1000, 1, "t")));
+        out.add(stat("propellant", com.pizzaparker07.spacebreaker.content.rocketry.item.Fmt.unit(design.propellantKg() / 1000, 1, "t")));
         if (design.stack().stream().anyMatch(p -> p.kind == ShipPart.Kind.ENGINE)) {
             out.add(Component.literal("  ").append(Component.translatable(design.hydrogen() ? "ship.spacebreaker.fuel_hydrogen" : "ship.spacebreaker.fuel_metalox"))
                     .withStyle(ChatFormatting.DARK_GRAY));
         }
-        out.add(stat("thrust", String.format(Locale.ROOT, "%,.0f kN", design.thrustKn())));
-        out.add(stat("isp", String.format(Locale.ROOT, "%,.0f s", design.isp())));
-        out.add(stat("accel", String.format(Locale.ROOT, "%.1f m/s²", design.acceleration())));
+        out.add(stat("thrust", com.pizzaparker07.spacebreaker.content.rocketry.item.Fmt.unit(design.thrustKn(), 0, "kN")));
+        out.add(stat("isp", com.pizzaparker07.spacebreaker.content.rocketry.item.Fmt.unit(design.isp(), 0, "s")));
+        out.add(stat("accel", com.pizzaparker07.spacebreaker.content.rocketry.item.Fmt.unit(design.acceleration(), 1, "m/s²")));
         // the bill the build step will charge
         var bill = com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipCost.of(design);
         if (!bill.isEmpty()) {
             out.add(Component.empty());
-            out.add(Component.translatable("ship.spacebreaker.bill", com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipCost.kfe(design))
+            out.add(Component.translatable("ship.spacebreaker.bill", com.pizzaparker07.spacebreaker.content.rocketry.item.Fmt.unit(
+                    com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipCost.kfe(design), 0, "k" + com.pizzaparker07.spacebreaker.content.rocketry.item.Fmt.NBSP + "FE"))
                     .withStyle(ChatFormatting.GRAY));
             for (var line : bill) {
                 var item = net.minecraft.core.registries.BuiltInRegistries.ITEM.get(line.item());
@@ -223,9 +223,9 @@ public class ShipyardScreen extends Screen {
         g.pose().pushPose();
         g.pose().translate(x, y, 0);
         g.pose().scale(1.5F, 1.5F, 1F);
-        g.drawString(font, String.format(Locale.ROOT, "%,.0f m/s", design.deltaV()), 0, 0, design.problems().isEmpty() ? 0xFFFFFFFF : RED, false);
+        g.drawString(font, com.pizzaparker07.spacebreaker.content.rocketry.item.Fmt.ms(design.deltaV()), 0, 0, design.problems().isEmpty() ? 0xFFFFFFFF : RED, false);
         g.pose().popPose();
-        String dv = String.format(Locale.ROOT, "%,.0f m/s", design.deltaV());
+        String dv = com.pizzaparker07.spacebreaker.content.rocketry.item.Fmt.ms(design.deltaV());
         dvBox = new int[]{x, y - 10, Math.max(w, (int) (font.width(dv) * 1.5F)), 24};
         y += 20;
         // only what is wrong; with nothing wrong, one "ready" line
