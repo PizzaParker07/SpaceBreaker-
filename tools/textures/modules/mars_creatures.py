@@ -22,36 +22,61 @@ DUST = ramp('#6b4630', '#8a5c3e', '#a8744e', '#c08c62', '#d4a57c')
 
 
 def beetle():
-    """Rust Beetle: domed rust-red wing cases with darker pits and a pale sheen, black chitin head and legs."""
+    """Rust Beetle: two domed rust-red wing cases with pitted rust spots, a long metallic sheen down each crown and a
+    dark seam between them, a darker thorax shield, black chitin body, head, mandibles and legs."""
     cv = Canvas(64, 64)
     n = clustered(64, 64, 41, passes=1)
     rng = random.Random(42)
-    spots = {(rng.randrange(1, 7), rng.randrange(1, 9)) for _ in range(6)}
+    pits = {(rng.randrange(0, 40), rng.randrange(0, 40)) for _ in range(60)}
 
-    def shell(face, x, y, fw, fh):
+    def pitted(t, x, y, ox, oy):
+        if (x + ox, y + oy) in pits:
+            return BEETLE[1]
+        return noise_pick(BEETLE, t, n, x + ox, y + oy)
+
+    def lower(face, x, y, fw, fh):
+        # the broad lower shell of one case: a lit outer flank, the dark seam on its inner (left-hand UV) side
         if face == 'top':
-            if x in (3,):  # the seam between the wing cases
-                return BEETLE[1]
-            if (x, y) in spots:
-                return BEETLE[2]
-            t = 5 if x in (1, 5) and 1 <= y <= 6 else 4  # long highlight on each dome
-            if y == 0 or y == fh - 1 or x == 0 or x == fw - 1:
-                t = 3
-            return noise_pick(BEETLE, t, n, x, y)
+            return BEETLE[1] if x == 0 else pitted(4 if x < fw - 1 else 3, x, y, 3, 1)
         if face == 'bottom':
             return CHITIN[1]
-        return noise_pick(BEETLE, 3 if y == 0 else 2, n, x + 30, y)
+        if face in ('right', 'left'):
+            return pitted(3 if y == 0 else 2, x, y, 11, 7)
+        return BEETLE[2] if y == 0 else BEETLE[1]
 
-    paint(cv, 0, 14, 7, 2, 9, shell)
+    def crown(face, x, y, fw, fh):
+        if face == 'top':
+            if x == 1 and 0 < y < fh - 2 and n[y * 3 % 64][7] > 0.35:
+                return BEETLE[5]  # a broken metallic sheen down the crown
+            if y == fh - 1:
+                return BEETLE[3]  # the crown rounds off toward the tail
+            return pitted(4, x, y, 21, 3)
+        if face == 'bottom':
+            return BEETLE[2]
+        return BEETLE[4] if face in ('right', 'left') else BEETLE[3]
+
+    paint(cv, 0, 14, 4, 2, 10, lower)
+    paint(cv, 0, 28, 3, 1, 9, crown)
+    paint(cv, 0, 40, 2, 1, 7, crown)
 
     def body(face, x, y, fw, fh):
         if face == 'bottom':
             return CHITIN[1] if (y % 3) else CHITIN[2]
-        if face == 'top':
-            return BEETLE[2]
-        return noise_pick(BEETLE, 2 if y < 2 else 1, n, x + 11, y + 20)
+        return noise_pick(CHITIN, 2, n, x + 11, y + 20)
 
-    paint(cv, 0, 0, 8, 4, 10, body)
+    paint(cv, 0, 0, 6, 3, 9, body)
+
+    def thorax(face, x, y, fw, fh):
+        if face == 'top':
+            if y == fh - 1:
+                return BEETLE[1]  # the rim where it meets the wing cases
+            return BEETLE[4] if (x in (1, fw - 2) and y == 1) else pitted(3, x, y, 30, 20)
+        if face == 'bottom':
+            return CHITIN[1]
+        return BEETLE[2] if y == 0 else BEETLE[1]
+
+    paint(cv, 30, 0, 6, 2, 4, thorax)
+    paint(cv, 46, 20, 4, 1, 3, lambda f, x, y, fw, fh: pitted(4 if f == 'top' else 3, x, y, 33, 25))
 
     def head(face, x, y, fw, fh):
         if face == 'front':
@@ -62,18 +87,12 @@ def beetle():
             return CHITIN[3] if y == 0 else CHITIN[2]
         return CHITIN[1]
 
-    paint(cv, 36, 0, 4, 3, 3, head)
-    paint(cv, 36, 8, 1, 1, 2, lambda f, x, y, fw, fh: CHITIN[3] if f in ('top', 'front') else CHITIN[1])
-
-    def leg(face, x, y, fw, fh):
-        if face == 'top':
-            return CHITIN[3] if x in (1, 3) else CHITIN[2]
-        return CHITIN[1] if x in (1, 3) else CHITIN[2]
-
-    paint(cv, 0, 28, 1, 1, 5, leg)
-    paint(cv, 14, 28, 5, 1, 1, leg)
-    paint(cv, 14, 32, 1, 3, 1, lambda f, x, y, fw, fh: CHITIN[0] if y == fh - 1 else (CHITIN[3] if f == 'front' else CHITIN[2]))
-    paint(cv, 44, 8, 1, 1, 4, lambda f, x, y, fw, fh: CHITIN[4] if f == 'front' else (CHITIN[3] if f == 'top' and x == 0 else CHITIN[2]))
+    paint(cv, 30, 8, 4, 2, 3, head)
+    paint(cv, 44, 8, 1, 1, 2, lambda f, x, y, fw, fh: CHITIN[3] if f == 'top' else CHITIN[1])
+    paint(cv, 44, 12, 1, 1, 2, lambda f, x, y, fw, fh: CHITIN[4] if f == 'front' else (CHITIN[3] if f == 'top' else CHITIN[2]))
+    paint(cv, 50, 8, 1, 1, 3, lambda f, x, y, fw, fh: CHITIN[3] if f in ('top', 'front') else CHITIN[1])
+    paint(cv, 28, 28, 4, 1, 1, lambda f, x, y, fw, fh: CHITIN[3] if f == 'top' else CHITIN[2])
+    paint(cv, 28, 31, 1, 6, 1, lambda f, x, y, fw, fh: CHITIN[0] if y == fh - 1 else (CHITIN[3] if f == 'front' and y < 2 else CHITIN[2]))
     return cv
 
 

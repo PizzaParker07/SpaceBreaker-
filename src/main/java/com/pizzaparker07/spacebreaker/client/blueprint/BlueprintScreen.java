@@ -177,6 +177,7 @@ public class BlueprintScreen extends Screen {
         g.drawString(font, Component.translatable("gui.spacebreaker.blueprints.materials"), dx, ly, 0x9FE3EA, true);
         ly += 11;
         int col = 0;
+        Map.Entry<Item, Integer> hovered = null;
         for (Map.Entry<Item, Integer> t : totals.entrySet()) {
             if (ly > bottom() - 50) {
                 break;
@@ -184,6 +185,9 @@ public class BlueprintScreen extends Screen {
             int cx = dx + col * (dw / 2);
             g.renderItem(new ItemStack(t.getKey()), cx, ly);
             g.drawString(font, "× " + t.getValue(), cx + 18, ly + 5, 0xE0E0E0, true);
+            if (mouseX >= cx && mouseX < cx + dw / 2 - 2 && mouseY >= ly && mouseY < ly + 16) {
+                hovered = t;
+            }
             col++;
             if (col == 2) {
                 col = 0;
@@ -193,8 +197,15 @@ public class BlueprintScreen extends Screen {
         if (d.selfAssembling()) {
             g.drawString(font, Component.translatable("hud.spacebreaker.materials.self_assembling"), dx, bottom() - 36, 0x9FE3EA, true);
         }
-        // tooltips: the research mark, and the size and block count on the preview
-        if (techTip != null && mouseX >= markX && mouseX < markX + 9 && mouseY >= markY && mouseY < markY + 9) {
+        // tooltips: a material (its name, how many you carry against how many it takes), the research mark, and the
+        // size and block count on the preview
+        if (hovered != null) {
+            int have = minecraft.player.getInventory().countItem(hovered.getKey());
+            int need = hovered.getValue();
+            g.renderComponentTooltip(font, List.of(new ItemStack(hovered.getKey()).getHoverName(),
+                    Component.translatable("gui.spacebreaker.blueprints.have", have, need)
+                            .withStyle(have >= need ? net.minecraft.ChatFormatting.GREEN : net.minecraft.ChatFormatting.GRAY)), mouseX, mouseY);
+        } else if (techTip != null && mouseX >= markX && mouseX < markX + 9 && mouseY >= markY && mouseY < markY + 9) {
             g.renderComponentTooltip(font, techTip, mouseX, mouseY);
         } else if (Math.abs(mouseX - pcx) < psize / 2 && Math.abs(mouseY - pcy) < psize / 2) {
             g.renderTooltip(font, Component.translatable("gui.spacebreaker.blueprints.size", cols, d.height(), rows, blocks), mouseX, mouseY);

@@ -206,6 +206,20 @@ public class RoverEntity extends Entity implements com.pizzaparker07.spacebreake
         return energy() / (float) roverType.capacity();
     }
 
+    /** Battery share below which the HUD prints the percentage beside the bar. */
+    public static final float LOW_BATTERY = 0.2F;
+
+    /**
+     * Battery percentage the HUD prints beside its bar, or -1 for none: always in the detailed HUD, otherwise only
+     * when the battery runs low. Rounded up, so "0" means truly empty.
+     */
+    public static int shownPercent(float fraction, boolean detailed) {
+        if (!detailed && fraction >= LOW_BATTERY) {
+            return -1;
+        }
+        return Mth.clamp(Mth.ceil(Mth.clamp(fraction, 0F, 1F) * 100F - 1e-4F), 0, 100);
+    }
+
     private boolean flag(byte f) {
         return (entityData.get(UPGRADES) & f) != 0;
     }

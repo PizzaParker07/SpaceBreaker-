@@ -77,6 +77,21 @@ final class MercuryScenario implements ShowcaseScenario {
             c.setPersistenceRequired();
             level.addFreshEntity(c);
         }
+        // a hollow snail grazing a patch of hollow deposit beside the crawler
+        for (int x = SX - 6; x <= SX - 3; x++) {
+            for (int z = SZ + 4; z <= SZ + 7; z++) {
+                level.setBlock(new BlockPos(x, y0, z), MercuryModule.HOLLOW_DEPOSIT.get().defaultBlockState(), Block.UPDATE_CLIENTS);
+            }
+        }
+        var snail = MercuryEntities.HOLLOW_SNAIL.get().create(level);
+        if (snail != null) {
+            snail.moveTo(SX - 4.5, y0 + 1, SZ + 5.5, 200F, 0F);
+            snail.setYBodyRot(200F);
+            snail.setYHeadRot(200F);
+            snail.setNoAi(true);
+            snail.setPersistenceRequired();
+            level.addFreshEntity(snail);
+        }
         int[] m = mineSpot(terrain);
         int my = (int) Math.floor(terrain.height(m[0] + 12, m[1] + 4));
         MarsScenario.placePiece(level, new IceMinePiece(31L, m[0], my, m[1]));
@@ -110,6 +125,7 @@ final class MercuryScenario implements ShowcaseScenario {
         }
         int y0 = (int) Math.floor(t.height(SX, SZ));
         s.add(new ShowcaseDriver.Shot("05_crawler_and_rocks", 0, SX + 1.5, y0 + 3, SZ + 9.5, 180F, 22F, true, fp, 80, at(0.03), null));
+        s.add(new ShowcaseDriver.Shot("05b_hollow_snail", 0, SX - 3.0, y0 + 2.4, SZ + 8.6, 155F, 24F, true, fp, 60, at(0.03), null));
         int[] m = mineSpot(t);
         int my = (int) Math.floor(t.height(m[0] + 12, m[1] + 4));
         s.add(new ShowcaseDriver.Shot("06_polar_crater", 0, m[0] + 12.5, my + 12, m[1] + 34.5, 180F, 20F, true, fp, 260, at(0.25), null));

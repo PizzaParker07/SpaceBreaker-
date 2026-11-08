@@ -38,7 +38,7 @@ final class RocketryLang {
         l.add("gui.spacebreaker.assembler.nuclear_first", "☢ Nuclear first stage: too weak to lift off, and it would irradiate the pad. Put it on an upper stage",
                 "☢ Nükleer ilk kademe: kalkmaya gücü yetmez, rampayı da ışınlar. Üst kademeye koy");
         l.add("tooltip.spacebreaker.part.boil_off", "Cryogenic: %s%% of its propellant boils off per day on long trips and in orbit",
-                "Kriyojenik: uzun yolculukta ve yörüngede yakıtının günde %%%s'i buharlaşır");
+                "Kriyojenik: uzun yolculukta ve yörüngede yakıtının günde %%%s kadarı buharlaşır");
         l.add("tooltip.spacebreaker.part.hydrogen_note", "Real liquid hydrogen is very bulky; in the game a tank's capacity counts as mass, whatever it holds",
                 "Gerçekte sıvı hidrojen çok hacimlidir; oyunda tank kapasitesi, içinde ne olursa olsun kütle olarak sayılır");
         l.add("tooltip.spacebreaker.part.propellant_nuclear", "In a nuclear thermal stage: LH2 %s mB, no LOX", "Nükleer termal kademede: LH2 %s mB, LOX yok");
@@ -340,7 +340,8 @@ final class RocketryLang {
         l.add("gui.spacebreaker.assembler.dv", "Δv %s", "Δv %s");
         l.add("gui.spacebreaker.assembler.twr", "TWR %s", "İ/A %s");
         l.add("gui.spacebreaker.assembler.mass", "Mass %s", "Kütle %s");
-        l.add("gui.spacebreaker.assembler.stage_line", "Stage %s (%s): Δv %s, TWR %s, %s propellant, %s burn", "Kademe %s (%s): Δv %s, İ/A %s, %s yakıt, %s yanma");
+        l.add("gui.spacebreaker.assembler.stage_line", "Stage %s (%s): Δv %s · TWR %s", "Kademe %s (%s): Δv %s · İ/A %s");
+        l.add("gui.spacebreaker.assembler.stage_fuel", "   %s propellant · %s burn", "   %s yakıt · %s yanma");
         l.add("gui.spacebreaker.assembler.payload", "Payload: %s, %s seat(s)", "Faydalı yük: %s, %s koltuk");
         l.add("gui.spacebreaker.assembler.height", "Height %s", "Boy %s");
         l.add("gui.spacebreaker.assembler.row.payload", "Payload: heat shield, capsule, parachute or nose", "Faydalı yük: ısı kalkanı, kapsül, paraşüt ya da burun");
