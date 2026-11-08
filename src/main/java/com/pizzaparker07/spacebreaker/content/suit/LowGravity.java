@@ -107,6 +107,51 @@ public final class LowGravity {
                 sound.getVolume() * 0.3F, sound.getPitch() * 0.7F);
     }
 
+    /** Below this ambient pressure (kPa) wings find nothing to lean on. */
+    public static final double VACUUM_KPA = 0.05;
+
+    /**
+     * Share of an elytra's lift at ambient pressure {@code kpa}: none in vacuum, the square root of the pressure
+     * against Earth's in thin air (Mars, 0.6 kPa: under a tenth), full in Earth-like or denser air.
+     */
+    public static double elytraLift(double kpa) {
+        if (kpa < VACUUM_KPA) {
+            return 0.0;
+        }
+        return Math.min(1.0, Math.sqrt(kpa / 101.325));
+    }
+
+    /** The local player's speed before this tick's movement, to tell the wings' share from a plain fall. */
+    private static net.minecraft.world.phys.Vec3 glideStart;
+
+    @SubscribeEvent
+    static void beforePlayerTick(net.neoforged.neoforge.event.tick.PlayerTickEvent.Pre event) {
+        var p = event.getEntity();
+        glideStart = p.level().isClientSide && p.isLocalPlayer() && p.isFallFlying() ? p.getDeltaMovement() : null;
+    }
+
+    @SubscribeEvent
+    static void afterPlayerTick(net.neoforged.neoforge.event.tick.PlayerTickEvent.Post event) {
+        var p = event.getEntity();
+        if (!p.isFallFlying()) {
+            return;
+        }
+        double lift = elytraLift(Environment.pressureKpa(p.level(), p.blockPosition()));
+        if (lift >= 1.0) {
+            return;
+        }
+        if (lift <= 0.0) {
+            p.stopFallFlying(); // nothing to glide on: the wings fold and the wearer simply falls
+            return;
+        }
+        if (p.level().isClientSide && p.isLocalPlayer() && glideStart != null) {
+            // keep only part of what the wings did this tick, the rest is a plain fall with vanilla drag
+            var v0 = glideStart;
+            var plain = new net.minecraft.world.phys.Vec3(v0.x * 0.99, (v0.y - p.getGravity()) * 0.98, v0.z * 0.99);
+            p.setDeltaMovement(plain.add(p.getDeltaMovement().subtract(plain).scale(lift)));
+        }
+    }
+
     /** The gravity factor of a level, looked up once per level and tick. */
     static double factor(Level level) {
         int side = level.isClientSide ? 1 : 0;

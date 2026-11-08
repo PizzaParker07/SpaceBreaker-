@@ -106,4 +106,14 @@ public final class LowGravityGameTests {
         helper.assertTrue(hop > 0 && hop < drop && drop <= 10, "a hop raises a little dust, a long drop more, never a cloud");
         helper.succeed();
     }
+
+    @GameTest(template = EMPTY)
+    public static void wingsNeedAir(GameTestHelper helper) {
+        helper.assertTrue(LowGravity.elytraLift(0.0) == 0.0, "no lift in vacuum");
+        helper.assertTrue(LowGravity.elytraLift(101.325) == 1.0 && LowGravity.elytraLift(9200) == 1.0, "full lift on Earth and in denser air");
+        helper.assertTrue(LowGravity.elytraLift(146.7) == 1.0, "Titan's thick air carries wings fine");
+        double mars = LowGravity.elytraLift(0.61);
+        helper.assertTrue(mars > 0.05 && mars < 0.1, "Mars's thin air gives under a tenth of the lift (" + mars + ")");
+        helper.succeed();
+    }
 }
