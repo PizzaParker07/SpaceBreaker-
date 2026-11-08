@@ -153,6 +153,37 @@ public final class RoverTests {
         h.succeed();
     }
 
+    /**
+     * Climbing a one-block step: the rover's feet jump a block in one tick, the drawn body (and the seats, so the
+     * camera) does not: it rises no more than a third of a block per tick and is up within 8 ticks.
+     */
+    @GameTest(template = "empty")
+    public static void stepUpEasesTheBodyUp(GameTestHelper h) {
+        float lift = 0;
+        double y = 0, shown = 0;
+        double maxRise = 0;
+        int settled = -1;
+        for (int t = 0; t < 20; t++) {
+            double dy = t == 1 ? 1.0 : 0;
+            y += dy;
+            lift = RoverPhysics.afterStep(lift, dy, true, 1F);
+            lift = RoverPhysics.easeLift(lift, 0F);
+            maxRise = Math.max(maxRise, y + lift - shown);
+            shown = y + lift;
+            if (settled < 0 && t > 1 && Math.abs(shown - y) < 0.06) {
+                settled = t - 1;
+            }
+        }
+        h.assertTrue(maxRise <= 0.34, "body rose " + maxRise + " in one tick");
+        h.assertTrue(settled > 0 && settled <= 8, "body up the step after " + settled + " ticks");
+        // a drop, a bounce or a teleport is left alone
+        h.assertTrue(RoverPhysics.afterStep(0.2F, -1.0, true, 1F) == 0.2F, "drops are not eased");
+        h.assertTrue(RoverPhysics.afterStep(0.2F, 0.15, true, 1F) == 0.2F, "small bumps follow the ground");
+        h.assertTrue(RoverPhysics.afterStep(0.2F, 5.0, true, 1F) == 0.2F, "teleports are not eased");
+        h.assertTrue(RoverPhysics.afterStep(0.2F, 1.0, false, 1F) == 0.2F, "airborne rises are real");
+        h.succeed();
+    }
+
     @GameTest(template = "empty")
     public static void lowGravityJumpsAreLongAndLandingsBounce(GameTestHelper h) {
         // airtime of a 0.3 b/t hop: about 6x longer on the Moon

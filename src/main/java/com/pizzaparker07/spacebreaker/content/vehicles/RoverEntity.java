@@ -94,7 +94,8 @@ public class RoverEntity extends Entity implements com.pizzaparker07.spacebreake
     public float bodyPitchO;
     public float bodyRoll;
     public float bodyRollO;
-    /** Client: how far the leaning body sits above the rover's feet (the mean of the ground under the wheels). */
+    /** Client: how far the leaning body sits above the rover's feet (the mean of the ground under the wheels); below
+     * them for a few ticks after a step up, while it eases up the block. */
     public float bodyLift;
     public float bodyLiftO;
     private float suspensionVel;
@@ -272,7 +273,8 @@ public class RoverEntity extends Entity implements com.pizzaparker07.spacebreake
         int i = getPassengers().indexOf(passenger);
         double z = i <= 0 ? 0.25 : -0.55;
         // the seats are the same height in every model, whatever the cabin above them
-        return new Vec3(0, SEAT_HEIGHT, z).yRot(-getYRot() * Mth.DEG_TO_RAD);
+        // the seats ride with the body on the client: lifted over rough ground, easing up after a step
+        return new Vec3(0, SEAT_HEIGHT + bodyLift, z).yRot(-getYRot() * Mth.DEG_TO_RAD);
     }
 
     @Override
@@ -776,6 +778,9 @@ public class RoverEntity extends Entity implements com.pizzaparker07.spacebreake
         bodyPitchO = bodyPitch;
         bodyRollO = bodyRoll;
         bodyLiftO = bodyLift;
+        // a step up (the wheels climb a block in one tick): keep the body where it was and let it ease up over a few
+        // ticks, so the model and the riders' camera rise smoothly instead of popping up a block
+        bodyLift = RoverPhysics.afterStep(bodyLift, getY() - yo, onGround(), maxUpStep());
         float a = (180F - getYRot()) * Mth.DEG_TO_RAD;
         // the renderer's model space after its yaw turn: +X = (cos a, -sin a), front (-Z) = (-sin a, -cos a)
         double fx = -Mth.sin(a), fz = -Mth.cos(a);
@@ -795,7 +800,7 @@ public class RoverEntity extends Entity implements com.pizzaparker07.spacebreake
         }
         bodyPitch += (pitch - bodyPitch) * 0.3F;
         bodyRoll += (roll - bodyRoll) * 0.3F;
-        bodyLift += (lift - bodyLift) * 0.3F;
+        bodyLift = RoverPhysics.easeLift(bodyLift, lift);
     }
 
     private void clientEffects() {

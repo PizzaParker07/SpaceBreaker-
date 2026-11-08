@@ -165,6 +165,20 @@ public final class RoverPhysics {
         return (float) Math.max(-MAX_TILT, Math.min(MAX_TILT, Math.atan2(groundA - groundB, span)));
     }
 
+    /**
+     * Body lift (blocks above the rover's feet, client only) after the rover moved {@code dy} this tick: a step up
+     * the wheels climbed in one tick is taken back out of the lift, so the drawn body (and the seats) stay where they
+     * were and {@link #easeLift} carries them up the block over the next few ticks.
+     */
+    public static float afterStep(float lift, double dy, boolean onGround, float maxStep) {
+        return onGround && dy > 0.25 && dy <= maxStep + 0.25 ? lift - (float) dy : lift;
+    }
+
+    /** One tick of the body lift easing towards the ground under the wheels. */
+    public static float easeLift(float lift, float target) {
+        return lift + (target - lift) * 0.3F;
+    }
+
     /** Afloat: the propeller accelerates gently, the water drags harder than tyres roll, no braking but reverse thrust. */
     public static double swimSpeed(double speed, double throttle, double maxSpeed) {
         speed += throttle * 0.008;
