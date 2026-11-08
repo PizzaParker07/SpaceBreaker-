@@ -61,7 +61,8 @@ final class InnerCreatureLineupScenario implements ShowcaseScenario {
             if (m == null) {
                 continue;
             }
-            m.moveTo(X0 + offset(i) + 0.5, gy + (m.isNoGravity() ? 1.5 : 0), Z0 + 0.5, 0F, 0F);
+            double lift = CREATURES.get(i).name().equals("cloud_jelly") ? 0.4 : CREATURES.get(i).name().equals("acid_ray") ? 0.8 : 0; // fliers float a little
+            m.moveTo(X0 + offset(i) + 0.5, gy + lift, Z0 + 0.5, 0F, 0F);
             m.setYBodyRot(0F);
             m.setYHeadRot(0F);
             m.setNoAi(true);
