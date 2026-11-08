@@ -216,6 +216,10 @@ public final class JupiterData {
         ctx.register(cf("europa_block"), OuterWorlds.boulder(0.7F, 1.6F, 0.55F, s(EUROPAN_ICE), 4, s(STAINED_ICE), 1));
         ctx.register(cf("io_paterae"), new ConfiguredFeature<>(OuterWorlds.LAKES.get(), ioPaterae()));
         ctx.register(cf("io_plumes"), new ConfiguredFeature<>(OuterWorlds.VENTS.get(), ioPlumes()));
+        // dark basalt flows with red-sulfur margins wandering out from vents across the plains
+        ctx.register(cf("io_lava_flows"), new ConfiguredFeature<>(OuterWorlds.LAVA_FLOWS.get(),
+                new com.pizzaparker07.spacebreaker.content.belt.world.LavaFlowFeature.Config(240, 0.85, 4, 120, 280, 3.6,
+                        s(IONIAN_BASALT.base()), Optional.of(s(RED_SULFUR)))));
         ctx.register(cf("io_sulfur_ore"), new ConfiguredFeature<>(Feature.ORE,
                 new OreConfiguration(new TagMatchTest(IO_STONE), s(IONIAN_SULFUR_ORE), 10)));
         ctx.register(cf("io_boulder"), OuterWorlds.boulder(0.7F, 1.8F, 0.5F, s(IONIAN_BASALT.base()), 1));
@@ -229,7 +233,7 @@ public final class JupiterData {
 
     private static void placed(BootstrapContext<PlacedFeature> ctx) {
         var cf = ctx.lookup(Registries.CONFIGURED_FEATURE);
-        for (String whole : new String[]{"europa_lineae", "europa_ocean", "europa_geysers", "io_paterae", "io_plumes", "ganymede_grooves",
+        for (String whole : new String[]{"europa_lineae", "europa_ocean", "europa_geysers", "io_paterae", "io_plumes", "io_lava_flows", "ganymede_grooves",
                 "callisto_valhalla"}) {
             PlacementUtils.register(ctx, pf(whole), cf.getOrThrow(cf(whole)), BiomeFilter.biome());
         }
@@ -266,7 +270,7 @@ public final class JupiterData {
         }
         for (ResourceKey<Biome> key : IO_BIOMES) {
             ctx.register(key, OuterWorlds.biome(pf, carvers, key, -1.4F, OuterWorlds.Look.airless(0xB8A050),
-                    lakes, "io_paterae", ores, "io_sulfur_ore", local, "io_boulder", surface, "io_plumes"));
+                    raw, "io_lava_flows", lakes, "io_paterae", ores, "io_sulfur_ore", local, "io_boulder", surface, "io_plumes"));
         }
         for (ResourceKey<Biome> key : GANYMEDE_BIOMES) {
             ctx.register(key, OuterWorlds.biome(pf, carvers, key, -1.5F, OuterWorlds.Look.airless(0x8A847C),
