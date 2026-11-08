@@ -57,7 +57,8 @@ public final class LowGravity {
 
     /**
      * Horizontal air drag per tick while airborne at gravity factor {@code f}: with less steering the vanilla drag
-     * would eat the take-off speed, so part of it is given back (half of what the steering lost), fading out on the
+     * would eat the take-off speed, so most of it is given back (four fifths of what the steering lost, tuned on
+     * measured hops: a Moon sprint hop keeps about nine tenths of its vanilla length), fading out on the
      * lightest worlds (below a factor of 0.15) so their hops stay short. Vanilla on Earth-like worlds and in
      * microgravity (own controls).
      */
@@ -66,7 +67,7 @@ public final class LowGravity {
             return VANILLA_AIR_DRAG;
         }
         double relief = Math.min(1.0, f / 0.15);
-        return VANILLA_AIR_DRAG + (1.0 - VANILLA_AIR_DRAG) * 0.5 * (1.0 - airControl(f)) * relief;
+        return VANILLA_AIR_DRAG + (1.0 - VANILLA_AIR_DRAG) * 0.8 * (1.0 - airControl(f)) * relief;
     }
 
     /**
@@ -129,13 +130,14 @@ public final class LowGravity {
 
     /**
      * Share of an elytra's lift at ambient pressure {@code kpa}: none in vacuum, the pressure against Earth's to the
-     * power 0.4 in thin air (Mars, 0.6 kPa: about an eighth), full in Earth-like or denser air.
+     * power 0.35 in thin air (Mars, 0.6 kPa: about a sixth, a tenth of an Earth glide's reach), full in Earth-like
+     * or denser air.
      */
     public static double elytraLift(double kpa) {
         if (kpa < VACUUM_KPA) {
             return 0.0;
         }
-        return Math.min(1.0, Math.pow(kpa / 101.325, 0.4));
+        return Math.min(1.0, Math.pow(kpa / 101.325, 0.35));
     }
 
     /** The local player's speed before this tick's movement, to tell the wings' share from a plain fall. */
