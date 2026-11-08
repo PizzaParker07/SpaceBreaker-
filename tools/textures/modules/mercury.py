@@ -149,11 +149,12 @@ def crawler_eyes():
     return cv
 
 
+HOLLOW_CRUST = ramp('#dfeaf4', '#f0f7fc')
 SNAIL_BODY = ramp('#3e3a37', '#524c47', '#665f58', '#7a726a', '#8e857c')
 
 
 def snail():
-    """Hollow Snail (64x64): a grey, finely wrinkled foot and neck; a pale blue-white shell banded like the hollow crust,
+    """Hollow Snail (64x64): a grey, finely wrinkled foot and neck; a pale blue-white shell banded like the hollow crust and caked with bright crust patches,
     a dark spiral line coiling in on each side to a pale knob."""
     import math
     cv = Canvas(64, 64)
@@ -177,9 +178,13 @@ def snail():
         # a line whose radius grows by 1.7 px per turn
         return abs(((r / 1.7) - a) % 1.0 - 0.5) > 0.36
 
+    crust = clustered(64, 32, 7602, passes=2)
+
     def shell(face, x, y, fw, fh):
         if face == 'bottom':
             return SNAIL_BODY[1]
+        if face != 'front' and crust[(y * 3 + (7 if face == 'top' else 0)) % 32][(x * 5 + y) % 64] > 0.68:
+            return HOLLOW_CRUST[1 if (x + y) % 3 else 0]  # bright patches of hollow crust caught on the shell
         if face in ('left', 'right'):
             if spiral(x, y, fw, fh):
                 return GRAPHITE[2]
