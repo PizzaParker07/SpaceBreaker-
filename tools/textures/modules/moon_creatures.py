@@ -47,85 +47,61 @@ def noise_pick(r, base, n, x, y, spread=1):
 
 # --------------------------------------------------------------------------- regolith tick
 
-def tick_sheet(r, crystals=False, seed=5):
+def tick_sheet(r, seed=5):
+    """Young tick: a dusty grey dome (pale crown, darker rim, pits), dark head, orange-dark mouth, pale leg joints."""
     cv = Canvas(64, 64)
     n = clustered(64, 64, seed, passes=1)
-    rng = random.Random(seed)
 
-    top = [
-        "1223322.",
-        "23344332",
-        "23465432",
-        "234440432",
-        "23344432",
-        "2304443 2",
-        "23446432",
-        "23344332",
-        "22333332",
-        "1222222.",
-    ]
+    def shell(base, ox, oy):
+        def fn(face, x, y, fw, fh):
+            if face == 'bottom':
+                return noise_pick(r, 1, n, x + ox, y + oy)
+            if face == 'top':
+                rim = x in (0, fw - 1) or y in (0, fh - 1)
+                pit = (x * 5 + y * 3 + ox) % 9 == 0
+                return r[1] if pit else noise_pick(r, base + (0 if rim else 1), n, x + ox, y + oy)
+            return noise_pick(r, base - (1 if y == fh - 1 else 0), n, x + ox, y + oy)
+        return fn
 
-    def body(face, x, y, fw, fh):
-        if face == 'top':
-            # leathery oval carapace: pale dusty centre, darker rim, a few pits and dust specks
-            ch = top[y][x] if x < len(top[y]) else '2'
-            t = 1 if ch in '. ' else int(ch)
-            return r[t] if t in (0, 6) else noise_pick(r, t, n, x + 10, y)
-        if face == 'bottom':
-            return noise_pick(r, 1, n, x + 20, y + 30)
-        # sides: top edge catches light, lower part in shadow
-        t = 3 if y == 0 else (2 if y == 1 else 1)
-        if face == 'back' and y == 1 and x % 2 == 1:
-            t = 0
-        return noise_pick(r, t, n, x + 3, y + 40)
-
-    paint(cv, 0, 0, 8, 3, 10, body)
-
-    def shield(face, x, y, fw, fh):
-        if face == 'top':
-            t = 5 if (x == 0 or y == 0) else (3 if (x == fw - 1 or y == fh - 1) else 4)
-            return r[t]
-        return r[3] if face != 'bottom' else r[2]
-
-    paint(cv, 0, 13, 6, 1, 5, shield)
+    paint(cv, 0, 0, 8, 2, 9, shell(2, 0, 0))
+    paint(cv, 0, 11, 6, 2, 7, shell(3, 7, 13))
+    paint(cv, 26, 11, 4, 1, 5, shell(5, 3, 21))
 
     def head(face, x, y, fw, fh):
         if face == 'top':
-            return r[4] if y == 0 else r[3]
+            return r[3] if y else r[4]
         if face == 'front':
-            return r[1] if y == 1 else r[2]
+            return r[1]
         return r[2] if y == 0 else r[1]
 
-    paint(cv, 22, 13, 4, 2, 3, head)
-    paint(cv, 36, 13, 1, 1, 2, lambda f, x, y, fw, fh: r[4] if f == 'front' else r[2])
+    paint(cv, 34, 0, 3, 2, 3, head)
+    paint(cv, 46, 0, 1, 1, 1, lambda f, x, y, fw, fh: MOUTH[2] if f == 'front' else MOUTH[1])
+    paint(cv, 50, 0, 1, 1, 2, lambda f, x, y, fw, fh: r[4] if f == 'front' else (r[3] if f == 'top' else r[2]))
 
-    def leg(face, x, y, fw, fh):
-        if face in ('top', 'front', 'back', 'bottom'):
-            # jointed: dark segments with pale joint rings, tip darkest
-            if x in (2, 5):
-                return r[4]
-            if face == 'top':
-                return r[1] if x < 1 else r[3]
-            return r[2]
-        return r[1]
+    def thigh(face, x, y, fw, fh):
+        if face == 'top':
+            return r[5] if x == 0 else r[3]
+        return r[2] if face != 'bottom' else r[1]
 
-    paint(cv, 0, 20, 8, 1, 1, leg)
+    paint(cv, 0, 20, 3, 1, 1, thigh)
 
-    if crystals:
-        # mineral crust on an old elder: KREEP crystals grown into the carapace
-        k = P.KREEP
-        for x, y in [(12, 3), (15, 6), (11, 8), (16, 2), (13, 10)]:
-            cv[x, y] = k[3]
-            cv[x + 1, y] = k[1]
-        cv[12, 3] = k[5]
+    def shin(face, x, y, fw, fh):
+        if face == 'top':
+            return r[5]
+        if face == 'bottom':
+            return r[0]
+        return r[4] if y == 0 else (r[2] if y < 3 else r[1])
+
+    paint(cv, 8, 20, 1, 4, 1, shin)
+    paint(cv, 12, 20, 2, 4, 1, shin)
     return cv
 
 
 def tick_eyes():
     cv = Canvas(64, 64)
-    # head front face starts at (25, 16), 4 x 2: two glinting eyes at the outer corners
-    cv[25, 16] = EYE[2]
-    cv[28, 16] = EYE[2]
+    # head front face starts at (37, 3), 3 x 2: two glinting eyes at the upper corners
+    cv[37, 3] = EYE[2]
+    cv[39, 3] = EYE[2]
     return cv
 
 
