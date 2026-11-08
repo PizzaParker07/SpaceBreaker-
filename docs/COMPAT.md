@@ -377,6 +377,12 @@ environment; the plugins compile against both APIs and the line itself is covere
   now classifies it as ORBIT (GameTest `spaceWorldsAreClassified`). `space_scene_orbits_vanilla_vs_iris.jpg`: the
   Earth-Moon space scene (01, 02, 04) and orbit views (10, 14, 38) vanilla left, pack right; the Mars orbit row is
   the pack before (left) and after (right) the fix.
+- **Round 32 content (2026-11-08):** rovers and the pressurised cabin (HUD beside the hotbar, panoramic windscreen,
+  dashboard), the Venus aerostat and gondola, the Ceres outpost, the Mercury ice mine, the Moon outpost, launch and
+  station consoles, the shipyard and its design screen, and the helmet HUD all look the same under Complementary
+  apart from its lighting (`round32_vanilla_vs_iris.jpg`, vanilla left). Where a pack shot shows only sky or no ground
+  right after a teleport (Mercury 07, Moon 10c), the pack had not built the chunks yet: with a longer wait the scene
+  is there.
 - **Outline boxes (`RenderType.lines()`):** Iris's line programs widen each segment in screen space, so an edge
   that runs behind the camera becomes a large flat quad across the view (seen as a lavender square over the station
   core while holding a docking module: the outline reaches back past the player). `compat.client.ClippedLines` cuts
