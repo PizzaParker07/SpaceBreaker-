@@ -23,7 +23,8 @@
 ### Kullanım
 - Bin: `Sağ Tık`. İn: `Shift`.
 - **Kargo:** `Shift` basılıyken geziciye tıkla.
-- Tutuş yerçekimine bağlıdır: düşük yerçekiminde kolay kayarsın, yavaş dön.
+- Tutuş yerçekimine bağlıdır: düşük yerçekiminde sert dönüşlerde biraz dışa kayarsın ve gezici bir süre yuvarlanmaya devam eder: Ay'da gazı bırakınca yaklaşık 8 blok.
+- **El freni:** tekerlekleri kilitlemek için `Boşluk` tuşunu basılı tut; normal frenden iki kat sert durdurur ve park hâlinde geziciyi yerinde tutar.
 - Tutuş zemine de bağlıdır. **Buzda**, en çok da Plüton'un azot buzunda, gezici zor hızlanır, zor durur, zor döner ve gittiği yönde kaymaya devam eder. Erken fren yap.
 
 ### Şarj
@@ -103,7 +104,8 @@ An electric vehicle for reaching distant craters, ice fields and ruins from your
 ### Driving
 - Get in: `Right Click`. Get out: `Shift`.
 - **Cargo:** click the rover while holding `Shift`.
-- Grip depends on gravity: in low gravity you slide easily, so turn slowly.
+- Grip depends on gravity: in low gravity hard turns drift a little wide, and the rover rolls on for a while: about 8 blocks on the Moon when you let go.
+- **Hand brake:** hold `Space` to lock the wheels; it stops twice as hard as the normal brake and holds the rover still when parked.
 - Grip also depends on the ground. On **ice**, and on Pluto's nitrogen ice most of all, the rover speeds up and brakes weakly, steers poorly and keeps sliding the way it was going. Brake early.
 
 ### Charging
