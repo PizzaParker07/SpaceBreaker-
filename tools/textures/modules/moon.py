@@ -7,7 +7,7 @@ stone/sand whatever the noise does.
 import math
 import random
 
-from sbtex.core import Canvas, clustered, fbm, normalize, parse_mask, mask_from, dome_shade, edge_pixels, pick
+from sbtex.core import Canvas, clustered, fbm, normalize, parse_mask, mask_from, dome_shade, edge_pixels, pick, ramp
 from sbtex import palettes as P
 
 
@@ -511,8 +511,9 @@ RAW_CHUNK = [
 
 
 def raw_ilmenite():
-    """Lumpy glossy-black chunk with violet-silver sheen on its facets."""
+    """Lumpy glossy-black chunk; its flat facets throw a violet sheen (tells it apart from haematite and magnetite)."""
     r = P.ILMENITE
+    violet = ramp('#2c1f45', '#4d3480', '#7a58c0', '#b497ec', '#e6dcff')
     m = mask_from(parse_mask(RAW_CHUNK))
     sh = dome_shade(m, roundness=3.0)
     rng = random.Random(1301)
@@ -521,16 +522,16 @@ def raw_ilmenite():
         for x in range(16):
             if m[y][x]:
                 v = 0.05 + 0.8 * sh[y][x] + (rng.random() - 0.5) * 0.15
-                cv[x, y] = pick([r[2], r[3], r[4], r[5]], v)
-    # flat crystal faces catching the light (tabular ilmenite), each with a darker lower edge
+                cv[x, y] = pick([r[1], r[2], r[3], r[4]], v)
+    # flat crystal faces catching the light (tabular ilmenite): violet sheen, a bright glint, a dark lower edge
     for x, y, l in [(4, 3, 3), (10, 4, 2), (3, 7, 2), (8, 8, 3), (11, 10, 2)]:
         for i in range(l):
-            cv[x + i, y] = r[6]
-            cv[x + i, y + 1] = r[3]
-    cv[4, 3] = r[7]
-    cv[8, 8] = r[7]
+            cv[x + i, y] = violet[2] if i else violet[3]
+            cv[x + i, y + 1] = violet[1] if i < l - 1 else violet[0]
+    cv[4, 3] = violet[4]
+    cv[8, 8] = violet[4]
     for x, y, side in edge_pixels(m):
-        cv[x, y] = r[0] if side == 'br' else r[1]
+        cv[x, y] = r[0] if side == 'br' else violet[0]
     return cv
 
 
