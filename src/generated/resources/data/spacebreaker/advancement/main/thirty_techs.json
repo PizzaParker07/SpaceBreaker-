@@ -17,6 +17,7 @@
       "count": 1,
       "id": "minecraft:enchanted_book"
     },
+    "show_toast": false,
     "title": {
       "translate": "advancements.spacebreaker.thirty_techs.title"
     }

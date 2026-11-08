@@ -121,17 +121,13 @@ public class EvaSuitModel extends HumanoidModel<LivingEntity> {
                 .texOffs(64, 28).addBox(-4F, -8F, -6F, 8, 1, 1, new CubeDeformation(0F, -0.35F, 0F))
                 .texOffs(64, 28).addBox(-5F, -8F, -5F, 1, 1, 1, new CubeDeformation(0F, -0.35F, 0F))
                 .texOffs(64, 28).addBox(4F, -8F, -5F, 1, 1, 1, new CubeDeformation(0F, -0.35F, 0F)), PartPose.ZERO);
-        // heated: a thick insulated collar and a heater pad on the crown
+        // heated: one insulated collar ring over the neck ring
         head.addOrReplaceChild("tier_heated", CubeListBuilder.create()
-                .texOffs(64, 0).addBox(-6F, -2F, -6F, 12, 2, 12)
-                .texOffs(64, 14).addBox(-2F, -11F, -2F, 4, 1, 4), PartPose.ZERO);
-        // radiation: armoured brow and chin plates leave a narrow visor slit; cheek guards; a crest
+                .texOffs(64, 0).addBox(-6F, -1F, -6F, 12, 1, 12, new CubeDeformation(-0.2F, 0F, -0.2F)), PartPose.ZERO);
+        // radiation: lead cheek guards only, flush with the shell; the visor stays open and round
         head.addOrReplaceChild("tier_radiation", CubeListBuilder.create()
-                .texOffs(64, 20).addBox(-5F, -8F, -6F, 10, 2, 1)
-                .texOffs(64, 24).addBox(-5F, -3F, -6F, 10, 2, 1)
-                .texOffs(88, 20).addBox(-6F, -5F, -4F, 1, 4, 6)
-                .texOffs(104, 20).addBox(5F, -5F, -4F, 1, 4, 6)
-                .texOffs(64, 30).addBox(-1F, -11F, -4F, 2, 2, 8), PartPose.ZERO);
+                .texOffs(88, 20).addBox(-6F, -5F, -4F, 1, 4, 6, new CubeDeformation(-0.2F, 0F, 0F))
+                .texOffs(104, 20).addBox(5F, -5F, -4F, 1, 4, 6, new CubeDeformation(-0.2F, 0F, 0F)), PartPose.ZERO);
         return LayerDefinition.create(mesh, 128, 64);
     }
 
@@ -174,8 +170,8 @@ public class EvaSuitModel extends HumanoidModel<LivingEntity> {
         for (boolean left : new boolean[]{false, true}) {
             PartDefinition a = left ? leftArm : rightArm;
             float x = left ? -1F : -3F;
-            a.addOrReplaceChild("tier_heated", mirrored(left).texOffs(64, 16).addBox(x, -2F, -2F, 4, 3, 4, new CubeDeformation(1.5F)), PartPose.ZERO);
-            a.addOrReplaceChild("tier_radiation", mirrored(left).texOffs(64, 32).addBox(x - 1F, -3F, -3F, 6, 2, 6, new CubeDeformation(0.5F)), PartPose.ZERO);
+            // radiation: a thin lead shoulder plate, just over the sleeve
+            a.addOrReplaceChild("tier_radiation", mirrored(left).texOffs(64, 32).addBox(x, -2.5F, -2F, 4, 2, 4, new CubeDeformation(1.25F, 0.2F, 1.25F)), PartPose.ZERO);
         }
         return LayerDefinition.create(mesh, 128, 64);
     }
@@ -212,9 +208,8 @@ public class EvaSuitModel extends HumanoidModel<LivingEntity> {
                 PartPose.ZERO);
         for (boolean left : new boolean[]{false, true}) {
             PartDefinition l = root.addOrReplaceChild(left ? "left_leg" : "right_leg", leg(left), PartPose.offset(left ? 1.9F : -1.9F, 12F, 0F));
-            // thermal: gold knee pads; heated: padded thighs; radiation: shin guards
+            // thermal: gold knee pads; radiation: shin guards (heated: plain legs, its insulation is in the colour)
             l.addOrReplaceChild("tier_thermal", mirrored(left).texOffs(64, 0).addBox(-2F, 4F, -3F, 4, 2, 1), PartPose.ZERO);
-            l.addOrReplaceChild("tier_heated", mirrored(left).texOffs(64, 4).addBox(-2F, 0F, -2F, 4, 5, 4, new CubeDeformation(0.9F)), PartPose.ZERO);
             l.addOrReplaceChild("tier_radiation", mirrored(left).texOffs(64, 16).addBox(-2F, 5F, -3F, 4, 5, 1, new CubeDeformation(0.3F, 0F, 0F)), PartPose.ZERO);
         }
         return LayerDefinition.create(mesh, 128, 32);

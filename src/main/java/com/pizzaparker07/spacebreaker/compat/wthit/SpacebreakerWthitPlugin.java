@@ -22,7 +22,7 @@ public final class SpacebreakerWthitPlugin implements IWailaClientPlugin {
             public void appendBody(ITooltip tooltip, IBlockAccessor accessor, IPluginConfig config) {
                 BlockEntity be = accessor.getBlockEntity();
                 if (be != null) {
-                    BlockInfoLines.lines(be).forEach(tooltip::addLine);
+                    BlockInfoLines.lines(be, accessor.getData().raw()).forEach(tooltip::addLine);
                 }
             }
         }, Block.class);

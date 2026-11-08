@@ -464,12 +464,17 @@ public final class RoverTests {
     }
 
     /** A pool of a liquid, 7 x 9 and 3 deep, on a stone floor. */
+    /**
+     * A walled pool that stays inside the 8x8 test structure: stone floor and rim, liquid 6x6x3 inside. Liquid must
+     * not run past the structure, where it would flow into (and be shaped by) the neighbouring tests.
+     */
     private static void pool(GameTestHelper h, BlockState liquid) {
-        for (int x = 0; x < 7; x++) {
-            for (int z = 0; z < 9; z++) {
+        for (int x = 0; x < 8; x++) {
+            for (int z = 0; z < 8; z++) {
                 h.setBlock(new BlockPos(x, 0, z), Blocks.STONE);
+                boolean rim = x == 0 || x == 7 || z == 0 || z == 7;
                 for (int y = 1; y <= 3; y++) {
-                    h.setBlock(new BlockPos(x, y, z), liquid);
+                    h.setBlock(new BlockPos(x, y, z), rim ? Blocks.STONE.defaultBlockState() : liquid);
                 }
             }
         }
@@ -479,22 +484,33 @@ public final class RoverTests {
     @GameTest(template = "empty", timeoutTicks = 200)
     public static void amphibiousRoverFloatsOnWater(GameTestHelper h) {
         pool(h, Blocks.WATER.defaultBlockState());
-        RoverEntity boat = h.spawn(VehiclesModule.AMPHIBIOUS_ROVER.get(), Vec3.atBottomCenterOf(new BlockPos(3, 2, 1)));
+        RoverEntity boat = h.spawn(VehiclesModule.AMPHIBIOUS_ROVER.get(), Vec3.atBottomCenterOf(new BlockPos(3, 2, 2)));
         boat.setYRot(0F);
         boat.setEnergy(500_000);
-        RoverEntity sinker = h.spawn(VehiclesModule.ROVER.get(), Vec3.atBottomCenterOf(new BlockPos(1, 3, 7)));
         double surface = h.absolutePos(new BlockPos(0, 4, 0)).getY();
-        double z0 = boat.getZ();
+        double[] z0 = new double[1];
         h.runAfterDelay(60, () -> {
             h.assertTrue(boat.afloat(), "afloat");
             double draft = surface - boat.getY();
             h.assertTrue(draft > 0.2 && draft < 0.8, "riding at its waterline, draft " + draft);
-            h.assertTrue(sinker.getY() < surface - 1.5, "a plain rover sinks: " + (surface - sinker.getY()));
+            z0[0] = boat.getZ();
+            boat.setSpeed(0.2);
         });
-        h.runAfterDelay(61, () -> boat.setSpeed(0.2));
-        h.runAfterDelay(100, () -> {
-            h.assertTrue(boat.getZ() - z0 > 2, "it sails on: moved " + (boat.getZ() - z0));
+        h.runAfterDelay(80, () -> {
+            h.assertTrue(boat.getZ() - z0[0] > 1, "it sails on: moved " + (boat.getZ() - z0[0]));
             h.assertTrue(surface - boat.getY() < 0.8, "and stays up");
+            h.succeed();
+        });
+    }
+
+    /** A plain rover in the same pool sinks to the bottom. */
+    @GameTest(template = "empty", timeoutTicks = 100)
+    public static void plainRoverSinks(GameTestHelper h) {
+        pool(h, Blocks.WATER.defaultBlockState());
+        RoverEntity sinker = h.spawn(VehiclesModule.ROVER.get(), Vec3.atBottomCenterOf(new BlockPos(3, 3, 3)));
+        double surface = h.absolutePos(new BlockPos(0, 4, 0)).getY();
+        h.runAfterDelay(60, () -> {
+            h.assertTrue(!sinker.afloat() && sinker.getY() < surface - 1.5, "a plain rover sinks: " + (surface - sinker.getY()));
             h.succeed();
         });
     }
@@ -502,11 +518,13 @@ public final class RoverTests {
     /** Driving out: afloat, it noses into the bank and climbs out onto dry ground. */
     @GameTest(template = "empty", timeoutTicks = 240)
     public static void amphibiousRoverClimbsOutOntoTheShore(GameTestHelper h) {
-        for (int x = 0; x < 7; x++) {
-            for (int z = 0; z < 12; z++) {
+        // water z 1..3 behind a rim, shore (stone up to y 3) from z 4 on, all inside the 8x8 structure
+        for (int x = 0; x < 8; x++) {
+            for (int z = 0; z < 8; z++) {
                 h.setBlock(new BlockPos(x, 0, z), Blocks.STONE);
+                boolean water = x > 0 && x < 7 && z > 0 && z < 4;
                 for (int y = 1; y <= 3; y++) {
-                    h.setBlock(new BlockPos(x, y, z), z < 6 ? Blocks.WATER : Blocks.STONE);
+                    h.setBlock(new BlockPos(x, y, z), water ? Blocks.WATER : Blocks.STONE);
                 }
             }
         }
@@ -516,7 +534,7 @@ public final class RoverTests {
         h.succeedWhen(() -> {
             boat.setSpeed(0.2);
             h.assertTrue(!boat.afloat() && boat.getY() >= h.absolutePos(new BlockPos(0, 4, 0)).getY() - 0.01
-                    && boat.getZ() > h.absolutePos(new BlockPos(0, 4, 6)).getZ() + 0.5, "out on the shore: y " + boat.getY() + " z " + boat.getZ());
+                    && boat.getZ() > h.absolutePos(new BlockPos(0, 4, 4)).getZ() + 1.0, "out on the shore: y " + boat.getY() + " z " + boat.getZ());
         });
     }
 
@@ -524,7 +542,7 @@ public final class RoverTests {
     @GameTest(template = "empty", timeoutTicks = 120)
     public static void amphibiousRoverFloatsOnLiquidMethane(GameTestHelper h) {
         pool(h, com.pizzaparker07.spacebreaker.content.saturn.SaturnModule.TITAN_METHANE.get().defaultBlockState());
-        RoverEntity boat = h.spawn(VehiclesModule.AMPHIBIOUS_ROVER.get(), Vec3.atBottomCenterOf(new BlockPos(3, 2, 4)));
+        RoverEntity boat = h.spawn(VehiclesModule.AMPHIBIOUS_ROVER.get(), Vec3.atBottomCenterOf(new BlockPos(3, 2, 3)));
         boat.setEnergy(500_000);
         double surface = h.absolutePos(new BlockPos(0, 4, 0)).getY();
         h.runAfterDelay(60, () -> {

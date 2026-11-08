@@ -16,6 +16,7 @@
       "count": 1,
       "id": "spacebreaker:guide_book"
     },
+    "show_toast": false,
     "title": {
       "translate": "advancements.spacebreaker.read_guide.title"
     }
