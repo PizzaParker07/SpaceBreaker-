@@ -38,10 +38,20 @@ public class SurveyDroneModel<T extends SurveyDrone> extends HierarchicalModel<T
         body.addOrReplaceChild("antenna", CubeListBuilder.create()
                 .texOffs(44, 0).addBox(-0.5F, -5F, -0.5F, 1F, 5F, 1F)
                 .texOffs(48, 0).addBox(-1F, -6F, -1F, 2F, 1F, 2F), PartPose.offset(1.5F, -4F, 1.5F));
+        // a sensor ring round the lens
+        body.addOrReplaceChild("sensor_ring", CubeListBuilder.create()
+                .texOffs(32, 6).addBox(-3F, -3F, -5.5F, 6F, 1F, 1F)
+                .texOffs(32, 6).addBox(-3F, 2F, -5.5F, 6F, 1F, 1F)
+                .texOffs(48, 6).addBox(-3F, -2F, -5.5F, 1F, 4F, 1F)
+                .texOffs(48, 6).addBox(2F, -2F, -5.5F, 1F, 4F, 1F), PartPose.ZERO);
+        // solar wings held out on short booms
+        body.addOrReplaceChild("booms", CubeListBuilder.create()
+                .texOffs(56, 0).addBox(4F, -0.5F, -0.5F, 1F, 1F, 1F)
+                .texOffs(56, 0).addBox(-5F, -0.5F, -0.5F, 1F, 1F, 1F), PartPose.ZERO);
         body.addOrReplaceChild("left_wing", CubeListBuilder.create()
-                .texOffs(0, 16).addBox(0F, -0.5F, -3F, 9F, 1F, 6F), PartPose.offset(4F, 0F, 0F));
+                .texOffs(0, 16).addBox(0F, -0.5F, -3F, 9F, 1F, 6F), PartPose.offset(5F, 0F, 0F));
         body.addOrReplaceChild("right_wing", CubeListBuilder.create()
-                .texOffs(0, 16).mirror().addBox(-9F, -0.5F, -3F, 9F, 1F, 6F), PartPose.offset(-4F, 0F, 0F));
+                .texOffs(0, 16).mirror().addBox(-9F, -0.5F, -3F, 9F, 1F, 6F), PartPose.offset(-5F, 0F, 0F));
         CubeListBuilder nozzle = CubeListBuilder.create().texOffs(12, 24).addBox(-1F, 0F, -1F, 2F, 2F, 2F);
         body.addOrReplaceChild("nozzle_0", nozzle, PartPose.offset(-2.5F, 4F, -2.5F));
         body.addOrReplaceChild("nozzle_1", nozzle, PartPose.offset(2.5F, 4F, -2.5F));

@@ -322,15 +322,19 @@ def survey_drone():
     def wing(face, x, y, fw, fh):
         if face == 'top':
             if x == 0 or y == 0 or x == fw - 1 or y == fh - 1:
-                return al[3]
+                return cell[0]  # dark frame, so the wing does not read as a grey slab
             if x % 3 == 0 or y == 3:
                 return cell[1]  # cell gaps
             return cell[5] if (x + y) % 5 == 0 else cell[3]
         if face == 'bottom':
-            return back[2] if (x + y) % 3 else back[1]
-        return al[3]
+            return cell[0] if (x + y) % 3 else cell[1]
+        return cell[0]  # thin dark panel edge, so the wing reads thin from the side
 
     paint(cv, 0, 16, 9, 1, 6, wing)
+    # sensor ring round the lens: bright machined aluminium with dark screw points
+    paint(cv, 32, 6, 6, 1, 1, lambda f, x, y, fw, fh: al[2] if f == 'front' and x in (0, 5) else (al[6] if f in ('front', 'top') else al[3]))
+    paint(cv, 48, 6, 1, 4, 1, lambda f, x, y, fw, fh: al[6] if f in ('front', 'top') else al[3])
+    paint(cv, 56, 0, 1, 1, 1, lambda f, x, y, fw, fh: P.STEEL[3])
 
     def nozzle(face, x, y, fw, fh):
         if face == 'bottom':
