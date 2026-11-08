@@ -94,7 +94,9 @@ public class ShipyardScreen extends Screen {
             r.render(g, mouseX, mouseY, partialTick);
         }
         // the numbers live in tooltips: the delta-v figure, and the berth's size on its frame
-        if (in(dvBox, mouseX, mouseY)) {
+        if (previewStats) {
+            g.renderComponentTooltip(font, statLines(), dvBox[0] - 160, dvBox[1] + 30);
+        } else if (in(dvBox, mouseX, mouseY)) {
             g.renderComponentTooltip(font, statLines(), mouseX, mouseY);
         } else if (in(sideBox, mouseX, mouseY) || in(topBox, mouseX, mouseY)) {
             g.renderComponentTooltip(font, List.of(Component.translatable("ship.spacebreaker.berth", Berths.MAX_WIDTH, Berths.MAX_HEIGHT, Berths.MAX_LENGTH)), mouseX, mouseY);
@@ -112,9 +114,24 @@ public class ShipyardScreen extends Screen {
         out.add(stat("size", design.length() + " × " + design.width() + " × " + design.height()));
         out.add(stat("mass", String.format(Locale.ROOT, "%,.1f t → %,.1f t", design.wetMassKg() / 1000, design.dryMassKg() / 1000)));
         out.add(stat("propellant", String.format(Locale.ROOT, "%,.1f t", design.propellantKg() / 1000)));
+        if (design.stack().stream().anyMatch(p -> p.kind == ShipPart.Kind.ENGINE)) {
+            out.add(Component.literal("  ").append(Component.translatable(design.hydrogen() ? "ship.spacebreaker.fuel_hydrogen" : "ship.spacebreaker.fuel_metalox"))
+                    .withStyle(ChatFormatting.DARK_GRAY));
+        }
         out.add(stat("thrust", String.format(Locale.ROOT, "%,.0f kN", design.thrustKn())));
         out.add(stat("isp", String.format(Locale.ROOT, "%,.0f s", design.isp())));
         out.add(stat("accel", String.format(Locale.ROOT, "%.1f m/s²", design.acceleration())));
+        // the bill the build step will charge
+        var bill = com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipCost.of(design);
+        if (!bill.isEmpty()) {
+            out.add(Component.empty());
+            out.add(Component.translatable("ship.spacebreaker.bill", com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipCost.kfe(design))
+                    .withStyle(ChatFormatting.GRAY));
+            for (var line : bill) {
+                var item = net.minecraft.core.registries.BuiltInRegistries.ITEM.get(line.item());
+                out.add(Component.literal("  " + line.count() + "× ").append(item.getDescription()).withStyle(ChatFormatting.WHITE));
+            }
+        }
         return out;
     }
 
@@ -233,6 +250,13 @@ public class ShipyardScreen extends Screen {
     @Override
     public boolean isPauseScreen() {
         return false;
+    }
+
+    private boolean previewStats;
+
+    /** For previews: show the delta-v tooltip (numbers and bill of materials) without hovering. */
+    public void previewStats(boolean on) {
+        previewStats = on;
     }
 
     /** For previews: the design being edited. */

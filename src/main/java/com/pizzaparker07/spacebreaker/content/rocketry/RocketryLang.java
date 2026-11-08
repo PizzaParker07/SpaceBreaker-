@@ -130,6 +130,10 @@ final class RocketryLang {
         l.add("ship.spacebreaker.stat_size", "Size", "Boyut");
         l.add("ship.spacebreaker.stat_mass", "Mass", "Kütle");
         l.add("ship.spacebreaker.stat_propellant", "Propellant", "Yakıt");
+        l.add("ship.spacebreaker.fuel_metalox", "methane + oxygen", "metan + oksijen");
+        l.add("ship.spacebreaker.fuel_hydrogen", "liquid hydrogen (bulky: tanks half full by mass)", "sıvı hidrojen (hacimli: tanklar kütlece yarı dolu)");
+        l.add("ship.spacebreaker.bill", "Materials (≈ %s k FE to make)", "Malzeme (üretimi ≈ %s k FE)");
+        l.add("ship.spacebreaker.problem.one_fuel", "Chemical and nuclear engines burn different propellants: use one kind", "Kimyasal ve nükleer motor farklı yakıt yakar: tek tür kullan");
         l.add("ship.spacebreaker.stat_thrust", "Thrust", "İtki");
         l.add("ship.spacebreaker.stat_isp", "Isp", "Isp");
         l.add("ship.spacebreaker.stat_accel", "Acceleration", "İvme");
