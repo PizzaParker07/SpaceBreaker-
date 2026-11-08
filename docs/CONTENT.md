@@ -92,6 +92,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Anortozit (+ merdiven, basamak, duvar), Cilalı Anortozit (+ merdiven, basamak), Anortozit Tuğla (+ merdiven, basamak, duvar) | taş kesici tarifleri |
 | 🎨 | Darbe Breşi, Ay Buzu, Meteor Demiri (→ 4 ham demir) | |
 | 🎨 | Sinterlenmiş Regolit (regolit fırında), Sinterlenmiş Regolit Tuğla (+ merdiven, basamak, duvar) | ilk Ay üssü yapı malzemesi |
+| 🎨 | Kontrol Masası (`spacebreaker:control_desk`) | dekor: anahtar panelli tezgâh ve arkasında ekran, yöne dönük yerleşir; tarif: cam bölme, kızıltaş, 5 demir külçe; karakol merkezi ve buz sondaj kulübesinde konsol olarak durur |
 
 ### Gezegen motoru ve Ay boyutu
 | Durum | İçerik | Not |
@@ -113,9 +114,9 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 ### Ay zindanları
 | Durum | İçerik | Not |
 |---|---|---|
-| 🎨 | Terk Edilmiş Keşif Karakolu | merkez modül, laboratuvar, depo **veya** çökmüş sera, drone hangarı, mürettebat yatakhanesi, hava kilidi (iki demir kapı), güneş paneli tarlası, iniş pisti, anten; **gücü kesik kasa** (bulmaca: komuta sandığındaki güç hücresini kapının üstündeki yuvaya tak) ve basınç plakalı ok tuzağı; muhafız: Keşif Dronları (+ çağırıcı) |
-| 🎨 | Antik Lav Tüpü | çökmüş tavan girişi, kıvrımlı tünel, düşmüş eski sonda enkazı (sandık), Yaşlı Regolit Kenesi yuvası |
-| 🎨 | Eski Buz Sondaj İstasyonu | yalnız kutup kraterlerinin kalıcı gölgeli tabanında (soğuk tuzak, ısıtmalı giysi gerekir): sondaj kulesi ve buza inen sondaj dizisi, hâlâ çalışan RTG'li kontrol kulübesi, çekirdek rafları; ödül: **Buz Çekirdeği Numunesi** (→ 4 Ay buzu), RTG yakıt peleti şansı, araştırma diski; muhafız: Isı Emiciler (soğuk tuzakta sürekli yaşar, RTG'nin enerjisini emer) |
+| 🎨 | Terk Edilmiş Keşif Karakolu | merkez modül, laboratuvar, depo **veya** çökmüş sera, drone hangarı, mürettebat yatakhanesi, istasyon bloklarından modüller (alüminyum panel, gövde çerçeve, titanyum zemin, koyu süpürgelik, pencereli mavi şerit, tavan LED'leri, Kontrol Masası konsolları, ranzalar), duvar diplerinde sinterlenmiş regolit set, dış boru hattı, hava kilidi (iki demir kapı), kırık panelli güneş tarlası, uyarı şeritli iniş pisti, anten; zemin ışıkları kasaya yol gösterir; **gücü kesik kasa** (bulmaca: komuta sandığındaki güç hücresini kapının üstündeki yuvaya tak) ve basınç plakalı ok tuzağı; muhafız: Keşif Dronları (+ çağırıcı) |
+| 🎨 | Antik Lav Tüpü | çökmüş tavan girişi, kıvrımlı tünel, düşmüş robotik iniş aracı enkazı (altın folyolu iniş katı, biri kırık dört bacak, motor, anten çanağı, kopmuş güneş kanadı; Malzeme Dolabı), Yaşlı Regolit Kenesi yuvası |
+| 🎨 | Eski Buz Sondaj İstasyonu | yalnız kutup kraterlerinin kalıcı gölgeli tabanında (soğuk tuzak, ısıtmalı giysi gerekir): sondaj kulesi ve buza inen sondaj dizisi, hâlâ çalışan RTG'li hazır kabin kontrol kulübesi (Kontrol Masaları, kulübeden sondaja kablo), çekirdek rafları; ödül: **Buz Çekirdeği Numunesi** (→ 4 Ay buzu), RTG yakıt peleti şansı, araştırma diski; muhafız: Isı Emiciler (soğuk tuzakta sürekli yaşar, RTG'nin enerjisini emer) |
 | 🎨 | Ganimet | `chests/moon/tech_data` araştırma diskleri için kanca tablosu (Araştırma alanı `spacebreaker:tech_disk` ekler) |
 | 🎨 | Üs blokları (1. kısım): alüminyum panel (+merdiven, basamak, duvar), titanyum güverte levhası (+merdiven, basamak), basınçlı cam, lombar, ızgara zemin, kayar kapı | tam bloklar, basınçlı cam, lombar ve kapalı kayar kapı hava tutar (oksijen dağıtıcısı); ızgara, basamaklar ve açık kapı havayı geçirir; kayar kapı 2 blok yüksek, kanatları yana kayar, el ya da redstone ile açılır; cam ve lombar: opak çerçeve + yarı saydam cam (shader güvenli); taş kesicide de yapılır |
 | 🎨 | Üs blokları (2. kısım): uyarı şeridi, LED/panel lamba/projektör, kablo ve boru kanalları, merdiven/korkuluk/platform | |
