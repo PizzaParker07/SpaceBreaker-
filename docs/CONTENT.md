@@ -390,7 +390,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | Gök cismi | Yaratıklar |
 |---|---|
 | Ay 🎨 | Regolit Kenesi (tozun altına saklanır, düşük yerçekiminde sıçrar), Yaşlı Regolit Kenesi (lav tüpü muhafızı), Toz Yüzücüsü (regolitin hemen altında süzülen pasif canlı, arkasında toz dalgaları), Keşif Dronu (karakol muhafızı, sersemletme atışı), Parıltı Böceği (pasif, ışıyan; fırçayla Parıltı Kabuğu verir → elektriksiz Parıltı Lambası, Ay gecesi için), Isı Emici (yalnız Ay gecesinde çıkar, lamba ışığında doğmaz; dokunuşu dondurur, akü ve jeneratörlerden enerji emip parlar, gün doğunca süblimleşir; ölünce emdiği enerji kızıltaşa döner) |
-| Mars 🎨 | Pas Böceği (demir oksit yer, tarafsız), Toz Şeytanı (fırtınalarda canlı hortum), Kanyon Pusucusu, Taş Otlayan (iri, pasif otlayıcı), Kutup Kurtçuğu |
+| Mars 🎨 | Pas Böceği (demir oksit yer, tarafsız), Toz Şeytanı (fırtınalarda canlı hortum), Kanyon Pusucusu, Taş Otlayan (alçak, geniş, zırhlı pasif otlayıcı: sırtında kiremit gibi dizili pas lekeli kaya plakaları, kamaya benzer baş, kayadan kabuk kazıyan geniş yassı çene, altı kısa kalın bacak), Kutup Kurtçuğu |
 | Venüs (bulutlar) 🎨 | Asit Vatozu (süzülen, tarafsız; kükürt ve deri bırakır), Bulut Medüzü (pasif gaz kesesi; Kaldırma Gazı Kesesi bırakır: kullanınca 30 sn yavaş düşüş) |
 | Merkür 🎨 | Alacakaranlık Sürüngeni (tehlikeli; grafit bırakır; gece-gündüz sınırında yaşar; güneş yükselince ya da gece çökünce toprağa gömülür), Oyuk Salyangozu (pasif, faydalı: oyuk tortusunu kazıyıp kükürt bırakır, kükürtle çoğalır) |
 | Io 🎨 | Kükürt Yengeci (ısıya dayanıklı, yakınına gelene saldırır) |

@@ -44,7 +44,7 @@ public final class MarsEntities {
             () -> EntityType.Builder.of(CanyonLurker::new, MobCategory.MONSTER).sized(1.4F, 0.95F).eyeHeight(0.75F).clientTrackingRange(8)
                     .build("canyon_lurker"));
     public static final DeferredHolder<EntityType<?>, EntityType<Stonegrazer>> STONEGRAZER = ENTITIES.register("stonegrazer",
-            () -> EntityType.Builder.of(Stonegrazer::new, MobCategory.CREATURE).sized(1.6F, 1.65F).eyeHeight(1.1F).clientTrackingRange(10)
+            () -> EntityType.Builder.of(Stonegrazer::new, MobCategory.CREATURE).sized(1.6F, 1.1F).eyeHeight(0.7F).clientTrackingRange(10)
                     .build("stonegrazer"));
     public static final DeferredHolder<EntityType<?>, EntityType<PolarWorm>> POLAR_WORM = ENTITIES.register("polar_worm",
             () -> EntityType.Builder.of(PolarWorm::new, MobCategory.CREATURE).sized(0.7F, 0.5F).eyeHeight(0.35F).clientTrackingRange(8)
