@@ -6,7 +6,7 @@ items: [spacebreaker:combustion_generator, spacebreaker:research_lab, spacebreak
 Yeni bir dünyadan ilk roketine en kısa yol. Ayrıntılar için her adımdaki bağlantıya bak. → [İlerleme Yolu](progression)
 
 ## 1. Enerji
-1. Bakır levhayı ve makası birleştirip elle **bakır tel** yap.
+1. Bakır levhayı ve makası birleştirip elle **üç bakır tel** yap.
 2. Tel, kızıltaş ve demir levhayla bir devre, devreyle bir {item spacebreaker:combustion_generator} yap. Kömür ya da odun yakar.
 {recipe spacebreaker:copper_wire_by_hand}
 
