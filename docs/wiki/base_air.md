@@ -67,6 +67,18 @@ Aydınlatma için **LED Panel Lamba** ve **Projektör**; ikisi de en parlak ış
 
 → **Uyarı Işığı ×2** (Çalışma Masası)
 
+**Kontrol Masası**
+
+**Kontrol Masası** süs amaçlı bir konsoldur: arkasında ekranı olan anahtar panelli bir tezgâh; koyduğun yöne bakar. Ay'daki karakollarda ve buz sondaj kulübelerinde görürsün.
+
+|   |   |   |
+|---|---|---|
+|   | İnce Cam |   |
+| Demir Külçesi | Redstone Tozu | Demir Külçesi |
+| Demir Külçesi | Demir Külçesi | Demir Külçesi |
+
+→ **Kontrol Masası** (Çalışma Masası)
+
 ### Kayar kapılar ve hava kilidi
 
 **Kayar Kapı**
@@ -153,6 +165,18 @@ Light it with **LED Panel Light** and **Floodlight**s; both give full light (15)
 | Iron Ingot | Iron Ingot | Iron Ingot |
 
 → **Warning Light ×2** (Crafting Table)
+
+**Control Desk**
+
+The **Control Desk** is a decorative console: a switch-panel desk with a screen behind it, facing the way you place it. You will see them in the Moon's outposts and ice-drilling huts.
+
+|   |   |   |
+|---|---|---|
+|   | Glass Pane |   |
+| Iron Ingot | Redstone Dust | Iron Ingot |
+| Iron Ingot | Iron Ingot | Iron Ingot |
+
+→ **Control Desk** (Crafting Table)
 
 ### Sliding doors and airlocks
 

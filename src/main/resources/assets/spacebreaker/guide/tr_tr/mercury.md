@@ -35,7 +35,7 @@ Kutup kraterlerinin tabanı hiç güneş görmez: yaklaşık −213 °C'lik bir 
 > **Merkür'de yakıt:** grafit + oksijen → CO₂ (kimyasal reaktör); CO₂ + hidrojen → metan (Sabatier reaktörü). Böylece metaloks yakıtını yerinde tamamlarsın. → [Yerinde Üretim](isru)
 
 ## Buz Madeni
-Bu kraterlerden birinde terk edilmiş bir buz madeni yatar. Krater tabanında makaralı çelik kafes bir kuyu kulesi, projektör direği ve bir kontrol kulübesi durur. Aşağıda bir galeri, çelik kemerlerin altından tozla katmanlanmış buzun içinden geçer; raylar, kablo kanalları ve LED'ler (bazıları sönük) boyunca kazı yüzündeki durmuş kesiciye uzanır. Tanklı ve elektrolizörlü bir eritme odası ve ganimet için {item spacebreaker:supply_locker}lar vardır.
+Bu kraterlerden birinde terk edilmiş bir buz madeni yatar. Krater tabanında makaralı çelik kafes bir kuyu kulesi, projektör direği ve bir kontrol kulübesi durur. Aşağıda bir galeri, çelik kemerlerin altından tozla katmanlanmış buzun içinden geçer; raylar, kablo kanalları ve LED'ler (bazıları sönük) boyunca kazı yüzündeki durmuş kesiciye uzanır. Tanklı ve elektroliz üniteli bir eritme odası ve ganimet için {item spacebreaker:supply_locker}lar vardır.
 - Depo **buzla mühürlüdür**: kazıyarak geç.
 - Galerideki basınç plakası, yerdeki bir dağıtıcıya toz kar fırlattırır.
 - Eski bakım dronları hâlâ galeride devriye gezer.

@@ -147,7 +147,7 @@ The **Pressurized Rover** has a closed cabin: aboard you need no helmet, and its
 
 **Amphibious Rover**
 
-The **Amphibious Rover** puts the pressurized cabin on a sealed hull with side floats and a stern propeller. It is a little slower on land (6 m/s), but it drives straight into water or liquid methane, as on Titan's lakes, and sails on at **5 m/s**, using twice the energy per block afloat. Afloat there are no brakes: reverse the propeller to slow down. Nose into a bank to climb back out onto the shore.
+The **Amphibious Rover** puts the pressurised cabin on a sealed hull with side floats and a stern propeller. It is a little slower on land (6 m/s), but it drives straight into water or liquid methane, as on Titan's lakes, and sails on at **5 m/s**, using twice the energy per block afloat. Afloat there are no brakes: reverse the propeller to slow down. Nose into a bank to climb back out onto the shore.
 
 |   |   |   |
 |---|---|---|

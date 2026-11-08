@@ -77,6 +77,10 @@ public class ResearchLabScreen extends AbstractContainerScreen<ResearchLabMenu> 
         if (h > 0) {
             g.blitSprite(ENERGY, EN_W, EN_H, 0, EN_H - h, leftPos + EN_X, topPos + EN_Y + EN_H - h, EN_W, h);
         }
+        // no power: the energy gauge blinks red
+        if (menu.status() == ResearchLabBlockEntity.NO_POWER && (minecraft.player.tickCount / 10) % 2 == 0) {
+            g.fill(leftPos + EN_X, topPos + EN_Y, leftPos + EN_X + EN_W, topPos + EN_Y + EN_H, 0x66E02020);
+        }
         if (menu.status() == ResearchLabBlockEntity.WORKING) {
             g.blitSprite(SCREEN_ON, leftPos + SCREEN_X, topPos + SCREEN_Y, 26, 12);
         }
@@ -109,7 +113,8 @@ public class ResearchLabScreen extends AbstractContainerScreen<ResearchLabMenu> 
         ResourceLocation tech = lab == null ? null : (lab.target() != null ? lab.target() : lab.lastResult());
         Component techName = tech == null ? Component.literal("?") : Component.translatable(TechNode.nameKey(tech));
         return switch (status) {
-            case ResearchLabBlockEntity.WORKING, ResearchLabBlockEntity.NO_POWER -> lab != null && lab.target() != null
+            case ResearchLabBlockEntity.NO_POWER -> Component.translatable("gui.spacebreaker.lab.status." + status);
+            case ResearchLabBlockEntity.WORKING -> lab != null && lab.target() != null
                     ? Component.translatable("gui.spacebreaker.lab.analysing", techName)
                     : Component.translatable("gui.spacebreaker.lab.status." + status);
             case ResearchLabBlockEntity.DONE, ResearchLabBlockEntity.ALREADY_KNOWN ->
@@ -135,8 +140,15 @@ public class ResearchLabScreen extends AbstractContainerScreen<ResearchLabMenu> 
         } else if (rx >= ARROW_X - 1 && rx < ARROW_X + 25 && ry >= ARROW_Y - 1 && ry < ARROW_Y + 17) {
             int left = Math.max(0, menu.total() - menu.progress()) / 20;
             List<Component> lines = new ArrayList<>();
-            lines.add(statusLine());
-            if (menu.total() > 0) {
+            ResearchLabBlockEntity labNow = menu.lab();
+            if (menu.status() == ResearchLabBlockEntity.NO_POWER && labNow != null && labNow.target() != null) {
+                lines.add(Component.translatable("gui.spacebreaker.lab.analysing",
+                        Component.translatable(TechNode.nameKey(labNow.target()))));
+                lines.add(Component.translatable("gui.spacebreaker.lab.paused").withStyle(ChatFormatting.RED));
+            } else {
+                lines.add(statusLine());
+            }
+            if (menu.total() > 0 && menu.status() != ResearchLabBlockEntity.NO_POWER) {
                 lines.add(Component.translatable("gui.spacebreaker.lab.time", left).withStyle(ChatFormatting.GRAY));
             }
             ResearchLabBlockEntity lab = menu.lab();
