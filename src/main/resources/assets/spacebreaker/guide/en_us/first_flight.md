@@ -43,4 +43,5 @@ There is no loading screen: after a short transition, a message tells you when y
 - **First flight:** use the {item spacebreaker:emergency_beacon}. A capsule with a heat shield and parachute comes and takes you home.
 - **Later flights:** put a **heat shield** under your capsule and a **parachute** on top. Pick Earth on the star map and **Land**; the shield takes the heat and the parachute opens.
 
-> Back home, analyse the Orbital Flight data in the lab: {tech spacebreaker:landing_systems} unlocks the heat shield, parachute and landing legs. You need the legs to land on the Moon.
+> Back home, analyse the Orbital Flight data in the lab: {tech spacebreaker:landing_systems} unlocks the heat shield, parachute and landing legs. It also needs {tech spacebreaker:precision_manufacturing}: the fabricator makes the ablative shield plates the heat shield is built from. You need the legs to land on the Moon.
+{recipe spacebreaker:rocketry/heat_shield}

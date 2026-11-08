@@ -11,7 +11,7 @@ Red-brown {item spacebreaker:bauxite_ore} is thin everywhere and rich in warm hi
 ## 2. First power
 The lab runs on energy. Your first power is the {item spacebreaker:combustion_generator}: it burns coal or wood.
 1. Stack two copper ingots: a **copper plate**.
-2. A plate and **shears** make copper wire. The shears are not used up.
+2. A plate and **shears** make three copper wires. The shears are not used up.
 3. Wire, redstone and an iron plate make a {item spacebreaker:basic_circuit}.
 4. Build the generator with the circuit.
 {recipe spacebreaker:copper_wire_by_hand}
@@ -49,7 +49,7 @@ In order: {tech spacebreaker:launch_infrastructure}, {tech spacebreaker:liquid_f
 
 ## 8. Orbit and the Moon
 1. Reach orbit: you get **Orbital Flight** data. Come home with the emergency beacon.
-2. With that data, {tech spacebreaker:landing_systems}: heat shield, parachute, landing legs.
+2. With that data and {tech spacebreaker:precision_manufacturing}, {tech spacebreaker:landing_systems}: heat shield (from ablative shield plates), parachute, landing legs.
 3. Land on the Moon, build a base and collect the disks in its ruins. → [The Moon](moon), [Ruins on the Moon](moon_ruins)
 4. Moon samples and disks prepare you for Mars. → [Mars](mars)
 

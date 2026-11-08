@@ -17,7 +17,9 @@
     "water_fog_color": 329011
   },
   "features": [
-    [],
+    [
+      "spacebreaker:io_lava_flows"
+    ],
     [
       "spacebreaker:io_paterae"
     ],

@@ -44,6 +44,21 @@ public final class ShowcaseDriver {
     private static final String PREFIX = System.getProperty("spacebreaker.shotPrefix", "vanilla");
     /** Optional regex: only shots whose name matches are taken (-Pshots=...). */
     private static final String FILTER = System.getProperty("spacebreaker.shots", "");
+    /** -PguiScale=N (0 = auto): the GUI scale for every shot, for HUD and screen layout checks. */
+    private static final int GUI_SCALE = Integer.getInteger("spacebreaker.guiScale", -1);
+    /** -Poffhand=namespace:item: an item in the off hand for every shot (its slot sits left of the hotbar). */
+    private static final String OFFHAND = System.getProperty("spacebreaker.offhand", "");
+    /**
+     * -Pretreat=N: after each shot, a second one from N blocks further back along the view (and N/3 higher, looking at
+     * the same spot) with a 6-chunk view distance, saved as {@code <name>_far}: what was in the first shot is then
+     * drawn by an LOD mod (Distant Horizons) if one is installed.
+     */
+    private static final int RETREAT = Integer.getInteger("spacebreaker.retreat", 0);
+    /** -PmainHand=left and -PattackIndicator=hotbar|crosshair|off: player options that move HUD elements. */
+    private static final String MAIN_HAND = System.getProperty("spacebreaker.mainHand", "");
+    private static final String ATTACK_INDICATOR = System.getProperty("spacebreaker.attackIndicator", "");
+    private static boolean retreating;
+    private static int savedRenderDistance;
     private static final String WORLD = "sb_showcase";
     private static final int TIMEOUT_TICKS = 20 * 60 * 12;
 
@@ -165,6 +180,22 @@ public final class ShowcaseDriver {
         Shot shot = shots.get(shotIndex);
         if (!shotApplied) {
             mc.setScreen(null);
+            if (!MAIN_HAND.isEmpty()) {
+                mc.options.mainHand().set(MAIN_HAND.equalsIgnoreCase("left")
+                        ? net.minecraft.world.entity.HumanoidArm.LEFT : net.minecraft.world.entity.HumanoidArm.RIGHT);
+                mc.options.broadcastOptions();
+            }
+            if (!ATTACK_INDICATOR.isEmpty()) {
+                mc.options.attackIndicator().set(switch (ATTACK_INDICATOR.toLowerCase(java.util.Locale.ROOT)) {
+                    case "hotbar" -> net.minecraft.client.AttackIndicatorStatus.HOTBAR;
+                    case "off" -> net.minecraft.client.AttackIndicatorStatus.OFF;
+                    default -> net.minecraft.client.AttackIndicatorStatus.CROSSHAIR;
+                });
+            }
+            if (GUI_SCALE >= 0 && mc.options.guiScale().get() != GUI_SCALE) {
+                mc.options.guiScale().set(GUI_SCALE);
+                mc.resizeDisplay();
+            }
             mc.options.hideGui = shot.hideGui();
             mc.options.setCameraType(shot.camera());
             var server = mc.getSingleplayerServer();
@@ -194,6 +225,10 @@ public final class ShowcaseDriver {
                 if (shot.serverSetup() != null) {
                     shot.serverSetup().accept(player);
                 }
+                if (!OFFHAND.isEmpty()) {
+                    net.minecraft.core.registries.BuiltInRegistries.ITEM.getOptional(net.minecraft.resources.ResourceLocation.parse(OFFHAND))
+                            .ifPresent(item -> player.setItemSlot(net.minecraft.world.entity.EquipmentSlot.OFFHAND, new net.minecraft.world.item.ItemStack(item)));
+                }
             });
             if (shot.clientSetup() != null) {
                 shot.clientSetup().run();
@@ -208,6 +243,19 @@ public final class ShowcaseDriver {
             // client side of the hold: no drift while the server's teleport and the chunks arrive
             mc.player.setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);
         }
+        if (retreating) {
+            if (ticks >= 1500 && (mc.levelRenderer.hasRenderedAllSections() || ticks > 1900)) {
+                String file = PREFIX + "_" + shot.name() + "_far.png";
+                Screenshot.grab(mc.gameDirectory, file, mc.getMainRenderTarget(), msg -> log("saved " + file));
+                mc.options.renderDistance().set(savedRenderDistance);
+                retreating = false;
+                var server = mc.getSingleplayerServer();
+                server.execute(() -> server.getPlayerList().getPlayers().get(0).setNoGravity(false));
+                shotIndex++;
+                shotApplied = false;
+            }
+            return;
+        }
         boolean ready = ticks >= shot.minTicks() && mc.levelRenderer.hasRenderedAllSections() && terrainLoaded(mc);
         if (ready && !QaUiProbe.finished(mc, shot.name())) {
             return; // QA screen probe: tooltips on this shot's screen first
@@ -216,6 +264,29 @@ public final class ShowcaseDriver {
             String file = PREFIX + "_" + shot.name() + ".png";
             Screenshot.grab(mc.gameDirectory, file, mc.getMainRenderTarget(), msg -> log("saved " + file));
             var server = mc.getSingleplayerServer();
+            if (RETREAT > 0 && mc.player != null && !mc.player.isPassenger()) {
+                // look at the same spot from far back: the target is where the view meets the ground, or 40 blocks out
+                var look = mc.player.getViewVector(1F);
+                var eye = mc.player.getEyePosition();
+                var hit = mc.level.clip(new net.minecraft.world.level.ClipContext(eye, eye.add(look.scale(80)),
+                        net.minecraft.world.level.ClipContext.Block.OUTLINE, net.minecraft.world.level.ClipContext.Fluid.NONE, mc.player));
+                var target = hit.getType() == net.minecraft.world.phys.HitResult.Type.MISS ? eye.add(look.scale(40)) : hit.getLocation();
+                double hx = look.x, hz = look.z, hl = Math.max(1.0E-4, Math.hypot(hx, hz));
+                double fx = target.x - hx / hl * RETREAT, fz = target.z - hz / hl * RETREAT, fy = target.y + RETREAT / 3.0;
+                float yaw = mc.player.getYRot();
+                float pitch = (float) Math.toDegrees(Math.atan2(fy - target.y, RETREAT));
+                savedRenderDistance = mc.options.renderDistance().get();
+                mc.options.renderDistance().set(6);
+                server.execute(() -> {
+                    ServerPlayer player = server.getPlayerList().getPlayers().get(0);
+                    player.setNoGravity(true);
+                    player.connection.teleport(fx, fy - player.getEyeHeight(), fz, yaw, pitch);
+                });
+                retreating = true;
+                ticks = 0;
+                log("shot " + shot.name() + " from " + RETREAT + " blocks back");
+                return;
+            }
             server.execute(() -> server.getPlayerList().getPlayers().get(0).setNoGravity(false));
             shotIndex++;
             shotApplied = false;

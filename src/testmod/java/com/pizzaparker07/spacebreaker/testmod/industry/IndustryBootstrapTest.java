@@ -184,7 +184,7 @@ public final class IndustryBootstrapTest {
                 new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.SHEARS)));
         h.assertTrue(recipe.matches(input, h.getLevel()), "plate + shears should match");
         var out = recipe.assemble(input, h.getLevel().registryAccess());
-        h.assertTrue(out.getCount() == 2 && out.is(com.pizzaparker07.spacebreaker.content.earth.EarthModule.COPPER.wire.get()), "2 copper wire");
+        h.assertTrue(out.getCount() == 3 && out.is(com.pizzaparker07.spacebreaker.content.earth.EarthModule.COPPER.wire.get()), "3 copper wire");
         var rest = recipe.getRemainingItems(input);
         h.assertTrue(rest.get(1).is(net.minecraft.world.item.Items.SHEARS) && rest.get(1).getDamageValue() == 1, "shears stay, 1 damage: " + rest.get(1));
         h.assertTrue(rest.get(0).isEmpty(), "the plate is used up");

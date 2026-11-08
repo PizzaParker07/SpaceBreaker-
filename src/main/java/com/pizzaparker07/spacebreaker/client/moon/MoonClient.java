@@ -16,6 +16,7 @@ public final class MoonClient {
     @SubscribeEvent
     static void layers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(RegolithTickModel.LAYER, RegolithTickModel::createLayer);
+        event.registerLayerDefinition(ElderRegolithTickModel.LAYER, ElderRegolithTickModel::createLayer);
         event.registerLayerDefinition(DustSwimmerModel.LAYER, DustSwimmerModel::createLayer);
         event.registerLayerDefinition(SurveyDroneModel.LAYER, SurveyDroneModel::createLayer);
         event.registerLayerDefinition(GlimmerBeetleModel.LAYER, GlimmerBeetleModel::createLayer);
@@ -25,7 +26,7 @@ public final class MoonClient {
     @SubscribeEvent
     static void renderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(MoonEntities.REGOLITH_TICK.get(), ctx -> new RegolithTickRenderer(ctx, 1F));
-        event.registerEntityRenderer(MoonEntities.ELDER_REGOLITH_TICK.get(), ctx -> new RegolithTickRenderer(ctx, 1.85F));
+        event.registerEntityRenderer(MoonEntities.ELDER_REGOLITH_TICK.get(), ElderRegolithTickRenderer::new);
         event.registerEntityRenderer(MoonEntities.DUST_SWIMMER.get(), DustSwimmerRenderer::new);
         event.registerEntityRenderer(MoonEntities.SURVEY_DRONE.get(), SurveyDroneRenderer::new);
         event.registerEntityRenderer(MoonEntities.STUN_BOLT.get(), StunBoltRenderer::new);

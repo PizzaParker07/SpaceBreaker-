@@ -111,7 +111,7 @@ final class MachineRecipes {
         ProcessingRecipeBuilder.of(LIQUEFACTION).fluidIn(FluidsModule.TAG_OXYGEN, 1000).fluidOut(FluidsModule.LIQUID_OXYGEN.get(), 500)
                 .time(60).energy(100).save(out, "oxygen");
         ProcessingRecipeBuilder.of(LIQUEFACTION).fluidIn(FluidsModule.TAG_HYDROGEN, 1000).fluidOut(FluidsModule.LIQUID_HYDROGEN.get(), 250)
-                .time(80).energy(160).save(out, "hydrogen");
+                .time(80).energy(100).save(out, "hydrogen");
         ProcessingRecipeBuilder.of(LIQUEFACTION).fluidIn(FluidsModule.TAG_METHANE, 1000).fluidOut(FluidsModule.LIQUID_METHANE.get(), 500)
                 .time(60).energy(100).save(out, "methane");
     }
@@ -127,7 +127,7 @@ final class MachineRecipes {
         shaped(out, COMBUSTION_GENERATOR.item().get(), 1, has(IRON.plateTag), "PPP", "WFW", "PCP",
                 'P', IRON.plateTag, 'W', COPPER.wireTag, 'F', Items.FURNACE, 'C', BASIC_CIRCUIT.get());
         shaped(out, BATTERY_BANK.item().get(), 1, has(LITHIUM.ingotTag), "PWP", "LCL", "PWP",
-                'P', IRON.plateTag, 'W', COPPER.wireTag, 'L', LITHIUM.ingotTag, 'C', BASIC_CIRCUIT.get());
+                'P', IRON.plateTag, 'W', COPPER.wireTag, 'L', LITHIUM.plateTag, 'C', BASIC_CIRCUIT.get());
         shaped(out, CRUSHER.item().get(), 1, has(ELECTRIC_MOTOR.get()), "PHP", "FMF", "PCP",
                 'P', IRON.plateTag, 'H', Items.HOPPER, 'F', Items.FLINT, 'M', ELECTRIC_MOTOR.get(), 'C', BASIC_CIRCUIT.get());
         shaped(out, ARC_FURNACE.item().get(), 1, has(BASIC_CIRCUIT.get()), "RWR", "BKB", "PCP",

@@ -176,43 +176,48 @@ def mars_disc(size=256):
 SPINNER = ramp('#1d1a19', '#2f2b29', '#433d39', '#5a524b', '#a59c8e', '#d8d2c4')
 
 
+SPINNER_LIGHT = ramp('#3a332d', '#5e554c', '#7f7468', '#9c9083', '#b8ad9f', '#d3c9bc')
+
+
 def spinner():
-    """Tether Spinner (64x32): low grey body, pale back plate, small head with two dark eyes, pale spinneret, thin
-    banded legs. UVs: TetherSpinnerModel."""
+    """Tether Spinner (64x32): a light grey-brown dome (it stands out on Phobos' near-black dust) with a darker rim, a
+    small head with two dark eyes, a big pale spinneret wound with the coiled line, thin legs with dark knee bands."""
     from modules.moon_creatures import paint, noise_pick
     cv = Canvas(64, 32)
     n = clustered(64, 32, 4401, passes=1)
-    h = SPINNER
+    h = SPINNER_LIGHT
 
     def body(face, x, y, fw, fh):
         if face == 'bottom':
-            return h[3]
+            return h[1]
         if face == 'top':
-            return noise_pick(h, 2, n, x, y)
-        return h[1] if y == fh - 1 else noise_pick(h, 2, n, x + 20, y)
+            return noise_pick(h, 3, n, x, y)
+        return h[1] if y == fh - 1 else noise_pick(h, 3, n, x + 20, y)
 
-    paint(cv, 0, 0, 6, 3, 6, body)
-
-    def plate(face, x, y, fw, fh):
-        if face == 'top':
-            return h[5] if 0 < x < fw - 1 and 0 < y < fh - 1 else h[4]
-        return h[3]
-
-    paint(cv, 0, 16, 4, 1, 4, plate)
+    paint(cv, 0, 0, 6, 2, 6, body)
+    paint(cv, 0, 16, 4, 2, 4, lambda f, x, y, fw, fh: h[4] if f == 'top' else (h[3] if y == 0 else h[2]))
+    paint(cv, 18, 16, 2, 1, 2, lambda f, x, y, fw, fh: h[5])
 
     def head(face, x, y, fw, fh):
         if face == 'front':
-            if y == 0 and x in (0, 3):
+            if y == 0 and x in (0, 2):
                 return h[0]  # eyes
-            if y == 1 and x in (1, 2):
-                return h[1]  # mouthparts
-        return noise_pick(h, 2 if face == 'top' else 1, n, x + 40, y + 6)
+            if y == 1 and x == 1:
+                return h[1]
+        return noise_pick(h, 3, n, x + 40, y + 6)
 
-    paint(cv, 26, 0, 4, 2, 3, head)
-    paint(cv, 40, 0, 2, 2, 2, lambda f, x, y, fw, fh: h[5] if f == 'back' else h[4])
-    leg = lambda f, x, y, fw, fh: h[3] if (x // 2) % 2 == 0 and f in ('top', 'bottom', 'front', 'back') else h[1]
-    paint(cv, 0, 12, 5, 1, 1, leg)
-    paint(cv, 0, 26, 7, 1, 1, leg)
+    paint(cv, 26, 0, 3, 2, 2, head)
+
+    def spinneret(face, x, y, fw, fh):
+        if face == 'back':
+            return h[0] if x == 1 and y == 1 else h[5]  # the nozzle
+        if face in ('left', 'right', 'top', 'bottom'):
+            return h[2] if (x + y) % 2 == 0 else h[5]  # the coiled line wound round it
+        return h[4]
+
+    paint(cv, 40, 0, 3, 3, 3, spinneret)
+    paint(cv, 0, 12, 5, 1, 1, lambda f, x, y, fw, fh: h[1] if x == fw - 1 else h[3])  # upper leg, dark at the knee
+    paint(cv, 0, 26, 9, 1, 1, lambda f, x, y, fw, fh: h[1] if x == 0 or x == fw - 1 else h[3])  # shin
     return cv
 
 

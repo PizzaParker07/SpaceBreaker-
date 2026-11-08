@@ -12,17 +12,24 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.util.Mth;
 
-/** Stonegrazer: barrel body with a ridge of dorsal plates, a blunt snout with two short horns, low heavy head, six pillar legs and a stubby tail. UVs: mars_creatures.py. */
+/**
+ * Stonegrazer: a low armoured grazer, deep and broad at the shoulders and tapering to the hindquarters. Overlapping
+ * rock plates overhang its flanks, shrinking toward the tail; the wedge head hangs low on a short neck with a wide flat
+ * scraper jaw for planing crusts off the rock; six short thick legs stand out at the sides; a plated stub of a tail.
+ * UVs: mars_creatures.py.
+ */
 public class StonegrazerModel extends HierarchicalModel<Stonegrazer> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Spacebreaker.id("stonegrazer"), "main");
     private final ModelPart root;
     private final ModelPart head;
+    private final ModelPart jaw;
     private final ModelPart tail;
     private final ModelPart[] legs = new ModelPart[6];
 
     public StonegrazerModel(ModelPart root) {
         this.root = root;
         this.head = root.getChild("head");
+        this.jaw = head.getChild("jaw");
         this.tail = root.getChild("tail");
         for (int i = 0; i < 6; i++) {
             legs[i] = root.getChild("leg" + i);
@@ -32,28 +39,32 @@ public class StonegrazerModel extends HierarchicalModel<Stonegrazer> {
     public static LayerDefinition createLayer() {
         MeshDefinition mesh = new MeshDefinition();
         PartDefinition root = mesh.getRoot();
-        PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-7F, -10F, -11F, 14F, 10F, 22F),
-                PartPose.offset(0F, 14F, 0F));
-        float[] pz = {-7F, -2F, 3F, 7.5F};
-        float[] ph = {3F, 4F, 4F, 3F};
-        for (int i = 0; i < 4; i++) {
-            body.addOrReplaceChild("plate" + i, CubeListBuilder.create().texOffs(0, 32).addBox(-3F, -ph[i], -2F, 6F, ph[i], 4F),
-                    PartPose.offsetAndRotation(0F, -9.5F, pz[i], 0.25F, 0F, 0F));
+        // a deep, broad chest and shoulders tapering to narrower, lower hindquarters
+        root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-9F, -9F, -12F, 18F, 9F, 10F)
+                .texOffs(56, 0).addBox(-7F, -7F, -2F, 14F, 7F, 12F), PartPose.offset(0F, 17F, 0F));
+        // shingled plates that overhang the flanks, largest over the shoulders, smaller toward the tail
+        float[] pz = {-10F, -6F, -1.5F, 2.5F, 6.5F};
+        float[] pw = {20F, 18F, 16F, 14F, 12F};
+        float[] py = {8F, 8F, 10F, 10F, 10F};
+        for (int i = 0; i < pz.length; i++) {
+            root.addOrReplaceChild("plate" + i, CubeListBuilder.create().texOffs(0, 20).addBox(-pw[i] / 2, -2F, -2.5F, pw[i], 2F, 5F),
+                    PartPose.offsetAndRotation(0F, py[i], pz[i], -0.18F, 0F, 0F));
         }
-        PartDefinition head = root.addOrReplaceChild("head", CubeListBuilder.create().texOffs(72, 0).addBox(-4F, -3F, -8F, 8F, 7F, 8F),
-                PartPose.offset(0F, 9F, -10F));
-        head.addOrReplaceChild("snout", CubeListBuilder.create().texOffs(104, 0).addBox(-3F, 0F, -3F, 6F, 4F, 3F), PartPose.offset(0F, 0F, -8F));
-        head.addOrReplaceChild("horn_left", CubeListBuilder.create().texOffs(104, 10).addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F),
-                PartPose.offsetAndRotation(3F, -3F, -5F, -0.35F, 0F, 0.4F));
-        head.addOrReplaceChild("horn_right", CubeListBuilder.create().texOffs(104, 10).mirror().addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F),
-                PartPose.offsetAndRotation(-3F, -3F, -5F, -0.35F, 0F, -0.4F));
-        root.addOrReplaceChild("tail", CubeListBuilder.create().texOffs(72, 30).addBox(-1.5F, -1.5F, 0F, 3F, 3F, 6F),
-                PartPose.offsetAndRotation(0F, 7F, 10.5F, -0.6F, 0F, 0F));
-        float[] z = {-7F, 0F, 7F};
+        root.addOrReplaceChild("neck", CubeListBuilder.create().texOffs(104, 28).addBox(-3F, -2.5F, -4F, 6F, 5F, 4F),
+                PartPose.offsetAndRotation(0F, 13F, -12F, 0.25F, 0F, 0F));
+        PartDefinition head = root.addOrReplaceChild("head", CubeListBuilder.create().texOffs(0, 28).addBox(-5F, -4F, -6F, 10F, 6F, 6F),
+                PartPose.offsetAndRotation(0F, 15F, -15F, 0.4F, 0F, 0F));
+        head.addOrReplaceChild("jaw", CubeListBuilder.create().texOffs(32, 28).addBox(-6F, 0F, -5F, 12F, 2F, 5F),
+                PartPose.offset(0F, 2F, -3F));
+        root.addOrReplaceChild("tail", CubeListBuilder.create().texOffs(66, 28).addBox(-2F, -2F, 0F, 4F, 3F, 5F),
+                PartPose.offsetAndRotation(0F, 13F, 10F, -0.25F, 0F, 0F));
+        // legs set out beyond the flanks, so they show from the side
+        float[] lz = {-9F, -4F, 6F};
+        float[] lx = {8F, 8F, 6.5F};
         for (int i = 0; i < 3; i++) {
-            root.addOrReplaceChild("leg" + i, CubeListBuilder.create().texOffs(72, 16).addBox(-2F, 0F, -2F, 4F, 10F, 4F), PartPose.offset(5F, 14F, z[i]));
-            root.addOrReplaceChild("leg" + (i + 3), CubeListBuilder.create().texOffs(72, 16).mirror().addBox(-2F, 0F, -2F, 4F, 10F, 4F),
-                    PartPose.offset(-5F, 14F, z[i]));
+            root.addOrReplaceChild("leg" + i, CubeListBuilder.create().texOffs(84, 28).addBox(-2.5F, 0F, -2.5F, 5F, 7F, 5F), PartPose.offset(lx[i], 17F, lz[i]));
+            root.addOrReplaceChild("leg" + (i + 3), CubeListBuilder.create().texOffs(84, 28).mirror().addBox(-2.5F, 0F, -2.5F, 5F, 7F, 5F),
+                    PartPose.offset(-lx[i], 17F, lz[i]));
         }
         return LayerDefinition.create(mesh, 128, 64);
     }
@@ -68,7 +79,9 @@ public class StonegrazerModel extends HierarchicalModel<Stonegrazer> {
         head.yRot = netHeadYaw * Mth.DEG_TO_RAD * 0.5F;
         // every so often the head sinks to lick the rocks
         float graze = Mth.clamp((Mth.sin(ageInTicks * 0.025F + grazer.getId()) - 0.6F) * 4F, 0F, 1F) * (1 - Math.min(1, limbSwingAmount * 3));
-        head.xRot = headPitch * Mth.DEG_TO_RAD * 0.4F + graze * 0.9F;
+        head.xRot = 0.4F + headPitch * Mth.DEG_TO_RAD * 0.3F + graze * 0.6F;
+        // the scraper jaw works while it grazes
+        jaw.xRot = graze * (0.15F + 0.15F * Mth.sin(ageInTicks * 0.6F));
         tail.yRot = Mth.sin(ageInTicks * 0.08F) * 0.2F;
         for (int i = 0; i < 6; i++) {
             float phase = ((i % 3) + (i >= 3 ? 1 : 0)) % 2 == 0 ? 0 : Mth.PI;

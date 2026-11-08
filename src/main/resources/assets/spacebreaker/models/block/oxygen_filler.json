@@ -4,7 +4,6 @@
   "textures": {
     "casing": "spacebreaker:block/life_support_casing",
     "plinth": "spacebreaker:block/life_support_plinth",
-    "top": "spacebreaker:block/oxygen_filler_top",
     "steel": "spacebreaker:block/life_support_top",
     "ring": "spacebreaker:block/life_support_ring",
     "front": "spacebreaker:block/oxygen_filler_front",
@@ -83,11 +82,11 @@
       "from": [
         2,
         2,
-        2
+        6
       ],
       "to": [
         14,
-        9,
+        11,
         14
       ],
       "faces": {
@@ -95,36 +94,36 @@
           "texture": "#front",
           "uv": [
             2,
-            2,
+            5,
             14,
-            13
+            14
           ]
         },
         "south": {
           "texture": "#casing",
           "uv": [
             2,
-            2,
+            5,
             14,
-            13
+            14
           ]
         },
         "east": {
           "texture": "#casing",
           "uv": [
             2,
-            2,
-            14,
-            13
+            5,
+            10,
+            14
           ]
         },
         "west": {
           "texture": "#casing",
           "uv": [
-            2,
-            2,
+            6,
+            5,
             14,
-            13
+            14
           ]
         },
         "up": {
@@ -133,7 +132,7 @@
             2,
             2,
             14,
-            14
+            10
           ]
         },
         "down": {
@@ -142,7 +141,7 @@
             2,
             2,
             14,
-            14
+            10
           ]
         }
       }
@@ -150,12 +149,12 @@
     {
       "from": [
         1,
-        9,
-        1
+        11,
+        5
       ],
       "to": [
         15,
-        10,
+        12,
         15
       ],
       "faces": {
@@ -196,12 +195,12 @@
           ]
         },
         "up": {
-          "texture": "#top",
+          "texture": "#steel",
           "uv": [
             1,
             1,
             15,
-            15
+            11
           ]
         },
         "down": {
@@ -210,143 +209,279 @@
             1,
             1,
             15,
-            15
+            11
           ]
         }
       }
     },
     {
       "from": [
-        5,
-        10,
-        5
+        3,
+        2,
+        1
       ],
       "to": [
-        11,
-        11,
-        11
-      ],
-      "faces": {
-        "north": {
-          "texture": "#ring",
-          "uv": [
-            5,
-            0,
-            11,
-            1
-          ]
-        },
-        "south": {
-          "texture": "#ring",
-          "uv": [
-            5,
-            0,
-            11,
-            1
-          ]
-        },
-        "east": {
-          "texture": "#ring",
-          "uv": [
-            5,
-            0,
-            11,
-            1
-          ]
-        },
-        "west": {
-          "texture": "#ring",
-          "uv": [
-            5,
-            0,
-            11,
-            1
-          ]
-        },
-        "up": {
-          "texture": "#top",
-          "uv": [
-            5,
-            5,
-            11,
-            11
-          ]
-        },
-        "down": {
-          "texture": "#ring",
-          "uv": [
-            5,
-            5,
-            11,
-            11
-          ]
-        }
-      }
-    },
-    {
-      "from": [
-        14,
-        4,
+        13,
+        3,
         6
       ],
-      "to": [
-        15,
-        7,
-        10
-      ],
       "faces": {
         "north": {
-          "texture": "#steel",
+          "texture": "#plinth",
           "uv": [
+            3,
             0,
-            0,
-            1,
-            3
+            13,
+            1
           ]
         },
         "south": {
-          "texture": "#steel",
+          "texture": "#plinth",
           "uv": [
+            3,
             0,
-            0,
-            1,
-            3
+            13,
+            1
           ]
         },
         "east": {
-          "texture": "#ring",
+          "texture": "#plinth",
           "uv": [
-            6,
-            4,
-            10,
-            7
+            3,
+            0,
+            13,
+            1
           ]
         },
         "west": {
-          "texture": "#steel",
+          "texture": "#plinth",
           "uv": [
+            3,
             0,
-            0,
-            4,
-            3
+            13,
+            1
           ]
         },
         "up": {
           "texture": "#steel",
           "uv": [
-            0,
-            0,
+            3,
             1,
-            4
+            13,
+            6
           ]
         },
         "down": {
           "texture": "#steel",
           "uv": [
-            0,
-            0,
+            3,
+            10,
+            13,
+            15
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        3,
+        3,
+        2
+      ],
+      "to": [
+        4,
+        7,
+        6
+      ],
+      "faces": {
+        "north": {
+          "texture": "#ring",
+          "uv": [
+            12,
+            9,
+            13,
+            13
+          ]
+        },
+        "south": {
+          "texture": "#ring",
+          "uv": [
+            3,
+            9,
+            4,
+            13
+          ]
+        },
+        "east": {
+          "texture": "#ring",
+          "uv": [
+            10,
+            9,
+            14,
+            13
+          ]
+        },
+        "west": {
+          "texture": "#ring",
+          "uv": [
+            2,
+            9,
+            6,
+            13
+          ]
+        },
+        "up": {
+          "texture": "#ring",
+          "uv": [
+            3,
+            2,
+            4,
+            6
+          ]
+        },
+        "down": {
+          "texture": "#ring",
+          "uv": [
+            3,
+            10,
+            4,
+            14
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        12,
+        3,
+        2
+      ],
+      "to": [
+        13,
+        7,
+        6
+      ],
+      "faces": {
+        "north": {
+          "texture": "#ring",
+          "uv": [
+            3,
+            9,
+            4,
+            13
+          ]
+        },
+        "south": {
+          "texture": "#ring",
+          "uv": [
+            12,
+            9,
+            13,
+            13
+          ]
+        },
+        "east": {
+          "texture": "#ring",
+          "uv": [
+            10,
+            9,
+            14,
+            13
+          ]
+        },
+        "west": {
+          "texture": "#ring",
+          "uv": [
+            2,
+            9,
+            6,
+            13
+          ]
+        },
+        "up": {
+          "texture": "#ring",
+          "uv": [
+            12,
+            2,
+            13,
+            6
+          ]
+        },
+        "down": {
+          "texture": "#ring",
+          "uv": [
+            12,
+            10,
+            13,
+            14
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        4,
+        3,
+        1
+      ],
+      "to": [
+        12,
+        4,
+        2
+      ],
+      "faces": {
+        "north": {
+          "texture": "#ring",
+          "uv": [
+            4,
+            12,
+            12,
+            13
+          ]
+        },
+        "south": {
+          "texture": "#ring",
+          "uv": [
+            4,
+            12,
+            12,
+            13
+          ]
+        },
+        "east": {
+          "texture": "#ring",
+          "uv": [
+            14,
+            12,
+            15,
+            13
+          ]
+        },
+        "west": {
+          "texture": "#ring",
+          "uv": [
             1,
-            4
+            12,
+            2,
+            13
+          ]
+        },
+        "up": {
+          "texture": "#ring",
+          "uv": [
+            4,
+            1,
+            12,
+            2
+          ]
+        },
+        "down": {
+          "texture": "#ring",
+          "uv": [
+            4,
+            14,
+            12,
+            15
           ]
         }
       }

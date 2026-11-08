@@ -32,11 +32,12 @@ import java.util.Optional;
  * @param rock       ground used to build up the rim and mountain under the carried soil
  * @param floorSoil  optional soil on the floor (impact melt, slumped debris)
  * @param band       optional second rock: the wall and the central mountain show layers of {@code rock} and {@code band}
+ * @param floorExtent how far out the floor soil reaches, in basin radii (default 0.7)
  */
 public class BasinFeature extends Feature<BasinFeature.Config> {
     public record Config(double x, double latitude, double radius, double depth, double rim, double peak, double peakRadius, int terraces,
                          double wall, double rings, BlockState rock, Optional<BlockState> floorSoil,
-                         Optional<BlockState> band) implements FeatureConfiguration {
+                         Optional<BlockState> band, double floorExtent) implements FeatureConfiguration {
         public static final Codec<Config> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.DOUBLE.optionalFieldOf("x", 0.0).forGetter(Config::x),
                 Codec.DOUBLE.optionalFieldOf("latitude", -90.0).forGetter(Config::latitude),
@@ -50,8 +51,14 @@ public class BasinFeature extends Feature<BasinFeature.Config> {
                 Codec.DOUBLE.optionalFieldOf("rings", 1.6).forGetter(Config::rings),
                 BlockState.CODEC.fieldOf("rock").forGetter(Config::rock),
                 BlockState.CODEC.optionalFieldOf("floor_soil").forGetter(Config::floorSoil),
-                BlockState.CODEC.optionalFieldOf("band").forGetter(Config::band)
+                BlockState.CODEC.optionalFieldOf("band").forGetter(Config::band),
+                Codec.DOUBLE.optionalFieldOf("floor_extent", 0.7).forGetter(Config::floorExtent)
         ).apply(i, Config::new));
+
+        public Config(double x, double latitude, double radius, double depth, double rim, double peak, double peakRadius, int terraces,
+                      double wall, double rings, BlockState rock, Optional<BlockState> floorSoil, Optional<BlockState> band) {
+            this(x, latitude, radius, depth, rim, peak, peakRadius, terraces, wall, rings, rock, floorSoil, band, 0.7);
+        }
     }
 
     public BasinFeature() {
@@ -136,7 +143,7 @@ public class BasinFeature extends Feature<BasinFeature.Config> {
                     top = Columns.shift(level, x, z, dy, cfg.rock());
                     any = true;
                 }
-                if (cfg.floorSoil().isPresent() && s < 0.7 && s > cfg.peakRadius() * 0.8) {
+                if (cfg.floorSoil().isPresent() && s < cfg.floorExtent() && s > cfg.peakRadius() * 0.8) {
                     if (top == Integer.MIN_VALUE) {
                         top = Columns.top(level, x, z);
                     }

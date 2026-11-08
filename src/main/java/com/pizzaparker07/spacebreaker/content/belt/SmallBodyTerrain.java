@@ -30,6 +30,7 @@ public final class SmallBodyTerrain {
     private TerrainProfile.Lowlands lowlands;
     private BlockStateLike lowlandSoil;
     private int soilDepth = 3;
+    private double freshRays = 0.06;
 
     private record BlockStateLike(BlockState soil, BlockState rock) {
     }
@@ -71,6 +72,15 @@ public final class SmallBodyTerrain {
     /** Crater density multiplier (1 = typical saturated small body). */
     public SmallBodyTerrain craters(double density) {
         this.craterDensity = density;
+        return this;
+    }
+
+    /**
+     * Share of craters young enough to still show bright rays (default 0.06). Lower it for dark old surfaces whose ray
+     * material would otherwise speckle over most of the ground.
+     */
+    public SmallBodyTerrain freshRays(double share) {
+        this.freshRays = share;
         return this;
     }
 
@@ -134,7 +144,7 @@ public final class SmallBodyTerrain {
         classes.add(new TerrainProfile.CraterClass(16, big * 0.45, 270, 0.4 + 0.2 * age, 1));
         classes.add(new TerrainProfile.CraterClass(big * 0.45, big, (int) (big * 7), 0.25 + 0.4 * age, 1));
         TerrainProfile.Craters craters = new TerrainProfile.Craters(classes, craterDensity * (0.5 + 0.6 * age), 1.0, 0.2, 0.05,
-                30, 0.4, 0.06, 4);
+                30, 0.4, freshRays, 4);
         TerrainProfile.Poles poles = new TerrainProfile.Poles(Math.min(iceLatitude, 80) - 6, iceLatitude, 4, 1.3);
         BlockState lowSoil = lowlandSoil != null ? lowlandSoil.soil() : materials.soil();
         BlockState lowRock = lowlandSoil != null ? lowlandSoil.rock() : materials.rock();

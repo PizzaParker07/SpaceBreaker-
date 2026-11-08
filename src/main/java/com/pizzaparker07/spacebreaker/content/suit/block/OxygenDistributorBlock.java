@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 /** Oxygen Distributor: pressurises the sealed room it stands in from a slotted oxygen tank. */
 public class OxygenDistributorBlock extends GasMachineBlock {
     public static final MapCodec<OxygenDistributorBlock> CODEC = simpleCodec(OxygenDistributorBlock::new);
-    private static final VoxelShape SHAPE = Shapes.or(box(1, 0, 1, 15, 2, 15), box(2, 2, 2, 14, 13, 14), box(3, 13, 3, 13, 15, 13));
+    private static final VoxelShape SHAPE = Shapes.or(box(1, 0, 1, 15, 2, 15), box(2, 2, 2, 14, 11, 14), box(3, 11, 3, 13, 13, 13), box(6, 13, 6, 10, 15, 10));
 
     public OxygenDistributorBlock(Properties properties) {
         super(properties);

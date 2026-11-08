@@ -423,6 +423,21 @@ def float_hull(face, x, y, fw, fh):
     return (204, 104, 30)
 
 
+def bow_plate(face, x, y, fw, fh):
+    # raked bow plate: safety orange with a white leading edge
+    if face == 'top' and y == 0:
+        return WHITE[3]
+    return ORANGE if face in ('top', 'front') else (204, 104, 30)
+
+
+def roll_hoop(face, x, y, fw, fh):
+    return (176, 40, 34) if (y // 4) % 2 == 0 or face in ('top', 'bottom') else (150, 30, 28)
+
+
+def rally_lamp(face, x, y, fw, fh):
+    return (236, 214, 120) if face == 'front' else (40, 40, 44)
+
+
 def prop(face, x, y, fw, fh):
     return AL[5] if (x + y) % 2 else AL[3]
 
@@ -436,10 +451,16 @@ def sheet(glow=False, sprint=False, cabin=False, floats=False):
         FABRIC = ramp('#3a0e0e', '#5a1616', '#7a2020', '#962a26', '#b03a30', '#c64f40')
     try:
         cv = _sheet(glow)
+        if sprint and not glow:
+            paint(cv, 130, 220, 1, 17, 1, roll_hoop)
+            paint(cv, 140, 220, 16, 1, 1, roll_hoop)
+            paint(cv, 140, 226, 1, 1, 1, rally_lamp)
         if floats and not glow:
-            paint(cv, 0, 200, 3, 4, 36, float_hull)
+            paint(cv, 0, 200, 4, 5, 38, float_hull)
             paint(cv, 90, 200, 2, 2, 2, prop)
-            paint(cv, 100, 200, 7, 7, 1, prop)   # covers both blades' UVs
+            paint(cv, 100, 200, 10, 10, 1, prop)   # covers both blades' UVs
+            paint(cv, 180, 215, 20, 1, 4, bow_plate)
+            paint(cv, 190, 225, 1, 5, 4, float_hull)
         if cabin and not glow:
             paint(cv, 0, 140, 22, 1, 32, cabin_roof)
             paint(cv, 110, 140, 1, 23, 32, cabin_side)

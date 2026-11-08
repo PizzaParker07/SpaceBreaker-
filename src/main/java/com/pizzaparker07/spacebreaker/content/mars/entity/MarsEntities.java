@@ -44,13 +44,13 @@ public final class MarsEntities {
             () -> EntityType.Builder.of(CanyonLurker::new, MobCategory.MONSTER).sized(1.4F, 0.95F).eyeHeight(0.75F).clientTrackingRange(8)
                     .build("canyon_lurker"));
     public static final DeferredHolder<EntityType<?>, EntityType<Stonegrazer>> STONEGRAZER = ENTITIES.register("stonegrazer",
-            () -> EntityType.Builder.of(Stonegrazer::new, MobCategory.CREATURE).sized(1.6F, 1.65F).eyeHeight(1.1F).clientTrackingRange(10)
+            () -> EntityType.Builder.of(Stonegrazer::new, MobCategory.CREATURE).sized(1.6F, 1.1F).eyeHeight(0.7F).clientTrackingRange(10)
                     .build("stonegrazer"));
     public static final DeferredHolder<EntityType<?>, EntityType<PolarWorm>> POLAR_WORM = ENTITIES.register("polar_worm",
             () -> EntityType.Builder.of(PolarWorm::new, MobCategory.CREATURE).sized(0.7F, 0.5F).eyeHeight(0.35F).clientTrackingRange(8)
                     .build("polar_worm"));
     public static final DeferredHolder<EntityType<?>, EntityType<TetherSpinner>> TETHER_SPINNER = ENTITIES.register("tether_spinner",
-            () -> EntityType.Builder.of(TetherSpinner::new, MobCategory.CREATURE).sized(0.8F, 0.5F).eyeHeight(0.35F).clientTrackingRange(8)
+            () -> EntityType.Builder.of(TetherSpinner::new, MobCategory.CREATURE).sized(1.0F, 0.7F).eyeHeight(0.45F).clientTrackingRange(8)
                     .build("tether_spinner"));
     public static final DeferredHolder<EntityType<?>, EntityType<DustWhirl>> DUST_WHIRL = ENTITIES.register("dust_whirl",
             () -> EntityType.Builder.<DustWhirl>of(DustWhirl::new, MobCategory.MISC).sized(1.2F, 6F).clientTrackingRange(10).updateInterval(4)

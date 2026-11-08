@@ -85,7 +85,14 @@ neoForge {
             systemProperty 'spacebreaker.scenario', project.findProperty('scenario') ?: 'style_sample'
             systemProperty 'spacebreaker.shotPrefix', project.findProperty('shotPrefix') ?: 'vanilla'
             systemProperty 'spacebreaker.shots', project.findProperty('shots') ?: ''
-            programArguments.addAll '--width', '1920', '--height', '1080', '--username', 'PizzaParker07'
+            // -PshotWidth / -PshotHeight: window size (default 1920x1080); -PguiScale=N (0 auto); -Poffhand=item id
+            programArguments.addAll '--width', (project.findProperty('shotWidth') ?: '1920').toString(),
+                    '--height', (project.findProperty('shotHeight') ?: '1080').toString(), '--username', 'PizzaParker07'
+            systemProperty 'spacebreaker.guiScale', (project.findProperty('guiScale') ?: '-1').toString()
+            systemProperty 'spacebreaker.offhand', (project.findProperty('offhand') ?: '').toString()
+            systemProperty 'spacebreaker.retreat', (project.findProperty('retreat') ?: '0').toString()
+            systemProperty 'spacebreaker.mainHand', (project.findProperty('mainHand') ?: '').toString()
+            systemProperty 'spacebreaker.attackIndicator', (project.findProperty('attackIndicator') ?: '').toString()
             jvmArguments.addAll '-Xmx3G'
         }
 

@@ -29,7 +29,7 @@ Ready-made modules join through standard **mouths**: a 3 × 3 opening at walking
 ### Living, airlock and power {#stage2}
 {items spacebreaker:habitation_module spacebreaker:airlock_module spacebreaker:solar_wings}
 - **{item spacebreaker:habitation_module}** (7 × 5 × 9): living quarters with three bunks in sleeping pods, two barrel lockers, two window bands, roof lights and a sealed mouth at the far end so the station can grow on.
-- **{item spacebreaker:airlock_module}** (5 × 5 × 5): an airlock door into the station, an airlock door to space and a small chamber between them. Close the inner door before you open the outer one, and the station keeps its air while you step out.
+- **{item spacebreaker:airlock_module}** (5 × 5 × 5): a sliding door into the station, a sliding door to space and a small chamber between them, framed by hazard stripes. The two doors are interlocked: ask for one while the other is open and the other shuts and cycles first, so both are never open at once and the station keeps its air while you step out.
 - **{item spacebreaker:solar_wings}**: built outside the hull, so the mouth stays sealed; its middle hatch becomes a battery bank feeding the station. A boom of grate and copper cable runs out from a rotary joint and carries **four solar arrays**, two on each side, with an antenna at the tip.
 
 They are attached and delivered like the core and the docking module.

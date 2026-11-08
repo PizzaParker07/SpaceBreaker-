@@ -49,7 +49,7 @@ public final class JupiterEntities {
         serpentEgg = items.register("glow_serpent_spawn_egg", () -> new DeferredSpawnEggItem(GLOW_SERPENT, 0x1B2C3A, 0x5EF0E0, new Item.Properties()));
         crabEgg = items.register("sulfur_crab_spawn_egg", () -> new DeferredSpawnEggItem(SULFUR_CRAB, 0xC9A23A, 0x7A2E14, new Item.Properties()));
         grazerEgg = items.register("groove_grazer_spawn_egg", () -> new DeferredSpawnEggItem(GROOVE_GRAZER, 0x8A847C, 0xD1D3D6, new Item.Properties()));
-        hopperEgg = items.register("crater_hopper_spawn_egg", () -> new DeferredSpawnEggItem(CRATER_HOPPER, 0x45403A, 0xE4E7EA, new Item.Properties()));
+        hopperEgg = items.register("crater_hopper_spawn_egg", () -> new DeferredSpawnEggItem(CRATER_HOPPER, 0x35302A, 0xE8ECEE, new Item.Properties()));
         EGGS.add(serpentEgg);
         EGGS.add(crabEgg);
         EGGS.add(grazerEgg);
