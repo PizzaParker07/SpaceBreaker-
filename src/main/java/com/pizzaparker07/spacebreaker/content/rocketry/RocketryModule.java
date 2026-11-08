@@ -244,6 +244,10 @@ public final class RocketryModule implements SbModule {
 
     public static final DeferredHolder<MenuType<?>, MenuType<RocketAssemblerMenu>> ASSEMBLER_MENU = MENUS.register("rocket_assembler",
             () -> IMenuTypeExtension.create(RocketAssemblerMenu::new));
+    /** The station core's nine-slot store: a chest row with its own screen (no "Inventory" caption). */
+    public static final DeferredHolder<MenuType<?>, MenuType<net.minecraft.world.inventory.ChestMenu>> STATION_CORE_MENU = MENUS.register("station_core",
+            () -> new MenuType<>((id, inv) -> new net.minecraft.world.inventory.ChestMenu(RocketryModule.STATION_CORE_MENU.get(), id, inv,
+                    new net.minecraft.world.SimpleContainer(9), 1), net.minecraft.world.flag.FeatureFlags.VANILLA_SET));
     public static final DeferredHolder<MenuType<?>, MenuType<LaunchConsoleMenu>> LAUNCH_CONSOLE_MENU = MENUS.register("launch_control_console",
             () -> IMenuTypeExtension.create(LaunchConsoleMenu::new));
 
@@ -376,6 +380,9 @@ public final class RocketryModule implements SbModule {
         reg.playToClient(com.pizzaparker07.spacebreaker.content.rocketry.mission.CoveragePayload.TYPE,
                 com.pizzaparker07.spacebreaker.content.rocketry.mission.CoveragePayload.STREAM_CODEC,
                 com.pizzaparker07.spacebreaker.content.rocketry.mission.CoveragePayload::handle);
+        reg.playToClient(com.pizzaparker07.spacebreaker.content.rocketry.net.RocketToastPayload.TYPE,
+                com.pizzaparker07.spacebreaker.content.rocketry.net.RocketToastPayload.STREAM_CODEC,
+                com.pizzaparker07.spacebreaker.content.rocketry.net.RocketToastPayload::handle);
         reg.playToClient(com.pizzaparker07.spacebreaker.content.rocketry.net.NearbyStarsPayload.TYPE,
                 com.pizzaparker07.spacebreaker.content.rocketry.net.NearbyStarsPayload.STREAM_CODEC,
                 com.pizzaparker07.spacebreaker.content.rocketry.net.NearbyStarsPayload::handle);

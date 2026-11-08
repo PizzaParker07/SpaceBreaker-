@@ -43,7 +43,7 @@ Uzayda giysin, kişisel uzay aracındır. İlk giysiyi Dünya'dan çıkmadan, s�
 → **EVA Botları** (Çalışma Masası)
 
 ### Sızdırmazlık
-Dört parçayı birlikte giyince bir tıslama duyarsın ve **"Giysi sızdırmaz · yaşam desteği çalışıyor"** mesajı gelir. Bir parçayı çıkarırsan **"Giysi açıldı"** der; havasız bir yerdeysen uyarı kırmızıdır.
+Dört parçayı birlikte giyince bir tıslama duyarsın ve **"Giysi sızdırmaz · yaşam desteği çalışıyor"** mesajı gelir. Bu mesaj en fazla 30 saniyede bir çıkar. Bir parçayı çıkarmak yalnız havasız yerde duyurulur: **"Giysi açıldı: burada hava yok!"**
 
 > [!WARNING]
 > Bir parça bile eksikse boşlukta nefes alamazsın.
@@ -60,7 +60,7 @@ Tüpler **EVA Gövdesi** içindeki sırt çantasında durur: **iki tüp**, Ek Ok
 
 <a id="hud"></a>
 ### Kask
-Kask göstergesi küçük kalır. Hotbar'ın yanında, ana elinin karşı tarafında tek bir oksijen satırı vardır: tüp simgesi, bir çubuk ve kalan süre (dd:ss). Çubuk mavidir; **%30**'un altında turuncu, **%15**'in altında kırmızı olur ve yanıp söner.
+Kask göstergesi küçük kalır. Hotbar'ın yanında, ana elinin karşı tarafında tek bir oksijen satırı vardır: tüp simgesi ve bir çubuk. Kalan süre (dd:ss) %30'un altında ya da envanter gibi bir ekran açıkken yanında görünür. Çubuk mavidir; **%30**'un altında turuncu, **%15**'in altında kırmızı olur ve yanıp söner.
 - **Tehlike simgeleri** oksijen süresinin yanında yalnız bir sorun varken çıkar: giysi (havasız yerde açık ya da %20'nin altında), sıcaklık (giysinin dayanımının ötesi ya da vücudun 35–38,5 °C dışında; 32–41 °C dışında kırmızı), radyasyon (günde 50 mSv'nin üstü ya da toplam 250 mSv; 1000'den sonra kırmızı), basınç (giysi zorlanıyor) ve manevra gazı (%10'un altı).
 - **Eve dönüş** (ok, hedef ve uzaklık) yalnız oksijenin, çevre sensörüyle seçtiğin hedefe yürüyerek dönmeye yetmeyecekse görünür. → [Çevre sensörü](tools)
 - Hotbar'ın üstünde **tek bir uyarı** yanıp söner: sarı **DÖN: DÖNÜŞ İÇİN O2 AZALIYOR** ya da kırmızı **GERİ DÖNMEYE O2 YETMİYOR**, **GİYSİ SIZDIRMAZ DEĞİL**, **GİYSİ DAYANIMI AŞILDI** gibi.
@@ -157,7 +157,7 @@ In space, your suit is your personal spacecraft. You make the first one before l
 → **EVA Boots** (Crafting Table)
 
 ### Sealing
-Put on all four pieces and you hear a hiss and see **"Suit sealed · life support online"**. Take one off and it says **"Suit unsealed"**; in an airless place the warning is red.
+Put on all four pieces and you hear a hiss and see **"Suit sealed · life support online"**. The note shows at most once every 30 seconds. Taking a piece off is only announced where there is no air: **"Suit unsealed: no air out here!"**
 
 > [!WARNING]
 > With even one piece missing you cannot breathe in a vacuum.
@@ -174,7 +174,7 @@ The tanks sit in the backpack inside the **EVA Torso**: **two tanks**, three wit
 
 <a id="hud"></a>
 ### Helmet
-The helmet display stays small. Beside the hotbar, on the side away from your main hand, is one oxygen line: a tank icon, a bar and the time left (mm:ss). The bar is blue, orange below **30 %**, and red and blinking below **15 %**.
+The helmet display stays small. Beside the hotbar, on the side away from your main hand, is one oxygen line: a tank icon and a bar. The time left (mm:ss) appears beside it below 30 %, or while a screen such as your inventory is open. The bar is blue, orange below **30 %**, and red and blinking below **15 %**.
 - **Hazard icons** appear after the oxygen time only while something is wrong: suit (open or below 20 % in an airless place), temperature (beyond your suit's rating, or your body outside 35–38.5 °C; red outside 32–41 °C), radiation (over 50 mSv/day, or 250 mSv in total; red from 1,000), pressure (suit under strain) and maneuvering gas (below 10 %).
 - **The way home** (arrow, target and distance) only shows when your oxygen will not last the walk back to the target you picked with the environment sensor. → [Environment sensor](tools)
 - **One warning** blinks above the hotbar, such as **TURN BACK: O2 RUNNING LOW FOR THE WAY HOME** in yellow, or **NOT ENOUGH O2 TO GET BACK**, **SUIT NOT SEALED** and **BEYOND SUIT RATING** in red.

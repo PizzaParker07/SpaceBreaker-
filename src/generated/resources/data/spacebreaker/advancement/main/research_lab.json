@@ -20,6 +20,7 @@
       "count": 1,
       "id": "spacebreaker:research_lab"
     },
+    "show_toast": false,
     "title": {
       "translate": "advancements.spacebreaker.research_lab.title"
     }

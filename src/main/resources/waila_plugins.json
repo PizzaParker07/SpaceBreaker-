@@ -1,9 +1,10 @@
 {
   "spacebreaker:info_lines": {
     "entrypoints": {
+      "common": "com.pizzaparker07.spacebreaker.compat.wthit.SpacebreakerWthitCommonPlugin",
       "client": "com.pizzaparker07.spacebreaker.compat.wthit.SpacebreakerWthitPlugin"
     },
-    "side": "client",
+    "side": "*",
     "required": []
   }
 }

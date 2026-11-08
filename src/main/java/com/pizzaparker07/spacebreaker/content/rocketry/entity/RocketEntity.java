@@ -1411,7 +1411,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         }
         if (to.orbit()) {
             award(com.pizzaparker07.spacebreaker.content.research.Milestones.ORBIT);
-            notifyCrew(Component.translatable("message.spacebreaker.orbit.arrived", to.name()));
+            toastCrew(Component.translatable("toast.spacebreaker.orbit.title"), to.name());
         }
         if (isUncrewed()) {
             com.pizzaparker07.spacebreaker.content.rocketry.mission.UncrewedMissions.arrived(this, to);
@@ -1592,6 +1592,23 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         for (Entity p : getPassengers()) {
             if (p instanceof ServerPlayer sp) {
                 com.pizzaparker07.spacebreaker.content.research.Milestones.award(sp, milestone);
+            }
+        }
+    }
+
+    /** A short toast to the crew (or the owner of an empty rocket) instead of a chat line. */
+    private void toastCrew(Component title, Component line) {
+        boolean any = false;
+        for (Entity p : getPassengers()) {
+            if (p instanceof ServerPlayer player) {
+                com.pizzaparker07.spacebreaker.content.rocketry.net.RocketToastPayload.send(player, title, line);
+                any = true;
+            }
+        }
+        if (!any && getPassengers().isEmpty() && owner != null && level().getServer() != null) {
+            ServerPlayer o = level().getServer().getPlayerList().getPlayer(owner);
+            if (o != null) {
+                com.pizzaparker07.spacebreaker.content.rocketry.net.RocketToastPayload.send(o, title, line);
             }
         }
     }

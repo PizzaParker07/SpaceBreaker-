@@ -340,9 +340,17 @@ through `waila_plugins.json`. Both show the lines of `compat/info/BlockInfoLines
 already synced to the client by the block entities):
 
 - Solar panel: "Dust: 42%, output: 66%" / "Toz: %42, verim: %66" (dust on the cells, `SolarPanelBlockEntity`).
+- Gas machines (Oxygen Filler, Oxygen Distributor, Suit Station; `GasMachineBlockEntity`, which have no screen):
+  "Tank: 2:30 / 5:00 (50%)", "Holding: <item>" or "Nothing inserted", and "Piped oxygen: 0:30 / 53:20". The piped
+  oxygen is not synced to the client, so it comes as server data: Jade `register` → `registerBlockDataProvider`,
+  WTHIT `SpacebreakerWthitCommonPlugin` (`common` entrypoint in `waila_plugins.json`) → `blockData`, both through
+  `BlockInfoLines.serverData`, only for gas machines. Energy (FE) and the item slot are shown by the overlays' own
+  NeoForge capability views (Jade's built-ins, WTHIT's `waila:neo`). Jade's own fluid view of the oxygen input reads
+  "Empty" because the pipe input handler reports no fluid; the piped line is the real amount.
 
-New lines go into `BlockInfoLines.lines` and show in both overlays. GameTest: `dustySolarPanelShowsDustAndOutput`.
-Showcase: `-Pscenario=info -PwithJade=true` or `-PwithWthit=true` (a dusty panel under the crosshair).
+New lines go into `BlockInfoLines.lines` and show in both overlays. GameTests: `dustySolarPanelShowsDustAndOutput`,
+`gasMachineShowsTankAndPipedOxygen`.
+Showcase: `-Pscenario=info -PwithJade=true` or `-PwithWthit=true` (01: a dusty panel, 02: an Oxygen Filler with a half-full tank and piped oxygen, under the crosshair).
 **Not yet run in the game here:** starting the client with the Jade or WTHIT jar was not permitted in this test
 environment; the plugins compile against both APIs and the line itself is covered by the GameTest.
 

@@ -255,15 +255,12 @@ public enum StationModule {
                     .defaultBlockState(), 3);
             mouth(level, at(wall, forward, 0, 0, length), forward, right, false);
         } else if (this == AIRLOCK) {
-            // the inner wall stays, with a door into the station; the outer wall has the door to space
-            BlockState door = SuitModule.AIRLOCK_DOOR.get().defaultBlockState();
+            // the inner wall stays, with a door into the station; the outer wall has the door to space. Sliding doors
+            // four blocks apart on one axis form an airlock: one only opens once the other has shut and cycled
+            BlockState door = com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.SLIDING_DOOR.get().defaultBlockState()
+                    .setValue(com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock.FACING, forward);
             for (int f : new int[]{0, length}) {
-                BlockState d = door.setValue(com.pizzaparker07.spacebreaker.content.suit.block.AirlockDoorBlock.FACING,
-                        f == 0 ? forward.getOpposite() : forward);
-                level.setBlock(at(wall, forward, 0, -1, f), d.setValue(com.pizzaparker07.spacebreaker.content.suit.block.AirlockDoorBlock.HALF,
-                        net.minecraft.world.level.block.state.properties.DoubleBlockHalf.LOWER), 3);
-                level.setBlock(at(wall, forward, 0, 0, f), d.setValue(com.pizzaparker07.spacebreaker.content.suit.block.AirlockDoorBlock.HALF,
-                        net.minecraft.world.level.block.state.properties.DoubleBlockHalf.UPPER), 3);
+                com.pizzaparker07.spacebreaker.content.rocketry.base.SlidingDoorBlock.place(level, at(wall, forward, 0, -1, f), door);
                 // hazard stripes framing each door
                 for (int u = -1; u <= 1; u++) {
                     level.setBlock(at(wall, forward, -1, u, f), stripe(), 3);

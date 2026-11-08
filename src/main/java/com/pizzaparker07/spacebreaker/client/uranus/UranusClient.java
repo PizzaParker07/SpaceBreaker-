@@ -58,9 +58,19 @@ public final class UranusClient {
         event.registerEntityRenderer(UranusEntities.SCREE_ROLLER.get(), ctx -> new SimpleMobRenderer<>(ctx,
                 new ScreeRollerModel(ctx.bakeLayer(ScreeRollerModel.LAYER)), Spacebreaker.id("textures/entity/uranus/scree_roller.png"), 1.0F, 0.45F,
                 false));
-        event.registerEntityRenderer(UranusEntities.GLOAM_HOPPER.get(), ctx -> new SimpleMobRenderer<>(ctx,
-                new GloamHopperModel(ctx.bakeLayer(GloamHopperModel.LAYER)), Spacebreaker.id("textures/entity/uranus/gloam_hopper.png"), 1.0F, 0.35F,
-                false));
+        event.registerEntityRenderer(UranusEntities.GLOAM_HOPPER.get(), ctx -> {
+            var r = new SimpleMobRenderer<>(ctx, new GloamHopperModel(ctx.bakeLayer(GloamHopperModel.LAYER)),
+                    Spacebreaker.id("textures/entity/uranus/gloam_hopper.png"), 1.0F, 0.35F, false);
+            // the big pale eyes glow faintly in Umbriel's dark
+            var eyes = net.minecraft.client.renderer.RenderType.eyes(Spacebreaker.id("textures/entity/uranus/gloam_hopper_eyes.png"));
+            r.addLayer(new net.minecraft.client.renderer.entity.layers.EyesLayer<>(r) {
+                @Override
+                public net.minecraft.client.renderer.RenderType renderType() {
+                    return eyes;
+                }
+            });
+            return r;
+        });
         event.registerEntityRenderer(UranusEntities.RIM_BURROWER.get(), ctx -> new SimpleMobRenderer<>(ctx,
                 new RimBurrowerModel(ctx.bakeLayer(RimBurrowerModel.LAYER)), Spacebreaker.id("textures/entity/uranus/rim_burrower.png"), 1.0F, 0.45F,
                 false));

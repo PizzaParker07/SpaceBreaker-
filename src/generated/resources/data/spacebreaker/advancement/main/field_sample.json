@@ -23,6 +23,7 @@
       "count": 1,
       "id": "spacebreaker:field_sample"
     },
+    "show_toast": false,
     "title": {
       "translate": "advancements.spacebreaker.field_sample.title"
     }

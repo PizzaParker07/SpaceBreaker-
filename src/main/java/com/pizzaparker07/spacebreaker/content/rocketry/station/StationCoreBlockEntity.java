@@ -100,7 +100,7 @@ public class StationCoreBlockEntity extends BaseContainerBlockEntity {
 
     @Override
     protected AbstractContainerMenu createMenu(int id, Inventory inventory) {
-        return new ChestMenu(net.minecraft.world.inventory.MenuType.GENERIC_9x1, id, inventory, this, 1);
+        return new ChestMenu(com.pizzaparker07.spacebreaker.content.rocketry.RocketryModule.STATION_CORE_MENU.get(), id, inventory, this, 1);
     }
 
     @Override

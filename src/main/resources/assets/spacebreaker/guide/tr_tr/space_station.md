@@ -1,7 +1,7 @@
 ---
 title: Uzay İstasyonu
 icon: spacebreaker:docking_port
-items: [spacebreaker:station_kit, spacebreaker:habitat_kit, spacebreaker:station_hull, spacebreaker:station_window, spacebreaker:docking_port, spacebreaker:station_bunk, spacebreaker:fuel_depot, spacebreaker:solar_array, spacebreaker:crew_capsule_large, spacebreaker:cargo_module, spacebreaker:station_core_module, spacebreaker:docking_module, spacebreaker:habitation_module, spacebreaker:airlock_module, spacebreaker:solar_wings, spacebreaker:station_hatch]
+items: [spacebreaker:station_kit, spacebreaker:habitat_kit, spacebreaker:station_hull, spacebreaker:station_window, spacebreaker:docking_port, spacebreaker:station_bunk, spacebreaker:fuel_depot, spacebreaker:solar_array, spacebreaker:crew_capsule_large, spacebreaker:cargo_module, spacebreaker:station_core_module, spacebreaker:docking_module, spacebreaker:habitation_module, spacebreaker:airlock_module, spacebreaker:solar_wings, spacebreaker:shipyard_module, spacebreaker:shipyard_console, spacebreaker:station_hatch]
 research: spacebreaker:space_stations
 ---
 Yörüngede bir ev, atölye ve yakıt deposu. Roketini her seferinde yerden doldurmak zorunda kalmazsın.
@@ -36,6 +36,16 @@ Bunlar da çekirdek ve kenetlenme modülü gibi bağlanır ve teslim edilir.
 {recipe spacebreaker:rocketry/habitation_module}
 {recipe spacebreaker:rocketry/airlock_module}
 {recipe spacebreaker:rocketry/solar_wings}
+
+## Tersane (taslak) {#shipyard}
+{items spacebreaker:shipyard_module}
+{item spacebreaker:shipyard_module} öteki modüller gibi bir ağza bağlanır ama gövdenin dışına kurulur: bir uzay aracı için yuvası (en fazla **13 × 13 × 29**) olan açık **15 × 15 × 31**'lik bir çerçeve, ağızda bir kenetlenme portu, bir yakıt deposu ve projektörler. {item spacebreaker:shipyard_console} tasarım ekranını açar.
+- Bölümleri burundan kıça doğru ekle: **kokpit** (burun kenetlenme portuyla), kabin, kargo bölmesi, küçük ya da büyük tank ve en sonda bir **metan** ya da **nükleer** motor. RCS kümelerini ve güneş kanadı çiftlerini say.
+- Yandan ve üstten görünümler aracı yuvanın içinde gösterir; panelde boyutu, kütlesi, yakıtı, itkisi, Isp'si, dolu tankla Δv'si ve ivmesi yazar.
+- Yapılmasını engelleyen her şey açıkça listelenir: kokpit başta ve tek olmalı, motor sonda, en az bir tank ve iki RCS kümesi gerekir, araç yuvaya sığmalıdır. Her şey yolundaysa **İnşaya hazır ✔** der. Tasarımı konsolda saklamak için **Tasarımı kaydet**'e bas.
+
+> Şimdilik tersane yalnız aracı tasarlar ve kaydeder; inşa etmek ve uçurmak sonraki bir sürümde gelecek.
+{recipe spacebreaker:rocketry/shipyard_module}
 
 ## Yaşam modülü kiti
 {items spacebreaker:habitat_kit}

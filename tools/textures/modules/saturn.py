@@ -6,7 +6,7 @@ Vanilla execution: 4-6 tones per block from one ramp, calm noise, light from the
 import math
 import random
 
-from sbtex.core import Canvas, clustered, fbm, parse_mask, mask_from, dome_shade, edge_pixels, pick, hexc
+from sbtex.core import Canvas, ramp, clustered, fbm, parse_mask, mask_from, dome_shade, edge_pixels, pick, hexc
 from sbtex import palettes as P
 from modules.moon import quant, white, blend, blur_dir, voronoi, footprint, overlay, RAW_CHUNK
 from modules.mars import dust, prints, sand
@@ -116,70 +116,119 @@ def sulcus_ice():
 
 # --------------------------------------------------------------------------- creatures
 
+# Methane skater: dark brown-olive body (it matches Titan's dim, orange-lit shores), a pale blue stripe along the
+# abdomen, big glossy black eyes, banded legs and glossy pads.
+SKATER_BODY = ramp('#17140b', '#221e10', '#2e2916', '#3b351d', '#4a4325', '#5a522e', '#6d643a', '#82784a')
+SKATER_STRIPE = ramp('#4f9aa3', '#7fd0d8', '#c4f0f2')
+
+
 def methane_skater():
-    """64x32 sheet for MethaneSkaterModel: dark amber body with pale lengthwise stripes, banded legs."""
+    """64x32 sheet for MethaneSkaterModel (box layout in moon_creatures.faces)."""
     cv = Canvas(64, 32)
-    r = P.SKATER
+    r = SKATER_BODY
     n = clustered(64, 64, 11901, passes=1)
 
-    def body(face, x, y, fw, fh):
-        if face == 'top':
-            if x in (1, fw - 2):
-                return r[5]
-            return noise_pick(r, 3, n, x, y)
-        if face == 'bottom':
-            return r[1]
-        return noise_pick(r, 2, n, x + 20, y + 30)
+    def shell(base):
+        def f(face, x, y, fw, fh):
+            if face == 'bottom':
+                return r[base - 2]
+            return noise_pick(r, base, n, x * 2 + fw, y * 3 + fh)
+        return f
 
-    paint(cv, 0, 0, 5, 2, 12, body)
-    paint(cv, 0, 14, 3, 2, 3, lambda f, x, y, fw, fh: hexc('#120a05') if (f == 'front' and y == 0 and x in (0, 2)) else r[4] if f == 'top' else r[3])
-    for y in range(14, 21):
-        for x in range(12, 18):
-            cv[x, y] = r[5]
-    for row, length in ((22, 14), (25, 12)):
-        for yy in range(row, row + 3):
-            for x in range(0, 2 * (length + 1)):
-                cv[x, yy] = r[2] if (x // 3) % 2 else r[4]
+    def abdomen(face, x, y, fw, fh):
+        if face == 'top':
+            if x == fw // 2:
+                return SKATER_STRIPE[1] if y % 3 else SKATER_STRIPE[2]
+            return noise_pick(r, 4, n, x, y)
+        if face == 'bottom':
+            return r[2]
+        # faint segment lines along the sides
+        return r[2] if (x % 3 == 2 and face in ('left', 'right')) else noise_pick(r, 3, n, x + 20, y + 30)
+
+    def eye(face, x, y, fw, fh):
+        if face in ('top', 'front') and x == 0 and y == 0:
+            return SKATER_STRIPE[2]  # the glint
+        return hexc('#0b0b0d') if face != 'bottom' else hexc('#1a1a1e')
+
+    def leg(face, x, y, fw, fh):
+        # banded: dark and lighter every few pixels along the leg
+        return r[2] if (x // 2) % 2 else r[5]
+
+    paint(cv, 0, 0, 3, 2, 3, shell(4))
+    paint(cv, 12, 0, 2, 2, 2, eye)
+    paint(cv, 20, 0, 1, 1, 3, lambda f, x, y, fw, fh: r[6] if f == 'front' else r[4])
+    paint(cv, 28, 0, 2, 1, 2, shell(3))
+    paint(cv, 0, 6, 4, 2, 4, lambda f, x, y, fw, fh: SKATER_STRIPE[0] if f == 'top' and x in (1, 2) and y == 3 else shell(5)(f, x, y, fw, fh))
+    paint(cv, 0, 12, 3, 2, 9, abdomen)
+    paint(cv, 40, 0, 3, 1, 3, lambda f, x, y, fw, fh: SKATER_STRIPE[2] if f == 'bottom' else (SKATER_STRIPE[1] if f == 'top' and (x + y) % 2 == 0 else SKATER_STRIPE[0]))
+    for (u, v, length) in ((0, 24, 8), (0, 26, 9), (20, 24, 7), (20, 26, 8), (40, 24, 3)):
+        paint(cv, u, v, length, 1, 1, leg)
     return cv
 
 
+# Tholin worm: honey-amber rings, darker grooves at each ring's edges, tholin dust specks on the back; the mouth inside is
+# a dark orange (no red, no flesh tones).
+WORM_HONEY = ramp('#2e1a07', '#4a2c0c', '#6a4212', '#8c5a1a', '#ad7424', '#c98f34', '#e0ac4c', '#f0c972')
+WORM_DUST = ramp('#3a2414', '#4f3320')
+WORM_MOUTH = ramp('#3c1c04', '#5a2c08', '#7a3e0c')
+
+
 def tholin_worm():
-    """64x32 sheet for TholinWormModel: ringed rust-orange segments (a dark groove every other row), lighter belly, and a
-    round ridged mouth plate on the front of the head."""
-    cv = Canvas(64, 32)
-    r = P.WORM
+    """64x64 sheet for TholinWormModel: six ringed segments thick in the middle, four mouth lips round a dark orange
+    gullet, and the back bristles. Box layout in moon_creatures.faces."""
+    cv = Canvas(64, 64)
+    r = WORM_HONEY
     n = clustered(64, 64, 12101, passes=1)
+    rng = random.Random(12103)
+    specks = {(rng.randrange(64), rng.randrange(64)) for _ in range(140)}
 
     def ring(face, x, y, fw, fh):
         if face == 'bottom':
-            return r[4]
-        if face in ('top',):
-            # grooves across the back, between the rings
-            return r[1] if y == 0 else noise_pick(r, 4, n, x, y + 5)
+            return noise_pick(r, 6, n, x, y + 40)
+        if face == 'top':
+            # the back: amber with dust specks, the ring edges (front and back rows) darker
+            if y == 0 or y == fh - 1:
+                return r[2]
+            if (x * 7 + y * 3 + fw) % 11 == 0 or (x + 30, y + fw) in specks:
+                return WORM_DUST[(x + y) % 2]
+            return noise_pick(r, 4, n, x, y + 5)
         if face in ('front', 'back'):
-            return noise_pick(r, 3, n, x + 30, y)
-        # sides: a dark groove line in the middle of each segment, paler near the belly
+            # the ring's end faces show between segments as a dark groove
+            return noise_pick(r, 1, n, x + 30, y) if y < fh - 1 else r[3]
+        # sides: dark groove at both ring edges, a lighter band along the middle, pale toward the belly
+        if x == 0 or x == fw - 1:
+            return r[2]
         if y == fh - 1:
-            return r[4]
-        return r[2] if x == fw // 2 else noise_pick(r, 4 if y < fh - 2 else 5, n, x + 9, y + 20)
+            return r[6]
+        if y == fh - 2:
+            return noise_pick(r, 5, n, x + 9, y + 20)
+        return noise_pick(r, 4 if y % 3 else 5, n, x + 9, y + 20)
 
     def head(face, x, y, fw, fh):
         if face == 'front':
-            # mouth plate: pale ring of ridges around a dark centre (sifts sand; no teeth)
-            cx, cy = (fw - 1) / 2, (fh - 1) / 2
-            d = ((x - cx) ** 2 + (y - cy) ** 2) ** 0.5
-            if d < 0.9:
-                return r[0]
-            if d < 1.9:
-                return r[6] if (x + y) % 2 == 0 else r[5]
-            return r[3]
+            # the gullet behind the lips: dark orange rings closing in to the darkest middle
+            cx, cy = (fw - 1) / 2, (fh - 1) / 2 - 0.5
+            d = max(abs(x - cx), abs(y - cy))
+            return WORM_MOUTH[0] if d < 0.8 else (WORM_MOUTH[1] if d < 1.6 else r[2])
         return ring(face, x, y, fw, fh)
 
-    paint(cv, 0, 0, 6, 5, 4, head)
-    paint(cv, 0, 9, 6, 5, 3, ring)
-    paint(cv, 20, 0, 5, 4, 3, ring)
-    paint(cv, 20, 9, 4, 4, 3, ring)
-    paint(cv, 36, 0, 3, 3, 3, ring)
+    def lip(face, x, y, fw, fh):
+        # lips: amber outside, a dark orange inner face, lighter tip (the front face)
+        if face == 'front':
+            return r[6]
+        if face in ('bottom',) and fh == 1:
+            return WORM_MOUTH[2]
+        return noise_pick(r, 5, n, x + 50, y + 3)
+
+    def bristle(face, x, y, fw, fh):
+        return r[7] if y == 0 else (r[6] if y == 1 else r[4])
+
+    for (u, v, w, h, d) in [(0, 0, 5, 4, 3), (0, 8, 6, 5, 3), (0, 17, 7, 6, 3), (0, 27, 6, 5, 3), (20, 0, 5, 4, 2), (36, 0, 3, 3, 2)]:
+        paint(cv, u, v, w, h, d, head if (u, v) == (0, 0) else ring)
+    paint(cv, 20, 12, 5, 1, 2, lip)
+    paint(cv, 20, 16, 5, 1, 2, lip)
+    paint(cv, 36, 8, 1, 2, 2, lip)
+    paint(cv, 48, 0, 1, 3, 1, bristle)
     return cv
 
 
