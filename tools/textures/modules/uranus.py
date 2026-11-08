@@ -439,7 +439,9 @@ def uranus_disc(size=256):
 
 
 def uranus_rings(width=256):
-    """Uranus' rings: a few thin, dark, narrow rings with gaps between (mostly empty)."""
+    """Uranus' rings: a few thin, dark, narrow rings with gaps between (mostly empty). They are among the darkest things
+    in the Solar System (albedo a few percent), so they stay faint and charcoal: seen nearly edge-on they must not read as
+    a grey bar."""
     from PIL import Image
     img = Image.new('RGBA', (width, 4), (0, 0, 0, 0))
     px = img.load()
@@ -449,9 +451,9 @@ def uranus_rings(width=256):
         a = 0
         for ring in rings:
             if abs(t - ring) < (0.012 if ring == 0.9 else 0.006):
-                a = 150 if ring == 0.9 else 90
+                a = 70 if ring == 0.9 else 40
         for y in range(4):
-            px[x, y] = (70, 72, 74, a)
+            px[x, y] = (44, 45, 47, a)
     return img
 
 
