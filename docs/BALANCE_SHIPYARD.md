@@ -51,6 +51,8 @@ Notlar:
 
 Yakıt ayrıca hesaplandı. Yanaşmış gemi yakıtı istasyondan alıyor, yine de üretim enerjisi gösterildi.
 
+"İlk gemi 7×5×11" ölçüsü (ASTRO.md) `ShipPart` boylarıyla birebir tutmuyor. Kokpit 3 + kargo 4 + küçük tank 3 + motor 3 = 13 blok ediyor. Bu yüzden en yakın düzen varsayıldı.
+
 | Gemi | Parçalar | Parça enerjisi | Yakıt |
 |---|---|---|---|
 | **İlk gemi** (~7×5×11) | kokpit, kargo bölmesi, küçük tank, metan motoru, 4 RCS | ~680 k FE | 4 t metaloks (O/F 3,6): 2060 mB sıvı metan + 2740 mB LOX ≈ 150 k FE (sıvılaştırma + elektroliz; metan rafineri ya da Sabatier'den) |
