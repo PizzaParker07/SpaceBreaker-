@@ -116,6 +116,16 @@ def ramp_of(name):
     return getattr(P, key)
 
 
+def glints(cv, r, seed=1):
+    """Metal dusts sparkle: three bright specks on the lit side of the heap (yellowcake and coal dust have none)."""
+    import random
+    rng = random.Random(seed * 7 + 1)
+    spots = [(x, y) for y in range(7, 12) for x in range(3, 11) if cv.alpha(x, y)]
+    for x, y in rng.sample(spots, min(3, len(spots))):
+        cv[x, y] = r[7]
+    return cv
+
+
 def surface_cue(cv, name, r):
     """A small per-metal mark on an ingot or plate: brushed lines on steel, a stamped band on the superalloy."""
     tones = [tuple(t) for t in r]
@@ -174,7 +184,7 @@ def export(save):
     for name in PLATES:
         save(surface_cue(S.plate(ramp_of(name)), name, ramp_of(name)), 'item', f'{name}_plate')
     for name in DUSTS:
-        save(S.dust(ramp_of(name), seed=len(name)), 'item', f'{name}_dust')
+        save(glints(S.dust(ramp_of(name), seed=len(name)), ramp_of(name), seed=len(name)), 'item', f'{name}_dust')
     for name in WIRES:
         save(S.wire(ramp_of(name)), 'item', f'{name}_wire')
     for name in RODS:
