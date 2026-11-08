@@ -13,7 +13,8 @@ import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.util.Mth;
 
 /**
- * Scree Roller: three overlapping arched plates over a soft body, a small pointed head and four short legs. Curled, the
+ * Scree Roller: three overlapping arched plates (pale crests, dark rims) over a soft body, a small pointed head and four
+ * short legs on broad clawed feet. Curled, the
  * plates close into a ball (head and legs hidden) that spins as it rolls. UVs: tools/textures/modules/uranus.py.
  */
 public class ScreeRollerModel extends HierarchicalModel<ScreeRoller> {
@@ -48,8 +49,9 @@ public class ScreeRollerModel extends HierarchicalModel<ScreeRoller> {
                 PartPose.offset(0F, 19.5F, -5F));
         float[][] at = {{3F, -3F}, {-3F, -3F}, {3F, 3F}, {-3F, 3F}};
         for (int i = 0; i < 4; i++) {
-            root.addOrReplaceChild("leg" + i, CubeListBuilder.create().texOffs(42, 14).addBox(-1F, 0F, -1F, 2F, 3F, 2F),
-                    PartPose.offset(at[i][0], 21F, at[i][1]));
+            // a short leg with a broad clawed foot reaching forward
+            root.addOrReplaceChild("leg" + i, CubeListBuilder.create().texOffs(42, 14).addBox(-1F, 0F, -1F, 2F, 3F, 2F)
+                    .texOffs(52, 14).addBox(-1F, 2F, -2F, 2F, 1F, 1F), PartPose.offset(at[i][0], 21F, at[i][1]));
         }
         return LayerDefinition.create(mesh, 64, 32);
     }

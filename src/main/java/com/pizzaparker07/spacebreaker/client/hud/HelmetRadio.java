@@ -53,8 +53,24 @@ public final class HelmetRadio {
     }
 
     /** Whether the radio caption is on screen (the sensor card then moves down below it). */
+    /** Height of the radio box last drawn (0 when none), so the sensor card can sit below it. */
+    private static int boxHeight;
+
     static boolean showing() {
         return line != null;
+    }
+
+    /** Where a panel below the radio line may start. */
+    static int bottom() {
+        return line != null && boxHeight > 0 ? 6 + boxHeight + 3 : 6;
+    }
+
+    /**
+     * Widest a top-left panel may get: it stops short of a block-info box (Jade, WTHIT) centred at the top, which
+     * spans about 110 px either side of the middle at the smallest GUI width.
+     */
+    static int maxPanelWidth(int guiWidth) {
+        return Math.max(90, guiWidth / 2 - 110 - 6);
     }
 
     static void render(GuiGraphics g, DeltaTracker delta) {
@@ -73,12 +89,17 @@ public final class HelmetRadio {
         float alpha = HudConfig.opacity();
         Component text = Component.translatable(line.subtitleKey());
         var font = mc.font;
-        int textW = font.width(text);
+        // top left, never the top centre (block-info mods show their tooltip there): long lines wrap
+        var rows = font.split(text, maxPanelWidth(g.guiWidth()) - 22);
+        int textW = 0;
+        for (var r : rows) {
+            textW = Math.max(textW, font.width(r));
+        }
         int w = textW + 22;
-        // top left, never the top centre (block-info mods show their tooltip there)
         int x = 6;
         int y = 6;
-        g.fill(x, y, x + w, y + 13, argb(0x000000, 0.45F * alpha));
+        boxHeight = 3 + rows.size() * 10;
+        g.fill(x, y, x + w, y + boxHeight, argb(0x000000, 0.45F * alpha));
         // pulsing wave: five bars like a radio level meter, lively while the line plays
         float t = (mc.level.getGameTime() + delta.getGameTimeDeltaPartialTick(false)) * 0.6F;
         for (int i = 0; i < 5; i++) {
@@ -87,7 +108,9 @@ public final class HelmetRadio {
             int bx = x + 3 + i * 3;
             g.fill(bx, y + 11 - h, bx + 2, y + 11, argb(0x36B1C0, alpha));
         }
-        g.drawString(font, text, x + 19, y + 3, argb(0xE6F2F5, alpha), true);
+        for (int i = 0; i < rows.size(); i++) {
+            g.drawString(font, rows.get(i), x + 19, y + 3 + i * 10, argb(0xE6F2F5, alpha), true);
+        }
     }
 
     private static int argb(int rgb, float a) {

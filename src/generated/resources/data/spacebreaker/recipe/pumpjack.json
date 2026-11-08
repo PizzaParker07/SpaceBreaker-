@@ -2,9 +2,6 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "B": {
-      "tag": "c:storage_blocks/steel"
-    },
     "C": {
       "item": "spacebreaker:basic_circuit"
     },
@@ -22,7 +19,7 @@
     }
   },
   "pattern": [
-    "BRB",
+    "SRS",
     "SMS",
     "PCP"
   ],

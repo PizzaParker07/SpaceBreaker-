@@ -329,7 +329,7 @@ code; log lines "[showcase] qa_station: …"; contact sheet `docs/screenshots/qa
 - docking module, living quarters and airlock attach to three mouths with a right click; inside the core the
   station is one sealed room of 270 blocks ✅ (04–05);
 - out through the airlock and back (inner shut behind you, outer open, back in, both shut): the station stays sealed
-  throughout ✅ (06–08) — clicked in the right order; the doors themselves do not interlock (QA-27);
+  throughout ✅ (06–08) — clicked in the right order; at the time the doors did not interlock (QA-27, closed below);
 - a hole in the quarters' wall (an LED panel removed) vents the station; put back, sealed again at 270 ✅ (09–10);
 - solar wings on the last mouth: the battery in the mouth holds 96,240 FE about 20 s later ✅ (11);
 - the star map's side panel lists "Station · 5 modules · 2 ports" for Earth ✅ (12);
@@ -344,9 +344,49 @@ lockers). The driver now has `Shot.stay(...)`: the player stays where they are (
   docking" ✅;
 - 14–15: docked by tick 2894, 0.00 blocks from the dock point, player still seated, the chat line "Docked: you can
   step out into the station" ✅.
-- 07 now clicks the doors carelessly (inner, then outer). With the old doors both open and the station vents (tick
-  1464: outer open, inner open, room not sealed). The interlocked sliding doors (rocketry, QA-27) are not in 1.21.1
-  yet; this is checked again once they are.
+- 07 now clicks the doors carelessly (inner, then outer). With the old doors both opened and the station vented
+  (tick 1464 on 6f693898).
+
+Re-run on 1.21.1 @ d66d1b3e (rocketry's interlocked sliding doors in), 2026-11-08: everything above holds again (room
+270 blocks, wings 96,240 FE, docking line at tick 2490, docked at tick 2890, 0.00 blocks). The careless clicks in 07
+now leave the outer door open and the inner one shut (tick 1461), and the station stays sealed throughout 06–08 ✅.
+Shot 11 is now aimed at the station. **QA-27 closed**: `stationAirlockCycle` asserts that the two doors are never open
+together on any tick and that the station is sealed at every step (both shut 119, inner open 148, outer asked open
+while the inner was open 119, and so on).
+
+## Simplified screens: usability (`qa_ui`, 2026-11-08, 1.21.1 @ 8d43f6c2)
+
+`./gradlew runShowcase -Pscenario=qa_ui -PshotPrefix=qa_ui_en` (and `qa_ui_tr`). With a `qa_ui*` prefix, `QaUiProbe`
+draws every open screen again with the mouse on an 8 px grid, records every tooltip that shows (text, where, width;
+`run-showcase/qa_ui/*.tsv`), then puts the real mouse on each one and takes a screenshot (`*_tipN.png`). Contact sheet:
+`docs/screenshots/qa/qa_ui_screens.jpg` (EN | TR pairs).
+
+Screens covered: assembler (complete, no engine), launch console (crewed without fuel, crewed, uncrewed probe, cargo
+route; pad built from the launch site blueprint), research lab (without power, running), research tree, field
+guide, blueprint choice, shipyard, suit HUD and rover HUD on the Moon.
+
+(1) Numbers in tooltips ✅: assembler stage Δv/TWR/propellant/burn; console checklist with values on "Check pad"
+(pad 25/25, tower 6 high, propellant 0.0 %, TWR 12.18, Δv 0 / 3,758 m/s); lab energy "0 / 20000 FE · uses 10 FE/t"
+and time left; tree "10 of 87 technologies" and "60 s, 24 FE/t in a lab"; blueprint size; shipyard mass/thrust/Isp.
+No raw translation keys and no tooltip wider than the screen in either language.
+
+(2) TR/EN overflow: no clipped or overflowing text on our screens; the assembler's TR error text fills the panel to its
+last line. Findings:
+- U1 TR number format is mixed: assembler "Boy 11.0 m" next to "İ/A 2,56, 23,4 t"; console "Yakıt %0.0"; shipyard
+  "20.4 t", "14.7 m/s²" and Δv "7,831 m/s" (EN separators) while the assembler writes "Δv 3.447 m/s".
+- U2 the assembler summary tooltip wraps where the screen edge falls, leaving orphans ("84 s" / "burn", "84 s" /
+  "yanma"): keep number and unit together.
+- U3 TR "Servis kulesi (6 yüksek)" reads oddly ("6 blok yüksekliğinde").
+
+(3) Red markers and reasons:
+- assembler: "✖ Every stage needs an engine" / "✖ Add a crew capsule or a nose cone on top" ✅;
+- console without fuel: red ✖ Crew aboard, Propellant, Δv budget ✅. U4: the right panel still reads "T-10 Ready" in
+  green while the checklist is red; U5: "✖ Return possible" (and "✖ Dönüş mümkün") reads as a contradiction;
+- U6 lab without power: the red "!" only says "Analysing: Field Geology" and the progress tooltip "30 s left"; neither
+  says the lab has no power (the empty energy bar is the only hint);
+- U7 rover HUD: the battery bar looks empty, with no red mark or number; the suit and rover HUDs show bars only, with no
+  way to read a value;
+- U8 blueprint choice: the material icons (× 6, × 16, …) have no tooltip, so the blocks cannot be named.
 
 ## Sky visual regression (2026-11-07)
 

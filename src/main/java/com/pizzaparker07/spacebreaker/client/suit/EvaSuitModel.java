@@ -50,6 +50,12 @@ public class EvaSuitModel extends HumanoidModel<LivingEntity> {
                     part.getChild("tier_" + t).visible = t.equals(tierId);
                 }
             }
+            // the heated suit keeps only its elbow and knee joints and the waist band (no stack of rings)
+            for (String ring : new String[]{"shoulder_ring", "wrist_ring", "ankle_ring"}) {
+                if (part.hasChild(ring)) {
+                    part.getChild(ring).visible = !"heated".equals(tierId);
+                }
+            }
         }
     }
 
@@ -138,7 +144,7 @@ public class EvaSuitModel extends HumanoidModel<LivingEntity> {
         PartDefinition root = mesh.getRoot();
         PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create()
                         .texOffs(0, 0).addBox(-4F, 0F, -2F, 8, 12, 4, new CubeDeformation(1.0F)) // upper torso
-                        .texOffs(24, 0).addBox(-3F, 3F, -5F, 6, 3, 2),      // chest control box
+                        .texOffs(24, 0).addBox(-2F, 3F, -4F, 4, 2, 1),      // chest control box
                 PartPose.ZERO);
         // the backpack hangs from the shoulders (pivot at its top edge) so it can sway a little
         PartDefinition pack = body.addOrReplaceChild("pack", CubeListBuilder.create()
@@ -170,6 +176,8 @@ public class EvaSuitModel extends HumanoidModel<LivingEntity> {
         for (boolean left : new boolean[]{false, true}) {
             PartDefinition a = left ? leftArm : rightArm;
             float x = left ? -1F : -3F;
+            a.addOrReplaceChild("shoulder_ring", mirrored(left).texOffs(32, 21).addBox(x, -2F, -2F, 4, 1, 4, RING), PartPose.ZERO);
+            a.addOrReplaceChild("wrist_ring", mirrored(left).texOffs(48, 16).addBox(x, 6F, -2F, 4, 1, 4, RING), PartPose.ZERO);
             // radiation: a thin lead shoulder plate, just over the sleeve
             a.addOrReplaceChild("tier_radiation", mirrored(left).texOffs(64, 32).addBox(x, -2.5F, -2F, 4, 2, 4, new CubeDeformation(1.25F, 0.2F, 1.25F)), PartPose.ZERO);
         }
@@ -192,9 +200,7 @@ public class EvaSuitModel extends HumanoidModel<LivingEntity> {
         }
         return b.texOffs(0, 16).addBox(x, -2F, -2F, 4, 8, 4, new CubeDeformation(1.0F))   // sleeve
                 .texOffs(16, 16).addBox(x, 7F, -2F, 4, 3, 4, new CubeDeformation(0.75F)) // glove
-                .texOffs(32, 21).addBox(x, -2F, -2F, 4, 1, 4, RING)                      // shoulder bearing
-                .texOffs(32, 16).addBox(x, 3F, -2F, 4, 1, 4, RING)                       // elbow bearing
-                .texOffs(48, 16).addBox(x, 6F, -2F, 4, 1, 4, RING);                      // wrist ring
+                .texOffs(32, 16).addBox(x, 3F, -2F, 4, 1, 4, RING);                      // elbow bearing (shoulder and wrist rings are children)
     }
 
     // ------------------------------------------------------------------------------------ legs
@@ -231,8 +237,8 @@ public class EvaSuitModel extends HumanoidModel<LivingEntity> {
         PartDefinition root = mesh.getRoot();
         for (boolean left : new boolean[]{false, true}) {
             PartDefinition l = root.addOrReplaceChild(left ? "left_leg" : "right_leg", boot(left), PartPose.offset(left ? 1.9F : -1.9F, 12F, 0F));
-            // heated: thick insulated cuff; radiation: armoured shin plate
-            l.addOrReplaceChild("tier_heated", mirrored(left).texOffs(64, 0).addBox(-3F, 5F, -3F, 6, 2, 6, new CubeDeformation(0.5F)), PartPose.ZERO);
+            l.addOrReplaceChild("ankle_ring", mirrored(left).texOffs(24, 8).addBox(-3F, 6F, -3F, 6, 1, 6, new CubeDeformation(0.3F, 0F, 0.3F)), PartPose.ZERO);
+            // radiation: armoured shin plate
             l.addOrReplaceChild("tier_radiation", mirrored(left).texOffs(64, 8).addBox(-3F, 6F, -4F, 6, 4, 1), PartPose.ZERO);
         }
         return LayerDefinition.create(mesh, 128, 32);
@@ -245,8 +251,7 @@ public class EvaSuitModel extends HumanoidModel<LivingEntity> {
         }
         return b.texOffs(0, 0).addBox(-3F, 6F, -3F, 6, 5, 6)                                    // boot upper
                 .texOffs(24, 0).addBox(-3F, 11F, -4F, 6, 1, 7)                                  // sole
-                .texOffs(0, 11).addBox(-3F, 9F, -4F, 6, 2, 1)                                   // toe cap
-                .texOffs(24, 8).addBox(-3F, 6F, -3F, 6, 1, 6, new CubeDeformation(0.3F, 0F, 0.3F)); // ankle ring
+                .texOffs(0, 11).addBox(-3F, 9F, -4F, 6, 2, 1);                                  // toe cap (ankle ring is a child)
     }
 
     // ------------------------------------------------------------------------------------ overlay
@@ -266,7 +271,7 @@ public class EvaSuitModel extends HumanoidModel<LivingEntity> {
                 .texOffs(24, 0).addBox(-6F, -8F, -3.04F, 1, 2, 0)
                 .texOffs(26, 0).addBox(5F, -8F, -3.04F, 1, 2, 0), PartPose.ZERO);
         root.addOrReplaceChild("display", CubeListBuilder.create()
-                .texOffs(24, 4).addBox(-2F, 4F, -5.04F, 4, 1, 0)       // chest display
+                .texOffs(24, 4).addBox(-2F, 3F, -4.04F, 4, 1, 0)       // chest display
                 .texOffs(24, 6).addBox(-2F, -1.04F, 3.5F, 1, 0, 1),    // status light on the vent cap
                 PartPose.ZERO);
         return LayerDefinition.create(mesh, 64, 32);

@@ -32,8 +32,11 @@ import net.minecraft.world.phys.Vec3;
  */
 public final class HelmetLamps {
     public static final ResourceLocation BEAM = Spacebreaker.id("textures/misc/helmet_lamp_beam.png");
-    /** Light level along the beam (dynamic lights): the wide lamps, and the brighter long beam. */
-    static final int WIDE_LUMINANCE = 11, LONG_LUMINANCE = 13;
+    /**
+     * Light levels for a dynamic lights mod: the wide lamps light their whole line; the long beam lights its line a
+     * little less and puts a bright spot where it lands, so it reads as a narrow pool far ahead.
+     */
+    static final int WIDE_LUMINANCE = 11, LONG_LUMINANCE = 9, LONG_SPOT_LUMINANCE = 15;
 
     private HelmetLamps() {
     }
@@ -68,7 +71,8 @@ public final class HelmetLamps {
             Vec3 to = onSurface ? hit.getLocation() : end;
             double d = to.distanceTo(eye);
             out.accept(new LightBeams.Beam(player.getUUID(), eye.add(look.scale(0.4)), to, onSurface, hit.getDirection(),
-                    longBeam ? LONG_LUMINANCE : WIDE_LUMINANCE, HelmetLamp.poolRadius(d, longBeam), HelmetLamp.strength(d, longBeam), 0.18));
+                    longBeam ? LONG_LUMINANCE : WIDE_LUMINANCE, HelmetLamp.poolRadius(d, longBeam), HelmetLamp.strength(d, longBeam), 0.18,
+                    longBeam ? LONG_SPOT_LUMINANCE : 0));
         }
     }
 

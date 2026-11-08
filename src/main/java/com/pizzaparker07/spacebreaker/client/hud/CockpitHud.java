@@ -105,7 +105,9 @@ public final class CockpitHud {
         int h = lines.size() * ROW_H - 2 + pad * 2;
         // the main-hand side of the hotbar, past the hand slot; the oxygen gauge is on the other side
         boolean rightHanded = mc.options.mainHand().get() == HumanoidArm.RIGHT;
-        int x = rightHanded ? g.guiWidth() / 2 + 91 + 6 : g.guiWidth() / 2 - 91 - 6 - w;
+        // the vanilla attack indicator in "hotbar" mode sits on that side too: step past it
+        int indicator = mc.options.attackIndicator().get() == net.minecraft.client.AttackIndicatorStatus.HOTBAR ? 20 : 0;
+        int x = rightHanded ? g.guiWidth() / 2 + 91 + 6 + indicator : g.guiWidth() / 2 - 91 - 6 - indicator - w;
         int y = g.guiHeight() - 2 - h;
         if (x < 2 || x + w > g.guiWidth() - 2) {
             x = g.guiWidth() - w - 4;

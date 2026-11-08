@@ -108,6 +108,7 @@ public final class VehiclesModule implements SbModule {
                 "İki kişilik, akülü elektrikli. Eğilip tıkla: kargo. Güneş paneli, RTG ya da peletle tıklayıp tak");
         lang.add("tooltip.spacebreaker.rover.charge", "Charges when parked next to a battery bank or cable",
                 "Batarya bankası ya da kablonun yanına park edince şarj olur");
+        lang.add("tooltip.spacebreaker.rover.hand_brake", "%s while driving: hand brake", "Sürerken %s: el freni");
         lang.add("hud.spacebreaker.rover.battery", "Battery %s%%", "Akü %%%s");
         lang.add("hud.spacebreaker.rover.speed", "%s m/s", "%s m/s");
         lang.add("hud.spacebreaker.rover.solar", "Solar", "Güneş");

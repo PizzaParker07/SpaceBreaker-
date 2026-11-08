@@ -37,7 +37,7 @@ Tek bir santrifüj yavaştır. Gerçek tesislerde binlercesi art arda çalışı
 
 **Fisyon Yüzey Güç Ünitesi**
 
-**Fisyon Yüzey Güç Ünitesi**, kilovat sınıfı bir fisyon yüzey güç ünitesidir. İçine bir **Nükleer Yakıt Elemanı** koy: gece gündüz, nerede olursan ol **320 FE/t** verir. Bir eleman **10 oyun günü** dayanır ve yakıt yalnız güç çekilirken yanar.
+**Fisyon Yüzey Güç Ünitesi**, kilovat sınıfı bir fisyon yüzey güç ünitesidir. İçine bir **Nükleer Yakıt Elemanı** koy: gece gündüz, nerede olursan ol **240 FE/t** verir. Bir eleman **10 oyun günü** dayanır ve yakıt yalnız güç çekilirken yanar.
 
 |   |   |   |
 |---|---|---|
@@ -105,7 +105,7 @@ One centrifuge alone is slow. Real plants run thousands one after another. Here 
 
 **Fission Surface Power Unit**
 
-The **Fission Surface Power Unit** is a kilowatt-class fission surface power unit. Load a **Nuclear Fuel Element** and it gives **320 FE/t**, day and night, wherever you are. One element lasts **10 game days**, and fuel only burns while power is drawn.
+The **Fission Surface Power Unit** is a kilowatt-class fission surface power unit. Load a **Nuclear Fuel Element** and it gives **240 FE/t**, day and night, wherever you are. One element lasts **10 game days**, and fuel only burns while power is drawn.
 
 |   |   |   |
 |---|---|---|

@@ -123,22 +123,36 @@ def nitrogen_slider():
     n = clustered(64, 64, 13901, passes=1)
 
     def body(face, x, y, fw, fh):
+        # calm: a gentle gradient from a darker spine to pale flanks and belly, a few small spots instead of blotches
         if face == 'bottom':
             return r[5]
         if face == 'top':
-            return r[1] if n[y][x] > 0.78 else noise_pick(r, 4, n, x, y)
+            d = abs(x - (fw - 1) / 2) / max(1, fw / 2)
+            spot = (x * 5 + y * 3) % 17 == 0
+            return r[2] if spot else r[3 if d < 0.35 else 4]
         if y >= fh - 1:
             return r[5]
-        return r[2] if n[y + 20][x] > 0.8 else noise_pick(r, 3, n, x + 20, y + 30)
+        if y == 0:
+            return r[4]
+        return r[2] if (x * 7 + y * 5) % 23 == 0 else r[4 if y < fh - 2 else 5]
 
     paint(cv, 0, 0, 8, 5, 13, body)
 
     def head(face, x, y, fw, fh):
-        if face == 'front' and fw == 6 and y == 1 and x in (1, 4):
-            return hexc('#14100d')
+        if face == 'front' and fw == 6:
+            # a clear face: big dark eyes with a glint, a dark nose, whisker dots on the muzzle
+            if y == 1 and x in (0, 1, 4, 5):
+                return hexc('#d9e4ea') if x in (1, 5) else hexc('#14100d')
+            if y == 2 and x in (0, 1, 4, 5):
+                return hexc('#14100d')
+            if y == 3 and x in (2, 3):
+                return hexc('#2a1f19')
+            if y == 4 and x in (1, 4):
+                return r[2]
+            return r[5] if y >= 3 else r[4]
         if face == 'bottom':
             return r[5]
-        return noise_pick(r, 4 if face == 'top' else 3, n, x + 40, y)
+        return r[3] if face == 'top' else r[4]
 
     paint(cv, 0, 18, 6, 5, 5, head)
     paint(cv, 22, 18, 3, 2, 2, lambda f, x, y, fw, fh: r[2] if f == 'front' and y == 0 else r[3])

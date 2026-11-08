@@ -25,7 +25,7 @@ Tek bir santrifüj yavaştır. Gerçek tesislerde binlercesi art arda çalışı
 
 ## Fisyon güç ünitesi {#fission}
 {items spacebreaker:fission_reactor}
-{item spacebreaker:fission_reactor}, kilovat sınıfı bir fisyon yüzey güç ünitesidir. İçine bir {item spacebreaker:nuclear_fuel_element} koy: gece gündüz, nerede olursan ol **320 FE/t** verir. Bir eleman **10 oyun günü** dayanır ve yakıt yalnız güç çekilirken yanar.
+{item spacebreaker:fission_reactor}, kilovat sınıfı bir fisyon yüzey güç ünitesidir. İçine bir {item spacebreaker:nuclear_fuel_element} koy: gece gündüz, nerede olursan ol **240 FE/t** verir. Bir eleman **10 oyun günü** dayanır ve yakıt yalnız güç çekilirken yanar.
 {recipe spacebreaker:fission_reactor}
 Kalkan yuvalarına tükenmiş uranyum levha ya da tungsten levha konabilir.
 

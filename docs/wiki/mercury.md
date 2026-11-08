@@ -39,7 +39,11 @@ Kutup kraterlerinin tabanı hiç güneş görmez: yaklaşık −213 °C'lik bir 
 > **Merkür'de yakıt:** grafit + oksijen → CO₂ (kimyasal reaktör); CO₂ + hidrojen → metan (Sabatier reaktörü). Böylece metaloks yakıtını yerinde tamamlarsın. → [Yerinde Üretim](isru)
 
 ### Buz Madeni
-Bu kraterlerden birinde terk edilmiş bir buz madeni yatar. Deposu **buzla mühürlüdür**: kazıyarak geç. Koridordaki basınç plakası toz kar püskürtür.
+Bu kraterlerden birinde terk edilmiş bir buz madeni yatar. Krater tabanında makaralı çelik kafes bir kuyu kulesi, projektör direği ve bir kontrol kulübesi durur. Aşağıda bir galeri, çelik kemerlerin altından tozla katmanlanmış buzun içinden geçer; raylar, kablo kanalları ve LED'ler (bazıları sönük) boyunca kazı yüzündeki durmuş kesiciye uzanır. Tanklı ve elektroliz üniteli bir eritme odası ve ganimet için **Malzeme Dolabı**lar vardır.
+- Depo **buzla mühürlüdür**: kazıyarak geç.
+- Galerideki basınç plakası, yerdeki bir dağıtıcıya toz kar fırlattırır.
+- Eski bakım dronları hâlâ galeride devriye gezer.
+- Son vardiya tabelası ne olduğunu anlatır.
 
 **Canlı:** Alacakaranlık Sürüngeni
 
@@ -97,7 +101,11 @@ The floors of the polar craters lie in permanent shadow: a **cold trap** at abou
 > **Fuel on Mercury:** graphite + oxygen → CO₂ (chemical reactor); CO₂ + hydrogen → methane (Sabatier reactor). That tops up methalox fuel on the spot. → [In-Situ Resources](isru)
 
 ### The ice mine
-An abandoned ice mine lies in one of these craters. Its store is **sealed with ice**: dig through. The pressure plate in the corridor sprays powder snow.
+An abandoned ice mine lies in one of these craters. On the crater floor stand a steel lattice head frame with its sheave, a floodlight mast and a control hut. Below, a drift runs through dust-banded ice under steel arches, past rails, cable ducts and LEDs (some dead) to a stalled cutter at the face, with a melt room of tanks and an electrolyser and **Supply Locker**s for the loot.
+- The store is **sealed with ice**: dig through.
+- A pressure plate in the drift makes a dispenser in the floor throw powder snow.
+- Old maintenance drones still patrol the drift.
+- The last-shift sign tells you what happened.
 
 **Creature:** Terminator Crawler
 

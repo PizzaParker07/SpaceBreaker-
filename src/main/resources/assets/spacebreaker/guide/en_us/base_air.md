@@ -1,7 +1,7 @@
 ---
 title: Air for the Base
 icon: spacebreaker:oxygen_distributor
-items: [spacebreaker:oxygen_distributor, spacebreaker:airlock_door, spacebreaker:aluminum_panel, spacebreaker:titanium_deck, spacebreaker:pressure_glass, spacebreaker:porthole, spacebreaker:hazard_stripe, spacebreaker:cable_duct, spacebreaker:pipe_duct, spacebreaker:grate, spacebreaker:grate_platform, spacebreaker:railing, spacebreaker:steel_ladder, spacebreaker:floodlight, spacebreaker:led_panel, spacebreaker:warning_light, spacebreaker:sliding_door]
+items: [spacebreaker:oxygen_distributor, spacebreaker:control_desk, spacebreaker:airlock_door, spacebreaker:aluminum_panel, spacebreaker:titanium_deck, spacebreaker:pressure_glass, spacebreaker:porthole, spacebreaker:hazard_stripe, spacebreaker:cable_duct, spacebreaker:pipe_duct, spacebreaker:grate, spacebreaker:grate_platform, spacebreaker:railing, spacebreaker:steel_ladder, spacebreaker:floodlight, spacebreaker:led_panel, spacebreaker:warning_light, spacebreaker:sliding_door]
 research: spacebreaker:oxygen_distribution
 ---
 For a base you can walk around in without a helmet you need a sealed room, a distributor and an airlock.
@@ -39,6 +39,10 @@ Build your base from {item spacebreaker:aluminum_panel}, {item spacebreaker:tita
 {items spacebreaker:led_panel spacebreaker:floodlight spacebreaker:warning_light}
 Light it with {item spacebreaker:led_panel} and {item spacebreaker:floodlight}s; both give full light (15), and the floodlight turns to face the side it is placed on. The amber {item spacebreaker:warning_light} with its turning beam lights up from redstone or on its own: while a rocket within 32 blocks is fuelling, counting down, launching or docking.
 {recipe spacebreaker:rocketry/warning_light}
+
+{items spacebreaker:control_desk}
+The {item spacebreaker:control_desk} is a decorative console: a switch-panel desk with a screen behind it, facing the way you place it. You will see them in the Moon's outposts and ice-drilling huts.
+{recipe spacebreaker:control_desk}
 
 ## Sliding doors and airlocks
 {items spacebreaker:sliding_door}

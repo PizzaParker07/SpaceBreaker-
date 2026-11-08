@@ -327,6 +327,11 @@ public final class MoonData {
                     .define('S', MoonModule.GLIMMER_SHELL.get()).define('G', Items.GLASS).define('B', MoonModule.SINTERED_REGOLITH.get())
                     .pattern(" S ").pattern("SGS").pattern(" B ")
                     .unlockedBy(getHasName(MoonModule.GLIMMER_SHELL.get()), has(MoonModule.GLIMMER_SHELL.get())).save(out);
+            // control desk: a glass screen over a redstone switch panel on an iron desk
+            net.minecraft.data.recipes.ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, MoonModule.CONTROL_DESK.get())
+                    .define('G', Items.GLASS_PANE).define('R', Items.REDSTONE).define('I', Items.IRON_INGOT)
+                    .pattern(" G ").pattern("IRI").pattern("III")
+                    .unlockedBy(getHasName(Items.REDSTONE), has(Items.REDSTONE)).save(out);
             // an ice core sample melts down into plenty of clean lunar ice
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, MoonModule.LUNAR_ICE.get(), 4).requires(MoonModule.ICE_CORE_SAMPLE.get())
                     .unlockedBy(getHasName(MoonModule.ICE_CORE_SAMPLE.get()), has(MoonModule.ICE_CORE_SAMPLE.get()))

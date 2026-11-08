@@ -28,9 +28,15 @@ public final class LightBeams {
      * @param poolRadius radius of the soft pool where it lands (fallback), in blocks
      * @param strength   pool brightness 0..1 (fallback)
      * @param nearGlow   faint light right around the lamp (fallback), 0 for none
+     * @param spotLuminance light level of a short bright spot where the beam lands (dynamic lights), 0 for none: a
+     *                      narrow long beam reads as a bright pool far ahead rather than an evenly lit line
      */
     public record Beam(Object key, Vec3 from, Vec3 to, boolean hit, net.minecraft.core.Direction face, int luminance,
-                       double poolRadius, double strength, double nearGlow) {
+                       double poolRadius, double strength, double nearGlow, int spotLuminance) {
+        public Beam(Object key, Vec3 from, Vec3 to, boolean hit, net.minecraft.core.Direction face, int luminance,
+                    double poolRadius, double strength, double nearGlow) {
+            this(key, from, to, hit, face, luminance, poolRadius, strength, nearGlow, 0);
+        }
     }
 
     /** Lists the beams that shine now; called once per frame (fallback) and once per tick (dynamic lights). */

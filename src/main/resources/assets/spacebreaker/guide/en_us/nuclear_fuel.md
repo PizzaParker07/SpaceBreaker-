@@ -25,7 +25,7 @@ One centrifuge alone is slow. Real plants run thousands one after another. Here 
 
 ## Fission power unit {#fission}
 {items spacebreaker:fission_reactor}
-The {item spacebreaker:fission_reactor} is a kilowatt-class fission surface power unit. Load a {item spacebreaker:nuclear_fuel_element} and it gives **320 FE/t**, day and night, wherever you are. One element lasts **10 game days**, and fuel only burns while power is drawn.
+The {item spacebreaker:fission_reactor} is a kilowatt-class fission surface power unit. Load a {item spacebreaker:nuclear_fuel_element} and it gives **240 FE/t**, day and night, wherever you are. One element lasts **10 game days**, and fuel only burns while power is drawn.
 {recipe spacebreaker:fission_reactor}
 The shielding slots take depleted uranium plate or tungsten plate.
 

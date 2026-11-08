@@ -14,7 +14,6 @@ import net.minecraft.util.FormattedCharSequence;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.List;
-import java.util.Locale;
 
 /**
  * The shipyard console: put a spacecraft together section by section, nose to tail, and see at once what it weighs,
@@ -26,6 +25,8 @@ public class ShipyardScreen extends Screen {
     private final BlockPos console;
     private ShipDesign design;
     private int panelX;
+    /** Screen pixels (GUI units) per block of the craft drawing, at most. */
+    private static final int MAX_DRAW_SCALE = 10;
 
     public ShipyardScreen(BlockPos console, ShipDesign design) {
         super(Component.translatable("ship.spacebreaker.shipyard"));
@@ -94,7 +95,9 @@ public class ShipyardScreen extends Screen {
             r.render(g, mouseX, mouseY, partialTick);
         }
         // the numbers live in tooltips: the delta-v figure, and the berth's size on its frame
-        if (in(dvBox, mouseX, mouseY)) {
+        if (previewStats) {
+            g.renderComponentTooltip(font, statLines(), dvBox[0] - 160, dvBox[1] + 30);
+        } else if (in(dvBox, mouseX, mouseY)) {
             g.renderComponentTooltip(font, statLines(), mouseX, mouseY);
         } else if (in(sideBox, mouseX, mouseY) || in(topBox, mouseX, mouseY)) {
             g.renderComponentTooltip(font, List.of(Component.translatable("ship.spacebreaker.berth", Berths.MAX_WIDTH, Berths.MAX_HEIGHT, Berths.MAX_LENGTH)), mouseX, mouseY);
@@ -109,12 +112,28 @@ public class ShipyardScreen extends Screen {
 
     private List<Component> statLines() {
         List<Component> out = new java.util.ArrayList<>();
-        out.add(stat("size", design.length() + " × " + design.width() + " × " + design.height()));
-        out.add(stat("mass", String.format(Locale.ROOT, "%,.1f t → %,.1f t", design.wetMassKg() / 1000, design.dryMassKg() / 1000)));
-        out.add(stat("propellant", String.format(Locale.ROOT, "%,.1f t", design.propellantKg() / 1000)));
-        out.add(stat("thrust", String.format(Locale.ROOT, "%,.0f kN", design.thrustKn())));
-        out.add(stat("isp", String.format(Locale.ROOT, "%,.0f s", design.isp())));
-        out.add(stat("accel", String.format(Locale.ROOT, "%.1f m/s²", design.acceleration())));
+        out.add(stat("size", design.length() + " × " + design.width() + " × " + design.height() + com.pizzaparker07.spacebreaker.content.rocketry.item.Fmt.NBSP + net.minecraft.network.chat.Component.translatable("ship.spacebreaker.blocks").getString()));
+        out.add(stat("mass", com.pizzaparker07.spacebreaker.content.rocketry.item.Fmt.unit(design.wetMassKg() / 1000, 1, "t") + " → " + com.pizzaparker07.spacebreaker.content.rocketry.item.Fmt.unit(design.dryMassKg() / 1000, 1, "t")));
+        out.add(stat("propellant", com.pizzaparker07.spacebreaker.content.rocketry.item.Fmt.unit(design.propellantKg() / 1000, 1, "t")));
+        if (design.stack().stream().anyMatch(p -> p.kind == ShipPart.Kind.ENGINE)) {
+            out.add(Component.literal("  ").append(Component.translatable(design.hydrogen() ? "ship.spacebreaker.fuel_hydrogen" : "ship.spacebreaker.fuel_metalox"))
+                    .withStyle(ChatFormatting.DARK_GRAY));
+        }
+        out.add(stat("thrust", com.pizzaparker07.spacebreaker.content.rocketry.item.Fmt.unit(design.thrustKn(), 0, "kN")));
+        out.add(stat("isp", com.pizzaparker07.spacebreaker.content.rocketry.item.Fmt.unit(design.isp(), 0, "s")));
+        out.add(stat("accel", com.pizzaparker07.spacebreaker.content.rocketry.item.Fmt.unit(design.acceleration(), 1, "m/s²")));
+        // the bill the build step will charge
+        var bill = com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipCost.of(design);
+        if (!bill.isEmpty()) {
+            out.add(Component.empty());
+            out.add(Component.translatable("ship.spacebreaker.bill", com.pizzaparker07.spacebreaker.content.rocketry.item.Fmt.unit(
+                    com.pizzaparker07.spacebreaker.content.rocketry.ship.ShipCost.kfe(design), 0, "k" + com.pizzaparker07.spacebreaker.content.rocketry.item.Fmt.NBSP + "FE"))
+                    .withStyle(ChatFormatting.GRAY));
+            for (var line : bill) {
+                var item = net.minecraft.core.registries.BuiltInRegistries.ITEM.get(line.item());
+                out.add(Component.literal("  " + line.count() + "× ").append(item.getDescription()).withStyle(ChatFormatting.WHITE));
+            }
+        }
         return out;
     }
 
@@ -126,7 +145,8 @@ public class ShipyardScreen extends Screen {
     /** Side and top views of the craft, nose on the left, inside the berth's outline. */
     private void drawCraft(GuiGraphics g) {
         int left = 124, right = panelX - 12;
-        int scale = Math.max(2, Math.min((right - left) / Berths.MAX_LENGTH, (height - 76) / (Berths.MAX_HEIGHT + Berths.MAX_WIDTH)));
+        // capped, so at a small GUI scale on a big screen the drawing keeps its size next to the buttons
+        int scale = Math.max(2, Math.min(MAX_DRAW_SCALE, Math.min((right - left) / Berths.MAX_LENGTH, (height - 76) / (Berths.MAX_HEIGHT + Berths.MAX_WIDTH))));
         int x0 = left + (right - left - Berths.MAX_LENGTH * scale) / 2;
         int sideY = 40, topY = sideY + Berths.MAX_HEIGHT * scale + 24;
         g.drawString(font, Component.translatable("ship.spacebreaker.view_side"), x0, sideY - 10, DIM, false);
@@ -203,9 +223,9 @@ public class ShipyardScreen extends Screen {
         g.pose().pushPose();
         g.pose().translate(x, y, 0);
         g.pose().scale(1.5F, 1.5F, 1F);
-        g.drawString(font, String.format(Locale.ROOT, "%,.0f m/s", design.deltaV()), 0, 0, design.problems().isEmpty() ? 0xFFFFFFFF : RED, false);
+        g.drawString(font, com.pizzaparker07.spacebreaker.content.rocketry.item.Fmt.ms(design.deltaV()), 0, 0, design.problems().isEmpty() ? 0xFFFFFFFF : RED, false);
         g.pose().popPose();
-        String dv = String.format(Locale.ROOT, "%,.0f m/s", design.deltaV());
+        String dv = com.pizzaparker07.spacebreaker.content.rocketry.item.Fmt.ms(design.deltaV());
         dvBox = new int[]{x, y - 10, Math.max(w, (int) (font.width(dv) * 1.5F)), 24};
         y += 20;
         // only what is wrong; with nothing wrong, one "ready" line
@@ -233,6 +253,13 @@ public class ShipyardScreen extends Screen {
     @Override
     public boolean isPauseScreen() {
         return false;
+    }
+
+    private boolean previewStats;
+
+    /** For previews: show the delta-v tooltip (numbers and bill of materials) without hovering. */
+    public void previewStats(boolean on) {
+        previewStats = on;
     }
 
     /** For previews: the design being edited. */
