@@ -43,5 +43,5 @@ Yükleme ekranı yoktur: kısa bir geçişten sonra yörüngeye varınca bir mes
 - **İlk uçuşta:** {item spacebreaker:emergency_beacon} kullan. Isı kalkanlı ve paraşütlü bir kapsül gelir, seni eve götürür.
 - **Sonraki uçuşlarda:** kapsülünün altında **ısı kalkanı**, üstünde **paraşüt** olsun. Yıldız haritasında Dünya'yı seçip **Yüzeye in**; kalkan ısıyı alır, paraşüt açılır.
 
-> Eve dönünce Yörünge Uçuşu verisini laboratuvarda incele: {tech spacebreaker:landing_systems} ile ısı kalkanı, paraşüt ve iniş bacakları açılır. Bunun için {tech spacebreaker:precision_manufacturing} da gerekir: ısı kalkanının yapıldığı ablatif kalkan levhalarını fabrikatör üretir. Ay'a inmek için bacaklar şart.
+> Eve dönünce Yörünge Uçuşu verisini laboratuvarda incele: {tech spacebreaker:landing_systems} ile ısı kalkanı, paraşüt ve iniş bacakları açılır. Bunun için {tech spacebreaker:precision_manufacturing} da gerekir: ısı kalkanının yapıldığı ablatif kalkan levhalarını {item spacebreaker:fabricator} üretir. Ay'a inmek için bacaklar şart.
 {recipe spacebreaker:rocketry/heat_shield}

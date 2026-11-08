@@ -45,7 +45,7 @@ Yükleme ekranı yoktur: kısa bir geçişten sonra yörüngeye varınca bir mes
 - **Sonraki uçuşlarda:** kapsülünün altında **ısı kalkanı**, üstünde **paraşüt** olsun. Yıldız haritasında Dünya'yı seçip **Yüzeye in**; kalkan ısıyı alır, paraşüt açılır.
 
 > [!TIP]
-> Eve dönünce Yörünge Uçuşu verisini laboratuvarda incele: *İniş Sistemleri* ile ısı kalkanı, paraşüt ve iniş bacakları açılır. Bunun için *Hassas İmalat* da gerekir: ısı kalkanının yapıldığı ablatif kalkan levhalarını fabrikatör üretir. Ay'a inmek için bacaklar şart.
+> Eve dönünce Yörünge Uçuşu verisini laboratuvarda incele: *İniş Sistemleri* ile ısı kalkanı, paraşüt ve iniş bacakları açılır. Bunun için *Hassas İmalat* da gerekir: ısı kalkanının yapıldığı ablatif kalkan levhalarını [Parça Üretim Tezgâhı](fabricator) üretir. Ay'a inmek için bacaklar şart.
 
 |   |   |   |
 |---|---|---|
