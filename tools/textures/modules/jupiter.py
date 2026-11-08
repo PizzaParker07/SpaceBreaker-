@@ -399,6 +399,8 @@ def groove_grazer():
     paint(cv, 44, 0, 6, 4, 4, head)
     paint(cv, 24, 19, 7, 1, 2, lambda f, x, y, fw, fh: r[1] if f != 'top' else r[2])
     paint(cv, 44, 8, 2, 5, 2, lambda f, x, y, fw, fh: r[1] if y >= fh - 1 else r[2])
+    # band skirts down the flanks: armour tone with a frost-pale lower edge
+    paint(cv, 0, 24, 1, 3, 3, lambda f, x, y, fw, fh: r[5] if (y == fh - 1 and f not in ('top', 'bottom')) else noise_pick(r, 4, n, x + 7, y + 44))
     return cv
 
 
