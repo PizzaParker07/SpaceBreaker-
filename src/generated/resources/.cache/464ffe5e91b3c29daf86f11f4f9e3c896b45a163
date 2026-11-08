@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-07T22:10:43.103108291	spacebreaker tech tree
+// 1.21.1	2026-11-08T00:39:51.437578397	spacebreaker tech tree
 eb99e6fc2778efcc16dc23f020327813f7f85164 data/spacebreaker/spacebreaker/tech/advanced_electronics.json
 37b86031d2662acffe53c51b4ca65ba988094711 data/spacebreaker/spacebreaker/tech/airlocks.json
 537f359ae0acefa3a0666d917ea3d66c22a9f910 data/spacebreaker/spacebreaker/tech/aluminium_smelting.json
@@ -23,7 +23,7 @@ b33b62230c0431b44985df00686abe7779fa1f42 data/spacebreaker/spacebreaker/tech/icy
 d3199b1a36d9e07146a86a74db131265442176c1 data/spacebreaker/spacebreaker/tech/interplanetary_transfers.json
 88444992e2dcc055cb5918fa69b1f25fc5b88880 data/spacebreaker/spacebreaker/tech/ion_propulsion.json
 c0ebb5c5ba1e535996744648d35f0b0058698f32 data/spacebreaker/spacebreaker/tech/isru.json
-7b978ace522a5dd7fa2e9674ec0896cf85ebdc7f data/spacebreaker/spacebreaker/tech/landing_systems.json
+1be6cdf83b44466148bbd8dd43fc00805a9297f6 data/spacebreaker/spacebreaker/tech/landing_systems.json
 fca83b755e3856331d654ca6e6e241c3a950941b data/spacebreaker/spacebreaker/tech/launch_infrastructure.json
 700c925b0066829fff301bec2358bbdfee678217 data/spacebreaker/spacebreaker/tech/liquid_fuel_engines.json
 a6181e1b533dd7c206a2dec5a26d38ea6891fbb0 data/spacebreaker/spacebreaker/tech/lunar_surveying.json

@@ -9,68 +9,68 @@
   "elements": [
     {
       "from": [
-        3,
+        4,
         12,
-        3
+        4
       ],
       "to": [
-        13,
+        12,
         14,
-        13
+        12
       ],
       "faces": {
         "north": {
           "texture": "#valve",
           "uv": [
-            3,
+            4,
             2,
-            13,
+            12,
             4
           ]
         },
         "south": {
           "texture": "#valve",
           "uv": [
-            3,
+            4,
             2,
-            13,
+            12,
             4
           ]
         },
         "east": {
           "texture": "#valve",
           "uv": [
-            3,
+            4,
             2,
-            13,
+            12,
             4
           ]
         },
         "west": {
           "texture": "#valve",
           "uv": [
-            3,
+            4,
             2,
-            13,
+            12,
             4
           ]
         },
         "up": {
           "texture": "#valve",
           "uv": [
-            3,
-            3,
-            13,
-            13
+            4,
+            4,
+            12,
+            12
           ]
         },
         "down": {
           "texture": "#valve",
           "uv": [
-            3,
-            3,
-            13,
-            13
+            4,
+            4,
+            12,
+            12
           ]
         }
       }

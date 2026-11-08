@@ -83,9 +83,8 @@ public final class HelmetHud {
             RenderSystem.disableBlend();
         }
         ItemStack helmet = mc.player.getItemBySlot(EquipmentSlot.HEAD);
-        if (SpaceSuitItem.isSunVisorDown(helmet)
-                || (helmet.getItem() instanceof SpaceSuitItem s && s.tier() == com.pizzaparker07.spacebreaker.content.suit.SuitTier.THERMAL)) {
-            g.fill(0, 0, w, h, 0x38C08616); // warm gold filter
+        if (SpaceSuitItem.isSunVisorDown(helmet)) {
+            g.fill(0, 0, w, h, 0x1AC08616); // a light warm gold filter (about 10%), only with the sun visor down
         }
         // rime on the visor rim when the cold is beyond the suit's rating (a light touch in any cold trap)
         float frost = rim ? frost(delta.getGameTimeDeltaPartialTick(false)) * HudConfig.visorFrameOpacity() / 0.7F : 0F;

@@ -36,8 +36,13 @@ public class GrooveGrazerModel extends HierarchicalModel<GrooveGrazer> {
         PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-4F, -5F, -7F, 8F, 5F, 14F),
                 PartPose.offset(0F, 19F, 0F));
         for (int i = 0; i < 3; i++) {
-            body.addOrReplaceChild("plate" + i, CubeListBuilder.create().texOffs(0, 19).addBox(-4.5F, -1F, -1.5F, 9F, 2F, 3F),
+            PartDefinition plate = body.addOrReplaceChild("plate" + i, CubeListBuilder.create().texOffs(0, 19).addBox(-4.5F, -1F, -1.5F, 9F, 2F, 3F),
                     PartPose.offset(0F, -5F, -4.5F + i * 4.5F));
+            // each band wraps down the flanks as a skirt that stands a little proud of the body, so the sides are not flat
+            plate.addOrReplaceChild("skirt_left", CubeListBuilder.create().texOffs(0, 24).addBox(0F, 0F, -1.5F, 1F, 3F, 3F),
+                    PartPose.offsetAndRotation(3.6F, 0.5F, 0F, 0F, 0F, -0.12F));
+            plate.addOrReplaceChild("skirt_right", CubeListBuilder.create().texOffs(0, 24).mirror().addBox(-1F, 0F, -1.5F, 1F, 3F, 3F),
+                    PartPose.offsetAndRotation(-3.6F, 0.5F, 0F, 0F, 0F, 0.12F));
         }
         PartDefinition head = root.addOrReplaceChild("head", CubeListBuilder.create().texOffs(44, 0).addBox(-3F, -2F, -4F, 6F, 4F, 4F),
                 PartPose.offset(0F, 17F, -7F));

@@ -90,10 +90,56 @@ WIRES = ['aluminum', 'tungsten', 'copper', 'gold']
 RODS = ['titanium', 'tungsten', 'steel', 'iron']
 
 
+# Item and block tones per metal. The shared palettes keep their neutral greys for machines and rockets; the metals
+# themselves get a hue each so seven grey ingots, plates and dusts can be told apart in the inventory.
+def _hex(*h):
+    from sbtex.core import ramp
+    return ramp(*h)
+
+
+ITEM_RAMPS = {
+    # aluminium: bright, cool white (the shared ramp already is)
+    'aluminum_lithium': _hex('#36324a', '#4f4a68', '#6c6788', '#8c87a8', '#aba7c4', '#c7c3dc', '#dfdcee', '#f3f1fa'),   # blue-lilac
+    'lithium': _hex('#45373b', '#635158', '#846e75', '#a48d93', '#c0abb0', '#d7c5c9', '#eadcdf', '#f8f0f2'),            # pink silver
+    'nickel_superalloy': _hex('#2b241c', '#41372a', '#5b4d3b', '#76654e', '#917e63', '#ac987c', '#c6b398', '#dfcfb8'),  # bronze grey
+    'steel': _hex('#1b2130', '#293144', '#3a4459', '#4e5970', '#636e87', '#7b869e', '#96a0b6', '#b5bdce'),              # blue grey
+    'titanium': _hex('#211e33', '#322d4c', '#45406a', '#5a5485', '#716b9f', '#8c87b6', '#aaa6cc', '#cac7e2'),           # anodised violet
+    'tungsten': _hex('#0f1013', '#191b1f', '#24272d', '#31353c', '#40454d', '#525860', '#696f78', '#898f98'),           # near black, heavy
+}
+
+
 def ramp_of(name):
     from sbtex import palettes as P
+    if name in ITEM_RAMPS:
+        return ITEM_RAMPS[name]
     key = {'iron': 'IRON', 'copper': 'COPPER', 'gold': 'GOLD'}.get(name) or METALS[name][0]
     return getattr(P, key)
+
+
+def glints(cv, r, seed=1):
+    """Metal dusts sparkle: three bright specks on the lit side of the heap (yellowcake and coal dust have none)."""
+    import random
+    rng = random.Random(seed * 7 + 1)
+    spots = [(x, y) for y in range(7, 12) for x in range(3, 11) if cv.alpha(x, y)]
+    for x, y in rng.sample(spots, min(3, len(spots))):
+        cv[x, y] = r[7]
+    return cv
+
+
+def surface_cue(cv, name, r):
+    """A small per-metal mark on an ingot or plate: brushed lines on steel, a stamped band on the superalloy."""
+    tones = [tuple(t) for t in r]
+    for y in range(16):
+        for x in range(16):
+            c = cv[x, y]
+            if c[3] == 0 or tuple(c[:3]) not in tones:
+                continue
+            i = tones.index(tuple(c[:3]))
+            if name == 'steel' and i == 5 and y % 2 == 1:
+                cv[x, y] = r[4]
+            elif name == 'nickel_superalloy' and 3 <= i <= 6 and x in (7, 8):
+                cv[x, y] = r[i - 2]
+    return cv
 
 
 def oil_seep() -> Canvas:
@@ -131,14 +177,14 @@ def export(save):
         save(S.raw_block(r, seed=len(ore) * 3), 'block', f'raw_{ore}_block', (40, 10, 50, None))
     metal_spec = (170, 230, 0, None)
     for name, (rk, style) in METALS.items():
-        r = getattr(P, rk)
-        save(S.ingot(r), 'item', f'{name}_ingot')
+        r = ramp_of(name)
+        save(surface_cue(S.ingot(r), name, r), 'item', f'{name}_ingot')
         save(S.nugget(r), 'item', f'{name}_nugget')
         save(S.metal_block(r, style, seed=len(name)), 'block', f'{name}_block', metal_spec)
     for name in PLATES:
-        save(S.plate(ramp_of(name)), 'item', f'{name}_plate')
+        save(surface_cue(S.plate(ramp_of(name)), name, ramp_of(name)), 'item', f'{name}_plate')
     for name in DUSTS:
-        save(S.dust(ramp_of(name), seed=len(name)), 'item', f'{name}_dust')
+        save(glints(S.dust(ramp_of(name), seed=len(name)), ramp_of(name), seed=len(name)), 'item', f'{name}_dust')
     for name in WIRES:
         save(S.wire(ramp_of(name)), 'item', f'{name}_wire')
     for name in RODS:

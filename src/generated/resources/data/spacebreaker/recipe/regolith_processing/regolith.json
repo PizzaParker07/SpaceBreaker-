@@ -5,7 +5,7 @@
     "id": "spacebreaker:iron_dust"
   },
   "bonus_chance": 0.2,
-  "energy": 120,
+  "energy": 80,
   "fluid_results": [
     {
       "amount": 250,

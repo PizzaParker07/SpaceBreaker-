@@ -13,7 +13,7 @@ Two tiny, dark moons, probably captured asteroids.
 > [!WARNING]
 > Careful jumping near edges: gravity is so low that coming back down takes a long time.
 
-An old probe crashed on Phobos, and Deimos hides an ice cache. → [Ruins on the Planets](planet_ruins)
+On Phobos a small octagonal sample-return capsule lies nosed into its impact pit, hatch blown open, one solar wing still on its arm; its sample vault is a {item spacebreaker:supply_locker}. Deimos hides an ice cache lined with aluminium panels, lit by an LED and marked by a floodlit mast. → [Ruins on the Planets](planet_ruins)
 
 {page}
 ## Stickney crater
@@ -23,7 +23,7 @@ Phobos' giant crater lies about **320 blocks east** of the landing site: a bowl 
 > {item spacebreaker:safety_tether}: use it on a block and a line runs from your belt to that block, so you cannot wander off and drift away. Use it again to unclip.
 
 ## Deimos relay spire
-An old relay and data cache on top of a rock needle. Around it spiral **12 rock stacks**, each 2 blocks higher and more than 4 blocks from the last. Out of reach on Earth, but on Deimos one jump lasts for seconds.
+On top of a rock needle stands an old relay: a lattice mast with a sky-facing dish and an LED beacon, a foil-wrapped transmitter and the data cache in a supply locker. A cable runs down the needle to a small ground station with a dish and a floodlight. Around it spiral **12 rock stacks**, each 2 blocks higher and more than 4 blocks from the last. Out of reach on Earth, but on Deimos one jump lasts for seconds.
 
 > One jump lasts for seconds: hop up the rocks and steer in mid-air.
 

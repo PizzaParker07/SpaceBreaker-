@@ -329,7 +329,7 @@ code; log lines "[showcase] qa_station: …"; contact sheet `docs/screenshots/qa
 - docking module, living quarters and airlock attach to three mouths with a right click; inside the core the
   station is one sealed room of 270 blocks ✅ (04–05);
 - out through the airlock and back (inner shut behind you, outer open, back in, both shut): the station stays sealed
-  throughout ✅ (06–08) — clicked in the right order; the doors themselves do not interlock (QA-27);
+  throughout ✅ (06–08) — clicked in the right order; at the time the doors did not interlock (QA-27, closed below);
 - a hole in the quarters' wall (an LED panel removed) vents the station; put back, sealed again at 270 ✅ (09–10);
 - solar wings on the last mouth: the battery in the mouth holds 96,240 FE about 20 s later ✅ (11);
 - the star map's side panel lists "Station · 5 modules · 2 ports" for Earth ✅ (12);
@@ -344,9 +344,15 @@ lockers). The driver now has `Shot.stay(...)`: the player stays where they are (
   docking" ✅;
 - 14–15: docked by tick 2894, 0.00 blocks from the dock point, player still seated, the chat line "Docked: you can
   step out into the station" ✅.
-- 07 now clicks the doors carelessly (inner, then outer). With the old doors both open and the station vents (tick
-  1464: outer open, inner open, room not sealed). The interlocked sliding doors (rocketry, QA-27) are not in 1.21.1
-  yet; this is checked again once they are.
+- 07 now clicks the doors carelessly (inner, then outer). With the old doors both opened and the station vented
+  (tick 1464 on 6f693898).
+
+Re-run on 1.21.1 @ d66d1b3e (rocketry's interlocked sliding doors in), 2026-11-08: everything above holds again (room
+270 blocks, wings 96,240 FE, docking line at tick 2490, docked at tick 2890, 0.00 blocks). The careless clicks in 07
+now leave the outer door open and the inner one shut (tick 1461), and the station stays sealed throughout 06–08 ✅.
+Shot 11 is now aimed at the station. **QA-27 closed**: `stationAirlockCycle` asserts that the two doors are never open
+together on any tick and that the station is sealed at every step (both shut 119, inner open 148, outer asked open
+while the inner was open 119, and so on).
 
 ## Sky visual regression (2026-11-07)
 

@@ -277,17 +277,39 @@ def glow_serpent():
     paint(cv, 0, 0, 4, 4, 5, skin(2))
     for u, v, w, h in ((18, 0, 4, 4), (36, 0, 3, 3), (18, 10, 3, 3), (36, 10, 2, 2)):
         paint(cv, u, v, w, h, 5, skin(1))
-    # barbels and fin: thin membranes
+    paint(cv, 40, 20, 1, 1, 4, skin(1))
+    # barbels: thin membranes
     for y in range(9, 14):
         for x in range(0, 6):
             cv[x, y] = r[3]
-    for y in range(16, 28):
-        for x in range(0, 12):
-            if (x + y) % 3 == 0:
-                cv[x, y] = r[4]
-            else:
-                cv[x, y] = r[2]
+    # fins: painted on one face only (the 'right' face of each plane), the other left transparent
+    for (fx, fy, fw, fh) in FIN_FACES:
+        for y in range(fh):
+            for x in range(fw):
+                if _fin_shape(x, y, fw, fh):
+                    cv[fx + x, fy + y] = r[4] if (x + y) % 3 == 0 else r[2]
     return cv
+
+
+# the tail fin (0x6x7 plane at (0, 16): its right face at (0, 23), 7 wide (along the body) x 6 tall) and the dorsal
+# fin (0x2x3 plane at (16, 22): right face at (16, 25), 3 x 2)
+FIN_FACES = [(0, 23, 7, 6), (16, 25, 3, 2)]
+
+
+def _fin_shape(x, y, fw, fh):
+    """A fin tapering to a point at the back. On a plane's 'right' face u runs from the back (+z) toward the front, so
+    the root is the last column (x = fw - 1) and the tip the first."""
+    x = fw - 1 - x
+    mid = (fh - 1) / 2
+    half = (fh / 2) * (1 - x / fw) + 0.5
+    return abs(y - mid) <= half
+
+
+def _fin_rim(x, y, fw, fh):
+    if not _fin_shape(x, y, fw, fh):
+        return False
+    return any(not _fin_shape(x + dx, y + dy, fw, fh) or not (0 <= x + dx < fw and 0 <= y + dy < fh)
+               for dx, dy in ((1, 0), (0, 1), (0, -1)))
 
 
 SERPENT_SPOTS = [
@@ -306,6 +328,12 @@ def glow_serpent_glow():
     g = P.SERPENT_GLOW
     for i, (x, y) in enumerate(SERPENT_SPOTS):
         cv[x, y] = g[2] if i < 2 else g[1]
+    # the tail fin's glowing rim
+    fx, fy, fw, fh = FIN_FACES[0]
+    for y in range(fh):
+        for x in range(fw):
+            if _fin_rim(x, y, fw, fh):
+                cv[fx + x, fy + y] = g[1]
     return cv
 
 
@@ -371,14 +399,22 @@ def groove_grazer():
     paint(cv, 44, 0, 6, 4, 4, head)
     paint(cv, 24, 19, 7, 1, 2, lambda f, x, y, fw, fh: r[1] if f != 'top' else r[2])
     paint(cv, 44, 8, 2, 5, 2, lambda f, x, y, fw, fh: r[1] if y >= fh - 1 else r[2])
+    # band skirts down the flanks: armour tone with a frost-pale lower edge
+    paint(cv, 0, 24, 1, 3, 3, lambda f, x, y, fw, fh: r[5] if (y == fh - 1 and f not in ('top', 'bottom')) else noise_pick(r, 4, n, x + 7, y + 44))
     return cv
 
 
+# Crater hopper (Callisto): dark brown-grey hide like the moon's old dark surface, white ring plates like its bright
+# crater rims, pale icy eyes.
+CRATER_HIDE = [hexc(h) for h in ('#1c1a17', '#28241f', '#35302a', '#433c35', '#524a42', '#635a51', '#786e63')]
+CRATER_PLATE = [hexc(h) for h in ('#5d6166', '#a9b0b6', '#ccd2d6', '#e8ecee')]
+
+
 def crater_hopper():
-    """64x32 sheet for CraterHopperModel: dark brown-grey hide, frost-white sensory plates and tail tip, pale belly."""
+    """64x32 sheet for CraterHopperModel (box layout in moon_creatures.faces)."""
     cv = Canvas(64, 32)
-    r = P.HOPPER
-    w = P.HOPPER_PLATE
+    r = CRATER_HIDE
+    w = CRATER_PLATE
     n = clustered(64, 64, 11021, passes=1)
 
     def hide(base):
@@ -388,22 +424,29 @@ def crater_hopper():
             return noise_pick(r, base + (1 if face == 'top' else 0), n, x + base * 7, y)
         return fn
 
-    paint(cv, 0, 0, 6, 6, 8, hide(2))
+    def plate(face, x, y, fw, fh):
+        # a ring: white rim round a darker middle on the top face
+        if face == 'top':
+            return w[0] if (0 < x < fw - 1 and 0 < y < fh - 1) or (fh <= 2 and 0 < x < fw - 1 and y == 1) else w[3]
+        return w[2] if face != 'bottom' else w[1]
 
     def head(face, x, y, fw, fh):
         if face == 'front':
-            if y == 1 and x in (0, fw - 1):
-                return hexc('#d9e6ee')
-            if y == 3 and 1 <= x <= 2:
-                return r[0]
+            if y == 0 and x in (0, fw - 1):
+                return hexc('#d9e6ee')  # pale icy eyes at the corners
             return r[3]
         return noise_pick(r, 3, n, x + 30, y)
 
-    paint(cv, 28, 0, 4, 4, 4, head)
-    paint(cv, 44, 0, 1, 5, 2, lambda f, x, y, fw, fh: w[2] if y < 2 else w[1] if y < 4 else w[0])
-    paint(cv, 0, 14, 2, 7, 4, hide(1))
-    paint(cv, 12, 14, 1, 4, 1, hide(1))
-    paint(cv, 16, 14, 2, 2, 6, lambda f, x, y, fw, fh: w[1] if (f == 'back' or (f in ('top', 'left', 'right') and x >= 4)) else r[2])
+    paint(cv, 0, 0, 6, 4, 7, hide(2))
+    paint(cv, 26, 0, 4, 1, 2, plate)
+    paint(cv, 38, 0, 4, 3, 4, head)
+    paint(cv, 54, 0, 2, 1, 1, lambda f, x, y, fw, fh: r[1] if f == 'front' else r[4])
+    paint(cv, 26, 4, 1, 1, 4, lambda f, x, y, fw, fh: w[3] if (f in ('back',) or (f != 'front' and x >= 3)) else w[1])
+    paint(cv, 0, 12, 2, 3, 3, hide(2))
+    paint(cv, 10, 12, 1, 3, 1, hide(1))
+    paint(cv, 14, 12, 2, 1, 3, lambda f, x, y, fw, fh: r[1] if f == 'bottom' else r[4])
+    paint(cv, 24, 12, 1, 3, 1, hide(1))
+    paint(cv, 28, 12, 2, 2, 3, lambda f, x, y, fw, fh: w[2] if f == 'back' else r[3])
     return cv
 
 
