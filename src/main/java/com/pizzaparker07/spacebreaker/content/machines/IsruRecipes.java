@@ -48,7 +48,7 @@ public final class IsruRecipes {
     public static final TagKey<Item> STONY_REGOLITHS = SbTagKeys.commonItem("regoliths/stony");
 
     /** Known feedstock from other areas, added by id only when it exists. */
-    private static final List<String> REGOLITH_IDS = List.of("lunar_regolith", "mare_regolith", "martian_regolith",
+    private static final List<String> REGOLITH_IDS = List.of("lunar_regolith", "mare_regolith", "fresh_regolith", "martian_regolith",
             "phobos_regolith", "deimos_regolith", "venus_soil", "hematite_soil");
     private static final List<String> CARBONACEOUS_IDS = List.of("bennu_regolith", "bennu_boulder", "ryugu_regolith", "ryugu_rock",
             "carbonaceous_chondrite");

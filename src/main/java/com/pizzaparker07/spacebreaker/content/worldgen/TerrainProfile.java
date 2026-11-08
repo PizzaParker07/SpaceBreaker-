@@ -145,7 +145,13 @@ public record TerrainProfile(ResourceLocation body, int baseHeight, double poleD
      * @param rayLength      length of bright rays in crater radii
      */
     public record Craters(List<CraterClass> classes, double density, double lowlandDensity, double depthRatio, double rimRatio,
-                          double complexRadius, double centralPeak, double freshChance, double rayLength) {
+                          double complexRadius, double centralPeak, double freshChance, double rayLength, double rayFill) {
+        /** Without {@code rayFill}: rays speckled as they always were (1). */
+        public Craters(List<CraterClass> classes, double density, double lowlandDensity, double depthRatio, double rimRatio,
+                       double complexRadius, double centralPeak, double freshChance, double rayLength) {
+            this(classes, density, lowlandDensity, depthRatio, rimRatio, complexRadius, centralPeak, freshChance, rayLength, 1.0);
+        }
+
         public static final Craters DEFAULT = new Craters(List.of(
                 new CraterClass(2.5, 7, 40, 0.55, 2),
                 new CraterClass(7, 18, 110, 0.5, 2),
@@ -161,7 +167,9 @@ public record TerrainProfile(ResourceLocation body, int baseHeight, double poleD
                 Codec.DOUBLE.optionalFieldOf("complex_radius", DEFAULT.complexRadius).forGetter(Craters::complexRadius),
                 Codec.DOUBLE.optionalFieldOf("central_peak", DEFAULT.centralPeak).forGetter(Craters::centralPeak),
                 Codec.DOUBLE.optionalFieldOf("fresh_chance", DEFAULT.freshChance).forGetter(Craters::freshChance),
-                Codec.DOUBLE.optionalFieldOf("ray_length", DEFAULT.rayLength).forGetter(Craters::rayLength)
+                Codec.DOUBLE.optionalFieldOf("ray_length", DEFAULT.rayLength).forGetter(Craters::rayLength),
+                // how densely ray soil fills a ray: 1 speckles it (the default); higher fills the strong inner part solid
+                Codec.DOUBLE.optionalFieldOf("ray_fill", DEFAULT.rayFill).forGetter(Craters::rayFill)
         ).apply(i, Craters::new));
     }
 

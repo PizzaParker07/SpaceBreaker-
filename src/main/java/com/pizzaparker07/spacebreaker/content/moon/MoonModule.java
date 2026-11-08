@@ -54,6 +54,8 @@ public final class MoonModule implements SbModule {
     public static final DeferredBlock<LunarRegolithBlock> MARE_REGOLITH = soil("mare_regolith", MapColor.COLOR_GRAY, SoundType.SAND, 0.6F);
     public static final DeferredBlock<LunarRegolithBlock> VOLCANIC_GLASS_SOIL = soil("volcanic_glass_soil", MapColor.COLOR_BROWN, SoundType.SAND, 0.6F);
     public static final DeferredBlock<LunarRegolithBlock> ICY_REGOLITH = soil("icy_regolith", MapColor.ICE, SoundType.SNOW, 0.8F);
+    /** Bright, unweathered ejecta of young craters: the rays and haloes that streak the Moon's surface. */
+    public static final DeferredBlock<LunarRegolithBlock> FRESH_REGOLITH = soil("fresh_regolith", MapColor.QUARTZ, SoundType.SAND, 0.6F);
 
     // ------------------------------------------------------------------ rocks
 
@@ -171,6 +173,7 @@ public final class MoonModule implements SbModule {
         order.add(MARE_REGOLITH);
         order.add(VOLCANIC_GLASS_SOIL);
         order.add(ICY_REGOLITH);
+        order.add(FRESH_REGOLITH);
         order.add(LUNAR_ICE);
         order.add(MARE_BASALT);
         order.addAll(ANORTHOSITE.all());
@@ -201,7 +204,7 @@ public final class MoonModule implements SbModule {
     }
 
     public static List<DeferredBlock<LunarRegolithBlock>> soils() {
-        return List.of(LUNAR_REGOLITH, MARE_REGOLITH, VOLCANIC_GLASS_SOIL, ICY_REGOLITH);
+        return List.of(LUNAR_REGOLITH, MARE_REGOLITH, VOLCANIC_GLASS_SOIL, ICY_REGOLITH, FRESH_REGOLITH);
     }
 
     public static List<StoneFamily> families() {
@@ -261,6 +264,7 @@ public final class MoonModule implements SbModule {
         lang.block(MARE_REGOLITH, "Mare Regolith", "Mare Regoliti");
         lang.block(VOLCANIC_GLASS_SOIL, "Volcanic Glass Soil", "Volkanik Cam Toprağı");
         lang.block(ICY_REGOLITH, "Icy Regolith", "Buzlu Regolit");
+        lang.block(FRESH_REGOLITH, "Fresh Regolith", "Taze Regolit");
         lang.block(LUNAR_ICE, "Lunar Ice", "Ay Buzu");
         lang.block(MARE_BASALT, "Mare Basalt", "Mare Bazaltı");
         familyNames(lang, ANORTHOSITE, "Anorthosite", "Anortozit");

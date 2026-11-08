@@ -190,8 +190,8 @@ public class PlanetChunkGenerator extends ChunkGenerator {
             soil = mat.polarSoil().get();
         } else if (c.volcanic && mat.volcanicSoil().isPresent()) {
             soil = mat.volcanicSoil().get();
-        } else if (c.ray > 0 && PlanetTerrain.unit(h, 1) < Math.min(1, c.ray * 1.5)) {
-            // speckled: dense near the crater, sparse and fading toward the ray tips
+        } else if (c.ray > 0 && PlanetTerrain.unit(h, 1) < Math.min(1, c.ray * 1.5 * p.craters().rayFill())) {
+            // speckled: dense near the crater, sparse and fading toward the ray tips (a ray fill over 1 makes the inner part solid)
             soil = mat.raySoil();
         } else {
             soil = lowland ? mat.lowlandSoil() : mat.highlandSoil();

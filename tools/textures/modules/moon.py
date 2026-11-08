@@ -113,6 +113,10 @@ def mare_regolith(variant=0):
     return soil(mare_ramp(), 211 + variant * 41)
 
 
+def fresh_regolith(variant=0):
+    return soil(list(P.FRESH_SOIL), 271 + variant * 43)
+
+
 def volcanic_glass_soil(variant=0):
     r = P.VOLCANIC_GLASS
     tones = [r[1], r[2], r[3], r[4], r[5]]
@@ -591,6 +595,7 @@ def export(save):
         'mare_regolith': (mare_regolith, mare_ramp()),
         'volcanic_glass_soil': (volcanic_glass_soil, [P.VOLCANIC_GLASS[i] for i in (1, 2, 3, 4, 5, 5)]),
         'icy_regolith': (icy_regolith, [regolith_ramp()[i] for i in (1, 1, 2, 3, 4, 4)]),
+        'fresh_regolith': (fresh_regolith, list(P.FRESH_SOIL)),
     }
     for name, (fn, ramp6) in soils.items():
         base = fn(0)

@@ -11,6 +11,8 @@ REGOLITH_SOIL = ramp('#5c5a56', '#74726d', '#7c7a75', '#85837e', '#8e8c86', '#99
 # Mare regolith: the dark soil of the lunar seas (basalt dust + glass).
 MARE_REGOLITH = ramp('#353432', '#3f3e3c', '#494846', '#53524f', '#5e5c59', '#6a6865', '#777571')
 # Mare soil tones (bead, then five powder tones).
+# fresh ejecta of young craters: immature regolith, clearly brighter and a touch bluer than the highland soil
+FRESH_SOIL = ramp('#8a8c8e', '#a2a4a6', '#acaeb0', '#b6b8ba', '#c0c2c4', '#cdd0d3')
 MARE_SOIL = ramp('#2f2e2c', '#454441', '#4c4b48', '#53524f', '#5b5a56', '#64625e')
 # Orange volcanic glass soil (pyroclastic glass beads) + black beads.
 VOLCANIC_GLASS = ramp('#1d1a18', '#3f3832', '#4b423a', '#574c42', '#63564a', '#706152')
