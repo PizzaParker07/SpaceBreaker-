@@ -1957,7 +1957,7 @@
   "tech.spacebreaker.kuiper_belt_navigation": "Kuiper Kuşağı Seyrüseferi",
   "tech.spacebreaker.kuiper_belt_navigation.desc": "Güneş'e Dünya'dan kırk kat uzak; ışık eve beş saatte ulaşır: kendi başına, yıldızlarla ve Charon'un üstünde kıpırdamadan duran Plüton'la yön bul.",
   "tech.spacebreaker.landing_systems": "İniş Sistemleri",
-  "tech.spacebreaker.landing_systems.desc": "Isı kalkanı, paraşüt ve iniş bacakları: inmek de çıkmak kadar zordur.",
+  "tech.spacebreaker.landing_systems.desc": "Ablatif levhalardan ısı kalkanı, paraşüt ve iniş bacakları: inmek de çıkmak kadar zordur.",
   "tech.spacebreaker.launch_infrastructure": "Fırlatma Altyapısı",
   "tech.spacebreaker.launch_infrastructure.desc": "Rampa, alev kanalı ve servis kulesi: bir roketi ateşlemek için güvenli bir yer.",
   "tech.spacebreaker.liquid_fuel_engines": "Sıvı Yakıtlı Motorlar",
