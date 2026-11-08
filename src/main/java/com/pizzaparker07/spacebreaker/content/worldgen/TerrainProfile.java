@@ -55,8 +55,8 @@ public record TerrainProfile(ResourceLocation body, int baseHeight, double poleD
      * @param detailAmplitude small bumps everywhere
      * @param detailScale     size of the small bumps
      * @param roughness       fine, block-scale unevenness that breaks smooth slopes into ragged, natural steps (0 = none)
-     * @param lowlandSmoothing share (0..1) of the fine detail and roughness taken away on lowland floors, so the plains
-     *                        lie smoother than the highlands (0 = the same everywhere)
+     * @param lowlandSmoothing share (0..1) of the roughness taken away on lowland floors (and about half that share of
+     *                        the broad detail), so the plains lie smoother than the highlands (0 = the same everywhere)
      */
     public record Relief(double amplitude, double scale, double detailAmplitude, double detailScale, double roughness,
                          double lowlandSmoothing) {

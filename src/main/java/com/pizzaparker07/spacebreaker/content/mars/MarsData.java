@@ -241,6 +241,8 @@ public final class MarsData {
         ctx.register(cf("mars_boulder"), boulder(0.8F, 1.9F, 0.45F, basalt, 6, mudstone, 1));
         ctx.register(cf("mars_boulder_sediment"), boulder(0.8F, 1.7F, 0.5F, sandstone, 4, mudstone, 2));
         ctx.register(cf("mars_boulder_large"), boulder(2.0F, 3.4F, 0.4F, basalt, 3, sandstone, 2));
+        // small dark rocks strewn in loose clusters over the plains
+        ctx.register(cf("mars_rock_cluster"), boulder(0.5F, 1.1F, 0.5F, basalt, 5, mudstone, 1));
         ctx.register(cf("mars_meteorite"), boulder(0.6F, 1.1F, 0.6F, MarsModule.meteorite().defaultBlockState(), 1));
         ctx.register(cf("moonlet_boulder"), boulder(0.7F, 1.6F, 0.5F, s(MarsModule.CARBONACEOUS_CHONDRITE), 1));
         ctx.register(cf("mars_ice_boulder"), boulder(0.8F, 1.6F, 0.5F, s(MarsModule.DRY_ICE), 2, s(MarsModule.MARTIAN_ICE), 3));
@@ -269,6 +271,10 @@ public final class MarsData {
         placed(ctx, "mars_boulder_rare", "mars_boulder", RarityFilter.onAverageOnceEvery(9), InSquarePlacement.spread(), top, BiomeFilter.biome());
         placed(ctx, "mars_boulder_sediment", "mars_boulder_sediment", RarityFilter.onAverageOnceEvery(3), InSquarePlacement.spread(), top, BiomeFilter.biome());
         placed(ctx, "mars_boulder_large", "mars_boulder_large", RarityFilter.onAverageOnceEvery(4), InSquarePlacement.spread(), top, BiomeFilter.biome());
+        // a cluster: in one chunk of four, a handful of small rocks close together
+        placed(ctx, "mars_rock_cluster", "mars_rock_cluster", RarityFilter.onAverageOnceEvery(4), CountPlacement.of(5),
+                net.minecraft.world.level.levelgen.placement.RandomOffsetPlacement.horizontal(net.minecraft.util.valueproviders.UniformInt.of(-4, 4)),
+                top, BiomeFilter.biome());
         placed(ctx, "mars_meteorite", "mars_meteorite", RarityFilter.onAverageOnceEvery(70), InSquarePlacement.spread(), top, BiomeFilter.biome());
         placed(ctx, "mars_ice_boulder", "mars_ice_boulder", RarityFilter.onAverageOnceEvery(5), InSquarePlacement.spread(), top, BiomeFilter.biome());
         placed(ctx, "moonlet_boulder", "moonlet_boulder", RarityFilter.onAverageOnceEvery(4), InSquarePlacement.spread(), top, BiomeFilter.biome());
@@ -289,7 +295,7 @@ public final class MarsData {
     /** Features in one fixed order: every biome must list shared features in the same order (vanilla rule). */
     private static final List<String> ORE_ORDER = List.of("mars_clay_lens", "mars_ore_hematite", "mars_ore_hematite_rich", "mars_ore_gypsum",
             "mars_ice_vein", "mars_buried_iron");
-    private static final List<String> SURFACE_ORDER = List.of("mars_boulder_large", "mars_boulder", "mars_boulder_rare", "mars_boulder_sediment",
+    private static final List<String> SURFACE_ORDER = List.of("mars_boulder_large", "mars_boulder", "mars_boulder_rare", "mars_rock_cluster", "mars_boulder_sediment",
             "mars_ice_boulder", "mars_meteorite", "moonlet_boulder");
 
     private static Consumer<BiomeGenerationSettings.Builder> features(HolderGetter<PlacedFeature> pf, String... wanted) {
@@ -304,9 +310,9 @@ public final class MarsData {
         HolderGetter<PlacedFeature> pf = ctx.lookup(Registries.PLACED_FEATURE);
         HolderGetter<ConfiguredWorldCarver<?>> carvers = ctx.lookup(Registries.CONFIGURED_CARVER);
         ctx.register(HIGHLANDS, marsBiome(pf, carvers, HIGHLANDS, -0.6F, features(pf, "mars_ore_hematite", "mars_ore_gypsum", "mars_buried_iron",
-                "mars_boulder", "mars_meteorite")));
+                "mars_boulder_large", "mars_boulder", "mars_rock_cluster", "mars_meteorite")));
         ctx.register(PLAINS, marsBiome(pf, carvers, PLAINS, -0.6F, features(pf, "mars_ore_hematite_rich", "mars_ice_vein", "mars_boulder_rare",
-                "mars_meteorite")));
+                "mars_rock_cluster", "mars_meteorite")));
         ctx.register(CRATER, marsBiome(pf, carvers, CRATER, -0.6F, features(pf, "mars_ore_hematite", "mars_ore_gypsum", "mars_buried_iron",
                 "mars_boulder_large", "mars_boulder", "mars_meteorite")));
         ctx.register(POLAR, marsBiome(pf, carvers, POLAR, -1.2F, features(pf, "mars_ore_hematite", "mars_ice_vein", "mars_boulder_rare",

@@ -26,7 +26,9 @@
     [],
     [],
     [
+      "spacebreaker:mars_boulder_large",
       "spacebreaker:mars_boulder",
+      "spacebreaker:mars_rock_cluster",
       "spacebreaker:mars_meteorite"
     ],
     [],
