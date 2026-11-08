@@ -80,6 +80,10 @@ karşılar, yanmalı jeneratörle pratik değil. Seçenekler (roketçiliğin kar
 - Sıvı hidrojen sıvılaştırması **160 → 100 FE/t** oldu (sanayi, `liquefaction/hydrogen`, 80 tick). 1000 mB H₂ → 250 mB LH₂
   artık 8 k FE (önce 12,8 k). Nükleer transfer aracının 24 t LH₂'si yaklaşık 17 M FE'ye iniyor: sıvılaştırma ~10,8 M,
   elektroliz ~6,5 M. Bu geç oyun hedefi; birkaç fisyon ünitesiyle birkaç günde dolması kabul edildi.
-- Tank sınırı yok.
+- Tank sınırı yok; bunun yerine nükleer motorlu gemide tanklar kütlece **yarı dolu** sıvı hidrojen taşıyor
+  (roketçilik 9937409e, `ShipDesign.HYDROGEN_FILL = 0.5`). Transfer aracında 24 t yerine 12 t LH₂ (≈ 169 000 mB):
+  100 FE/t ile sıvılaştırma ~5,4 M + elektroliz ~3,3 M ≈ **8,7 M FE**; Δv 10,1 → 6,4 km/s.
+- Kimyasal ve nükleer motor aynı gemide kullanılamıyor (tek yakıt türü).
+- Tersane parça maliyetini §3 tablosundan gösteriyor (`ShipCost`); transfer aracı ≈ 1163 k FE, yakıt elemanı hariç.
 - İlk geminin boyunu roketçilik kendi ölçüsünde düzeltecek.
 - Ablatif levha ısı kalkanında (roketçilik 7ffa605d).
