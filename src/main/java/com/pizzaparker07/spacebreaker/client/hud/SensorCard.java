@@ -83,6 +83,9 @@ public final class SensorCard {
         return p >= 1 ? String.format(Locale.ROOT, "%.0f%%", p) : String.format(Locale.ROOT, "%.2f%%", p);
     }
 
+    /** Below this GUI width the card's text is drawn at 3/4 size. */
+    private static final int NARROW = 520;
+
     static void render(GuiGraphics g, DeltaTracker delta) {
         Minecraft mc = Minecraft.getInstance();
         if (reading == null || mc.level == null || mc.options.hideGui) {
@@ -95,23 +98,44 @@ public final class SensorCard {
         }
         float alpha = age > SHOW_TICKS - FADE_TICKS ? (SHOW_TICKS - age) / (float) FADE_TICKS : 1F;
         Font font = mc.font;
-        List<Component> lines = lines(reading);
-        int w = 0;
-        for (Component c : lines) {
-            w = Math.max(w, font.width(c));
-        }
-        w += 10;
-        int h = lines.size() * 10 + 6;
-        // top left: the top right is where advancement toasts appear
+        // top left (the top right is where advancement toasts appear), no wider than the space left of a
+        // block-info box at the top centre: long lines wrap; on narrow screens the text is drawn at 3/4 size, and the
+        // card never runs down into the arrival title and subtitle (overflowing rows end in "…")
+        float scale = g.guiWidth() < NARROW ? 0.75F : 1F;
         int x = 6;
-        int y = HelmetRadio.showing() ? 22 : 6;
+        int y = HelmetRadio.bottom();
+        int maxText = Math.round((HelmetRadio.maxPanelWidth(g.guiWidth()) - 10) / scale);
+        int maxRows = Math.max(2, (int) ((g.guiHeight() - 80 - y - 6) / (10 * scale)));
+        List<net.minecraft.util.FormattedCharSequence> lines = new ArrayList<>();
+        List<Boolean> title = new ArrayList<>();
+        List<Component> source = lines(reading);
+        for (int i = 0; i < source.size(); i++) {
+            for (var row : font.split(source.get(i), maxText)) {
+                lines.add(row);
+                title.add(i == 0);
+            }
+        }
+        if (lines.size() > maxRows) {
+            lines = new ArrayList<>(lines.subList(0, maxRows - 1));
+            lines.add(Component.literal("…").getVisualOrderText());
+            title = title.subList(0, maxRows);
+        }
+        int textW = 0;
+        for (var c : lines) {
+            textW = Math.max(textW, font.width(c));
+        }
+        int w = Math.round(textW * scale) + 10;
+        int h = Math.round(lines.size() * 10 * scale) + 6;
         g.fill(x, y, x + w, y + h, argb(0x000000, 0.6F * alpha));
         g.fill(x, y, x + w, y + 1, argb(0x36B1C0, alpha));
-        int ly = y + 4;
+        var pose = g.pose();
+        pose.pushPose();
+        pose.translate(x + 5, y + 4, 0);
+        pose.scale(scale, scale, 1F);
         for (int i = 0; i < lines.size(); i++) {
-            g.drawString(font, lines.get(i), x + 5, ly, argb(i == 0 ? 0x9FE3EA : 0xE6E6E6, alpha), true);
-            ly += 10;
+            g.drawString(font, lines.get(i), 0, i * 10, argb(title.get(i) ? 0x9FE3EA : 0xE6E6E6, alpha), true);
         }
+        pose.popPose();
     }
 
     private static int argb(int rgb, float a) {
