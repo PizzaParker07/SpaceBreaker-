@@ -198,29 +198,47 @@ public class RoverModel extends EntityModel<RoverEntity> {
         if (st.cabin()) {
             // closed cabin over both seats: thin walls whose windows are cut out of the texture, so the crew shows
             body.addOrReplaceChild("cabin", CubeListBuilder.create()
-                    .texOffs(0, 140).addBox(-hw, -11F, -16F, 2 * hw, 1F, 32F)              // roof
-                    .texOffs(110, 140).addBox(-hw, -10F, -16F, 1F, 23F, 32F)               // side walls
-                    .texOffs(110, 140).addBox(hw - 1, -10F, -16F, 1F, 23F, 32F)
-                    .texOffs(180, 140).addBox(-hw + 1, -10F, -16F, 2 * hw - 2, 23F, 1F)    // windscreen wall
-                    .texOffs(180, 170).addBox(-hw + 1, -10F, 15F, 2 * hw - 2, 23F, 1F),    // rear wall
+                    // the cabin sits 2 px forward of the seats' centre so a seated driver's boots stay inside the windscreen wall
+                    .texOffs(0, 140).addBox(-hw, -11F, -18F, 2 * hw, 1F, 32F)              // roof
+                    .texOffs(110, 140).addBox(-hw, -10F, -18F, 1F, 23F, 32F)               // side walls
+                    .texOffs(110, 140).addBox(hw - 1, -10F, -18F, 1F, 23F, 32F)
+                    .texOffs(180, 140).addBox(-hw + 1, -10F, -18F, 2 * hw - 2, 23F, 1F)    // windscreen wall
+                    .texOffs(180, 170).addBox(-hw + 1, -10F, 13F, 2 * hw - 2, 23F, 1F),    // rear wall
                     PartPose.ZERO);
             // low dashboard across the cabin under the windscreen, below the crew's eye line, with three lamps on it
-            body.addOrReplaceChild("dash", CubeListBuilder.create().texOffs(130, 200).addBox(-hw + 1, -1F, -15F, 2 * hw - 2, 2F, 3F), PartPose.ZERO);
+            body.addOrReplaceChild("dash", CubeListBuilder.create().texOffs(130, 200).addBox(-hw + 1, -1F, -17F, 2 * hw - 2, 2F, 3F), PartPose.ZERO);
             for (int i = 0; i < 3; i++) {
                 body.addOrReplaceChild("dash_lamp" + i, CubeListBuilder.create().texOffs(160 + i * 4, 210)
-                        .addBox(-hw + 3.2F + i * 1.6F, -1.5F, -14.2F, 0.6F, 0.5F, 0.6F), PartPose.ZERO);
+                        .addBox(-hw + 3.2F + i * 1.6F, -1.5F, -16.2F, 0.6F, 0.5F, 0.6F), PartPose.ZERO);
             }
         }
         if (st.floats()) {
-            // sealed floats along both sides, outside the wheels, and a propeller at the stern
+            // full sealed floats along both sides, outside the wheels; a raked bow plate that throws the wave aside,
+            // a big stern propeller and a rudder fin behind it
             for (int sd = -1; sd <= 1; sd += 2) {
                 body.addOrReplaceChild("float_" + (sd < 0 ? "l" : "r"), CubeListBuilder.create()
-                        .texOffs(0, 200).addBox(-1.5F, -2F, -18F, 3F, 4F, 36F), PartPose.offset((st.wheelX() + 4.5F) * sd, 15F, 0F));
+                        .texOffs(0, 200).addBox(-2F, -2.5F, -19F, 4F, 5F, 38F), PartPose.offset((st.wheelX() + 5F) * sd, 15F, 0F));
             }
+            body.addOrReplaceChild("bow", CubeListBuilder.create().texOffs(180, 215).addBox(-hw + 1, 0F, -4F, 2 * hw - 2, 1F, 4F),
+                    PartPose.offsetAndRotation(0F, 17F, -23F, -0.6F, 0F, 0F));
             body.addOrReplaceChild("propeller", CubeListBuilder.create()
                     .texOffs(90, 200).addBox(-1F, -1F, -1F, 2F, 2F, 2F)
-                    .texOffs(100, 200).addBox(-0.5F, -3.5F, -0.3F, 1F, 7F, 0.6F)
-                    .texOffs(100, 200).addBox(-3.5F, -0.5F, -0.3F, 7F, 1F, 0.6F), PartPose.offset(0F, 18F, 31F));
+                    .texOffs(100, 200).addBox(-0.5F, -5F, -0.3F, 1F, 10F, 0.6F)
+                    .texOffs(100, 200).addBox(-5F, -0.5F, -0.3F, 10F, 1F, 0.6F), PartPose.offset(0F, 18F, 31F));
+            body.addOrReplaceChild("rudder", CubeListBuilder.create().texOffs(190, 225).addBox(-0.5F, -2F, 0F, 1F, 5F, 4F),
+                    PartPose.offset(0F, 16F, 32F));
+        }
+        if (st.equals(SPRINT)) {
+            // the sprint rover: a red roll hoop between the seats with a bar of four rally lamps on top
+            for (int sd = -1; sd <= 1; sd += 2) {
+                body.addOrReplaceChild("hoop_" + (sd < 0 ? "l" : "r"), CubeListBuilder.create()
+                        .texOffs(130, 220).addBox(-0.5F, -17F, -0.5F, 1F, 17F, 1F), PartPose.offset((hw - 1.5F) * sd, 12F, 3F));
+            }
+            CubeListBuilder bar = CubeListBuilder.create().texOffs(140, 220).addBox(-hw + 1, -6F, 2.5F, 2 * hw - 2, 1F, 1F);
+            for (int i = 0; i < 4; i++) {
+                bar.texOffs(140, 226).addBox(-4.5F + i * 2.5F, -7F, 2F, 1.5F, 1F, 1F);
+            }
+            body.addOrReplaceChild("hoop_bar", bar, PartPose.ZERO);
         }
         // the solar panel: flat on posts over the rear deck, behind the passenger's head; on the roof of a cabin
         CubeListBuilder solar = CubeListBuilder.create().texOffs(0, 72).addBox(-12F, st.panelTop(), st.panelFront(), 24F, 1F, 16F);

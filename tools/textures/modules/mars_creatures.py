@@ -73,75 +73,74 @@ def beetle():
     return cv
 
 
+HIDE = ramp('#4a3a2e', '#5e4a3a', '#735b47', '#896d55', '#9d7f63', '#b09272')
+ROCK = ramp('#2f2a28', '#3f3834', '#514842', '#635850', '#76695f', '#897b6f')
+RUST = ramp('#5a2a18', '#7a3a20', '#9a4e2a')
+MOUTH = ramp('#3a1a0c', '#6a3010')
+
+
 def grazer():
-    """Stonegrazer: dusty grey-brown hide, a back armoured with rust-red plates in rows, a heavy blunt head."""
+    """Stonegrazer: a sandy hide under shingled grey rock plates flecked with rust, a wedge head with small amber eyes
+    and a wide dark scraper jaw with a pale cutting edge (the mouth inside dark orange)."""
     cv = Canvas(128, 64)
     n = clustered(128, 64, 51, passes=1)
 
     def body(face, x, y, fw, fh):
         if face == 'top':
-            return noise_pick(GRAZER, 3, n, x, y)
+            return noise_pick(ROCK, 2, n, x, y)
         if face == 'bottom':
-            return noise_pick(GRAZER, 1, n, x + 40, y)
-        # flank: lighter top, wrinkles as darker vertical folds
-        t = 4 if y < 2 else (3 if y < fh - 3 else 2)
-        if x % 5 == 0 and 2 < y < fh - 2:
-            t -= 1
-        return noise_pick(GRAZER, t, n, x + 7, y + 22)
+            return noise_pick(HIDE, 1, n, x + 40, y)
+        t = 4 if y < 2 else (3 if y < fh - 2 else 2)
+        if x % 6 == 0 and 1 < y < fh - 1:
+            t -= 1  # skin folds
+        return noise_pick(HIDE, t, n, x + 7, y + 22)
 
-    paint(cv, 0, 0, 14, 10, 22, body)
+    paint(cv, 0, 0, 16, 8, 22, body)
 
     def plates(face, x, y, fw, fh):
-        # each dorsal plate: a lit rim on top, weathered rust-red sides fading darker toward the base
         if face == 'top':
-            return PLATE[5] if y == 0 else (PLATE[4] if x not in (0, fw - 1) else PLATE[3])
+            if y == 0:
+                return ROCK[5]  # lit leading edge
+            if (x * 7 + y * 3) % 11 == 0:
+                return RUST[2]
+            return noise_pick(ROCK, 3, n, x + 3, y + 5)
         if face == 'bottom':
-            return PLATE[0]
+            return ROCK[0]
         if y == 0:
-            return PLATE[4]
-        t = 3 if y < fh // 2 else 2
-        if face in ('left', 'right') and (x + y) % 3 == 0:
-            t -= 1
-        return PLATE[max(1, t)]
+            return ROCK[4]
+        return RUST[1] if (x + y) % 5 == 0 else ROCK[2]
 
-    paint(cv, 0, 32, 6, 4, 4, plates)
+    paint(cv, 0, 32, 17, 2, 5, plates)
 
     def head(face, x, y, fw, fh):
         if face == 'front':
-            if y in (2,) and x in (1, fw - 2):
-                return CHITIN[0]  # small deep-set eyes
-            if y in (2,) and x in (2, fw - 3):
-                return GRAZER[5]
-            if y >= fh - 2:
-                return GRAZER[1] if x % 2 else GRAZER[2]  # grinding lips
-            return noise_pick(GRAZER, 3 if y < 2 else 2, n, x + 90, y)
+            if y == 1 and x in (1, fw - 2):
+                return EYE[2]
+            if y == 1 and x in (2, fw - 3):
+                return EYE[1]
+            return noise_pick(HIDE, 3 if y < 2 else 2, n, x + 90, y)
         if face == 'top':
-            return PLATE[4] if y % 3 == 0 else PLATE[3]
-        return noise_pick(GRAZER, 2, n, x + 60, y + 40)
+            return ROCK[3] if y % 2 == 0 else ROCK[2]
+        return noise_pick(HIDE, 2, n, x + 60, y + 40)
 
-    paint(cv, 72, 0, 8, 7, 8, head)
+    paint(cv, 80, 0, 10, 6, 6, head)
+
+    def jaw(face, x, y, fw, fh):
+        if face == 'top':
+            return MOUTH[1] if y > 0 else ROCK[5]  # inside the mouth, the cutting edge at the front
+        if face == 'front':
+            return ROCK[5] if y == 0 else ROCK[1]
+        return ROCK[1] if y else ROCK[2]
+
+    paint(cv, 80, 14, 12, 2, 5, jaw)
+    paint(cv, 80, 24, 4, 3, 5, lambda f, x, y, fw, fh: ROCK[3] if f == 'top' else noise_pick(HIDE, 2, n, x + 110, y + 50))
 
     def leg(face, x, y, fw, fh):
-        if y >= fh - 2:
-            return GRAZER[0] if y == fh - 1 else GRAZER[1]  # broad padded foot
-        return noise_pick(GRAZER, 3 if face in ('front', 'left') else 2, n, x + 100, y + 10)
+        if y >= fh - 1:
+            return ROCK[1]  # horny foot rim
+        return noise_pick(HIDE, 3 if face in ('front', 'left') else 2, n, x + 100, y + 10)
 
-    paint(cv, 72, 16, 4, 10, 4, leg)
-
-    def snout(face, x, y, fw, fh):
-        if face == 'front':
-            if y == 1 and x in (1, fw - 2):
-                return GRAZER[0]  # nostrils
-            if y == fh - 1:
-                return GRAZER[1] if x % 2 else GRAZER[2]  # grinding lips
-            return noise_pick(GRAZER, 4 if y == 0 else 3, n, x + 80, y + 50)
-        if face == 'top':
-            return noise_pick(GRAZER, 4, n, x + 85, y + 55)
-        return noise_pick(GRAZER, 2, n, x + 90, y + 58)
-
-    paint(cv, 104, 0, 6, 4, 3, snout)
-    paint(cv, 104, 10, 1, 3, 1, lambda f, x, y, fw, fh: GRAZER[6] if y == 0 else (GRAZER[5] if f in ('front', 'left') else GRAZER[4]))
-    paint(cv, 72, 30, 3, 3, 6, lambda f, x, y, fw, fh: noise_pick(GRAZER, 2, n, x + 110, y + 50))
+    paint(cv, 100, 24, 5, 6, 5, leg)
     return cv
 
 

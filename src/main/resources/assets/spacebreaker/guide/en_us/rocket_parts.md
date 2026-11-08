@@ -43,7 +43,7 @@ The {item spacebreaker:nuclear_thermal_engine} ({tech spacebreaker:nuclear_therm
 
 >! While it burns it is a **radiation source**: the dose falls with the square of the distance, and the shadow shield above the engine protects the crew. Cold (with fresh fuel), it is safe. Its exhaust is almost invisible: a faint bluish-violet glow.
 
-Its recipe takes a nuclear fuel element, radiation shielding plate for the shadow shield (depleted uranium or tungsten), nickel superalloy, titanium plate and a hydrolox vacuum engine. → [Nuclear Fuel](nuclear_fuel)
+Its recipe takes a fresh nuclear fuel element (a partly burned one is refused), radiation shielding plate for the shadow shield (depleted uranium or tungsten), nickel superalloy, titanium plate and a hydrolox vacuum engine. → [Nuclear Fuel](nuclear_fuel)
 {recipe spacebreaker:rocketry/nuclear_thermal_engine}
 
 The assembler shows each stage's fuel type and Δv.

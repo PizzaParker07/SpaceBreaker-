@@ -13,7 +13,7 @@ research: spacebreaker:interplanetary_transfers
 > [!WARNING]
 > Kenarlara yakın zıplarken dikkat et: yerçekimi o kadar düşük ki yere dönmen uzun sürer.
 
-Phobos'a düşmüş eski bir sonda, Deimos'ta ise bir buz deposu var. → [Gezegenlerdeki Harabeler](planet_ruins)
+Phobos'ta küçük, sekizgen bir numune dönüş kapsülü burnuyla çarpma çukuruna gömülü yatar; kapağı patlamış, bir güneş kanadı hâlâ kolunda. Numune kasası bir {item spacebreaker:supply_locker}. Deimos'ta alüminyum panellerle kaplı, LED'le aydınlatılmış ve projektörlü bir direkle işaretlenmiş bir buz deposu saklıdır. → [Gezegenlerdeki Harabeler](planet_ruins)
 
 {page}
 ## Stickney krateri
@@ -23,7 +23,7 @@ Phobos'un dev krateri iniş noktasının yaklaşık **320 blok doğusunda**: **4
 > {item spacebreaker:safety_tether}: bir bloğa kullan, kemerinden o bloğa halat takılır; uzaklaşıp sürüklenemezsin. Çözmek için yeniden kullan.
 
 ## Deimos Röle Kulesi
-Bir kaya iğnesinin tepesinde eski bir röle ve veri kasası. Çevresinde spiral şeklinde **12 kaya yığını** var: her biri bir öncekinden 2 blok yüksek ve 4 bloktan uzak. Dünya'da aşılamaz, ama Deimos'ta bir zıplama saniyelerce sürer.
+Bir kaya iğnesinin tepesinde eski bir röle durur: göğe bakan çanaklı ve LED işaret ışıklı kafes bir direk, folyoya sarılı bir verici ve bir malzeme dolabındaki veri kasası. İğnenin yüzünden aşağıya bir kablo iner; dipte çanaklı ve projektörlü küçük bir yer istasyonu vardır. Çevresinde spiral şeklinde **12 kaya yığını** var: her biri bir öncekinden 2 blok yüksek ve 4 bloktan uzak. Dünya'da aşılamaz, ama Deimos'ta bir zıplama saniyelerce sürer.
 
 > Zıpla ve havadayken yön ver: kayaları basamak basamak çık.
 

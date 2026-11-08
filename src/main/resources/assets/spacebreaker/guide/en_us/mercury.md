@@ -35,7 +35,11 @@ The floors of the polar craters lie in permanent shadow: a **cold trap** at abou
 > **Fuel on Mercury:** graphite + oxygen → CO₂ (chemical reactor); CO₂ + hydrogen → methane (Sabatier reactor). That tops up methalox fuel on the spot. → [In-Situ Resources](isru)
 
 ## The ice mine
-An abandoned ice mine lies in one of these craters. Its store is **sealed with ice**: dig through. The pressure plate in the corridor sprays powder snow.
+An abandoned ice mine lies in one of these craters. On the crater floor stand a steel lattice head frame with its sheave, a floodlight mast and a control hut. Below, a drift runs through dust-banded ice under steel arches, past rails, cable ducts and LEDs (some dead) to a stalled cutter at the face, with a melt room of tanks and an electrolyser and {item spacebreaker:supply_locker}s for the loot.
+- The store is **sealed with ice**: dig through.
+- A pressure plate in the drift makes a dispenser in the floor throw powder snow.
+- Old maintenance drones still patrol the drift.
+- The last-shift sign tells you what happened.
 
 {entity spacebreaker:terminator_crawler}
 ## Terminator Crawler

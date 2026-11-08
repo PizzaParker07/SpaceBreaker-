@@ -1,6 +1,6 @@
 {
   "type": "spacebreaker:regolith_processing",
-  "energy": 120,
+  "energy": 80,
   "fluid_results": [
     {
       "amount": 250,

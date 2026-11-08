@@ -360,24 +360,32 @@ def centrifuge_tube():
 
 
 def yellowcake():
-    """Uranium oxide concentrate: a heap of yellow-orange powder."""
+    """Uranium oxide concentrate: a matte heap of orange-yellow granules (no metallic glint, unlike gold dust)."""
+    import random as _r
     from modules.industry_shapes import dust
-    cake = [(98, 70, 18), (128, 94, 24), (160, 120, 30), (190, 148, 40), (214, 172, 52), (232, 196, 80), (244, 216, 120), (250, 232, 160)]
-    return dust(cake, seed=17)
+    cake = [(92, 56, 14), (122, 76, 18), (152, 98, 24), (180, 120, 30), (202, 140, 38), (218, 158, 50), (226, 170, 62), (232, 180, 74)]
+    cv = dust(cake, seed=17)
+    rng = _r.Random(23)
+    # granules: dark pits and small lit lumps across the heap
+    for y in range(7, 13):
+        for x in range(2, 15):
+            if cv.alpha(x, y) and rng.random() < 0.22:
+                cv[x, y] = cake[2] if rng.random() < 0.6 else cake[6]
+    return cv
 
 
 def enriched_uranium():
-    """Enriched uranium: a dark metal ingot with a faint green sheen."""
+    """Enriched uranium: a bright, clearly green ingot with a glint."""
     from sbtex.shapes import ingot
-    green = [(24, 32, 24), (36, 50, 34), (50, 70, 46), (66, 92, 58), (84, 116, 70), (104, 140, 84), (130, 166, 104), (168, 196, 140)]
+    green = [(20, 36, 20), (30, 58, 30), (44, 84, 40), (60, 112, 52), (80, 142, 64), (104, 172, 80), (136, 200, 104), (184, 230, 150)]
     return ingot(green)
 
 
 def depleted_uranium():
-    """Depleted uranium: a dull, very dense grey ingot."""
+    """Depleted uranium: a dull, very dense near-grey ingot, no glint and barely a trace of green."""
     from sbtex.shapes import ingot
-    from sbtex import palettes as PP
-    return ingot(PP.URANIUM, glint=False)
+    dull = [(18, 19, 18), (28, 29, 28), (40, 42, 40), (54, 56, 53), (68, 71, 67), (84, 87, 82), (100, 103, 97), (118, 121, 114)]
+    return ingot(dull, glint=False)
 
 
 _export_isru_centrifuge = export
