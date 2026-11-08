@@ -394,6 +394,17 @@ environment; the plugins compile against both APIs and the line itself is covere
   cockpit HUDs sit where the vanilla attack indicator goes in its "hotbar" mode; the helmet radio and sensor card at
   the top left grow with their text and can reach under a centred Jade/WTHIT box on narrow screens (the box stays on
   top, `InfoOverlayDepth`). Jade/WTHIT themselves were not run here.
+- **Dynamic lights, round 32 (2026-11-08):** helmet lamps (wide and long beam) and rover headlights with
+  LambDynamicLights 4.8.11, vanilla and Complementary (`dynlights_lamps_headlights.jpg`: columns no LDL, LDL, LDL +
+  pack). Both give real block light along the beams; the fallback pools are off. With LDL the long beam lights the
+  ground near the wearer much like the wide one (block light falls off over ~15 blocks), so the narrow far pool of
+  the fallback is not reproduced.
+- **Distant Horizons and the new structures:** not run here this time (starting the client with the downloaded DH
+  jar was not permitted in this environment). The showcase has `-Pretreat=N` for it: after each shot a second one from
+  N blocks back, looking at the same spot with a 6-chunk view distance (`<name>_far`), e.g.
+  `-Pscenario=moon '-Pshots=30_.*' -Pretreat=300 -PwithCompat=true` with DH in `run-mods`. Expected: the outposts are
+  StructurePieces, so DH shows them in LODs once their chunks have been generated (visited); DH's own far generation
+  in its default FEATURES mode does not place structures.
 - **Outline boxes (`RenderType.lines()`):** Iris's line programs widen each segment in screen space, so an edge
   that runs behind the camera becomes a large flat quad across the view (seen as a lavender square over the station
   core while holding a docking module: the outline reaches back past the player). `compat.client.ClippedLines` cuts

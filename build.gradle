@@ -90,6 +90,7 @@ neoForge {
                     '--height', (project.findProperty('shotHeight') ?: '1080').toString(), '--username', 'PizzaParker07'
             systemProperty 'spacebreaker.guiScale', (project.findProperty('guiScale') ?: '-1').toString()
             systemProperty 'spacebreaker.offhand', (project.findProperty('offhand') ?: '').toString()
+            systemProperty 'spacebreaker.retreat', (project.findProperty('retreat') ?: '0').toString()
             jvmArguments.addAll '-Xmx3G'
         }
 
