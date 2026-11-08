@@ -94,6 +94,7 @@ public final class ShowcaseScenarios {
         ALL.put("perf_outer", new OuterPerfScenario());
         ALL.put("outer_creatures", new OuterCreaturesScenario());
         ALL.put("moon_creatures", new MoonCreaturesScenario());
+        ALL.put("outer_survey", new OuterSurveyScenario());
         ALL.put("scan_outer", new OuterScanScenario());
         ALL.put("triton", new TritonScenario());
         ALL.put("pluto", new PlutoScenario(false));
