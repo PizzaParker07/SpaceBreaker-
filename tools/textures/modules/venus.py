@@ -330,39 +330,62 @@ def export(save):
 from modules.moon_creatures import paint, noise_pick  # noqa: E402
 
 ACID = ramp('#3e3a1c', '#5a5426', '#777031', '#948b3e', '#b0a64e', '#c9c068')
+GLOW = ramp('#c8d038', '#e4ec5a', '#f6fa9a')
 BELLY = ramp('#9e987a', '#b8b294', '#d6d1b4')
 SAC = ramp('#b8a98e', '#cfc3a8', '#ddd2b8', '#e9e0ca', '#f3ecdb')
 VEIN = ramp('#9c7f98', '#7f6580', '#634e66')
 
 
 def acid_ray():
-    """Acid Ray: an olive-yellow back mottled darker, acid-yellow wing margins, a pale belly."""
-    cv = Canvas(64, 64)
+    """Acid Ray (128x64): an olive back mottled with dark rosettes, a pale spine ridge, a darker eye hump with two
+    acid-yellow eyes, wing panels darkening outward to glowing acid-yellow margins, a pale belly."""
+    cv = Canvas(128, 64)
     n = clustered(64, 64, 6001, passes=1)
+    m = clustered(64, 64, 6002, passes=2)
+
+    def back(t, x, y, ox, oy):
+        if m[(y + oy) % 64][(x + ox) % 64] > 0.74:
+            return ACID[0]  # a dark rosette
+        return noise_pick(ACID, t, n, x + ox, y + oy)
 
     def body(face, x, y, fw, fh):
         if face == 'top':
-            if (x * 7 + y * 3) % 11 == 0:
-                return ACID[1]
-            return noise_pick(ACID, 3 if 2 < x < fw - 3 else 2, n, x, y)
+            return back(2 if 1 < x < fw - 2 else 1, x, y, 0, 0)
         if face == 'bottom':
             return noise_pick(BELLY, 1, n, x + 20, y)
         return ACID[2] if y == 0 else BELLY[0]
 
-    paint(cv, 0, 0, 10, 2, 12, body)
+    paint(cv, 0, 0, 6, 2, 12, body)
+    paint(cv, 40, 0, 4, 1, 2, body)
+    paint(cv, 40, 4, 4, 1, 2, body)
 
-    def wing(face, x, y, fw, fh):
-        if face == 'top':
-            edge = x >= fw - 2 or y in (0, fh - 1)
-            if edge:
-                return ACID[5] if (x + y) % 2 == 0 else ACID[4]
-            return noise_pick(ACID, 2 + (1 if x < 4 else 0), n, x + 30, y + 10)
-        if face == 'bottom':
-            return noise_pick(BELLY, 2 if x < 6 else 1, n, x + 40, y + 30)
-        return ACID[4]
+    def hump(face, x, y, fw, fh):
+        if face == 'front' or (face == 'top' and y == 0):
+            return GLOW[2] if x in (0, fw - 1) else ACID[0]  # the eyes at the hump's front corners
+        return back(2, x, y, 9, 33)
 
-    paint(cv, 0, 16, 12, 1, 10, wing)
-    paint(cv, 44, 0, 1, 1, 10, lambda f, x, y, fw, fh: ACID[1] if f != 'top' else ACID[2])
+    paint(cv, 56, 0, 5, 1, 3, hump)
+    paint(cv, 56, 6, 2, 1, 8, lambda f, x, y, fw, fh: ACID[4] if f == 'top' and x == 0 else (ACID[3] if f == 'top' else ACID[2]))
+
+    def panel(level):
+        def fn(face, x, y, fw, fh):
+            if face == 'top':
+                outer = x >= fw - 1 or y in (0, fh - 1)
+                if outer and level > 0 or (level == 0 and y in (0, fh - 1)):
+                    return GLOW[1] if (x + y) % 2 == 0 else GLOW[0]
+                return back(2 if level == 0 else 1, x, y, 30 + level * 9, 10)
+            if face == 'bottom':
+                return noise_pick(BELLY, 2 if level == 0 else 1, n, x + 40, y + 30)
+            return GLOW[0]
+        return fn
+
+    paint(cv, 0, 16, 4, 1, 12, panel(0))
+    paint(cv, 0, 30, 4, 1, 8, panel(1))
+    paint(cv, 0, 40, 3, 1, 4, panel(2))
+    paint(cv, 40, 8, 1, 1, 2, lambda f, x, y, fw, fh: GLOW[0] if f == 'front' else (ACID[3] if f == 'top' else ACID[1]))
+    paint(cv, 80, 0, 1, 1, 7, lambda f, x, y, fw, fh: ACID[2] if f == 'top' else ACID[1])
+    paint(cv, 80, 8, 1, 1, 6, lambda f, x, y, fw, fh: ACID[3] if f == 'top' and x % 2 == 0 else ACID[1])
+    paint(cv, 80, 16, 2, 1, 2, lambda f, x, y, fw, fh: GLOW[1] if f == 'top' else GLOW[0])
     return cv
 
 
