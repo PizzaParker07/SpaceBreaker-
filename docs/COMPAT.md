@@ -431,6 +431,13 @@ environment; the plugins compile against both APIs and the line itself is covere
   `-PattackIndicator=hotbar -PmainHand=left`). At 427x240 the research tree opens at its left edge with the branch
   names visible; the sensor card wraps to 97 px but then grows tall enough to reach the subtitle text near the bottom
   on Mars (`gui_scale_fixes_427x240.jpg`, passed to the suit area).
+- **Night round 2 (2026-11-08, 8314188d):** 143 shot pairs, vanilla and Complementary: all reworked creatures
+  (`inner_creatures`, `moon_creatures`, `outer_creatures`), the 40 survey worlds (`outer_survey`, `moon_survey`: fresh
+  regolith rays, mare ridges, the big crater), Io with its lava flows and observatory, Titan with Saturn's glow through
+  the haze, the rover cabin. Translucent creatures (Cloud Jelly, Heat Siphon, Geyser Drifter, Polar Worm) keep their
+  see-through parts and are not lost against the sky; the gas giants' air shells and night sides look as without
+  shaders. Only the pack's lighting differs (warmer ground, real shadows, a blue ambient on night sides and indoors).
+  `round2_creatures_worlds_vanilla_vs_iris.jpg` (pairs, vanilla left).
 - **Outline boxes (`RenderType.lines()`):** Iris's line programs widen each segment in screen space, so an edge
   that runs behind the camera becomes a large flat quad across the view (seen as a lavender square over the station
   core while holding a docking module: the outline reaches back past the player). `compat.client.ClippedLines` cuts
