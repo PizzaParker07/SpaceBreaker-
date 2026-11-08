@@ -55,7 +55,7 @@ public class RocketPartItem extends Item {
             tooltip.add(Component.translatable("tooltip.spacebreaker.part.burns", p.propellant().displayName()).withStyle(grey));
             if (p.propellant().boilOffPerDay() > 0) {
                 tooltip.add(Component.translatable("tooltip.spacebreaker.part.boil_off",
-                        String.format(java.util.Locale.ROOT, "%.2f", p.propellant().boilOffPerDay() * 100)).withStyle(grey));
+                        Fmt.dec(p.propellant().boilOffPerDay() * 100, 2)).withStyle(grey));
             }
             if (p.propellant() == com.pizzaparker07.spacebreaker.content.rocketry.part.Propellant.NUCLEAR) {
                 tooltip.add(Component.translatable("tooltip.spacebreaker.part.nuclear").withStyle(ChatFormatting.GOLD));
