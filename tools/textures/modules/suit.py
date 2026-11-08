@@ -775,17 +775,6 @@ def _ribbed(r, period=2):
     return fn
 
 
-def _quilted(r):
-    """Padded insulation: soft horizontal baffles (like a down jacket), lit from the top-left."""
-    def fn(x, y, w, h):
-        if y % 3 == 2:
-            return r[4]                      # stitched seam between baffles
-        if y % 3 == 0:
-            return r[6] if x > 0 else r[7]   # puffed top of a baffle catches the light
-        return r[5]
-    return fn
-
-
 def helmet_extras(cv, tier):
     if tier == 'thermal':
         box(cv, (64, 28, 10, 1, 2), top=_flat(SILVER), north=_flat(G, 7, 6, 4), sides=_flat(SILVER, 6, 5, 3), bottom=solid(G[3]))
@@ -802,6 +791,13 @@ def torso_extras(cv, tier):
         for u in (64, 76):
             box(cv, (u, 0, 5, 8, 1), north=_ribbed(G), south=_ribbed(G), sides=solid(G[3]), top=solid(G[6]), bottom=solid(G[2]))
     elif tier == 'heated':
+        # smooth orange panels (no baffles that read as rings); dark elbow joints are the only arm rings
+        panel = _flat(ORANGE, 6, 6, 5)
+        box(cv, TORSO['torso'], north=panel, west=panel, east=panel, top=solid(ORANGE[6]))
+        box(cv, TORSO['sleeve'], sides=panel, top=solid(ORANGE[6]), bottom=solid(ORANGE[5]))
+        # accent (dyeable, dark steel by default)
+        box(cv, TORSO['elbow'], sides=_flat(SENT, 5, 4, 3), top=solid(SENT[5]), bottom=solid(SENT[3]))
+
         def pack(x, y, w, h):
             if y == 1 and 1 <= x <= 4:
                 return (255, 150, 60) if x % 2 else (220, 110, 40)   # heater status bars
@@ -827,16 +823,20 @@ def torso_extras(cv, tier):
 
 
 def legs_extras(cv, tier):
-    if tier == 'thermal':
+    if tier == 'heated':
+        panel = _flat(ORANGE, 6, 6, 5)
+        box(cv, LEGS['hips'], sides=panel, top=solid(ORANGE[6]), bottom=solid(ORANGE[5]))
+        box(cv, LEGS['leg'], sides=panel, top=solid(ORANGE[6]), bottom=solid(ORANGE[5]))
+        for part in ('waist', 'knee'):              # accent (dyeable, dark steel by default)
+            box(cv, LEGS[part], sides=_flat(SENT, 5, 4, 3), top=solid(SENT[5]), bottom=solid(SENT[3]))
+    elif tier == 'thermal':
         box(cv, (64, 0, 4, 2, 1), all=_flat(G, 7, 5, 3))
     elif tier == 'radiation':
         box(cv, (64, 16, 4, 5, 1), north=_flat(LEAD, 6, 5, 3), sides=solid(LEAD[3]), top=solid(LEAD[6]), bottom=solid(LEAD[2]))
 
 
 def boots_extras(cv, tier):
-    if tier == 'heated':
-        box(cv, (64, 0, 6, 2, 6), sides=_quilted(ORANGE), top=solid(ORANGE[6]), bottom=solid(ORANGE[3]))
-    elif tier == 'radiation':
+    if tier == 'radiation':
         box(cv, (64, 8, 6, 4, 1), north=_flat(LEAD, 6, 5, 3), sides=solid(LEAD[3]), top=solid(LEAD[6]), bottom=solid(LEAD[2]))
 
 
