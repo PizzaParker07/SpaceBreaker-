@@ -130,7 +130,8 @@ public final class JupiterData {
     }
 
     public static LineaeFeature.Config europaLineae() {
-        return new LineaeFeature.Config(s(STAINED_ICE), Optional.of(s(EUROPAN_ICE)), 560, 0.03, 2.0, 2, Optional.of(s(REFROZEN_BRINE)),
+        // wider, more numerous reddish-brown lineae: Europa's signature, readable from up high
+        return new LineaeFeature.Config(s(STAINED_ICE), Optional.of(s(EUROPAN_ICE)), 560, 0.045, 2.0, 3, Optional.of(s(REFROZEN_BRINE)),
                 950, 0.62, 0, -70, "any");
     }
 
@@ -173,13 +174,17 @@ public final class JupiterData {
     public static TerrainProfile callistoProfile() {
         var m = new SmallBodyTerrain.Materials(s(CALLISTO_REGOLITH), s(CALLISTAN_ROCK.base()), s(CALLISTAN_ROCK.base()), s(BRIGHT_FROST),
                 Optional.of(s(BRIGHT_FROST)), Optional.of(s(EUROPAN_ICE)));
+        // Callisto is one of the darkest icy moons: dark regolith, bright frost only on a few young ray craters, the knobs
+        // and the Valhalla plain (a lower fresh-ray share keeps the frost from speckling over the whole surface)
         return SmallBodyTerrain.of(Spacebreaker.id("callisto"), 2410.3).baseHeight(74).roughness(0.6).craters(1.35).age(1.0)
-                .iceLatitude(72).materials(m).build();
+                .freshRays(0.012).iceLatitude(72).materials(m).build();
     }
 
     /** Valhalla: a huge multi-ring basin, a bright central plain ringed by concentric troughs and ridges. */
     public static BasinFeature.Config valhalla() {
-        return new BasinFeature.Config(1400, 15, 1100, 5, 3, 0, 0.3, 0, 0.08, 4.5, s(CALLISTAN_ROCK.base()), Optional.of(s(BRIGHT_FROST)), Optional.empty());
+        // the bright plain is only the middle of the structure; the rings beyond it stay dark Callistan ground
+        return new BasinFeature.Config(1400, 15, 1100, 5, 3, 0, 0.01, 0, 0.08, 4.5, s(CALLISTAN_ROCK.base()), Optional.of(s(BRIGHT_FROST)), Optional.empty(),
+                0.32);
     }
 
     // ------------------------------------------------------------------ datagen

@@ -33,7 +33,7 @@
     ],
     "complex_radius": 30.0,
     "density": 1.4850000000000003,
-    "fresh_chance": 0.06,
+    "fresh_chance": 0.012,
     "lowland_density": 1.0,
     "ray_length": 4.0
   },

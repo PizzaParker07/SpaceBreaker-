@@ -130,7 +130,7 @@ MITE_SALT = ramp('#9d998f', '#c3bfb5', '#dedad1', '#f1eee8')
 # Europa: bright, faintly cream frost; pale blue-grey shell ice; red-brown stained lineae ice; orange-brown chaos brine.
 EUROPA_FROST = ramp('#a9a59c', '#c9c5bc', '#d3cfc6', '#dcd8d0', '#e4e1da', '#ecebe5')
 EUROPA_ICE = ramp('#7f8f99', '#94a4ae', '#a7b6bf', '#b8c6ce', '#c9d5dc', '#dbe4ea')
-STAINED_ICE = ramp('#5e3f2f', '#734e3a', '#865d45', '#976c51', '#a87d60', '#b98f72')
+STAINED_ICE = ramp('#6a3626', '#82432e', '#965139', '#a85f45', '#b87055', '#c78467')
 BRINE_ICE = ramp('#6a4a35', '#7f5a41', '#93694d', '#a6795b', '#b98c6d', '#d9cbb8')
 OCEAN_SALT = ramp('#8b8f96', '#a9adb3', '#c4c8cd', '#dadde1', '#eceef0', '#fbfbfc')
 # Io: muted sulfur yellow sand, white SO2 frost, rusty red short-chain sulfur, near-black silicate lava.
@@ -160,7 +160,7 @@ TITAN_ICE = ramp('#6c6458', '#82796c', '#948b7e', '#a59d90', '#b5ada1', '#c5beb3
 ICE_COBBLES = ramp('#4a3a2a', '#7d766d', '#958e84', '#aba49a', '#c1bbb2', '#d6d1c9')
 THOLIN = ramp('#3a1e0a', '#5c3010', '#7f4517', '#a35e21', '#c27a30', '#d99a4a', '#e8b96e')
 # Enceladus: the whitest snow in the Solar System, bright blue-white ice, deeper blue tiger-stripe ice.
-ENCELADUS_SNOW = ramp('#b4c0c8', '#d2dbe1', '#dde4e9', '#e6ecf0', '#eef2f5', '#f7f9fb')
+ENCELADUS_SNOW = ramp('#a9c3d4', '#c6dbe8', '#d4e5ef', '#e0edf5', '#eaf3f9', '#f4f9fc')
 ENCELADUS_ICE = ramp('#8fa4b3', '#a6b9c6', '#b9cad5', '#cad8e1', '#dae5ec', '#e9f0f5')
 SULCUS_ICE = ramp('#3e6e86', '#4c8099', '#5a92ab', '#6aa3bc', '#7db4cb', '#97c7da')
 # Creatures: methane skater (dark amber body, pale stripes), geyser drifter (translucent blue-white bell).
@@ -219,7 +219,7 @@ CLINGER = ramp('#2a2a2b', '#3a3a3b', '#4c4c4d', '#606061', '#78787a', '#929294')
 STAINED_N2 = ramp('#3b3330', '#4a403b', '#574b44', '#64574e', '#72645a', '#837266')
 
 # --------------------------------------------------------------------------- Ariel (ramps from docs/ASTRO.md)
-ARIEL_SOIL = ramp('#8e959c', '#a1a8af', '#b4bbc2', '#c6cdd3', '#d6dce1', '#e5eaee')
+ARIEL_SOIL = ramp('#8a949e', '#9ca7b2', '#aeb9c4', '#bfcad4', '#cfd8e0', '#dee5eb')
 ARIEL_ICE = ramp('#7f868e', '#9098a0', '#a2a9b1', '#b3bac1', '#c3c9cf', '#d3d8dd')
 GRABEN_FLOOR = ramp('#7f7a74', '#8c8781', '#9a958e', '#a7a29b', '#b4afa8', '#c2bdb6')
 CO2_FROST = ramp('#b9bcbf', '#c7cacd', '#d1d4d7', '#dadde0', '#e3e5e7', '#eeeff0')

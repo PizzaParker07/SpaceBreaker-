@@ -10,9 +10,9 @@
       "Name": "spacebreaker:europan_ice"
     },
     "scale": 560.0,
-    "sets": 2,
     "stain": {
       "Name": "spacebreaker:stained_ice"
-    }
+    },
+    "width": 0.045
   }
 }
