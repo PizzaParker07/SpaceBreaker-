@@ -436,26 +436,28 @@ def _arrow(img, ox, oy, col):
 
 
 def lab_container() -> Image.Image:
+    """Laid out like the industry machines: energy on the far left, input -> arrow -> output on one centre line,
+    the small status display beside the output, buttons in the title row."""
     img = Image.new('RGBA', (256, 256), (0, 0, 0, 0))
     _gui_panel(img, 0, 0, 176, 166)
-    _slot(img, 55, 34)                     # input
-    _slot(img, 111, 30, 26, 26)            # output (big, like the furnace result)
-    _arrow(img, 80, 35, G_SLOT)
-    # small status display above the arrow
+    # energy gauge, far left
+    _slot(img, 7, 17, 16, 52)
     px = img.load()
-    for y in range(17, 31):
-        for x in range(78, 106):
-            edge_dark = x == 78 or y == 17
-            edge_light = x == 105 or y == 30
-            px[x, y] = G_DARK if edge_dark else G_WHITE if edge_light else (0x1d, 0x22, 0x24, 255)
-    # energy gauge
-    _slot(img, 152, 17, 16, 52)
     for y in range(18, 68):
-        for x in range(153, 167):
+        for x in range(8, 22):
             px[x, y] = (0x2b, 0x2b, 0x2b, 255)
     for y in range(22, 68, 5):              # scale ticks
-        px[153, y] = G_SHADOW
-        px[154, y] = G_SHADOW
+        px[8, y] = G_SHADOW
+        px[9, y] = G_SHADOW
+    _slot(img, 51, 34)                     # input
+    _arrow(img, 73, 35, G_SLOT)
+    _slot(img, 101, 30, 26, 26)            # output (big, like the furnace result)
+    # small status display beside the output
+    for y in range(36, 50):
+        for x in range(131, 159):
+            edge_dark = x == 131 or y == 36
+            edge_light = x == 158 or y == 49
+            px[x, y] = G_DARK if edge_dark else G_WHITE if edge_light else (0x1d, 0x22, 0x24, 255)
     # player inventory
     for row in range(3):
         for col in range(9):

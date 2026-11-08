@@ -51,12 +51,12 @@ public final class UranusEntities {
 
     public static void register(IEventBus modBus, DeferredRegister.Items items) {
         clingerEgg = items.register("cliff_clinger_spawn_egg", () -> new DeferredSpawnEggItem(CLIFF_CLINGER, 0x5C5A57, 0xD6D8DA, new Item.Properties()));
-        mothEgg = items.register("frost_moth_spawn_egg", () -> new DeferredSpawnEggItem(FROST_MOTH, 0xDADDE0, 0x8E8A84, new Item.Properties()));
+        mothEgg = items.register("frost_moth_spawn_egg", () -> new DeferredSpawnEggItem(FROST_MOTH, 0xD5E3ED, 0x3D5A7C, new Item.Properties()));
         EGGS.add(clingerEgg);
         rollerEgg = items.register("scree_roller_spawn_egg", () -> new DeferredSpawnEggItem(SCREE_ROLLER, 0x5C5853, 0xB5B0A8, new Item.Properties()));
         EGGS.add(mothEgg);
         EGGS.add(rollerEgg);
-        hopperEgg = items.register("gloam_hopper_spawn_egg", () -> new DeferredSpawnEggItem(GLOAM_HOPPER, 0x2E2C2B, 0xC9CED2, new Item.Properties()));
+        hopperEgg = items.register("gloam_hopper_spawn_egg", () -> new DeferredSpawnEggItem(GLOAM_HOPPER, 0x4B4256, 0x7FD6E0, new Item.Properties()));
         EGGS.add(hopperEgg);
         burrowerEgg = items.register("rim_burrower_spawn_egg", () -> new DeferredSpawnEggItem(RIM_BURROWER, 0x6E6560, 0x2A2420, new Item.Properties()));
         EGGS.add(burrowerEgg);

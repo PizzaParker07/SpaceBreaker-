@@ -73,48 +73,60 @@ public class StickneyLanderPiece extends StructurePiece {
         int y = gy + 1; // the body hangs a block above the dust on its legs
         BlockState hull = s(Blocks.WHITE_CONCRETE);
         BlockState trim = s(Blocks.LIGHT_GRAY_CONCRETE);
-        BlockState foil = s(Blocks.GOLD_BLOCK);
-        // the body: a 5x5 box, three layers, with gold foil on the middle band and a solar deck on top
+        BlockState foil = s(com.pizzaparker07.spacebreaker.content.belt.LanderBlocks.GOLD_FOIL_CLADDING.get());
+        // the body: a small octagonal bus (foil on the flat faces, white on the corners) under a slab deck; the east
+        // side rides a block high on its stretched tether
         for (int layer = 0; layer < 3; layer++) {
             for (int dx = -2; dx <= 2; dx++) {
                 for (int dz = -2; dz <= 2; dz++) {
-                    boolean corner = Math.abs(dx) == 2 && Math.abs(dz) == 2;
-                    if (corner) {
+                    if (Math.abs(dx) == 2 && Math.abs(dz) == 2) {
                         continue;
                     }
                     boolean edge = Math.abs(dx) == 2 || Math.abs(dz) == 2;
-                    int tilt = dx == 2 ? 1 : 0; // the east side rides a block high on its stretched tether
+                    boolean diagonal = Math.abs(dx) + Math.abs(dz) == 3;
+                    int tilt = dx == 2 ? 1 : 0;
                     BlockState st;
                     if (layer == 0) {
                         st = trim;
                     } else if (layer == 2) {
-                        st = edge ? trim : s(Blocks.DAYLIGHT_DETECTOR);
+                        st = s(Blocks.SMOOTH_STONE_SLAB);
                     } else {
-                        st = edge ? ((dx + dz) % 2 == 0 ? foil : hull) : s(Blocks.AIR);
+                        st = edge ? (diagonal ? hull : foil) : s(Blocks.AIR);
                     }
                     set(level, box, cx + dx, y + layer + tilt, cz + dz, st);
                 }
             }
         }
         // the survey recorder inside, reached through the open hatch on the south side
-        BlockPos chest = new BlockPos(cx, y + 1, cz);
-        if (box.isInside(chest)) {
-            level.setBlock(chest, s(Blocks.CHEST), Block.UPDATE_CLIENTS);
-            if (level.getBlockEntity(chest) instanceof net.minecraft.world.level.block.entity.ChestBlockEntity be) {
+        BlockPos rec = new BlockPos(cx, y + 1, cz);
+        if (box.isInside(rec)) {
+            level.setBlock(rec, com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.BLOCK.get().defaultBlockState()
+                    .setValue(com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlock.FACING, Direction.SOUTH), Block.UPDATE_CLIENTS);
+            if (level.getBlockEntity(rec) instanceof com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlockEntity be) {
                 be.setLootTable(MarsLoot.STICKNEY_LANDER, seed);
             }
         }
         set(level, box, cx, y + 1, cz + 2, s(Blocks.AIR));
-        // four legs; the south-west one folded under the body
-        for (int[] leg : new int[][]{{-2, -2}, {2, -2}, {2, 2}}) {
-            int lx = cx + leg[0];
-            int lz = cz + leg[1];
-            for (int dy = ground(level, lx, lz); dy < y + (leg[0] == 2 ? 1 : 0); dy++) {
-                set(level, box, lx, dy, lz, s(Blocks.IRON_BARS));
+        // four splayed legs with footpads; the south-west one folded flat under the body
+        for (int[] leg : new int[][]{{-1, -1}, {1, -1}, {1, 1}}) {
+            int sx = cx + leg[0] * 3;
+            int sz = cz + leg[1] * 3;
+            for (int dy = ground(level, sx, sz); dy <= y + (leg[0] == 1 ? 1 : 0); dy++) {
+                set(level, box, sx, dy, sz, s(Blocks.IRON_BARS));
             }
+            int fx = cx + leg[0] * 4;
+            int fz = cz + leg[1] * 4;
+            set(level, box, fx, ground(level, fx, fz), fz, s(Blocks.HEAVY_WEIGHTED_PRESSURE_PLATE));
         }
-        set(level, box, cx - 3, ground(level, cx - 3, cz + 3), cz + 3, s(Blocks.IRON_BARS));
+        for (int i = 2; i <= 3; i++) {
+            set(level, box, cx - i, ground(level, cx - i, cz + i), cz + i, s(Blocks.CHAIN).setValue(ChainBlock.AXIS, Direction.Axis.X));
+        }
+        // one small solar wing folded out to the north
+        set(level, box, cx, y + 1, cz - 3, s(Blocks.CHAIN).setValue(ChainBlock.AXIS, Direction.Axis.Z));
+        set(level, box, cx, y + 1, cz - 4, s(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.SOLAR_PANEL.get()));
+        set(level, box, cx, y + 1, cz - 5, s(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.SOLAR_PANEL.get()));
         // high-gain antenna
+        set(level, box, cx - 1, y + 2, cz - 1, s(Blocks.LIGHT_GRAY_CONCRETE));
         set(level, box, cx - 1, y + 3, cz - 1, s(Blocks.LIGHTNING_ROD));
         set(level, box, cx - 1, y + 4, cz - 1, s(Blocks.DAYLIGHT_DETECTOR));
         // three harpoon tethers: chains slanting out from the base to anchors driven into the regolith
@@ -129,12 +141,18 @@ public class StickneyLanderPiece extends StructurePiece {
                 int pz = cz + Math.round(a[1] * (float) i / steps);
                 int py = Math.round(y + (ay + 1 - y) * (float) i / steps);
                 Direction.Axis axis = Math.abs(a[0]) >= Math.abs(a[1]) ? Direction.Axis.X : Direction.Axis.Z;
-                set(level, box, px, Math.max(py, ground(level, px, pz)), pz, s(Blocks.CHAIN).setValue(ChainBlock.AXIS, axis));
+                int ty = Math.max(py, ground(level, px, pz));
+                set(level, box, px, ty, pz, s(Blocks.CHAIN).setValue(ChainBlock.AXIS, axis));
+                // the tether is a braided pair: a second strand beside the first
+                int ox = axis == Direction.Axis.X ? 0 : 1;
+                int oz = axis == Direction.Axis.X ? 1 : 0;
+                set(level, box, px + ox, Math.max(ty, ground(level, px + ox, pz + oz)), pz + oz, s(Blocks.CHAIN).setValue(ChainBlock.AXIS, axis));
             }
             // the harpoon: a barbed spike buried in the dust, its winch ring showing
             set(level, box, ax, ay, az, s(Blocks.IRON_BLOCK));
             set(level, box, ax, ay - 1, az, s(Blocks.POINTED_DRIPSTONE));
-            set(level, box, ax, ay + 1, az, s(Blocks.CHAIN));
+            set(level, box, ax, ay + 1, az, s(Blocks.POLISHED_ANDESITE)); // the winch housing on the harpoon head
+            set(level, box, ax, ay + 2, az, s(Blocks.LIGHTNING_ROD));
         }
         // the plate that explains it, facing the hatch
         BlockPos sign = new BlockPos(cx, ground(level, cx, cz + 4), cz + 4);

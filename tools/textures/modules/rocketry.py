@@ -2261,6 +2261,32 @@ def ghost(cv, x, y, icon, alpha=70):
                 cv[x + 1 + i, y + 1 + j] = (110, 110, 110) if alpha else c
 
 
+ROW_DARK, ROW_MID, ROW_PIP = (85, 85, 85), (139, 139, 139), (255, 255, 255)
+
+
+def row_icon(cv, x, y, stage):
+    """A 9x11 row badge: a capsule cone for the payload row, a tank with one to three pips for a stage."""
+    if stage == 0:
+        for j in range(9):
+            half = j // 2
+            for i in range(4 - half, 5 + half):
+                cv[x + i, y + j] = ROW_MID
+            cv[x + 4 - half, y + j] = ROW_DARK
+            cv[x + 4 + half, y + j] = ROW_DARK
+        for i in range(9):
+            cv[x + i, y + 9] = ROW_DARK
+        return
+    for j in range(11):
+        for i in range(1, 8):
+            edge = i in (1, 7) or j in (0, 10)
+            cv[x + i, y + j] = ROW_DARK if edge else ROW_MID
+    for k in range(stage):
+        py = y + 2 + k * 3
+        for i in range(3, 6):
+            cv[x + i, py] = ROW_PIP
+            cv[x + i, py + 1] = ROW_PIP
+
+
 def gui_assembler():
     """512x256 sheet; the screen uses the top-left 300x222. Must match RocketAssemblerMenu/Screen."""
     cv = Canvas(512, 256)
@@ -2277,25 +2303,23 @@ def gui_assembler():
         for k in range(6):
             gui_slot(cv, slot_x + k * 18 - 1, y - 1)
             ghost(cv, slot_x + k * 18 - 1, y - 1, ic[expect[k] if not (s == 2 and k == 5) else 'decoupler'])
-    # thin "stack" rail left of the rows
+    # thin "stack" rail left of the rows, with a small icon per row (its meaning is in the screen's tooltip)
     for y in range(payload_y, stage_y0 + 2 * gap + 16):
         cv[20, y] = (150, 150, 150)
-    # output slot (big)
-    ox, oy = 152, 112
-    gui_slot(cv, ox - 5, oy - 5, 26)
-    # arrow from the button to the output
-    for i in range(6):
-        for j in range(-i // 2, i // 2 + 1):
-            pass
+    row_icon(cv, 8, payload_y + 3, 0)
+    for s in range(3):
+        row_icon(cv, 8, stage_y0 + (2 - s) * gap + 3, s + 1)
+    # output slot on the stage-1 line, right of the assemble arrow (parts -> button -> output, as machines read)
+    gui_slot(cv, 160 - 1, stage_y0 + 2 * gap - 1)
     # preview window: blueprint grid
-    px, py, pw, ph = 182, 18, 110, 104
+    px, py, pw, ph = 182, 18, 110, 150
     gui_inset(cv, px - 1, py - 1, pw + 2, ph + 2, BLUEPRINT[0])
     for y in range(py, py + ph):
         for x in range(px, px + pw):
             if (x - px) % 10 == 0 or (y - py) % 10 == 0:
                 cv[x, y] = BLUEPRINT[1]
     # stats window
-    sx, sy, sw, sh = 182, 126, 110, 88
+    sx, sy, sw, sh = 182, 172, 110, 42
     gui_inset(cv, sx - 1, sy - 1, sw + 2, sh + 2, (36, 40, 46))
     # player inventory
     inv_y = 140

@@ -69,6 +69,11 @@ public final class SkyClient {
             return;
         }
         float pt = event.getPartialTick().getGameTimeDeltaPartialTick(false);
+        if ("blockyperf".equals(System.getProperty("spacebreaker.shotPrefix")) && net.minecraft.Util.getMillis() - lastFpsLog > 10000) {
+            // measurement runs: frame rate whatever draws the planets
+            lastFpsLog = net.minecraft.Util.getMillis();
+            Spacebreaker.LOGGER.info("Sky fps {} ({})", Minecraft.getInstance().getFps(), SkyConfig.planetStyle());
+        }
         // development camera for the travel scene (showcase only): draws the scene from a given scene block position
         String devCamera = System.getProperty("spacebreaker.spaceCamera");
         if (devCamera != null && !devCamera.isEmpty()) {
@@ -120,6 +125,8 @@ public final class SkyClient {
         com.mojang.blaze3d.systems.RenderSystem.depthMask(true);
         com.mojang.blaze3d.systems.RenderSystem.disableBlend();
     }
+
+    private static long lastFpsLog;
 
     @SubscribeEvent
     static void loggingOut(ClientPlayerNetworkEvent.LoggingOut event) {

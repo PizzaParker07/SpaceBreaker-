@@ -65,8 +65,17 @@ public class GloamHopper extends OuterGrazer {
 
     @Override
     public void aiStep() {
+        boolean wasOnGround = onGround();
         super.aiStep();
         if (level().isClientSide) {
+            // a faint ring of dust puffs out where it lands
+            if (onGround() && !wasOnGround) {
+                for (int i = 0; i < 10; i++) {
+                    double a = i * Math.PI / 5;
+                    level().addParticle(new net.minecraft.core.particles.BlockParticleOption(ParticleTypes.BLOCK, getBlockStateOn()),
+                            getX() + Math.cos(a) * 0.35, getY() + 0.05, getZ() + Math.sin(a) * 0.35, Math.cos(a) * 0.08, 0.02, Math.sin(a) * 0.08);
+                }
+            }
             return;
         }
         if (cloudCooldown > 0) {

@@ -22,11 +22,12 @@ public class IceMineStructure extends Structure {
         int z = ctx.chunkPos().getMinBlockZ();
         if (ctx.chunkGenerator() instanceof com.pizzaparker07.spacebreaker.content.worldgen.PlanetChunkGenerator gen) {
             var t = gen.terrain();
-            if (!t.column(x + 12, z + 20).shadowed(t.profile())) {
+            if (!t.column(x + 12, z + 4).shadowed(t.profile())) {
                 return Optional.empty();
             }
         }
-        int y = ctx.chunkGenerator().getFirstOccupiedHeight(x + 12, z + 20, Heightmap.Types.WORLD_SURFACE_WG, ctx.heightAccessor(), ctx.randomState()) - 1;
+        // the shaft is at piece cell (12, 20); the piece faces north, so that is world (x + 12, z + 4)
+        int y = ctx.chunkGenerator().getFirstOccupiedHeight(x + 12, z + 4, Heightmap.Types.WORLD_SURFACE_WG, ctx.heightAccessor(), ctx.randomState()) - 1;
         long seed = ctx.random().nextLong();
         return Optional.of(new GenerationStub(new BlockPos(x, y, z), b -> b.addPiece(new IceMinePiece(seed, x, y, z))));
     }

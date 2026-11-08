@@ -94,6 +94,9 @@ public class RoverRenderer extends EntityRenderer<RoverEntity> {
             roofDust(pose, buffers.getBuffer(RenderType.entityTranslucent(net.minecraft.client.renderer.texture.TextureAtlas.LOCATION_BLOCKS)),
                     dust, model.bodyY(), model.style(), light);
         }
+        if (rover.energy() > 0) {
+            model.renderDashLights(pose, buffers.getBuffer(RenderType.eyes(LIGHTS)), rover.tickCount + partialTick);
+        }
         boolean on = lightsOn(rover);
         if (on) {
             model.renderToBuffer(pose, buffers.getBuffer(RenderType.eyes(LIGHTS)), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);

@@ -94,28 +94,86 @@ def graben_floor_ice():
     return cv
 
 
-def frost_moth():
-    """32x32 sheet for FrostMothModel: grey body, pale frosty wings with a darker eye spot and edge."""
-    cv = Canvas(32, 32)
-    r = P.MOTH
-    n = clustered(32, 32, 16001, passes=1)
-    paint(cv, 0, 0, 2, 2, 6, lambda f, x, y, fw, fh: noise_pick(r, 1, n, x, y))
-    paint(cv, 16, 0, 3, 3, 2, lambda f, x, y, fw, fh: hexc('#1c1d1e') if f == 'front' and y == 1 and x in (0, 2) else r[2])
-    for y in range(0, 3):
-        for x in range(26, 30):
-            cv[x, y + 3] = r[3]
+# Frost moth: icy blue-white wings with frost veins, a scalloped trailing edge, an eye spot on each wing and a pale rim;
+# a soft grey fuzzy body and feathery antennae.
+MOTH_ICE = [hexc(h) for h in ('#4f6070', '#6f8496', '#93a8bb', '#b7cad8', '#d5e3ed', '#ecf4f9', '#fafdff')]
+MOTH_FUR = [hexc(h) for h in ('#5c5e63', '#787a7f', '#95979b', '#b2b3b6', '#cdcdcf', '#e3e3e4')]
+MOTH_SPOT = [hexc(h) for h in ('#22304a', '#3d5a7c', '#9fd8f0')]
 
-    def wing(w, h, ox, oy, spot):
-        for y in range(h):
-            for x in range(w):
-                edge = x in (0, w - 1) or y in (0, h - 1)
-                t = 2 if edge else noise_pick(r, 4, n, x + ox, y + oy)
-                if spot and abs(x - w // 2) <= 1 and abs(y - h // 2) <= 1:
-                    t = r[1]
-                cv[ox + x, oy + y] = r[t] if isinstance(t, int) else t
-    # top faces of the flat wing planes (texOffs + depth for the top face)
-    wing(9, 6, 6, 10, True)
-    wing(7, 5, 5, 18, False)
+
+def _moth_wing(cv, u, v, w, d, n, spot, seed):
+    """A flat wing plane, drawn on its top face (u+d, v) only: the bottom face stays transparent, so the two faces of the
+    zero-thickness plane never fight (the mob renders without culling, so the top face shows from below too). x = 0 is
+    the body, y = 0 the leading edge."""
+    shape = {}
+    for y in range(d):
+        for x in range(w):
+            # the trailing edge sweeps forward toward the tip; the tip and the root's back corner are rounded
+            limit = (d - 1) - (x / max(1, w - 1)) ** 2.2 * (d * 0.45)
+            if y > limit:
+                continue
+            if x == w - 1 and (y == 0 or y >= limit - 1):
+                continue
+            shape[x, y] = True
+    sx, sy, sr = spot
+    for (x, y) in shape:
+        edge = any((x + dx, y + dy) not in shape for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)) if x + dx >= 0)
+        trailing = (x, y + 1) not in shape
+        if trailing and (x + seed) % 3 == 0 and 0 < x < w - 1:
+            continue  # scalloped trailing edge
+        c = MOTH_ICE[noise_pick(list(range(7)), 4, n, x + u, y + v)]
+        # frost veins: lines fanning out from the root
+        ang = math.atan2(y - d * 0.35, x + 0.5)
+        if x > 0 and min(abs(ang - a) for a in (-0.6, -0.15, 0.3, 0.75)) < 0.09:
+            c = MOTH_ICE[2]
+        dist = math.hypot(x - sx, y - sy)
+        if sr and dist < sr:
+            c = MOTH_SPOT[2] if dist < sr * 0.4 else (MOTH_SPOT[0] if dist < sr * 0.75 else MOTH_SPOT[1])
+        if y == 0 or (x == w - 1 or (x + 1, y) not in shape) and not trailing:
+            c = MOTH_ICE[6]
+        elif trailing:
+            c = MOTH_ICE[3]
+        if x == 0:
+            c = MOTH_ICE[1]
+        cv[u + d + x, v + y] = c
+
+
+def frost_moth():
+    """64x32 sheet for FrostMothModel (box layout in moon_creatures.faces)."""
+    cv = Canvas(64, 32)
+    n = clustered(64, 64, 16001, passes=1)
+
+    def fur(face, x, y, fw, fh):
+        return MOTH_FUR[noise_pick(list(range(6)), 3 if face != 'bottom' else 2, n, x * 3, y * 5, spread=2)]
+
+    def head(face, x, y, fw, fh):
+        if face == 'front' and y == 0:
+            return hexc('#141820')
+        return fur(face, x, y, fw, fh)
+
+    def abdomen(face, x, y, fw, fh):
+        if face in ('left', 'right', 'top') and (x if face == 'top' else x) % 2 == 1 and face != 'top':
+            return MOTH_FUR[1]
+        return fur(face, x, y, fw, fh)
+
+    def ruff(face, x, y, fw, fh):
+        return MOTH_FUR[5] if (x + y) % 2 == 0 else MOTH_FUR[4]
+
+    paint(cv, 0, 0, 2, 2, 2, head)
+    paint(cv, 8, 0, 3, 3, 3, fur)
+    paint(cv, 20, 0, 2, 2, 5, abdomen)
+    paint(cv, 34, 0, 4, 4, 1, ruff)
+
+    def feather(face, x, y, fw, fh):
+        if face != 'front':
+            return None  # one face only, as for the wings
+        if x == fw // 2:
+            return MOTH_FUR[3]
+        return MOTH_FUR[5] if (y + x) % 2 == 0 else None
+
+    paint(cv, 44, 0, 3, 4, 0, feather)
+    _moth_wing(cv, 0, 8, 10, 7, n, (5.5, 2.6, 1.9), 0)
+    _moth_wing(cv, 0, 16, 7, 5, n, (3.2, 1.8, 1.3), 1)
     return cv
 
 
@@ -203,33 +261,84 @@ def sooty_ice():
     return cv
 
 
-def gloam_hopper():
-    """64x32 sheet for GloamHopperModel: soot-dark body with a slightly paler back stripe, pale eyes, dark ear plates."""
+# Gloam hopper: mauve-grey hide, slate rock plates, big pale eyes that glow in Umbriel's dark (eyes layer).
+GLOAM = [hexc(h) for h in ('#211c26', '#2e2735', '#3c3445', '#4b4256', '#5b5168', '#6d627b', '#82778f', '#a094aa')]
+GLOAM_PLATE = [hexc(h) for h in ('#3f3c44', '#55525b', '#6c6973', '#86838c')]
+GLOAM_EYE = [hexc(h) for h in ('#163a40', '#4fb3c0', '#bdf3f8')]
+
+
+def _gloam_sheet(eyes_only):
     cv = Canvas(64, 32)
-    r = P.HOPPER
+    r = GLOAM
     n = clustered(64, 64, 17401, passes=1)
 
+    def hide(base):
+        return lambda face, x, y, fw, fh: None if eyes_only else (
+            r[base - 2] if face == 'bottom' else noise_pick(r, base, n, x * 2 + fw, y * 3 + fh))
+
     def body(face, x, y, fw, fh):
+        if eyes_only:
+            return None
         if face == 'bottom':
-            return r[1]
-        if face == 'top' and x in (2, 3):
-            return r[4]
+            return r[6]
+        if face in ('left', 'right') and y >= fh - 2:
+            return r[5]  # paler flanks toward the belly
         return noise_pick(r, 3, n, x, y)
 
-    paint(cv, 0, 0, 6, 5, 8, body)
+    def plate(face, x, y, fw, fh):
+        if eyes_only:
+            return None
+        if face == 'top':
+            return GLOAM_PLATE[3] if y == 0 else GLOAM_PLATE[2 if (x + y) % 3 else 1]
+        return GLOAM_PLATE[0] if face == 'bottom' else GLOAM_PLATE[1]
 
     def head(face, x, y, fw, fh):
-        if face == 'front' and y == 1 and x in (0, 4):
-            return r[5]
-        if face == 'front' and y == 3 and x in (1, 2, 3):
-            return r[0]
-        return noise_pick(r, 3, n, x + 30, y)
+        if face == 'front' and y == 1:
+            # two big eyes, pale with a dark rim toward the middle
+            if x in (0, 3):
+                return GLOAM_EYE[2]
+            return None if eyes_only else r[1]  # the dark bridge between the eyes
+        if eyes_only:
+            return None
+        if face == 'front' and y == 2 and x in (0, 3):
+            return GLOAM_EYE[1]
+        if face == 'front' and y == 2:
+            return None if eyes_only else r[2]
+        return noise_pick(r, 4, n, x + 30, y)
 
-    paint(cv, 28, 0, 5, 4, 4, head)
-    paint(cv, 46, 0, 2, 4, 1, lambda f, x, y, fw, fh: r[2] if y else r[3])
-    paint(cv, 0, 14, 2, 5, 5, lambda f, x, y, fw, fh: r[0] if y == fh - 1 else noise_pick(r, 2, n, x + 10, y + 20))
-    paint(cv, 16, 14, 1, 5, 1, lambda f, x, y, fw, fh: r[0] if y == fh - 1 else r[2])
+    def ear(face, x, y, fw, fh):
+        if eyes_only:
+            return None
+        if face in ('front', 'back') and 0 < x < fw - 1 and y > 0:
+            return r[6]  # the pale inner ear
+        return r[3]
+
+    def snout(face, x, y, fw, fh):
+        if eyes_only:
+            return None
+        return r[1] if face == 'front' else r[4]
+
+    paint(cv, 0, 0, 5, 5, 6, body)
+    paint(cv, 22, 0, 4, 1, 3, plate)
+    paint(cv, 36, 0, 4, 4, 4, head)
+    paint(cv, 52, 0, 3, 3, 1, ear)
+    paint(cv, 52, 4, 2, 1, 1, snout)
+    paint(cv, 0, 12, 2, 4, 4, hide(3))
+    paint(cv, 0, 20, 2, 1, 4, lambda f, x, y, fw, fh: None if eyes_only else (r[1] if f == 'bottom' else r[5]))
+    paint(cv, 12, 12, 1, 3, 1, hide(4))
+    paint(cv, 16, 12, 1, 1, 8, lambda f, x, y, fw, fh: None if eyes_only else (r[2] if (x + y) % 4 == 0 else r[3]))
+    paint(cv, 36, 12, 2, 2, 2, lambda f, x, y, fw, fh: None if eyes_only else r[7 if (x + y) % 2 else 6])
     return cv
+
+
+def gloam_hopper():
+    """64x32 sheet for GloamHopperModel (box layout in moon_creatures.faces)."""
+    return _gloam_sheet(False)
+
+
+def gloam_hopper_eyes():
+    """The glowing eyes alone, for the renderer's eyes layer."""
+    return _gloam_sheet(True)
 
 
 # --------------------------------------------------------------------------- Oberon
@@ -360,6 +469,7 @@ def export(save):
     save(umbriel_ice(), 'block', 'umbriel_ice', (40, 12, 20, None))
     save(sooty_ice(), 'block', 'sooty_ice', (30, 10, 30, None))
     save(gloam_hopper(), 'entity', 'uranus/gloam_hopper')
+    save(gloam_hopper_eyes(), 'entity', 'uranus/gloam_hopper_eyes')
     base = oberon_regolith(0)
     save(base, 'block', 'oberon_regolith', dust_spec)
     save(oberon_regolith(1), 'block', 'oberon_regolith_1', dust_spec)

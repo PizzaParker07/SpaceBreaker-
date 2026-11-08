@@ -16,6 +16,7 @@
       "count": 1,
       "id": "spacebreaker:tech_disk"
     },
+    "show_toast": false,
     "title": {
       "translate": "advancements.spacebreaker.first_tech.title"
     }

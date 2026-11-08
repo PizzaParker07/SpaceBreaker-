@@ -4,6 +4,7 @@ import com.pizzaparker07.spacebreaker.content.mars.MarsModule;
 import com.pizzaparker07.spacebreaker.content.mars.entity.CanyonLurker;
 import com.pizzaparker07.spacebreaker.content.mars.entity.MarsEntities;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -276,7 +277,7 @@ public class RiverbedCavePiece extends StructurePiece {
             for (int dy = 0; dy < 2; dy++) {
                 p.set(wx + dx, floor + dy, wz);
                 if (box.isInside(p)) {
-                    level.setBlock(p, dy == 1 && dx == 1 ? s(Blocks.GOLD_BLOCK) : s(Blocks.WHITE_CONCRETE), Block.UPDATE_CLIENTS);
+                    level.setBlock(p, dy == 1 && dx == 1 ? s(com.pizzaparker07.spacebreaker.content.belt.LanderBlocks.GOLD_FOIL_CLADDING.get()) : s(Blocks.WHITE_CONCRETE), Block.UPDATE_CLIENTS);
                 }
             }
         }
@@ -290,16 +291,29 @@ public class RiverbedCavePiece extends StructurePiece {
         }
         chest(level, box, cx - 1, floor, cz + 5);
         chest(level, box, cx + 2, floor, cz - 5);
+        // the survey team's lights, still on their tripods round the chamber, and the cable between them
+        for (int[] l : new int[][]{{-4, -3}, {4, 2}, {-2, 6}}) {
+            int lx = cx + l[0];
+            int lz = cz + l[1];
+            p.set(lx, floor, lz);
+            if (box.isInside(p) && level.getBlockState(p).isAir()) {
+                level.setBlock(p, s(Blocks.IRON_BARS), Block.UPDATE_CLIENTS);
+                p.set(lx, floor + 1, lz);
+                level.setBlock(p, s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.FLOODLIGHT.get())
+                        .setValue(net.minecraft.world.level.block.DirectionalBlock.FACING, Direction.UP), Block.UPDATE_CLIENTS);
+            }
+        }
     }
 
+    /** The probe's data vault: a supply locker, its doors to the open chamber. */
     private void chest(WorldGenLevel level, BoundingBox box, int x, int y, int z) {
         BlockPos pos = new BlockPos(x, y, z);
         if (!box.isInside(pos)) {
             return;
         }
-        level.setBlock(pos, s(Blocks.CHEST), Block.UPDATE_CLIENTS);
-        if (level.getBlockEntity(pos) instanceof net.minecraft.world.level.block.entity.ChestBlockEntity chest) {
-            chest.setLootTable(MarsLoot.RIVERBED_PROBE, seed ^ (x * 341873128712L + z));
+        level.setBlock(pos, com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.BLOCK.get().defaultBlockState(), Block.UPDATE_CLIENTS);
+        if (level.getBlockEntity(pos) instanceof com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlockEntity locker) {
+            locker.setLootTable(MarsLoot.RIVERBED_PROBE, seed ^ (x * 341873128712L + z));
         }
     }
 

@@ -16,6 +16,7 @@
       "count": 1,
       "id": "minecraft:firework_rocket"
     },
+    "show_toast": false,
     "title": {
       "translate": "advancements.spacebreaker.basic_rocketry.title"
     }
