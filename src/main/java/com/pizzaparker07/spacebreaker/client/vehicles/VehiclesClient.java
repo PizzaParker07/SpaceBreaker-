@@ -99,7 +99,9 @@ public final class VehiclesClient {
         int pw = width + PAD * 2, ph = height + PAD * 2;
         boolean rightHanded = mc.options.mainHand().get() == net.minecraft.world.entity.HumanoidArm.RIGHT;
         // agreed with the suit HUD: it keeps the off-hand side past the offhand slot, the rover takes the main-hand side
-        int ax = rightHanded ? g.guiWidth() / 2 + 91 + 6 : g.guiWidth() / 2 - 91 - 6 - pw;
+        // vanilla's attack indicator in "hotbar" mode sits right beside the hotbar on the main-hand side: step past it
+        int gap = mc.options.attackIndicator().get() == net.minecraft.client.AttackIndicatorStatus.HOTBAR ? 6 + 18 + 2 : 6;
+        int ax = rightHanded ? g.guiWidth() / 2 + 91 + gap : g.guiWidth() / 2 - 91 - gap - pw;
         int ay = g.guiHeight() - 2 - ph;
         if (ax < 2 || ax + pw > g.guiWidth() - 2) {
             ax = g.guiWidth() - pw - 4;

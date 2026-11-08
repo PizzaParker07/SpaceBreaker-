@@ -3,17 +3,17 @@
   "config": {
     "chaos_threshold": 0.6,
     "ridge": {
-      "Name": "spacebreaker:bright_frost",
-      "Properties": {
-        "facing": "north",
-        "print": "none"
-      }
+      "Name": "spacebreaker:grooved_ice"
     },
     "ridge_height": 3.0,
     "scale": 150.0,
     "sets": 2,
     "stain": {
-      "Name": "spacebreaker:grooved_ice"
+      "Name": "spacebreaker:bright_frost",
+      "Properties": {
+        "facing": "north",
+        "print": "none"
+      }
     },
     "where": "lowlands",
     "width": 0.07

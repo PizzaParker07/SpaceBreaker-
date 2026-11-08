@@ -11,7 +11,7 @@ Kızıl-kahve {item spacebreaker:bauxite_ore} her yerde seyrek, sıcak tepelerde
 ## 2. İlk enerji
 Laboratuvar enerjiyle çalışır. İlk enerjin {item spacebreaker:combustion_generator}: kömür ya da odun yakar.
 1. İki bakır külçesini üst üste koy: **bakır levha**.
-2. Levha ve bir **makasla** bakır tel yap. Makas tükenmez.
+2. Levha ve bir **makasla** üç bakır tel yap. Makas tükenmez.
 3. Tel, kızıltaş ve demir levhayla bir {item spacebreaker:basic_circuit} yap.
 4. Devreyle jeneratörü kur.
 {recipe spacebreaker:copper_wire_by_hand}
@@ -49,7 +49,7 @@ Sırayla: {tech spacebreaker:launch_infrastructure}, {tech spacebreaker:liquid_f
 
 ## 8. Yörünge ve Ay
 1. Yörüngeye çık: **Yörünge Uçuşu** verisi alırsın. Eve acil dönüş işaretiyle dön.
-2. Veriyle {tech spacebreaker:landing_systems}: ısı kalkanı, paraşüt, iniş bacakları.
+2. Bu veri ve {tech spacebreaker:precision_manufacturing} ile {tech spacebreaker:landing_systems}: ısı kalkanı (ablatif kalkan levhalarından), paraşüt, iniş bacakları.
 3. Ay'a in, üs kur, harabelerdeki diskleri topla. → [Ay](moon), [Ay'daki Harabeler](moon_ruins)
 4. Ay numuneleri ve diskler seni Mars'a hazırlar. → [Mars](mars)
 

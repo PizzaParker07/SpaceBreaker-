@@ -36,6 +36,8 @@ Coming in 2.0: a procedural universe beyond the Solar System, with other stars a
 python3 tools/textures/generate.py   # redraw all textures
 python3 tools/models/gen_assets.py   # regenerate blockstates and models
 ```
+Compatibility runs (shader packs, recipe viewers, info overlays, dynamic lights, GUI scales): see the showcase
+properties in [`docs/COMPAT.md` → How to test](docs/COMPAT.md#4-how-to-test).
 
 ---
 

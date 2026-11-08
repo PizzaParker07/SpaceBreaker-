@@ -47,6 +47,6 @@ For a steady 10 FE/t load (a panel gives at most 20 FE/t at noon, a battery bank
 
 >! From Europa outwards solar panels are not practical: the Sun is too far. Use an {item spacebreaker:rtg} there ({tech spacebreaker:radioisotope_power}); one RTG carries four 10 FE/t loads and runs on {item spacebreaker:rtg_fuel_pellet}. The pellet is made from yellowcake in the sintering furnace. → [Nuclear Fuel](nuclear_fuel)
 
-> For a big base, the {item spacebreaker:fission_reactor} gives 320 FE/t from one fuel element for 10 days, but it must be buried or shielded. → [Fission power unit](nuclear_fuel#fission)
+> For a big base, the {item spacebreaker:fission_reactor} gives 240 FE/t from one fuel element for 10 days, but it must be buried or shielded. → [Fission power unit](nuclear_fuel#fission)
 
 {recipe? spacebreaker:rtg}

@@ -9,6 +9,7 @@ import com.pizzaparker07.spacebreaker.content.vehicles.RoverEntity;
 import com.pizzaparker07.spacebreaker.content.vehicles.RoverPhysics;
 import com.pizzaparker07.spacebreaker.content.vehicles.VehiclesModule;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTest;
@@ -63,6 +64,132 @@ public final class RoverTests {
         h.assertTrue(RoverPhysics.speed(0.2, 1, false, 1) < 0.2, "airborne wheels do not push");
         h.assertTrue(RoverPhysics.yawChange(0, 1F) == 0F, "no turning on the spot");
         h.assertTrue(RoverPhysics.yawChange(0.3, 1F) < 0 && RoverPhysics.yawChange(-0.1, 1F) > 0, "steering reverses when backing up");
+        h.succeed();
+    }
+
+    /** Blocks rolled from top speed until stopped, with the given throttle and hand brake. */
+    private static double stoppingDistance(double g, double throttle, boolean handBrake) {
+        double push = RoverPhysics.traction(g), roll = RoverPhysics.rollingDrag(g);
+        double s = RoverPhysics.MAX_SPEED, d = 0;
+        for (int t = 0; s > 0.01 && t < 10_000; t++) {
+            s = RoverPhysics.speed(s, throttle, handBrake, true, push, roll, RoverPhysics.MAX_SPEED, RoverPhysics.ACCEL);
+            d += Math.max(s, 0);
+        }
+        return d;
+    }
+
+    /** Letting go of the throttle on the Moon: the rover rolls on about 8 blocks, not 18; the hand brake stops it short. */
+    @GameTest(template = "empty")
+    public static void moonCoastingAndTheHandBrake(GameTestHelper h) {
+        double earthCoast = stoppingDistance(1.0, 0, false);
+        double moonCoast = stoppingDistance(MOON, 0, false);
+        h.assertTrue(earthCoast > 6 && earthCoast < 8, "Earth coasting " + earthCoast);
+        h.assertTrue(moonCoast > 7 && moonCoast < 9, "Moon coasting " + moonCoast);
+        double moonReverse = stoppingDistance(MOON, -1, false);
+        double moonHand = stoppingDistance(MOON, 0, true);
+        double earthHand = stoppingDistance(1.0, 0, true);
+        h.assertTrue(moonHand < moonReverse * 0.75, "Moon hand brake " + moonHand + " vs reverse " + moonReverse);
+        h.assertTrue(moonHand > earthHand * 1.5 && moonHand < 5, "Moon hand brake " + moonHand + " Earth " + earthHand);
+        // the hand brake holds against the throttle and stops a reversing rover too
+        h.assertTrue(RoverPhysics.speed(0.2, 1, true, true, 1, 1, RoverPhysics.MAX_SPEED, RoverPhysics.ACCEL) < 0.2, "brake beats throttle");
+        h.assertTrue(RoverPhysics.speed(-0.1, 0, true, true, 1, 1, RoverPhysics.MAX_SPEED, RoverPhysics.ACCEL) > -0.1, "brakes backwards");
+        h.assertTrue(RoverPhysics.speed(0.2, 0, true, false, 1, 1, RoverPhysics.MAX_SPEED, RoverPhysics.ACCEL) > 0.19, "airborne wheels do not brake");
+        h.succeed();
+    }
+
+    /** Largest angle (degrees) between heading and velocity while turning at full lock from top speed, and the
+     * distance from the start after one full circle of heading. */
+    private static double[] fullLockTurn(double g) {
+        double speed = RoverPhysics.MAX_SPEED, yaw = 0, vx = 0, vz = speed, x = 0, z = 0, drift = 0;
+        double k = RoverPhysics.lateralGrip(1.0, g);
+        int ticks = Math.round(360F / RoverPhysics.TURN_RATE);
+        for (int t = 0; t < ticks; t++) {
+            yaw += Math.toRadians(RoverPhysics.yawChange(speed, 1F));
+            double[] v = RoverPhysics.tyres(vx, vz, -Math.sin(yaw), Math.cos(yaw), speed, 1.0, k);
+            vx = v[0];
+            vz = v[1];
+            x += vx;
+            z += vz;
+            double heading = Math.atan2(-Math.sin(yaw), Math.cos(yaw)), moving = Math.atan2(vx, vz);
+            drift = Math.max(drift, Math.abs(Mth.wrapDegrees(Math.toDegrees(heading - moving))));
+        }
+        return new double[]{drift, Math.hypot(x, z)};
+    }
+
+    /** A hard turn at top speed: on Earth the rover goes where it points, on the Moon it drifts a little wide. */
+    @GameTest(template = "empty")
+    public static void lowGravityTurnsDriftALittle(GameTestHelper h) {
+        double[] earth = fullLockTurn(1.0);
+        double[] moon = fullLockTurn(MOON);
+        h.assertTrue(earth[0] < 0.5, "Earth drift " + earth[0] + " deg");
+        h.assertTrue(moon[0] > 3 && moon[0] < 12, "Moon drift " + moon[0] + " deg");
+        // still under control: after a full circle of heading the rover is back near where it started
+        h.assertTrue(moon[1] < 4, "Moon circle closes within " + moon[1] + " blocks");
+        // the along-heading part is untouched: driving straight, the tyres still pull the rover to its speed at once
+        double[] straight = RoverPhysics.tyres(0, 0.1, 0, 1, 0.3, 1.0, RoverPhysics.lateralGrip(1.0, MOON));
+        h.assertTrue(Math.abs(straight[1] - 0.3) < 1e-9 && straight[0] == 0, "straight ahead " + straight[1]);
+        // a parked rover (full grip) shoved sideways on the Moon stops at once instead of sliding away
+        double[] shoved = RoverPhysics.tyres(0.2, 0, 0, 1, 0, 1.0, 1.0);
+        h.assertTrue(shoved[0] == 0 && shoved[1] == 0, "parked rover held: " + shoved[0]);
+        // equal grips are the plain slide
+        double[] a = RoverPhysics.tyres(0.1, 0.2, 0.6, 0.8, 0.3, 0.4, 0.4), b = RoverPhysics.slide(0.1, 0.2, 0.18, 0.24, 0.4);
+        h.assertTrue(Math.abs(a[0] - b[0]) < 1e-9 && Math.abs(a[1] - b[1]) < 1e-9, "tyres = slide for equal grips");
+        h.succeed();
+    }
+
+    /**
+     * Off a one-block crest on the Moon at top speed the rover is airborne for about 13 ticks: at full lock it still
+     * turns its flight path a few degrees (15 % of the ground rate), where it used to fly dead straight.
+     */
+    @GameTest(template = "empty")
+    public static void airborneRoverSteersALittle(GameTestHelper h) {
+        double speed = RoverPhysics.MAX_SPEED, yaw = 0, vx = 0, vz = speed, y = 0, vy = 0, groundYaw = 0;
+        int air = 0;
+        while (y > -1 && air < 200) {
+            yaw += Math.toRadians(RoverPhysics.yawChange(speed, 1F, RoverPhysics.AIR_STEER));
+            speed = RoverPhysics.speed(speed, 1, false, 1);
+            double[] v = RoverPhysics.slide(vx, vz, -Math.sin(yaw) * speed, Math.cos(yaw) * speed, RoverPhysics.AIR_STEER);
+            vx = v[0];
+            vz = v[1];
+            vy = RoverPhysics.fall(vy, MOON);
+            y += vy;
+            groundYaw += RoverPhysics.yawChange(RoverPhysics.MAX_SPEED, 1F, 1.0);
+            air++;
+        }
+        double turned = Math.abs(Math.toDegrees(Math.atan2(vx, vz)));
+        h.assertTrue(air >= 11 && air <= 15, "airtime " + air);
+        h.assertTrue(turned > 3 && turned < Math.abs(groundYaw) * 0.15, "flight path turned " + turned + " deg (ground " + groundYaw + ")");
+        h.succeed();
+    }
+
+    /**
+     * Climbing a one-block step: the rover's feet jump a block in one tick, the drawn body (and the seats, so the
+     * camera) does not: it rises no more than a third of a block per tick and is up within 8 ticks.
+     */
+    @GameTest(template = "empty")
+    public static void stepUpEasesTheBodyUp(GameTestHelper h) {
+        float lift = 0;
+        double y = 0, shown = 0;
+        double maxRise = 0;
+        int settled = -1;
+        for (int t = 0; t < 20; t++) {
+            double dy = t == 1 ? 1.0 : 0;
+            y += dy;
+            lift = RoverPhysics.afterStep(lift, dy, true, 1F);
+            lift = RoverPhysics.easeLift(lift, 0F);
+            maxRise = Math.max(maxRise, y + lift - shown);
+            shown = y + lift;
+            if (settled < 0 && t > 1 && Math.abs(shown - y) < 0.06) {
+                settled = t - 1;
+            }
+        }
+        h.assertTrue(maxRise <= 0.34, "body rose " + maxRise + " in one tick");
+        h.assertTrue(settled > 0 && settled <= 8, "body up the step after " + settled + " ticks");
+        // a drop, a bounce or a teleport is left alone
+        h.assertTrue(RoverPhysics.afterStep(0.2F, -1.0, true, 1F) == 0.2F, "drops are not eased");
+        h.assertTrue(RoverPhysics.afterStep(0.2F, 0.15, true, 1F) == 0.2F, "small bumps follow the ground");
+        h.assertTrue(RoverPhysics.afterStep(0.2F, 5.0, true, 1F) == 0.2F, "teleports are not eased");
+        h.assertTrue(RoverPhysics.afterStep(0.2F, 1.0, false, 1F) == 0.2F, "airborne rises are real");
         h.succeed();
     }
 

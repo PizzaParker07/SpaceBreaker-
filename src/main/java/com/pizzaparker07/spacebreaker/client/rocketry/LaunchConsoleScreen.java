@@ -143,11 +143,11 @@ public class LaunchConsoleScreen extends AbstractContainerScreen<LaunchConsoleMe
                     Component.translatable("gui.spacebreaker.console.crew", menu.get(LaunchConsoleMenu.CREW)), RED));
         }
         out.add(new Row(menu.flag(LaunchConsoleBlockEntity.FUELLED), name("fuel"), Component.translatable("gui.spacebreaker.console.fuel",
-                String.format(Locale.ROOT, "%.1f", menu.get(LaunchConsoleMenu.FUEL) / 10.0)), RED));
+                Fmt.dec(menu.get(LaunchConsoleMenu.FUEL) / 10.0, 1)), RED));
         out.add(new Row(menu.flag(LaunchConsoleBlockEntity.TWR_OK), name("twr"), Component.translatable("gui.spacebreaker.console.twr",
                 Fmt.twr(menu.get(LaunchConsoleMenu.TWR) / 100.0)), RED));
         out.add(new Row(menu.flag(LaunchConsoleBlockEntity.DV_OK), name("dv"), Component.translatable("gui.spacebreaker.console.dv",
-                Fmt.num(menu.get(LaunchConsoleMenu.DV)), Fmt.num(menu.get(LaunchConsoleMenu.COST))), RED));
+                Fmt.num(menu.get(LaunchConsoleMenu.DV)), Fmt.ms(menu.get(LaunchConsoleMenu.COST))), RED));
         if (route) {
             RocketEntity.RouteStatus st = drone.routeStatus();
             Component line = Component.translatable("gui.spacebreaker.console.route." + st.name().toLowerCase(Locale.ROOT));
@@ -156,8 +156,9 @@ public class LaunchConsoleScreen extends AbstractContainerScreen<LaunchConsoleMe
             Component line = Component.translatable("gui.spacebreaker.console.one_way");
             out.add(new Row(true, line, line, AMBER));
         } else {
-            Component line = Component.translatable("gui.spacebreaker.console.return");
-            out.add(new Row(menu.flag(LaunchConsoleBlockEntity.RETURN_OK), line, line, AMBER));
+            boolean back = menu.flag(LaunchConsoleBlockEntity.RETURN_OK);
+            Component line = Component.translatable(back ? "gui.spacebreaker.console.return" : "gui.spacebreaker.console.return_no");
+            out.add(new Row(back, line, line, AMBER));
         }
         return out;
     }
@@ -244,14 +245,20 @@ public class LaunchConsoleScreen extends AbstractContainerScreen<LaunchConsoleMe
             clock = "T-10";
             col = DIM;
         }
+        // something that stops a launch is missing: the clock waits, it does not say ready
+        boolean blocked = shown.stream().anyMatch(r -> r.bad() == RED);
+        if (blocked && state == FlightState.IDLE.ordinal()) {
+            col = 0xA04A40;
+        }
         g.pose().pushPose();
         g.pose().translate(SCREEN_X + 186, SCREEN_Y + 30, 0);
         g.pose().scale(2.2F, 2.2F, 1);
         g.drawCenteredString(font, clock, 0, 0, col);
         g.pose().popPose();
         Component status = state < 0 ? Component.translatable("gui.spacebreaker.console.status.no_rocket")
+                : blocked && state == FlightState.IDLE.ordinal() ? Component.translatable("gui.spacebreaker.console.status.waiting")
                 : Component.translatable("hud.spacebreaker.state." + FlightState.byId(state).name().toLowerCase(Locale.ROOT));
-        g.drawCenteredString(font, status, SCREEN_X + 186, SCREEN_Y + 58, TEXT);
+        g.drawCenteredString(font, status, SCREEN_X + 186, SCREEN_Y + 58, blocked && state == FlightState.IDLE.ordinal() ? RED : TEXT);
     }
 
     /** Tooltip over the checklist: a missing row's numbers, or the whole list. */

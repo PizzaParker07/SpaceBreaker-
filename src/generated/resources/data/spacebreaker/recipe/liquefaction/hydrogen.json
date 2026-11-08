@@ -1,6 +1,6 @@
 {
   "type": "spacebreaker:liquefaction",
-  "energy": 160,
+  "energy": 100,
   "fluid_input": {
     "amount": 1000,
     "tag": "c:hydrogen"

@@ -178,13 +178,13 @@ public class RocketAssemblerScreen extends AbstractContainerScreen<RocketAssembl
         double[] fuel = layout.fullFuel();
         double g0 = Environment.gravity(minecraft.level);
         double heightBlocks = Math.max(1, RocketGeometry.ofActive(layout, 0).height() / 16.0);
-        out.add(Component.translatable("gui.spacebreaker.assembler.height", String.format(Locale.ROOT, "%.1f m", heightBlocks)));
+        out.add(Component.translatable("gui.spacebreaker.assembler.height", Fmt.unit(heightBlocks, 1, "m")));
         for (int i = 0; i < layout.stages().size(); i++) {
             RocketLayout.Stage s = layout.stages().get(i);
             double dv = RocketMath.stageDeltaV(layout, i, fuel, i == 0 ? RocketMath.ASCENT_ATMOSPHERE : 0);
             double twr = RocketMath.twr(layout, i, fuel, g0);
             out.add(Component.translatable("gui.spacebreaker.assembler.stage_line", i + 1, s.propellant().displayName(), Fmt.ms(dv), Fmt.twr(twr),
-                    Fmt.kg(s.propellantKg()), String.format(Locale.ROOT, "%.0f", RocketMath.burnTime(s, s.propellantKg(), 0))));
+                    Fmt.kg(s.propellantKg()), Fmt.unit(RocketMath.burnTime(s, s.propellantKg(), 0), 0, "s")));
         }
         out.add(Component.translatable("gui.spacebreaker.assembler.payload", Fmt.kg(layout.payload().massKg()), layout.payload().seats()));
         String nuclear = com.pizzaparker07.spacebreaker.content.rocketry.entity.NuclearExhaust.designWarning(layout);
