@@ -476,14 +476,15 @@ def group_three():
             item['display'] = json.load(fh)['display']
         write(f'models/item/{name}.json', item)
 
-    # power monitor: the cabinet keeps its full front (PowerMonitorRenderer draws the figures on it), with a sun visor
-    # over the screen, two grab handles and a cable gland underneath
+    # power monitor: the screen face stays on the block's front plane (PowerMonitorRenderer draws the figures just in
+    # front of it); a raised bezel frames it, a sun visor over the top, the cabinet stands on four feet with grab handles
     t = parts_tex(casing_tex('power_monitor_front'))
-    els = [
-        box([0, 0, 0], [16, 16, 16], sides('side', north='front', up='top', down='bottom')),
-        box([0, 14, -2], [16, 15, 0], STEEL6), box([0, 12, -2], [1, 14, -1], STEEL6), box([15, 12, -2], [16, 14, -1], STEEL6),
-        box([-1, 3, 3], [0, 4, 13], STEEL6), box([-1, 4, 3], [0, 10, 4], STEEL6), box([-1, 4, 12], [0, 10, 13], STEEL6),
-        box([16, 3, 3], [17, 4, 13], STEEL6), box([16, 4, 3], [17, 10, 4], STEEL6), box([16, 4, 12], [17, 10, 13], STEEL6),
+    els = legs(1, 1, 15, 16, h=1) + [
+        box([1, 1, 0], [15, 16, 16], sides('side', north='front', up='top', down='bottom'), uv={'north': [1, 0, 15, 15]}),
+        box([0, 14, -2], [16, 15, 0], STEEL6),
+        box([0, 1, -1], [1, 14, 0], STEEL6), box([15, 1, -1], [16, 14, 0], STEEL6), box([1, 1, -1], [15, 2, 0], STEEL6),
+        box([-1, 4, 3], [0, 5, 12], STEEL6), box([-1, 5, 3], [0, 10, 4], STEEL6), box([-1, 5, 11], [0, 10, 12], STEEL6),
+        box([16, 4, 3], [17, 5, 12], STEEL6), box([16, 5, 3], [17, 10, 4], STEEL6), box([16, 5, 11], [17, 10, 12], STEEL6),
     ]
     model('power_monitor', t, els)
 
