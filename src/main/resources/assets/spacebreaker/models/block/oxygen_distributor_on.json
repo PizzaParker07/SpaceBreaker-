@@ -4,7 +4,6 @@
   "textures": {
     "casing": "spacebreaker:block/life_support_casing",
     "plinth": "spacebreaker:block/life_support_plinth",
-    "fan": "spacebreaker:block/oxygen_distributor_top",
     "steel": "spacebreaker:block/life_support_top",
     "ring": "spacebreaker:block/life_support_ring",
     "front": "spacebreaker:block/oxygen_distributor_front_on",
@@ -196,7 +195,7 @@
           ]
         },
         "up": {
-          "texture": "#fan",
+          "texture": "#steel",
           "uv": [
             3,
             3,

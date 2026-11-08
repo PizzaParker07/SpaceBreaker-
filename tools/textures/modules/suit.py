@@ -1446,41 +1446,15 @@ def ring_tex() -> Canvas:
 
 
 def filler_front(on=False) -> Canvas:
-    """Casing with a cyan O2 band across the top, a centred pressure gauge and a small status lamp."""
+    """Casing front behind the tank cradle: a cyan O2 band, a small pressure gauge to one side, a cyan status lamp."""
     cv = casing()
-    for x in range(1, 15):
-        cv[x, 3] = C[4]                      # oxygen colour band
-    dial = parse_mask([
-        ".bbbb.",
-        "bwwwwb",
-        "bwwwnb",
-        "bwwnwb",
-        "bwwwwb",
-        ".bbbb.",
-    ])
-    for y, row in enumerate(dial):
-        for x, ch in enumerate(row):
-            if ch == 'b':
-                cv[5 + x, 6 + y] = S[3]
-            elif ch == 'w':
-                cv[5 + x, 6 + y] = W[7]
-            elif ch == 'n':
-                cv[5 + x, 6 + y] = S[3]
-    cv[12, 11] = LAMP_ON if on else S[3]   # status lamp
-    return cv
-
-
-def filler_top() -> Canvas:
-    """Top plate with the tank cradle and its quick-connect port."""
-    cv = steel_top()
-    for y in range(5, 11):
-        for x in range(5, 11):
-            edge = x in (5, 10) or y in (5, 10)
-            cv[x, y] = A[5] if edge else S[2]
-    cv[7, 7] = S[6]
-    cv[8, 7] = S[4]
-    cv[7, 8] = S[4]
-    cv[8, 8] = S[2]
+    for x in range(2, 14):
+        cv[x, 6] = C[4]                      # oxygen colour band
+    for y in range(8, 10):                   # small gauge face beside the tank, a dark needle tick
+        for x in range(11, 14):
+            cv[x, y] = W[7]
+    cv[12, 8] = S[3]
+    cv[3, 8] = C[4] if on else S[3]          # status lamp (lit in the band's cyan)
     return cv
 
 
@@ -1521,38 +1495,22 @@ def station_top() -> Canvas:
     return cv
 
 
+AIR_LAMP_OFF = (72, 112, 78)
+
+
 def distributor_front(on=False) -> Canvas:
-    """Casing with an air outlet louvre and a status lamp."""
+    """Casing with a wide vent grille and, under it, a green "air" lamp strip in a dark bezel."""
     cv = casing()
     for y in range(2, 8):
         for x in range(3, 13):
             cv[x, y] = S[2] if y % 2 == 0 else S[5]
-    for x in range(6, 10):
+    for x in range(5, 11):
+        cv[x, 9] = S[2]
         cv[x, 11] = S[2]
-        cv[x, 13] = S[2]
-    cv[6, 12] = S[2]
-    cv[9, 12] = S[2]
-    cv[7, 12] = LAMP_ON if on else S[2]
-    cv[8, 12] = LAMP_ON if on else S[2]
-    return cv
-
-
-def distributor_top() -> Canvas:
-    """Fan grille: round dark opening, four blades, steel rim."""
-    cv = steel_top()
-    import math
-    for y in range(16):
-        for x in range(16):
-            dx, dy = x - 7.5, y - 7.5
-            r = math.hypot(dx, dy)
-            if r < 5.6:
-                a = math.atan2(dy, dx)
-                blade = (math.sin(a * 4 + r * 0.6) > 0.35)
-                cv[x, y] = S[4] if blade else S[2]
-                if r < 1.2:
-                    cv[x, y] = A[5]
-            elif r < 6.6:
-                cv[x, y] = S[6] if (dx + dy) < 0 else S[2]
+    cv[5, 10] = S[2]
+    cv[10, 10] = S[2]
+    for x in range(6, 10):
+        cv[x, 10] = LAMP_ON if on else AIR_LAMP_OFF
     return cv
 
 
@@ -1635,10 +1593,8 @@ def export_blocks(save):
     save(ring_tex(), 'block', 'life_support_ring', (180, 232, 0, None), wrap=False)
     save(filler_front(), 'block', 'oxygen_filler_front', paint, wrap=False)
     save(filler_front(True), 'block', 'oxygen_filler_front_on', paint, wrap=False)
-    save(filler_top(), 'block', 'oxygen_filler_top', metal, wrap=False)
     save(distributor_front(), 'block', 'oxygen_distributor_front', paint, wrap=False)
     save(distributor_front(True), 'block', 'oxygen_distributor_front_on', paint, wrap=False)
-    save(distributor_top(), 'block', 'oxygen_distributor_top', metal, wrap=False)
     save(station_front(), 'block', 'suit_station_front', paint, wrap=False)
     save(station_front(True), 'block', 'suit_station_front_on', paint, wrap=False)
     save(station_top(), 'block', 'suit_station_top', metal, wrap=False)

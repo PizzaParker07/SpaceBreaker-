@@ -113,18 +113,22 @@ def machine_states(name, model_off, model_on):
 
 
 def oxygen_filler():
+    """Plinth, a low casing set back with a small gauge on its front, and a tank cradle out in front of it."""
     for suffix, front in (('', 'oxygen_filler_front'), ('_on', 'oxygen_filler_front_on')):
-        tex = {'casing': b('life_support_casing'), 'plinth': b('life_support_plinth'), 'top': b('oxygen_filler_top'),
+        tex = {'casing': b('life_support_casing'), 'plinth': b('life_support_plinth'),
                'steel': b('life_support_top'), 'ring': b('life_support_ring'), 'front': b(front), 'particle': b('life_support_casing')}
         els = [
             cube([1, 0, 1], [15, 2, 15], {'up': 'steel', 'down': 'steel', **{s: 'plinth' for s in SIDES}}, per_face=uv_box([1, 0, 1], [15, 2, 15]) | {s: [1, 14, 15, 16] for s in SIDES}),
-            cube([2, 2, 2], [14, 9, 14], {'north': 'front', 'south': 'casing', 'east': 'casing', 'west': 'casing', 'up': 'steel', 'down': 'steel'},
-                 per_face={'north': [2, 2, 14, 13], 'south': [2, 2, 14, 13], 'east': [2, 2, 14, 13], 'west': [2, 2, 14, 13], 'up': [2, 2, 14, 14], 'down': [2, 2, 14, 14]}),
-            cube([1, 9, 1], [15, 10, 15], {'up': 'top', 'down': 'steel', **{s: 'plinth' for s in SIDES}}, per_face={'up': [1, 1, 15, 15], 'down': [1, 1, 15, 15], **{s: [1, 0, 15, 1] for s in SIDES}}),
-            cube([5, 10, 5], [11, 11, 11], {'up': 'top', 'down': 'ring', **{s: 'ring' for s in SIDES}}, per_face={'up': [5, 5, 11, 11], 'down': [5, 5, 11, 11], **{s: [5, 0, 11, 1] for s in SIDES}}),
-            # pressure regulator on the east side
-            cube([14, 4, 6], [15, 7, 10], {'east': 'ring', **{s: 'steel' for s in ('north', 'south', 'west')}, 'up': 'steel', 'down': 'steel'},
-                 per_face={'east': [6, 4, 10, 7], 'north': [0, 0, 1, 3], 'south': [0, 0, 1, 3], 'west': [0, 0, 4, 3], 'up': [0, 0, 1, 4], 'down': [0, 0, 1, 4]}),
+            cube([2, 2, 6], [14, 11, 14], {'north': 'front', 'south': 'casing', 'east': 'casing', 'west': 'casing', 'up': 'steel', 'down': 'steel'},
+                 per_face=uv_box([2, 2, 6], [14, 11, 14]) | {'up': [2, 2, 14, 10]}),
+            cube([1, 11, 5], [15, 12, 15], {'up': 'steel', 'down': 'steel', **{s: 'plinth' for s in SIDES}},
+                 per_face={'up': [1, 1, 15, 11], 'down': [1, 1, 15, 11], **{s: [1, 0, 15, 1] for s in SIDES}}),
+            # tank cradle in front: a steel shelf, two blue arms and a low front lip
+            cube([3, 2, 1], [13, 3, 6], {'up': 'steel', 'down': 'steel', **{s: 'plinth' for s in SIDES}},
+                 per_face=uv_box([3, 2, 1], [13, 3, 6]) | {s: [3, 0, 13, 1] for s in SIDES}),
+            cube([3, 3, 2], [4, 7, 6], 'ring', per_face=uv_box([3, 3, 2], [4, 7, 6])),
+            cube([12, 3, 2], [13, 7, 6], 'ring', per_face=uv_box([12, 3, 2], [13, 7, 6])),
+            cube([4, 3, 1], [12, 4, 2], 'ring', per_face=uv_box([4, 3, 1], [12, 4, 2])),
         ]
         write(f'models/block/oxygen_filler{suffix}.json', {'parent': 'minecraft:block/block', 'render_type': 'minecraft:cutout',
                                                             'textures': tex, 'elements': els})
@@ -154,13 +158,13 @@ def suit_station():
 
 def oxygen_distributor():
     for suffix, front in (('', 'oxygen_distributor_front'), ('_on', 'oxygen_distributor_front_on')):
-        tex = {'casing': b('life_support_casing'), 'plinth': b('life_support_plinth'), 'fan': b('oxygen_distributor_top'),
+        tex = {'casing': b('life_support_casing'), 'plinth': b('life_support_plinth'),
                'steel': b('life_support_top'), 'ring': b('life_support_ring'), 'front': b(front), 'particle': b('life_support_casing')}
         els = [
             cube([1, 0, 1], [15, 2, 15], {'up': 'steel', 'down': 'steel', **{s: 'plinth' for s in SIDES}}, per_face=uv_box([1, 0, 1], [15, 2, 15]) | {s: [1, 14, 15, 16] for s in SIDES}),
             cube([2, 2, 2], [14, 13, 14], {'north': 'front', 'south': 'casing', 'east': 'casing', 'west': 'casing', 'up': 'steel', 'down': 'steel'},
                  per_face={s: [2, 2, 14, 13] for s in SIDES} | {'up': [2, 2, 14, 14], 'down': [2, 2, 14, 14]}),
-            cube([3, 13, 3], [13, 15, 13], {'up': 'fan', 'down': 'steel', **{s: 'plinth' for s in SIDES}},
+            cube([3, 13, 3], [13, 15, 13], {'up': 'steel', 'down': 'steel', **{s: 'plinth' for s in SIDES}},
                  per_face={'up': [3, 3, 13, 13], 'down': [3, 3, 13, 13], **{s: [3, 0, 13, 2] for s in SIDES}}),
             # tank port on the south side
             cube([6, 5, 14], [10, 9, 15], {'south': 'ring', **{s: 'steel' for s in ('north', 'east', 'west')}, 'up': 'steel', 'down': 'steel'},

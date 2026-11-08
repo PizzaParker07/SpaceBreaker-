@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 /** Oxygen Filler: put a tank (or Maneuvering Unit) into its cradle and it is refilled. */
 public class OxygenFillerBlock extends GasMachineBlock {
     public static final MapCodec<OxygenFillerBlock> CODEC = simpleCodec(OxygenFillerBlock::new);
-    private static final VoxelShape SHAPE = Shapes.or(box(1, 0, 1, 15, 10, 15), box(4, 10, 4, 12, 12, 12));
+    private static final VoxelShape SHAPE = Shapes.or(box(1, 0, 1, 15, 12, 15));
 
     public OxygenFillerBlock(Properties properties) {
         super(properties);
