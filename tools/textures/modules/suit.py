@@ -36,7 +36,7 @@ HELMET = {
 }
 TORSO = {
     'torso': (0, 0, 8, 12, 4),
-    'box': (24, 0, 6, 3, 2),
+    'box': (24, 0, 4, 2, 1),
     'plss': (0, 32, 8, 10, 2),
     'bottle_r': (24, 32, 2, 8, 2),
     'bottle_l': (32, 32, 2, 8, 2),
@@ -301,14 +301,10 @@ def eva_torso() -> Canvas:
     box(cv, TORSO['torso'], north=chest, south=back, west=flank, east=flank,
         top=lambda x, y, w, h: W[7] if 0 < y < h - 1 else W[6], bottom=solid(W[3]))
 
-    # chest control box: grey panel, display window, knobs and a row of switches
+    # chest control box: small grey panel, one thin display strip, a knob and a row of switches
     def panel(x, y, w, h):
         if y == 0:
-            return S[6]
-        if y == 1:
-            if 1 <= x <= 4:
-                return S[1]                      # display window (glows from the overlay)
-            return S[7] if x == 0 else S[3]      # knobs
+            return S[1] if x < 3 else S[7]          # display strip (lit from the overlay) and a knob
         return S[6] if x % 2 == 0 else S[3]      # switches
     box(cv, TORSO['box'], north=panel, top=solid(S[6]), bottom=solid(S[2]),
         west=solid(S[5]), east=solid(S[3]), south=solid(S[3]))
@@ -484,8 +480,10 @@ def eva_suit_overlay() -> Canvas:
     cv[24, 1] = L[3]
     cv[26, 0] = L[5]
     cv[26, 1] = L[3]
-    for x, c in enumerate((C[6], C[4], (98, 210, 120), C[4])):
-        cv[24 + x, 4] = c
+    # chest display: one dim, fading three-pixel strip (a single readout, never two "eyes")
+    cv[24, 4] = C[3]
+    cv[25, 4] = C[3]
+    cv[26, 4] = C[2]
     cv[25, 6] = (90, 220, 110)
     cv[26, 6] = (90, 220, 110)
     return cv
@@ -777,17 +775,6 @@ def _ribbed(r, period=2):
     return fn
 
 
-def _quilted(r):
-    """Padded insulation: soft horizontal baffles (like a down jacket), lit from the top-left."""
-    def fn(x, y, w, h):
-        if y % 3 == 2:
-            return r[4]                      # stitched seam between baffles
-        if y % 3 == 0:
-            return r[6] if x > 0 else r[7]   # puffed top of a baffle catches the light
-        return r[5]
-    return fn
-
-
 def helmet_extras(cv, tier):
     if tier == 'thermal':
         box(cv, (64, 28, 10, 1, 2), top=_flat(SILVER), north=_flat(G, 7, 6, 4), sides=_flat(SILVER, 6, 5, 3), bottom=solid(G[3]))
@@ -804,6 +791,13 @@ def torso_extras(cv, tier):
         for u in (64, 76):
             box(cv, (u, 0, 5, 8, 1), north=_ribbed(G), south=_ribbed(G), sides=solid(G[3]), top=solid(G[6]), bottom=solid(G[2]))
     elif tier == 'heated':
+        # smooth orange panels (no baffles that read as rings); dark elbow joints are the only arm rings
+        panel = _flat(ORANGE, 6, 6, 5)
+        box(cv, TORSO['torso'], north=panel, west=panel, east=panel, top=solid(ORANGE[6]))
+        box(cv, TORSO['sleeve'], sides=panel, top=solid(ORANGE[6]), bottom=solid(ORANGE[5]))
+        # accent (dyeable, dark steel by default)
+        box(cv, TORSO['elbow'], sides=_flat(SENT, 5, 4, 3), top=solid(SENT[5]), bottom=solid(SENT[3]))
+
         def pack(x, y, w, h):
             if y == 1 and 1 <= x <= 4:
                 return (255, 150, 60) if x % 2 else (220, 110, 40)   # heater status bars
@@ -829,16 +823,20 @@ def torso_extras(cv, tier):
 
 
 def legs_extras(cv, tier):
-    if tier == 'thermal':
+    if tier == 'heated':
+        panel = _flat(ORANGE, 6, 6, 5)
+        box(cv, LEGS['hips'], sides=panel, top=solid(ORANGE[6]), bottom=solid(ORANGE[5]))
+        box(cv, LEGS['leg'], sides=panel, top=solid(ORANGE[6]), bottom=solid(ORANGE[5]))
+        for part in ('waist', 'knee'):              # accent (dyeable, dark steel by default)
+            box(cv, LEGS[part], sides=_flat(SENT, 5, 4, 3), top=solid(SENT[5]), bottom=solid(SENT[3]))
+    elif tier == 'thermal':
         box(cv, (64, 0, 4, 2, 1), all=_flat(G, 7, 5, 3))
     elif tier == 'radiation':
         box(cv, (64, 16, 4, 5, 1), north=_flat(LEAD, 6, 5, 3), sides=solid(LEAD[3]), top=solid(LEAD[6]), bottom=solid(LEAD[2]))
 
 
 def boots_extras(cv, tier):
-    if tier == 'heated':
-        box(cv, (64, 0, 6, 2, 6), sides=_quilted(ORANGE), top=solid(ORANGE[6]), bottom=solid(ORANGE[3]))
-    elif tier == 'radiation':
+    if tier == 'radiation':
         box(cv, (64, 8, 6, 4, 1), north=_flat(LEAD, 6, 5, 3), sides=solid(LEAD[3]), top=solid(LEAD[6]), bottom=solid(LEAD[2]))
 
 
@@ -1448,41 +1446,15 @@ def ring_tex() -> Canvas:
 
 
 def filler_front(on=False) -> Canvas:
-    """Casing with a cyan O2 band across the top, a centred pressure gauge and a small status lamp."""
+    """Casing front behind the tank cradle: a cyan O2 band, a small pressure gauge to one side, a cyan status lamp."""
     cv = casing()
-    for x in range(1, 15):
-        cv[x, 3] = C[4]                      # oxygen colour band
-    dial = parse_mask([
-        ".bbbb.",
-        "bwwwwb",
-        "bwwwnb",
-        "bwwnwb",
-        "bwwwwb",
-        ".bbbb.",
-    ])
-    for y, row in enumerate(dial):
-        for x, ch in enumerate(row):
-            if ch == 'b':
-                cv[5 + x, 6 + y] = S[3]
-            elif ch == 'w':
-                cv[5 + x, 6 + y] = W[7]
-            elif ch == 'n':
-                cv[5 + x, 6 + y] = S[3]
-    cv[12, 11] = LAMP_ON if on else S[3]   # status lamp
-    return cv
-
-
-def filler_top() -> Canvas:
-    """Top plate with the tank cradle and its quick-connect port."""
-    cv = steel_top()
-    for y in range(5, 11):
-        for x in range(5, 11):
-            edge = x in (5, 10) or y in (5, 10)
-            cv[x, y] = A[5] if edge else S[2]
-    cv[7, 7] = S[6]
-    cv[8, 7] = S[4]
-    cv[7, 8] = S[4]
-    cv[8, 8] = S[2]
+    for x in range(2, 14):
+        cv[x, 6] = C[4]                      # oxygen colour band
+    for y in range(8, 10):                   # small gauge face beside the tank, a dark needle tick
+        for x in range(11, 14):
+            cv[x, y] = W[7]
+    cv[12, 8] = S[3]
+    cv[3, 8] = C[4] if on else S[3]          # status lamp (lit in the band's cyan)
     return cv
 
 
@@ -1523,38 +1495,22 @@ def station_top() -> Canvas:
     return cv
 
 
+AIR_LAMP_OFF = (72, 112, 78)
+
+
 def distributor_front(on=False) -> Canvas:
-    """Casing with an air outlet louvre and a status lamp."""
+    """Casing with a wide vent grille and, under it, a green "air" lamp strip in a dark bezel."""
     cv = casing()
     for y in range(2, 8):
         for x in range(3, 13):
             cv[x, y] = S[2] if y % 2 == 0 else S[5]
-    for x in range(6, 10):
+    for x in range(5, 11):
+        cv[x, 9] = S[2]
         cv[x, 11] = S[2]
-        cv[x, 13] = S[2]
-    cv[6, 12] = S[2]
-    cv[9, 12] = S[2]
-    cv[7, 12] = LAMP_ON if on else S[2]
-    cv[8, 12] = LAMP_ON if on else S[2]
-    return cv
-
-
-def distributor_top() -> Canvas:
-    """Fan grille: round dark opening, four blades, steel rim."""
-    cv = steel_top()
-    import math
-    for y in range(16):
-        for x in range(16):
-            dx, dy = x - 7.5, y - 7.5
-            r = math.hypot(dx, dy)
-            if r < 5.6:
-                a = math.atan2(dy, dx)
-                blade = (math.sin(a * 4 + r * 0.6) > 0.35)
-                cv[x, y] = S[4] if blade else S[2]
-                if r < 1.2:
-                    cv[x, y] = A[5]
-            elif r < 6.6:
-                cv[x, y] = S[6] if (dx + dy) < 0 else S[2]
+    cv[5, 10] = S[2]
+    cv[10, 10] = S[2]
+    for x in range(6, 10):
+        cv[x, 10] = LAMP_ON if on else AIR_LAMP_OFF
     return cv
 
 
@@ -1637,10 +1593,8 @@ def export_blocks(save):
     save(ring_tex(), 'block', 'life_support_ring', (180, 232, 0, None), wrap=False)
     save(filler_front(), 'block', 'oxygen_filler_front', paint, wrap=False)
     save(filler_front(True), 'block', 'oxygen_filler_front_on', paint, wrap=False)
-    save(filler_top(), 'block', 'oxygen_filler_top', metal, wrap=False)
     save(distributor_front(), 'block', 'oxygen_distributor_front', paint, wrap=False)
     save(distributor_front(True), 'block', 'oxygen_distributor_front_on', paint, wrap=False)
-    save(distributor_top(), 'block', 'oxygen_distributor_top', metal, wrap=False)
     save(station_front(), 'block', 'suit_station_front', paint, wrap=False)
     save(station_front(True), 'block', 'suit_station_front_on', paint, wrap=False)
     save(station_top(), 'block', 'suit_station_top', metal, wrap=False)

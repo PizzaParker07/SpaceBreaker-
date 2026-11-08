@@ -334,9 +334,9 @@ public final class EarthModule implements SbModule {
                         .unlockedBy("has_ingot", has(m.ingotTag)).save(out, Spacebreaker.id(m.name + "_plate_by_hand"));
             }
         }
-        // early-game fallback (the Press makes 2 wires per ingot): one hand-made plate + shears -> 2 wires
+        // early-game fallback (the Press makes 2 wires per ingot): one hand-made plate + shears -> 3 wires
         out.accept(Spacebreaker.id("copper_wire_by_hand"), new ToolShapelessRecipe("", net.minecraft.world.item.crafting.CraftingBookCategory.MISC,
-                new net.minecraft.world.item.ItemStack(COPPER.wire.get(), 2),
+                new net.minecraft.world.item.ItemStack(COPPER.wire.get(), 3),
                 net.minecraft.core.NonNullList.of(Ingredient.EMPTY, Ingredient.of(COPPER.plateTag), Ingredient.of(Items.SHEARS))), null);
         // rods by hand (the Press gives 1 rod per ingot): three ingots in a column -> 2 rods.
         // Breaks the loop "electric motor needs a rod, rods need the Press, the Press needs a motor".

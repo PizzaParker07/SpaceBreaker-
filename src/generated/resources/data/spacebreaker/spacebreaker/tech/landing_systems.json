@@ -3,7 +3,8 @@
   "icon": "spacebreaker:landing_legs",
   "requires": [
     "spacebreaker:vacuum_engines",
-    "spacebreaker:guidance_systems"
+    "spacebreaker:guidance_systems",
+    "spacebreaker:precision_manufacturing"
   ],
   "samples": [
     "spacebreaker:orbital_flight"

@@ -20,6 +20,8 @@ public final class SpacebreakerWthitCommonPlugin implements IWailaCommonPlugin {
             @Override
             public void appendData(IDataWriter data, IServerAccessor<GasMachineBlockEntity> accessor, IPluginConfig config) {
                 BlockInfoLines.serverData(accessor.getTarget(), data.raw());
+                // the pipe input reports no fluid; the piped-oxygen line is the real amount (waila:neo runs after us, at 2000)
+                data.blockAll(mcp.mobius.waila.api.data.FluidData.TYPE);
             }
         }, GasMachineBlockEntity.class);
     }

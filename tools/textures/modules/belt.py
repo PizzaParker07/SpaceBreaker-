@@ -121,9 +121,21 @@ def raw_lump(r, seed, glints):
 
 
 def raw_magnetite():
-    r = ['#0c0c0e', '#17181b', '#24252a', '#33353b', '#44474e', '#5a5d65', '#80848d', '#b4b8bf']
+    """Dark steel-grey lump peppered with small metallic grey grains (two-tone flecks), so it reads apart from the
+    reddish hematite and the purple-black ilmenite in an inventory."""
+    r = ['#0c0c0e', '#17181b', '#24262b', '#33363c', '#44484f', '#5a5f67', '#80868f', '#b4bac2']
     from sbtex.core import hexc
-    return raw_lump([hexc(c) for c in r], 8501, [(5, 4), (9, 7), (6, 10)])
+    cv = raw_lump([hexc(c) for c in r], 8501, [(5, 4), (9, 7), (6, 10)])
+    m = mask_from(parse_mask(RAW_CHUNK))
+    fleck = hexc('#9ba3ad')
+    shine = hexc('#d2d8df')
+    # metallic grains: a lit pixel with a mid-grey tail, kept off the outline
+    for x, y in [(3, 6), (7, 5), (11, 5), (4, 9), (8, 9), (12, 8), (10, 11), (6, 12), (13, 10)]:
+        inside = all(m[yy][xx] for xx, yy in ((x, y), (x + 1, y), (x, y + 1), (x - 1, y), (x, y - 1)) if 0 <= xx < 16 and 0 <= yy < 16)
+        if inside:
+            cv[x, y] = shine
+            cv[x + 1, y] = fleck
+    return cv
 
 
 # --------------------------------------------------------------------------- Vesta

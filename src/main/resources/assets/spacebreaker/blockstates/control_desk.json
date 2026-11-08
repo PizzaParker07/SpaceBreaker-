@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "spacebreaker:block/control_desk"
+    },
+    "facing=east": {
+      "model": "spacebreaker:block/control_desk",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "spacebreaker:block/control_desk",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "spacebreaker:block/control_desk",
+      "y": 270
+    }
+  }
+}

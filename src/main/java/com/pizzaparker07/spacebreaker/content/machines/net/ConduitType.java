@@ -10,7 +10,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 public enum ConduitType implements StringRepresentable {
     COPPER_CABLE("copper_cable", true, 512, 2),
     HV_CABLE("hv_cable", true, 8192, 3),
-    FLUID_PIPE("fluid_pipe", false, 500, 3),
+    FLUID_PIPE("fluid_pipe", false, 500, 2),
     GAS_PIPE("gas_pipe", false, 1000, 2),
     ITEM_DUCT("item_duct", false, 8, 3);
 

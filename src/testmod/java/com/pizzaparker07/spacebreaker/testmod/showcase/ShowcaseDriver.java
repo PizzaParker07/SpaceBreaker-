@@ -44,6 +44,10 @@ public final class ShowcaseDriver {
     private static final String PREFIX = System.getProperty("spacebreaker.shotPrefix", "vanilla");
     /** Optional regex: only shots whose name matches are taken (-Pshots=...). */
     private static final String FILTER = System.getProperty("spacebreaker.shots", "");
+    /** -PguiScale=N (0 = auto): the GUI scale for every shot, for HUD and screen layout checks. */
+    private static final int GUI_SCALE = Integer.getInteger("spacebreaker.guiScale", -1);
+    /** -Poffhand=namespace:item: an item in the off hand for every shot (its slot sits left of the hotbar). */
+    private static final String OFFHAND = System.getProperty("spacebreaker.offhand", "");
     private static final String WORLD = "sb_showcase";
     private static final int TIMEOUT_TICKS = 20 * 60 * 12;
 
@@ -165,6 +169,10 @@ public final class ShowcaseDriver {
         Shot shot = shots.get(shotIndex);
         if (!shotApplied) {
             mc.setScreen(null);
+            if (GUI_SCALE >= 0 && mc.options.guiScale().get() != GUI_SCALE) {
+                mc.options.guiScale().set(GUI_SCALE);
+                mc.resizeDisplay();
+            }
             mc.options.hideGui = shot.hideGui();
             mc.options.setCameraType(shot.camera());
             var server = mc.getSingleplayerServer();
@@ -193,6 +201,10 @@ public final class ShowcaseDriver {
                 }
                 if (shot.serverSetup() != null) {
                     shot.serverSetup().accept(player);
+                }
+                if (!OFFHAND.isEmpty()) {
+                    net.minecraft.core.registries.BuiltInRegistries.ITEM.getOptional(net.minecraft.resources.ResourceLocation.parse(OFFHAND))
+                            .ifPresent(item -> player.setItemSlot(net.minecraft.world.entity.EquipmentSlot.OFFHAND, new net.minecraft.world.item.ItemStack(item)));
                 }
             });
             if (shot.clientSetup() != null) {
