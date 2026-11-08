@@ -95,21 +95,31 @@ public final class SensorCard {
         }
         float alpha = age > SHOW_TICKS - FADE_TICKS ? (SHOW_TICKS - age) / (float) FADE_TICKS : 1F;
         Font font = mc.font;
-        List<Component> lines = lines(reading);
+        // top left (the top right is where advancement toasts appear), no wider than the space left of a
+        // block-info box at the top centre: long lines wrap
+        int maxText = HelmetRadio.maxPanelWidth(g.guiWidth()) - 10;
+        List<net.minecraft.util.FormattedCharSequence> lines = new ArrayList<>();
+        List<Boolean> title = new ArrayList<>();
+        List<Component> source = lines(reading);
+        for (int i = 0; i < source.size(); i++) {
+            for (var row : font.split(source.get(i), maxText)) {
+                lines.add(row);
+                title.add(i == 0);
+            }
+        }
         int w = 0;
-        for (Component c : lines) {
+        for (var c : lines) {
             w = Math.max(w, font.width(c));
         }
         w += 10;
         int h = lines.size() * 10 + 6;
-        // top left: the top right is where advancement toasts appear
         int x = 6;
-        int y = HelmetRadio.showing() ? 22 : 6;
+        int y = HelmetRadio.bottom();
         g.fill(x, y, x + w, y + h, argb(0x000000, 0.6F * alpha));
         g.fill(x, y, x + w, y + 1, argb(0x36B1C0, alpha));
         int ly = y + 4;
         for (int i = 0; i < lines.size(); i++) {
-            g.drawString(font, lines.get(i), x + 5, ly, argb(i == 0 ? 0x9FE3EA : 0xE6E6E6, alpha), true);
+            g.drawString(font, lines.get(i), x + 5, ly, argb(title.get(i) ? 0x9FE3EA : 0xE6E6E6, alpha), true);
             ly += 10;
         }
     }
