@@ -19,7 +19,8 @@ research: spacebreaker:rovers
 ## Kullanım
 - Bin: {key key.use}. İn: {key key.sneak}.
 - **Kargo:** {key key.sneak} basılıyken geziciye tıkla.
-- Tutuş yerçekimine bağlıdır: düşük yerçekiminde kolay kayarsın, yavaş dön.
+- Tutuş yerçekimine bağlıdır: düşük yerçekiminde sert dönüşlerde biraz dışa kayarsın ve gezici bir süre yuvarlanmaya devam eder: Ay'da gazı bırakınca yaklaşık 8 blok.
+- **El freni:** tekerlekleri kilitlemek için {key key.jump} tuşunu basılı tut; normal frenden iki kat sert durdurur ve park hâlinde geziciyi yerinde tutar.
 - Tutuş zemine de bağlıdır. **Buzda**, en çok da Plüton'un azot buzunda, gezici zor hızlanır, zor durur, zor döner ve gittiği yönde kaymaya devam eder. Erken fren yap.
 
 ## Şarj

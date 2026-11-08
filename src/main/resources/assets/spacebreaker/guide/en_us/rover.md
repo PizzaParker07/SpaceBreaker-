@@ -19,7 +19,8 @@ An electric vehicle for reaching distant craters, ice fields and ruins from your
 ## Driving
 - Get in: {key key.use}. Get out: {key key.sneak}.
 - **Cargo:** click the rover while holding {key key.sneak}.
-- Grip depends on gravity: in low gravity you slide easily, so turn slowly.
+- Grip depends on gravity: in low gravity hard turns drift a little wide, and the rover rolls on for a while: about 8 blocks on the Moon when you let go.
+- **Hand brake:** hold {key key.jump} to lock the wheels; it stops twice as hard as the normal brake and holds the rover still when parked.
 - Grip also depends on the ground. On **ice**, and on Pluto's nitrogen ice most of all, the rover speeds up and brakes weakly, steers poorly and keeps sliding the way it was going. Brake early.
 
 ## Charging
