@@ -19,7 +19,6 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ButtonBlock;
 import net.minecraft.world.level.block.DoorBlock;
-import net.minecraft.world.level.block.LanternBlock;
 import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -477,7 +476,7 @@ public class OutpostPiece extends StructurePiece {
                 placeBlock(level, armour, x, F + 4, z, box);
             }
         }
-        placeBlock(level, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), 25, F + 3, 5, box);
+        placeBlock(level, s(BaseBlocks.LED_PANEL.get()), 25, F + 4, 5, box);
         container(level, box, null, 27, F + 1, 4, MoonLoot.OUTPOST_VAULT, true);
         container(level, box, null, 27, F + 1, 6, MoonLoot.OUTPOST_VAULT, true);
     }
@@ -489,8 +488,19 @@ public class OutpostPiece extends StructurePiece {
     private void vaultPuzzle(WorldGenLevel level, BoundingBox box) {
         door(level, box, 22, 5, Direction.EAST);
         placeBlock(level, s(Blocks.AIR), 22, F + 3, 5, box); // empty socket above the door
-        placeBlock(level, s(Blocks.YELLOW_TERRACOTTA), 22, F + 3, 4, box);
-        placeBlock(level, s(Blocks.YELLOW_TERRACOTTA), 22, F + 3, 6, box);
+        // hazard stripes frame the door and its socket
+        for (int y = F + 1; y <= F + 3; y++) {
+            placeBlock(level, s(BaseBlocks.HAZARD_STRIPE.base().get()), 22, y, 4, box);
+            placeBlock(level, s(BaseBlocks.HAZARD_STRIPE.base().get()), 22, y, 6, box);
+        }
+        // guide lights: set into the lab floor from the hub tunnel to the east doorway, then the tunnel floor and
+        // ceiling, so the way to the vault reads from the lab even in the dark
+        for (int[] c : new int[][]{{15, 7}, {15, 5}, {17, 5}}) {
+            placeBlock(level, s(BaseBlocks.LED_PANEL.get()), c[0], F, c[1], box);
+        }
+        placeBlock(level, s(BaseBlocks.LED_PANEL.get()), 20, F, 5, box);
+        placeBlock(level, s(BaseBlocks.LED_PANEL.get()), 20, F + 3, 5, box);
+        placeBlock(level, s(BaseBlocks.HAZARD_STRIPE.base().get()), 21, F, 5, box); // under the trap plate
         placeBlock(level, s(Blocks.REDSTONE_LAMP), 22, F + 4, 5, box);
         // warning sign on the tunnel wall
         BlockPos signPos = getWorldPos(21, F + 2, 5);
