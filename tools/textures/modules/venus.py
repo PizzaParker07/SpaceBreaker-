@@ -440,13 +440,28 @@ def cloud_jelly():
 
 
 def cloud_sea():
-    """Tiling cloud-top texture (32x32): soft puffs in cream and pale yellow, drawn in the sky below the player."""
-    f = fbm(32, 32, 6201, [(16, 1.0), (8, 0.6), (4, 0.3)])
-    cv = Canvas(32, 32)
-    r = ramp('#c8b98e', '#d8cba2', '#e6dbb8', '#f1e9cf', '#f8f3e3')
-    for y in range(32):
-        for x in range(32):
-            cv[x, y] = pick(r, f[y][x])
+    """Tiling cloud-top texture (64x64): rounded puffs in cream and pale yellow, sunlit on top and shadowed in the
+    hollows, drawn out along the east-west super-rotation winds; the gaps between puffs are clear so a second, higher
+    layer drawn with it reads as heaped cloud tops, and each puff carries a darker rim where it meets a gap."""
+    f = fbm(64, 64, 6201, [(32, 1.0), (16, 0.7), (8, 0.45), (4, 0.25), (2, 0.1)])
+    g = fbm(64, 64, 6202, [(64, 1.0), (16, 0.5)])
+    cv = Canvas(64, 64)
+    r = ramp('#a8966a', '#bfae84', '#d2c49c', '#e3d8b8', '#f1eada', '#fcf9ee')
+
+    def v_at(x, y):
+        return 0.6 * f[(y * 2) % 64][x % 64] + 0.4 * g[y % 64][(x * 2) % 64]
+
+    for y in range(64):
+        for x in range(64):
+            v = v_at(x, y)
+            # light from the north-east: brighter where the puff rises toward it, darker on the far side
+            slope = v_at(x + 1, y - 1) - v
+            t = 0.55 + (v - 0.5) * 1.1 - slope * 4.0
+            if v < 0.47:
+                t -= 0.25  # the shadowed rim around each puff
+            c = pick(r, max(0.0, min(0.999, t)))
+            a = 255 if v > 0.42 else int(255 * max(0.0, (v - 0.32) / 0.10))
+            cv[x, y] = (c[0], c[1], c[2], a)
     return cv
 
 
