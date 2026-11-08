@@ -105,7 +105,7 @@ public final class RoverTests {
         int ticks = Math.round(360F / RoverPhysics.TURN_RATE);
         for (int t = 0; t < ticks; t++) {
             yaw += Math.toRadians(RoverPhysics.yawChange(speed, 1F));
-            double[] v = RoverPhysics.slide(vx, vz, -Math.sin(yaw) * speed, Math.cos(yaw) * speed, k);
+            double[] v = RoverPhysics.tyres(vx, vz, -Math.sin(yaw), Math.cos(yaw), speed, 1.0, k);
             vx = v[0];
             vz = v[1];
             x += vx;
@@ -125,6 +125,15 @@ public final class RoverTests {
         h.assertTrue(moon[0] > 3 && moon[0] < 12, "Moon drift " + moon[0] + " deg");
         // still under control: after a full circle of heading the rover is back near where it started
         h.assertTrue(moon[1] < 4, "Moon circle closes within " + moon[1] + " blocks");
+        // the along-heading part is untouched: driving straight, the tyres still pull the rover to its speed at once
+        double[] straight = RoverPhysics.tyres(0, 0.1, 0, 1, 0.3, 1.0, RoverPhysics.lateralGrip(1.0, MOON));
+        h.assertTrue(Math.abs(straight[1] - 0.3) < 1e-9 && straight[0] == 0, "straight ahead " + straight[1]);
+        // a parked rover (full grip) shoved sideways on the Moon stops at once instead of sliding away
+        double[] shoved = RoverPhysics.tyres(0.2, 0, 0, 1, 0, 1.0, 1.0);
+        h.assertTrue(shoved[0] == 0 && shoved[1] == 0, "parked rover held: " + shoved[0]);
+        // equal grips are the plain slide
+        double[] a = RoverPhysics.tyres(0.1, 0.2, 0.6, 0.8, 0.3, 0.4, 0.4), b = RoverPhysics.slide(0.1, 0.2, 0.18, 0.24, 0.4);
+        h.assertTrue(Math.abs(a[0] - b[0]) < 1e-9 && Math.abs(a[1] - b[1]) < 1e-9, "tyres = slide for equal grips");
         h.succeed();
     }
 

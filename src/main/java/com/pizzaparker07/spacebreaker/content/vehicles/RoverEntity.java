@@ -563,7 +563,9 @@ public class RoverEntity extends Entity implements com.pizzaparker07.spacebreake
         vy = RoverPhysics.fall(vy, g);
         float yaw = getYRot() * Mth.DEG_TO_RAD;
         // the tyres steer the ground velocity towards the heading as far as the surface lets them; airborne, only a little
-        double[] h = RoverPhysics.slide(v.x, v.z, -Mth.sin(yaw) * speed, Mth.cos(yaw) * speed, onGround() ? RoverPhysics.lateralGrip(grip, g) : RoverPhysics.AIR_STEER);
+        boolean parked = handBrake || speed == 0 && throttle == 0;
+        double side = !onGround() ? RoverPhysics.AIR_STEER : parked ? grip : RoverPhysics.lateralGrip(grip, g);
+        double[] h = RoverPhysics.tyres(v.x, v.z, -Mth.sin(yaw), Mth.cos(yaw), speed, onGround() ? grip : RoverPhysics.AIR_STEER, side);
         setDeltaMovement(h[0], vy, h[1]);
         double before = getDeltaMovement().y;
         move(MoverType.SELF, getDeltaMovement());

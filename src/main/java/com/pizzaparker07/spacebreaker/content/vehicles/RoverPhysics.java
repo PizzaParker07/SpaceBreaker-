@@ -47,7 +47,8 @@ public final class RoverPhysics {
 
     /**
      * Sideways hold of the tyres: the surface grip times the gravity's traction, as for driving and braking. In low
-     * gravity a hard turn at speed drifts a little wide (about 6 degrees on the Moon at full lock), never a spin.
+     * gravity a hard turn at speed drifts a little wide (a few degrees on the Moon at full lock), never a spin. A
+     * parked or hand-braked rover keeps the full grip: its locked wheels do not let a push slide it away.
      */
     public static double lateralGrip(double grip, double gravityFactor) {
         return grip * traction(gravityFactor);
@@ -60,6 +61,20 @@ public final class RoverPhysics {
     public static double[] slide(double vx, double vz, double wantX, double wantZ, double grip) {
         double k = Mth.clamp(grip, 0.0, 1.0);
         return new double[]{vx + (wantX - vx) * k, vz + (wantZ - vz) * k};
+    }
+
+    /**
+     * Ground velocity after one tick, split along the heading ({@code hx, hz}, a unit vector): the part along it is
+     * pulled to {@code speed} by {@code forwardGrip}, the sideways part is held off by {@code sideGrip}. With both
+     * the same this is {@link #slide}; in low gravity the side grip is the weaker, so a hard turn drifts wide without
+     * changing how the rover speeds up or brakes.
+     */
+    public static double[] tyres(double vx, double vz, double hx, double hz, double speed, double forwardGrip, double sideGrip) {
+        double f = vx * hx + vz * hz;
+        double sx = vx - f * hx, sz = vz - f * hz;
+        double f2 = f + (speed - f) * Mth.clamp(forwardGrip, 0.0, 1.0);
+        double keep = 1 - Mth.clamp(sideGrip, 0.0, 1.0);
+        return new double[]{f2 * hx + sx * keep, f2 * hz + sz * keep};
     }
 
     /** Speed after one tick for the standard rover. */
