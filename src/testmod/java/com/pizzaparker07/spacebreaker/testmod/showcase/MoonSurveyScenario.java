@@ -25,13 +25,37 @@ final class MoonSurveyScenario extends OuterShowcase {
     protected void build(ServerLevel level, PlanetTerrain t) {
         region(level, "mare", MoonData.MARE);
         region(level, "highlands", MoonData.HIGHLANDS);
-        region(level, "crater", MoonData.CRATER);
+        crater(level);
         region(level, "volcanic", MoonData.VOLCANIC);
         region(level, "polar", MoonData.POLAR);
         int[] mare = find(level, MoonData.MARE);
         if (mare != null) {
             parent(level, t, "survey_earth", mare[0], mare[1], DAY, 8);
+            // lunar night: Earth nearly full over the near side
+            parent(level, t, "survey_earth_night", mare[0], mare[1], 0.75, 8);
         }
+    }
+
+    /** The great crater framed on its centre: from its floor toward the central peak, and from above the rim. */
+    private void crater(ServerLevel level) {
+        int[] p = find(level, MoonData.CRATER);
+        if (p == null) {
+            ShowcaseDriver.log("[moon survey] no crater");
+            return;
+        }
+        int[] c = centroid(level, MoonData.CRATER, p[0], p[1]);
+        int cells = 0;
+        for (int x = c[0] - 240; x <= c[0] + 240; x += 16) {
+            for (int z = c[1] - 240; z <= c[1] + 240; z += 16) {
+                cells += is(level, MoonData.CRATER, x, z) ? 1 : 0;
+            }
+        }
+        double r = Math.max(30, Math.sqrt(cells * 256 / Math.PI));
+        look(level, "survey_crater_a_ground", c[0], c[1] + r * 0.5, 1.7, c[0], c[1], at(DAY), 200, MoonScenario::farView);
+        double hz = c[1] + r * 1.1;
+        double top = ground(level, c[0], hz) + 25;
+        shot("survey_crater_b_high", c[0] + 0.5, top, hz + 0.5, MoonScenario.yaw(0, c[1] - hz),
+                MoonScenario.pitch(0, ground(level, c[0], c[1]) - top, c[1] - hz), 200, at(DAY), MoonScenario::farView);
     }
 
     private void region(ServerLevel level, String name, ResourceKey<Biome> biome) {

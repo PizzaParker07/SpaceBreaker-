@@ -43,6 +43,28 @@ public final class MoonLifeGameTests {
 
     // ------------------------------------------------------------------ creatures
 
+    /**
+     * The Moon's rays are laid in Fresh Regolith, filled solid toward the crater; every other world keeps the speckled
+     * rays it always had (ray fill 1), so the setting changed nothing outside the Moon.
+     */
+    @GameTest(template = EMPTY)
+    public static void moonRaysAreFreshRegolithOtherWorldsUnchanged(GameTestHelper helper) {
+        var profiles = helper.getLevel().registryAccess().registryOrThrow(com.pizzaparker07.spacebreaker.content.worldgen.TerrainProfile.REGISTRY);
+        var moon = profiles.getOptional(Spacebreaker.id("moon")).orElseThrow(() -> new AssertionError("moon terrain profile"));
+        helper.assertTrue(moon.materials().raySoil().is(MoonModule.FRESH_REGOLITH.get()), "Moon rays are fresh regolith");
+        helper.assertTrue(moon.craters().rayFill() > 1, "Moon rays are filled toward the crater, fill " + moon.craters().rayFill());
+        helper.assertTrue(MoonModule.FRESH_REGOLITH.get().defaultBlockState().is(MoonModule.LUNAR_SOILS), "fresh regolith is a lunar soil");
+        int others = 0;
+        for (var e : profiles.entrySet()) {
+            if (!e.getKey().location().equals(Spacebreaker.id("moon"))) {
+                helper.assertTrue(e.getValue().craters().rayFill() == 1.0, e.getKey().location() + " keeps speckled rays");
+                others++;
+            }
+        }
+        helper.assertTrue(others > 5, "other terrain profiles checked: " + others);
+        helper.succeed();
+    }
+
     @GameTest(template = EMPTY, timeoutTicks = 100)
     public static void regolithTickBurrowsInSoilAndSurfacesWhenHit(GameTestHelper helper) {
         helper.setBlock(1, 0, 1, MoonModule.LUNAR_REGOLITH.get());

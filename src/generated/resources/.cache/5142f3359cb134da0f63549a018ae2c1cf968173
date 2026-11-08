@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-07T23:54:41.613271864	Tags for minecraft:block mod id spacebreaker
+// 1.21.1	2026-11-08T02:28:03.039973764	Tags for minecraft:block mod id spacebreaker
 baa792afbbd764742ba879704d1a1ac2c34c5a78 data/c/tags/block/ore_rates/singular.json
 203c174f339db62a8ff7248872ae78b4b8ac7b1e data/c/tags/block/ores.json
 614424eab6df954a625b0fb41ae902f31f485d64 data/c/tags/block/ores/ammonia.json
@@ -42,7 +42,7 @@ e21077d057ed0923aae4f9d3cfd999103138de75 data/c/tags/block/storage_blocks/raw_ru
 23f53dbe7b807a70ebd2412b806d5d94739792b0 data/minecraft/tags/block/coal_ores.json
 9bac14e09af682680848e770fc54d2f2468380da data/minecraft/tags/block/ice.json
 3c0830fe155259d46d196491f23c3144b5dcd4b1 data/minecraft/tags/block/mineable/pickaxe.json
-575b97e510e7c43c37c8c0f3564610cf3d02abbe data/minecraft/tags/block/mineable/shovel.json
+242aaae7b8f408d5fb05a984ecb95bd7695c5f3c data/minecraft/tags/block/mineable/shovel.json
 3eeaa79ccb654e45913a65715e52154e8e733293 data/minecraft/tags/block/needs_iron_tool.json
 ef162d68f6cda2eb75502db8b007d21fd80fb451 data/minecraft/tags/block/needs_stone_tool.json
 1137c1ba4d56080deb8301dbb264af90ec575b94 data/minecraft/tags/block/sand.json
@@ -66,7 +66,7 @@ e933cd9f6c422c642dd82640bf75511945850a4a data/spacebreaker/tags/block/itokawa_st
 c1204579efcf8b297d6ddffec2292f59a5815228 data/spacebreaker/tags/block/jovian_ground.json
 83b856920949aa64a5d494d9074d959afe6093bf data/spacebreaker/tags/block/jovian_ice.json
 0d68a39dbc317f9b2dce0c53fa798d6b5444be49 data/spacebreaker/tags/block/leaky.json
-65f229612c5d2f11045007d043184bec03af4bbb data/spacebreaker/tags/block/lunar_soils.json
+2086ff0256e4cb37540809fcc34c8c7bd487a0a7 data/spacebreaker/tags/block/lunar_soils.json
 afb8415bcdce0603de7cf58212b2d8c11a30e053 data/spacebreaker/tags/block/mars_soils.json
 970028c21f102ea541f27978c131fc4101c9c779 data/spacebreaker/tags/block/mars_stone.json
 fa4817a4b31eb3b99c938dcf1a4b5f6ec4d57eef data/spacebreaker/tags/block/mercury_stone.json

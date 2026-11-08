@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-07T17:00:29.375263135	Tags for minecraft:item mod id spacebreaker
+// 1.21.1	2026-11-08T02:28:03.047193955	Tags for minecraft:item mod id spacebreaker
 7e8e995a94080524a7a2d6280b7b24b5bae0a66f data/c/tags/item/buckets.json
 2a38d13958b33895ff8da9a470c0eb27ca030dfb data/c/tags/item/dry_ices.json
 07fbd159d3e0d8a1a05acd85d71e5425c4011142 data/c/tags/item/dusts.json
@@ -80,7 +80,7 @@ d69c241b19f0918261eb73ca04f537e8093fa5ff data/c/tags/item/raw_materials/magnetit
 12fa247c0f157ce1496395bc28b36eda7706a12c data/c/tags/item/raw_materials/spodumene.json
 b8850ad78f83e817fe170204f5808e7f823bbd97 data/c/tags/item/raw_materials/uraninite.json
 20055c2564312e0545794c0b73f9d248ff7fe9bf data/c/tags/item/raw_materials/wolframite.json
-042d68f2931ac897ddd083e346dbca64a6c20115 data/c/tags/item/regoliths.json
+69c39d493856d141f9ef2fba3984af3131db84b4 data/c/tags/item/regoliths.json
 334b462ddd47eb4b61c2b70ec88f54edfc1b6dfd data/c/tags/item/regoliths/carbonaceous.json
 5a1d4e66e545090f2718cc9aac1b10bea6a69b5c data/c/tags/item/regoliths/solar_wind.json
 ee8194fbfeefc822b906a6d6732d11713e643bec data/c/tags/item/regoliths/stony.json

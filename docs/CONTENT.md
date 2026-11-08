@@ -92,6 +92,7 @@ Her içerik paketi gerçek istemcide vitrin dünyasında fotoğraflanır; onayda
 | 🎨 | Anortozit (+ merdiven, basamak, duvar), Cilalı Anortozit (+ merdiven, basamak), Anortozit Tuğla (+ merdiven, basamak, duvar) | taş kesici tarifleri |
 | 🎨 | Darbe Breşi, Ay Buzu, Meteor Demiri (→ 4 ham demir) | |
 | 🎨 | Sinterlenmiş Regolit (regolit fırında), Sinterlenmiş Regolit Tuğla (+ merdiven, basamak, duvar) | ilk Ay üssü yapı malzemesi |
+| 🎨 | Taze Regolit (`spacebreaker:fresh_regolith`) | genç kraterlerin parlak, olgunlaşmamış fırlatma örtüsü: Ay'daki ışınlar ve haleler bundan; Ay toprağı gibi ayak izi alır, kürekle kazılır, kendini düşürür, sinterleme fırınında ve ISRU'da regolit olarak işlenir (`c:regoliths`); ışınlar kratere yakın kısımda dolu, uca doğru beneklenerek söner (arazi profili `ray_fill`, Ay'da 2.5; diğer dünyalarda 1 = eski benekli ışınlar) |
 | 🎨 | Kontrol Masası (`spacebreaker:control_desk`) | dekor: anahtar panelli tezgâh ve arkasında ekran, yöne dönük yerleşir; tarif: cam bölme, kızıltaş, 5 demir külçe; karakol merkezi ve buz sondaj kulübesinde konsol olarak durur |
 
 ### Gezegen motoru ve Ay boyutu

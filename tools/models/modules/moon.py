@@ -1,7 +1,7 @@
 """Moon blocks: soils with boot prints, rocks, building stone families, ice, ores and items."""
 from sbmodels.common import *  # noqa: F401,F403
 
-SOILS = ['lunar_regolith', 'mare_regolith', 'volcanic_glass_soil', 'icy_regolith']
+SOILS = ['lunar_regolith', 'mare_regolith', 'volcanic_glass_soil', 'icy_regolith', 'fresh_regolith']
 ROCKS = ['mare_basalt', 'impact_breccia', 'lunar_ice', 'sintered_regolith', 'meteoric_iron']
 # (base block, texture, stem for stairs/slab/wall, has wall)
 FAMILIES = [

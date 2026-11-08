@@ -353,7 +353,7 @@ public final class BlockyBodyRenderer {
             return;
         }
         render(pose, style, n, map, body, sun, Math.max(night, AIR_NIGHT), tint, alpha, ring, null);
-        drawLimb(pose, body, sun, air, AIR_LIMB_ALPHA * alpha * tint, AIR_LIMB_THICKNESS);
+        drawLimb(pose, body, sun, air, Math.min(1F, AIR_LIMB_ALPHA * alpha * tint), AIR_LIMB_THICKNESS);
     }
 
     /**
@@ -868,8 +868,10 @@ public final class BlockyBodyRenderer {
     }
 
     private static int shade(int rgb, float light, int alpha) {
-        float l = Mth.clamp(light, 0, 1);
-        return alpha << 24 | (int) ((rgb >> 16 & 255) * l) << 16 | (int) ((rgb >> 8 & 255) * l) << 8 | (int) ((rgb & 255) * l);
+        // light above 1 (a tint over 1: a bright body like Earth seen from its moon) brightens, each channel capped
+        float l = Mth.clamp(light, 0, 2);
+        return alpha << 24 | Math.min(255, (int) ((rgb >> 16 & 255) * l)) << 16 | Math.min(255, (int) ((rgb >> 8 & 255) * l)) << 8
+                | Math.min(255, (int) ((rgb & 255) * l));
     }
 
     /** One face's four corners, counter-clockwise from outside, in the body's own units. */
