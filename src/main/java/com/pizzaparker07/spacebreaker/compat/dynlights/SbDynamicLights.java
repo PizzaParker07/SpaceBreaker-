@@ -39,11 +39,30 @@ public final class SbDynamicLights implements DynamicLightsInitializer {
         // nothing: the helmet's light is a moving beam, set up in onInitializeDynamicLights(context)
     }
 
+    /** One lit segment: a beam's line, or the short spot at its end. */
+    private record Segment(Vec3 from, Vec3 to, int luminance) {
+    }
+
+    /** Length of the bright spot at the end of a beam that has one (blocks). */
+    private static final double SPOT_LENGTH = 1.5;
+
     private void tick() {
         Minecraft mc = Minecraft.getInstance();
         List<LightBeams.Beam> beams = mc.level == null || mc.isPaused() ? List.of() : LightBeams.collect(mc, 1F);
-        for (int i = 0; i < beams.size(); i++) {
-            LightBeams.Beam b = beams.get(i);
+        List<Segment> segments = new ArrayList<>();
+        for (LightBeams.Beam b : beams) {
+            segments.add(new Segment(b.from(), b.to(), b.luminance()));
+            if (b.spotLuminance() > 0) {
+                Vec3 dir = b.to().subtract(b.from());
+                double len = dir.length();
+                // pulled back off the surface a little, so the spot lights the face it hits
+                Vec3 end = len > 1e-3 ? b.to().subtract(dir.scale(0.3 / len)) : b.to();
+                Vec3 start = len > 1e-3 ? end.subtract(dir.scale(Math.min(SPOT_LENGTH, len) / len)) : end;
+                segments.add(new Segment(start, end, b.spotLuminance()));
+            }
+        }
+        for (int i = 0; i < segments.size(); i++) {
+            Segment b = segments.get(i);
             if (i < lines.size()) {
                 LineLightBehavior line = lines.get(i);
                 if (moved(line.getStartPoint(), b.from()) || moved(line.getEndPoint(), b.to())) {
@@ -60,7 +79,7 @@ public final class SbDynamicLights implements DynamicLightsInitializer {
                 manager.add(line);
             }
         }
-        while (lines.size() > beams.size()) {
+        while (lines.size() > segments.size()) {
             manager.remove(lines.remove(lines.size() - 1));
         }
     }

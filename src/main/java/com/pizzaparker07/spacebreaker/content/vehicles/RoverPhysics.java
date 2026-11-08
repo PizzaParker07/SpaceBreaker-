@@ -40,6 +40,21 @@ public final class RoverPhysics {
     }
 
     /**
+     * Steering left in the air (a hop off a crest, a long low-gravity drop): the body turns at this share of the
+     * ground rate and the flight path follows it as gently, so a rover off a bump is not wholly out of control.
+     */
+    public static final double AIR_STEER = 0.15;
+
+    /**
+     * Sideways hold of the tyres: the surface grip times the gravity's traction, as for driving and braking. In low
+     * gravity a hard turn at speed drifts a little wide (a few degrees on the Moon at full lock), never a spin. A
+     * parked or hand-braked rover keeps the full grip: its locked wheels do not let a push slide it away.
+     */
+    public static double lateralGrip(double grip, double gravityFactor) {
+        return grip * traction(gravityFactor);
+    }
+
+    /**
      * Ground velocity after one tick: the tyres pull it towards where the wheels point, as hard as the grip allows.
      * On rock that is at once; on ice the rover keeps sliding the way it was going.
      */
@@ -48,22 +63,64 @@ public final class RoverPhysics {
         return new double[]{vx + (wantX - vx) * k, vz + (wantZ - vz) * k};
     }
 
+    /**
+     * Ground velocity after one tick, split along the heading ({@code hx, hz}, a unit vector): the part along it is
+     * pulled to {@code speed} by {@code forwardGrip}, the sideways part is held off by {@code sideGrip}. With both
+     * the same this is {@link #slide}; in low gravity the side grip is the weaker, so a hard turn drifts wide without
+     * changing how the rover speeds up or brakes.
+     */
+    public static double[] tyres(double vx, double vz, double hx, double hz, double speed, double forwardGrip, double sideGrip) {
+        double f = vx * hx + vz * hz;
+        double sx = vx - f * hx, sz = vz - f * hz;
+        double f2 = f + (speed - f) * Mth.clamp(forwardGrip, 0.0, 1.0);
+        double keep = 1 - Mth.clamp(sideGrip, 0.0, 1.0);
+        return new double[]{f2 * hx + sx * keep, f2 * hz + sz * keep};
+    }
+
     /** Speed after one tick for the standard rover. */
     public static double speed(double speed, double throttle, boolean onGround, double traction) {
         return speed(speed, throttle, onGround, traction, MAX_SPEED, ACCEL);
     }
 
-    /** Speed after one tick. throttle -1..1 (forward positive); airborne wheels neither push nor brake. */
+    /** Speed after one tick; rolling drag taken to fall with the traction (tests of grip alone). */
     public static double speed(double speed, double throttle, boolean onGround, double traction, double maxSpeed, double accel) {
+        return speed(speed, throttle, false, onGround, traction, traction, maxSpeed, accel);
+    }
+
+    /**
+     * Rolling drag of the tyres on a body with the given gravity: it hardly eases off in low gravity (soft regolith
+     * drags as much as the lighter load saves), so the rover coasts about 8 blocks on the Moon, not 18.
+     */
+    public static double rollingDrag(double gravityFactor) {
+        return 0.9 + 0.1 * Mth.clamp(gravityFactor, 0, 1);
+    }
+
+    /** Hand brake: how hard it slows the rover per tick on full traction (twice the service brake). */
+    public static final double HAND_BRAKE = 0.06;
+
+    /**
+     * Speed after one tick. throttle -1..1 (forward positive); airborne wheels neither push nor brake.
+     * {@code push} = grip of the tyres for driving and braking (gravity and surface), {@code roll} = rolling drag
+     * when coasting (gravity and surface: ice still lets the rover run on). The hand brake locks the wheels: it
+     * overrides the throttle.
+     */
+    public static double speed(double speed, double throttle, boolean handBrake, boolean onGround, double push, double roll,
+                               double maxSpeed, double accel) {
         if (onGround) {
-            if (throttle != 0 && Math.signum(throttle) != Math.signum(speed) && Math.abs(speed) > 1e-4) {
-                double brake = BRAKE * traction * Math.abs(throttle);
+            // braking (hand brake or the opposite throttle) rolls with the full drag of a coasting rover, never less
+            boolean braking = handBrake || throttle != 0 && Math.signum(throttle) != Math.signum(speed) && Math.abs(speed) > 1e-4;
+            if (handBrake) {
+                double brake = HAND_BRAKE * push;
+                speed = Math.abs(speed) <= brake ? 0 : speed - Math.signum(speed) * brake;
+                throttle = 0;
+            } else if (throttle != 0 && Math.signum(throttle) != Math.signum(speed) && Math.abs(speed) > 1e-4) {
+                double brake = BRAKE * push * Math.abs(throttle);
                 speed = Math.abs(speed) <= brake ? 0 : speed - Math.signum(speed) * brake;
             } else {
-                speed += throttle * accel * traction;
+                speed += throttle * accel * push;
             }
             // rolling resistance grows with how hard the wheels press on the ground
-            speed *= throttle == 0 ? 1 - 0.06 * traction : 1 - 0.015 * traction;
+            speed *= throttle == 0 || braking ? 1 - 0.06 * roll : 1 - 0.015 * push;
         } else {
             speed *= 0.995;
         }
@@ -121,6 +178,20 @@ public final class RoverPhysics {
      */
     public static float tilt(double groundA, double groundB, double span) {
         return (float) Math.max(-MAX_TILT, Math.min(MAX_TILT, Math.atan2(groundA - groundB, span)));
+    }
+
+    /**
+     * Body lift (blocks above the rover's feet, client only) after the rover moved {@code dy} this tick: a step up
+     * the wheels climbed in one tick is taken back out of the lift, so the drawn body (and the seats) stay where they
+     * were and {@link #easeLift} carries them up the block over the next few ticks.
+     */
+    public static float afterStep(float lift, double dy, boolean onGround, float maxStep) {
+        return onGround && dy > 0.25 && dy <= maxStep + 0.25 ? lift - (float) dy : lift;
+    }
+
+    /** One tick of the body lift easing towards the ground under the wheels. */
+    public static float easeLift(float lift, float target) {
+        return lift + (target - lift) * 0.3F;
     }
 
     /** Afloat: the propeller accelerates gently, the water drags harder than tyres roll, no braking but reverse thrust. */

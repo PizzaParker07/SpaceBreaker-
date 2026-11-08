@@ -210,7 +210,9 @@ public class ResearchScreen extends Screen {
         boolean inside = mouseX >= ix && mouseX < ix + iw && mouseY >= iy && mouseY < iy + ih;
         for (Band b : bands) {
             int color = 0xFF000000 | ResearchTree.categoryColor(b.category());
-            g.drawString(font, Component.translatable(TechNode.categoryKey(b.category())), PAD, b.y() - 11, color, true);
+            // the branch name sticks to the left edge of the view, so it is never cut off when the tree is scrolled
+            int labelX = Math.max(PAD, (int) Math.ceil(-panX / zoom) + 4);
+            g.drawString(font, Component.translatable(TechNode.categoryKey(b.category())), labelX, b.y() - 11, color, true);
             g.fill(PAD, b.y() - 2, contentW - PAD, b.y() - 1, (color & 0x00FFFFFF) | 0x55000000);
         }
         Placed hovered = null;
@@ -454,12 +456,16 @@ public class ResearchScreen extends Screen {
         return false;
     }
 
-    /** For the showcase: centre the view on a technology. */
+    /**
+     * For the showcase: bring a technology into view. The view stays against the left (top) edge, with the branch
+     * names readable, whenever the technology is already visible from there; otherwise it is centred.
+     */
     public void focus(ResourceLocation tech) {
         Placed p = placed.get(tech);
         if (p != null) {
-            panX = innerW() / 2.0 - (p.x() + NODE / 2.0) * zoom;
-            panY = innerH() / 2.0 - (p.y() + NODE / 2.0) * zoom;
+            int margin = 8;
+            panX = (p.x() + NODE) * zoom + margin <= innerW() ? 0 : innerW() / 2.0 - (p.x() + NODE / 2.0) * zoom;
+            panY = (p.y() + NODE) * zoom + margin <= innerH() ? 0 : innerH() / 2.0 - (p.y() + NODE / 2.0) * zoom;
             clampPan();
         }
     }

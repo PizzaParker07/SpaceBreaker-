@@ -1,0 +1,21 @@
+{
+  "type": "spacebreaker:lava_flows",
+  "config": {
+    "cell": 240,
+    "chance": 0.85,
+    "core": {
+      "Name": "spacebreaker:ionian_basalt"
+    },
+    "flows": 4,
+    "margin": {
+      "Name": "spacebreaker:red_sulfur",
+      "Properties": {
+        "facing": "north",
+        "print": "none"
+      }
+    },
+    "max_length": 280.0,
+    "min_length": 120.0,
+    "width": 3.6
+  }
+}

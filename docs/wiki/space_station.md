@@ -18,12 +18,12 @@ Yörüngede bir ev, atölye ve yakıt deposu. Roketini her seferinde yerden dold
 **İstasyon Çekirdek Modülü** · **Kenetlenme Modülü**
 
 Hazır modüller standart **ağızlardan** birleşir: yürüme yüksekliğinde 3 × 3'lük bir açıklık; bir şey bağlı değilken dokuz **İstasyon Kapağı** ile kapalıdır (ortadaki işaretlidir).
-- ****İstasyon Çekirdek Modülü**** (7 × 7 × 7): istasyonun kalbi; **İstasyon Çekirdek Konsolu**, oksijen dağıtıcı, tavan ışıkları, çatıda bir kenetlenme portu ve üstünde birer pencere olan dört yan ağız.
-- ****Kenetlenme Modülü**** (5 × 5 × 7): ucunda kenetlenme portu olan kısa bir tünel.
+- ****İstasyon Çekirdek Modülü**** (7 × 7 × 7): istasyonun kalbi; **İstasyon Çekirdek Konsolu**, oksijen dağıtıcı, tavan ışıkları, çatıda bir yanaşma portu ve üstünde birer pencere olan dört yan ağız.
+- ****Kenetlenme Modülü**** (5 × 5 × 7): ucunda yanaşma portu olan kısa bir tünel.
 
 **Elle:** modülü bir ağzın kapağına kullan. Duvara dayanarak kurulur ve iki duvar kısa bir geçide açılır; iki modül tek bir hava odası olur. Yörüngede boşlukta kullanılan bir çekirdek yeni bir istasyon kurar (başka yerde "İstasyon çekirdeği yalnızca yörüngede açılabilir" der). Elinde modül varken bir ağza bakarsan nereye geleceğinin taslağı görünür: yer varsa yeşil, yolda bir şey varsa kırmızı.
 
-**Roketle:** modüller kapsül yuvasına takılır. Modül taşıyan roket yörüngesindeki istasyona kenetlenir ve modülü çekirdek konsolunda bekletir; almak için konsolu aç. 512 blok içinde istasyon yoksa çekirdek modülü roketin önünde yeni bir istasyon açar, roket de onun çatısına kenetlenir.
+**Roketle:** modüller kapsül yuvasına takılır. Modül taşıyan roket yörüngesindeki istasyona yanaşır ve modülü çekirdek konsolunda bekletir; almak için konsolu aç. 512 blok içinde istasyon yoksa çekirdek modülü roketin önünde yeni bir istasyon açar, roket de onun çatısına kenetlenir.
 
 |   |   |   |
 |---|---|---|
@@ -47,7 +47,7 @@ Hazır modüller standart **ağızlardan** birleşir: yürüme yüksekliğinde 3
 **Yaşam Modülü** · **Hava Kilidi Modülü** · **Güneş Kanatları**
 
 - ****Yaşam Modülü**** (7 × 5 × 9): uyku bölmelerinde üç ranza, iki fıçı dolap, iki pencere bandı, tavan ışıkları ve istasyonu büyütmek için uçta kapalı bir ağız.
-- ****Hava Kilidi Modülü**** (5 × 5 × 5): istasyona açılan bir sürgülü kapı, uzaya açılan bir sürgülü kapı ve aralarında tehlike şeritleriyle çevrili küçük bir oda. İki kapı birbirine kilitlidir: biri açıkken ötekini istersen, önce açık olan kapanır ve döngüyü tamamlar. İkisi hiçbir zaman aynı anda açık olmaz; sen dışarı çıkarken istasyon havasını korur.
+- ****Hava Kilidi Modülü**** (5 × 5 × 5): istasyona açılan bir kayar kapı, uzaya açılan bir kayar kapı ve aralarında tehlike şeritleriyle çevrili küçük bir oda. İki kapı birbirine kilitlidir: biri açıkken ötekini istersen, önce açık olan kapanır ve döngüyü tamamlar. İkisi hiçbir zaman aynı anda açık olmaz; sen dışarı çıkarken istasyon havasını korur.
 - ****Güneş Kanatları****: gövdenin dışına kurulur, ağız kapalı kalır; ortadaki kapak istasyonu besleyen bir batarya bankasına dönüşür. Döner bir eklemden ızgara ve bakır kablodan bir kol uzanır; üstünde her yanda ikişer olmak üzere **dört güneş paneli dizisi** ve ucunda bir anten vardır.
 
 Bunlar da çekirdek ve kenetlenme modülü gibi bağlanır ve teslim edilir.
@@ -81,8 +81,8 @@ Bunlar da çekirdek ve kenetlenme modülü gibi bağlanır ve teslim edilir.
 
 **Tersane Modülü**
 
-**Tersane Modülü** öteki modüller gibi bir ağza bağlanır ama gövdenin dışına kurulur: bir uzay aracı için yuvası (en fazla **13 × 13 × 29**) olan açık **15 × 15 × 31**'lik bir çerçeve, ağızda bir kenetlenme portu, bir yakıt deposu ve projektörler. **Tersane Konsolu** tasarım ekranını açar.
-- Bölümleri burundan kıça doğru ekle: **kokpit** (burun kenetlenme portuyla), kabin, kargo bölmesi, küçük ya da büyük tank ve en sonda bir **metan** ya da **nükleer** motor. RCS kümelerini ve güneş kanadı çiftlerini say.
+**Tersane Modülü** öteki modüller gibi bir ağza bağlanır ama gövdenin dışına kurulur: bir uzay aracı için yuvası (en fazla **13 × 13 × 29**) olan açık **15 × 15 × 31**'lik bir çerçeve, ağızda bir yanaşma portu, bir yakıt deposu ve projektörler. **Tersane Konsolu** tasarım ekranını açar.
+- Bölümleri burundan kıça doğru ekle: **kokpit** (burun yanaşma portuyla), kabin, kargo bölmesi, küçük ya da büyük tank ve en sonda bir **metan** ya da **nükleer** motor. RCS kümelerini ve güneş kanadı çiftlerini say.
 - Yandan ve üstten görünümler aracı yuvanın içinde gösterir; panelde boyutu, kütlesi, yakıtı, itkisi, Isp'si, dolu tankla Δv'si ve ivmesi yazar.
 - Yapılmasını engelleyen her şey açıkça listelenir: kokpit başta ve tek olmalı, motor sonda, en az bir tank ve iki RCS kümesi gerekir, araç yuvaya sığmalıdır. Her şey yolundaysa **İnşaya hazır ✔** der. Tasarımı konsolda saklamak için **Tasarımı kaydet**'e bas.
 

@@ -45,7 +45,14 @@ Yükleme ekranı yoktur: kısa bir geçişten sonra yörüngeye varınca bir mes
 - **Sonraki uçuşlarda:** kapsülünün altında **ısı kalkanı**, üstünde **paraşüt** olsun. Yıldız haritasında Dünya'yı seçip **Yüzeye in**; kalkan ısıyı alır, paraşüt açılır.
 
 > [!TIP]
-> Eve dönünce Yörünge Uçuşu verisini laboratuvarda incele: *İniş Sistemleri* ile ısı kalkanı, paraşüt ve iniş bacakları açılır. Ay'a inmek için bacaklar şart.
+> Eve dönünce Yörünge Uçuşu verisini laboratuvarda incele: *İniş Sistemleri* ile ısı kalkanı, paraşüt ve iniş bacakları açılır. Bunun için *Hassas İmalat* da gerekir: ısı kalkanının yapıldığı ablatif kalkan levhalarını [Parça Üretim Tezgâhı](fabricator) üretir. Ay'a inmek için bacaklar şart.
+
+|   |   |   |
+|---|---|---|
+| Ablatif Kalkan Levhası | Ablatif Kalkan Levhası | Ablatif Kalkan Levhası |
+| Tuğla | Obsidiyen | Tuğla |
+
+→ **Ablatif Isı Kalkanı** (Çalışma Masası)
 
 <details>
 <summary>English: Your First Flight</summary>
@@ -93,6 +100,13 @@ There is no loading screen: after a short transition, a message tells you when y
 - **Later flights:** put a **heat shield** under your capsule and a **parachute** on top. Pick Earth on the star map and **Land**; the shield takes the heat and the parachute opens.
 
 > [!TIP]
-> Back home, analyse the Orbital Flight data in the lab: *Landing Systems* unlocks the heat shield, parachute and landing legs. You need the legs to land on the Moon.
+> Back home, analyse the Orbital Flight data in the lab: *Landing Systems* unlocks the heat shield, parachute and landing legs. It also needs *Precision Manufacturing*: the fabricator makes the ablative shield plates the heat shield is built from. You need the legs to land on the Moon.
+
+|   |   |   |
+|---|---|---|
+| Ablative Shield Plate | Ablative Shield Plate | Ablative Shield Plate |
+| Brick | Obsidian | Brick |
+
+→ **Ablative Heat Shield** (Crafting Table)
 
 </details>

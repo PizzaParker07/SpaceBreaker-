@@ -195,9 +195,9 @@ final class MarsScenario implements ShowcaseScenario {
 
     private void buildStage(ServerLevel level) {
         int y0 = (int) Math.floor(terrain.height(STAGE_X, STAGE_Z));
-        for (int x = STAGE_X - 13; x <= STAGE_X + 13; x++) {
+        for (int x = STAGE_X - 13; x <= STAGE_X + 19; x++) {
             for (int z = STAGE_Z - 6; z <= STAGE_Z + 16; z++) {
-                for (int y = y0 - 3; y <= y0 + 12; y++) {
+                for (int y = y0 - 3; y <= y0 + 20; y++) {
                     BlockState s = y < y0 ? MarsModule.MARTIAN_SANDSTONE.base().get().defaultBlockState()
                             : y == y0 ? MarsModule.MARTIAN_REGOLITH.get().defaultBlockState() : Blocks.AIR.defaultBlockState();
                     level.setBlock(new BlockPos(x, y, z), s, Block.UPDATE_CLIENTS);
