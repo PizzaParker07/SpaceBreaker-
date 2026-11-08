@@ -1,0 +1,6 @@
+{
+  "parent": "spacebreaker:block/launch_control_console",
+  "textures": {
+    "screen": "spacebreaker:block/research_lab_screen"
+  }
+}

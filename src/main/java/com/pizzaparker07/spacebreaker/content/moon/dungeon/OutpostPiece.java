@@ -194,6 +194,8 @@ public class OutpostPiece extends StructurePiece {
         BlockState floor = s(BaseBlocks.TITANIUM_DECK.base().get());
         BlockState glass = s(RocketryModule.STATION_WINDOW.get());
         BlockState tray = s(BaseBlocks.CABLE_DUCT.get());
+        BlockState skirting = s(Blocks.GRAY_CONCRETE);
+        BlockState stripe = s(Blocks.BLUE_CONCRETE);
         for (int x = x0; x <= x1; x++) {
             for (int z = z0; z <= z1; z++) {
                 boolean ex = x == x0 || x == x1;
@@ -205,7 +207,8 @@ public class OutpostPiece extends StructurePiece {
                         st = frame;
                     } else if (ex || ez) {
                         boolean window = y == F + 2 && ((ex ? z : x) % 3 == 0);
-                        st = window ? glass : y == F + h - 1 ? tray : wall;
+                        // dark skirting at the floor, a blue band at waist height with the windows in it, the cable tray on top
+                        st = window ? glass : y == F + 1 ? skirting : y == F + 2 ? stripe : y == F + h - 1 ? tray : wall;
                     } else {
                         st = s(Blocks.AIR);
                     }
@@ -218,10 +221,13 @@ public class OutpostPiece extends StructurePiece {
                 }
             }
         }
-        // a light panel set into the middle of the ceiling
-        int cx = (x0 + x1) / 2;
-        int cz = (z0 + z1) / 2;
-        placeBlock(level, s(BaseBlocks.LED_PANEL.get()), cx, F + h, cz, box);
+        // light panels set into the ceiling every three blocks, and one in the middle
+        for (int x = x0 + 2; x < x1; x += 3) {
+            for (int z = z0 + 2; z < z1; z += 3) {
+                placeBlock(level, s(BaseBlocks.LED_PANEL.get()), x, F + h, z, box);
+            }
+        }
+        placeBlock(level, s(BaseBlocks.LED_PANEL.get()), (x0 + x1) / 2, F + h, (z0 + z1) / 2, box);
     }
 
     /** A pressurised tunnel along z between two module walls (exclusive), one block wide inside. */
@@ -274,20 +280,22 @@ public class OutpostPiece extends StructurePiece {
     }
 
     private void furnishHub(WorldGenLevel level, BoundingBox box, RandomSource r) {
-        // survey consoles along the north wall: sloped desks, dead screens above, one still lit
+        // survey consoles along the north wall: control desks facing into the room, a seat at two of them
         for (int x = 11; x <= 19; x++) {
             if (x < 14 || x > 16) {
-                placeBlock(level, BaseBlocks.ALUMINUM_PANEL.stairs().get().defaultBlockState().setValue(StairBlock.FACING, Direction.NORTH)
-                        .setValue(StairBlock.HALF, net.minecraft.world.level.block.state.properties.Half.TOP), x, F + 1, 11, box);
-                placeBlock(level, x == 12 ? s(BaseBlocks.LED_PANEL.get()) : s(RocketryModule.STATION_HULL.get()), x, F + 2, 11, box);
+                placeBlock(level, MoonModule.CONTROL_DESK.get().defaultBlockState()
+                        .setValue(net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING, Direction.SOUTH), x, F + 1, 11, box);
             }
+        }
+        for (int x : new int[]{12, 18}) {
+            placeBlock(level, BaseBlocks.ALUMINUM_PANEL.stairs().get().defaultBlockState().setValue(StairBlock.FACING, Direction.SOUTH), x, F + 1, 12, box);
         }
         // the map table in the middle, a seat at it
         for (int x = 14; x <= 16; x++) {
             placeBlock(level, BaseBlocks.TITANIUM_DECK.slab().get().defaultBlockState().setValue(net.minecraft.world.level.block.SlabBlock.TYPE,
                     net.minecraft.world.level.block.state.properties.SlabType.TOP), x, F + 1, 15, box);
         }
-        placeBlock(level, BaseBlocks.ALUMINUM_PANEL.stairs().get().defaultBlockState().setValue(StairBlock.FACING, Direction.NORTH), 15, F + 1, 16, box);
+        placeBlock(level, BaseBlocks.ALUMINUM_PANEL.stairs().get().defaultBlockState().setValue(StairBlock.FACING, Direction.SOUTH), 15, F + 1, 16, box);
         // the power and water lines come in along the floor
         for (int z = 12; z <= 19; z++) {
             if (z >= 14 && z <= 16) {
