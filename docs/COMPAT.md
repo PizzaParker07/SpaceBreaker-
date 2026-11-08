@@ -423,6 +423,12 @@ environment; the plugins compile against both APIs and the line itself is covere
   `-Pscenario=moon '-Pshots=30_.*' -Pretreat=300 -PwithCompat=true` with DH in `run-mods`. Expected: the outposts are
   StructurePieces, so DH shows them in LODs once their chunks have been generated (visited); DH's own far generation
   in its default FEATURES mode does not place structures.
+- **Layout fixes re-checked (2026-11-08, on a merge of dev/industry 21a62a79, dev/rocketry 2f6b32e6, dev/suit
+  58349cb5, dev/research c8b16b87):** with the attack indicator in "hotbar" mode the rover and cockpit HUDs move 20 px
+  out, mirrored for the left hand, clear of the off-hand slot (`hud_attack_indicator_hotbar.jpg`; showcase
+  `-PattackIndicator=hotbar -PmainHand=left`). At 427x240 the research tree opens at its left edge with the branch
+  names visible; the sensor card wraps to 97 px but then grows tall enough to reach the subtitle text near the bottom
+  on Mars (`gui_scale_fixes_427x240.jpg`, passed to the suit area).
 - **Outline boxes (`RenderType.lines()`):** Iris's line programs widen each segment in screen space, so an edge
   that runs behind the camera becomes a large flat quad across the view (seen as a lavender square over the station
   core while holding a docking module: the outline reaches back past the player). `compat.client.ClippedLines` cuts
