@@ -74,3 +74,12 @@ karşılar, yanmalı jeneratörle pratik değil. Seçenekler (roketçiliğin kar
 - büyük tankı nükleer motorla 6 t LH₂'ye sınırlamak ya da tankı küçültmek;
 - istasyon yakıt deposunun sıvılaştırmayı yavaş yavaş, kendisi yapması;
 - sıvılaştırma tarifini LH₂ için 160 → 100 FE/t'ye indirmek (sanayi tarafında yapılabilir, onay gerekir).
+
+## 5. Karar (2026-11-08)
+
+- Sıvı hidrojen sıvılaştırması **160 → 100 FE/t** oldu (sanayi, `liquefaction/hydrogen`, 80 tick). 1000 mB H₂ → 250 mB LH₂
+  artık 8 k FE (önce 12,8 k). Nükleer transfer aracının 24 t LH₂'si yaklaşık 17 M FE'ye iniyor: sıvılaştırma ~10,8 M,
+  elektroliz ~6,5 M. Bu geç oyun hedefi; birkaç fisyon ünitesiyle birkaç günde dolması kabul edildi.
+- Tank sınırı yok.
+- İlk geminin boyunu roketçilik kendi ölçüsünde düzeltecek.
+- Ablatif levha ısı kalkanında (roketçilik 7ffa605d).
