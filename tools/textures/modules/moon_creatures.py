@@ -426,7 +426,8 @@ def glimmer_beetle():
     paint(cv, 0, 0, 6, 3, 7, abdomen)
     paint(cv, 0, 10, 4, 2, 3, lambda f, x, y, fw, fh: (r[4] if y == 0 else r[3]) if f == 'top' else r[1])
     paint(cv, 14, 10, 2, 2, 2, lambda f, x, y, fw, fh: (g[2] if y == 0 else r[1]) if f == 'front' else r[2])
-    paint(cv, 22, 10, 1, 2, 1, lambda f, x, y, fw, fh: r[3] if y == 0 else r[2])
+    # feelers 1 x 1 x 4: dark, pale ringed, a glowing bead at the tip (front face)
+    paint(cv, 22, 10, 1, 1, 4, lambda f, x, y, fw, fh: g[2] if f == 'front' else (r[4] if (f == 'top' and y % 2 == 0) or (f in ('right', 'left') and x % 2 == 0) else r[2]))
     paint(cv, 0, 16, 4, 1, 1, lambda f, x, y, fw, fh: r[3] if x == 1 else r[1])
     return cv
 
@@ -449,6 +450,8 @@ def glimmer_beetle_glow():
     for x in range(6):
         for y in range(4, 7):
             cv[13 + x, y] = g[1]
+    # feeler tips (front face of the 1 x 1 x 4 box at (26, 14))
+    cv[26, 14] = g[3]
     # eye spots on the head front (16, 12)
     cv[16, 12] = g[3]
     cv[17, 12] = g[3]
