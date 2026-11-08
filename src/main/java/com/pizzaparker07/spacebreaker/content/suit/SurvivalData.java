@@ -67,6 +67,8 @@ public final class SurvivalData {
     public Boolean wasSealed;
     /** When the "suit sealed" note was last shown (player tick), so it does not repeat on every quick swap. */
     public int lastSealNoteTick = -10000;
+    /** When the "pressurised" note was last shown (player tick), so boarding a cabin again does not repeat it. */
+    public int lastPressurisedNoteTick = -10000;
 
     public SurvivalData() {
         this(MAX_BREATH, NORMAL_BODY_C, 0.0);

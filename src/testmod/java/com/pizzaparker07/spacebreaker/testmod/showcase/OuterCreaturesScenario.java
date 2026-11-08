@@ -74,6 +74,10 @@ final class OuterCreaturesScenario extends OuterShowcase {
                 }
             }
             Mob m = mob(level, c.type().get(), x, y0 + c.lift(), SZ, 0F);
+            // bats (the frost moth) are born resting; REST=1 keeps that pose, otherwise they are shot in flight
+            if (m instanceof net.minecraft.world.entity.ambient.Bat bat && System.getenv("REST") == null) {
+                bat.setResting(false);
+            }
             double size = m == null ? 1 : Math.max(m.getBbWidth(), m.getBbHeight());
             double d = 0.8 + size * 1.25;
             double eye = y0 + c.lift() + (m == null ? 0.5 : m.getBbHeight() * 0.5);

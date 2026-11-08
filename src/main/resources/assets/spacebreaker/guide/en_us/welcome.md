@@ -10,7 +10,7 @@ Keep this book with you. If you lose it, make a new one from a book and some {it
 {recipe spacebreaker:guide_book}
 
 ## Using the book
-- Click a chapter name in the **Contents** to open it.
+- The **Contents** lists the topics on the left: click one and its chapters appear on the right page, then click a chapter name. Until you pick one, the right page suggests where to start.
 - Turn pages with the arrows under the book, the arrow keys or the mouse wheel.
 - The coloured ribbons on the right take you straight to a topic.
 - {color #1E5A9A}Blue{/color} text is a link: hover an item name to see it, click it to open that item's page.

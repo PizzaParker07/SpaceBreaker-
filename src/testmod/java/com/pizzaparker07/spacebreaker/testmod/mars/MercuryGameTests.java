@@ -101,14 +101,15 @@ public final class MercuryGameTests {
         int ice = 0;
         for (BlockPos p : BlockPos.betweenClosed(bb.minX(), bb.minY(), bb.minZ(), bb.maxX(), bb.maxY(), bb.maxZ())) {
             var st = level.getBlockState(p);
-            if (st.is(Blocks.CHEST) && level.getBlockEntity(p) instanceof ChestBlockEntity ch && ch.getLootTable() != null) {
+            if (level.getBlockEntity(p) instanceof com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlockEntity ch
+                    && ch.getLootTable() != null) {
                 chests++;
             }
             if (st.is(com.pizzaparker07.spacebreaker.content.mercury.MercuryModule.MERCURY_ICE.get())) {
                 ice++;
             }
         }
-        helper.assertTrue(chests >= 2, "office and stores chests, found " + chests);
+        helper.assertTrue(chests >= 2, "office and stores lockers, found " + chests);
         helper.assertTrue(ice > 300, "the mine is cut into ice, found " + ice);
         int frost = 0;
         int signs = 0;
@@ -121,12 +122,12 @@ public final class MercuryGameTests {
                 signs++;
             }
             var st = level.getBlockState(p);
-            if (st.is(Blocks.LADDER) || st.is(Blocks.OAK_WALL_SIGN)) {
+            if (st.is(Blocks.LADDER) || st.is(Blocks.BIRCH_WALL_SIGN)) {
                 helper.assertTrue(st.canSurvive(level, p), "a ladder or sign hangs in the air at " + p);
             }
         }
         helper.assertTrue(frost == 1, "the powder-snow trap, found " + frost);
-        helper.assertTrue(signs == 1, "the sign at the ice-sealed store, found " + signs);
+        helper.assertTrue(signs == 2, "the sign at the ice-sealed store and the last-shift log, found " + signs);
         helper.succeed();
     }
 

@@ -86,33 +86,78 @@ public class MoonletDungeonPiece extends StructurePiece {
                 }
             }
         }
-        // the probe body, tilted into the pit floor
-        int by = G - 2;
-        for (int x = 6; x <= 8; x++) {
-            for (int z = 6; z <= 8; z++) {
-                placeBlock(level, x == 7 && z == 7 ? s(Blocks.GOLD_BLOCK) : s(Blocks.WHITE_CONCRETE), x, by, z, box);
+        // the probe: a small octagonal capsule nosed into the pit floor, its heat shield to the east, the hatch to the
+        // west torn open; the sample vault is still sealed inside
+        int by = G - 3;
+        BlockState hull = s(Blocks.SMOOTH_QUARTZ);
+        BlockState rib = s(Blocks.POLISHED_ANDESITE);
+        BlockState foil = s(com.pizzaparker07.spacebreaker.content.belt.LanderBlocks.GOLD_FOIL_CLADDING.get());
+        for (int x = 4; x <= 9; x++) {
+            int sink = x >= 8 ? 1 : 0; // the nose went in deeper
+            boolean cap = x == 4 || x == 9;
+            for (int u = -2; u <= 2; u++) {
+                int au = Math.abs(u);
+                Direction in = u < 0 ? Direction.SOUTH : Direction.NORTH;
+                for (int v = 0; v <= 3; v++) {
+                    int y = by + v - sink;
+                    BlockState st = null;
+                    boolean interior = (au <= 1 && v >= 1 && v <= 2) || (au == 0 && v == 3);
+                    if (v == 0 && au <= 1) {
+                        st = cap ? rib : s(Blocks.SMOOTH_STONE);
+                    } else if (v == 0) {
+                        st = s(Blocks.SMOOTH_QUARTZ_STAIRS).setValue(net.minecraft.world.level.block.StairBlock.FACING, in)
+                                .setValue(net.minecraft.world.level.block.StairBlock.HALF, Half.TOP);
+                    } else if (interior) {
+                        st = cap ? rib : s(Blocks.AIR);
+                    } else if (au == 2 && v <= 2) {
+                        st = cap ? rib : v == 1 ? foil : hull;
+                    } else if (au == 2) {
+                        st = s(Blocks.SMOOTH_QUARTZ_STAIRS).setValue(net.minecraft.world.level.block.StairBlock.FACING, in);
+                    } else if (v == 3) {
+                        st = cap ? rib : hull;
+                    }
+                    if (st != null) {
+                        com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this, st, x, y, 7 + u, box);
+                    }
+                }
             }
         }
-        placeBlock(level, s(Blocks.WHITE_CONCRETE), 7, by + 1, 7, box);
-        placeBlock(level, s(Blocks.LIGHTNING_ROD), 7, by + 2, 7, box);
-        placeBlock(level, Blocks.IRON_TRAPDOOR.defaultBlockState().setValue(TrapDoorBlock.HALF, Half.TOP), 6, by + 1, 7, box);
-        // torn solar wings and debris thrown out of the pit
-        placeBlock(level, s(MachinesModule.SOLAR_PANEL.get()), 2, G + 1, 6, box);
-        placeBlock(level, s(MachinesModule.SOLAR_PANEL.get()), 12, G + 1, 9, box);
-        placeBlock(level, s(Blocks.IRON_BARS), 11, G + 2, 3, box);
-        placeBlock(level, s(Blocks.WHITE_CONCRETE), 3, G + 2, 11, box);
-        chest(level, box, 8, by + 1, 7, MarsLoot.PHOBOS_PROBE);
+        // the heat shield: a brown dish across the nose
+        for (int u = -2; u <= 2; u++) {
+            for (int v = 0; v <= 3; v++) {
+                if (Math.abs(u) + Math.abs(v - 1.5) <= 3) {
+                    placeBlock(level, Math.abs(u) <= 1 && v >= 1 && v <= 2 ? s(Blocks.BROWN_TERRACOTTA) : s(Blocks.TERRACOTTA), 10, by + v - 1, 7 + u, box);
+                }
+            }
+        }
+        // the hatch, blown open and lying in the dust
+        placeBlock(level, s(Blocks.AIR), 4, by + 1, 7, box);
+        placeBlock(level, s(Blocks.AIR), 4, by + 2, 7, box);
+        placeBlock(level, Blocks.IRON_TRAPDOOR.defaultBlockState().setValue(TrapDoorBlock.HALF, Half.BOTTOM), 3, by + 1, 6, box);
+        com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.place(level, this, 8, by, 7, Direction.WEST, MarsLoot.PHOBOS_PROBE,
+                seed ^ 0x51L, box);
+        // one solar wing still on its arm, the other torn off and thrown out of the pit
+        placeBlock(level, s(Blocks.CHAIN).setValue(net.minecraft.world.level.block.ChainBlock.AXIS, Direction.Axis.Z), 6, by + 2, 4, box);
+        placeBlock(level, s(MachinesModule.SOLAR_PANEL.get()), 6, by + 2, 3, box);
+        placeBlock(level, s(MachinesModule.SOLAR_PANEL.get()), 6, by + 2, 2, box);
+        placeBlock(level, s(MachinesModule.SOLAR_PANEL.get()), 11, G + 2, 12, box);
+        placeBlock(level, s(MachinesModule.SOLAR_PANEL.get()), 12, G + 2, 12, box);
+        // debris: shell plates and a bent antenna
+        placeBlock(level, s(Blocks.SMOOTH_QUARTZ_SLAB), 2, G + 2, 10, box);
+        placeBlock(level, s(Blocks.SMOOTH_QUARTZ_SLAB), 12, G + 2, 4, box);
+        placeBlock(level, s(Blocks.LIGHTNING_ROD), 6, by + 4, 7, box);
     }
 
     private void iceCache(WorldGenLevel level, BoundingBox box) {
-        BlockState wall = s(MarsModule.POLISHED_MARTIAN_BASALT.base().get());
+        BlockState wall = s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.ALUMINUM_PANEL.base().get());
         // vault: 7 x 7 x 4 room, 6 blocks under the surface
         int fy = G - 7;
         for (int x = 4; x <= 10; x++) {
             for (int z = 4; z <= 10; z++) {
                 for (int y = fy; y <= fy + 4; y++) {
                     boolean shell = x == 4 || x == 10 || z == 4 || z == 10 || y == fy || y == fy + 4;
-                    placeBlock(level, shell ? wall : s(Blocks.AIR), x, y, z, box);
+                    boolean rib = (x == 4 || x == 10) && (z == 4 || z == 10) || y == fy + 4 && (x == 7 || z == 7);
+                    placeBlock(level, shell ? (y == fy ? s(Blocks.SMOOTH_STONE) : rib ? s(Blocks.POLISHED_ANDESITE) : wall) : s(Blocks.AIR), x, y, z, box);
                 }
             }
         }
@@ -125,9 +170,11 @@ public class MoonletDungeonPiece extends StructurePiece {
         }
         placeBlock(level, s(MarsModule.DRY_ICE.get()), 9, fy + 1, 9, box);
         placeBlock(level, s(MarsModule.DRY_ICE.get()), 9, fy + 1, 8, box);
-        placeBlock(level, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), 7, fy + 3, 7, box);
-        chest(level, box, 9, fy + 1, 5, MarsLoot.DEIMOS_CACHE);
-        chest(level, box, 8, fy + 1, 9, MarsLoot.DEIMOS_CACHE);
+        placeBlock(level, s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.LED_PANEL.get()), 7, fy + 4, 7, box);
+        com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.place(level, this, 10, fy + 1, 6, Direction.WEST, MarsLoot.DEIMOS_CACHE, seed ^ 0x61L, box);
+        com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLocker.place(level, this, 8, fy + 1, 10, Direction.NORTH, MarsLoot.DEIMOS_CACHE, seed ^ 0x62L, box);
+        placeBlock(level, s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.CABLE_DUCT.get()), 6, fy + 4, 7, box);
+        placeBlock(level, s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.CABLE_DUCT.get()), 8, fy + 4, 7, box);
         // shaft with ladder up to a hatch on the surface
         for (int y = fy + 1; y <= G; y++) {
             placeBlock(level, s(Blocks.AIR), 7, y, 4, box);
@@ -140,7 +187,10 @@ public class MoonletDungeonPiece extends StructurePiece {
         for (int y = G + 1; y <= G + 4; y++) {
             placeBlock(level, s(Blocks.IRON_BARS), 9, y, 3, box);
         }
-        placeBlock(level, s(Blocks.REDSTONE_LAMP), 9, G + 5, 3, box);
+        placeBlock(level, s(Blocks.POLISHED_ANDESITE), 9, G + 5, 3, box);
+        com.pizzaparker07.spacebreaker.content.dungeons.PieceOrientation.place(level, this,
+                s(com.pizzaparker07.spacebreaker.content.rocketry.base.BaseBlocks.FLOODLIGHT.get())
+                        .setValue(net.minecraft.world.level.block.DirectionalBlock.FACING, Direction.UP), 9, G + 6, 3, box);
     }
 
     private void chest(WorldGenLevel level, BoundingBox box, int x, int y, int z, net.minecraft.resources.ResourceKey<net.minecraft.world.level.storage.loot.LootTable> loot) {

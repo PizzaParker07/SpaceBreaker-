@@ -59,8 +59,10 @@ public final class SuitEvents {
         }
         if (player.tickCount % 10 == 0) {
             boolean pressurised = pressurisedAt(player);
-            if (pressurised && !data.wasPressurised) {
-                // stepping into a station module or base: the helmet may come off here
+            if (pressurised && !data.wasPressurised && player.tickCount - data.lastPressurisedNoteTick > 1200) {
+                // stepping into a station module, base or cabin: the helmet may come off here (at most once a minute, so
+                // climbing in and out of a rover does not repeat it)
+                data.lastPressurisedNoteTick = player.tickCount;
                 player.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.spacebreaker.suit.pressurised")
                         .withStyle(net.minecraft.ChatFormatting.AQUA), true);
             }

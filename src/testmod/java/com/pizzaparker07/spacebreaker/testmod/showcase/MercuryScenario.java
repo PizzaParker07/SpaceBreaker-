@@ -78,7 +78,7 @@ final class MercuryScenario implements ShowcaseScenario {
             level.addFreshEntity(c);
         }
         int[] m = mineSpot(terrain);
-        int my = (int) Math.floor(terrain.height(m[0] + 12, m[1] + 20));
+        int my = (int) Math.floor(terrain.height(m[0] + 12, m[1] + 4));
         MarsScenario.placePiece(level, new IceMinePiece(31L, m[0], my, m[1]));
     }
 
@@ -111,12 +111,17 @@ final class MercuryScenario implements ShowcaseScenario {
         int y0 = (int) Math.floor(t.height(SX, SZ));
         s.add(new ShowcaseDriver.Shot("05_crawler_and_rocks", 0, SX + 1.5, y0 + 3, SZ + 9.5, 180F, 22F, true, fp, 80, at(0.03), null));
         int[] m = mineSpot(t);
-        int my = (int) Math.floor(t.height(m[0] + 12, m[1] + 20));
+        int my = (int) Math.floor(t.height(m[0] + 12, m[1] + 4));
         s.add(new ShowcaseDriver.Shot("06_polar_crater", 0, m[0] + 12.5, my + 12, m[1] + 34.5, 180F, 20F, true, fp, 260, at(0.25), null));
         s.add(new ShowcaseDriver.Shot("07_ice_mine", 0, m[0] + 12.5, my - 14 + 2 + 1.6, m[1] + 16.5, 180F, 6F, true, fp, 100, p -> {
             PlanetTime.setDayFraction(p.serverLevel(), 0.25);
             p.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.NIGHT_VISION, 2400, 0, false, false));
         }, null));
+        s.add(new ShowcaseDriver.Shot("07b_ice_mine_melt_room", 0, m[0] + 7.5, my - 14 + 2 + 1.6, m[1] + 15.5, 120F, 8F, true, fp, 100, p -> {
+            PlanetTime.setDayFraction(p.serverLevel(), 0.25);
+            p.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.NIGHT_VISION, 2400, 0, false, false));
+        }, null));
+        s.add(new ShowcaseDriver.Shot("07c_ice_mine_pithead", 0, m[0] + 20.5, my + 14, m[1] + 20.5, 155F, 30F, true, fp, 160, at(0.25), null));
         return s;
     }
 }

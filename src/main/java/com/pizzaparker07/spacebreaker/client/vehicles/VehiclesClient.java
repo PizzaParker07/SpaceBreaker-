@@ -77,7 +77,7 @@ public final class VehiclesClient {
 
     /**
      * Rover panel in the suit HUD's style (icon, bar, short value on a translucent backing), beside the hotbar on the
-     * main-hand side so it mirrors the suit panel on the off-hand side. Battery bar, speed only while moving, the
+     * main-hand side (centre + 91 + 6, mirrored for left-handed play) while the suit panel keeps the off-hand side. Battery bar, speed only while moving, the
      * power sources as small icons (the solar icon turns rust when the panel is dusty, the RTG greys out without a
      * pellet), cabin air as a second bar on pressurised rovers.
      */
@@ -98,7 +98,8 @@ public final class VehiclesClient {
         int height = rows * ROW_H - 2;
         int pw = width + PAD * 2, ph = height + PAD * 2;
         boolean rightHanded = mc.options.mainHand().get() == net.minecraft.world.entity.HumanoidArm.RIGHT;
-        int ax = rightHanded ? g.guiWidth() / 2 + 91 + 29 + 6 : g.guiWidth() / 2 - 91 - 29 - 6 - pw;
+        // agreed with the suit HUD: it keeps the off-hand side past the offhand slot, the rover takes the main-hand side
+        int ax = rightHanded ? g.guiWidth() / 2 + 91 + 6 : g.guiWidth() / 2 - 91 - 6 - pw;
         int ay = g.guiHeight() - 2 - ph;
         if (ax < 2 || ax + pw > g.guiWidth() - 2) {
             ax = g.guiWidth() - pw - 4;

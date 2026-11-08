@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 /** Lab GUI: input slot, output slot, progress, power and the "share with team" toggle (button 0). */
 public class ResearchLabMenu extends AbstractContainerMenu {
     public static final int BUTTON_TOGGLE_SHARE = 0;
-    public static final int INPUT_X = 56, INPUT_Y = 35, OUTPUT_X = 116, OUTPUT_Y = 35;
+    public static final int INPUT_X = 52, INPUT_Y = 35, OUTPUT_X = 106, OUTPUT_Y = 35;
 
     private final Container container;
     private final ContainerData data;

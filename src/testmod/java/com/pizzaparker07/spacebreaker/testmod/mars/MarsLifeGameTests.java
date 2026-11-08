@@ -244,7 +244,14 @@ public final class MarsLifeGameTests {
         helper.assertTrue(piece.getBoundingBox().maxY() >= top, "the sinkhole reaches the surface");
         place(level, piece);
         helper.assertTrue(level.getBlockState(piece.chamber()).isAir(), "the chamber is open");
-        helper.assertTrue(lootChests(level, piece.getBoundingBox()) >= 1, "the probe wreck holds its data vault");
+        int vaults = 0;
+        BoundingBox cb = piece.getBoundingBox();
+        for (BlockPos p : BlockPos.betweenClosed(cb.minX(), cb.minY(), cb.minZ(), cb.maxX(), cb.maxY(), cb.maxZ())) {
+            if (level.getBlockEntity(p) instanceof com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlockEntity l && l.getLootTable() != null) {
+                vaults++;
+            }
+        }
+        helper.assertTrue(vaults >= 1, "the probe wreck holds its data vault, a supply locker");
         helper.succeed();
     }
 
@@ -278,7 +285,13 @@ public final class MarsLifeGameTests {
             chains += st.is(Blocks.CHAIN) ? 1 : 0;
             signs += st.is(Blocks.OAK_SIGN) ? 1 : 0;
         }
-        helper.assertTrue(lootChests(level, bb) == 1, "one survey recorder, found " + lootChests(level, bb));
+        int recorders = 0;
+        for (BlockPos p : BlockPos.betweenClosed(bb.minX(), bb.minY(), bb.minZ(), bb.maxX(), bb.maxY(), bb.maxZ())) {
+            if (level.getBlockEntity(p) instanceof com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlockEntity l && l.getLootTable() != null) {
+                recorders++;
+            }
+        }
+        helper.assertTrue(recorders == 1, "one survey recorder, found " + recorders);
         helper.assertTrue(chains >= 12, "three harpoon tethers, found " + chains + " chain blocks");
         helper.assertTrue(signs == 1, "the plate that explains the anchoring");
         helper.succeed();
@@ -334,8 +347,8 @@ public final class MarsLifeGameTests {
         }
         BlockPos summit = piece.summit();
         helper.assertTrue(summit.getY() - stacks.get(stacks.size() - 1).getY() == rise, "the summit is one hop above the last stack");
-        helper.assertTrue(lootChests(level, piece.getBoundingBox()) == 1, "the relay cache on the summit");
-        helper.assertTrue(level.getBlockState(summit).is(Blocks.CHEST), "the cache sits on the summit");
+        helper.assertTrue(level.getBlockEntity(summit) instanceof com.pizzaparker07.spacebreaker.content.dungeons.locker.SupplyLockerBlockEntity l
+                && l.getLootTable() != null, "the relay cache (a supply locker) sits on the summit");
         helper.succeed();
     }
 

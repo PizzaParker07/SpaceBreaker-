@@ -20,7 +20,7 @@ Uzayda giysin, kişisel uzay aracındır. İlk giysiyi Dünya'dan çıkmadan, s�
 
 {page}
 ## Sızdırmazlık
-Dört parçayı birlikte giyince bir tıslama duyarsın ve **"Giysi sızdırmaz · yaşam desteği çalışıyor"** mesajı gelir. Bir parçayı çıkarırsan **"Giysi açıldı"** der; havasız bir yerdeysen uyarı kırmızıdır.
+Dört parçayı birlikte giyince bir tıslama duyarsın ve **"Giysi sızdırmaz · yaşam desteği çalışıyor"** mesajı gelir. Bu mesaj en fazla 30 saniyede bir çıkar. Bir parçayı çıkarmak yalnız havasız yerde duyurulur: **"Giysi açıldı: burada hava yok!"**
 
 >! Bir parça bile eksikse boşlukta nefes alamazsın.
 
@@ -36,7 +36,7 @@ Tüpler {item spacebreaker:eva_chestplate} içindeki sırt çantasında durur: *
 
 {page}
 ## Kask {#hud}
-Kask göstergesi küçük kalır. Hotbar'ın yanında, ana elinin karşı tarafında tek bir oksijen satırı vardır: tüp simgesi, bir çubuk ve kalan süre (dd:ss). Çubuk mavidir; **%30**'un altında turuncu, **%15**'in altında kırmızı olur ve yanıp söner.
+Kask göstergesi küçük kalır. Hotbar'ın yanında, ana elinin karşı tarafında tek bir oksijen satırı vardır: tüp simgesi ve bir çubuk. Kalan süre (dd:ss) %30'un altında ya da envanter gibi bir ekran açıkken yanında görünür. Çubuk mavidir; **%30**'un altında turuncu, **%15**'in altında kırmızı olur ve yanıp söner.
 - **Tehlike simgeleri** oksijen süresinin yanında yalnız bir sorun varken çıkar: giysi (havasız yerde açık ya da %20'nin altında), sıcaklık (giysinin dayanımının ötesi ya da vücudun 35–38,5 °C dışında; 32–41 °C dışında kırmızı), radyasyon (günde 50 mSv'nin üstü ya da toplam 250 mSv; 1000'den sonra kırmızı), basınç (giysi zorlanıyor) ve manevra gazı (%10'un altı).
 - **Eve dönüş** (ok, hedef ve uzaklık) yalnız oksijenin, çevre sensörüyle seçtiğin hedefe yürüyerek dönmeye yetmeyecekse görünür. → [Çevre sensörü](tools)
 - Hotbar'ın üstünde **tek bir uyarı** yanıp söner: sarı **DÖN: DÖNÜŞ İÇİN O2 AZALIYOR** ya da kırmızı **GERİ DÖNMEYE O2 YETMİYOR**, **GİYSİ SIZDIRMAZ DEĞİL**, **GİYSİ DAYANIMI AŞILDI** gibi.
