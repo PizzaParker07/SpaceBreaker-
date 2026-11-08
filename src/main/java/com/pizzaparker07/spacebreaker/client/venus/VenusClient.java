@@ -60,7 +60,8 @@ public final class VenusClient {
         float above = VenusSkyEffects.above(y);
         float end = Mth.lerp(above, Math.min(far, VenusSkyEffects.visibility), far);
         end = Mth.lerp(in, end, 18F);
-        float start = Mth.lerp(above, 0F, far * 0.4F);
+        // at the surface the haze thickens from a quarter of the way out, so nearby ground keeps its relief
+        float start = Mth.lerp(above, end * 0.25F, far * 0.4F);
         start = Mth.lerp(in, start, 0F);
         event.setNearPlaneDistance(start);
         event.setFarPlaneDistance(end);

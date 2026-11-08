@@ -94,13 +94,19 @@
       ],
       "rock": {
         "Name": "spacebreaker:venus_basalt"
+      },
+      "flow_soil": {
+        "Name": "spacebreaker:venus_basalt"
+      },
+      "summit_soil": {
+        "Name": "spacebreaker:sulfur_crust"
       }
     },
     "tesserae": {
       "scale": 1500,
-      "threshold": 0.3,
-      "height": 18,
-      "spacing": 30,
+      "threshold": 0.18,
+      "height": 22,
+      "spacing": 32,
       "rock": {
         "Name": "spacebreaker:tessera_rock"
       }

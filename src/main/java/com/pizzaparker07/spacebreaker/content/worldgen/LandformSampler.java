@@ -347,8 +347,9 @@ final class LandformSampler {
         double w = tessNoise.getValue(x / 300.0 + 51, z / 300.0 - 17) * 0.8;
         double p1 = (x * 0.94 + z * 0.34) / cfg.spacing() + w;
         double p2 = (-x * 0.42 + z * 0.91) / (cfg.spacing() * 1.7) - w;
-        double r1 = 1 - Math.abs(Math.sin(p1 * Math.PI));
-        double r2 = 1 - Math.abs(Math.sin(p2 * Math.PI));
+        // rounded crests (a raised cosine, smooth at the top) so the ridges step down in bands, not to one-block spines
+        double r1 = 0.5 + 0.5 * Math.cos(p1 * Mth.TWO_PI);
+        double r2 = 0.5 + 0.5 * Math.cos(p2 * Mth.TWO_PI);
         return cfg.height() * m * (0.35 + 0.45 * r1 * r1 * r1 + 0.3 * r2 * r2 * r2);
     }
 

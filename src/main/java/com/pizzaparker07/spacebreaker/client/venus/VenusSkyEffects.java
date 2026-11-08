@@ -207,20 +207,44 @@ public class VenusSkyEffects extends DimensionSpecialEffects {
         return true;
     }
 
-    /** The cloud tops below: a large drifting textured plane at the deck height, fading into the horizon haze. */
+    /**
+     * The cloud tops below: two large drifting textured planes at the deck height, fading into the horizon haze. The
+     * lower one is a solid sea; the upper one, a few blocks higher, only keeps its puffs (its gaps are clear), drifts
+     * faster and is a little brighter, so the deck reads as heaped, streaky cloud rather than a flat floor.
+     */
     private static void cloudSea(Matrix4f m, ClientLevel level, float partialTick, Camera camera, double camY, float bright) {
         float h = (float) (VenusClimate.CLOUD_TOP - 1 - camY);
         if (h > -1) {
             return;
         }
         Vec3 cam = camera.getPosition();
-        double drift = (level.getGameTime() + partialTick) * 0.05;
-        float scale = 1F / 48F;
-        float u0 = (float) ((cam.x + drift) * scale);
-        float v0 = (float) (cam.z * scale);
+        double t = level.getGameTime() + partialTick;
+        float b = 0.25F + 0.75F * bright;
+        // a solid floor under the puffs, in the shadowed cloud colour, so nothing shows through their gaps
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        BufferBuilder floor = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        float r = 384;
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                float x0 = -r + 2 * r * i / 8, x1 = -r + 2 * r * (i + 1) / 8, z0 = -r + 2 * r * j / 8, z1 = -r + 2 * r * (j + 1) / 8;
+                floorVertex(floor, m, x0, h - 4F, z0, r, b);
+                floorVertex(floor, m, x0, h - 4F, z1, r, b);
+                floorVertex(floor, m, x1, h - 4F, z1, r, b);
+                floorVertex(floor, m, x1, h - 4F, z0, r, b);
+            }
+        }
+        BufferUploader.drawWithShader(floor.buildOrThrow());
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
         RenderSystem.setShaderTexture(0, SEA);
-        float b = 0.25F + 0.75F * bright;
+        seaLayer(m, cam, t * 0.05, h - 3F, 1F / 96F, b * 0.85F, 1F, 0F);
+        if (h + 1F < -1F) {
+            seaLayer(m, cam, t * 0.08, h, 1F / 72F, b, 1F, 0.37F);
+        }
+    }
+
+    private static void seaLayer(Matrix4f m, Vec3 cam, double drift, float h, float scale, float b, float a, float shift) {
+        float u0 = (float) ((cam.x + drift) * scale) + shift;
+        float v0 = (float) (cam.z * scale) + shift * 0.6F;
         BufferBuilder bb = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
         int n = 8;
         float r = 384;
@@ -237,6 +261,11 @@ public class VenusSkyEffects extends DimensionSpecialEffects {
             }
         }
         BufferUploader.drawWithShader(bb.buildOrThrow());
+    }
+
+    private static void floorVertex(BufferBuilder bb, Matrix4f m, float x, float y, float z, float r, float b) {
+        float d = Math.min(1F, (float) Math.sqrt(x * x + z * z) / r);
+        bb.addVertex(m, x, y, z).setColor(0.74F * b, 0.67F * b, 0.50F * b, 1F - d * d);
     }
 
     private static void quadVertex(BufferBuilder bb, Matrix4f m, float x, float y, float z, float u0, float v0, float scale, float r, float b) {

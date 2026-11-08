@@ -77,6 +77,9 @@ final class InnerSurveyScenario extends OuterShowcase {
         if (first == null) {
             return;
         }
+        // an overview from 100 blocks up, looking almost straight down: crater density and region pattern at a glance
+        shot("survey_" + world + "_c_overview", first[0] + 0.5, ground(level, first[0], first[1]) + 100, first[1] + 0.5, 0F, 80F, 220, at(DAY),
+                MoonScenario::farView);
         String w = "survey_" + world + "_sky";
         switch (world) {
             case "mars" -> {
@@ -87,7 +90,8 @@ final class InnerSurveyScenario extends OuterShowcase {
             case "venus" -> {
                 // inside the cloud deck, and on top of it looking toward the low sun
                 shot(w + "_in_clouds", first[0] + 0.5, VenusClimate.CLOUD_BASE + 20, first[1] + 0.5, -90F, 0F, 140, at(0.2), null);
-                shot(w + "_above_clouds_sun", first[0] + 0.5, VenusClimate.CLOUD_TOP + 4, first[1] + 0.5, -90F, -6F, 160, at(0.1), null);
+                // Venus turns backwards: the morning sun stands in the west
+                shot(w + "_above_clouds_sun", first[0] + 0.5, VenusClimate.CLOUD_TOP + 4, first[1] + 0.5, 90F, -12F, 160, at(0.1), null);
             }
             case "mercury" -> {
                 // dawn at the terminator: long shadows, the sun just over the edge
