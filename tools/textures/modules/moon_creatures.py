@@ -129,6 +129,97 @@ def tick_eyes():
     return cv
 
 
+MOUTH = ramp('#3a1606', '#6e2c0c', '#a14714')
+
+
+def elder_sheet(seed=9):
+    """Elder tick: dark breccia armour plates studded with pale clasts, KREEP crystals, pale knee rings, dark orange mouth."""
+    r = ELDER
+    k = P.KREEP
+    cv = Canvas(64, 64)
+    n = clustered(64, 64, seed, passes=1)
+    rng = random.Random(seed)
+
+    def clasty(face, x, y, fw, fh, base, ox, oy):
+        # breccia: dark matrix with angular pale clasts; plate tops lighter at the front edge
+        if face == 'bottom':
+            return noise_pick(r, 1, n, x + ox, y + oy)
+        h = (x * 7 + y * 13 + ox * 3 + oy) % 11
+        if h == 0:
+            return r[6]
+        if h == 5:
+            return r[5]
+        t = base + (1 if face == 'top' else 0) - (1 if face != 'top' and y == fh - 1 else 0)
+        return noise_pick(r, max(1, t), n, x + ox, y + oy)
+
+    paint(cv, 0, 0, 10, 4, 11, lambda f, x, y, fw, fh: clasty(f, x, y, fw, fh, 2, 0, 0))
+    paint(cv, 0, 15, 11, 3, 4, lambda f, x, y, fw, fh: clasty(f, x, y, fw, fh, 3, 5, 17)
+          if not (f == 'top' and y == 0) else r[5])
+    paint(cv, 30, 15, 9, 2, 4, lambda f, x, y, fw, fh: clasty(f, x, y, fw, fh, 3, 11, 3)
+          if not (f == 'top' and y == 0) else r[5])
+    paint(cv, 0, 22, 9, 2, 4, lambda f, x, y, fw, fh: clasty(f, x, y, fw, fh, 2, 19, 7))
+
+    def head(face, x, y, fw, fh):
+        if face == 'top':
+            return r[4] if y == 0 else clasty(face, x, y, fw, fh, 3, 2, 9)
+        if face == 'front':
+            return r[1] if y == fh - 1 else r[2]
+        return r[2] if y == 0 else r[1]
+
+    paint(cv, 26, 22, 6, 3, 3, head)
+    # the mouth between the pincers: dark orange inside, darker rim
+    paint(cv, 44, 22, 3, 1, 1, lambda f, x, y, fw, fh: MOUTH[2] if f == 'front' and x == 1 else MOUTH[1] if f == 'front' else MOUTH[0])
+
+    def pincer(face, x, y, fw, fh):
+        if face == 'top':
+            return r[5] if x == 0 or y == 0 else r[4]
+        if face == 'bottom':
+            return r[1]
+        return r[3] if y == 0 else r[2]
+
+    paint(cv, 44, 0, 2, 2, 4, pincer)
+    paint(cv, 56, 0, 1, 1, 2, lambda f, x, y, fw, fh: r[6] if f == 'front' else r[4])
+
+    def crystal(face, x, y, fw, fh):
+        if face in ('top', 'bottom'):
+            return k[5] if face == 'top' else k[1]
+        return k[4] if x == 0 else (k[2] if x == fw - 1 else k[3])
+
+    paint(cv, 44, 8, 2, 4, 2, crystal)
+    paint(cv, 52, 8, 1, 3, 1, crystal)
+
+    def thigh(face, x, y, fw, fh):
+        if face in ('right', 'left'):
+            return r[2]
+        if face == 'top':
+            return r[5] if x in (0, 6) else r[3]
+        return r[1] if face == 'bottom' else (r[4] if x in (0, 6) else r[2])
+
+    paint(cv, 0, 28, 7, 2, 2, thigh)
+
+    def shin(face, x, y, fw, fh):
+        if face == 'top':
+            return r[5]
+        if face == 'bottom':
+            return r[0]
+        # pale ring at the knee, darker toward the clawed foot
+        if y == 0:
+            return r[5]
+        return r[3] if y < 3 else r[2]
+
+    paint(cv, 18, 28, 2, 5, 2, shin)
+    paint(cv, 26, 28, 1, 6, 1, lambda f, x, y, fw, fh: r[0] if f == 'bottom' or y == fh - 1 else (r[4] if f == 'top' else r[1]))
+    return cv
+
+
+def elder_eyes():
+    cv = Canvas(64, 64)
+    # head front face starts at (29, 25), 6 x 3: four small amber eyes in a row above the mouth
+    for x in (29, 30, 33, 34):
+        cv[x, 25] = EYE[2] if x in (30, 33) else EYE[1]
+    return cv
+
+
 # --------------------------------------------------------------------------- dust swimmer
 
 def dust_swimmer():
@@ -317,7 +408,8 @@ def stun_bolt():
 
 def export(save):
     save(tick_sheet(TICK), 'entity/moon', 'regolith_tick')
-    save(tick_sheet(ELDER, crystals=True, seed=9), 'entity/moon', 'elder_regolith_tick')
+    save(elder_sheet(), 'entity/moon', 'elder_regolith_tick')
+    save(elder_eyes(), 'entity/moon', 'elder_regolith_tick_eyes')
     save(tick_eyes(), 'entity/moon', 'regolith_tick_eyes')
     save(dust_swimmer(), 'entity/moon', 'dust_swimmer')
     save(survey_drone(), 'entity/moon', 'survey_drone')

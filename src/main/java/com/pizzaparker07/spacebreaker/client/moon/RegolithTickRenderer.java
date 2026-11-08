@@ -10,10 +10,9 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.EyesLayer;
 import net.minecraft.resources.ResourceLocation;
 
-/** Draws ticks, sunk into the dust while burrowed (only the shield and the glinting eyes show), and the bigger elders. */
+/** Draws ticks, sunk into the dust while burrowed (only the shield and the glinting eyes show). Elders have their own model. */
 public class RegolithTickRenderer extends MobRenderer<RegolithTick, RegolithTickModel<RegolithTick>> {
     private static final ResourceLocation TEXTURE = Spacebreaker.id("textures/entity/moon/regolith_tick.png");
-    private static final ResourceLocation ELDER = Spacebreaker.id("textures/entity/moon/elder_regolith_tick.png");
     private static final RenderType EYES = RenderType.eyes(Spacebreaker.id("textures/entity/moon/regolith_tick_eyes.png"));
     private final float scale;
 
@@ -43,7 +42,7 @@ public class RegolithTickRenderer extends MobRenderer<RegolithTick, RegolithTick
 
     @Override
     public ResourceLocation getTextureLocation(RegolithTick tick) {
-        return tick.isElder() ? ELDER : TEXTURE;
+        return TEXTURE;
     }
 
     @Override

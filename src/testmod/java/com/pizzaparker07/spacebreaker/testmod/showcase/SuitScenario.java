@@ -91,8 +91,9 @@ final class SuitScenario implements ShowcaseScenario {
             be.setStack(new ItemStack(SuitModule.OXYGEN_TANK.get()));
             be.getEnergy().receiveEnergy(16000, false);
         }
-        BlockPos f2 = new BlockPos(9, FLOOR + 1, 12);
-        level.setBlock(f2, SuitModule.OXYGEN_FILLER.get().defaultBlockState().setValue(GasMachineBlock.FACING, Direction.SOUTH), Block.UPDATE_ALL);
+        // a distributor beside the filler, so the two machines can be told apart side by side
+        BlockPos d2 = new BlockPos(9, FLOOR + 1, 12);
+        level.setBlock(d2, SuitModule.OXYGEN_DISTRIBUTOR.get().defaultBlockState().setValue(GasMachineBlock.FACING, Direction.SOUTH), Block.UPDATE_ALL);
         // a second airlock, open, on the side
         BlockPos side = new BlockPos(x1, FLOOR + 1, 8);
         var sideLower = SuitModule.AIRLOCK_DOOR.get().defaultBlockState().setValue(AirlockDoorBlock.FACING, Direction.EAST)
@@ -164,6 +165,9 @@ final class SuitScenario implements ShowcaseScenario {
         s.add(new Shot("suit_14_inventory", 6000, 0.5, G + 1.62, 7.0, 180F, 5F, false, fp, 30, SuitScenario::fillHotbar,
                 SuitShots.clearToastsThen(ShowcaseDriver::openCreativeTab)));
         s.add(new Shot("suit_10_hud", 6000, 0.5, G + 1.62, 7.0, 180F, 5F, false, fp, 60, SuitScenario::suitUp, SuitShots.CLEAR_TOASTS));
+        // the same view with the sun visor down: a light gold filter over the screen
+        s.add(new Shot("suit_10_hud_sun_visor", 6000, 0.5, G + 1.62, 7.0, 180F, 5F, false, fp, 60,
+                p -> { suitUp(p); dress(p, fullSuit(true, false)); }, SuitShots.CLEAR_TOASTS));
         return s;
     }
 

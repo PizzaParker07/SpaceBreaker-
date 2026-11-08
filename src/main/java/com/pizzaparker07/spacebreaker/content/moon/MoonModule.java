@@ -96,6 +96,10 @@ public final class MoonModule implements SbModule {
     public static final DeferredBlock<Block> GLIMMER_LAMP = block("glimmer_lamp", BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_CYAN)
             .instrument(NoteBlockInstrument.HAT).strength(0.6F).sound(SoundType.GLASS).lightLevel(st -> 14));
 
+    /** A work desk with a switch panel and a screen: base decoration, fitted in the survey outposts. */
+    public static final DeferredBlock<ControlDeskBlock> CONTROL_DESK = block("control_desk", ControlDeskBlock::new, BlockBehaviour.Properties.of()
+            .mapColor(MapColor.METAL).strength(2.0F, 6.0F).sound(SoundType.METAL).requiresCorrectToolForDrops().noOcclusion());
+
     // block items (kept as fields for other modules and tests)
     public static final DeferredItem<BlockItem> LUNAR_REGOLITH_ITEM = item(LUNAR_REGOLITH);
     public static final DeferredItem<BlockItem> MARE_BASALT_ITEM = item(MARE_BASALT);
@@ -179,6 +183,7 @@ public final class MoonModule implements SbModule {
         order.add(ILMENITE_ORE);
         order.add(KREEP_ORE);
         order.add(GLIMMER_LAMP);
+        order.add(CONTROL_DESK);
         for (DeferredBlock<? extends Block> b : order) {
             DeferredItem<BlockItem> existing = switch (b.getId().getPath()) {
                 case "lunar_regolith" -> LUNAR_REGOLITH_ITEM;
@@ -274,6 +279,7 @@ public final class MoonModule implements SbModule {
         lang.add("tooltip.spacebreaker.ice_core_sample", "Ancient cold-trap ice in layers: water and frozen volatiles",
                 "Katman katman kadim soğuk tuzak buzu: su ve donmuş uçucular");
         lang.block(GLIMMER_LAMP, "Glimmer Lamp", "Parıltı Lambası");
+        lang.block(CONTROL_DESK, "Control Desk", "Kontrol Masası");
         lang.add("biome.spacebreaker.moon_highlands", "Lunar Highlands", "Ay Yaylaları");
         lang.add("biome.spacebreaker.moon_mare", "Lunar Mare", "Ay Denizi (Mare)");
         lang.add("biome.spacebreaker.moon_crater", "Great Crater", "Büyük Krater");
@@ -312,6 +318,7 @@ public final class MoonModule implements SbModule {
         loot.self(SINTERED_REGOLITH.get());
         loot.self(METEORIC_IRON.get());
         loot.self(GLIMMER_LAMP.get());
+        loot.self(CONTROL_DESK.get());
         for (StoneFamily f : families()) {
             loot.self(f.base().get());
             loot.self(f.stairs().get());
@@ -327,7 +334,7 @@ public final class MoonModule implements SbModule {
     @Override
     public void addTags(SbTags tags) {
         List<Block> pick = new ArrayList<>(List.of(MARE_BASALT.get(), IMPACT_BRECCIA.get(), SINTERED_REGOLITH.get(),
-                METEORIC_IRON.get(), ILMENITE_ORE.get(), KREEP_ORE.get(), LUNAR_ICE.get(), GLIMMER_LAMP.get()));
+                METEORIC_IRON.get(), ILMENITE_ORE.get(), KREEP_ORE.get(), LUNAR_ICE.get(), GLIMMER_LAMP.get(), CONTROL_DESK.get()));
         for (StoneFamily f : families()) {
             f.all().forEach(b -> pick.add(b.get()));
             tags.block(BlockTags.STAIRS, f.stairs().get());

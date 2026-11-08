@@ -115,6 +115,11 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         return true;
     }
 
+    /** The current status code (0 = working or idle; see {@link #statusKey}). */
+    public int status() {
+        return status;
+    }
+
     /** Translation key for the status line, or null when there is nothing to report. */
     public static @Nullable String statusKey(int status) {
         return switch (status) {

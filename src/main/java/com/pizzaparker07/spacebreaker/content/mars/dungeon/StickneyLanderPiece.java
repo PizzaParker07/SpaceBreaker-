@@ -25,7 +25,7 @@ import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSeriali
  * recorder is inside, and a plate on the ground explains why it had to be tied down.
  */
 public class StickneyLanderPiece extends StructurePiece {
-    public static final int SIZE = 17;
+    public static final int SIZE = 21;
     private final long seed;
 
     public StickneyLanderPiece(long seed, int x, int y, int z) {
@@ -74,24 +74,26 @@ public class StickneyLanderPiece extends StructurePiece {
         BlockState hull = s(Blocks.WHITE_CONCRETE);
         BlockState trim = s(Blocks.LIGHT_GRAY_CONCRETE);
         BlockState foil = s(com.pizzaparker07.spacebreaker.content.belt.LanderBlocks.GOLD_FOIL_CLADDING.get());
-        // the body: a small octagonal bus (foil on the flat faces, white on the corners) under a slab deck; the east
-        // side rides a block high on its stretched tether
-        for (int layer = 0; layer < 3; layer++) {
-            for (int dx = -2; dx <= 2; dx++) {
-                for (int dz = -2; dz <= 2; dz++) {
-                    if (Math.abs(dx) == 2 && Math.abs(dz) == 2) {
+        // the body: an octagonal bus seven blocks across, wrapped in gold foil (white only on the cut corners), under a
+        // slab deck; it lists a little: the east side rides a block high on its stretched tether
+        for (int layer = 0; layer < 4; layer++) {
+            for (int dx = -3; dx <= 3; dx++) {
+                for (int dz = -3; dz <= 3; dz++) {
+                    int ax = Math.abs(dx);
+                    int az = Math.abs(dz);
+                    if (ax + az > 4) {
                         continue;
                     }
-                    boolean edge = Math.abs(dx) == 2 || Math.abs(dz) == 2;
-                    boolean diagonal = Math.abs(dx) + Math.abs(dz) == 3;
-                    int tilt = dx == 2 ? 1 : 0;
+                    boolean edge = ax == 3 || az == 3 || ax + az == 4;
+                    boolean corner = ax == 2 && az == 2; // only the cut diagonals are white
+                    int tilt = dx >= 2 ? 1 : 0;
                     BlockState st;
                     if (layer == 0) {
                         st = trim;
-                    } else if (layer == 2) {
+                    } else if (layer == 3) {
                         st = s(Blocks.SMOOTH_STONE_SLAB);
                     } else {
-                        st = edge ? (diagonal ? hull : foil) : s(Blocks.AIR);
+                        st = edge ? (corner ? hull : foil) : s(Blocks.AIR);
                     }
                     set(level, box, cx + dx, y + layer + tilt, cz + dz, st);
                 }
@@ -106,31 +108,39 @@ public class StickneyLanderPiece extends StructurePiece {
                 be.setLootTable(MarsLoot.STICKNEY_LANDER, seed);
             }
         }
-        set(level, box, cx, y + 1, cz + 2, s(Blocks.AIR));
-        // four splayed legs with footpads; the south-west one folded flat under the body
-        for (int[] leg : new int[][]{{-1, -1}, {1, -1}, {1, 1}}) {
-            int sx = cx + leg[0] * 3;
-            int sz = cz + leg[1] * 3;
-            for (int dy = ground(level, sx, sz); dy <= y + (leg[0] == 1 ? 1 : 0); dy++) {
-                set(level, box, sx, dy, sz, s(Blocks.IRON_BARS));
+        set(level, box, cx, y + 1, cz + 3, s(Blocks.AIR));
+        set(level, box, cx, y + 2, cz + 3, s(Blocks.AIR));
+        // four legs splayed well out: a strut down from each corner of the body to a footpad
+        for (int[] leg : new int[][]{{-1, -1}, {1, -1}, {1, 1}, {-1, 1}}) {
+            int top = y + (leg[0] == 1 ? 1 : 0);
+            for (int k = 0; k <= 2; k++) {
+                int sx = cx + leg[0] * (3 + k);
+                int sz = cz + leg[1] * (3 + k);
+                int sy = top - k;
+                set(level, box, sx, Math.max(sy, ground(level, sx, sz)), sz, s(Blocks.ANDESITE_WALL));
             }
-            int fx = cx + leg[0] * 4;
-            int fz = cz + leg[1] * 4;
+            int fx = cx + leg[0] * 6;
+            int fz = cz + leg[1] * 6;
             set(level, box, fx, ground(level, fx, fz), fz, s(Blocks.HEAVY_WEIGHTED_PRESSURE_PLATE));
         }
-        for (int i = 2; i <= 3; i++) {
-            set(level, box, cx - i, ground(level, cx - i, cz + i), cz + i, s(Blocks.CHAIN).setValue(ChainBlock.AXIS, Direction.Axis.X));
-        }
         // one small solar wing folded out to the north
-        set(level, box, cx, y + 1, cz - 3, s(Blocks.CHAIN).setValue(ChainBlock.AXIS, Direction.Axis.Z));
-        set(level, box, cx, y + 1, cz - 4, s(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.SOLAR_PANEL.get()));
-        set(level, box, cx, y + 1, cz - 5, s(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.SOLAR_PANEL.get()));
-        // high-gain antenna
-        set(level, box, cx - 1, y + 2, cz - 1, s(Blocks.LIGHT_GRAY_CONCRETE));
-        set(level, box, cx - 1, y + 3, cz - 1, s(Blocks.LIGHTNING_ROD));
-        set(level, box, cx - 1, y + 4, cz - 1, s(Blocks.DAYLIGHT_DETECTOR));
+        set(level, box, cx, y + 2, cz - 4, s(Blocks.CHAIN).setValue(ChainBlock.AXIS, Direction.Axis.Z));
+        set(level, box, cx, y + 2, cz - 5, s(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.SOLAR_PANEL.get()));
+        set(level, box, cx, y + 2, cz - 6, s(com.pizzaparker07.spacebreaker.content.machines.MachinesModule.SOLAR_PANEL.get()));
+        // the high-gain dish on the deck: three blocks across, turned to the sky
+        int dy = y + 4;
+        set(level, box, cx - 1, dy, cz, s(Blocks.POLISHED_ANDESITE));
+        set(level, box, cx - 1, dy + 1, cz, s(Blocks.DAYLIGHT_DETECTOR));
+        for (int ddx = -1; ddx <= 1; ddx++) {
+            for (int ddz = -1; ddz <= 1; ddz++) {
+                if (ddx != 0 || ddz != 0) {
+                    set(level, box, cx - 1 + ddx, dy + 1, cz + ddz, s(Blocks.SMOOTH_QUARTZ_SLAB));
+                }
+            }
+        }
+        set(level, box, cx - 1, dy + 2, cz, s(Blocks.LIGHTNING_ROD));
         // three harpoon tethers: chains slanting out from the base to anchors driven into the regolith
-        int[][] anchors = {{6, 0}, {-3, -6}, {-3, 6}};
+        int[][] anchors = {{9, 0}, {-5, -8}, {-5, 8}};
         for (int[] a : anchors) {
             int ax = cx + a[0];
             int az = cz + a[1];
@@ -139,6 +149,9 @@ public class StickneyLanderPiece extends StructurePiece {
             for (int i = 1; i < steps; i++) {
                 int px = cx + Math.round(a[0] * (float) i / steps);
                 int pz = cz + Math.round(a[1] * (float) i / steps);
+                if (Math.abs(px - cx) + Math.abs(pz - cz) <= 4 && Math.abs(px - cx) <= 3 && Math.abs(pz - cz) <= 3) {
+                    continue; // still under the body
+                }
                 int py = Math.round(y + (ay + 1 - y) * (float) i / steps);
                 Direction.Axis axis = Math.abs(a[0]) >= Math.abs(a[1]) ? Direction.Axis.X : Direction.Axis.Z;
                 int ty = Math.max(py, ground(level, px, pz));

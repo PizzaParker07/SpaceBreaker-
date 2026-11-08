@@ -225,7 +225,7 @@ final class QaStationPlayScenario implements ShowcaseScenario {
             orbit(p).setBlock(breach, breachState, 3);
         }, null));
         // 11: solar wings on the last mouth (north), charging
-        s.add(new Shot("11_solar_wings", 6000, X0 - 10.5, Y + 8, Z0 - 14, 210F, 20F, true, fp, 400, p -> {
+        s.add(new Shot("11_solar_wings", 6000, X0 - 10.5, Y + 8, Z0 - 14, 325F, 20F, true, fp, 400, p -> {
             log("after mending: room " + room(p));
             BlockPos north = centre.relative(Direction.NORTH, 3).above(2);
             boolean wings = attach(p, north, new ItemStack(net.minecraft.core.registries.BuiltInRegistries.ITEM.get(Spacebreaker.id("solar_wings"))), Direction.NORTH);
