@@ -377,6 +377,23 @@ environment; the plugins compile against both APIs and the line itself is covere
   now classifies it as ORBIT (GameTest `spaceWorldsAreClassified`). `space_scene_orbits_vanilla_vs_iris.jpg`: the
   Earth-Moon space scene (01, 02, 04) and orbit views (10, 14, 38) vanilla left, pack right; the Mars orbit row is
   the pack before (left) and after (right) the fix.
+- **Round 32 content (2026-11-08):** rovers and the pressurised cabin (HUD beside the hotbar, panoramic windscreen,
+  dashboard), the Venus aerostat and gondola, the Ceres outpost, the Mercury ice mine, the Moon outpost, launch and
+  station consoles, the shipyard and its design screen, and the helmet HUD all look the same under Complementary
+  apart from its lighting (`round32_vanilla_vs_iris.jpg`, vanilla left). Where a pack shot shows only sky or no ground
+  right after a teleport (Mercury 07, Moon 10c), the pack had not built the chunks yet: with a longer wait the scene
+  is there.
+- **GUI scale and window size (2026-11-08):** showcase properties `-PshotWidth`, `-PshotHeight`, `-PguiScale` (0 =
+  auto) and `-Poffhand=<item>`. Layout depends only on the scaled size, so six runs cover the range: 1280x720 at 3
+  (427x240, the smallest Minecraft allows) and 2, 1366x768 at 3 and auto, 1920x1080 at 4 and 1, each with a torch in
+  the off hand. Suit HUD, rover HUD, cabin HUD, helmet panel, research lab, research tree, field guide, rocket
+  assembler, launch console and shipyard design screen: nothing overlaps the hotbar or off-hand slot (the HUDs flip
+  sides with the main hand) and nothing is cut off at 427x240 (`gui_scale_smallest_427x240.jpg`,
+  `gui_scale_largest_1920x1080.jpg`). Notes passed to the owners: the research tree opens panned so its left column is
+  cut at 427x240; the shipyard drawing grows with the screen while its buttons stay small at scale 1; the rover and
+  cockpit HUDs sit where the vanilla attack indicator goes in its "hotbar" mode; the helmet radio and sensor card at
+  the top left grow with their text and can reach under a centred Jade/WTHIT box on narrow screens (the box stays on
+  top, `InfoOverlayDepth`). Jade/WTHIT themselves were not run here.
 - **Outline boxes (`RenderType.lines()`):** Iris's line programs widen each segment in screen space, so an edge
   that runs behind the camera becomes a large flat quad across the view (seen as a lavender square over the station
   core while holding a docking module: the outline reaches back past the player). `compat.client.ClippedLines` cuts

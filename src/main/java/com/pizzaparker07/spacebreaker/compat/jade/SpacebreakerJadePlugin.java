@@ -22,6 +22,31 @@ public final class SpacebreakerJadePlugin implements IWailaPlugin {
         // values the client does not have (the oxygen piped into a gas machine), sent only for those machines
         registration.registerBlockDataProvider(Lines.INSTANCE,
                 com.pizzaparker07.spacebreaker.content.suit.block.GasMachineBlockEntity.class);
+        // their pipe input reports no fluid ("Empty 32B"); the real amount is our piped-oxygen line
+        registration.registerFluidStorage(NoGasMachineFluid.INSTANCE,
+                com.pizzaparker07.spacebreaker.content.suit.block.GasMachineBlockEntity.class);
+    }
+
+    /** Hides Jade's fluid view for gas machines: an empty group list wins over the generic capability view. */
+    enum NoGasMachineFluid implements snownee.jade.api.view.IServerExtensionProvider<net.minecraft.nbt.CompoundTag> {
+        INSTANCE;
+
+        private static final ResourceLocation UID = Spacebreaker.id("gas_machine_fluid");
+
+        @Override
+        public java.util.List<snownee.jade.api.view.ViewGroup<net.minecraft.nbt.CompoundTag>> getGroups(snownee.jade.api.Accessor<?> accessor) {
+            return java.util.List.of();
+        }
+
+        @Override
+        public ResourceLocation getUid() {
+            return UID;
+        }
+
+        @Override
+        public int getDefaultPriority() {
+            return -1000; // ahead of the generic capability view
+        }
     }
 
     @Override

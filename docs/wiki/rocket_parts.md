@@ -54,11 +54,11 @@ Her kademede altta **bir motor**, üstünde **yakıt tankları** olur. Tanklar, 
 > [!WARNING]
 > Yanarken bir **radyasyon kaynağıdır**: doz uzaklığın karesiyle azalır, motorun üstündeki gölge kalkanı mürettebatı korur. Soğukken (taze yakıtla) güvenlidir. Egzozu neredeyse görünmez: soluk, mavimsi-mor bir ışıma.
 
-Tarifinde bir nükleer yakıt elemanı, gölge kalkanı için radyasyon kalkanı levhası (tükenmiş uranyum ya da tungsten), nikel süperalaşım, titanyum levha ve bir hidroloks vakum motoru var. → [Nükleer Yakıt](nuclear_fuel)
+Tarifinde taze bir nükleer yakıt elemanı (kısmen yanmış eleman kabul edilmez), gölge kalkanı için radyasyon kalkanı levhası (tükenmiş uranyum ya da tungsten), nikel süperalaşım, titanyum levha ve bir hidroloks vakum motoru var. → [Nükleer Yakıt](nuclear_fuel)
 
 |   |   |   |
 |---|---|---|
-| Tükenmiş Uranyum Levhası | Nükleer Yakıt Elemanı | Tükenmiş Uranyum Levhası |
+| Tükenmiş Uranyum Levhası | ? | Tükenmiş Uranyum Levhası |
 | Nikel Süper Alaşımı Külçe | Hidroloks Motoru (Vakum) | Nikel Süper Alaşımı Külçe |
 | Titanyum Levha | Titanyum Levha | Titanyum Levha |
 
@@ -153,11 +153,11 @@ The **Nuclear Thermal Engine (Vacuum)** (*Nuclear Thermal Propulsion*) burns no 
 > [!WARNING]
 > While it burns it is a **radiation source**: the dose falls with the square of the distance, and the shadow shield above the engine protects the crew. Cold (with fresh fuel), it is safe. Its exhaust is almost invisible: a faint bluish-violet glow.
 
-Its recipe takes a nuclear fuel element, radiation shielding plate for the shadow shield (depleted uranium or tungsten), nickel superalloy, titanium plate and a hydrolox vacuum engine. → [Nuclear Fuel](nuclear_fuel)
+Its recipe takes a fresh nuclear fuel element (a partly burned one is refused), radiation shielding plate for the shadow shield (depleted uranium or tungsten), nickel superalloy, titanium plate and a hydrolox vacuum engine. → [Nuclear Fuel](nuclear_fuel)
 
 |   |   |   |
 |---|---|---|
-| Depleted Uranium Plate | Nuclear Fuel Element | Depleted Uranium Plate |
+| Depleted Uranium Plate | ? | Depleted Uranium Plate |
 | Nickel Superalloy Ingot | Hydrolox Engine (Vacuum) | Nickel Superalloy Ingot |
 | Titanium Plate | Titanium Plate | Titanium Plate |
 

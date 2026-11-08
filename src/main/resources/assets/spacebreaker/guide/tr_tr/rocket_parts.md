@@ -43,7 +43,7 @@ Her kademede altta **bir motor**, üstünde **yakıt tankları** olur. Tanklar, 
 
 >! Yanarken bir **radyasyon kaynağıdır**: doz uzaklığın karesiyle azalır, motorun üstündeki gölge kalkanı mürettebatı korur. Soğukken (taze yakıtla) güvenlidir. Egzozu neredeyse görünmez: soluk, mavimsi-mor bir ışıma.
 
-Tarifinde bir nükleer yakıt elemanı, gölge kalkanı için radyasyon kalkanı levhası (tükenmiş uranyum ya da tungsten), nikel süperalaşım, titanyum levha ve bir hidroloks vakum motoru var. → [Nükleer Yakıt](nuclear_fuel)
+Tarifinde taze bir nükleer yakıt elemanı (kısmen yanmış eleman kabul edilmez), gölge kalkanı için radyasyon kalkanı levhası (tükenmiş uranyum ya da tungsten), nikel süperalaşım, titanyum levha ve bir hidroloks vakum motoru var. → [Nükleer Yakıt](nuclear_fuel)
 {recipe spacebreaker:rocketry/nuclear_thermal_engine}
 
 Montaj tezgâhı her kademenin yakıt türünü ve Δv'sini gösterir.

@@ -119,9 +119,9 @@ public final class StationAuditTests {
 
     /**
      * Station stage 2 airlock (QA): core + airlock module on a side mouth. Opens the doors the way a player would (a
-     * click on each) in the order of a careless crew — inner, then outer while the inner is still open — and records
-     * when the station stays sealed. Written to {@code run-gametest/qa/station_airlock.md}; only "both shut: sealed"
-     * and "outer open, inner shut: sealed" are asserted, the careless case is measured.
+     * click on each) in the order of a careless crew — inner, then outer while the inner is still open. The doors
+     * interlock (QA-27): they are never open together on any tick and the station stays sealed at every step. Written
+     * to {@code run-gametest/qa/station_airlock.md}.
      */
     @GameTest(template = "empty", timeoutTicks = 600, batch = QA_BATCH)
     public static void stationAirlockCycle(GameTestHelper h) {
@@ -138,24 +138,25 @@ public final class StationAuditTests {
         var player = h.makeMockServerPlayerInLevel();
         BlockPos dist = centre.relative(forward.getOpposite(), 2).relative(forward.getClockWise(), -2).above();
         List<String> out = new ArrayList<>();
-        // steps: 0 both shut, 1 inner open, 2 inner + outer open, 3 inner shut (outer open), 4 all shut
+        // steps: 0 both shut, 1 inner clicked, 2 outer clicked, 3 inner clicked, 4 outer clicked; each click on a shut door asks it open
         int[] step = {0};
         int[] settle = {0};
-        String[] names = {"both doors shut", "inner door open", "inner and outer open", "outer open, inner shut", "both shut again"};
+        String[] names = {"both doors shut", "inner door open", "outer asked open while the inner is open", "inner asked open while the outer is open", "outer asked open again"};
         h.onEachTick(() -> {
             if (step[0] > 4 || !(level.getBlockEntity(dist) instanceof OxygenDistributorBlockEntity be)) {
                 return;
+            }
+            // the interlock: the two doors are never open at the same time, on any tick
+            if (level.getBlockState(inner).getValue(open) && level.getBlockState(outer).getValue(open)) {
+                h.fail("both airlock doors open at once during step " + step[0] + ": " + out);
             }
             // give the room scan a moment after each change (the first scan of a new station takes longer)
             var room = be.room();
             if (++settle[0] < 40 || (step[0] == 0 && !room.sealed() && settle[0] < 300)) {
                 return;
             }
-            out.add(String.format("- %s: %s (%d blocks)%s", names[step[0]], room.sealed() ? "sealed" : "**open to space**", room.volume(),
-                    step[0] == 2 && !room.sealed() ? " — the doors do not interlock: one click on each empties the station" : ""));
-            if (step[0] == 0 || step[0] == 3 || step[0] == 4) {
-                h.assertTrue(room.sealed(), names[step[0]] + " should keep the station sealed: " + out);
-            }
+            out.add(String.format("- %s: %s (%d blocks)", names[step[0]], room.sealed() ? "sealed" : "**open to space**", room.volume()));
+            h.assertTrue(room.sealed(), names[step[0]] + " should keep the station sealed: " + out);
             BlockPos click = switch (step[0]) {
                 case 0 -> inner;
                 case 1 -> outer;

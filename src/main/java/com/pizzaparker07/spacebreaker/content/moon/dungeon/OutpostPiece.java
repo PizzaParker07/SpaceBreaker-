@@ -19,7 +19,6 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ButtonBlock;
 import net.minecraft.world.level.block.DoorBlock;
-import net.minecraft.world.level.block.LanternBlock;
 import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -194,6 +193,8 @@ public class OutpostPiece extends StructurePiece {
         BlockState floor = s(BaseBlocks.TITANIUM_DECK.base().get());
         BlockState glass = s(RocketryModule.STATION_WINDOW.get());
         BlockState tray = s(BaseBlocks.CABLE_DUCT.get());
+        BlockState skirting = s(Blocks.GRAY_CONCRETE);
+        BlockState stripe = s(Blocks.BLUE_CONCRETE);
         for (int x = x0; x <= x1; x++) {
             for (int z = z0; z <= z1; z++) {
                 boolean ex = x == x0 || x == x1;
@@ -205,7 +206,8 @@ public class OutpostPiece extends StructurePiece {
                         st = frame;
                     } else if (ex || ez) {
                         boolean window = y == F + 2 && ((ex ? z : x) % 3 == 0);
-                        st = window ? glass : y == F + h - 1 ? tray : wall;
+                        // dark skirting at the floor, a blue band at waist height with the windows in it, the cable tray on top
+                        st = window ? glass : y == F + 1 ? skirting : y == F + 2 ? stripe : y == F + h - 1 ? tray : wall;
                     } else {
                         st = s(Blocks.AIR);
                     }
@@ -218,10 +220,13 @@ public class OutpostPiece extends StructurePiece {
                 }
             }
         }
-        // a light panel set into the middle of the ceiling
-        int cx = (x0 + x1) / 2;
-        int cz = (z0 + z1) / 2;
-        placeBlock(level, s(BaseBlocks.LED_PANEL.get()), cx, F + h, cz, box);
+        // light panels set into the ceiling every three blocks, and one in the middle
+        for (int x = x0 + 2; x < x1; x += 3) {
+            for (int z = z0 + 2; z < z1; z += 3) {
+                placeBlock(level, s(BaseBlocks.LED_PANEL.get()), x, F + h, z, box);
+            }
+        }
+        placeBlock(level, s(BaseBlocks.LED_PANEL.get()), (x0 + x1) / 2, F + h, (z0 + z1) / 2, box);
     }
 
     /** A pressurised tunnel along z between two module walls (exclusive), one block wide inside. */
@@ -274,20 +279,22 @@ public class OutpostPiece extends StructurePiece {
     }
 
     private void furnishHub(WorldGenLevel level, BoundingBox box, RandomSource r) {
-        // survey consoles along the north wall: sloped desks, dead screens above, one still lit
+        // survey consoles along the north wall: control desks facing into the room, a seat at two of them
         for (int x = 11; x <= 19; x++) {
             if (x < 14 || x > 16) {
-                placeBlock(level, BaseBlocks.ALUMINUM_PANEL.stairs().get().defaultBlockState().setValue(StairBlock.FACING, Direction.NORTH)
-                        .setValue(StairBlock.HALF, net.minecraft.world.level.block.state.properties.Half.TOP), x, F + 1, 11, box);
-                placeBlock(level, x == 12 ? s(BaseBlocks.LED_PANEL.get()) : s(RocketryModule.STATION_HULL.get()), x, F + 2, 11, box);
+                placeBlock(level, MoonModule.CONTROL_DESK.get().defaultBlockState()
+                        .setValue(net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING, Direction.SOUTH), x, F + 1, 11, box);
             }
+        }
+        for (int x : new int[]{12, 18}) {
+            placeBlock(level, BaseBlocks.ALUMINUM_PANEL.stairs().get().defaultBlockState().setValue(StairBlock.FACING, Direction.SOUTH), x, F + 1, 12, box);
         }
         // the map table in the middle, a seat at it
         for (int x = 14; x <= 16; x++) {
             placeBlock(level, BaseBlocks.TITANIUM_DECK.slab().get().defaultBlockState().setValue(net.minecraft.world.level.block.SlabBlock.TYPE,
                     net.minecraft.world.level.block.state.properties.SlabType.TOP), x, F + 1, 15, box);
         }
-        placeBlock(level, BaseBlocks.ALUMINUM_PANEL.stairs().get().defaultBlockState().setValue(StairBlock.FACING, Direction.NORTH), 15, F + 1, 16, box);
+        placeBlock(level, BaseBlocks.ALUMINUM_PANEL.stairs().get().defaultBlockState().setValue(StairBlock.FACING, Direction.SOUTH), 15, F + 1, 16, box);
         // the power and water lines come in along the floor
         for (int z = 12; z <= 19; z++) {
             if (z >= 14 && z <= 16) {
@@ -417,20 +424,41 @@ public class OutpostPiece extends StructurePiece {
                 net.minecraft.world.level.block.state.properties.SlabType.TOP), x, F + 3, z, box);
     }
 
-    /** A greenhouse that lost its air: glass roof, dry hydroponic trays, dead plants, a seed store. */
+    /**
+     * A greenhouse that lost its air: a pressure-glass roof, two grow beds of dry soil with dead plants under light bars,
+     * the irrigation line along them, the water tank frozen solid, and the seed store.
+     */
     private void furnishGreenhouse(WorldGenLevel level, BoundingBox box) {
         for (int x = 23; x <= 28; x++) {
             for (int z = 12; z <= 18; z++) {
                 placeBlock(level, s(BaseBlocks.PRESSURE_GLASS.get()), x, F + 5, z, box); // glass roof
                 placeBlock(level, s(Blocks.AIR), x, F + 6, z, box);                      // no regolith shield on glass
-                if ((z == 13 || z == 17) && x >= 23 && x <= 27) {
-                    placeBlock(level, s(Blocks.COARSE_DIRT), x, F, z, box);
-                    placeBlock(level, x % 2 == 0 ? s(Blocks.POTTED_DEAD_BUSH) : s(Blocks.FLOWER_POT), x, F + 1, z, box);
-                }
             }
         }
-        placeBlock(level, s(Blocks.COMPOSTER), 28, F + 1, 12, box);
-        placeBlock(level, s(Blocks.REDSTONE_LAMP), 28, F + 4, 15, box);
+        for (int z : new int[]{13, 17}) {
+            for (int x = 23; x <= 28; x++) {
+                if (x <= 27) {
+                    // the bed: soil in a deck-edged trough, a dead plant in every other cell
+                    placeBlock(level, s(Blocks.COARSE_DIRT), x, F + 1, z, box);
+                    placeBlock(level, (x & 1) == 0 ? s(Blocks.DEAD_BUSH) : s(Blocks.AIR), x, F + 2, z, box);
+                }
+                // a light bar from wall to wall above the bed, a grow light every other block
+                placeBlock(level, (x & 1) == 1 ? s(BaseBlocks.LED_PANEL.get()) : s(BaseBlocks.CABLE_DUCT.get()), x, F + 4, z, box);
+            }
+            // the irrigation line along the outer side of the bed
+            int side = z == 13 ? 12 : 18;
+            for (int x = 23; x <= 27; x++) {
+                placeBlock(level, BaseBlocks.ALUMINUM_PANEL.slab().get().defaultBlockState(), x, F + 1, side, box);
+            }
+            placeBlock(level, s(BaseBlocks.PIPE_DUCT.get()), 28, F + 1, z, box);
+        }
+        // the water tank, frozen solid when the heating failed, piped into the beds
+        placeBlock(level, s(MoonModule.LUNAR_ICE.get()), 28, F + 1, 15, box);
+        placeBlock(level, s(MoonModule.LUNAR_ICE.get()), 28, F + 2, 15, box);
+        placeBlock(level, s(BaseBlocks.PRESSURE_GLASS.get()), 28, F + 3, 15, box);
+        for (int z : new int[]{14, 16}) {
+            placeBlock(level, s(BaseBlocks.PIPE_DUCT.get()), 28, F + 1, z, box);
+        }
         container(level, box, null, 28, F + 1, 18, MoonLoot.OUTPOST_GREENHOUSE, false);
         container(level, box, null, 23, F + 1, 15, MoonLoot.OUTPOST_GREENHOUSE, true);
     }
@@ -448,7 +476,7 @@ public class OutpostPiece extends StructurePiece {
                 placeBlock(level, armour, x, F + 4, z, box);
             }
         }
-        placeBlock(level, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), 25, F + 3, 5, box);
+        placeBlock(level, s(BaseBlocks.LED_PANEL.get()), 25, F + 4, 5, box);
         container(level, box, null, 27, F + 1, 4, MoonLoot.OUTPOST_VAULT, true);
         container(level, box, null, 27, F + 1, 6, MoonLoot.OUTPOST_VAULT, true);
     }
@@ -460,8 +488,19 @@ public class OutpostPiece extends StructurePiece {
     private void vaultPuzzle(WorldGenLevel level, BoundingBox box) {
         door(level, box, 22, 5, Direction.EAST);
         placeBlock(level, s(Blocks.AIR), 22, F + 3, 5, box); // empty socket above the door
-        placeBlock(level, s(Blocks.YELLOW_TERRACOTTA), 22, F + 3, 4, box);
-        placeBlock(level, s(Blocks.YELLOW_TERRACOTTA), 22, F + 3, 6, box);
+        // hazard stripes frame the door and its socket
+        for (int y = F + 1; y <= F + 3; y++) {
+            placeBlock(level, s(BaseBlocks.HAZARD_STRIPE.base().get()), 22, y, 4, box);
+            placeBlock(level, s(BaseBlocks.HAZARD_STRIPE.base().get()), 22, y, 6, box);
+        }
+        // guide lights: set into the lab floor from the hub tunnel to the east doorway, then the tunnel floor and
+        // ceiling, so the way to the vault reads from the lab even in the dark
+        for (int[] c : new int[][]{{15, 7}, {15, 5}, {17, 5}}) {
+            placeBlock(level, s(BaseBlocks.LED_PANEL.get()), c[0], F, c[1], box);
+        }
+        placeBlock(level, s(BaseBlocks.LED_PANEL.get()), 20, F, 5, box);
+        placeBlock(level, s(BaseBlocks.LED_PANEL.get()), 20, F + 3, 5, box);
+        placeBlock(level, s(BaseBlocks.HAZARD_STRIPE.base().get()), 21, F, 5, box); // under the trap plate
         placeBlock(level, s(Blocks.REDSTONE_LAMP), 22, F + 4, 5, box);
         // warning sign on the tunnel wall
         BlockPos signPos = getWorldPos(21, F + 2, 5);
