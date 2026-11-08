@@ -128,6 +128,31 @@ public final class RoverTests {
         h.succeed();
     }
 
+    /**
+     * Off a one-block crest on the Moon at top speed the rover is airborne for about 13 ticks: at full lock it still
+     * turns its flight path a few degrees (15 % of the ground rate), where it used to fly dead straight.
+     */
+    @GameTest(template = "empty")
+    public static void airborneRoverSteersALittle(GameTestHelper h) {
+        double speed = RoverPhysics.MAX_SPEED, yaw = 0, vx = 0, vz = speed, y = 0, vy = 0, groundYaw = 0;
+        int air = 0;
+        while (y > -1 && air < 200) {
+            yaw += Math.toRadians(RoverPhysics.yawChange(speed, 1F, RoverPhysics.AIR_STEER));
+            speed = RoverPhysics.speed(speed, 1, false, 1);
+            double[] v = RoverPhysics.slide(vx, vz, -Math.sin(yaw) * speed, Math.cos(yaw) * speed, RoverPhysics.AIR_STEER);
+            vx = v[0];
+            vz = v[1];
+            vy = RoverPhysics.fall(vy, MOON);
+            y += vy;
+            groundYaw += RoverPhysics.yawChange(RoverPhysics.MAX_SPEED, 1F, 1.0);
+            air++;
+        }
+        double turned = Math.abs(Math.toDegrees(Math.atan2(vx, vz)));
+        h.assertTrue(air >= 11 && air <= 15, "airtime " + air);
+        h.assertTrue(turned > 3 && turned < Math.abs(groundYaw) * 0.15, "flight path turned " + turned + " deg (ground " + groundYaw + ")");
+        h.succeed();
+    }
+
     @GameTest(template = "empty")
     public static void lowGravityJumpsAreLongAndLandingsBounce(GameTestHelper h) {
         // airtime of a 0.3 b/t hop: about 6x longer on the Moon

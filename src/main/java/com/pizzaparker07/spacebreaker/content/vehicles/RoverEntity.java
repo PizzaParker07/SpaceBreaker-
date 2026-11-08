@@ -554,14 +554,14 @@ public class RoverEntity extends Entity implements com.pizzaparker07.spacebreake
         double grip = onGround() ? Math.min(1.0, RoverPhysics.grip(level().getBlockState(under).getFriction(level(), under, this)) * roverType.grip()) : 0;
         speed = RoverPhysics.speed(speed, throttle, handBrake, onGround(), RoverPhysics.traction(g) * Math.max(grip, 0.02),
                 RoverPhysics.rollingDrag(g) * Math.max(grip, 0.02), roverType.maxSpeed(), roverType.accel());
-        deltaYaw = RoverPhysics.yawChange(speed, steer, onGround() ? grip : 0);
+        deltaYaw = RoverPhysics.yawChange(speed, steer, onGround() ? grip : RoverPhysics.AIR_STEER);
         setYRot(getYRot() + deltaYaw);
         Vec3 v = getDeltaMovement();
         double vy = onGround() && v.y <= 0 ? 0 : v.y;
         vy = RoverPhysics.fall(vy, g);
         float yaw = getYRot() * Mth.DEG_TO_RAD;
-        // the tyres steer the ground velocity towards the heading as far as the surface lets them; airborne, it keeps going
-        double[] h = RoverPhysics.slide(v.x, v.z, -Mth.sin(yaw) * speed, Mth.cos(yaw) * speed, RoverPhysics.lateralGrip(grip, g));
+        // the tyres steer the ground velocity towards the heading as far as the surface lets them; airborne, only a little
+        double[] h = RoverPhysics.slide(v.x, v.z, -Mth.sin(yaw) * speed, Mth.cos(yaw) * speed, onGround() ? RoverPhysics.lateralGrip(grip, g) : RoverPhysics.AIR_STEER);
         setDeltaMovement(h[0], vy, h[1]);
         double before = getDeltaMovement().y;
         move(MoverType.SELF, getDeltaMovement());

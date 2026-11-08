@@ -40,6 +40,12 @@ public final class RoverPhysics {
     }
 
     /**
+     * Steering left in the air (a hop off a crest, a long low-gravity drop): the body turns at this share of the
+     * ground rate and the flight path follows it as gently, so a rover off a bump is not wholly out of control.
+     */
+    public static final double AIR_STEER = 0.15;
+
+    /**
      * Sideways hold of the tyres: the surface grip times the gravity's traction, as for driving and braking. In low
      * gravity a hard turn at speed drifts a little wide (about 6 degrees on the Moon at full lock), never a spin.
      */
