@@ -10,7 +10,6 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
@@ -56,8 +55,7 @@ public final class RocketHud {
             FlightState s = rocket.state();
             float t = rocket.timer() + pt;
             if (s == FlightState.REENTRY) {
-                float heat = Mth.clamp(t / 30F, 0, 1) * Mth.clamp((170 - t) / 50F, 0, 1);
-                plasma(g, w, h, heat, rocket.tickCount + pt);
+                plasma(g, w, h, reentryHeat(t), rocket.tickCount + pt);
             }
             if (s == FlightState.TRANSFER && t > 1) {
                 // the orbit stays in view: only a thin progress rule at the top (the panel names the destination)
@@ -116,35 +114,33 @@ public final class RocketHud {
     }
 
     /** Orange-red glow over the whole window, white-hot from below (the shield), with streaks rushing up past. */
+    /**
+     * How hot the entry is, 0..1, from ticks since it began: up in about a second, a short peak, then it dies away
+     * over a few seconds as the capsule slows (shared by the screen glow and the glow round the capsule).
+     */
+    public static float reentryHeat(float t) {
+        float up = Mth.clamp(t / 22F, 0, 1);
+        float down = 1F - Mth.clamp((t - 45F) / 60F, 0, 1);
+        return up * up * (3 - 2 * up) * down * down;
+    }
+
+    /** The entry seen from inside: only a soft orange light at the screen's edges; the planet stays in view. */
     static void plasma(GuiGraphics g, int w, int h, float heat, float time) {
         if (heat <= 0.01F) {
             return;
         }
-        float flicker = 0.9F + 0.1F * Mth.sin(time * 1.7F);
-        g.fill(0, 0, w, h, ((int) (heat * flicker * 70) << 24) | 0xFF6A20);
-        // glow rising from the bottom edge
-        int glow = (int) (h * 0.55F);
-        g.fillGradient(0, h - glow, w, h, 0x00FF8A30, ((int) (heat * flicker * 200) << 24) | 0xFFB050);
-        g.fillGradient(0, 0, w, (int) (h * 0.25F), ((int) (heat * 110) << 24) | 0xFF5A1E, 0x00FF5A1E);
-        // side glow, one column per pixel so there are no bands
-        int side = (int) (w * 0.22F);
+        float flicker = 0.92F + 0.08F * Mth.sin(time * 1.7F) * Mth.sin(time * 0.63F + 1F);
+        int bottom = (int) (h * 0.28F);
+        g.fillGradient(0, h - bottom, w, h, 0x00FF8A40, ((int) (heat * flicker * 110) << 24) | 0xFF8A40);
+        int side = (int) (w * 0.14F);
         for (int i = 0; i < side; i++) {
             float f = 1 - i / (float) side;
-            int a = (int) (heat * flicker * 150 * f * f);
-            int col = (a << 24) | 0xFF7A30;
+            int a = (int) (heat * flicker * 85 * f * f * f);
+            int col = (a << 24) | 0xFF7A3A;
             g.fill(i, 0, i + 1, h, col);
             g.fill(w - i - 1, 0, w - i, h, col);
         }
-        RandomSource rng = RandomSource.create(42);
-        for (int i = 0; i < 70; i++) {
-            float x = rng.nextFloat() * w;
-            float speed = 8 + rng.nextFloat() * 14;
-            float len = 14 + rng.nextFloat() * 50;
-            float y = h - ((time * speed + rng.nextFloat() * h) % (h + len));
-            boolean edge = x < w * 0.3F || x > w * 0.7F;
-            int a = (int) (heat * (edge ? 140 + rng.nextInt(110) : 40 + rng.nextInt(60)));
-            g.fill((int) x, (int) y, (int) x + 1, (int) (y + len), (a << 24) | 0xFFE6B0);
-        }
+        g.fillGradient(0, 0, w, (int) (h * 0.12F), ((int) (heat * flicker * 50) << 24) | 0xFF6A50, 0x00FF6A50);
     }
 
     // ------------------------------------------------------------------ instrument panel
