@@ -74,7 +74,7 @@ public final class JupiterModule implements SbModule {
     public static final DeferredBlock<Block> STAINED_ICE = KIT.block("stained_ice", ice(MapColor.TERRACOTTA_BROWN));
     public static final DeferredBlock<Block> REFROZEN_BRINE = KIT.block("refrozen_brine", ice(MapColor.TERRACOTTA_ORANGE).friction(0.8F));
     public static final DeferredBlock<DropExperienceBlock> SALT_ORE = KIT.block("salt_ore", p -> new DropExperienceBlock(UniformInt.of(0, 2), p),
-            BlockKit.rockProps(MapColor.ICE, SoundType.GLASS, 1.4F));
+            BlockKit.rockProps(MapColor.ICE, SoundType.CALCITE, 1.4F));
     public static final DeferredItem<Item> OCEAN_SALT = KIT.item("ocean_salt");
     public static final DeferredBlock<VentBlock> ICE_GEYSER = KIT.block("ice_geyser",
             p -> new VentBlock(new VentBlock.Kind(VentBlock.Style.ICE, 0.55, 0F, 600, 220, 34), p),
