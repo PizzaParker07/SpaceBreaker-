@@ -51,6 +51,7 @@ public final class CompatClient {
         ShaderSkyPass.release();
         HazePass.release();
         LateEffects.clear();
+        DhCompat.hideLods(false); // an override someone forgot to lift must not outlive the world
         SpaceSky.reset();
     }
 }
