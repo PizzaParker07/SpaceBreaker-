@@ -1185,6 +1185,45 @@ ICON_SENSOR = [
 ]
 
 
+SENSOR_FRONT = [
+    "HWWWWw",
+    "Wkkkkw",
+    "WkCcCw",
+    "WkcCcw",
+    "WkCCcw",
+    "Wkkkkw",
+    "WWWWWw",
+    "Wbrbww",
+    "Wbbbww",
+    "wwwwww",
+]
+
+
+def sensor_model() -> Canvas:
+    """Sheet for the 3D Environment Sensor: front (6x10, screen and keys), back, side, top, bottom and antenna."""
+    red = (200, 60, 50)
+    k = (24, 26, 30)
+    pal = {'H': S[6], 'W': S[5], 'w': S[3], 'k': k, 'C': C[5], 'c': C[3], 'b': S[2], 'r': red}
+    cv = Canvas()
+    for y, row in enumerate(SENSOR_FRONT):
+        for x, ch in enumerate(row):
+            cv[x, y] = pal[ch]
+    for y in range(10):
+        for x in range(6):
+            cv[6 + x, y] = S[3] if y in (3, 7) and 0 < x < 5 else (S[6] if y == 0 else S[5])   # back, battery door
+        cv[12, y] = S[5]                                                                    # side
+        cv[13, y] = S[3]
+    for x in range(6):
+        cv[x, 10] = S[6]                                                                    # top
+        cv[x, 11] = S[5]
+        cv[6 + x, 10] = S[3]                                                                # bottom
+        cv[6 + x, 11] = S[2]
+    for y in range(10, 14):
+        cv[12, y] = S[6]                                                                    # antenna
+    cv[13, 10] = red                                                                        # antenna tip
+    return cv
+
+
 def icon_sensor() -> Canvas:
     pal = {'o': S[1], 'W': S[5], 'H': S[6], 'w': S[3], 'k': (24, 26, 30), 'C': C[5], 'c': C[3], 'b': S[2],
            'r': (200, 60, 50), 's': S[5], 'm': S[3]}
@@ -1388,6 +1427,7 @@ def export(save):
     save(icon_mmu(), 'item', 'maneuvering_unit')
     save(icon_tether(), 'item', 'safety_tether')
     save(icon_sensor(), 'item', 'environment_sensor')
+    save(sensor_model(), 'item', 'environment_sensor_model')
     save(icon_drill(), 'item', 'electric_drill')
     save(drill_model(), 'item', 'electric_drill_model')
     save(icon_drill_head(), 'item', 'wide_bore_drill_head')
