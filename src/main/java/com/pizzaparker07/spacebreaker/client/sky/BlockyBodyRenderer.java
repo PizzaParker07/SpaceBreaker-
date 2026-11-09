@@ -565,7 +565,13 @@ public final class BlockyBodyRenderer {
                     return;
                 }
                 ring = null;
-                alpha *= 1F - ball;
+                // the cube gives way faster than the ball comes in, so its dark night side does not hang over the ball
+                // as a see-through box while both are half drawn
+                alpha *= (1F - ball) * (1F - ball);
+            } else if (n == APPROACH) {
+                // flying in: keep the ball's level of detail following the size while the cube still shows, so the ball
+                // comes in at the right fineness (with its colours ready) instead of starting coarse and stepping up
+                lod(map, BlockyBodyMesh.Style.VOXEL, body, LEVELS[LEVELS.length - 1]);
             }
             flatCube = true;
             try {
@@ -625,6 +631,11 @@ public final class BlockyBodyRenderer {
             if (t < 1F) {
                 // cross-fade: the old level underneath, the new one fading in over it
                 cached(pose, style, lod.previous, map, body, sun, night, tint, alpha);
+                if (!sceneDepth) {
+                    // the two levels' steps cross each other: with a shared depth the new one would show only where it
+                    // sticks out, in stripes; in the sky it is simply laid over the old one
+                    RenderSystem.clear(org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
+                }
                 cached(pose, style, lod.current, map, body, sun, night, tint, alpha * t);
             } else {
                 lod.previous = 0;
