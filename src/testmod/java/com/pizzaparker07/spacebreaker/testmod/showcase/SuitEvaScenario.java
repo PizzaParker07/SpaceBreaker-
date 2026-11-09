@@ -239,6 +239,13 @@ final class SuitEvaScenario implements ShowcaseScenario {
             }
             p.getInventory().selected = 0;
         }), SuitShots.CLEAR_TOASTS));
+        // the drill seen from the front, held like a pistol drill
+        s.add(new Shot(prefix + "_17b_drill_held", 0, 0.5, g + 1.62, 8.5, 250F, 5F, true, CameraType.THIRD_PERSON_FRONT, 40, at(false, p -> {
+            astronaut(p);
+            ItemStack drill = new ItemStack(SuitModule.ELECTRIC_DRILL.get());
+            com.pizzaparker07.spacebreaker.content.suit.ElectricDrillItem.setEnergy(drill, 70000);
+            p.setItemSlot(EquipmentSlot.MAINHAND, drill);
+        }), SuitShots.CLEAR_TOASTS));
         // the wide-bore drill has dug a 3 x 3 pit (and one more square beside it) in front of the player
         s.add(new Shot(prefix + "_18_wide_bore", 0, 0.5, g + 1.62, 9.0, 180F, 40F, false, fp, 60, at(false, p -> {
             astronaut(p);
