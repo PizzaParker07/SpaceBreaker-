@@ -87,6 +87,22 @@ final class BlueprintScenario implements ShowcaseScenario {
         s.add(new Shot("blueprint_05_hidden_gui", 6000, -3.5, G + 3.0, 5.5, 215F, 18F, true, fp, 40, projecting("launch_site", LAUNCH, -1), SuitShots.CLEAR_TOASTS));
         s.add(new Shot("blueprint_06_select", 6000, 0.5, G + 4.5, 9.5, 180F, 22F, false, fp, 30, projecting("launch_site", LAUNCH, -1),
                 SuitShots.clearToastsThen(() -> Minecraft.getInstance().setScreen(new BlueprintScreen()))));
+        // "Build": the projection being filled in from the inventory, block by block, a couple of seconds in
+        s.add(new Shot("blueprint_08_building", 6000, 6.5, G + 4.0, 10.5, 150F, 25F, false, fp, 50, p -> {
+            projecting("launch_site", LAUNCH, -1).accept(p);
+            var def = com.pizzaparker07.spacebreaker.core.multiblock.Multiblocks.get(p.registryAccess(), Spacebreaker.id("launch_site")).orElseThrow();
+            BlockPos c = LAUNCH;
+            for (var pl : def.placements(c, Direction.NORTH)) {
+                p.serverLevel().setBlock(pl.pos(), net.minecraft.world.level.block.Blocks.AIR.defaultBlockState(), 3);
+                if (!pl.spec().isAir()) {
+                    p.getInventory().add(new net.minecraft.world.item.ItemStack(pl.spec().item()));
+                }
+            }
+            p.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
+            var stack = com.pizzaparker07.spacebreaker.content.blueprint.BlueprintModule.projectorInHand(p);
+            com.pizzaparker07.spacebreaker.content.blueprint.BlueprintBuilder.start(p,
+                    com.pizzaparker07.spacebreaker.content.blueprint.HologramProjectorItem.hologram(stack));
+        }, SuitShots.CLEAR_TOASTS));
         // the pointer on the first material: its name and how many the player carries against how many it takes
         s.add(new Shot("blueprint_07_material_tip", 6000, 0.5, G + 4.5, 9.5, 180F, 22F, false, fp, 30, projecting("launch_site", LAUNCH, -1),
                 SuitShots.clearToastsThen(() -> {

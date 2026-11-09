@@ -132,4 +132,79 @@ public final class BlueprintGameTests {
         }
         helper.succeed();
     }
+
+    // ------------------------------------------------------------------------------------ build action
+
+    /** Every item the launch site takes, by count (the projector's material list). */
+    private static java.util.Map<net.minecraft.world.item.Item, Integer> launchMaterials(GameTestHelper helper) {
+        java.util.Map<net.minecraft.world.item.Item, Integer> totals = new java.util.LinkedHashMap<>();
+        for (var p : def(helper, LAUNCH).placements(BlockPos.ZERO, Direction.NORTH)) {
+            if (!p.spec().isAir()) {
+                totals.merge(p.spec().item(), 1, Integer::sum);
+            }
+        }
+        return totals;
+    }
+
+    private static net.minecraft.server.level.ServerPlayer builder(GameTestHelper helper, java.util.Map<net.minecraft.world.item.Item, Integer> give) {
+        net.minecraft.server.level.ServerPlayer p = helper.makeMockServerPlayerInLevel();
+        p.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
+        var at = helper.absoluteVec(new net.minecraft.world.phys.Vec3(6.5, 1, 6.5));   // beside the projection
+        p.moveTo(at.x, at.y, at.z);
+        p.getInventory().clearContent();
+        give.forEach((item, n) -> {
+            if (n > 0) {
+                p.getInventory().add(new net.minecraft.world.item.ItemStack(item, n));
+            }
+        });
+        return p;
+    }
+
+    private static int count(net.minecraft.server.level.ServerPlayer p, net.minecraft.world.item.Item item) {
+        return p.getInventory().countItem(item);
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 400)
+    public static void projectorBuildsTheProjectionFromTheInventory(GameTestHelper helper) {
+        var materials = launchMaterials(helper);
+        var p = builder(helper, materials);
+        BlockPos controller = helper.absolutePos(new BlockPos(3, 1, 4));
+        Hologram h = Hologram.of(LAUNCH).withAnchor(controller, Direction.NORTH);
+        helper.assertTrue(com.pizzaparker07.spacebreaker.content.blueprint.BlueprintBuilder.start(p, h), "the build starts");
+        helper.succeedWhen(() -> {
+            var r = com.pizzaparker07.spacebreaker.content.blueprint.BlueprintBuilder.lastResult(p);
+            helper.assertTrue(r != null, "still building");
+            helper.assertTrue(r.complete() && !r.stopped(), "the structure is complete: " + r);
+            helper.assertTrue(r.missing().isEmpty() && r.blocked() == 0 && r.placed() == 33, "every block placed from the inventory: " + r);
+            helper.assertTrue(Multiblocks.validate(helper.getLevel(), def(helper, LAUNCH), controller, Direction.NORTH).complete(), "and it validates");
+            materials.keySet().forEach(item -> helper.assertTrue(count(p, item) == 0, "all " + item + " used up"));
+            helper.getLevel().getServer().getPlayerList().remove(p);
+        });
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 400)
+    public static void projectorBuildsWhatItCanAndListsTheRest(GameTestHelper helper) {
+        var materials = new java.util.LinkedHashMap<>(launchMaterials(helper));
+        var pad = net.minecraft.core.registries.BuiltInRegistries.ITEM.get(Spacebreaker.id("launch_pad"));
+        var tower = net.minecraft.core.registries.BuiltInRegistries.ITEM.get(Spacebreaker.id("service_tower"));
+        int pads = materials.get(pad);
+        materials.put(pad, pads - 4);          // one pad spot is taken by dirt, three more are short
+        materials.put(tower, 0);               // no tower at all
+        var p = builder(helper, materials);
+        BlockPos controller = helper.absolutePos(new BlockPos(3, 1, 4));
+        BlockPos dirt = helper.absolutePos(new BlockPos(1, 1, 2));   // a pad corner (north-west)
+        helper.getLevel().setBlock(dirt, Blocks.DIRT.defaultBlockState(), 3);
+        com.pizzaparker07.spacebreaker.content.blueprint.BlueprintBuilder.start(p, Hologram.of(LAUNCH).withAnchor(controller, Direction.NORTH));
+        helper.succeedWhen(() -> {
+            var r = com.pizzaparker07.spacebreaker.content.blueprint.BlueprintBuilder.lastResult(p);
+            helper.assertTrue(r != null, "still building");
+            helper.assertFalse(r.complete(), "not complete without the tower");
+            helper.assertTrue(r.missing().equals(java.util.Map.of(pad, 3, tower, 6)), "missing list: 3 pads and 6 tower sections, got " + r.missing());
+            helper.assertTrue(r.blocked() == 1, "the dirt is reported, not replaced: " + r.blocked());
+            helper.assertTrue(helper.getLevel().getBlockState(dirt).is(Blocks.DIRT), "and left in place");
+            helper.assertTrue(r.placed() == 33 - 1 - 3 - 6, "everything else is placed: " + r.placed());
+            helper.assertTrue(count(p, pad) == 0, "every pad carried was used");
+            helper.getLevel().getServer().getPlayerList().remove(p);
+        });
+    }
 }
