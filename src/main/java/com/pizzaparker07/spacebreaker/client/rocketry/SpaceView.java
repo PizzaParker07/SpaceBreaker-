@@ -312,6 +312,11 @@ public final class SpaceView {
         Location here = surface(level);
         float k = factor();
         float planet = here == null ? 0F : ball(k);
+        if (planet > 0 && !(k > 0.6F || planet > 0.5F) && com.pizzaparker07.spacebreaker.compat.client.ShaderState.shaderPackInUse()) {
+            // under a shader pack the ball only comes with the hand-over to this sky (see RocketryClient): before it,
+            // the pack's haze would wash it into pale overlapping plates
+            planet = 0F;
+        }
         if (here == null || k <= 0 && planet <= 0.003F) {
             return;
         }
@@ -322,6 +327,11 @@ public final class SpaceView {
         int r = (int) Mth.lerp(night, 8, 0), g = (int) Mth.lerp(night, 16, 0), b = (int) Mth.lerp(night, 52, 0);
         int over = (int) (top * 255) << 24 | r << 16 | g << 8 | b;
         int horizon = (int) (Mth.clamp((k - 0.35F) / 0.6F, 0, 1) * 255) << 24 | r << 16 | g << 8 | b;
+        if (com.pizzaparker07.spacebreaker.compat.client.ShaderState.shaderPackInUse()) {
+            // a shader pack draws its own horizon: the light band left open at eye level would show it as a thin stepped
+            // line across the screen, so the darkening comes down evenly instead
+            horizon = over;
+        }
         if (!off("gradient")) {
             SkyDraw.gradient(modelView, over, horizon);
         }
