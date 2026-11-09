@@ -43,6 +43,18 @@ public final class SpaceView {
     private static ResourceKey<Level> arrivalDim;
     private static int arrivalRocket = -1;
 
+    /**
+     * Switches to take parts of this view out one at a time, for tracking a clash with another mod's renderer:
+     * -Dspacebreaker.spaceView.off=fog,fogColour,gradient,stars,ball,overTerrain (any of them, comma separated), or the
+     * environment variable SB_SPACEVIEW_OFF.
+     */
+    private static final java.util.Set<String> OFF = java.util.Set.of(System.getProperty("spacebreaker.spaceView.off",
+            System.getenv().getOrDefault("SB_SPACEVIEW_OFF", "")).split(","));
+
+    static boolean off(String part) {
+        return OFF.contains(part);
+    }
+
     private SpaceView() {
     }
 
@@ -265,8 +277,12 @@ public final class SpaceView {
         int r = (int) Mth.lerp(night, 8, 0), g = (int) Mth.lerp(night, 16, 0), b = (int) Mth.lerp(night, 52, 0);
         int over = (int) (top * 255) << 24 | r << 16 | g << 8 | b;
         int horizon = (int) (Mth.clamp((k - 0.35F) / 0.6F, 0, 1) * 255) << 24 | r << 16 | g << 8 | b;
-        SkyDraw.gradient(modelView, over, horizon);
-        SkyDraw.stars(modelView, projection, k);
+        if (!off("gradient")) {
+            SkyDraw.gradient(modelView, over, horizon);
+        }
+        if (!off("stars")) {
+            SkyDraw.stars(modelView, projection, k);
+        }
         float t = level.getGameTime() + partialTick;
         if (k < 1F) {
             // the world's own sun, handing over to the orbit sky's as the view climbs
@@ -275,7 +291,7 @@ public final class SpaceView {
             SkyDraw.billboard(modelView, OrbitSkyEffects.SUN, day, 100F, 15F, k * (1F - smooth(k)));
         }
         RenderSystem.depthMask(false);
-        OrbitSkyEffects.drawBodyBelow(modelView, here.body(), angle(k), t, lit(level, here, t) * smooth(k), planet,
+        if (!off("ball")) OrbitSkyEffects.drawBodyBelow(modelView, here.body(), angle(k), t, lit(level, here, t) * smooth(k), planet,
                 com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.APPROACH, new Vector3f(0, -1, 0), sun(level, k, t, partialTick));
         RenderSystem.depthMask(true);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
@@ -295,7 +311,7 @@ public final class SpaceView {
         Location here = surface(level);
         float k = factor();
         float hide = hide(k);
-        if (here == null || hide <= 0.003F) {
+        if (here == null || hide <= 0.003F || off("overTerrain")) {
             return;
         }
         float t = level.getGameTime() + partialTick;
