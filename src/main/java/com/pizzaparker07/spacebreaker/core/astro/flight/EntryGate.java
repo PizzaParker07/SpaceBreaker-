@@ -53,6 +53,20 @@ public final class EntryGate {
         return x * x * (3 - 2 * x);
     }
 
+    /**
+     * {@link #spaceFactor} for worlds measured in blocks: {@code blocksAboveGround} out of {@code topBlocks} (the height
+     * at which the climb is treated as reaching low orbit) maps linearly onto 0..low-orbit altitude.
+     */
+    public static double spaceFactorForBlocks(AstroBody b, double blocksAboveGround, double topBlocks) {
+        return spaceFactor(b, blocksToAltitude(b, blocksAboveGround, topBlocks));
+    }
+
+    /** The linear blocks-to-altitude mapping used by {@link #spaceFactorForBlocks}, m. */
+    public static double blocksToAltitude(AstroBody b, double blocksAboveGround, double topBlocks) {
+        if (topBlocks <= 0) throw new IllegalArgumentException("topBlocks must be positive");
+        return Math.max(0, blocksAboveGround) / topBlocks * (b.lowOrbitRadius() - b.radius());
+    }
+
     /** Altitude at which {@link #spaceFactor} reaches {@code k} (inverse, by bisection), m. */
     public static double altitudeForSpaceFactor(AstroBody b, double k) {
         double lo = 0, hi = b.lowOrbitRadius() - b.radius();
