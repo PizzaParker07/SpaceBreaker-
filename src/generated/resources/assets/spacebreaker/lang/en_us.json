@@ -1132,6 +1132,7 @@
   "hud.spacebreaker.state.reentry": "Reentry",
   "hud.spacebreaker.state.transfer": "Coasting",
   "hud.spacebreaker.tether": "TETHER",
+  "hud.spacebreaker.time_warp": "⏩ time ×%s",
   "hud.spacebreaker.warn.cant_make_it": "NOT ENOUGH O2 TO GET BACK",
   "hud.spacebreaker.warn.cold": "HYPOTHERMIA",
   "hud.spacebreaker.warn.cold_trap": "COLD TRAP: BEYOND SUIT RATING",

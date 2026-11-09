@@ -1,35 +1,48 @@
 package com.pizzaparker07.spacebreaker.client.rocketry;
 
-import com.pizzaparker07.spacebreaker.Spacebreaker;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
+import com.pizzaparker07.spacebreaker.content.rocketry.design.RocketGeometry;
+import com.pizzaparker07.spacebreaker.content.rocketry.design.RocketLayout;
 import com.pizzaparker07.spacebreaker.content.rocketry.entity.FlightState;
 import com.pizzaparker07.spacebreaker.content.rocketry.entity.RocketEntity;
 import com.pizzaparker07.spacebreaker.content.rocketry.nav.Location;
 import com.pizzaparker07.spacebreaker.content.rocketry.nav.Transit;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * The jump between dimensions, kept out of sight: the world itself carries the flight (the sky darkens as the rocket
- * climbs, the planet curves away below in orbit). Just before the jump the view dims slightly ({@link Transit#MAX_DIP});
- * the last frame is then taken and held on screen while the next dimension loads ({@link TransitScreen}, never a
- * "loading" screen and never a black screen) and until the crew is back in the seat, and finally cross-fades into the
- * new world in {@link Transit#FADE_OUT_SECONDS}. GUI layer, so it also covers the world under a shader pack.
+ * The jump between dimensions, kept out of sight. The views either side of it are built to match ({@link SpaceView}:
+ * the top of the climb already looks like the orbit, the start of a descent still does), so the jump itself only has
+ * to keep the picture going: no loading screen ({@link TransitScreen} draws nothing, the new world shows through as
+ * soon as it exists), the crew arrive straight in their seats, and until the rocket itself has reached the client the
+ * view draws a stand-in of it where it will be (the "ghost"), with the crew hidden as they are in the closed capsule.
  */
 public final class TransitView {
-    static final ResourceLocation SNAPSHOT = Spacebreaker.id("transit_snapshot");
+    /** Give up on the stand-in after this long (the rocket never came: a dead rocket, a refused landing). */
+    private static final long GHOST_LIMIT_NANOS = 8_000_000_000L;
+
     @Nullable
     private static Transit.Kind kind;
     @Nullable
     private static Location to;
-    private static long arrived = -1;
     private static float lead;
     private static boolean holding;
+    private static long holdSince;
     private static boolean pinned;
     private static float pinnedAlpha;
-    private static boolean snapshot;
+
+    // the rocket as last seen before the jump, for the stand-in
+    @Nullable
+    private static RocketLayout ghostLayout;
+    private static int ghostStage;
+    private static float ghostYaw;
+    private static Vec3 seatOffset = Vec3.ZERO;
 
     private TransitView() {
     }
@@ -40,10 +53,18 @@ public final class TransitView {
             return;
         }
         FlightState s = rocket.state();
-        float l = Transit.leadIn(s, rocket.timer(), rocket.ascentProgress());
-        if (arrived >= 0) {
-            return; // cross-fading into the new world
+        // remember the rocket and where the crew sit in it, for the stand-in after the jump
+        var player = Minecraft.getInstance().player;
+        if (player != null && player.getVehicle() == rocket && !holding) {
+            ghostLayout = rocket.layout();
+            // coming home to the Earth only the capsule comes down (the stages stay in orbit)
+            Location dest = rocket.destination();
+            ghostStage = s == FlightState.TRANSFER && dest != null && dest.isEarth() && !dest.orbit()
+                    ? rocket.layout().stages().size() : rocket.activeStage();
+            ghostYaw = rocket.getYRot();
+            seatOffset = player.position().subtract(rocket.position());
         }
+        float l = Transit.leadIn(s, rocket.timer(), rocket.ascentProgress());
         if (l > 0 && kind == null) {
             Location here = rocket.location();
             Location dest = s == FlightState.ASCENT ? RocketEntity.launchTarget(here) : rocket.destination();
@@ -52,7 +73,7 @@ public final class TransitView {
             }
         }
         lead = l;
-        if (l <= 0 && !holding) {
+        if (l <= 0 && !holding && kind != null) {
             reset(); // aborted (failed ascent, cancelled travel)
         }
     }
@@ -60,29 +81,25 @@ public final class TransitView {
     static void begin(Transit.Kind k, @Nullable Location here, @Nullable Location dest) {
         kind = k;
         to = dest;
-        arrived = -1;
     }
 
-    /** The dimension is changing ({@link TransitScreen} is up): take the last frame and hold it. */
+    /** The dimension is changing ({@link TransitScreen} is up): from now the stand-in takes the rocket's place. */
     static void hold() {
         holding = true;
-        releaseSnapshot();
-        try {
-            var mc = Minecraft.getInstance();
-            var image = net.minecraft.client.Screenshot.takeScreenshot(mc.getMainRenderTarget());
-            mc.getTextureManager().register(SNAPSHOT, new net.minecraft.client.renderer.texture.DynamicTexture(image));
-            snapshot = true;
-        } catch (RuntimeException e) {
-            snapshot = false;
-        }
+        holdSince = System.nanoTime();
     }
 
-    /** The new dimension is there and the crew seated: start the cross-fade. */
+    /** The rocket has reached the client and the crew are in their seats again: the real one takes over. */
     static void arrived() {
-        if (kind != null && arrived < 0) {
-            arrived = System.nanoTime();
-            holding = false;
-        }
+        reset();
+        handedOver = System.nanoTime();
+    }
+
+    private static long handedOver = Long.MIN_VALUE / 2;
+
+    /** True during a hand-over and for a moment after it: the camera keeps its settings across the change of rocket. */
+    static boolean handingOver() {
+        return holding || System.nanoTime() - handedOver < 2_000_000_000L;
     }
 
     static boolean holding() {
@@ -90,11 +107,43 @@ public final class TransitView {
     }
 
     static boolean active() {
-        return kind != null;
+        return kind != null || holding;
+    }
+
+    /** Whether the stand-in is drawn now. */
+    static boolean ghost() {
+        if (!holding || ghostLayout == null) {
+            return false;
+        }
+        if (System.nanoTime() - holdSince > GHOST_LIMIT_NANOS) {
+            reset();
+            return false;
+        }
+        var player = Minecraft.getInstance().player;
+        return player != null && !(player.getVehicle() instanceof RocketEntity);
     }
 
     /**
-     * For screenshots: shows (or with a null kind, clears) the dip at a fixed strength until cleared.
+     * Draws the stand-in rocket where the real one will appear: under the seated player. The pose is camera-relative
+     * (as in an after-entities render stage).
+     */
+    static void renderGhost(PoseStack pose, MultiBufferSource buffers, Vec3 camera, boolean firstPerson) {
+        var player = Minecraft.getInstance().player;
+        if (player == null || ghostLayout == null) {
+            return;
+        }
+        Vec3 at = player.position().subtract(seatOffset);
+        RocketGeometry geo = RocketGeometry.ofActive(ghostLayout, ghostStage);
+        pose.pushPose();
+        pose.translate(at.x - camera.x, at.y - camera.y, at.z - camera.z);
+        pose.mulPose(Axis.YP.rotationDegrees(-ghostYaw));
+        int skipFrom = firstPerson && ghostLayout.payload().present() ? ghostLayout.payload().firstPart() : Integer.MAX_VALUE;
+        RocketStackRenderer.render(ghostLayout, geo, pose, buffers, LightTexture.FULL_BRIGHT, 0F, skipFrom);
+        pose.popPose();
+    }
+
+    /**
+     * For screenshots: shows (or with a null kind, clears) a dip at a fixed strength until cleared.
      *
      * @param alpha how dark (0 = clear, 1 = black)
      */
@@ -111,39 +160,13 @@ public final class TransitView {
         pinned = false;
         kind = null;
         to = null;
-        arrived = -1;
         lead = 0;
         holding = false;
-        releaseSnapshot();
     }
 
-    private static void releaseSnapshot() {
-        if (snapshot) {
-            snapshot = false;
-            Minecraft.getInstance().getTextureManager().release(SNAPSHOT);
-        }
-    }
-
-    private static float seconds(long since) {
-        return (System.nanoTime() - since) / 1e9F;
-    }
-
-    /** How strongly the transit view covers the world right now (0 when it is not shown). */
+    /** How strongly a dip covers the world right now: only the showcase's pinned dip (the flight never dims). */
     static float alpha() {
-        if (kind == null) {
-            return 0;
-        }
-        if (arrived >= 0) {
-            float a = Transit.fadeOut(seconds(arrived));
-            if (a <= 0) {
-                reset();
-            }
-            return a;
-        }
-        if (pinned) {
-            return pinnedAlpha;
-        }
-        return holding ? 1F : lead;
+        return pinned ? pinnedAlpha : 0F;
     }
 
     @Nullable
@@ -151,27 +174,12 @@ public final class TransitView {
         return to;
     }
 
-    /**
-     * Before the jump: a slight dip. While held and while cross-fading: the last frame (dimmed as the dip left it) over
-     * the world; black only if the frame could not be taken.
-     */
+    /** The showcase's pinned dip. */
     static void render(GuiGraphics g, int w, int h, float alpha) {
-        if (kind == null || alpha <= 0.003F) {
+        if (!pinned || alpha <= 0.003F) {
             return;
         }
         float a = Mth.clamp(alpha, 0, 1);
-        float eased = a * a * (3 - 2 * a);
-        if (holding || arrived >= 0) {
-            if (snapshot) {
-                com.mojang.blaze3d.systems.RenderSystem.enableBlend();
-                g.setColor(1F, 1F, 1F, eased);
-                g.blit(SNAPSHOT, 0, 0, 0, 0F, 0F, w, h, w, h);
-                g.setColor(1F, 1F, 1F, 1F); // the frame already carries the dip
-            } else {
-                g.fill(0, 0, w, h, (int) (eased * 255) << 24);
-            }
-            return;
-        }
-        g.fill(0, 0, w, h, (int) (eased * (pinned ? 1F : Transit.MAX_DIP) * 255) << 24);
+        g.fill(0, 0, w, h, (int) (a * a * (3 - 2 * a) * 255) << 24);
     }
 }
