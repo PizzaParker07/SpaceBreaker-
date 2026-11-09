@@ -134,9 +134,9 @@ public final class SpaceView {
         }
         // the far ground is drawn by the game to the view distance, and by an LOD mod (Distant Horizons) much further
         double reach = Minecraft.getInstance().options.getEffectiveRenderDistance() * 16.0;
-        var cam = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
-        boolean lods = com.pizzaparker07.spacebreaker.compat.client.DhCompat.active() && !com.pizzaparker07.spacebreaker.compat.client.DhCompat.hidingLods()
-                && com.pizzaparker07.spacebreaker.compat.client.DhCompat.lodUnder(cam.x, cam.z);
+        // (with the LOD mod running and its terrain shown, the far ground is its business: no ball until the LODs
+        // are switched off for the last stretch before the orbit view)
+        boolean lods = com.pizzaparker07.spacebreaker.compat.client.DhCompat.active() && !com.pizzaparker07.spacebreaker.compat.client.DhCompat.hidingLods();
         if (lods) {
             reach = Math.max(reach, com.pizzaparker07.spacebreaker.compat.client.DhCompat.lodReachBlocks());
         }
@@ -333,10 +333,17 @@ public final class SpaceView {
                 com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.APPROACH, new Vector3f(0, -1, 0), sun(level, k, t, partialTick));
         main.copyDepthFrom(saved);
         main.bindWrite(false);
-        // the ball takes a sky object's depth once it covers the ground (with a shader pack at once: the pack's fog
-        // would otherwise go by the depth of the ground far below it)
-        if (hide > 0.98F || com.pizzaparker07.spacebreaker.compat.client.ShaderState.shaderPackInUse()) {
+        // the ball takes a sky object's depth once it covers the ground, so water and clouds stay under it. Not with a
+        // shader pack: there the ball's pixels are left at the far depth, where the space sky is laid over the pack's
+        // picture untouched by its fog (a sky object's depth beyond the view distance would be fogged out)
+        boolean pack = com.pizzaparker07.spacebreaker.compat.client.ShaderState.shaderPackInUse();
+        if (hide > 0.98F && !pack) {
             disc(modelView, angle(k), 1F, true);
+        } else if (pack && hide > 0.5F) {
+            // with a pack: where the ball covers the ground, set the depth back to the far value
+            GL11.glDepthRange(1.0, 1.0);
+            disc(modelView, angle(k), 1F, true);
+            GL11.glDepthRange(0.0, 1.0);
         }
         RenderSystem.enableDepthTest();
         RenderSystem.depthMask(true);
