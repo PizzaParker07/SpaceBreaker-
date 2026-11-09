@@ -204,6 +204,28 @@ public final class IndustryBootstrapTest {
         return false;
     }
 
+    /**
+     * Blocks sound like what they are made of: the cables are copper and heavy-gauge metal (they used to break, step
+     * and knock like wool), the pipes metal or copper, and no industry block is cloth.
+     */
+    @GameTest(template = "empty")
+    public static void conduitsAndMachinesSoundLikeMetal(GameTestHelper h) {
+        var copper = MachinesModule.COPPER_CABLE.get().defaultBlockState().getSoundType();
+        var hv = MachinesModule.HV_CABLE.get().defaultBlockState().getSoundType();
+        h.assertTrue(copper == net.minecraft.world.level.block.SoundType.COPPER, "copper cable sounds like copper");
+        h.assertTrue(hv == net.minecraft.world.level.block.SoundType.METAL, "HV cable sounds like metal");
+        for (var conduit : MachinesModule.CONDUITS) {
+            var sound = conduit.get().defaultBlockState().getSoundType();
+            h.assertTrue(sound == net.minecraft.world.level.block.SoundType.METAL || sound == net.minecraft.world.level.block.SoundType.COPPER,
+                    conduit.getId() + " is metal or copper");
+        }
+        for (MachineEntry<?, ?> e : MachinesModule.MACHINES) {
+            h.assertTrue(e.block().get().defaultBlockState().getSoundType() != net.minecraft.world.level.block.SoundType.WOOL,
+                    e.block().getId() + " is not cloth");
+        }
+        h.succeed();
+    }
+
     private IndustryBootstrapTest() {
     }
 }
