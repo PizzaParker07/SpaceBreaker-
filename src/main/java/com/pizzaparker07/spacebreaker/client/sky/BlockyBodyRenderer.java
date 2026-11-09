@@ -312,6 +312,51 @@ public final class BlockyBodyRenderer {
         render(pose, style, n, map, body, sun, night, tint, alpha, ring, null);
     }
 
+    /** Set by {@link #drawInScene}: the body is drawn into the scene's depth (no depth clears), not as sky. */
+    private static boolean sceneDepth;
+    /** Set while an air shell is drawn (in the scene it then writes no depth). */
+    private static boolean shellPass;
+
+    /**
+     * Draws a body into the scene rather than the sky, for seamless launches and landings: it is depth-tested against
+     * the terrain already drawn (so near ground hides the planet below the horizon) and the depth buffer is not
+     * cleared, so draw it after the terrain (e.g. at RenderLevelStageEvent AFTER_SOLID_BLOCKS) with the modelView of
+     * that stage. Otherwise as {@link #draw(Matrix4f, BlockyBodyMesh.Style, int, ColorMap, Pose, Vector3f, float, float,
+     * float, Ring, int)}; {@code alpha} fades it in or out (see {@link #ascentBlend}).
+     */
+    public static void drawInScene(Matrix4f pose, BlockyBodyMesh.Style style, int n, ColorMap map, Pose body, Vector3f sun, float night,
+                                   float tint, float alpha, Ring ring, int air) {
+        sceneDepth = true;
+        try {
+            draw(pose, style, n, map, body, sun, night, tint, alpha, ring, air);
+        } finally {
+            sceneDepth = false;
+            RenderSystem.enableDepthTest();
+            RenderSystem.depthMask(true);
+        }
+    }
+
+    /**
+     * How much of the planet below shows while climbing out (0 = only the terrain, 1 = only the ball), from the
+     * height above the ground in blocks: nothing until {@code fadeStart}, all of it from {@code fadeEnd}, smooth in
+     * between. A landing uses the same curve on the way down, so the two meet at the same heights.
+     */
+    public static float ascentBlend(double altitudeBlocks, double fadeStart, double fadeEnd) {
+        double t = Mth.clamp((altitudeBlocks - fadeStart) / Math.max(1e-6, fadeEnd - fadeStart), 0, 1);
+        return (float) (t * t * (3 - 2 * t));
+    }
+
+    /**
+     * The pose of the planet below a craft at {@code altitudeBlocks} above a ground of radius {@code radiusBlocks}
+     * (blocks, the scale the terrain is drawn at), placed straight down from the camera inside the sky's 100-block
+     * reach: same angle on screen as the real planet, so the ball's horizon lines up with the terrain's.
+     */
+    public static Pose belowPose(double altitudeBlocks, double radiusBlocks, Vector3f pole, Vector3f facing, float spin) {
+        double d = radiusBlocks + Math.max(0.5, altitudeBlocks);
+        float s = (float) (100 / d);
+        return new Pose(new Vector3f(0, (float) (-d * s), 0), (float) (radiusBlocks * s), pole, facing, spin);
+    }
+
     /** No air: {@link #draw(Matrix4f, BlockyBodyMesh.Style, int, ColorMap, Pose, Vector3f, float, float, float, Ring, int)} without a limb. */
     public static final int NO_AIR = -1;
     /** Night side of a body with thick air (gas giants): lit faintly by its moons and its own air, never a black hole in the sky. */
@@ -370,12 +415,17 @@ public final class BlockyBodyRenderer {
         ColorMap shell = AIR_MAPS.computeIfAbsent(air, BlockyBodyRenderer::flat);
         float grow = 2.2F / level; // one cell (a cell is 2 radii / level across) and a hair, so the shell clears the body's corners
         Pose halo = new Pose(body.center(), body.radius() * (1 + grow), body.pole(), body.facing(), body.spin());
-        if (glow > 0.01F) {
-            Pose outer = new Pose(body.center(), body.radius() * (1 + grow * 1.7F), body.pole(), body.facing(), body.spin());
-            render(pose, style, level, AIR_MAPS.computeIfAbsent(glowRgb, BlockyBodyRenderer::flat), outer, sun, 1F, 1F,
-                    alpha * Math.min(1F, glow), null, null);
+        shellPass = true;
+        try {
+            if (glow > 0.01F) {
+                Pose outer = new Pose(body.center(), body.radius() * (1 + grow * 1.7F), body.pole(), body.facing(), body.spin());
+                render(pose, style, level, AIR_MAPS.computeIfAbsent(glowRgb, BlockyBodyRenderer::flat), outer, sun, 1F, 1F,
+                        alpha * Math.min(1F, glow), null, null);
+            }
+            render(pose, style, level, shell, halo, sun, AIR_SHELL_NIGHT, Math.min(1F, tint), alpha * AIR_LIMB_ALPHA, null, null);
+        } finally {
+            shellPass = false;
         }
-        render(pose, style, level, shell, halo, sun, AIR_SHELL_NIGHT, Math.min(1F, tint), alpha * AIR_LIMB_ALPHA, null, null);
         render(pose, style, n, map, body, sun, Math.max(night, AIR_NIGHT), tint, alpha, ring, null);
     }
 
@@ -533,8 +583,14 @@ public final class BlockyBodyRenderer {
         // the stepped body has hidden corners: draw it with its own depth, then clear that depth again so the terrain
         // drawn after the sky is not hidden behind a planet 100 blocks away (the sky comes before terrain, so nothing
         // else has written depth yet). glClear leaves depth alone while the depth mask is off: open the mask first.
-        RenderSystem.depthMask(true);
-        RenderSystem.clear(org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
+        if (sceneDepth) {
+            // in the scene (a landing): tested against the terrain already drawn; an air shell writes no depth, so the
+            // body drawn after it is not hidden behind its own shell
+            RenderSystem.depthMask(!shellPass);
+        } else {
+            RenderSystem.depthMask(true);
+            RenderSystem.clear(org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
+        }
         RenderSystem.enableDepthTest();
         RenderSystem.depthFunc(org.lwjgl.opengl.GL11.GL_LEQUAL);
         RenderSystem.enableBlend();
@@ -569,7 +625,9 @@ public final class BlockyBodyRenderer {
                     body, body.rotationInto(style, S_ROT), sun, night, tint, alpha, null, true);
         }
         RenderSystem.enableCull();
-        RenderSystem.clear(org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX); // while the mask is still open
+        if (!sceneDepth) {
+            RenderSystem.clear(org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX); // while the mask is still open
+        }
         RenderSystem.depthMask(false);
         RenderSystem.disableDepthTest();
         if (blend > 0F) {

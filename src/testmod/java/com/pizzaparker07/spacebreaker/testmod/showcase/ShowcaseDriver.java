@@ -58,6 +58,12 @@ public final class ShowcaseDriver {
     /** -PmainHand=left and -PattackIndicator=hotbar|crosshair|off: player options that move HUD elements. */
     private static final String MAIN_HAND = System.getProperty("spacebreaker.mainHand", "");
     private static final String ATTACK_INDICATOR = System.getProperty("spacebreaker.attackIndicator", "");
+    /**
+     * Burst mode, for frame-by-frame sequences of a moving scene (a flight through a change of dimension): a "stay" shot
+     * is taken after exactly its minTicks, without waiting for terrain, and without closing the screen that is open (a
+     * transition screen is part of what is filmed). Set by a scenario's shot setup.
+     */
+    public static volatile boolean burst;
     private static boolean retreating;
     private static int savedRenderDistance;
     private static final String WORLD = "sb_showcase";
@@ -180,7 +186,9 @@ public final class ShowcaseDriver {
         }
         Shot shot = shots.get(shotIndex);
         if (!shotApplied) {
-            mc.setScreen(null);
+            if (!(burst && shot.stays())) {
+                mc.setScreen(null);
+            }
             if (!MAIN_HAND.isEmpty()) {
                 mc.options.mainHand().set(MAIN_HAND.equalsIgnoreCase("left")
                         ? net.minecraft.world.entity.HumanoidArm.LEFT : net.minecraft.world.entity.HumanoidArm.RIGHT);
@@ -261,7 +269,8 @@ public final class ShowcaseDriver {
             }
             return;
         }
-        boolean ready = ticks >= shot.minTicks() && mc.levelRenderer.hasRenderedAllSections() && terrainLoaded(mc);
+        boolean ready = burst && shot.stays() ? ticks >= shot.minTicks()
+                : ticks >= shot.minTicks() && mc.levelRenderer.hasRenderedAllSections() && terrainLoaded(mc);
         if (ready && !QaUiProbe.finished(mc, shot.name())) {
             return; // QA screen probe: tooltips on this shot's screen first
         }

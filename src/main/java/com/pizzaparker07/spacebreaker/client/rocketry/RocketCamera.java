@@ -51,9 +51,15 @@ public final class RocketCamera {
     static void tick(ClientTickEvent.Post event) {
         Minecraft mc = Minecraft.getInstance();
         RocketEntity rocket = RocketHud.ridden();
+        if (TransitView.handingOver() && rocket == null) {
+            return; // between dimensions: the same flight goes on, keep the camera as it is
+        }
         if (rocket != null && rocket.getId() != riddenId) {
+            boolean sameFlight = TransitView.handingOver() && zoom > 0;
             riddenId = rocket.getId();
-            zoom = distanceFor(rocket.geometry().height() / 16.0);
+            if (!sameFlight) {
+                zoom = distanceFor(rocket.geometry().height() / 16.0);
+            }
             if (enabled() && before == null) {
                 before = mc.options.getCameraType();
                 mc.options.setCameraType(CameraType.THIRD_PERSON_BACK);
@@ -84,7 +90,7 @@ public final class RocketCamera {
 
     @SubscribeEvent
     static void distance(CalculateDetachedCameraDistanceEvent event) {
-        if (RocketHud.ridden() != null && zoom > 0) {
+        if ((RocketHud.ridden() != null || TransitView.ghost()) && zoom > 0) {
             event.setDistance(zoom);
         }
     }

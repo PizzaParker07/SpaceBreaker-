@@ -1133,6 +1133,7 @@
   "hud.spacebreaker.state.reentry": "Atmosfere giriş",
   "hud.spacebreaker.state.transfer": "Süzülüş",
   "hud.spacebreaker.tether": "HALAT",
+  "hud.spacebreaker.time_warp": "⏩ zaman ×%s",
   "hud.spacebreaker.warn.cant_make_it": "GERİ DÖNMEYE O2 YETMİYOR",
   "hud.spacebreaker.warn.cold": "HİPOTERMİ",
   "hud.spacebreaker.warn.cold_trap": "SOĞUK TUZAK: GİYSİ DAYANIMI AŞILDI",

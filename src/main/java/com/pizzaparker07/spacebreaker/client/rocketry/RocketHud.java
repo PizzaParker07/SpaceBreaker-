@@ -66,6 +66,16 @@ public final class RocketHud {
                 int bw = 100;
                 g.fill(w / 2 - bw / 2, 14, w / 2 + bw / 2, 15, (int) (a * 0x40) << 24 | 0xFFFFFF);
                 g.fill(w / 2 - bw / 2, 14, w / 2 - bw / 2 + (int) (bw * p), 15, (int) (a * 0xC0) << 24 | 0xFFFFFF);
+                // the coast takes days: say how fast time runs while it passes in a few seconds
+                Location dest = rocket.destination();
+                if (dest != null && !dest.body().equals(rocket.location().body())) {
+                    double warp = com.pizzaparker07.spacebreaker.content.rocketry.nav.Transfers.coastSeconds(rocket.location(), dest)
+                            / (RocketEntity.TRANSFER_TICKS / 20.0);
+                    if (warp > 1.5) {
+                        Component label = Component.translatable("hud.spacebreaker.time_warp", com.pizzaparker07.spacebreaker.content.rocketry.item.Fmt.num(warp));
+                        g.drawCenteredString(mc.font, label, w / 2, 18, (int) (a * 0xD0) << 24 | 0xBFD8FF);
+                    }
+                }
             }
         }
         if (mc.level != null) {
