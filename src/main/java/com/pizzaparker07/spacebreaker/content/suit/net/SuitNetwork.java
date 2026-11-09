@@ -9,6 +9,29 @@ public final class SuitNetwork {
     private SuitNetwork() {
     }
 
+    /**
+     * Sends a suit payload to a player only when their client has the channel: a client without the mod (or an
+     * older one) can join a server running it, and a payload it does not know would disconnect it.
+     */
+    public static void send(net.minecraft.server.level.ServerPlayer player, net.minecraft.network.protocol.common.custom.CustomPacketPayload payload) {
+        if (player.connection != null && player.connection.hasChannel(payload.type())) {
+            net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(player, payload);
+        }
+    }
+
+    /**
+     * Sends a payload about {@code subject} to the subject and to every player in the same world close enough to see
+     * them, each only when their client has the channel (the tracking broadcast does not check it per player).
+     */
+    public static void sendNearAndSelf(net.minecraft.server.level.ServerPlayer subject, net.minecraft.network.protocol.common.custom.CustomPacketPayload payload) {
+        double range = net.minecraft.world.entity.EntityType.PLAYER.clientTrackingRange() * 16.0;
+        for (net.minecraft.server.level.ServerPlayer other : subject.serverLevel().players()) {
+            if (other == subject || other.distanceToSqr(subject) <= range * range) {
+                send(other, payload);
+            }
+        }
+    }
+
     // Client-side handlers of the play-to-client payloads, set by client.suit.SuitClient at client setup. Common code
     // names no client class, so nothing client-only can be resolved on a dedicated server (there these stay no-ops).
     public static java.util.function.BiConsumer<SuitStatusPayload, Long> onSuitStatus = (payload, gameTime) -> { };

@@ -58,7 +58,9 @@ public final class BlockyBodyRenderer {
             if (style != BlockyBodyMesh.Style.CUBE) {
                 return rotation();
             }
-            Matrix3f r = rotation();
+            // a cube always turns its tipped corner toward the camera (at the origin), whatever the pose's facing, so a
+            // small cube far away shows three faces, never one flat square
+            Matrix3f r = new Pose(center, radius, pole, new Vector3f(center).negate(), spin).rotation();
             r.mul(new Matrix3f().rotationY(spin)).mul(new Matrix3f().rotationX(CUBE_TILT)).mul(new Matrix3f().rotationY(-spin + (float) Math.PI / 4));
             return r;
         }
@@ -66,7 +68,9 @@ public final class BlockyBodyRenderer {
         /** {@link #rotation(BlockyBodyMesh.Style)} written into {@code dest}, allocating nothing (render thread only). */
         Matrix3f rotationInto(BlockyBodyMesh.Style style, Matrix3f dest) {
             Vector3f y = S_Y.set(pole).normalize();
-            Vector3f z = S_Z.set(facing).sub(S_T.set(y).mul(y.dot(facing)));
+            // a cube faces the camera (see rotation(style)); other styles keep the pose's facing
+            Vector3f f = style == BlockyBodyMesh.Style.CUBE ? S_F.set(center).negate() : facing;
+            Vector3f z = S_Z.set(f).sub(S_T.set(y).mul(y.dot(f)));
             if (z.lengthSquared() < 1e-8F) {
                 z.set(Math.abs(y.x) < 0.9F ? 1 : 0, 0, Math.abs(y.x) < 0.9F ? 0 : 1);
                 z.sub(S_T.set(y).mul(y.dot(z)));
@@ -109,7 +113,7 @@ public final class BlockyBodyRenderer {
     }
 
     // scratch for the every-frame path (render thread only), so drawing a cached body allocates nothing
-    private static final Vector3f S_X = new Vector3f(), S_Y = new Vector3f(), S_Z = new Vector3f(), S_T = new Vector3f();
+    private static final Vector3f S_X = new Vector3f(), S_Y = new Vector3f(), S_Z = new Vector3f(), S_T = new Vector3f(), S_F = new Vector3f();
     private static final Matrix3f S_M = new Matrix3f(), S_ROT = new Matrix3f(), S_ROT_T = new Matrix3f();
     private static final Vector3f S_LOOK = new Vector3f(), S_UP = new Vector3f(), S_RIGHT = new Vector3f();
     private static final Vector3f S_SUN_B = new Vector3f(), S_LOOK_B = new Vector3f(), S_UP_B = new Vector3f(), S_RIGHT_B = new Vector3f(),
@@ -410,8 +414,11 @@ public final class BlockyBodyRenderer {
             render(pose, style, n, map, body, sun, night, tint, alpha, ring, null);
             return;
         }
+        // a cube that has (mostly) turned into its ball of blocks gets a ball-shaped shell too
+        BlockyBodyMesh.Style shellStyle = style == BlockyBodyMesh.Style.CUBE && cubeToBall(body, n == APPROACH) >= 0.5F
+                ? BlockyBodyMesh.Style.VOXEL : style;
         // the body's own block size, so the shell's steps line up with the body's
-        int level = n > 0 ? n : lod(map, style, body, n == APPROACH ? LEVELS[LEVELS.length - 1] : SKY_MAX).current;
+        int level = n > 0 ? n : lod(map, shellStyle, body, n == APPROACH ? LEVELS[LEVELS.length - 1] : SKY_MAX).current;
         ColorMap shell = AIR_MAPS.computeIfAbsent(air, BlockyBodyRenderer::flat);
         float grow = 2.2F / level; // one cell (a cell is 2 radii / level across) and a hair, so the shell clears the body's corners
         Pose halo = new Pose(body.center(), body.radius() * (1 + grow), body.pole(), body.facing(), body.spin());
@@ -419,10 +426,10 @@ public final class BlockyBodyRenderer {
         try {
             if (glow > 0.01F) {
                 Pose outer = new Pose(body.center(), body.radius() * (1 + grow * 1.7F), body.pole(), body.facing(), body.spin());
-                render(pose, style, level, AIR_MAPS.computeIfAbsent(glowRgb, BlockyBodyRenderer::flat), outer, sun, 1F, 1F,
+                render(pose, shellStyle, level, AIR_MAPS.computeIfAbsent(glowRgb, BlockyBodyRenderer::flat), outer, sun, 1F, 1F,
                         alpha * Math.min(1F, glow), null, null);
             }
-            render(pose, style, level, shell, halo, sun, AIR_SHELL_NIGHT, Math.min(1F, tint), alpha * AIR_LIMB_ALPHA, null, null);
+            render(pose, shellStyle, level, shell, halo, sun, AIR_SHELL_NIGHT, Math.min(1F, tint), alpha * AIR_LIMB_ALPHA, null, null);
         } finally {
             shellPass = false;
         }
@@ -523,6 +530,13 @@ public final class BlockyBodyRenderer {
     /** Angular radius (radians) where a cube planet starts to give way to the ball of blocks as it nears, and where it is gone. */
     static final float CUBE_TO_BALL_FROM = 0.66F;
     static final float CUBE_TO_BALL_FULL = 0.85F;
+    /**
+     * The same for a body flown up to ({@link #APPROACH}: a transfer, an arrival): a face of a growing cube turned to the
+     * camera reads as a huge flat slab cutting the horizon, so there the ball takes over early, between about 11 and 20
+     * degrees.
+     */
+    static final float APPROACH_CUBE_TO_BALL_FROM = 0.19F;
+    static final float APPROACH_CUBE_TO_BALL_FULL = 0.35F;
     /** Set while a cube is drawn: cubes keep the flat depth of a small body at any size (no funnel-like perspective). */
     private static boolean flatCube;
 
@@ -532,16 +546,18 @@ public final class BlockyBodyRenderer {
      * camera would be over or inside one face of a huge box, so it becomes the ball of blocks with its fine surface
      * patch, the way the PIXEL style turns into its sphere.
      */
-    static float cubeToBall(Pose body) {
+    static float cubeToBall(Pose body, boolean approach) {
         float ang = (float) Math.asin(Math.min(1F, body.radius() / Math.max(1e-3F, body.center().length())));
-        float t = Mth.clamp((ang - CUBE_TO_BALL_FROM) / (CUBE_TO_BALL_FULL - CUBE_TO_BALL_FROM), 0F, 1F);
+        float from = approach ? APPROACH_CUBE_TO_BALL_FROM : CUBE_TO_BALL_FROM;
+        float full = approach ? APPROACH_CUBE_TO_BALL_FULL : CUBE_TO_BALL_FULL;
+        float t = Mth.clamp((ang - from) / (full - from), 0F, 1F);
         return t * t * (3 - 2 * t);
     }
 
     private static void renderBody(Matrix4f pose, BlockyBodyMesh.Style style, int n, ColorMap map, Pose body, Vector3f sun, float night,
                                    float tint, float alpha, Ring ring, Vector3f viewDir) {
         if (viewDir == null && style == BlockyBodyMesh.Style.CUBE) {
-            float ball = cubeToBall(body);
+            float ball = cubeToBall(body, n == APPROACH);
             if (ball > 0F) {
                 // close in: the ball of blocks underneath, the cube fading out over it
                 renderBody(pose, BlockyBodyMesh.Style.VOXEL, n, map, body, sun, night, tint, alpha, ring, null);
@@ -646,12 +662,15 @@ public final class BlockyBodyRenderer {
 
     private static final class Patch {
         final float halfAngle;
+        /** Middle of the patch on the unit sphere, body frame. */
+        final Vector3f centre;
         final Cached buffer = new Cached();
         volatile List<BlockyBodyMesh.Face> faces;
         volatile int[] colours;
 
-        Patch(float halfAngle) {
+        Patch(float halfAngle, Vector3f centre) {
             this.halfAngle = halfAngle;
+            this.centre = centre;
         }
     }
 
@@ -709,10 +728,10 @@ public final class BlockyBodyRenderer {
         }
         Patch patch = PATCHES.get(key);
         if (patch == null) {
-            Patch p = new Patch(half * 1.2F);
+            Vector3f centre = new Vector3f(qx, qy, qz).div(q).normalize();
+            Patch p = new Patch(half * 1.2F, centre);
             PATCHES.put(key, p);
             patch = p;
-            Vector3f centre = new Vector3f(qx, qy, qz).div(q).normalize();
             int size = n;
             java.util.concurrent.CompletableFuture.runAsync(() -> {
                 List<BlockyBodyMesh.Face> faces = BlockyBodyMesh.patch(size, centre, p.halfAngle);
@@ -721,10 +740,12 @@ public final class BlockyBodyRenderer {
             });
         }
         if (patch.faces == null) {
-            // still building: keep showing the last finished patch if there is one
+            // still building: keep showing the last finished patch, but only while it still covers everything in view
+            // (when the size changes fast, an old patch is too small or off to one side); otherwise draw the body at its
+            // fixed finest level until the new patch is ready
             PatchKey last = LAST_PATCH.get(map);
             patch = last == null ? null : PATCHES.get(last);
-            if (patch == null || patch.faces == null) {
+            if (patch == null || patch.faces == null || !covers(patch, toward, half)) {
                 return false;
             }
             key = last;
@@ -732,6 +753,12 @@ public final class BlockyBodyRenderer {
         LAST_PATCH.put(map, key);
         drawFaces(pose, patch.buffer, patch.faces, patch.colours, body, rot, sun, night, tint, alpha, null, false);
         return true;
+    }
+
+    /** Whether a built patch covers the cap of {@code half} radians round {@code toward} (body frame, unit). */
+    private static boolean covers(Patch patch, Vector3f toward, float half) {
+        float off = (float) Math.acos(Mth.clamp(patch.centre.dot(toward), -1F, 1F));
+        return off + half <= patch.halfAngle;
     }
 
     /** The resolution to draw a body at, stepping up as it grows on screen and fading between steps. */

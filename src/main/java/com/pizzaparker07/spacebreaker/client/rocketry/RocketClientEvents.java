@@ -47,10 +47,11 @@ public final class RocketClientEvents {
         if (ridden != null) {
             TransitView.update(ridden);
         }
+        SpaceView.tickLods();
         if (TransitView.active() && TransitView.holding() && !(mc.screen instanceof TransitScreen)) {
             // the new dimension is on screen: fade the view out into it once the crew is back in the seat
             // (the passenger follows the rocket a few ticks later), or after two seconds in any case
-            if (ridden != null || ++unseated > 40) {
+            if (ridden != null && TransitView.drawable(ridden) || ++unseated > 60) {
                 unseated = 0;
                 TransitView.arrived();
             }
@@ -308,16 +309,18 @@ public final class RocketClientEvents {
     private static final float CLOUDS_GONE = 0.1F;
 
     /** The air thins: the fog draws back with altitude and is gone well before the sky turns black. */
-    @SubscribeEvent
+    // last, and also after a world's own fog handler has claimed the event: high up the far ground is the ball, with
+    // no band of fog between it and the terrain
+    @SubscribeEvent(priority = net.neoforged.bus.api.EventPriority.LOWEST, receiveCanceled = true)
     static void fogDistance(ViewportEvent.RenderFog event) {
         if (event.getMode() == net.minecraft.client.renderer.FogRenderer.FogMode.FOG_TERRAIN) {
             SpaceView.terrainFog(event.getFarPlaneDistance(), event.getFogShape() == com.mojang.blaze3d.shaders.FogShape.SPHERE);
         }
         float k = spaceFactor();
-        if (k <= 0) {
+        float clear = SpaceView.clearAir(k);
+        if (clear <= 0 || SpaceView.off("fog")) {
             return;
         }
-        float clear = Mth.clamp(k / 0.3F, 0, 1);
         event.setFarPlaneDistance(event.getFarPlaneDistance() * (1 + 30 * clear));
         event.setNearPlaneDistance(event.getNearPlaneDistance() * (1 + 30 * clear));
         event.setCanceled(true);
@@ -327,7 +330,7 @@ public final class RocketClientEvents {
     static void fog(ViewportEvent.ComputeFogColor event) {
         // the horizon turns a clear, saturated blue as the air thins (never grey), then fades to black at the top
         float f = spaceFactor();
-        if (f <= 0) {
+        if (f <= 0 || SpaceView.off("fogColour")) {
             return;
         }
         var here = SpaceView.surface(Minecraft.getInstance().level);

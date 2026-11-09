@@ -95,29 +95,45 @@ public final class ParachuteRenderer {
         float k = ease(landed / COLLAPSE);
         float full = 2.1F * capsuleWidth;
         float lineLen = lineLength(capsuleWidth);
-        // the canopy's centre travels from above the capsule to the ground beside it, tipping onto its side
-        float side = Mth.lerp(k, 0F, lineLen * 0.9F + full * 0.6F);
-        float height = Mth.lerp(k, top + lineLen, 0.15F);
-        float r = full * Mth.lerp(k, 1F, 1.15F);
-        float depth = full * Mth.lerp(k, 0.55F, 0.06F);
+        float r = full * Mth.lerp(k, 1F, 1.1F);
+        // on the ground the canopy lies stretched downwind with its near edge over the capsule
+        float side = Mth.lerp(k, 0F, r * 1.75F);
+        float height = Mth.lerp(k, top + lineLen, 0.12F);
+        float depth = full * Mth.lerp(k, 0.55F, 0.08F);
         pose.pushPose();
         pose.translate(side, height, 0);
-        // it leans downwind as it goes, then settles flat on the ground
-        float lean = k < 0.6F ? Mth.lerp(k / 0.6F, 0F, 35F) : Mth.lerp((k - 0.6F) / 0.4F, 35F, 4F);
+        // it leans downwind as it goes, then settles on the ground
+        float lean = k < 0.6F ? Mth.lerp(k / 0.6F, 0F, 35F) : Mth.lerp((k - 0.6F) / 0.4F, 35F, 3F);
         pose.mulPose(Axis.ZP.rotationDegrees(-lean));
+        crumple = k;
+        drapeX = -side;
+        drapeTop = top - height;
+        drapeRadius = capsuleWidth * 0.6F;
         canopy(pose, vc, sprite, 0, 0, 0, r, depth, time * (1F - k), light, 1F);
+        crumple = 0F;
         pose.popPose();
-        // slack lines from the capsule to the skirt's near edge
-        float skirtX = side - r * 0.2F * k, skirtY = Mth.lerp(k, top + lineLen, 0.1F);
-        for (int i = 0; i < 6; i++) {
-            float a = (float) (i * Math.PI / 3);
-            float sag = 0.6F * k;
-            line(pose, vc, sprite, Mth.cos(a) * capsuleWidth * 0.3F, top, Mth.sin(a) * capsuleWidth * 0.3F,
-                    (skirtX + Mth.cos(a) * r * 0.25F * (1 - k)) * 0.5F, (top + skirtY) * 0.5F - sag, Mth.sin(a) * r * 0.3F * 0.5F, light);
-            line(pose, vc, sprite, (skirtX + Mth.cos(a) * r * 0.25F * (1 - k)) * 0.5F, (top + skirtY) * 0.5F - sag, Mth.sin(a) * r * 0.3F * 0.5F,
-                    skirtX, skirtY, Mth.sin(a) * r * 0.3F, light);
+        // slack lines: from the capsule's top they sag to the ground in loose curves and run out to the near skirt
+        for (int i = 0; i < 8; i++) {
+            float a = (float) (i * Math.PI / 4);
+            float x0 = Mth.cos(a) * capsuleWidth * 0.3F, z0 = Mth.sin(a) * capsuleWidth * 0.3F;
+            float x3 = Mth.lerp(k, Mth.cos(a) * r, side - r * 0.9F), z3 = Mth.lerp(k, Mth.sin(a) * r, Mth.sin(a) * r * 0.55F);
+            float y3 = Mth.lerp(k, top + lineLen, 0.1F + 0.15F * Mth.sin(a * 3F) * k);
+            float px = x0, py = top, pz = z0;
+            for (int seg = 1; seg <= 4; seg++) {
+                float f = seg / 4F;
+                float sag = k * (0.9F * Mth.sin(f * Mth.PI) + 0.25F * Mth.sin(f * 9F + i));
+                float wiggle = k * 0.35F * Mth.sin(f * 6F + i * 1.7F);
+                float nx = Mth.lerp(f, x0, x3) + wiggle * 0.3F, ny = Math.max(0.05F, Mth.lerp(f, top, y3) - sag), nz = Mth.lerp(f, z0, z3) + wiggle;
+                line(pose, vc, sprite, px, py, pz, nx, ny, nz, light);
+                px = nx;
+                py = ny;
+                pz = nz;
+            }
         }
     }
+
+    /** While a canopy lies on the ground: how crumpled it is (0..1), and where the capsule is under its near edge. */
+    private static float crumple, drapeX, drapeTop, drapeRadius;
 
     private static TextureAtlasSprite sprite() {
         return Minecraft.getInstance().getBlockRenderer().getBlockModelShaper().getParticleIcon(Blocks.WHITE_CONCRETE.defaultBlockState());
@@ -150,10 +166,25 @@ public final class ParachuteRenderer {
 
     /** A point of the dome: angle round, p from skirt (0) to apex (1). */
     private static float[] dome(float a, float p, float r, float depth, float flutter) {
-        float rr = (r + flutter) * Mth.cos(p * Mth.HALF_PI) ;
+        float c = crumple;
+        float rr = (r + flutter) * Mth.cos(p * Mth.HALF_PI) * (1F + c * 0.12F * Mth.sin(5F * a + 2.3F));
         float yy = depth * Mth.sin(p * Mth.HALF_PI);
-        // gores bulge between the lines a little
-        return new float[]{Mth.cos(a) * rr, yy, Mth.sin(a) * rr};
+        float x = Mth.cos(a) * rr, z = Mth.sin(a) * rr;
+        if (c > 0F) {
+            // a spent canopy: drawn out downwind, narrower across, in folds, with the skirt lifted here and there
+            x *= 1F + 0.45F * c;
+            z *= 1F - 0.3F * c;
+            yy += c * r * ((0.09F * Mth.sin(6F * a + 1.1F) + 0.05F * Mth.sin(11F * a + p * 7F)) * (1F - 0.5F * p)
+                    + 0.12F * Math.max(0F, Mth.sin(3F * a + 0.7F)) * (1F - p));
+            // the near edge rests on the capsule
+            // only the skirt's near edge reaches it
+            float over = 1F - Math.min(1F, Math.abs(x - drapeX) / Math.max(0.01F, drapeRadius * 1.3F));
+            if (over > 0F && p < 0.35F) {
+                yy = Math.max(yy, c * drapeTop * over * (1F - p / 0.35F));
+            }
+            yy = Math.max(0.02F, yy);
+        }
+        return new float[]{x, yy, z};
     }
 
     /** Suspension lines from a ring on the capsule top to the skirt. */

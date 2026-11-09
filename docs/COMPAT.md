@@ -76,7 +76,7 @@ follow the Sun, which only the Overworld programs give. So we keep the Overworld
 | `client/HazePass` | **thick and dusty air.** Packs ignore vanilla fog and the light map, so Venus was a bright beige desert. At `AFTER_SOLID_BLOCKS` the terrain fog the world set up this frame is captured (start, end, shape, colour — after every mod's `ViewportEvent` fog handlers); the world's own `adjustLightmapColors` gives its full-daylight colour. After the pack's final pass (and after the sky pass) the depth buffer is copied (`glCopyTexSubImage2D`, avoids a feedback loop and converts formats) and the core shader `spacebreaker:compat_haze` applies `frame * tint * (1 - f) + fog * f` to scene pixels only (two blended draws). Thick atmospheres get haze + tint; thin ones (Mars) get haze only while their fog is closer than 80 % of the render distance (dust storms). Generic: Titan or any new world uses its own fog and light map. |
 | dawn white balance (`HazePass.dawnBalance`) | packs colour sunlight by the sun's height as if it shone through Earth's air, so the Moon and Mercury turned orange/pink at sunrise and sunset. Packs take the height from vanilla's sun angle; from the same angle the pass pulls red and green back toward blue on scene pixels of airless worlds (up to −42 % / −18 % at the horizon, nothing above ~40° or at night). A multiply can only darken, which suits a grazing sun. Checked with Complementary on the Moon and Mercury. |
 | `mixin/iris/PackCloudsMixin` | `DimensionSpecialEffects.getCloudHeight` → 25000 in space worlds while a pack is active. Iris passes it as `cloudHeight`; pack clouds move beyond their draw distance (no clouds in front of distant terrain, no cloud shadows). Our sky effects draw clouds themselves, vanilla never reads it there. |
-| `mixin/iris/PackAmbientMixin` | `ClientLevel.getSkyColor` → a cool fill in airless worlds while a pack is active (Iris passes it as `skyColor`). Packs use it differently: Complementary adds `pow(skyColor, 0.75)` to a warm, atmosphere-filtered sun and needs (0.20, 0.30, 0.72) to bring grey regolith back to neutral; MakeUp mixes 60 % of it into an already neutral ambient, so other packs get a moderate (0.20, 0.27, 0.55); BSL ignores it. The pack family is read from Iris's current pack name (internal method, by reflection; unknown → moderate value). Mars keeps its biome sky colour (butterscotch fill is right there). |
+| `mixin/iris/PackAmbientMixin` | `ClientLevel.getSkyColor` → a cool fill in airless worlds while a pack is active (Iris passes it as `skyColor`). Packs use it differently: Complementary adds `pow(skyColor, 0.75)` to a warm, atmosphere-filtered sun and needs (0.20, 0.30, 0.72) to bring grey regolith back to neutral; MakeUp mixes 60 % of it into an already neutral ambient, so other packs get a near-neutral (0.20, 0.23, 0.32); BSL ignores it. The pack family is read from Iris's current pack name (internal method, by reflection; unknown → moderate value). Mars keeps its biome sky colour (butterscotch fill is right there). |
 | `mixin/ClientWeatherMixin` | client-side `getRainLevel` / `getThunderLevel` = 0 in space worlds (always, with or without Iris). Server-side weather is untouched. |
 | `CompatMixinPlugin` | the `iris.*` mixins are only applied when Iris (or Oculus) is installed: without it the game runs the exact vanilla code paths. |
 | `client/ShaderState` | Iris is reached only through its public API `net.irisshaders.iris.api.v0.IrisApi` (`isShaderPackInUse`) by reflection. |
@@ -86,6 +86,8 @@ follow the Sun, which only the Overworld programs give. So we keep the Overworld
 | `client/InfoOverlayDepth` | with Jade or WTHIT installed, clears the GUI depth before their box is drawn, so it is never hidden behind our HUD layers. |
 | `client/ClippedLines` | outline boxes cut just in front of the camera: Iris's line programs stretch an edge that runs behind the camera across the view. |
 | `client/LodDepth` | Distant Horizons' depth texture through its API, so the sky and haze passes keep LOD terrain. |
+| `ShaderSkyPass.spaceView` | a hook (default off) for features that turn a vanilla-sky world's sky into space for a while (rocketry's seamless ascent and descent on Earth): while it answers true, the pack's sky and clouds are replaced there as in our space worlds, so the climb ends in the same sky the orbit shows. |
+| `client/DhCompat` | what Distant Horizons draws, by reflection: `active()`, `lodReachBlocks()` (its LOD distance), `curvatureRatio()` (its earth curvature setting), `lodUnder(x, z)` (LOD data in that column), `hideLods(boolean)` and `hideFog(boolean)` hold DH's LOD pass and its fog pass back by cancelling DH's before-render and before-fog events (`DhRenderGate`, `DhFogGate`, compiled against DH but loaded only when it is there), lifted on logout. No DH setting is touched. **Do not override DH's `renderingEnabled` through its config API:** in DH 3.3 that setting is linked to its quick render toggle, whose listener saves the override to `config/DistantHorizons.toml` (`rendererMode = "DISABLED"`), so a player's LODs stayed off for good after one rocket flight (found by the integrator, b302218e and earlier). Cancelling the before-render event is what DH itself does for dimensions the player told it to ignore. Verified by the integrator on f08bce96 with DH 3.3.3 (whole 69+70 flight): `rendererMode` stays `DEFAULT` after the run, DH is seen (LOD reach 4096 blocks), the sky wedge and band are gone, and DH's fog is off in space worlds (black Moon sky). The state is read again every game tick, and at the latest every quarter second or on a world change (DH's API objects appear only after its start-up; game time can stand still); the first reading in a world is logged once ("Distant Horizons seen: …"). Every reason it reports DH as off is logged once as an INFO line starting "DH state:" (not in the mod list or classes not visible, `Delayed.configs` still null, the rendering switch's value and type). DH's classes are taken from the class loader of its NeoForge entry class. In airless worlds (orbits, the Moon) DH's fog is always held back (it would paint them with the Overworld's haze), on top of what `hideFog` asks for; a client tick keeps this current. The curvature and terrain-data parts are looked up separately, so one a DH version lacks only switches off what needs it. For effects that hand the ground over high up (the seamless ascent's planet ball): DH draws its LODs after our terrain passes wherever the depth is still far, so far LOD ground shows around a ball that only covers the normal terrain. |
 
 Full-screen effects and HUDs stay in the GUI layer (drawn on top of the pack's final frame) — unchanged.
 
@@ -438,6 +440,38 @@ environment; the plugins compile against both APIs and the line itself is covere
   see-through parts and are not lost against the sky; the gas giants' air shells and night sides look as without
   shaders. Only the pack's lighting differs (warmer ground, real shadows, a blue ambient on night sides and indoors).
   `round2_creatures_worlds_vanilla_vs_iris.jpg` (pairs, vanilla left).
+- **Seamless ascent and descent (rocketry 161755c9, 2026-11-09):** whole flights in burst mode (69_flight, 70_transfer)
+  under vanilla, Sodium, Complementary, BSL and MakeUp. The Earth is a vanilla-sky world, so the packs kept their sky
+  and clouds during the climb: a sharp light-blue wedge in Complementary and BSL (the sky gradient's cube through the
+  pack's sky program), and no darkening at all in MakeUp, so the climb did not end in the orbit's sky. With the
+  `ShaderSkyPass.spaceView` hook wired to `SpaceView.factor() > 0.02` the pack's sky and clouds are replaced as soon as
+  the view starts to leave the ground: no wedge, black sky with stars in all three packs, the cut to orbit lines up
+  (`seamless_ascent_packs_before_after.jpg`; columns vanilla, Complementary before/after, BSL before/after, MakeUp
+  before/after). Left with Complementary: the planet ball looks pale blue for part of the climb (its pixels keep the
+  far terrain's depth, which the pack fogs). A one-frame tilted slab at the first ground hand-over frame appears
+  without shaders too (`seamless_vanilla_slab_024.jpg`, rocketry). With a pack the client is much slower than the
+  server, so burst frames land on other moments of the flight than in vanilla.
+- **Seamless ascent, rocketry 385c819f (2026-11-09):** the space sky takes over under a pack only once the ball covers
+  the far ground (`factor() > 0.6 || ball > 0.5`), and the ball leaves the far depth where it covers the ground. In
+  all three packs: no black frames and no pale, fogged ball any more; the hand-over is a cut from the pack's hazy sky
+  (the ball showing faintly through it) to black sky with stars (`seamless_385c819f_packs_handover.jpg`; rows
+  Complementary, BSL, MakeUp, the last pack-sky frame and the two after it). Still open, with packs only (not in
+  vanilla or Sodium, already in e17f02a5): for about six burst frames after the take-over a thin, stepped
+  horizontal line in sky and green tints crosses the whole view near a quarter of its height, drifting down slowly.
+  Isolated with `SB_SPACEVIEW_OFF` (Complementary, frames 16-19; rows gradient off, overTerrain off, ball off):
+  the line goes only with the gradient off, so it belongs to the sky gradient's horizon band
+  (`seamless_385c819f_line_isolation.jpg`; reported to rocketry).
+  Fixed in rocketry b415c1aa (with a pack the gradient's horizon alpha equals the sky above it): no line in any of 40
+  Complementary frames, the sky darkens evenly to navy and then black (`seamless_b415c1aa_complementary.jpg`, frames
+  15-22). Left, minor: in the last frame under the pack's own sky the ball shows through the haze as pale overlapping
+  slabs (gone with `SB_SPACEVIEW_OFF=ball`, see the isolation image).
+  Fixed in rocketry 315a4107 (under a pack the ball comes with the hand-over): a clean cut from the pack's hazy sky
+  to the space view, no slabs, no line, no dark frame in 40 Complementary frames
+  (`seamless_315a4107_complementary.jpg`, frames 13-20).
+- **MakeUp on the Moon:** the airless ambient handed to packs other than Complementary was (0.20, 0.27, 0.55); MakeUp
+  mixes it into its own ambient strongly enough that the Moon turned lilac, most of all at a low sun (seamless
+  landing frames). Now (0.20, 0.23, 0.32): near-neutral grey by day, shadows a little cool
+  (`makeup_moon_ambient_before_after.jpg`, before left). Complementary keeps its own value; BSL ignores it.
 - **Outline boxes (`RenderType.lines()`):** Iris's line programs widen each segment in screen space, so an edge
   that runs behind the camera becomes a large flat quad across the view (seen as a lavender square over the station
   core while holding a docking module: the outline reaches back past the player). `compat.client.ClippedLines` cuts

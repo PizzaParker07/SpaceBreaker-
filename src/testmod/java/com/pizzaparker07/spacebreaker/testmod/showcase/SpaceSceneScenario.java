@@ -62,6 +62,14 @@ final class SpaceSceneScenario implements ShowcaseScenario {
             Vector3d cam = new Vector3d(m).sub(e).mul(0.5).add(e).add(0, er * 0.5, 0);
             return new Vector3d[]{cam, m};
         }));
+        // 3b, 3c: the Moon still small on the way in (a few degrees across): a cube with a lit top and two shaded sides
+        for (double far : new double[]{25, 10}) {
+            s.add(nearMoon(far > 20 ? "03b_moon_far" : "03c_moon_mid", (e, er, m, mr, sun) -> {
+                Vector3d back = new Vector3d(e).sub(m).normalize();
+                Vector3d cam = new Vector3d(back).add(new Vector3d(sun).mul(0.8)).normalize().mul(mr * far).add(m).add(0, mr * 0.6, 0);
+                return new Vector3d[]{cam, m};
+            }));
+        }
         // 4: closing in on the Moon: finer blocks
         s.add(nearMoon("04_near_the_moon", (e, er, m, mr, sun) -> {
             Vector3d back = new Vector3d(e).sub(m).normalize();

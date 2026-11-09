@@ -46,7 +46,7 @@ public class SpentStageEntity extends Entity implements IEntityWithComplexSpawn 
         e.spin = (level.random.nextFloat() - 0.5F) * 2.2F;
         e.moveTo(pos.x, pos.y, pos.z, level.random.nextFloat() * 360F, 0);
         // a small push away from the rocket so separation reads clearly
-        e.setDeltaMovement(inOrbit ? new Vec3(0.02, -0.06, 0.03) : velocity.multiply(0.6, 0.6, 0.6).add(0, -0.05, 0));
+        e.setDeltaMovement(inOrbit ? velocity.add(0.02, -0.06, 0.03) : velocity.multiply(0.6, 0.6, 0.6).add(0, -0.05, 0));
         return e;
     }
 

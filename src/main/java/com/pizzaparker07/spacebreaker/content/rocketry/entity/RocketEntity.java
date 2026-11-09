@@ -390,6 +390,8 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
     /** Client only: whether this rocket was seen under parachutes, and the tick it touched down (for the collapsing canopy). */
     public transient boolean chuteSeen;
     public transient int chuteLandedAt = -1;
+    /** Client only: the last tick sparks were shed during entry. */
+    public transient int sparkTick = -1;
 
     @Override
     protected Vec3 getPassengerAttachmentPoint(Entity passenger, EntityDimensions dimensions, float partialTick) {
@@ -1339,8 +1341,10 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         Location dest = destination();
         if (t == 20 && dest != null && dest.isEarth() && !dest.orbit() && activeStage() < layout().stages().size()) {
             // coming home only the capsule re-enters: the stages separate here in orbit, in sight, not at the hand-over
+            // pushed apart gently, so they have drifted well away by the time the capsule leaves the orbit
             for (int s = activeStage(); s < layout().stages().size(); s++) {
-                spawnSpentStage(s, true);
+                double a = random.nextDouble() * Math.PI * 2;
+                spawnSpentStage(s, true, new Vec3(Math.cos(a) * 0.18, -0.12 - 0.05 * s, Math.sin(a) * 0.18));
             }
             setActiveStage(layout().stages().size());
             level().playSound(null, blockPosition(), com.pizzaparker07.spacebreaker.content.audio.SbSounds.ROCKET_STAGE_SEPARATION.get(), SoundSource.NEUTRAL, 3F, 1F);
@@ -1577,7 +1581,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
                 p.hurt(damageSources().onFire(), 3F);
             }
         }
-        if (level() instanceof ServerLevel sl && t % 2 == 0 && t < 150) {
+        if (level() instanceof ServerLevel sl && t % 2 == 0 && t < 100) {
             sl.sendParticles(ParticleTypes.FLAME, getX(), getY() - 0.2, getZ(), 6, 0.6, 0.1, 0.6, 0.02);
             sl.sendParticles(ParticleTypes.LARGE_SMOKE, getX(), getY() + 1.5, getZ(), 2, 0.4, 0.4, 0.4, 0.01);
         }
@@ -1628,6 +1632,11 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
     }
 
     private void spawnSpentStage(int stage, boolean inOrbit) {
+        spawnSpentStage(stage, inOrbit, Vec3.ZERO);
+    }
+
+    /** As above, the stage pushed off with this extra velocity (blocks per tick). */
+    private void spawnSpentStage(int stage, boolean inOrbit, Vec3 push) {
         if (!(level() instanceof ServerLevel sl)) {
             return;
         }
@@ -1639,7 +1648,7 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
                 break;
             }
         }
-        SpentStageEntity spent = SpentStageEntity.create(sl, design, stage, position().add(0, y, 0), getDeltaMovement(), tilt(), inOrbit);
+        SpentStageEntity spent = SpentStageEntity.create(sl, design, stage, position().add(0, y, 0), getDeltaMovement().add(push), tilt(), inOrbit);
         sl.addFreshEntity(spent);
     }
 

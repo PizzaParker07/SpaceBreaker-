@@ -177,8 +177,13 @@ public class OrbitSkyEffects extends DimensionSpecialEffects {
 
     /** As above with the body's centre in direction {@code dir} (unit) instead of straight down. */
     static void drawBodyBelow(Matrix4f modelView, ResourceLocation body, float angularDeg, float t, float lit, float alpha, int n, Vector3f dir) {
+        drawBodyBelow(modelView, body, angularDeg, t, lit, alpha, n, dir, sunDirection(t));
+    }
+
+    /** As above, lit by a sun in direction {@code sun} (unit; the orbit's own is {@link #sunDirection}). */
+    static void drawBodyBelow(Matrix4f modelView, ResourceLocation body, float angularDeg, float t, float lit, float alpha, int n, Vector3f dir,
+                              Vector3f sun) {
         float orbit = t / ORBIT_TICKS;
-        Vector3f sun = sunDirection(t);
         if (lit * alpha > 0.01F) {
             SkyDraw.billboard(modelView, SUN, sun, 100F, sunSize(body), lit * alpha);
         }
@@ -236,24 +241,32 @@ public class OrbitSkyEffects extends DimensionSpecialEffects {
             float p = Mth.clamp((rocket.timer() + partialTick) / com.pizzaparker07.spacebreaker.content.rocketry.entity.RocketEntity.TRANSFER_TICKS, 0, 1);
             // both balls at a fixed resolution while their size runs; the close-up patch again for the last stretch,
             // so the hand-over meets the destination's own orbit sky exactly
-            int fixed = 64;
-            if (p < 0.5F) {
-                float e = smooth(p / 0.45F);
-                drawBodyBelow(modelView, body, Mth.lerp(e, ORBIT_ANGULAR_RADIUS, 0.8F), t, lit, 1F - smooth((p - 0.4F) / 0.1F),
-                        p < 0.04F ? com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.APPROACH : fixed);
+            // the close-up patch copes with a changing size (it falls back to its finest fixed level while it rebuilds)
+            int fixed = com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.APPROACH;
+            var look = net.minecraft.client.Minecraft.getInstance().gameRenderer.getMainCamera().getLookVector();
+            float hl = Math.max(1e-3F, (float) Math.sqrt(look.x * look.x + look.z * look.z));
+            float lx = look.x / hl, lz = look.z / hl;
+            // the world left behind: it shrinks steadily and drifts off to one side, still in sight as a small ball
+            if (p < 0.72F) {
+                float e = smooth(p / 0.62F);
+                float size = (float) Math.toDegrees(Math.asin(Mth.lerp((float) Math.sqrt(e), Mth.sin(ORBIT_ANGULAR_RADIUS * Mth.DEG_TO_RAD),
+                        Mth.sin(1.6F * Mth.DEG_TO_RAD))));
+                float c = Mth.cos(0.9F), sn = Mth.sin(0.9F);
+                Vector3f aside = new Vector3f((lx * c - lz * sn) * 0.75F, -0.66F, (lz * c + lx * sn) * 0.75F).normalize();
+                Vector3f dir = new Vector3f(0, -1, 0).lerp(aside, smooth(p / 0.5F)).normalize();
+                drawBodyBelow(modelView, body, size, t, lit, 1F - smooth((p - 0.6F) / 0.12F),
+                        p < 0.03F ? com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.APPROACH : fixed, dir);
             }
-            if (p > 0.3F) {
-                float e = smooth((p - 0.3F) / 0.7F);
-                float size = (float) Math.toDegrees(Math.asin(Mth.lerp(e * e * e, Mth.sin(0.8F * Mth.DEG_TO_RAD), Mth.sin(ORBIT_ANGULAR_RADIUS * Mth.DEG_TO_RAD))));
+            // the next one: it rises ahead early, a small ball that grows and swings round under the ship
+            if (p > 0.18F) {
+                float e = smooth((p - 0.18F) / 0.82F);
+                float size = (float) Math.toDegrees(Math.asin(Mth.lerp(e * e * e, Mth.sin(0.9F * Mth.DEG_TO_RAD), Mth.sin(ORBIT_ANGULAR_RADIUS * Mth.DEG_TO_RAD))));
                 float destLit = (float) com.pizzaparker07.spacebreaker.content.rocketry.nav.OrbitDaylight.sunlit(
                         com.pizzaparker07.spacebreaker.content.rocketry.nav.OrbitDaylight.system(level.registryAccess()), dest.body(), t);
-                // it comes up ahead, a little below the line of sight, and swings round under the ship as it grows
-                var look = net.minecraft.client.Minecraft.getInstance().gameRenderer.getMainCamera().getLookVector();
-                float hl = Math.max(1e-3F, (float) Math.sqrt(look.x * look.x + look.z * look.z));
-                Vector3f ahead = new Vector3f(look.x / hl * 0.9F, -0.44F, look.z / hl * 0.9F).normalize();
-                float swing = smooth((p - 0.55F) / 0.4F);
-                Vector3f dir = ahead.lerp(new Vector3f(0, -1, 0), swing).normalize();
-                drawBodyBelow(modelView, dest.body(), size, t, destLit, smooth((p - 0.3F) / 0.08F),
+                float c = Mth.cos(-0.45F), sn = Mth.sin(-0.45F);
+                Vector3f ahead = new Vector3f((lx * c - lz * sn) * 0.9F, -0.4F, (lz * c + lx * sn) * 0.9F).normalize();
+                Vector3f dir = ahead.lerp(new Vector3f(0, -1, 0), smooth((p - 0.55F) / 0.4F)).normalize();
+                drawBodyBelow(modelView, dest.body(), size, t, destLit, smooth((p - 0.18F) / 0.08F),
                         p > 0.96F ? com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.APPROACH : fixed, dir);
             }
         } else {

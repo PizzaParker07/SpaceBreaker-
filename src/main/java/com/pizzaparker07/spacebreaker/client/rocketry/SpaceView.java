@@ -37,13 +37,23 @@ public final class SpaceView {
     private static final double THIN_FROM = 260, THIN_SPAN = 640;
     /** Ascent progress at which the view starts to leave the ground, and where it is the orbit view. */
     static final float ASCENT_FROM = 0.25F, ASCENT_FULL = 0.97F;
-    /** Angular radius of the ball when it first appears (a nearly flat horizon), degrees. */
-    static final float LOW_ANGLE = 72F;
 
     private static double arrivalTop = Double.NaN;
     @Nullable
     private static ResourceKey<Level> arrivalDim;
     private static int arrivalRocket = -1;
+
+    /**
+     * Switches to take parts of this view out one at a time, for tracking a clash with another mod's renderer:
+     * -Dspacebreaker.spaceView.off=fog,fogColour,gradient,stars,ball,overTerrain (any of them, comma separated), or the
+     * environment variable SB_SPACEVIEW_OFF.
+     */
+    private static final java.util.Set<String> OFF = java.util.Set.of(System.getProperty("spacebreaker.spaceView.off",
+            System.getenv().getOrDefault("SB_SPACEVIEW_OFF", "")).split(","));
+
+    static boolean off(String part) {
+        return OFF.contains(part);
+    }
 
     private SpaceView() {
     }
@@ -88,7 +98,6 @@ public final class SpaceView {
                     return byHeight; // a descent that did not come from orbit (a hop on the same world)
                 }
                 arrivalTop = y;
-                readySince = -1;
                 arrivalDim = level.dimension();
                 arrivalRocket = rocket.getId();
             }
@@ -102,20 +111,124 @@ public final class SpaceView {
     }
 
     /**
-     * How much of the ground is hidden under the ball (0..1): once the ground is far below and small, and in any case
-     * once the ground has dropped out of the view distance (so there is never a moment with neither ground nor ball).
+     * How much of the ground is hidden under the ball drawn over it (0..1): only in the last stretch before the view is
+     * the orbit's (and the first stretch of a descent), where the ball is small enough on screen to cover the ground
+     * as one smooth body. Below that the ball stays behind the terrain (see {@link #ball}).
      */
     static float hide(float k) {
-        // (only in a rocket: someone flying high on their own keeps the real ground for as long as it is drawn)
-        return k <= 0F ? 0F : Math.max(smooth((k - 0.35F) / 0.4F), RocketHud.ridden() != null ? groundOutOfReach() : 0F);
+        return smooth((k - 0.75F) / 0.2F);
     }
 
-    /** How strongly the ball itself is drawn: it comes in once it is a ball, and whenever it has to cover for the ground. */
+    /**
+     * How strongly the ball is drawn in the sky, behind the terrain: wherever the ground is drawn it covers the ball,
+     * so the ball only shows beyond the view distance, as the world's far ground and horizon. In a rocket it comes in
+     * with height above the ground (from a quarter of the view distance up); for anyone else with the space factor.
+     */
     static float ball(float k) {
-        return Math.max(smooth((k - 0.25F) / 0.2F), hide(k));
+        float byK = smooth((k - 0.05F) / 0.25F);
+        // a ball of blocks seen from close above its surface breaks up into slabs: it is only drawn once it is well
+        // rounded on screen (lower, the ground and the world's own sky make the horizon)
+        float rounded = smooth((MAX_BALL_ANGLE + 2.5F - angle(k)) / 2.5F);
+        if (RocketHud.ridden() == null) {
+            return byK * rounded;
+        }
+        // the far ground is drawn by the game to the view distance, and by an LOD mod (Distant Horizons) much further
+        double reach = Minecraft.getInstance().options.getEffectiveRenderDistance() * 16.0;
+        // (the ball is drawn in the sky pass, before the LOD mod's terrain, which covers it wherever it holds data;
+        // where it holds none yet, as in a world just arrived in, the ball is the far ground)
+        boolean lods = com.pizzaparker07.spacebreaker.compat.client.DhCompat.active() && !com.pizzaparker07.spacebreaker.compat.client.DhCompat.hidingLods();
+        if (lods) {
+            reach = Math.max(reach, com.pizzaparker07.spacebreaker.compat.client.DhCompat.lodReachBlocks());
+        }
+        float far = Math.max(byK, smooth((float) ((altitude() - 0.25 * reach) / (0.35 * reach))));
+        // coming down into a world just arrived in, the ball stays until the ground under the camera is really drawn
+        if (!Double.isNaN(arrivalTop) && !groundDrawn()) {
+            far = 1F;
+        }
+        return far * rounded;
     }
 
-    private static float readySince = -1;
+    private static boolean lodsHidden;
+
+    /** Whether the terrain straight below the camera has been built for drawing (or an LOD mod draws it). */
+    static boolean groundDrawn() {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.level == null) {
+            return false;
+        }
+        var cam = mc.gameRenderer.getMainCamera().getPosition();
+        var column = net.minecraft.core.BlockPos.containing(cam.x, mc.level.getMinBuildHeight(), cam.z);
+        if (!mc.level.hasChunkAt(column)) {
+            return false;
+        }
+        int y = mc.level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, column.getX(), column.getZ()) - 1;
+        return mc.levelRenderer.isSectionCompiled(new net.minecraft.core.BlockPos(column.getX(), Math.max(mc.level.getMinBuildHeight(), y), column.getZ()));
+    }
+
+    /**
+     * Each client tick: while the ball covers the ground (the last stretch before the orbit view), an LOD mod's far
+     * terrain is switched off, or it would show past the ball's edge; it comes back as soon as the ball lifts.
+     */
+    private static int dhLogTicks;
+
+    static void tickLods() {
+        if (RocketHud.ridden() != null && com.pizzaparker07.spacebreaker.compat.Compat.isInstalled("distanthorizons") && --dhLogTicks <= 0) {
+            // what this view sees of Distant Horizons, every five seconds of a flight (for checking a DH install)
+            dhLogTicks = 100;
+            float k = factor();
+            com.pizzaparker07.spacebreaker.Spacebreaker.LOGGER.info(
+                    "Space view with Distant Horizons: active {}, LOD reach {}, curvature {}, LODs hidden {}, k {}, hide {}, ball {}, altitude {}",
+                    com.pizzaparker07.spacebreaker.compat.client.DhCompat.active(),
+                    com.pizzaparker07.spacebreaker.compat.client.DhCompat.lodReachBlocks(),
+                    com.pizzaparker07.spacebreaker.compat.client.DhCompat.curvatureRatio(),
+                    com.pizzaparker07.spacebreaker.compat.client.DhCompat.hidingLods(),
+                    String.format(java.util.Locale.ROOT, "%.2f", k), String.format(java.util.Locale.ROOT, "%.2f", hide(k)),
+                    String.format(java.util.Locale.ROOT, "%.2f", ball(k)), (int) altitude());
+        }
+        // (once hidden, DH may report itself off: keep going so the LODs are always given back)
+        if (!lodsHidden && !com.pizzaparker07.spacebreaker.compat.client.DhCompat.active()) {
+            return;
+        }
+        boolean want = RocketHud.ridden() != null && hide(factor()) > 0.5F;
+        if (want != lodsHidden) {
+            lodsHidden = want;
+            com.pizzaparker07.spacebreaker.compat.client.DhCompat.hideLods(want);
+        }
+        // DH's own fog is tuned for standing on the ground: from the first rise of the space view it would wash the
+        // LOD terrain and the sky behind it, so it stays off for the climb, the orbit and the descent
+        boolean noFog = RocketHud.ridden() != null && factor() > 0.02F;
+        if (noFog != dhFogHidden) {
+            dhFogHidden = noFog;
+            hideDhFog(noFog);
+        }
+    }
+
+    private static boolean dhFogHidden;
+    private static java.lang.reflect.Method hideFog;
+    private static boolean hideFogLooked;
+
+    /** {@code DhCompat.hideFog}, where this build has it (a no-op where it does not). */
+    private static void hideDhFog(boolean hide) {
+        if (!hideFogLooked) {
+            hideFogLooked = true;
+            try {
+                hideFog = com.pizzaparker07.spacebreaker.compat.client.DhCompat.class.getMethod("hideFog", boolean.class);
+            } catch (NoSuchMethodException e) {
+                hideFog = null;
+            }
+        }
+        if (hideFog != null) {
+            try {
+                hideFog.invoke(null, hide);
+            } catch (ReflectiveOperationException e) {
+                hideFog = null;
+            }
+        }
+    }
+
+    /** The widest the ball below is drawn (angular radius, degrees). */
+    static final float MAX_BALL_ANGLE = 76F;
+
     private static float fogEnd = Float.NaN;
     private static boolean fogSphere;
 
@@ -125,45 +238,19 @@ public final class SpaceView {
         fogSphere = sphere;
     }
 
-    /**
-     * 0 while the ground below is drawn, 1 while it is not: before the client has the terrain under the camera built
-     * (just after arriving in a world), or when it is beyond the far plane. Once the terrain is there, the cover lifts
-     * over a second and a half rather than at once.
-     */
-    static float groundOutOfReach() {
+    /** Height of the camera above the ground below it (above sea level while that ground is not loaded). */
+    static double altitude() {
         Minecraft mc = Minecraft.getInstance();
         if (mc.level == null) {
-            return 0F;
+            return 0;
         }
         var cam = mc.gameRenderer.getMainCamera().getPosition();
-        var below = net.minecraft.core.BlockPos.containing(cam.x, mc.level.getMinBuildHeight(), cam.z);
-        // (waiting for the terrain to be built only matters on the way down into a world just arrived in)
-        boolean built = mc.level.hasChunkAt(below) && mc.levelRenderer.hasRenderedAllSections();
-        // counted in game time, so the fade lasts the same share of the descent at any frame rate
-        float now = mc.level.getGameTime() + mc.getTimer().getGameTimeDeltaPartialTick(false);
-        double groundY = mc.level.hasChunkAt(below)
-                ? mc.level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, below.getX(), below.getZ())
-                : mc.level.getSeaLevel();
-        // terrain sections are drawn up to the view distance in every direction, so the ground straight below is lost
-        // once it is that far down (and sooner in a round fog)
-        double far = mc.options.getEffectiveRenderDistance() * 16.0;
-        if (fogSphere && !Float.isNaN(fogEnd)) {
-            far = Math.min(far, fogEnd);
-        }
-        // a wide window, so the ground hands over to the ball over a few seconds of the climb or the descent
-        float tooFar = smooth((float) ((cam.y - groundY - far * 0.45) / (far * 0.5)));
-        if (Double.isNaN(arrivalTop)) {
-            return tooFar; // on the way up the ground is there from the start
-        }
-        // once the ground has been there, it stays (sections built later as the camera drops do not bring the ball back)
-        if (readySince < 0) {
-            if (!built) {
-                return 1F;
-            }
-            readySince = now;
-        }
-        float lifting = 1F - smooth((now - readySince) / 30F);
-        return Math.max(lifting, tooFar);
+        return cam.y - ground(mc.level, cam);
+    }
+
+    /** How much the fog is cleared away with height (0..1): as soon as the far ground (the ball) is to be seen. */
+    static float clearAir(float k) {
+        return Math.max(Mth.clamp(k / 0.3F, 0, 1), surface(Minecraft.getInstance().level) == null ? 0F : ball(k));
     }
 
     /** Height of the ground under the camera (sea level while it is not loaded). */
@@ -179,11 +266,38 @@ public final class SpaceView {
     }
 
     /**
-     * Angular radius of the ball below for this space factor, degrees: from a wide ball (close to, but not touching,
-     * the camera, where its stepped surface would rise above the horizon) to the orbit sky's.
+     * Angular radius of the ball below, degrees: the real one for this height over a world of the body's size (a
+     * nearly flat horizon a few hundred blocks up), turning into the orbit sky's angle over the last stretch before
+     * the cut so the two views meet.
      */
     static float angle(float k) {
-        return Mth.lerp(smooth(k), LOW_ANGLE, OrbitSkyEffects.ORBIT_ANGULAR_RADIUS);
+        Location here = surface(Minecraft.getInstance().level);
+        double radius = virtualRadius(here);
+        double h = Math.max(1, altitude());
+        float real = (float) Math.toDegrees(Math.asin(radius / (radius + h)));
+        return Math.min(89.5F, Mth.lerp(smooth((k - 0.55F) / 0.45F), real, OrbitSkyEffects.ORBIT_ANGULAR_RADIUS));
+    }
+
+    /**
+     * Radius in blocks of the world the terrain stands for, for the curve of its horizon (the Earth's 6,000: the
+     * ball is rounded enough to draw from about 190 blocks up, just past where the ground is drawn to).
+     */
+    static double virtualRadius(@Nullable Location here) {
+        double km = here == null ? 6371 : Locations.body(here.body()).map(b -> b.physical().radiusKm()).orElse(6371.0);
+        return Math.max(2000, 6000 * km / 6371.0);
+    }
+
+    /**
+     * The sun that lights the ball: the orbit sky's at the cut (so the two views match), turning into this world's own
+     * sun as the view comes down (by k = 0.7), so the ball below is lit like the ground it hands over to.
+     */
+    static Vector3f sun(ClientLevel level, float k, float t, float partialTick) {
+        float theta = level.getTimeOfDay(partialTick) * Mth.TWO_PI;
+        Vector3f local = new Vector3f(-Mth.sin(theta), Mth.cos(theta), 0);
+        Vector3f orbit = OrbitSkyEffects.sunDirection(t);
+        float w = smooth((k - 0.7F) / 0.3F);
+        Vector3f s = local.lerp(orbit, w);
+        return s.lengthSquared() < 1e-6F ? orbit : s.normalize();
     }
 
     private static float lit(ClientLevel level, Location here, float t) {
@@ -197,7 +311,13 @@ public final class SpaceView {
         ClientLevel level = mc.level;
         Location here = surface(level);
         float k = factor();
-        if (here == null || k <= 0) {
+        float planet = here == null ? 0F : ball(k);
+        if (planet > 0 && !(k > 0.6F || planet > 0.5F) && com.pizzaparker07.spacebreaker.compat.client.ShaderState.shaderPackInUse()) {
+            // under a shader pack the ball only comes with the hand-over to this sky (see RocketryClient): before it,
+            // the pack's haze would wash it into pale overlapping plates
+            planet = 0F;
+        }
+        if (here == null || k <= 0 && planet <= 0.003F) {
             return;
         }
         // deep blue overhead first, then black; the horizon stays a thin band of light blue the longest
@@ -207,8 +327,17 @@ public final class SpaceView {
         int r = (int) Mth.lerp(night, 8, 0), g = (int) Mth.lerp(night, 16, 0), b = (int) Mth.lerp(night, 52, 0);
         int over = (int) (top * 255) << 24 | r << 16 | g << 8 | b;
         int horizon = (int) (Mth.clamp((k - 0.35F) / 0.6F, 0, 1) * 255) << 24 | r << 16 | g << 8 | b;
-        SkyDraw.gradient(modelView, over, horizon);
-        SkyDraw.stars(modelView, projection, k);
+        if (com.pizzaparker07.spacebreaker.compat.client.ShaderState.shaderPackInUse()) {
+            // a shader pack draws its own horizon: the light band left open at eye level would show it as a thin stepped
+            // line across the screen, so the darkening comes down evenly instead
+            horizon = over;
+        }
+        if (!off("gradient")) {
+            SkyDraw.gradient(modelView, over, horizon);
+        }
+        if (!off("stars")) {
+            SkyDraw.stars(modelView, projection, k);
+        }
         float t = level.getGameTime() + partialTick;
         if (k < 1F) {
             // the world's own sun, handing over to the orbit sky's as the view climbs
@@ -216,9 +345,9 @@ public final class SpaceView {
             Vector3f day = new Vector3f(-Mth.sin(theta), Mth.cos(theta), 0);
             SkyDraw.billboard(modelView, OrbitSkyEffects.SUN, day, 100F, 15F, k * (1F - smooth(k)));
         }
-        float planet = ball(k);
         RenderSystem.depthMask(false);
-        OrbitSkyEffects.drawBodyBelow(modelView, here.body(), angle(k), t, lit(level, here, t) * smooth(k), planet);
+        if (!off("ball")) OrbitSkyEffects.drawBodyBelow(modelView, here.body(), angle(k), t, lit(level, here, t) * smooth(k), planet,
+                com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.APPROACH, new Vector3f(0, -1, 0), sun(level, k, t, partialTick));
         RenderSystem.depthMask(true);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
     }
@@ -237,7 +366,7 @@ public final class SpaceView {
         Location here = surface(level);
         float k = factor();
         float hide = hide(k);
-        if (here == null || hide <= 0.003F) {
+        if (here == null || hide <= 0.003F || off("overTerrain")) {
             return;
         }
         float t = level.getGameTime() + partialTick;
@@ -255,11 +384,21 @@ public final class SpaceView {
         RenderSystem.disableDepthTest();
         // a black disc under the ball, so the ground does not show through its stepped edge
         disc(modelView, angle(k), hide, false);
-        OrbitSkyEffects.drawBodyBelow(modelView, here.body(), angle(k), t, lit(level, here, t) * smooth(k), hide);
+        OrbitSkyEffects.drawBodyBelow(modelView, here.body(), angle(k), t, lit(level, here, t) * smooth(k), hide,
+                com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.APPROACH, new Vector3f(0, -1, 0), sun(level, k, t, partialTick));
         main.copyDepthFrom(saved);
         main.bindWrite(false);
-        if (hide > 0.98F) {
+        // the ball takes a sky object's depth once it covers the ground, so water and clouds stay under it. Not with a
+        // shader pack: there the ball's pixels are left at the far depth, where the space sky is laid over the pack's
+        // picture untouched by its fog (a sky object's depth beyond the view distance would be fogged out)
+        boolean pack = com.pizzaparker07.spacebreaker.compat.client.ShaderState.shaderPackInUse();
+        if (hide > 0.98F && !pack) {
             disc(modelView, angle(k), 1F, true);
+        } else if (pack && hide > 0.5F) {
+            // with a pack: where the ball covers the ground, set the depth back to the far value
+            GL11.glDepthRange(1.0, 1.0);
+            disc(modelView, angle(k), 1F, true);
+            GL11.glDepthRange(0.0, 1.0);
         }
         RenderSystem.enableDepthTest();
         RenderSystem.depthMask(true);

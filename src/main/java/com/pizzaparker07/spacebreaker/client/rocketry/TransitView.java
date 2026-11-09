@@ -43,6 +43,26 @@ public final class TransitView {
     private static int ghostStage;
     private static float ghostYaw;
     private static Vec3 seatOffset = Vec3.ZERO;
+    /** Another kind of vehicle (not a rocket) to stand in for, drawn through its own renderer. */
+    @Nullable
+    private static net.minecraft.world.entity.Entity ghostVehicle;
+
+    /** See {@link SeamlessHandOff#expect}. */
+    static void expectVehicle(Transit.Kind k, @Nullable Location from, @Nullable Location dest, @Nullable net.minecraft.world.entity.Entity vehicle) {
+        begin(k, from, dest);
+        var player = Minecraft.getInstance().player;
+        ghostVehicle = vehicle instanceof RocketEntity ? null : vehicle;
+        if (vehicle instanceof RocketEntity r) {
+            ghostLayout = r.layout();
+            ghostStage = r.activeStage();
+            ghostYaw = r.getYRot();
+        } else if (vehicle == null) {
+            ghostLayout = null;
+        }
+        if (player != null && vehicle != null) {
+            seatOffset = player.position().subtract(vehicle.position());
+        }
+    }
 
     private TransitView() {
     }
@@ -112,7 +132,7 @@ public final class TransitView {
 
     /** Whether the stand-in is drawn now. */
     static boolean ghost() {
-        if (!holding || ghostLayout == null) {
+        if (!holding || ghostLayout == null && ghostVehicle == null) {
             return false;
         }
         if (System.nanoTime() - holdSince > GHOST_LIMIT_NANOS) {
@@ -120,7 +140,20 @@ public final class TransitView {
             return false;
         }
         var player = Minecraft.getInstance().player;
-        return player != null && !(player.getVehicle() instanceof RocketEntity);
+        if (player == null) {
+            return false;
+        }
+        // the game draws an entity only once the terrain section it is in has been built: until then the stand-in
+        // stays, even with the crew back in their seats
+        var vehicle = player.getVehicle();
+        return vehicle == null || !drawable(vehicle);
+    }
+
+    /** Whether the game draws this entity yet (its section built, or it is outside the build height). */
+    static boolean drawable(net.minecraft.world.entity.Entity e) {
+        var mc = Minecraft.getInstance();
+        var at = e.blockPosition();
+        return mc.level == null || mc.level.isOutsideBuildHeight(at) || mc.levelRenderer.isSectionCompiled(at);
     }
 
     /**
@@ -129,10 +162,20 @@ public final class TransitView {
      */
     static void renderGhost(PoseStack pose, MultiBufferSource buffers, Vec3 camera, boolean firstPerson) {
         var player = Minecraft.getInstance().player;
-        if (player == null || ghostLayout == null) {
+        if (player == null) {
             return;
         }
         Vec3 at = player.position().subtract(seatOffset);
+        if (ghostVehicle != null) {
+            // someone else's vehicle: its own renderer, at its last pose
+            var mc = Minecraft.getInstance();
+            mc.getEntityRenderDispatcher().render(ghostVehicle, at.x - camera.x, at.y - camera.y, at.z - camera.z, ghostVehicle.getYRot(),
+                    mc.getTimer().getGameTimeDeltaPartialTick(false), pose, buffers, LightTexture.FULL_BRIGHT);
+            return;
+        }
+        if (ghostLayout == null) {
+            return;
+        }
         RocketGeometry geo = RocketGeometry.ofActive(ghostLayout, ghostStage);
         pose.pushPose();
         pose.translate(at.x - camera.x, at.y - camera.y, at.z - camera.z);
@@ -157,6 +200,7 @@ public final class TransitView {
     }
 
     private static void reset() {
+        ghostVehicle = null;
         pinned = false;
         kind = null;
         to = null;

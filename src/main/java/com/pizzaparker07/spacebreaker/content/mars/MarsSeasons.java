@@ -64,7 +64,7 @@ public final class MarsSeasons {
 
     static void syncTo(ServerPlayer player) {
         var mars = player.server.getLevel(MarsModule.MARS);
-        if (mars != null) {
+        if (mars != null && player.connection.hasChannel(Payload.TYPE)) {
             net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(player, new Payload(data(mars).offsetSols));
         }
     }
@@ -140,7 +140,13 @@ public final class MarsSeasons {
         d.offsetSols += (Mth.positiveModulo(ls - now, 360)) / 360.0 * YEAR_SOLS;
         d.lastSeason = season(ls);
         d.setDirty();
-        net.neoforged.neoforge.network.PacketDistributor.sendToAllPlayers(new Payload(d.offsetSols));
+        Payload p = new Payload(d.offsetSols);
+        for (ServerPlayer player : level.getServer().getPlayerList().getPlayers()) {
+            // only to clients that know the channel (a client without the mod would be disconnected)
+            if (player.connection.hasChannel(Payload.TYPE)) {
+                net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(player, p);
+            }
+        }
     }
 
     // ------------------------------------------------------------------ pressure

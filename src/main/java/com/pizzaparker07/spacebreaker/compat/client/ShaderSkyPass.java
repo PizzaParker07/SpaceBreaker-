@@ -83,6 +83,21 @@ public final class ShaderSkyPass {
     private ShaderSkyPass() {
     }
 
+    /**
+     * Set by features that turn the sky of a world that normally keeps the pack's sky (the Overworld) into space for a
+     * while, such as rocketry's seamless ascent and descent: while it answers true, the pack's sky and clouds are
+     * replaced there too, so the view climbs into the same space sky the orbit shows. Called once a frame.
+     */
+    public static volatile java.util.function.BooleanSupplier spaceView = () -> false;
+
+    private static boolean spaceViewNow() {
+        try {
+            return spaceView.getAsBoolean();
+        } catch (RuntimeException e) {
+            return false;
+        }
+    }
+
     /** Whether the pack's sky must be replaced in the current world right now. */
     public static boolean active() {
         CompatConfig.SkyMode mode = CompatConfig.skyMode();
@@ -94,7 +109,7 @@ public final class ShaderSkyPass {
             return false; // LOD terrain we cannot see in a depth buffer would be painted over
         }
         ClientLevel level = Minecraft.getInstance().level;
-        return level != null && SpaceSky.kind(level).ownSky() && ShaderState.shaderPackInUse();
+        return level != null && (SpaceSky.kind(level).ownSky() || spaceViewNow()) && ShaderState.shaderPackInUse();
     }
 
     /**
@@ -257,7 +272,7 @@ public final class ShaderSkyPass {
      * screenshots in docs/screenshots/compat; unknown packs get the moderate value.
      */
     private static final Vec3 PACK_SKY_COMPLEMENTARY = new Vec3(0.20, 0.30, 0.72);
-    private static final Vec3 PACK_SKY_DEFAULT = new Vec3(0.20, 0.27, 0.55);
+    private static final Vec3 PACK_SKY_DEFAULT = new Vec3(0.20, 0.23, 0.32);
     private static String lastPack;
     private static Vec3 lastPackSky = PACK_SKY_DEFAULT;
 
@@ -278,6 +293,6 @@ public final class ShaderSkyPass {
     public static boolean hidePackClouds(DimensionSpecialEffects effects) {
         ClientLevel level = Minecraft.getInstance().level;
         return level != null && level.effects() == effects && CompatConfig.hidePackClouds()
-                && SpaceSky.kind(level) != SpaceWorlds.Kind.VANILLA && ShaderState.shaderPackInUse();
+                && (SpaceSky.kind(level) != SpaceWorlds.Kind.VANILLA || spaceViewNow()) && ShaderState.shaderPackInUse();
     }
 }

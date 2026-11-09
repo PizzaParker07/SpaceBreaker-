@@ -237,7 +237,12 @@ public final class MeteorShowers {
     }
 
     private static void broadcast(ServerLevel level, int ticksLeft) {
-        PacketDistributor.sendToPlayersInDimension(level, new MeteorShowerPayload(level.dimension(), ticksLeft));
+        MeteorShowerPayload payload = new MeteorShowerPayload(level.dimension(), ticksLeft);
+        for (ServerPlayer p : level.players()) {
+            if (p.connection != null && p.connection.hasChannel(MeteorShowerPayload.TYPE)) {
+                PacketDistributor.sendToPlayer(p, payload);
+            }
+        }
     }
 
     private static void sync(net.minecraft.world.entity.player.Player player) {
