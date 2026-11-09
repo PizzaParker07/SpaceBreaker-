@@ -351,6 +351,16 @@ public final class BlockyBodyRenderer {
      */
     public static void draw(Matrix4f pose, BlockyBodyMesh.Style style, int n, ColorMap map, Pose body, Vector3f sun, float night,
                             float tint, float alpha, Ring ring, int air) {
+        draw(pose, style, n, map, body, sun, night, tint, alpha, ring, air, 0, 0F);
+    }
+
+    /**
+     * As {@link #draw(Matrix4f, BlockyBodyMesh.Style, int, ColorMap, Pose, Vector3f, float, float, float, Ring, int)}, with a
+     * glow of the air lit from behind ({@code glowRgb}, strength {@code glow} 0..1): the ring of sunsets round Earth seen
+     * from the Moon during an eclipse. It is a second, slightly bigger shell of the same blocks, evenly bright all round.
+     */
+    public static void draw(Matrix4f pose, BlockyBodyMesh.Style style, int n, ColorMap map, Pose body, Vector3f sun, float night,
+                            float tint, float alpha, Ring ring, int air, int glowRgb, float glow) {
         if (air == NO_AIR) {
             render(pose, style, n, map, body, sun, night, tint, alpha, ring, null);
             return;
@@ -360,6 +370,11 @@ public final class BlockyBodyRenderer {
         ColorMap shell = AIR_MAPS.computeIfAbsent(air, BlockyBodyRenderer::flat);
         float grow = 2.2F / level; // one cell (a cell is 2 radii / level across) and a hair, so the shell clears the body's corners
         Pose halo = new Pose(body.center(), body.radius() * (1 + grow), body.pole(), body.facing(), body.spin());
+        if (glow > 0.01F) {
+            Pose outer = new Pose(body.center(), body.radius() * (1 + grow * 1.7F), body.pole(), body.facing(), body.spin());
+            render(pose, style, level, AIR_MAPS.computeIfAbsent(glowRgb, BlockyBodyRenderer::flat), outer, sun, 1F, 1F,
+                    alpha * Math.min(1F, glow), null, null);
+        }
         render(pose, style, level, shell, halo, sun, AIR_SHELL_NIGHT, Math.min(1F, tint), alpha * AIR_LIMB_ALPHA, null, null);
         render(pose, style, n, map, body, sun, Math.max(night, AIR_NIGHT), tint, alpha, ring, null);
     }
@@ -455,8 +470,50 @@ public final class BlockyBodyRenderer {
         return bean instanceof com.sun.management.ThreadMXBean sun ? sun.getCurrentThreadAllocatedBytes() : 0;
     }
 
+    /** Angular radius (radians) where a cube planet starts to give way to the ball of blocks as it nears, and where it is gone. */
+    static final float CUBE_TO_BALL_FROM = 0.66F;
+    static final float CUBE_TO_BALL_FULL = 0.85F;
+    /** Set while a cube is drawn: cubes keep the flat depth of a small body at any size (no funnel-like perspective). */
+    private static boolean flatCube;
+
+    /**
+     * How far a cube planet has turned into the ball of blocks (0 = cube, 1 = ball): a cube stays a cube while it hangs
+     * in the sky, even a giant over its moon (up to about 38 degrees in radius), but close in (low orbit, a landing) the
+     * camera would be over or inside one face of a huge box, so it becomes the ball of blocks with its fine surface
+     * patch, the way the PIXEL style turns into its sphere.
+     */
+    static float cubeToBall(Pose body) {
+        float ang = (float) Math.asin(Math.min(1F, body.radius() / Math.max(1e-3F, body.center().length())));
+        float t = Mth.clamp((ang - CUBE_TO_BALL_FROM) / (CUBE_TO_BALL_FULL - CUBE_TO_BALL_FROM), 0F, 1F);
+        return t * t * (3 - 2 * t);
+    }
+
     private static void renderBody(Matrix4f pose, BlockyBodyMesh.Style style, int n, ColorMap map, Pose body, Vector3f sun, float night,
                                    float tint, float alpha, Ring ring, Vector3f viewDir) {
+        if (viewDir == null && style == BlockyBodyMesh.Style.CUBE) {
+            float ball = cubeToBall(body);
+            if (ball > 0F) {
+                // close in: the ball of blocks underneath, the cube fading out over it
+                renderBody(pose, BlockyBodyMesh.Style.VOXEL, n, map, body, sun, night, tint, alpha, ring, null);
+                if (ball >= 1F) {
+                    return;
+                }
+                ring = null;
+                alpha *= 1F - ball;
+            }
+            flatCube = true;
+            try {
+                renderCubeOrBall(pose, style, n, map, body, sun, night, tint, alpha, ring, null);
+            } finally {
+                flatCube = false;
+            }
+            return;
+        }
+        renderCubeOrBall(pose, style, n, map, body, sun, night, tint, alpha, ring, viewDir);
+    }
+
+    private static void renderCubeOrBall(Matrix4f pose, BlockyBodyMesh.Style style, int n, ColorMap map, Pose body, Vector3f sun, float night,
+                                         float tint, float alpha, Ring ring, Vector3f viewDir) {
         if (viewDir != null) {
             if (ring != null) {
                 // a ringed body on a flat view: body and ring sorted together, drawn each time (rare: a map's ringed planets)
@@ -1019,6 +1076,9 @@ public final class BlockyBodyRenderer {
      * of the view (a planet seen from orbit, or while landing), with a smooth change in between.
      */
     static float depthKept(Pose body) {
+        if (flatCube) {
+            return DEPTH_KEPT;
+        }
         float ang = (float) Math.asin(Math.min(1F, body.radius() / Math.max(1e-3F, body.center().length())));
         float t = Mth.clamp((ang - 0.3F) / 0.25F, 0F, 1F);
         return Mth.lerp(t * t * (3 - 2 * t), DEPTH_KEPT, 1F);

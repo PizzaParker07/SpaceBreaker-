@@ -239,6 +239,11 @@ final class SuitEvaScenario implements ShowcaseScenario {
             }
             p.getInventory().selected = 0;
         }), SuitShots.CLEAR_TOASTS));
+        // the sensor held up, seen from the front
+        s.add(new Shot(prefix + "_16b_sensor_held", 0, 0.5, g + 1.62, 8.5, 250F, 5F, true, CameraType.THIRD_PERSON_FRONT, 40, at(false, p -> {
+            astronaut(p);
+            p.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(SuitModule.ENVIRONMENT_SENSOR.get()));
+        }), SuitShots.CLEAR_TOASTS));
         // the drill seen from the front, held like a pistol drill
         s.add(new Shot(prefix + "_17b_drill_held", 0, 0.5, g + 1.62, 8.5, 250F, 5F, true, CameraType.THIRD_PERSON_FRONT, 40, at(false, p -> {
             astronaut(p);
