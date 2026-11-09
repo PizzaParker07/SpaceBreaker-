@@ -359,6 +359,11 @@ while the inner was open 119, and so on).
 - (c) no metal block sounds like wool: `qa/BlockSoundAuditTests.metalBlocksDoNotSoundLikeWool` reads every block's
   sound (with the level); wool is allowed only on soft blocks (station_bunk, envelope_fabric, or a fabric/bed/carpet
   name). Before industry edac01ea it caught copper_cable and hv_cable; now ✅ (`run-gametest/qa/block_sounds.md`).
+- (b) the hologram projector's Build (suit d555e320), `qa/ProjectorBuildAuditTests` on 16397402: every blueprint builds
+  completely in creative and validates (launch site 33/33, pressurised habitat 100/100, pumpjack 7/7 and refinery 4/4,
+  whose controllers set the rest of their structure themselves); with half the launch site's materials 15 of 33 are
+  placed, every carried block is used, the missing list matches the shortfall exactly and unrelated items are not
+  touched; walking 80 blocks away stops the job, and the inventory paid exactly for what was placed ✅.
 - (a) the crew does not show through the capsule: `./gradlew runShowcase -Pscenario=qa_crew_hidden`. The player rides
   a Moon rocket in third person through every flight state (the whole stack: IDLE, COUNTDOWN, ASCENT, ORBIT, BURN,
   TRANSFER, DESCENT, REENTRY, PARACHUTE; the capsule alone: REENTRY, PARACHUTE, IDLE). Each draw of a rider is
