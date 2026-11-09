@@ -203,4 +203,24 @@ class FlightCoreTest {
         var far = new StateVector(st.position().sub(along.scale(100_000)), st.velocity());
         assertFalse(com.pizzaparker07.spacebreaker.core.astro.flight.StationRendezvous.returnsToPocket(far, orbit, 5000));
     }
+
+    @Test
+    void spaceFactor() {
+        for (AstroBody b : new AstroBody[]{EARTH, MOON, SYS.require("spacebreaker:mars")}) {
+            double top = b.lowOrbitRadius() - b.radius();
+            assertEquals(0, com.pizzaparker07.spacebreaker.core.astro.flight.EntryGate.spaceFactor(b, 0), 1e-12, b.id());
+            assertEquals(1, com.pizzaparker07.spacebreaker.core.astro.flight.EntryGate.spaceFactor(b, top), 1e-12, b.id());
+            double prev = -1;
+            for (double h = 0; h <= top * 1.2; h += top / 50) {
+                double k = com.pizzaparker07.spacebreaker.core.astro.flight.EntryGate.spaceFactor(b, h);
+                assertTrue(k >= prev - 1e-12 && k >= 0 && k <= 1);
+                prev = k;
+            }
+            double h = com.pizzaparker07.spacebreaker.core.astro.flight.EntryGate.altitudeForSpaceFactor(b, 0.5);
+            assertEquals(0.5, com.pizzaparker07.spacebreaker.core.astro.flight.EntryGate.spaceFactor(b, h), 1e-6);
+        }
+        // Earth's sky starts to darken around 20 km; the Moon's view changes from the ground up
+        assertEquals(0, com.pizzaparker07.spacebreaker.core.astro.flight.EntryGate.spaceFactor(EARTH, 15e3), 1e-12);
+        assertTrue(com.pizzaparker07.spacebreaker.core.astro.flight.EntryGate.spaceFactor(MOON, 5e3) > 0);
+    }
 }

@@ -41,6 +41,29 @@ public final class EntryGate {
         return alt <= entryAltitude(b) && rel.position().dot(rel.velocity()) < 0;
     }
 
+    /**
+     * "Space factor" k in 0..1 for seamless surface-to-orbit visuals: 0 low in the air (sky as usual), 1 at low-orbit
+     * altitude, where the view matches the orbit sky and the dimension switch happens. Smoothstep between a quarter of
+     * the entry altitude (the surface on airless worlds) and the low-orbit altitude.
+     */
+    public static double spaceFactor(AstroBody b, double altitude) {
+        double a0 = b.hasAtmosphere() ? 0.25 * entryAltitude(b) : 0;
+        double a1 = b.lowOrbitRadius() - b.radius();
+        double x = Math.max(0, Math.min(1, (altitude - a0) / (a1 - a0)));
+        return x * x * (3 - 2 * x);
+    }
+
+    /** Altitude at which {@link #spaceFactor} reaches {@code k} (inverse, by bisection), m. */
+    public static double altitudeForSpaceFactor(AstroBody b, double k) {
+        double lo = 0, hi = b.lowOrbitRadius() - b.radius();
+        for (int i = 0; i < 60; i++) {
+            double mid = 0.5 * (lo + hi);
+            if (spaceFactor(b, mid) < k) lo = mid;
+            else hi = mid;
+        }
+        return hi;
+    }
+
     /** Speed at the entry interface relative to the body's surface (ignoring rotation), m/s. */
     public static double entrySpeed(StateVector rel) {
         return rel.velocity().length();
