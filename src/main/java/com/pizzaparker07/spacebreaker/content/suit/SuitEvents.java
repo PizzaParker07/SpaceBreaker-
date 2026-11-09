@@ -13,7 +13,6 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 /** Game-bus hooks of the suit module: per-player life support, gravity for every living entity. */
 @EventBusSubscriber(modid = Spacebreaker.MOD_ID)
@@ -71,7 +70,7 @@ public final class SuitEvents {
         if (player.tickCount % 20 == 7 && SpaceSuitItem.wearsHelmet(player) && sp.connection != null
                 && sp.connection.hasChannel(com.pizzaparker07.spacebreaker.content.suit.net.NavPayload.TYPE)) {
             var target = Navigation.find(sp.serverLevel(), player, data.navKind);
-            PacketDistributor.sendToPlayer(sp, new com.pizzaparker07.spacebreaker.content.suit.net.NavPayload(data.navKind.ordinal(),
+            com.pizzaparker07.spacebreaker.content.suit.net.SuitNetwork.send(sp, new com.pizzaparker07.spacebreaker.content.suit.net.NavPayload(data.navKind.ordinal(),
                     target.map(t -> t.kind().ordinal()).orElse(0), target.map(Navigation.Target::pos)));
         }
         if (player.tickCount % 5 == 0) {
@@ -180,7 +179,7 @@ public final class SuitEvents {
         if (!mmu.isEmpty()) {
             flags |= SuitStatusPayload.MMU;
         }
-        PacketDistributor.sendToPlayer(player, new SuitStatusPayload(SuitTanks.oxygen(torso), SuitTanks.capacity(torso), data.breath,
+        com.pizzaparker07.spacebreaker.content.suit.net.SuitNetwork.send(player, new SuitStatusPayload(SuitTanks.oxygen(torso), SuitTanks.capacity(torso), data.breath,
                 (float) data.bodyTempC, (float) data.ambientC, (float) data.doseMsv, (float) data.doseRateMsvDay,
                 (float) data.pressureKpa, (float) Gravity.factorFor(player), mmu.isEmpty() ? 0 : ManeuveringUnitItem.fuel(mmu),
                 integrity(player), flags, rating == null ? 0 : (int) Math.round(LifeSupport.ratedRange(rating, data.pressureKpa)[0]),
@@ -236,7 +235,7 @@ public final class SuitEvents {
         if (event.getTarget() instanceof Player target && event.getEntity() instanceof ServerPlayer tracker
                 && tracker.connection.hasChannel(com.pizzaparker07.spacebreaker.content.suit.net.TetherPayload.TYPE)) {
             if (Tether.isTethered(target)) {
-                PacketDistributor.sendToPlayer(tracker, Tether.payload(target));
+                com.pizzaparker07.spacebreaker.content.suit.net.SuitNetwork.send(tracker, Tether.payload(target));
             }
         }
     }

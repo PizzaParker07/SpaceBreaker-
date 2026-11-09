@@ -17,7 +17,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -71,7 +70,7 @@ public class EnvironmentSensorItem extends Item {
             return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
         }
         if (!level.isClientSide && player instanceof ServerPlayer sp) {
-            PacketDistributor.sendToPlayer(sp, read(level, player.blockPosition()));
+            com.pizzaparker07.spacebreaker.content.suit.net.SuitNetwork.send(sp, read(level, player.blockPosition()));
             level.playSound(null, player.blockPosition(), SoundEvents.NOTE_BLOCK_BIT.value(), SoundSource.PLAYERS, 0.4F, 1.8F);
         }
         player.getCooldowns().addCooldown(this, 20);
