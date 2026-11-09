@@ -31,6 +31,10 @@ public final class DhCompat {
     private static Method setApiValue;
     private static Method clearApiValue;
     private static boolean hiding;
+    private static Method fog;
+    private static Method enableDhFog;
+    private static boolean hidingFog;
+    private static boolean fogWarned;
     private static Method worldLoaded;
     private static Method singlePlayerLevel;
     private static Method columnData;
@@ -64,6 +68,8 @@ public final class DhCompat {
             chunkRenderDistance = g.getMethod("chunkRenderDistance");
             renderingEnabled = g.getMethod("renderingEnabled");
             curvature = g.getMethod("earthCurvatureRatio");
+            fog = g.getMethod("fog");
+            enableDhFog = Class.forName("com.seibel.distanthorizons.api.interfaces.config.client.IDhApiFogConfig").getMethod("enableDhFog");
             Class<?> value = Class.forName("com.seibel.distanthorizons.api.interfaces.config.IDhApiConfigValue");
             configValue = value.getMethod("getValue");
             setApiValue = value.getMethod("setValue", Object.class);
@@ -185,6 +191,49 @@ public final class DhCompat {
     /** Whether {@link #hideLods} is holding DH's LOD terrain back right now. */
     public static boolean hidingLods() {
         return hiding;
+    }
+
+    /**
+     * Stops DH drawing its own fog (far fog and height fog together: an API override of its "enable DH fog" setting,
+     * the player's setting untouched and back with {@code false}). For a flight that climbs far above the ground, where
+     * DH's fog, tuned for standing on it, would wash the LOD terrain and the sky behind it. Vanilla's fog and DH's
+     * "disable vanilla fog" setting are left alone. Cheap to call every frame; only a change is passed on to DH.
+     */
+    public static void hideFog(boolean hide) {
+        if (hide == hidingFog) {
+            return;
+        }
+        resolve();
+        if (configs == null || enableDhFog == null) {
+            hidingFog = false;
+            return;
+        }
+        try {
+            Object config = configs.get(null);
+            if (config == null) {
+                return;
+            }
+            Object setting = enableDhFog.invoke(fog.invoke(graphics.invoke(config)));
+            if (hide) {
+                if (!Boolean.TRUE.equals(setApiValue.invoke(setting, Boolean.FALSE))) {
+                    if (!fogWarned) {
+                        fogWarned = true;
+                        Spacebreaker.LOGGER.warn("Distant Horizons did not accept an API override of its fog setting; its fog stays on");
+                    }
+                    return;
+                }
+            } else {
+                clearApiValue.invoke(setting);
+            }
+            hidingFog = hide;
+        } catch (ReflectiveOperationException | RuntimeException e) {
+            warn(e);
+        }
+    }
+
+    /** Whether {@link #hideFog} is holding DH's fog back right now. */
+    public static boolean hidingFog() {
+        return hidingFog;
     }
 
     private static void refresh() {

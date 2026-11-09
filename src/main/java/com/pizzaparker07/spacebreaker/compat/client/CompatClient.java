@@ -52,6 +52,7 @@ public final class CompatClient {
         HazePass.release();
         LateEffects.clear();
         DhCompat.hideLods(false); // an override someone forgot to lift must not outlive the world
+        DhCompat.hideFog(false);
         SpaceSky.reset();
     }
 }
