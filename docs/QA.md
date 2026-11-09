@@ -354,6 +354,57 @@ Shot 11 is now aimed at the station. **QA-27 closed**: `stationAirlockCycle` ass
 together on any tick and that the station is sealed at every step (both shut 119, inner open 148, outer asked open
 while the inner was open 119, and so on).
 
+## Clients without the mod's channels (2026-11-09, 1.21.1 @ dbeb7887)
+
+- `tools/qa/channel_audit.py`: every server → client send in `src/main` (PacketDistributor.sendToPlayer/…ToPlayers…/
+  …ToAll…, connection.send of a custom payload) must have a `hasChannel` check just before it. Now 12 sends, 0
+  unguarded ✅ (before the moon/inner/suit fixes the login sync `PlanetTime.syncTo` threw for such a client).
+- `qa/NoModClientTests.aClientWithoutTheModsChannelsStaysConnected`: a server player on a connection that has agreed
+  none of the mod's channels logs in, wears a full suit (HUD sync every tick), learns a technology and stays 100
+  ticks: nothing throws, still connected ✅. (A client without Spacebreaker at all is refused at login by NeoForge's
+  registry check, with a message; this covers a client whose channels differ.)
+
+## Seamless trips as a player (`qa_seamless`, 2026-11-09, 1.21.1 @ 191b49ca, rocketry 161755c9)
+
+`./gradlew runShowcase -Pscenario=qa_seamless`: third-person camera, the player in a Moon rocket with the three-seat
+capsule. Flight 1: pad → Earth orbit → back down to the Earth. Flight 2: Earth orbit → Moon orbit → the Moon's surface.
+The client logs every tick (`run-showcase/qa_seamless.tsv`: dimension, screen, seated, state, stand-in drawn, real
+rockets near) and saves frames.
+- no loading or progress screen in 8,146 ticks ✅; no black or one-colour frame ✅; the descent into the Earth's air is a
+  smooth fade into the reentry glow ✅;
+- the player stays seated; at the hand-over to orbit the client shows them unseated for 3–4 ticks, covered by the
+  stand-in rocket ✅; the stand-in is never drawn while a real rocket is near ✅;
+- landing points: the Moon exactly under the orbit position (airless, 0.5 86 0.5) ✅; the Earth 50.6 blocks from the pad
+  (no landing beacon: under the orbit position plus wind drift, by design);
+- ❌ about 10 ticks after arriving in Earth orbit the real rocket is not drawn for ~20 ticks (frames 840–859), although
+  the client has it and the player is seated in it; reported to rocketry;
+- re-run on dbeb7887 (rocketry 7b2f2f03, 566a5e80 in): the rocket is drawn in every frame after arriving in orbit ✅
+  (the stand-in now stays until the real rocket's section is built); on the descent to the Moon the planet ball stays
+  until the ground is drawn, never a frame with neither ✅; a second crew member (a server player on a connection
+  with no mod channels) stays seated through all six hand-overs and lands on the Moon aboard ✅. The pilot shows
+  unseated for 12 ticks in all, every one of them inside a hand-over with the stand-in drawn.
+
+## beta.1 feedback checks (2026-11-09, 1.21.1 @ d52b37a3)
+
+- (c) no metal block sounds like wool: `qa/BlockSoundAuditTests.metalBlocksDoNotSoundLikeWool` reads every block's
+  sound (with the level); wool is allowed only on soft blocks (station_bunk, envelope_fabric, or a fabric/bed/carpet
+  name). Before industry edac01ea it caught copper_cable and hv_cable; now ✅ (`run-gametest/qa/block_sounds.md`).
+- (b) the hologram projector's Build (suit d555e320), `qa/ProjectorBuildAuditTests` on 16397402: every blueprint builds
+  completely in creative and validates (launch site 33/33, pressurised habitat 100/100, pumpjack 7/7 and refinery 4/4,
+  whose controllers set the rest of their structure themselves); with half the launch site's materials 15 of 33 are
+  placed, every carried block is used, the missing list matches the shortfall exactly and unrelated items are not
+  touched; walking 80 blocks away stops the job, and the inventory paid exactly for what was placed ✅.
+- cube planets by default (moon a02d947a), the one-time switch checked with real client launches against a
+  hand-written `run-showcase/config/spacebreaker-worlds-client.toml`: old file VOXEL without styleVersion → CUBE,
+  styleVersion 1; launched again → stays CUBE; VOXEL with styleVersion 1 (chosen after the switch) → stays VOXEL; ROUND
+  and PIXEL without a version → kept; VOXEL with styleVersion 0 → CUBE ✅. (A player who chose VOXEL on purpose before
+  the update cannot be told apart from the old default and moves to CUBE once; by design.)
+- (a) the crew does not show through the capsule: `./gradlew runShowcase -Pscenario=qa_crew_hidden`. The player rides
+  a Moon rocket in third person through every flight state (the whole stack: IDLE, COUNTDOWN, ASCENT, ORBIT, BURN,
+  TRANSFER, DESCENT, REENTRY, PARACHUTE; the capsule alone: REENTRY, PARACHUTE, IDLE). Each draw of a rider is
+  counted along with whether it was cancelled: 59–79 draws per state, none drawn ✅ (rocketry 6d7a7265 hides the crew of a
+  rocket with a capsule). A line "crew: FAIL …" names a state where the rider is drawn.
+
 ## Low gravity with real key presses (`qa_low_gravity`, 2026-11-08)
 
 `./gradlew runShowcase -Pscenario=qa_low_gravity`: the keys are held down on the client (movement is worked out
