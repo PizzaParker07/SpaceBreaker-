@@ -322,6 +322,11 @@ public final class SpaceView {
         int r = (int) Mth.lerp(night, 8, 0), g = (int) Mth.lerp(night, 16, 0), b = (int) Mth.lerp(night, 52, 0);
         int over = (int) (top * 255) << 24 | r << 16 | g << 8 | b;
         int horizon = (int) (Mth.clamp((k - 0.35F) / 0.6F, 0, 1) * 255) << 24 | r << 16 | g << 8 | b;
+        if (com.pizzaparker07.spacebreaker.compat.client.ShaderState.shaderPackInUse()) {
+            // a shader pack draws its own horizon: the light band left open at eye level would show it as a thin stepped
+            // line across the screen, so the darkening comes down evenly instead
+            horizon = over;
+        }
         if (!off("gradient")) {
             SkyDraw.gradient(modelView, over, horizon);
         }
