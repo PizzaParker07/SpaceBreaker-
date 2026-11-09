@@ -240,10 +240,23 @@ public final class RocketClientEvents {
      * The crew sit inside the closed capsule: like on a real capsule they are not seen from outside (their model would
      * otherwise poke through the capsule walls in third person, on every phase of the flight).
      */
+    /** Between the jump and the rocket's arrival on the client: the stand-in rocket, and the crew hidden in it. */
+    @SubscribeEvent
+    static void ghost(RenderLevelStageEvent event) {
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_ENTITIES || !TransitView.ghost()) {
+            return;
+        }
+        Minecraft mc = Minecraft.getInstance();
+        var buffers = mc.renderBuffers().bufferSource();
+        TransitView.renderGhost(event.getPoseStack(), buffers, event.getCamera().getPosition(), mc.options.getCameraType().isFirstPerson());
+        buffers.endBatch();
+    }
+
     @SubscribeEvent
     static void hideCrew(net.neoforged.neoforge.client.event.RenderLivingEvent.Pre<?, ?> event) {
         if (event.getEntity().getVehicle() instanceof com.pizzaparker07.spacebreaker.content.rocketry.entity.RocketEntity rocket
-                && rocket.layout().payload().present()) {
+                && rocket.layout().payload().present()
+                || event.getEntity() == Minecraft.getInstance().player && TransitView.ghost()) {
             event.setCanceled(true);
         }
     }
@@ -280,14 +293,9 @@ public final class RocketClientEvents {
         event.setRoll(event.getRoll() + Mth.sin(t * 3.1F + 2F) * a * 0.5F);
     }
 
-    /** 0 at the surface, 1 where the sky has turned black (rocket ascent in the overworld). */
+    /** 0 at the surface, 1 where the view is the orbit's (see {@link SpaceView#factor}). */
     static float spaceFactor() {
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.level == null || mc.level.dimension() != Level.OVERWORLD) {
-            return 0;
-        }
-        double y = mc.gameRenderer.getMainCamera().getPosition().y;
-        return (float) Mth.clamp((y - 260) / 640.0, 0, 1);
+        return SpaceView.factor();
     }
 
     /** True for the overworld's sky effects while the camera is high enough that its clouds are left out. */
@@ -302,6 +310,9 @@ public final class RocketClientEvents {
     /** The air thins: the fog draws back with altitude and is gone well before the sky turns black. */
     @SubscribeEvent
     static void fogDistance(ViewportEvent.RenderFog event) {
+        if (event.getMode() == net.minecraft.client.renderer.FogRenderer.FogMode.FOG_TERRAIN) {
+            SpaceView.terrainFog(event.getFarPlaneDistance(), event.getFogShape() == com.mojang.blaze3d.shaders.FogShape.SPHERE);
+        }
         float k = spaceFactor();
         if (k <= 0) {
             return;
@@ -319,6 +330,10 @@ public final class RocketClientEvents {
         if (f <= 0) {
             return;
         }
+        var here = SpaceView.surface(Minecraft.getInstance().level);
+        if (here == null || !here.atmosphere()) {
+            return; // no air, no blue: the world's own (black) sky all the way up
+        }
         float clear = Mth.clamp(f * 3F, 0, 1);
         float keep = 1 - Mth.clamp((f - 0.45F) / 0.55F, 0, 1);
         event.setRed(Mth.lerp(clear, event.getRed(), 0.38F) * keep);
@@ -328,38 +343,11 @@ public final class RocketClientEvents {
 
     @SubscribeEvent
     static void sky(RenderLevelStageEvent event) {
-        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_SKY) {
-            return;
+        float partial = event.getPartialTick().getGameTimeDeltaPartialTick(false);
+        if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_SKY) {
+            SpaceView.sky(event.getModelViewMatrix(), event.getProjectionMatrix(), partial);
+        } else if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_CUTOUT_BLOCKS) {
+            SpaceView.overTerrain(event.getModelViewMatrix(), partial);
         }
-        float k = spaceFactor();
-        if (k <= 0) {
-            return;
-        }
-        // deep blue overhead first, then black; the horizon stays a thin band of light blue the longest
-        float top = Mth.clamp(k * 3F, 0, 1);
-        float night = Mth.clamp((k - 0.3F) / 0.6F, 0, 1);
-        int r = (int) Mth.lerp(night, 8, 0), g = (int) Mth.lerp(night, 16, 0), b = (int) Mth.lerp(night, 52, 0);
-        int over = (int) (top * 255) << 24 | r << 16 | g << 8 | b;
-        int horizon = (int) (Mth.clamp((k - 0.35F) / 0.6F, 0, 1) * 255) << 24 | r << 16 | g << 8 | b;
-        SkyDraw.gradient(event.getModelViewMatrix(), over, horizon);
-        SkyDraw.stars(event.getModelViewMatrix(), event.getProjectionMatrix(), k);
-        // the sun stays bright in space
-        Minecraft mc = Minecraft.getInstance();
-        float theta = mc.level.getTimeOfDay(event.getPartialTick().getGameTimeDeltaPartialTick(false)) * Mth.TWO_PI;
-        org.joml.Vector3f sun = new org.joml.Vector3f(-Mth.sin(theta), Mth.cos(theta), 0);
-        SkyDraw.billboard(event.getModelViewMatrix(), OrbitSkyEffects.SUN, sun, 100F, 15F, k);
-        // the Earth below: its horizon curves away as the rocket climbs, until it looks as it will from orbit
-        // (angular radius from ~88 degrees, a flat horizon, down to the orbit sky's)
-        float angle = Mth.lerp(k, 88F, OrbitSkyEffects.ORBIT_ANGULAR_RADIUS) * Mth.DEG_TO_RAD;
-        float radius = 100F * Mth.sin(angle);
-        org.joml.Vector3f center = new org.joml.Vector3f(0, -100F, 0);
-        float planet = Mth.clamp((k - 0.02F) / 0.15F, 0, 1);
-        com.mojang.blaze3d.systems.RenderSystem.depthMask(false);
-        if (!BodyLook.drawBelow(event.getModelViewMatrix(), Location.EARTH, center, radius, 0F, sun, planet, true)) {
-            SkyDraw.planet(event.getModelViewMatrix(), OrbitSkyEffects.EARTH, center, radius, 0F, sun, 0.05F, planet, false);
-            SkyDraw.planet(event.getModelViewMatrix(), OrbitSkyEffects.EARTH_CLOUDS, center, radius * 1.006F, 0F, sun, 0.03F, 0.6F * planet, false);
-            SkyDraw.planet(event.getModelViewMatrix(), OrbitSkyEffects.EARTH_LIMB, center, radius * 1.035F, 0F, sun, 0.25F, planet, true, true);
-        }
-        com.mojang.blaze3d.systems.RenderSystem.depthMask(true);
     }
 }

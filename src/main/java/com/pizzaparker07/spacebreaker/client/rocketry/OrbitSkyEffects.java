@@ -159,6 +159,57 @@ public class OrbitSkyEffects extends DimensionSpecialEffects {
         colors.lerp(new org.joml.Vector3f(0.75F, 0.75F, 0.75F), 0.04F);
     }
 
+    /**
+     * The sun, the body below at this angular radius and (round the Earth) the Moon, exactly as the orbit sky draws
+     * them at game time {@code t}: shared by the orbit sky and the high-altitude sky of a surface world, so the two
+     * frames either side of a change of dimension match.
+     *
+     * @param lit share of sunlight (orbit shadow), {@code alpha} of the whole
+     */
+    static void drawBodyBelow(Matrix4f modelView, ResourceLocation body, float angularDeg, float t, float lit, float alpha) {
+        drawBodyBelow(modelView, body, angularDeg, t, lit, alpha, com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.APPROACH);
+    }
+
+    /** As above at a fixed ball resolution (see {@link BodyLook#drawBelow}): for a ball whose size is changing. */
+    static void drawBodyBelow(Matrix4f modelView, ResourceLocation body, float angularDeg, float t, float lit, float alpha, int n) {
+        drawBodyBelow(modelView, body, angularDeg, t, lit, alpha, n, new Vector3f(0, -1, 0));
+    }
+
+    /** As above with the body's centre in direction {@code dir} (unit) instead of straight down. */
+    static void drawBodyBelow(Matrix4f modelView, ResourceLocation body, float angularDeg, float t, float lit, float alpha, int n, Vector3f dir) {
+        float orbit = t / ORBIT_TICKS;
+        Vector3f sun = sunDirection(t);
+        if (lit * alpha > 0.01F) {
+            SkyDraw.billboard(modelView, SUN, sun, 100F, sunSize(body), lit * alpha);
+        }
+        Vector3f center = new Vector3f(dir).mul(100F);
+        float radius = 100F * Mth.sin(angularDeg * Mth.DEG_TO_RAD);
+        if (Location.EARTH.equals(body)) {
+            SkyDraw.billboard(modelView, MOON_DISC, new Vector3f(0.7F, 0.45F, -0.55F), 100F, 2.4F, alpha);
+            if (!BodyLook.drawBelow(modelView, Location.EARTH, center, radius, orbit, sun, alpha, true, n)) {
+                SkyDraw.planet(modelView, EARTH, center, radius, orbit, sun, 0.05F, alpha, false);
+                SkyDraw.planet(modelView, EARTH_CLOUDS, center, radius * 1.006F, orbit * 1.15F, sun, 0.03F, 0.6F * alpha, false);
+                // thin blue atmosphere halo around the limb (drawn last, additive)
+                SkyDraw.planet(modelView, EARTH_LIMB, center, radius * 1.035F, 0, sun, 0.25F, alpha, true, true);
+            }
+        } else {
+            // the planet a moon belongs to hangs in the sky (the Earth seen from the Moon)
+            Locations.parentPlanet(body).ifPresent(parent -> SkyDraw.billboard(modelView, disc(parent),
+                    new Vector3f(-0.6F, 0.35F, 0.7F), 100F, Location.EARTH.equals(parent) ? 3.2F : 6F, alpha));
+            boolean air = Locations.body(body).filter(b -> b.atmosphere().pressureKpa() >= 0.1).isPresent();
+            if (!BodyLook.drawBelow(modelView, body, center, radius, orbit * 0.5F, sun, alpha, air, n)) {
+                SkyDraw.planet(modelView, Location.MOON.equals(body) ? MOON : surface(body), center, radius, orbit * 0.5F, sun, 0.04F, alpha, false);
+                Locations.body(body).filter(b -> b.atmosphere().pressureKpa() >= 0.1).ifPresent(b ->
+                        SkyDraw.planet(modelView, limb(body), center, radius * (b.atmosphere().pressureKpa() > 1000 ? 1.05F : 1.03F), 0, sun, 0.2F, alpha, true, true));
+            }
+        }
+    }
+
+    private static float smooth(float x) {
+        x = Mth.clamp(x, 0F, 1F);
+        return x * x * (3F - 2F * x);
+    }
+
     /** Angular radius of the body below as seen from orbit (degrees); the ascent sky grows towards it. */
     static final float ORBIT_ANGULAR_RADIUS = 68F;
 
@@ -174,32 +225,39 @@ public class OrbitSkyEffects extends DimensionSpecialEffects {
         RenderSystem.disableDepthTest();
         SkyDraw.blackout(modelView, 0xFF000000);
         SkyDraw.stars(modelView, projection, 1F);
-        // the sun fades through the penumbra as it slips behind the planet's edge
+        // the sun fades through the penumbra as it slips behind the planet's edge; the body below fills the lower view
         float lit = sunlit(level, partialTick);
-        if (lit > 0.01F) {
-            SkyDraw.billboard(modelView, SUN, sun, 100F, sunSize(body), lit);
-        }
-        // the body below, seen from low orbit: the horizon dips ~22 degrees, so the curve fills the lower view
-        Vector3f center = new Vector3f(0, -100F, 0);
-        float radius = 100F * Mth.sin(ORBIT_ANGULAR_RADIUS * Mth.DEG_TO_RAD);
-        if (Location.EARTH.equals(body)) {
-            SkyDraw.billboard(modelView, MOON_DISC, new Vector3f(0.7F, 0.45F, -0.55F), 100F, 2.4F, 1F);
-            if (!BodyLook.drawBelow(modelView, Location.EARTH, center, radius, orbit, sun, 1F, true)) {
-                SkyDraw.planet(modelView, EARTH, center, radius, orbit, sun, 0.05F, 1F, false);
-                SkyDraw.planet(modelView, EARTH_CLOUDS, center, radius * 1.006F, orbit * 1.15F, sun, 0.03F, 0.6F, false);
-                // thin blue atmosphere halo around the limb (drawn last, additive)
-                SkyDraw.planet(modelView, EARTH_LIMB, center, radius * 1.035F, 0, sun, 0.25F, 1F, true, true);
+        var rocket = RocketHud.ridden();
+        Location dest = rocket != null && rocket.state() == com.pizzaparker07.spacebreaker.content.rocketry.entity.FlightState.TRANSFER
+                ? rocket.destination() : null;
+        if (dest != null && !dest.body().equals(body)) {
+            // the coast between worlds, sped up: the world left behind shrinks away below, the next one grows to fill
+            // the view as the orbit sky there will show it (so the hand-over matches)
+            float p = Mth.clamp((rocket.timer() + partialTick) / com.pizzaparker07.spacebreaker.content.rocketry.entity.RocketEntity.TRANSFER_TICKS, 0, 1);
+            // both balls at a fixed resolution while their size runs; the close-up patch again for the last stretch,
+            // so the hand-over meets the destination's own orbit sky exactly
+            int fixed = 64;
+            if (p < 0.5F) {
+                float e = smooth(p / 0.45F);
+                drawBodyBelow(modelView, body, Mth.lerp(e, ORBIT_ANGULAR_RADIUS, 0.8F), t, lit, 1F - smooth((p - 0.4F) / 0.1F),
+                        p < 0.04F ? com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.APPROACH : fixed);
+            }
+            if (p > 0.3F) {
+                float e = smooth((p - 0.3F) / 0.7F);
+                float size = (float) Math.toDegrees(Math.asin(Mth.lerp(e * e * e, Mth.sin(0.8F * Mth.DEG_TO_RAD), Mth.sin(ORBIT_ANGULAR_RADIUS * Mth.DEG_TO_RAD))));
+                float destLit = (float) com.pizzaparker07.spacebreaker.content.rocketry.nav.OrbitDaylight.sunlit(
+                        com.pizzaparker07.spacebreaker.content.rocketry.nav.OrbitDaylight.system(level.registryAccess()), dest.body(), t);
+                // it comes up ahead, a little below the line of sight, and swings round under the ship as it grows
+                var look = net.minecraft.client.Minecraft.getInstance().gameRenderer.getMainCamera().getLookVector();
+                float hl = Math.max(1e-3F, (float) Math.sqrt(look.x * look.x + look.z * look.z));
+                Vector3f ahead = new Vector3f(look.x / hl * 0.9F, -0.44F, look.z / hl * 0.9F).normalize();
+                float swing = smooth((p - 0.55F) / 0.4F);
+                Vector3f dir = ahead.lerp(new Vector3f(0, -1, 0), swing).normalize();
+                drawBodyBelow(modelView, dest.body(), size, t, destLit, smooth((p - 0.3F) / 0.08F),
+                        p > 0.96F ? com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.APPROACH : fixed, dir);
             }
         } else {
-            // the planet a moon belongs to hangs in the sky (the Earth seen from the Moon)
-            Locations.parentPlanet(body).ifPresent(parent -> SkyDraw.billboard(modelView, disc(parent),
-                    new Vector3f(-0.6F, 0.35F, 0.7F), 100F, Location.EARTH.equals(parent) ? 3.2F : 6F, 1F));
-            boolean air = Locations.body(body).filter(b -> b.atmosphere().pressureKpa() >= 0.1).isPresent();
-            if (!BodyLook.drawBelow(modelView, body, center, radius, orbit * 0.5F, sun, 1F, air)) {
-                SkyDraw.planet(modelView, Location.MOON.equals(body) ? MOON : surface(body), center, radius, orbit * 0.5F, sun, 0.04F, 1F, false);
-                Locations.body(body).filter(b -> b.atmosphere().pressureKpa() >= 0.1).ifPresent(b ->
-                        SkyDraw.planet(modelView, limb(body), center, radius * (b.atmosphere().pressureKpa() > 1000 ? 1.05F : 1.03F), 0, sun, 0.2F, 1F, true, true));
-            }
+            drawBodyBelow(modelView, body, ORBIT_ANGULAR_RADIUS, t, lit, 1F);
         }
         RenderSystem.enableDepthTest();
         RenderSystem.depthMask(true);
