@@ -354,6 +354,24 @@ Shot 11 is now aimed at the station. **QA-27 closed**: `stationAirlockCycle` ass
 together on any tick and that the station is sealed at every step (both shut 119, inner open 148, outer asked open
 while the inner was open 119, and so on).
 
+## Seamless trips as a player (`qa_seamless`, 2026-11-09, 1.21.1 @ 191b49ca, rocketry 161755c9)
+
+`./gradlew runShowcase -Pscenario=qa_seamless`: third-person camera, the player in a Moon rocket with the three-seat
+capsule. Flight 1: pad → Earth orbit → back down to the Earth. Flight 2: Earth orbit → Moon orbit → the Moon's surface.
+The client logs every tick (`run-showcase/qa_seamless.tsv`: dimension, screen, seated, state, stand-in drawn, real
+rockets near) and saves frames.
+- no loading or progress screen in 8,146 ticks ✅; no black or one-colour frame ✅; the descent into the Earth's air is a
+  smooth fade into the reentry glow ✅;
+- the player stays seated; at the hand-over to orbit the client shows them unseated for 3–4 ticks, covered by the
+  stand-in rocket ✅; the stand-in is never drawn while a real rocket is near ✅;
+- landing points: the Moon exactly under the orbit position (airless, 0.5 86 0.5) ✅; the Earth 50.6 blocks from the pad
+  (no landing beacon: under the orbit position plus wind drift, by design);
+- ❌ about 10 ticks after arriving in Earth orbit the real rocket is not drawn for ~20 ticks (frames 840–859), although
+  the client has it and the player is seated in it; reported to rocketry;
+- a second crew member cannot be tried in this harness (a fake player is not in the world; a server player on a dead
+  connection has not agreed the mod's network channels, and the login sync refuses to send to it): needs a second real
+  client.
+
 ## beta.1 feedback checks (2026-11-09, 1.21.1 @ d52b37a3)
 
 - (c) no metal block sounds like wool: `qa/BlockSoundAuditTests.metalBlocksDoNotSoundLikeWool` reads every block's
