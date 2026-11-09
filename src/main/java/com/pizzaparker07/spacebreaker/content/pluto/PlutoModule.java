@@ -67,14 +67,14 @@ public final class PlutoModule implements SbModule {
             .mapColor(MapColor.TERRACOTTA_BROWN).strength(0.6F).friction(0.98F).sound(SoundType.GLASS).instrument(NoteBlockInstrument.CHIME));
     public static final DeferredBlock<Block> METHANE_FROST = KIT.block("methane_frost", BlockBehaviour.Properties.of().mapColor(MapColor.SNOW)
             .strength(0.3F).sound(SoundType.POWDER_SNOW));
-    public static final BlockKit.Family PLUTONIAN_ICE = KIT.family("plutonian_ice", MapColor.TERRACOTTA_WHITE, SoundType.STONE, 1.7F, true);
+    public static final BlockKit.Family PLUTONIAN_ICE = KIT.family("plutonian_ice", MapColor.TERRACOTTA_WHITE, SoundType.GLASS, 1.7F, true);
     public static final DeferredBlock<DropExperienceBlock> PLUTONIAN_THOLIN_ORE = KIT.block("plutonian_tholin_ore",
             p -> new DropExperienceBlock(UniformInt.of(0, 2), p), BlockKit.rockProps(MapColor.TERRACOTTA_WHITE, SoundType.STONE, 2.0F));
 
     // ---- Charon
     public static final DeferredBlock<LunarRegolithBlock> CHARON_REGOLITH = KIT.block("charon_regolith", LunarRegolithBlock::new,
             BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(0.5F).sound(SoundType.SAND));
-    public static final DeferredBlock<Block> CHARON_ICE = KIT.rock("charon_ice", MapColor.COLOR_GRAY, SoundType.STONE, 1.6F);
+    public static final DeferredBlock<Block> CHARON_ICE = KIT.rock("charon_ice", MapColor.COLOR_GRAY, SoundType.GLASS, 1.6F);
     public static final DeferredBlock<LunarRegolithBlock> RED_POLAR_FROST = KIT.block("red_polar_frost", LunarRegolithBlock::new,
             BlockBehaviour.Properties.of().mapColor(MapColor.TERRACOTTA_RED).strength(0.4F).sound(SoundType.POWDER_SNOW));
     public static final DeferredBlock<DropExperienceBlock> AMMONIA_HYDRATE_ORE = KIT.block("ammonia_hydrate_ore",

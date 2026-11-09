@@ -3,6 +3,7 @@ package com.pizzaparker07.spacebreaker.content.blueprint;
 import com.pizzaparker07.spacebreaker.core.multiblock.MultiblockDefinition;
 import com.pizzaparker07.spacebreaker.core.multiblock.Multiblocks;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -23,6 +24,8 @@ import java.util.List;
  * <ul>
  *   <li>use in the air: choose a structure (list screen);</li>
  *   <li>use on a block: place the projection there (controller position), turned the way you look;</li>
+ *   <li>use on the projection (a block of it, or a spot inside it): build what is missing from the inventory
+ *   ({@link BlueprintBuilder});</li>
  *   <li>sneak + use on a block: remove the projection; sneak + use in the air: next layer / all layers;</li>
  *   <li>sneak + mouse wheel: turn the projection.</li>
  * </ul>
@@ -76,6 +79,8 @@ public class HologramProjectorItem extends Item {
             if (player != null && player.isShiftKeyDown()) {
                 stack.set(BlueprintModule.HOLOGRAM.get(), h.cleared());
                 player.displayClientMessage(Component.translatable("message.spacebreaker.hologram.cleared"), true);
+            } else if (player instanceof net.minecraft.server.level.ServerPlayer sp && onProjection(level, h, ctx.getClickedPos(), ctx.getClickedPos().relative(ctx.getClickedFace()))) {
+                BlueprintBuilder.start(sp, h);
             } else {
                 var anchor = ctx.getClickedPos().relative(ctx.getClickedFace());
                 stack.set(BlueprintModule.HOLOGRAM.get(), h.withAnchor(anchor, ctx.getHorizontalDirection()));
@@ -83,6 +88,23 @@ public class HologramProjectorItem extends Item {
             }
         }
         return InteractionResult.sidedSuccess(level.isClientSide);
+    }
+
+    /** Whether either position belongs to the placed projection. */
+    static boolean onProjection(Level level, Hologram h, BlockPos clicked, BlockPos against) {
+        if (h.anchor().isEmpty()) {
+            return false;
+        }
+        var def = Multiblocks.get(level.registryAccess(), h.blueprint());
+        if (def.isEmpty()) {
+            return false;
+        }
+        for (MultiblockDefinition.Placement p : def.get().placements(h.anchor().get(), h.facing())) {
+            if (p.pos().equals(clicked) || p.pos().equals(against)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -94,5 +116,6 @@ public class HologramProjectorItem extends Item {
         }
         tooltip.add(Component.translatable("tooltip.spacebreaker.hologram.hint1").withStyle(ChatFormatting.GRAY));
         tooltip.add(Component.translatable("tooltip.spacebreaker.hologram.hint2").withStyle(ChatFormatting.DARK_GRAY));
+        tooltip.add(Component.translatable("tooltip.spacebreaker.hologram.hint3").withStyle(ChatFormatting.DARK_GRAY));
     }
 }

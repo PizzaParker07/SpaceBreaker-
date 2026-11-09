@@ -53,8 +53,8 @@ public final class UranusModule implements SbModule {
 
     public static final DeferredBlock<LunarRegolithBlock> MIRANDAN_REGOLITH = KIT.block("mirandan_regolith", LunarRegolithBlock::new,
             BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(0.5F).sound(SoundType.SAND));
-    public static final BlockKit.Family MIRANDAN_ICE = KIT.family("mirandan_ice", MapColor.COLOR_GRAY, SoundType.STONE, 1.6F, true);
-    public static final DeferredBlock<Block> BRIGHT_RIDGE_ICE = KIT.rock("bright_ridge_ice", MapColor.SNOW, SoundType.STONE, 1.4F);
+    public static final BlockKit.Family MIRANDAN_ICE = KIT.family("mirandan_ice", MapColor.COLOR_GRAY, SoundType.GLASS, 1.6F, true);
+    public static final DeferredBlock<Block> BRIGHT_RIDGE_ICE = KIT.rock("bright_ridge_ice", MapColor.SNOW, SoundType.GLASS, 1.4F);
     public static final DeferredBlock<Block> DARK_BAND_ICE = KIT.rock("dark_band_ice", MapColor.COLOR_GRAY, SoundType.STONE, 1.4F);
     public static final DeferredBlock<DropExperienceBlock> CARBON_ORE = KIT.block("mirandan_carbon_ore",
             p -> new DropExperienceBlock(UniformInt.of(0, 2), p), BlockKit.rockProps(MapColor.COLOR_GRAY, SoundType.STONE, 2.0F));
@@ -63,7 +63,7 @@ public final class UranusModule implements SbModule {
     public static final ResourceKey<Level> ARIEL = ResourceKey.create(Registries.DIMENSION, Spacebreaker.id("ariel"));
     public static final DeferredBlock<LunarRegolithBlock> ARIEL_REGOLITH = KIT.block("ariel_regolith", LunarRegolithBlock::new,
             BlockBehaviour.Properties.of().mapColor(MapColor.TERRACOTTA_WHITE).strength(0.5F).sound(SoundType.SAND));
-    public static final BlockKit.Family ARIEL_ICE = KIT.family("ariel_ice", MapColor.TERRACOTTA_LIGHT_GRAY, SoundType.STONE, 1.6F, true);
+    public static final BlockKit.Family ARIEL_ICE = KIT.family("ariel_ice", MapColor.TERRACOTTA_LIGHT_GRAY, SoundType.GLASS, 1.6F, true);
     public static final DeferredBlock<Block> GRABEN_FLOOR_ICE = KIT.block("graben_floor_ice", BlockBehaviour.Properties.of()
             .mapColor(MapColor.TERRACOTTA_LIGHT_GRAY).strength(1.2F).friction(0.9F).sound(SoundType.GLASS));
     public static final DeferredBlock<DropExperienceBlock> ARIEL_AMMONIA_ORE = KIT.block("ariel_ammonia_ore",
@@ -73,7 +73,7 @@ public final class UranusModule implements SbModule {
     public static final ResourceKey<Level> TITANIA = ResourceKey.create(Registries.DIMENSION, Spacebreaker.id("titania"));
     public static final DeferredBlock<LunarRegolithBlock> TITANIA_REGOLITH = KIT.block("titania_regolith", LunarRegolithBlock::new,
             BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GRAY).strength(0.5F).sound(SoundType.SAND));
-    public static final BlockKit.Family TITANIA_ICE = KIT.family("titania_ice", MapColor.COLOR_GRAY, SoundType.STONE, 1.7F, true);
+    public static final BlockKit.Family TITANIA_ICE = KIT.family("titania_ice", MapColor.COLOR_GRAY, SoundType.GLASS, 1.7F, true);
     public static final DeferredBlock<Block> CANYON_WALL_ICE = KIT.rock("canyon_wall_ice", MapColor.TERRACOTTA_WHITE, SoundType.STONE, 1.5F);
     public static final DeferredBlock<DropExperienceBlock> TITANIA_CARBON_ORE = KIT.block("titania_carbon_ore",
             p -> new DropExperienceBlock(UniformInt.of(0, 2), p), BlockKit.rockProps(MapColor.COLOR_GRAY, SoundType.STONE, 2.0F));
