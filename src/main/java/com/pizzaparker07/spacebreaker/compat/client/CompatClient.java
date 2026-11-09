@@ -5,6 +5,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
@@ -47,12 +48,16 @@ public final class CompatClient {
     }
 
     @SubscribeEvent
+    static void clientTick(ClientTickEvent.Post event) {
+        DhCompat.tick();
+    }
+
+    @SubscribeEvent
     static void loggingOut(ClientPlayerNetworkEvent.LoggingOut event) {
         ShaderSkyPass.release();
         HazePass.release();
         LateEffects.clear();
-        DhCompat.hideLods(false); // an override someone forgot to lift must not outlive the world
-        DhCompat.hideFog(false);
+        DhCompat.reset(); // an override someone forgot to lift must not outlive the world
         SpaceSky.reset();
     }
 }

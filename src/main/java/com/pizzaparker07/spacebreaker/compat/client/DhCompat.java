@@ -20,6 +20,8 @@ import java.lang.reflect.Method;
 public final class DhCompat {
     private static final String DH = "distanthorizons";
     private static boolean resolved;
+    private static ClassLoader loader;
+    private static final java.util.Set<String> noted = new java.util.HashSet<>();
     private static Field configs;
     private static Field terrainRepo;
     private static Field worldProxy;
@@ -34,6 +36,8 @@ public final class DhCompat {
     private static Method fog;
     private static Method enableDhFog;
     private static boolean hidingFog;
+    private static boolean fogRequested;
+    private static boolean fogAuto;
     private static boolean fogWarned;
     private static Method worldLoaded;
     private static Method singlePlayerLevel;
@@ -54,22 +58,56 @@ public final class DhCompat {
     private DhCompat() {
     }
 
+    /**
+     * The class loader that holds DH's API as DH itself uses it: the loader of DH's NeoForge entry class if that can
+     * be found, else ours. Null without DH.
+     */
+    private static ClassLoader dhLoader() {
+        ClassLoader own = DhCompat.class.getClassLoader();
+        for (String entry : new String[]{"com.seibel.distanthorizons.neoforge.NeoforgeMain", "com.seibel.distanthorizons.api.DhApi"}) {
+            try {
+                return Class.forName(entry, false, own).getClassLoader();
+            } catch (ClassNotFoundException | LinkageError ignored) {
+                // try the next one
+            }
+        }
+        return null;
+    }
+
+    private static Class<?> find(String name) throws ClassNotFoundException {
+        return Class.forName(name, true, loader);
+    }
+
+    private static void note(String key, String message, Object... args) {
+        if (noted.add(key)) {
+            Spacebreaker.LOGGER.info("DH state: " + message, args);
+        }
+    }
+
     private static void resolve() {
         if (resolved) {
             return;
         }
         resolved = true;
-        if (!Compat.isInstalled(DH)) {
+        boolean listed = Compat.isInstalled(DH);
+        loader = dhLoader();
+        if (loader == null) {
+            if (listed) {
+                Spacebreaker.LOGGER.info("DH state: in the mod list, but its classes are not visible to Spacebreaker");
+            }
             return;
         }
+        if (!listed) {
+            Spacebreaker.LOGGER.info("DH state: classes present although the mod list has no '{}'; using them", DH);
+        }
         try {
-            Class<?> delayed = Class.forName("com.seibel.distanthorizons.api.DhApi$Delayed");
+            Class<?> delayed = find("com.seibel.distanthorizons.api.DhApi$Delayed");
             configs = delayed.getField("configs");
-            graphics = Class.forName("com.seibel.distanthorizons.api.interfaces.config.IDhApiConfig").getMethod("graphics");
-            Class<?> g = Class.forName("com.seibel.distanthorizons.api.interfaces.config.client.IDhApiGraphicsConfig");
+            graphics = find("com.seibel.distanthorizons.api.interfaces.config.IDhApiConfig").getMethod("graphics");
+            Class<?> g = find("com.seibel.distanthorizons.api.interfaces.config.client.IDhApiGraphicsConfig");
             chunkRenderDistance = g.getMethod("chunkRenderDistance");
             renderingEnabled = g.getMethod("renderingEnabled");
-            Class<?> value = Class.forName("com.seibel.distanthorizons.api.interfaces.config.IDhApiConfigValue");
+            Class<?> value = find("com.seibel.distanthorizons.api.interfaces.config.IDhApiConfigValue");
             configValue = value.getMethod("getValue");
             setApiValue = value.getMethod("setValue", Object.class);
             clearApiValue = value.getMethod("clearValue");
@@ -80,30 +118,30 @@ public final class DhCompat {
         }
         // The rest is optional: each part that a DH version lacks only switches off what needs it.
         try {
-            curvature = Class.forName("com.seibel.distanthorizons.api.interfaces.config.client.IDhApiGraphicsConfig")
+            curvature = find("com.seibel.distanthorizons.api.interfaces.config.client.IDhApiGraphicsConfig")
                     .getMethod("earthCurvatureRatio");
         } catch (ReflectiveOperationException | LinkageError e) {
             curvature = null;
             Spacebreaker.LOGGER.warn("Distant Horizons' earth curvature setting could not be reached", e);
         }
         try {
-            fog = Class.forName("com.seibel.distanthorizons.api.interfaces.config.client.IDhApiGraphicsConfig").getMethod("fog");
-            enableDhFog = Class.forName("com.seibel.distanthorizons.api.interfaces.config.client.IDhApiFogConfig").getMethod("enableDhFog");
+            fog = find("com.seibel.distanthorizons.api.interfaces.config.client.IDhApiGraphicsConfig").getMethod("fog");
+            enableDhFog = find("com.seibel.distanthorizons.api.interfaces.config.client.IDhApiFogConfig").getMethod("enableDhFog");
         } catch (ReflectiveOperationException | LinkageError e) {
             fog = null;
             enableDhFog = null;
             Spacebreaker.LOGGER.warn("Distant Horizons' fog settings could not be reached", e);
         }
         try {
-            Class<?> delayed = Class.forName("com.seibel.distanthorizons.api.DhApi$Delayed");
+            Class<?> delayed = find("com.seibel.distanthorizons.api.DhApi$Delayed");
             terrainRepo = delayed.getField("terrainRepo");
             worldProxy = delayed.getField("worldProxy");
-            Class<?> world = Class.forName("com.seibel.distanthorizons.api.interfaces.world.IDhApiWorldProxy");
+            Class<?> world = find("com.seibel.distanthorizons.api.interfaces.world.IDhApiWorldProxy");
             worldLoaded = world.getMethod("worldLoaded");
             singlePlayerLevel = world.getMethod("getSinglePlayerLevel");
-            Class<?> repo = Class.forName("com.seibel.distanthorizons.api.interfaces.data.IDhApiTerrainDataRepo");
-            Class<?> level = Class.forName("com.seibel.distanthorizons.api.interfaces.world.IDhApiLevelWrapper");
-            Class<?> cache = Class.forName("com.seibel.distanthorizons.api.interfaces.data.IDhApiTerrainDataCache");
+            Class<?> repo = find("com.seibel.distanthorizons.api.interfaces.data.IDhApiTerrainDataRepo");
+            Class<?> level = find("com.seibel.distanthorizons.api.interfaces.world.IDhApiLevelWrapper");
+            Class<?> cache = find("com.seibel.distanthorizons.api.interfaces.data.IDhApiTerrainDataCache");
             columnData = repo.getMethod("getColumnDataAtBlockPos", level, int.class, int.class, cache);
         } catch (ReflectiveOperationException | LinkageError e) {
             columnData = null;
@@ -226,6 +264,21 @@ public final class DhCompat {
      * "disable vanilla fog" setting are left alone. Cheap to call every frame; only a change is passed on to DH.
      */
     public static void hideFog(boolean hide) {
+        fogRequested = hide;
+        applyFog();
+    }
+
+    /** DH's fog is always held back in airless worlds (orbits, the Moon): it would paint them with the Overworld's haze. */
+    private static void autoFog(Minecraft mc) {
+        boolean airless = mc.level != null && SpaceSky.kind(mc.level).airless();
+        if (airless != fogAuto) {
+            fogAuto = airless;
+            applyFog();
+        }
+    }
+
+    private static void applyFog() {
+        boolean hide = fogRequested || fogAuto;
         if (hide == hidingFog) {
             return;
         }
@@ -257,7 +310,22 @@ public final class DhCompat {
         }
     }
 
-    /** Whether {@link #hideFog} is holding DH's fog back right now. */
+    /** Once a client tick: keeps the automatic parts (fog in airless worlds) up to date while nothing else asks. */
+    public static void tick() {
+        if (loader != null || !resolved) {
+            refresh();
+        }
+    }
+
+    /** Lifts every override (on logout): an override must not outlive the world. */
+    public static void reset() {
+        hideLods(false);
+        fogRequested = false;
+        fogAuto = false;
+        applyFog();
+    }
+
+    /** Whether DH's fog is held back right now (asked for with {@link #hideFog}, or in an airless world). */
     public static boolean hidingFog() {
         return hidingFog;
     }
@@ -278,15 +346,22 @@ public final class DhCompat {
         cachedCurvature = 0;
         resolve();
         if (configs == null) {
+            note("unresolved", "API not resolved (see the lines above), reported as off");
             return;
         }
         try {
             Object config = configs.get(null);
             if (config == null) {
+                note("config-null", "DhApi.Delayed.configs is still null (class loader {}), reported as off",
+                        configs.getDeclaringClass().getClassLoader());
                 return;
             }
             Object g = graphics.invoke(config);
-            if (!hiding && !Boolean.TRUE.equals(configValue.invoke(renderingEnabled.invoke(g)))) {
+            autoFog(mc);
+            Object rendering = configValue.invoke(renderingEnabled.invoke(g));
+            if (!hiding && !Boolean.TRUE.equals(rendering)) {
+                note("rendering-" + rendering, "rendering switch reads {} ({}), reported as off", rendering,
+                        rendering == null ? "null" : rendering.getClass().getName());
                 return;
             }
             Object chunks = configValue.invoke(chunkRenderDistance.invoke(g));
