@@ -63,6 +63,11 @@ public final class RocketryClient {
             }
         };
         com.pizzaparker07.spacebreaker.content.rocketry.net.RocketToastPayload.onClient = RocketToast::show;
+        // high up in a rocket a shader pack's own sky (and clouds) give way to ours, so the climb ends in the orbit sky
+        com.pizzaparker07.spacebreaker.compat.client.ShaderSkyPass.spaceView = () -> {
+            float k = SpaceView.factor();
+            return k > 0.02F || SpaceView.ball(k) > 0.02F;
+        };
         com.pizzaparker07.spacebreaker.content.rocketry.item.Fmt.localDots = () -> {
             var mc = net.minecraft.client.Minecraft.getInstance();
             return mc != null && mc.getLanguageManager() != null && mc.getLanguageManager().getSelected().startsWith("tr");

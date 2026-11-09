@@ -177,8 +177,13 @@ public class OrbitSkyEffects extends DimensionSpecialEffects {
 
     /** As above with the body's centre in direction {@code dir} (unit) instead of straight down. */
     static void drawBodyBelow(Matrix4f modelView, ResourceLocation body, float angularDeg, float t, float lit, float alpha, int n, Vector3f dir) {
+        drawBodyBelow(modelView, body, angularDeg, t, lit, alpha, n, dir, sunDirection(t));
+    }
+
+    /** As above, lit by a sun in direction {@code sun} (unit; the orbit's own is {@link #sunDirection}). */
+    static void drawBodyBelow(Matrix4f modelView, ResourceLocation body, float angularDeg, float t, float lit, float alpha, int n, Vector3f dir,
+                              Vector3f sun) {
         float orbit = t / ORBIT_TICKS;
-        Vector3f sun = sunDirection(t);
         if (lit * alpha > 0.01F) {
             SkyDraw.billboard(modelView, SUN, sun, 100F, sunSize(body), lit * alpha);
         }
