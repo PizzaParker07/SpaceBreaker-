@@ -102,7 +102,10 @@ public final class PlanetTime {
         Data data = data(level);
         data.offset = offset;
         data.setDirty();
-        PacketDistributor.sendToAllPlayers(new PlanetTimePayload(level.dimension(), updated.dayTicks(), updated.offset()));
+        PlanetTimePayload payload = new PlanetTimePayload(level.dimension(), updated.dayTicks(), updated.offset());
+        for (ServerPlayer p : level.getServer().getPlayerList().getPlayers()) {
+            send(p, payload);
+        }
     }
 
     // ------------------------------------------------------------------ lifecycle
@@ -124,7 +127,14 @@ public final class PlanetTime {
     }
 
     static void syncTo(ServerPlayer player) {
-        SERVER.forEach((dim, c) -> PacketDistributor.sendToPlayer(player, new PlanetTimePayload(dim, c.dayTicks(), c.offset())));
+        SERVER.forEach((dim, c) -> send(player, new PlanetTimePayload(dim, c.dayTicks(), c.offset())));
+    }
+
+    /** Sends only to clients that have the mod's channel (a vanilla client on the server must not get it). */
+    private static void send(ServerPlayer player, PlanetTimePayload payload) {
+        if (player.connection != null && player.connection.hasChannel(PlanetTimePayload.TYPE)) {
+            PacketDistributor.sendToPlayer(player, payload);
+        }
     }
 
     static void receive(PlanetTimePayload payload) {
