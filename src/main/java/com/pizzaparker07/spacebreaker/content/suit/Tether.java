@@ -11,7 +11,6 @@ import com.pizzaparker07.spacebreaker.core.env.TetherAnchor;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.Optional;
 
@@ -128,8 +127,8 @@ public final class Tether {
 
     /** Tells the wearer and everyone who can see them where the line is. */
     public static void sync(Player player) {
-        if (player instanceof ServerPlayer sp && sp.connection != null && sp.connection.hasChannel(TetherPayload.TYPE)) {
-            PacketDistributor.sendToPlayersTrackingEntityAndSelf(sp, payload(sp));
+        if (player instanceof ServerPlayer sp) {
+            com.pizzaparker07.spacebreaker.content.suit.net.SuitNetwork.sendNearAndSelf(sp, payload(sp));
         }
     }
 
