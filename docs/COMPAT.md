@@ -86,6 +86,7 @@ follow the Sun, which only the Overworld programs give. So we keep the Overworld
 | `client/InfoOverlayDepth` | with Jade or WTHIT installed, clears the GUI depth before their box is drawn, so it is never hidden behind our HUD layers. |
 | `client/ClippedLines` | outline boxes cut just in front of the camera: Iris's line programs stretch an edge that runs behind the camera across the view. |
 | `client/LodDepth` | Distant Horizons' depth texture through its API, so the sky and haze passes keep LOD terrain. |
+| `ShaderSkyPass.spaceView` | a hook (default off) for features that turn a vanilla-sky world's sky into space for a while (rocketry's seamless ascent and descent on Earth): while it answers true, the pack's sky and clouds are replaced there as in our space worlds, so the climb ends in the same sky the orbit shows. |
 | `client/DhCompat` | what Distant Horizons draws, by reflection: `active()`, `lodReachBlocks()` (its LOD distance), `curvatureRatio()` (its earth curvature setting), `lodUnder(x, z)` (LOD data in that column), `hideLods(boolean)` (an API override of DH's rendering switch, lifted on logout; the player's setting is untouched). For effects that hand the ground over high up (the seamless ascent's planet ball): DH draws its LODs after our terrain passes wherever the depth is still far, so far LOD ground shows around a ball that only covers the normal terrain. |
 
 Full-screen effects and HUDs stay in the GUI layer (drawn on top of the pack's final frame) — unchanged.
