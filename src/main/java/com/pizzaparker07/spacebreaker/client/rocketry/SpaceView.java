@@ -137,7 +137,9 @@ public final class SpaceView {
         // (the ball is drawn in the sky pass, before the LOD mod's terrain, which covers it wherever it holds data;
         // where it holds none yet, as in a world just arrived in, the ball is the far ground)
         boolean lods = com.pizzaparker07.spacebreaker.compat.client.DhCompat.active() && !com.pizzaparker07.spacebreaker.compat.client.DhCompat.hidingLods();
-        if (lods) {
+        var cam = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+        if (lods && com.pizzaparker07.spacebreaker.compat.client.DhCompat.lodUnder(cam.x, cam.z)) {
+            // (only where it really holds terrain: in a world it has not seen yet the ball stays as long as without it)
             reach = Math.max(reach, com.pizzaparker07.spacebreaker.compat.client.DhCompat.lodReachBlocks());
         }
         float far = Math.max(byK, smooth((float) ((altitude() - 0.25 * reach) / (0.35 * reach))));
@@ -199,32 +201,11 @@ public final class SpaceView {
         boolean noFog = RocketHud.ridden() != null && factor() > 0.02F;
         if (noFog != dhFogHidden) {
             dhFogHidden = noFog;
-            hideDhFog(noFog);
+            com.pizzaparker07.spacebreaker.compat.client.DhCompat.hideFog(noFog);
         }
     }
 
     private static boolean dhFogHidden;
-    private static java.lang.reflect.Method hideFog;
-    private static boolean hideFogLooked;
-
-    /** {@code DhCompat.hideFog}, where this build has it (a no-op where it does not). */
-    private static void hideDhFog(boolean hide) {
-        if (!hideFogLooked) {
-            hideFogLooked = true;
-            try {
-                hideFog = com.pizzaparker07.spacebreaker.compat.client.DhCompat.class.getMethod("hideFog", boolean.class);
-            } catch (NoSuchMethodException e) {
-                hideFog = null;
-            }
-        }
-        if (hideFog != null) {
-            try {
-                hideFog.invoke(null, hide);
-            } catch (ReflectiveOperationException e) {
-                hideFog = null;
-            }
-        }
-    }
 
     /** The widest the ball below is drawn (angular radius, degrees). */
     static final float MAX_BALL_ANGLE = 76F;
