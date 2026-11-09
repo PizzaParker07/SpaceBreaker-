@@ -351,6 +351,16 @@ public final class BlockyBodyRenderer {
      */
     public static void draw(Matrix4f pose, BlockyBodyMesh.Style style, int n, ColorMap map, Pose body, Vector3f sun, float night,
                             float tint, float alpha, Ring ring, int air) {
+        draw(pose, style, n, map, body, sun, night, tint, alpha, ring, air, 0, 0F);
+    }
+
+    /**
+     * As {@link #draw(Matrix4f, BlockyBodyMesh.Style, int, ColorMap, Pose, Vector3f, float, float, float, Ring, int)}, with a
+     * glow of the air lit from behind ({@code glowRgb}, strength {@code glow} 0..1): the ring of sunsets round Earth seen
+     * from the Moon during an eclipse. It is a second, slightly bigger shell of the same blocks, evenly bright all round.
+     */
+    public static void draw(Matrix4f pose, BlockyBodyMesh.Style style, int n, ColorMap map, Pose body, Vector3f sun, float night,
+                            float tint, float alpha, Ring ring, int air, int glowRgb, float glow) {
         if (air == NO_AIR) {
             render(pose, style, n, map, body, sun, night, tint, alpha, ring, null);
             return;
@@ -360,6 +370,11 @@ public final class BlockyBodyRenderer {
         ColorMap shell = AIR_MAPS.computeIfAbsent(air, BlockyBodyRenderer::flat);
         float grow = 2.2F / level; // one cell (a cell is 2 radii / level across) and a hair, so the shell clears the body's corners
         Pose halo = new Pose(body.center(), body.radius() * (1 + grow), body.pole(), body.facing(), body.spin());
+        if (glow > 0.01F) {
+            Pose outer = new Pose(body.center(), body.radius() * (1 + grow * 1.7F), body.pole(), body.facing(), body.spin());
+            render(pose, style, level, AIR_MAPS.computeIfAbsent(glowRgb, BlockyBodyRenderer::flat), outer, sun, 1F, 1F,
+                    alpha * Math.min(1F, glow), null, null);
+        }
         render(pose, style, level, shell, halo, sun, AIR_SHELL_NIGHT, Math.min(1F, tint), alpha * AIR_LIMB_ALPHA, null, null);
         render(pose, style, n, map, body, sun, Math.max(night, AIR_NIGHT), tint, alpha, ring, null);
     }
