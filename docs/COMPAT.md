@@ -86,6 +86,8 @@ follow the Sun, which only the Overworld programs give. So we keep the Overworld
 | `client/InfoOverlayDepth` | with Jade or WTHIT installed, clears the GUI depth before their box is drawn, so it is never hidden behind our HUD layers. |
 | `client/ClippedLines` | outline boxes cut just in front of the camera: Iris's line programs stretch an edge that runs behind the camera across the view. |
 | `client/LodDepth` | Distant Horizons' depth texture through its API, so the sky and haze passes keep LOD terrain. |
+| `ShaderSkyPass.spaceView` | a hook (default off) for features that turn a vanilla-sky world's sky into space for a while (rocketry's seamless ascent and descent on Earth): while it answers true, the pack's sky and clouds are replaced there as in our space worlds, so the climb ends in the same sky the orbit shows. |
+| `client/DhCompat` | what Distant Horizons draws, by reflection: `active()`, `lodReachBlocks()` (its LOD distance), `curvatureRatio()` (its earth curvature setting), `lodUnder(x, z)` (LOD data in that column), `hideLods(boolean)` (an API override of DH's rendering switch, lifted on logout; the player's setting is untouched). For effects that hand the ground over high up (the seamless ascent's planet ball): DH draws its LODs after our terrain passes wherever the depth is still far, so far LOD ground shows around a ball that only covers the normal terrain. |
 
 Full-screen effects and HUDs stay in the GUI layer (drawn on top of the pack's final frame) — unchanged.
 
@@ -438,6 +440,17 @@ environment; the plugins compile against both APIs and the line itself is covere
   see-through parts and are not lost against the sky; the gas giants' air shells and night sides look as without
   shaders. Only the pack's lighting differs (warmer ground, real shadows, a blue ambient on night sides and indoors).
   `round2_creatures_worlds_vanilla_vs_iris.jpg` (pairs, vanilla left).
+- **Seamless ascent and descent (rocketry 161755c9, 2026-11-09):** whole flights in burst mode (69_flight, 70_transfer)
+  under vanilla, Sodium, Complementary, BSL and MakeUp. The Earth is a vanilla-sky world, so the packs kept their sky
+  and clouds during the climb: a sharp light-blue wedge in Complementary and BSL (the sky gradient's cube through the
+  pack's sky program), and no darkening at all in MakeUp, so the climb did not end in the orbit's sky. With the
+  `ShaderSkyPass.spaceView` hook wired to `SpaceView.factor() > 0.02` the pack's sky and clouds are replaced as soon as
+  the view starts to leave the ground: no wedge, black sky with stars in all three packs, the cut to orbit lines up
+  (`seamless_ascent_packs_before_after.jpg`; columns vanilla, Complementary before/after, BSL before/after, MakeUp
+  before/after). Left with Complementary: the planet ball looks pale blue for part of the climb (its pixels keep the
+  far terrain's depth, which the pack fogs). A one-frame tilted slab at the first ground hand-over frame appears
+  without shaders too (`seamless_vanilla_slab_024.jpg`, rocketry). With a pack the client is much slower than the
+  server, so burst frames land on other moments of the flight than in vanilla.
 - **Outline boxes (`RenderType.lines()`):** Iris's line programs widen each segment in screen space, so an edge
   that runs behind the camera becomes a large flat quad across the view (seen as a lavender square over the station
   core while holding a docking module: the outline reaches back past the player). `compat.client.ClippedLines` cuts
