@@ -48,6 +48,18 @@ public class RocketRenderer extends EntityRenderer<RocketEntity> {
             pose.translate(0, Mth.sin(time * 0.03F) * 0.08F, 0);
             pose.mulPose(Axis.YP.rotationDegrees(time * 0.15F));
         }
+        // under the main canopy the capsule swings like a pendulum about the canopy (not in the cockpit view)
+        float chuteT = rocket.timer() + partialTick;
+        float capsuleW = rocket.layout().payload().seats() > 1 ? 1.4F : 1F;
+        float top = (float) (geo.height() / 16.0);
+        if (state == FlightState.PARACHUTE && !cockpit) {
+            float[] sw = ParachuteRenderer.swing(chuteT, time);
+            float pivot = top + ParachuteRenderer.lineLength(capsuleW);
+            pose.translate(0, pivot, 0);
+            pose.mulPose(Axis.XP.rotationDegrees(sw[0]));
+            pose.mulPose(Axis.ZP.rotationDegrees(sw[1]));
+            pose.translate(0, -pivot, 0);
+        }
         float legs = legDeploy(rocket, partialTick);
         int skipFrom = cockpit && rocket.layout().payload().present() ? rocket.layout().payload().firstPart() : Integer.MAX_VALUE;
         RocketStackRenderer.render(rocket.layout(), geo, pose, buffers, light, legs, skipFrom);
@@ -61,9 +73,26 @@ public class RocketRenderer extends EntityRenderer<RocketEntity> {
             com.pizzaparker07.spacebreaker.compat.client.LateEffects.drawOrDefer(pose, buffers,
                     (p, b) -> RocketStackRenderer.renderPlume(layout, geo, stage, p, b, time, strength, vacuum));
         }
-        if (state == FlightState.PARACHUTE && !cockpit) {
-            float open = Mth.clamp((rocket.timer() + partialTick) / 30F, 0.15F, 1F);
-            renderCanopy(pose, buffers, geo, open, time, light);
+        // parachutes: in flight, and for a while after touchdown as the canopy collapses beside the capsule
+        if (state == FlightState.PARACHUTE) {
+            rocket.chuteLandedAt = -1;
+            if (!cockpit) {
+                pose.pushPose();
+                pose.translate(0, top, 0);
+                ParachuteRenderer.flying(pose, buffers, chuteT, time, capsuleW, light);
+                pose.popPose();
+            }
+        } else if (rocket.chuteSeen && rocket.chuteLandedAt < 0) {
+            rocket.chuteLandedAt = rocket.tickCount;
+        }
+        if (state == FlightState.PARACHUTE) {
+            rocket.chuteSeen = true;
+        }
+        if (state != FlightState.PARACHUTE && rocket.chuteLandedAt >= 0 && state != FlightState.ASCENT && state != FlightState.COUNTDOWN) {
+            ParachuteRenderer.landed(pose, buffers, rocket.tickCount - rocket.chuteLandedAt + partialTick, time, top, capsuleW, light);
+        } else if (state == FlightState.ASCENT || state == FlightState.COUNTDOWN) {
+            rocket.chuteSeen = false;
+            rocket.chuteLandedAt = -1;
         }
         pose.popPose();
         LaunchEffects.render(rocket, partialTick, pose, buffers, light, entityRenderDispatcher.camera.getPosition());
@@ -77,19 +106,6 @@ public class RocketRenderer extends EntityRenderer<RocketEntity> {
             case COUNTDOWN, ASCENT -> Location.MOON_SURFACE.equals(rocket.location()) ? Math.max(0F, 1F - (rocket.timer() > 0 && rocket.state() == FlightState.ASCENT ? rocket.timer() / 40F : 0F)) : 0F;
             default -> 0F;
         };
-    }
-
-    private static void renderCanopy(PoseStack pose, MultiBufferSource buffers, RocketGeometry geo, float open, float time, int light) {
-        BakedModel model = Minecraft.getInstance().getModelManager().getModel(CANOPY);
-        pose.pushPose();
-        pose.translate(0, geo.height() / 16.0 + 2.2 * open, 0);
-        pose.mulPose(Axis.ZP.rotationDegrees(Mth.sin(time * 0.05F) * 4F));
-        pose.scale(open * 1.6F, 0.6F + 0.4F * open, open * 1.6F);
-        pose.translate(-0.5, 0, -0.5);
-        ModelBlockRenderer r = Minecraft.getInstance().getBlockRenderer().getModelRenderer();
-        r.renderModel(pose.last(), buffers.getBuffer(RenderType.entityCutoutNoCull(TextureAtlas.LOCATION_BLOCKS)), Blocks.AIR.defaultBlockState(),
-                model, 1F, 1F, 1F, light, OverlayTexture.NO_OVERLAY, ModelData.EMPTY, null);
-        pose.popPose();
     }
 
     @Override

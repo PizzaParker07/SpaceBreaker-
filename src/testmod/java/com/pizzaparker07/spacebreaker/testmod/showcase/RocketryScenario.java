@@ -935,6 +935,33 @@ final class RocketryScenario implements ShowcaseScenario {
                         net.minecraft.network.chat.Component.translatable("toast.spacebreaker.orbit.title"), Location.EARTH_ORBIT.name());
             });
         }, null));
+        // the parachute sequence frame by frame: drogue, reefed main, filling, full with a pendulum swing, touchdown
+        // and the canopy collapsing beside the capsule (a camera that keeps level with the falling capsule)
+        double cx = LANDING.getX() + 0.5, cz = LANDING.getZ() + 20.5;
+        s.add(new Shot("67_chute_00", 6000, cx + 18, G + 74, cz, 90F, 0F, true, fp, 60, p -> clearScene(p), null));
+        s.add(Shot.stay("67_chute_01", 6000, true, fp, 3, p -> {
+            spawn(p.serverLevel(), new Vec3(cx, G + 72, cz), 0F, FlightState.PARACHUTE, 0, 3, false);
+            p.connection.teleport(cx + 18, G + 75 - p.getEyeHeight(), cz, 90F, 6F);
+        }, null));
+        for (int i = 2; i <= 22; i++) {
+            final int frame = i;
+            s.add(Shot.stay(String.format(java.util.Locale.ROOT, "67_chute_%02d", i), 6000, true, fp, frame < 14 ? 6 : 10, p -> {
+                if (scene.isEmpty()) {
+                    return;
+                }
+                RocketEntity r = scene.get(scene.size() - 1);
+                boolean down = r.state() != FlightState.PARACHUTE;
+                double eye = down ? G + 4 : r.getY() + 3;
+                double back = down ? 16 : 18;
+                p.connection.teleport(cx + back, eye - p.getEyeHeight(), cz - (down ? 4 : 0), down ? 100F : 90F, down ? 8F : 6F);
+            }, null));
+        }
+        // third person in the capsule under the main canopy: the crew sit inside, nothing pokes through the walls
+        s.add(new Shot("68_chute_third_person", 6000, cx, G + 60, cz, 30F, -25F, true, CameraType.THIRD_PERSON_BACK, 40, p -> {
+            clearScene(p);
+            RocketEntity r = spawn(p.serverLevel(), new Vec3(cx, G + 58, cz), 0F, FlightState.PARACHUTE, 90, 3, false);
+            p.startRiding(r, true);
+        }, null));
         s.add(new Shot("31_nearby_stars", 6000, 0, 0, 0, 0F, 0F, false, fp, 120,
                 p -> {
                     RocketryShowcaseClient.star = "Alpha Centauri";

@@ -236,6 +236,18 @@ public final class RocketClientEvents {
         }
     }
 
+    /**
+     * The crew sit inside the closed capsule: like on a real capsule they are not seen from outside (their model would
+     * otherwise poke through the capsule walls in third person, on every phase of the flight).
+     */
+    @SubscribeEvent
+    static void hideCrew(net.neoforged.neoforge.client.event.RenderLivingEvent.Pre<?, ?> event) {
+        if (event.getEntity().getVehicle() instanceof com.pizzaparker07.spacebreaker.content.rocketry.entity.RocketEntity rocket
+                && rocket.layout().payload().present()) {
+            event.setCanceled(true);
+        }
+    }
+
     @SubscribeEvent
     static void tooltip(net.neoforged.neoforge.event.entity.player.ItemTooltipEvent event) {
         var player = event.getEntity();
