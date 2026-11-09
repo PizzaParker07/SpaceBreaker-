@@ -30,11 +30,7 @@ public final class DhCompat {
     private static Method renderingEnabled;
     private static Method curvature;
     private static Method configValue;
-    private static Method setApiValue;
-    private static Method clearApiValue;
     private static boolean hiding;
-    private static Method fog;
-    private static Method enableDhFog;
     private static boolean hidingFog;
     private static boolean fogRequested;
     private static boolean fogAuto;
@@ -109,8 +105,6 @@ public final class DhCompat {
             renderingEnabled = g.getMethod("renderingEnabled");
             Class<?> value = find("com.seibel.distanthorizons.api.interfaces.config.IDhApiConfigValue");
             configValue = value.getMethod("getValue");
-            setApiValue = value.getMethod("setValue", Object.class);
-            clearApiValue = value.getMethod("clearValue");
         } catch (ReflectiveOperationException | LinkageError e) {
             configs = null;
             Spacebreaker.LOGGER.warn("Distant Horizons is installed but its config API could not be reached", e);
@@ -123,14 +117,6 @@ public final class DhCompat {
         } catch (ReflectiveOperationException | LinkageError e) {
             curvature = null;
             Spacebreaker.LOGGER.warn("Distant Horizons' earth curvature setting could not be reached", e);
-        }
-        try {
-            fog = find("com.seibel.distanthorizons.api.interfaces.config.client.IDhApiGraphicsConfig").getMethod("fog");
-            enableDhFog = find("com.seibel.distanthorizons.api.interfaces.config.client.IDhApiFogConfig").getMethod("enableDhFog");
-        } catch (ReflectiveOperationException | LinkageError e) {
-            fog = null;
-            enableDhFog = null;
-            Spacebreaker.LOGGER.warn("Distant Horizons' fog settings could not be reached", e);
         }
         try {
             Class<?> delayed = find("com.seibel.distanthorizons.api.DhApi$Delayed");
@@ -213,42 +199,33 @@ public final class DhCompat {
     }
 
     /**
-     * Stops DH drawing its LOD terrain while {@code hide} is true (an API override of its "rendering enabled" setting:
-     * the player's own setting is untouched and comes back with {@code false}). For a view that covers the whole
-     * ground with something else, such as the planet ball high in a seamless ascent: LOD terrain is drawn after it,
-     * wherever the depth is still the far value, so its far edge would show around the ball. Cheap to call every
-     * frame; only a change is passed on to DH.
+     * Stops DH drawing its LOD terrain while {@code hide} is true, by cancelling its before-render event each frame
+     * (see {@link DhRenderGate}); no DH setting is touched, so nothing can reach the player's config file. For a view
+     * that covers the whole ground with something else, such as the planet ball high in a seamless ascent: LOD terrain
+     * is drawn after it, wherever the depth is still the far value, so its far edge would show around the ball.
+     * Cheap to call every frame.
      */
     public static void hideLods(boolean hide) {
         if (hide == hiding) {
             return;
         }
         resolve();
-        if (configs == null) {
+        if (loader == null || configs == null) {
             hiding = false;
             return;
         }
         try {
-            Object config = configs.get(null);
-            if (config == null) {
-                return;
-            }
-            Object setting = renderingEnabled.invoke(graphics.invoke(config));
             if (hide) {
-                if (!Boolean.TRUE.equals(setApiValue.invoke(setting, Boolean.FALSE))) {
-                    if (!warned) {
-                        warned = true;
-                        Spacebreaker.LOGGER.warn("Distant Horizons did not accept an API override of its rendering setting; LODs stay on");
-                    }
-                    return;
-                }
-            } else {
-                clearApiValue.invoke(setting);
+                DhRenderGate.install();
             }
+            DhRenderGate.closed = hide;
             hiding = hide;
             cachedTick = Long.MIN_VALUE;
-        } catch (ReflectiveOperationException | RuntimeException e) {
-            warn(e);
+        } catch (RuntimeException | LinkageError e) {
+            if (!warned) {
+                warned = true;
+                Spacebreaker.LOGGER.warn("Could not register with Distant Horizons' render event; LODs stay on", e);
+            }
         }
     }
 
@@ -258,10 +235,10 @@ public final class DhCompat {
     }
 
     /**
-     * Stops DH drawing its own fog (far fog and height fog together: an API override of its "enable DH fog" setting,
-     * the player's setting untouched and back with {@code false}). For a flight that climbs far above the ground, where
+     * Stops DH drawing its own fog (far fog and height fog together) while {@code hide} is true, by cancelling its
+     * before-fog event (see {@link DhFogGate}); no DH setting is touched. For a flight that climbs far above the ground, where
      * DH's fog, tuned for standing on it, would wash the LOD terrain and the sky behind it. Vanilla's fog and DH's
-     * "disable vanilla fog" setting are left alone. Cheap to call every frame; only a change is passed on to DH.
+     * "disable vanilla fog" setting are left alone. Cheap to call every frame.
      */
     public static void hideFog(boolean hide) {
         fogRequested = hide;
@@ -283,30 +260,21 @@ public final class DhCompat {
             return;
         }
         resolve();
-        if (configs == null || enableDhFog == null) {
+        if (loader == null || configs == null) {
             hidingFog = false;
             return;
         }
         try {
-            Object config = configs.get(null);
-            if (config == null) {
-                return;
-            }
-            Object setting = enableDhFog.invoke(fog.invoke(graphics.invoke(config)));
             if (hide) {
-                if (!Boolean.TRUE.equals(setApiValue.invoke(setting, Boolean.FALSE))) {
-                    if (!fogWarned) {
-                        fogWarned = true;
-                        Spacebreaker.LOGGER.warn("Distant Horizons did not accept an API override of its fog setting; its fog stays on");
-                    }
-                    return;
-                }
-            } else {
-                clearApiValue.invoke(setting);
+                DhFogGate.install();
             }
+            DhFogGate.closed = hide;
             hidingFog = hide;
-        } catch (ReflectiveOperationException | RuntimeException e) {
-            warn(e);
+        } catch (RuntimeException | LinkageError e) {
+            if (!fogWarned) {
+                fogWarned = true;
+                Spacebreaker.LOGGER.warn("Could not register with Distant Horizons' fog event; its fog stays on", e);
+            }
         }
     }
 
@@ -368,8 +336,8 @@ public final class DhCompat {
             cachedReach = chunks instanceof Integer c ? Math.max(0, c) * 16 : 0;
             if (!reported && mc.level != null) {
                 reported = true;
-                Spacebreaker.LOGGER.info("Distant Horizons seen: LOD reach {} blocks, fog switch {}, terrain data {}",
-                        cachedReach, enableDhFog != null ? "reachable" : "missing", columnData != null ? "reachable" : "missing");
+                Spacebreaker.LOGGER.info("Distant Horizons seen: LOD reach {} blocks, terrain data {}",
+                        cachedReach, columnData != null ? "reachable" : "missing");
             }
             if (curvature != null) {
                 Object ratio = configValue.invoke(curvature.invoke(g));
