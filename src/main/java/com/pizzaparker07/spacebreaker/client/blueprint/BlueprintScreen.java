@@ -42,6 +42,7 @@ public class BlueprintScreen extends Screen {
     private int scroll;
     private int selected;
     private Button project;
+    private Button build;
 
     public BlueprintScreen() {
         super(Component.translatable("gui.spacebreaker.blueprints"));
@@ -78,6 +79,23 @@ public class BlueprintScreen extends Screen {
         project = addRenderableWidget(Button.builder(Component.translatable("gui.spacebreaker.blueprints.project"), b -> confirm())
                 .bounds(left() + panelW() - 90, bottom() - 22, 86, 20).build());
         project.active = !entries.isEmpty();
+        // build the projection already placed in the world (its blueprint must be the selected one)
+        build = addRenderableWidget(Button.builder(Component.translatable("gui.spacebreaker.blueprints.build"), b -> {
+                    PacketDistributor.sendToServer(new BlueprintPayload(BlueprintPayload.BUILD, entries.get(selected).getKey()));
+                    onClose();
+                })
+                .bounds(left() + panelW() - 180, bottom() - 22, 86, 20).build());
+        build.active = false;
+    }
+
+    /** Whether the projector in hand shows the selected blueprint, placed in the world. */
+    private boolean placedSelection() {
+        if (selected >= entries.size()) {
+            return false;
+        }
+        var stack = com.pizzaparker07.spacebreaker.content.blueprint.BlueprintModule.projectorInHand(minecraft.player);
+        var h = stack.isEmpty() ? null : com.pizzaparker07.spacebreaker.content.blueprint.HologramProjectorItem.hologram(stack);
+        return h != null && h.anchor().isPresent() && h.blueprint().equals(entries.get(selected).getKey());
     }
 
     private void confirm() {
@@ -113,6 +131,9 @@ public class BlueprintScreen extends Screen {
 
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
+        if (build != null) {
+            build.active = placedSelection();
+        }
         super.render(g, mouseX, mouseY, partialTick);
         int x0 = left();
         int y0 = top();

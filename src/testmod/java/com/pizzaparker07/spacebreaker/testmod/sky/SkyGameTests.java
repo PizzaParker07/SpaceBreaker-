@@ -18,6 +18,24 @@ public final class SkyGameTests {
         return dots.stream().filter(d -> d.id().equals(id)).findFirst().orElse(null);
     }
 
+    /**
+     * Planets are cubes by default now: a settings file from before (version 0) that still says VOXEL, the old default,
+     * moves to CUBE once; any other saved style stays, and once the file is at the current version a VOXEL picked on
+     * purpose stays VOXEL.
+     */
+    @GameTest(template = "empty")
+    public static void planetStyleMovesToCubeOnce(GameTestHelper helper) {
+        var cube = com.pizzaparker07.spacebreaker.client.sky.SkyConfig.PlanetStyle.CUBE;
+        var voxel = com.pizzaparker07.spacebreaker.client.sky.SkyConfig.PlanetStyle.VOXEL;
+        var round = com.pizzaparker07.spacebreaker.client.sky.SkyConfig.PlanetStyle.ROUND;
+        helper.assertTrue(com.pizzaparker07.spacebreaker.client.sky.SkyConfig.migratedStyle(voxel, 0) == cube, "old VOXEL becomes CUBE");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.client.sky.SkyConfig.migratedStyle(round, 0) == round, "old ROUND stays");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.client.sky.SkyConfig.migratedStyle(voxel, 1) == voxel, "VOXEL chosen after the switch stays");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.client.sky.SkyConfig.migratedStyle(cube, 0) == cube, "CUBE stays");
+        helper.assertTrue(com.pizzaparker07.spacebreaker.client.sky.SkyConfig.PLANET_STYLE.getDefault() == cube, "CUBE is the default");
+        helper.succeed();
+    }
+
     @GameTest(template = "empty")
     public static void planetsInEarthSky(GameTestHelper helper) {
         var sys = BodyAdapter.system(helper.getLevel().registryAccess()).orElseThrow();

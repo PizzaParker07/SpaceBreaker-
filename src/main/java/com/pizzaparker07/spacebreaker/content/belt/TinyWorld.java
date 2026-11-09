@@ -53,11 +53,19 @@ public final class TinyWorld {
      * @param waterIce true if the bedrock is water ice (it then melts to water in the ice melter: a refuel world)
      */
     public TinyWorld(BlockKit kit, String name, String soilId, MapColor soilColor, String rockId, MapColor rockColor, boolean waterIce) {
+        this(kit, name, soilId, soilColor, rockId, rockColor, waterIce, SoundType.STONE);
+    }
+
+    /**
+     * @param rockSound the bedrock's sound: GLASS for clean ice, STONE for rock or dust-laden ice
+     */
+    public TinyWorld(BlockKit kit, String name, String soilId, MapColor soilColor, String rockId, MapColor rockColor, boolean waterIce,
+                     SoundType rockSound) {
         this.name = name;
         this.level = ResourceKey.create(Registries.DIMENSION, Spacebreaker.id(name));
         this.soil = kit.block(soilId, LunarRegolithBlock::new,
                 BlockBehaviour.Properties.of().mapColor(soilColor).strength(0.5F).sound(SoundType.SAND));
-        this.rock = kit.rock(rockId, rockColor, SoundType.STONE, 1.6F);
+        this.rock = kit.rock(rockId, rockColor, rockSound, 1.6F);
         this.stone = SbTagKeys.modBlock(name + "_stone");
         this.plains = OuterWorlds.biome(name + "_plains");
         this.crater = OuterWorlds.biome(name + "_crater");

@@ -21,7 +21,12 @@ public final class SkyClient {
 
     /** Called from the mod constructor on the client (registers the client config file). */
     public static void init() {
-        ModLoadingContext.get().getActiveContainer().registerConfig(ModConfig.Type.CLIENT, SkyConfig.SPEC, "spacebreaker-worlds-client.toml");
+        var container = ModLoadingContext.get().getActiveContainer();
+        container.registerConfig(ModConfig.Type.CLIENT, SkyConfig.SPEC, "spacebreaker-worlds-client.toml");
+        if (container.getEventBus() != null) {
+            container.getEventBus().addListener(net.neoforged.fml.event.config.ModConfigEvent.Loading.class, SkyConfig::migrate);
+            container.getEventBus().addListener(net.neoforged.fml.event.config.ModConfigEvent.Reloading.class, SkyConfig::migrate);
+        }
     }
 
     @SubscribeEvent

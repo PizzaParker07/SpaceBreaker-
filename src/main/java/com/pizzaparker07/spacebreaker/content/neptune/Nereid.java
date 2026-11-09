@@ -12,6 +12,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.MapColor;
 
 import java.util.Optional;
@@ -25,7 +26,7 @@ import static com.pizzaparker07.spacebreaker.content.belt.OuterWorlds.s;
  */
 public final class Nereid {
     public static final TinyWorld NEREID = new TinyWorld(NeptuneModule.KIT, "nereid", "nereid_frost", MapColor.COLOR_LIGHT_GRAY, "nereid_ice",
-            MapColor.TERRACOTTA_WHITE, true);
+            MapColor.TERRACOTTA_WHITE, true, SoundType.GLASS);
 
     private Nereid() {
     }

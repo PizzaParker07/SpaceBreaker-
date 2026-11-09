@@ -49,7 +49,7 @@ public final class Umbriel {
 
     public static final DeferredBlock<LunarRegolithBlock> REGOLITH = KIT.block("umbriel_regolith", LunarRegolithBlock::new,
             BlockBehaviour.Properties.of().mapColor(MapColor.DEEPSLATE).strength(0.5F).sound(SoundType.SAND));
-    public static final BlockKit.Family ICE = KIT.family("umbriel_ice", MapColor.DEEPSLATE, SoundType.STONE, 1.7F, true);
+    public static final BlockKit.Family ICE = KIT.family("umbriel_ice", MapColor.DEEPSLATE, SoundType.GLASS, 1.7F, true);
     /** Dark ice laced with carbon: smelts into coal. */
     public static final DeferredBlock<Block> SOOTY_ICE = KIT.rock("sooty_ice", MapColor.COLOR_BLACK, SoundType.STONE, 1.5F);
     public static final TagKey<Block> STONE = SbTagKeys.modBlock("umbriel_stone");

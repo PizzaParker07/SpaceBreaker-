@@ -67,6 +67,13 @@ public final class BlueprintModule implements SbModule {
                         stack.set(HOLOGRAM.get(), h.rotated(payload.action() == BlueprintPayload.ROTATE_CW ? 1 : 3));
                     }
                 }
+                case BlueprintPayload.BUILD -> {
+                    if (h == null || h.anchor().isEmpty()) {
+                        player.displayClientMessage(Component.translatable("message.spacebreaker.hologram.build_place_first"), true);
+                    } else {
+                        BlueprintBuilder.start(player, h);
+                    }
+                }
                 default -> {
                 }
             }
@@ -91,6 +98,16 @@ public final class BlueprintModule implements SbModule {
                 "Kullan: yapı seç · bloğa kullan: yansıtmayı yerleştir");
         lang.add("tooltip.spacebreaker.hologram.hint2", "Sneak + use: layers · sneak + wheel: turn · sneak + use on a block: remove",
                 "Eğil + kullan: katmanlar · eğil + tekerlek: döndür · eğil + bloğa kullan: kaldır");
+        lang.add("tooltip.spacebreaker.hologram.hint3", "Use on the placed projection: build it from your inventory",
+                "Yerleştirilmiş yansıtmaya kullan: envanterinden inşa et");
+        lang.add("message.spacebreaker.hologram.build_start", "Building %s…", "%s inşa ediliyor…");
+        lang.add("message.spacebreaker.hologram.build_done", "Built: %s", "İnşa edildi: %s");
+        lang.add("message.spacebreaker.hologram.build_missing", "Placed %s blocks; still missing: %s", "%s blok kondu; eksik: %s");
+        lang.add("message.spacebreaker.hologram.build_blocked", "%s spots hold other blocks: left as they are", "%s yerde başka blok var: dokunulmadı");
+        lang.add("message.spacebreaker.hologram.build_stopped", "Building stopped (you went too far away) after %s blocks",
+                "İnşa durdu (çok uzaklaştın), %s blok kondu");
+        lang.add("message.spacebreaker.hologram.build_place_first", "Place the projection first", "Önce yansıtmayı yerleştir");
+        lang.add("gui.spacebreaker.blueprints.build", "Build", "İnşa et");
         lang.add("message.spacebreaker.hologram.all_layers", "Showing all layers", "Tüm katmanlar gösteriliyor");
         lang.add("message.spacebreaker.hologram.layer", "Layer %s of %s", "Katman %s / %s");
         lang.add("message.spacebreaker.hologram.cleared", "Projection removed", "Yansıtma kaldırıldı");

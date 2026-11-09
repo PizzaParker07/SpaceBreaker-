@@ -48,6 +48,26 @@ public final class SuitClient {
         com.pizzaparker07.spacebreaker.content.suit.net.SuitNetwork.onNav = com.pizzaparker07.spacebreaker.client.hud.ClientNav::accept;
         com.pizzaparker07.spacebreaker.content.suit.net.SuitNetwork.onTether = TetherClient::accept;
         com.pizzaparker07.spacebreaker.client.light.LightBeams.register(HelmetLamps::collect);
+        event.enqueueWork(SuitClient::drillProperties);
+    }
+
+    /**
+     * Item properties of the Electric Drill model: {@code wide_bore} (the wide-bore head is fitted) and {@code spin}
+     * (0, .25, .5, .75: the bit's turn frame, cycling every two ticks while the holder is drilling).
+     */
+    private static void drillProperties() {
+        var drill = SuitModule.ELECTRIC_DRILL.get();
+        net.minecraft.client.renderer.item.ItemProperties.register(drill, com.pizzaparker07.spacebreaker.Spacebreaker.id("wide_bore"),
+                (stack, level, entity, seed) -> com.pizzaparker07.spacebreaker.content.suit.ElectricDrillItem.wideBore(stack) ? 1F : 0F);
+        net.minecraft.client.renderer.item.ItemProperties.register(drill, com.pizzaparker07.spacebreaker.Spacebreaker.id("spin"),
+                (stack, level, entity, seed) -> {
+                    var mc = net.minecraft.client.Minecraft.getInstance();
+                    if (entity == null || mc.level == null || entity.getMainHandItem() != stack) {
+                        return 0F;
+                    }
+                    boolean drilling = entity == mc.player ? mc.gameMode != null && mc.gameMode.isDestroying() : entity.swinging;
+                    return drilling ? (mc.level.getGameTime() / 2 % 4) / 4F : 0F;
+                });
     }
 
     @SubscribeEvent
