@@ -169,7 +169,22 @@ public final class SpaceView {
      * Each client tick: while the ball covers the ground (the last stretch before the orbit view), an LOD mod's far
      * terrain is switched off, or it would show past the ball's edge; it comes back as soon as the ball lifts.
      */
+    private static int dhLogTicks;
+
     static void tickLods() {
+        if (RocketHud.ridden() != null && com.pizzaparker07.spacebreaker.compat.Compat.isInstalled("distanthorizons") && --dhLogTicks <= 0) {
+            // what this view sees of Distant Horizons, every five seconds of a flight (for checking a DH install)
+            dhLogTicks = 100;
+            float k = factor();
+            com.pizzaparker07.spacebreaker.Spacebreaker.LOGGER.info(
+                    "Space view with Distant Horizons: active {}, LOD reach {}, curvature {}, LODs hidden {}, k {}, hide {}, ball {}, altitude {}",
+                    com.pizzaparker07.spacebreaker.compat.client.DhCompat.active(),
+                    com.pizzaparker07.spacebreaker.compat.client.DhCompat.lodReachBlocks(),
+                    com.pizzaparker07.spacebreaker.compat.client.DhCompat.curvatureRatio(),
+                    com.pizzaparker07.spacebreaker.compat.client.DhCompat.hidingLods(),
+                    String.format(java.util.Locale.ROOT, "%.2f", k), String.format(java.util.Locale.ROOT, "%.2f", hide(k)),
+                    String.format(java.util.Locale.ROOT, "%.2f", ball(k)), (int) altitude());
+        }
         // (once hidden, DH may report itself off: keep going so the LODs are always given back)
         if (!lodsHidden && !com.pizzaparker07.spacebreaker.compat.client.DhCompat.active()) {
             return;
