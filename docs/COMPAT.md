@@ -468,6 +468,8 @@ environment; the plugins compile against both APIs and the line itself is covere
   Fixed in rocketry 315a4107 (under a pack the ball comes with the hand-over): a clean cut from the pack's hazy sky
   to the space view, no slabs, no line, no dark frame in 40 Complementary frames
   (`seamless_315a4107_complementary.jpg`, frames 13-20).
+  On 1.21.1 dbeb7887 the same holds for BSL and MakeUp (60 frames each: no line, no dark frame, a clean cut to the
+  space view; `seamless_dbeb7887_bsl_makeup.jpg`, top BSL frames 16-23, bottom MakeUp frames 24-31).
 - **MakeUp on the Moon:** the airless ambient handed to packs other than Complementary was (0.20, 0.27, 0.55); MakeUp
   mixes it into its own ambient strongly enough that the Moon turned lilac, most of all at a low sun (seamless
   landing frames). Now (0.20, 0.23, 0.32): near-neutral grey by day, shadows a little cool
