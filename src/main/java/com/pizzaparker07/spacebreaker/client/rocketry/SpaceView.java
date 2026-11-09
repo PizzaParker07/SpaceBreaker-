@@ -179,6 +179,36 @@ public final class SpaceView {
             lodsHidden = want;
             com.pizzaparker07.spacebreaker.compat.client.DhCompat.hideLods(want);
         }
+        // DH's own fog is tuned for standing on the ground: from the first rise of the space view it would wash the
+        // LOD terrain and the sky behind it, so it stays off for the climb, the orbit and the descent
+        boolean noFog = RocketHud.ridden() != null && factor() > 0.02F;
+        if (noFog != dhFogHidden) {
+            dhFogHidden = noFog;
+            hideDhFog(noFog);
+        }
+    }
+
+    private static boolean dhFogHidden;
+    private static java.lang.reflect.Method hideFog;
+    private static boolean hideFogLooked;
+
+    /** {@code DhCompat.hideFog}, where this build has it (a no-op where it does not). */
+    private static void hideDhFog(boolean hide) {
+        if (!hideFogLooked) {
+            hideFogLooked = true;
+            try {
+                hideFog = com.pizzaparker07.spacebreaker.compat.client.DhCompat.class.getMethod("hideFog", boolean.class);
+            } catch (NoSuchMethodException e) {
+                hideFog = null;
+            }
+        }
+        if (hideFog != null) {
+            try {
+                hideFog.invoke(null, hide);
+            } catch (ReflectiveOperationException e) {
+                hideFog = null;
+            }
+        }
     }
 
     /** The widest the ball below is drawn (angular radius, degrees). */
