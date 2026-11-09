@@ -241,7 +241,8 @@ public class OrbitSkyEffects extends DimensionSpecialEffects {
             float p = Mth.clamp((rocket.timer() + partialTick) / com.pizzaparker07.spacebreaker.content.rocketry.entity.RocketEntity.TRANSFER_TICKS, 0, 1);
             // both balls at a fixed resolution while their size runs; the close-up patch again for the last stretch,
             // so the hand-over meets the destination's own orbit sky exactly
-            int fixed = 64;
+            // the close-up patch copes with a changing size (it falls back to its finest fixed level while it rebuilds)
+            int fixed = com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.APPROACH;
             var look = net.minecraft.client.Minecraft.getInstance().gameRenderer.getMainCamera().getLookVector();
             float hl = Math.max(1e-3F, (float) Math.sqrt(look.x * look.x + look.z * look.z));
             float lx = look.x / hl, lz = look.z / hl;
