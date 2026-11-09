@@ -646,12 +646,15 @@ public final class BlockyBodyRenderer {
 
     private static final class Patch {
         final float halfAngle;
+        /** Middle of the patch on the unit sphere, body frame. */
+        final Vector3f centre;
         final Cached buffer = new Cached();
         volatile List<BlockyBodyMesh.Face> faces;
         volatile int[] colours;
 
-        Patch(float halfAngle) {
+        Patch(float halfAngle, Vector3f centre) {
             this.halfAngle = halfAngle;
+            this.centre = centre;
         }
     }
 
@@ -709,10 +712,10 @@ public final class BlockyBodyRenderer {
         }
         Patch patch = PATCHES.get(key);
         if (patch == null) {
-            Patch p = new Patch(half * 1.2F);
+            Vector3f centre = new Vector3f(qx, qy, qz).div(q).normalize();
+            Patch p = new Patch(half * 1.2F, centre);
             PATCHES.put(key, p);
             patch = p;
-            Vector3f centre = new Vector3f(qx, qy, qz).div(q).normalize();
             int size = n;
             java.util.concurrent.CompletableFuture.runAsync(() -> {
                 List<BlockyBodyMesh.Face> faces = BlockyBodyMesh.patch(size, centre, p.halfAngle);
@@ -721,10 +724,12 @@ public final class BlockyBodyRenderer {
             });
         }
         if (patch.faces == null) {
-            // still building: keep showing the last finished patch if there is one
+            // still building: keep showing the last finished patch, but only while it still covers everything in view
+            // (when the size changes fast, an old patch is too small or off to one side); otherwise draw the body at its
+            // fixed finest level until the new patch is ready
             PatchKey last = LAST_PATCH.get(map);
             patch = last == null ? null : PATCHES.get(last);
-            if (patch == null || patch.faces == null) {
+            if (patch == null || patch.faces == null || !covers(patch, toward, half)) {
                 return false;
             }
             key = last;
@@ -732,6 +737,12 @@ public final class BlockyBodyRenderer {
         LAST_PATCH.put(map, key);
         drawFaces(pose, patch.buffer, patch.faces, patch.colours, body, rot, sun, night, tint, alpha, null, false);
         return true;
+    }
+
+    /** Whether a built patch covers the cap of {@code half} radians round {@code toward} (body frame, unit). */
+    private static boolean covers(Patch patch, Vector3f toward, float half) {
+        float off = (float) Math.acos(Mth.clamp(patch.centre.dot(toward), -1F, 1F));
+        return off + half <= patch.halfAngle;
     }
 
     /** The resolution to draw a body at, stepping up as it grows on screen and fading between steps. */
