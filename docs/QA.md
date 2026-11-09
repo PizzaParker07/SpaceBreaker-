@@ -354,6 +354,16 @@ Shot 11 is now aimed at the station. **QA-27 closed**: `stationAirlockCycle` ass
 together on any tick and that the station is sealed at every step (both shut 119, inner open 148, outer asked open
 while the inner was open 119, and so on).
 
+## Clients without the mod's channels (2026-11-09, 1.21.1 @ dbeb7887)
+
+- `tools/qa/channel_audit.py`: every server → client send in `src/main` (PacketDistributor.sendToPlayer/…ToPlayers…/
+  …ToAll…, connection.send of a custom payload) must have a `hasChannel` check just before it. Now 12 sends, 0
+  unguarded ✅ (before the moon/inner/suit fixes the login sync `PlanetTime.syncTo` threw for such a client).
+- `qa/NoModClientTests.aClientWithoutTheModsChannelsStaysConnected`: a server player on a connection that has agreed
+  none of the mod's channels logs in, wears a full suit (HUD sync every tick), learns a technology and stays 100
+  ticks: nothing throws, still connected ✅. (A client without Spacebreaker at all is refused at login by NeoForge's
+  registry check, with a message; this covers a client whose channels differ.)
+
 ## Seamless trips as a player (`qa_seamless`, 2026-11-09, 1.21.1 @ 191b49ca, rocketry 161755c9)
 
 `./gradlew runShowcase -Pscenario=qa_seamless`: third-person camera, the player in a Moon rocket with the three-seat
@@ -368,9 +378,11 @@ rockets near) and saves frames.
   (no landing beacon: under the orbit position plus wind drift, by design);
 - ❌ about 10 ticks after arriving in Earth orbit the real rocket is not drawn for ~20 ticks (frames 840–859), although
   the client has it and the player is seated in it; reported to rocketry;
-- a second crew member cannot be tried in this harness (a fake player is not in the world; a server player on a dead
-  connection has not agreed the mod's network channels, and the login sync refuses to send to it): needs a second real
-  client.
+- re-run on dbeb7887 (rocketry 7b2f2f03, 566a5e80 in): the rocket is drawn in every frame after arriving in orbit ✅
+  (the stand-in now stays until the real rocket's section is built); on the descent to the Moon the planet ball stays
+  until the ground is drawn, never a frame with neither ✅; a second crew member (a server player on a connection
+  with no mod channels) stays seated through all six hand-overs and lands on the Moon aboard ✅. The pilot shows
+  unseated for 12 ticks in all, every one of them inside a hand-over with the stand-in drawn.
 
 ## beta.1 feedback checks (2026-11-09, 1.21.1 @ d52b37a3)
 

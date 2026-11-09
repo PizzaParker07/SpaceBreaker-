@@ -34,9 +34,8 @@ import java.util.Locale;
  * The client logs every tick (dimension, screen on top, seated or not, the rocket's state, whether the stand-in rocket
  * is drawn while a real rocket is already near) to {@code run-showcase/qa_seamless.tsv} and saves frames (every 10
  * ticks, every tick around a change of dimension); the server logs where each crew member is at every hand-over and
- * where each flight lands. Log lines "[showcase] seamless: …". A second crew member cannot be tried here: a fake player
- * is not in the world, and a server player on a connection with nothing at the other end has not agreed the mod's
- * network channels, so the mod's normal login sync refuses to send to it; that needs a second real client.
+ * where each flight lands. Log lines "[showcase] seamless: …". The second crew member is a server player on a connection
+ * with nothing at the other end: what the hand-overs do to it on the server is checked, not what it would see.
  */
 final class QaSeamlessScenario implements ShowcaseScenario {
     private static final int SHOTS = 80, STEP = 100;
@@ -103,7 +102,8 @@ final class QaSeamlessScenario implements ShowcaseScenario {
             p.teleportTo(rocket.getX(), rocket.getY() + 2, rocket.getZ());
             rocket.fillCompletely();
             boolean seated = p.startRiding(rocket, true);
-            boolean second = false; // see the class comment: no second client in this harness
+            crew2 = secondPlayer(level, rocket.position().add(0, 2, 0));
+            boolean second = crew2 != null && crew2.startRiding(rocket, true);
             launchedFrom = rocket.position();
             ShowcaseDriver.burst = true;
             boolean go = rocket.tryStartCountdown(null);
@@ -184,6 +184,27 @@ final class QaSeamlessScenario implements ShowcaseScenario {
 
         private static double orbitX, orbitZ;
 
+        /**
+         * A second, real server player on a connection with nothing at the other end (as GameTest's mock players), so
+         * the hand-overs move a second crew member exactly as on a server. It has agreed none of the mod's channels,
+         * which the mod's sends now check for.
+         */
+        private static ServerPlayer secondPlayer(ServerLevel level, Vec3 at) {
+            var server = level.getServer();
+            var profile = new com.mojang.authlib.GameProfile(java.util.UUID.nameUUIDFromBytes("qa_crew2".getBytes()), "qa_crew2");
+            ServerPlayer p = new ServerPlayer(server, level, profile, net.minecraft.server.level.ClientInformation.createDefault());
+            var connection = new net.minecraft.network.Connection(net.minecraft.network.protocol.PacketFlow.SERVERBOUND);
+            new io.netty.channel.embedded.EmbeddedChannel(connection);
+            try {
+                server.getPlayerList().placeNewPlayer(connection, p, net.minecraft.server.network.CommonListenerCookie.createInitial(profile, false));
+            } catch (RuntimeException e) {
+                log("the second crew member could not log in: " + e);
+                return null;
+            }
+            p.teleportTo(level, at.x, at.y, at.z, 0F, 0F);
+            return p;
+        }
+
 
         /** The Moon rocket with the large crew capsule (three seats). */
         private static com.pizzaparker07.spacebreaker.content.rocketry.design.RocketDesign crewOfThree() {
@@ -210,7 +231,11 @@ final class QaSeamlessScenario implements ShowcaseScenario {
             r.stageScene(FlightState.ORBIT, 0, 1, false);
             pilot.teleportTo(orbit, 0.5, RocketEntity.ORBIT_Y + 1, 0.5, 0F, 0F);
             boolean seated = pilot.startRiding(r, true);
-            boolean second = false;
+            if (crew2 != null) {
+                crew2.stopRiding();
+                crew2.teleportTo(orbit, 0.5, RocketEntity.ORBIT_Y + 1, 0.5, 0F, 0F);
+            }
+            boolean second = crew2 != null && crew2.startRiding(r, true);
             rocket = r;
             orbitX = r.getX();
             orbitZ = r.getZ();
