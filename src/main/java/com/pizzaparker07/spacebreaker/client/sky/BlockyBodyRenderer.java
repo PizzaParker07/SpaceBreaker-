@@ -410,8 +410,11 @@ public final class BlockyBodyRenderer {
             render(pose, style, n, map, body, sun, night, tint, alpha, ring, null);
             return;
         }
+        // a cube that has (mostly) turned into its ball of blocks gets a ball-shaped shell too
+        BlockyBodyMesh.Style shellStyle = style == BlockyBodyMesh.Style.CUBE && cubeToBall(body, n == APPROACH) >= 0.5F
+                ? BlockyBodyMesh.Style.VOXEL : style;
         // the body's own block size, so the shell's steps line up with the body's
-        int level = n > 0 ? n : lod(map, style, body, n == APPROACH ? LEVELS[LEVELS.length - 1] : SKY_MAX).current;
+        int level = n > 0 ? n : lod(map, shellStyle, body, n == APPROACH ? LEVELS[LEVELS.length - 1] : SKY_MAX).current;
         ColorMap shell = AIR_MAPS.computeIfAbsent(air, BlockyBodyRenderer::flat);
         float grow = 2.2F / level; // one cell (a cell is 2 radii / level across) and a hair, so the shell clears the body's corners
         Pose halo = new Pose(body.center(), body.radius() * (1 + grow), body.pole(), body.facing(), body.spin());
@@ -419,10 +422,10 @@ public final class BlockyBodyRenderer {
         try {
             if (glow > 0.01F) {
                 Pose outer = new Pose(body.center(), body.radius() * (1 + grow * 1.7F), body.pole(), body.facing(), body.spin());
-                render(pose, style, level, AIR_MAPS.computeIfAbsent(glowRgb, BlockyBodyRenderer::flat), outer, sun, 1F, 1F,
+                render(pose, shellStyle, level, AIR_MAPS.computeIfAbsent(glowRgb, BlockyBodyRenderer::flat), outer, sun, 1F, 1F,
                         alpha * Math.min(1F, glow), null, null);
             }
-            render(pose, style, level, shell, halo, sun, AIR_SHELL_NIGHT, Math.min(1F, tint), alpha * AIR_LIMB_ALPHA, null, null);
+            render(pose, shellStyle, level, shell, halo, sun, AIR_SHELL_NIGHT, Math.min(1F, tint), alpha * AIR_LIMB_ALPHA, null, null);
         } finally {
             shellPass = false;
         }
@@ -523,6 +526,13 @@ public final class BlockyBodyRenderer {
     /** Angular radius (radians) where a cube planet starts to give way to the ball of blocks as it nears, and where it is gone. */
     static final float CUBE_TO_BALL_FROM = 0.66F;
     static final float CUBE_TO_BALL_FULL = 0.85F;
+    /**
+     * The same for a body flown up to ({@link #APPROACH}: a transfer, an arrival): a face of a growing cube turned to the
+     * camera reads as a huge flat slab cutting the horizon, so there the ball takes over early, between about 11 and 20
+     * degrees.
+     */
+    static final float APPROACH_CUBE_TO_BALL_FROM = 0.19F;
+    static final float APPROACH_CUBE_TO_BALL_FULL = 0.35F;
     /** Set while a cube is drawn: cubes keep the flat depth of a small body at any size (no funnel-like perspective). */
     private static boolean flatCube;
 
@@ -532,16 +542,18 @@ public final class BlockyBodyRenderer {
      * camera would be over or inside one face of a huge box, so it becomes the ball of blocks with its fine surface
      * patch, the way the PIXEL style turns into its sphere.
      */
-    static float cubeToBall(Pose body) {
+    static float cubeToBall(Pose body, boolean approach) {
         float ang = (float) Math.asin(Math.min(1F, body.radius() / Math.max(1e-3F, body.center().length())));
-        float t = Mth.clamp((ang - CUBE_TO_BALL_FROM) / (CUBE_TO_BALL_FULL - CUBE_TO_BALL_FROM), 0F, 1F);
+        float from = approach ? APPROACH_CUBE_TO_BALL_FROM : CUBE_TO_BALL_FROM;
+        float full = approach ? APPROACH_CUBE_TO_BALL_FULL : CUBE_TO_BALL_FULL;
+        float t = Mth.clamp((ang - from) / (full - from), 0F, 1F);
         return t * t * (3 - 2 * t);
     }
 
     private static void renderBody(Matrix4f pose, BlockyBodyMesh.Style style, int n, ColorMap map, Pose body, Vector3f sun, float night,
                                    float tint, float alpha, Ring ring, Vector3f viewDir) {
         if (viewDir == null && style == BlockyBodyMesh.Style.CUBE) {
-            float ball = cubeToBall(body);
+            float ball = cubeToBall(body, n == APPROACH);
             if (ball > 0F) {
                 // close in: the ball of blocks underneath, the cube fading out over it
                 renderBody(pose, BlockyBodyMesh.Style.VOXEL, n, map, body, sun, night, tint, alpha, ring, null);
