@@ -134,13 +134,13 @@ public final class SpaceView {
         }
         // the far ground is drawn by the game to the view distance, and by an LOD mod (Distant Horizons) much further
         double reach = Minecraft.getInstance().options.getEffectiveRenderDistance() * 16.0;
-        // (with the LOD mod running and its terrain shown, the far ground is its business: no ball until the LODs
-        // are switched off for the last stretch before the orbit view)
+        // (the ball is drawn in the sky pass, before the LOD mod's terrain, which covers it wherever it holds data;
+        // where it holds none yet, as in a world just arrived in, the ball is the far ground)
         boolean lods = com.pizzaparker07.spacebreaker.compat.client.DhCompat.active() && !com.pizzaparker07.spacebreaker.compat.client.DhCompat.hidingLods();
         if (lods) {
             reach = Math.max(reach, com.pizzaparker07.spacebreaker.compat.client.DhCompat.lodReachBlocks());
         }
-        float far = Math.max(lods ? 0F : byK, smooth((float) ((altitude() - 0.25 * reach) / (0.35 * reach))));
+        float far = Math.max(byK, smooth((float) ((altitude() - 0.25 * reach) / (0.35 * reach))));
         // coming down into a world just arrived in, the ball stays until the ground under the camera is really drawn
         if (!Double.isNaN(arrivalTop) && !groundDrawn()) {
             far = 1F;
