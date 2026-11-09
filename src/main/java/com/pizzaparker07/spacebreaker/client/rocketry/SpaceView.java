@@ -312,6 +312,11 @@ public final class SpaceView {
         Location here = surface(level);
         float k = factor();
         float planet = here == null ? 0F : ball(k);
+        if (planet > 0 && !(k > 0.6F || planet > 0.5F) && com.pizzaparker07.spacebreaker.compat.client.ShaderState.shaderPackInUse()) {
+            // under a shader pack the ball only comes with the hand-over to this sky (see RocketryClient): before it,
+            // the pack's haze would wash it into pale overlapping plates
+            planet = 0F;
+        }
         if (here == null || k <= 0 && planet <= 0.003F) {
             return;
         }
