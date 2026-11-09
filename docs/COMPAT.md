@@ -451,6 +451,13 @@ environment; the plugins compile against both APIs and the line itself is covere
   far terrain's depth, which the pack fogs). A one-frame tilted slab at the first ground hand-over frame appears
   without shaders too (`seamless_vanilla_slab_024.jpg`, rocketry). With a pack the client is much slower than the
   server, so burst frames land on other moments of the flight than in vanilla.
+- **Seamless ascent, rocketry 385c819f (2026-11-09):** the space sky takes over under a pack only once the ball covers
+  the far ground (`factor() > 0.6 || ball > 0.5`), and the ball leaves the far depth where it covers the ground. In
+  all three packs: no black frames and no pale, fogged ball any more; the hand-over is a cut from the pack's hazy sky
+  (the ball showing faintly through it) to black sky with stars (`seamless_385c819f_packs_handover.jpg`; rows
+  Complementary, BSL, MakeUp, the last pack-sky frame and the two after it). Still open, with packs only (not in
+  vanilla or Sodium, already in e17f02a5): for about six burst frames after the take-over a thin, stepped
+  horizontal line in sky and green tints crosses the whole view near a quarter of its height, drifting down slowly.
 - **MakeUp on the Moon:** the airless ambient handed to packs other than Complementary was (0.20, 0.27, 0.55); MakeUp
   mixes it into its own ambient strongly enough that the Moon turned lilac, most of all at a low sun (seamless
   landing frames). Now (0.20, 0.23, 0.32): near-neutral grey by day, shadows a little cool
