@@ -381,6 +381,10 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         return EntityDimensions.fixed(1.8F, (float) h);
     }
 
+    /** Client only: whether this rocket was seen under parachutes, and the tick it touched down (for the collapsing canopy). */
+    public transient boolean chuteSeen;
+    public transient int chuteLandedAt = -1;
+
     @Override
     protected Vec3 getPassengerAttachmentPoint(Entity passenger, EntityDimensions dimensions, float partialTick) {
         double seat = (geometry().capsuleBottom() + 3) / 16.0;
