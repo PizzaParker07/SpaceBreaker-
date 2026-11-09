@@ -332,6 +332,7 @@ final class RocketryLang {
         l.add("hud.spacebreaker.fuel", "Fuel", "Yakıt");
         l.add("hud.spacebreaker.hint.launch", "Press %s to start the countdown", "Geri sayımı başlatmak için %s");
         l.add("hud.spacebreaker.hint.abort", "Press %s to abort", "Durdurmak için %s");
+        l.add("hud.spacebreaker.time_warp", "⏩ time ×%s", "⏩ zaman ×%s");
         l.add("hud.spacebreaker.hint.map", "Press %s for the star map", "Yıldız haritası için %s");
 
         // screens

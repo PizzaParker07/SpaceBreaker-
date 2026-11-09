@@ -12,6 +12,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.MapColor;
 
 import java.util.List;
@@ -26,9 +27,9 @@ import static com.pizzaparker07.spacebreaker.content.belt.OuterWorlds.s;
  */
 public final class PlutoMoonlets {
     public static final TinyWorld NIX = new TinyWorld(PlutoModule.KIT, "nix", "nix_frost", MapColor.COLOR_LIGHT_GRAY, "nix_ice",
-            MapColor.TERRACOTTA_LIGHT_GRAY, true);
+            MapColor.TERRACOTTA_LIGHT_GRAY, true, SoundType.GLASS);
     public static final TinyWorld HYDRA = new TinyWorld(PlutoModule.KIT, "hydra", "hydra_frost", MapColor.SNOW, "hydra_ice",
-            MapColor.QUARTZ, true);
+            MapColor.QUARTZ, true, SoundType.GLASS);
 
     private PlutoMoonlets() {
     }

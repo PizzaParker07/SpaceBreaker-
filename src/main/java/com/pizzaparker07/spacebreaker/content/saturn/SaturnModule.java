@@ -59,7 +59,7 @@ public final class SaturnModule implements SbModule {
             BlockBehaviour.Properties.of().mapColor(MapColor.TERRACOTTA_BROWN).strength(0.5F).sound(SoundType.SAND));
     public static final DeferredBlock<LunarRegolithBlock> THOLIN_MUD = KIT.block("tholin_mud", LunarRegolithBlock::new,
             BlockBehaviour.Properties.of().mapColor(MapColor.TERRACOTTA_ORANGE).strength(0.6F).sound(SoundType.MUD));
-    public static final BlockKit.Family TITAN_ICE = KIT.family("titan_ice", MapColor.TERRACOTTA_WHITE, SoundType.STONE, 1.6F, true);
+    public static final BlockKit.Family TITAN_ICE = KIT.family("titan_ice", MapColor.TERRACOTTA_WHITE, SoundType.GLASS, 1.6F, true);
     public static final DeferredBlock<Block> ICE_COBBLES = KIT.block("ice_cobbles", BlockBehaviour.Properties.of().mapColor(MapColor.TERRACOTTA_WHITE)
             .strength(1.2F).sound(SoundType.GRAVEL).instrument(NoteBlockInstrument.BASEDRUM));
     public static final DeferredBlock<DropExperienceBlock> THOLIN_ORE = KIT.block("tholin_ore", p -> new DropExperienceBlock(UniformInt.of(0, 2), p),

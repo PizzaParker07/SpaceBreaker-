@@ -67,6 +67,12 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
     public static final double ORBIT_Y = 160;
     public static final int BURN_TICKS = 60;
     public static final int TRANSFER_TICKS = 120;
+    /** Ascent progress by which the rocket stands upright again (the orbit view takes over just after). */
+    public static final double LEVEL_OUT_AT = 0.95;
+    /** Before a landing, the ground under the landing spot is loaded this many ticks ahead. */
+    public static final int PRELOAD_TICKS = 60;
+    private static final net.minecraft.server.level.TicketType<Integer> LANDING_TICKET =
+            net.minecraft.server.level.TicketType.create("spacebreaker_landing", Integer::compare, PRELOAD_TICKS + 200);
     public static final int STAGING_COAST_TICKS = 24;
 
     private static final EntityDataAccessor<Integer> DATA_STATE = SynchedEntityData.defineId(RocketEntity.class, EntityDataSerializers.INT);
@@ -380,6 +386,10 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         double h = Math.max(1.0, geometry().height() / 16.0);
         return EntityDimensions.fixed(1.8F, (float) h);
     }
+
+    /** Client only: whether this rocket was seen under parachutes, and the tick it touched down (for the collapsing canopy). */
+    public transient boolean chuteSeen;
+    public transient int chuteLandedAt = -1;
 
     @Override
     protected Vec3 getPassengerAttachmentPoint(Entity passenger, EntityDimensions dimensions, float partialTick) {
@@ -1275,6 +1285,8 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         }
         // gentle gravity turn on Earth so it looks like a real ascent
         float tilt = location().atmosphere() ? (float) Mth.clamp((t - 200) * 0.03, 0, 14) : 0;
+        // the last part of the climb levels out, so the rocket stands as it will in orbit when the view hands over
+        tilt *= (float) Mth.clamp((LEVEL_OUT_AT - ascentProgress()) / 0.1, 0, 1);
         entityData.set(DATA_TILT, tilt);
         double vx = vy * Math.sin(Math.toRadians(tilt));
         setDeltaMovement(vx, vy, 0);
@@ -1321,9 +1333,35 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
     private void tickTransfer() {
         int t = timer() + 1;
         setTimer(t);
+        if (t == TRANSFER_TICKS - PRELOAD_TICKS) {
+            preloadLanding(destination());
+        }
+        Location dest = destination();
+        if (t == 20 && dest != null && dest.isEarth() && !dest.orbit() && activeStage() < layout().stages().size()) {
+            // coming home only the capsule re-enters: the stages separate here in orbit, in sight, not at the hand-over
+            for (int s = activeStage(); s < layout().stages().size(); s++) {
+                spawnSpentStage(s, true);
+            }
+            setActiveStage(layout().stages().size());
+            level().playSound(null, blockPosition(), com.pizzaparker07.spacebreaker.content.audio.SbSounds.ROCKET_STAGE_SEPARATION.get(), SoundSource.NEUTRAL, 3F, 1F);
+        }
         if (t >= TRANSFER_TICKS) {
             arrive(destination());
         }
+    }
+
+    /** Loads the ground where a landing will come down, so the descent starts over finished terrain. */
+    private void preloadLanding(@org.jetbrains.annotations.Nullable Location to) {
+        if (to == null || to.orbit() || !(level() instanceof ServerLevel server)) {
+            return;
+        }
+        ServerLevel target = server.getServer().getLevel(to.dimension());
+        if (target == null) {
+            return;
+        }
+        double x = to.isEarth() ? (Double.isNaN(homeX) ? target.getSharedSpawnPos().getX() + 0.5 : homeX + 48) : getX() % 30000.0;
+        double z = to.isEarth() ? (Double.isNaN(homeZ) ? target.getSharedSpawnPos().getZ() + 0.5 : homeZ + 16) : getZ() % 30000.0;
+        target.getChunkSource().addRegionTicket(LANDING_TICKET, new net.minecraft.world.level.ChunkPos(BlockPos.containing(x, 0, z)), 4, getId());
     }
 
     /** Moves the rocket (and crew) to the destination's dimension and starts the right phase there. */
@@ -1383,9 +1421,27 @@ public class RocketEntity extends Entity implements IEntityWithComplexSpawn {
         setTimer(0);
         setBurning(next == FlightState.DESCENT);
         teleporting = true;
+        // the crew travel separately and arrive straight in their seats, so the camera does not jump while the rocket
+        // is still on its way to the client (it draws a stand-in until then)
+        List<Entity> crew = target == level() ? List.of() : List.copyOf(getPassengers());
+        crew.forEach(Entity::stopRiding);
         Entity moved = target == level() ? this : changeDimension(new DimensionTransition(target, pos, speed, getYRot(), 0, DimensionTransition.DO_NOTHING));
         teleporting = false;
         if (moved instanceof RocketEntity r) {
+            r.teleporting = true;
+            for (Entity e : crew) {
+                Vec3 seat = r.getPassengerRidingPosition(e).subtract(e.getVehicleAttachmentPoint(r));
+                Entity there;
+                if (e instanceof ServerPlayer sp) {
+                    sp.teleportTo(target, seat.x, seat.y, seat.z, sp.getYRot(), sp.getXRot());
+                    there = sp;
+                } else {
+                    there = e.changeDimension(new DimensionTransition(target, seat, Vec3.ZERO, e.getYRot(), e.getXRot(), DimensionTransition.DO_NOTHING));
+                }
+                if (there != null) {
+                    there.startRiding(r, true);
+                }
+            }
             r.teleporting = false;
             if (moved == this) {
                 moveTo(pos.x, pos.y, pos.z);

@@ -258,8 +258,8 @@ public final class MachinesModule implements SbModule {
 
     // ------------------------------------------------------------------ cables and pipes
     public static final List<DeferredBlock<ConduitBlock>> CONDUITS = new ArrayList<>();
-    public static final DeferredBlock<ConduitBlock> COPPER_CABLE = conduit(ConduitType.COPPER_CABLE, SoundType.WOOL);
-    public static final DeferredBlock<ConduitBlock> HV_CABLE = conduit(ConduitType.HV_CABLE, SoundType.WOOL);
+    public static final DeferredBlock<ConduitBlock> COPPER_CABLE = conduit(ConduitType.COPPER_CABLE, SoundType.COPPER);
+    public static final DeferredBlock<ConduitBlock> HV_CABLE = conduit(ConduitType.HV_CABLE, SoundType.METAL);
     public static final DeferredBlock<ConduitBlock> FLUID_PIPE = conduit(ConduitType.FLUID_PIPE, SoundType.METAL);
     public static final DeferredBlock<ConduitBlock> GAS_PIPE = conduit(ConduitType.GAS_PIPE, SoundType.COPPER);
     public static final DeferredBlock<ConduitBlock> ITEM_DUCT = conduit(ConduitType.ITEM_DUCT, SoundType.METAL);

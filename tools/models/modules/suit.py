@@ -51,6 +51,95 @@ def tank_model(name, top):
     })
 
 
+def _sw(col, row, w=4, h=4, du=0):
+    """UV of a patch on the drill swatch sheet (4x4 patches, see textures electric_drill_model)."""
+    return [col * 4 + du, row * 4, col * 4 + du + w, row * 4 + h]
+
+
+def _faces(side, top=None, bottom=None, front=None, back=None, east=None, west=None):
+    top = top or side
+    return {'north': front or side, 'south': back or side, 'east': east or side, 'west': west or side,
+            'up': top, 'down': bottom or top}
+
+
+DRILL_DISPLAY = {
+    'thirdperson_righthand': {'rotation': [90, -90, 0], 'translation': [0, 1, 2], 'scale': [0.55, 0.55, 0.55]},
+    'thirdperson_lefthand': {'rotation': [90, -90, 0], 'translation': [0, 1, 2], 'scale': [0.55, 0.55, 0.55]},
+    'firstperson_righthand': {'rotation': [0, 0, 0], 'translation': [1.5, 3, -2], 'scale': [0.42, 0.42, 0.42]},
+    'firstperson_lefthand': {'rotation': [0, 0, 0], 'translation': [1.5, 3, -2], 'scale': [0.42, 0.42, 0.42]},
+    'gui': {'rotation': [25, -135, 0], 'translation': [0, -1, 0], 'scale': [0.75, 0.75, 0.75]},
+    'ground': {'rotation': [0, 0, 0], 'translation': [0, 2, 0], 'scale': [0.45, 0.45, 0.45]},
+    'fixed': {'rotation': [0, 90, 0], 'translation': [0, 0, 0], 'scale': [0.8, 0.8, 0.8]},
+}
+DRILL_SPIN = (0, 22.5, 45, -22.5)
+
+
+def electric_drill():
+    """Pistol-grip electric drill, nose towards -z: white motor housing with a cyan band, ribbed rubber grip and
+    trigger, battery pack under the grip, steel chuck and a fluted bit (or the wide-bore titanium crown). Four spin
+    frames per bit turn the bit or crown in 22.5 degree steps and shift its flutes, picked by the spin property."""
+    def els(frame, wide):
+        rot = {'origin': [8, 10, 0], 'axis': 'z', 'angle': DRILL_SPIN[frame]} if DRILL_SPIN[frame] else None
+        e = [
+            cube([6, 8, 4], [10, 12, 13], 'tex', per_face=_faces(_sw(1, 0), top=_sw(0, 0), bottom=_sw(2, 0), back=_sw(3, 0))),  # motor housing
+            cube([6.5, 2, 9], [9.5, 8, 12], 'tex', per_face=_faces(_sw(0, 1)),
+                 rot={'origin': [8, 8, 10.5], 'axis': 'x', 'angle': -22.5}),                                                       # grip
+            cube([7.5, 6, 7.5], [8.5, 7.5, 9], 'tex', per_face=_faces(_sw(3, 1, 1, 2))),                                          # trigger
+            cube([5.5, 0, 8], [10.5, 2.5, 14], 'tex', per_face=_faces(_sw(1, 1), top=_sw(2, 1))),                                 # battery
+            cube([6.5, 8.5, 2], [9.5, 11.5, 4], 'tex', per_face=_faces(_sw(0, 2), front=_sw(1, 2))),                             # chuck
+        ]
+        flutes = _sw(2, 2, 2, 4, du=frame % 2)
+        if wide:
+            e.append(cube([7.5, 9.5, -3], [8.5, 10.5, 2], 'tex', per_face=_faces(flutes, front=_sw(3, 2, 1, 1)), rot=rot))      # short pilot bit
+            e.append(cube([5, 7, 0], [11, 13, 2], 'tex', per_face=_faces(_sw(0, 3), front=_sw(1, 3)), rot=rot))                # titanium crown
+        else:
+            e.append(cube([7.5, 9.5, -4], [8.5, 10.5, 2], 'tex', per_face=_faces(flutes, front=_sw(3, 2, 1, 1)), rot=rot))      # bit
+        return e
+
+    tex = {'tex': i('electric_drill_model'), 'particle': i('electric_drill_model')}
+    for wide in (False, True):
+        for frame in range(4):
+            name = 'electric_drill' + ('_wide' if wide else '') + (f'_spin{frame}' if frame else '')
+            if name == 'electric_drill':
+                continue
+            write(f'models/item/{name}.json', {'parent': 'minecraft:block/block', 'textures': tex, 'elements': els(frame, wide),
+                                                'display': DRILL_DISPLAY})
+    overrides = [{'predicate': {'spacebreaker:spin': f / 4}, 'model': i(f'electric_drill_spin{f}')} for f in (1, 2, 3)]
+    overrides.append({'predicate': {'spacebreaker:wide_bore': 1}, 'model': i('electric_drill_wide')})
+    overrides += [{'predicate': {'spacebreaker:wide_bore': 1, 'spacebreaker:spin': f / 4}, 'model': i(f'electric_drill_wide_spin{f}')}
+                  for f in (1, 2, 3)]
+    write('models/item/electric_drill.json', {'parent': 'minecraft:block/block', 'textures': tex,
+                                              'elements': els(0, False), 'display': DRILL_DISPLAY, 'overrides': overrides})
+
+
+def environment_sensor():
+    """Handheld scanner: a grey case with a glowing readout screen and three keys on the side facing the holder (+z),
+    a battery door on the back and a whip antenna with a red tip."""
+    side = [12, 0, 13, 10]
+    els = [
+        cube([5, 1, 7], [11, 11, 9], 'tex', per_face={'south': [0, 0, 6, 10], 'north': [6, 0, 12, 10], 'east': side, 'west': side,
+                                                      'up': [0, 10, 6, 12], 'down': [6, 10, 12, 12]}),
+        cube([9.5, 11, 7.5], [10.5, 14, 8.5], 'tex', per_face={s: [12, 10, 13, 13] for s in SIDES} | {'up': [13, 10, 14, 11], 'down': [12, 13, 13, 14]}),
+    ]
+    screen = cube([6, 5, 9], [10, 10, 9.02], 'tex', faces=('south',), per_face={'south': [1, 1, 5, 6]})
+    screen['neoforge_data'] = {'block_light': 15, 'sky_light': 15}
+    els.append(screen)
+    write('models/item/environment_sensor.json', {
+        'parent': 'minecraft:block/block',
+        'textures': {'tex': i('environment_sensor_model'), 'particle': i('environment_sensor_model')},
+        'elements': els,
+        'display': {
+            'thirdperson_righthand': {'rotation': [-180, -90, 90], 'translation': [0, 1, 1], 'scale': [0.55, 0.55, 0.55]},
+            'thirdperson_lefthand': {'rotation': [-180, -90, 90], 'translation': [0, 1, 1], 'scale': [0.55, 0.55, 0.55]},
+            'firstperson_righthand': {'rotation': [-20, 0, 0], 'translation': [0, 3, -1], 'scale': [0.5, 0.5, 0.5]},
+            'firstperson_lefthand': {'rotation': [-20, 0, 0], 'translation': [0, 3, -1], 'scale': [0.5, 0.5, 0.5]},
+            'gui': {'rotation': [15, -25, 0], 'translation': [0, 0, 0], 'scale': [1.0, 1.0, 1.0]},
+            'ground': {'rotation': [0, 0, 0], 'translation': [0, 2, 0], 'scale': [0.5, 0.5, 0.5]},
+            'fixed': {'rotation': [0, 180, 0], 'translation': [0, 0, 0], 'scale': [1.0, 1.0, 1.0]},
+        },
+    })
+
+
 def oxygen_tank():
     tank_model('oxygen_tank', 11)
     tank_model('large_oxygen_tank', 13)
@@ -63,10 +152,11 @@ def generate():
     for name in pieces:
         write(f'models/item/{name}.json', {'parent': 'minecraft:item/generated',
                                             'textures': {'layer0': i(name), 'layer1': i(name + '_accent')}})
-    for name in ('maneuvering_unit', 'safety_tether', 'environment_sensor', 'wide_bore_drill_head', 'suit_upgrade_template', 'thermal_regulator_module', 'radiation_shield_module',
+    for name in ('maneuvering_unit', 'safety_tether', 'wide_bore_drill_head', 'suit_upgrade_template', 'thermal_regulator_module', 'radiation_shield_module',
                  'extra_oxygen_module', 'jetpack_booster_module'):
         generated_item(name)
-    write('models/item/electric_drill.json', {'parent': 'minecraft:item/handheld', 'textures': {'layer0': i('electric_drill')}})
+    electric_drill()
+    environment_sensor()
     for tool in ('pickaxe', 'axe', 'shovel', 'hoe', 'sword'):
         write(f'models/item/titanium_{tool}.json', {'parent': 'minecraft:item/handheld', 'textures': {'layer0': i(f'titanium_{tool}')}})
     oxygen_tank()

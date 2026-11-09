@@ -38,6 +38,10 @@ final class RocketryScenario implements ShowcaseScenario {
     private static final BlockPos POOL = new BlockPos(-40, F, 30);
 
     private static RocketEntity padRocket;
+    /** Frames of the flight sequence (shot 69), ten ticks apart. */
+    private static final int FLIGHT_FRAMES = Integer.parseInt(System.getenv().getOrDefault("SB_FLIGHT_FRAMES", "240"));
+    private static final int TRANSFER_FRAMES = Integer.parseInt(System.getenv().getOrDefault("SB_TRANSFER_FRAMES", "130"));
+    private static final int FLIGHT_STEP = Integer.parseInt(System.getenv().getOrDefault("SB_FLIGHT_STEP", "10"));
     private static int moonGround = 100;
     private static final List<RocketEntity> scene = new ArrayList<>();
 
@@ -935,6 +939,96 @@ final class RocketryScenario implements ShowcaseScenario {
                         net.minecraft.network.chat.Component.translatable("toast.spacebreaker.orbit.title"), Location.EARTH_ORBIT.name());
             });
         }, null));
+        // the parachute sequence frame by frame: drogue, reefed main, filling, full with a pendulum swing, touchdown
+        // and the canopy collapsing beside the capsule (a camera that keeps level with the falling capsule)
+        double cx = LANDING.getX() + 0.5, cz = LANDING.getZ() + 20.5;
+        s.add(new Shot("67_chute_00", 6000, cx + 18, G + 74, cz, 90F, 0F, true, fp, 60, p -> clearScene(p), null));
+        s.add(Shot.stay("67_chute_01", 6000, true, fp, 3, p -> {
+            spawn(p.serverLevel(), new Vec3(cx, G + 72, cz), 0F, FlightState.PARACHUTE, 0, 3, false);
+            p.connection.teleport(cx + 18, G + 75 - p.getEyeHeight(), cz, 90F, 6F);
+        }, null));
+        for (int i = 2; i <= 22; i++) {
+            final int frame = i;
+            s.add(Shot.stay(String.format(java.util.Locale.ROOT, "67_chute_%02d", i), 6000, true, fp, frame < 14 ? 6 : 10, p -> {
+                if (scene.isEmpty()) {
+                    return;
+                }
+                RocketEntity r = scene.get(scene.size() - 1);
+                boolean down = r.state() != FlightState.PARACHUTE;
+                double eye = down ? G + 4 : r.getY() + 3;
+                double back = down ? 16 : 18;
+                p.connection.teleport(cx + back, eye - p.getEyeHeight(), cz - (down ? 4 : 0), down ? 100F : 90F, down ? 8F : 6F);
+            }, null));
+        }
+        // third person in the capsule under the main canopy: the crew sit inside, nothing pokes through the walls
+        s.add(new Shot("68_chute_third_person", 6000, cx, G + 60, cz, 30F, -25F, true, CameraType.THIRD_PERSON_BACK, 40, p -> {
+            clearScene(p);
+            RocketEntity r = spawn(p.serverLevel(), new Vec3(cx, G + 58, cz), 0F, FlightState.PARACHUTE, 90, 3, false);
+            p.startRiding(r, true);
+        }, null));
+        // a whole flight frame by frame (every 10 ticks, burst mode): countdown, climb, the hand-over to orbit, a few
+        // seconds in orbit, the de-orbit and the hand-over back to the Earth, the descent: no frame may freeze, go
+        // black or jump
+        boolean[] landingAsked = {false};
+        int[] inOrbit = {0};
+        s.add(new Shot("69_flight_000", 6000, 6.5, G + 6, -8.5, 30F, 20F, true, CameraType.THIRD_PERSON_BACK, 40, p -> {
+            clearScene(p);
+            landingAsked[0] = false;
+            inOrbit[0] = 0;
+            padRocket.fillCompletely();
+            p.startRiding(padRocket, true);
+            ShowcaseDriver.burst = true;
+            padRocket.tryStartCountdown(null);
+        }, null));
+        for (int i = 1; i <= FLIGHT_FRAMES; i++) {
+            final boolean last = i == FLIGHT_FRAMES;
+            final int frame = i;
+            s.add(Shot.stay(String.format(java.util.Locale.ROOT, "69_flight_%03d", i), 6000, true, CameraType.THIRD_PERSON_BACK, FLIGHT_STEP, p -> {
+                if (p.getVehicle() instanceof RocketEntity v) {
+                    com.pizzaparker07.spacebreaker.Spacebreaker.LOGGER.info("[flight] frame {} {} t{} progress {} y {} dim {}", frame, v.state(), v.timer(),
+                            String.format(java.util.Locale.ROOT, "%.3f", v.ascentProgress()), (int) v.getY(), v.level().dimension().location());
+                }
+                if (p.getVehicle() instanceof RocketEntity r && r.state() == FlightState.ORBIT && ++inOrbit[0] > 8 && !landingAsked[0]) {
+                    landingAsked[0] = true;
+                    r.tryTravel(null, Location.EARTH_SURFACE);
+                }
+                if (last) {
+                    ShowcaseDriver.burst = false;
+                }
+            }, null));
+        }
+        // the transfer to the Moon and the landing there, frame by frame (every 5 ticks): the Earth shrinks away, the
+        // Moon grows, the hand-over to the Moon's orbit, the de-orbit and the hand-over to the surface
+        int[] step = {0};
+        s.add(new Shot("70_transfer_000", 6000, 0, 0, 0, 0F, 0F, true, CameraType.THIRD_PERSON_BACK, 80, p -> {
+            clearScene(p);
+            step[0] = 0;
+            ServerLevel orbit = p.server.getLevel(Location.EARTH_ORBIT.dimension());
+            RocketEntity r = spawn(orbit, new Vec3(0.5, RocketEntity.ORBIT_Y, 0.5), 0F, FlightState.ORBIT, 0, 1, false);
+            toDimension(p, Location.EARTH_ORBIT, 0.5, RocketEntity.ORBIT_Y + 1, 0.5, 30F, 20F);
+            p.startRiding(r, true);
+            ShowcaseDriver.burst = true;
+        }, null));
+        for (int i = 1; i <= TRANSFER_FRAMES; i++) {
+            final boolean last = i == TRANSFER_FRAMES;
+            final int frame = i;
+            s.add(Shot.stay(String.format(java.util.Locale.ROOT, "70_transfer_%03d", i), 6000, true, CameraType.THIRD_PERSON_BACK, 5, p -> {
+                if (p.getVehicle() instanceof RocketEntity r) {
+                    com.pizzaparker07.spacebreaker.Spacebreaker.LOGGER.info("[transfer] frame {} {} t{} y {} dim {}", frame, r.state(), r.timer(),
+                            (int) r.getY(), r.level().dimension().location());
+                    if (step[0] == 0 && r.state() == FlightState.ORBIT && frame >= 3) {
+                        step[0] = r.tryTravel(null, Location.MOON_ORBIT) ? 1 : -1;
+                    } else if (step[0] == 1 && r.state() == FlightState.ORBIT && Location.MOON_ORBIT.equals(r.location())) {
+                        step[0] = 2;
+                    } else if (step[0] >= 2 && step[0] < 12 && r.state() == FlightState.ORBIT && ++step[0] == 12) {
+                        r.tryTravel(null, Location.MOON_SURFACE);
+                    }
+                }
+                if (last) {
+                    ShowcaseDriver.burst = false;
+                }
+            }, null));
+        }
         s.add(new Shot("31_nearby_stars", 6000, 0, 0, 0, 0F, 0F, false, fp, 120,
                 p -> {
                     RocketryShowcaseClient.star = "Alpha Centauri";

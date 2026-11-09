@@ -52,6 +52,8 @@ public class PlanetSkyEffects extends DimensionSpecialEffects {
     private double parentSize = 1.9;
     /** Earth's air seen from the Moon: a thin blue band along its outline, faint on the night side (no city lights). */
     private static final int EARTH_AIR = 0x7FB4FF;
+    /** The ring of sunsets round Earth while it hides the Sun from the Moon. */
+    private static final int EARTH_ECLIPSE_GLOW = 0xFF8A3D;
     /** Earth reflects about two and a half times more light than the Moon: its day side is drawn brighter than its map. */
     private static final float EARTH_BRIGHTNESS = 1.45F;
 
@@ -350,10 +352,8 @@ public class PlanetSkyEffects extends DimensionSpecialEffects {
             var pose = new BlockyBodyRenderer.Pose(centre, radius, new Vector3f((float) up.x, (float) up.y, (float) up.z),
                     new Vector3f((float) toViewer.x, (float) toViewer.y, (float) toViewer.z), (float) spin);
             BlockyBodyRenderer.draw(ps.last().pose(), blocky, 0, earthMap(), pose,
-                    new Vector3f((float) s.x, (float) s.y, (float) s.z), 0.07F, EARTH_BRIGHTNESS * (1F - 0.9F * eclipseNow), 1F, null, EARTH_AIR);
-            if (eclipseNow > 0.01F) {
-                sunsetRing(ps.last().pose(), new Vector3d(e).mul(100), right, up, radius * 0.985F, eclipseNow);
-            }
+                    new Vector3f((float) s.x, (float) s.y, (float) s.z), 0.07F, EARTH_BRIGHTNESS * (1F - 0.9F * eclipseNow), 1F, null, EARTH_AIR,
+                    EARTH_ECLIPSE_GLOW, eclipseNow); // during an eclipse the air round Earth glows with every sunset at once
             return;
         }
         ResourceLocation tex = EarthDisc.update(sunInDisc, spin, cloudSpin);

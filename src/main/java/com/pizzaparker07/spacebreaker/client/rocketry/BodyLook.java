@@ -60,6 +60,16 @@ final class BodyLook {
      */
     static boolean drawBelow(Matrix4f modelView, ResourceLocation body, Vector3f center, float radius, float spin, Vector3f sun,
                              float alpha, boolean air) {
+        return drawBelow(modelView, body, center, radius, spin, sun, alpha, air, BlockyBodyRenderer.APPROACH);
+    }
+
+    /**
+     * As above, at a fixed resolution {@code n} (blocks across the body), or {@link BlockyBodyRenderer#APPROACH} for the
+     * close-up surface patch. A ball that grows or shrinks on screen uses a fixed resolution: the close-up patch is
+     * built for one size and breaks up while the size runs.
+     */
+    static boolean drawBelow(Matrix4f modelView, ResourceLocation body, Vector3f center, float radius, float spin, Vector3f sun,
+                             float alpha, boolean air, int n) {
         BlockyBodyMesh.Style st = style();
         if (st == null) {
             return false;
@@ -67,7 +77,7 @@ final class BodyLook {
         // pole along the horizon, longitude 0 facing up at the viewer: we look down on the tropics
         var pose = new BlockyBodyRenderer.Pose(center, radius, new Vector3f(0, 0, 1), new Vector3f(0, 1, 0), spin * (float) (Math.PI * 2));
         // close below an orbit: up to the finest level, or the steps show as big bands
-        BlockyBodyRenderer.draw(modelView, st, BlockyBodyRenderer.APPROACH, map(body), pose, sun, 0.05F, 1F, alpha, null);
+        BlockyBodyRenderer.draw(modelView, st, n, map(body), pose, sun, 0.05F, 1F, alpha, null);
         if (air) {
             // a thin stepped band of air along the planet's outline (never over its face): the horizon from low orbit
             BlockyBodyRenderer.drawLimb(modelView, pose, sun, 0x7FB4FF, 0.85F * alpha, 0.025F);

@@ -14,8 +14,8 @@ import net.neoforged.neoforge.client.event.ScreenEvent;
 import java.util.function.BooleanSupplier;
 
 /**
- * Shown while a rocket changes dimension, in place of the "loading terrain" screen: the last frame of the flight stays
- * on screen ({@link TransitView} takes and holds it) until the new world cross-fades in. Same closing logic as
+ * Shown while a rocket changes dimension, in place of the "loading terrain" screen: it draws nothing, so the new world
+ * is seen from its first frame ({@link TransitView} draws the rocket until it arrives). Same closing logic as
  * vanilla's.
  */
 public class TransitScreen extends ReceivingLevelScreen {
@@ -24,15 +24,13 @@ public class TransitScreen extends ReceivingLevelScreen {
         TransitView.hold();
     }
 
+    /** Nothing: the new world is drawn behind this screen from its first frame, with the stand-in rocket in it. */
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
-        renderBackground(g, mouseX, mouseY, partialTick);
     }
 
     @Override
     public void renderBackground(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
-        g.fill(0, 0, width, height, 0xFF000000);
-        TransitView.render(g, width, height, 1F);
     }
 
     @EventBusSubscriber(modid = Spacebreaker.MOD_ID, value = Dist.CLIENT)
