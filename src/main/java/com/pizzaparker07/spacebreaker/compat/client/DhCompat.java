@@ -41,9 +41,13 @@ public final class DhCompat {
     private static boolean warned;
 
     private static long cachedTick = Long.MIN_VALUE;
+    private static long cachedAt;
+    private static Object cachedLevel;
+    private static boolean reported;
     private static int cachedReach;
     private static int cachedCurvature;
-    private static long columnTick = Long.MIN_VALUE;
+    private static long columnAt;
+    private static Object columnLevel;
     private static int columnX = Integer.MIN_VALUE, columnZ = Integer.MIN_VALUE;
     private static boolean columnFound;
 
@@ -61,19 +65,39 @@ public final class DhCompat {
         try {
             Class<?> delayed = Class.forName("com.seibel.distanthorizons.api.DhApi$Delayed");
             configs = delayed.getField("configs");
-            terrainRepo = delayed.getField("terrainRepo");
-            worldProxy = delayed.getField("worldProxy");
             graphics = Class.forName("com.seibel.distanthorizons.api.interfaces.config.IDhApiConfig").getMethod("graphics");
             Class<?> g = Class.forName("com.seibel.distanthorizons.api.interfaces.config.client.IDhApiGraphicsConfig");
             chunkRenderDistance = g.getMethod("chunkRenderDistance");
             renderingEnabled = g.getMethod("renderingEnabled");
-            curvature = g.getMethod("earthCurvatureRatio");
-            fog = g.getMethod("fog");
-            enableDhFog = Class.forName("com.seibel.distanthorizons.api.interfaces.config.client.IDhApiFogConfig").getMethod("enableDhFog");
             Class<?> value = Class.forName("com.seibel.distanthorizons.api.interfaces.config.IDhApiConfigValue");
             configValue = value.getMethod("getValue");
             setApiValue = value.getMethod("setValue", Object.class);
             clearApiValue = value.getMethod("clearValue");
+        } catch (ReflectiveOperationException | LinkageError e) {
+            configs = null;
+            Spacebreaker.LOGGER.warn("Distant Horizons is installed but its config API could not be reached", e);
+            return;
+        }
+        // The rest is optional: each part that a DH version lacks only switches off what needs it.
+        try {
+            curvature = Class.forName("com.seibel.distanthorizons.api.interfaces.config.client.IDhApiGraphicsConfig")
+                    .getMethod("earthCurvatureRatio");
+        } catch (ReflectiveOperationException | LinkageError e) {
+            curvature = null;
+            Spacebreaker.LOGGER.warn("Distant Horizons' earth curvature setting could not be reached", e);
+        }
+        try {
+            fog = Class.forName("com.seibel.distanthorizons.api.interfaces.config.client.IDhApiGraphicsConfig").getMethod("fog");
+            enableDhFog = Class.forName("com.seibel.distanthorizons.api.interfaces.config.client.IDhApiFogConfig").getMethod("enableDhFog");
+        } catch (ReflectiveOperationException | LinkageError e) {
+            fog = null;
+            enableDhFog = null;
+            Spacebreaker.LOGGER.warn("Distant Horizons' fog settings could not be reached", e);
+        }
+        try {
+            Class<?> delayed = Class.forName("com.seibel.distanthorizons.api.DhApi$Delayed");
+            terrainRepo = delayed.getField("terrainRepo");
+            worldProxy = delayed.getField("worldProxy");
             Class<?> world = Class.forName("com.seibel.distanthorizons.api.interfaces.world.IDhApiWorldProxy");
             worldLoaded = world.getMethod("worldLoaded");
             singlePlayerLevel = world.getMethod("getSinglePlayerLevel");
@@ -82,8 +106,8 @@ public final class DhCompat {
             Class<?> cache = Class.forName("com.seibel.distanthorizons.api.interfaces.data.IDhApiTerrainDataCache");
             columnData = repo.getMethod("getColumnDataAtBlockPos", level, int.class, int.class, cache);
         } catch (ReflectiveOperationException | LinkageError e) {
-            configs = null;
-            Spacebreaker.LOGGER.warn("Distant Horizons is installed but its config/terrain API could not be reached", e);
+            columnData = null;
+            Spacebreaker.LOGGER.warn("Distant Horizons' terrain data API could not be reached", e);
         }
     }
 
@@ -113,16 +137,18 @@ public final class DhCompat {
      * there once it is inside {@link #lodReachBlocks()}. Asked at most once a second for the same column.
      */
     public static boolean lodUnder(double x, double z) {
-        if (!active()) {
+        if (!active() || columnData == null) {
             return false;
         }
         Minecraft mc = Minecraft.getInstance();
-        long tick = mc.level == null ? 0 : mc.level.getGameTime();
+        long now = System.nanoTime();
         int bx = Mth.floor(x), bz = Mth.floor(z);
-        if (tick - columnTick < 20 && Math.abs(bx - columnX) < 16 && Math.abs(bz - columnZ) < 16) {
+        if (now - columnAt < 1_000_000_000L && mc.level == columnLevel
+                && Math.abs(bx - columnX) < 16 && Math.abs(bz - columnZ) < 16) {
             return columnFound;
         }
-        columnTick = tick;
+        columnAt = now;
+        columnLevel = mc.level;
         columnX = bx;
         columnZ = bz;
         columnFound = false;
@@ -239,10 +265,15 @@ public final class DhCompat {
     private static void refresh() {
         Minecraft mc = Minecraft.getInstance();
         long tick = mc.level == null ? 0 : mc.level.getGameTime();
-        if (tick == cachedTick) {
+        long now = System.nanoTime();
+        // Once per game tick, but also again after a quarter second and on a world change: DH's API objects appear only
+        // after its own start-up, and the game time can stand still (a frozen tick rate, the same time in a new world).
+        if (tick == cachedTick && mc.level == cachedLevel && now - cachedAt < 250_000_000L) {
             return;
         }
         cachedTick = tick;
+        cachedAt = now;
+        cachedLevel = mc.level;
         cachedReach = 0;
         cachedCurvature = 0;
         resolve();
@@ -260,8 +291,15 @@ public final class DhCompat {
             }
             Object chunks = configValue.invoke(chunkRenderDistance.invoke(g));
             cachedReach = chunks instanceof Integer c ? Math.max(0, c) * 16 : 0;
-            Object ratio = configValue.invoke(curvature.invoke(g));
-            cachedCurvature = ratio instanceof Integer r ? r : 0;
+            if (!reported && mc.level != null) {
+                reported = true;
+                Spacebreaker.LOGGER.info("Distant Horizons seen: LOD reach {} blocks, fog switch {}, terrain data {}",
+                        cachedReach, enableDhFog != null ? "reachable" : "missing", columnData != null ? "reachable" : "missing");
+            }
+            if (curvature != null) {
+                Object ratio = configValue.invoke(curvature.invoke(g));
+                cachedCurvature = ratio instanceof Integer r ? r : 0;
+            }
         } catch (ReflectiveOperationException | RuntimeException e) {
             warn(e);
         }
