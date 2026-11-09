@@ -465,6 +465,9 @@ environment; the plugins compile against both APIs and the line itself is covere
   Complementary frames, the sky darkens evenly to navy and then black (`seamless_b415c1aa_complementary.jpg`, frames
   15-22). Left, minor: in the last frame under the pack's own sky the ball shows through the haze as pale overlapping
   slabs (gone with `SB_SPACEVIEW_OFF=ball`, see the isolation image).
+  Fixed in rocketry 315a4107 (under a pack the ball comes with the hand-over): a clean cut from the pack's hazy sky
+  to the space view, no slabs, no line, no dark frame in 40 Complementary frames
+  (`seamless_315a4107_complementary.jpg`, frames 13-20).
 - **MakeUp on the Moon:** the airless ambient handed to packs other than Complementary was (0.20, 0.27, 0.55); MakeUp
   mixes it into its own ambient strongly enough that the Moon turned lilac, most of all at a low sun (seamless
   landing frames). Now (0.20, 0.23, 0.32): near-neutral grey by day, shadows a little cool
