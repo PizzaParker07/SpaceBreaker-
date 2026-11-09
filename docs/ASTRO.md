@@ -1055,7 +1055,11 @@ built on them.
   `apply`, `burnSeconds(mass, thrust, isp)` and `startTime` (the burn centred on the node).
 - `EntryGate` gives a body's layers: `zone(body, altitude)` returns SPACE, ORBIT_SHELL (below twice the
   low-orbit altitude), ENTRY (below the top of the air, or half the low-orbit altitude on airless worlds) or
-  SURFACE. `descendsThroughEntry(body, state)` is the hand-over test to the surface world.
+  SURFACE. `descendsThroughEntry(body, state)` is the hand-over test to the surface world. `spaceFactor(body, altitude)` (0..1, smoothstep from a
+  quarter of the entry altitude, or the ground on airless worlds, to low-orbit altitude) drives seamless launch
+  and landing visuals: at 1 the view matches the orbit sky and the switch happens; `altitudeForSpaceFactor` is
+  its inverse. `spaceFactorForBlocks(body, blocksAboveGround, topBlocks)` is the same for block-measured climbs: the
+  climb maps linearly onto 0..low-orbit altitude. Rockets use it so they share one definition.
 - `StationRendezvous.orbit(body, altitude, inclination, phase)` builds a station's fixed circular orbit (from
   rocketry's `Stations.orbit`). `returnsToPocket(craft, orbit, t)` is true within 50 km and below 50 m/s
   relative speed.
