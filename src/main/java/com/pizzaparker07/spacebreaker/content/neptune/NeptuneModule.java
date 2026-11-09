@@ -61,7 +61,7 @@ public final class NeptuneModule implements SbModule {
             BlockBehaviour.Properties.of().mapColor(MapColor.TERRACOTTA_PINK).strength(0.4F).sound(SoundType.POWDER_SNOW));
     public static final DeferredBlock<LunarRegolithBlock> PLUME_DUST = KIT.block("plume_dust", LunarRegolithBlock::new,
             BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK).strength(0.4F).sound(SoundType.SAND));
-    public static final BlockKit.Family TRITON_ICE = KIT.family("triton_ice", MapColor.TERRACOTTA_LIGHT_GREEN, SoundType.STONE, 1.6F, true);
+    public static final BlockKit.Family TRITON_ICE = KIT.family("triton_ice", MapColor.TERRACOTTA_LIGHT_GREEN, SoundType.GLASS, 1.6F, true);
     public static final DeferredBlock<VentBlock> NITROGEN_GEYSER = KIT.block("nitrogen_geyser",
             p -> new VentBlock(new VentBlock.Kind(VentBlock.Style.NITROGEN, 0.45, 0F, 700, 260, 40), () -> NeptuneModule.PLUME_DUST.get(), p),
             BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK).strength(2.5F, 9F).sound(SoundType.GLASS).requiresCorrectToolForDrops());

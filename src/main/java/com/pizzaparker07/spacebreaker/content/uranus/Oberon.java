@@ -50,7 +50,7 @@ public final class Oberon {
 
     public static final DeferredBlock<LunarRegolithBlock> REGOLITH = KIT.block("oberon_regolith", LunarRegolithBlock::new,
             BlockBehaviour.Properties.of().mapColor(MapColor.TERRACOTTA_GRAY).strength(0.5F).sound(SoundType.SAND));
-    public static final BlockKit.Family ICE = KIT.family("oberon_ice", MapColor.TERRACOTTA_GRAY, SoundType.STONE, 1.7F, true);
+    public static final BlockKit.Family ICE = KIT.family("oberon_ice", MapColor.TERRACOTTA_GRAY, SoundType.GLASS, 1.7F, true);
     /** The dark material flooding the floors of Oberon's large craters. */
     public static final DeferredBlock<Block> DARK_FLOOR = KIT.block("dark_crater_fill", BlockBehaviour.Properties.of()
             .mapColor(MapColor.TERRACOTTA_BLACK).strength(0.8F).sound(SoundType.GRAVEL));
