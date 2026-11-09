@@ -364,6 +364,11 @@ while the inner was open 119, and so on).
   whose controllers set the rest of their structure themselves); with half the launch site's materials 15 of 33 are
   placed, every carried block is used, the missing list matches the shortfall exactly and unrelated items are not
   touched; walking 80 blocks away stops the job, and the inventory paid exactly for what was placed ✅.
+- cube planets by default (moon a02d947a), the one-time switch checked with real client launches against a
+  hand-written `run-showcase/config/spacebreaker-worlds-client.toml`: old file VOXEL without styleVersion → CUBE,
+  styleVersion 1; launched again → stays CUBE; VOXEL with styleVersion 1 (chosen after the switch) → stays VOXEL; ROUND
+  and PIXEL without a version → kept; VOXEL with styleVersion 0 → CUBE ✅. (A player who chose VOXEL on purpose before
+  the update cannot be told apart from the old default and moves to CUBE once; by design.)
 - (a) the crew does not show through the capsule: `./gradlew runShowcase -Pscenario=qa_crew_hidden`. The player rides
   a Moon rocket in third person through every flight state (the whole stack: IDLE, COUNTDOWN, ASCENT, ORBIT, BURN,
   TRANSFER, DESCENT, REENTRY, PARACHUTE; the capsule alone: REENTRY, PARACHUTE, IDLE). Each draw of a rider is
