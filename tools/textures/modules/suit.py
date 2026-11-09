@@ -1342,6 +1342,35 @@ ICON_DRILL_HEAD = [
 ]
 
 
+def drill_model() -> Canvas:
+    """Swatch sheet for the 3D Electric Drill: sixteen 4x4 material patches the model's faces pick from (9 colours)."""
+    T = P.TITANIUM
+    cv = Canvas()
+    red = (200, 45, 35)
+
+    def patch(col, row, fn):
+        for y in range(4):
+            for x in range(4):
+                cv[col * 4 + x, row * 4 + y] = fn(x, y)
+    patch(0, 0, lambda x, y: W[7] if y == 0 or x == 0 else W[6])                                # body top
+    patch(1, 0, lambda x, y: W[7] if y == 0 else (C[4] if y == 1 else W[6]))                   # body side, cyan band
+    patch(2, 0, lambda x, y: S[6])                                                              # body underside
+    patch(3, 0, lambda x, y: S[2] if x in (1, 2) and y in (1, 2) else W[6])                    # rear vents
+    patch(0, 1, lambda x, y: R[2] if y % 2 == 0 else S[2])                                     # rubber grip, ribbed
+    patch(1, 1, lambda x, y: C[4] if y == 1 and 0 < x < 3 else S[4])                           # battery side, charge bar
+    patch(2, 1, lambda x, y: S[2])                                                              # battery top / bottom
+    patch(3, 1, lambda x, y: red)                                                               # trigger
+    patch(0, 2, lambda x, y: S[6] if y in (0, 2) else S[4])                                    # chuck, ringed
+    patch(1, 2, lambda x, y: S[2] if x in (1, 2) and y in (1, 2) else S[4])                    # chuck front
+    patch(2, 2, lambda x, y: S[6] if (x + y) % 2 == 0 else S[4])                               # bit flutes (spiral)
+    patch(3, 2, lambda x, y: S[6])                                                              # bit tip
+    patch(0, 3, lambda x, y: T[6] if (x + y) % 3 else S[4])                                    # wide head rim, teeth
+    patch(1, 3, lambda x, y: S[2] if x in (1, 2) and y in (1, 2) else (S[4] if x in (0, 3) or y in (0, 3) else T[6]))  # crown face: teeth rim, hub
+    patch(2, 3, lambda x, y: T[6])
+    patch(3, 3, lambda x, y: S[4])
+    return cv
+
+
 def icon_drill_head() -> Canvas:
     T = P.TITANIUM
     pal = {'o': T[0], 'H': T[7], 'T': T[5], 't': T[3], 'R': (220, 40, 30), 'r': (150, 20, 15), 'S': S[5], 's': S[3]}
@@ -1360,6 +1389,7 @@ def export(save):
     save(icon_tether(), 'item', 'safety_tether')
     save(icon_sensor(), 'item', 'environment_sensor')
     save(icon_drill(), 'item', 'electric_drill')
+    save(drill_model(), 'item', 'electric_drill_model')
     save(icon_drill_head(), 'item', 'wide_bore_drill_head')
     for name in TOOL_ICONS:
         save(tool_icon(name), 'item', name)
