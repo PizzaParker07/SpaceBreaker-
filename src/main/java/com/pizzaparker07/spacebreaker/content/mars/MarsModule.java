@@ -79,7 +79,7 @@ public final class MarsModule implements SbModule {
     public static final DeferredBlock<Block> MARTIAN_ICE = KIT.block("martian_ice", BlockBehaviour.Properties.of().mapColor(MapColor.ICE)
             .instrument(NoteBlockInstrument.CHIME).friction(0.98F).strength(0.8F).sound(SoundType.GLASS));
     public static final DeferredBlock<Block> DUSTY_ICE = KIT.block("dusty_ice", BlockBehaviour.Properties.of().mapColor(MapColor.TERRACOTTA_WHITE)
-            .instrument(NoteBlockInstrument.CHIME).friction(0.9F).strength(0.9F).sound(SoundType.GLASS));
+            .instrument(NoteBlockInstrument.CHIME).friction(0.9F).strength(0.9F).sound(SoundType.STONE)); // dust-laden: sounds like rock, not glass
     public static final DeferredBlock<DryIceBlock> DRY_ICE = KIT.block("dry_ice", DryIceBlock::new, BlockBehaviour.Properties.of()
             .mapColor(MapColor.SNOW).instrument(NoteBlockInstrument.CHIME).friction(0.95F).strength(0.6F).sound(SoundType.GLASS).randomTicks());
 
