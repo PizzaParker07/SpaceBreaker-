@@ -147,7 +147,30 @@ public final class SpaceView {
         if (!Double.isNaN(arrivalTop) && !groundDrawn()) {
             far = 1F;
         }
-        return far * rounded;
+        return eased(far * rounded);
+    }
+
+    private static float easedBall = Float.NaN;
+    private static long easedAt;
+    private static Object easedFor;
+
+    /**
+     * The ball's strength for a rider, never changing faster than over about a second and a half: its inputs can step
+     * (the far ground handing over between the game and an LOD mod, the ground under the camera getting built), and
+     * the ball against the black sky would flash with them.
+     */
+    private static float eased(float target) {
+        long now = System.nanoTime();
+        Object rider = RocketHud.ridden();
+        if (Float.isNaN(easedBall) || easedFor != rider || now - easedAt > 500_000_000L) {
+            easedBall = target;
+        } else {
+            float step = (now - easedAt) / 1.5e9F;
+            easedBall += Mth.clamp(target - easedBall, -step, step);
+        }
+        easedAt = now;
+        easedFor = rider;
+        return easedBall;
     }
 
     private static boolean lodsHidden;
