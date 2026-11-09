@@ -458,6 +458,9 @@ environment; the plugins compile against both APIs and the line itself is covere
   Complementary, BSL, MakeUp, the last pack-sky frame and the two after it). Still open, with packs only (not in
   vanilla or Sodium, already in e17f02a5): for about six burst frames after the take-over a thin, stepped
   horizontal line in sky and green tints crosses the whole view near a quarter of its height, drifting down slowly.
+  Isolated with `SB_SPACEVIEW_OFF` (Complementary, frames 16-19; rows gradient off, overTerrain off, ball off):
+  the line goes only with the gradient off, so it belongs to the sky gradient's horizon band
+  (`seamless_385c819f_line_isolation.jpg`; reported to rocketry).
 - **MakeUp on the Moon:** the airless ambient handed to packs other than Complementary was (0.20, 0.27, 0.55); MakeUp
   mixes it into its own ambient strongly enough that the Moon turned lilac, most of all at a low sun (seamless
   landing frames). Now (0.20, 0.23, 0.32): near-neutral grey by day, shadows a little cool
