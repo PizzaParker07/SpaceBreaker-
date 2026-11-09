@@ -7,6 +7,9 @@ public final class SkyConfig {
     public static final ModConfigSpec SPEC;
     public static final ModConfigSpec.DoubleValue BODY_SCALE;
     public static final ModConfigSpec.EnumValue<PlanetStyle> PLANET_STYLE;
+    /** Settings file version: 1 once the switch of the default style to CUBE has been applied to this file. */
+    public static final ModConfigSpec.IntValue STYLE_VERSION;
+    static final int CURRENT_STYLE_VERSION = 1;
 
     /** How planets and moons look from outside. */
     public enum PlanetStyle {
@@ -25,8 +28,10 @@ public final class SkyConfig {
         b.push("sky");
         BODY_SCALE = b.comment("Apparent size of the sun and planets relative to reality (1 = real angular size, which is tiny on screen).")
                 .defineInRange("bodyScale", 8.0, 1.0, 20.0);
-        PLANET_STYLE = b.comment("How planets and moons look from outside: VOXEL (a ball of blocks), CUBE (a pixel cube), PIXEL (blocks far away, a pixel-textured sphere close up) or ROUND (smooth disc).")
-                .defineEnum("planetStyle", PlanetStyle.VOXEL);
+        PLANET_STYLE = b.comment("How planets and moons look from outside: CUBE (a pixel cube, the default), VOXEL (a ball of blocks), PIXEL (blocks far away, a pixel-textured sphere close up) or ROUND (smooth disc).")
+                .defineEnum("planetStyle", PlanetStyle.CUBE);
+        STYLE_VERSION = b.comment("Internal: settings version, do not edit.")
+                .defineInRange("styleVersion", 0, 0, 1000);
         b.pop();
         SPEC = b.build();
     }
@@ -55,7 +60,31 @@ public final class SkyConfig {
     }
 
     public static PlanetStyle planetStyle() {
-        return SPEC.isLoaded() ? PLANET_STYLE.get() : PlanetStyle.VOXEL;
+        return SPEC.isLoaded() ? PLANET_STYLE.get() : PlanetStyle.CUBE;
+    }
+
+    /**
+     * One-time switch when the file is loaded: the default style became CUBE, so a file written before that (version 0)
+     * that still says VOXEL, the old default, moves to CUBE once. The version is then set, so a player who later picks
+     * VOXEL or ROUND on purpose keeps that choice.
+     */
+    static void migrate(net.neoforged.fml.event.config.ModConfigEvent event) {
+        if (event.getConfig().getSpec() != SPEC || event instanceof net.neoforged.fml.event.config.ModConfigEvent.Unloading) {
+            return;
+        }
+        if (STYLE_VERSION.get() >= CURRENT_STYLE_VERSION) {
+            return;
+        }
+        if (migratedStyle(PLANET_STYLE.get(), STYLE_VERSION.get()) != PLANET_STYLE.get()) {
+            PLANET_STYLE.set(PlanetStyle.CUBE);
+        }
+        STYLE_VERSION.set(CURRENT_STYLE_VERSION);
+        SPEC.save();
+    }
+
+    /** The style a settings file of {@code version} keeps after the one-time switch (pure, for tests). */
+    public static PlanetStyle migratedStyle(PlanetStyle saved, int version) {
+        return version < CURRENT_STYLE_VERSION && saved == PlanetStyle.VOXEL ? PlanetStyle.CUBE : saved;
     }
 
     /** The blocky style to draw with, or null for the old smooth disc. */
