@@ -440,6 +440,17 @@ environment; the plugins compile against both APIs and the line itself is covere
   see-through parts and are not lost against the sky; the gas giants' air shells and night sides look as without
   shaders. Only the pack's lighting differs (warmer ground, real shadows, a blue ambient on night sides and indoors).
   `round2_creatures_worlds_vanilla_vs_iris.jpg` (pairs, vanilla left).
+- **Seamless ascent and descent (rocketry 161755c9, 2026-11-09):** whole flights in burst mode (69_flight, 70_transfer)
+  under vanilla, Sodium, Complementary, BSL and MakeUp. The Earth is a vanilla-sky world, so the packs kept their sky
+  and clouds during the climb: a sharp light-blue wedge in Complementary and BSL (the sky gradient's cube through the
+  pack's sky program), and no darkening at all in MakeUp, so the climb did not end in the orbit's sky. With the
+  `ShaderSkyPass.spaceView` hook wired to `SpaceView.factor() > 0.02` the pack's sky and clouds are replaced as soon as
+  the view starts to leave the ground: no wedge, black sky with stars in all three packs, the cut to orbit lines up
+  (`seamless_ascent_packs_before_after.jpg`; columns vanilla, Complementary before/after, BSL before/after, MakeUp
+  before/after). Left with Complementary: the planet ball looks pale blue for part of the climb (its pixels keep the
+  far terrain's depth, which the pack fogs). A one-frame tilted slab at the first ground hand-over frame appears
+  without shaders too (`seamless_vanilla_slab_024.jpg`, rocketry). With a pack the client is much slower than the
+  server, so burst frames land on other moments of the flight than in vanilla.
 - **Outline boxes (`RenderType.lines()`):** Iris's line programs widen each segment in screen space, so an edge
   that runs behind the camera becomes a large flat quad across the view (seen as a lavender square over the station
   core while holding a docking module: the outline reaches back past the player). `compat.client.ClippedLines` cuts
