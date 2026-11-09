@@ -41,6 +41,8 @@ final class RocketryScenario implements ShowcaseScenario {
     /** Frames of the flight sequence (shot 69), ten ticks apart. */
     private static final int FLIGHT_FRAMES = Integer.parseInt(System.getenv().getOrDefault("SB_FLIGHT_FRAMES", "240"));
     private static final int TRANSFER_FRAMES = Integer.parseInt(System.getenv().getOrDefault("SB_TRANSFER_FRAMES", "130"));
+    /** Time of day for the flight sequences (69, 70), e.g. 18000 for a night run. */
+    private static final int FLIGHT_TIME = Integer.parseInt(System.getenv().getOrDefault("SB_FLIGHT_TIME", "6000"));
     private static final int FLIGHT_STEP = Integer.parseInt(System.getenv().getOrDefault("SB_FLIGHT_STEP", "10"));
     private static int moonGround = 100;
     private static final List<RocketEntity> scene = new ArrayList<>();
@@ -971,7 +973,7 @@ final class RocketryScenario implements ShowcaseScenario {
         // black or jump
         boolean[] landingAsked = {false};
         int[] inOrbit = {0};
-        s.add(new Shot("69_flight_000", 6000, 6.5, G + 6, -8.5, 30F, 20F, true, CameraType.THIRD_PERSON_BACK, 40, p -> {
+        s.add(new Shot("69_flight_000", FLIGHT_TIME, 6.5, G + 6, -8.5, 30F, 20F, true, CameraType.THIRD_PERSON_BACK, 40, p -> {
             clearScene(p);
             landingAsked[0] = false;
             inOrbit[0] = 0;
@@ -983,7 +985,7 @@ final class RocketryScenario implements ShowcaseScenario {
         for (int i = 1; i <= FLIGHT_FRAMES; i++) {
             final boolean last = i == FLIGHT_FRAMES;
             final int frame = i;
-            s.add(Shot.stay(String.format(java.util.Locale.ROOT, "69_flight_%03d", i), 6000, true, CameraType.THIRD_PERSON_BACK, FLIGHT_STEP, p -> {
+            s.add(Shot.stay(String.format(java.util.Locale.ROOT, "69_flight_%03d", i), FLIGHT_TIME, true, CameraType.THIRD_PERSON_BACK, FLIGHT_STEP, p -> {
                 if (p.getVehicle() instanceof RocketEntity v) {
                     com.pizzaparker07.spacebreaker.Spacebreaker.LOGGER.info("[flight] frame {} {} t{} progress {} y {} dim {}", frame, v.state(), v.timer(),
                             String.format(java.util.Locale.ROOT, "%.3f", v.ascentProgress()), (int) v.getY(), v.level().dimension().location());
@@ -1000,7 +1002,7 @@ final class RocketryScenario implements ShowcaseScenario {
         // the transfer to the Moon and the landing there, frame by frame (every 5 ticks): the Earth shrinks away, the
         // Moon grows, the hand-over to the Moon's orbit, the de-orbit and the hand-over to the surface
         int[] step = {0};
-        s.add(new Shot("70_transfer_000", 6000, 0, 0, 0, 0F, 0F, true, CameraType.THIRD_PERSON_BACK, 80, p -> {
+        s.add(new Shot("70_transfer_000", FLIGHT_TIME, 0, 0, 0, 0F, 0F, true, CameraType.THIRD_PERSON_BACK, 80, p -> {
             clearScene(p);
             step[0] = 0;
             ServerLevel orbit = p.server.getLevel(Location.EARTH_ORBIT.dimension());
@@ -1012,7 +1014,7 @@ final class RocketryScenario implements ShowcaseScenario {
         for (int i = 1; i <= TRANSFER_FRAMES; i++) {
             final boolean last = i == TRANSFER_FRAMES;
             final int frame = i;
-            s.add(Shot.stay(String.format(java.util.Locale.ROOT, "70_transfer_%03d", i), 6000, true, CameraType.THIRD_PERSON_BACK, 5, p -> {
+            s.add(Shot.stay(String.format(java.util.Locale.ROOT, "70_transfer_%03d", i), FLIGHT_TIME, true, CameraType.THIRD_PERSON_BACK, 5, p -> {
                 if (p.getVehicle() instanceof RocketEntity r) {
                     com.pizzaparker07.spacebreaker.Spacebreaker.LOGGER.info("[transfer] frame {} {} t{} y {} dim {}", frame, r.state(), r.timer(),
                             (int) r.getY(), r.level().dimension().location());

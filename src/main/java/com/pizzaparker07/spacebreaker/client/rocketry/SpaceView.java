@@ -185,6 +185,19 @@ public final class SpaceView {
         return Math.max(2000, 6000 * km / 6371.0);
     }
 
+    /**
+     * The sun that lights the ball: the orbit sky's at the cut (so the two views match), turning into this world's own
+     * sun as the view comes down (by k = 0.7), so the ball below is lit like the ground it hands over to.
+     */
+    static Vector3f sun(ClientLevel level, float k, float t, float partialTick) {
+        float theta = level.getTimeOfDay(partialTick) * Mth.TWO_PI;
+        Vector3f local = new Vector3f(-Mth.sin(theta), Mth.cos(theta), 0);
+        Vector3f orbit = OrbitSkyEffects.sunDirection(t);
+        float w = smooth((k - 0.7F) / 0.3F);
+        Vector3f s = local.lerp(orbit, w);
+        return s.lengthSquared() < 1e-6F ? orbit : s.normalize();
+    }
+
     private static float lit(ClientLevel level, Location here, float t) {
         return (float) com.pizzaparker07.spacebreaker.content.rocketry.nav.OrbitDaylight.sunlit(
                 com.pizzaparker07.spacebreaker.content.rocketry.nav.OrbitDaylight.system(level.registryAccess()), here.body(), t);
@@ -217,7 +230,8 @@ public final class SpaceView {
             SkyDraw.billboard(modelView, OrbitSkyEffects.SUN, day, 100F, 15F, k * (1F - smooth(k)));
         }
         RenderSystem.depthMask(false);
-        OrbitSkyEffects.drawBodyBelow(modelView, here.body(), angle(k), t, lit(level, here, t) * smooth(k), planet);
+        OrbitSkyEffects.drawBodyBelow(modelView, here.body(), angle(k), t, lit(level, here, t) * smooth(k), planet,
+                com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.APPROACH, new Vector3f(0, -1, 0), sun(level, k, t, partialTick));
         RenderSystem.depthMask(true);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
     }
@@ -254,10 +268,13 @@ public final class SpaceView {
         RenderSystem.disableDepthTest();
         // a black disc under the ball, so the ground does not show through its stepped edge
         disc(modelView, angle(k), hide, false);
-        OrbitSkyEffects.drawBodyBelow(modelView, here.body(), angle(k), t, lit(level, here, t) * smooth(k), hide);
+        OrbitSkyEffects.drawBodyBelow(modelView, here.body(), angle(k), t, lit(level, here, t) * smooth(k), hide,
+                com.pizzaparker07.spacebreaker.client.sky.BlockyBodyRenderer.APPROACH, new Vector3f(0, -1, 0), sun(level, k, t, partialTick));
         main.copyDepthFrom(saved);
         main.bindWrite(false);
-        if (hide > 0.98F) {
+        // the ball takes a sky object's depth once it covers the ground (with a shader pack at once: the pack's fog
+        // would otherwise go by the depth of the ground far below it)
+        if (hide > 0.98F || com.pizzaparker07.spacebreaker.compat.client.ShaderState.shaderPackInUse()) {
             disc(modelView, angle(k), 1F, true);
         }
         RenderSystem.enableDepthTest();

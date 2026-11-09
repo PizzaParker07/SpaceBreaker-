@@ -50,7 +50,7 @@ public final class RocketClientEvents {
         if (TransitView.active() && TransitView.holding() && !(mc.screen instanceof TransitScreen)) {
             // the new dimension is on screen: fade the view out into it once the crew is back in the seat
             // (the passenger follows the rocket a few ticks later), or after two seconds in any case
-            if (ridden != null || ++unseated > 40) {
+            if (ridden != null && TransitView.drawable(ridden) || ++unseated > 60) {
                 unseated = 0;
                 TransitView.arrived();
             }

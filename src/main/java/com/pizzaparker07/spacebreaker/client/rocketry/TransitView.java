@@ -140,7 +140,20 @@ public final class TransitView {
             return false;
         }
         var player = Minecraft.getInstance().player;
-        return player != null && player.getVehicle() == null;
+        if (player == null) {
+            return false;
+        }
+        // the game draws an entity only once the terrain section it is in has been built: until then the stand-in
+        // stays, even with the crew back in their seats
+        var vehicle = player.getVehicle();
+        return vehicle == null || !drawable(vehicle);
+    }
+
+    /** Whether the game draws this entity yet (its section built, or it is outside the build height). */
+    static boolean drawable(net.minecraft.world.entity.Entity e) {
+        var mc = Minecraft.getInstance();
+        var at = e.blockPosition();
+        return mc.level == null || mc.level.isOutsideBuildHeight(at) || mc.levelRenderer.isSectionCompiled(at);
     }
 
     /**
