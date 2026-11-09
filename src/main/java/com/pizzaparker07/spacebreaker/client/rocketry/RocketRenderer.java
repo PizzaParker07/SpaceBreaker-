@@ -78,6 +78,15 @@ public class RocketRenderer extends EntityRenderer<RocketEntity> {
             com.pizzaparker07.spacebreaker.compat.client.LateEffects.drawOrDefer(pose, buffers,
                     (p, b) -> RocketStackRenderer.renderPlume(layout, geo, stage, p, b, time, plume, vacuum));
         }
+        // atmospheric entry: the shock glowing in front of the shield, the wake streaming back, sparks shed into it
+        if (state == FlightState.REENTRY) {
+            float heat = RocketHud.reentryHeat(chuteT);
+            EntryGlow.render(pose, buffers, heat, time, capsuleW, top);
+            if (rocket.tickCount != rocket.sparkTick) {
+                rocket.sparkTick = rocket.tickCount;
+                EntryGlow.sparks(rocket, heat, capsuleW);
+            }
+        }
         // parachutes: in flight, and for a while after touchdown as the canopy collapses beside the capsule
         if (state == FlightState.PARACHUTE) {
             rocket.chuteLandedAt = -1;

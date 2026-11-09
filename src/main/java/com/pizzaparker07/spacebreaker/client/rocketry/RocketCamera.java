@@ -29,6 +29,8 @@ public final class RocketCamera {
     private static CameraType before;
     private static int riddenId = -1;
     private static float zoom = -1;
+    /** The player chose a distance with the wheel this flight: leave it alone. */
+    private static boolean userZoomed;
 
     private RocketCamera() {
     }
@@ -59,12 +61,21 @@ public final class RocketCamera {
             riddenId = rocket.getId();
             if (!sameFlight) {
                 zoom = distanceFor(rocket.geometry().height() / 16.0);
+                userZoomed = false;
             }
             if (enabled() && before == null) {
                 before = mc.options.getCameraType();
                 mc.options.setCameraType(CameraType.THIRD_PERSON_BACK);
             }
-        } else if (rocket == null && riddenId != -1) {
+        }
+        if (rocket != null && zoom > 0) {
+            // after a stage drops away (the capsule alone coming home), close in smoothly on what is left
+            float target = distanceFor(rocket.geometry().height() / 16.0);
+            if (target < zoom && !userZoomed) {
+                zoom = Math.max(target, zoom + (target - zoom) * 0.04F);
+            }
+        }
+        if (rocket == null && riddenId != -1 && !TransitView.handingOver()) {
             riddenId = -1;
             if (before != null && mc.player != null && !mc.player.isPassenger()) {
                 mc.options.setCameraType(before);
@@ -100,6 +111,7 @@ public final class RocketCamera {
         Minecraft mc = Minecraft.getInstance();
         if (mc.screen == null && RocketHud.ridden() != null && !mc.options.getCameraType().isFirstPerson() && zoom > 0) {
             zoom = zoomed(zoom, event.getScrollDeltaY());
+            userZoomed = true;
             event.setCanceled(true);
         }
     }
