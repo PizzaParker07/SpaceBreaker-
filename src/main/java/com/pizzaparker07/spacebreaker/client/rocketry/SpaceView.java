@@ -120,8 +120,33 @@ public final class SpaceView {
         if (RocketHud.ridden() == null) {
             return byK * rounded;
         }
+        // the far ground is drawn by the game to the view distance, and by an LOD mod (Distant Horizons) much further
         double reach = Minecraft.getInstance().options.getEffectiveRenderDistance() * 16.0;
-        return Math.max(byK, smooth((float) ((altitude() - 0.25 * reach) / (0.35 * reach)))) * rounded;
+        var cam = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+        boolean lods = com.pizzaparker07.spacebreaker.compat.client.DhCompat.active() && !com.pizzaparker07.spacebreaker.compat.client.DhCompat.hidingLods()
+                && com.pizzaparker07.spacebreaker.compat.client.DhCompat.lodUnder(cam.x, cam.z);
+        if (lods) {
+            reach = Math.max(reach, com.pizzaparker07.spacebreaker.compat.client.DhCompat.lodReachBlocks());
+        }
+        return Math.max(lods ? 0F : byK, smooth((float) ((altitude() - 0.25 * reach) / (0.35 * reach)))) * rounded;
+    }
+
+    private static boolean lodsHidden;
+
+    /**
+     * Each client tick: while the ball covers the ground (the last stretch before the orbit view), an LOD mod's far
+     * terrain is switched off, or it would show past the ball's edge; it comes back as soon as the ball lifts.
+     */
+    static void tickLods() {
+        // (once hidden, DH may report itself off: keep going so the LODs are always given back)
+        if (!lodsHidden && !com.pizzaparker07.spacebreaker.compat.client.DhCompat.active()) {
+            return;
+        }
+        boolean want = RocketHud.ridden() != null && hide(factor()) > 0.5F;
+        if (want != lodsHidden) {
+            lodsHidden = want;
+            com.pizzaparker07.spacebreaker.compat.client.DhCompat.hideLods(want);
+        }
     }
 
     /** The widest the ball below is drawn (angular radius, degrees). */
