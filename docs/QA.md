@@ -354,6 +354,17 @@ Shot 11 is now aimed at the station. **QA-27 closed**: `stationAirlockCycle` ass
 together on any tick and that the station is sealed at every step (both shut 119, inner open 148, outer asked open
 while the inner was open 119, and so on).
 
+## beta.1 feedback checks (2026-11-09, 1.21.1 @ d52b37a3)
+
+- (c) no metal block sounds like wool: `qa/BlockSoundAuditTests.metalBlocksDoNotSoundLikeWool` reads every block's
+  sound (with the level); wool is allowed only on soft blocks (station_bunk, envelope_fabric, or a fabric/bed/carpet
+  name). Before industry edac01ea it caught copper_cable and hv_cable; now ✅ (`run-gametest/qa/block_sounds.md`).
+- (a) the crew does not show through the capsule: `./gradlew runShowcase -Pscenario=qa_crew_hidden`. The player rides
+  a Moon rocket in third person through every flight state (the whole stack: IDLE, COUNTDOWN, ASCENT, ORBIT, BURN,
+  TRANSFER, DESCENT, REENTRY, PARACHUTE; the capsule alone: REENTRY, PARACHUTE, IDLE). Each draw of a rider is
+  counted along with whether it was cancelled: 59–79 draws per state, none drawn ✅ (rocketry 6d7a7265 hides the crew of a
+  rocket with a capsule). A line "crew: FAIL …" names a state where the rider is drawn.
+
 ## Low gravity with real key presses (`qa_low_gravity`, 2026-11-08)
 
 `./gradlew runShowcase -Pscenario=qa_low_gravity`: the keys are held down on the client (movement is worked out
