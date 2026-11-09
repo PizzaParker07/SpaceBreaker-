@@ -126,11 +126,17 @@ public final class MarsWeather {
 
     private static void sync(ServerLevel level, Data d) {
         d.synced = d.strength;
-        PacketDistributor.sendToPlayersInDimension(level, new Payload(level.dimension(), d.strength));
+        Payload p = new Payload(level.dimension(), d.strength);
+        for (ServerPlayer player : level.players()) {
+            // a client without the mod has no such channel: sending would disconnect it
+            if (player.connection.hasChannel(Payload.TYPE)) {
+                PacketDistributor.sendToPlayer(player, p);
+            }
+        }
     }
 
     static void syncTo(ServerPlayer player) {
-        if (dusty(player.level())) {
+        if (dusty(player.level()) && player.connection.hasChannel(Payload.TYPE)) {
             PacketDistributor.sendToPlayer(player, new Payload(player.level().dimension(), data(player.serverLevel()).strength));
         }
     }
