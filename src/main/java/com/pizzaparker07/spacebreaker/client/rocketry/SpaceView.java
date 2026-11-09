@@ -128,10 +128,30 @@ public final class SpaceView {
         if (lods) {
             reach = Math.max(reach, com.pizzaparker07.spacebreaker.compat.client.DhCompat.lodReachBlocks());
         }
-        return Math.max(lods ? 0F : byK, smooth((float) ((altitude() - 0.25 * reach) / (0.35 * reach)))) * rounded;
+        float far = Math.max(lods ? 0F : byK, smooth((float) ((altitude() - 0.25 * reach) / (0.35 * reach))));
+        // coming down into a world just arrived in, the ball stays until the ground under the camera is really drawn
+        if (!Double.isNaN(arrivalTop) && !groundDrawn()) {
+            far = 1F;
+        }
+        return far * rounded;
     }
 
     private static boolean lodsHidden;
+
+    /** Whether the terrain straight below the camera has been built for drawing (or an LOD mod draws it). */
+    static boolean groundDrawn() {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.level == null) {
+            return false;
+        }
+        var cam = mc.gameRenderer.getMainCamera().getPosition();
+        var column = net.minecraft.core.BlockPos.containing(cam.x, mc.level.getMinBuildHeight(), cam.z);
+        if (!mc.level.hasChunkAt(column)) {
+            return false;
+        }
+        int y = mc.level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, column.getX(), column.getZ()) - 1;
+        return mc.levelRenderer.isSectionCompiled(new net.minecraft.core.BlockPos(column.getX(), Math.max(mc.level.getMinBuildHeight(), y), column.getZ()));
+    }
 
     /**
      * Each client tick: while the ball covers the ground (the last stretch before the orbit view), an LOD mod's far
