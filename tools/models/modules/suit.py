@@ -112,6 +112,34 @@ def electric_drill():
                                               'elements': els(0, False), 'display': DRILL_DISPLAY, 'overrides': overrides})
 
 
+def environment_sensor():
+    """Handheld scanner: a grey case with a glowing readout screen and three keys on the side facing the holder (+z),
+    a battery door on the back and a whip antenna with a red tip."""
+    side = [12, 0, 13, 10]
+    els = [
+        cube([5, 1, 7], [11, 11, 9], 'tex', per_face={'south': [0, 0, 6, 10], 'north': [6, 0, 12, 10], 'east': side, 'west': side,
+                                                      'up': [0, 10, 6, 12], 'down': [6, 10, 12, 12]}),
+        cube([9.5, 11, 7.5], [10.5, 14, 8.5], 'tex', per_face={s: [12, 10, 13, 13] for s in SIDES} | {'up': [13, 10, 14, 11], 'down': [12, 13, 13, 14]}),
+    ]
+    screen = cube([6, 5, 9], [10, 10, 9.02], 'tex', faces=('south',), per_face={'south': [1, 1, 5, 6]})
+    screen['neoforge_data'] = {'block_light': 15, 'sky_light': 15}
+    els.append(screen)
+    write('models/item/environment_sensor.json', {
+        'parent': 'minecraft:block/block',
+        'textures': {'tex': i('environment_sensor_model'), 'particle': i('environment_sensor_model')},
+        'elements': els,
+        'display': {
+            'thirdperson_righthand': {'rotation': [-180, -90, 90], 'translation': [0, 1, 1], 'scale': [0.55, 0.55, 0.55]},
+            'thirdperson_lefthand': {'rotation': [-180, -90, 90], 'translation': [0, 1, 1], 'scale': [0.55, 0.55, 0.55]},
+            'firstperson_righthand': {'rotation': [-20, 0, 0], 'translation': [0, 3, -1], 'scale': [0.5, 0.5, 0.5]},
+            'firstperson_lefthand': {'rotation': [-20, 0, 0], 'translation': [0, 3, -1], 'scale': [0.5, 0.5, 0.5]},
+            'gui': {'rotation': [15, -25, 0], 'translation': [0, 0, 0], 'scale': [1.0, 1.0, 1.0]},
+            'ground': {'rotation': [0, 0, 0], 'translation': [0, 2, 0], 'scale': [0.5, 0.5, 0.5]},
+            'fixed': {'rotation': [0, 180, 0], 'translation': [0, 0, 0], 'scale': [1.0, 1.0, 1.0]},
+        },
+    })
+
+
 def oxygen_tank():
     tank_model('oxygen_tank', 11)
     tank_model('large_oxygen_tank', 13)
@@ -124,10 +152,11 @@ def generate():
     for name in pieces:
         write(f'models/item/{name}.json', {'parent': 'minecraft:item/generated',
                                             'textures': {'layer0': i(name), 'layer1': i(name + '_accent')}})
-    for name in ('maneuvering_unit', 'safety_tether', 'environment_sensor', 'wide_bore_drill_head', 'suit_upgrade_template', 'thermal_regulator_module', 'radiation_shield_module',
+    for name in ('maneuvering_unit', 'safety_tether', 'wide_bore_drill_head', 'suit_upgrade_template', 'thermal_regulator_module', 'radiation_shield_module',
                  'extra_oxygen_module', 'jetpack_booster_module'):
         generated_item(name)
     electric_drill()
+    environment_sensor()
     for tool in ('pickaxe', 'axe', 'shovel', 'hoe', 'sword'):
         write(f'models/item/titanium_{tool}.json', {'parent': 'minecraft:item/handheld', 'textures': {'layer0': i(f'titanium_{tool}')}})
     oxygen_tank()

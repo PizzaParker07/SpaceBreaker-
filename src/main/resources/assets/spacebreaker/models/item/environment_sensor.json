@@ -1,6 +1,293 @@
 {
-  "parent": "minecraft:item/generated",
+  "parent": "minecraft:block/block",
   "textures": {
-    "layer0": "spacebreaker:item/environment_sensor"
+    "tex": "spacebreaker:item/environment_sensor_model",
+    "particle": "spacebreaker:item/environment_sensor_model"
+  },
+  "elements": [
+    {
+      "from": [
+        5,
+        1,
+        7
+      ],
+      "to": [
+        11,
+        11,
+        9
+      ],
+      "faces": {
+        "north": {
+          "texture": "#tex",
+          "uv": [
+            6,
+            0,
+            12,
+            10
+          ]
+        },
+        "south": {
+          "texture": "#tex",
+          "uv": [
+            0,
+            0,
+            6,
+            10
+          ]
+        },
+        "east": {
+          "texture": "#tex",
+          "uv": [
+            12,
+            0,
+            13,
+            10
+          ]
+        },
+        "west": {
+          "texture": "#tex",
+          "uv": [
+            12,
+            0,
+            13,
+            10
+          ]
+        },
+        "up": {
+          "texture": "#tex",
+          "uv": [
+            0,
+            10,
+            6,
+            12
+          ]
+        },
+        "down": {
+          "texture": "#tex",
+          "uv": [
+            6,
+            10,
+            12,
+            12
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        9.5,
+        11,
+        7.5
+      ],
+      "to": [
+        10.5,
+        14,
+        8.5
+      ],
+      "faces": {
+        "north": {
+          "texture": "#tex",
+          "uv": [
+            12,
+            10,
+            13,
+            13
+          ]
+        },
+        "south": {
+          "texture": "#tex",
+          "uv": [
+            12,
+            10,
+            13,
+            13
+          ]
+        },
+        "east": {
+          "texture": "#tex",
+          "uv": [
+            12,
+            10,
+            13,
+            13
+          ]
+        },
+        "west": {
+          "texture": "#tex",
+          "uv": [
+            12,
+            10,
+            13,
+            13
+          ]
+        },
+        "up": {
+          "texture": "#tex",
+          "uv": [
+            13,
+            10,
+            14,
+            11
+          ]
+        },
+        "down": {
+          "texture": "#tex",
+          "uv": [
+            12,
+            13,
+            13,
+            14
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        6,
+        5,
+        9
+      ],
+      "to": [
+        10,
+        10,
+        9.02
+      ],
+      "faces": {
+        "south": {
+          "texture": "#tex",
+          "uv": [
+            1,
+            1,
+            5,
+            6
+          ]
+        }
+      },
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
+    }
+  ],
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [
+        -180,
+        -90,
+        90
+      ],
+      "translation": [
+        0,
+        1,
+        1
+      ],
+      "scale": [
+        0.55,
+        0.55,
+        0.55
+      ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [
+        -180,
+        -90,
+        90
+      ],
+      "translation": [
+        0,
+        1,
+        1
+      ],
+      "scale": [
+        0.55,
+        0.55,
+        0.55
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        -20,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        3,
+        -1
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [
+        -20,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        3,
+        -1
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ]
+    },
+    "gui": {
+      "rotation": [
+        15,
+        -25,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "ground": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        2,
+        0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        0,
+        180,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    }
   }
 }
