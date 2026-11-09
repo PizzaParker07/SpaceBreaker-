@@ -28,6 +28,9 @@ public final class DhCompat {
     private static Method renderingEnabled;
     private static Method curvature;
     private static Method configValue;
+    private static Method setApiValue;
+    private static Method clearApiValue;
+    private static boolean hiding;
     private static Method worldLoaded;
     private static Method singlePlayerLevel;
     private static Method columnData;
@@ -61,7 +64,10 @@ public final class DhCompat {
             chunkRenderDistance = g.getMethod("chunkRenderDistance");
             renderingEnabled = g.getMethod("renderingEnabled");
             curvature = g.getMethod("earthCurvatureRatio");
-            configValue = Class.forName("com.seibel.distanthorizons.api.interfaces.config.IDhApiConfigValue").getMethod("getValue");
+            Class<?> value = Class.forName("com.seibel.distanthorizons.api.interfaces.config.IDhApiConfigValue");
+            configValue = value.getMethod("getValue");
+            setApiValue = value.getMethod("setValue", Object.class);
+            clearApiValue = value.getMethod("clearValue");
             Class<?> world = Class.forName("com.seibel.distanthorizons.api.interfaces.world.IDhApiWorldProxy");
             worldLoaded = world.getMethod("worldLoaded");
             singlePlayerLevel = world.getMethod("getSinglePlayerLevel");
@@ -136,6 +142,51 @@ public final class DhCompat {
         return columnFound;
     }
 
+    /**
+     * Stops DH drawing its LOD terrain while {@code hide} is true (an API override of its "rendering enabled" setting:
+     * the player's own setting is untouched and comes back with {@code false}). For a view that covers the whole
+     * ground with something else, such as the planet ball high in a seamless ascent: LOD terrain is drawn after it,
+     * wherever the depth is still the far value, so its far edge would show around the ball. Cheap to call every
+     * frame; only a change is passed on to DH.
+     */
+    public static void hideLods(boolean hide) {
+        if (hide == hiding) {
+            return;
+        }
+        resolve();
+        if (configs == null) {
+            hiding = false;
+            return;
+        }
+        try {
+            Object config = configs.get(null);
+            if (config == null) {
+                return;
+            }
+            Object setting = renderingEnabled.invoke(graphics.invoke(config));
+            if (hide) {
+                if (!Boolean.TRUE.equals(setApiValue.invoke(setting, Boolean.FALSE))) {
+                    if (!warned) {
+                        warned = true;
+                        Spacebreaker.LOGGER.warn("Distant Horizons did not accept an API override of its rendering setting; LODs stay on");
+                    }
+                    return;
+                }
+            } else {
+                clearApiValue.invoke(setting);
+            }
+            hiding = hide;
+            cachedTick = Long.MIN_VALUE;
+        } catch (ReflectiveOperationException | RuntimeException e) {
+            warn(e);
+        }
+    }
+
+    /** Whether {@link #hideLods} is holding DH's LOD terrain back right now. */
+    public static boolean hidingLods() {
+        return hiding;
+    }
+
     private static void refresh() {
         Minecraft mc = Minecraft.getInstance();
         long tick = mc.level == null ? 0 : mc.level.getGameTime();
@@ -155,7 +206,7 @@ public final class DhCompat {
                 return;
             }
             Object g = graphics.invoke(config);
-            if (!Boolean.TRUE.equals(configValue.invoke(renderingEnabled.invoke(g)))) {
+            if (!hiding && !Boolean.TRUE.equals(configValue.invoke(renderingEnabled.invoke(g)))) {
                 return;
             }
             Object chunks = configValue.invoke(chunkRenderDistance.invoke(g));
