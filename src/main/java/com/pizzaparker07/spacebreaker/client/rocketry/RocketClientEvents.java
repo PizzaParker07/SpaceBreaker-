@@ -318,7 +318,7 @@ public final class RocketClientEvents {
         }
         float k = spaceFactor();
         float clear = SpaceView.clearAir(k);
-        if (clear <= 0) {
+        if (clear <= 0 || SpaceView.off("fog")) {
             return;
         }
         event.setFarPlaneDistance(event.getFarPlaneDistance() * (1 + 30 * clear));
@@ -330,7 +330,7 @@ public final class RocketClientEvents {
     static void fog(ViewportEvent.ComputeFogColor event) {
         // the horizon turns a clear, saturated blue as the air thins (never grey), then fades to black at the top
         float f = spaceFactor();
-        if (f <= 0) {
+        if (f <= 0 || SpaceView.off("fogColour")) {
             return;
         }
         var here = SpaceView.surface(Minecraft.getInstance().level);
