@@ -461,6 +461,10 @@ environment; the plugins compile against both APIs and the line itself is covere
   Isolated with `SB_SPACEVIEW_OFF` (Complementary, frames 16-19; rows gradient off, overTerrain off, ball off):
   the line goes only with the gradient off, so it belongs to the sky gradient's horizon band
   (`seamless_385c819f_line_isolation.jpg`; reported to rocketry).
+  Fixed in rocketry b415c1aa (with a pack the gradient's horizon alpha equals the sky above it): no line in any of 40
+  Complementary frames, the sky darkens evenly to navy and then black (`seamless_b415c1aa_complementary.jpg`, frames
+  15-22). Left, minor: in the last frame under the pack's own sky the ball shows through the haze as pale overlapping
+  slabs (gone with `SB_SPACEVIEW_OFF=ball`, see the isolation image).
 - **MakeUp on the Moon:** the airless ambient handed to packs other than Complementary was (0.20, 0.27, 0.55); MakeUp
   mixes it into its own ambient strongly enough that the Moon turned lilac, most of all at a low sun (seamless
   landing frames). Now (0.20, 0.23, 0.32): near-neutral grey by day, shadows a little cool
