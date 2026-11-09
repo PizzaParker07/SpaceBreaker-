@@ -58,7 +58,9 @@ public final class BlockyBodyRenderer {
             if (style != BlockyBodyMesh.Style.CUBE) {
                 return rotation();
             }
-            Matrix3f r = rotation();
+            // a cube always turns its tipped corner toward the camera (at the origin), whatever the pose's facing, so a
+            // small cube far away shows three faces, never one flat square
+            Matrix3f r = new Pose(center, radius, pole, new Vector3f(center).negate(), spin).rotation();
             r.mul(new Matrix3f().rotationY(spin)).mul(new Matrix3f().rotationX(CUBE_TILT)).mul(new Matrix3f().rotationY(-spin + (float) Math.PI / 4));
             return r;
         }
@@ -66,7 +68,9 @@ public final class BlockyBodyRenderer {
         /** {@link #rotation(BlockyBodyMesh.Style)} written into {@code dest}, allocating nothing (render thread only). */
         Matrix3f rotationInto(BlockyBodyMesh.Style style, Matrix3f dest) {
             Vector3f y = S_Y.set(pole).normalize();
-            Vector3f z = S_Z.set(facing).sub(S_T.set(y).mul(y.dot(facing)));
+            // a cube faces the camera (see rotation(style)); other styles keep the pose's facing
+            Vector3f f = style == BlockyBodyMesh.Style.CUBE ? S_F.set(center).negate() : facing;
+            Vector3f z = S_Z.set(f).sub(S_T.set(y).mul(y.dot(f)));
             if (z.lengthSquared() < 1e-8F) {
                 z.set(Math.abs(y.x) < 0.9F ? 1 : 0, 0, Math.abs(y.x) < 0.9F ? 0 : 1);
                 z.sub(S_T.set(y).mul(y.dot(z)));
@@ -109,7 +113,7 @@ public final class BlockyBodyRenderer {
     }
 
     // scratch for the every-frame path (render thread only), so drawing a cached body allocates nothing
-    private static final Vector3f S_X = new Vector3f(), S_Y = new Vector3f(), S_Z = new Vector3f(), S_T = new Vector3f();
+    private static final Vector3f S_X = new Vector3f(), S_Y = new Vector3f(), S_Z = new Vector3f(), S_T = new Vector3f(), S_F = new Vector3f();
     private static final Matrix3f S_M = new Matrix3f(), S_ROT = new Matrix3f(), S_ROT_T = new Matrix3f();
     private static final Vector3f S_LOOK = new Vector3f(), S_UP = new Vector3f(), S_RIGHT = new Vector3f();
     private static final Vector3f S_SUN_B = new Vector3f(), S_LOOK_B = new Vector3f(), S_UP_B = new Vector3f(), S_RIGHT_B = new Vector3f(),
